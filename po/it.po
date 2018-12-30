@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2018-12-30 01:22\n"
+"PO-Revision-Date: 2018-12-30 18:12\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -415,7 +415,7 @@ msgstr "Componi Numero"
 
 #: src/service/daemon.js:730 src/service/plugins/share.js:27
 msgid "Share File"
-msgstr "Condividi File"
+msgstr "Invia file"
 
 #: src/service/device.js:161
 msgid "Not available"
@@ -599,7 +599,7 @@ msgstr "File"
 
 #: src/service/plugins/share.js:13 src/service/plugins/share.js:19
 msgid "Share"
-msgstr "Condividi"
+msgstr "Invia file"
 
 #: src/service/plugins/share.js:35
 msgid "Share Text"

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2018-12-30 00:53\n"
+"PO-Revision-Date: 2018-12-30 17:42\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -40,7 +40,7 @@ msgstr "IP адрес"
 
 #: data/connect.ui:142
 msgid "Bluetooth Device"
-msgstr ""
+msgstr "Bluetooth устройство"
 
 #: data/contacts.ui:49
 msgid "Type a phone number or name"
@@ -48,7 +48,7 @@ msgstr "Наберите номер или имя"
 
 #: data/contacts.ui:83
 msgid "No contacts"
-msgstr ""
+msgstr "Нет контактов"
 
 #: data/contacts.ui:95 data/menus.ui:33 data/messaging.ui:247
 msgid "Help"
@@ -109,11 +109,11 @@ msgstr "Добавить"
 
 #: data/device.ui:527 data/device.ui:542
 msgid "Remove"
-msgstr ""
+msgstr "Удалить"
 
 #: data/device.ui:576 data/device.ui:588
 msgid "Edit"
-msgstr ""
+msgstr "Изменить"
 
 #: data/device.ui:604 data/device.ui:616
 msgid "Save"
@@ -178,11 +178,11 @@ msgstr "Плагины"
 
 #: data/device.ui:1475
 msgid "Experimental"
-msgstr ""
+msgstr "Экспериментальное"
 
 #: data/device.ui:1524
 msgid "Legacy SMS Support"
-msgstr ""
+msgstr "Устаревшая поддержка SMS"
 
 #: data/device.ui:1598
 msgid "Delete"
@@ -211,11 +211,11 @@ msgstr "Сопряжение"
 
 #: data/device.ui:2047
 msgid "Device is unpaired"
-msgstr ""
+msgstr "Устройство не сопряжено"
 
 #: data/device.ui:2062
 msgid "You may configure this device before pairing"
-msgstr ""
+msgstr "Вы можете настроить это устройство перед сопряжением"
 
 #: data/menus.ui:12
 msgid "Display Mode"
@@ -234,7 +234,7 @@ msgstr "Меню пользователя"
 #. TRANSLATORS: Generate a support log
 #: data/menus.ui:29 src/service/ui/settings.js:536
 msgid "Generate Support Log"
-msgstr ""
+msgstr "Сгенерировать журнал"
 
 #: data/menus.ui:38
 msgid "About"
@@ -293,15 +293,15 @@ msgstr "Сообщение"
 
 #: data/messaging.ui:21 src/service/ui/messaging.js:992
 msgid "New Conversation"
-msgstr ""
+msgstr "Новый диалог"
 
 #: data/messaging.ui:110
 msgid "No conversation selected"
-msgstr ""
+msgstr "Не выбран диалог"
 
 #: data/messaging.ui:126
 msgid "Select or start a conversation"
-msgstr ""
+msgstr "Выберите или начните диалог"
 
 #: data/messaging.ui:193 data/notification.ui:52 data/telephony.ui:52
 msgid "Device is disconnected"
@@ -309,7 +309,7 @@ msgstr "Устройство отключено"
 
 #: data/messaging.ui:264
 msgid "No Conversations"
-msgstr ""
+msgstr "Нет диалогов"
 
 #: data/notification.ui:21 data/telephony.ui:21
 #: src/service/plugins/share.js:457
@@ -318,7 +318,7 @@ msgstr "Отправить"
 
 #: data/settings.ui:10
 msgid "Searching for devices…"
-msgstr ""
+msgstr "Поиск устройств…"
 
 #: data/settings.ui:49 data/settings.ui:63
 msgid "Refresh"
@@ -330,11 +330,11 @@ msgstr "Настройки"
 
 #: data/settings.ui:144 data/settings.ui:158
 msgid "Edit Device Name"
-msgstr ""
+msgstr "Редактировать название устройства"
 
 #: data/settings.ui:236
 msgid "Devices"
-msgstr ""
+msgstr "Устройства"
 
 #: data/settings.ui:299
 msgid "Browser Add-Ons"
@@ -342,11 +342,11 @@ msgstr "Расширения браузера"
 
 #: data/settings.ui:579
 msgid "Enable"
-msgstr ""
+msgstr "Включить"
 
 #: data/settings.ui:611
 msgid "This device is invisible to unpaired devices"
-msgstr ""
+msgstr "Это устройство является невидимым для неспаренных устройств"
 
 #: data/settings.ui:623 src/service/daemon.js:532
 msgid "Discovery Disabled"
@@ -481,7 +481,7 @@ msgstr "Принять"
 
 #: src/service/plugins/battery.js:188 src/service/plugins/findmyphone.js:19
 msgid "Ring"
-msgstr ""
+msgstr "Найти"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:197
@@ -541,7 +541,7 @@ msgstr "Клавиатура не готова"
 
 #: src/service/plugins/mpris.js:10
 msgid "MPRIS"
-msgstr ""
+msgstr "MPRIS"
 
 #: src/service/plugins/notification.js:26
 msgid "Cancel Notification"
@@ -577,7 +577,7 @@ msgstr "Отправить Команду"
 
 #: src/service/plugins/sftp.js:12
 msgid "SFTP"
-msgstr ""
+msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:18
 msgid "Mount"
@@ -692,7 +692,7 @@ msgstr "Отправить ссылку на %s"
 
 #: src/service/plugins/sms.js:13
 msgid "SMS"
-msgstr ""
+msgstr "SMS"
 
 #: src/service/plugins/sms.js:34
 msgid "New SMS (URI)"
@@ -832,7 +832,7 @@ msgstr "Вчера・%s"
 #: src/service/ui/messaging.js:243
 #, javascript-format
 msgid "You: %s"
-msgstr ""
+msgstr "Вы: %s"
 
 #: src/service/ui/service.js:31
 msgid "Select a Device"
@@ -844,21 +844,21 @@ msgstr "Выбор"
 
 #: src/service/ui/settings.js:331
 msgid "Unpaired"
-msgstr ""
+msgstr "Не сопряжен"
 
 #: src/service/ui/settings.js:333
 msgid "Disconnected"
-msgstr ""
+msgstr "Отключено"
 
 #: src/service/ui/settings.js:336
 msgid "Connected"
-msgstr ""
+msgstr "Подключено"
 
 #. TRANSLATORS: Description of where directly shared files are stored.
 #: src/service/ui/settings.js:406
 #, javascript-format
 msgid "Transferred files are placed in the <a href=\"%s\">Downloads</a> folder."
-msgstr ""
+msgstr "Переданные файлы помещаются в папку <a href=\"%s\">Загрузки</a>."
 
 #: src/service/ui/settings.js:499
 msgid "A complete KDE Connect implementation for GNOME"
@@ -871,11 +871,11 @@ msgstr "'Losted' <losted@wants.dicksinhisan.us>"
 
 #: src/service/ui/settings.js:537
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
-msgstr ""
+msgstr "Отладочные сообщения будут записаны. Произведите действия при которых произошла проблема, затем посмотрите журнал."
 
 #: src/service/ui/settings.js:540
 msgid "Review Log"
-msgstr ""
+msgstr "Посмотреть журнал"
 
 #. TRANSLATORS: When the battery level is 100%
 #: src/shell/device.js:82
@@ -938,12 +938,12 @@ msgstr[3] "%d часа"
 
 #: src/shell/notification.js:42
 msgid "Reply"
-msgstr ""
+msgstr "Ответить"
 
 #. TRANSLATORS: Extension name
 #: webextension/gettext.js:27
 msgid "GSConnect"
-msgstr ""
+msgstr "GSConnect"
 
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
