@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-27 15:44-0800\n"
-"PO-Revision-Date: 2018-12-27 23:52\n"
+"POT-Creation-Date: 2018-12-29 16:44-0800\n"
+"PO-Revision-Date: 2018-12-30 00:53\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Polish\n"
 "Language: pl\n"
@@ -24,7 +24,7 @@ msgstr "Połącz z…"
 #. Action Buttons
 #: data/connect.ui:30 data/notification.ui:14 data/telephony.ui:14
 #: src/service/plugins/share.js:139 src/service/plugins/share.js:310
-#: src/service/plugins/share.js:456 src/service/ui/device.js:609
+#: src/service/plugins/share.js:456 src/service/ui/device.js:607
 #: src/service/ui/keybindings.js:44 src/service/ui/service.js:37
 #: src/service/ui/settings.js:539 src/shell/donotdisturb.js:215
 msgid "Cancel"
@@ -82,11 +82,11 @@ msgstr "Mysz i klawiatura"
 msgid "Volume Control"
 msgstr "Sterowanie głośnością"
 
-#: data/device.ui:345 data/device.ui:1625
+#: data/device.ui:345 data/device.ui:1728
 msgid "Sharing"
 msgstr "Udostępnianie"
 
-#: data/device.ui:374 data/device.ui:651 data/device.ui:1671
+#: data/device.ui:374 data/device.ui:651 data/device.ui:1774
 #: src/service/plugins/runcommand.js:18 src/service/plugins/runcommand.js:169
 msgid "Commands"
 msgstr "Polecenia"
@@ -127,7 +127,7 @@ msgstr "Udostępnianie powiadomień"
 msgid "Applications"
 msgstr "Programy"
 
-#: data/device.ui:809 data/device.ui:1717
+#: data/device.ui:809 data/device.ui:1820
 #: src/service/plugins/notification.js:13
 msgid "Notifications"
 msgstr "Powiadomienia"
@@ -152,7 +152,7 @@ msgstr "Trwające połączenia"
 msgid "Mute Microphone"
 msgstr "Wyciszanie mikrofonu"
 
-#: data/device.ui:1230 data/device.ui:1763 src/service/plugins/telephony.js:13
+#: data/device.ui:1230 data/device.ui:1866 src/service/plugins/telephony.js:13
 msgid "Telephony"
 msgstr "Komunikacja"
 
@@ -176,36 +176,44 @@ msgstr "Skróty"
 msgid "Plugins"
 msgstr "Wtyczki"
 
-#: data/device.ui:1495
+#: data/device.ui:1475
+msgid "Experimental"
+msgstr ""
+
+#: data/device.ui:1524
+msgid "Legacy SMS Support"
+msgstr ""
+
+#: data/device.ui:1598
 msgid "Delete"
 msgstr "Usuń"
 
-#: data/device.ui:1524
+#: data/device.ui:1627
 msgid "Delete this device"
 msgstr "Usuń to urządzenie"
 
-#: data/device.ui:1542
+#: data/device.ui:1645
 msgid "Unpair and remove all settings and files"
 msgstr "Odwiąż i usuń wszystkie ustawienia i pliki"
 
-#: data/device.ui:1575 data/device.ui:1855
+#: data/device.ui:1678 data/device.ui:1958
 msgid "Advanced"
 msgstr "Zaawansowane"
 
-#: data/device.ui:1809
+#: data/device.ui:1912
 msgid "Keyboard Shortcuts"
 msgstr "Skróty klawiszowe"
 
 #. TRANSLATORS: Send a pair request to the device
-#: data/device.ui:1912 data/menus.ui:68 src/service/device.js:429
+#: data/device.ui:2015 data/menus.ui:68 src/service/device.js:424
 msgid "Pair"
 msgstr "Powiąż"
 
-#: data/device.ui:1944
+#: data/device.ui:2047
 msgid "Device is unpaired"
 msgstr "Urządzenie jest niepowiązane"
 
-#: data/device.ui:1959
+#: data/device.ui:2062
 msgid "You may configure this device before pairing"
 msgstr "Można skonfigurować to urządzenie przed powiązaniem"
 
@@ -243,12 +251,12 @@ msgid "Switch to LAN"
 msgstr "Przełącz na sieć LAN"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
-#: data/menus.ui:63 src/service/ui/device.js:322
+#: data/menus.ui:63 src/service/ui/device.js:317
 msgid "Encryption Info"
 msgstr "Informacje o szyfrowaniu"
 
 #. TRANSLATORS: Unpair the device and notify it
-#: data/menus.ui:74 src/service/device.js:437
+#: data/menus.ui:74 src/service/device.js:432
 msgid "Unpair"
 msgstr "Odwiąż"
 
@@ -279,11 +287,11 @@ msgid "Mute"
 msgstr "Wycisz"
 
 #: data/messaging.ui:12 src/service/plugins/sms.js:26
-#: src/service/ui/messaging.js:857
+#: src/service/ui/messaging.js:911
 msgid "Messaging"
 msgstr "Wiadomości"
 
-#: data/messaging.ui:21 src/service/ui/messaging.js:926
+#: data/messaging.ui:21 src/service/ui/messaging.js:992
 msgid "New Conversation"
 msgstr "Nowa rozmowa"
 
@@ -411,12 +419,12 @@ msgstr "Zadzwoń"
 msgid "Share File"
 msgstr "Udostępnij plik"
 
-#: src/service/device.js:166
+#: src/service/device.js:161
 msgid "Not available"
 msgstr "Niedostępne"
 
 #. TRANSLATORS: Bluetooth address for remote device
-#: src/service/device.js:170
+#: src/service/device.js:165
 #, javascript-format
 msgid "Bluetooth device at %s"
 msgstr "Urządzenie Bluetooth pod adresem %s"
@@ -427,47 +435,47 @@ msgstr "Urządzenie Bluetooth pod adresem %s"
 #.
 #. Google Pixel Fingerprint:
 #. 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-#: src/service/device.js:188 src/service/device.js:190
+#: src/service/device.js:183 src/service/device.js:185
 #, javascript-format
 msgid "%s Fingerprint:"
 msgstr "Odcisk urządzenia %s:"
 
-#: src/service/device.js:247
+#: src/service/device.js:242
 msgid "Laptop"
 msgstr "Laptop"
 
-#: src/service/device.js:249
+#: src/service/device.js:244
 msgid "Smartphone"
 msgstr "Smartfon"
 
-#: src/service/device.js:251
+#: src/service/device.js:246
 msgid "Tablet"
 msgstr "Tablet"
 
-#: src/service/device.js:253
+#: src/service/device.js:248
 msgid "Desktop"
 msgstr "Komputer stacjonarny"
 
-#: src/service/device.js:413 src/service/ui/device.js:15
+#: src/service/device.js:408 src/service/ui/device.js:15
 msgid "Reconnect"
 msgstr "Połącz ponownie"
 
-#: src/service/device.js:421 src/service/ui/device.js:16
+#: src/service/device.js:416 src/service/ui/device.js:16
 #: src/service/ui/settings.js:371
 msgid "Settings"
 msgstr "Ustawienia"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
-#: src/service/device.js:612
+#: src/service/device.js:607
 #, javascript-format
 msgid "Pair Request from %s"
 msgstr "Prośba o powiązanie z urządzenia %s"
 
-#: src/service/device.js:619
+#: src/service/device.js:614
 msgid "Reject"
 msgstr "Odrzuć"
 
-#: src/service/device.js:624
+#: src/service/device.js:619
 msgid "Accept"
 msgstr "Przyjmij"
 
@@ -599,8 +607,8 @@ msgstr "Udostępnij"
 msgid "Share Text"
 msgstr "Udostępnij tekst"
 
-#: src/service/plugins/share.js:43 src/service/ui/messaging.js:909
-#: src/service/ui/messaging.js:917
+#: src/service/plugins/share.js:43 src/service/ui/messaging.js:975
+#: src/service/ui/messaging.js:983
 msgid "Share Link"
 msgstr "Udostępnij odnośnik"
 
@@ -752,20 +760,20 @@ msgstr "%s・Domowy"
 msgid "Send to %s"
 msgstr "Wyślij do „%s”"
 
-#: src/service/ui/device.js:610
+#: src/service/ui/device.js:608
 msgid "Open"
 msgstr "Otwórz"
 
-#: src/service/ui/device.js:662 src/service/ui/device.js:675
+#: src/service/ui/device.js:660 src/service/ui/device.js:673
 msgid "On"
 msgstr "Włączone"
 
-#: src/service/ui/device.js:662 src/service/ui/device.js:675
+#: src/service/ui/device.js:660 src/service/ui/device.js:673
 msgid "Off"
 msgstr "Wyłączone"
 
-#: src/service/ui/device.js:800 src/service/ui/device.js:838
-#: src/service/ui/device.js:862
+#: src/service/ui/device.js:798 src/service/ui/device.js:826
+#: src/service/ui/device.js:850
 msgid "Disabled"
 msgstr "Wyłączone"
 
@@ -819,6 +827,12 @@ msgstr[3] "%d minut"
 #, javascript-format
 msgid "Yesterday・%s"
 msgstr "Wczoraj・%s"
+
+#. TRANSLATORS: An outgoing message body in a conversation summary
+#: src/service/ui/messaging.js:243
+#, javascript-format
+msgid "You: %s"
+msgstr ""
 
 #: src/service/ui/service.js:31
 msgid "Select a Device"
