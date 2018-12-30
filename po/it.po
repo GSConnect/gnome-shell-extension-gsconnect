@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2018-12-30 00:53\n"
+"PO-Revision-Date: 2018-12-30 01:12\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -178,7 +178,7 @@ msgstr "Plugin"
 
 #: data/device.ui:1475
 msgid "Experimental"
-msgstr ""
+msgstr "Sperimentale"
 
 #: data/device.ui:1524
 msgid "Legacy SMS Support"
@@ -828,7 +828,7 @@ msgstr "Ieri・%s"
 #: src/service/ui/messaging.js:243
 #, javascript-format
 msgid "You: %s"
-msgstr ""
+msgstr "Tu: %s"
 
 #: src/service/ui/service.js:31
 msgid "Select a Device"
