@@ -188,6 +188,8 @@ var Plugin = GObject.registerClass({
     }
 
     _handleInput(input) {
+        let mask = 0;
+
         // These are ordered, as much as possible, to create the shortest code
         // path for high-frequency, low-latency events (eg. mouse movement)
         switch (true) {
@@ -205,8 +207,6 @@ var Plugin = GObject.registerClass({
 
             case (input.hasOwnProperty('key') || input.hasOwnProperty('specialKey')):
                 // We need to decide if we have modifiers to deal with
-                let mask = 0;
-
                 if (input.alt) mask |= Gdk.ModifierType.MOD1_MASK;
                 if (input.ctrl) mask |= Gdk.ModifierType.CONTROL_MASK;
                 if (input.shift) mask |= Gdk.ModifierType.SHIFT_MASK;
