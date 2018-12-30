@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2018-12-30 17:32\n"
+"PO-Revision-Date: 2018-12-30 17:42\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -48,7 +48,7 @@ msgstr "Наберите номер или имя"
 
 #: data/contacts.ui:83
 msgid "No contacts"
-msgstr ""
+msgstr "Нет контактов"
 
 #: data/contacts.ui:95 data/menus.ui:33 data/messaging.ui:247
 msgid "Help"
@@ -109,7 +109,7 @@ msgstr "Добавить"
 
 #: data/device.ui:527 data/device.ui:542
 msgid "Remove"
-msgstr ""
+msgstr "Удалить"
 
 #: data/device.ui:576 data/device.ui:588
 msgid "Edit"
@@ -318,7 +318,7 @@ msgstr "Отправить"
 
 #: data/settings.ui:10
 msgid "Searching for devices…"
-msgstr ""
+msgstr "Поиск устройств…"
 
 #: data/settings.ui:49 data/settings.ui:63
 msgid "Refresh"
@@ -330,11 +330,11 @@ msgstr "Настройки"
 
 #: data/settings.ui:144 data/settings.ui:158
 msgid "Edit Device Name"
-msgstr ""
+msgstr "Редактировать название устройства"
 
 #: data/settings.ui:236
 msgid "Devices"
-msgstr ""
+msgstr "Устройства"
 
 #: data/settings.ui:299
 msgid "Browser Add-Ons"
@@ -342,11 +342,11 @@ msgstr "Расширения браузера"
 
 #: data/settings.ui:579
 msgid "Enable"
-msgstr ""
+msgstr "Включить"
 
 #: data/settings.ui:611
 msgid "This device is invisible to unpaired devices"
-msgstr ""
+msgstr "Это устройство является невидимым для неспаренных устройств"
 
 #: data/settings.ui:623 src/service/daemon.js:532
 msgid "Discovery Disabled"
@@ -481,7 +481,7 @@ msgstr "Принять"
 
 #: src/service/plugins/battery.js:188 src/service/plugins/findmyphone.js:19
 msgid "Ring"
-msgstr ""
+msgstr "Найти"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:197
@@ -871,7 +871,7 @@ msgstr "'Losted' <losted@wants.dicksinhisan.us>"
 
 #: src/service/ui/settings.js:537
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
-msgstr ""
+msgstr "Отладочные сообщения будут записаны. Произведите действия при которых произошла проблема, затем посмотрите журнал."
 
 #: src/service/ui/settings.js:540
 msgid "Review Log"
