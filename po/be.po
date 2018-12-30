@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2018-12-30 00:53\n"
+"PO-Revision-Date: 2018-12-30 11:22\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Belarusian\n"
 "Language: be\n"
@@ -182,7 +182,7 @@ msgstr ""
 
 #: data/device.ui:1524
 msgid "Legacy SMS Support"
-msgstr ""
+msgstr "Падтрымка SMS (ранейшая версія)"
 
 #: data/device.ui:1598
 msgid "Delete"
@@ -832,7 +832,7 @@ msgstr "Учора・%s"
 #: src/service/ui/messaging.js:243
 #, javascript-format
 msgid "You: %s"
-msgstr ""
+msgstr "Вы: %s"
 
 #: src/service/ui/service.js:31
 msgid "Select a Device"
