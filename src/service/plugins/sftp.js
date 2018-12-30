@@ -200,7 +200,11 @@ var Plugin = GObject.registerClass({
                         if (e.code && e.code === Gio.IOErrorEnum.ALREADY_MOUNTED) {
                             warning(e, this.device.name);
                             resolve(true);
+
+                        // There's a good chance this is a host key verification
+                        // error; regardless we'll remove the key for security.
                         } else {
+                            this._sftp_remove_host(this._port);
                             reject(e);
                         }
                     }
@@ -271,6 +275,40 @@ var Plugin = GObject.registerClass({
                 }
             });
         });
+    }
+
+    /**
+     * Remove old host keys from ~/.ssh/known_hosts for this host from the range
+     * used by KDE Connect (1739-1764).
+     *
+     * @param {number} port - The port to remove the host key for
+     */
+    async _sftp_remove_host(port = 1739) {
+        try {
+            let ssh_keygen = new Gio.Subprocess({
+                argv: [
+                    gsconnect.metadata.bin.ssh_keygen,
+                    '-R',
+                    `[${this.ip}]:${port}`
+                ],
+                flags: Gio.SubprocessFlags.STDOUT_SILENCE | Gio.SubprocessFlags.STDERR_SILENCE
+            });
+            ssh_keygen.init(null);
+
+            await new Promise((resolve, reject) => {
+                ssh_keygen.wait_check_async(null, (proc, res) => {
+                    try {
+                        resolve(proc.wait_check_finish(res));
+                    } catch (e) {
+                        reject(e);
+                    }
+                });
+            });
+
+            debug(`removed host key for [${this.ip}]:${port}`);
+        } catch (e) {
+            warning(e, this.device.name);
+        }
     }
 
     /**
