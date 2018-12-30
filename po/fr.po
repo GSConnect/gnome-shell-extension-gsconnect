@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2018-12-30 06:43\n"
+"PO-Revision-Date: 2018-12-30 06:52\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -36,11 +36,11 @@ msgstr "Connecter"
 
 #: data/connect.ui:98
 msgid "IP Address"
-msgstr ""
+msgstr "Adresse IP"
 
 #: data/connect.ui:142
 msgid "Bluetooth Device"
-msgstr ""
+msgstr "Périphérique bluetooth"
 
 #: data/contacts.ui:49
 msgid "Type a phone number or name"
@@ -48,7 +48,7 @@ msgstr "Taper un numéro de téléphone ou un nom"
 
 #: data/contacts.ui:83
 msgid "No contacts"
-msgstr ""
+msgstr "\"Aucun contact\""
 
 #: data/contacts.ui:95 data/menus.ui:33 data/messaging.ui:247
 msgid "Help"
@@ -60,7 +60,7 @@ msgstr "Taper un message"
 
 #: data/conversation.ui:84
 msgid "Send Message"
-msgstr ""
+msgstr "Envoyer le message"
 
 #: data/device.ui:67 src/service/plugins/battery.js:12
 msgid "Battery"
@@ -105,11 +105,11 @@ msgstr "Choisir un exécutable"
 
 #: data/device.ui:496 data/device.ui:511
 msgid "Add"
-msgstr ""
+msgstr "Ajouter"
 
 #: data/device.ui:527 data/device.ui:542
 msgid "Remove"
-msgstr ""
+msgstr "Supprimer"
 
 #: data/device.ui:576 data/device.ui:588
 msgid "Edit"
@@ -138,7 +138,7 @@ msgstr "Appels entrants"
 
 #: data/device.ui:888 data/device.ui:1055
 msgid "Volume"
-msgstr ""
+msgstr "Volume"
 
 #: data/device.ui:954 data/device.ui:1120
 msgid "Pause Media"
@@ -178,7 +178,7 @@ msgstr "Greffons"
 
 #: data/device.ui:1475
 msgid "Experimental"
-msgstr ""
+msgstr "Expérimental"
 
 #: data/device.ui:1524
 msgid "Legacy SMS Support"
@@ -293,7 +293,7 @@ msgstr "Messagerie"
 
 #: data/messaging.ui:21 src/service/ui/messaging.js:992
 msgid "New Conversation"
-msgstr ""
+msgstr "Nouvelle conversation"
 
 #: data/messaging.ui:110
 msgid "No conversation selected"
@@ -334,7 +334,7 @@ msgstr ""
 
 #: data/settings.ui:236
 msgid "Devices"
-msgstr ""
+msgstr "Appareils"
 
 #: data/settings.ui:299
 msgid "Browser Add-Ons"
@@ -342,7 +342,7 @@ msgstr "Extensions du navigateur"
 
 #: data/settings.ui:579
 msgid "Enable"
-msgstr ""
+msgstr "Activer"
 
 #: data/settings.ui:611
 msgid "This device is invisible to unpaired devices"
@@ -507,7 +507,7 @@ msgstr "Récupérer le presse-papiers"
 
 #: src/service/plugins/contacts.js:12
 msgid "Contacts"
-msgstr ""
+msgstr "Contacts"
 
 #. Ensure we have a sender
 #. TRANSLATORS: No name or phone number
@@ -744,7 +744,7 @@ msgstr "%s・Travail"
 #: src/service/ui/contacts.js:131
 #, javascript-format
 msgid "%s・Mobile"
-msgstr ""
+msgstr "%s・Mobile"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:135
@@ -815,7 +815,7 @@ msgstr "À l'instant"
 #, javascript-format
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] ""
+msgstr[0] "%d minute"
 msgstr[1] ""
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
@@ -840,15 +840,15 @@ msgstr "Sélectionner"
 
 #: src/service/ui/settings.js:331
 msgid "Unpaired"
-msgstr ""
+msgstr "Dissocié"
 
 #: src/service/ui/settings.js:333
 msgid "Disconnected"
-msgstr ""
+msgstr "Déconnecté"
 
 #: src/service/ui/settings.js:336
 msgid "Connected"
-msgstr ""
+msgstr "Connecté"
 
 #. TRANSLATORS: Description of where directly shared files are stored.
 #: src/service/ui/settings.js:406
@@ -871,7 +871,7 @@ msgstr ""
 
 #: src/service/ui/settings.js:540
 msgid "Review Log"
-msgstr ""
+msgstr "Vérifier les logs"
 
 #. TRANSLATORS: When the battery level is 100%
 #: src/shell/device.js:82
@@ -916,7 +916,7 @@ msgstr "Jusqu'à ce que vous désactiviez Ne pas déranger"
 #: src/shell/donotdisturb.js:184 src/shell/donotdisturb.js:278
 #, javascript-format
 msgid "Until %s (%s)"
-msgstr ""
+msgstr "Jusqu'à %s (%s)"
 
 #: src/shell/donotdisturb.js:216
 msgid "Done"
@@ -927,17 +927,17 @@ msgstr "Terminé"
 #, javascript-format
 msgid "%d hour"
 msgid_plural "%d hours"
-msgstr[0] ""
+msgstr[0] "%d heure(s)"
 msgstr[1] ""
 
 #: src/shell/notification.js:42
 msgid "Reply"
-msgstr ""
+msgstr "Répondre"
 
 #. TRANSLATORS: Extension name
 #: webextension/gettext.js:27
 msgid "GSConnect"
-msgstr ""
+msgstr "GSConnect"
 
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
