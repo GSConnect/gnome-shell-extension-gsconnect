@@ -1452,6 +1452,7 @@
                             <property name="can_focus">False</property>
                             <property name="hexpand">True</property>
                             <property name="selection_mode">none</property>
+                            <signal name="keynav-failed" handler="_onKeynavFailed" swapped="no"/>
                             <accessibility>
                               <relation type="labelled-by" target="plugins-label"/>
                             </accessibility>
@@ -1497,6 +1498,7 @@
                             <property name="can_focus">False</property>
                             <property name="hexpand">True</property>
                             <property name="selection_mode">none</property>
+                            <signal name="keynav-failed" handler="_onKeynavFailed" swapped="no"/>
                             <child>
                               <object class="GtkListBoxRow" id="legacy-sms-row">
                                 <property name="height_request">56</property>

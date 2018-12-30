@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-29 16:28-0800\n"
+"POT-Creation-Date: 2018-12-29 16:44-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,7 +26,7 @@ msgstr ""
 #. Action Buttons
 #: data/connect.ui:30 data/notification.ui:14 data/telephony.ui:14
 #: src/service/plugins/share.js:139 src/service/plugins/share.js:310
-#: src/service/plugins/share.js:456 src/service/ui/device.js:596
+#: src/service/plugins/share.js:456 src/service/ui/device.js:607
 #: src/service/ui/keybindings.js:44 src/service/ui/service.js:37
 #: src/service/ui/settings.js:539 src/shell/donotdisturb.js:215
 msgid "Cancel"
@@ -84,11 +84,11 @@ msgstr ""
 msgid "Volume Control"
 msgstr ""
 
-#: data/device.ui:345 data/device.ui:1726
+#: data/device.ui:345 data/device.ui:1728
 msgid "Sharing"
 msgstr ""
 
-#: data/device.ui:374 data/device.ui:651 data/device.ui:1772
+#: data/device.ui:374 data/device.ui:651 data/device.ui:1774
 #: src/service/plugins/runcommand.js:18 src/service/plugins/runcommand.js:169
 msgid "Commands"
 msgstr ""
@@ -129,7 +129,7 @@ msgstr ""
 msgid "Applications"
 msgstr ""
 
-#: data/device.ui:809 data/device.ui:1818
+#: data/device.ui:809 data/device.ui:1820
 #: src/service/plugins/notification.js:13
 msgid "Notifications"
 msgstr ""
@@ -154,7 +154,7 @@ msgstr ""
 msgid "Mute Microphone"
 msgstr ""
 
-#: data/device.ui:1230 data/device.ui:1864 src/service/plugins/telephony.js:13
+#: data/device.ui:1230 data/device.ui:1866 src/service/plugins/telephony.js:13
 msgid "Telephony"
 msgstr ""
 
@@ -178,44 +178,44 @@ msgstr ""
 msgid "Plugins"
 msgstr ""
 
-#: data/device.ui:1474
+#: data/device.ui:1475
 msgid "Experimental"
 msgstr ""
 
-#: data/device.ui:1522
+#: data/device.ui:1524
 msgid "Legacy SMS Support"
 msgstr ""
 
-#: data/device.ui:1596
+#: data/device.ui:1598
 msgid "Delete"
 msgstr ""
 
-#: data/device.ui:1625
+#: data/device.ui:1627
 msgid "Delete this device"
 msgstr ""
 
-#: data/device.ui:1643
+#: data/device.ui:1645
 msgid "Unpair and remove all settings and files"
 msgstr ""
 
-#: data/device.ui:1676 data/device.ui:1956
+#: data/device.ui:1678 data/device.ui:1958
 msgid "Advanced"
 msgstr ""
 
-#: data/device.ui:1910
+#: data/device.ui:1912
 msgid "Keyboard Shortcuts"
 msgstr ""
 
 #. TRANSLATORS: Send a pair request to the device
-#: data/device.ui:2013 data/menus.ui:68 src/service/device.js:424
+#: data/device.ui:2015 data/menus.ui:68 src/service/device.js:424
 msgid "Pair"
 msgstr ""
 
-#: data/device.ui:2045
+#: data/device.ui:2047
 msgid "Device is unpaired"
 msgstr ""
 
-#: data/device.ui:2060
+#: data/device.ui:2062
 msgid "You may configure this device before pairing"
 msgstr ""
 
@@ -253,7 +253,7 @@ msgid "Switch to LAN"
 msgstr ""
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
-#: data/menus.ui:63 src/service/ui/device.js:306
+#: data/menus.ui:63 src/service/ui/device.js:317
 msgid "Encryption Info"
 msgstr ""
 
@@ -761,20 +761,20 @@ msgstr ""
 msgid "Send to %s"
 msgstr ""
 
-#: src/service/ui/device.js:597
+#: src/service/ui/device.js:608
 msgid "Open"
 msgstr ""
 
-#: src/service/ui/device.js:649 src/service/ui/device.js:662
+#: src/service/ui/device.js:660 src/service/ui/device.js:673
 msgid "On"
 msgstr ""
 
-#: src/service/ui/device.js:649 src/service/ui/device.js:662
+#: src/service/ui/device.js:660 src/service/ui/device.js:673
 msgid "Off"
 msgstr ""
 
-#: src/service/ui/device.js:787 src/service/ui/device.js:815
-#: src/service/ui/device.js:839
+#: src/service/ui/device.js:798 src/service/ui/device.js:826
+#: src/service/ui/device.js:850
 msgid "Disabled"
 msgstr ""
 

@@ -6,11 +6,11 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 const Pango = imports.gi.Pango;
 
-
 const Keybindings = imports.service.ui.keybindings;
 
 
-// Build a list of shortcuts for devices
+// Build a list of plugins and shortcuts for devices
+const DEVICE_PLUGINS = [];
 const DEVICE_SHORTCUTS = {
     activate: ['view-refresh-symbolic', _('Reconnect')],
     openSettings: ['preferences-system-symbolic', _('Settings')]
@@ -19,6 +19,10 @@ const DEVICE_SHORTCUTS = {
 for (let name in imports.service.plugins) {
     if (name === 'base') continue;
 
+    // Plugins
+    DEVICE_PLUGINS.push(name);
+
+    // Shortcuts
     let meta = imports.service.plugins[name].Metadata;
 
     for (let [name, action] of Object.entries(meta.actions)) {
@@ -237,7 +241,7 @@ var DevicePreferences = GObject.registerClass({
         this._onConnected(this.device);
 
         // Hide elements for any disabled plugins
-        for (let name of this.settings.get_strv('supported-plugins')) {
+        for (let name of DEVICE_PLUGINS) {
             if (this.hasOwnProperty(name)) {
                 this[name].visible = this.get_plugin_allowed(name);
             }
@@ -983,20 +987,37 @@ var DevicePreferences = GObject.registerClass({
             'notify::active',
             this._togglePlugin.bind(this)
         );
+
+        if (this.hasOwnProperty(name)) {
+            this[name].visible = widget.active;
+        }
     }
 
     _populatePlugins() {
+        let supported = this.supported_plugins;
+
         this.plugin_list.foreach(row => {
             let checkbutton = row.get_child();
-            checkbutton.disconnect(checkbutton._togglePluginId);
+            let name = checkbutton.tooltip_text;
 
-            // HACK: temporary mitigator for mysterious GtkListBox leak
-            //row.destroy();
-            row.run_dispose();
-            imports.system.gc();
+            if (supported.includes(name)) {
+                checkbutton.active = this.get_plugin_allowed(name);
+                supported.splice(supported.indexOf(name), 1);
+            } else {
+                // Ensure we disconnect the checkbox and hide the setting
+                checkbutton.disconnect(checkbutton._togglePluginId);
+
+                if (this.hasOwnProperty(name)) {
+                    this[name].visible = false;
+                }
+
+                // HACK: temporary mitigator for mysterious GtkListBox leak
+                row.run_dispose();
+                imports.system.gc();
+            }
         });
 
-        for (let name of this.supported_plugins) {
+        for (let name of supported) {
             this._addPlugin(name);
         }
     }
