@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-27 15:44-0800\n"
-"PO-Revision-Date: 2018-12-27 23:52\n"
+"POT-Creation-Date: 2018-12-29 16:44-0800\n"
+"PO-Revision-Date: 2018-12-30 00:53\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Belarusian\n"
 "Language: be\n"
@@ -24,7 +24,7 @@ msgstr "Падлучыцца да…"
 #. Action Buttons
 #: data/connect.ui:30 data/notification.ui:14 data/telephony.ui:14
 #: src/service/plugins/share.js:139 src/service/plugins/share.js:310
-#: src/service/plugins/share.js:456 src/service/ui/device.js:609
+#: src/service/plugins/share.js:456 src/service/ui/device.js:607
 #: src/service/ui/keybindings.js:44 src/service/ui/service.js:37
 #: src/service/ui/settings.js:539 src/shell/donotdisturb.js:215
 msgid "Cancel"
@@ -82,11 +82,11 @@ msgstr "Мыш і клавіятура"
 msgid "Volume Control"
 msgstr "Кіраванне гучнасцю"
 
-#: data/device.ui:345 data/device.ui:1625
+#: data/device.ui:345 data/device.ui:1728
 msgid "Sharing"
 msgstr "Абагульванне"
 
-#: data/device.ui:374 data/device.ui:651 data/device.ui:1671
+#: data/device.ui:374 data/device.ui:651 data/device.ui:1774
 #: src/service/plugins/runcommand.js:18 src/service/plugins/runcommand.js:169
 msgid "Commands"
 msgstr "Каманды"
@@ -127,7 +127,7 @@ msgstr "Абагульваць апавяшчэнні"
 msgid "Applications"
 msgstr "Праграмы"
 
-#: data/device.ui:809 data/device.ui:1717
+#: data/device.ui:809 data/device.ui:1820
 #: src/service/plugins/notification.js:13
 msgid "Notifications"
 msgstr "Апавяшчэнні"
@@ -152,7 +152,7 @@ msgstr "Выходныя выклікі"
 msgid "Mute Microphone"
 msgstr "Адключыць мікрафон"
 
-#: data/device.ui:1230 data/device.ui:1763 src/service/plugins/telephony.js:13
+#: data/device.ui:1230 data/device.ui:1866 src/service/plugins/telephony.js:13
 msgid "Telephony"
 msgstr "Тэлефанія"
 
@@ -176,36 +176,44 @@ msgstr "Спалучэнні клавіш"
 msgid "Plugins"
 msgstr "Убудовы"
 
-#: data/device.ui:1495
+#: data/device.ui:1475
+msgid "Experimental"
+msgstr ""
+
+#: data/device.ui:1524
+msgid "Legacy SMS Support"
+msgstr ""
+
+#: data/device.ui:1598
 msgid "Delete"
 msgstr "Выдаліць"
 
-#: data/device.ui:1524
+#: data/device.ui:1627
 msgid "Delete this device"
 msgstr "Выдаліць гэту прыладу"
 
-#: data/device.ui:1542
+#: data/device.ui:1645
 msgid "Unpair and remove all settings and files"
 msgstr "Разлучыць і выдаліць усе налады і файлы"
 
-#: data/device.ui:1575 data/device.ui:1855
+#: data/device.ui:1678 data/device.ui:1958
 msgid "Advanced"
 msgstr "Пашыраныя"
 
-#: data/device.ui:1809
+#: data/device.ui:1912
 msgid "Keyboard Shortcuts"
 msgstr "Спалучэнні клавіш"
 
 #. TRANSLATORS: Send a pair request to the device
-#: data/device.ui:1912 data/menus.ui:68 src/service/device.js:429
+#: data/device.ui:2015 data/menus.ui:68 src/service/device.js:424
 msgid "Pair"
 msgstr "Спалучыць"
 
-#: data/device.ui:1944
+#: data/device.ui:2047
 msgid "Device is unpaired"
 msgstr "Прылада разлучана"
 
-#: data/device.ui:1959
+#: data/device.ui:2062
 msgid "You may configure this device before pairing"
 msgstr "Вы можаце наладзіць гэту прыладу перад спалучэннем"
 
@@ -243,12 +251,12 @@ msgid "Switch to LAN"
 msgstr "Пераключыць на LAN"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
-#: data/menus.ui:63 src/service/ui/device.js:322
+#: data/menus.ui:63 src/service/ui/device.js:317
 msgid "Encryption Info"
 msgstr "Інфармацыя пра шыфраванне"
 
 #. TRANSLATORS: Unpair the device and notify it
-#: data/menus.ui:74 src/service/device.js:437
+#: data/menus.ui:74 src/service/device.js:432
 msgid "Unpair"
 msgstr "Разлучыць"
 
@@ -279,11 +287,11 @@ msgid "Mute"
 msgstr "Выключыць гук"
 
 #: data/messaging.ui:12 src/service/plugins/sms.js:26
-#: src/service/ui/messaging.js:857
+#: src/service/ui/messaging.js:911
 msgid "Messaging"
 msgstr "Паведамленні"
 
-#: data/messaging.ui:21 src/service/ui/messaging.js:926
+#: data/messaging.ui:21 src/service/ui/messaging.js:992
 msgid "New Conversation"
 msgstr "Новая размова"
 
@@ -411,12 +419,12 @@ msgstr "Набраць нумар"
 msgid "Share File"
 msgstr "Абагуліць файл"
 
-#: src/service/device.js:166
+#: src/service/device.js:161
 msgid "Not available"
 msgstr "Недаступны"
 
 #. TRANSLATORS: Bluetooth address for remote device
-#: src/service/device.js:170
+#: src/service/device.js:165
 #, javascript-format
 msgid "Bluetooth device at %s"
 msgstr "Bluetooth прылада па %s"
@@ -427,47 +435,47 @@ msgstr "Bluetooth прылада па %s"
 #.
 #. Google Pixel Fingerprint:
 #. 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-#: src/service/device.js:188 src/service/device.js:190
+#: src/service/device.js:183 src/service/device.js:185
 #, javascript-format
 msgid "%s Fingerprint:"
 msgstr "%s адбітак пальца:"
 
-#: src/service/device.js:247
+#: src/service/device.js:242
 msgid "Laptop"
 msgstr "Ноўтбук"
 
-#: src/service/device.js:249
+#: src/service/device.js:244
 msgid "Smartphone"
 msgstr "Смартфон"
 
-#: src/service/device.js:251
+#: src/service/device.js:246
 msgid "Tablet"
 msgstr "Планшэт"
 
-#: src/service/device.js:253
+#: src/service/device.js:248
 msgid "Desktop"
 msgstr "Камп'ютар"
 
-#: src/service/device.js:413 src/service/ui/device.js:15
+#: src/service/device.js:408 src/service/ui/device.js:15
 msgid "Reconnect"
 msgstr "Перападлучыцца"
 
-#: src/service/device.js:421 src/service/ui/device.js:16
+#: src/service/device.js:416 src/service/ui/device.js:16
 #: src/service/ui/settings.js:371
 msgid "Settings"
 msgstr "Налады"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
-#: src/service/device.js:612
+#: src/service/device.js:607
 #, javascript-format
 msgid "Pair Request from %s"
 msgstr "Запыт спалучэння ад %s"
 
-#: src/service/device.js:619
+#: src/service/device.js:614
 msgid "Reject"
 msgstr "Адхіліць"
 
-#: src/service/device.js:624
+#: src/service/device.js:619
 msgid "Accept"
 msgstr "Прыняць"
 
@@ -599,8 +607,8 @@ msgstr "Абагуліць"
 msgid "Share Text"
 msgstr "Абагуліць тэкст"
 
-#: src/service/plugins/share.js:43 src/service/ui/messaging.js:909
-#: src/service/ui/messaging.js:917
+#: src/service/plugins/share.js:43 src/service/ui/messaging.js:975
+#: src/service/ui/messaging.js:983
 msgid "Share Link"
 msgstr "Абагуліць спасылку"
 
@@ -752,20 +760,20 @@ msgstr "%s・Дом"
 msgid "Send to %s"
 msgstr "Адправіць у %s"
 
-#: src/service/ui/device.js:610
+#: src/service/ui/device.js:608
 msgid "Open"
 msgstr "Адкрыць"
 
-#: src/service/ui/device.js:662 src/service/ui/device.js:675
+#: src/service/ui/device.js:660 src/service/ui/device.js:673
 msgid "On"
 msgstr "Укл."
 
-#: src/service/ui/device.js:662 src/service/ui/device.js:675
+#: src/service/ui/device.js:660 src/service/ui/device.js:673
 msgid "Off"
 msgstr "Выкл."
 
-#: src/service/ui/device.js:800 src/service/ui/device.js:838
-#: src/service/ui/device.js:862
+#: src/service/ui/device.js:798 src/service/ui/device.js:826
+#: src/service/ui/device.js:850
 msgid "Disabled"
 msgstr "Адключана"
 
@@ -819,6 +827,12 @@ msgstr[3] ""
 #, javascript-format
 msgid "Yesterday・%s"
 msgstr "Учора・%s"
+
+#. TRANSLATORS: An outgoing message body in a conversation summary
+#: src/service/ui/messaging.js:243
+#, javascript-format
+msgid "You: %s"
+msgstr ""
 
 #: src/service/ui/service.js:31
 msgid "Select a Device"
