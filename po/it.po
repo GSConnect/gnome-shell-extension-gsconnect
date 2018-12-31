@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2018-12-30 18:12\n"
+"PO-Revision-Date: 2018-12-31 23:02\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -219,7 +219,7 @@ msgstr "È possibile configurare questo dispositivo prima dell'accoppiamento"
 
 #: data/menus.ui:12
 msgid "Display Mode"
-msgstr "Modalità di visualizzazione"
+msgstr "Modalità di Visualizzazione"
 
 #. TRANSLATORS: Show device indicators in the top bar
 #: data/menus.ui:15
