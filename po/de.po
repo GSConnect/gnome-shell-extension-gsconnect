@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2018-12-30 17:32\n"
+"PO-Revision-Date: 2018-12-31 00:56\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -36,11 +36,11 @@ msgstr "Verbinden"
 
 #: data/connect.ui:98
 msgid "IP Address"
-msgstr ""
+msgstr "IP-Adresse"
 
 #: data/connect.ui:142
 msgid "Bluetooth Device"
-msgstr ""
+msgstr "Bluetooth-Gerät"
 
 #: data/contacts.ui:49
 msgid "Type a phone number or name"
@@ -48,7 +48,7 @@ msgstr "Telefonnummer oder Name eingeben"
 
 #: data/contacts.ui:83
 msgid "No contacts"
-msgstr ""
+msgstr "Keine Kontakte"
 
 #: data/contacts.ui:95 data/menus.ui:33 data/messaging.ui:247
 msgid "Help"
@@ -60,7 +60,7 @@ msgstr "Verfasse eine Nachricht"
 
 #: data/conversation.ui:84
 msgid "Send Message"
-msgstr ""
+msgstr "Nachricht schicken"
 
 #: data/device.ui:67 src/service/plugins/battery.js:12
 msgid "Battery"
@@ -93,7 +93,7 @@ msgstr "Befehle"
 
 #: data/device.ui:424 data/device.ui:427
 msgid "Name"
-msgstr ""
+msgstr "Name"
 
 #: data/device.ui:440 data/device.ui:446
 msgid "Command Line"
@@ -105,19 +105,19 @@ msgstr "Wähle ein ausführbares Programm"
 
 #: data/device.ui:496 data/device.ui:511
 msgid "Add"
-msgstr ""
+msgstr "Hinzufügen"
 
 #: data/device.ui:527 data/device.ui:542
 msgid "Remove"
-msgstr ""
+msgstr "Entfernen"
 
 #: data/device.ui:576 data/device.ui:588
 msgid "Edit"
-msgstr ""
+msgstr "Bearbeiten"
 
 #: data/device.ui:604 data/device.ui:616
 msgid "Save"
-msgstr ""
+msgstr "Speichern"
 
 #: data/device.ui:712
 msgid "Share Notifications"
@@ -174,15 +174,15 @@ msgstr "Tastenkürzel"
 
 #: data/device.ui:1429
 msgid "Plugins"
-msgstr ""
+msgstr "Plugins"
 
 #: data/device.ui:1475
 msgid "Experimental"
-msgstr ""
+msgstr "Experimentell"
 
 #: data/device.ui:1524
 msgid "Legacy SMS Support"
-msgstr ""
+msgstr "Alte SMS-Unterstützung"
 
 #: data/device.ui:1598
 msgid "Delete"
