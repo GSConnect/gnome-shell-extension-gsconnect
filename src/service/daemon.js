@@ -503,7 +503,7 @@ const Service = GObject.registerClass({
             switch (error.name) {
                 // A TLS certificate failure
                 case 'AuthenticationError':
-                    id = `${Date.now()}`;
+                    id = `"${error.deviceName}"@${error.deviceHost}`;
                     title = _('Authentication Failure');
                     time = GLib.DateTime.new_now_local().format('%F %R');
                     body = `"${error.deviceName}"@${error.deviceHost} (${time})`;
