@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2018-12-31 00:56\n"
+"PO-Revision-Date: 2018-12-31 05:02\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -211,11 +211,11 @@ msgstr "Verbinde"
 
 #: data/device.ui:2047
 msgid "Device is unpaired"
-msgstr ""
+msgstr "Gerät ist ungepaarte"
 
 #: data/device.ui:2062
 msgid "You may configure this device before pairing"
-msgstr ""
+msgstr "Sie können dieses Gerät vor der Paarung konfigurieren"
 
 #: data/menus.ui:12
 msgid "Display Mode"
@@ -330,11 +330,11 @@ msgstr "Mobile Einstellungen"
 
 #: data/settings.ui:144 data/settings.ui:158
 msgid "Edit Device Name"
-msgstr ""
+msgstr "Gerätename bearbeiten"
 
 #: data/settings.ui:236
 msgid "Devices"
-msgstr ""
+msgstr "Geräte"
 
 #: data/settings.ui:299
 msgid "Browser Add-Ons"
@@ -342,11 +342,11 @@ msgstr "Browser Erweiterungen"
 
 #: data/settings.ui:579
 msgid "Enable"
-msgstr ""
+msgstr "Aktivieren"
 
 #: data/settings.ui:611
 msgid "This device is invisible to unpaired devices"
-msgstr ""
+msgstr "Dieses Gerät ist für ungepaarte Geräte unsichtbar"
 
 #: data/settings.ui:623 src/service/daemon.js:532
 msgid "Discovery Disabled"
@@ -440,19 +440,19 @@ msgstr "%s Fingerabdruck:"
 
 #: src/service/device.js:242
 msgid "Laptop"
-msgstr ""
+msgstr "Laptop"
 
 #: src/service/device.js:244
 msgid "Smartphone"
-msgstr ""
+msgstr "Smartphone"
 
 #: src/service/device.js:246
 msgid "Tablet"
-msgstr ""
+msgstr "Tablet"
 
 #: src/service/device.js:248
 msgid "Desktop"
-msgstr ""
+msgstr "Desktop"
 
 #: src/service/device.js:408 src/service/ui/device.js:15
 msgid "Reconnect"
@@ -479,7 +479,7 @@ msgstr "Annehmen"
 
 #: src/service/plugins/battery.js:188 src/service/plugins/findmyphone.js:19
 msgid "Ring"
-msgstr ""
+msgstr "Ring"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:197
@@ -523,7 +523,7 @@ msgstr "Finde mein Handy"
 
 #: src/service/plugins/mousepad.js:14
 msgid "Mousepad"
-msgstr ""
+msgstr "Mauspad"
 
 #: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:569
 msgid "Keyboard"
@@ -539,7 +539,7 @@ msgstr "Tastatur nicht bereit"
 
 #: src/service/plugins/mpris.js:10
 msgid "MPRIS"
-msgstr ""
+msgstr "MPRIS"
 
 #: src/service/plugins/notification.js:26
 msgid "Cancel Notification"
@@ -560,14 +560,14 @@ msgstr "Benachrichtigung senden"
 #: src/service/plugins/ping.js:11 src/service/plugins/ping.js:17
 #: src/service/plugins/ping.js:46
 msgid "Ping"
-msgstr ""
+msgstr "Ping"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
 #: src/service/plugins/ping.js:53
 #, javascript-format
 msgid "Ping: %s"
-msgstr ""
+msgstr "Ping: %s"
 
 #: src/service/plugins/runcommand.js:12
 msgid "Run Commands"
@@ -575,7 +575,7 @@ msgstr "Befehl ausführen"
 
 #: src/service/plugins/sftp.js:12
 msgid "SFTP"
-msgstr ""
+msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:18
 msgid "Mount"
@@ -690,7 +690,7 @@ msgstr "Sende Link an %s"
 
 #: src/service/plugins/sms.js:13
 msgid "SMS"
-msgstr ""
+msgstr "SMS"
 
 #: src/service/plugins/sms.js:34
 msgid "New SMS (URI)"
@@ -840,7 +840,7 @@ msgstr "Auswählen"
 
 #: src/service/ui/settings.js:331
 msgid "Unpaired"
-msgstr ""
+msgstr "Ungepaarte"
 
 #: src/service/ui/settings.js:333
 msgid "Disconnected"
@@ -937,7 +937,7 @@ msgstr ""
 #. TRANSLATORS: Extension name
 #: webextension/gettext.js:27
 msgid "GSConnect"
-msgstr ""
+msgstr "GSConnect"
 
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
