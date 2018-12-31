@@ -4,6 +4,7 @@ files:
     translation: /po/%locale%.po
     languages_mapping:
       locale:
+        ca-ES: ca
         fr: fr
         de: de
         pt-BR: pt_BR
