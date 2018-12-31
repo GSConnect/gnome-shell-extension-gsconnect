@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2018-12-31 05:13\n"
+"PO-Revision-Date: 2018-12-31 05:23\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -234,7 +234,7 @@ msgstr "Benutzermenü"
 #. TRANSLATORS: Generate a support log
 #: data/menus.ui:29 src/service/ui/settings.js:536
 msgid "Generate Support Log"
-msgstr ""
+msgstr "Support für Protokoll generieren"
 
 #: data/menus.ui:38
 msgid "About"
@@ -243,17 +243,17 @@ msgstr "Über"
 #. TRANSLATORS: Change the connection type to Bluetooth
 #: data/menus.ui:49
 msgid "Switch to Bluetooth"
-msgstr ""
+msgstr "Wechseln Sie zu Bluetooth"
 
 #. TRANSLATORS: Change the connection type to TCP/IP
 #: data/menus.ui:56
 msgid "Switch to LAN"
-msgstr ""
+msgstr "Wechseln Sie zu LAN"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
 #: data/menus.ui:63 src/service/ui/device.js:317
 msgid "Encryption Info"
-msgstr ""
+msgstr "Verschlüsselung Info"
 
 #. TRANSLATORS: Unpair the device and notify it
 #: data/menus.ui:74 src/service/device.js:432
@@ -293,15 +293,15 @@ msgstr "Nachrichten"
 
 #: data/messaging.ui:21 src/service/ui/messaging.js:992
 msgid "New Conversation"
-msgstr ""
+msgstr "Neues Gespräch"
 
 #: data/messaging.ui:110
 msgid "No conversation selected"
-msgstr ""
+msgstr "Keine Unterhaltung ausgewählt"
 
 #: data/messaging.ui:126
 msgid "Select or start a conversation"
-msgstr ""
+msgstr "Auswählen oder eine Unterhaltung beginnen"
 
 #: data/messaging.ui:193 data/notification.ui:52 data/telephony.ui:52
 msgid "Device is disconnected"
@@ -854,7 +854,7 @@ msgstr "Verbunden"
 #: src/service/ui/settings.js:406
 #, javascript-format
 msgid "Transferred files are placed in the <a href=\"%s\">Downloads</a> folder."
-msgstr ""
+msgstr "Übertragene Dateien befinden sich im Ordner \" <a href=\"%s\">Downloads</a>\"."
 
 #: src/service/ui/settings.js:499
 msgid "A complete KDE Connect implementation for GNOME"
@@ -871,7 +871,7 @@ msgstr ""
 
 #: src/service/ui/settings.js:540
 msgid "Review Log"
-msgstr ""
+msgstr "Protokoll überprüfen"
 
 #. TRANSLATORS: When the battery level is 100%
 #: src/shell/device.js:82
