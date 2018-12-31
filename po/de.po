@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2018-12-31 05:02\n"
+"PO-Revision-Date: 2018-12-31 05:13\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -224,7 +224,7 @@ msgstr "Anzeigemodus"
 #. TRANSLATORS: Show device indicators in the top bar
 #: data/menus.ui:15
 msgid "Panel"
-msgstr ""
+msgstr "Panel"
 
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
 #: data/menus.ui:21
@@ -309,7 +309,7 @@ msgstr "Gerät ist getrennt"
 
 #: data/messaging.ui:264
 msgid "No Conversations"
-msgstr ""
+msgstr "Keine Konversationen"
 
 #: data/notification.ui:21 data/telephony.ui:21
 #: src/service/plugins/share.js:457
@@ -318,7 +318,7 @@ msgstr "Senden"
 
 #: data/settings.ui:10
 msgid "Searching for devices…"
-msgstr ""
+msgstr "Geräte werden gesucht…"
 
 #: data/settings.ui:49 data/settings.ui:63
 msgid "Refresh"
@@ -680,7 +680,7 @@ msgstr "Sende Dateien an %s"
 #. TRANSLATORS: Mark the file to be opened once completed
 #: src/service/plugins/share.js:412
 msgid "Open when done"
-msgstr ""
+msgstr "Öffnen nach Erledigung"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
 #: src/service/plugins/share.js:451
@@ -726,31 +726,31 @@ msgstr "Laufender Anruf"
 #: src/service/ui/contacts.js:118 src/service/ui/contacts.js:139
 #, javascript-format
 msgid "%s・Other"
-msgstr ""
+msgstr "%s・Andere"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:123
 #, javascript-format
 msgid "%s・Fax"
-msgstr ""
+msgstr "%s・Fax"
 
 #. TRANSLATORS: A work phone number
 #: src/service/ui/contacts.js:127
 #, javascript-format
 msgid "%s・Work"
-msgstr ""
+msgstr "%s・Arbeit"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:131
 #, javascript-format
 msgid "%s・Mobile"
-msgstr ""
+msgstr "%s・Handy"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:135
 #, javascript-format
 msgid "%s・Home"
-msgstr ""
+msgstr "%s・Haus"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #: src/service/ui/contacts.js:278 src/service/ui/contacts.js:292
@@ -828,7 +828,7 @@ msgstr "Gestern・%s"
 #: src/service/ui/messaging.js:243
 #, javascript-format
 msgid "You: %s"
-msgstr ""
+msgstr "Sie: %s"
 
 #: src/service/ui/service.js:31
 msgid "Select a Device"
@@ -844,11 +844,11 @@ msgstr "Ungepaarte"
 
 #: src/service/ui/settings.js:333
 msgid "Disconnected"
-msgstr ""
+msgstr "Getrennt"
 
 #: src/service/ui/settings.js:336
 msgid "Connected"
-msgstr ""
+msgstr "Verbunden"
 
 #. TRANSLATORS: Description of where directly shared files are stored.
 #: src/service/ui/settings.js:406
@@ -927,12 +927,12 @@ msgstr "Erledigt"
 #, javascript-format
 msgid "%d hour"
 msgid_plural "%d hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d stunde"
+msgstr[1] "%d stunde"
 
 #: src/shell/notification.js:42
 msgid "Reply"
-msgstr ""
+msgstr "Antworten"
 
 #. TRANSLATORS: Extension name
 #: webextension/gettext.js:27
