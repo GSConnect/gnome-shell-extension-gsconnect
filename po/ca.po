@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-01-01 11:33\n"
+"PO-Revision-Date: 2019-01-01 11:42\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -330,7 +330,7 @@ msgstr ""
 
 #: data/settings.ui:144 data/settings.ui:158
 msgid "Edit Device Name"
-msgstr ""
+msgstr "Edita el nom del dispositiu"
 
 #: data/settings.ui:236
 msgid "Devices"
@@ -807,7 +807,7 @@ msgstr "%s ja s’està fent servir"
 #. TRANSLATORS: Less than a minute ago
 #: src/service/ui/messaging.js:65 src/service/ui/messaging.js:98
 msgid "Just now"
-msgstr ""
+msgstr "Ara mateix"
 
 #. TRANSLATORS: Time duration in minutes (eg. 15 minutes)
 #: src/service/ui/messaging.js:70 src/service/ui/messaging.js:102
