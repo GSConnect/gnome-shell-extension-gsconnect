@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-01-01 07:22\n"
+"PO-Revision-Date: 2019-01-01 07:32\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -48,89 +48,89 @@ msgstr ""
 
 #: data/contacts.ui:83
 msgid "No contacts"
-msgstr ""
+msgstr "No hi ha cap contacte"
 
 #: data/contacts.ui:95 data/menus.ui:33 data/messaging.ui:247
 msgid "Help"
-msgstr ""
+msgstr "Ajuda"
 
 #: data/conversation.ui:76 data/conversation.ui:85 src/shell/notification.js:51
 msgid "Type a message"
-msgstr ""
+msgstr "Escriviu un missatge"
 
 #: data/conversation.ui:84
 msgid "Send Message"
-msgstr ""
+msgstr "Envia el missatge"
 
 #: data/device.ui:67 src/service/plugins/battery.js:12
 msgid "Battery"
-msgstr ""
+msgstr "Bateria"
 
 #: data/device.ui:122
 msgid "Clipboard Sync"
-msgstr ""
+msgstr "Sincronització del porta-retalls"
 
 #: data/device.ui:185
 msgid "Media Players"
-msgstr ""
+msgstr "Reproductors multimèdia"
 
 #: data/device.ui:240
 msgid "Mouse & Keyboard"
-msgstr ""
+msgstr "Ratolí i teclat"
 
 #: data/device.ui:295
 msgid "Volume Control"
-msgstr ""
+msgstr "Control de volum"
 
 #: data/device.ui:345 data/device.ui:1728
 msgid "Sharing"
-msgstr ""
+msgstr "Compartició"
 
 #: data/device.ui:374 data/device.ui:651 data/device.ui:1774
 #: src/service/plugins/runcommand.js:18 src/service/plugins/runcommand.js:169
 msgid "Commands"
-msgstr ""
+msgstr "Ordres"
 
 #: data/device.ui:424 data/device.ui:427
 msgid "Name"
-msgstr ""
+msgstr "Nom"
 
 #: data/device.ui:440 data/device.ui:446
 msgid "Command Line"
-msgstr ""
+msgstr "Línia d’ordres"
 
 #: data/device.ui:444 data/device.ui:445
 msgid "Choose an executable"
-msgstr ""
+msgstr "Trieu un executable"
 
 #: data/device.ui:496 data/device.ui:511
 msgid "Add"
-msgstr ""
+msgstr "Afegeix"
 
 #: data/device.ui:527 data/device.ui:542
 msgid "Remove"
-msgstr ""
+msgstr "Elimina"
 
 #: data/device.ui:576 data/device.ui:588
 msgid "Edit"
-msgstr ""
+msgstr "Edita"
 
 #: data/device.ui:604 data/device.ui:616
 msgid "Save"
-msgstr ""
+msgstr "Desa"
 
 #: data/device.ui:712
 msgid "Share Notifications"
-msgstr ""
+msgstr "Notificacions de compartició"
 
 #: data/device.ui:763
 msgid "Applications"
-msgstr ""
+msgstr "Aplicacions"
 
 #: data/device.ui:809 data/device.ui:1820
 #: src/service/plugins/notification.js:13
 msgid "Notifications"
-msgstr ""
+msgstr "Notificacions"
 
 #: data/device.ui:839
 msgid "Incoming Calls"
