@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2018-12-31 05:33\n"
+"PO-Revision-Date: 2019-01-01 07:22\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -178,11 +178,11 @@ msgstr "Complementos"
 
 #: data/device.ui:1475
 msgid "Experimental"
-msgstr ""
+msgstr "Experimentos"
 
 #: data/device.ui:1524
 msgid "Legacy SMS Support"
-msgstr ""
+msgstr "Compatibilidad SMS heredada"
 
 #: data/device.ui:1598
 msgid "Delete"
@@ -224,7 +224,7 @@ msgstr "Modo de visualización"
 #. TRANSLATORS: Show device indicators in the top bar
 #: data/menus.ui:15
 msgid "Panel"
-msgstr ""
+msgstr "Panel"
 
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
 #: data/menus.ui:21
@@ -523,7 +523,7 @@ msgstr "Encontrar mi teléfono"
 
 #: src/service/plugins/mousepad.js:14
 msgid "Mousepad"
-msgstr ""
+msgstr "Mousepad"
 
 #: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:569
 msgid "Keyboard"
@@ -539,7 +539,7 @@ msgstr "El teclado no está preparado"
 
 #: src/service/plugins/mpris.js:10
 msgid "MPRIS"
-msgstr ""
+msgstr "MPRIS"
 
 #: src/service/plugins/notification.js:26
 msgid "Cancel Notification"
@@ -575,7 +575,7 @@ msgstr "Ejecutar órdenes"
 
 #: src/service/plugins/sftp.js:12
 msgid "SFTP"
-msgstr ""
+msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:18
 msgid "Mount"
@@ -690,7 +690,7 @@ msgstr "Enviar un enlace a %s"
 
 #: src/service/plugins/sms.js:13
 msgid "SMS"
-msgstr ""
+msgstr "SMS"
 
 #: src/service/plugins/sms.js:34
 msgid "New SMS (URI)"
@@ -732,7 +732,7 @@ msgstr "%s・Otro"
 #: src/service/ui/contacts.js:123
 #, javascript-format
 msgid "%s・Fax"
-msgstr ""
+msgstr "%s・Fax"
 
 #. TRANSLATORS: A work phone number
 #: src/service/ui/contacts.js:127
@@ -828,7 +828,7 @@ msgstr "Ayer・%s"
 #: src/service/ui/messaging.js:243
 #, javascript-format
 msgid "You: %s"
-msgstr ""
+msgstr "Usted: %s"
 
 #: src/service/ui/service.js:31
 msgid "Select a Device"
@@ -932,12 +932,12 @@ msgstr[1] "%d horas"
 
 #: src/shell/notification.js:42
 msgid "Reply"
-msgstr ""
+msgstr "Responder"
 
 #. TRANSLATORS: Extension name
 #: webextension/gettext.js:27
 msgid "GSConnect"
-msgstr ""
+msgstr "GSConnect"
 
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
