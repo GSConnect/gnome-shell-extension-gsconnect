@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-01-01 07:42\n"
+"PO-Revision-Date: 2019-01-01 07:53\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -162,7 +162,7 @@ msgstr ""
 
 #: data/device.ui:1280 data/device.ui:1349
 msgid "Reset All…"
-msgstr ""
+msgstr "Reinicialitza-ho tot…"
 
 #: data/device.ui:1334
 msgid "Command Shortcuts"
@@ -202,7 +202,7 @@ msgstr ""
 
 #: data/device.ui:1912
 msgid "Keyboard Shortcuts"
-msgstr ""
+msgstr "Dreceres de teclat"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/device.ui:2015 data/menus.ui:68 src/service/device.js:424
