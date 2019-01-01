@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-01-01 07:32\n"
+"PO-Revision-Date: 2019-01-01 07:42\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -134,11 +134,11 @@ msgstr "Notificacions"
 
 #: data/device.ui:839
 msgid "Incoming Calls"
-msgstr ""
+msgstr "Trucades entrants"
 
 #: data/device.ui:888 data/device.ui:1055
 msgid "Volume"
-msgstr ""
+msgstr "Volum"
 
 #: data/device.ui:954 data/device.ui:1120
 msgid "Pause Media"
@@ -154,7 +154,7 @@ msgstr ""
 
 #: data/device.ui:1230 data/device.ui:1866 src/service/plugins/telephony.js:13
 msgid "Telephony"
-msgstr ""
+msgstr "Telefonia"
 
 #: data/device.ui:1265
 msgid "Action Shortcuts"
@@ -224,12 +224,12 @@ msgstr ""
 #. TRANSLATORS: Show device indicators in the top bar
 #: data/menus.ui:15
 msgid "Panel"
-msgstr ""
+msgstr "Plafó"
 
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
 #: data/menus.ui:21
 msgid "User Menu"
-msgstr ""
+msgstr "Menú d’usuari"
 
 #. TRANSLATORS: Generate a support log
 #: data/menus.ui:29 src/service/ui/settings.js:536
@@ -238,17 +238,17 @@ msgstr ""
 
 #: data/menus.ui:38
 msgid "About"
-msgstr ""
+msgstr "Quant a"
 
 #. TRANSLATORS: Change the connection type to Bluetooth
 #: data/menus.ui:49
 msgid "Switch to Bluetooth"
-msgstr ""
+msgstr "Canvia a Bluetooth"
 
 #. TRANSLATORS: Change the connection type to TCP/IP
 #: data/menus.ui:56
 msgid "Switch to LAN"
-msgstr ""
+msgstr "Canvia a LAN"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
 #: data/menus.ui:63 src/service/ui/device.js:317
@@ -436,23 +436,23 @@ msgstr ""
 #: src/service/device.js:183 src/service/device.js:185
 #, javascript-format
 msgid "%s Fingerprint:"
-msgstr ""
+msgstr "Empremta de l’aparell %s:"
 
 #: src/service/device.js:242
 msgid "Laptop"
-msgstr ""
+msgstr "Ordinador portàtil"
 
 #: src/service/device.js:244
 msgid "Smartphone"
-msgstr ""
+msgstr "Telèfon intel·ligent"
 
 #: src/service/device.js:246
 msgid "Tablet"
-msgstr ""
+msgstr "Tauleta"
 
 #: src/service/device.js:248
 msgid "Desktop"
-msgstr ""
+msgstr "Ordinador d’escriptori"
 
 #: src/service/device.js:408 src/service/ui/device.js:15
 msgid "Reconnect"
@@ -527,7 +527,7 @@ msgstr ""
 
 #: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:569
 msgid "Keyboard"
-msgstr ""
+msgstr "Teclat"
 
 #: src/service/plugins/mousepad.js:223
 msgid "Additional Software Required"
@@ -539,7 +539,7 @@ msgstr ""
 
 #: src/service/plugins/mpris.js:10
 msgid "MPRIS"
-msgstr ""
+msgstr "MPRIS"
 
 #: src/service/plugins/notification.js:26
 msgid "Cancel Notification"
@@ -560,14 +560,14 @@ msgstr ""
 #: src/service/plugins/ping.js:11 src/service/plugins/ping.js:17
 #: src/service/plugins/ping.js:46
 msgid "Ping"
-msgstr ""
+msgstr "Comprovació de connectivitat"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
 #: src/service/plugins/ping.js:53
 #, javascript-format
 msgid "Ping: %s"
-msgstr ""
+msgstr "Comprovació de connectivitat: %s"
 
 #: src/service/plugins/runcommand.js:12
 msgid "Run Commands"
@@ -575,7 +575,7 @@ msgstr ""
 
 #: src/service/plugins/sftp.js:12
 msgid "SFTP"
-msgstr ""
+msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:18
 msgid "Mount"
@@ -587,19 +587,19 @@ msgstr ""
 
 #: src/service/plugins/sftp.js:159
 msgid "All files"
-msgstr ""
+msgstr "Tots els fitxers"
 
 #: src/service/plugins/sftp.js:160
 msgid "Camera pictures"
-msgstr ""
+msgstr "Fotografies de la càmera"
 
 #: src/service/plugins/sftp.js:417
 msgid "Files"
-msgstr ""
+msgstr "Fitxers"
 
 #: src/service/plugins/share.js:13 src/service/plugins/share.js:19
 msgid "Share"
-msgstr ""
+msgstr "Compartició"
 
 #: src/service/plugins/share.js:35
 msgid "Share Text"
