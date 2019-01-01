@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-01-01 11:33\n"
+"PO-Revision-Date: 2019-01-01 11:42\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -802,7 +802,7 @@ msgstr "Oprima Esc para cancelar o Retroceso para restablecer el atajo de teclad
 #: src/service/ui/keybindings.js:182
 #, javascript-format
 msgid "%s is already being used"
-msgstr "Ya se está utilizando %s"
+msgstr "Ya está utilizándose %s"
 
 #. TRANSLATORS: Less than a minute ago
 #: src/service/ui/messaging.js:65 src/service/ui/messaging.js:98
