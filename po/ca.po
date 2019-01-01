@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-01-01 09:12\n"
+"PO-Revision-Date: 2019-01-01 09:22\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -471,11 +471,11 @@ msgstr ""
 
 #: src/service/device.js:614
 msgid "Reject"
-msgstr ""
+msgstr "Rebutja’l"
 
 #: src/service/device.js:619
 msgid "Accept"
-msgstr ""
+msgstr "Accepta’l"
 
 #: src/service/plugins/battery.js:188 src/service/plugins/findmyphone.js:19
 msgid "Ring"
@@ -495,7 +495,7 @@ msgstr ""
 
 #: src/service/plugins/clipboard.js:11
 msgid "Clipboard"
-msgstr ""
+msgstr "Porta-retalls"
 
 #: src/service/plugins/clipboard.js:17
 msgid "Clipboard Push"
@@ -726,41 +726,41 @@ msgstr ""
 #: src/service/ui/contacts.js:118 src/service/ui/contacts.js:139
 #, javascript-format
 msgid "%s・Other"
-msgstr ""
+msgstr "%s・Altre"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:123
 #, javascript-format
 msgid "%s・Fax"
-msgstr ""
+msgstr "%s・Fax"
 
 #. TRANSLATORS: A work phone number
 #: src/service/ui/contacts.js:127
 #, javascript-format
 msgid "%s・Work"
-msgstr ""
+msgstr "%s・Treball"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:131
 #, javascript-format
 msgid "%s・Mobile"
-msgstr ""
+msgstr "%s・Mòbil"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:135
 #, javascript-format
 msgid "%s・Home"
-msgstr ""
+msgstr "%s・Particular"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #: src/service/ui/contacts.js:278 src/service/ui/contacts.js:292
 #, javascript-format
 msgid "Send to %s"
-msgstr ""
+msgstr "Envia al %s"
 
 #: src/service/ui/device.js:608
 msgid "Open"
-msgstr ""
+msgstr "Obre"
 
 #: src/service/ui/device.js:660 src/service/ui/device.js:673
 msgid "On"
