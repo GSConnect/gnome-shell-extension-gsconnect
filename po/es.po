@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-01-01 07:22\n"
+"PO-Revision-Date: 2019-01-01 07:32\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -560,7 +560,7 @@ msgstr "Enviar notificación"
 #: src/service/plugins/ping.js:11 src/service/plugins/ping.js:17
 #: src/service/plugins/ping.js:46
 msgid "Ping"
-msgstr "Comprobación de conectividad"
+msgstr "Prueba de conectividad"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -599,7 +599,7 @@ msgstr "Archivos"
 
 #: src/service/plugins/share.js:13 src/service/plugins/share.js:19
 msgid "Share"
-msgstr "Compartir"
+msgstr "Compartición"
 
 #: src/service/plugins/share.js:35
 msgid "Share Text"
