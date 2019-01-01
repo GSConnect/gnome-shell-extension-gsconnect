@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-01-01 08:42\n"
+"PO-Revision-Date: 2019-01-01 09:12\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -158,7 +158,7 @@ msgstr "Telefonia"
 
 #: data/device.ui:1265
 msgid "Action Shortcuts"
-msgstr ""
+msgstr "Dreceres d’accions"
 
 #: data/device.ui:1280 data/device.ui:1349
 msgid "Reset All…"
@@ -166,19 +166,19 @@ msgstr "Reinicialitza-ho tot…"
 
 #: data/device.ui:1334
 msgid "Command Shortcuts"
-msgstr ""
+msgstr "Dreceres d’ordres"
 
 #: data/device.ui:1398
 msgid "Shortcuts"
-msgstr ""
+msgstr "Dreceres"
 
 #: data/device.ui:1429
 msgid "Plugins"
-msgstr ""
+msgstr "Connectors"
 
 #: data/device.ui:1475
 msgid "Experimental"
-msgstr ""
+msgstr "Experiments"
 
 #: data/device.ui:1524
 msgid "Legacy SMS Support"
@@ -186,11 +186,11 @@ msgstr ""
 
 #: data/device.ui:1598
 msgid "Delete"
-msgstr ""
+msgstr "Suprimeix"
 
 #: data/device.ui:1627
 msgid "Delete this device"
-msgstr ""
+msgstr "Suprimeix aquest dispositiu"
 
 #: data/device.ui:1645
 msgid "Unpair and remove all settings and files"
@@ -198,7 +198,7 @@ msgstr ""
 
 #: data/device.ui:1678 data/device.ui:1958
 msgid "Advanced"
-msgstr ""
+msgstr "Avançat"
 
 #: data/device.ui:1912
 msgid "Keyboard Shortcuts"
@@ -289,15 +289,15 @@ msgstr ""
 #: data/messaging.ui:12 src/service/plugins/sms.js:26
 #: src/service/ui/messaging.js:911
 msgid "Messaging"
-msgstr ""
+msgstr "Missatgeria"
 
 #: data/messaging.ui:21 src/service/ui/messaging.js:992
 msgid "New Conversation"
-msgstr ""
+msgstr "Conversa nova"
 
 #: data/messaging.ui:110
 msgid "No conversation selected"
-msgstr ""
+msgstr "No s’ha seleccionat cap conversa"
 
 #: data/messaging.ui:126
 msgid "Select or start a conversation"
@@ -309,20 +309,20 @@ msgstr ""
 
 #: data/messaging.ui:264
 msgid "No Conversations"
-msgstr ""
+msgstr "No hi ha cap conversa"
 
 #: data/notification.ui:21 data/telephony.ui:21
 #: src/service/plugins/share.js:457
 msgid "Send"
-msgstr ""
+msgstr "Envia"
 
 #: data/settings.ui:10
 msgid "Searching for devices…"
-msgstr ""
+msgstr "S’estan cercant dispositius…"
 
 #: data/settings.ui:49 data/settings.ui:63
 msgid "Refresh"
-msgstr ""
+msgstr "Actualitza"
 
 #: data/settings.ui:74 data/settings.ui:91 src/extension.js:105
 msgid "Mobile Settings"
@@ -334,11 +334,11 @@ msgstr ""
 
 #: data/settings.ui:236
 msgid "Devices"
-msgstr ""
+msgstr "Dispositius"
 
 #: data/settings.ui:299
 msgid "Browser Add-Ons"
-msgstr ""
+msgstr "Connectors per als navegadors"
 
 #: data/settings.ui:579
 msgid "Enable"
@@ -361,7 +361,7 @@ msgstr ""
 #. Service Menu
 #: src/extension.js:79 src/extension.js:255
 msgid "Mobile Devices"
-msgstr ""
+msgstr "Dispositius mòbils"
 
 #. TRANSLATORS: %d is the number of devices connected
 #: src/extension.js:253
