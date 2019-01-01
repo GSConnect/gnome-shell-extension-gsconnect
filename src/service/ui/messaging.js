@@ -332,6 +332,10 @@ const ConversationWidget = GObject.registerClass({
         this.message_list.set_header_func(this._headerMessages);
         this.message_list.set_sort_func(this._sortMessages);
         this._populateMessages();
+
+        // HACK: This property was added in gtk-3.24; if it's not present this
+        // will just become a useless JS variable instead of choking
+        this.message_entry.enable_emoji_completion = true;
     }
 
     get address() {
