@@ -363,8 +363,12 @@ var ContactChooser = GObject.registerClass({
 
     add_contact(contact) {
         if (contact.numbers.length === 1) {
+            contact.name = contact.name || contact.numbers[0].value;
             return this.add_contact_number(contact, 0);
         }
+
+        // HACK: fix missing contact names
+        contact.name = contact.name || _('Unknown Contact');
 
         for (let i = 0, len = contact.numbers.length; i < len; i++) {
             this.add_contact_number(contact, i);
@@ -394,7 +398,7 @@ var ContactChooser = GObject.registerClass({
             grid.attach(avatar, 0, 0, 1, 2);
 
             let nameLabel = new Gtk.Label({
-                label: contact.name || _('Unknown Contact'),
+                label: contact.name,
                 halign: Gtk.Align.START,
                 hexpand: true,
                 visible: true
