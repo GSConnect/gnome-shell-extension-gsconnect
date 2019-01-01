@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2018-12-31 05:36\n"
+"PO-Revision-Date: 2019-01-01 07:22\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -19,7 +19,7 @@ msgstr ""
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/connect.ui:24 data/menus.ui:7
 msgid "Connect to…"
-msgstr ""
+msgstr "Connecta amb…"
 
 #. Action Buttons
 #: data/connect.ui:30 data/notification.ui:14 data/telephony.ui:14
@@ -28,19 +28,19 @@ msgstr ""
 #: src/service/ui/keybindings.js:44 src/service/ui/service.js:37
 #: src/service/ui/settings.js:539 src/shell/donotdisturb.js:215
 msgid "Cancel"
-msgstr ""
+msgstr "Cancel·la"
 
 #: data/connect.ui:37
 msgid "Connect"
-msgstr ""
+msgstr "Connecta"
 
 #: data/connect.ui:98
 msgid "IP Address"
-msgstr ""
+msgstr "Adreça IP"
 
 #: data/connect.ui:142
 msgid "Bluetooth Device"
-msgstr ""
+msgstr "Dispositiu Bluetooth"
 
 #: data/contacts.ui:49
 msgid "Type a phone number or name"
