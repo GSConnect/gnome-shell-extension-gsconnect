@@ -320,6 +320,8 @@ var Plugin = GObject.registerClass({
         } else if (rate && !this.charging) {
             this._time = Math.floor(rate * level);
         }
+
+        this.__state.state = this.state;
     }
 
     destroy() {
