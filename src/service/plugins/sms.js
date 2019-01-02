@@ -233,7 +233,7 @@ var Plugin = GObject.registerClass({
     handlePacket(packet) {
         // Currently only one incoming packet type
         if (packet.type === 'kdeconnect.sms.messages') {
-            this._handleMessages(packet);
+            this._handleMessages(packet.body.messages);
         }
     }
 
@@ -268,13 +268,12 @@ var Plugin = GObject.registerClass({
     /**
      * Parse a conversation (thread of messages) and sort them
      *
-     * @param {Array} messages - A list of telephony message objects
+     * @param {object[]} messages - A list of sms message objects from a thread
      */
     async _handleConversation(messages) {
         try {
-            if (messages.length === 0 || !messages[0].address) {
-                return;
-            }
+            // If the address is missing this will cause problems...
+            if (!messages[0].address) return;
 
             let thread_id = messages[0].thread_id;
             let conversation = this.conversations[thread_id] || [];
@@ -282,7 +281,8 @@ var Plugin = GObject.registerClass({
                 number: messages[0].address
             });
 
-            for (let message of messages) {
+            for (let i = 0, len = messages.length; i < len; i++) {
+                let message = messages[i];
                 let extant = conversation.find(msg => msg._id === message._id);
 
                 if (extant) {
@@ -308,16 +308,14 @@ var Plugin = GObject.registerClass({
     /**
      * Handle a response to telephony.request_conversation(s)
      *
-     * @param {kdeconnect.sms.messages} packet - An incoming packet
+     * @param {object[]} messages - A list of sms message objects
      */
-    async _handleMessages(packet) {
+    async _handleMessages(messages) {
         try {
             // If messages is empty there's nothing to do...
-            if (packet.body.messages.length === 0) {
-                return;
-            }
+            if (messages.length === 0) return;
 
-            let thread_ids = packet.body.messages.map(msg => msg.thread_id);
+            let thread_ids = messages.map(msg => msg.thread_id);
 
             // If there's multiple thread_id's it's a summary of threads
             if (thread_ids.some(id => id !== thread_ids[0])) {
@@ -330,9 +328,11 @@ var Plugin = GObject.registerClass({
                 });
 
                 // Request each new or newer thread
-                packet.body.messages.map(message => {
+                for (let i = 0, len = messages.length; i < len; i++) {
+                    let message = messages[i];
                     let cache = this.conversations[message.thread_id];
 
+                    // If this is for an existing thread, mark the rest as read
                     if (cache && message.read === MessageStatus.READ) {
                         cache.forEach(message => message.read = MessageStatus.READ);
                     }
@@ -340,14 +340,14 @@ var Plugin = GObject.registerClass({
                     if (!cache || cache[cache.length - 1]._id < message._id) {
                         this.requestConversation(message.thread_id);
                     }
-                });
+                }
 
                 await this.__cache_write();
                 this.notify('conversations');
 
             // Otherwise this is single thread or new message
             } else {
-                await this._handleConversation(packet.body.messages);
+                await this._handleConversation(messages);
             }
         } catch (e) {
             logError(e);
