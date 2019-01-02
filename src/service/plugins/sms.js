@@ -287,6 +287,10 @@ var Plugin = GObject.registerClass({
 
             for (let i = 0, len = messages.length; i < len; i++) {
                 let message = messages[i];
+
+                // TODO: invalid MessageType
+                if (message.type < 0 || message.type > 5) continue;
+
                 let extant = conversation.find(msg => msg._id === message._id);
 
                 if (extant) {

@@ -399,6 +399,13 @@ const ConversationWidget = GObject.registerClass({
 
         while (this.__messages.length > 0) {
             let message = this.__messages[this.__messages.length - 1];
+
+            // TODO: Unsupported MessageType
+            if (message.type !== 1 && message.type !== 2) {
+                this.__messages.pop()
+                continue;
+            }
+
             date = date || message.date;
             direction = direction || message.type;
 
@@ -555,6 +562,9 @@ const ConversationWidget = GObject.registerClass({
      * @param {Object} message - A sms message object
      */
     logMessage(message) {
+        // TODO: Unsupported MessageType
+        if (message.type !== 1 && message.type !== 2) return;
+
         // Ensure it's older than the last message (or the first)
         // TODO: with a lot of work we could probably handle this...
         if (this.__last && this.__last.id > message._id) {
