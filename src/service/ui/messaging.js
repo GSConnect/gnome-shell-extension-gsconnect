@@ -86,7 +86,7 @@ var ConversationMessage = GObject.registerClass({
 
     _init(message) {
         this.message = message;
-        let incoming = (message.type === Sms.MessageType.INBOX)
+        let incoming = (message.type === Sms.MessageType.INBOX);
 
         super._init({
             label: message.body.linkify(message.date),
@@ -402,7 +402,7 @@ const ConversationWidget = GObject.registerClass({
 
             // TODO: Unsupported MessageType
             if (message.type !== 1 && message.type !== 2) {
-                this.__messages.pop()
+                this.__messages.pop();
                 continue;
             }
 
