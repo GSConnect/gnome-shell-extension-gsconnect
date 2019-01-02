@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2018-12-31 05:33\n"
+"PO-Revision-Date: 2019-01-01 11:42\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -178,11 +178,11 @@ msgstr "Complementos"
 
 #: data/device.ui:1475
 msgid "Experimental"
-msgstr ""
+msgstr "Experimentos"
 
 #: data/device.ui:1524
 msgid "Legacy SMS Support"
-msgstr ""
+msgstr "Compatibilidad SMS heredada"
 
 #: data/device.ui:1598
 msgid "Delete"
@@ -207,7 +207,7 @@ msgstr "Atajos de teclado"
 #. TRANSLATORS: Send a pair request to the device
 #: data/device.ui:2015 data/menus.ui:68 src/service/device.js:424
 msgid "Pair"
-msgstr "Emparejar"
+msgstr "Emparejamiento"
 
 #: data/device.ui:2047
 msgid "Device is unpaired"
@@ -224,7 +224,7 @@ msgstr "Modo de visualización"
 #. TRANSLATORS: Show device indicators in the top bar
 #: data/menus.ui:15
 msgid "Panel"
-msgstr ""
+msgstr "Panel"
 
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
 #: data/menus.ui:21
@@ -326,7 +326,7 @@ msgstr "Actualizar"
 
 #: data/settings.ui:74 data/settings.ui:91 src/extension.js:105
 msgid "Mobile Settings"
-msgstr "Configuración de móviles"
+msgstr "Configuración de móvil"
 
 #: data/settings.ui:144 data/settings.ui:158
 msgid "Edit Device Name"
@@ -523,7 +523,7 @@ msgstr "Encontrar mi teléfono"
 
 #: src/service/plugins/mousepad.js:14
 msgid "Mousepad"
-msgstr ""
+msgstr "Mousepad"
 
 #: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:569
 msgid "Keyboard"
@@ -539,7 +539,7 @@ msgstr "El teclado no está preparado"
 
 #: src/service/plugins/mpris.js:10
 msgid "MPRIS"
-msgstr ""
+msgstr "MPRIS"
 
 #: src/service/plugins/notification.js:26
 msgid "Cancel Notification"
@@ -560,7 +560,7 @@ msgstr "Enviar notificación"
 #: src/service/plugins/ping.js:11 src/service/plugins/ping.js:17
 #: src/service/plugins/ping.js:46
 msgid "Ping"
-msgstr "Comprobación de conectividad"
+msgstr "Prueba de conectividad"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -575,7 +575,7 @@ msgstr "Ejecutar órdenes"
 
 #: src/service/plugins/sftp.js:12
 msgid "SFTP"
-msgstr ""
+msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:18
 msgid "Mount"
@@ -599,7 +599,7 @@ msgstr "Archivos"
 
 #: src/service/plugins/share.js:13 src/service/plugins/share.js:19
 msgid "Share"
-msgstr "Compartir"
+msgstr "Compartición"
 
 #: src/service/plugins/share.js:35
 msgid "Share Text"
@@ -690,7 +690,7 @@ msgstr "Enviar un enlace a %s"
 
 #: src/service/plugins/sms.js:13
 msgid "SMS"
-msgstr ""
+msgstr "SMS"
 
 #: src/service/plugins/sms.js:34
 msgid "New SMS (URI)"
@@ -732,7 +732,7 @@ msgstr "%s・Otro"
 #: src/service/ui/contacts.js:123
 #, javascript-format
 msgid "%s・Fax"
-msgstr ""
+msgstr "%s・Fax"
 
 #. TRANSLATORS: A work phone number
 #: src/service/ui/contacts.js:127
@@ -802,7 +802,7 @@ msgstr "Oprima Esc para cancelar o Retroceso para restablecer el atajo de teclad
 #: src/service/ui/keybindings.js:182
 #, javascript-format
 msgid "%s is already being used"
-msgstr "Ya se está utilizando %s"
+msgstr "Ya está utilizándose %s"
 
 #. TRANSLATORS: Less than a minute ago
 #: src/service/ui/messaging.js:65 src/service/ui/messaging.js:98
@@ -828,7 +828,7 @@ msgstr "Ayer・%s"
 #: src/service/ui/messaging.js:243
 #, javascript-format
 msgid "You: %s"
-msgstr ""
+msgstr "Usted: %s"
 
 #: src/service/ui/service.js:31
 msgid "Select a Device"
@@ -863,7 +863,7 @@ msgstr "Una completa implementación de KDE Connect para GNOME"
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/service/ui/settings.js:508
 msgid "translator-credits"
-msgstr "Adolfo Jayme Barrientos <fitojb@ubuntu.com>, 2018"
+msgstr "Adolfo Jayme Barrientos <fitojb@ubuntu.com>, 2018-2019"
 
 #: src/service/ui/settings.js:537
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
@@ -932,12 +932,12 @@ msgstr[1] "%d horas"
 
 #: src/shell/notification.js:42
 msgid "Reply"
-msgstr ""
+msgstr "Responder"
 
 #. TRANSLATORS: Extension name
 #: webextension/gettext.js:27
 msgid "GSConnect"
-msgstr ""
+msgstr "GSConnect"
 
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
