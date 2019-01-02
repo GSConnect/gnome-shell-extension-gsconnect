@@ -178,21 +178,25 @@ var MessageStatus = {
  * SMS Message direction. IN/OUT match the 'type' field from the Android App
  * message packet.
  *
- * NOTICE: A general message (eg. timestamp, missed call)
+ * See: https://developer.android.com/reference/android/provider/Telephony.TextBasedSmsColumns.html
+ *
  * IN: An incoming message
  * OUT: An outgoing message
  */
 var MessageType = {
-    NOTICE: 0,
-    IN: 1,
-    OUT: 2
+    ALL: 0,
+    INBOX: 1,
+    SENT: 2,
+    DRAFT: 3,
+    OUTBOX: 4,
+    FAILED: 5
 };
 
 
 /**
  * SMS Plugin
- * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/telephony
- * https://github.com/KDE/kdeconnect-android/tree/master/src/org/kde/kdeconnect/Plugins/TelephonyPlugin
+ * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/sms
+ * https://github.com/KDE/kdeconnect-android/tree/master/src/org/kde/kdeconnect/Plugins/SMSPlugin/
  */
 var Plugin = GObject.registerClass({
     GTypeName: 'GSConnectSMSPlugin',
@@ -255,7 +259,7 @@ var Plugin = GObject.registerClass({
         if (conversation) {
             // Track expected ticker of outgoing messages so they can be closed
             // FIXME: this is not working well
-            if (message.type === MessageType.OUT) {
+            if (message.type === MessageType.SENT) {
                 conversation._notifications.push(
                     `${contact.name}: ${message.body}`
                 );

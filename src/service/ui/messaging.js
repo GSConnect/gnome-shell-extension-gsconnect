@@ -7,44 +7,7 @@ const Gtk = imports.gi.Gtk;
 const Pango = imports.gi.Pango;
 
 const Contacts = imports.service.ui.contacts;
-
-
-/**
- * SMS Message event type. Currently all events are TEXT_MESSAGE.
- *
- * TEXT_MESSAGE: Has a "body" field which contains pure, human-readable text
- */
-var MessageEvent = {
-    TEXT_MESSAGE: 0x1
-};
-
-
-/**
- * SMS Message status. READ/UNREAD match the 'read' field from the Android App
- * message packet.
- *
- * UNREAD: A message not marked as read
- * READ: A message marked as read
- */
-var MessageStatus = {
-    UNREAD: 0,
-    READ: 1
-};
-
-
-/**
- * SMS Message direction. IN/OUT match the 'type' field from the Android App
- * message packet.
- *
- * NOTICE: A general message (eg. timestamp, missed call)
- * IN: An incoming message
- * OUT: An outgoing message
- */
-var MessageType = {
-    NOTICE: 0,
-    IN: 1,
-    OUT: 2
-};
+const Sms = imports.service.plugins.sms;
 
 
 /**
@@ -123,10 +86,11 @@ var ConversationMessage = GObject.registerClass({
 
     _init(message) {
         this.message = message;
+        let incoming = (message.type === Sms.MessageType.INBOX)
 
         super._init({
             label: message.body.linkify(message.date),
-            halign: (message.type === MessageType.IN) ? Gtk.Align.START : Gtk.Align.END,
+            halign: incoming ? Gtk.Align.START : Gtk.Align.END,
             selectable: true,
             tooltip_text: getTime(message.date),
             use_markup: true,
@@ -136,7 +100,7 @@ var ConversationMessage = GObject.registerClass({
             xalign: 0
         });
 
-        if (message.type === MessageType.IN) {
+        if (incoming) {
             this.get_style_context().add_class('message-in');
         } else {
             this.get_style_context().add_class('message-out');
@@ -238,12 +202,12 @@ const ConversationSummary = GObject.registerClass({
         bodyLabel = GLib.markup_escape_text(bodyLabel, -1);
 
         // Ignore the 'read' flag if it's an outgoing message
-        if (message.type === MessageType.OUT) {
+        if (message.type === Sms.MessageType.SENT) {
             // TRANSLATORS: An outgoing message body in a conversation summary
             bodyLabel = _('You: %s').format(bodyLabel);
 
         // Otherwise make it bold if it's unread
-        } else if (message.read === MessageStatus.UNREAD) {
+        } else if (message.read === Sms.MessageStatus.UNREAD) {
             nameLabel = '<b>' + nameLabel + '</b>';
             bodyLabel = '<b>' + bodyLabel + '</b>';
         }
@@ -542,6 +506,8 @@ const ConversationWidget = GObject.registerClass({
      * @param {object} message - The message object to create a series for
      */
     _createSeries(message) {
+        let incoming = (message.type === Sms.MessageType.INBOX);
+
         let row = new Gtk.ListBoxRow({
             activatable: false,
             selectable: false,
@@ -556,12 +522,12 @@ const ConversationWidget = GObject.registerClass({
             hexpand: true,
             margin: 6,
             spacing: 6,
-            halign: (row.type === MessageType.IN) ? Gtk.Align.START : Gtk.Align.END
+            halign: incoming ? Gtk.Align.START : Gtk.Align.END
         });
         row.add(layout);
 
         // Add avatar for incoming messages
-        if (row.type === MessageType.IN) {
+        if (incoming) {
             let avatar = new Contacts.Avatar(this.contact);
             avatar.valign = Gtk.Align.END;
             layout.add(avatar);
@@ -573,8 +539,8 @@ const ConversationWidget = GObject.registerClass({
             spacing: 3,
             halign: layout.halign,
             // Avatar width (32px) + layout spacing (6px) + 6px
-            margin_right: (row.type === MessageType.IN) ? 44 : 0,
-            margin_left: (row.type === MessageType.IN) ? 0 : 44
+            margin_right: incoming ? 44 : 0,
+            margin_left: incoming ? 0 : 44
         });
         layout.add(row.messages);
 
@@ -620,7 +586,7 @@ const ConversationWidget = GObject.registerClass({
         this.__last.messages.pack_start(widget, false, false, 0);
 
         // Remove the first pending message
-        if (this.has_pending && message.type === MessageType.OUT) {
+        if (this.has_pending && message.type === Sms.MessageType.SENT) {
             this.pending_box.get_children()[0].destroy();
             this.notify('has-pending');
         }
@@ -651,7 +617,7 @@ const ConversationWidget = GObject.registerClass({
         let message = new ConversationMessage({
             body: entry.text,
             date: Date.now(),
-            type: MessageType.OUT
+            type: Sms.MessageType.SENT
         });
         this.pending_box.add(message);
         this.notify('has-pending');
