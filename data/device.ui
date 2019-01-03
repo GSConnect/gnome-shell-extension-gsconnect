@@ -1555,6 +1555,59 @@
                                 </accessibility>
                               </object>
                             </child>
+                            <child>
+                              <object class="GtkListBoxRow" id="use-gvfs-row">
+                                <property name="height_request">56</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="action_name">settings.use-gvfs</property>
+                                <property name="selectable">False</property>
+                                <child>
+                                  <object class="GtkGrid">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="margin_left">12</property>
+                                    <property name="margin_right">12</property>
+                                    <property name="column_spacing">12</property>
+                                    <child>
+                                      <object class="GtkLabel" id="use-gvfs-label">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                        <property name="halign">start</property>
+                                        <property name="valign">center</property>
+                                        <property name="hexpand">True</property>
+                                        <property name="vexpand">True</property>
+                                        <property name="label" translatable="yes">Use GVFS for file access</property>
+                                        <accessibility>
+                                          <relation type="label-for" target="use-gvfs-row"/>
+                                          <relation type="label-for" target="use-gvfs"/>
+                                        </accessibility>
+                                      </object>
+                                      <packing>
+                                        <property name="left_attach">0</property>
+                                        <property name="top_attach">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkSwitch" id="use-gvfs">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="halign">end</property>
+                                        <property name="valign">center</property>
+                                        <property name="action_name">settings.use-gvfs</property>
+                                        <accessibility>
+                                          <relation type="labelled-by" target="use-gvfs-label"/>
+                                        </accessibility>
+                                      </object>
+                                      <packing>
+                                        <property name="left_attach">1</property>
+                                        <property name="top_attach">0</property>
+                                      </packing>
+                                    </child>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
                             <accessibility>
                               <relation type="labelled-by" target="experimental-label"/>
                             </accessibility>

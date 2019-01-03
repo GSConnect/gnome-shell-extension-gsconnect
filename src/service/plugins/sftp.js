@@ -52,6 +52,10 @@ var Plugin = GObject.registerClass({
     }
 
     get has_sshfs() {
+        // Short-circuit to false if GVFS override is enabled
+        if (this.settings.get_boolean('use-gvfs')) {
+            return false;
+        }
         return GLib.find_program_in_path(gsconnect.metadata.bin.sshfs);
     }
 
