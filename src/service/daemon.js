@@ -681,13 +681,6 @@ const Service = GObject.registerClass({
     }
 
     vfunc_dbus_register(connection, object_path) {
-        try {
-            super.vfunc_dbus_register(connection, object_path);
-        } catch (e) {
-            return false;
-        }
-
-        // org.freedesktop.ObjectManager interface; only devices currently
         this.objectManager = new Gio.DBusObjectManagerServer({
             connection: connection,
             object_path: object_path
@@ -740,28 +733,37 @@ const Service = GObject.registerClass({
     }
 
     vfunc_shutdown() {
-        super.vfunc_shutdown();
-
         // Destroy the channel providers first to avoid any further connections
-        if (this.lan) {
-            this.lan.destroy();
+        try {
+            if (this.lan) this.lan.destroy();
+        } catch (e) {
+            debug(e);
         }
 
-        if (this.bluetooth) {
-            this.bluetooth.destroy();
+        try {
+            if (this.bluetooth) this.bluetooth.destroy();
+        } catch (e) {
+            debug(e);
         }
 
         // This must be done before ::dbus-unregister is emitted
         this._devices.forEach(device => device.destroy());
 
         // Destroy the remaining components last
-        if (this.mpris) {
-            this.mpris.destroy();
+        try {
+            if (this.mpris) this.mpris.destroy();
+        } catch (e) {
+            debug(e);
         }
 
-        if (this.notification) {
-            this.notification.destroy();
+        try {
+            if (this.notification) this.notification.destroy();
+        } catch (e) {
+            debug(e);
         }
+
+        // Chain up last (application->priv->did_shutdown)
+        super.vfunc_shutdown();
     }
 });
 
