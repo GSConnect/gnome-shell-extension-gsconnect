@@ -126,11 +126,11 @@ var Device = GObject.registerClass({
         this._dbus_object.add_interface(this._dbus);
 
         // GActions/GMenu
-        this._registerActions();
         this._actionsId = Gio.DBus.session.export_action_group(
             this.object_path,
             this
         );
+        this._registerActions();
 
         this.menu = new Gio.Menu();
         this._menuId = Gio.DBus.session.export_menu_model(
