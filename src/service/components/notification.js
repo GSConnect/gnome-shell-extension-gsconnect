@@ -373,7 +373,8 @@ var Listener = class Listener {
             await this._helloConnection();
             await this._monitorConnection();
         } catch (e) {
-            this.service.notify_error(e);
+            // FIXME: if something goes wrong the component will appear active
+            logError(e);
             this.destroy();
         }
     }

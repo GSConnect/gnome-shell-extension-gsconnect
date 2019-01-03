@@ -84,7 +84,8 @@ var Manager = GObject.registerClass({
                 }
             });
         } catch (e) {
-            this.service.notify_error(e);
+            // FIXME: if something goes wrong the component will appear active
+            logError(e);
             this.destroy();
         }
     }

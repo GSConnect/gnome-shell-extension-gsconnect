@@ -776,10 +776,7 @@ var Device = GObject.registerClass({
             }
         } catch (e) {
             e.name = (e.name === 'Error') ? 'PluginError' : e.name;
-            e.device = this.id;
-            e.plugin = name;
-            e.label = handler.Metadata.label;
-
+            e.plugin = handler.Metadata.label;
             this.service.notify_error(e);
         }
     }

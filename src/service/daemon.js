@@ -494,9 +494,8 @@ const Service = GObject.registerClass({
             logError(error);
 
             // Create an new notification
-            let id, title, body, icon, time;
+            let id, title, body, icon, priority, time;
             let notif = new Gio.Notification();
-            notif.set_priority(Gio.NotificationPriority.URGENT);
 
             switch (error.name) {
                 // A TLS certificate failure
@@ -506,22 +505,16 @@ const Service = GObject.registerClass({
                     time = GLib.DateTime.new_now_local().format('%F %R');
                     body = `"${error.deviceName}"@${error.deviceHost} (${time})`;
                     icon = new Gio.ThemedIcon({name: 'dialog-error'});
+                    priority = Gio.NotificationPriority.URGENT;
                     break;
 
                 case 'LanError':
                 case 'ProxyError':
                     id = error.name;
                     title = _('Network Error');
-                    body = error.message + '\n\n' + _('Click for help troubleshooting');
-                    icon = new Gio.ThemedIcon({name: 'network-error'});
-                    notif.set_default_action(`app.wiki('Help#${error.name}')`);
-                    break;
-
-                case 'GvcError':
-                    id = error.name;
-                    title = _('PulseAudio Error');
                     body = _('Click for help troubleshooting');
-                    icon = new Gio.ThemedIcon({name: 'dialog-error'});
+                    icon = new Gio.ThemedIcon({name: 'network-error'});
+                    priority = Gio.NotificationPriority.URGENT;
                     notif.set_default_action(`app.wiki('Help#${error.name}')`);
                     break;
 
@@ -530,44 +523,43 @@ const Service = GObject.registerClass({
                     title = _('Discovery Disabled');
                     body = _('Discovery has been disabled due to the number of devices on this network.');
                     icon = new Gio.ThemedIcon({name: 'dialog-warning'});
-                    notif.set_default_action('app.preferences');
-                    notif.set_priority(Gio.NotificationPriority.NORMAL);
+                    priority = Gio.NotificationPriority.NORMAL;
+                    notif.set_default_action('app.settings');
                     break;
 
                 case 'PluginError':
                     id = `${error.plugin}-error`;
-                    title = _('%s Plugin Failed To Load').format(error.label);
-                    body = error.message + '\n\n' + _('Click for more information');
+                    title = _('%s Plugin Failed To Load').format(error.plugin);
+                    body = _('Click for more information');
                     icon = new Gio.ThemedIcon({name: 'dialog-error'});
-
+                    priority = Gio.NotificationPriority.HIGH;
                     error = new GLib.Variant('a{ss}', {
                         name: error.name.trim(),
                         message: error.message.trim(),
                         stack: error.stack.trim()
                     });
-
                     notif.set_default_action_and_target('app.error', error);
-                    notif.set_priority(Gio.NotificationPriority.HIGH);
                     break;
 
                 default:
                     id = `${Date.now()}`;
-                    title = error.name;
-                    body = error.message.trim();
+                    title = error.name.trim();
+                    body = _('Click for more information');
                     icon = new Gio.ThemedIcon({name: 'dialog-error'});
                     error = new GLib.Variant('a{ss}', {
-                        name: error.name,
-                        message: error.message,
-                        stack: error.stack
+                        name: error.name.trim(),
+                        message: error.message.trim(),
+                        stack: error.stack.trim()
                     });
                     notif.set_default_action_and_target('app.error', error);
-                    notif.set_priority(Gio.NotificationPriority.HIGH);
+                    priority = Gio.NotificationPriority.HIGH;
             }
 
             // Create an urgent notification
             notif.set_title(`GSConnect: ${title}`);
             notif.set_body(body);
             notif.set_icon(icon);
+            notif.set_priority(priority);
 
             // Bypass override
             super.send_notification(id, notif);
@@ -588,7 +580,7 @@ const Service = GObject.registerClass({
                     this[name] = new module.Service();
                 }
             } catch (e) {
-                this.notify_error(e);
+                logError(e);
             }
         }
     }
