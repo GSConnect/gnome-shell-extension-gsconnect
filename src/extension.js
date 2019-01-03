@@ -344,15 +344,11 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         });
 
         // Device Indicator
-        let indicator = new Device.Indicator({
-            object: object,
-            device: iface
-        });
+        let indicator = new Device.Indicator({device: iface});
         Main.panel.addToStatusArea(iface.g_object_path, indicator);
 
         // Device Menu
         let menu = new Device.Menu({
-            object: object,
             device: iface,
             menu_type: 'list'
         });
