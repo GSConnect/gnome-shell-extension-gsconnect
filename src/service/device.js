@@ -209,10 +209,7 @@ var Device = GObject.registerClass({
 
     get allowed_plugins() {
         let disabled = this.settings.get_strv('disabled-plugins');
-
-        return this.supported_plugins.filter(name => {
-            return !disabled.includes(name);
-        });
+        return this.supported_plugins.filter(name => !disabled.includes(name));
     }
 
     get icon_name() {
@@ -416,21 +413,16 @@ var Device = GObject.registerClass({
         openSettings.connect('activate', this.openSettings.bind(this));
         this.add_action(openSettings);
 
-        let acceptPair = new Gio.SimpleAction({
-            name: 'pair',
-            state: new GLib.Variant('(ss)', [_('Pair'), 'channel-secure-symbolic'])
-        });
+        // Pairing notification actions
+        let acceptPair = new Gio.SimpleAction({name: 'pair'});
         acceptPair.connect('activate', this.pair.bind(this));
         this.add_action(acceptPair);
 
-        let rejectPair = new Gio.SimpleAction({
-            name: 'unpair',
-            state: new GLib.Variant('(ss)', [_('Unpair'), 'channel-insecure-symbolic'])
-        });
+        let rejectPair = new Gio.SimpleAction({name: 'unpair'});
         rejectPair.connect('activate', this.unpair.bind(this));
         this.add_action(rejectPair);
 
-        // Some general utility actions
+        // Transfer notification actions
         let cancelTransfer = new Gio.SimpleAction({
             name: 'cancelTransfer',
             parameter_type: new GLib.VariantType('s')
@@ -444,21 +436,6 @@ var Device = GObject.registerClass({
         });
         openPath.connect('activate', this.openPath);
         this.add_action(openPath);
-    }
-
-    openPath(action, parameter) {
-        let path = parameter.unpack();
-
-        // Normalize paths to URIs, assuming local file
-        path = path.includes('://') ? path : `file://${path}`;
-
-        Gio.AppInfo.launch_default_for_uri_async(path, null, null, (src, res) => {
-            try {
-                Gio.AppInfo.launch_default_for_uri_finish(res);
-            } catch (e) {
-                logError(e);
-            }
-        });
     }
 
     /**
@@ -475,7 +452,7 @@ var Device = GObject.registerClass({
      */
     showNotification(params) {
         params = Object.assign({
-            id: GLib.DateTime.new_now_local().to_unix(),
+            id: Date.now(),
             title: this.name,
             body: '',
             icon: new Gio.ThemedIcon({name: `${this.icon_name}-symbolic`}),
@@ -532,6 +509,9 @@ var Device = GObject.registerClass({
         this.service.send_notification(`${this.id}|${params.id}`, notif);
     }
 
+    /**
+     * File Transfers
+     */
     cancelTransfer(action, parameter) {
         let uuid = parameter.unpack();
         let transfer = this._transfers.get(uuid);
@@ -549,7 +529,7 @@ var Device = GObject.registerClass({
             case (this.connection_type === 'tcp'):
                 return new Lan.Transfer(params);
 
-            // For now, return a mock transfer that always appears to fail
+            // TODO: For now, return a mock transfer that always appears to fail
             case (this.connection_type === 'bluetooth'):
                 //return new Bluetooth.Transfer(params);
                 return {
@@ -558,6 +538,21 @@ var Device = GObject.registerClass({
                     upload: () => false
                 };
         }
+    }
+
+    openPath(action, parameter) {
+        let path = parameter.unpack();
+
+        // Normalize paths to URIs, assuming local file
+        path = path.includes('://') ? path : `file://${path}`;
+
+        Gio.AppInfo.launch_default_for_uri_async(path, null, null, (src, res) => {
+            try {
+                Gio.AppInfo.launch_default_for_uri_finish(res);
+            } catch (e) {
+                logError(e);
+            }
+        });
     }
 
     /**
