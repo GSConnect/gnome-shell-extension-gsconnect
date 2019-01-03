@@ -384,11 +384,11 @@ var DevicePreferences = GObject.registerClass({
         settings = this._getSettings('notification');
         this.actions.add_action(settings.create_action('send-notifications'));
 
-        settings = this._getSettings('sms');
-        this.actions.add_action(settings.create_action('legacy-sms'));
-
         settings = this._getSettings('sftp');
         this.actions.add_action(settings.create_action('use-gvfs'));
+
+        settings = this._getSettings('sms');
+        this.actions.add_action(settings.create_action('legacy-sms'));
 
         settings = this._getSettings('systemvolume');
         this.actions.add_action(settings.create_action('share-sinks'));
