@@ -77,12 +77,14 @@ var Manager = GObject.registerClass({
 
             // Add the current players
             let names = await this._listNames();
+            
+            for (let i = 0, len = names.length; i < len; i++) {
+                let name = names[i];
 
-            names.map(name => {
                 if (name.startsWith('org.mpris.MediaPlayer2')) {
                     this._addPlayer(name);
                 }
-            });
+            }
         } catch (e) {
             // FIXME: if something goes wrong the component will appear active
             logError(e);
