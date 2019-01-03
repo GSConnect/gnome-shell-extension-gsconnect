@@ -404,7 +404,6 @@ var Device = GObject.registerClass({
         // Stock device actions
         let activate = new Gio.SimpleAction({
             name: 'activate',
-            parameter_type: null,
             state: new GLib.Variant('(ss)', [_('Reconnect'), 'view-refresh-symbolic']),
         });
         activate.connect('activate', this.activate.bind(this));
@@ -412,7 +411,6 @@ var Device = GObject.registerClass({
 
         let openSettings = new Gio.SimpleAction({
             name: 'openSettings',
-            parameter_type: null,
             state: new GLib.Variant('(ss)', [_('Settings'), 'preferences-system-symbolic'])
         });
         openSettings.connect('activate', this.openSettings.bind(this));
@@ -420,7 +418,6 @@ var Device = GObject.registerClass({
 
         let acceptPair = new Gio.SimpleAction({
             name: 'pair',
-            parameter_type: null,
             state: new GLib.Variant('(ss)', [_('Pair'), 'channel-secure-symbolic'])
         });
         acceptPair.connect('activate', this.pair.bind(this));
@@ -428,7 +425,6 @@ var Device = GObject.registerClass({
 
         let rejectPair = new Gio.SimpleAction({
             name: 'unpair',
-            parameter_type: null,
             state: new GLib.Variant('(ss)', [_('Unpair'), 'channel-insecure-symbolic'])
         });
         rejectPair.connect('activate', this.unpair.bind(this));
