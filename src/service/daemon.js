@@ -301,12 +301,9 @@ const Service = GObject.registerClass({
      */
     _initActions() {
         let actions = [
-            // Device
-            ['deviceAction', this._deviceAction.bind(this), '(ssbv)'],
-
-            // Service actions
             ['broadcast', this.broadcast.bind(this)],
             ['devel', this._devel.bind(this)],
+            ['device', this._device.bind(this), '(ssbv)'],
             ['error', this._error.bind(this), 'a{ss}'],
             ['settings', this._settings.bind(this)],
             ['wiki', this._wiki.bind(this), 's']
@@ -337,7 +334,7 @@ const Service = GObject.registerClass({
      * @param {GLib.Variant(b)} parameter[2] - %false if the parameter is null
      * @param {GLib.Variant(v)} parameter[3] - GAction parameter
      */
-    _deviceAction(action, parameter) {
+    _device(action, parameter) {
         parameter = parameter.unpack();
 
         let id = parameter[0].unpack();

@@ -99,7 +99,7 @@ class RepliableNotificationBanner extends MessageTray.NotificationBanner {
             ]);
 
             app.ActivateActionRemote(
-                'deviceAction',
+                'device',
                 [target],
                 NotificationDaemon.getPlatformData()
             );
@@ -152,7 +152,7 @@ class Source extends NotificationDaemon.GtkNotificationDaemonAppSource {
             ]);
 
             app.ActivateActionRemote(
-                'deviceAction',
+                'device',
                 [target],
                 NotificationDaemon.getPlatformData()
             );
@@ -380,7 +380,7 @@ function patchGtkNotificationSources() {
             ]);
 
             app.ActivateActionRemote(
-                'deviceAction',
+                'device',
                 [target],
                 NotificationDaemon.getPlatformData()
             );
