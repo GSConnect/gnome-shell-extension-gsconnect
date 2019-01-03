@@ -93,8 +93,6 @@ const Service = GObject.registerClass({
 
         GLib.set_prgname(gsconnect.app_id);
         GLib.set_application_name('GSConnect');
-
-        this.register(null);
     }
 
     get certificate() {
@@ -596,7 +594,7 @@ const Service = GObject.registerClass({
     }
 
     vfunc_activate() {
-        this.broadcast();
+        super.vfunc_activate();
     }
 
     vfunc_startup() {
