@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-01-04 12:21\n"
+"PO-Revision-Date: 2019-01-04 12:24\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -555,7 +555,7 @@ msgstr ""
 
 #: src/service/plugins/notification.js:50
 msgid "Send Notification"
-msgstr ""
+msgstr "Envia una notificació"
 
 #: src/service/plugins/ping.js:11 src/service/plugins/ping.js:17
 #: src/service/plugins/ping.js:46
@@ -579,11 +579,11 @@ msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:18
 msgid "Mount"
-msgstr ""
+msgstr "Munta"
 
 #: src/service/plugins/sftp.js:26
 msgid "Unmount"
-msgstr ""
+msgstr "Desmunta"
 
 #: src/service/plugins/sftp.js:159
 msgid "All files"
@@ -612,7 +612,7 @@ msgstr ""
 
 #: src/service/plugins/share.js:132 src/service/plugins/share.js:303
 msgid "Starting Transfer"
-msgstr ""
+msgstr "S'està iniciant la transferència"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:134
@@ -690,7 +690,7 @@ msgstr ""
 
 #: src/service/plugins/sms.js:13
 msgid "SMS"
-msgstr ""
+msgstr "SMS"
 
 #: src/service/plugins/sms.js:34
 msgid "New SMS (URI)"
@@ -706,7 +706,7 @@ msgstr ""
 
 #: src/service/plugins/systemvolume.js:11
 msgid "System Volume"
-msgstr ""
+msgstr "Volum del sistema"
 
 #: src/service/plugins/telephony.js:30
 msgid "Mute Call"
