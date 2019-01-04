@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2018-12-31 05:33\n"
+"PO-Revision-Date: 2019-01-04 15:33\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -211,7 +211,7 @@ msgstr "Verbinde"
 
 #: data/device.ui:2047
 msgid "Device is unpaired"
-msgstr "Gerät ist ungepaarte"
+msgstr "Gerät ist nicht gepaart"
 
 #: data/device.ui:2062
 msgid "You may configure this device before pairing"
@@ -234,7 +234,7 @@ msgstr "Benutzermenü"
 #. TRANSLATORS: Generate a support log
 #: data/menus.ui:29 src/service/ui/settings.js:536
 msgid "Generate Support Log"
-msgstr "Support für Protokoll generieren"
+msgstr "Support-Protokoll generieren"
 
 #: data/menus.ui:38
 msgid "About"
@@ -301,7 +301,7 @@ msgstr "Keine Unterhaltung ausgewählt"
 
 #: data/messaging.ui:126
 msgid "Select or start a conversation"
-msgstr "Auswählen oder eine Unterhaltung beginnen"
+msgstr "Wähle oder Starte eine Unterhaltung"
 
 #: data/messaging.ui:193 data/notification.ui:52 data/telephony.ui:52
 msgid "Device is disconnected"

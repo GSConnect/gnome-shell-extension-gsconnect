@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-01-01 11:42\n"
+"PO-Revision-Date: 2019-01-04 12:37\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -146,7 +146,7 @@ msgstr ""
 
 #: data/device.ui:1007
 msgid "Ongoing Calls"
-msgstr ""
+msgstr "Trucades en curs"
 
 #: data/device.ui:1176
 msgid "Mute Microphone"
@@ -263,12 +263,12 @@ msgstr ""
 #. TRANSLATORS: Send clipboard content to device
 #: data/menus.ui:86
 msgid "To Device"
-msgstr ""
+msgstr "Al dispositiu"
 
 #. TRANSLATORS: Receive clipboard content from the device
 #: data/menus.ui:92
 msgid "From Device"
-msgstr ""
+msgstr "Des del dispositiu"
 
 #. TRANSLATORS: Don't change the system volume
 #: data/menus.ui:104 data/menus.ui:130
@@ -284,7 +284,7 @@ msgstr ""
 #. TRANSLATORS: Silence the phone ringer
 #: data/menus.ui:118 data/menus.ui:144 src/service/plugins/telephony.js:194
 msgid "Mute"
-msgstr ""
+msgstr "Silencia"
 
 #: data/messaging.ui:12 src/service/plugins/sms.js:26
 #: src/service/ui/messaging.js:911
@@ -419,7 +419,7 @@ msgstr ""
 
 #: src/service/device.js:161
 msgid "Not available"
-msgstr ""
+msgstr "No disponible"
 
 #. TRANSLATORS: Bluetooth address for remote device
 #: src/service/device.js:165
@@ -479,7 +479,7 @@ msgstr "Accepta’l"
 
 #: src/service/plugins/battery.js:188 src/service/plugins/findmyphone.js:19
 msgid "Ring"
-msgstr ""
+msgstr "Truca"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:197
@@ -555,7 +555,7 @@ msgstr ""
 
 #: src/service/plugins/notification.js:50
 msgid "Send Notification"
-msgstr ""
+msgstr "Envia una notificació"
 
 #: src/service/plugins/ping.js:11 src/service/plugins/ping.js:17
 #: src/service/plugins/ping.js:46
@@ -579,11 +579,11 @@ msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:18
 msgid "Mount"
-msgstr ""
+msgstr "Munta"
 
 #: src/service/plugins/sftp.js:26
 msgid "Unmount"
-msgstr ""
+msgstr "Desmunta"
 
 #: src/service/plugins/sftp.js:159
 msgid "All files"
@@ -612,7 +612,7 @@ msgstr ""
 
 #: src/service/plugins/share.js:132 src/service/plugins/share.js:303
 msgid "Starting Transfer"
-msgstr ""
+msgstr "S'està iniciant la transferència"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:134
@@ -690,7 +690,7 @@ msgstr ""
 
 #: src/service/plugins/sms.js:13
 msgid "SMS"
-msgstr ""
+msgstr "SMS"
 
 #: src/service/plugins/sms.js:34
 msgid "New SMS (URI)"
@@ -706,21 +706,21 @@ msgstr ""
 
 #: src/service/plugins/systemvolume.js:11
 msgid "System Volume"
-msgstr ""
+msgstr "Volum del sistema"
 
 #: src/service/plugins/telephony.js:30
 msgid "Mute Call"
-msgstr ""
+msgstr "Silencia la trucada"
 
 #. TRANSLATORS: The phone is ringing
 #: src/service/plugins/telephony.js:190
 msgid "Incoming call"
-msgstr ""
+msgstr "Trucada entrant"
 
 #. TRANSLATORS: A phone call is active
 #: src/service/plugins/telephony.js:205
 msgid "Ongoing call"
-msgstr ""
+msgstr "Trucada en curs"
 
 #. TRANSLATORS: All other phone number types
 #: src/service/ui/contacts.js:118 src/service/ui/contacts.js:139
@@ -844,11 +844,11 @@ msgstr ""
 
 #: src/service/ui/settings.js:333
 msgid "Disconnected"
-msgstr ""
+msgstr "Desconnectat"
 
 #: src/service/ui/settings.js:336
 msgid "Connected"
-msgstr ""
+msgstr "Connectat"
 
 #. TRANSLATORS: Description of where directly shared files are stored.
 #: src/service/ui/settings.js:406
@@ -937,7 +937,7 @@ msgstr ""
 #. TRANSLATORS: Extension name
 #: webextension/gettext.js:27
 msgid "GSConnect"
-msgstr ""
+msgstr "GSConnect"
 
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
@@ -952,10 +952,10 @@ msgstr ""
 #. TRANSLATORS: No devices are known or available
 #: webextension/gettext.js:35
 msgid "No Device Found"
-msgstr ""
+msgstr "No s'ha trobat cap dispositiu"
 
 #. TRANSLATORS: Open URL with the device's browser
 #: webextension/gettext.js:37
 msgid "Open in Browser"
-msgstr ""
+msgstr "Obre al navegador"
 
