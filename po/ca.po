@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-01-04 12:24\n"
+"PO-Revision-Date: 2019-01-04 12:37\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -146,7 +146,7 @@ msgstr ""
 
 #: data/device.ui:1007
 msgid "Ongoing Calls"
-msgstr ""
+msgstr "Trucades en curs"
 
 #: data/device.ui:1176
 msgid "Mute Microphone"
@@ -263,12 +263,12 @@ msgstr ""
 #. TRANSLATORS: Send clipboard content to device
 #: data/menus.ui:86
 msgid "To Device"
-msgstr ""
+msgstr "Al dispositiu"
 
 #. TRANSLATORS: Receive clipboard content from the device
 #: data/menus.ui:92
 msgid "From Device"
-msgstr ""
+msgstr "Des del dispositiu"
 
 #. TRANSLATORS: Don't change the system volume
 #: data/menus.ui:104 data/menus.ui:130
@@ -284,7 +284,7 @@ msgstr ""
 #. TRANSLATORS: Silence the phone ringer
 #: data/menus.ui:118 data/menus.ui:144 src/service/plugins/telephony.js:194
 msgid "Mute"
-msgstr ""
+msgstr "Silencia"
 
 #: data/messaging.ui:12 src/service/plugins/sms.js:26
 #: src/service/ui/messaging.js:911
@@ -479,7 +479,7 @@ msgstr "Accepta’l"
 
 #: src/service/plugins/battery.js:188 src/service/plugins/findmyphone.js:19
 msgid "Ring"
-msgstr ""
+msgstr "Truca"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:197
@@ -710,17 +710,17 @@ msgstr "Volum del sistema"
 
 #: src/service/plugins/telephony.js:30
 msgid "Mute Call"
-msgstr ""
+msgstr "Silencia la trucada"
 
 #. TRANSLATORS: The phone is ringing
 #: src/service/plugins/telephony.js:190
 msgid "Incoming call"
-msgstr ""
+msgstr "Trucada entrant"
 
 #. TRANSLATORS: A phone call is active
 #: src/service/plugins/telephony.js:205
 msgid "Ongoing call"
-msgstr ""
+msgstr "Trucada en curs"
 
 #. TRANSLATORS: All other phone number types
 #: src/service/ui/contacts.js:118 src/service/ui/contacts.js:139
@@ -937,7 +937,7 @@ msgstr ""
 #. TRANSLATORS: Extension name
 #: webextension/gettext.js:27
 msgid "GSConnect"
-msgstr ""
+msgstr "GSConnect"
 
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
@@ -952,10 +952,10 @@ msgstr ""
 #. TRANSLATORS: No devices are known or available
 #: webextension/gettext.js:35
 msgid "No Device Found"
-msgstr ""
+msgstr "No s'ha trobat cap dispositiu"
 
 #. TRANSLATORS: Open URL with the device's browser
 #: webextension/gettext.js:37
 msgid "Open in Browser"
-msgstr ""
+msgstr "Obre al navegador"
 
