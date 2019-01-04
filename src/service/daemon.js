@@ -93,6 +93,9 @@ const Service = GObject.registerClass({
 
         GLib.set_prgname(gsconnect.app_id);
         GLib.set_application_name('GSConnect');
+
+        // Track devices with id as key
+        this._devices = new Map();
     }
 
     get certificate() {
@@ -644,19 +647,6 @@ const Service = GObject.registerClass({
         // Components (PulseAudio, UPower, etc)
         this._loadComponents();
 
-        // Track devices with id as key
-        this._devices = new Map();
-
-        // Load cached devices
-        let cached = gsconnect.settings.get_strv('devices');
-        debug(`Loading ${cached.length} device(s) from cache`);
-        cached.map(id => {
-            let device = new Device.Device({body: {deviceId: id}});
-            this._devices.set(device.id, device);
-            device.loadPlugins();
-        });
-        this.notify('devices');
-
         // Lan.ChannelService
         try {
             this.lan = new Lan.ChannelService();
@@ -682,6 +672,13 @@ const Service = GObject.registerClass({
             connection: connection,
             object_path: object_path
         });
+
+        // Load cached devices
+        for (let id of gsconnect.settings.get_strv('devices')) {
+            let device = new Device.Device({body: {deviceId: id}});
+            this._devices.set(id, device);
+            device.loadPlugins();
+        }
 
         return true;
     }
