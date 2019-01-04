@@ -28,9 +28,6 @@ gsconnect.proxyProperties = function (iface) {
     let info = gsconnect.dbusinfo.lookup_interface(iface.g_interface_name);
 
     for (let property of info.properties) {
-        // Properties already defined for this proxy
-        if (iface.hasOwnProperty(property.name)) return;
-
         Object.defineProperty(iface, property.name, {
             get: () => {
                 try {
@@ -196,10 +193,6 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
     }
 
     _onInterfacePropertiesChanged(manager, object, iface, changed, invalidated) {
-        if (iface.g_interface_name !== 'org.gnome.Shell.Extensions.GSConnect.Device') {
-            return;
-        }
-
         changed = changed.deep_unpack();
 
         if (changed.hasOwnProperty('Connected') || changed.hasOwnProperty('Paired')) {
@@ -250,7 +243,11 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         } else {
             if (this.available.length > 1) {
                 //TRANSLATORS: %d is the number of devices connected
-                this._item.label.text = gsconnect.ngettext('%d Connected', '%d Connected', this.available.length).format(this.available.length);
+                this._item.label.text = gsconnect.ngettext(
+                    '%d Connected',
+                    '%d Connected',
+                    this.available.length
+                ).format(this.available.length);
             } else {
                 this._item.label.text = _('Mobile Devices');
             }
@@ -293,9 +290,9 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         });
     }
 
-    async _onNameOwnerChanged(manager) {
+    async _onNameOwnerChanged() {
         try {
-            if (manager.name_owner === null) {
+            if (this.manager.name_owner === null) {
                 this._indicator.visible = false;
                 await this._activate();
             } else {
@@ -312,11 +309,6 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
     _onInterfaceAdded(manager, object, iface) {
         gsconnect.proxyProperties(iface);
-
-        // We only handle devices here
-        if (iface.g_interface_name !== 'org.gnome.Shell.Extensions.GSConnect.Device') {
-            return;
-        }
 
         this.devices.add(iface);
 
