@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-01-01 11:42\n"
+"PO-Revision-Date: 2019-01-04 12:21\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -419,7 +419,7 @@ msgstr ""
 
 #: src/service/device.js:161
 msgid "Not available"
-msgstr ""
+msgstr "No disponible"
 
 #. TRANSLATORS: Bluetooth address for remote device
 #: src/service/device.js:165
@@ -844,11 +844,11 @@ msgstr ""
 
 #: src/service/ui/settings.js:333
 msgid "Disconnected"
-msgstr ""
+msgstr "Desconnectat"
 
 #: src/service/ui/settings.js:336
 msgid "Connected"
-msgstr ""
+msgstr "Connectat"
 
 #. TRANSLATORS: Description of where directly shared files are stored.
 #: src/service/ui/settings.js:406
