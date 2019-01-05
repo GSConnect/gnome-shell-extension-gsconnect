@@ -96,6 +96,10 @@ const Service = GObject.registerClass({
 
         // Track devices with id as key
         this._devices = new Map();
+
+        // Properties
+        gsconnect.settings.bind('discoverable', this, 'discoverable', 0);
+        gsconnect.settings.bind('public-name', this, 'name', 0);
     }
 
     get certificate() {
@@ -124,7 +128,7 @@ const Service = GObject.registerClass({
                 type: 'kdeconnect.identity',
                 body: {
                     deviceId: this.certificate.common_name,
-                    deviceName: gsconnect.settings.get_string('public-name'),
+                    deviceName: this.name,
                     deviceType: this.type,
                     tcpPort: 1716,
                     protocolVersion: 7,
@@ -612,7 +616,7 @@ const Service = GObject.registerClass({
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         );
 
-        // Ensure out handlers are registered
+        // Ensure our handlers are registered
         try {
             let appInfo = Gio.DesktopAppInfo.new(`${gsconnect.app_id}.desktop`);
             appInfo.add_supports_type('x-scheme-handler/sms');
@@ -620,21 +624,6 @@ const Service = GObject.registerClass({
         } catch (e) {
             warning(e);
         }
-
-        // Properties
-        gsconnect.settings.bind(
-            'discoverable',
-            this,
-            'discoverable',
-            Gio.SettingsBindFlags.DEFAULT
-        );
-
-        gsconnect.settings.bind(
-            'public-name',
-            this,
-            'name',
-            Gio.SettingsBindFlags.DEFAULT
-        );
 
         // Keep identity updated and broadcast any name changes
         gsconnect.settings.connect('changed::public-name', (settings) => {
