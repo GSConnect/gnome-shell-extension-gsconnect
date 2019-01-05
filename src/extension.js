@@ -68,6 +68,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         // Service Indicator
         this._indicator = this._addIndicator();
         this._indicator.icon_name = 'org.gnome.Shell.Extensions.GSConnect-symbolic';
+        this._indicator.visible = false;
 
         AggregateMenu._indicators.insert_child_at_index(this.indicators, 0);
         AggregateMenu._gsconnect = this;
@@ -169,7 +170,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             if (this.manager.name_owner === null) {
                 GLib.timeout_add_seconds(0, 5, () => {
                     if (this.manager.name_owner === null) {
-                        this._activate().catch(debug);
+                        this._activate().catch(logError);
                     }
 
                     return GLib.SOURCE_REMOVE;
@@ -296,7 +297,11 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 this._indicator.visible = false;
                 await this._activate();
             } else {
-                this._indicator.visible = true;
+                for (let object of this.manager.get_objects()) {
+                    for (let iface of object.get_interfaces()) {
+                        this._onInterfaceAdded(this.manager, object, iface);
+                    }
+                }
             }
         } catch (e) {
             Gio.DBusError.strip_remote_error(e);
