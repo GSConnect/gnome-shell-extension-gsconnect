@@ -742,8 +742,8 @@ var Window = GObject.registerClass({
         return this.conversation_stack.visible_child_name;
     }
 
-    set address(value) {
-        if (!value) {
+    set address(address) {
+        if (!address) {
             this.conversation_list.select_row(null);
             this.conversation_stack.set_visible_child_name('placeholder');
             return;
@@ -753,10 +753,10 @@ var Window = GObject.registerClass({
         let contact = this.device.contacts.query({number: value});
 
         this.headerbar.title = contact.name;
-        this.headerbar.subtitle = value;
+        this.headerbar.subtitle = address;
 
         // See if we have a nicer display number
-        let number = value.toPhoneNumber();
+        let number = address.toPhoneNumber();
 
         for (let contactNumber of contact.numbers) {
             let cnumber = contactNumber.value.toPhoneNumber();
@@ -768,18 +768,18 @@ var Window = GObject.registerClass({
         }
 
         // Create a conversation widget if there isn't one
-        let conversation = this.conversation_stack.get_child_by_name(number);
+        let conversation = this.conversation_stack.get_child_by_name(address);
 
         if (conversation === null) {
             conversation = new ConversationWidget({
                 device: this.device,
-                address: number
+                address: address
             });
 
-            this.conversation_stack.add_named(conversation, number);
+            this.conversation_stack.add_named(conversation, address);
         }
 
-        this.conversation_stack.set_visible_child_name(number);
+        this.conversation_stack.visible_child_name = address;
 
         // There was a pending message waiting for a contact to be chosen
         if (this._pendingShare) {
