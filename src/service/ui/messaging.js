@@ -845,18 +845,21 @@ var Window = GObject.registerClass({
      * Conversations
      */
     _onConversationsChanged() {
-        let threads = new Map();
+        let messages = new Map();
 
-        for (let [id, thread] of Object.entries(this.sms.conversations)) {
-            threads.set(id, thread[thread.length - 1]);
+        for (let thread of Object.values(this.sms.conversations)) {
+            let message = thread[thread.length - 1];
+            messages.set(message.thread_id, message);
         }
 
         // Update existing summaries and destroy old ones
         this.conversation_list.foreach(summary => {
+            let message = messages.get(summary.id);
+
             // If it's an existing conversation, update it
-            if (threads.hasOwnProperty(summary.id)) {
-                summary.message = threads[summary.id];
-                threads.delete(summary.id);
+            if (message) {
+                summary.message = message;
+                messages.delete(summary.id);
 
             // Otherwise destroy it
             } else {
@@ -867,7 +870,7 @@ var Window = GObject.registerClass({
         });
 
         // Add new summaries
-        for (let message of threads.values()) {
+        for (let message of messages.values()) {
             let contact = this.device.contacts.query({
                 number: message.address
             });
