@@ -48,8 +48,6 @@ var Store = GObject.registerClass({
             debug(e);
             this.__cache_data = {};
         } finally {
-            this.connect('notify::contacts', this.__cache_write.bind(this));
-
             if (this.context === null) {
                 // Create a re-usable launcher for folks.py
                 this._launcher = new Gio.SubprocessLauncher({
@@ -84,9 +82,19 @@ var Store = GObject.registerClass({
     }
 
     *[Symbol.iterator]() {
-        for (let contact of Object.values(this.__cache_data)) {
-            yield contact;
+        let contacts = this.contacts;
+
+        for (let i = 0, len = contacts.length; i < len; i++) {
+            yield contacts[i];
         }
+    }
+
+    get contacts() {
+        if (this._contacts === undefined) {
+            this._contacts = Object.values(this.__cache_data);
+        }
+
+        return this._contacts;
     }
 
     get context() {
@@ -149,9 +157,7 @@ var Store = GObject.registerClass({
      * @return {object} - The updated contact
      */
     setAvatarPath(id, path) {
-        let contact = this.__cache_data[id];
-
-        if (contact) {
+        if (this.__cache_data[id]) {
             this.__cache_data[id].avatar = path;
             this.update();
             return this.__cache_data[id];
@@ -172,38 +178,31 @@ var Store = GObject.registerClass({
         }
 
         // First look for an existing contact by number
-        let contacts = Object.values(this.__cache_data);
+        let contacts = this.contacts;
         let matches = [];
         let qnumber = query.number.toPhoneNumber();
 
-        for (let i = 0; i < contacts.length; i++) {
+        for (let i = 0, len = contacts.length; i < len; i++) {
             let contact = contacts[i];
 
             for (let num of contact.numbers) {
                 let cnumber = num.value.toPhoneNumber();
 
                 if (qnumber.endsWith(cnumber) || cnumber.endsWith(qnumber)) {
-                    // Number match & exact name match; must be it
-                    if (query.name && query.name === contact.name) {
+                    // If no query name or exact match, return immediately
+                    if (!query.name || query.name === contact.name) {
                         return contact;
                     }
 
-                    // Hold off on returning; we might find an exact name match
+                    // Otherwise we might find an exact name match that shares
+                    // the number with another contact
                     matches.push(contact);
                 }
             }
         }
 
         // Return the first match (pretty much what Android does)
-        if (matches.length > 0) {
-            // TODO: this is a check to prevent errors later caused by contacts
-            // that may have be populated without names by GSConnect <= v17
-            if (!matches[0].name) {
-                matches[0].name = query.number;
-            }
-
-            return matches[0];
-        }
+        if (matches.length > 0) return matches[0];
 
         // No match; create a new contact with a unique ID
         let id = GLib.uuid_string_random();
@@ -277,7 +276,11 @@ var Store = GObject.registerClass({
     clear(only_temp = false) {
         try {
             if (only_temp) {
-                for (let contact of Object.values(this.__cache_data)) {
+                let contacts = this.contacts;
+
+                for (let i = 0, len = contacts.length; i < len; i++) {
+                    let contact = contacts[i];
+
                     if (contact.origin === 'gsconnect') {
                         delete this.__cache_data[contact.id];
                     }
@@ -295,6 +298,8 @@ var Store = GObject.registerClass({
     update(json = {}) {
         try {
             this.__cache_data = Object.assign(this.__cache_data, json);
+            this.__cache_write();
+            this._contacts = Object.values(this.__cache_data);
             this.notify('contacts');
         } catch (e) {
             logError(e);
