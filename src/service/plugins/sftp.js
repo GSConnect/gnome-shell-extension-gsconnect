@@ -46,6 +46,11 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'sftp');
 
+        // A reusable launcher for silence procs
+        this._launcher = new Gio.SubprocessLauncher({
+            flags: Gio.SubprocessFlags.STDOUT_SILENCE | Gio.SubprocessFlags.STDERR_SILENCE
+        });
+
         this._directories = {};
         this._mount = null;
         this._mounting = false;
@@ -254,17 +259,10 @@ var Plugin = GObject.registerClass({
      * identity can be verified by Android during private key authentication.
      */
     _sftp_add_identity() {
-        // Path the the stored private key
-        let key_path = GLib.build_filenamev([
-            gsconnect.configdir,
-            'private.pem'
+        let ssh_add = this._launcher.spawnv([
+            gsconnect.metadata.bin.ssh_add,
+            GLib.build_filenamev([gsconnect.configdir, 'private.pem'])
         ]);
-
-        let ssh_add = new Gio.Subprocess({
-            argv: [gsconnect.metadata.bin.ssh_add, key_path],
-            flags: Gio.SubprocessFlags.STDOUT_SILENCE | Gio.SubprocessFlags.STDERR_SILENCE
-        });
-        ssh_add.init(null);
 
         return new Promise((resolve, reject) => {
             ssh_add.wait_check_async(null, (proc, res) => {
@@ -285,15 +283,11 @@ var Plugin = GObject.registerClass({
      */
     async _sftp_remove_host(port = 1739) {
         try {
-            let ssh_keygen = new Gio.Subprocess({
-                argv: [
-                    gsconnect.metadata.bin.ssh_keygen,
-                    '-R',
-                    `[${this.ip}]:${port}`
-                ],
-                flags: Gio.SubprocessFlags.STDOUT_SILENCE | Gio.SubprocessFlags.STDERR_SILENCE
-            });
-            ssh_keygen.init(null);
+            let ssh_keygen = this._launcher.spawnv([
+                gsconnect.metadata.bin.ssh_keygen,
+                '-R',
+                `[${this.ip}]:${port}`
+            ]);
 
             await new Promise((resolve, reject) => {
                 ssh_keygen.wait_check_async(null, (proc, res) => {
@@ -406,10 +400,9 @@ var Plugin = GObject.registerClass({
         }
 
         return new Promise ((resolve, reject) => {
-            let proc = new Gio.Subprocess({argv: argv});
-            proc.init(null);
+            let umount = this._launcher.spawnv(argv);
 
-            proc.wait_async(null, (proc, res) => {
+            umount.wait_async(null, (proc, res) => {
                 try {
                     resolve(proc.wait_finish(res));
                 } catch (e) {
