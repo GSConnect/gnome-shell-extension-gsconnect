@@ -138,8 +138,8 @@ const Service = GObject.registerClass({
             });
 
             for (let name in imports.service.plugins) {
-                // Don't report 'mousepad' support in Wayland sessions
-                if (_WAYLAND && name === 'mousepad') continue;
+                // Don't report clipbaord/mousepad support in Wayland sessions
+                if (_WAYLAND && ['clipboard', 'mousepad'].includes(name)) continue;
 
                 let meta = imports.service.plugins[name].Metadata;
 
