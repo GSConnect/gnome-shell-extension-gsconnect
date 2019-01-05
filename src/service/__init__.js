@@ -62,7 +62,7 @@ gsconnect.settings.connect('changed::debug', (settings) => {
  * @param {string} [prefix] - An optional prefix for the warning
  */
 window.warning = function(message, prefix = null) {
-    message = message.hasOwnProperty('message') ? message.message : message;
+    message = (message.message) ? message.message : message;
     message = (prefix) ? `${prefix}: ${message}` : message;
 
     GLib.log_structured(
