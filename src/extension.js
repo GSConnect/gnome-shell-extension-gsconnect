@@ -58,13 +58,6 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
         this.keybindingManager = new Keybindings.Manager();
 
-        // Service Actions
-        this.service = Gio.DBusActionGroup.get(
-            Gio.DBus.session,
-            'org.gnome.Shell.Extensions.GSConnect',
-            '/org/gnome/Shell/Extensions/GSConnect'
-        );
-
         // Service Indicator
         this._indicator = this._addIndicator();
         this._indicator.icon_name = 'org.gnome.Shell.Extensions.GSConnect-symbolic';
@@ -99,10 +92,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         this._item.menu.addMenuItem(new DoNotDisturb.MenuItem());
 
         // Service Menu -> "Mobile Settings"
-        this._item.menu.addAction(
-            _('Mobile Settings'),
-            () => this.service.activate_action('settings', null)
-        );
+        this._item.menu.addAction(_('Mobile Settings'), this._settings);
 
         // Watch for UI prefs
         this._gsettingsId = gsconnect.settings.connect(
@@ -170,7 +160,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             if (this.manager.name_owner === null) {
                 GLib.timeout_add_seconds(0, 5, () => {
                     if (this.manager.name_owner === null) {
-                        this._activate().catch(logError);
+                        this._activate();
                     }
 
                     return GLib.SOURCE_REMOVE;
@@ -262,40 +252,56 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
     }
 
     _activate() {
-        if (this._activating) {
-            return Promise.resolve(true);
-        }
-
+        if (this._activating) return;
         this._activating = true;
 
-        return new Promise((resolve, reject) => {
-            Gio.DBus.session.call(
-                'org.freedesktop.DBus',
-                '/org/freedesktop/DBus',
-                'org.freedesktop.DBus',
-                'StartServiceByName',
-                new GLib.Variant('(su)', ['org.gnome.Shell.Extensions.GSConnect', 0]),
-                null,
-                Gio.DBusCallFlags.NONE,
-                -1,
-                this._cancellable,
-                (connection, res) => {
-                    try {
-                        this._activating = false;
-                        resolve(connection.call_finish(res));
-                    } catch (e) {
-                        reject(e);
-                    }
+        Gio.DBus.session.call(
+            'org.gnome.Shell.Extensions.GSConnect',
+            '/org/gnome/Shell/Extensions/GSConnect',
+            'org.freedesktop.Application',
+            'Activate',
+            new GLib.Variant('(a{sv})', [{}]),
+            null,
+            Gio.DBusCallFlags.NONE,
+            -1,
+            this._cancellable,
+            (connection, res) => {
+                try {
+                    this._activating = false;
+                    connection.call_finish(res);
+                } catch (e) {
+                    // Silence errors
                 }
-            );
-        });
+            }
+        );
     }
 
-    async _onNameOwnerChanged() {
+    _settings() {
+        Gio.DBus.session.call(
+            'org.gnome.Shell.Extensions.GSConnect',
+            '/org/gnome/Shell/Extensions/GSConnect',
+            'org.freedesktop.Application',
+            'ActivateAction',
+            new GLib.Variant('(sava{sv})', ['settings', [], {}]),
+            null,
+            Gio.DBusCallFlags.NONE,
+            -1,
+            null,
+            (connection, res) => {
+                try {
+                    connection.call_finish(res);
+                } catch (e) {
+                    logError(e, 'GSConnect');
+                }
+            }
+        );
+    }
+
+    _onNameOwnerChanged() {
         try {
             if (this.manager.name_owner === null) {
                 this._indicator.visible = false;
-                await this._activate();
+                this._activate();
             } else {
                 for (let object of this.manager.get_objects()) {
                     for (let iface of object.get_interfaces()) {
@@ -304,11 +310,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 }
             }
         } catch (e) {
-            Gio.DBusError.strip_remote_error(e);
-
-            if (!e.code || e.code !== Gio.IOErrorEnum.CANCELLED) {
-                logError(e, 'GSConnect');
-            }
+            logError(e);
         }
     }
 
