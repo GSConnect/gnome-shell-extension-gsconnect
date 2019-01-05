@@ -42,10 +42,7 @@ var Plugin = GObject.registerClass({
 
     _init(device) {
         super._init(device, 'contacts');
-
-        this._store = new Contacts.Store({
-            context: device.id
-        });
+        this._store = new Contacts.Store(device.id);
     }
 
     connected() {
@@ -64,9 +61,9 @@ var Plugin = GObject.registerClass({
     _handleUids(packet) {
         try {
             // Delete any contacts that were removed on the device
-            let remote_removed = false;
             let contacts = this._store.contacts;
             let remote_uids = packet.body.uids;
+            let removed = false;
             delete packet.body.uids;
 
             for (let i = 0, len = contacts.length; i < len; i++) {
@@ -76,15 +73,12 @@ var Plugin = GObject.registerClass({
                 if (contact.origin !== 'device') continue;
 
                 if (!remote_uids.includes(contact.id)) {
-                    delete this._store.__cache_data[contact.id];
-                    remote_removed = true;
+                    this._store.remove(contact.id, false);
+                    removed = true;
                 }
             }
 
-            // If any contacts were deleted, signal an update
-            if (remote_removed) {
-                this._store.update();
-            }
+            if (removed) this._store.__cache_write();
 
             // Build a list of new or updated contacts
             let uids = [];
@@ -309,18 +303,14 @@ var Plugin = GObject.registerClass({
             // We don't use this
             delete packet.body.uids;
 
-            // Parse each VCard and return a contact object
-            let contacts = {};
-
+            // Parse each vCard and add the contact
             for (let [uid, vcard] of Object.entries(packet.body)) {
                 let contact = await this.parseContact(uid, vcard);
 
                 if (contact) {
-                    contacts[uid] = contact;
+                    this._store.add(contact);
                 }
             }
-
-            this._store.update(contacts);
         } catch (e) {
             logError(e);
         }

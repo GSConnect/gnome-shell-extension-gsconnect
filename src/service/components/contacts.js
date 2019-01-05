@@ -12,28 +12,34 @@ const GObject = imports.gi.GObject;
 var Store = GObject.registerClass({
     GTypeName: 'GSConnectContactsStore',
     Properties: {
-        'contacts': GObject.param_spec_variant(
-            'contacts',
-            'ContactsList',
-            'A list of cached contacts',
-            new GLib.VariantType('a{sv}'),
-            null,
-            GObject.ParamFlags.READABLE
-        ),
         'context': GObject.ParamSpec.string(
             'context',
             'Context',
             'Used as the cache directory, relative to gsconnect.cachedir',
-            GObject.ParamFlags.READWRITE,
+            GObject.ParamFlags.CONSTRUCT_ONLY | GObject.ParamFlags.READWRITE,
             ''
         )
+    },
+    Signals: {
+        'contact-added': {
+            flags: GObject.SignalFlags.RUN_FIRST,
+            param_types: [GObject.TYPE_STRING]
+        },
+        'contact-removed': {
+            flags: GObject.SignalFlags.RUN_FIRST,
+            param_types: [GObject.TYPE_STRING]
+        },
+        'contact-changed': {
+            flags: GObject.SignalFlags.RUN_FIRST,
+            param_types: [GObject.TYPE_STRING]
+        }
     }
 }, class Store extends GObject.Object {
 
-    _init(params) {
-        super._init(Object.assign({
-            context: null
-        }, params));
+    _init(context = null) {
+        super._init({
+            context: context
+        });
 
         this.__cache_data = {};
 
@@ -46,17 +52,6 @@ var Store = GObject.registerClass({
             this.__cache_data = await JSON.load(this.__cache_file);
         } catch (e) {
             debug(e);
-            this.__cache_data = {};
-        } finally {
-            if (this.context === null) {
-                // Create a re-usable launcher for folks.py
-                this._launcher = new Gio.SubprocessLauncher({
-                    flags: Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE
-                });
-                this._launcher.setenv('FOLKS_BACKENDS_DISABLED', 'telepathy', true);
-
-                this._loadFolks();
-            }
         }
     }
 
@@ -98,11 +93,17 @@ var Store = GObject.registerClass({
     }
 
     set context(context) {
-        if (!context) {
-            this._context = null;
+        this._context = context;
+
+        if (context === null) {
+            // Create a re-usable launcher for folks.py
+            this._launcher = new Gio.SubprocessLauncher({
+                flags: Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE
+            });
+            this._launcher.setenv('FOLKS_BACKENDS_DISABLED', 'telepathy', true);
+
             this.__cache_dir = Gio.File.new_for_path(gsconnect.cachedir);
         } else {
-            this._context = context;
             this.__cache_dir = Gio.File.new_for_path(
                 GLib.build_filenamev([gsconnect.cachedir, context])
             );
@@ -207,72 +208,96 @@ var Store = GObject.registerClass({
     /**
      * Add a contact, checking for validity
      *
-     * @param {string} id - The id of the contact to delete
+     * @param {object} contact - A contact object
+     * @param {boolean} write - Write to disk
      */
-    add(contact) {
-        switch (true) {
-            case !contact.id:
-            case !contact.name:
-            case !contact.numbers:
-            case !contact.numbers[0]:
-            case !contact.numbers[0].type:
-            case !contact.numbers[0].value:
-                return;
+    add(contact, write = true) {
+        // Ensure the contact has a unique id
+        if (!contact.id) {
+            let id = GLib.uuid_string_random();
 
-            // Updated contact
-            case this.__cache_data.hasOwnProperty(contact.id):
-                Object.assign(this.__cache_data[contact.id], contact);
-                break;
+            while (this.__cache_data[id]) {
+                id = GLib.uuid_string_random();
+            }
 
-            // New contact
-            default:
-                this.__cache_data[contact.id] = contact;
+            contact.id = id;
         }
 
-        this.update();
+        // This is an updated contact
+        if (this.__cache_data[contact.id]) {
+            this.__cache_data[contact.id] = contact;
+            this.emit('contact-changed', contact.id);
+        } else {
+            this.__cache_data[contact.id] = contact;
+            this.emit('contact-added', contact.id);
+        }
+
+        // Write if requested
+        if (write) {
+            this.__cache_write();
+        }
     }
 
     /**
      * Remove a contact by id
      *
      * @param {string} id - The id of the contact to delete
+     * @param {boolean} write - Write to disk
      */
-    remove(id) {
+    remove(id, write = true) {
+        // Only remove if the contact actually exists
         if (this.__cache_data[id]) {
             delete this.__cache_data[id];
-            this.update();
+            this.emit('contact-removed', id);
+
+            // Write if requested
+            if (write) {
+                this.__cache_write();
+            }
         }
     }
 
+    async clear() {
         try {
-            if (only_temp) {
-                let contacts = this.contacts;
+            let contacts = this.contacts;
 
-                for (let i = 0, len = contacts.length; i < len; i++) {
-                    let contact = contacts[i];
-
-                    if (contact.origin === 'gsconnect') {
-                        delete this.__cache_data[contact.id];
-                    }
-                }
-            } else {
-                this.__cache_data = {};
+            for (let i = 0, len = contacts.length; i < len; i++) {
+                await this.remove(contacts[i].id, false);
             }
 
-            this.update();
+            await this.__cache_write();
         } catch (e) {
-            logError(e);
+            warning(e, 'Clearing contacts');
         }
     }
 
-    update(json = {}) {
+    async update(json = {}) {
         try {
-            this.__cache_data = Object.assign(this.__cache_data, json);
-            this.__cache_write();
-            this._contacts = Object.values(this.__cache_data);
-            this.notify('contacts');
+            let contacts = Object.values(json);
+
+            for (let i = 0, len = contacts.length; i < len; i++) {
+                let new_contact = contacts[i];
+                let contact = this.__cache_data[new_contact.id];
+
+                if (!contact || new_contact.timestamp !== contact.timestamp) {
+                    await this.add(new_contact, false);
+                }
+            }
+
+            // Prune contacts
+            contacts = this.contacts;
+
+            for (let i = 0, len = contacts.length; i < len; i++) {
+                let contact = contacts[i];
+
+                if (!json[contact.id]) {
+                    await this.remove(contact.id, false);
+                }
+            }
+
+            await this.__cache_write();
         } catch (e) {
-            logError(e);
+            warning(e, 'Updating contacts');
         }
     }
 
@@ -302,9 +327,9 @@ var Store = GObject.registerClass({
                 });
             });
 
-            this.update(folks);
+            await this.update(folks);
         } catch (e) {
-            warning(e);
+            debug(e, 'Loading folks');
         }
     }
 });

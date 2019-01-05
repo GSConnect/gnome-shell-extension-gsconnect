@@ -241,9 +241,19 @@ var ContactChooser = GObject.registerClass({
         this.connect_template();
         super._init(params);
 
-        this._contactsChangedId = this.store.connect(
-            'notify::contacts',
-            this._populate.bind(this)
+        this._contactAddedId = this.store.connect(
+            'contact-added',
+            this._onContactAdded.bind(this)
+        );
+
+        this._contactRemovedId = this.store.connect(
+            'contact-removed',
+            this._onContactRemoved.bind(this)
+        );
+
+        this._contactChangedId = this.store.connect(
+            'contact-changed',
+            this._onContactChanged.bind(this)
         );
 
         // Cleanup on ::destroy
@@ -260,8 +270,36 @@ var ContactChooser = GObject.registerClass({
         this._populate();
     }
 
+    _onContactAdded(store, id) {
+        let contact = this.store.get_contact(id);
+        this.add_contact(contact);
+    }
+
+    _onContactRemoved(store, id) {
+        let rows = this.contact_list.get_children();
+
+        for (let i = 0, len = rows.length; i < len; i++) {
+            let row = rows[i];
+
+            if (row.contact.id === id) {
+                // HACK: temporary mitigator for mysterious GtkListBox leak
+                //row.destroy();
+                row.run_dispose();
+                imports.system.gc();
+            }
+        }
+    }
+
+    _onContactChanged(store, id) {
+        this._onContactRemoved(store, id);
+        this._onContactAdded(store, id);
+    }
+
     _onDestroy(chooser) {
-        chooser.store.disconnect(chooser._contactsChangedId);
+        chooser.store.disconnect(chooser._contactAddedId);
+        chooser.store.disconnect(chooser._contactRemovedId);
+        chooser.store.disconnect(chooser._contactChangedId);
+
         chooser.disconnect_template();
     }
 
