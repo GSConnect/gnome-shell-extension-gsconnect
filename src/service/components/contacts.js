@@ -90,11 +90,7 @@ var Store = GObject.registerClass({
     }
 
     get contacts() {
-        if (this._contacts === undefined) {
-            this._contacts = Object.values(this.__cache_data);
-        }
-
-        return this._contacts;
+        return Object.values(this.__cache_data);
     }
 
     get context() {
@@ -120,7 +116,7 @@ var Store = GObject.registerClass({
      * Save a ByteArray to file and return the path
      *
      * @param {ByteArray} contents - An image ByteArray
-     * @return {string} - Path the the avatar file
+     * @return {string|undefined} - File path or %undefined on failure
      */
     setAvatarContents(contents) {
         return new Promise((resolve, reject) => {
@@ -141,7 +137,8 @@ var Store = GObject.registerClass({
                             file.replace_contents_finish(res);
                             resolve(file.get_path());
                         } catch (e) {
-                            reject(e);
+                            warning(e, 'Storing avatar');
+                            resolve(undefined);
                         }
                     }
                 );
@@ -167,16 +164,12 @@ var Store = GObject.registerClass({
     /**
      * Query the Store for a contact by name and/or number.
      *
-     * @param {Object} query - A query object
-     * @param {String} [query.name] - The contact's name
-     * @param {String} query.number - The contact's number
+     * @param {object} query - A query object
+     * @param {string} [query.name] - The contact's name
+     * @param {string} query.number - The contact's number
+     * @return {object} - A contact object
      */
     query(query) {
-        // sanity check
-        if (!query.number) {
-            throw new Error('query.number is undefined');
-        }
-
         // First look for an existing contact by number
         let contacts = this.contacts;
         let matches = [];
@@ -204,24 +197,18 @@ var Store = GObject.registerClass({
         // Return the first match (pretty much what Android does)
         if (matches.length > 0) return matches[0];
 
-        // No match; create a new contact with a unique ID
+        // No match; return a mock contact with a unique ID
         let id = GLib.uuid_string_random();
         while (this.__cache_data.hasOwnProperty(id)) {
             id = GLib.uuid_string_random();
         }
 
-        // Add the contact to the cache
-        this.__cache_data[id] = {
+        return {
             id: id,
             name: query.name || query.number,
             numbers: [{value: query.number, type: 'unknown'}],
             origin: 'gsconnect'
         };
-
-        this.update();
-
-        // Return the created contact
-        return this.__cache_data[id];
     }
 
     // FIXME: API compatible with GListModel

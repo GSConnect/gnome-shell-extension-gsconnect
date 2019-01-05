@@ -749,9 +749,8 @@ var Window = GObject.registerClass({
             return;
         }
 
-        // Ensure we have a contact stored and hold a reference to it
+        // Set the header bar title/subtitle
         let contact = this.device.contacts.query({number: value});
-        this._contact = contact;
 
         this.headerbar.title = contact.name;
         this.headerbar.subtitle = value;
@@ -802,7 +801,6 @@ var Window = GObject.registerClass({
         let contacts = this.device.lookup_plugin('contacts');
 
         if (contacts) {
-            this.device.contacts.clear(true);
             contacts.connected();
         } else {
             this.device.contacts._loadFolks();

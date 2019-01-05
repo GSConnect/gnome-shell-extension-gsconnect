@@ -356,7 +356,7 @@ var ContactChooser = GObject.registerClass({
             imports.system.gc();
         });
 
-        // Add each contacts
+        // Add each contact
         let contacts = this.store.contacts;
 
         for (let i = 0, len = contacts.length; i < len; i++) {
