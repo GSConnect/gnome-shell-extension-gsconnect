@@ -239,7 +239,7 @@ var Plugin = GObject.registerClass({
         if (packet.body.phoneNumber) {
             action = {
                 name: 'legacyReply',
-                parameter: new GLib.Variant.full_pack(packet)
+                parameter: GLib.Variant.full_pack(packet)
             };
         }
 
