@@ -74,9 +74,10 @@ var Plugin = GObject.registerClass({
 
                 if (packet.body.phoneThumbnail) {
                     let data = GLib.base64_decode(packet.body.phoneThumbnail);
-                    contact.avatar = await this.device.contacts.setAvatarContents(data);
-                    this.device.contacts.update();
+                    contact.avatar = await this.device.contacts.storeAvatar(data);
                 }
+                
+                this.device.contacts.add(contact);
             }
 
             // Only handle 'ringing' or 'talking' events, leave the notification

@@ -119,7 +119,7 @@ var Store = GObject.registerClass({
      * @param {ByteArray} contents - An image ByteArray
      * @return {string|undefined} - File path or %undefined on failure
      */
-    setAvatarContents(contents) {
+    storeAvatar(contents) {
         return new Promise((resolve, reject) => {
             let md5 = GLib.compute_checksum_for_data(GLib.ChecksumType.MD5, contents);
             let file = this.__cache_dir.get_child(`${md5}`);

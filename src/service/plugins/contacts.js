@@ -288,7 +288,7 @@ var Plugin = GObject.registerClass({
             // Avatar
             if (vcard.photo) {
                 let data = GLib.base64_decode(vcard.photo[0].value[0]);
-                contact.avatar = await this._store.setAvatarContents(data);
+                contact.avatar = await this._store.storeAvatar(data);
             }
 
             return contact;
