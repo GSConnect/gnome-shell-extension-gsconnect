@@ -5,11 +5,6 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
 
-/**
- * Globals, overrides and polyfills are kept here so we don't mangle or collide
- * with the prototypes of other processes (eg. gnome-shell).
- */
-
 
 /**
  * Check if we're in a Wayland session (mostly for input synthesis)
@@ -397,7 +392,7 @@ Object.defineProperties(Gio.Menu.prototype, {
  * @param {string} cert_path - Absolute path to a x509 certificate in PEM format
  * @param {string} key_path - Absolute path to a private key in PEM format
  *
- * See :https://github.com/KDE/kdeconnect-kde/blob/master/core/kdeconnectconfig.cpp#L119
+ * See: https://github.com/KDE/kdeconnect-kde/blob/master/core/kdeconnectconfig.cpp#L119
  */
 Gio.TlsCertificate.new_for_paths = function (cert_path, key_path) {
     let cert_exists = GLib.file_test(cert_path, GLib.FileTest.EXISTS);
@@ -621,7 +616,7 @@ GLib.Variant.prototype.full_unpack = _full_unpack;
 
 
 /**
- * A convenience function for connecting Gtk template callbacks
+ * A convenience functions for connecting/disconnecting Gtk template callbacks
  */
 Gtk.Widget.prototype.connect_template = function() {
     this.$templateHandlers = [];
@@ -634,10 +629,6 @@ Gtk.Widget.prototype.connect_template = function() {
     });
 };
 
-
-/**
- * A convenience function for disconnecting Gtk template callbacks
- */
 Gtk.Widget.prototype.disconnect_template = function() {
     Gtk.Widget.set_connect_func.call(this, function() {});
     this.$templateHandlers.map(([obj, id]) => obj.disconnect(id));
