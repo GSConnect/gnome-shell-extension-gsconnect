@@ -749,9 +749,10 @@ var Window = GObject.registerClass({
             return;
         }
 
-        // Set the header bar title/subtitle
-        let contact = this.device.contacts.query({number: value});
+        // Get a contact object for this address
+        let contact = this.device.contacts.query({number: address});
 
+        // Set the header bar title/subtitle
         this.headerbar.title = contact.name;
         this.headerbar.subtitle = address;
 
@@ -821,6 +822,8 @@ var Window = GObject.registerClass({
     _onNewConversation() {
         this._sync();
         this.conversation_stack.set_visible_child_name('contact-list');
+        this.headerbar.title = _('Messaging');
+        this.headerbar.subtitle = _('New Conversation');
         this.contact_list.contact_entry.has_focus = true;
     }
 
