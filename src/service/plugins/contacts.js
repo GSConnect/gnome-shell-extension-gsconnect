@@ -90,7 +90,7 @@ var Plugin = GObject.registerClass({
             let uids = [];
 
             for (let [uid, timestamp] of Object.entries(packet.body)) {
-                let cache = this._store.get_item(uid);
+                let cache = this._store.get_contact(uid);
 
                 if (!cache || cache.timestamp !== timestamp) {
                     uids.push(uid);

@@ -147,21 +147,6 @@ var Store = GObject.registerClass({
     }
 
     /**
-     * Set a contact avatar from a file path
-     *
-     * @param {object} id - The contact id
-     * @param {string} contents - A file path to a GdkPixbuf compatible image
-     * @return {object} - The updated contact
-     */
-    setAvatarPath(id, path) {
-        if (this.__cache_data[id]) {
-            this.__cache_data[id].avatar = path;
-            this.update();
-            return this.__cache_data[id];
-        }
-    }
-
-    /**
      * Query the Store for a contact by name and/or number.
      *
      * @param {object} query - A query object
@@ -211,8 +196,7 @@ var Store = GObject.registerClass({
         };
     }
 
-    // FIXME: API compatible with GListModel
-    get_item(position) {
+    get_contact(position) {
         try {
             return (this.__cache_data[position]) ? this.__cache_data[position] : null;
         } catch (e) {
@@ -260,7 +244,6 @@ var Store = GObject.registerClass({
         }
     }
 
-    clear(only_temp = false) {
         try {
             if (only_temp) {
                 let contacts = this.contacts;
