@@ -780,6 +780,7 @@ var Window = GObject.registerClass({
         }
 
         this.conversation_stack.visible_child_name = address;
+        this.conversation_stack.visible_child.message_entry.has_focus = true;
 
         // There was a pending message waiting for a contact to be chosen
         if (this._pendingShare) {
@@ -885,7 +886,6 @@ var Window = GObject.registerClass({
         // Show the conversation for this number (if applicable)
         if (row) {
             this.address = row.message.address;
-            this.conversation_stack.visible_child.message_entry.has_focus = true;
 
         // Show the placeholder
         } else {
