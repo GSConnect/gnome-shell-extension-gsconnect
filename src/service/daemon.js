@@ -86,11 +86,6 @@ const Service = GObject.registerClass({
             flags: Gio.ApplicationFlags.HANDLES_OPEN
         });
 
-        // FIXME: Breaks Multi-DPI support. Remove once a Wayland protocol is
-        // created or an interface can be exported from gnome-shell process.
-        // FIXME: Removing this causes a regression of #307.
-        Gdk.set_allowed_backends('x11,*');
-
         GLib.set_prgname(gsconnect.app_id);
         GLib.set_application_name('GSConnect');
 
