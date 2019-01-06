@@ -241,33 +241,66 @@ var ContactChooser = GObject.registerClass({
         this.connect_template();
         super._init(params);
 
-        this._contactAddedId = this.store.connect(
-            'contact-added',
-            this._onContactAdded.bind(this)
-        );
-
-        this._contactRemovedId = this.store.connect(
-            'contact-removed',
-            this._onContactRemoved.bind(this)
-        );
-
-        this._contactChangedId = this.store.connect(
-            'contact-changed',
-            this._onContactChanged.bind(this)
-        );
+        // Setup the contact list
+        this.contact_list._entry = this.contact_entry.text;
+        this.contact_list.set_filter_func(this._filter);
+        this.contact_list.set_sort_func(this._sort);
+        this.contact_list.set_placeholder(this.contact_placeholder);
 
         // Cleanup on ::destroy
         this.connect('destroy', this._onDestroy);
 
-        this.contact_list._entry = this.contact_entry.text;
-        this.contact_list.set_filter_func(this._filter);
-        this.contact_list.set_sort_func(this._sort);
-
-        // Placeholder
-        this.contact_list.set_placeholder(this.contact_placeholder);
-
-        // Populate and setup
+        // Initial populate
         this._populate();
+    }
+
+    get store() {
+        return this._store || null;
+    }
+
+    set store(store) {
+        if (this._store) {
+            // Disconnect the current store
+            this._store.disconnect(this._contactAddedId);
+            this._store.disconnect(this._contactRemovedId);
+            this._store.disconnect(this._contactChangedId);
+
+            // Clear the current list
+            let rows = this.contact_list.get_children();
+
+            for (let i = 0, len = rows.length; i < len; i++) {
+                // HACK: temporary mitigator for mysterious GtkListBox leak
+                //row.destroy();
+                row.run_dispose();
+                imports.system.gc();
+            }
+        }
+
+        // Connect to the new store
+        this._contactAddedId = store.connect(
+            'contact-added',
+            this._onContactAdded.bind(this)
+        );
+
+        this._contactRemovedId = store.connect(
+            'contact-removed',
+            this._onContactRemoved.bind(this)
+        );
+
+        this._contactChangedId = store.connect(
+            'contact-changed',
+            this._onContactChanged.bind(this)
+        );
+
+        // If we're replacing the store we need to repopulate now
+        if (this._store) {
+            this._store = store;
+            this._populate();
+
+        // Otherwise we're waiting for _init() to complete
+        } else {
+            this._store = store;
+        }
     }
 
     _onContactAdded(store, id) {
@@ -387,13 +420,6 @@ var ContactChooser = GObject.registerClass({
     }
 
     _populate() {
-        this.contact_list.foreach(row => {
-            // HACK: temporary mitigator for mysterious GtkListBox leak
-            //row.destroy();
-            row.run_dispose();
-            imports.system.gc();
-        });
-
         // Add each contact
         let contacts = this.store.contacts;
 
