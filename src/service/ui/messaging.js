@@ -268,7 +268,7 @@ const ConversationWidget = GObject.registerClass({
             'connected',
             this.message_entry,
             'sensitive',
-            GObject.BindingFlags.DEFAULT
+            GObject.BindingFlags.SYNC_CREATE
         );
 
         // If we're disconnected pending messages might not succeed, but we'll
