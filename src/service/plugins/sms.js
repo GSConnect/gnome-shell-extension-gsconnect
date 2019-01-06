@@ -254,7 +254,11 @@ var Plugin = GObject.registerClass({
      * Handle a new single message
      */
     _handleMessage(contact, message) {
-        let conversation = this._hasConversation(message.address);
+        let conversation = null;
+
+        if (this._window) {
+            conversation = this._window.getConversation(message.address);
+        }
 
         if (conversation) {
             // Track expected ticker of outgoing messages so they can be closed
@@ -360,30 +364,6 @@ var Plugin = GObject.registerClass({
         } catch (e) {
             logError(e);
         }
-    }
-
-    /**
-     * Check if there's an active conversation for a number (eg. being viewed)
-     *
-     * @param {string} number - A string phone number
-     * @return {Messaging.ConversationWidget} - The conversation panel or %false
-     */
-    _hasConversation(address) {
-        if (this._window) {
-            address = address.toPhoneNumber();
-
-            for (let page of this.window.conversation_stack.get_children()) {
-                if (!page.address) continue;
-
-                let waddress = page.address.toPhoneNumber();
-
-                if (address.endsWith(waddress) || waddress.endsWith(address)) {
-                    return page;
-                }
-            }
-        }
-
-        return false;
     }
 
     /**

@@ -769,7 +769,7 @@ var Window = GObject.registerClass({
         }
 
         // Create a conversation widget if there isn't one
-        let conversation = this.conversation_stack.get_child_by_name(address);
+        let conversation = this.getConversation(address);
 
         if (conversation === null) {
             conversation = new ConversationWidget({
@@ -780,7 +780,8 @@ var Window = GObject.registerClass({
             this.conversation_stack.add_named(conversation, address);
         }
 
-        this.conversation_stack.visible_child_name = address;
+        // Select the conversation and entry active
+        this.conversation_stack.visible_child = conversation;
         this.conversation_stack.visible_child.message_entry.has_focus = true;
 
         // There was a pending message waiting for a contact to be chosen
@@ -827,20 +828,8 @@ var Window = GObject.registerClass({
     }
 
     _onNumberSelected(list, number) {
-        number = number.toPhoneNumber();
-
-        for (let row of this.conversation_list.get_children()) {
-            if (!row.message) continue;
-
-            let cnumber = row.message.address.toPhoneNumber();
-
-            if (cnumber.endsWith(number) || number.endsWith(cnumber)) {
-                this.conversation_list.select_row(row);
-                return;
-            }
-        }
-
-        this.conversation_list.select_row(null);
+        let summary = this.getSummary(number);
+        this.conversation_list.select_row(summary);
         this.address = number;
     }
 
@@ -906,6 +895,49 @@ var Window = GObject.registerClass({
         }
 
         return GLib.SOURCE_CONTINUE;
+    }
+
+    /**
+     * Find the conversation widget for an address
+     *
+     * @param {string} address - A contact address
+     * @return {ConversationWidget|null} - The conversation widget or %null
+     */
+    getConversation(address) {
+        let number = address.toPhoneNumber();
+
+        for (let conversation of this.conversation_stack.get_children()) {
+            // Skip contact list
+            if (!conversation.address) continue;
+
+            let cnumber = conversation.address.toPhoneNumber();
+
+            if (cnumber.endsWith(number) || number.endsWith(cnumber)) {
+                return conversation;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Find the conversation summary row for an address
+     *
+     * @param {string} address - A contact address
+     * @return {ConversationSummary|null} - The conversation summary or %null
+     */
+    getSummary(address) {
+        let number = address.toPhoneNumber();
+
+        for (let summary of this.conversation_list.get_children()) {
+            let cnumber = summary.message.address.toPhoneNumber();
+
+            if (cnumber.endsWith(number) || number.endsWith(cnumber)) {
+                return summary;
+            }
+        }
+
+        return null;
     }
 
     /**
