@@ -109,7 +109,7 @@ function makeSdpRecord(uuid) {
  */
 var ChannelService = GObject.registerClass({
     GTypeName: 'GSConnectBluetoothChannelService',
-    Implements: [Gio.DBusObjectManager],
+    Implements: [Gio.DBusInterface],
     Properties: {
         'devices': GObject.param_spec_variant(
             'devices',
@@ -120,14 +120,22 @@ var ChannelService = GObject.registerClass({
             GObject.ParamFlags.READABLE
         )
     }
-}, class ChannelService extends Gio.DBusObjectManagerClient {
+}, class ChannelService extends Gio.DBusProxy {
 
     _init() {
         super._init({
-            bus_type: Gio.BusType.SYSTEM,
-            name: 'org.bluez',
-            object_path: '/'
+            g_bus_type: Gio.BusType.SYSTEM,
+            g_name: 'org.bluez',
+            g_object_path: '/',
+            g_interface_name: 'org.freedesktop.DBus.ObjectManager',
+            g_flags: Gio.DBusProxyFlags.DO_NOT_AUTO_START_AT_CONSTRUCTION
         });
+
+        // Watch the service
+        this._nameOwnerChangedId = this.connect(
+            'notify::g-name-owner',
+            this._onNameOwnerChanged.bind(this)
+        );
 
         // The full device map
         this._devices = new Map();
@@ -152,7 +160,7 @@ var ChannelService = GObject.registerClass({
     async _register(uuid) {
         // Export the org.bluez.Profile1 interface for the KDE Connect service
         this._profile = new DBus.Interface({
-            g_connection: Gio.DBus.system,
+            g_connection: this.g_connection,
             g_instance: this,
             g_interface_info: BluezNode.lookup_interface('org.bluez.Profile1'),
             g_object_path: gsconnect.app_path + uuid.replace(/-/gi, '')
@@ -188,21 +196,7 @@ var ChannelService = GObject.registerClass({
                 });
             });
 
-            this._profileManager = new ProfileManager1Proxy({
-                g_bus_type: Gio.BusType.SYSTEM,
-                g_name: 'org.bluez',
-                g_object_path: '/org/bluez'
-            });
-            await this._profileManager.init_promise();
-
-            // Register the service profile
-            await this._register(SERVICE_UUID);
-
-            for (let obj of this.get_objects()) {
-                for (let iface of obj.get_interfaces()) {
-                    this.vfunc_interface_added(obj, iface);
-                }
-            }
+            this._onNameOwnerChanged();
         } catch (e) {
             if (e instanceof Gio.DBusError) {
                 Gio.DBusError.strip_remote_error(e);
@@ -213,44 +207,210 @@ var ChannelService = GObject.registerClass({
         }
     }
 
-    vfunc_interface_added(object, iface) {
-        // We track all devices in case their service UUIDs change later
-        if (iface.g_interface_name === 'org.bluez.Device1') {
+    vfunc_g_signal(sender_name, signal_name, parameters) {
+        try {
+            // Wait until the name is properly owned
+            if (!this.g_name_owner === null) return;
+
+            parameters = parameters.deep_unpack();
+
+            switch (true) {
+                case (signal_name === 'InterfacesAdded'):
+                    this._onInterfacesAdded(...parameters);
+                    break;
+
+                case (signal_name === 'InterfacesRemoved'):
+                    this._onInterfacesRemoved(...parameters);
+                    break;
+            }
+        } catch (e) {
+            logError(e);
+        }
+    }
+
+    async _getDeviceProxy(object_path) {
+        try {
+            let proxy = new Gio.DBusProxy({
+                g_bus_type: Gio.BusType.SYSTEM,
+                g_name: this.g_name_owner,
+                g_object_path: object_path,
+                g_interface_name: 'org.bluez.Device1'
+            });
+
+            // Initialize the device proxy
+            await new Promise((resolve, reject) => {
+                proxy.init_async(
+                    GLib.PRIORITY_DEFAULT,
+                    null,
+                    (proxy, res) => {
+                        try {
+                            resolve(proxy.init_finish(res));
+                        } catch (e) {
+                            reject(e);
+                        }
+                    }
+                );
+            });
+
+            // Properties and Methods
+            DBus.proxyMethods(proxy, DEVICE_INFO);
+            DBus.proxyProperties(proxy, DEVICE_INFO);
+
+            // Set a null channel
+            proxy._channel = null;
+
+            return proxy;
+        } catch (e) {
+            warning(e);
+            return undefined;
+        }
+    }
+
+    /**
+     * org.freedesktop.DBus.ObjectManager.InterfacesAdded
+     *
+     * @param {string} object_path - Path interfaces have been removed from
+     * @param {object[]} - ??
+     */
+    async _onInterfacesAdded(object_path, interfaces) {
+        for (let interface_name in interfaces) {
+            // Only handle devices
+            if (interface_name !== 'org.bluez.Device1') continue;
+
+            // We track all devices in case their service UUIDs change later
+            if (this._devices.has(object_path)) continue;
+
             // Setup the device proxy
-            DBus.proxyMethods(iface, DEVICE_INFO);
-            DBus.proxyProperties(iface, DEVICE_INFO);
-            iface._channel = null;
+            let proxy = await this._getDeviceProxy(object_path);
+            if (proxy === undefined) continue;
 
-            this._devices.set(iface.g_object_path, iface);
+            // Watch for connected/paired changes
+            proxy.__deviceChangedId = proxy.connect(
+                'g-properties-changed',
+                this._onDeviceChanged.bind(this)
+            );
 
-            // Notify
+            // Store the proxy and emit notify::devices
+            this._devices.set(proxy.g_object_path, proxy);
             this.notify('devices');
         }
     }
 
-    vfunc_interface_removed(manager, object, iface) {
-        if (iface.g_interface_name === 'org.bluez.Device1') {
-            this.RequestDisconnection(iface.g_object_path);
-            this._devices.delete(iface.g_object_path);
+    /**
+     * org.freedesktop.DBus.ObjectManager.InterfacesRemoved
+     *
+     * @param {string} object_path - Path interfaces have been removed from
+     * @param {string[]} - List of interface names removed
+     */
+    async _onInterfacesRemoved(object_path, interfaces) {
+        try {
+            // An empty interface list means the object is being removed
+            if (interfaces.length === 0) return;
+
+            // Only handle devices
+            if (interfaces[0] !== 'org.bluez.Device1') return;
+
+            // Get the proxy
+            let proxy = this._devices.get(object_path);
+            if (proxy === undefined) return;
+
+            // Stop watching for connected/paired changes
+            proxy.disconnect(proxy.__deviceChangedId);
+            this.RequestDisconnection(object_path);
+
+            // Release the proxy and emit notify::devices
+            this._devices.delete(object_path);
+            this.notify('devices');
+        } catch (e) {
+            logError(e, object_path);
         }
     }
 
-    vfunc_interface_proxy_properties_changed(object, iface, changed, invalidated) {
-        if (iface.g_interface_name === 'org.bluez.Device1') {
+    _onDeviceChanged(proxy, changed, invalidated) {
+        // Try connecting if the device has just connected or resolved services
+        changed = changed.full_unpack();
 
-            // Try connecting if the device has just connected or resolved services
-            changed = changed.full_unpack();
-
-            if (changed.hasOwnProperty('Connected')) {
-                if (changed.Connected) {
-                    this._connectDevice(iface);
-                } else {
-                    this.RequestDisconnection(iface.g_object_path);
-                }
-            } else if (changed.ServicesResolved) {
-                this._connectDevice(iface);
+        if (changed.hasOwnProperty('Connected')) {
+            if (changed.Connected) {
+                this._connectDevice(proxy);
+            } else {
+                this.RequestDisconnection(proxy.g_object_path);
             }
+        } else if (changed.ServicesResolved) {
+            this._connectDevice(proxy);
         }
+    }
+
+    async _onNameOwnerChanged() {
+        try {
+            if (this.g_name_owner === null) {
+                // Ensure we've removed all devices before restarting
+                for (let device of this._devices.values()) {
+                    device.disconnect(device.__deviceChangedId);
+                    this._devices.delete(device.g_object_path);
+                    this.emit('device-removed', device);
+                }
+
+                // Remove the profile
+                if (this._profile) {
+                    this._profile.destroy();
+                    this._profile = null;
+                }
+
+                if (this._profileManager) {
+                    this._profileManager.destroy();
+                    this._profileManager = null;
+                }
+
+                await this._getManagedObjects();
+            } else {
+                // Get a profile manager
+                this._profileManager = new ProfileManager1Proxy({
+                    g_bus_type: Gio.BusType.SYSTEM,
+                    g_name: 'org.bluez',
+                    g_object_path: '/org/bluez'
+                });
+                await this._profileManager.init_promise();
+
+                // Register the service profile
+                await this._register(SERVICE_UUID);
+
+                let objects = await this._getManagedObjects();
+
+                for (let [object_path, object] of Object.entries(objects)) {
+                    await this._onInterfacesAdded(object_path, object);
+                }
+            }
+        } catch (e) {
+            logError(e);
+        }
+    }
+
+
+    /**
+     * org.freedesktop.DBus.ObjectManager.GetManagedObjects
+     *
+     * @return {object} - Dictionary of managed object paths and interface names
+     */
+    _getManagedObjects() {
+        return new Promise((resolve, reject) => {
+            this.call(
+                'GetManagedObjects',
+                null,
+                Gio.DBusCallFlags.NONE,
+                -1,
+                null,
+                (proxy, res) => {
+                    try {
+                        let variant = proxy.call_finish(res);
+                        let objects = variant.deep_unpack()[0];
+                        resolve(objects);
+                    } catch (e) {
+                        reject(e);
+                    }
+                }
+            );
+        });
     }
 
     /**
