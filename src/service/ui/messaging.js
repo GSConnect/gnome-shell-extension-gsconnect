@@ -552,8 +552,8 @@ const ConversationWidget = GObject.registerClass({
             spacing: 3,
             halign: layout.halign,
             // Avatar width (32px) + layout spacing (6px) + 6px
-            margin_right: incoming ? 44 : 0,
-            margin_left: incoming ? 0 : 44
+            margin_end: incoming ? 44 : 0,
+            margin_start: incoming ? 0 : 44
         });
         layout.add(row.messages);
 
