@@ -312,22 +312,6 @@ const ConversationWidget = GObject.registerClass({
 
     set address(value) {
         this._address = value;
-        this._displayNumber = value;
-        this._notifications = [];
-
-        // See if we have a nicer display number
-        let number = value.toPhoneNumber();
-
-        for (let contactNumber of this.contact.numbers) {
-            let cnumber = contactNumber.value.toPhoneNumber();
-
-            if (number.endsWith(cnumber) || cnumber.endsWith(number)) {
-                this._displayNumber = contactNumber.value;
-                break;
-            }
-        }
-
-        this.notify('address');
     }
 
     get contact() {
