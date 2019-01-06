@@ -360,6 +360,12 @@ const ConversationWidget = GObject.registerClass({
     _onDestroy(conversation) {
         conversation.device.disconnect(conversation._connectedId);
         conversation.disconnect_template();
+
+        conversation.message_list.foreach(message => {
+            // HACK: temporary mitigator for mysterious GtkListBox leak
+            message.run_dispose();
+            imports.system.gc();
+        });
     }
 
     /**
@@ -845,7 +851,7 @@ var Window = GObject.registerClass({
         }
 
         // Update existing summaries and destroy old ones
-        this.conversation_list.foreach(summary => {
+        for (let summary of this.conversation_list.get_children()) {
             let message = messages.get(summary.id);
 
             // If it's an existing conversation, update it
@@ -858,18 +864,22 @@ var Window = GObject.registerClass({
                 // HACK: temporary mitigator for mysterious GtkListBox leak
                 summary.run_dispose();
                 imports.system.gc();
+
+                // Also delete the conversation
+                let conversation = this.getConversation(summary.message.address);
+
+                if (conversation) {
+                    conversation.run_dispose();
+                    imports.system.gc();
+                }
             }
-        });
+        }
 
         // Add new summaries
         for (let message of messages.values()) {
-            let contact = this.device.contacts.query({
-                number: message.address
-            });
-
-            this.conversation_list.add(
-                new ConversationSummary(contact, message)
-            );
+            let contact = this.device.contacts.query({number: message.address});
+            let conversation = new ConversationSummary(contact, message);
+            this.conversation_list.add(conversation);
         }
     }
 
