@@ -822,8 +822,7 @@ var Window = GObject.registerClass({
     _onNewConversation() {
         this._sync();
         this.conversation_stack.set_visible_child_name('contact-list');
-        this.headerbar.title = _('Messaging');
-        this.headerbar.subtitle = _('New Conversation');
+        this.conversation_list.select_row(null);
         this.contact_list.contact_entry.has_focus = true;
     }
 
