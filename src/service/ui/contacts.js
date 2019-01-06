@@ -271,7 +271,7 @@ var ContactChooser = GObject.registerClass({
             for (let i = 0, len = rows.length; i < len; i++) {
                 // HACK: temporary mitigator for mysterious GtkListBox leak
                 //row.destroy();
-                row.run_dispose();
+                rows[i].run_dispose();
                 imports.system.gc();
             }
         }
