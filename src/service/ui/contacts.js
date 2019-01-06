@@ -451,7 +451,9 @@ var ContactChooser = GObject.registerClass({
             label: getNumberLabel(row.number),
             halign: Gtk.Align.START,
             hexpand: true,
+            // TODO: rtl inverts margin-start so the number don't align
             margin_start: (index > 0) ? 38 : 0,
+            margin_end: (index > 0) ? 38 : 0,
             visible: true
         });
         numLabel.get_style_context().add_class('dim-label');
