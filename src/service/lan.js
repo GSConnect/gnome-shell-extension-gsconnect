@@ -270,7 +270,6 @@ var ChannelService = class ChannelService {
 
             // Remember manual addresses so we know to accept connections
             } else if (address instanceof Gio.InetSocketAddress) {
-                debug(`Identifying to ${address.address.to_string()}`);
                 this.allowed.add(address.address.to_string());
 
             // Only broadcast to the network if no address is specified
