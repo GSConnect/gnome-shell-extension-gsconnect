@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-01-04 12:37\n"
+"PO-Revision-Date: 2019-01-06 04:22\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -253,7 +253,7 @@ msgstr "Canvia a LAN"
 #. TRANSLATORS: View the TLS Certificate fingerprint
 #: data/menus.ui:63 src/service/ui/device.js:317
 msgid "Encryption Info"
-msgstr ""
+msgstr "Informació de xifratge"
 
 #. TRANSLATORS: Unpair the device and notify it
 #: data/menus.ui:74 src/service/device.js:432
@@ -407,7 +407,7 @@ msgstr ""
 
 #: src/service/daemon.js:542
 msgid "Click for more information"
-msgstr ""
+msgstr "Feu clic per a més informació"
 
 #: src/service/daemon.js:724
 msgid "Dial Number"
@@ -507,7 +507,7 @@ msgstr ""
 
 #: src/service/plugins/contacts.js:12
 msgid "Contacts"
-msgstr ""
+msgstr "Contactes"
 
 #. Ensure we have a sender
 #. TRANSLATORS: No name or phone number
@@ -515,11 +515,11 @@ msgstr ""
 #: src/service/plugins/telephony.js:224 src/service/plugins/telephony.js:264
 #: src/service/ui/contacts.js:156 src/service/ui/contacts.js:397
 msgid "Unknown Contact"
-msgstr ""
+msgstr "Contacte desconegut"
 
 #: src/service/plugins/findmyphone.js:13
 msgid "Find My Phone"
-msgstr ""
+msgstr "Troba el meu telèfon"
 
 #: src/service/plugins/mousepad.js:14
 msgid "Mousepad"
@@ -535,7 +535,7 @@ msgstr ""
 
 #: src/service/plugins/mousepad.js:586
 msgid "Keyboard not ready"
-msgstr ""
+msgstr "El teclat no està preparat"
 
 #: src/service/plugins/mpris.js:10
 msgid "MPRIS"

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-01-04 22:32\n"
+"PO-Revision-Date: 2019-01-06 04:32\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -603,7 +603,7 @@ msgstr "Invia file"
 
 #: src/service/plugins/share.js:35
 msgid "Share Text"
-msgstr "Condividi Testo"
+msgstr "Invia testo"
 
 #: src/service/plugins/share.js:43 src/service/ui/messaging.js:975
 #: src/service/ui/messaging.js:983
