@@ -61,7 +61,7 @@ function relativeLuminance(rgba) {
  * @return {Gdk.RGBA} - A Gdk.RGBA object for the foreground color
  */
 function getFgRGBA(rgba) {
-    let bgLuminance = this.relativeLuminance(rgba);
+    let bgLuminance = relativeLuminance(rgba);
     let lightContrast = (0.07275541795665634 + 0.05) / (bgLuminance + 0.05);
     let darkContrast = (bgLuminance + 0.05) / (0.0046439628482972135 + 0.05);
 
