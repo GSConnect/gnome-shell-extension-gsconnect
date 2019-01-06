@@ -12,28 +12,34 @@ const GObject = imports.gi.GObject;
 var Store = GObject.registerClass({
     GTypeName: 'GSConnectContactsStore',
     Properties: {
-        'contacts': GObject.param_spec_variant(
-            'contacts',
-            'ContactsList',
-            'A list of cached contacts',
-            new GLib.VariantType('a{sv}'),
-            null,
-            GObject.ParamFlags.READABLE
-        ),
         'context': GObject.ParamSpec.string(
             'context',
             'Context',
             'Used as the cache directory, relative to gsconnect.cachedir',
-            GObject.ParamFlags.READWRITE,
+            GObject.ParamFlags.CONSTRUCT_ONLY | GObject.ParamFlags.READWRITE,
             ''
         )
+    },
+    Signals: {
+        'contact-added': {
+            flags: GObject.SignalFlags.RUN_FIRST,
+            param_types: [GObject.TYPE_STRING]
+        },
+        'contact-removed': {
+            flags: GObject.SignalFlags.RUN_FIRST,
+            param_types: [GObject.TYPE_STRING]
+        },
+        'contact-changed': {
+            flags: GObject.SignalFlags.RUN_FIRST,
+            param_types: [GObject.TYPE_STRING]
+        }
     }
 }, class Store extends GObject.Object {
 
-    _init(params) {
-        super._init(Object.assign({
-            context: null
-        }, params));
+    _init(context = null) {
+        super._init({
+            context: context
+        });
 
         this.__cache_data = {};
 
@@ -45,20 +51,7 @@ var Store = GObject.registerClass({
         try {
             this.__cache_data = await JSON.load(this.__cache_file);
         } catch (e) {
-            logWarning(e);
-            this.__cache_data = {};
-        } finally {
-            this.connect('notify::contacts', this.__cache_write.bind(this));
-
-            if (this.context === null) {
-                // Create a re-usable launcher for folks.py
-                this._launcher = new Gio.SubprocessLauncher({
-                    flags: Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE
-                });
-                this._launcher.setenv('FOLKS_BACKENDS_DISABLED', 'telepathy', true);
-
-                this._loadFolks();
-            }
+            debug(e);
         }
     }
 
@@ -72,7 +65,7 @@ var Store = GObject.registerClass({
             this.__cache_lock = true;
             await JSON.dump(this.__cache_data, this.__cache_file);
         } catch (e) {
-            logWarning(e);
+            warning(e);
         } finally {
             this.__cache_lock = false;
 
@@ -84,9 +77,15 @@ var Store = GObject.registerClass({
     }
 
     *[Symbol.iterator]() {
-        for (let contact of Object.values(this.__cache_data)) {
-            yield contact;
+        let contacts = this.contacts;
+
+        for (let i = 0, len = contacts.length; i < len; i++) {
+            yield contacts[i];
         }
+    }
+
+    get contacts() {
+        return Object.values(this.__cache_data);
     }
 
     get context() {
@@ -94,11 +93,17 @@ var Store = GObject.registerClass({
     }
 
     set context(context) {
-        if (!context) {
-            this._context = null;
+        this._context = context;
+
+        if (context === null) {
+            // Create a re-usable launcher for folks.py
+            this._launcher = new Gio.SubprocessLauncher({
+                flags: Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE
+            });
+            this._launcher.setenv('FOLKS_BACKENDS_DISABLED', 'telepathy', true);
+
             this.__cache_dir = Gio.File.new_for_path(gsconnect.cachedir);
         } else {
-            this._context = context;
             this.__cache_dir = Gio.File.new_for_path(
                 GLib.build_filenamev([gsconnect.cachedir, context])
             );
@@ -112,9 +117,9 @@ var Store = GObject.registerClass({
      * Save a ByteArray to file and return the path
      *
      * @param {ByteArray} contents - An image ByteArray
-     * @return {string} - Path the the avatar file
+     * @return {string|undefined} - File path or %undefined on failure
      */
-    setAvatarContents(contents) {
+    storeAvatar(contents) {
         return new Promise((resolve, reject) => {
             let md5 = GLib.compute_checksum_for_data(GLib.ChecksumType.MD5, contents);
             let file = this.__cache_dir.get_child(`${md5}`);
@@ -133,7 +138,8 @@ var Store = GObject.registerClass({
                             file.replace_contents_finish(res);
                             resolve(file.get_path());
                         } catch (e) {
-                            reject(e);
+                            warning(e, 'Storing avatar');
+                            resolve(undefined);
                         }
                     }
                 );
@@ -142,91 +148,56 @@ var Store = GObject.registerClass({
     }
 
     /**
-     * Set a contact avatar from a file path
-     *
-     * @param {object} id - The contact id
-     * @param {string} contents - A file path to a GdkPixbuf compatible image
-     * @return {object} - The updated contact
-     */
-    setAvatarPath(id, path) {
-        let contact = this.__cache_data[id];
-
-        if (contact) {
-            this.__cache_data[id].avatar = path;
-            this.update();
-            return this.__cache_data[id];
-        }
-    }
-
-    /**
      * Query the Store for a contact by name and/or number.
      *
-     * @param {Object} query - A query object
-     * @param {String} [query.name] - The contact's name
-     * @param {String} query.number - The contact's number
+     * @param {object} query - A query object
+     * @param {string} [query.name] - The contact's name
+     * @param {string} query.number - The contact's number
+     * @return {object} - A contact object
      */
     query(query) {
-        // sanity check
-        if (!query.number) {
-            throw new Error('query.number is undefined');
-        }
-
         // First look for an existing contact by number
-        let contacts = Object.values(this.__cache_data);
+        let contacts = this.contacts;
         let matches = [];
         let qnumber = query.number.toPhoneNumber();
 
-        for (let i = 0; i < contacts.length; i++) {
+        for (let i = 0, len = contacts.length; i < len; i++) {
             let contact = contacts[i];
 
             for (let num of contact.numbers) {
                 let cnumber = num.value.toPhoneNumber();
 
                 if (qnumber.endsWith(cnumber) || cnumber.endsWith(qnumber)) {
-                    // Number match & exact name match; must be it
-                    if (query.name && query.name === contact.name) {
+                    // If no query name or exact match, return immediately
+                    if (!query.name || query.name === contact.name) {
                         return contact;
                     }
 
-                    // Hold off on returning; we might find an exact name match
+                    // Otherwise we might find an exact name match that shares
+                    // the number with another contact
                     matches.push(contact);
                 }
             }
         }
 
         // Return the first match (pretty much what Android does)
-        if (matches.length > 0) {
-            // TODO: this is a check to prevent errors later caused by contacts
-            // that may have be populated without names by GSConnect <= v17
-            if (!matches[0].name) {
-                matches[0].name = query.number;
-            }
+        if (matches.length > 0) return matches[0];
 
-            return matches[0];
-        }
-
-        // No match; create a new contact with a unique ID
+        // No match; return a mock contact with a unique ID
         let id = GLib.uuid_string_random();
         while (this.__cache_data.hasOwnProperty(id)) {
             id = GLib.uuid_string_random();
         }
 
-        // Add the contact to the cache
-        this.__cache_data[id] = {
+        return {
             id: id,
             name: query.name || query.number,
             numbers: [{value: query.number, type: 'unknown'}],
             origin: 'gsconnect'
         };
-
-        this.update();
-
-        // Return the created contact
-        return this.__cache_data[id];
     }
 
-    // FIXME: API compatible with GListModel
-    get_item(position) {
+    get_contact(position) {
         try {
             return (this.__cache_data[position]) ? this.__cache_data[position] : null;
         } catch (e) {
@@ -237,67 +208,96 @@ var Store = GObject.registerClass({
     /**
      * Add a contact, checking for validity
      *
-     * @param {string} id - The id of the contact to delete
+     * @param {object} contact - A contact object
+     * @param {boolean} write - Write to disk
      */
-    add(contact) {
-        switch (true) {
-            case !contact.id:
-            case !contact.name:
-            case !contact.numbers:
-            case !contact.numbers[0]:
-            case !contact.numbers[0].type:
-            case !contact.numbers[0].value:
-                return;
+    add(contact, write = true) {
+        // Ensure the contact has a unique id
+        if (!contact.id) {
+            let id = GLib.uuid_string_random();
 
-            // Updated contact
-            case this.__cache_data.hasOwnProperty(contact.id):
-                Object.assign(this.__cache_data[contact.id], contact);
-                break;
+            while (this.__cache_data[id]) {
+                id = GLib.uuid_string_random();
+            }
 
-            // New contact
-            default:
-                this.__cache_data[contact.id] = contact;
+            contact.id = id;
         }
 
-        this.update();
+        // This is an updated contact
+        if (this.__cache_data[contact.id]) {
+            this.__cache_data[contact.id] = contact;
+            this.emit('contact-changed', contact.id);
+        } else {
+            this.__cache_data[contact.id] = contact;
+            this.emit('contact-added', contact.id);
+        }
+
+        // Write if requested
+        if (write) {
+            this.__cache_write();
+        }
     }
 
     /**
      * Remove a contact by id
      *
      * @param {string} id - The id of the contact to delete
+     * @param {boolean} write - Write to disk
      */
-    remove(id) {
+    remove(id, write = true) {
+        // Only remove if the contact actually exists
         if (this.__cache_data[id]) {
             delete this.__cache_data[id];
-            this.update();
+            this.emit('contact-removed', id);
+
+            // Write if requested
+            if (write) {
+                this.__cache_write();
+            }
         }
     }
 
-    clear(only_temp = false) {
+    async clear() {
         try {
-            if (only_temp) {
-                for (let contact of Object.values(this.__cache_data)) {
-                    if (contact.origin === 'gsconnect') {
-                        delete this.__cache_data[contact.id];
-                    }
-                }
-            } else {
-                this.__cache_data = {};
+            let contacts = this.contacts;
+
+            for (let i = 0, len = contacts.length; i < len; i++) {
+                await this.remove(contacts[i].id, false);
             }
 
-            this.update();
+            await this.__cache_write();
         } catch (e) {
-            logError(e);
+            warning(e, 'Clearing contacts');
         }
     }
 
-    update(json = {}) {
+    async update(json = {}) {
         try {
-            this.__cache_data = Object.assign(this.__cache_data, json);
-            this.notify('contacts');
+            let contacts = Object.values(json);
+
+            for (let i = 0, len = contacts.length; i < len; i++) {
+                let new_contact = contacts[i];
+                let contact = this.__cache_data[new_contact.id];
+
+                if (!contact || new_contact.timestamp !== contact.timestamp) {
+                    await this.add(new_contact, false);
+                }
+            }
+
+            // Prune contacts
+            contacts = this.contacts;
+
+            for (let i = 0, len = contacts.length; i < len; i++) {
+                let contact = contacts[i];
+
+                if (!json[contact.id]) {
+                    await this.remove(contact.id, false);
+                }
+            }
+
+            await this.__cache_write();
         } catch (e) {
-            logError(e);
+            warning(e, 'Updating contacts');
         }
     }
 
@@ -327,9 +327,9 @@ var Store = GObject.registerClass({
                 });
             });
 
-            this.update(folks);
+            await this.update(folks);
         } catch (e) {
-            logWarning(e);
+            debug(e, 'Loading folks');
         }
     }
 });

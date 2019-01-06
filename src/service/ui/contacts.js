@@ -83,7 +83,7 @@ function getPixbuf(path, size = null) {
     try {
         data = GLib.file_get_contents(path)[1];
     } catch (e) {
-        logWarning(e.message, path);
+        warning(e.message, path);
         return undefined;
     }
 
@@ -93,7 +93,7 @@ function getPixbuf(path, size = null) {
         loader.write(data);
         loader.close();
     } catch (e) {
-        logWarning(e, path);
+        warning(e, path);
     }
 
     let pixbuf = loader.get_pixbuf();
@@ -241,9 +241,19 @@ var ContactChooser = GObject.registerClass({
         this.connect_template();
         super._init(params);
 
-        this._contactsChangedId = this.store.connect(
-            'notify::contacts',
-            this._populate.bind(this)
+        this._contactAddedId = this.store.connect(
+            'contact-added',
+            this._onContactAdded.bind(this)
+        );
+
+        this._contactRemovedId = this.store.connect(
+            'contact-removed',
+            this._onContactRemoved.bind(this)
+        );
+
+        this._contactChangedId = this.store.connect(
+            'contact-changed',
+            this._onContactChanged.bind(this)
         );
 
         // Cleanup on ::destroy
@@ -260,8 +270,36 @@ var ContactChooser = GObject.registerClass({
         this._populate();
     }
 
+    _onContactAdded(store, id) {
+        let contact = this.store.get_contact(id);
+        this.add_contact(contact);
+    }
+
+    _onContactRemoved(store, id) {
+        let rows = this.contact_list.get_children();
+
+        for (let i = 0, len = rows.length; i < len; i++) {
+            let row = rows[i];
+
+            if (row.contact.id === id) {
+                // HACK: temporary mitigator for mysterious GtkListBox leak
+                //row.destroy();
+                row.run_dispose();
+                imports.system.gc();
+            }
+        }
+    }
+
+    _onContactChanged(store, id) {
+        this._onContactRemoved(store, id);
+        this._onContactAdded(store, id);
+    }
+
     _onDestroy(chooser) {
-        chooser.store.disconnect(chooser._contactsChangedId);
+        chooser.store.disconnect(chooser._contactAddedId);
+        chooser.store.disconnect(chooser._contactRemovedId);
+        chooser.store.disconnect(chooser._contactChangedId);
+
         chooser.disconnect_template();
     }
 
@@ -356,15 +394,22 @@ var ContactChooser = GObject.registerClass({
             imports.system.gc();
         });
 
-        for (let contact of this.store) {
-            this.add_contact(contact);
+        // Add each contact
+        let contacts = this.store.contacts;
+
+        for (let i = 0, len = contacts.length; i < len; i++) {
+            this.add_contact(contacts[i]);
         }
     }
 
     add_contact(contact) {
         if (contact.numbers.length === 1) {
+            contact.name = contact.name || contact.numbers[0].value;
             return this.add_contact_number(contact, 0);
         }
+
+        // HACK: fix missing contact names
+        contact.name = contact.name || _('Unknown Contact');
 
         for (let i = 0, len = contact.numbers.length; i < len; i++) {
             this.add_contact_number(contact, i);
@@ -394,7 +439,7 @@ var ContactChooser = GObject.registerClass({
             grid.attach(avatar, 0, 0, 1, 2);
 
             let nameLabel = new Gtk.Label({
-                label: contact.name || _('Unknown Contact'),
+                label: contact.name,
                 halign: Gtk.Align.START,
                 hexpand: true,
                 visible: true

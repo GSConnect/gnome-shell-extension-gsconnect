@@ -1,0 +1,27 @@
+project_identifier: org.gnome.Shell.Extensions.GSConnect
+files:
+  - source: /po/org.gnome.Shell.Extensions.GSConnect.pot
+    translation: /po/%locale%.po
+    languages_mapping:
+      locale:
+        ca-ES: ca
+        ca: ca
+        fr: fr
+        de: de
+        pt-BR: pt_BR
+        nl: nl_NL
+        nl-BE: nl_BE
+        es-ES: es
+        be: be
+        cs: cs
+        et: et
+        hu: hu
+        it: it
+        ja: ja
+        lt: lt
+        pl: pl
+        ru: ru
+        sk: sk
+        sr: sr
+        tr: tr
+        zh-CN: zh_CN

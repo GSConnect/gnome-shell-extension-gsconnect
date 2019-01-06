@@ -26,9 +26,10 @@ var Metadata = {
 /**
  * vCard 2.1 Patterns
  */
-const VCARD_REGEX_META = /^(version|fn|title|org|X-KDECONNECT-TIMESTAMP):(.+)$/i;
-const VCARD_REGEX_PROP = /^([^:;]+);([^:]+):(.+)$/;
-const VCARD_REGEX_KEY = /item\d{1,2}\./;
+const FIELD_BASIC = /^([^:;]+):(.+)$/;
+const FIELD_TYPED = /^([^:;]+);([^:]+):(.+)$/;
+const FIELD_TYPED_KEY = /item\d{1,2}\./;
+const FIELD_TYPED_META = /([a-z]+)=(.*)/i;
 
 
 /**
@@ -41,10 +42,7 @@ var Plugin = GObject.registerClass({
 
     _init(device) {
         super._init(device, 'contacts');
-
-        this._store = new Contacts.Store({
-            context: device.id
-        });
+        this._store = new Contacts.Store(device.id);
     }
 
     connected() {
@@ -63,30 +61,30 @@ var Plugin = GObject.registerClass({
     _handleUids(packet) {
         try {
             // Delete any contacts that were removed on the device
-            let remote_removed = false;
+            let contacts = this._store.contacts;
             let remote_uids = packet.body.uids;
+            let removed = false;
             delete packet.body.uids;
 
-            for (let contact of this._store) {
+            for (let i = 0, len = contacts.length; i < len; i++) {
+                let contact = contacts[i];
+
                 // Skip contacts that were added from a different source
                 if (contact.origin !== 'device') continue;
 
                 if (!remote_uids.includes(contact.id)) {
-                    delete this._store.__cache_data[contact.id];
-                    remote_removed = true;
+                    this._store.remove(contact.id, false);
+                    removed = true;
                 }
             }
 
-            // If any contacts were deleted, signal an update
-            if (remote_removed) {
-                this._store.update();
-            }
+            if (removed) this._store.__cache_write();
 
             // Build a list of new or updated contacts
             let uids = [];
 
             for (let [uid, timestamp] of Object.entries(packet.body)) {
-                let cache = this._store.get_item(uid);
+                let cache = this._store.get_contact(uid);
 
                 if (!cache || cache.timestamp !== timestamp) {
                     uids.push(uid);
@@ -180,7 +178,7 @@ var Plugin = GObject.registerClass({
 
             // Say "chowdah" frenchie!
             } catch (e) {
-                logWarning(`Failed to decode UTF-8 VCard field "${input}"`);
+                warning(`Failed to decode UTF-8 VCard field "${input}"`);
                 return input;
             }
         }
@@ -193,42 +191,51 @@ var Plugin = GObject.registerClass({
      *
      * @param {string} vcard_data - The raw VCard data
      */
-    parseVCard(vcard_data) {
-        //
-        let vcard = {};
+    parseVCard21(vcard_data) {
+        // vcard skeleton
+        let vcard = {
+            fn: _('Unknown Contact'),
+            tel: []
+        };
 
-        // Remove line wrapping
-        vcard_data = vcard_data.replace(/\n /g, '');
+        // Remove line folding and split
+        let lines = vcard_data.replace(/\n /g, '').split('\n');
 
-        vcard_data.split('\n').forEach(line => {
+        for (let i = 0, len = lines.length; i < len; i++) {
+            let line = lines[i];
             let results, key, type, value;
 
-            // Simple Keys (fn, x-kdeconnect-timestamp, etc)
-            if ((results = line.match(VCARD_REGEX_META))) {
+            // Empty line
+            if (!line) continue;
+
+            // Basic Fields (fn, x-kdeconnect-timestamp, etc)
+            if ((results = line.match(FIELD_BASIC))) {
                 [results, key, value] = results;
                 vcard[key.toLowerCase()] = value;
-                return;
+                continue;
             }
 
-            // Typed Keys (tel, adr, etc)
-            if ((results = line.match(VCARD_REGEX_PROP))) {
+            // Typed Fields (tel, adr, etc)
+            if ((results = line.match(FIELD_TYPED))) {
                 [results, key, type, value] = results;
-                key = key.replace(VCARD_REGEX_KEY, '').toLowerCase();
+                key = key.replace(FIELD_TYPED_KEY, '').toLowerCase();
                 value = value.split(';');
+                type = type.split(';');
 
+                // Type(s)
                 let meta = {};
 
-                type.split(';').map((p, i) => {
-                    let res = p.match(/([a-z]+)=(.*)/i);
+                for (let i = 0, len = type.length; i < len; i++) {
+                    let res = type[i].match(FIELD_TYPED_META);
 
                     if (res) {
                         meta[res[1]] = res[2];
                     } else {
-                        meta['type' + (i === 0 ? '' : i)] = p.toLowerCase();
+                        meta['type' + (i === 0 ? '' : i)] = type[i].toLowerCase();
                     }
-                });
+                }
 
-                //
+                // Value(s)
                 if (!vcard[key]) vcard[key] = [];
 
                 // Decode QUOTABLE-PRINTABLE
@@ -243,54 +250,50 @@ var Plugin = GObject.registerClass({
                     value = value.map(v => this.decode_utf8(v));
                 }
 
+                // Special case for FN (full name)
                 if (key === 'fn') {
                     vcard[key] = value[0];
                 } else {
                     vcard[key].push({meta: meta, value: value});
                 }
             }
-        });
+        }
 
         return vcard;
     }
 
     async parseContact(uid, vcard_data) {
         try {
-            let vcard = this.parseVCard(vcard_data);
+            let vcard = this.parseVCard21(vcard_data);
 
             let contact = {
                 id: uid,
-                name: vcard.fn || _('Unknown Contact'),
+                name: vcard.fn,
                 numbers: [],
                 origin: 'device',
                 timestamp: parseInt(vcard['x-kdeconnect-timestamp'])
             };
 
             // Phone Numbers
-            if (vcard.tel) {
-                vcard.tel.map(number => {
-                    let type = 'unknown';
-                    
-                    if (number.meta && number.meta.type) {
-                        type = number.meta.type;
-                    }
-                    
-                    contact.numbers.push({
-                        type: type,
-                        value: number.value[0]
-                    });
-                });
-            }
+            contact.numbers = vcard.tel.map(entry => {
+                let type = 'unknown';
+
+                if (entry.meta && entry.meta.type) {
+                    type = entry.meta.type;
+                }
+
+                return {type: type, value: entry.value[0]};
+            });
 
             // Avatar
             if (vcard.photo) {
                 let data = GLib.base64_decode(vcard.photo[0].value[0]);
-                contact.avatar = await this._store.setAvatarContents(data);
+                contact.avatar = await this._store.storeAvatar(data);
             }
 
             return contact;
         } catch (e) {
-            logWarning(e, `Failed to parse VCard contact "${uid}"`);
+            warning(e, `Failed to parse VCard contact "${uid}"`);
             return undefined;
         }
     }
@@ -300,18 +303,14 @@ var Plugin = GObject.registerClass({
             // We don't use this
             delete packet.body.uids;
 
-            // Parse each VCard and return a contact object
-            let contacts = {};
-
+            // Parse each vCard and add the contact
             for (let [uid, vcard] of Object.entries(packet.body)) {
                 let contact = await this.parseContact(uid, vcard);
 
                 if (contact) {
-                    contacts[uid] = contact;
+                    this._store.add(contact);
                 }
             }
-
-            this._store.update(contacts);
         } catch (e) {
             logError(e);
         }

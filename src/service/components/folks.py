@@ -3,6 +3,7 @@
 # This has been modified from the work shimming Gee by Hugo Sena Ribeiro. The
 # original code is available here: https://github.com/hugosenari/folks
 
+import hashlib
 import itertools
 import json
 import os.path
@@ -400,6 +401,11 @@ class Aggregator(object):
                             fobj.write(folk.avatar.get_bytes().get_data())
 
                         contacts[folk_id]['avatar'] = path
+
+                # Phony timestamp
+                cbytes = json.dumps(contacts[folk_id]).encode('utf-8')
+                contacts[folk_id]['timestamp'] = hashlib.md5(cbytes).hexdigest()
+
             except:
                 pass
 

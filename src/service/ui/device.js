@@ -6,11 +6,11 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 const Pango = imports.gi.Pango;
 
-
 const Keybindings = imports.service.ui.keybindings;
 
 
-// Build a list of shortcuts for devices
+// Build a list of plugins and shortcuts for devices
+const DEVICE_PLUGINS = [];
 const DEVICE_SHORTCUTS = {
     activate: ['view-refresh-symbolic', _('Reconnect')],
     openSettings: ['preferences-system-symbolic', _('Settings')]
@@ -19,6 +19,10 @@ const DEVICE_SHORTCUTS = {
 for (let name in imports.service.plugins) {
     if (name === 'base') continue;
 
+    // Plugins
+    DEVICE_PLUGINS.push(name);
+
+    // Shortcuts
     let meta = imports.service.plugins[name].Metadata;
 
     for (let [name, action] of Object.entries(meta.actions)) {
@@ -97,22 +101,13 @@ const SectionRow = GObject.registerClass({
         Object.assign(this, params);
     }
 
-    get icon() {
-        return this._icon.gicon;
-    }
-
-    set icon(gicon) {
-        this._icon.visible = (gicon);
-        this._icon.gicon = gicon;
-    }
-
     get icon_name() {
-        return this._icon.icon_name;
+        return this._icon.gicon.names[0];
     }
 
-    set icon_name(text) {
-        this._icon.visible = (text);
-        this._icon.icon_name = text;
+    set icon_name(icon_name) {
+        this._icon.visible = (icon_name);
+        this._icon.gicon = new Gio.ThemedIcon({name: icon_name});
     }
 
     get title() {
@@ -164,7 +159,7 @@ var DevicePreferences = GObject.registerClass({
         'command-editor', 'command-name', 'command-line',
         // Notifications
         'notification', 'notification-page',
-        'notification-apps',
+        'notification-list', 'notification-apps',
         // Telephony
         'telephony', 'telephony-page',
         'ringing-list', 'ringing-volume', 'talking-list', 'talking-volume',
@@ -174,7 +169,7 @@ var DevicePreferences = GObject.registerClass({
         'shortcuts-commands', 'shortcuts-commands-title', 'shortcuts-commands-list',
         // Advanced
         'advanced-page',
-        'plugin-list', 'danger-list'
+        'plugin-list', 'experimental-list', 'danger-list'
     ]
 }, class DevicePreferences extends Gtk.Grid {
 
@@ -246,7 +241,7 @@ var DevicePreferences = GObject.registerClass({
         this._onConnected(this.device);
 
         // Hide elements for any disabled plugins
-        for (let name of this.settings.get_strv('supported-plugins')) {
+        for (let name of DEVICE_PLUGINS) {
             if (this.hasOwnProperty(name)) {
                 this[name].visible = this.get_plugin_allowed(name);
             }
@@ -264,6 +259,16 @@ var DevicePreferences = GObject.registerClass({
         if (_WAYLAND) supported.splice(supported.indexOf('mousepad'), 1);
 
         return supported;
+    }
+
+    _onKeynavFailed(widget, direction) {
+        if (direction === Gtk.DirectionType.UP && widget.prev) {
+            widget.prev.child_focus(direction);
+        } else if (direction === Gtk.DirectionType.DOWN && widget.next) {
+            widget.next.child_focus(direction);
+        }
+
+        return true;
     }
 
     _onSwitcherRowSelected(box, row) {
@@ -378,6 +383,9 @@ var DevicePreferences = GObject.registerClass({
 
         settings = this._getSettings('notification');
         this.actions.add_action(settings.create_action('send-notifications'));
+
+        settings = this._getSettings('sms');
+        this.actions.add_action(settings.create_action('legacy-sms'));
 
         settings = this._getSettings('systemvolume');
         this.actions.add_action(settings.create_action('share-sinks'));
@@ -628,6 +636,10 @@ var DevicePreferences = GObject.registerClass({
         let notification_box = this.notification_page.get_child().get_child();
         notification_box.set_focus_vadjustment(this.notification_page.vadjustment);
 
+        // Continue focus chain between lists
+        this.notification_list.next = this.notification_apps;
+        this.notification_apps.prev = this.notification_list;
+
         this.notification_apps.set_sort_func(title_sort);
         this.notification_apps.set_header_func(section_separators);
 
@@ -654,7 +666,7 @@ var DevicePreferences = GObject.registerClass({
 
         for (let name in applications) {
             let row = new SectionRow({
-                icon: new Gio.ThemedIcon({name: applications[name].iconName}),
+                icon_name: applications[name].iconName,
                 title: name,
                 height_request: 48,
                 widget: new Gtk.Label({
@@ -731,6 +743,10 @@ var DevicePreferences = GObject.registerClass({
      * Telephony Settings
      */
     _telephonySettings() {
+        // Continue focus chain between lists
+        this.ringing_list.next = this.talking_list;
+        this.talking_list.prev = this.ringing_list;
+
         this.ringing_list.set_header_func(section_separators);
         this.talking_list.set_header_func(section_separators);
     }
@@ -785,7 +801,7 @@ var DevicePreferences = GObject.registerClass({
         widget.get_style_context().add_class('dim-label');
 
         let row = new SectionRow({
-            icon: new Gio.ThemedIcon({name: icon_name}),
+            icon_name: icon_name,
             title: label,
             widget: widget
         });
@@ -801,16 +817,6 @@ var DevicePreferences = GObject.registerClass({
 
     _setPluginKeybindings() {
         let keybindings = this.settings.get_value('keybindings').deep_unpack();
-
-        // TODO: Backwards compatibility; remove later
-        if (typeof keybindings === 'string') {
-            this.settings.set_value(
-                'keybindings',
-                new GLib.Variant('a{ss}', {})
-            );
-            // A ::changed signal should be emitted so we'll return
-            return;
-        }
 
         this.shortcuts_actions_list.foreach(row => {
             if (keybindings[row.action]) {
@@ -949,6 +955,10 @@ var DevicePreferences = GObject.registerClass({
         let advanced_box = this.advanced_page.get_child().get_child();
         advanced_box.set_focus_vadjustment(this.advanced_page.vadjustment);
 
+        // Continue focus chain between lists
+        this.plugin_list.next = this.experimental_list;
+        this.experimental_list.prev = this.plugin_list;
+
         this._pluginsId = this.settings.connect(
             'changed::supported-plugins',
             this._populatePlugins.bind(this)
@@ -977,20 +987,37 @@ var DevicePreferences = GObject.registerClass({
             'notify::active',
             this._togglePlugin.bind(this)
         );
+
+        if (this.hasOwnProperty(name)) {
+            this[name].visible = widget.active;
+        }
     }
 
     _populatePlugins() {
+        let supported = this.supported_plugins;
+
         this.plugin_list.foreach(row => {
             let checkbutton = row.get_child();
-            checkbutton.disconnect(checkbutton._togglePluginId);
+            let name = checkbutton.tooltip_text;
 
-            // HACK: temporary mitigator for mysterious GtkListBox leak
-            //row.destroy();
-            row.run_dispose();
-            imports.system.gc();
+            if (supported.includes(name)) {
+                checkbutton.active = this.get_plugin_allowed(name);
+                supported.splice(supported.indexOf(name), 1);
+            } else {
+                // Ensure we disconnect the checkbox and hide the setting
+                checkbutton.disconnect(checkbutton._togglePluginId);
+
+                if (this.hasOwnProperty(name)) {
+                    this[name].visible = false;
+                }
+
+                // HACK: temporary mitigator for mysterious GtkListBox leak
+                row.run_dispose();
+                imports.system.gc();
+            }
         });
 
-        for (let name of this.supported_plugins) {
+        for (let name of supported) {
             this._addPlugin(name);
         }
     }

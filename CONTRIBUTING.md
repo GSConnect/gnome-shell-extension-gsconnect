@@ -46,10 +46,56 @@ and it will be reviewed.
   
 ### Code Style
 
-JavaScript doesn't follow a formal style guide; the existing code is the guide.
-Prefer ES6 syntax, `if () {` long-form code blocks `}`, camelCase naming,
-_private and __implementation prefixes, 4-space indents and 80 character lines.
-Python can either imitate the same style or use PEP-8.
+GSConnect ships with an ESLint file, which run on any committed code by the CI
+and can be run on code simply with `eslint src/`. When in doubt, copy existing
+style. A short example:
+
+```js
+// ES6 Syntax and Classes
+class Foo extends Bar {
+
+    // 4-space indents and 80-character lines
+    constructor() {
+    }
+
+    // Properties first, only use GProperties when necessary
+    get baz() {
+        // _private and __implementation prefixes
+        return this._baz;
+    }
+
+    // Spaces between assigments and use %null instead of %undefined
+    qux(quz = null) {
+        // Guard clauses can be single-line
+        if (!quz) return;
+
+        // Otherwise, even single statements should be in blocks
+        if (some_conditional) {
+            // camelCase naming, unless sublcassing a GObject
+            doSomething();
+        }
+    }
+
+    // Prefer async functions over Promises, if possible
+    async doSomething() {
+        try {
+            throw new Error();
+        } catch (e) {
+            // Always catch and call `logError()` or manually reject the error
+            return Promise.reject(e);
+        }
+    }
+}
+// End files with a newline (\n)
+```
+
+### Developer Tool
+
+GSConnect ships with a development tool, although it is now hidden from users
+due to the confusion it caused. This is not guaranteed to ever work and should
+not be marked for translation. It can be started with `gapplication`:
+
+    $ gapplication action org.gnome.Shell.Extensions.GSConnect devel
   
 ### A Note About Template Strings
 

@@ -5,18 +5,72 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
 
-/**
- * Globals, overrides and polyfills are kept here so we don't mangle or collide
- * with the prototypes of other processes (eg. gnome-shell).
- */
-debug('loading service/__init__.js');
-
 
 /**
  * Check if we're in a Wayland session (mostly for input synthesis)
  * https://wiki.gnome.org/Accessibility/Wayland#Bugs.2FIssues_We_Must_Address
  */
 window._WAYLAND = GLib.getenv('XDG_SESSION_TYPE') === 'wayland';
+
+
+/**
+ * A custom debug function that logs at LEVEL_MESSAGE to avoid the need for env
+ * variables to be set.
+ *
+ * @param {Error|string} message - A string or Error to log
+ * @param {string} [prefix] - An optional prefix for the warning
+ */
+const _debugFunc = function(message, prefix = null) {
+    let caller;
+
+    if (message.stack) {
+        caller = message.stack.split('\n')[0];
+        message = `${message.message}\n${message.stack}`;
+    } else {
+        message = JSON.stringify(message, null, 2);
+        caller = (new Error()).stack.split('\n')[1];
+    }
+
+    // Prepend prefix
+    message = (prefix) ? `${prefix}: ${message}` : message;
+
+    // Cleanup the stack
+    let [, func, file, line] = caller.match(/([^@]*)@([^:]*):([^:]*)/);
+    let script = file.replace(gsconnect.extdatadir, '');
+
+    GLib.log_structured('GSConnect', GLib.LogLevelFlags.LEVEL_MESSAGE, {
+        'MESSAGE': `[${script}:${func}:${line}]: ${message}`,
+        'SYSLOG_IDENTIFIER': 'org.gnome.Shell.Extensions.GSConnect',
+        'CODE_FILE': file,
+        'CODE_FUNC': func,
+        'CODE_LINE': line
+    });
+};
+
+// Swap the function out for a no-op anonymous function for speed
+window.debug = gsconnect.settings.get_boolean('debug') ? _debugFunc : () => {};
+
+gsconnect.settings.connect('changed::debug', (settings) => {
+    window.debug = settings.get_boolean('debug') ? _debugFunc : () => {};
+});
+
+
+/**
+ * A simple warning function along the lines of logError()
+ *
+ * @param {Error|string} message - A string or Error to log
+ * @param {string} [prefix] - An optional prefix for the warning
+ */
+window.warning = function(message, prefix = null) {
+    message = (message.message) ? message.message : message;
+    message = (prefix) ? `${prefix}: ${message}` : message;
+
+    GLib.log_structured(
+        'GSConnect',
+        GLib.LogLevelFlags.LEVEL_WARNING,
+        {MESSAGE: `WARNING: ${message}`}
+    );
+};
 
 
 /**
@@ -97,6 +151,61 @@ JSON.dump = function (obj, file, sync = false) {
                 }
             );
         });
+    }
+};
+
+
+/**
+ * The same regular expression used in GNOME Shell
+ *
+ * http://daringfireball.net/2010/07/improved_regex_for_matching_urls
+ */
+const _balancedParens = '\\((?:[^\\s()<>]+|(?:\\(?:[^\\s()<>]+\\)))*\\)';
+const _leadingJunk = '[\\s`(\\[{\'\\"<\u00AB\u201C\u2018]';
+const _notTrailingJunk = '[^\\s`!()\\[\\]{};:\'\\".,<>?\u00AB\u00BB\u201C\u201D\u2018\u2019]';
+
+const _urlRegexp = new RegExp(
+    '(^|' + _leadingJunk + ')' +
+    '(' +
+        '(?:' +
+            '(?:http|https|ftp)://' +             // scheme://
+            '|' +
+            'www\\d{0,3}[.]' +                    // www.
+            '|' +
+            '[a-z0-9.\\-]+[.][a-z]{2,4}/' +       // foo.xx/
+        ')' +
+        '(?:' +                                   // one or more:
+            '[^\\s()<>]+' +                       // run of non-space non-()
+            '|' +                                 // or
+            _balancedParens +                     // balanced parens
+        ')+' +
+        '(?:' +                                   // end with:
+            _balancedParens +                     // balanced parens
+            '|' +                                 // or
+            _notTrailingJunk +                    // last non-junk char
+        ')' +
+    ')', 'gi');
+
+
+/**
+ * Return a string with URLs couched in <a> tags, parseable by Pango and
+ * using the same RegExp as GNOME Shell.
+ *
+ * @param {string} text - The string to be modified
+ * @return {string} - the modified text
+ */
+String.prototype.linkify = function(title = null) {
+    let text = GLib.markup_escape_text(this, -1);
+
+    _urlRegexp.lastIndex = 0;
+
+    if (title) {
+        return text.replace(
+            _urlRegexp,
+            `$1<a href="$2" title="${title}">$2</a>`
+        );
+    } else {
+        return text.replace(_urlRegexp, '$1<a href="$2">$2</a>');
     }
 };
 
@@ -283,7 +392,7 @@ Object.defineProperties(Gio.Menu.prototype, {
  * @param {string} cert_path - Absolute path to a x509 certificate in PEM format
  * @param {string} key_path - Absolute path to a private key in PEM format
  *
- * See :https://github.com/KDE/kdeconnect-kde/blob/master/core/kdeconnectconfig.cpp#L119
+ * See: https://github.com/KDE/kdeconnect-kde/blob/master/core/kdeconnectconfig.cpp#L119
  */
 Gio.TlsCertificate.new_for_paths = function (cert_path, key_path) {
     let cert_exists = GLib.file_test(cert_path, GLib.FileTest.EXISTS);
@@ -306,14 +415,6 @@ Gio.TlsCertificate.new_for_paths = function (cert_path, key_path) {
         proc.init(null);
         proc.wait_check(null);
     }
-
-    // Ensure the private key is in the keyring
-    let ssh_add = new Gio.Subprocess({
-        argv: [gsconnect.metadata.bin.ssh_add, key_path],
-        flags: Gio.SubprocessFlags.STDOUT_SILENCE | Gio.SubprocessFlags.STDERR_SILENCE
-    });
-    ssh_add.init(null);
-    ssh_add.wait_check(null);
 
     return Gio.TlsCertificate.new_from_files(cert_path, key_path);
 };
@@ -515,7 +616,7 @@ GLib.Variant.prototype.full_unpack = _full_unpack;
 
 
 /**
- * A convenience function for connecting Gtk template callbacks
+ * A convenience functions for connecting/disconnecting Gtk template callbacks
  */
 Gtk.Widget.prototype.connect_template = function() {
     this.$templateHandlers = [];
@@ -528,10 +629,6 @@ Gtk.Widget.prototype.connect_template = function() {
     });
 };
 
-
-/**
- * A convenience function for disconnecting Gtk template callbacks
- */
 Gtk.Widget.prototype.disconnect_template = function() {
     Gtk.Widget.set_connect_func.call(this, function() {});
     this.$templateHandlers.map(([obj, id]) => obj.disconnect(id));

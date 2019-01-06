@@ -28,9 +28,6 @@ gsconnect.proxyProperties = function (iface) {
     let info = gsconnect.dbusinfo.lookup_interface(iface.g_interface_name);
 
     for (let property of info.properties) {
-        // Properties already defined for this proxy
-        if (iface.hasOwnProperty(property.name)) return;
-
         Object.defineProperty(iface, property.name, {
             get: () => {
                 try {
@@ -61,16 +58,10 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
         this.keybindingManager = new Keybindings.Manager();
 
-        // Service Actions
-        this.service = Gio.DBusActionGroup.get(
-            Gio.DBus.session,
-            gsconnect.app_id,
-            gsconnect.app_path
-        );
-
         // Service Indicator
         this._indicator = this._addIndicator();
         this._indicator.icon_name = 'org.gnome.Shell.Extensions.GSConnect-symbolic';
+        this._indicator.visible = false;
 
         AggregateMenu._indicators.insert_child_at_index(this.indicators, 0);
         AggregateMenu._gsconnect = this;
@@ -101,10 +92,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         this._item.menu.addMenuItem(new DoNotDisturb.MenuItem());
 
         // Service Menu -> "Mobile Settings"
-        this._item.menu.addAction(
-            _('Mobile Settings'),
-            () => this.service.activate_action('settings', null)
-        );
+        this._item.menu.addAction(_('Mobile Settings'), this._settings);
 
         // Watch for UI prefs
         this._gsettingsId = gsconnect.settings.connect(
@@ -133,8 +121,8 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 Gio.DBusObjectManagerClient.new_for_bus(
                     Gio.BusType.SESSION,
                     Gio.DBusObjectManagerClientFlags.DO_NOT_AUTO_START,
-                    gsconnect.app_id,
-                    gsconnect.app_path,
+                    'org.gnome.Shell.Extensions.GSConnect',
+                    '/org/gnome/Shell/Extensions/GSConnect',
                     null,
                     this._cancellable,
                     (manager, res) => {
@@ -172,7 +160,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             if (this.manager.name_owner === null) {
                 GLib.timeout_add_seconds(0, 5, () => {
                     if (this.manager.name_owner === null) {
-                        this._activate().catch(debug);
+                        this._activate();
                     }
 
                     return GLib.SOURCE_REMOVE;
@@ -196,10 +184,6 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
     }
 
     _onInterfacePropertiesChanged(manager, object, iface, changed, invalidated) {
-        if (iface.g_interface_name !== 'org.gnome.Shell.Extensions.GSConnect.Device') {
-            return;
-        }
-
         changed = changed.deep_unpack();
 
         if (changed.hasOwnProperty('Connected') || changed.hasOwnProperty('Paired')) {
@@ -239,7 +223,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             // Add the battery to the submenu item
             if (!this._item._battery) {
                 this._item._battery = new Device.Battery({
-                    object: this.manager.get_object(device.g_object_path),
+                    device: device,
                     opacity: 128
                 });
                 this._item.actor.insert_child_below(
@@ -250,7 +234,11 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         } else {
             if (this.available.length > 1) {
                 //TRANSLATORS: %d is the number of devices connected
-                this._item.label.text = gsconnect.ngettext('%d Connected', '%d Connected', this.available.length).format(this.available.length);
+                this._item.label.text = gsconnect.ngettext(
+                    '%d Connected',
+                    '%d Connected',
+                    this.available.length
+                ).format(this.available.length);
             } else {
                 this._item.label.text = _('Mobile Devices');
             }
@@ -264,61 +252,71 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
     }
 
     _activate() {
-        if (this._activating) {
-            return Promise.resolve(true);
-        }
-
+        if (this._activating) return;
         this._activating = true;
 
-        return new Promise((resolve, reject) => {
-            Gio.DBus.session.call(
-                'org.freedesktop.DBus',
-                '/org/freedesktop/DBus',
-                'org.freedesktop.DBus',
-                'StartServiceByName',
-                new GLib.Variant('(su)', [gsconnect.app_id, 0]),
-                null,
-                Gio.DBusCallFlags.NONE,
-                -1,
-                this._cancellable,
-                (connection, res) => {
-                    try {
-                        this._activating = false;
-                        resolve(connection.call_finish(res));
-                    } catch (e) {
-                        reject(e);
-                    }
+        Gio.DBus.session.call(
+            'org.gnome.Shell.Extensions.GSConnect',
+            '/org/gnome/Shell/Extensions/GSConnect',
+            'org.freedesktop.Application',
+            'Activate',
+            new GLib.Variant('(a{sv})', [{}]),
+            null,
+            Gio.DBusCallFlags.NONE,
+            -1,
+            this._cancellable,
+            (connection, res) => {
+                try {
+                    this._activating = false;
+                    connection.call_finish(res);
+                } catch (e) {
+                    // Silence errors
                 }
-            );
-        });
+            }
+        );
     }
 
-    async _onNameOwnerChanged(manager) {
+    _settings() {
+        Gio.DBus.session.call(
+            'org.gnome.Shell.Extensions.GSConnect',
+            '/org/gnome/Shell/Extensions/GSConnect',
+            'org.freedesktop.Application',
+            'ActivateAction',
+            new GLib.Variant('(sava{sv})', ['settings', [], {}]),
+            null,
+            Gio.DBusCallFlags.NONE,
+            -1,
+            null,
+            (connection, res) => {
+                try {
+                    connection.call_finish(res);
+                } catch (e) {
+                    logError(e, 'GSConnect');
+                }
+            }
+        );
+    }
+
+    _onNameOwnerChanged() {
         try {
-            if (manager.name_owner === null) {
+            if (this.manager.name_owner === null) {
                 this._indicator.visible = false;
-                await this._activate();
+                this._activate();
             } else {
-                this._indicator.visible = true;
+                for (let object of this.manager.get_objects()) {
+                    for (let iface of object.get_interfaces()) {
+                        this._onInterfaceAdded(this.manager, object, iface);
+                    }
+                }
             }
         } catch (e) {
-            Gio.DBusError.strip_remote_error(e);
-
-            if (!e.code || e.code !== Gio.IOErrorEnum.CANCELLED) {
-                logError(e, 'GSConnect');
-            }
+            logError(e);
         }
     }
 
     _onInterfaceAdded(manager, object, iface) {
         gsconnect.proxyProperties(iface);
 
-        // We only handle devices here
-        if (iface.g_interface_name !== 'org.gnome.Shell.Extensions.GSConnect.Device') {
-            return;
-        }
-
-        debug(`GSConnect: Adding ${iface.Name}`);
         this.devices.add(iface);
 
         // GActions
@@ -345,15 +343,11 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         });
 
         // Device Indicator
-        let indicator = new Device.Indicator({
-            object: object,
-            device: iface
-        });
+        let indicator = new Device.Indicator({device: iface});
         Main.panel.addToStatusArea(iface.g_object_path, indicator);
 
         // Device Menu
         let menu = new Device.Menu({
-            object: object,
             device: iface,
             menu_type: 'list'
         });
@@ -375,8 +369,6 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
     _onObjectRemoved(manager, object) {
         let iface = object.get_interface('org.gnome.Shell.Extensions.GSConnect.Device');
-
-        debug(`GSConnect: Removing ${iface.Name}`);
 
         // Release keybindings
         iface.settings.disconnect(iface._keybindingsChangedId);
@@ -405,15 +397,6 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             // Get the keybindings
             let keybindings = iface.settings.get_value('keybindings').deep_unpack();
 
-            // TODO: Backwards compatible check for keybindings <= v12
-            if (typeof keybindings === 'string') {
-                iface.settings.set_value(
-                    'keybindings',
-                    new GLib.Variant('a{ss}', {})
-                );
-                return;
-            }
-
             // Apply the keybindings
             for (let [action, accelerator] of Object.entries(keybindings)) {
                 let [, name, parameter] = Gio.Action.parse_detailed_name(action);
@@ -428,7 +411,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 }
             }
         } catch (e) {
-            debug(e);
+            logError(e);
         }
     }
 
@@ -478,9 +461,7 @@ var serviceIndicator = null;
 
 
 function init() {
-    debug(`Initializing GSConnect v${gsconnect.metadata.version}`);
-
-    Gtk.IconTheme.get_default().add_resource_path(gsconnect.app_path + '/icons');
+    Gtk.IconTheme.get_default().add_resource_path('/org/gnome/Shell/Extensions/GSConnect/icons');
 
     // If installed as a user extension, this will install the Desktop entry,
     // DBus and systemd service files necessary for DBus activation and
@@ -498,16 +479,12 @@ function init() {
 
 
 function enable() {
-    debug(`Enabling GSConnect v${gsconnect.metadata.version}`);
-
     serviceIndicator = new ServiceIndicator();
     Notification.patchGtkNotificationSources();
 }
 
 
 function disable() {
-    debug(`Disabling GSConnect v${gsconnect.metadata.version}`);
-
     serviceIndicator.destroy();
     serviceIndicator = null;
     Notification.unpatchGtkNotificationSources();

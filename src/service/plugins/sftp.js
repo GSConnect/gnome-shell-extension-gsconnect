@@ -46,6 +46,11 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'sftp');
 
+        // A reusable launcher for silence procs
+        this._launcher = new Gio.SubprocessLauncher({
+            flags: Gio.SubprocessFlags.STDOUT_SILENCE | Gio.SubprocessFlags.STDERR_SILENCE
+        });
+
         this._directories = {};
         this._mount = null;
         this._mounting = false;
@@ -143,6 +148,9 @@ var Plugin = GObject.registerClass({
 
                 // HACK: Test an SFTP mount for this IP in the 1716-1764 range
                 this._uriRegex = new RegExp(`sftp://(${this.ip}):(171[6-9]|17[2-5][0-9]|176[0-4])`);
+
+                // Ensure the private key is in the keyring
+                await this._sftp_add_identity();
             }
 
             // If 'multiPaths' is present setup a local URI for each
@@ -192,12 +200,16 @@ var Plugin = GObject.registerClass({
                     try {
                         resolve(file.mount_enclosing_volume_finish(res));
                     } catch (e) {
-                        // TODO: special case when the GMount didn't unmount
-                        // properly but is still on the same port (code 17).
+                        // Special case when the GMount didn't unmount properly
+                        // but is still on the same port and can be reused.
                         if (e.code && e.code === Gio.IOErrorEnum.ALREADY_MOUNTED) {
-                            logWarning(e, this.device.name);
+                            warning(e, this.device.name);
                             resolve(true);
+
+                        // There's a good chance this is a host key verification
+                        // error; regardless we'll remove the key for security.
                         } else {
+                            this._sftp_remove_host(this._port);
                             reject(e);
                         }
                     }
@@ -213,10 +225,11 @@ var Plugin = GObject.registerClass({
                 // Check if this is our mount
                 if (this._uri === uri) {
                     this._mount = mount;
+                    this._mount.connect('unmounted', this.unmount.bind(this));
 
                 // Or if it's a stale mount we need to cleanup
                 } else if (this._uriRegex.test(uri)) {
-                    logWarning('Removing stale GMount', this.device.name);
+                    warning('Removing stale GMount', this.device.name);
                     await this._sftp_unmount(mount);
                 }
             }
@@ -239,6 +252,57 @@ var Plugin = GObject.registerClass({
                 }
             });
         });
+    }
+
+    /**
+     * Add GSConnect's private key identity to the authentication agent so our
+     * identity can be verified by Android during private key authentication.
+     */
+    _sftp_add_identity() {
+        let ssh_add = this._launcher.spawnv([
+            gsconnect.metadata.bin.ssh_add,
+            GLib.build_filenamev([gsconnect.configdir, 'private.pem'])
+        ]);
+
+        return new Promise((resolve, reject) => {
+            ssh_add.wait_check_async(null, (proc, res) => {
+                try {
+                    resolve(proc.wait_check_finish(res));
+                } catch (e) {
+                    reject(e);
+                }
+            });
+        });
+    }
+
+    /**
+     * Remove old host keys from ~/.ssh/known_hosts for this host from the range
+     * used by KDE Connect (1739-1764).
+     *
+     * @param {number} port - The port to remove the host key for
+     */
+    async _sftp_remove_host(port = 1739) {
+        try {
+            let ssh_keygen = this._launcher.spawnv([
+                gsconnect.metadata.bin.ssh_keygen,
+                '-R',
+                `[${this.ip}]:${port}`
+            ]);
+
+            await new Promise((resolve, reject) => {
+                ssh_keygen.wait_check_async(null, (proc, res) => {
+                    try {
+                        resolve(proc.wait_check_finish(res));
+                    } catch (e) {
+                        reject(e);
+                    }
+                });
+            });
+
+            debug(`removed host key for [${this.ip}]:${port}`);
+        } catch (e) {
+            warning(e, this.device.name);
+        }
     }
 
     /**
@@ -336,10 +400,9 @@ var Plugin = GObject.registerClass({
         }
 
         return new Promise ((resolve, reject) => {
-            let proc = new Gio.Subprocess({argv: argv});
-            proc.init(null);
+            let umount = this._launcher.spawnv(argv);
 
-            proc.wait_async(null, (proc, res) => {
+            umount.wait_async(null, (proc, res) => {
                 try {
                     resolve(proc.wait_finish(res));
                 } catch (e) {
@@ -363,7 +426,7 @@ var Plugin = GObject.registerClass({
                         throw new Error(msg);
                     }
 
-                    logWarning(msg, `${this.device.name}: sshfs`);
+                    warning(msg, `${this.device.name}: sshfs`);
                     this._sshfs_check(stream);
                 }
             } catch (e) {

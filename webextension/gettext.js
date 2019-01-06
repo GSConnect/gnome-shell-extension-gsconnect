@@ -70,14 +70,22 @@ let info, iter = podir.enumerate_children('standard::name', 0, null);
 while ((info = iter.next_file(null))) {
     let [lang, ext] = info.get_name().split('.');
 
-    if (ext !== 'po') {
-        continue;
-    }
+    // Only process PO files
+    if (ext !== 'po') continue;
 
-    print(`Processing "${lang}"`);
+    /**
+     * Convert glibc language codes
+     *
+     * pt_BR => pt-BR
+     * sr@latin => sr-Latn
+     */
+    let langCode = lang.replace('_', '-');
+    langCode = langCode.replace('@latin', '-Latn');
+
+    print(`Processing "${lang}" as "${langCode}"`);
 
     // Make a new dir and file
-    let jsondir = localedir.get_child(lang);
+    let jsondir = localedir.get_child(langCode);
     let jsonfile = jsondir.get_child('messages.json');
     GLib.mkdir_with_parents(jsondir.get_path(), 448);
 

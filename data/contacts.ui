@@ -45,7 +45,6 @@
         <property name="margin_right">6</property>
         <property name="margin_top">6</property>
         <property name="margin_bottom">6</property>
-        <property name="primary_icon_name">x-office-address-book-symbolic</property>
         <property name="placeholder_text" translatable="yes">Type a phone number or name</property>
         <property name="input_purpose">phone</property>
         <signal name="search-changed" handler="_onSearchChanged" swapped="no"/>

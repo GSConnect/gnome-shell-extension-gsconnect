@@ -402,7 +402,7 @@ var Window = GObject.registerClass({
             download_dir = GLib.build_filenamev([GLib.get_home_dir(), 'Downloads']);
         }
 
-        // TODO: Copied from GNOME Control Center; may change
+        // TRANSLATORS: Description of where directly shared files are stored.
         this.info_label.label = _('Transferred files are placed in the <a href="%s">Downloads</a> folder.').format(
             'file://' + download_dir
         );
@@ -514,10 +514,8 @@ var Window = GObject.registerClass({
             });
 
             // Persist
-            this._about.connect(
-                'delete-event',
-                () => this._about.hide_on_delete()
-            );
+            this._about.connect('response', (dialog) => dialog.hide_on_delete());
+            this._about.connect('delete-event', (dialog) => dialog.hide_on_delete());
         }
 
         this._about.present();

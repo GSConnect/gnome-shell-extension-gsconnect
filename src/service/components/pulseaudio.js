@@ -8,17 +8,12 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
 
-try {
-    // Add gnome-shell's typelib dir to the search path
-    let typelibDir = GLib.build_filenamev([gsconnect.libdir, 'gnome-shell']);
-    GIRepository.Repository.prepend_search_path(typelibDir);
-    GIRepository.Repository.prepend_library_path(typelibDir);
+// Add gnome-shell's typelib dir to the search path
+let typelibDir = GLib.build_filenamev([gsconnect.libdir, 'gnome-shell']);
+GIRepository.Repository.prepend_search_path(typelibDir);
+GIRepository.Repository.prepend_library_path(typelibDir);
 
-    var Gvc = imports.gi.Gvc;
-} catch (e) {
-    e.name = 'GvcError';
-    throw e;
-}
+const Gvc = imports.gi.Gvc;
 
 
 /**

@@ -18,7 +18,6 @@ imports.gi.versions.Pango = '1.0';
 imports.gi.versions.UPowerGlib = '1.0';
 
 const Gdk = imports.gi.Gdk;
-const GdkPixbuf = imports.gi.GdkPixbuf;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
@@ -95,7 +94,12 @@ const Service = GObject.registerClass({
         GLib.set_prgname(gsconnect.app_id);
         GLib.set_application_name('GSConnect');
 
-        this.register(null);
+        // Track devices with id as key
+        this._devices = new Map();
+
+        // Properties
+        gsconnect.settings.bind('discoverable', this, 'discoverable', 0);
+        gsconnect.settings.bind('public-name', this, 'name', 0);
     }
 
     get certificate() {
@@ -124,7 +128,7 @@ const Service = GObject.registerClass({
                 type: 'kdeconnect.identity',
                 body: {
                     deviceId: this.certificate.common_name,
-                    deviceName: gsconnect.settings.get_string('public-name'),
+                    deviceName: this.name,
                     deviceType: this.type,
                     tcpPort: 1716,
                     protocolVersion: 7,
@@ -304,12 +308,9 @@ const Service = GObject.registerClass({
      */
     _initActions() {
         let actions = [
-            // Device
-            ['deviceAction', this._deviceAction.bind(this), '(ssbv)'],
-
-            // Service actions
             ['broadcast', this.broadcast.bind(this)],
             ['devel', this._devel.bind(this)],
+            ['device', this._device.bind(this), '(ssbv)'],
             ['error', this._error.bind(this), 'a{ss}'],
             ['settings', this._settings.bind(this)],
             ['wiki', this._wiki.bind(this), 's']
@@ -340,7 +341,7 @@ const Service = GObject.registerClass({
      * @param {GLib.Variant(b)} parameter[2] - %false if the parameter is null
      * @param {GLib.Variant(v)} parameter[3] - GAction parameter
      */
-    _deviceAction(action, parameter) {
+    _device(action, parameter) {
         parameter = parameter.unpack();
 
         let id = parameter[0].unpack();
@@ -497,34 +498,27 @@ const Service = GObject.registerClass({
             logError(error);
 
             // Create an new notification
-            let id, title, body, icon, time;
+            let id, title, body, icon, priority, time;
             let notif = new Gio.Notification();
-            notif.set_priority(Gio.NotificationPriority.URGENT);
 
             switch (error.name) {
                 // A TLS certificate failure
                 case 'AuthenticationError':
-                    id = `${Date.now()}`;
+                    id = `"${error.deviceName}"@${error.deviceHost}`;
                     title = _('Authentication Failure');
                     time = GLib.DateTime.new_now_local().format('%F %R');
                     body = `"${error.deviceName}"@${error.deviceHost} (${time})`;
                     icon = new Gio.ThemedIcon({name: 'dialog-error'});
+                    priority = Gio.NotificationPriority.URGENT;
                     break;
 
                 case 'LanError':
                 case 'ProxyError':
                     id = error.name;
                     title = _('Network Error');
-                    body = error.message + '\n\n' + _('Click for help troubleshooting');
-                    icon = new Gio.ThemedIcon({name: 'network-error'});
-                    notif.set_default_action(`app.wiki('Help#${error.name}')`);
-                    break;
-
-                case 'GvcError':
-                    id = error.name;
-                    title = _('PulseAudio Error');
                     body = _('Click for help troubleshooting');
-                    icon = new Gio.ThemedIcon({name: 'dialog-error'});
+                    icon = new Gio.ThemedIcon({name: 'network-error'});
+                    priority = Gio.NotificationPriority.URGENT;
                     notif.set_default_action(`app.wiki('Help#${error.name}')`);
                     break;
 
@@ -533,44 +527,43 @@ const Service = GObject.registerClass({
                     title = _('Discovery Disabled');
                     body = _('Discovery has been disabled due to the number of devices on this network.');
                     icon = new Gio.ThemedIcon({name: 'dialog-warning'});
-                    notif.set_default_action('app.preferences');
-                    notif.set_priority(Gio.NotificationPriority.NORMAL);
+                    priority = Gio.NotificationPriority.NORMAL;
+                    notif.set_default_action('app.settings');
                     break;
 
                 case 'PluginError':
                     id = `${error.plugin}-error`;
-                    title = _('%s Plugin Failed To Load').format(error.label);
-                    body = error.message + '\n\n' + _('Click for more information');
+                    title = _('%s Plugin Failed To Load').format(error.plugin);
+                    body = _('Click for more information');
                     icon = new Gio.ThemedIcon({name: 'dialog-error'});
-
+                    priority = Gio.NotificationPriority.HIGH;
                     error = new GLib.Variant('a{ss}', {
                         name: error.name.trim(),
                         message: error.message.trim(),
                         stack: error.stack.trim()
                     });
-
                     notif.set_default_action_and_target('app.error', error);
-                    notif.set_priority(Gio.NotificationPriority.HIGH);
                     break;
 
                 default:
                     id = `${Date.now()}`;
-                    title = error.name;
-                    body = error.message.trim();
+                    title = error.name.trim();
+                    body = _('Click for more information');
                     icon = new Gio.ThemedIcon({name: 'dialog-error'});
                     error = new GLib.Variant('a{ss}', {
-                        name: error.name,
-                        message: error.message,
-                        stack: error.stack
+                        name: error.name.trim(),
+                        message: error.message.trim(),
+                        stack: error.stack.trim()
                     });
                     notif.set_default_action_and_target('app.error', error);
-                    notif.set_priority(Gio.NotificationPriority.HIGH);
+                    priority = Gio.NotificationPriority.HIGH;
             }
 
             // Create an urgent notification
             notif.set_title(`GSConnect: ${title}`);
             notif.set_body(body);
             notif.set_icon(icon);
+            notif.set_priority(priority);
 
             // Bypass override
             super.send_notification(id, notif);
@@ -591,13 +584,13 @@ const Service = GObject.registerClass({
                     this[name] = new module.Service();
                 }
             } catch (e) {
-                this.notify_error(e);
+                logError(e);
             }
         }
     }
 
     vfunc_activate() {
-        this.broadcast();
+        super.vfunc_activate();
     }
 
     vfunc_startup() {
@@ -623,25 +616,14 @@ const Service = GObject.registerClass({
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         );
 
-        // Ensure out handlers are registered
-        let appInfo = Gio.DesktopAppInfo.new(`${gsconnect.app_id}.desktop`);
-        appInfo.add_supports_type('x-scheme-handler/sms');
-        appInfo.add_supports_type('x-scheme-handler/tel');
-
-        // Properties
-        gsconnect.settings.bind(
-            'discoverable',
-            this,
-            'discoverable',
-            Gio.SettingsBindFlags.DEFAULT
-        );
-
-        gsconnect.settings.bind(
-            'public-name',
-            this,
-            'name',
-            Gio.SettingsBindFlags.DEFAULT
-        );
+        // Ensure our handlers are registered
+        try {
+            let appInfo = Gio.DesktopAppInfo.new(`${gsconnect.app_id}.desktop`);
+            appInfo.add_supports_type('x-scheme-handler/sms');
+            appInfo.add_supports_type('x-scheme-handler/tel');
+        } catch (e) {
+            warning(e);
+        }
 
         // Keep identity updated and broadcast any name changes
         gsconnect.settings.connect('changed::public-name', (settings) => {
@@ -653,19 +635,6 @@ const Service = GObject.registerClass({
 
         // Components (PulseAudio, UPower, etc)
         this._loadComponents();
-
-        // Track devices with id as key
-        this._devices = new Map();
-
-        // Load cached devices
-        let cached = gsconnect.settings.get_strv('devices');
-        debug(`Loading ${cached.length} device(s) from cache`);
-        cached.map(id => {
-            let device = new Device.Device({body: {deviceId: id}});
-            this._devices.set(device.id, device);
-            device.loadPlugins();
-        });
-        this.notify('devices');
 
         // Lan.ChannelService
         try {
@@ -688,17 +657,17 @@ const Service = GObject.registerClass({
     }
 
     vfunc_dbus_register(connection, object_path) {
-        try {
-            super.vfunc_dbus_register(connection, object_path);
-        } catch (e) {
-            return false;
-        }
-
-        // org.freedesktop.ObjectManager interface; only devices currently
         this.objectManager = new Gio.DBusObjectManagerServer({
             connection: connection,
             object_path: object_path
         });
+
+        // Load cached devices
+        for (let id of gsconnect.settings.get_strv('devices')) {
+            let device = new Device.Device({body: {deviceId: id}});
+            this._devices.set(id, device);
+            device.loadPlugins();
+        }
 
         return true;
     }
@@ -730,7 +699,7 @@ const Service = GObject.registerClass({
                         break;
 
                     default:
-                        logWarning(`Unsupported URI: ${file.get_uri()}`);
+                        warning(`Unsupported URI: ${file.get_uri()}`);
                         return;
                 }
 
@@ -747,28 +716,37 @@ const Service = GObject.registerClass({
     }
 
     vfunc_shutdown() {
-        super.vfunc_shutdown();
-
         // Destroy the channel providers first to avoid any further connections
-        if (this.lan) {
-            this.lan.destroy();
+        try {
+            if (this.lan) this.lan.destroy();
+        } catch (e) {
+            debug(e);
         }
 
-        if (this.bluetooth) {
-            this.bluetooth.destroy();
+        try {
+            if (this.bluetooth) this.bluetooth.destroy();
+        } catch (e) {
+            debug(e);
         }
 
         // This must be done before ::dbus-unregister is emitted
         this._devices.forEach(device => device.destroy());
 
         // Destroy the remaining components last
-        if (this.mpris) {
-            this.mpris.destroy();
+        try {
+            if (this.mpris) this.mpris.destroy();
+        } catch (e) {
+            debug(e);
         }
 
-        if (this.notification) {
-            this.notification.destroy();
+        try {
+            if (this.notification) this.notification.destroy();
+        } catch (e) {
+            debug(e);
         }
+
+        // Chain up last (application->priv->did_shutdown)
+        super.vfunc_shutdown();
     }
 });
 

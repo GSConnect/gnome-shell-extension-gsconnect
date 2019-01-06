@@ -349,7 +349,7 @@ var Plugin = GObject.registerClass({
                 icon: new Gio.ThemedIcon({name: iconName})
             });
         } catch (e) {
-            logWarning(e, this.device.name);
+            warning(e, this.device.name);
         }
     }
 

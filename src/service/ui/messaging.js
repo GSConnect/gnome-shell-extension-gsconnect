@@ -7,72 +7,7 @@ const Gtk = imports.gi.Gtk;
 const Pango = imports.gi.Pango;
 
 const Contacts = imports.service.ui.contacts;
-
-
-/**
- * SMS Message event type. Currently all events are TEXT_MESSAGE.
- *
- * TEXT_MESSAGE: Has a "body" field which contains pure, human-readable text
- */
-var MessageEvent = {
-    TEXT_MESSAGE: 0x1
-};
-
-
-/**
- * SMS Message status. READ/UNREAD match the 'read' field from the Android App
- * message packet.
- *
- * UNREAD: A message not marked as read
- * READ: A message marked as read
- */
-var MessageStatus = {
-    UNREAD: 0,
-    READ: 1
-};
-
-
-/**
- * SMS Message direction. IN/OUT match the 'type' field from the Android App
- * message packet.
- *
- * NOTICE: A general message (eg. timestamp, missed call)
- * IN: An incoming message
- * OUT: An outgoing message
- */
-var MessageType = {
-    NOTICE: 0,
-    IN: 1,
-    OUT: 2
-};
-
-
-// http://daringfireball.net/2010/07/improved_regex_for_matching_urls
-const _balancedParens = '\\((?:[^\\s()<>]+|(?:\\(?:[^\\s()<>]+\\)))*\\)';
-const _leadingJunk = '[\\s`(\\[{\'\\"<\u00AB\u201C\u2018]';
-const _notTrailingJunk = '[^\\s`!()\\[\\]{};:\'\\".,<>?\u00AB\u00BB\u201C\u201D\u2018\u2019]';
-
-const _urlRegexp = new RegExp(
-    '(^|' + _leadingJunk + ')' +
-    '(' +
-        '(?:' +
-            '(?:http|https|ftp)://' +             // scheme://
-            '|' +
-            'www\\d{0,3}[.]' +                    // www.
-            '|' +
-            '[a-z0-9.\\-]+[.][a-z]{2,4}/' +       // foo.xx/
-        ')' +
-        '(?:' +                                   // one or more:
-            '[^\\s()<>]+' +                       // run of non-space non-()
-            '|' +                                 // or
-            _balancedParens +                     // balanced parens
-        ')+' +
-        '(?:' +                                   // end with:
-            _balancedParens +                     // balanced parens
-            '|' +                                 // or
-            _notTrailingJunk +                    // last non-junk char
-        ')' +
-    ')', 'gi');
+const Sms = imports.service.plugins.sms;
 
 
 /**
@@ -129,6 +64,10 @@ function getShortTime(time) {
             // TRANSLATORS: Time duration in minutes (eg. 15 minutes)
             return ngettext('%d minute', '%d minutes', (diff / GLib.TIME_SPAN_MINUTE)).format(diff / GLib.TIME_SPAN_MINUTE);
 
+        // Less than a day ago
+        case (diff < GLib.TIME_SPAN_DAY):
+            return time.format('%l:%M %p');
+
         case (diff < (GLib.TIME_SPAN_DAY * 7)):
             return time.format('%a');
 
@@ -147,10 +86,11 @@ var ConversationMessage = GObject.registerClass({
 
     _init(message) {
         this.message = message;
+        let incoming = (message.type === Sms.MessageType.INBOX);
 
         super._init({
-            label: this._linkify(message.body),
-            halign: (message.type === MessageType.IN) ? Gtk.Align.START : Gtk.Align.END,
+            label: message.body.linkify(message.date),
+            halign: incoming ? Gtk.Align.START : Gtk.Align.END,
             selectable: true,
             tooltip_text: getTime(message.date),
             use_markup: true,
@@ -160,7 +100,7 @@ var ConversationMessage = GObject.registerClass({
             xalign: 0
         });
 
-        if (message.type === MessageType.IN) {
+        if (incoming) {
             this.get_style_context().add_class('message-in');
         } else {
             this.get_style_context().add_class('message-out');
@@ -185,23 +125,6 @@ var ConversationMessage = GObject.registerClass({
 
         return false;
     }
-
-    /**
-     * Return a string with URLs couched in <a> tags, parseable by Pango and
-     * using the same RegExp as GNOME Shell.
-     *
-     * @param {string} text - The string to be modified
-     * @return {string} - the modified text
-     */
-    _linkify(text) {
-        text = GLib.markup_escape_text(text, -1);
-
-        _urlRegexp.lastIndex = 0;
-        return text.replace(
-            _urlRegexp,
-            `$1<a href="$2" title="${getTime(this.message.date)}">$2</a>`
-        );
-    }
 });
 
 
@@ -212,63 +135,95 @@ const ConversationSummary = GObject.registerClass({
     GTypeName: 'GSConnectConversationSummary'
 }, class ConversationSummary extends Gtk.ListBoxRow {
     _init(contact, message) {
-        super._init();
+        super._init({visible: true});
 
-        // Hold a reference to the contact & message
-        this.contact = contact;
-        this.message = message;
-
+        // Row layout
         let grid = new Gtk.Grid({
             margin: 6,
-            column_spacing: 6
+            column_spacing: 6,
+            visible: true
         });
         this.add(grid);
 
-        let nameLabel = contact.name;
-        let bodyLabel = message.body.split(/\r|\n/)[0];
-        bodyLabel = '<small>' + GLib.markup_escape_text(bodyLabel, -1) + '</small>';
+        // Contact Avatar
+        this._avatar = new Contacts.Avatar(contact);
+        grid.attach(this._avatar, 0, 0, 1, 3);
 
-        if (message.read === MessageStatus.UNREAD) {
-            nameLabel = '<b>' + nameLabel + '</b>';
-            bodyLabel = '<b>' + bodyLabel + '</b>';
-        }
-
-        grid.attach(new Contacts.Avatar(contact), 0, 0, 1, 3);
-
-        let name = new Gtk.Label({
-            label: nameLabel,
+        // Contact Name
+        this._name = new Gtk.Label({
             halign: Gtk.Align.START,
             hexpand: true,
             ellipsize: Pango.EllipsizeMode.END,
             use_markup: true,
-            xalign: 0
+            xalign: 0,
+            visible: true
         });
-        grid.attach(name, 1, 0, 1, 1);
+        grid.attach(this._name, 1, 0, 1, 1);
 
-        let time = new Gtk.Label({
-            label: '<small>' + getShortTime(message.date) + '</small>',
+        // Message Time
+        this._time = new Gtk.Label({
             halign: Gtk.Align.END,
             ellipsize: Pango.EllipsizeMode.END,
             use_markup: true,
-            xalign: 0
+            xalign: 0,
+            visible: true
         });
-        //time.connect('map', (widget) => {
-        //    widget.label = '<small>' + getShortTime(this.message.date) + '</small>';
-        //    return false;
-        //});
-        time.get_style_context().add_class('dim-label');
-        grid.attach(time, 2, 0, 1, 1);
+        this._time.get_style_context().add_class('dim-label');
+        grid.attach(this._time, 2, 0, 1, 1);
 
-        let body = new Gtk.Label({
-            label: bodyLabel,
+        // Message Body
+        this._body = new Gtk.Label({
             halign: Gtk.Align.START,
             ellipsize: Pango.EllipsizeMode.END,
             use_markup: true,
-            xalign: 0
+            xalign: 0,
+            visible: true
         });
-        grid.attach(body, 1, 1, 2, 1);
+        grid.attach(this._body, 1, 1, 2, 1);
 
-        this.show_all();
+        this.contact = contact;
+        this.message = message;
+    }
+
+    get id() {
+        return this._message.thread_id;
+    }
+
+    get message() {
+        return this._message;
+    }
+
+    set message(message) {
+        this._message = message;
+
+        // Contact Name & Message body
+        let nameLabel = this.contact.name;
+        let bodyLabel = message.body.split(/\r|\n/)[0];
+        bodyLabel = GLib.markup_escape_text(bodyLabel, -1);
+
+        // Ignore the 'read' flag if it's an outgoing message
+        if (message.type === Sms.MessageType.SENT) {
+            // TRANSLATORS: An outgoing message body in a conversation summary
+            bodyLabel = _('You: %s').format(bodyLabel);
+
+        // Otherwise make it bold if it's unread
+        } else if (message.read === Sms.MessageStatus.UNREAD) {
+            nameLabel = '<b>' + nameLabel + '</b>';
+            bodyLabel = '<b>' + bodyLabel + '</b>';
+        }
+
+        // Set the labels, body always smaller
+        this._name.label = nameLabel;
+        this._body.label = '<small>' + bodyLabel + '</small>';
+
+        // Time
+        let timeLabel = '<small>' + getShortTime(message.date) + '</small>';
+        this._time.label = timeLabel;
+    }
+
+    update() {
+        let timeLabel = '<small>' + getShortTime(this.message.date) + '</small>';
+        this._time.label = timeLabel;
     }
 });
 
@@ -341,6 +296,10 @@ const ConversationWidget = GObject.registerClass({
         this.message_list.set_header_func(this._headerMessages);
         this.message_list.set_sort_func(this._sortMessages);
         this._populateMessages();
+
+        // HACK: This property was added in gtk-3.24; if it's not present this
+        // will just become a useless JS variable instead of choking
+        this.message_entry.enable_emoji_completion = true;
     }
 
     get address() {
@@ -401,6 +360,12 @@ const ConversationWidget = GObject.registerClass({
     _onDestroy(conversation) {
         conversation.device.disconnect(conversation._connectedId);
         conversation.disconnect_template();
+
+        conversation.message_list.foreach(message => {
+            // HACK: temporary mitigator for mysterious GtkListBox leak
+            message.run_dispose();
+            imports.system.gc();
+        });
     }
 
     /**
@@ -440,6 +405,13 @@ const ConversationWidget = GObject.registerClass({
 
         while (this.__messages.length > 0) {
             let message = this.__messages[this.__messages.length - 1];
+
+            // TODO: Unsupported MessageType
+            if (message.type !== 1 && message.type !== 2) {
+                this.__messages.pop();
+                continue;
+            }
+
             date = date || message.date;
             direction = direction || message.type;
 
@@ -547,6 +519,8 @@ const ConversationWidget = GObject.registerClass({
      * @param {object} message - The message object to create a series for
      */
     _createSeries(message) {
+        let incoming = (message.type === Sms.MessageType.INBOX);
+
         let row = new Gtk.ListBoxRow({
             activatable: false,
             selectable: false,
@@ -561,12 +535,12 @@ const ConversationWidget = GObject.registerClass({
             hexpand: true,
             margin: 6,
             spacing: 6,
-            halign: (row.type === MessageType.IN) ? Gtk.Align.START : Gtk.Align.END
+            halign: incoming ? Gtk.Align.START : Gtk.Align.END
         });
         row.add(layout);
 
         // Add avatar for incoming messages
-        if (row.type === MessageType.IN) {
+        if (incoming) {
             let avatar = new Contacts.Avatar(this.contact);
             avatar.valign = Gtk.Align.END;
             layout.add(avatar);
@@ -578,8 +552,8 @@ const ConversationWidget = GObject.registerClass({
             spacing: 3,
             halign: layout.halign,
             // Avatar width (32px) + layout spacing (6px) + 6px
-            margin_right: (row.type === MessageType.IN) ? 44 : 0,
-            margin_left: (row.type === MessageType.IN) ? 0 : 44
+            margin_right: incoming ? 44 : 0,
+            margin_left: incoming ? 0 : 44
         });
         layout.add(row.messages);
 
@@ -594,10 +568,13 @@ const ConversationWidget = GObject.registerClass({
      * @param {Object} message - A sms message object
      */
     logMessage(message) {
+        // TODO: Unsupported MessageType
+        if (message.type !== 1 && message.type !== 2) return;
+
         // Ensure it's older than the last message (or the first)
         // TODO: with a lot of work we could probably handle this...
         if (this.__last && this.__last.id > message._id) {
-            logWarning('SMS message out of order', this.device.name);
+            warning('SMS message out of order', this.device.name);
             return;
         }
 
@@ -625,7 +602,7 @@ const ConversationWidget = GObject.registerClass({
         this.__last.messages.pack_start(widget, false, false, 0);
 
         // Remove the first pending message
-        if (this.has_pending && message.type === MessageType.OUT) {
+        if (this.has_pending && message.type === Sms.MessageType.SENT) {
             this.pending_box.get_children()[0].destroy();
             this.notify('has-pending');
         }
@@ -656,7 +633,7 @@ const ConversationWidget = GObject.registerClass({
         let message = new ConversationMessage({
             body: entry.text,
             date: Date.now(),
-            type: MessageType.OUT
+            type: Sms.MessageType.SENT
         });
         this.pending_box.add(message);
         this.notify('has-pending');
@@ -743,7 +720,13 @@ var Window = GObject.registerClass({
 
         this._conversationsChangedId = this.sms.connect(
             'notify::conversations',
-            this._populateConversations.bind(this)
+            this._onConversationsChanged.bind(this)
+        );
+
+        this._timestampConversationsId = GLib.timeout_add_seconds(
+            GLib.PRIORITY_DEFAULT_IDLE,
+            60,
+            this._timestampConversations.bind(this)
         );
 
         // Conversations Placeholder
@@ -753,7 +736,7 @@ var Window = GObject.registerClass({
         this.connect('destroy', this._onDestroy);
 
         this._sync();
-        this._populateConversations();
+        this._onConversationsChanged();
     }
 
     vfunc_delete_event(event) {
@@ -765,22 +748,22 @@ var Window = GObject.registerClass({
         return this.conversation_stack.visible_child_name;
     }
 
-    set address(value) {
-        if (!value) {
+    set address(address) {
+        if (!address) {
             this.conversation_list.select_row(null);
             this.conversation_stack.set_visible_child_name('placeholder');
             return;
         }
 
-        // Ensure we have a contact stored and hold a reference to it
-        let contact = this.device.contacts.query({number: value});
-        this._contact = contact;
+        // Get a contact object for this address
+        let contact = this.device.contacts.query({number: address});
 
+        // Set the header bar title/subtitle
         this.headerbar.title = contact.name;
-        this.headerbar.subtitle = value;
+        this.headerbar.subtitle = address;
 
         // See if we have a nicer display number
-        let number = value.toPhoneNumber();
+        let number = address.toPhoneNumber();
 
         for (let contactNumber of contact.numbers) {
             let cnumber = contactNumber.value.toPhoneNumber();
@@ -792,23 +775,25 @@ var Window = GObject.registerClass({
         }
 
         // Create a conversation widget if there isn't one
-        let conversation = this.conversation_stack.get_child_by_name(number);
+        let conversation = this.getConversation(address);
 
         if (conversation === null) {
             conversation = new ConversationWidget({
                 device: this.device,
-                address: number
+                address: address
             });
 
-            this.conversation_stack.add_named(conversation, number);
+            this.conversation_stack.add_named(conversation, address);
         }
 
-        this.conversation_stack.set_visible_child_name(number);
+        // Select the conversation and entry active
+        this.conversation_stack.visible_child = conversation;
+        this.conversation_stack.visible_child.message_entry.has_focus = true;
 
         // There was a pending message waiting for a contact to be chosen
         if (this._pendingShare) {
             conversation.setMessage(this._pendingShare);
-            this._pendingShare = undefined;
+            this._pendingShare = null;
         }
     }
 
@@ -825,7 +810,6 @@ var Window = GObject.registerClass({
         let contacts = this.device.lookup_plugin('contacts');
 
         if (contacts) {
-            this.device.contacts.clear(true);
             contacts.connected();
         } else {
             this.device.contacts._loadFolks();
@@ -836,6 +820,7 @@ var Window = GObject.registerClass({
     }
 
     _onDestroy(window) {
+        GLib.source_remove(window._timestampConversationsId);
         window.contact_list.disconnect(window._numberSelectedId);
         window.sms.disconnect(window._conversationsChangedId);
         window.disconnect_template();
@@ -844,46 +829,69 @@ var Window = GObject.registerClass({
     _onNewConversation() {
         this._sync();
         this.conversation_stack.set_visible_child_name('contact-list');
+        this.conversation_list.select_row(null);
         this.contact_list.contact_entry.has_focus = true;
     }
 
     _onNumberSelected(list, number) {
-        number = number.toPhoneNumber();
-
-        for (let row of this.conversation_list.get_children()) {
-            if (!row.message) continue;
-
-            let cnumber = row.message.address.toPhoneNumber();
-
-            if (cnumber.endsWith(number) || number.endsWith(cnumber)) {
-                this.conversation_list.select_row(row);
-                return;
-            }
-        }
-
-        this.conversation_list.select_row(null);
+        let summary = this.getSummary(number);
+        this.conversation_list.select_row(summary);
         this.address = number;
     }
 
     /**
      * Conversations
      */
-    _populateConversations() {
-        this.conversation_list.foreach(row => {
-            // HACK: temporary mitigator for mysterious GtkListBox leak
-            //row.destroy();
-            row.run_dispose();
-            imports.system.gc();
-        });
+    _onConversationsChanged() {
+        let messages = new Map();
 
         for (let thread of Object.values(this.sms.conversations)) {
-            let contact = this.device.contacts.query({
-                number: thread[0].address
-            });
+            let message = thread[thread.length - 1];
+            messages.set(message.thread_id, message);
+        }
 
-            this.conversation_list.add(
-                new ConversationSummary(contact, thread[thread.length - 1])
-            );
+        // Update existing summaries and destroy old ones
+        for (let summary of this.conversation_list.get_children()) {
+            let message = messages.get(summary.id);
+
+            // If it's an existing conversation, update it
+            if (message) {
+                summary.message = message;
+                messages.delete(summary.id);
+
+            // Otherwise destroy it
+            } else {
+                // HACK: temporary mitigator for mysterious GtkListBox leak
+                summary.run_dispose();
+                imports.system.gc();
+
+                // Also delete the conversation
+                let conversation = this.getConversation(summary.message.address);
+
+                if (conversation) {
+                    conversation.run_dispose();
+                    imports.system.gc();
+                }
+            }
+        }
+
+        // Add new summaries
+        for (let message of messages.values()) {
+            let contact = this.device.contacts.query({number: message.address});
+            let conversation = new ConversationSummary(contact, message);
+            this.conversation_list.add(conversation);
+        }
+    }
+
+    _onConversationSelected(box, row) {
+        // Show the conversation for this number (if applicable)
+        if (row) {
+            this.address = row.message.address;
+
+        // Show the placeholder
+        } else {
+            this.headerbar.title = _('Messaging');
+            this.headerbar.subtitle = this.device.name;
         }
     }
 
@@ -891,16 +899,74 @@ var Window = GObject.registerClass({
         return (row1.message.date > row2.message.date) ? -1 : 1;
     }
 
-    _onConversationSelected(box, row) {
-        // Show the conversation for this number (if applicable)
-        if (row) {
-            this.address = row.message.address;
-            this.conversation_stack.visible_child.message_entry.has_focus = true;
+    _timestampConversations() {
+        if (this.visible) {
+            this.conversation_list.foreach(summary => summary.update());
+        }
 
-        // Show the placeholder
-        } else {
-            this.headerbar.title = _('Messaging');
-            this.headerbar.subtitle = this.device.name;
+        return GLib.SOURCE_CONTINUE;
+    }
+
+    /**
+     * Find the conversation widget for an address
+     *
+     * @param {string} address - A contact address
+     * @return {ConversationWidget|null} - The conversation widget or %null
+     */
+    getConversation(address) {
+        let number = address.toPhoneNumber();
+
+        for (let conversation of this.conversation_stack.get_children()) {
+            // Skip contact list
+            if (!conversation.address) continue;
+
+            let cnumber = conversation.address.toPhoneNumber();
+
+            if (cnumber.endsWith(number) || number.endsWith(cnumber)) {
+                return conversation;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Find the conversation summary row for an address
+     *
+     * @param {string} address - A contact address
+     * @return {ConversationSummary|null} - The conversation summary or %null
+     */
+    getSummary(address) {
+        let number = address.toPhoneNumber();
+
+        for (let summary of this.conversation_list.get_children()) {
+            let cnumber = summary.message.address.toPhoneNumber();
+
+            if (cnumber.endsWith(number) || number.endsWith(cnumber)) {
+                return summary;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Set the contents of the message entry. If @pending is %false set the
+     * message of the currently selected conversation, otherwise mark the
+     * message to be set for the next selected conversation.
+     *
+     * @param {String} text - The message to place in the entry
+     * @param {boolean} pending - Wait for a conversation to be selected
+     */
+    setMessage(message, pending = false) {
+        try {
+            if (pending) {
+                this._pendingShare = message;
+            } else {
+                this.conversation_stack.visible_child.setMessage(message);
+            }
+        } catch (e) {
+            warning(e);
         }
     }
 });
@@ -948,7 +1014,7 @@ var ConversationChooser = GObject.registerClass({
 
         let newButton = new Gtk.Button({
             image: new Gtk.Image({icon_name: 'list-add-symbolic'}),
-            tooltip_text: _('New Message'),
+            tooltip_text: _('New Conversation'),
             always_show_image: true
         });
         newButton.connect('clicked', this._new.bind(this));
@@ -995,9 +1061,8 @@ var ConversationChooser = GObject.registerClass({
     _select(box, row) {
         this.sms.sms();
         this.sms.window.address = row.message.address;
+        this.sms.window.setMessage(this.message);
 
-        let conversation = this.sms._hasConversation(row.message.address);
-        conversation.setMessage(this.message);
         this.destroy();
     }
 });

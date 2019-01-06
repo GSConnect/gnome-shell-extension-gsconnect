@@ -22,52 +22,11 @@ var Metadata = {
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/battery
  */
 var Plugin = GObject.registerClass({
-    GTypeName: 'GSConnectBatteryPlugin',
-    Properties: {
-        'charging': GObject.ParamSpec.boolean(
-            'charging',
-            'isCharging',
-            'Whether the device is charging',
-            GObject.ParamFlags.READABLE,
-            false
-        ),
-        'icon-name': GObject.ParamSpec.string(
-            'icon-name',
-            'IconName',
-            'Icon name representing the battery state',
-            GObject.ParamFlags.READABLE,
-            ''
-        ),
-        'level': GObject.ParamSpec.int(
-            'level',
-            'currentCharge',
-            'Whether the device is charging',
-            GObject.ParamFlags.READABLE,
-            -1, 100,
-            -1
-        ),
-        'time': GObject.ParamSpec.int(
-            'time',
-            'timeRemaining',
-            'Seconds until full or depleted',
-            GObject.ParamFlags.READABLE,
-            -1, GLib.MAXINT32,
-            -1
-        )
-    }
+    GTypeName: 'GSConnectBatteryPlugin'
 }, class Plugin extends PluginsBase.Plugin {
 
     _init(device) {
         super._init(device, 'battery');
-
-        // Export DBus
-        this._dbus = new DBus.Interface({
-            g_instance: this,
-            g_interface_info: gsconnect.dbusinfo.lookup_interface(
-                'org.gnome.Shell.Extensions.GSConnect.Battery'
-            )
-        });
-        this.device._dbus_object.add_interface(this._dbus);
 
         // Setup Cache; defaults are 90 minute charge, 1 day discharge
         this._chargeState = [54, 0, -1];
@@ -79,6 +38,14 @@ var Plugin = GObject.registerClass({
             '_dischargeState',
             '_thresholdLevel'
         ]);
+
+        // Export battery state as GAction
+        this.__state = new Gio.SimpleAction({
+            name: 'battery',
+            parameter_type: new GLib.VariantType('(bsii)'),
+            state: this.state
+        });
+        this.device.add_action(this.__state);
 
         // Local Battery (UPower)
         this._upowerId = 0;
@@ -138,14 +105,15 @@ var Plugin = GObject.registerClass({
         return this._time;
     }
 
+    get state() {
+        return new GLib.Variant(
+            '(bsii)',
+            [this.charging, this.icon_name, this.level, this.time]
+        );
+    }
+
     cacheLoaded() {
         this._estimateTime();
-
-        this.notify('charging');
-        this.notify('level');
-        this.notify('icon-name');
-        this.notify('time');
-
         this.connected();
     }
 
@@ -212,15 +180,11 @@ var Plugin = GObject.registerClass({
      */
     _receiveState(packet) {
         // Charging state changed
-        if (this._charging !== packet.body.isCharging) {
-            this._charging = packet.body.isCharging;
-            this.notify('charging');
-        }
+        this._charging = packet.body.isCharging;
 
         // Level changed
         if (this._level !== packet.body.currentCharge) {
             this._level = packet.body.currentCharge;
-            this.notify('level');
 
             if (this._level > this._thresholdLevel) {
                 this.device.hideNotification('battery|threshold');
@@ -233,7 +197,8 @@ var Plugin = GObject.registerClass({
         }
 
         this._updateEstimate();
-        this.notify('icon-name');
+
+        this.__state.state = this.state;
     }
 
     /**
@@ -339,8 +304,6 @@ var Plugin = GObject.registerClass({
         } else if (rate && !this.charging) {
             this._time = Math.floor(rate * new_level);
         }
-
-        this.notify('time');
     }
 
     _estimateTime() {
@@ -358,13 +321,13 @@ var Plugin = GObject.registerClass({
             this._time = Math.floor(rate * level);
         }
 
-        this.notify('time');
+        this.__state.state = this.state;
     }
 
     destroy() {
         this.settings.disconnect(this._sendStatisticsId);
         this._unmonitorState();
-        this.device._dbus_object.remove_interface(this._dbus);
+        this.device.remove_action('battery');
 
         super.destroy();
     }

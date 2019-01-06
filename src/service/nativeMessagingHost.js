@@ -11,22 +11,6 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const System = imports.system;
 
-// Find the root datadir of the extension
-function get_datadir() {
-    let m = /@(.+):\d+/.exec((new Error()).stack.split('\n')[1]);
-    return Gio.File.new_for_path(m[1]).get_parent().get_parent().get_path();
-}
-
-window.gsconnect = {extdatadir: get_datadir()};
-imports.searchPath.unshift(gsconnect.extdatadir);
-imports._gsconnect;
-const DBus = imports.service.components.dbus;
-
-
-const DeviceInterface = gsconnect.dbusinfo.lookup_interface(
-    'org.gnome.Shell.Extensions.GSConnect.Device'
-);
-
 
 var NativeMessagingHost = GObject.registerClass({
     GTypeName: 'GSConnectNativeMessagingHost'
@@ -70,21 +54,28 @@ var NativeMessagingHost = GObject.registerClass({
         source.set_callback(this.receive.bind(this));
         source.attach(null);
 
-        // ObjectManager
-        Gio.DBusObjectManagerClient.new_for_bus(
-            Gio.BusType.SESSION,
-            Gio.DBusObjectManagerClientFlags.DO_NOT_AUTO_START,
-            gsconnect.app_id,
-            gsconnect.app_path,
-            null,
-            null,
-            this._init_async.bind(this)
-        );
+        this._init_async();
     }
 
-    _init_async(obj, res) {
+    async _init_async(obj, res) {
         try {
-            this.manager = Gio.DBusObjectManagerClient.new_for_bus_finish(res);
+            this.manager = await new Promise((resolve, reject) => {
+                Gio.DBusObjectManagerClient.new_for_bus(
+                    Gio.BusType.SESSION,
+                    Gio.DBusObjectManagerClientFlags.DO_NOT_AUTO_START,
+                    'org.gnome.Shell.Extensions.GSConnect',
+                    '/org/gnome/Shell/Extensions/GSConnect',
+                    null,
+                    null,
+                    (manager, res) => {
+                        try {
+                            resolve(Gio.DBusObjectManagerClient.new_for_bus_finish(res));
+                        } catch (e) {
+                            reject(e);
+                        }
+                    }
+                );
+            });
 
             // Add currently managed devices
             for (let object of this.manager.get_objects()) {
@@ -99,8 +90,8 @@ var NativeMessagingHost = GObject.registerClass({
                 this._onInterfaceAdded.bind(this)
             );
             this.manager.connect(
-                'interface-removed',
-                this._onInterfaceRemoved.bind(this)
+                'object-removed',
+                this._onObjectRemoved.bind(this)
             );
 
             // Watch for device property changes
@@ -117,62 +108,57 @@ var NativeMessagingHost = GObject.registerClass({
 
             this.send({type: 'connected', data: true});
         } catch (e) {
-            logError(e);
             this.quit();
         }
     }
 
     receive() {
-        let message;
-
         try {
+            // Read the message
             let length = this.stdin.read_int32(null);
-            message = this.stdin.read_bytes(length, null).toArray();
+            let message = this.stdin.read_bytes(length, null).toArray();
 
             if (message instanceof Uint8Array) {
                 message = imports.byteArray.toString(message);
             }
 
             message = JSON.parse(message);
+
+            // A request for a list of devices
+            if (message.type === 'devices') {
+                this.sendDeviceList();
+
+            // A request to invoke an action
+            } else if (message.type === 'share') {
+                let actionName;
+                let device = this._devices[message.data.device];
+
+                if (device) {
+                    if (message.data.action === 'share') {
+                        actionName = 'shareUri';
+                    } else if (message.data.action === 'telephony') {
+                        actionName = 'shareSms';
+                    }
+
+                    device.actions.activate_action(
+                        actionName,
+                        new GLib.Variant('s', message.data.url)
+                    );
+                }
+            }
+
+            return true;
         } catch (e) {
-            logError(e);
             this.quit();
         }
-
-        debug(message);
-
-        if (message.type === 'devices') {
-            this.sendDeviceList();
-        } else if (message.type === 'share') {
-            let actionName;
-            let device = this._devices[message.data.device];
-
-            if (device) {
-                if (message.data.action === 'share') {
-                    actionName = 'shareUri';
-                } else if (message.data.action === 'telephony') {
-                    actionName = 'shareSms';
-                }
-
-                device.actions.activate_action(
-                    actionName,
-                    new GLib.Variant('s', message.data.url)
-                );
-            }
-        }
-
-        return true;
     }
 
     send(message) {
-        debug(message);
-
         try {
             let data = JSON.stringify(message);
             this.stdout.put_int32(data.length, null);
             this.stdout.put_string(data, null);
         } catch (e) {
-            logError(e);
             this.quit();
         }
     }
@@ -184,48 +170,63 @@ var NativeMessagingHost = GObject.registerClass({
             return;
         }
 
-        let devices = [];
+        let available = [];
 
         for (let device of this.devices) {
             let share = device.actions.get_action_enabled('shareUri');
             let telephony = device.actions.get_action_enabled('shareSms');
 
-            if (device.Connected && device.Paired && (share || telephony)) {
-                devices.push({
-                    id: device.Id,
-                    name: device.Name,
-                    type: device.Type,
+            if (share || telephony) {
+                available.push({
+                    id: device.g_object_path,
+                    name: device.name,
+                    type: device.type,
                     share: share,
                     telephony: telephony
                 });
             }
         }
 
-        this.send({type: 'devices', data: devices});
+        this.send({type: 'devices', data: available});
+    }
+
+    _proxyGetter(name) {
+        try {
+            return this.get_cached_property(name).unpack();
+        } catch (e) {
+            return null;
+        }
     }
 
     _onInterfaceAdded(manager, object, iface) {
-        if (iface.g_interface_name === 'org.gnome.Shell.Extensions.GSConnect.Device') {
-            DBus.proxyProperties(iface, DeviceInterface);
+        Object.defineProperties(iface, {
+            'name': {
+                get: this._proxyGetter.bind(iface, 'Name'),
+                enumerable: true
+            },
+            // TODO: phase this out for icon-name
+            'type': {
+                get: this._proxyGetter.bind(iface, 'Type'),
+                enumerable: true
+            }
+        });
 
-            iface.actions = Gio.DBusActionGroup.get(
-                iface.g_connection,
-                iface.g_name,
-                iface.g_object_path
-            );
+        iface.actions = Gio.DBusActionGroup.get(
+            iface.g_connection,
+            iface.g_name,
+            iface.g_object_path
+        );
 
-            this._devices[iface.Id] = iface;
-            this.sendDeviceList();
-        }
+        this._devices[iface.g_object_path] = iface;
+        this.sendDeviceList();
     }
 
-    _onInterfaceRemoved(manager, object, iface) {
-        if (iface.g_interface_name === 'org.gnome.Shell.Extensions.GSConnect.Device') {
-            delete this._devices[iface.Id];
-            this.sendDeviceList();
-        }
+    _onObjectRemoved(manager, object) {
+        delete this._devices[object.g_object_path];
+        this.sendDeviceList();
     }
 });
 
+// NOTE: must not pass ARGV
 (new NativeMessagingHost()).run([System.programInvocationName]);
 

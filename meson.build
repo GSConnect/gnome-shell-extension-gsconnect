@@ -1,4 +1,4 @@
-project('gsconnect', 'c', version: '17', meson_version: '>= 0.45.0')
+project('gsconnect', 'c', version: '19', meson_version: '>= 0.45.0')
 
 gnome = import('gnome')
 
@@ -35,6 +35,7 @@ extconfig.set('GSCHEMADIR', gschemadir)
 extconfig.set('FUSERMOUNT_PATH', get_option('fusermount_path'))
 extconfig.set('OPENSSL_PATH', get_option('openssl_path'))
 extconfig.set('SSHADD_PATH', get_option('sshadd_path'))
+extconfig.set('SSHKEYGEN_PATH', get_option('sshkeygen_path'))
 extconfig.set('SSHFS_PATH', get_option('sshfs_path'))
 
 # ZIP targets for user extension builds
@@ -206,4 +207,3 @@ if get_option('post_install')
       join_paths(meson.source_root(), 'meson/post-install.sh')
     )
 endif
-

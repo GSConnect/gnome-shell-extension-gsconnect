@@ -6,6 +6,7 @@ const GObject = imports.gi.GObject;
 
 const PluginsBase = imports.service.plugins.base;
 const Messaging = imports.service.ui.messaging;
+const TelephonyUI = imports.service.ui.telephony;
 
 
 var Metadata = {
@@ -177,21 +178,25 @@ var MessageStatus = {
  * SMS Message direction. IN/OUT match the 'type' field from the Android App
  * message packet.
  *
- * NOTICE: A general message (eg. timestamp, missed call)
+ * See: https://developer.android.com/reference/android/provider/Telephony.TextBasedSmsColumns.html
+ *
  * IN: An incoming message
  * OUT: An outgoing message
  */
 var MessageType = {
-    NOTICE: 0,
-    IN: 1,
-    OUT: 2
+    ALL: 0,
+    INBOX: 1,
+    SENT: 2,
+    DRAFT: 3,
+    OUTBOX: 4,
+    FAILED: 5
 };
 
 
 /**
  * SMS Plugin
- * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/telephony
- * https://github.com/KDE/kdeconnect-android/tree/master/src/org/kde/kdeconnect/Plugins/TelephonyPlugin
+ * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/sms
+ * https://github.com/KDE/kdeconnect-android/tree/master/src/org/kde/kdeconnect/Plugins/SMSPlugin/
  */
 var Plugin = GObject.registerClass({
     GTypeName: 'GSConnectSMSPlugin',
@@ -215,6 +220,10 @@ var Plugin = GObject.registerClass({
     }
 
     get window() {
+        if (this.settings.get_boolean('legacy-sms')) {
+            return new TelephonyUI.Dialog({device: this.device});
+        }
+
         if (this._window === undefined) {
             this._window = new Messaging.Window({
                 application: this.service,
@@ -228,7 +237,7 @@ var Plugin = GObject.registerClass({
     handlePacket(packet) {
         // Currently only one incoming packet type
         if (packet.type === 'kdeconnect.sms.messages') {
-            this._handleMessages(packet);
+            this._handleMessages(packet.body.messages);
         }
     }
 
@@ -245,12 +254,16 @@ var Plugin = GObject.registerClass({
      * Handle a new single message
      */
     _handleMessage(contact, message) {
-        let conversation = this._hasConversation(message.address);
+        let conversation = null;
+
+        if (this._window) {
+            conversation = this._window.getConversation(message.address);
+        }
 
         if (conversation) {
             // Track expected ticker of outgoing messages so they can be closed
             // FIXME: this is not working well
-            if (message.type === MessageType.OUT) {
+            if (message.type === MessageType.SENT) {
                 conversation._notifications.push(
                     `${contact.name}: ${message.body}`
                 );
@@ -263,13 +276,12 @@ var Plugin = GObject.registerClass({
     /**
      * Parse a conversation (thread of messages) and sort them
      *
-     * @param {Array} messages - A list of telephony message objects
+     * @param {object[]} messages - A list of sms message objects from a thread
      */
     async _handleConversation(messages) {
         try {
-            if (messages.length === 0 || !messages[0].address) {
-                return;
-            }
+            // If the address is missing this will cause problems...
+            if (!messages[0].address) return;
 
             let thread_id = messages[0].thread_id;
             let conversation = this.conversations[thread_id] || [];
@@ -277,7 +289,12 @@ var Plugin = GObject.registerClass({
                 number: messages[0].address
             });
 
-            for (let message of messages) {
+            for (let i = 0, len = messages.length; i < len; i++) {
+                let message = messages[i];
+
+                // TODO: invalid MessageType
+                if (message.type < 0 || message.type > 5) continue;
+
                 let extant = conversation.find(msg => msg._id === message._id);
 
                 if (extant) {
@@ -303,16 +320,14 @@ var Plugin = GObject.registerClass({
     /**
      * Handle a response to telephony.request_conversation(s)
      *
-     * @param {kdeconnect.sms.messages} packet - An incoming packet
+     * @param {object[]} messages - A list of sms message objects
      */
-    async _handleMessages(packet) {
+    async _handleMessages(messages) {
         try {
             // If messages is empty there's nothing to do...
-            if (packet.body.messages.length === 0) {
-                return;
-            }
+            if (messages.length === 0) return;
 
-            let thread_ids = packet.body.messages.map(msg => msg.thread_id);
+            let thread_ids = messages.map(msg => msg.thread_id);
 
             // If there's multiple thread_id's it's a summary of threads
             if (thread_ids.some(id => id !== thread_ids[0])) {
@@ -325,9 +340,11 @@ var Plugin = GObject.registerClass({
                 });
 
                 // Request each new or newer thread
-                packet.body.messages.map(message => {
+                for (let i = 0, len = messages.length; i < len; i++) {
+                    let message = messages[i];
                     let cache = this.conversations[message.thread_id];
 
+                    // If this is for an existing thread, mark the rest as read
                     if (cache && message.read === MessageStatus.READ) {
                         cache.forEach(message => message.read = MessageStatus.READ);
                     }
@@ -335,42 +352,18 @@ var Plugin = GObject.registerClass({
                     if (!cache || cache[cache.length - 1]._id < message._id) {
                         this.requestConversation(message.thread_id);
                     }
-                });
+                }
 
                 await this.__cache_write();
                 this.notify('conversations');
 
             // Otherwise this is single thread or new message
             } else {
-                await this._handleConversation(packet.body.messages);
+                await this._handleConversation(messages);
             }
         } catch (e) {
             logError(e);
         }
-    }
-
-    /**
-     * Check if there's an active conversation for a number (eg. being viewed)
-     *
-     * @param {string} number - A string phone number
-     * @return {Messaging.ConversationWidget} - The conversation panel or %false
-     */
-    _hasConversation(address) {
-        if (this._window) {
-            address = address.toPhoneNumber();
-
-            for (let page of this.window.conversation_stack.get_children()) {
-                if (!page.address) continue;
-
-                let waddress = page.address.toPhoneNumber();
-
-                if (address.endsWith(waddress) || waddress.endsWith(address)) {
-                    return page;
-                }
-            }
-        }
-
-        return false;
     }
 
     /**
@@ -432,8 +425,14 @@ var Plugin = GObject.registerClass({
      * @param {string} url - The link to be shared
      */
     shareSms(url) {
+        // Legacy Mode
+        if (this.settings.get_boolean('legacy-sms')) {
+            let window = this.window;
+            window.present();
+            window.setMessage(url);
+
         // If there are active conversations, show the chooser dialog
-        if (Object.values(this.conversations).length > 0) {
+        } else if (Object.values(this.conversations).length > 0) {
             let window = new Messaging.ConversationChooser({
                 application: this.service,
                 device: this.device,
@@ -445,7 +444,7 @@ var Plugin = GObject.registerClass({
         // Otherwise show the window and wait for a contact to be chosen
         } else {
             this.window.present();
-            this.window._pendingMessage = url;
+            this.window.setMessage(url, true);
         }
     }
 
@@ -458,6 +457,7 @@ var Plugin = GObject.registerClass({
 
     /**
      * This is the sms: URI scheme handler
+     * TODO: we should now reject multi-recipient URIs
      *
      * @param {string} uri - The URI the handle (sms:|sms://|sms:///)
      */
@@ -465,14 +465,13 @@ var Plugin = GObject.registerClass({
         try {
             uri = new URI(uri);
 
-            // TODO: we should now reject multi-recipient URIs
-            this.window.present();
-            this.window.address = uri.recipients[0];
+            let window = this.window;
+            window.present();
+            window.address = uri.recipients[0];
 
             // Set the outgoing message if the uri has a body variable
             if (uri.body) {
-                let conversation = this.window.conversation_stack.visible_child;
-                conversation.setMessage(uri.body);
+                window.setMessage(uri.body);
             }
         } catch (e) {
             logError(e, `${this.device.name}: "${uri}"`);

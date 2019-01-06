@@ -13,11 +13,9 @@ const GMenu = imports.shell.gmenu;
 const Tooltip = imports.shell.tooltip;
 
 
-
-var BATTERY_INTERFACE = 'org.gnome.Shell.Extensions.GSConnect.Battery';
-
-
-/** St.BoxLayout subclass for a battery icon with text percentage */
+/**
+ * A battery widget with an icon, text percentage and time estimate tooltip
+ */
 var Battery = GObject.registerClass({
     GTypeName: 'GSConnectShellDeviceBattery'
 }, class Battery extends St.BoxLayout {
@@ -49,27 +47,60 @@ var Battery = GObject.registerClass({
             text: this.battery_label
         });
 
-        // Battery Added/Removed
-        this._interfaceAddedId = this.object.connect(
-            'interface-added',
-            this._onInterfaceAdded.bind(this)
+        // Battery GAction
+        this._actionAddedId = this.device.action_group.connect(
+            'action-added',
+            this._onActionChanged.bind(this)
+        );
+        this._actionRemovedId = this.device.action_group.connect(
+            'action-removed',
+            this._onActionChanged.bind(this)
+        );
+        this._actionStateChangedId = this.device.action_group.connect(
+            'action-state-changed',
+            this._onStateChanged.bind(this)
         );
 
-        this._interfaceRemovedId = this.object.connect(
-            'interface-removed',
-            this._onInterfaceRemoved.bind(this)
-        );
-
-        // Battery proxy
-        let iface = this.object.get_interface(BATTERY_INTERFACE);
-        if (iface) this._onInterfaceAdded(null, iface);
+        this._onActionChanged(this.device.action_group, 'battery');
 
         // Refresh when mapped
         this._mappedId = this.connect('notify::mapped', this._sync.bind(this));
-        this._sync();
 
         // Cleanup
         this.connect('destroy', this._onDestroy);
+    }
+
+    _onActionChanged(action_group, action_name) {
+        if (action_name === 'battery') {
+            if (action_group.has_action('battery')) {
+                let value = action_group.get_action_state('battery');
+                let [charging, icon_name, level, time] = value.deep_unpack();
+
+                this.battery = {
+                    Charging: charging,
+                    IconName: icon_name,
+                    Level: level,
+                    Time: time
+                };
+            } else {
+                this.battery = null;
+            }
+
+            this._sync();
+        }
+    }
+
+    _onStateChanged(action_group, action_name, value) {
+        if (action_name === 'battery') {
+            let [charging, icon_name, level, time] = value.deep_unpack();
+
+            this.battery = {
+                Charging: charging,
+                IconName: icon_name,
+                Level: level,
+                Time: time
+            };
+        }
     }
 
     get battery_label() {
@@ -110,34 +141,10 @@ var Battery = GObject.registerClass({
     }
 
     _onDestroy(actor) {
-        actor.object.disconnect(actor._interfaceAddedId);
-        actor.object.disconnect(actor._interfaceRemovedId);
+        actor.device.action_group.disconnect(actor._actionAddedId);
+        actor.device.action_group.disconnect(actor._actionRemovedId);
+        actor.device.action_group.disconnect(actor._actionStateChangedId);
         actor.disconnect(actor._mappedId);
-
-        if (actor._batteryId && actor.battery) {
-            actor.battery.disconnect(actor._batteryId);
-        }
-    }
-
-    _onInterfaceAdded(object, iface) {
-        if (iface.g_interface_name !== BATTERY_INTERFACE) return;
-
-        this.battery = iface;
-        gsconnect.proxyProperties(iface);
-
-        this._batteryId = this.battery.connect(
-            'g-properties-changed',
-            this._sync.bind(this)
-        );
-
-        this._sync();
-    }
-
-    _onInterfaceRemoved(object, iface) {
-        if (iface.g_interface_name === BATTERY_INTERFACE) {
-            this._batteryId = iface.disconnect(this._batteryId);
-            this.battery = null;
-        }
     }
 
     _sync() {
@@ -177,7 +184,7 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
         this.actor.connect('destroy', this._onDestroy);
 
         // Title -> Battery
-        this._battery = new Battery({object: this.object});
+        this._battery = new Battery({device: this.device});
         this._title.actor.add_child(this._battery);
 
         // Actions
@@ -210,7 +217,9 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
 };
 
 
-/** An indicator representing a Device in the Status Area */
+/**
+ * An indicator representing a Device in the Status Area
+ */
 var Indicator = class Indicator extends PanelMenu.Button {
 
     _init(params) {
@@ -226,7 +235,6 @@ var Indicator = class Indicator extends PanelMenu.Button {
 
         // Menu
         let menu = new Menu({
-            object: this.object,
             device: this.device,
             menu_type: 'icon'
         });

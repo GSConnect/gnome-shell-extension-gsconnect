@@ -8,6 +8,8 @@ const Main = imports.ui.main;
 const MessageTray = imports.ui.messageTray;
 const NotificationDaemon = imports.ui.notificationDaemon;
 
+const _ = gsconnect._;
+
 
 // deviceId Pattern (<device-id>|<remote-id>)
 const DEVICE_REGEX = /^([^|]+)\|(.+)$/;
@@ -24,51 +26,80 @@ class RepliableNotificationBanner extends MessageTray.NotificationBanner {
     _init(notification) {
         super._init(notification);
 
-        this._responseEntry = new St.Entry({
-            style_class: 'chat-response',
+        // Ensure there's an action area
+        if (!this._buttonBox) {
+            this._buttonBox = new St.BoxLayout({
+                style_class: 'notification-actions',
+                x_expand: true
+            });
+            this.setActionArea(this._buttonBox);
+            global.focus_manager.add_group(this._buttonBox);
+        }
+
+        // Reply Button
+        let button = new St.Button({
+            style_class: 'notification-button',
+            label: _('Reply'),
             x_expand: true,
             can_focus: true
         });
-        this._responseEntry.clutter_text.connect(
-            'activate', this._onEntryActivated.bind(this)
-        );
-        this.setActionArea(this._responseEntry);
+        this._buttonBox.add_child(button);
 
-        this._responseEntry.clutter_text.connect('key-focus-in', () => {
-            this.focused = true;
+        // Reply Entry
+        let entry = new St.Entry({
+            can_focus: true,
+            hint_text: _('Type a message'),
+            style_class: 'chat-response',
+            x_expand: true,
+            visible: false
         });
-        this._responseEntry.clutter_text.connect('key-focus-out', () => {
+        this._buttonBox.add_child(entry);
+
+        // Enter to send
+        // TODO: secondary-icon
+        entry.clutter_text.connect(
+            'activate',
+            this._onEntryActivated.bind(this)
+        );
+
+        // Swap the button out for the entry
+        button.connect('clicked', (button) => {
+            this.focused = true;
+            entry.visible = true;
+            entry.clutter_text.grab_key_focus();
+            button.visible = false;
+        });
+
+        // Make sure we release the focus when it's time
+        entry.clutter_text.connect('key-focus-out', () => {
             this.focused = false;
             this.emit('unfocused');
         });
     }
 
-    _onEntryActivated() {
-        let text = this._responseEntry.get_text();
-        if (text == '')
-            return;
+    _onEntryActivated(clutter_text) {
+        // Refuse to send empty replies
+        if (clutter_text.text === '') return;
 
-        this._responseEntry.set_text('');
+        // Copy the text, then clear the entry
+        let text = clutter_text.text;
+        clutter_text.text = '';
 
         let {deviceId, requestReplyId, source} = this.notification;
 
         source._createApp((app, error) => {
             // Bail on error in case we can try again
-            if (error !== null) {
-                return;
-            }
-
-            debug(`Sending ${text}`);
+            if (error !== null) return;
 
             let target = new GLib.Variant('(ssbv)', [
                 deviceId,
                 'replyNotification',
                 true,
-                new GLib.Variant('(ss)', [requestReplyId, text])
+                new GLib.Variant('(ssa{ss})', [requestReplyId, text, {}])
             ]);
 
             app.ActivateActionRemote(
-                'deviceAction',
+                'device',
                 [target],
                 NotificationDaemon.getPlatformData()
             );
@@ -113,8 +144,6 @@ class Source extends NotificationDaemon.GtkNotificationDaemonAppSource {
                 return;
             }
 
-            debug(`Closing ${notification.remoteId}`);
-
             let target = new GLib.Variant('(ssbv)', [
                 notification.deviceId,
                 'closeNotification',
@@ -123,7 +152,7 @@ class Source extends NotificationDaemon.GtkNotificationDaemonAppSource {
             ]);
 
             app.ActivateActionRemote(
-                'deviceAction',
+                'device',
                 [target],
                 NotificationDaemon.getPlatformData()
             );
@@ -351,7 +380,7 @@ function patchGtkNotificationSources() {
             ]);
 
             app.ActivateActionRemote(
-                'deviceAction',
+                'device',
                 [target],
                 NotificationDaemon.getPlatformData()
             );
