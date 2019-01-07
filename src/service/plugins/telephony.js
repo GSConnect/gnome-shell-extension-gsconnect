@@ -65,9 +65,9 @@ var Plugin = GObject.registerClass({
                 return;
             }
 
-            // Take the opportunity to store the contact
+            // Take the opportunity to save the contact in the service store
             if (packet.body.phoneNumber) {
-                let contact = this.device.contacts.query({
+                let contact = this.service.contacts.query({
                     name: packet.body.contactName,
                     number: packet.body.phoneNumber
                 });
@@ -77,7 +77,7 @@ var Plugin = GObject.registerClass({
                     contact.avatar = await this.device.contacts.storeAvatar(data);
                 }
                 
-                this.device.contacts.add(contact);
+                this.service.contacts.add(contact);
             }
 
             // Only handle 'ringing' or 'talking' events, leave the notification
