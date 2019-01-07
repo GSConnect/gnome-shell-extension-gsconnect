@@ -221,6 +221,10 @@ var Plugin = GObject.registerClass({
                 } else if (input.key && _ASCII.test(input.key) && !mask) {
                     this.pressKey(input);
 
+                // Unicode character
+                } else if (input.key && !_ASCII.test(input.key)) {
+                    this.pressUnicodeKey(input);
+
                 // Caribou/XTest is required; modifiers and/or unicode
                 } else if (this.virtual_keyboard) {
                     this.pressKeySym(input, mask);
@@ -359,6 +363,82 @@ var Plugin = GObject.registerClass({
     }
 
     /**
+     * Simulate the composition of a unicode character with Control+Shift+u, [hex], Return
+     *
+     * @param {object} input - 'body' of a 'kdeconnect.mousepad.request' packet
+     */
+    pressUnicodeKey(input) {
+        try {
+            debug(`unicodeKey: ${input.key}`);
+
+            // TODO: Hardcoded Control_L and Shift_L keycodes.
+            // Using Control and Shift keysym is not working (it triggers key release)
+            // Probably using LOCKMODIFIERS will not work either as unlocking the modifier
+            // will not trigger a release
+            
+            let ucode = input.key.charCodeAt(0).toString(16);
+            let ukeyval;
+        
+            // Press Shift_L (keycode 50)
+            Atspi.generate_keyboard_event(
+                50,
+                null,
+                Atspi.KeySynthType.PRESS
+            );
+
+            // Press Control_L (keycode 37)
+            Atspi.generate_keyboard_event(
+                37,
+                null,
+                Atspi.KeySynthType.PRESS
+            );
+
+            // Press and release 'u'
+            Atspi.generate_keyboard_event(
+                Gdk.unicode_to_keyval("u".codePointAt(0)),
+                null,
+                Atspi.KeySynthType.PRESSRELEASE | Atspi.KeySynthType.SYM
+            );
+
+            // Release Shift_L (keycode 50)
+            Atspi.generate_keyboard_event(
+                50,
+                null,
+                Atspi.KeySynthType.RELEASE
+            );
+
+            // Release Control_L (keycode 37)
+            Atspi.generate_keyboard_event(
+                37,
+                null,
+                Atspi.KeySynthType.RELEASE
+            );
+            
+            for (var h = 0; h < ucode.length; h++) {
+                ukeyval = Gdk.unicode_to_keyval(ucode.charAt(h).codePointAt(0));
+                // Press and release hex code
+                Atspi.generate_keyboard_event(
+                    ukeyval,
+                    null,
+                    Atspi.KeySynthType.PRESSRELEASE | Atspi.KeySynthType.SYM
+                );
+            }
+            
+            // Press and release Return
+            Atspi.generate_keyboard_event(
+                Gdk.KEY_Return,
+                null,
+                Atspi.KeySynthType.PRESSRELEASE | Atspi.KeySynthType.SYM
+            );
+ 
+
+            this.sendEcho(input);
+        } catch (e) {
+            logError(e, this.device.name);
+        }
+    }
+
+    /**
      * Simulate a key press using libcaribou
      *
      * @param {object} input - 'body' of a 'kdeconnect.mousepad.request' packet
@@ -370,11 +450,16 @@ var Plugin = GObject.registerClass({
 
             // Transform key to keyval
             let keyval;
+            let ucode = "";
 
-            // Regular key (Unicode)
+            // Regular key (ASCII)
             // NOTE: \u0000 sometimes sent in advance of a specialKey packet
-            if (input.key && input.key !== '\u0000') {
+            if (input.key && input.key !== '\u0000' && _ASCII.test(input.key)) {
                 keyval = Gdk.unicode_to_keyval(input.key.codePointAt(0));
+
+            // Unicode key
+            } else if (input.key && input.key !== '\u0000' && !_ASCII.test(input.key)) {
+                ucode = input.key.charCodeAt(0).toString(16);
 
             // Special key (eg. non-printable ASCII)
             } else if (input.specialKey && KeyMap.has(input.specialKey)) {
@@ -396,7 +481,32 @@ var Plugin = GObject.registerClass({
                 this.virtual_keyboard.mod_unlock(mask);
 
                 this.sendEcho(input);
+            } else if (ucode !== "") {
+                debug(`unicode hex: /u${ucode}`);
+                const ukeyval = Gdk.unicode_to_keyval("u".codePointAt(0));
+                let ukeyvar;
+
+                // unicode character
+                // using .mod_un/lock does not work as mod_unlock is not equivalent to a key release
+                // Press Control + Shift
+                this.virtual_keyboard.keyval_press(Gdk.KEY_Control_L);
+                this.virtual_keyboard.keyval_press(Gdk.KEY_Shift_L);
+                // Press and release 'u'
+                this.virtual_keyboard.keyval_press(ukeyval);
+                this.virtual_keyboard.keyval_release(ukeyval);
+                for (var h = 0; h < ucode.length; h++) {
+                    ukeyvar = Gdk.unicode_to_keyval(ucode.charAt(h).codePointAt(0));
+                    // Press and release hex code
+                    this.virtual_keyboard.keyval_press(ukeyvar);
+                    this.virtual_keyboard.keyval_release(ukeyvar);
+                }
+                // Release Control + Shift
+                this.virtual_keyboard.keyval_release(Gdk.KEY_Shift_L);
+                this.virtual_keyboard.keyval_release(Gdk.KEY_Control_L);
+
+                this.sendEcho(input);
             }
+
         } catch (e) {
             logError(e, this.device.name);
         }
