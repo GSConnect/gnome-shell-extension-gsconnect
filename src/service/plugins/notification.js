@@ -58,7 +58,31 @@ var Metadata = {
 };
 
 
-var ID_REGEX = /^(fdo|gtk)\|([^|]+)\|(.*)$/;
+// A regex for our custom notificaiton ids
+const ID_REGEX = /^(fdo|gtk)\|([^|]+)\|(.*)$/;
+
+// A list of known SMS apps
+const SMS_APPS = [
+    // Popular apps that don't contain the string 'sms'
+    'com.android.messaging',                    // AOSP
+    'com.google.android.apps.messaging',        // Google Messages
+    'com.textra',                               // Textra
+    'xyz.klinker.messenger',                    // Pulse
+    'com.calea.echo',                           // Mood Messenger
+    'com.moez.QKSMS',                           // QKSMS
+    'rpkandrodev.yaata',                        // YAATA
+    'com.tencent.mm',                           // WeChat
+    'com.viber.voip',                           // Viber
+    'com.kakao.talk',                           // KakaoTalk
+    'com.concentriclivers.mms.com.android.mms', // AOSP Clone
+    'fr.slvn.mms',                              // AOSP Clone
+    'com.promessage.message',                   //
+    'com.htc.sense.mms',                        // HTC Messages
+
+    // Known not to work with sms plugin
+    'org.thoughtcrime.securesms',               // Signal Private Messenger
+    'com.samsung.android.messaging'             // Samsung Messages
+];
 
 
 /**
@@ -151,6 +175,22 @@ var Plugin = GObject.registerClass({
                     warning('Unknown notification type', this.device.name);
             }
         }
+    }
+
+    /**
+     * Check an internal id for evidence that it's from an SMS app
+     *
+     * @param {string} - Internal notification id
+     * @return {boolean} - Whether the id has evidence it's from an SMS app
+     */
+    _isSms(id) {
+        if (id.includes('sms')) return true;
+
+        for (let i = 0, len = SMS_APPS.length; i < len; i++) {
+            if (id.includes(SMS_APPS[i])) return true;
+        }
+
+        return false;
     }
 
     /**
@@ -441,27 +481,31 @@ var Plugin = GObject.registerClass({
                 };
             }
 
-            // Special case for SMS notifications
-            if (packet.body.id.includes(':sms')) {
-                title = packet.body.title;
-                body = packet.body.text;
-                action = {
-                    name: 'replySms',
-                    parameter: new GLib.Variant('s', packet.body.title)
-                };
-                icon = icon || new Gio.ThemedIcon({name: 'sms-symbolic'});
+            switch (true) {
+                // Special case for Missed Calls
+                case packet.body.id.includes('MissedCall'):
+                    title = packet.body.title;
+                    body = packet.body.text;
+                    icon = icon || new Gio.ThemedIcon({name: 'call-missed-symbolic'});
+                    break;
 
-                this._sms[packet.body.ticker] = packet.body.id;
+                // Special case for SMS notifications
+                case this._isSms(packet.body.id):
+                    title = packet.body.title;
+                    body = packet.body.text;
+                    action = {
+                        name: 'replySms',
+                        parameter: new GLib.Variant('s', packet.body.title)
+                    };
+                    icon = icon || new Gio.ThemedIcon({name: 'sms-symbolic'});
 
-            // Special case for Missed Calls
-            } else if (packet.body.id.includes('MissedCall')) {
-                title = packet.body.title;
-                body = packet.body.text;
-                icon = icon || new Gio.ThemedIcon({name: 'call-missed-symbolic'});
+                    this._sms[packet.body.ticker] = packet.body.id;
+                    break;
 
-            // Ignore 'appName' if it's the same as 'title'
-            } else if (packet.body.appName === packet.body.title) {
-                body = packet.body.text;
+                // Ignore 'appName' if it's the same as 'title'
+                case (packet.body.appName === packet.body.title):
+                    body = packet.body.text;
+                    break;
             }
 
             // If we still don't have an icon use the device icon
