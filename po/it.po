@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-01-06 04:32\n"
+"PO-Revision-Date: 2019-01-08 13:19\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -40,7 +40,7 @@ msgstr "Indirizzo IP"
 
 #: data/connect.ui:142
 msgid "Bluetooth Device"
-msgstr "Dispositivo bluetooth"
+msgstr "Dispositivo Bluetooth"
 
 #: data/contacts.ui:49
 msgid "Type a phone number or name"
@@ -243,7 +243,7 @@ msgstr "Informazioni"
 #. TRANSLATORS: Change the connection type to Bluetooth
 #: data/menus.ui:49
 msgid "Switch to Bluetooth"
-msgstr "Passa a bluetooth"
+msgstr "Passa a Bluetooth"
 
 #. TRANSLATORS: Change the connection type to TCP/IP
 #: data/menus.ui:56
@@ -253,7 +253,7 @@ msgstr "Passa a LAN"
 #. TRANSLATORS: View the TLS Certificate fingerprint
 #: data/menus.ui:63 src/service/ui/device.js:317
 msgid "Encryption Info"
-msgstr "Informazioni di Criptazione"
+msgstr "Informazioni di criptazione"
 
 #. TRANSLATORS: Unpair the device and notify it
 #: data/menus.ui:74 src/service/device.js:432
