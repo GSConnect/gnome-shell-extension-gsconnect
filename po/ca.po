@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-01-08 13:34\n"
+"PO-Revision-Date: 2019-01-08 13:45\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -571,7 +571,7 @@ msgstr "Comprovació de connectivitat: %s"
 
 #: src/service/plugins/runcommand.js:12
 msgid "Run Commands"
-msgstr ""
+msgstr "Execució d’ordres"
 
 #: src/service/plugins/sftp.js:12
 msgid "SFTP"
@@ -618,7 +618,7 @@ msgstr "S'està iniciant la transferència"
 #: src/service/plugins/share.js:134
 #, javascript-format
 msgid "Receiving “%s” from %s"
-msgstr ""
+msgstr "S’està rebent «%s» del %s"
 
 #: src/service/plugins/share.js:172 src/service/plugins/share.js:327
 msgid "Transfer Successful"
@@ -628,7 +628,7 @@ msgstr ""
 #: src/service/plugins/share.js:174
 #, javascript-format
 msgid "Received “%s” from %s"
-msgstr "S’ha rebut «%s» d’un %s"
+msgstr "S’ha rebut «%s» del %s"
 
 #: src/service/plugins/share.js:180
 msgid "Open Folder"
@@ -636,7 +636,7 @@ msgstr "Obre la carpeta"
 
 #: src/service/plugins/share.js:185
 msgid "Open File"
-msgstr ""
+msgstr "Obre el fitxer"
 
 #: src/service/plugins/share.js:192 src/service/plugins/share.js:335
 msgid "Transfer Failed"
@@ -675,12 +675,12 @@ msgstr ""
 #: src/service/plugins/share.js:408
 #, javascript-format
 msgid "Send files to %s"
-msgstr ""
+msgstr "Envia fitxers al %s"
 
 #. TRANSLATORS: Mark the file to be opened once completed
 #: src/service/plugins/share.js:412
 msgid "Open when done"
-msgstr ""
+msgstr "Obre’l en finalitzar"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
 #: src/service/plugins/share.js:451
@@ -815,28 +815,28 @@ msgstr "Ara mateix"
 #, javascript-format
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d minut"
+msgstr[1] "%d minuts"
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
 #: src/service/ui/messaging.js:75
 #, javascript-format
 msgid "Yesterday・%s"
-msgstr ""
+msgstr "Ahir・%s"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:243
 #, javascript-format
 msgid "You: %s"
-msgstr ""
+msgstr "Vós: %s"
 
 #: src/service/ui/service.js:31
 msgid "Select a Device"
-msgstr ""
+msgstr "Seleccioneu un dispositiu"
 
 #: src/service/ui/service.js:35
 msgid "Select"
-msgstr ""
+msgstr "Selecciona"
 
 #: src/service/ui/settings.js:331
 msgid "Unpaired"
@@ -933,7 +933,7 @@ msgstr[1] "%d hores"
 
 #: src/shell/notification.js:42
 msgid "Reply"
-msgstr ""
+msgstr "Respon"
 
 #. TRANSLATORS: Extension name
 #: webextension/gettext.js:27
