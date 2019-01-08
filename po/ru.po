@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-01-08 10:52\n"
+"PO-Revision-Date: 2019-01-08 20:42\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -19,7 +19,7 @@ msgstr ""
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/connect.ui:24 data/menus.ui:7
 msgid "Connect to…"
-msgstr "Подключиться к..."
+msgstr "Подключиться к…"
 
 #. Action Buttons
 #: data/connect.ui:30 data/notification.ui:14 data/telephony.ui:14
@@ -162,7 +162,7 @@ msgstr "Комбинации клавиш"
 
 #: data/device.ui:1280 data/device.ui:1349
 msgid "Reset All…"
-msgstr "Сбросить все..."
+msgstr "Сбросить все…"
 
 #: data/device.ui:1334
 msgid "Command Shortcuts"
