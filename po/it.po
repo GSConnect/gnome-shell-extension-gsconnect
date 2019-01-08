@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-01-08 14:05\n"
+"PO-Revision-Date: 2019-01-08 14:21\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -622,7 +622,7 @@ msgstr "Ricezione in corso di \"%s\" da %s"
 
 #: src/service/plugins/share.js:172 src/service/plugins/share.js:327
 msgid "Transfer Successful"
-msgstr "Trasferimento Riuscito"
+msgstr "Trasferimento riuscito"
 
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:174
@@ -636,7 +636,7 @@ msgstr "Apri cartella"
 
 #: src/service/plugins/share.js:185
 msgid "Open File"
-msgstr "Apri File"
+msgstr "Apri file"
 
 #: src/service/plugins/share.js:192 src/service/plugins/share.js:335
 msgid "Transfer Failed"
