@@ -69,9 +69,6 @@ var Plugin = GObject.registerClass({
             for (let i = 0, len = contacts.length; i < len; i++) {
                 let contact = contacts[i];
 
-                // Skip contacts that were added from a different source
-                if (contact.origin !== 'device') continue;
-
                 if (!remote_uids.includes(contact.id)) {
                     this._store.remove(contact.id, false);
                     removed = true;
@@ -84,9 +81,9 @@ var Plugin = GObject.registerClass({
             let uids = [];
 
             for (let [uid, timestamp] of Object.entries(packet.body)) {
-                let cache = this._store.get_contact(uid);
+                let contact = this._store.get_contact(uid);
 
-                if (!cache || cache.timestamp !== timestamp) {
+                if (!contact || contact.timestamp !== timestamp) {
                     uids.push(uid);
                 }
             }

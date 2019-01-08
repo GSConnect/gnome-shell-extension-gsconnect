@@ -223,6 +223,11 @@ var Store = GObject.registerClass({
             contact.id = id;
         }
 
+        // Ensure the contact has an origin
+        if (!contact.origin) {
+            contact.origin = 'gsconnect';
+        }
+
         // This is an updated contact
         if (this.__cache_data[contact.id]) {
             this.__cache_data[contact.id] = contact;
@@ -290,7 +295,7 @@ var Store = GObject.registerClass({
             for (let i = 0, len = contacts.length; i < len; i++) {
                 let contact = contacts[i];
 
-                if (!json[contact.id]) {
+                if (contact.origin === 'folks' && !json[contact.id]) {
                     await this.remove(contact.id, false);
                 }
             }
