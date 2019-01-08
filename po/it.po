@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-01-08 13:58\n"
+"PO-Revision-Date: 2019-01-08 14:05\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -608,7 +608,7 @@ msgstr "Invia testo"
 #: src/service/plugins/share.js:43 src/service/ui/messaging.js:975
 #: src/service/ui/messaging.js:983
 msgid "Share Link"
-msgstr "Condividi Collegamento"
+msgstr "Condividi collegamento"
 
 #: src/service/plugins/share.js:132 src/service/plugins/share.js:303
 msgid "Starting Transfer"
