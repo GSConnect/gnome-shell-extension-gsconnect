@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-01-06 04:22\n"
+"PO-Revision-Date: 2019-01-08 13:19\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -628,11 +628,11 @@ msgstr ""
 #: src/service/plugins/share.js:174
 #, javascript-format
 msgid "Received “%s” from %s"
-msgstr ""
+msgstr "S’ha rebut «%s» d’un %s"
 
 #: src/service/plugins/share.js:180
 msgid "Open Folder"
-msgstr ""
+msgstr "Obre la carpeta"
 
 #: src/service/plugins/share.js:185
 msgid "Open File"
