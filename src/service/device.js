@@ -745,11 +745,8 @@ var Device = GObject.registerClass({
 
     _onDisabledPlugins(settings) {
         let disabled = this.settings.get_strv('disabled-plugins');
-        let supported = this.settings.get_strv('supported-plugins');
-        let allowed = supported.filter(name => !disabled.includes(name));
-
         disabled.map(name => this.unloadPlugin(name));
-        allowed.map(name => this.loadPlugin(name));
+        this.allowed_plugins.map(name => this.loadPlugin(name));
     }
 
     loadPlugin(name) {
