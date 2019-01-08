@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2018-12-30 17:42\n"
+"PO-Revision-Date: 2019-01-08 10:52\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -862,7 +862,7 @@ msgstr "Переданные файлы помещаются в папку <a hr
 
 #: src/service/ui/settings.js:499
 msgid "A complete KDE Connect implementation for GNOME"
-msgstr ""
+msgstr "Полная реализация KDE Connect для GNOME"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/service/ui/settings.js:508
