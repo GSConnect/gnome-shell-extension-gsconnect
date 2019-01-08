@@ -343,7 +343,7 @@ var ContactChooser = GObject.registerClass({
         // If the entry contains string with 2 or more digits...
         if (entry.text.replace(/\D/g, '').length >= 2) {
             // ...ensure we have a dynamic contact for it
-            if (!dynamic.__tmp) {
+            if (!dynamic || !dynamic.__tmp) {
                 dynamic = this.add_contact({
                     // TRANSLATORS: A phone number (eg. "Send to 555-5555")
                     name: _('Send to %s').format(entry.text),
@@ -366,7 +366,7 @@ var ContactChooser = GObject.registerClass({
             }
 
         // ...otherwise remove any dynamic contact that's been created
-        } else if (dynamic.__tmp) {
+        } else if (dynamic && dynamic.__tmp) {
             dynamic.destroy();
         }
 
@@ -404,6 +404,10 @@ var ContactChooser = GObject.registerClass({
                     return true;
                 }
             }
+
+        // Query is effectively empty
+        } else if (/^0+/.test(query)) {
+            return true;
         }
 
         return false;
