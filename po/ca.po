@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-01-08 13:19\n"
+"PO-Revision-Date: 2019-01-08 13:34\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -738,7 +738,7 @@ msgstr "%s・Fax"
 #: src/service/ui/contacts.js:127
 #, javascript-format
 msgid "%s・Work"
-msgstr "%s・Treball"
+msgstr "%s・Feina"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:131
@@ -863,7 +863,8 @@ msgstr ""
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/service/ui/settings.js:508
 msgid "translator-credits"
-msgstr "Adolfo Jayme Barrientos <fitojb@ubuntu.com>, 2019"
+msgstr "Adolfo Jayme Barrientos <fitojb@ubuntu.com>, 2019\n"
+"Marc Riera Irigoyen <marc.riera.irigoyen@gmail.com>, 2019"
 
 #: src/service/ui/settings.js:537
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
