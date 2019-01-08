@@ -50,6 +50,10 @@ var Plugin = GObject.registerClass({
         this.requestUids();
     }
 
+    cacheClear() {
+        this._store.clear();
+    }
+
     handlePacket(packet) {
         if (packet.type === 'kdeconnect.contacts.response_uids_timestamps') {
             this._handleUids(packet);

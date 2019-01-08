@@ -241,6 +241,12 @@ var Plugin = GObject.registerClass({
         }
     }
 
+    cacheClear() {
+        this.conversations = {};
+        this.__cache_write();
+        this.notify('conversations');
+    }
+
     cacheLoaded() {
         this.notify('conversations');
     }

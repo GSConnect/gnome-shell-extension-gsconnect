@@ -955,6 +955,9 @@ var DevicePreferences = GObject.registerClass({
         let advanced_box = this.advanced_page.get_child().get_child();
         advanced_box.set_focus_vadjustment(this.advanced_page.vadjustment);
 
+        //
+        this.plugin_list.set_header_func(section_separators);
+
         // Continue focus chain between lists
         this.plugin_list.next = this.experimental_list;
         this.experimental_list.prev = this.plugin_list;
@@ -974,14 +977,48 @@ var DevicePreferences = GObject.registerClass({
     }
 
     _addPlugin(name) {
-        let widget = new Gtk.CheckButton({
-            label: imports.service.plugins[name].Metadata.label,
-            active: this.get_plugin_allowed(name),
-            tooltip_text: name,
-            valign: Gtk.Align.CENTER,
+        let plugin = imports.service.plugins[name];
+
+        let row = new Gtk.ListBoxRow({
+            border_width: 0,
             visible: true
         });
-        this.plugin_list.add(widget);
+
+        let grid = new Gtk.Grid({
+            height_request: 32,
+            visible: true
+        });
+        row.add(grid);
+
+        let widget = new Gtk.CheckButton({
+            label: plugin.Metadata.label,
+            active: this.get_plugin_allowed(name),
+            hexpand: true,
+            tooltip_text: name,
+            valign: Gtk.Align.CENTER,
+            vexpand: true,
+            visible: true
+        });
+        grid.add(widget);
+
+        if (plugin.Plugin.prototype.cacheClear) {
+            let button = new Gtk.Button({
+                image: new Gtk.Image({
+                    icon_name: 'edit-clear-all-symbolic',
+                    pixel_size: 16,
+                    visible: true
+                }),
+                valign: Gtk.Align.CENTER,
+                vexpand: true,
+                visible: true
+            });
+            button.connect('clicked', this._clearPluginCache.bind(this, name));
+            button.get_style_context().add_class('flat');
+            widget.bind_property('active', button, 'sensitive', 2);
+            grid.add(button);
+        }
+
+        this.plugin_list.add(row);
 
         widget._togglePluginId = widget.connect(
             'notify::active',
@@ -993,29 +1030,34 @@ var DevicePreferences = GObject.registerClass({
         }
     }
 
+    _clearPluginCache(name) {
+        try {
+            this.device.lookup_plugin(name).cacheClear();
+        } catch (e) {
+            warning(e, `${this.device.name}: ${this.name}`);
+        }
+    }
+
     _populatePlugins() {
         let supported = this.supported_plugins;
 
-        this.plugin_list.foreach(row => {
-            let checkbutton = row.get_child();
+        for (let row of this.plugin_list.get_children()) {
+            let checkbutton = row.get_child().get_child_at(0, 0);
             let name = checkbutton.tooltip_text;
 
             if (supported.includes(name)) {
+                row.visible = true;
                 checkbutton.active = this.get_plugin_allowed(name);
-                supported.splice(supported.indexOf(name), 1);
             } else {
-                // Ensure we disconnect the checkbox and hide the setting
-                checkbutton.disconnect(checkbutton._togglePluginId);
+                row.visible = false;
 
                 if (this.hasOwnProperty(name)) {
                     this[name].visible = false;
                 }
-
-                // HACK: temporary mitigator for mysterious GtkListBox leak
-                row.run_dispose();
-                imports.system.gc();
             }
-        });
+
+            supported.splice(supported.indexOf(name), 1);
+        }
 
         for (let name of supported) {
             this._addPlugin(name);

@@ -96,6 +96,12 @@ var Plugin = GObject.registerClass({
         this.requestCommandList();
     }
 
+    cacheClear() {
+        this._remote_commands = {};
+        this.__cache_write();
+        this.notify('remote-commands');
+    }
+
     cacheLoaded() {
         if (this.device.connected) {
             this.connected();
