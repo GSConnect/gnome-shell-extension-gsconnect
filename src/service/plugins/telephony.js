@@ -65,21 +65,6 @@ var Plugin = GObject.registerClass({
                 return;
             }
 
-            // Take the opportunity to save the contact in the service store
-            if (packet.body.phoneNumber) {
-                let contact = this.service.contacts.query({
-                    name: packet.body.contactName,
-                    number: packet.body.phoneNumber
-                });
-
-                if (packet.body.phoneThumbnail) {
-                    let data = GLib.base64_decode(packet.body.phoneThumbnail);
-                    contact.avatar = await this.device.contacts.storeAvatar(data);
-                }
-                
-                this.service.contacts.add(contact);
-            }
-
             // Only handle 'ringing' or 'talking' events, leave the notification
             // plugin to handle 'missedCall' and 'sms' since they're repliable
             if (['ringing', 'talking'].includes(packet.body.event)) {
