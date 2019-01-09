@@ -155,7 +155,7 @@ var Plugin = GObject.registerClass({
             let cache = await JSON.load(this.__cache_file);
             Object.assign(this, cache);
         } catch (e) {
-            warning(e.message, `${this.device.name}: ${this.name}`);
+            debug(e.message, `${this.device.name}: ${this.name}`);
         } finally {
             this.cacheLoaded();
         }
@@ -220,7 +220,7 @@ var Plugin = GObject.registerClass({
 
                 JSON.dump(cache, this.__cache_file, true);
             } catch (e) {
-                debug(e);
+                debug(e.message, `${this.device.name}: ${this.name}`);
             }
         }
 
