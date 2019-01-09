@@ -101,10 +101,7 @@ var Dialog = GObject.registerClass({
             // Refuse to send empty or whitespace only texts
             if (!this.message_entry.buffer.text.trim()) return;
 
-            this.sms.sendMessage(
-                this.address,
-                this.message_entry.buffer.text
-            );
+            this.sms.sendSms(this.address, this.message_entry.buffer.text);
         }
 
         this.destroy();
