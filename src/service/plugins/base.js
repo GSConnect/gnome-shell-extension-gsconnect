@@ -187,7 +187,7 @@ var Plugin = GObject.registerClass({
 
             await JSON.dump(cache, this.__cache_file);
         } catch (e) {
-            warning(e.message, `${this.device.name}: ${this.name}`);
+            debug(e.message, `${this.device.name}: ${this.name}`);
         } finally {
             this.__cache_lock = false;
 
