@@ -690,6 +690,7 @@ var Window = GObject.registerClass({
 
         // Contacts
         this.contact_list = new Contacts.ContactChooser({
+            device: this.device,
             store: this.device.contacts
         });
         this.conversation_stack.add_named(this.contact_list, 'contact-list');

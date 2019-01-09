@@ -375,6 +375,9 @@ var DevicePreferences = GObject.registerClass({
         this.actions.add_action(settings.create_action('receive-content'));
         this.clipboard_sync.set_menu_model(this._menus.get_object('clipboard-sync'));
 
+        settings = this._getSettings('contacts');
+        this.actions.add_action(settings.create_action('contacts-source'));
+
         settings = this._getSettings('mousepad');
         this.actions.add_action(settings.create_action('share-control'));
 

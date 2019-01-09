@@ -214,6 +214,13 @@ var Avatar = GObject.registerClass({
 var ContactChooser = GObject.registerClass({
     GTypeName: 'GSConnectContactChooser',
     Properties: {
+        'device': GObject.ParamSpec.object(
+            'device',
+            'Device',
+            'The device associated with this window',
+            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            GObject.Object
+        ),
         'store': GObject.ParamSpec.object(
             'store',
             'Store',
@@ -241,6 +248,14 @@ var ContactChooser = GObject.registerClass({
         this.connect_template();
         super._init(params);
 
+        // Make sure we're using the correct contacts store
+        this.device.bind_property(
+            'contacts',
+            this,
+            'store',
+            GObject.BindingFlags.DEFAULT
+        );
+
         // Setup the contact list
         this.contact_list._entry = this.contact_entry.text;
         this.contact_list.set_filter_func(this._filter);
@@ -259,6 +274,9 @@ var ContactChooser = GObject.registerClass({
     }
 
     set store(store) {
+        // Do nothing if the store hasn't changed
+        if (this._store && this._store === store) return;
+
         if (this._store) {
             // Disconnect the current store
             this._store.disconnect(this._contactAddedId);

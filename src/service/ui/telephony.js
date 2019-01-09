@@ -78,6 +78,7 @@ var Dialog = GObject.registerClass({
         // Otherwise load the contact list
         } else {
             this.contact_list = new Contacts.ContactChooser({
+                device: this.device,
                 store: this.device.contacts
             });
             this.stack.add_named(this.contact_list, 'contact-list');

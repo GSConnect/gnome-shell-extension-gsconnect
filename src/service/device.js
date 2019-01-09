@@ -32,6 +32,13 @@ var Device = GObject.registerClass({
             GObject.ParamFlags.READABLE,
             null
         ),
+        'contacts': GObject.ParamSpec.object(
+            'contacts',
+            'Contacts',
+            'The contacts store for this device',
+            GObject.ParamFlags.READABLE,
+            GObject.Object
+        ),
         'encryption-info': GObject.ParamSpec.string(
             'encryption-info',
             'Encryption Info',
@@ -154,7 +161,12 @@ var Device = GObject.registerClass({
 
     get contacts() {
         let contacts = this.lookup_plugin('contacts');
-        return (contacts) ? contacts._store : this.service.contacts;
+
+        if (contacts && contacts.settings.get_boolean('contacts-source')) {
+            return contacts._store;
+        } else {
+            return this.service.contacts;
+        }
     }
 
     get encryption_info() {
@@ -747,6 +759,11 @@ var Device = GObject.registerClass({
         let disabled = this.settings.get_strv('disabled-plugins');
         disabled.map(name => this.unloadPlugin(name));
         this.allowed_plugins.map(name => this.loadPlugin(name));
+
+        // Make sure we're change the contacts store if the plugin was disabled
+        if (!this.get_plugin_allowed('contacts')) {
+            this.notify('contacts');
+        }
     }
 
     loadPlugin(name) {

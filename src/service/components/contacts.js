@@ -43,15 +43,9 @@ var Store = GObject.registerClass({
 
         this.__cache_data = {};
 
-        // Asynchronous setup
-        this._init_async();
-    }
-
-    async _init_async() {
-        try {
-            this.__cache_data = await JSON.load(this.__cache_file);
-        } catch (e) {
-            debug(e);
+        // Automatically prepare the desktop store
+        if (context === null) {
+            this.prepare();
         }
     }
 
@@ -145,6 +139,17 @@ var Store = GObject.registerClass({
                 );
             }
         });
+    }
+
+    // TODO: ensure this can only be called once
+    async prepare() {
+        try {
+            this.__cache_data = await JSON.load(this.__cache_file);
+        } catch (e) {
+            debug(e);
+        } finally {
+            this.notify('context');
+        }
     }
 
     /**

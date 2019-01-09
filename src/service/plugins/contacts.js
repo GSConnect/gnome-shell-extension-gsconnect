@@ -43,6 +43,21 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'contacts');
         this._store = new Contacts.Store(device.id);
+
+        // Notify when the store is ready
+        this._contactsStoreReadyId = this._store.connect(
+            'notify::context',
+            () => this.device.notify('contacts')
+        );
+
+        // Notify if the contacts source changes
+        this._contactsStoreChangedId = this.settings.connect(
+            'changed::contacts-source',
+            () => this.device.notify('contacts')
+        );
+
+        // Prepare the store
+        this._store.prepare();
     }
 
     connected() {
@@ -330,6 +345,12 @@ var Plugin = GObject.registerClass({
                 uids: uids
             }
         });
+    }
+
+    destroy() {
+        this.settings.disconnect(this._contactsStoreReadyId);
+        this.settings.disconnect(this._contactsSourceChangedId);
+        super.destroy();
     }
 });
 
