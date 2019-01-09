@@ -51,8 +51,9 @@ var Plugin = GObject.registerClass({
         super._init(device, 'telephony');
     }
 
-    get sms() {
-        return this.device.lookup_plugin('sms');
+    get legacy_sms() {
+        let sms = this.device.lookup_plugin('sms');
+        return (sms && sms.settings.get_boolean('legacy-sms'));
     }
 
     async handlePacket(packet) {
@@ -62,18 +63,14 @@ var Plugin = GObject.registerClass({
                 let sender = packet.body.contactName || packet.body.phoneNumber;
                 this.device.hideNotification(`${packet.body.event}|${sender}`);
                 this._restoreMediaState();
-                return;
-            }
 
             // Only handle 'ringing' or 'talking' events, leave the notification
             // plugin to handle 'missedCall' and 'sms' since they're repliable
-            if (['ringing', 'talking'].includes(packet.body.event)) {
+            } else if (['ringing', 'talking'].includes(packet.body.event)) {
                 this._handleEvent(packet);
-            }
 
             // Legacy messaging support
-            if (packet.body.event === 'sms' &&
-                this.sms.settings.get_boolean('legacy-sms')) {
+            } else if (packet.body.event === 'sms' && this.legacy_sms) {
                 this._handleLegacyMessage(packet);
             }
         } catch (e) {
