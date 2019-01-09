@@ -300,7 +300,7 @@ var Store = GObject.registerClass({
             for (let i = 0, len = contacts.length; i < len; i++) {
                 let contact = contacts[i];
 
-                if (contact.origin === 'folks' && !json[contact.id]) {
+                if (!json[contact.id]) {
                     await this.remove(contact.id, false);
                 }
             }
