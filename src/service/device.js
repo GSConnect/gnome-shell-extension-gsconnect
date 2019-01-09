@@ -530,7 +530,7 @@ var Device = GObject.registerClass({
 
         if (transfer !== undefined) {
             this._transfers.delete(uuid);
-            transfer.cancel();
+            transfer.close();
         }
     }
 

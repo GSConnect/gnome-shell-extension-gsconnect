@@ -536,13 +536,6 @@ var Transfer = class Transfer extends Channel {
         throw new GObject.NotImplementedError();
     }
 
-    /**
-     * Cancel the transfer in progress
-     */
-    cancel() {
-        this.close();
-    }
-
     close() {
         this.device._transfers.delete(this.uuid);
         super.close();
