@@ -496,6 +496,43 @@ var Channel = class Channel {
             this.close();
         }
     }
+
+    /**
+     * Transfer using g_output_stream_splice()
+     *
+     * @return {Boolean} - %true on success, %false on failure.
+     */
+    async _transfer() {
+        let result = false;
+
+        try {
+            result = await new Promise((resolve, reject) => {
+                this.output_stream.splice_async(
+                    this.input_stream,
+                    Gio.OutputStreamSpliceFlags.NONE,
+                    GLib.PRIORITY_DEFAULT,
+                    this.cancellable,
+                    (source, res) => {
+                        try {
+                            if (source.splice_finish(res) < this.size) {
+                                throw new Error('incomplete data');
+                            }
+
+                            resolve(true);
+                        } catch (e) {
+                            reject(e);
+                        }
+                    }
+                );
+            });
+        } catch (e) {
+            debug(e, this.identity.body.deviceName);
+        } finally {
+            this.close();
+        }
+
+        return result;
+    }
 };
 
 
@@ -538,43 +575,6 @@ var Transfer = class Transfer extends Channel {
     close() {
         this.device._transfers.delete(this.uuid);
         super.close();
-    }
-
-    /**
-     * Transfer using g_output_stream_splice()
-     *
-     * @return {Boolean} - %true on success, %false on failure.
-     */
-    async _transfer() {
-        let result = false;
-
-        try {
-            result = await new Promise((resolve, reject) => {
-                this.output_stream.splice_async(
-                    this.input_stream,
-                    Gio.OutputStreamSpliceFlags.NONE,
-                    GLib.PRIORITY_DEFAULT,
-                    this.cancellable,
-                    (source, res) => {
-                        try {
-                            if (source.splice_finish(res) < this.size) {
-                                throw new Error('incomplete data');
-                            }
-
-                            resolve(true);
-                        } catch (e) {
-                            reject(e);
-                        }
-                    }
-                );
-            });
-        } catch (e) {
-            debug(e, this.device.name);
-        } finally {
-            this.close();
-        }
-
-        return result;
     }
 };
 
