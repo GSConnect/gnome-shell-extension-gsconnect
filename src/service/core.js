@@ -240,11 +240,6 @@ var Channel = class Channel {
             // Standard TLS Handshake
             await this._handshake(connection);
 
-            // Bail if deviceId is missing
-            if (!this.identity.body.hasOwnProperty('deviceId')) {
-                throw new Error('missing deviceId');
-            }
-
             // Get a GSettings object for this deviceId
             let settings = new Gio.Settings({
                 settings_schema: gsconnect.gschema.lookup(gsconnect.app_id + '.Device', true),
