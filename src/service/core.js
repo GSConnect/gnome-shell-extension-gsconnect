@@ -129,6 +129,18 @@ var Channel = class Channel {
         return Gio.Application.get_default();
     }
 
+    get uuid() {
+        if (this._uuid === undefined) {
+            this._uuid = GLib.uuid_string_random();
+        }
+
+        return this._uuid;
+    }
+
+    set uuid(uuid) {
+        this._uuid = uuid;
+    }
+
     /**
      * Set socket options
      */
@@ -382,7 +394,7 @@ var Channel = class Channel {
      * Close all streams associated with this channel, silencing any errors
      */
     close() {
-        debug(`${this.constructor.name}:${this.type}${(this.uuid) ? '(Transfer)' : ''}`);
+        debug(`${this.constructor.name} (${this.type})`);
 
         // Cancel any queued operations
         this.cancellable.cancel();
@@ -510,19 +522,6 @@ var Transfer = class Transfer extends Channel {
 
     get type() {
         return 'transfer';
-    }
-
-    // For bluetooth transfers this also serves as the per-transfer profile UUID
-    get uuid() {
-        if (this._uuid === undefined) {
-            this._uuid = GLib.uuid_string_random();
-        }
-
-        return this._uuid;
-    }
-
-    set uuid(uuid) {
-        this._uuid = uuid;
     }
 
     /**
