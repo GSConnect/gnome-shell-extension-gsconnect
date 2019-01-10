@@ -6,29 +6,6 @@ const GObject = imports.gi.GObject;
 
 
 /**
- * One-time check for Linux/FreeBSD scoket options
- */
-var _LINUX_SOCKET_OPTIONS = false;
-
-try {
-    // This should throw on FreeBSD
-    // https://github.com/freebsd/freebsd/blob/master/sys/netinet/tcp.h#L159
-    new Gio.Socket({
-        family: Gio.SocketFamily.IPV4,
-        protocol: Gio.SocketProtocol.TCP,
-        type: Gio.SocketType.STREAM
-    }).get_option(6, 5);
-
-    // Otherwise we can use Linux socket options
-    debug('Setting socket options for Linux');
-    _LINUX_SOCKET_OPTIONS = true;
-} catch (e) {
-    debug('Setting socket options for FreeBSD');
-    _LINUX_SOCKET_OPTIONS = false;
-}
-
-
-/**
  * Packet
  *
  * The packet class is a simple Object-derived class. It only exists to offer
@@ -117,16 +94,12 @@ var Channel = class Channel {
         return this._cancellable;
     }
 
-    get certificate() {
-        if (this.type === 'tcp') {
-            return this._connection.get_peer_certificate();
-        }
-
-        return null;
-    }
-
     get service() {
         return Gio.Application.get_default();
+    }
+
+    get type() {
+        return null;
     }
 
     get uuid() {
@@ -142,23 +115,10 @@ var Channel = class Channel {
     }
 
     /**
-     * Set socket options
+     * Override this in subclasses to configure any necessary socket options.
+     * The defau;t implementation returns the original Gio.SocketConnection.
      */
     _initSocket(connection) {
-        if (connection instanceof Gio.TcpConnection) {
-            connection.socket.set_keepalive(true);
-
-            if (_LINUX_SOCKET_OPTIONS) {
-                connection.socket.set_option(6, 4, 10); // TCP_KEEPIDLE
-                connection.socket.set_option(6, 5, 5);  // TCP_KEEPINTVL
-                connection.socket.set_option(6, 6, 3);  // TCP_KEEPCNT
-            } else {
-                connection.socket.set_option(6, 256, 10); // TCP_KEEPIDLE
-                connection.socket.set_option(6, 512, 5);  // TCP_KEEPINTVL
-                connection.socket.set_option(6, 1024, 3); // TCP_KEEPCNT
-            }
-        }
-
         return connection;
     }
 
@@ -225,108 +185,24 @@ var Channel = class Channel {
     }
 
     /**
-     * Handshake Gio.TlsConnection
-     */
-    _handshake(connection) {
-        return new Promise((resolve, reject) => {
-            connection.validation_flags = Gio.TlsCertificateFlags.EXPIRED;
-            connection.authentication_mode = Gio.TlsAuthenticationMode.REQUIRED;
-
-            connection.handshake_async(
-                GLib.PRIORITY_DEFAULT,
-                this.cancellable,
-                (connection, res) => {
-                    try {
-                        resolve(connection.handshake_finish(res));
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
-            );
-        });
-    }
-
-    async _authenticate(connection) {
-        // FIXME: This is a hack, error propogation needs to be fixed
-        try {
-            // Standard TLS Handshake
-            await this._handshake(connection);
-
-            // Get a GSettings object for this deviceId
-            let settings = new Gio.Settings({
-                settings_schema: gsconnect.gschema.lookup(gsconnect.app_id + '.Device', true),
-                path: gsconnect.settings.path + 'device/' + this.identity.body.deviceId + '/'
-            });
-            let cert_pem = settings.get_string('certificate-pem');
-
-            // If we have a certificate for this deviceId, we can verify it
-            if (cert_pem !== '') {
-                let certificate = Gio.TlsCertificate.new_from_pem(cert_pem, -1);
-                let valid = certificate.is_same(connection.peer_certificate);
-
-                // This is a fraudulent certificate; notify the user
-                if (!valid) {
-                    let error = new Error();
-                    error.name = 'AuthenticationError';
-                    error.deviceName = this.identity.body.deviceName;
-                    error.deviceHost = connection.base_io_stream.get_remote_address().address.to_string();
-                    this.service.notify_error(error);
-
-                    throw error;
-                }
-            }
-
-            return connection;
-        } catch (e) {
-            return Promise.reject(e);
-        }
-    }
-
-    /**
-     * If @connection is a Gio.TcpConnection, wrap it in Gio.TlsClientConnection
-     * and initiate handshake, otherwise just return it.
+     * Override these in subclasses to negotiate encryption. The default
+     * implementations simply return the original Gio.SocketConnection.
      */
     _clientEncryption(connection) {
-        if (connection instanceof Gio.TcpConnection) {
-            connection = Gio.TlsClientConnection.new(
-                connection,
-                connection.socket.remote_address
-            );
-            connection.set_certificate(this.service.certificate);
-
-            return this._authenticate(connection);
-        } else {
-            return Promise.resolve(connection);
-        }
+        return Promise.resolve(connection);
     }
 
-    /**
-     * If @connection is a Gio.TcpConnection, wrap it in Gio.TlsServerConnection
-     * and initiate handshake, otherwise just return it.
-     */
     _serverEncryption(connection) {
-        if (connection instanceof Gio.TcpConnection) {
-            connection = Gio.TlsServerConnection.new(
-                connection,
-                this.service.certificate
-            );
-
-            // If we're the server, we trust-on-first-use and verify after
-            let _id = connection.connect('accept-certificate', (conn) => {
-                conn.disconnect(_id);
-                return true;
-            });
-
-            return this._authenticate(connection);
-        } else {
-            return Promise.resolve(connection);
-        }
+        return Promise.resolve(connection);
     }
 
     /**
-     * Attach the channel to a device and monitor the input stream for packets
+     * Attach to @device as the default channel used for packet exchange. This
+     * should connect the channel's Gio.Cancellable to mark the device as
+     * disconnected, setup the IO streams, start the receive() loop and set the
+     * device as connected.
      *
-     * @param {Device.Device} - The device to attach to
+     * @param {Device.Device} device - The device to attach to
      */
     attach(device) {
         // Detach any existing channel
@@ -485,6 +361,41 @@ var Channel = class Channel {
     }
 
     /**
+     * Override these in subclasses to negotiate payload transfers. Both methods
+     * should cleanup after themselves and return a success boolean.
+     *
+     * The default implementation will always report failure, for protocols that
+     * won't or don't yet support payload transfers.
+     */
+    async download(packet) {
+        let result = false;
+
+        try {
+            throw new GObject.NotImplementedError();
+        } catch (e) {
+            debug(e, this.identity.body.deviceName);
+        } finally {
+            this.close();
+        }
+
+        return result;
+    }
+
+    async upload(port) {
+        let result = false;
+
+        try {
+            throw new GObject.NotImplementedError();
+        } catch (e) {
+            debug(e, this.identity.body.deviceName);
+        } finally {
+            this.close();
+        }
+
+        return result;
+    }
+
+    /**
      * Transfer using g_output_stream_splice()
      *
      * @return {Boolean} - %true on success, %false on failure.
@@ -546,17 +457,6 @@ var Transfer = class Transfer extends Channel {
 
     get type() {
         return 'transfer';
-    }
-
-    /**
-     * Override in protocol implementation
-     */
-    async upload() {
-        throw new GObject.NotImplementedError();
-    }
-
-    async download() {
-        throw new GObject.NotImplementedError();
     }
 
     close() {

@@ -6,9 +6,36 @@ const GObject = imports.gi.GObject;
 
 const Core = imports.service.core;
 
+
+/**
+ * TCP Port Constants
+ */
 const TCP_MIN_PORT = 1716;
 const TCP_MAX_PORT = 1764;
 const UDP_PORT = 1716;
+
+
+/**
+ * One-time check for Linux/FreeBSD socket options
+ */
+var _LINUX_SOCKETS = false;
+
+try {
+    // This should throw on FreeBSD
+    // https://github.com/freebsd/freebsd/blob/master/sys/netinet/tcp.h#L159
+    new Gio.Socket({
+        family: Gio.SocketFamily.IPV4,
+        protocol: Gio.SocketProtocol.TCP,
+        type: Gio.SocketType.STREAM
+    }).get_option(6, 5);
+
+    // Otherwise we can use Linux socket options
+    debug('Using Linux socket options');
+    _LINUX_SOCKETS = true;
+} catch (e) {
+    debug('Using FreeBSD socket options');
+    _LINUX_SOCKETS = false;
+}
 
 
 /**
@@ -76,7 +103,7 @@ var ChannelService = class ChannelService {
         let channel, host, device;
 
         try {
-            channel = new Core.Channel({type: 'tcp'});
+            channel = new Channel();
             host = connection.get_remote_address().address.to_string();
 
             // Cancel any connection still resolving with this host
@@ -220,7 +247,7 @@ var ChannelService = class ChannelService {
             }
 
             // Create a new channel
-            let channel = new Core.Channel({type: 'tcp'});
+            let channel = new Channel();
             channel.identity = packet;
 
             let connection = await new Promise((resolve, reject) => {
@@ -298,9 +325,168 @@ var ChannelService = class ChannelService {
 
 
 /**
- * Lan File Transfers
+ * Lan Base Channel
+ *
+ * This class essentially just extends Core.Channel to set TCP socket options
+ * and negotiate TLS encrypted connections.
  */
-var Transfer = class Transfer extends Core.Transfer {
+var Channel = class Channel extends Core.Channel {
+
+    get certificate() {
+        return this._connection.get_peer_certificate();
+    }
+
+    get type() {
+        return 'tcp';
+    }
+
+    _initSocket(connection) {
+        connection.socket.set_keepalive(true);
+
+        if (_LINUX_SOCKETS) {
+            connection.socket.set_option(6, 4, 10); // TCP_KEEPIDLE
+            connection.socket.set_option(6, 5, 5);  // TCP_KEEPINTVL
+            connection.socket.set_option(6, 6, 3);  // TCP_KEEPCNT
+        } else {
+            connection.socket.set_option(6, 256, 10); // TCP_KEEPIDLE
+            connection.socket.set_option(6, 512, 5);  // TCP_KEEPINTVL
+            connection.socket.set_option(6, 1024, 3); // TCP_KEEPCNT
+        }
+
+        return connection;
+    }
+
+    /**
+     * Handshake Gio.TlsConnection
+     */
+    _handshake(connection) {
+        return new Promise((resolve, reject) => {
+            connection.validation_flags = Gio.TlsCertificateFlags.EXPIRED;
+            connection.authentication_mode = Gio.TlsAuthenticationMode.REQUIRED;
+
+            connection.handshake_async(
+                GLib.PRIORITY_DEFAULT,
+                this.cancellable,
+                (connection, res) => {
+                    try {
+                        resolve(connection.handshake_finish(res));
+                    } catch (e) {
+                        reject(e);
+                    }
+                }
+            );
+        });
+    }
+
+    async _authenticate(connection) {
+        try {
+            // Standard TLS Handshake
+            await this._handshake(connection);
+
+            // Get a GSettings object for this deviceId
+            let id = this.identity.body.deviceId;
+            let settings = new Gio.Settings({
+                settings_schema: gsconnect.gschema.lookup(
+                    'org.gnome.Shell.Extensions.GSConnect.Device',
+                    true
+                ),
+                path: `/org/gnome/shell/extensions/gsconnect/device/${id}/`
+            });
+            let cert_pem = settings.get_string('certificate-pem');
+
+            // If we have a certificate for this deviceId, we can verify it
+            if (cert_pem !== '') {
+                let certificate = Gio.TlsCertificate.new_from_pem(cert_pem, -1);
+                let valid = certificate.is_same(connection.peer_certificate);
+
+                // This is a fraudulent certificate; notify the user
+                if (!valid) {
+                    let error = new Error();
+                    error.name = 'AuthenticationError';
+                    error.deviceName = this.identity.body.deviceName;
+                    error.deviceHost = connection.base_io_stream.get_remote_address().address.to_string();
+                    this.service.notify_error(error);
+
+                    throw error;
+                }
+            }
+
+            return connection;
+        } catch (e) {
+            return Promise.reject(e);
+        }
+    }
+
+    /**
+     * Wrap the connection in Gio.TlsClientConnection and initiate handshake
+     *
+     * @param {Gio.TcpConnection} connection - The unauthenticated connection
+     * @return {Gio.TlsServerConnection} - The authenticated connection
+     */
+    _clientEncryption(connection) {
+        connection = Gio.TlsClientConnection.new(
+            connection,
+            connection.socket.remote_address
+        );
+        connection.set_certificate(this.service.certificate);
+
+        return this._authenticate(connection);
+    }
+
+    /**
+     * Wrap the connection in Gio.TlsServerConnection and initiate handshake
+     *
+     * @param {Gio.TcpConnection} connection - The unauthenticated connection
+     * @return {Gio.TlsServerConnection} - The authenticated connection
+     */
+    _serverEncryption(connection) {
+        connection = Gio.TlsServerConnection.new(
+            connection,
+            this.service.certificate
+        );
+
+        // We're the server so we trust-on-first-use and verify after
+        let _id = connection.connect('accept-certificate', (connection) => {
+            connection.disconnect(_id);
+            return true;
+        });
+
+        return this._authenticate(connection);
+    }
+};
+
+
+/**
+ * Lan Transfer Channel
+ */
+var Transfer = class Transfer extends Channel {
+
+    /**
+     * @param {object} params - Transfer parameters
+     * @param {Device.Device} params.device - The device that owns this transfer
+     * @param {Gio.InputStream} params.input_stream - The input stream (read)
+     * @param {Gio.OutputStream} params.output_stream - The output stream (write)
+     * @param {number} params.size - The size of the transfer in bytes
+     */
+    constructor(params) {
+        super(params);
+
+        // The device tracks transfers it owns so they can be closed from the
+        // notification action.
+        this.device._transfers.set(this.uuid, this);
+    }
+
+    get identity() {
+        return this.device._channel.identity;
+    }
+
+    /**
+     * Override to untrack the transfer UUID
+     */
+    close() {
+        this.device._transfers.delete(this.uuid);
+        super.close();
+    }
 
     /**
      * Connect to @port and read from the remote output stream into the local
@@ -309,8 +495,8 @@ var Transfer = class Transfer extends Core.Transfer {
      * When finished the channel and local input stream will be closed whether
      * or not the transfer succeeds.
      *
-     * @param {Number} port - The port the transfer is listening for connection
-     * @return {Boolean} - %true on success or %false on fail
+     * @param {number} port - The port the transfer is listening for connection
+     * @return {boolean} - %true on success or %false on fail
      */
     async download(port) {
         let result = false;
@@ -357,8 +543,8 @@ var Transfer = class Transfer extends Core.Transfer {
      * When finished the channel and local output stream will be closed whether
      * or not the transfer succeeds.
      *
-     * @param {Core.Packet} packet - The packet to send the transfer with
-     * @return {Boolean} - %true on success or %false on fail
+     * @param {Core.Packet} packet - The packet describing the transfer
+     * @return {boolean} - %true on success or %false on fail
      */
     async upload(packet) {
         let port = 1739;
