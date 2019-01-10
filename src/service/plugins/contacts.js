@@ -51,7 +51,7 @@ var Plugin = GObject.registerClass({
         );
 
         // Notify if the contacts source changes
-        this._contactsStoreChangedId = this.settings.connect(
+        this._contactsSourceChangedId = this.settings.connect(
             'changed::contacts-source',
             () => this.device.notify('contacts')
         );
