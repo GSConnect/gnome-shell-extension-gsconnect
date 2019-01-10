@@ -407,14 +407,6 @@ var Channel = class Channel {
                 // Silence errors
             }
         });
-
-        if (this._listener) {
-            try {
-                this._listener.close();
-            } catch (e) {
-                // Silence errors
-            }
-        }
     }
 
     /**

@@ -366,11 +366,11 @@ var Transfer = class Transfer extends Core.Transfer {
 
         try {
             // Start listening on the first available port between 1739-1764
-            this._listener = new Gio.SocketListener();
+            let listener = new Gio.SocketListener();
 
             while (port <= TCP_MAX_PORT) {
                 try {
-                    this._listener.add_inet_port(port, null);
+                    listener.add_inet_port(port, null);
                     break;
                 } catch (e) {
                     if (port < TCP_MAX_PORT) {
@@ -384,13 +384,16 @@ var Transfer = class Transfer extends Core.Transfer {
 
             // Await the incoming connection
             let connection = new Promise((resolve, reject) => {
-                this._listener.accept_async(null, (source, res) => {
-                    try {
-                        resolve(this._listener.accept_finish(res)[0]);
-                    } catch (e) {
-                        reject(e);
+                listener.accept_async(
+                    this.cancellable,
+                    (listener, res, source_object) => {
+                        try {
+                            resolve(listener.accept_finish(res)[0]);
+                        } catch (e) {
+                            reject(e);
+                        }
                     }
-                });
+                );
             });
 
             // Notify the device we're ready
