@@ -169,16 +169,22 @@ var Device = GObject.registerClass({
         }
     }
 
+    // TODO: should we just store the fingerprint instead of the pem?
     get encryption_info() {
         let fingerprint = _('Not available');
 
+        // Bluetooth connections have no certificate so we use the host address
         if (this.connection_type === 'bluetooth') {
             // TRANSLATORS: Bluetooth address for remote device
             return _('Bluetooth device at %s').format(
                 this.settings.get_string('bluetooth-host')
             );
+
+        // If the device is connected use the certificate from the connection
         } else if (this.connected) {
             fingerprint = this._channel.certificate.fingerprint();
+
+        // Otherwise pull it out of the settings
         } else if (this.paired) {
             fingerprint = Gio.TlsCertificate.new_from_pem(
                 this.settings.get_string('certificate-pem'),
@@ -467,7 +473,7 @@ var Device = GObject.registerClass({
             id: Date.now(),
             title: this.name,
             body: '',
-            icon: new Gio.ThemedIcon({name: `${this.icon_name}-symbolic`}),
+            icon: new Gio.ThemedIcon({name: this.icon_name}),
             priority: Gio.NotificationPriority.NORMAL,
             action: null,
             buttons: []
