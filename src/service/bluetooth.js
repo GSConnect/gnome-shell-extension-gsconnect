@@ -470,15 +470,9 @@ var ChannelService = GObject.registerClass({
             let connection = socket.connection_factory_create_connection();
             let channel = new Core.Channel();
 
-            // FIXME: We can't differentiate between incoming or outgoing
-            //        connections and GLib.IOConditon.OUT always seems to be set
-            let condition = connection.socket.condition_check(
-                GLib.IOCondition.IN | GLib.IOCondition.OUT
-            );
-
-            if (condition === GLib.IOCondition.OUT) {
-                connection = await channel._sendIdent(connection);
-            }
+            // TODO: We can't differentiate incoming or outgoing connections so
+            // we treat this as outgoing and write our identity to the socket
+            connection = await channel._sendIdent(connection);
 
             // Accept the connection
             await channel.accept(connection);
