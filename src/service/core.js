@@ -451,27 +451,8 @@ var Channel = class Channel {
         );
     }
 
-    _send(packet) {
-        return new Promise((resolve, reject) => {
-            this.output_stream.write_all_async(
-                packet.toString(),
-                GLib.PRIORITY_DEFAULT,
-                this.cancellable,
-                (stream, res) => {
-                    try {
-                        resolve(stream.write_all_finish(res));
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
-            );
-        });
-    }
-
     /**
      * Send a packet to a device
-     *
-     * See: https://github.com/KDE/kdeconnect-kde/blob/master/core/backends/lan/landevicelink.cpp#L92-L94
      *
      * @param {object} packet - An dictionary of packet data
      */
@@ -485,7 +466,21 @@ var Channel = class Channel {
                 this.__lock = true;
 
                 while ((next = this.output_queue.shift())) {
-                    await this._send(next);
+                    await new Promise((resolve, reject) => {
+                        this.output_stream.write_all_async(
+                            next.toString(),
+                            GLib.PRIORITY_DEFAULT,
+                            this.cancellable,
+                            (stream, res) => {
+                                try {
+                                    resolve(stream.write_all_finish(res));
+                                } catch (e) {
+                                    reject(e);
+                                }
+                            }
+                        );
+                    });
+
                     debug(next, this.identity.body.deviceName);
                 }
 
