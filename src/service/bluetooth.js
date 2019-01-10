@@ -468,7 +468,7 @@ var ChannelService = GObject.registerClass({
             // Create a Gio.SocketConnection from the file-descriptor
             let socket = Gio.Socket.new_from_fd(fd);
             let connection = socket.connection_factory_create_connection();
-            let channel = new Core.Channel({type: 'bluetooth'});
+            let channel = new Core.Channel();
 
             // FIXME: We can't differentiate between incoming or outgoing
             //        connections and GLib.IOConditon.OUT always seems to be set
@@ -566,154 +566,46 @@ var ChannelService = GObject.registerClass({
 
 
 /**
- * Bluetooth File Transfers
- *
- * FIXME: All of this should be assumed broken
+ * TODO: Bluetooth Base Channel
  */
-var Transfer = class Transfer extends Core.Transfer {
+var Channel = class Channel extends Core.Channel {
 
+    get type() {
+        return 'bluetooth';
+    }
+};
+
+
+/**
+ * TODO: Bluetooth Transfer Channel
+ */
+var Transfer = class Transfer extends Channel {
+
+    /**
+     * @param {object} params - Transfer parameters
+     * @param {Device.Device} params.device - The device that owns this transfer
+     * @param {Gio.InputStream} params.input_stream - The input stream (read)
+     * @param {Gio.OutputStream} params.output_stream - The output stream (write)
+     * @param {number} params.size - The size of the transfer in bytes
+     */
     constructor(params) {
         super(params);
 
-        this._profileManager = new ProfileManager1Proxy({
-            g_connection: Gio.DBus.system,
-            g_name: 'org.bluez',
-            g_object_path: '/org/bluez'
-        });
-        this._profileManager.init(null);
+        // The device tracks transfers it owns so they can be closed from the
+        // notification action.
+        this.device._transfers.set(this.uuid, this);
     }
 
-    async _registerProfile(uuid) {
-        // Export the org.bluez.Profile1 interface for the socket
-        this._profile = new DBus.Interface({
-            g_connection: Gio.DBus.system,
-            g_instance: this,
-            g_interface_info: BluezNode.lookup_interface('org.bluez.Profile1'),
-            g_object_path: gsconnect.app_path + '/' + uuid.replace(/-/gi, '')
-        });
-
-        let profileOptions = {
-            // TODO: just do it all manually?
-            AutoConnect: new GLib.Variant('b', true),
-            Role: new GLib.Variant('s', 'client'),
-            // Don't require confirmation
-            RequireAuthorization: new GLib.Variant('b', false),
-            // Only allow paired devices
-            RequireAuthentication: new GLib.Variant('b', true),
-            // Service Record (customized to work with Android)
-            ServiceRecord: new GLib.Variant('s', makeSdpRecord(uuid))
-        };
-
-        // Register KDE Connect bluez profile
-        await this._profileManager.RegisterProfile(
-            this._profile.get_object_path(),
-            uuid,
-            profileOptions
-        );
-
-        return uuid;
-    }
-
-    async upload(packet) {
-        debug(this.identity.body.deviceId);
-
-        try {
-            // Start "listening" for uuid
-            this._profile = new DBus.Interface({
-                g_connection: Gio.DBus.system,
-                g_instance: this,
-                g_interface_info: BluezNode.lookup_interface('org.bluez.Profile1'),
-                g_object_path: gsconnect.app_path + '/' + this.uuid.replace(/-/gi, '')
-            });
-
-            await this._registerProfile(this.uuid);
-
-            // Notify the device we're ready
-            packet.body.payloadHash = this.checksum;
-            packet.payloadSize = this.size;
-            packet.payloadTransferInfo = {uuid: this.uuid};
-            this.device.sendPacket(packet);
-
-            // Return the uuid for payloadTransferInfo
-            return this.uuid;
-        } catch (e) {
-            logError(e);
-            this.close();
-        }
+    get identity() {
+        return this.device._channel.identity;
     }
 
     /**
-     * Presumably for bluetooth connections this will handle accepting
-     * uploads and downloads...
+     * Override to untrack the transfer UUID
      */
-    async NewConnection(object_path, fd, fd_properties) {
-        debug(`(${object_path}, ${fd}, ${JSON.stringify(fd_properties)})`);
-        try {
-
-            // Create a Gio.SocketConnection from the file-descriptor
-            let socket = Gio.Socket.new_from_fd(fd);
-            this._connection = socket.connection_factory_create_connection();
-            //let channel = new Core.Channel({type: 'bluetooth'});
-
-            // Accept the connection and configure the channel
-            this._connection = await this._initSocket(this._connection);
-            this._connection = await this._serverEncryption(this._connection);
-            this.output_stream = this._connection.get_output_stream();
-
-            // NewConnection() is actually called in response to ConnectProfile()
-            // so maybe it makes more sense for this to use open() somehow?
-            log('TRANSFER CONNECTED: ' + this._connection);
-            this.emit('connected');
-        } catch (e) {
-            logError(e);
-        }
-    }
-
-    async upload_accept(listener, res) {
-        debug(this.identity.body.deviceId);
-
-        try {
-            this._connection = await new Promise((resolve, reject) => {
-                try {
-                    resolve(this._listener.accept_finish(res)[0]);
-                } catch (e) {
-                    reject(e);
-                }
-            });
-            this._connection = await this._initSocket(this._connection);
-            this._connection = await this._serverEncryption(this._connection);
-            this.output_stream = this._connection.get_output_stream();
-            this.emit('connected');
-        } catch (e) {
-            log('Error uploading: ' + e.message);
-            debug(e);
-            this.close();
-        }
-    }
-
-    async download(uuid) {
-        log(`Connecting to ${this.identity.body.deviceId}`);
-
-        try {
-            uuid = await this._registerProfile(uuid);
-            let service = Gio.Application.get_default().bluetooth;
-            let device = service._devices.get(this.device.settings.get_string('bluetooth-path'));
-            await device.ConnectProfile(uuid);
-        } catch (e) {
-            log('Error downloading: ' + e.message);
-            debug(e);
-            this.close();
-        }
-    }
-
-    async Release() {
-        debug(arguments);
-    }
-
-    async RequestDisconnection(object_path) {
-        debug(object_path);
-
-        this.close();
+    close() {
+        this.device._transfers.delete(this.uuid);
+        super.close();
     }
 };
 
