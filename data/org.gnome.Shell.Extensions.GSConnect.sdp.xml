@@ -4,16 +4,16 @@
   <attribute id="0x0001">
     <sequence>
       <!-- Custom UUID -->
-      <uuid value="@UUID@" />
+      <uuid value="185f3df4-3268-4e3f-9fca-d4d5059915bd" />
       <!-- Custom UUID hex for Android -->
-      <uuid value="0x@UUID_ANDROID@" />
+      <uuid value="185f3df432684e3f9fcad4d5059915bd" />
       <!-- SPP (Serial Port Profile) -->
       <uuid value="0x1101" />
     </sequence>
   </attribute>
   <!-- ServiceID -->
   <attribute id="0x0003">
-    <uuid value="@UUID@" />
+    <uuid value="185f3df4-3268-4e3f-9fca-d4d5059915bd" />
   </attribute>
   <!-- ProtocolDescriptorList -->
   <attribute id="0x0004">

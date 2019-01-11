@@ -87,21 +87,15 @@ const ProfileManager1Proxy = DBus.makeInterfaceProxy(PROFILE_MANAGER_INFO);
 
 
 /**
- * Service Discovery Protocol Record template and Service UUID
+ * Service Discovery Protocol Record and Service UUID
  */
+const SERVICE_RECORD = gsconnect.get_resource(`${gsconnect.app_id}.sdp.xml`);
 const SERVICE_UUID = '185f3df4-3268-4e3f-9fca-d4d5059915bd';
-const SDP_TEMPLATE = gsconnect.get_resource(`${gsconnect.app_id}.sdp.xml`);
-
-
-function makeSdpRecord(uuid) {
-    return SDP_TEMPLATE.replace(
-        /@UUID@/gi,
-        uuid
-    ).replace(
-        '@UUID_ANDROID@',
-        uuid.replace(/-/gi, '')
-    );
-}
+const SERVICE_PROFILE = {
+    RequireAuthorization: new GLib.Variant('b', false),
+    RequireAuthentication: new GLib.Variant('b', true),
+    ServiceRecord: new GLib.Variant('s', SERVICE_RECORD)
+};
 
 
 /**
@@ -157,7 +151,7 @@ var ChannelService = GObject.registerClass({
     /**
      * Create a service record and register a profile
      */
-    async _register(uuid) {
+    _register(uuid) {
         // Export the org.bluez.Profile1 interface for the KDE Connect service
         this._profile = new DBus.Interface({
             g_connection: this.g_connection,
@@ -169,18 +163,12 @@ var ChannelService = GObject.registerClass({
         // Register our exported profile path
         let profile = this._profile.get_object_path();
 
-        // Set profile options
-        let options = {
-            // Don't require confirmation
-            RequireAuthorization: new GLib.Variant('b', false),
-            // Only allow paired devices
-            RequireAuthentication: new GLib.Variant('b', true),
-            // Service Record (customized to work with Android)
-            ServiceRecord: new GLib.Variant('s', makeSdpRecord(uuid))
-        };
-
         // Register KDE Connect bluez profile
-        await this._profileManager.RegisterProfile(profile, uuid, options);
+        return this._profileManager.RegisterProfile(
+            profile,
+            SERVICE_UUID,
+            SERVICE_PROFILE
+        );
     }
 
     async _init_async() {
