@@ -261,26 +261,30 @@ var ChannelService = GObject.registerClass({
      * @param {object[]} - ??
      */
     async _onInterfacesAdded(object_path, interfaces) {
-        for (let interface_name in interfaces) {
-            // Only handle devices
-            if (interface_name !== 'org.bluez.Device1') continue;
+        try {
+            for (let interface_name in interfaces) {
+                // Only handle devices
+                if (interface_name !== 'org.bluez.Device1') continue;
 
-            // We track all devices in case their service UUIDs change later
-            if (this._devices.has(object_path)) continue;
+                // We track all devices in case their service UUIDs change later
+                if (this._devices.has(object_path)) continue;
 
-            // Setup the device proxy
-            let proxy = await this._getDeviceProxy(object_path);
-            if (proxy === undefined) continue;
+                // Setup the device proxy
+                let proxy = await this._getDeviceProxy(object_path);
+                if (proxy === undefined) continue;
 
-            // Watch for connected/paired changes
-            proxy.__deviceChangedId = proxy.connect(
-                'g-properties-changed',
-                this._onDeviceChanged.bind(this)
-            );
+                // Watch for connected/paired changes
+                proxy.__deviceChangedId = proxy.connect(
+                    'g-properties-changed',
+                    this._onDeviceChanged.bind(this)
+                );
 
-            // Store the proxy and emit notify::devices
-            this._devices.set(proxy.g_object_path, proxy);
-            this.notify('devices');
+                // Store the proxy and emit notify::devices
+                this._devices.set(proxy.g_object_path, proxy);
+                this.notify('devices');
+            }
+        } catch (e) {
+            logError(e, object_path);
         }
     }
 
@@ -336,7 +340,6 @@ var ChannelService = GObject.registerClass({
                 for (let device of this._devices.values()) {
                     device.disconnect(device.__deviceChangedId);
                     this._devices.delete(device.g_object_path);
-                    this.emit('device-removed', device);
                 }
 
                 // Remove the profile
@@ -533,6 +536,8 @@ var ChannelService = GObject.registerClass({
     }
 
     destroy() {
+        this.disconnect(this._nameOwnerChangedId);
+
         for (let device of this._devices.values()) {
             if (device._channel !== null) {
                 device._channel.close();
