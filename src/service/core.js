@@ -130,6 +130,8 @@ var Channel = class Channel {
      */
     _receiveIdent(connection) {
         return new Promise((resolve, reject) => {
+            debug('receiving identity');
+
             let stream = new Gio.DataInputStream({
                 base_stream: connection.input_stream,
                 close_base_stream: false
@@ -168,6 +170,8 @@ var Channel = class Channel {
      */
     _sendIdent(connection) {
         return new Promise((resolve, reject) => {
+            debug('sending identity');
+
             connection.output_stream.write_all_async(
                 `${this.service.identity}`,
                 GLib.PRIORITY_DEFAULT,
