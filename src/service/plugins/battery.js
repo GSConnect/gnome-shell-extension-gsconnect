@@ -4,7 +4,6 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
-const DBus = imports.service.components.dbus;
 const PluginsBase = imports.service.plugins.base;
 
 
@@ -110,13 +109,6 @@ var Plugin = GObject.registerClass({
             '(bsii)',
             [this.charging, this.icon_name, this.level, this.time]
         );
-    }
-
-    cacheClear() {
-        this._chargeState = [54, 0, -1];
-        this._dischargeState = [864, 0, -1];
-        this._thresholdLevel = 25;
-        this.__cache_write();
     }
 
     cacheLoaded() {
