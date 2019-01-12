@@ -22,24 +22,7 @@ const Device = imports.shell.device;
 const DoNotDisturb = imports.shell.donotdisturb;
 const Keybindings = imports.shell.keybindings;
 const Notification = imports.shell.notification;
-
-
-gsconnect.proxyProperties = function (iface) {
-    let info = gsconnect.dbusinfo.lookup_interface(iface.g_interface_name);
-
-    for (let property of info.properties) {
-        Object.defineProperty(iface, property.name, {
-            get: () => {
-                try {
-                    return iface.get_cached_property(property.name).deep_unpack();
-                } catch (e) {
-                    return null;
-                }
-            },
-            enumerable: true
-        });
-    }
-};
+const Remote = imports.shell.remote;
 
 
 /**
@@ -51,9 +34,6 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
     _init() {
         super._init();
 
-        this._activating = false;
-        this._cancellable = new Gio.Cancellable();
-        this._devices = new Set();
         this._menus = {};
 
         this.keybindingManager = new Keybindings.Manager();
@@ -104,76 +84,28 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         this._init_async();
     }
 
-    get available() {
-        return Array.from(this.devices).filter(device => {
-            return (device.Connected && device.Paired);
-        });
-    }
-
-    get devices() {
-        return this._devices;
-    }
-
     async _init_async() {
         try {
-            // Init the ObjectManager
-            this.manager = await new Promise((resolve, reject) => {
-                Gio.DBusObjectManagerClient.new_for_bus(
-                    Gio.BusType.SESSION,
-                    Gio.DBusObjectManagerClientFlags.DO_NOT_AUTO_START,
-                    'org.gnome.Shell.Extensions.GSConnect',
-                    '/org/gnome/Shell/Extensions/GSConnect',
-                    null,
-                    this._cancellable,
-                    (manager, res) => {
-                        try {
-                            resolve(Gio.DBusObjectManagerClient.new_for_bus_finish(res));
-                        } catch (e) {
-                            reject(e);
-                        }
-                    }
-                );
-            });
+            // Device Manager
+            this.manager = new Remote.Service();
 
             // Watch for new and removed
-            this._nameOwnerId = this.manager.connect(
-                'notify::name-owner',
-                this._onNameOwnerChanged.bind(this)
+            this._deviceAddedId = this.manager.connect(
+                'device-added',
+                this._onDeviceAdded.bind(this)
             );
 
-            this._interfaceAddedId = this.manager.connect(
-                'interface-added',
-                this._onInterfaceAdded.bind(this)
+            this._deviceRemovedId = this.manager.connect(
+                'device-removed',
+                this._onDeviceRemoved.bind(this)
             );
 
-            this._objectRemovedId = this.manager.connect(
-                'object-removed',
-                this._onObjectRemoved.bind(this)
+            this._availableChangedId = this.manager.connect(
+                'available-changed',
+                this._sync.bind(this)
             );
 
-            this._interfaceProxyPropertiesChangedId = this.manager.connect(
-                'interface-proxy-properties-changed',
-                this._onInterfacePropertiesChanged.bind(this)
-            );
-
-            // If the service is inactive, wait 5s and recheck before activating
-            if (this.manager.name_owner === null) {
-                GLib.timeout_add_seconds(0, 5, () => {
-                    if (this.manager.name_owner === null) {
-                        this._activate();
-                    }
-
-                    return GLib.SOURCE_REMOVE;
-                });
-
-            // Otherwise we need to setup the currently managed devices
-            } else {
-                for (let object of this.manager.get_objects()) {
-                    for (let iface of object.get_interfaces()) {
-                        this._onInterfaceAdded(this.manager, object, iface);
-                    }
-                }
-            }
+            await this.manager._init_async();
         } catch (e) {
             Gio.DBusError.strip_remote_error(e);
 
@@ -183,32 +115,26 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         }
     }
 
-    _onInterfacePropertiesChanged(manager, object, iface, changed, invalidated) {
-        changed = changed.deep_unpack();
-
-        if (changed.hasOwnProperty('Connected') || changed.hasOwnProperty('Paired')) {
-            this._sync();
-        }
-    }
-
     _sync() {
-        // Hide status indicator if in Panel mode or no devices are available
+        let available = this.manager.available;
         let panelMode = gsconnect.settings.get_boolean('show-indicators');
-        this._indicator.visible = (!panelMode && this.available.length);
+
+        // Hide status indicator if in Panel mode or no devices are available
+        this._indicator.visible = (!panelMode && available.length);
 
         // Show device indicators in Panel mode if available
-        for (let device of this._devices.values()) {
+        for (let device of this.manager.devices) {
             let indicator = Main.panel.statusArea[device.g_object_path].actor;
-            indicator.visible = panelMode && this.available.includes(device);
+            indicator.visible = panelMode && available.includes(device);
 
             let menu = this._menus[device.g_object_path];
-            menu.actor.visible = !panelMode && this.available.includes(device);
+            menu.actor.visible = !panelMode && available.includes(device);
             menu._title.actor.visible = menu.actor.visible;
         }
 
         // One connected device in User Menu mode
-        if (!panelMode && this.available.length === 1) {
-            let device = this.available[0];
+        if (!panelMode && available.length === 1) {
+            let device = available[0];
 
             // Hide the menu title and move it to the submenu item
             this._menus[device.g_object_path]._title.actor.visible = false;
@@ -232,13 +158,13 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 );
             }
         } else {
-            if (this.available.length > 1) {
-                //TRANSLATORS: %d is the number of devices connected
+            if (available.length > 1) {
+                // TRANSLATORS: %d is the number of devices connected
                 this._item.label.text = gsconnect.ngettext(
                     '%d Connected',
                     '%d Connected',
-                    this.available.length
-                ).format(this.available.length);
+                    available.length
+                ).format(available.length);
             } else {
                 this._item.label.text = _('Mobile Devices');
             }
@@ -249,31 +175,6 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 this._item._battery = null;
             }
         }
-    }
-
-    _activate() {
-        if (this._activating) return;
-        this._activating = true;
-
-        Gio.DBus.session.call(
-            'org.gnome.Shell.Extensions.GSConnect',
-            '/org/gnome/Shell/Extensions/GSConnect',
-            'org.freedesktop.Application',
-            'Activate',
-            new GLib.Variant('(a{sv})', [{}]),
-            null,
-            Gio.DBusCallFlags.NONE,
-            -1,
-            this._cancellable,
-            (connection, res) => {
-                try {
-                    this._activating = false;
-                    connection.call_finish(res);
-                } catch (e) {
-                    // Silence errors
-                }
-            }
-        );
     }
 
     _settings() {
@@ -297,105 +198,66 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         );
     }
 
-    _onNameOwnerChanged() {
+    _onDeviceAdded(manager, device) {
         try {
-            if (this.manager.name_owner === null) {
-                this._indicator.visible = false;
-                this._activate();
-            } else {
-                for (let object of this.manager.get_objects()) {
-                    for (let iface of object.get_interfaces()) {
-                        this._onInterfaceAdded(this.manager, object, iface);
-                    }
-                }
-            }
+            // Device Indicator
+            let indicator = new Device.Indicator({device: device});
+            Main.panel.addToStatusArea(device.g_object_path, indicator);
+
+            // Device Menu
+            let menu = new Device.Menu({
+                device: device,
+                menu_type: 'list'
+            });
+            this._menus[device.g_object_path] = menu;
+            this.deviceSection.addMenuItem(menu);
+
+            // Keyboard Shortcuts
+            device._keybindingsChangedId = device.settings.connect(
+                'changed::keybindings',
+                this._onKeybindingsChanged.bind(this, device)
+            );
+            this._onKeybindingsChanged(device);
+
+            // Try activating the device
+            device.action_group.activate_action('activate', null);
+
+            this._sync();
         } catch (e) {
-            logError(e);
+            logError(e, device.g_object_path);
         }
     }
 
-    _onInterfaceAdded(manager, object, iface) {
-        gsconnect.proxyProperties(iface);
+    _onDeviceRemoved(manager, device) {
+        try {
+            // Release keybindings
+            device.settings.disconnect(device._keybindingsChangedId);
+            device._keybindings.map(id => this.keybindingManager.remove(id));
 
-        this.devices.add(iface);
+            // Destroy the indicator
+            Main.panel.statusArea[device.g_object_path].destroy();
 
-        // GActions
-        iface.action_group = Gio.DBusActionGroup.get(
-            iface.g_connection,
-            iface.g_name,
-            iface.g_object_path
-        );
+            // Destroy the menu
+            this._menus[device.g_object_path].destroy();
+            delete this._menus[device.g_object_path];
 
-        // GMenu
-        iface.menu_model = Gio.DBusMenuModel.get(
-            iface.g_connection,
-            iface.g_name,
-            iface.g_object_path
-        );
-
-        // GSettings
-        iface.settings = new Gio.Settings({
-            settings_schema: gsconnect.gschema.lookup(
-                'org.gnome.Shell.Extensions.GSConnect.Device',
-                true
-            ),
-            path: '/org/gnome/shell/extensions/gsconnect/device/' + iface.Id + '/'
-        });
-
-        // Device Indicator
-        let indicator = new Device.Indicator({device: iface});
-        Main.panel.addToStatusArea(iface.g_object_path, indicator);
-
-        // Device Menu
-        let menu = new Device.Menu({
-            device: iface,
-            menu_type: 'list'
-        });
-        this._menus[iface.g_object_path] = menu;
-        this.deviceSection.addMenuItem(menu);
-
-        // Keyboard Shortcuts
-        iface._keybindingsChangedId = iface.settings.connect(
-            'changed::keybindings',
-            this._onKeybindingsChanged.bind(this, iface)
-        );
-        this._onKeybindingsChanged(iface);
-
-        // Try activating the device
-        iface.action_group.activate_action('activate', null);
-
-        this._sync();
+            this._sync();
+        } catch (e) {
+            logError(e, device.g_object_path);
+        }
     }
 
-    _onObjectRemoved(manager, object) {
-        let iface = object.get_interface('org.gnome.Shell.Extensions.GSConnect.Device');
-
-        // Release keybindings
-        iface.settings.disconnect(iface._keybindingsChangedId);
-        iface._keybindings.map(id => this.keybindingManager.remove(id));
-
-        // Destroy the indicator
-        Main.panel.statusArea[iface.g_object_path].destroy();
-
-        // Destroy the menu
-        this._menus[iface.g_object_path].destroy();
-        delete this._menus[iface.g_object_path];
-
-        this.devices.delete(iface);
-        this._sync();
-    }
-
-    async _onKeybindingsChanged(iface) {
+    async _onKeybindingsChanged(device) {
         try {
             // Reset any existing keybindings
-            if (iface.hasOwnProperty('_keybindings')) {
-                iface._keybindings.map(id => this.keybindingManager.remove(id));
+            if (device.hasOwnProperty('_keybindings')) {
+                device._keybindings.map(id => this.keybindingManager.remove(id));
             }
 
-            iface._keybindings = [];
+            device._keybindings = [];
 
             // Get the keybindings
-            let keybindings = iface.settings.get_value('keybindings').deep_unpack();
+            let keybindings = device.settings.get_value('keybindings').deep_unpack();
 
             // Apply the keybindings
             for (let [action, accelerator] of Object.entries(keybindings)) {
@@ -403,15 +265,15 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
                 let actionId = this.keybindingManager.add(
                     accelerator,
-                    () => iface.action_group.activate_action(name, parameter)
+                    () => device.action_group.activate_action(name, parameter)
                 );
 
                 if (actionId !== 0) {
-                    iface._keybindings.push(actionId);
+                    device._keybindings.push(actionId);
                 }
             }
         } catch (e) {
-            logError(e);
+            logError(e, device.g_object_path);
         }
     }
 
@@ -427,19 +289,12 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
     }
 
     destroy() {
-        this._cancellable.cancel();
-
         // Unhook from any ObjectManager events
         if (this.manager) {
-            this.manager.disconnect(this._interfaceProxyPropertiesChangedId);
-            this.manager.disconnect(this._interfaceAddedId);
-            this.manager.disconnect(this._objectRemovedId);
-            this.manager.disconnect(this._nameOwnerId);
-
-            // Destroy any remaining devices
-            for (let object of this.manager.get_objects()) {
-                this._onObjectRemoved(this.manager, object);
-            }
+            this.manager.destroy();
+            this.manager.disconnect(this._deviceAddedId);
+            this.manager.disconnect(this._deviceRemovedId);
+            this.manager.disconnect(this._availableChangedId);
         }
 
         // Disconnect any keybindings

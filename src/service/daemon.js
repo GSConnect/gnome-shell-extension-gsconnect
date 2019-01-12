@@ -86,11 +86,6 @@ const Service = GObject.registerClass({
             flags: Gio.ApplicationFlags.HANDLES_OPEN
         });
 
-        // FIXME: Breaks Multi-DPI support. Remove once a Wayland protocol is
-        // created or an interface can be exported from gnome-shell process.
-        // FIXME: Removing this causes a regression of #307.
-        Gdk.set_allowed_backends('x11,*');
-
         GLib.set_prgname(gsconnect.app_id);
         GLib.set_application_name('GSConnect');
 
@@ -138,8 +133,8 @@ const Service = GObject.registerClass({
             });
 
             for (let name in imports.service.plugins) {
-                // Don't report 'mousepad' support in Wayland sessions
-                if (_WAYLAND && name === 'mousepad') continue;
+                // Don't report clipbaord/mousepad support in Wayland sessions
+                if (_WAYLAND && ['clipboard', 'mousepad'].includes(name)) continue;
 
                 let meta = imports.service.plugins[name].Metadata;
 
