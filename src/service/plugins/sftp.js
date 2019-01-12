@@ -322,6 +322,10 @@ var Plugin = GObject.registerClass({
                 '-f',
                 // Do not use ~/.ssh/config
                 '-F', '/dev/null',
+                // Allow older crypographic protocols
+                '-o', 'HostKeyAlgorithms=+ssh-dss',
+                '-o', 'MACs=+hmac-sha1',
+                '-o', 'KexAlgorithms=+diffie-hellman-group1-sha1',
                 // Use the private key from the service certificate
                 '-o', 'IdentityFile=' + gsconnect.configdir + '/private.pem',
                 // Don't prompt for new host confirmation (we know the host)
