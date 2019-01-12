@@ -7,17 +7,16 @@ developers for the sister Python script 'kdeconnect-send-nautilus.py':
 https://github.com/Bajoja/indicator-kdeconnect/blob/master/data/extensions/kdeconnect-send-nautilus.py
 """
 
+import gettext
+import locale
+import os.path
+
 import gi
 gi.require_version('Nautilus', '3.0')
 gi.require_version('Gio', '2.0')
 gi.require_version('GLib', '2.0')
 gi.require_version('GObject', '2.0')
 from gi.repository import Nautilus, Gio, GLib, GObject
-
-import gettext
-import locale
-import os.path
-import subprocess
 
 _ = gettext.gettext
 
@@ -30,55 +29,93 @@ else:
     LOCALE_DIR = None
 
 
+SERVICE_NAME = 'org.gnome.Shell.Extensions.GSConnect'
+SERVICE_PATH = '/org/gnome/Shell/Extensions/GSConnect'
 
-class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
+
+
+class GSConnectShareExtension(GObject.Object, Nautilus.MenuProvider):
     """A context menu for sending files via GSConnect."""
 
     def __init__(self):
-        """Initialize Gettext translations"""
+        """Initialize the translations and DBus ObjectManager"""
 
         GObject.Object.__init__(self)
 
+        # Prepare the translations
         try:
             locale.setlocale(locale.LC_ALL, '')
-            gettext.bindtextdomain('org.gnome.Shell.Extensions.GSConnect', LOCALE_DIR)
+            gettext.bindtextdomain(SERVICE_NAME, LOCALE_DIR)
         except:
             pass
 
         self.devices = {}
 
-        Gio.DBusObjectManagerClient.new_for_bus(
-            Gio.BusType.SESSION,
-            Gio.DBusObjectManagerClientFlags.DO_NOT_AUTO_START,
-            'org.gnome.Shell.Extensions.GSConnect',
-            '/org/gnome/Shell/Extensions/GSConnect',
-            None,
-            None,
-            None,
-            self._init_async,
-            None)
+        # Initialize an ObjectManager asynchronously
+        Gio.DBusProxy.new_for_bus(Gio.BusType.SESSION,
+                                  Gio.DBusProxyFlags.DO_NOT_AUTO_START,
+                                  None,
+                                  'org.gnome.Shell.Extensions.GSConnect',
+                                  '/org/gnome/Shell/Extensions/GSConnect',
+                                  'org.freedesktop.DBus.ObjectManager',
+                                  None,
+                                  self._init_async,
+                                  None)
 
-    def _init_async(self, source_object, res, user_data):
-        self.manager = source_object.new_for_bus_finish(res)
+    def _init_async(self, proxy, res, user_data):
+        proxy = proxy.new_for_bus_finish(res)
+        proxy.connect('notify::g-name-owner', self._on_name_owner_changed)
+        proxy.connect('g-signal', self._on_g_signal)
 
-        for obj in self.manager.get_objects():
-            for interface in obj.get_interfaces():
-                self._on_interface_added(self.manager, obj, interface)
+        self._on_name_owner_changed(proxy, None)
 
-        self.manager.connect('interface-added', self._on_interface_added)
-        self.manager.connect('object-removed', self._on_object_removed)
+    def _on_g_signal(self, proxy, sender_name, signal_name, parameters):
+        # Wait until the service is ready
+        if proxy.props.g_name_owner is None:
+            return
 
-    def _on_interface_added(self, manager, obj, interface):
-        if interface.props.g_interface_name == 'org.gnome.Shell.Extensions.GSConnect.Device':
-            self.devices[interface.props.g_object_path] = (
-                interface.get_cached_property('Name').unpack(),
-                Gio.DBusActionGroup.get(
-                    interface.get_connection(),
-                    'org.gnome.Shell.Extensions.GSConnect',
-                    interface.props.g_object_path))
+        objects = parameters.unpack()
 
-    def _on_object_removed(self, manager, obj):
-        del self.devices[obj.props.g_object_path]
+        if signal_name == 'InterfacesAdded':
+            for object_path, props in objects.items():
+                props = props['org.gnome.Shell.Extensions.GSConnect.Device']
+
+                self.devices[object_path] = (props['Name'],
+                                             Gio.DBusActionGroup.get(
+                                                 proxy.get_connection(),
+                                                 SERVICE_NAME,
+                                                 object_path))
+        elif signal_name == 'InterfacesRemoved':
+            for object_path in objects:
+                try:
+                    del self.devices[object_path]
+                except KeyError:
+                    pass
+
+    def _on_name_owner_changed(self, proxy, pspec):
+        # Wait until the service is ready
+        if proxy.props.g_name_owner is None:
+            self.devices = {}
+        else:
+            proxy.call('GetManagedObjects',
+                       None,
+                       Gio.DBusCallFlags.NO_AUTO_START,
+                       -1,
+                       None,
+                       self._get_managed_objects,
+                       None)
+
+    def _get_managed_objects(self, proxy, res, user_data):
+        objects = proxy.call_finish(res)[0]
+
+        for object_path, props in objects.items():
+            props = props['org.gnome.Shell.Extensions.GSConnect.Device']
+
+            self.devices[object_path] = (props['Name'],
+                                         Gio.DBusActionGroup.get(
+                                             proxy.get_connection(),
+                                             SERVICE_NAME,
+                                             object_path))
 
     def send_files(self, menu, files, action_group):
         """Send *files* to *device_id*"""
@@ -90,30 +127,29 @@ class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
     def get_file_items(self, window, files):
         """Return a list of select files to be sent"""
 
-        # Enumerate capable devices
-        devices = []
-
-        for name, actions in self.devices.values():
-            if actions.get_action_enabled('shareFile'):
-                devices.append([name, actions])
-
-        # No capable devices; don't show menu entry
-        if not devices:
-            return
-
         # Only accept regular files
         for uri in files:
             if uri.get_uri_scheme() != 'file' or uri.is_directory():
-                return
+                return ()
+
+        # Enumerate capable devices
+        devices = []
+
+        for name, action_group in self.devices.values():
+            if action_group.get_action_enabled('shareFile'):
+                devices.append([name, action_group])
+
+        # No capable devices; don't show menu entry
+        if not devices:
+            return ()
 
         # Context Menu Item
         menu = Nautilus.MenuItem(
             name='GSConnectShareExtension::Devices',
-            label=_('Send To Mobile Device'),
-            icon='smartphone-symbolic'
+            label=_('Send To Mobile Device')
         )
 
-        # Context Menu
+        # Context Submenu
         submenu = Nautilus.Menu()
         menu.set_submenu(submenu)
 
@@ -121,13 +157,12 @@ class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
         for name, action_group in devices:
             item = Nautilus.MenuItem(
                 name='GSConnectShareExtension::Device' + name,
-                label=name,
-                icon='smartphone-symbolic'
+                label=name
             )
 
             item.connect('activate', self.send_files, files, action_group)
 
             submenu.append_item(item)
 
-        return menu,
+        return (menu,)
 
