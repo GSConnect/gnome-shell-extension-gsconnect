@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-01-13 07:07\n"
+"PO-Revision-Date: 2019-01-13 07:12\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -346,7 +346,7 @@ msgstr ""
 
 #: data/settings.ui:611
 msgid "This device is invisible to unpaired devices"
-msgstr ""
+msgstr "Aquest dispositiu és invisible als dispositius no aparellats"
 
 #: data/settings.ui:623 src/service/daemon.js:532
 msgid "Discovery Disabled"
@@ -374,7 +374,7 @@ msgstr[1] ""
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:112 webextension/gettext.js:31
 msgid "Send To Mobile Device"
-msgstr ""
+msgstr "Envia al dispositiu mòbil"
 
 #: src/service/daemon.js:372
 msgid "Report"
@@ -390,7 +390,7 @@ msgstr ""
 
 #: src/service/daemon.js:517 src/service/daemon.js:525
 msgid "Click for help troubleshooting"
-msgstr ""
+msgstr "Ajuda per a resoldre el problema"
 
 #: src/service/daemon.js:524
 msgid "PulseAudio Error"
