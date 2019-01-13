@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-01-13 08:12\n"
+"PO-Revision-Date: 2019-01-13 08:22\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -211,7 +211,7 @@ msgstr "Aparella"
 
 #: data/device.ui:2047
 msgid "Device is unpaired"
-msgstr "El dispositiu no s’ha aparellat"
+msgstr "No s’ha aparellat el dispositiu"
 
 #: data/device.ui:2062
 msgid "You may configure this device before pairing"
@@ -407,7 +407,7 @@ msgstr "No s’ha pogut carregar el connector %s"
 
 #: src/service/daemon.js:542
 msgid "Click for more information"
-msgstr "Feu clic per a més informació"
+msgstr "Més informació"
 
 #: src/service/daemon.js:724
 msgid "Dial Number"
@@ -910,7 +910,7 @@ msgstr "Silencia les notificacions del dispositiu mòbil"
 
 #: src/shell/donotdisturb.js:171
 msgid "Until you turn off Do Not Disturb"
-msgstr ""
+msgstr "Fins que desactiveu el mode No molesteu"
 
 #. TRANSLATORS: Time until change with time duration
 #. EXAMPLE: Until 10:00 (2 hours)
