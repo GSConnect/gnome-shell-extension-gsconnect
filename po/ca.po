@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-01-13 07:22\n"
+"PO-Revision-Date: 2019-01-13 07:32\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -646,7 +646,7 @@ msgstr ""
 #: src/service/plugins/share.js:194
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
-msgstr ""
+msgstr "No s’ha pogut rebre «%s» del %s"
 
 #: src/service/plugins/share.js:233
 #, javascript-format
@@ -669,7 +669,7 @@ msgstr "S’ha enviat «%s» al %s"
 #: src/service/plugins/share.js:337
 #, javascript-format
 msgid "Failed to send “%s” to %s"
-msgstr ""
+msgstr "No s’ha pogut enviar «%s» al %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:408
