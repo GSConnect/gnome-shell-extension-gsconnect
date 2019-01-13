@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-01-08 13:45\n"
+"PO-Revision-Date: 2019-01-13 07:07\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -44,7 +44,7 @@ msgstr "Dispositiu Bluetooth"
 
 #: data/contacts.ui:49
 msgid "Type a phone number or name"
-msgstr ""
+msgstr "Introduïu un número telefònic o un nom"
 
 #: data/contacts.ui:83
 msgid "No contacts"
@@ -142,7 +142,7 @@ msgstr "Volum"
 
 #: data/device.ui:954 data/device.ui:1120
 msgid "Pause Media"
-msgstr ""
+msgstr "Posa en pausa la multimèdia"
 
 #: data/device.ui:1007
 msgid "Ongoing Calls"
@@ -150,7 +150,7 @@ msgstr "Trucades en curs"
 
 #: data/device.ui:1176
 msgid "Mute Microphone"
-msgstr ""
+msgstr "Silencia el micròfon"
 
 #: data/device.ui:1230 data/device.ui:1866 src/service/plugins/telephony.js:13
 msgid "Telephony"
@@ -194,7 +194,7 @@ msgstr "Suprimeix aquest dispositiu"
 
 #: data/device.ui:1645
 msgid "Unpair and remove all settings and files"
-msgstr ""
+msgstr "Desaparella’l i suprimeix-li tots els paràmetres i fitxers"
 
 #: data/device.ui:1678 data/device.ui:1958
 msgid "Advanced"
@@ -207,19 +207,19 @@ msgstr "Dreceres de teclat"
 #. TRANSLATORS: Send a pair request to the device
 #: data/device.ui:2015 data/menus.ui:68 src/service/device.js:424
 msgid "Pair"
-msgstr ""
+msgstr "Aparella"
 
 #: data/device.ui:2047
 msgid "Device is unpaired"
-msgstr ""
+msgstr "El dispositiu no s’ha aparellat"
 
 #: data/device.ui:2062
 msgid "You may configure this device before pairing"
-msgstr ""
+msgstr "Podeu configurar el dispositiu abans d’aparellar-lo"
 
 #: data/menus.ui:12
 msgid "Display Mode"
-msgstr ""
+msgstr "Mode de visualització"
 
 #. TRANSLATORS: Show device indicators in the top bar
 #: data/menus.ui:15
@@ -258,7 +258,7 @@ msgstr "Informació de xifratge"
 #. TRANSLATORS: Unpair the device and notify it
 #: data/menus.ui:74 src/service/device.js:432
 msgid "Unpair"
-msgstr ""
+msgstr "Desaparella"
 
 #. TRANSLATORS: Send clipboard content to device
 #: data/menus.ui:86
@@ -273,12 +273,12 @@ msgstr "Des del dispositiu"
 #. TRANSLATORS: Don't change the system volume
 #: data/menus.ui:104 data/menus.ui:130
 msgid "Nothing"
-msgstr ""
+msgstr "Res"
 
 #. TRANSLATORS: Lower the system volume
 #: data/menus.ui:111 data/menus.ui:137
 msgid "Lower"
-msgstr ""
+msgstr "Abaixa"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the phone ringer
@@ -456,26 +456,26 @@ msgstr "Ordinador d’escriptori"
 
 #: src/service/device.js:408 src/service/ui/device.js:15
 msgid "Reconnect"
-msgstr ""
+msgstr "Torna a connectar"
 
 #: src/service/device.js:416 src/service/ui/device.js:16
 #: src/service/ui/settings.js:371
 msgid "Settings"
-msgstr ""
+msgstr "Paràmetres"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:607
 #, javascript-format
 msgid "Pair Request from %s"
-msgstr ""
+msgstr "Sol·licitud d’aparellament d’un %s"
 
 #: src/service/device.js:614
 msgid "Reject"
-msgstr "Rebutja’l"
+msgstr "Rebutja-la"
 
 #: src/service/device.js:619
 msgid "Accept"
-msgstr "Accepta’l"
+msgstr "Accepta-la"
 
 #: src/service/plugins/battery.js:188 src/service/plugins/findmyphone.js:19
 msgid "Ring"
