@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-01-13 07:12\n"
+"PO-Revision-Date: 2019-01-13 07:22\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -415,7 +415,7 @@ msgstr ""
 
 #: src/service/daemon.js:730 src/service/plugins/share.js:27
 msgid "Share File"
-msgstr ""
+msgstr "Comparteix un fitxer"
 
 #: src/service/device.js:161
 msgid "Not available"
@@ -531,7 +531,7 @@ msgstr "Teclat"
 
 #: src/service/plugins/mousepad.js:223
 msgid "Additional Software Required"
-msgstr ""
+msgstr "Cal programari addicional"
 
 #: src/service/plugins/mousepad.js:586
 msgid "Keyboard not ready"
@@ -657,13 +657,13 @@ msgstr ""
 #: src/service/plugins/share.js:305
 #, javascript-format
 msgid "Sending “%s” to %s"
-msgstr ""
+msgstr "S’està enviant «%s» al %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:329
 #, javascript-format
 msgid "Sent “%s” to %s"
-msgstr ""
+msgstr "S’ha enviat «%s» al %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:337
@@ -686,7 +686,7 @@ msgstr "Obre’l en finalitzar"
 #: src/service/plugins/share.js:451
 #, javascript-format
 msgid "Send a link to %s"
-msgstr ""
+msgstr "Envia un enllaç al %s"
 
 #: src/service/plugins/sms.js:13
 msgid "SMS"
@@ -902,11 +902,11 @@ msgstr ""
 
 #: src/shell/donotdisturb.js:150 src/shell/donotdisturb.js:289
 msgid "Do Not Disturb"
-msgstr ""
+msgstr "No molesteu"
 
 #: src/shell/donotdisturb.js:156
 msgid "Silence Mobile Device Notifications"
-msgstr ""
+msgstr "Silencia les notificacions del dispositiu mòbil"
 
 #: src/shell/donotdisturb.js:171
 msgid "Until you turn off Do Not Disturb"
@@ -943,12 +943,12 @@ msgstr "GSConnect"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
+msgstr "Compartiu enllaços amb el GSConnect, directament al navegador o mitjançant SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:33
 msgid "Service Unavailable"
-msgstr ""
+msgstr "El servei no està disponible"
 
 #. TRANSLATORS: No devices are known or available
 #: webextension/gettext.js:35
