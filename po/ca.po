@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-01-13 07:32\n"
+"PO-Revision-Date: 2019-01-13 08:12\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -403,7 +403,7 @@ msgstr ""
 #: src/service/daemon.js:541
 #, javascript-format
 msgid "%s Plugin Failed To Load"
-msgstr ""
+msgstr "No s’ha pogut carregar el connector %s"
 
 #: src/service/daemon.js:542
 msgid "Click for more information"
@@ -425,7 +425,7 @@ msgstr "No disponible"
 #: src/service/device.js:165
 #, javascript-format
 msgid "Bluetooth device at %s"
-msgstr ""
+msgstr "Dispositiu Bluetooth a %s"
 
 #. TRANSLATORS: Label for TLS Certificate fingerprint
 #.
@@ -840,7 +840,7 @@ msgstr "Selecciona"
 
 #: src/service/ui/settings.js:331
 msgid "Unpaired"
-msgstr ""
+msgstr "Desaparellat"
 
 #: src/service/ui/settings.js:333
 msgid "Disconnected"
@@ -854,7 +854,7 @@ msgstr "Connectat"
 #: src/service/ui/settings.js:406
 #, javascript-format
 msgid "Transferred files are placed in the <a href=\"%s\">Downloads</a> folder."
-msgstr ""
+msgstr "Els fitxers transferits es col·loquen a la carpeta <a href=\"%s\">Baixades</a>."
 
 #: src/service/ui/settings.js:499
 msgid "A complete KDE Connect implementation for GNOME"
@@ -877,14 +877,14 @@ msgstr ""
 #. TRANSLATORS: When the battery level is 100%
 #: src/shell/device.js:82
 msgid "Fully Charged"
-msgstr ""
+msgstr "Càrrega completa"
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
 #: src/shell/device.js:86
 #, javascript-format
 msgid "%d%% (Estimating…)"
-msgstr ""
+msgstr "%d%% (en estimació…)"
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
