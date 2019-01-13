@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-01-13 07:12\n"
+"PO-Revision-Date: 2019-01-13 08:12\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -876,7 +876,7 @@ msgstr "Revisar registro"
 #. TRANSLATORS: When the battery level is 100%
 #: src/shell/device.js:82
 msgid "Fully Charged"
-msgstr "Cargada completamente"
+msgstr "Carga completa"
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
