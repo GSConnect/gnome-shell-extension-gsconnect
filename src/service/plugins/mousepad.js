@@ -36,12 +36,21 @@ var Metadata = {
 };
 
 
+/**
+ * Printable ASCII range
+ */
 const _ASCII = /[\x20-\x7E]/;
 
-const XKEYCODE_Alt_L = 0x40;
-const XKEYCODE_Control_L = 0x25;
-const XKEYCODE_Shift_L = 0x32;
-const XKEYCODE_Super_L = 0x85;
+
+/**
+ * Modifier Keycode Defaults
+ */
+const XKeycode = {
+    Alt_L: 0x40,
+    Control_L: 0x25,
+    Shift_L: 0x32,
+    Super_L: 0x85
+};
 
 
 /**
@@ -129,6 +138,25 @@ var Plugin = GObject.registerClass({
         } catch (e) {
             this.destroy();
             throw e;
+        }
+
+        // Try to read modifier keycodes from Gdk
+        try {
+            let keymap = Gdk.Keymap.get_default();
+
+            let modifier = keymap.get_entries_for_keyval(Gdk.KEY_Alt_L)[1][0];
+            XKeycode.Alt_L = modifier.keycode;
+
+            modifier = keymap.get_entries_for_keyval(Gdk.KEY_Control_L)[1][0];
+            XKeycode.Control_L = modifier.keycode;
+
+            modifier = keymap.get_entries_for_keyval(Gdk.KEY_Shift_L)[1][0];
+            XKeycode.Shift_L = modifier.keycode;
+
+            modifier = keymap.get_entries_for_keyval(Gdk.KEY_Super_L)[1][0];
+            XKeycode.Super_L = modifier.keycode;
+        } catch (e) {
+            warning('using default modifier keycodes', this.name);
         }
 
         this.settings.bind(
@@ -377,10 +405,10 @@ var Plugin = GObject.registerClass({
             debug(`key: ${input.key}`);
 
             // Press Modifiers
-            if (input.alt) this.mode_lock(XKEYCODE_Alt_L);
-            if (input.ctrl) this.mode_lock(XKEYCODE_Control_L);
-            if (input.shift) this.mode_lock(XKEYCODE_Shift_L);
-            if (input.super) this.mode_lock(XKEYCODE_Super_L);
+            if (input.alt) this.mode_lock(XKeycode.Alt_L);
+            if (input.ctrl) this.mode_lock(XKeycode.Control_L);
+            if (input.shift) this.mode_lock(XKeycode.Shift_L);
+            if (input.super) this.mode_lock(XKeycode.Super_L);
 
             Atspi.generate_keyboard_event(
                 0,
@@ -389,10 +417,10 @@ var Plugin = GObject.registerClass({
             );
 
             // Release Modifiers
-            if (input.alt) this.mode_unlock(XKEYCODE_Alt_L);
-            if (input.ctrl) this.mode_unlock(XKEYCODE_Control_L);
-            if (input.shift) this.mode_unlock(XKEYCODE_Shift_L);
-            if (input.super) this.mode_unlock(XKEYCODE_Super_L);
+            if (input.alt) this.mode_unlock(XKeycode.Alt_L);
+            if (input.ctrl) this.mode_unlock(XKeycode.Control_L);
+            if (input.shift) this.mode_unlock(XKeycode.Shift_L);
+            if (input.super) this.mode_unlock(XKeycode.Super_L);
 
             this.sendEcho(input);
         } catch (e) {
@@ -410,10 +438,10 @@ var Plugin = GObject.registerClass({
             debug(`specialKey: ${KeyMap.get(input.specialKey)}`);
 
             // Press Modifiers
-            if (input.alt) this.mode_lock(XKEYCODE_Alt_L);
-            if (input.ctrl) this.mode_lock(XKEYCODE_Control_L);
-            if (input.shift) this.mode_lock(XKEYCODE_Shift_L);
-            if (input.super) this.mode_lock(XKEYCODE_Super_L);
+            if (input.alt) this.mode_lock(XKeycode.Alt_L);
+            if (input.ctrl) this.mode_lock(XKeycode.Control_L);
+            if (input.shift) this.mode_lock(XKeycode.Shift_L);
+            if (input.super) this.mode_lock(XKeycode.Super_L);
 
             Atspi.generate_keyboard_event(
                 KeyMap.get(input.specialKey),
@@ -422,10 +450,10 @@ var Plugin = GObject.registerClass({
             );
 
             // Release Modifiers
-            if (input.alt) this.mode_unlock(XKEYCODE_Alt_L);
-            if (input.ctrl) this.mode_unlock(XKEYCODE_Control_L);
-            if (input.shift) this.mode_unlock(XKEYCODE_Shift_L);
-            if (input.super) this.mode_unlock(XKEYCODE_Super_L);
+            if (input.alt) this.mode_unlock(XKeycode.Alt_L);
+            if (input.ctrl) this.mode_unlock(XKeycode.Control_L);
+            if (input.shift) this.mode_unlock(XKeycode.Shift_L);
+            if (input.super) this.mode_unlock(XKeycode.Super_L);
 
             this.sendEcho(input);
         } catch (e) {
@@ -451,15 +479,15 @@ var Plugin = GObject.registerClass({
             let ukeyval;
         
             // Press Control_L & Shift_L
-            this.mode_lock(XKEYCODE_Control_L);
-            this.mode_lock(XKEYCODE_Shift_L);
+            this.mode_lock(XKeycode.Control_L);
+            this.mode_lock(XKeycode.Shift_L);
 
             // Press and release 'u'
             this.keyval_pressrelease(Gdk.KEY_U);
 
             // Release Control_L & Shift_L
-            this.mode_unlock(XKEYCODE_Control_L);
-            this.mode_unlock(XKEYCODE_Shift_L);
+            this.mode_unlock(XKeycode.Control_L);
+            this.mode_unlock(XKeycode.Shift_L);
             
             // Press and release hex code
             for (let h = 0; h < ucode.length; h++) {
