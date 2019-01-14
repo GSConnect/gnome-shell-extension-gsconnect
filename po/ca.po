@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-01-08 13:45\n"
+"PO-Revision-Date: 2019-01-13 08:22\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -44,7 +44,7 @@ msgstr "Dispositiu Bluetooth"
 
 #: data/contacts.ui:49
 msgid "Type a phone number or name"
-msgstr ""
+msgstr "Introduïu un número telefònic o un nom"
 
 #: data/contacts.ui:83
 msgid "No contacts"
@@ -142,7 +142,7 @@ msgstr "Volum"
 
 #: data/device.ui:954 data/device.ui:1120
 msgid "Pause Media"
-msgstr ""
+msgstr "Posa en pausa la multimèdia"
 
 #: data/device.ui:1007
 msgid "Ongoing Calls"
@@ -150,7 +150,7 @@ msgstr "Trucades en curs"
 
 #: data/device.ui:1176
 msgid "Mute Microphone"
-msgstr ""
+msgstr "Silencia el micròfon"
 
 #: data/device.ui:1230 data/device.ui:1866 src/service/plugins/telephony.js:13
 msgid "Telephony"
@@ -194,7 +194,7 @@ msgstr "Suprimeix aquest dispositiu"
 
 #: data/device.ui:1645
 msgid "Unpair and remove all settings and files"
-msgstr ""
+msgstr "Desaparella’l i suprimeix-li tots els paràmetres i fitxers"
 
 #: data/device.ui:1678 data/device.ui:1958
 msgid "Advanced"
@@ -207,19 +207,19 @@ msgstr "Dreceres de teclat"
 #. TRANSLATORS: Send a pair request to the device
 #: data/device.ui:2015 data/menus.ui:68 src/service/device.js:424
 msgid "Pair"
-msgstr ""
+msgstr "Aparella"
 
 #: data/device.ui:2047
 msgid "Device is unpaired"
-msgstr ""
+msgstr "No s’ha aparellat el dispositiu"
 
 #: data/device.ui:2062
 msgid "You may configure this device before pairing"
-msgstr ""
+msgstr "Podeu configurar el dispositiu abans d’aparellar-lo"
 
 #: data/menus.ui:12
 msgid "Display Mode"
-msgstr ""
+msgstr "Mode de visualització"
 
 #. TRANSLATORS: Show device indicators in the top bar
 #: data/menus.ui:15
@@ -258,7 +258,7 @@ msgstr "Informació de xifratge"
 #. TRANSLATORS: Unpair the device and notify it
 #: data/menus.ui:74 src/service/device.js:432
 msgid "Unpair"
-msgstr ""
+msgstr "Desaparella"
 
 #. TRANSLATORS: Send clipboard content to device
 #: data/menus.ui:86
@@ -273,12 +273,12 @@ msgstr "Des del dispositiu"
 #. TRANSLATORS: Don't change the system volume
 #: data/menus.ui:104 data/menus.ui:130
 msgid "Nothing"
-msgstr ""
+msgstr "Res"
 
 #. TRANSLATORS: Lower the system volume
 #: data/menus.ui:111 data/menus.ui:137
 msgid "Lower"
-msgstr ""
+msgstr "Abaixa"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the phone ringer
@@ -346,7 +346,7 @@ msgstr ""
 
 #: data/settings.ui:611
 msgid "This device is invisible to unpaired devices"
-msgstr ""
+msgstr "Aquest dispositiu és invisible als dispositius no aparellats"
 
 #: data/settings.ui:623 src/service/daemon.js:532
 msgid "Discovery Disabled"
@@ -374,7 +374,7 @@ msgstr[1] ""
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:112 webextension/gettext.js:31
 msgid "Send To Mobile Device"
-msgstr ""
+msgstr "Envia al dispositiu mòbil"
 
 #: src/service/daemon.js:372
 msgid "Report"
@@ -390,7 +390,7 @@ msgstr ""
 
 #: src/service/daemon.js:517 src/service/daemon.js:525
 msgid "Click for help troubleshooting"
-msgstr ""
+msgstr "Ajuda per a resoldre el problema"
 
 #: src/service/daemon.js:524
 msgid "PulseAudio Error"
@@ -403,11 +403,11 @@ msgstr ""
 #: src/service/daemon.js:541
 #, javascript-format
 msgid "%s Plugin Failed To Load"
-msgstr ""
+msgstr "No s’ha pogut carregar el connector %s"
 
 #: src/service/daemon.js:542
 msgid "Click for more information"
-msgstr "Feu clic per a més informació"
+msgstr "Més informació"
 
 #: src/service/daemon.js:724
 msgid "Dial Number"
@@ -415,7 +415,7 @@ msgstr ""
 
 #: src/service/daemon.js:730 src/service/plugins/share.js:27
 msgid "Share File"
-msgstr ""
+msgstr "Comparteix un fitxer"
 
 #: src/service/device.js:161
 msgid "Not available"
@@ -425,7 +425,7 @@ msgstr "No disponible"
 #: src/service/device.js:165
 #, javascript-format
 msgid "Bluetooth device at %s"
-msgstr ""
+msgstr "Dispositiu Bluetooth a %s"
 
 #. TRANSLATORS: Label for TLS Certificate fingerprint
 #.
@@ -456,26 +456,26 @@ msgstr "Ordinador d’escriptori"
 
 #: src/service/device.js:408 src/service/ui/device.js:15
 msgid "Reconnect"
-msgstr ""
+msgstr "Torna a connectar"
 
 #: src/service/device.js:416 src/service/ui/device.js:16
 #: src/service/ui/settings.js:371
 msgid "Settings"
-msgstr ""
+msgstr "Paràmetres"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:607
 #, javascript-format
 msgid "Pair Request from %s"
-msgstr ""
+msgstr "Sol·licitud d’aparellament d’un %s"
 
 #: src/service/device.js:614
 msgid "Reject"
-msgstr "Rebutja’l"
+msgstr "Rebutja-la"
 
 #: src/service/device.js:619
 msgid "Accept"
-msgstr "Accepta’l"
+msgstr "Accepta-la"
 
 #: src/service/plugins/battery.js:188 src/service/plugins/findmyphone.js:19
 msgid "Ring"
@@ -531,7 +531,7 @@ msgstr "Teclat"
 
 #: src/service/plugins/mousepad.js:223
 msgid "Additional Software Required"
-msgstr ""
+msgstr "Cal programari addicional"
 
 #: src/service/plugins/mousepad.js:586
 msgid "Keyboard not ready"
@@ -646,7 +646,7 @@ msgstr ""
 #: src/service/plugins/share.js:194
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
-msgstr ""
+msgstr "No s’ha pogut rebre «%s» del %s"
 
 #: src/service/plugins/share.js:233
 #, javascript-format
@@ -657,19 +657,19 @@ msgstr ""
 #: src/service/plugins/share.js:305
 #, javascript-format
 msgid "Sending “%s” to %s"
-msgstr ""
+msgstr "S’està enviant «%s» al %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:329
 #, javascript-format
 msgid "Sent “%s” to %s"
-msgstr ""
+msgstr "S’ha enviat «%s» al %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:337
 #, javascript-format
 msgid "Failed to send “%s” to %s"
-msgstr ""
+msgstr "No s’ha pogut enviar «%s» al %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:408
@@ -686,7 +686,7 @@ msgstr "Obre’l en finalitzar"
 #: src/service/plugins/share.js:451
 #, javascript-format
 msgid "Send a link to %s"
-msgstr ""
+msgstr "Envia un enllaç al %s"
 
 #: src/service/plugins/sms.js:13
 msgid "SMS"
@@ -840,7 +840,7 @@ msgstr "Selecciona"
 
 #: src/service/ui/settings.js:331
 msgid "Unpaired"
-msgstr ""
+msgstr "Desaparellat"
 
 #: src/service/ui/settings.js:333
 msgid "Disconnected"
@@ -854,7 +854,7 @@ msgstr "Connectat"
 #: src/service/ui/settings.js:406
 #, javascript-format
 msgid "Transferred files are placed in the <a href=\"%s\">Downloads</a> folder."
-msgstr ""
+msgstr "Els fitxers transferits es col·loquen a la carpeta <a href=\"%s\">Baixades</a>."
 
 #: src/service/ui/settings.js:499
 msgid "A complete KDE Connect implementation for GNOME"
@@ -877,14 +877,14 @@ msgstr ""
 #. TRANSLATORS: When the battery level is 100%
 #: src/shell/device.js:82
 msgid "Fully Charged"
-msgstr ""
+msgstr "Càrrega completa"
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
 #: src/shell/device.js:86
 #, javascript-format
 msgid "%d%% (Estimating…)"
-msgstr ""
+msgstr "%d%% (en estimació…)"
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
@@ -902,15 +902,15 @@ msgstr ""
 
 #: src/shell/donotdisturb.js:150 src/shell/donotdisturb.js:289
 msgid "Do Not Disturb"
-msgstr ""
+msgstr "No molesteu"
 
 #: src/shell/donotdisturb.js:156
 msgid "Silence Mobile Device Notifications"
-msgstr ""
+msgstr "Silencia les notificacions del dispositiu mòbil"
 
 #: src/shell/donotdisturb.js:171
 msgid "Until you turn off Do Not Disturb"
-msgstr ""
+msgstr "Fins que desactiveu el mode No molesteu"
 
 #. TRANSLATORS: Time until change with time duration
 #. EXAMPLE: Until 10:00 (2 hours)
@@ -943,12 +943,12 @@ msgstr "GSConnect"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
+msgstr "Compartiu enllaços amb el GSConnect, directament al navegador o mitjançant SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:33
 msgid "Service Unavailable"
-msgstr ""
+msgstr "El servei no està disponible"
 
 #. TRANSLATORS: No devices are known or available
 #: webextension/gettext.js:35
