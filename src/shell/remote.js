@@ -178,8 +178,11 @@ var Service = GObject.registerClass({
      */
     async _onInterfacesAdded(object_path, interfaces) {
         try {
+            // An empty list means only the object has been added
+            if (Object.values(interfaces).length === 0) return;
+
             // Skip existing proxies
-            if (this._devices.get(object_path)) return;
+            if (this._devices.has(object_path)) return;
 
             // Create a proxy
             let proxy = await this._getProxy(object_path);
