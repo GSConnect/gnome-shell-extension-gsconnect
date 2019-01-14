@@ -77,7 +77,7 @@ var Service = GObject.registerClass({
 
     vfunc_g_signal(sender_name, signal_name, parameters) {
         try {
-            // Wait until the name is properly owned
+            // Don't emit signals until the name is properly owned
             if (!this.g_name_owner === null) return;
 
             parameters = parameters.deep_unpack();
@@ -194,7 +194,7 @@ var Service = GObject.registerClass({
                 this._onDeviceChanged.bind(this)
             );
 
-            // Store the proxy and emit ::device-added
+            // Hold the proxy and emit ::device-added
             this._devices.set(object_path, proxy);
             this.emit('device-added', proxy);
         } catch (e) {
@@ -230,17 +230,14 @@ var Service = GObject.registerClass({
 
     async _onNameOwnerChanged() {
         try {
+            // If the service stopped, clear all devices before restarting
             if (this.g_name_owner === null) {
-                // Ensure we've removed all devices before restarting
-                for (let device of this.devices) {
-                    device.disconnect(device.__deviceChangedId);
-                    this._devices.delete(device.g_object_path);
-                    this.emit('device-removed', device);
-                }
+                this.clear();
+                await this._GetManagedObjects();
 
-                await this._getManagedObjects();
+            // Now that service is started, add each device manually
             } else {
-                let objects = await this._getManagedObjects();
+                let objects = await this._GetManagedObjects();
 
                 for (let [object_path, object] of Object.entries(objects)) {
                     await this._onInterfacesAdded(object_path, object);
@@ -256,7 +253,7 @@ var Service = GObject.registerClass({
      *
      * @return {object} - Dictionary of managed object paths and interface names
      */
-    _getManagedObjects() {
+    _GetManagedObjects() {
         return new Promise((resolve, reject) => {
             this.call(
                 'GetManagedObjects',
@@ -267,8 +264,7 @@ var Service = GObject.registerClass({
                 (proxy, res) => {
                     try {
                         let variant = proxy.call_finish(res);
-                        let objects = variant.deep_unpack()[0];
-                        resolve(objects);
+                        resolve(variant.deep_unpack()[0]);
                     } catch (e) {
                         reject(e);
                     }
@@ -277,14 +273,17 @@ var Service = GObject.registerClass({
         });
     }
 
-    destroy() {
-        this.disconnect(this._nameOwnerChangedId);
-
+    clear() {
         for (let device of this.devices) {
             device.disconnect(device.__deviceChangedId);
             this._devices.delete(device.g_object_path);
             this.emit('device-removed', device);
         }
+    }
+
+    destroy() {
+        this.disconnect(this._nameOwnerChangedId);
+        this.clear();
     }
 });
 

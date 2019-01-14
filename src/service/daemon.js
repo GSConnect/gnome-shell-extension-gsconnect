@@ -255,11 +255,10 @@ const Service = GObject.registerClass({
 
             device = new Device.Device(packet);
             this._devices.set(device.id, device);
+            device.loadPlugins();
 
             gsconnect.settings.set_strv('devices', this.devices);
             this.notify('devices');
-
-            device.loadPlugins();
         }
 
         return device;

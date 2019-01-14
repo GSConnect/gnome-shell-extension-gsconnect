@@ -217,9 +217,8 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         this.removeAll();
         this.sub.get_children().map(child => child.destroy());
 
-        let len = this.menu_model.get_n_items();
 
-        for (let i = 0; i < len; i++) {
+        for (let i = 0, len = this.menu_model.get_n_items(); i < len; i++) {
             let info = getItemInfo(this.menu_model, i);
             let item;
 
