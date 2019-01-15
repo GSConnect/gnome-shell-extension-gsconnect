@@ -52,12 +52,8 @@ var Plugin = GObject.registerClass({
         });
 
         this._directories = {};
-        this._mount = null;
+        this._gmount = null;
         this._mounting = false;
-    }
-
-    get has_sshfs() {
-        return GLib.find_program_in_path(gsconnect.metadata.bin.sshfs);
     }
 
     get ip() {
@@ -67,14 +63,8 @@ var Plugin = GObject.registerClass({
 
     handlePacket(packet) {
         // Ensure we don't mount on top of an existing mount
-        // FIXME: might need to update old mounts?
-        if (this._mount) {
-            debug('already mounted', this.device.name);
-            return;
-        }
-
-        if (packet.type === 'kdeconnect.sftp') {
-            this._agnostic_mount(packet.body);
+        if (packet.type === 'kdeconnect.sftp' && this._gmount === null) {
+            this._mount(packet.body);
         }
     }
 
@@ -111,47 +101,13 @@ var Plugin = GObject.registerClass({
             this._user = info.user;
             this._password = info.password;
             this._port = info.port;
+            this._uri = `sftp://${this.ip}:${this._port}/`;
 
-            // Ensure mountpoint is ready for sshfs
-            if (this.has_sshfs) {
-                this._mountpoint = GLib.build_filenamev([
-                    gsconnect.runtimedir,
-                    this.device.id
-                ]);
-                this._uri = `file://${this._mountpoint}`;
+            // HACK: Test an SFTP mount for this IP in the 1716-1764 range
+            this._uriRegex = new RegExp(`sftp://(${this.ip}):(171[6-9]|17[2-5][0-9]|176[0-4])`);
 
-                let dir = Gio.File.new_for_path(this._mountpoint);
-
-                try {
-                    dir.make_directory_with_parents(null);
-                    dir.set_attribute_uint32('unix::mode', 448, 0, null);
-                } catch (e) {
-                }
-
-                // Grab the uid/gid from the mountpoint
-                await new Promise((resolve, reject) => {
-                    dir.query_info_async('unix::*', 0, 0, null, (dir, res) => {
-                        try {
-                            let finfo = dir.query_info_finish(res);
-                            this._uid = finfo.get_attribute_uint32('unix::uid');
-                            this._gid = finfo.get_attribute_uint32('unix::gid');
-                            resolve();
-                        } catch (e) {
-                            reject(e);
-                        }
-                    });
-                });
-
-            // Otherwise just store the mountpoint's URI
-            } else {
-                this._uri = `sftp://${this.ip}:${this._port}/`;
-
-                // HACK: Test an SFTP mount for this IP in the 1716-1764 range
-                this._uriRegex = new RegExp(`sftp://(${this.ip}):(171[6-9]|17[2-5][0-9]|176[0-4])`);
-
-                // Ensure the private key is in the keyring
-                await this._sftp_add_identity();
-            }
+            // Ensure the private key is in the keyring
+            await this._add_identity();
 
             // If 'multiPaths' is present setup a local URI for each
             if (info.hasOwnProperty('multiPaths')) {
@@ -174,8 +130,14 @@ var Plugin = GObject.registerClass({
         }
     }
 
-    async _sftp_mount() {
+    async _mount(info) {
         try {
+            // If mounting is already in progress, let that fail before retrying
+            if (this._mounting) return;
+            this._mounting = true;
+
+            await this._setup(info);
+
             let op = new Gio.MountOperation({
                 username: this._user,
                 password: this._password,
@@ -209,7 +171,7 @@ var Plugin = GObject.registerClass({
                         // There's a good chance this is a host key verification
                         // error; regardless we'll remove the key for security.
                         } else {
-                            this._sftp_remove_host(this._port);
+                            this._remove_host(this._port);
                             reject(e);
                         }
                     }
@@ -224,23 +186,27 @@ var Plugin = GObject.registerClass({
 
                 // Check if this is our mount
                 if (this._uri === uri) {
-                    this._mount = mount;
-                    this._mount.connect('unmounted', this.unmount.bind(this));
+                    this._gmount = mount;
+                    this._gmount.connect('unmounted', this.unmount.bind(this));
 
                 // Or if it's a stale mount we need to cleanup
                 } else if (this._uriRegex.test(uri)) {
                     warning('Removing stale GMount', this.device.name);
-                    await this._sftp_unmount(mount);
+                    await this._unmount(mount);
                 }
             }
 
-            return Promise.resolve();
+            // Populate the menu
+            this._addSubmenu();
+            this._mounting = false;
         } catch (e) {
-            return Promise.reject(e);
+            logError(e, `${this.device.name} (${this.name})`);
+            this._mounting = false;
+            this.unmount();
         }
     }
 
-    _sftp_unmount(mount) {
+    _unmount(mount) {
         return new Promise((resolve, reject) => {
             let op = new Gio.MountOperation();
 
@@ -258,7 +224,7 @@ var Plugin = GObject.registerClass({
      * Add GSConnect's private key identity to the authentication agent so our
      * identity can be verified by Android during private key authentication.
      */
-    _sftp_add_identity() {
+    _add_identity() {
         let ssh_add = this._launcher.spawnv([
             gsconnect.metadata.bin.ssh_add,
             GLib.build_filenamev([gsconnect.configdir, 'private.pem'])
@@ -281,7 +247,7 @@ var Plugin = GObject.registerClass({
      *
      * @param {number} port - The port to remove the host key for
      */
-    async _sftp_remove_host(port = 1739) {
+    async _remove_host(port = 1739) {
         try {
             let ssh_keygen = this._launcher.spawnv([
                 gsconnect.metadata.bin.ssh_keygen,
@@ -303,137 +269,6 @@ var Plugin = GObject.registerClass({
         } catch (e) {
             warning(e, this.device.name);
         }
-    }
-
-    /**
-     * Start the sshfs process and send the password
-     */
-    async _sshfs_mount() {
-        try {
-            let argv = [
-                gsconnect.metadata.bin.sshfs,
-                `${this._user}@${this.ip}:/`,
-                this._mountpoint,
-                '-p', this._port.toString(),
-                // 'disable multi-threaded operation'
-                // Fixes file chunks being sent out of order and corrupted
-                '-s',
-                // 'foreground operation'
-                '-f',
-                // Do not use ~/.ssh/config
-                '-F', '/dev/null',
-                // Use the private key from the service certificate
-                '-o', 'IdentityFile=' + gsconnect.configdir + '/private.pem',
-                // Don't prompt for new host confirmation (we know the host)
-                '-o', 'StrictHostKeyChecking=no',
-                // Prevent storing as a known host
-                '-o', 'UserKnownHostsFile=/dev/null',
-                // Match keepalive for kdeconnect connection (30sx3)
-                '-o', 'ServerAliveInterval=30',
-                // Wait until mountpoint is first accessed to connect
-                '-o', 'delay_connect',
-                // Reconnect to server if connection is interrupted
-                '-o', 'reconnect',
-                // Set user/group permissions to allow readwrite access
-                '-o', `uid=${this._uid}`, '-o', `gid=${this._gid}`,
-                // 'read password from stdin (only for pam_mount!)'
-                '-o', 'password_stdin'
-            ];
-
-            // Execute sshfs
-            this._mount = new Gio.Subprocess({
-                argv: argv,
-                flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDERR_PIPE
-            });
-            this._mount.init(null);
-
-            // Cleanup when the process exits
-            this._mount.wait_async(null, this._sshfs_unmount.bind(this));
-
-            // Since we're using '-o reconnect' we watch stderr so we can quit
-            // on errors *we* consider fatal, otherwise the process may dangle
-            let stderr = new Gio.DataInputStream({
-                base_stream: this._mount.get_stderr_pipe()
-            });
-            this._sshfs_check(stderr);
-
-            // Send session password
-            return new Promise((resolve, reject) => {
-                this._mount.get_stdin_pipe().write_all_async(
-                    `${this._password}\n`,
-                    GLib.PRIORITY_DEFAULT,
-                    null,
-                    (stream, res) => {
-                        try {
-                            resolve(stream.write_all_finish(res));
-                        } catch (e) {
-                            reject(e);
-                        }
-                    }
-                );
-            });
-        } catch (e) {
-            return Promise.reject(e);
-        }
-    }
-
-    _sshfs_unmount(proc, res) {
-        // This is the callback for Gio.Subprocess.wait_async()
-        try {
-            proc.wait_finish(res);
-        } catch (e) {
-            // Silence errors
-        } finally {
-            this._mount = null;
-        }
-
-        // Skip if there's no mountpoint defined
-        if (!this._mountpoint) return Promise.resolve();
-
-        // We also call fusermount/umount to ensure it's actually unmounted
-        let argv = [gsconnect.metadata.bin.fusermount, '-uz', this._mountpoint];
-
-        // On Linux `fusermount` should be available, but BSD uses `umount`
-        // See: https://phabricator.kde.org/D6945
-        if (!GLib.find_program_in_path(gsconnect.metadata.bin.fusermount)) {
-            argv = ['umount', this._mountpoint];
-        }
-
-        return new Promise ((resolve, reject) => {
-            let umount = this._launcher.spawnv(argv);
-
-            umount.wait_async(null, (proc, res) => {
-                try {
-                    resolve(proc.wait_finish(res));
-                } catch (e) {
-                    // Silence errors
-                    resolve();
-                }
-            });
-        });
-    }
-
-    /**
-     * Watch stderr output from the sshfs process for fatal errors
-     */
-    _sshfs_check(stream) {
-        stream.read_line_async(GLib.PRIORITY_DEFAULT, null, (stream, res) => {
-            try {
-                let msg = stream.read_line_finish_utf8(res)[0];
-
-                if (msg !== null) {
-                    if (msg.includes('ssh_dispatch_run_fatal')) {
-                        throw new Error(msg);
-                    }
-
-                    warning(msg, `${this.device.name}: sshfs`);
-                    this._sshfs_check(stream);
-                }
-            } catch (e) {
-                debug(e);
-                this.unmount();
-            }
-        });
     }
 
     /**
@@ -492,39 +327,6 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * TODO: Transitional wrapper until Gio is thoroughly tested
-     *
-     * @param {packet} info - The body of a kdeconnect.sftp packet
-     */
-    async _agnostic_mount(info) {
-        try {
-            // If mounting is already in progress, let that fail before retrying
-            if (this._mounting) return;
-            this._mounting = true;
-
-            await this._setup(info);
-
-            // Prefer sshfs
-            if (this.has_sshfs) {
-                await this._sshfs_mount();
-
-            // Fallback to Gio
-            } else {
-                debug('sshfs not found: falling back to GMount');
-                await this._sftp_mount();
-            }
-
-            // Populate the menu
-            this._addSubmenu();
-            this._mounting = false;
-        } catch (e) {
-            logError(e, `${this.device.name}: ${this.name}`);
-            this._mounting = false;
-            this.unmount();
-        }
-    }
-
-    /**
      * Send a request to mount the remote device
      */
     mount() {
@@ -539,27 +341,17 @@ var Plugin = GObject.registerClass({
      */
     async unmount() {
         try {
-            debug('unmounting', this.device.name);
-
             // Skip since this will always fail
-            if (!this._mount) {
-                // pass
-
-            // TODO: Transitional wrapper until Gio is thoroughly tested
-            } else if (this.has_sshfs) {
-                await this._sshfs_unmount(null, null);
-            } else {
-                await this._sftp_unmount(this._mount);
+            if (this._gmount) {
+                await this._unmount(this._gmount);
             }
         } catch (e) {
             debug(e, this.device.name);
 
         // Always reset the state and menu
         } finally {
-            debug('unmounted', this.device.name);
-
             this._directories = {};
-            this._mount = null;
+            this._gmount = null;
             this._mounting = false;
             this._removeSubmenu();
         }
