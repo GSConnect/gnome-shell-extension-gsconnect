@@ -157,6 +157,8 @@ var Service = GObject.registerClass({
                 proxy.g_object_path
             );
 
+            await this._Start(object_path);
+
             // GSettings
             proxy.settings = new Gio.Settings({
                 settings_schema: gsconnect.gschema.lookup(DEVICE_NAME, true),
@@ -265,6 +267,37 @@ var Service = GObject.registerClass({
                     try {
                         let variant = proxy.call_finish(res);
                         resolve(variant.deep_unpack()[0]);
+                    } catch (e) {
+                        reject(e);
+                    }
+                }
+            );
+        });
+    }
+
+    /**
+     * org.gtk.Menus.Start
+     *
+     * We use this call to ensure that our connection is subscribed to GMenu
+     * changes if the device is added after the service has started.
+     *
+     * @param {string} object_path
+     */
+    _Start(object_path) {
+        return new Promise((resolve, reject) => {
+            this.g_connection.call(
+                this.g_name,
+                object_path,
+                'org.gtk.Menus',
+                'Start',
+                new GLib.Variant('(au)', [[0]]),
+                null,
+                Gio.DBusCallFlags.NONE,
+                -1,
+                null,
+                (proxy, res) => {
+                    try {
+                        resolve(proxy.call_finish(res));
                     } catch (e) {
                         reject(e);
                     }
