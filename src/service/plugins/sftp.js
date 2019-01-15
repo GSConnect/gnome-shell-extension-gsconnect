@@ -46,9 +46,9 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'sftp');
 
-        // A reusable launcher for silence procs
+        // A reusable launcher for ssh processes
         this._launcher = new Gio.SubprocessLauncher({
-            flags: Gio.SubprocessFlags.STDOUT_SILENCE | Gio.SubprocessFlags.STDERR_SILENCE
+            flags: Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_MERGE
         });
 
         this._directories = {};
@@ -88,11 +88,7 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * Setup the directories for export with GMenu and store the mountpoint. For
-     * `sshfs` we also ensure the local mountpoint is ready and get the UID/GID.
-     *
-     * TODO: If #607706 (https://bugzilla.gnome.org/show_bug.cgi?id=607706)
-     *       is fixed in gvfs we can mount sshfs in $HOME and show in Nautilus
+     * Setup the directories for export with GMenu and store the mountpoint.
      *
      * @param {object} info - The body of a kdeconnect.sftp packet
      */
@@ -124,7 +120,7 @@ var Plugin = GObject.registerClass({
                 this._directories[_('Camera pictures')] = uri + 'DCIM/Camera';
             }
 
-            return Promise.resolve(true);
+            return Promise.resolve();
         } catch (e) {
             return Promise.reject(e);
         }
@@ -165,7 +161,7 @@ var Plugin = GObject.registerClass({
                         // Special case when the GMount didn't unmount properly
                         // but is still on the same port and can be reused.
                         if (e.code && e.code === Gio.IOErrorEnum.ALREADY_MOUNTED) {
-                            warning(e, this.device.name);
+                            warning(e, `${this.device.name} (${this.name})`);
                             resolve(true);
 
                         // There's a good chance this is a host key verification
@@ -191,7 +187,7 @@ var Plugin = GObject.registerClass({
 
                 // Or if it's a stale mount we need to cleanup
                 } else if (this._uriRegex.test(uri)) {
-                    warning('Removing stale GMount', this.device.name);
+                    warning('Removing stale GMount', `${this.device.name} (${this.name})`);
                     await this._unmount(mount);
                 }
             }
@@ -231,9 +227,15 @@ var Plugin = GObject.registerClass({
         ]);
 
         return new Promise((resolve, reject) => {
-            ssh_add.wait_check_async(null, (proc, res) => {
+            ssh_add.communicate_utf8_async(null, null, (proc, res) => {
                 try {
-                    resolve(proc.wait_check_finish(res));
+                    let result = proc.communicate_utf8_finish(res)[1].trim();
+
+                    if (proc.get_exit_status() !== 0) {
+                        warning(result, `${this.device.name} (${this.name})`);
+                    }
+
+                    resolve();
                 } catch (e) {
                     reject(e);
                 }
@@ -267,7 +269,7 @@ var Plugin = GObject.registerClass({
 
             debug(`removed host key for [${this.ip}]:${port}`);
         } catch (e) {
-            warning(e, this.device.name);
+            warning(e, `${this.device.name} (${this.name})`);
         }
     }
 
