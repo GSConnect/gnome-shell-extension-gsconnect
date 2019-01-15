@@ -125,25 +125,26 @@ var Device = GObject.registerClass({
         });
         this.service.objectManager.export(this._dbus_object);
 
-        // Export the Device interface
-        this._dbus = new DBus.Interface({
-            g_instance: this,
-            g_interface_info: INTERFACE_INFO
-        });
-        this._dbus_object.add_interface(this._dbus);
-
-        // GActions/GMenu
+        // Export GActions
         this._actionsId = Gio.DBus.session.export_action_group(
             this.object_path,
             this
         );
         this._registerActions();
 
+        // Export GMenu
         this.menu = new Gio.Menu();
         this._menuId = Gio.DBus.session.export_menu_model(
             this.object_path,
             this.menu
         );
+
+        // Export the Device interface
+        this._dbus = new DBus.Interface({
+            g_instance: this,
+            g_interface_info: INTERFACE_INFO
+        });
+        this._dbus_object.add_interface(this._dbus);
     }
 
     /** Device Properties */
