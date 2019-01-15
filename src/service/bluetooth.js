@@ -299,20 +299,22 @@ var ChannelService = GObject.registerClass({
             // An empty interface list means the object is being removed
             if (interfaces.length === 0) return;
 
-            // Only handle devices
-            if (interfaces[0] !== 'org.bluez.Device1') return;
+            for (let interface_name of interfaces) {
+                // Only handle devices
+                if (interface_name !== 'org.bluez.Device1') continue;
 
-            // Get the proxy
-            let proxy = this._devices.get(object_path);
-            if (proxy === undefined) return;
+                // Get the proxy
+                let proxy = this._devices.get(object_path);
+                if (proxy === undefined) continue;
 
-            // Stop watching for connected/paired changes
-            proxy.disconnect(proxy.__deviceChangedId);
-            this.RequestDisconnection(object_path);
+                // Stop watching for connected/paired changes
+                proxy.disconnect(proxy.__deviceChangedId);
+                this.RequestDisconnection(object_path);
 
-            // Release the proxy and emit notify::devices
-            this._devices.delete(object_path);
-            this.notify('devices');
+                // Release the proxy and emit notify::devices
+                this._devices.delete(object_path);
+                this.notify('devices');
+            }
         } catch (e) {
             logError(e, object_path);
         }
