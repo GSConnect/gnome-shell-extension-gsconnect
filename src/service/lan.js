@@ -509,10 +509,6 @@ var Transfer = class Transfer extends Channel {
         this.device._transfers.set(this.uuid, this);
     }
 
-    get identity() {
-        return this.device._channel.identity;
-    }
-
     /**
      * Override to untrack the transfer UUID
      */
@@ -667,7 +663,7 @@ var Transfer = class Transfer extends Channel {
                 );
             });
         } catch (e) {
-            debug(e, this.identity.body.deviceName);
+            debug(e, this.device.name);
         } finally {
             this.close();
         }
