@@ -156,6 +156,16 @@ JSON.dump = function (obj, file, sync = false) {
 
 
 /**
+ * Delayed Promise
+ *
+ * @param {number} delay - Delay in milliseconds before resolving
+ */
+Promise.delay = function(delay = 100) {
+    return new Promise(resolve => GLib.timeout_add(0, delay, resolve));
+};
+
+
+/**
  * The same regular expression used in GNOME Shell
  *
  * http://daringfireball.net/2010/07/improved_regex_for_matching_urls
