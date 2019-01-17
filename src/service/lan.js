@@ -455,24 +455,73 @@ var Channel = class Channel extends Core.Channel {
     }
 
     /**
-     * Open an outgoing connection
+     * Read the identity packet from the new connection
      *
-     * @param {Gio.SocketConnection} connection - The remote connection
-     * @return {Boolean} - %true on connected, %false otherwise
+     * @param {Gio.SocketConnection} connection - An unencrypted socket
+     * @return {Gio.SocketConnection} - The connection after success
      */
-    async open(connection) {
-        try {
-            this._connection = await this._initSocket(connection);
-            this._connection = await this._sendIdent(this._connection);
-            this._connection = await this._serverEncryption(this._connection);
-        } catch (e) {
-            this.close();
-            return Promise.reject(e);
-        }
+    _receiveIdent(connection) {
+        return new Promise((resolve, reject) => {
+            debug('receiving identity');
+
+            let stream = new Gio.DataInputStream({
+                base_stream: connection.input_stream,
+                close_base_stream: false
+            });
+
+            stream.read_line_async(
+                GLib.PRIORITY_DEFAULT,
+                this.cancellable,
+                (stream, res) => {
+                    try {
+                        let data = stream.read_line_finish_utf8(res)[0];
+                        stream.close(null);
+
+                        // Store the identity as an object property
+                        this.identity = new Core.Packet(data);
+
+                        // Reject connections without a deviceId
+                        if (!this.identity.body.deviceId) {
+                            throw new Error('missing deviceId');
+                        }
+
+                        resolve(connection);
+                    } catch (e) {
+                        reject(e);
+                    }
+                }
+            );
+        });
     }
 
     /**
-     * Accept an incoming connection
+     * Write our identity packet to the new connection
+     *
+     * @param {Gio.SocketConnection} connection - An unencrypted socket
+     * @return {Gio.SocketConnection} - The connection after success
+     */
+    _sendIdent(connection) {
+        return new Promise((resolve, reject) => {
+            debug('sending identity');
+
+            connection.output_stream.write_all_async(
+                `${this.service.identity}`,
+                GLib.PRIORITY_DEFAULT,
+                this.cancellable,
+                (stream, res) => {
+                    try {
+                        stream.write_all_finish(res);
+                        resolve(connection);
+                    } catch (e) {
+                        reject(e);
+                    }
+                }
+            );
+        });
+    }
+
+    /**
+     * Negotiate an incoming connection
      *
      * @param {Gio.TcpConnection} connection - The incoming connection
      */
@@ -481,6 +530,22 @@ var Channel = class Channel extends Core.Channel {
             this._connection = await this._initSocket(connection);
             this._connection = await this._receiveIdent(this._connection);
             this._connection = await this._clientEncryption(this._connection);
+        } catch (e) {
+            this.close();
+            return Promise.reject(e);
+        }
+    }
+
+    /**
+     * Negotiate an outgoing connection
+     *
+     * @param {Gio.SocketConnection} connection - The remote connection
+     */
+    async open(connection) {
+        try {
+            this._connection = await this._initSocket(connection);
+            this._connection = await this._sendIdent(this._connection);
+            this._connection = await this._serverEncryption(this._connection);
         } catch (e) {
             this.close();
             return Promise.reject(e);

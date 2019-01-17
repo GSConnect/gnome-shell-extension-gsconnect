@@ -115,69 +115,23 @@ var Channel = class Channel {
     }
 
     /**
-     * Read the identity packet from the new connection
-     *
-     * @param {Gio.SocketConnection} connection - An unencrypted socket
-     * @return {Gio.SocketConnection} - The connection after success
+     * Override these to send and receive the identity packet during initial
+     * connection negotiation.
      */
     _receiveIdent(connection) {
-        return new Promise((resolve, reject) => {
-            debug('receiving identity');
-
-            let stream = new Gio.DataInputStream({
-                base_stream: connection.input_stream,
-                close_base_stream: false
-            });
-
-            stream.read_line_async(
-                GLib.PRIORITY_DEFAULT,
-                this.cancellable,
-                (stream, res) => {
-                    try {
-                        let data = stream.read_line_finish_utf8(res)[0];
-                        stream.close(null);
-
-                        // Store the identity as an object property
-                        this.identity = new Packet(data);
-
-                        // Reject connections without a deviceId
-                        if (!this.identity.body.deviceId) {
-                            throw new Error('missing deviceId');
-                        }
-
-                        resolve(connection);
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
-            );
-        });
+        throw new GObject.NotImplementedError();
     }
 
-    /**
-     * Write our identity packet to the new connection
-     *
-     * @param {Gio.SocketConnection} connection - An unencrypted socket
-     * @return {Gio.SocketConnection} - The connection after success
-     */
     _sendIdent(connection) {
-        return new Promise((resolve, reject) => {
-            debug('sending identity');
+        throw new GObject.NotImplementedError();
+    }
 
-            connection.output_stream.write_all_async(
-                `${this.service.identity}`,
-                GLib.PRIORITY_DEFAULT,
-                this.cancellable,
-                (stream, res) => {
-                    try {
-                        stream.write_all_finish(res);
-                        resolve(connection);
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
-            );
-        });
+    accept(connection) {
+        throw new GObject.NotImplementedError();
+    }
+
+    open(connection) {
+        throw new GObject.NotImplementedError();
     }
 
     /**
@@ -214,35 +168,6 @@ var Channel = class Channel {
         // Emit connected:: if necessary
         if (!device.connected) {
             device._setConnected();
-        }
-    }
-
-    /**
-     * Open an outgoing connection
-     *
-     * @param {Gio.SocketConnection} connection - The remote connection
-     * @return {Boolean} - %true on connected, %false otherwise
-     */
-    async open(connection) {
-        try {
-            throw new GObject.NotImplementedError();
-        } catch (e) {
-            this.close();
-            return Promise.reject(e);
-        }
-    }
-
-    /**
-     * Accept an incoming connection
-     *
-     * @param {Gio.TcpConnection} connection - The incoming connection
-     */
-    async accept(connection) {
-        try {
-            throw new GObject.NotImplementedError();
-        } catch (e) {
-            this.close();
-            return Promise.reject(e);
         }
     }
 
