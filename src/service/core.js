@@ -115,14 +115,6 @@ var Channel = class Channel {
     }
 
     /**
-     * Override this in subclasses to configure any necessary socket options.
-     * The defau;t implementation returns the original Gio.SocketConnection.
-     */
-    _initSocket(connection) {
-        return connection;
-    }
-
-    /**
      * Read the identity packet from the new connection
      *
      * @param {Gio.SocketConnection} connection - An unencrypted socket
@@ -189,18 +181,6 @@ var Channel = class Channel {
     }
 
     /**
-     * Override these in subclasses to negotiate encryption. The default
-     * implementations simply return the original Gio.SocketConnection.
-     */
-    _clientEncryption(connection) {
-        return Promise.resolve(connection);
-    }
-
-    _serverEncryption(connection) {
-        return Promise.resolve(connection);
-    }
-
-    /**
      * Attach to @device as the default channel used for packet exchange. This
      * should connect the channel's Gio.Cancellable to mark the device as
      * disconnected, setup the IO streams, start the receive() loop and set the
@@ -245,9 +225,7 @@ var Channel = class Channel {
      */
     async open(connection) {
         try {
-            this._connection = await this._initSocket(connection);
-            this._connection = await this._sendIdent(this._connection);
-            this._connection = await this._serverEncryption(this._connection);
+            throw new GObject.NotImplementedError();
         } catch (e) {
             this.close();
             return Promise.reject(e);
@@ -261,9 +239,7 @@ var Channel = class Channel {
      */
     async accept(connection) {
         try {
-            this._connection = await this._initSocket(connection);
-            this._connection = await this._receiveIdent(this._connection);
-            this._connection = await this._clientEncryption(this._connection);
+            throw new GObject.NotImplementedError();
         } catch (e) {
             this.close();
             return Promise.reject(e);
@@ -397,75 +373,6 @@ var Channel = class Channel {
         }
 
         return result;
-    }
-
-    /**
-     * Transfer using g_output_stream_splice()
-     *
-     * @return {Boolean} - %true on success, %false on failure.
-     */
-    async _transfer() {
-        let result = false;
-
-        try {
-            result = await new Promise((resolve, reject) => {
-                this.output_stream.splice_async(
-                    this.input_stream,
-                    Gio.OutputStreamSpliceFlags.NONE,
-                    GLib.PRIORITY_DEFAULT,
-                    this.cancellable,
-                    (source, res) => {
-                        try {
-                            if (source.splice_finish(res) < this.size) {
-                                throw new Error('incomplete data');
-                            }
-
-                            resolve(true);
-                        } catch (e) {
-                            reject(e);
-                        }
-                    }
-                );
-            });
-        } catch (e) {
-            debug(e, this.identity.body.deviceName);
-        } finally {
-            this.close();
-        }
-
-        return result;
-    }
-};
-
-
-/**
- * File Transfer base class
- */
-var Transfer = class Transfer extends Channel {
-
-    /**
-     * @param {object} params - Transfer parameters
-     * @param {Device.Device} params.device - The device that owns this transfer
-     * @param {Gio.InputStream} params.input_stream - The input stream (read)
-     * @param {Gio.OutputStrea} params.output_stream - The output stream (write)
-     * @param {number} params.size - The size of the transfer in bytes
-     */
-    constructor(params) {
-        super(params);
-        this.device._transfers.set(this.uuid, this);
-    }
-
-    get identity() {
-        return this.device._channel.identity;
-    }
-
-    get type() {
-        return 'transfer';
-    }
-
-    close() {
-        this.device._transfers.delete(this.uuid);
-        super.close();
     }
 };
 

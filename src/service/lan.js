@@ -453,6 +453,39 @@ var Channel = class Channel extends Core.Channel {
 
         return this._authenticate(connection);
     }
+
+    /**
+     * Open an outgoing connection
+     *
+     * @param {Gio.SocketConnection} connection - The remote connection
+     * @return {Boolean} - %true on connected, %false otherwise
+     */
+    async open(connection) {
+        try {
+            this._connection = await this._initSocket(connection);
+            this._connection = await this._sendIdent(this._connection);
+            this._connection = await this._serverEncryption(this._connection);
+        } catch (e) {
+            this.close();
+            return Promise.reject(e);
+        }
+    }
+
+    /**
+     * Accept an incoming connection
+     *
+     * @param {Gio.TcpConnection} connection - The incoming connection
+     */
+    async accept(connection) {
+        try {
+            this._connection = await this._initSocket(connection);
+            this._connection = await this._receiveIdent(this._connection);
+            this._connection = await this._clientEncryption(this._connection);
+        } catch (e) {
+            this.close();
+            return Promise.reject(e);
+        }
+    }
 };
 
 
@@ -598,6 +631,43 @@ var Transfer = class Transfer extends Channel {
             result = await this._transfer();
         } catch (e) {
             logError(e, this.device.name);
+        } finally {
+            this.close();
+        }
+
+        return result;
+    }
+
+    /**
+     * Transfer using g_output_stream_splice()
+     *
+     * @return {Boolean} - %true on success, %false on failure.
+     */
+    async _transfer() {
+        let result = false;
+
+        try {
+            result = await new Promise((resolve, reject) => {
+                this.output_stream.splice_async(
+                    this.input_stream,
+                    Gio.OutputStreamSpliceFlags.NONE,
+                    GLib.PRIORITY_DEFAULT,
+                    this.cancellable,
+                    (source, res) => {
+                        try {
+                            if (source.splice_finish(res) < this.size) {
+                                throw new Error('incomplete data');
+                            }
+
+                            resolve(true);
+                        } catch (e) {
+                            reject(e);
+                        }
+                    }
+                );
+            });
+        } catch (e) {
+            debug(e, this.identity.body.deviceName);
         } finally {
             this.close();
         }
