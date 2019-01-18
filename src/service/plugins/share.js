@@ -121,10 +121,10 @@ var Plugin = GObject.registerClass({
                 });
             });
 
-            transfer = this.device.createTransfer({
+            transfer = this.device.createTransfer(Object.assign({
                 output_stream: stream,
                 size: packet.payloadSize
-            });
+            }, packet.payloadTransferInfo));
 
             // Notify that we're about to start the transfer
             this.device.showNotification({

@@ -418,10 +418,10 @@ var Plugin = GObject.registerClass({
             });
 
             // Download the icon
-            transfer = this.device.createTransfer({
+            transfer = this.device.createTransfer(Object.assign({
                 output_stream: stream,
                 size: packet.payloadSize
-            });
+            }, packet.payloadTransferInfo));
 
             success = await transfer.download(
                 packet.payloadTransferInfo.port || packet.payloadTransferInfo.uuid
