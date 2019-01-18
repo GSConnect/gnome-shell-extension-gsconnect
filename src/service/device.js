@@ -222,7 +222,7 @@ var Device = GObject.registerClass({
         // Preempt clipboard and mousepad plugins on Wayland
         if (_WAYLAND) {
             supported = supported.filter(name => {
-                return (name !== 'clipboard' && name !== 'mousepad')
+                return (name !== 'clipboard' && name !== 'mousepad');
             });
         }
 
