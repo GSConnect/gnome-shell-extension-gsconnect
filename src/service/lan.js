@@ -384,7 +384,7 @@ var Channel = class Channel extends Core.Channel {
             await this._handshake(connection);
 
             // Get a GSettings object for this deviceId
-            let id = this.identity.body.deviceId;
+            let id = (this.device) ? this.device.id : this.identity.body.deviceId;
             let settings = new Gio.Settings({
                 settings_schema: gsconnect.gschema.lookup(
                     'org.gnome.Shell.Extensions.GSConnect.Device',
