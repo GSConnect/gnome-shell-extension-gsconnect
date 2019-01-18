@@ -20,9 +20,7 @@ var Packet = class Packet {
         this.type = undefined;
         this.body = {};
 
-        if (data === null) {
-            return;
-        } else if (typeof data === 'string') {
+        if (typeof data === 'string') {
             this.fromString(data);
         } else {
             this.fromObject(data);
@@ -209,15 +207,16 @@ var Channel = class Channel {
                     // Queue another receive() before handling the packet
                     this.receive(device);
 
-                    // In case %null is returned we don't want an error thrown
-                    // when trying to parse it as a packet
-                    if (data !== null) {
+                    // Malformed packets aren't fatal, we just warn and discard
+                    try {
                         packet = new Packet(data);
-                        debug(packet, this.identity.body.deviceName);
+                        debug(packet, device.name);
                         device.receivePacket(packet);
+                    } catch (e) {
+                        warning(e);
                     }
                 } catch (e) {
-                    debug(e, this.identity.body.deviceName);
+                    debug(e, device.name);
                     this.close();
                 }
             }
