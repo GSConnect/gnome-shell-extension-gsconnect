@@ -252,18 +252,6 @@ var DevicePreferences = GObject.registerClass({
         return Gio.Application.get_default();
     }
 
-    get supported_plugins() {
-        let supported = this.settings.get_strv('supported-plugins');
-
-        // Preempt clipboard and mousepad plugins on Wayland
-        if (_WAYLAND) {
-            supported.splice(supported.indexOf('clipboard'), 1);
-            supported.splice(supported.indexOf('mousepad'), 1);
-        }
-
-        return supported;
-    }
-
     _onKeynavFailed(widget, direction) {
         if (direction === Gtk.DirectionType.UP && widget.prev) {
             widget.prev.child_focus(direction);
@@ -977,7 +965,7 @@ var DevicePreferences = GObject.registerClass({
 
     get_plugin_allowed(name) {
         let disabled = this.settings.get_strv('disabled-plugins');
-        let supported = this.supported_plugins;
+        let supported = this.device.supported_plugins;
 
         return supported.filter(name => !disabled.includes(name)).includes(name);
     }
@@ -1045,7 +1033,7 @@ var DevicePreferences = GObject.registerClass({
     }
 
     _populatePlugins() {
-        let supported = this.supported_plugins;
+        let supported = this.device.supported_plugins;
 
         for (let row of this.plugin_list.get_children()) {
             let checkbutton = row.get_child().get_child_at(0, 0);
