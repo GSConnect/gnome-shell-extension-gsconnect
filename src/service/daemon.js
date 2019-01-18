@@ -34,10 +34,10 @@ imports.searchPath.unshift(gsconnect.extdatadir);
 imports._gsconnect;
 
 // Local Imports
-const Bluetooth = imports.service.bluetooth;
-const Core = imports.service.core;
+const Bluetooth = imports.service.protocol.bluetooth;
+const Core = imports.service.protocol.core;
 const Device = imports.service.device;
-const Lan = imports.service.lan;
+const Lan = imports.service.protocol.lan;
 
 const ServiceUI = imports.service.ui.service;
 const Settings = imports.service.ui.settings;

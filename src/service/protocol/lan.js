@@ -4,7 +4,7 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
-const Core = imports.service.core;
+const Core = imports.service.protocol.core;
 
 
 /**

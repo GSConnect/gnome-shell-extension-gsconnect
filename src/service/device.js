@@ -5,10 +5,9 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
-const Core = imports.service.core;
+const Bluetooth = imports.service.protocol.bluetooth;
+const Lan = imports.service.protocol.lan;
 const DBus = imports.service.components.dbus;
-const Lan = imports.service.lan;
-const Bluetooth = imports.service.bluetooth;
 
 const UUID = 'org.gnome.Shell.Extensions.GSConnect.Device';
 const INTERFACE_INFO = gsconnect.dbusinfo.lookup_interface(UUID);
