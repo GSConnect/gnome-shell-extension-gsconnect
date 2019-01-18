@@ -156,12 +156,23 @@ JSON.dump = function (obj, file, sync = false) {
 
 
 /**
- * Delayed Promise
+ * Idle Promise
  *
- * @param {number} delay - Delay in milliseconds before resolving
+ * @param {number} priority - The priority of the idle source
  */
-Promise.delay = function(delay = 100) {
-    return new Promise(resolve => GLib.timeout_add(0, delay, resolve));
+Promise.idle = function(priority) {
+    return new Promise(resolve => GLib.idle_add(priority, resolve));
+};
+
+
+/**
+ * Timeout Promise
+ *
+ * @param {number} priority - The priority of the timeout source
+ * @param {number} interval - Delay in milliseconds before resolving
+ */
+Promise.timeout = function(priority = GLib.PRIORITY_DEFAULT, interval = 100) {
+    return new Promise(resolve => GLib.timeout_add(priority, interval, resolve));
 };
 
 
