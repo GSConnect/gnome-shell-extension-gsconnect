@@ -5,6 +5,8 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
 
+const ByteArray = imports.byteArray;
+
 
 /**
  * Check if we're in a Wayland session (mostly for input synthesis)
@@ -103,7 +105,7 @@ JSON.load = function (file, sync = false) {
         let contents = file.load_contents(null)[1];
 
         if (contents instanceof Uint8Array) {
-            contents = imports.byteArray.toString(contents);
+            contents = ByteArray.toString(contents);
         }
 
         return JSON.parse(contents);
@@ -114,7 +116,7 @@ JSON.load = function (file, sync = false) {
                     let contents = file.load_contents_finish(res)[1];
 
                     if (contents instanceof Uint8Array) {
-                        contents = imports.byteArray.toString(contents);
+                        contents = ByteArray.toString(contents);
                     }
 
                     resolve(JSON.parse(contents));
@@ -565,7 +567,7 @@ function _full_pack(obj) {
         case (type === 'boolean'):
             return GLib.Variant.new('b', obj);
 
-        case (obj instanceof imports.byteArray.ByteArray):
+        case (obj instanceof ByteArray.ByteArray):
             return GLib.Variant.new('ay', obj);
 
         case (obj === null):
@@ -618,7 +620,7 @@ function _full_unpack(obj) {
         case (obj instanceof GLib.Variant):
             return _full_unpack(obj.deep_unpack());
 
-        case (obj instanceof imports.byteArray.ByteArray):
+        case (obj instanceof ByteArray.ByteArray):
             return obj;
 
         case (typeof obj.map === 'function'):
