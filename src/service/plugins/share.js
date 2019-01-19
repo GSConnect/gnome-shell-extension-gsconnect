@@ -66,14 +66,6 @@ var Plugin = GObject.registerClass({
         super._init(device, 'share');
     }
 
-    connected() {
-        super.connected();
-
-        if (this.device.connection_type === 'bluetooth') {
-            this.device.lookup_action('shareFile').enabled = false;
-        }
-    }
-
     /**
      * Get a GFile for @filename in ~/Downloads, with a numbered suffix if it
      * already exists (eg. `picture.jpg (1)`)
@@ -244,8 +236,6 @@ var Plugin = GObject.registerClass({
      * Packet dispatch
      */
     handlePacket(packet) {
-        debug('Share: handlePacket()');
-
         if (packet.body.hasOwnProperty('filename')) {
             this._handleFile(packet);
         } else if (packet.body.hasOwnProperty('text')) {
@@ -290,11 +280,9 @@ var Plugin = GObject.registerClass({
                 });
             });
 
-            let info = file.query_info('standard::size', 0, null);
-
             transfer = this.device.createTransfer({
                 input_stream: stream,
-                size: info.get_size()
+                size: file.query_info('standard::size', 0, null).get_size()
             });
 
             // Notify that we're about to start the transfer
@@ -315,7 +303,6 @@ var Plugin = GObject.registerClass({
             });
 
             success = await transfer.upload({
-                id: 0,
                 type: 'kdeconnect.share.request',
                 body: {
                     filename: file.get_basename(),
@@ -360,7 +347,6 @@ var Plugin = GObject.registerClass({
      */
     shareText(text) {
         this.device.sendPacket({
-            id: 0,
             type: 'kdeconnect.share.request',
             body: {text: text}
         });
@@ -389,7 +375,6 @@ var Plugin = GObject.registerClass({
         }
 
         this.device.sendPacket({
-            id: 0,
             type: 'kdeconnect.share.request',
             body: {url: uri}
         });
