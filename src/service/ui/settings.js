@@ -49,7 +49,7 @@ async function generateSupportLog(time) {
 
         // FIXME: BSD???
         let proc = new Gio.Subprocess({
-            flags: Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDOUT_PIPE,
+            flags: Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_MERGE,
             argv: ['journalctl', '--no-host', '--since', time]
         });
         proc.init(null);
