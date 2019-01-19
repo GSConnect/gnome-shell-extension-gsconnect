@@ -74,6 +74,20 @@ window.warning = function(message, prefix = null) {
 
 
 /**
+ * Convenience Functions
+ */
+window.open_uri = function(uri) {
+    Gio.AppInfo.launch_default_for_uri_async(uri, null, null, (src, res) => {
+        try {
+            Gio.AppInfo.launch_default_for_uri_finish(res);
+        } catch (e) {
+            logError(e, uri);
+        }
+    });
+};
+
+
+/**
  * Convenience function for loading JSON from a file
  *
  * @param {Gio.File|string} file - A Gio.File or path to a JSON file

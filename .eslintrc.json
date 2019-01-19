@@ -115,6 +115,7 @@
         "gsconnect": false,
         "debug": false,
         "warning": false,
+        "open_uri": false,
         "_": false,
         "_C": false,
         "_N": false,

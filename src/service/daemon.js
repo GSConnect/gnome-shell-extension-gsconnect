@@ -415,14 +415,7 @@ const Service = GObject.registerClass({
 
     _github(path = []) {
         let uri = [_GITHUB].concat(path.split('/')).join('/');
-
-        Gio.AppInfo.launch_default_for_uri_async(uri, null, null, (src, res) => {
-            try {
-                Gio.AppInfo.launch_default_for_uri_finish(res);
-            } catch (e) {
-                logError(e);
-            }
-        });
+        open_uri(uri);
     }
 
     /**

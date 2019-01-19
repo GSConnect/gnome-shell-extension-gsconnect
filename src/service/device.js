@@ -569,14 +569,7 @@ var Device = GObject.registerClass({
 
         // Normalize paths to URIs, assuming local file
         path = path.includes('://') ? path : `file://${path}`;
-
-        Gio.AppInfo.launch_default_for_uri_async(path, null, null, (src, res) => {
-            try {
-                Gio.AppInfo.launch_default_for_uri_finish(res);
-            } catch (e) {
-                logError(e);
-            }
-        });
+        open_uri(path);
     }
 
     /**

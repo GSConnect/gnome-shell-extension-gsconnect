@@ -78,15 +78,7 @@ async function generateSupportLog(time) {
             });
         });
 
-        await new Promise((resolve, reject) => {
-            Gio.AppInfo.launch_default_for_uri_async(file.get_uri(), null, null, (src, res) => {
-                try {
-                    resolve(Gio.AppInfo.launch_default_for_uri_finish(res));
-                } catch (e) {
-                    reject(e);
-                }
-            });
-        });
+        open_uri(file.get_uri());
     } catch (e) {
         logError(e);
     }

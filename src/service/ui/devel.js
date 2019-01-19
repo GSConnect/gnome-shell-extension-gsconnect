@@ -334,13 +334,7 @@ var Window = GObject.registerClass({
     _onOpenURI(entry) {
         if (this.sms_uri.text) {
             log(this.sms_uri.text);
-            Gio.AppInfo.launch_default_for_uri_async(this.sms_uri.text, null, null, (src, res) => {
-                try {
-                    Gio.AppInfo.launch_default_for_uri_finish(res);
-                } catch (e) {
-                    logError(e);
-                }
-            });
+            open_uri(this.sms_uri.text);
         }
     }
 

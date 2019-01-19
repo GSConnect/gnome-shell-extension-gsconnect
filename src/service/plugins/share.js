@@ -141,21 +141,7 @@ var Plugin = GObject.registerClass({
 
             // We've been asked to open this directly
             if (success && packet.body.open) {
-                await new Promise((resolve, reject) => {
-                    Gio.AppInfo.launch_default_for_uri_async(
-                        file.get_uri(),
-                        null,
-                        null,
-                        (src, res) => {
-                            try {
-                                Gio.AppInfo.launch_default_for_uri_finish(res);
-                            } catch (e) {
-                                reject(e);
-                            }
-                        }
-                    );
-                });
-
+                open_uri(file.get_uri());
                 return;
             }
 
@@ -206,18 +192,7 @@ var Plugin = GObject.registerClass({
     }
 
     _handleUri(packet) {
-        Gio.AppInfo.launch_default_for_uri_async(
-            packet.body.url,
-            null,
-            null,
-            (src, res) => {
-                try {
-                    Gio.AppInfo.launch_default_for_uri_finish(res);
-                } catch (e) {
-                    logError(e);
-                }
-            }
-        );
+        open_uri(packet.body.url);
     }
 
     _handleText(packet) {
