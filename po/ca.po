@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-01-13 08:22\n"
+"PO-Revision-Date: 2019-01-22 11:34\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -305,7 +305,7 @@ msgstr "Seleccioneu una conversa o inicieu-ne una de nova"
 
 #: data/messaging.ui:193 data/notification.ui:52 data/telephony.ui:52
 msgid "Device is disconnected"
-msgstr ""
+msgstr "El dispositiu està desconnectat"
 
 #: data/messaging.ui:264
 msgid "No Conversations"
@@ -356,7 +356,7 @@ msgstr ""
 #: data/telephony.ui:9 src/service/daemon.js:718 src/service/plugins/sms.js:50
 #: webextension/gettext.js:39
 msgid "Send SMS"
-msgstr ""
+msgstr "Envia un SMS"
 
 #. Service Menu
 #: src/extension.js:79 src/extension.js:255
@@ -386,7 +386,7 @@ msgstr ""
 
 #: src/service/daemon.js:516
 msgid "Network Error"
-msgstr ""
+msgstr "Error de xarxa"
 
 #: src/service/daemon.js:517 src/service/daemon.js:525
 msgid "Click for help troubleshooting"
@@ -394,7 +394,7 @@ msgstr "Ajuda per a resoldre el problema"
 
 #: src/service/daemon.js:524
 msgid "PulseAudio Error"
-msgstr ""
+msgstr "Error de PulseAudio"
 
 #: src/service/daemon.js:533
 msgid "Discovery has been disabled due to the number of devices on this network."
@@ -603,12 +603,12 @@ msgstr "Compartició"
 
 #: src/service/plugins/share.js:35
 msgid "Share Text"
-msgstr ""
+msgstr "Comparteix text"
 
 #: src/service/plugins/share.js:43 src/service/ui/messaging.js:975
 #: src/service/ui/messaging.js:983
 msgid "Share Link"
-msgstr ""
+msgstr "Comparteix un enllaç"
 
 #: src/service/plugins/share.js:132 src/service/plugins/share.js:303
 msgid "Starting Transfer"
@@ -640,7 +640,7 @@ msgstr "Obre el fitxer"
 
 #: src/service/plugins/share.js:192 src/service/plugins/share.js:335
 msgid "Transfer Failed"
-msgstr ""
+msgstr "Ha fallat la transferència"
 
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:194
@@ -773,7 +773,7 @@ msgstr ""
 #: src/service/ui/device.js:798 src/service/ui/device.js:826
 #: src/service/ui/device.js:850
 msgid "Disabled"
-msgstr ""
+msgstr "Desactivat"
 
 #. TRANSLATORS: Title of keyboard shortcut dialog
 #: src/service/ui/keybindings.js:33
@@ -858,7 +858,7 @@ msgstr "Els fitxers transferits es col·loquen a la carpeta <a href=\"%s\">Baixa
 
 #: src/service/ui/settings.js:499
 msgid "A complete KDE Connect implementation for GNOME"
-msgstr ""
+msgstr "Una implementació completa de KDE Connect per al GNOME"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/service/ui/settings.js:508
@@ -872,7 +872,7 @@ msgstr ""
 
 #: src/service/ui/settings.js:540
 msgid "Review Log"
-msgstr ""
+msgstr "Mostra el registre"
 
 #. TRANSLATORS: When the battery level is 100%
 #: src/shell/device.js:82
