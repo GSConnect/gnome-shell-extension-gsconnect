@@ -553,6 +553,25 @@ var Channel = class Channel extends Core.Channel {
     }
 
     /**
+     * Close all streams associated with this channel, silencing any errors
+     */
+    close() {
+        debug(`${this.constructor.name} (${this.type})`);
+
+        // Cancel any queued operations
+        this.cancellable.cancel();
+
+        // Close any streams
+        [this._connection, this.input_stream, this.output_stream].map(stream => {
+            try {
+                stream.close(null);
+            } catch (e) {
+                // Silence errors
+            }
+        });
+    }
+
+    /**
      * Attach to @device as the default channel used for packet exchange.
      *
      * @param {Device.Device} device - The device to attach to

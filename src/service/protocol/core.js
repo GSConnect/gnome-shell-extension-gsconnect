@@ -148,19 +148,7 @@ var Channel = class Channel {
      * Close all streams associated with this channel, silencing any errors
      */
     close() {
-        debug(`${this.constructor.name} (${this.type})`);
-
-        // Cancel any queued operations
-        this.cancellable.cancel();
-
-        // Close any streams
-        [this._connection, this.input_stream, this.output_stream].map(stream => {
-            try {
-                stream.close(null);
-            } catch (e) {
-                // Silence errors
-            }
-        });
+        throw new GObject.NotImplementedError();
     }
 
     /**
