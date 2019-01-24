@@ -572,31 +572,36 @@ var Channel = class Channel extends Core.Channel {
      * @param {Device.Device} device - The device to attach to
      */
     attach(device) {
-        // Detach any existing channel
-        if (device._channel && device._channel !== this) {
-            device._channel.cancellable.disconnect(device._channel._id);
-            device._channel.close();
-        }
+        try {
+            // Detach any existing channel
+            if (device._channel && device._channel !== this) {
+                device._channel.cancellable.disconnect(device._channel._id);
+                device._channel.close();
+            }
 
-        // Attach the new channel and parse it's identity
-        device._channel = this;
-        this._id = this.cancellable.connect(device._setDisconnected.bind(device));
-        device._handleIdentity(this.identity);
+            // Attach the new channel and parse it's identity
+            device._channel = this;
+            this._id = this.cancellable.connect(device._setDisconnected.bind(device));
+            device._handleIdentity(this.identity);
 
-        // Setup streams for packet exchange
-        this.input_stream = new Gio.DataInputStream({
-            base_stream: this._connection.input_stream
-        });
+            // Setup streams for packet exchange
+            this.input_stream = new Gio.DataInputStream({
+                base_stream: this._connection.input_stream
+            });
 
-        this.output_queue = [];
-        this.output_stream = this._connection.output_stream;
+            this.output_queue = [];
+            this.output_stream = this._connection.output_stream;
 
-        // Start listening for packets
-        this.receive(device);
+            // Start listening for packets
+            this.receive(device);
 
-        // Emit connected:: if necessary
-        if (!device.connected) {
-            device._setConnected();
+            // Emit connected:: if necessary
+            if (!device.connected) {
+                device._setConnected();
+            }
+        } catch (e) {
+            logError(e);
+            this.close();
         }
     }
 };
