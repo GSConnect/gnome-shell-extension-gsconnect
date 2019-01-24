@@ -137,6 +137,7 @@ var ChannelService = class ChannelService {
 
                 // ...otherwise bail
                 default:
+                    channel.close();
                     throw Error('device not allowed');
             }
 
