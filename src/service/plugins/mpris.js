@@ -56,18 +56,21 @@ var Plugin = GObject.registerClass({
     }
 
     handlePacket(packet) {
-        switch (true) {
-            case packet.body.requestPlayerList:
-            case !this.service.mpris.players.has(packet.body.player):
-                this._sendPlayerList();
-                break;
+        // A request for the list of players
+        if (packet.body.requestPlayerList) {
+            this._sendPlayerList();
 
-            case packet.body.hasOwnProperty('albumArtUrl'):
-                this._sendAlbumArt(packet);
-                break;
+        // A request for an unknown player; send the list of players
+        } else if (!this.service.mpris.players.has(packet.body.player)) {
+            this._sendPlayerList();
 
-            default:
-                this._handleCommand(packet);
+        // An album art request
+        } else if (packet.body.hasOwnProperty('albumArtUrl')) {
+            this._sendAlbumArt(packet);
+
+        // A player command
+        } else {
+            this._handleCommand(packet);
         }
     }
 
@@ -292,6 +295,7 @@ var Plugin = GObject.registerClass({
             this.service.mpris.disconnect(this._playerChangedId);
             this.service.mpris.disconnect(this._playerSeekedId);
         } catch (e) {
+            // Silence errors
         }
 
         super.destroy();
