@@ -645,7 +645,7 @@ var Transfer = class Transfer extends Channel {
      * @param {number} port - The port the transfer is listening for connection
      * @return {boolean} - %true on success or %false on fail
      */
-    async download(port) {
+    async download() {
         let result = false;
 
         try {
@@ -656,7 +656,7 @@ var Transfer = class Transfer extends Channel {
                 // Use the address from GSettings with @port
                 let address = Gio.InetSocketAddress.new_from_string(
                     this.device.settings.get_string('tcp-host'),
-                    port
+                    this.port
                 );
 
                 client.connect_async(address, null, (client, res) => {

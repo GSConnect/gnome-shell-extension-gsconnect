@@ -136,7 +136,7 @@ var Plugin = GObject.registerClass({
             });
 
             // Start transfer
-            success = await transfer.download(packet.payloadTransferInfo.port);
+            success = await transfer.download();
             this.device.hideNotification(transfer.uuid);
 
             // We've been asked to open this directly
