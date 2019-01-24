@@ -271,12 +271,6 @@ var ChannelService = class ChannelService {
             channel.attach(device);
         } catch (e) {
             logError(e);
-
-            // Notify the user of Proxy errors
-            if ([40, 41, 42, 43].includes(e.code)) {
-                e.name = 'ProxyError';
-                this.service.notify_error(e);
-            }
         }
     }
 

@@ -500,7 +500,6 @@ const Service = GObject.registerClass({
                     break;
 
                 case 'LanError':
-                case 'ProxyError':
                     id = error.name;
                     title = _('Network Error');
                     body = _('Click for help troubleshooting');
