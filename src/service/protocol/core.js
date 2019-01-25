@@ -170,13 +170,15 @@ var Channel = class Channel {
                     // Queue another receive() before handling the packet
                     this.receive(device);
 
-                    // Malformed packets aren't fatal, we just warn and discard
-                    try {
-                        packet = new Packet(data);
-                        debug(packet, device.name);
-                        device.receivePacket(packet);
-                    } catch (e) {
-                        warning(e);
+                    // Malformed packets and %null aren't fatal
+                    if (data !== null) {
+                        try {
+                            packet = new Packet(data);
+                            debug(packet, device.name);
+                            device.receivePacket(packet);
+                        } catch (e) {
+                            warning(e);
+                        }
                     }
                 } catch (e) {
                     debug(e, device.name);
