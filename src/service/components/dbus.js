@@ -501,10 +501,10 @@ function proxyMethods(iface, info) {
  */
 Gio.DBusProxy.prototype.init_promise = function(cancellable = null) {
     return new Promise((resolve, reject) => {
-        this.init_async(GLib.PRIORITY_DEFAULT, cancellable, (source_object, res) => {
+        this.init_async(GLib.PRIORITY_DEFAULT, cancellable, (proxy, res) => {
             try {
-                source_object.init_finish(res);
-                resolve(source_object);
+                proxy.init_finish(res);
+                resolve(proxy);
             } catch (e) {
                 reject(e);
             }
@@ -543,7 +543,7 @@ function makeInterfaceProxy(info) {
         )
     };
 
-    for (let i = 0; i < info.properties.length; i++) {
+    for (let i = 0, len = info.properties.length; i < len; i++) {
         let property = info.properties[i];
         let flags = 0;
 
@@ -605,7 +605,7 @@ function makeInterfaceProxy(info) {
     // GSignal Spec's
     let signals_ = {};
 
-    for (let i = 0; i < info.signals.length; i++) {
+    for (let i = 0, len = info.signals.length; i < len; i++) {
         let signal = info.signals[i];
 
         signals_[signal.name] = {
