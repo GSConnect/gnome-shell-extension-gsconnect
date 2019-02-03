@@ -31,8 +31,8 @@ const Remote = imports.shell.remote;
  */
 class ServiceIndicator extends PanelMenu.SystemIndicator {
 
-    _init() {
-        super._init();
+    constructor() {
+        super();
 
         this._menus = {};
 

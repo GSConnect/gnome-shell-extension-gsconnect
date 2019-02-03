@@ -64,8 +64,8 @@ function getItemInfo(model, index) {
  */
 var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
 
-    _init(params) {
-        super._init();
+    constructor(params) {
+        super();
         Object.assign(this, params);
 
         // Main Actor
@@ -404,8 +404,8 @@ var IconButton = GObject.registerClass({
 
 var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
 
-    _init(params) {
-        super._init();
+    constructor(params) {
+        super();
         Object.assign(this, params);
 
         // Main Actor

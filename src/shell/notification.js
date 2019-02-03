@@ -23,8 +23,8 @@ const REPLY_REGEX = /^([^|]+)\|(.+)\|([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[
  */
 class RepliableNotificationBanner extends MessageTray.NotificationBanner {
 
-    _init(notification) {
-        super._init(notification);
+    constructor(notification) {
+        super(notification);
 
         // Ensure there's an action area
         if (!this._buttonBox) {

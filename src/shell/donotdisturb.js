@@ -123,8 +123,8 @@ var RadioButton = GObject.registerClass({
 
 var Dialog = class Dialog extends ModalDialog.ModalDialog {
 
-    _init() {
-        super._init({styleClass: 'gsconnect-dnd-dialog'});
+    constructor() {
+        super({styleClass: 'gsconnect-dnd-dialog'});
 
         this.contentLayout.style_class = 'nm-dialog-content';
 
@@ -285,8 +285,8 @@ var Dialog = class Dialog extends ModalDialog.ModalDialog {
 
 var MenuItem = class MenuItem extends PopupMenu.PopupSwitchMenuItem {
 
-    _init() {
-        super._init(_('Do Not Disturb'), false);
+    constructor() {
+        super(_('Do Not Disturb'), false);
 
         // Update the toggle state when 'paintable'
         this.actor.connect('notify::mapped', () => {

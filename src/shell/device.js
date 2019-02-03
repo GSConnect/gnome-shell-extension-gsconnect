@@ -164,8 +164,8 @@ var Battery = GObject.registerClass({
  */
 var Menu = class Menu extends PopupMenu.PopupMenuSection {
 
-    _init(params) {
-        super._init();
+    constructor(params) {
+        super();
         Object.assign(this, params);
 
         this.actor.add_style_class_name('gsconnect-device-menu');
