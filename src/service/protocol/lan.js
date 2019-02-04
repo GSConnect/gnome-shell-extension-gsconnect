@@ -192,7 +192,7 @@ var ChannelService = class ChannelService {
         this._udp_source.attach(null);
     }
 
-    async _onIncomingIdentity() {
+    _onIncomingIdentity() {
         try {
             // Most of the datagram methods don't work in GJS, so we "peek" for
             // the host address first...
@@ -207,6 +207,17 @@ var ChannelService = class ChannelService {
             let packet = new Core.Packet(data);
             packet.body.tcpHost = host;
 
+            // Handle the rest asynchronously
+            this._onIdentity(packet);
+        } catch (e) {
+            logError(e);
+        }
+
+        return GLib.SOURCE_CONTINUE;
+    }
+
+    async _onIdentity(packet) {
+        try {
             // Bail if the deviceId is missing
             if (!packet.body.hasOwnProperty('deviceId')) {
                 warning('missing deviceId', packet.body.deviceName);
@@ -229,7 +240,7 @@ var ChannelService = class ChannelService {
 
                 // Or the service is discoverable or host is allowed...
                 case this.service.discoverable:
-                case this.allowed.has(host):
+                case this.allowed.has(packet.body.tcpHost):
                     device = this.service._ensureDevice(packet);
                     break;
 
@@ -248,8 +259,7 @@ var ChannelService = class ChannelService {
             }
 
             // Create a new channel
-            let channel = new Channel();
-            channel.identity = packet;
+            let channel = new Channel({identity: packet});
 
             let connection = await new Promise((resolve, reject) => {
                 let address = Gio.InetSocketAddress.new_from_string(
