@@ -160,10 +160,10 @@ var ChannelService = class ChannelService {
         this._udp.init(null);
 
         try {
-            let addr = new Gio.InetSocketAddress({
-                address: Gio.InetAddress.new_any(Gio.SocketFamily.IPV4),
-                port: UDP_PORT
-            });
+            let addr = Gio.InetSocketAddress.new_from_string(
+                '0.0.0.0',
+                UDP_PORT
+            );
 
             this._udp.bind(addr, false);
         } catch (e) {
