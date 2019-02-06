@@ -161,11 +161,9 @@ var Channel = class Channel {
             GLib.PRIORITY_DEFAULT,
             this.cancellable,
             (stream, res) => {
-                let data, packet;
-
                 try {
                     // Try to read and parse a packet
-                    data = stream.read_line_finish_utf8(res)[0];
+                    let data = stream.read_line_finish_utf8(res)[0];
 
                     // Queue another receive() before handling the packet
                     this.receive(device);
@@ -173,7 +171,7 @@ var Channel = class Channel {
                     // Malformed packets and %null aren't fatal
                     if (data !== null) {
                         try {
-                            packet = new Packet(data);
+                            let packet = new Packet(data);
                             debug(packet, device.name);
                             device.receivePacket(packet);
                         } catch (e) {
