@@ -866,6 +866,9 @@ var Window = GObject.registerClass({
             let conversation = new ConversationSummary(contact, message);
             this.conversation_list.add(conversation);
         }
+
+        // Re-sort the summaries
+        this.conversation_list.invalidate_sort();
     }
 
     _onConversationSelected(box, row) {
