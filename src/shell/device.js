@@ -223,7 +223,7 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
 var Indicator = class Indicator extends PanelMenu.Button {
 
     _init(params) {
-        super._init(null, `${params.device.Name} Indicator`, false);
+        super._init(0.0, `${params.device.Name} Indicator`, false);
         Object.assign(this, params);
 
         // Device Icon
@@ -241,4 +241,14 @@ var Indicator = class Indicator extends PanelMenu.Button {
         this.menu.addMenuItem(menu);
     }
 };
+
+/**
+ * Re-wrap the Indicator class as a GObject subclass for GNOME Shell 3.32
+ */
+if (imports.system.version > 15499) {
+    Indicator = GObject.registerClass(
+        {GTypeName: 'GSConnectDeviceIndicator'},
+        Indicator
+    );
+}
 
