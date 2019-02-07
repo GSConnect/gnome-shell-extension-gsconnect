@@ -26,6 +26,33 @@ const Remote = imports.shell.remote;
 
 
 /**
+ * A function to fetch a GIcon with fallback support for getting unthemed icons
+ * from our GResource in gnome-shell >= 3.32
+ */
+function get_gicon(name) {
+    if (get_gicon.icons === undefined) {
+        get_gicon.icons = {};
+        get_gicon.theme = Gtk.IconTheme.get_default();
+    }
+
+    if (imports.system.version < 15500 || get_gicon.theme.has_icon(name))
+        return new Gio.ThemedIcon({name: name});
+
+    if (!get_gicon.icons[name]) {
+        get_gicon.icons[name] = new Gio.FileIcon({
+            file: Gio.File.new_for_uri(
+                `resource://org/gnome/Shell/Extensions/GSConnect/icons/${name}.svg`
+            )
+        });
+    }
+
+    return get_gicon.icons[name];
+}
+
+gsconnect.get_gicon = get_gicon;
+
+
+/**
  * A System Indicator used as the hub for spawning device indicators and
  * indicating that the extension is active when there are none.
  */
@@ -40,7 +67,9 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
         // Service Indicator
         this._indicator = this._addIndicator();
-        this._indicator.icon_name = 'org.gnome.Shell.Extensions.GSConnect-symbolic';
+        this._indicator.gicon = gsconnect.get_gicon(
+            'org.gnome.Shell.Extensions.GSConnect-symbolic'
+        );
         this._indicator.visible = false;
 
         AggregateMenu._indicators.insert_child_at_index(this.indicators, 0);
@@ -48,7 +77,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
         // Service Menu
         this._item = new PopupMenu.PopupSubMenuMenuItem(_('Mobile Devices'), true);
-        this._item.icon.icon_name = 'org.gnome.Shell.Extensions.GSConnect-symbolic';
+        this._item.icon.gicon = this._indicator.gicon;
         this._item.label.clutter_text.x_expand = true;
         this.menu.addMenuItem(this._item);
 
@@ -316,7 +345,10 @@ var serviceIndicator = null;
 
 
 function init() {
-    Gtk.IconTheme.get_default().add_resource_path('/org/gnome/Shell/Extensions/GSConnect/icons');
+    // This is only relevant on gnome-shell <= 3.30
+    if (imports.system.version < 15500) {
+        Gtk.IconTheme.get_default().add_resource_path('/org/gnome/Shell/Extensions/GSConnect/icons');
+    }
 
     // If installed as a user extension, this will install the Desktop entry,
     // DBus and systemd service files necessary for DBus activation and

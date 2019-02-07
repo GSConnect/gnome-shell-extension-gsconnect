@@ -33,7 +33,12 @@ function getItemInfo(model, index) {
 
         switch (name) {
             case 'icon':
-                info[name] = Gio.Icon.deserialize(value);
+                value = Gio.Icon.deserialize(value);
+
+                if (value instanceof Gio.ThemedIcon)
+                    value = gsconnect.get_gicon(value.names[0]);
+
+                info[name] = value;
                 break;
 
             case 'target':
