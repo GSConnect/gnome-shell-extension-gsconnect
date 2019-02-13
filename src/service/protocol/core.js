@@ -162,21 +162,22 @@ var Channel = class Channel {
             this.cancellable,
             (stream, res) => {
                 try {
-                    // Try to read and parse a packet
                     let data = stream.read_line_finish_utf8(res)[0];
+
+                    if (data === null) {
+                        throw new Error('End of stream');
+                    }
 
                     // Queue another receive() before handling the packet
                     this.receive(device);
 
-                    // Malformed packets and %null aren't fatal
-                    if (data !== null) {
-                        try {
-                            let packet = new Packet(data);
-                            debug(packet, device.name);
-                            device.receivePacket(packet);
-                        } catch (e) {
-                            warning(e);
-                        }
+                    // Malformed packets aren't fatal
+                    try {
+                        let packet = new Packet(data);
+                        debug(packet, device.name);
+                        device.receivePacket(packet);
+                    } catch (e) {
+                        warning(e);
                     }
                 } catch (e) {
                     debug(e, device.name);
