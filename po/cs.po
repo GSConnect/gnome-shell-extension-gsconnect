@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-02-16 01:52\n"
+"PO-Revision-Date: 2019-02-20 09:48\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Czech\n"
 "Language: cs\n"
@@ -32,15 +32,15 @@ msgstr "Zrušit"
 
 #: data/connect.ui:37
 msgid "Connect"
-msgstr ""
+msgstr "Připojit"
 
 #: data/connect.ui:98
 msgid "IP Address"
-msgstr ""
+msgstr "IP adresa"
 
 #: data/connect.ui:142
 msgid "Bluetooth Device"
-msgstr ""
+msgstr "Zařízení Bluetooth"
 
 #: data/contacts.ui:49
 msgid "Type a phone number or name"
@@ -52,7 +52,7 @@ msgstr ""
 
 #: data/contacts.ui:95 data/menus.ui:33 data/messaging.ui:247
 msgid "Help"
-msgstr ""
+msgstr "Nápověda"
 
 #: data/conversation.ui:76 data/conversation.ui:85 src/shell/notification.js:51
 msgid "Type a message"
@@ -84,12 +84,12 @@ msgstr ""
 
 #: data/device.ui:345 data/device.ui:1728
 msgid "Sharing"
-msgstr ""
+msgstr "Sdílení"
 
 #: data/device.ui:374 data/device.ui:651 data/device.ui:1774
 #: src/service/plugins/runcommand.js:18 src/service/plugins/runcommand.js:169
 msgid "Commands"
-msgstr ""
+msgstr "Příkazy"
 
 #: data/device.ui:424 data/device.ui:427
 msgid "Name"
@@ -97,7 +97,7 @@ msgstr "Jméno"
 
 #: data/device.ui:440 data/device.ui:446
 msgid "Command Line"
-msgstr ""
+msgstr "Příkazový řádek"
 
 #: data/device.ui:444 data/device.ui:445
 msgid "Choose an executable"
@@ -105,7 +105,7 @@ msgstr ""
 
 #: data/device.ui:496 data/device.ui:511
 msgid "Add"
-msgstr ""
+msgstr "Přidat"
 
 #: data/device.ui:527 data/device.ui:542
 msgid "Remove"
@@ -113,15 +113,15 @@ msgstr ""
 
 #: data/device.ui:576 data/device.ui:588
 msgid "Edit"
-msgstr ""
+msgstr "Upravit"
 
 #: data/device.ui:604 data/device.ui:616
 msgid "Save"
-msgstr ""
+msgstr "Uložit"
 
 #: data/device.ui:712
 msgid "Share Notifications"
-msgstr ""
+msgstr "Sdílet oznámení"
 
 #: data/device.ui:763
 msgid "Applications"
@@ -138,7 +138,7 @@ msgstr "Příchozí hovory"
 
 #: data/device.ui:888 data/device.ui:1055
 msgid "Volume"
-msgstr ""
+msgstr "Hlasitost"
 
 #: data/device.ui:954 data/device.ui:1120
 msgid "Pause Media"
@@ -178,7 +178,7 @@ msgstr "Zásuvné moduly"
 
 #: data/device.ui:1475
 msgid "Experimental"
-msgstr ""
+msgstr "Experimentální"
 
 #: data/device.ui:1524
 msgid "Legacy SMS Support"
@@ -186,7 +186,7 @@ msgstr ""
 
 #: data/device.ui:1598
 msgid "Delete"
-msgstr ""
+msgstr "Smazat"
 
 #: data/device.ui:1627
 msgid "Delete this device"
@@ -198,16 +198,16 @@ msgstr ""
 
 #: data/device.ui:1678 data/device.ui:1958
 msgid "Advanced"
-msgstr ""
+msgstr "Pokročilé"
 
 #: data/device.ui:1912
 msgid "Keyboard Shortcuts"
-msgstr ""
+msgstr "Klávesové zkratky"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/device.ui:2015 data/menus.ui:68 src/service/device.js:424
 msgid "Pair"
-msgstr ""
+msgstr "Párovat"
 
 #: data/device.ui:2047
 msgid "Device is unpaired"
@@ -219,12 +219,12 @@ msgstr ""
 
 #: data/menus.ui:12
 msgid "Display Mode"
-msgstr ""
+msgstr "Režim zobrazení"
 
 #. TRANSLATORS: Show device indicators in the top bar
 #: data/menus.ui:15
 msgid "Panel"
-msgstr ""
+msgstr "Panel"
 
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
 #: data/menus.ui:21
@@ -253,7 +253,7 @@ msgstr ""
 #. TRANSLATORS: View the TLS Certificate fingerprint
 #: data/menus.ui:63 src/service/ui/device.js:317
 msgid "Encryption Info"
-msgstr ""
+msgstr "Informace o šifrování"
 
 #. TRANSLATORS: Unpair the device and notify it
 #: data/menus.ui:74 src/service/device.js:432
@@ -293,7 +293,7 @@ msgstr ""
 
 #: data/messaging.ui:21 src/service/ui/messaging.js:992
 msgid "New Conversation"
-msgstr ""
+msgstr "Nová konverzace"
 
 #: data/messaging.ui:110
 msgid "No conversation selected"
@@ -450,7 +450,7 @@ msgstr "Chytrý telefon"
 
 #: src/service/device.js:246
 msgid "Tablet"
-msgstr ""
+msgstr "Tablet"
 
 #: src/service/device.js:248
 msgid "Desktop"
@@ -458,12 +458,12 @@ msgstr "Počítač"
 
 #: src/service/device.js:408 src/service/ui/device.js:15
 msgid "Reconnect"
-msgstr ""
+msgstr "Znovu připojit"
 
 #: src/service/device.js:416 src/service/ui/device.js:16
 #: src/service/ui/settings.js:371
 msgid "Settings"
-msgstr ""
+msgstr "Nastavení"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:607
@@ -509,7 +509,7 @@ msgstr ""
 
 #: src/service/plugins/contacts.js:12
 msgid "Contacts"
-msgstr ""
+msgstr "Kontakty"
 
 #. Ensure we have a sender
 #. TRANSLATORS: No name or phone number
@@ -521,7 +521,7 @@ msgstr "Neznámý kontakt"
 
 #: src/service/plugins/findmyphone.js:13
 msgid "Find My Phone"
-msgstr ""
+msgstr "Najít můj telefon"
 
 #: src/service/plugins/mousepad.js:14
 msgid "Mousepad"
@@ -529,7 +529,7 @@ msgstr ""
 
 #: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:569
 msgid "Keyboard"
-msgstr ""
+msgstr "Klávesnice"
 
 #: src/service/plugins/mousepad.js:223
 msgid "Additional Software Required"
@@ -537,11 +537,11 @@ msgstr ""
 
 #: src/service/plugins/mousepad.js:586
 msgid "Keyboard not ready"
-msgstr ""
+msgstr "Klávesnice není připravena"
 
 #: src/service/plugins/mpris.js:10
 msgid "MPRIS"
-msgstr ""
+msgstr "MPRIS"
 
 #: src/service/plugins/notification.js:26
 msgid "Cancel Notification"
@@ -577,7 +577,7 @@ msgstr "Spustit příkaz"
 
 #: src/service/plugins/sftp.js:12
 msgid "SFTP"
-msgstr ""
+msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:18
 msgid "Mount"
@@ -597,7 +597,7 @@ msgstr ""
 
 #: src/service/plugins/sftp.js:417
 msgid "Files"
-msgstr ""
+msgstr "Soubory"
 
 #: src/service/plugins/share.js:13 src/service/plugins/share.js:19
 msgid "Share"
@@ -692,7 +692,7 @@ msgstr "Poslat odkaz do %s"
 
 #: src/service/plugins/sms.js:13
 msgid "SMS"
-msgstr ""
+msgstr "SMS"
 
 #: src/service/plugins/sms.js:34
 msgid "New SMS (URI)"
@@ -762,7 +762,7 @@ msgstr "Poslat do %s"
 
 #: src/service/ui/device.js:608
 msgid "Open"
-msgstr ""
+msgstr "Otevřít"
 
 #: src/service/ui/device.js:660 src/service/ui/device.js:673
 msgid "On"
@@ -924,7 +924,7 @@ msgstr ""
 
 #: src/shell/donotdisturb.js:216
 msgid "Done"
-msgstr ""
+msgstr "Hotovo"
 
 #. TRANSLATORS: Time duration in hours (eg. 2 hours)
 #: src/shell/donotdisturb.js:263
@@ -938,12 +938,12 @@ msgstr[3] ""
 
 #: src/shell/notification.js:42
 msgid "Reply"
-msgstr ""
+msgstr "Odpovědět"
 
 #. TRANSLATORS: Extension name
 #: webextension/gettext.js:27
 msgid "GSConnect"
-msgstr ""
+msgstr "GSConnect"
 
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
