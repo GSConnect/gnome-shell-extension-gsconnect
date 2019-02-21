@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-02-21 20:14\n"
+"PO-Revision-Date: 2019-02-21 20:34\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Czech\n"
 "Language: cs\n"
@@ -792,7 +792,7 @@ msgstr "Nastavit"
 #: src/service/ui/keybindings.js:54
 #, javascript-format
 msgid "Enter a new shortcut to change <b>%s</b>"
-msgstr "Zadejte novou zkratku kterou změnit <b>%s</b>"
+msgstr "Zadejte novou zkratku pro <b>%s</b>"
 
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/service/ui/keybindings.js:83
@@ -875,7 +875,7 @@ msgstr "Ladící zprávy jsou zaznamenávány. Podnikněte kroky, potřebné pro
 
 #: src/service/ui/settings.js:540
 msgid "Review Log"
-msgstr "Zkontrolovat záznam událostí"
+msgstr "Prohlédnout si záznam událostí"
 
 #. TRANSLATORS: When the battery level is 100%
 #: src/shell/device.js:82
@@ -901,7 +901,7 @@ msgstr "%d%% (%d∶%02d do úplného nabití)"
 #: src/shell/device.js:104
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
-msgstr "%d%% (%d∶%02d zbývající)"
+msgstr "%d%% (%d∶%02d zbývá)"
 
 #: src/shell/donotdisturb.js:150 src/shell/donotdisturb.js:289
 msgid "Do Not Disturb"
@@ -920,7 +920,7 @@ msgstr "Dokud nevypnete režim Nerušit"
 #: src/shell/donotdisturb.js:184 src/shell/donotdisturb.js:278
 #, javascript-format
 msgid "Until %s (%s)"
-msgstr "Zbývá %s (%s)"
+msgstr "Do %s (%s)"
 
 #: src/shell/donotdisturb.js:216
 msgid "Done"
@@ -948,7 +948,7 @@ msgstr "GSConnect"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr "Sdílet odkazy pomocí GSConnect, přímo do prohlížeče nebo prostřednictvím SMS"
+msgstr "Sdílet odkazy pomocí GSConnect, přímo do prohlížeče nebo prostřednictvím SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:33
