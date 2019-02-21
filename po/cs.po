@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-02-21 18:55\n"
+"PO-Revision-Date: 2019-02-21 19:14\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Czech\n"
 "Language: cs\n"
@@ -371,7 +371,7 @@ msgid_plural "%d Connected"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
+msgstr[3] "%d připojené"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:112 webextension/gettext.js:31
@@ -380,11 +380,11 @@ msgstr "Poslat do mobilního zařízení"
 
 #: src/service/daemon.js:372
 msgid "Report"
-msgstr ""
+msgstr "Hlášení"
 
 #: src/service/daemon.js:507
 msgid "Authentication Failure"
-msgstr ""
+msgstr "Ověření se nezdařilo"
 
 #: src/service/daemon.js:516
 msgid "Network Error"
@@ -392,7 +392,7 @@ msgstr "Chyba sítě"
 
 #: src/service/daemon.js:517 src/service/daemon.js:525
 msgid "Click for help troubleshooting"
-msgstr ""
+msgstr "Kliknutím otevřete nápovědu pro odstraňování potíží"
 
 #: src/service/daemon.js:524
 msgid "PulseAudio Error"
@@ -400,12 +400,12 @@ msgstr "Chyba PulseAudio"
 
 #: src/service/daemon.js:533
 msgid "Discovery has been disabled due to the number of devices on this network."
-msgstr ""
+msgstr "Kvůli velkému množství zařízení na této síti bylo zjišťování vypnuto."
 
 #: src/service/daemon.js:541
 #, javascript-format
 msgid "%s Plugin Failed To Load"
-msgstr ""
+msgstr "Zásuvný modul %s se nepodařilo načíst"
 
 #: src/service/daemon.js:542
 msgid "Click for more information"
