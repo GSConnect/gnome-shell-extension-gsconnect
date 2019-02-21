@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-02-21 20:04\n"
+"PO-Revision-Date: 2019-02-21 20:14\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Czech\n"
 "Language: cs\n"
@@ -501,7 +501,7 @@ msgstr "Schránka"
 
 #: src/service/plugins/clipboard.js:17
 msgid "Clipboard Push"
-msgstr "Posílání do schránky"
+msgstr "Odesílání schránky"
 
 #: src/service/plugins/clipboard.js:25
 msgid "Clipboard Pull"
@@ -614,7 +614,7 @@ msgstr "Sdílet odkaz"
 
 #: src/service/plugins/share.js:132 src/service/plugins/share.js:303
 msgid "Starting Transfer"
-msgstr "Začíná přenos"
+msgstr "Přenos začíná"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:134
@@ -665,19 +665,19 @@ msgstr "Posílání „%s“ do %s"
 #: src/service/plugins/share.js:329
 #, javascript-format
 msgid "Sent “%s” to %s"
-msgstr "Odesláno „%s“ do %s"
+msgstr "„%s“ odesláno do %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:337
 #, javascript-format
 msgid "Failed to send “%s” to %s"
-msgstr "Nepodařilo se „%s“ odeslat do %s"
+msgstr "Nepodařilo se odeslat „%s“ do %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:408
 #, javascript-format
 msgid "Send files to %s"
-msgstr "Poslat soubory do %s"
+msgstr "Odeslat soubory do %s"
 
 #. TRANSLATORS: Mark the file to be opened once completed
 #: src/service/plugins/share.js:412
@@ -696,7 +696,7 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:34
 msgid "New SMS (URI)"
-msgstr "Nový SMS (URI)"
+msgstr "Nová SMS (URI)"
 
 #: src/service/plugins/sms.js:42 src/service/plugins/telephony.js:22
 msgid "Reply SMS"
@@ -758,7 +758,7 @@ msgstr "%s・Domů"
 #: src/service/ui/contacts.js:278 src/service/ui/contacts.js:292
 #, javascript-format
 msgid "Send to %s"
-msgstr "Poslat do %s"
+msgstr "Poslat na %s"
 
 #: src/service/ui/device.js:608
 msgid "Open"
