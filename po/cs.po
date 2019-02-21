@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-02-21 15:34\n"
+"PO-Revision-Date: 2019-02-21 15:35\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Czech\n"
 "Language: cs\n"
@@ -722,7 +722,7 @@ msgstr "Příchozí hovor"
 #. TRANSLATORS: A phone call is active
 #: src/service/plugins/telephony.js:205
 msgid "Ongoing call"
-msgstr ""
+msgstr "Probíhající hovor"
 
 #. TRANSLATORS: All other phone number types
 #: src/service/ui/contacts.js:118 src/service/ui/contacts.js:139
@@ -775,7 +775,7 @@ msgstr "Vyp."
 #: src/service/ui/device.js:798 src/service/ui/device.js:826
 #: src/service/ui/device.js:850
 msgid "Disabled"
-msgstr ""
+msgstr "Vypnuto"
 
 #. TRANSLATORS: Title of keyboard shortcut dialog
 #: src/service/ui/keybindings.js:33
@@ -909,11 +909,11 @@ msgstr "Nerušit"
 
 #: src/shell/donotdisturb.js:156
 msgid "Silence Mobile Device Notifications"
-msgstr ""
+msgstr "Umlčet oznámení z mobilního zařízení"
 
 #: src/shell/donotdisturb.js:171
 msgid "Until you turn off Do Not Disturb"
-msgstr ""
+msgstr "Dokud nevypnete režim Nerušit"
 
 #. TRANSLATORS: Time until change with time duration
 #. EXAMPLE: Until 10:00 (2 hours)
