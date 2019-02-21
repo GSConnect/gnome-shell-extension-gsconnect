@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-02-21 15:20\n"
+"PO-Revision-Date: 2019-02-21 15:34\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Czech\n"
 "Language: cs\n"
@@ -28,7 +28,7 @@ msgstr ""
 #: src/service/ui/keybindings.js:44 src/service/ui/service.js:37
 #: src/service/ui/settings.js:539 src/shell/donotdisturb.js:215
 msgid "Cancel"
-msgstr "Zrušit"
+msgstr "Storno"
 
 #: data/connect.ui:37
 msgid "Connect"
@@ -44,7 +44,7 @@ msgstr "Zařízení Bluetooth"
 
 #: data/contacts.ui:49
 msgid "Type a phone number or name"
-msgstr "Napište telefoní číslo nebo jméno"
+msgstr "Napište telefonní číslo nebo jméno"
 
 #: data/contacts.ui:83
 msgid "No contacts"
@@ -64,7 +64,7 @@ msgstr "Odeslat zprávu"
 
 #: data/device.ui:67 src/service/plugins/battery.js:12
 msgid "Battery"
-msgstr "Baterie"
+msgstr "Akumulátor"
 
 #: data/device.ui:122
 msgid "Clipboard Sync"
@@ -150,7 +150,7 @@ msgstr ""
 
 #: data/device.ui:1176
 msgid "Mute Microphone"
-msgstr "Ztišit mikrofon"
+msgstr "Ztlumit mikrofon"
 
 #: data/device.ui:1230 data/device.ui:1866 src/service/plugins/telephony.js:13
 msgid "Telephony"
@@ -278,7 +278,7 @@ msgstr "Nic"
 #. TRANSLATORS: Lower the system volume
 #: data/menus.ui:111 data/menus.ui:137
 msgid "Lower"
-msgstr "Dolní"
+msgstr "Snížit"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the phone ringer
@@ -421,7 +421,7 @@ msgstr "Sdílet soubor"
 
 #: src/service/device.js:161
 msgid "Not available"
-msgstr ""
+msgstr "Není k dispozici"
 
 #. TRANSLATORS: Bluetooth address for remote device
 #: src/service/device.js:165
@@ -469,7 +469,7 @@ msgstr "Nastavení"
 #: src/service/device.js:607
 #, javascript-format
 msgid "Pair Request from %s"
-msgstr "Žádost o spárování od"
+msgstr "Žádost o spárování od %s"
 
 #: src/service/device.js:614
 msgid "Reject"
@@ -477,7 +477,7 @@ msgstr "Odmítnout"
 
 #: src/service/device.js:619
 msgid "Accept"
-msgstr "Přimout"
+msgstr "Přijmout"
 
 #: src/service/plugins/battery.js:188 src/service/plugins/findmyphone.js:19
 msgid "Ring"
@@ -573,7 +573,7 @@ msgstr ""
 
 #: src/service/plugins/runcommand.js:12
 msgid "Run Commands"
-msgstr "Spustit příkaz"
+msgstr "Spustit příkazy"
 
 #: src/service/plugins/sftp.js:12
 msgid "SFTP"
@@ -624,13 +624,13 @@ msgstr "Získávání „%s“ z %s"
 
 #: src/service/plugins/share.js:172 src/service/plugins/share.js:327
 msgid "Transfer Successful"
-msgstr "Přenos byl úspěšný"
+msgstr "Přenos úspěšný"
 
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:174
 #, javascript-format
 msgid "Received “%s” from %s"
-msgstr "Získáno „%s“ z %s"
+msgstr "Obdrženo „%s“ z %s"
 
 #: src/service/plugins/share.js:180
 msgid "Open Folder"
@@ -717,7 +717,7 @@ msgstr ""
 #. TRANSLATORS: The phone is ringing
 #: src/service/plugins/telephony.js:190
 msgid "Incoming call"
-msgstr ""
+msgstr "Příchozí hovor"
 
 #. TRANSLATORS: A phone call is active
 #: src/service/plugins/telephony.js:205
@@ -766,11 +766,11 @@ msgstr "Otevřít"
 
 #: src/service/ui/device.js:660 src/service/ui/device.js:673
 msgid "On"
-msgstr ""
+msgstr "Zap."
 
 #: src/service/ui/device.js:660 src/service/ui/device.js:673
 msgid "Off"
-msgstr ""
+msgstr "Vyp."
 
 #: src/service/ui/device.js:798 src/service/ui/device.js:826
 #: src/service/ui/device.js:850
@@ -785,7 +785,7 @@ msgstr ""
 #. TRANSLATORS: Button to confirm the new shortcut
 #: src/service/ui/keybindings.js:47
 msgid "Set"
-msgstr ""
+msgstr "Nastavit"
 
 #. TRANSLATORS: Summary of a keyboard shortcut function
 #. Example: Enter a new shortcut to change Messaging
@@ -809,7 +809,7 @@ msgstr ""
 #. TRANSLATORS: Less than a minute ago
 #: src/service/ui/messaging.js:65 src/service/ui/messaging.js:98
 msgid "Just now"
-msgstr ""
+msgstr "Právě teď"
 
 #. TRANSLATORS: Time duration in minutes (eg. 15 minutes)
 #: src/service/ui/messaging.js:70 src/service/ui/messaging.js:102
@@ -820,19 +820,19 @@ msgid_plural "%d minutes"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
+msgstr[3] "%d minuty"
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
 #: src/service/ui/messaging.js:75
 #, javascript-format
 msgid "Yesterday・%s"
-msgstr ""
+msgstr "Včera・%s"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:243
 #, javascript-format
 msgid "You: %s"
-msgstr ""
+msgstr "Vy: %s"
 
 #: src/service/ui/service.js:31
 msgid "Select a Device"
@@ -844,15 +844,15 @@ msgstr "Vybrat"
 
 #: src/service/ui/settings.js:331
 msgid "Unpaired"
-msgstr ""
+msgstr "Nespárováno"
 
 #: src/service/ui/settings.js:333
 msgid "Disconnected"
-msgstr ""
+msgstr "Odpojeno"
 
 #: src/service/ui/settings.js:336
 msgid "Connected"
-msgstr ""
+msgstr "Připojeno"
 
 #. TRANSLATORS: Description of where directly shared files are stored.
 #: src/service/ui/settings.js:406
@@ -867,7 +867,7 @@ msgstr ""
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/service/ui/settings.js:508
 msgid "translator-credits"
-msgstr ""
+msgstr "Pavel Borecki <pavel.borecki@gmail.com>"
 
 #: src/service/ui/settings.js:537
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
@@ -875,7 +875,7 @@ msgstr ""
 
 #: src/service/ui/settings.js:540
 msgid "Review Log"
-msgstr ""
+msgstr "Zkontrolovat záznam událostí"
 
 #. TRANSLATORS: When the battery level is 100%
 #: src/shell/device.js:82
@@ -887,7 +887,7 @@ msgstr "Plně nabito"
 #: src/shell/device.js:86
 #, javascript-format
 msgid "%d%% (Estimating…)"
-msgstr "%d%% (Odhaduje se…)"
+msgstr "%d%% (odhaduje se…)"
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
@@ -905,7 +905,7 @@ msgstr "%d%% (%d∶%02d zbývající)"
 
 #: src/shell/donotdisturb.js:150 src/shell/donotdisturb.js:289
 msgid "Do Not Disturb"
-msgstr ""
+msgstr "Nerušit"
 
 #: src/shell/donotdisturb.js:156
 msgid "Silence Mobile Device Notifications"
@@ -920,7 +920,7 @@ msgstr ""
 #: src/shell/donotdisturb.js:184 src/shell/donotdisturb.js:278
 #, javascript-format
 msgid "Until %s (%s)"
-msgstr ""
+msgstr "Zbývá %s (%s)"
 
 #: src/shell/donotdisturb.js:216
 msgid "Done"
@@ -934,7 +934,7 @@ msgid_plural "%d hours"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
+msgstr[3] "%d hodiny"
 
 #: src/shell/notification.js:42
 msgid "Reply"
@@ -948,20 +948,20 @@ msgstr "GSConnect"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
+msgstr "Sdílet odkazy pomocí GSConnect, přímo do prohlížeče nebo prostřednictvím SMS"
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:33
 msgid "Service Unavailable"
-msgstr ""
+msgstr "Služba nedostupná"
 
 #. TRANSLATORS: No devices are known or available
 #: webextension/gettext.js:35
 msgid "No Device Found"
-msgstr ""
+msgstr "Nenalezeno žádné zařízení"
 
 #. TRANSLATORS: Open URL with the device's browser
 #: webextension/gettext.js:37
 msgid "Open in Browser"
-msgstr ""
+msgstr "Otevřít v prohlížeči"
 
