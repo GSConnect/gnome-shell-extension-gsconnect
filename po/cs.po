@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-02-21 19:14\n"
+"PO-Revision-Date: 2019-02-21 19:24\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Czech\n"
 "Language: cs\n"
@@ -409,7 +409,7 @@ msgstr "Zásuvný modul %s se nepodařilo načíst"
 
 #: src/service/daemon.js:542
 msgid "Click for more information"
-msgstr ""
+msgstr "Více informací získáte kliknutím"
 
 #: src/service/daemon.js:724
 msgid "Dial Number"
@@ -427,7 +427,7 @@ msgstr "Není k dispozici"
 #: src/service/device.js:165
 #, javascript-format
 msgid "Bluetooth device at %s"
-msgstr ""
+msgstr "Bluetooth zařízení na %s"
 
 #. TRANSLATORS: Label for TLS Certificate fingerprint
 #.
@@ -438,7 +438,7 @@ msgstr ""
 #: src/service/device.js:183 src/service/device.js:185
 #, javascript-format
 msgid "%s Fingerprint:"
-msgstr ""
+msgstr "Otisk %s:"
 
 #: src/service/device.js:242
 msgid "Laptop"
@@ -481,19 +481,19 @@ msgstr "Přijmout"
 
 #: src/service/plugins/battery.js:188 src/service/plugins/findmyphone.js:19
 msgid "Ring"
-msgstr ""
+msgstr "Vyzvánění"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:197
 #, javascript-format
 msgid "%s: Battery is low"
-msgstr ""
+msgstr "%s: Akumulátor je téměř vybitý"
 
 #. TRANSLATORS: eg. 15% remaining
 #: src/service/plugins/battery.js:199
 #, javascript-format
 msgid "%d%% remaining"
-msgstr ""
+msgstr "%d%% zbývá"
 
 #: src/service/plugins/clipboard.js:11
 msgid "Clipboard"
@@ -501,11 +501,11 @@ msgstr "Schránka"
 
 #: src/service/plugins/clipboard.js:17
 msgid "Clipboard Push"
-msgstr ""
+msgstr "Posílání do schránky"
 
 #: src/service/plugins/clipboard.js:25
 msgid "Clipboard Pull"
-msgstr ""
+msgstr "Stahování schránky"
 
 #: src/service/plugins/contacts.js:12
 msgid "Contacts"
@@ -525,7 +525,7 @@ msgstr "Najít můj telefon"
 
 #: src/service/plugins/mousepad.js:14
 msgid "Mousepad"
-msgstr ""
+msgstr "Myš"
 
 #: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:569
 msgid "Keyboard"
@@ -533,7 +533,7 @@ msgstr "Klávesnice"
 
 #: src/service/plugins/mousepad.js:223
 msgid "Additional Software Required"
-msgstr ""
+msgstr "Je zapotřebí další software"
 
 #: src/service/plugins/mousepad.js:586
 msgid "Keyboard not ready"
@@ -545,31 +545,31 @@ msgstr "MPRIS"
 
 #: src/service/plugins/notification.js:26
 msgid "Cancel Notification"
-msgstr ""
+msgstr "Zrušit oznámení"
 
 #: src/service/plugins/notification.js:34
 msgid "Close Notification"
-msgstr ""
+msgstr "Zavřít oznámení"
 
 #: src/service/plugins/notification.js:42
 msgid "Reply Notification"
-msgstr ""
+msgstr "Odpovědět na oznámení"
 
 #: src/service/plugins/notification.js:50
 msgid "Send Notification"
-msgstr ""
+msgstr "Poslat oznámení"
 
 #: src/service/plugins/ping.js:11 src/service/plugins/ping.js:17
 #: src/service/plugins/ping.js:46
 msgid "Ping"
-msgstr ""
+msgstr "Ping"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
 #: src/service/plugins/ping.js:53
 #, javascript-format
 msgid "Ping: %s"
-msgstr ""
+msgstr "Ping: %s"
 
 #: src/service/plugins/runcommand.js:12
 msgid "Run Commands"
@@ -581,7 +581,7 @@ msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:18
 msgid "Mount"
-msgstr ""
+msgstr "Připojit"
 
 #: src/service/plugins/sftp.js:26
 msgid "Unmount"
@@ -589,11 +589,11 @@ msgstr "Odpojit"
 
 #: src/service/plugins/sftp.js:159
 msgid "All files"
-msgstr ""
+msgstr "Všechny soubory"
 
 #: src/service/plugins/sftp.js:160
 msgid "Camera pictures"
-msgstr ""
+msgstr "Snímky z fotoaparátu"
 
 #: src/service/plugins/sftp.js:417
 msgid "Files"
@@ -605,7 +605,7 @@ msgstr "Sdílet"
 
 #: src/service/plugins/share.js:35
 msgid "Share Text"
-msgstr ""
+msgstr "Sdílet text"
 
 #: src/service/plugins/share.js:43 src/service/ui/messaging.js:975
 #: src/service/ui/messaging.js:983
@@ -648,12 +648,12 @@ msgstr "Přenos se nezdařil"
 #: src/service/plugins/share.js:194
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
-msgstr ""
+msgstr "Nepodařilo se přijmout „%s“ od %s"
 
 #: src/service/plugins/share.js:233
 #, javascript-format
 msgid "Text Shared By %s"
-msgstr ""
+msgstr "Text sdílený %s"
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
 #: src/service/plugins/share.js:305
