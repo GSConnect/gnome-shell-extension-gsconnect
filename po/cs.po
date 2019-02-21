@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-02-21 19:44\n"
+"PO-Revision-Date: 2019-02-21 20:04\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Czech\n"
 "Language: cs\n"
@@ -182,7 +182,7 @@ msgstr "Experimentální"
 
 #: data/device.ui:1524
 msgid "Legacy SMS Support"
-msgstr "Podpora původních SMS"
+msgstr "Podpora původních SMS zpráv"
 
 #: data/device.ui:1598
 msgid "Delete"
@@ -207,11 +207,11 @@ msgstr "Klávesové zkratky"
 #. TRANSLATORS: Send a pair request to the device
 #: data/device.ui:2015 data/menus.ui:68 src/service/device.js:424
 msgid "Pair"
-msgstr "Párovat"
+msgstr "Spárování"
 
 #: data/device.ui:2047
 msgid "Device is unpaired"
-msgstr "Spárování zařízení je zrušeno"
+msgstr "Zařízení není spárováno"
 
 #: data/device.ui:2062
 msgid "You may configure this device before pairing"
@@ -346,7 +346,7 @@ msgstr "Zapnout"
 
 #: data/settings.ui:611
 msgid "This device is invisible to unpaired devices"
-msgstr "Toto zařízení je pro nespárovaná zařízení neviditelná"
+msgstr "Toto zařízení je pro nespárovaná zařízení neviditelné"
 
 #: data/settings.ui:623 src/service/daemon.js:532
 msgid "Discovery Disabled"
@@ -376,7 +376,7 @@ msgstr[3] "%d připojené"
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:112 webextension/gettext.js:31
 msgid "Send To Mobile Device"
-msgstr "Poslat do mobilního zařízení"
+msgstr "Odeslat do mobilního zařízení"
 
 #: src/service/daemon.js:372
 msgid "Report"
@@ -400,7 +400,7 @@ msgstr "Chyba PulseAudio"
 
 #: src/service/daemon.js:533
 msgid "Discovery has been disabled due to the number of devices on this network."
-msgstr "Kvůli velkému množství zařízení na této síti bylo zjišťování vypnuto."
+msgstr "Kvůli velkému množství zařízení na této síti bylo objevování vypnuto."
 
 #: src/service/daemon.js:541
 #, javascript-format
@@ -409,7 +409,7 @@ msgstr "Zásuvný modul %s se nepodařilo načíst"
 
 #: src/service/daemon.js:542
 msgid "Click for more information"
-msgstr "Více informací získáte kliknutím"
+msgstr "Další informace získáte kliknutím"
 
 #: src/service/daemon.js:724
 msgid "Dial Number"
