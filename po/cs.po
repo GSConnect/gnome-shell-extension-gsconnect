@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-02-21 15:48\n"
+"PO-Revision-Date: 2019-02-21 18:55\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Czech\n"
 "Language: cs\n"
@@ -234,7 +234,7 @@ msgstr ""
 #. TRANSLATORS: Generate a support log
 #: data/menus.ui:29 src/service/ui/settings.js:536
 msgid "Generate Support Log"
-msgstr ""
+msgstr "Vytvořit záznam událostí pro podporu"
 
 #: data/menus.ui:38
 msgid "About"
@@ -289,7 +289,7 @@ msgstr "Ztlumit"
 #: data/messaging.ui:12 src/service/plugins/sms.js:26
 #: src/service/ui/messaging.js:911
 msgid "Messaging"
-msgstr ""
+msgstr "Zasílání zpráv"
 
 #: data/messaging.ui:21 src/service/ui/messaging.js:992
 msgid "New Conversation"
@@ -297,11 +297,11 @@ msgstr "Nová konverzace"
 
 #: data/messaging.ui:110
 msgid "No conversation selected"
-msgstr ""
+msgstr "Nevybrána žádná konverzace"
 
 #: data/messaging.ui:126
 msgid "Select or start a conversation"
-msgstr ""
+msgstr "Vybrat nebo zahájit konverzaci"
 
 #: data/messaging.ui:193 data/notification.ui:52 data/telephony.ui:52
 msgid "Device is disconnected"
@@ -309,7 +309,7 @@ msgstr "Zařízení je odpojeno"
 
 #: data/messaging.ui:264
 msgid "No Conversations"
-msgstr ""
+msgstr "Žádné konverzace"
 
 #: data/notification.ui:21 data/telephony.ui:21
 #: src/service/plugins/share.js:457
@@ -318,7 +318,7 @@ msgstr "Poslat"
 
 #: data/settings.ui:10
 msgid "Searching for devices…"
-msgstr ""
+msgstr "Vyhledávání zařízení…"
 
 #: data/settings.ui:49 data/settings.ui:63
 msgid "Refresh"
@@ -338,7 +338,7 @@ msgstr "Zařízení"
 
 #: data/settings.ui:299
 msgid "Browser Add-Ons"
-msgstr ""
+msgstr "Doplňky pro prohlížeče"
 
 #: data/settings.ui:579
 msgid "Enable"
@@ -346,11 +346,11 @@ msgstr "Zapnout"
 
 #: data/settings.ui:611
 msgid "This device is invisible to unpaired devices"
-msgstr ""
+msgstr "Toto zařízení je pro nespárovaná zařízení neviditelná"
 
 #: data/settings.ui:623 src/service/daemon.js:532
 msgid "Discovery Disabled"
-msgstr ""
+msgstr "Objevování vypnuto"
 
 #. TRANSLATORS: Share URL by SMS
 #: data/telephony.ui:9 src/service/daemon.js:718 src/service/plugins/sms.js:50
