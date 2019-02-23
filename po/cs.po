@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-02-21 20:44\n"
+"PO-Revision-Date: 2019-02-23 07:54\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Czech\n"
 "Language: cs\n"
@@ -369,9 +369,9 @@ msgstr "Mobilní zařízení"
 msgid "%d Connected"
 msgid_plural "%d Connected"
 msgstr[0] "%d připojen"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "%d připojené"
+msgstr[1] "%d připojené"
+msgstr[2] "%d připojených"
+msgstr[3] "%d připojených"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:112 webextension/gettext.js:31
@@ -817,10 +817,10 @@ msgstr "Právě teď"
 #, javascript-format
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "%d minuty"
+msgstr[0] "%d minuta"
+msgstr[1] "%d minuty"
+msgstr[2] "%d minut"
+msgstr[3] "%d minut"
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
 #: src/service/ui/messaging.js:75
@@ -931,10 +931,10 @@ msgstr "Hotovo"
 #, javascript-format
 msgid "%d hour"
 msgid_plural "%d hours"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "%d hodiny"
+msgstr[0] "%d hodina"
+msgstr[1] "%d hodiny"
+msgstr[2] "%d hodin"
+msgstr[3] "%d hodin"
 
 #: src/shell/notification.js:42
 msgid "Reply"
