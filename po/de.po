@@ -80,7 +80,7 @@ msgstr "Maus & Tastatur"
 
 #: data/device.ui:295
 msgid "Volume Control"
-msgstr "Lautstärken Kontrolle"
+msgstr "Lautstärken-Kontrolle"
 
 #: data/device.ui:345 data/device.ui:1728
 msgid "Sharing"
@@ -158,7 +158,7 @@ msgstr "Telefonie"
 
 #: data/device.ui:1265
 msgid "Action Shortcuts"
-msgstr "Aktions Tastenkürzel"
+msgstr "Aktions-Tastenkürzel"
 
 #: data/device.ui:1280 data/device.ui:1349
 msgid "Reset All…"
@@ -253,7 +253,7 @@ msgstr "Wechseln Sie zu LAN"
 #. TRANSLATORS: View the TLS Certificate fingerprint
 #: data/menus.ui:63 src/service/ui/device.js:317
 msgid "Encryption Info"
-msgstr "Verschlüsselung Info"
+msgstr "Verschlüsselungs-Info"
 
 #. TRANSLATORS: Unpair the device and notify it
 #: data/menus.ui:74 src/service/device.js:432
@@ -301,7 +301,7 @@ msgstr "Keine Unterhaltung ausgewählt"
 
 #: data/messaging.ui:126
 msgid "Select or start a conversation"
-msgstr "Wähle oder Starte eine Unterhaltung"
+msgstr "Wähle oder starte eine Unterhaltung"
 
 #: data/messaging.ui:193 data/notification.ui:52 data/telephony.ui:52
 msgid "Device is disconnected"
@@ -326,7 +326,7 @@ msgstr "Aktualisieren"
 
 #: data/settings.ui:74 data/settings.ui:91 src/extension.js:105
 msgid "Mobile Settings"
-msgstr "Mobile Einstellungen"
+msgstr "Geräte-Einstellungen"
 
 #: data/settings.ui:144 data/settings.ui:158
 msgid "Edit Device Name"
@@ -338,7 +338,7 @@ msgstr "Geräte"
 
 #: data/settings.ui:299
 msgid "Browser Add-Ons"
-msgstr "Browser Erweiterungen"
+msgstr "Browser-Erweiterungen"
 
 #: data/settings.ui:579
 msgid "Enable"
@@ -390,7 +390,7 @@ msgstr "Netzwerkfehler"
 
 #: src/service/daemon.js:517 src/service/daemon.js:525
 msgid "Click for help troubleshooting"
-msgstr "Klicke um Hilfe zu bekommen"
+msgstr "Klicke um Hilfe zu erhalten"
 
 #: src/service/daemon.js:524
 msgid "PulseAudio Error"
@@ -456,7 +456,7 @@ msgstr "Desktop"
 
 #: src/service/device.js:408 src/service/ui/device.js:15
 msgid "Reconnect"
-msgstr "Neuverbinden"
+msgstr "Neu verbinden"
 
 #: src/service/device.js:416 src/service/ui/device.js:16
 #: src/service/ui/settings.js:371
@@ -680,7 +680,7 @@ msgstr "Sende Dateien an %s"
 #. TRANSLATORS: Mark the file to be opened once completed
 #: src/service/plugins/share.js:412
 msgid "Open when done"
-msgstr "Öffnen nach Erledigung"
+msgstr "Öffnen nach Abschluss"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
 #: src/service/plugins/share.js:451
@@ -706,7 +706,7 @@ msgstr "SMS teilen"
 
 #: src/service/plugins/systemvolume.js:11
 msgid "System Volume"
-msgstr "System Lautstärke"
+msgstr "System-Lautstärke"
 
 #: src/service/plugins/telephony.js:30
 msgid "Mute Call"
@@ -783,7 +783,7 @@ msgstr "Setze Tastenkürzel"
 #. TRANSLATORS: Button to confirm the new shortcut
 #: src/service/ui/keybindings.js:47
 msgid "Set"
-msgstr "Setze"
+msgstr "Setzen"
 
 #. TRANSLATORS: Summary of a keyboard shortcut function
 #. Example: Enter a new shortcut to change Messaging
@@ -795,7 +795,7 @@ msgstr "Gebe ein neues Tastenkürzel ein um <b>%s<b> zu Ändern"
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/service/ui/keybindings.js:83
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr "Drücke ESC zum Abbrechen oder die Rücktaste um das Tastenkürzel Zurückzusetzen."
+msgstr "Drücke ESC zum Abbrechen oder die Rücktaste um das Tastenkürzel zurückzusetzen."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -883,7 +883,7 @@ msgstr "Vollständig geladen"
 #: src/shell/device.js:86
 #, javascript-format
 msgid "%d%% (Estimating…)"
-msgstr "%d%% (Schätze..)"
+msgstr "%d%% (Schätze…)"
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
