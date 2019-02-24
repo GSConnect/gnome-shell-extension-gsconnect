@@ -790,7 +790,7 @@ msgstr "Setze"
 #: src/service/ui/keybindings.js:54
 #, javascript-format
 msgid "Enter a new shortcut to change <b>%s</b>"
-msgstr "Gebe ein neues Tastenkürzel ein um <b>%s<b> zu Ändern"
+msgstr "Gebe ein neues Tastenkürzel ein um <b>%s</b> zu Ändern"
 
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/service/ui/keybindings.js:83
