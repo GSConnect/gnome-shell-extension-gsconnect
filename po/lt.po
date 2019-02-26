@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-02-26 11:58\n"
+"PO-Revision-Date: 2019-02-26 12:08\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Lithuanian\n"
 "Language: lt\n"
@@ -346,11 +346,11 @@ msgstr "Įjungti"
 
 #: data/settings.ui:611
 msgid "This device is invisible to unpaired devices"
-msgstr ""
+msgstr "Šis įrenginys yra nematomas nesuporuotiems įrenginiams"
 
 #: data/settings.ui:623 src/service/daemon.js:532
 msgid "Discovery Disabled"
-msgstr ""
+msgstr "Aptikimas išjungtas"
 
 #. TRANSLATORS: Share URL by SMS
 #: data/telephony.ui:9 src/service/daemon.js:718 src/service/plugins/sms.js:50
@@ -388,11 +388,11 @@ msgstr ""
 
 #: src/service/daemon.js:516
 msgid "Network Error"
-msgstr ""
+msgstr "Tinklo klaida"
 
 #: src/service/daemon.js:517 src/service/daemon.js:525
 msgid "Click for help troubleshooting"
-msgstr ""
+msgstr "Spustelėkite, norėdami šalinti nesklandumus"
 
 #: src/service/daemon.js:524
 msgid "PulseAudio Error"
@@ -413,11 +413,11 @@ msgstr ""
 
 #: src/service/daemon.js:724
 msgid "Dial Number"
-msgstr ""
+msgstr "Rinkti numerį"
 
 #: src/service/daemon.js:730 src/service/plugins/share.js:27
 msgid "Share File"
-msgstr ""
+msgstr "Bendrinti failą"
 
 #: src/service/device.js:161
 msgid "Not available"
@@ -427,7 +427,7 @@ msgstr ""
 #: src/service/device.js:165
 #, javascript-format
 msgid "Bluetooth device at %s"
-msgstr ""
+msgstr "Bluetooth įrenginys ties %s"
 
 #. TRANSLATORS: Label for TLS Certificate fingerprint
 #.
@@ -438,7 +438,7 @@ msgstr ""
 #: src/service/device.js:183 src/service/device.js:185
 #, javascript-format
 msgid "%s Fingerprint:"
-msgstr ""
+msgstr "%s kontrolinis kodas:"
 
 #: src/service/device.js:242
 msgid "Laptop"
@@ -463,7 +463,7 @@ msgstr ""
 #: src/service/device.js:416 src/service/ui/device.js:16
 #: src/service/ui/settings.js:371
 msgid "Settings"
-msgstr ""
+msgstr "Nustatymai"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:607
@@ -487,7 +487,7 @@ msgstr ""
 #: src/service/plugins/battery.js:197
 #, javascript-format
 msgid "%s: Battery is low"
-msgstr ""
+msgstr "%s: Baterija baigia išsikrauti"
 
 #. TRANSLATORS: eg. 15% remaining
 #: src/service/plugins/battery.js:199
@@ -521,7 +521,7 @@ msgstr "Nežinomas adresatas"
 
 #: src/service/plugins/findmyphone.js:13
 msgid "Find My Phone"
-msgstr ""
+msgstr "Rasti mano telefoną"
 
 #: src/service/plugins/mousepad.js:14
 msgid "Mousepad"
@@ -529,15 +529,15 @@ msgstr ""
 
 #: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:569
 msgid "Keyboard"
-msgstr ""
+msgstr "Klaviatūra"
 
 #: src/service/plugins/mousepad.js:223
 msgid "Additional Software Required"
-msgstr ""
+msgstr "Reikalinga papildoma programinė įranga"
 
 #: src/service/plugins/mousepad.js:586
 msgid "Keyboard not ready"
-msgstr ""
+msgstr "Klaviatūra nepasiruošusi"
 
 #: src/service/plugins/mpris.js:10
 msgid "MPRIS"
@@ -545,19 +545,19 @@ msgstr "MPRIS"
 
 #: src/service/plugins/notification.js:26
 msgid "Cancel Notification"
-msgstr ""
+msgstr "Atsisakyti pranešimo"
 
 #: src/service/plugins/notification.js:34
 msgid "Close Notification"
-msgstr ""
+msgstr "Užverti pranešimą"
 
 #: src/service/plugins/notification.js:42
 msgid "Reply Notification"
-msgstr ""
+msgstr "Atsakyti į pranešimą"
 
 #: src/service/plugins/notification.js:50
 msgid "Send Notification"
-msgstr ""
+msgstr "Siųsti pranešimą"
 
 #: src/service/plugins/ping.js:11 src/service/plugins/ping.js:17
 #: src/service/plugins/ping.js:46
@@ -581,7 +581,7 @@ msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:18
 msgid "Mount"
-msgstr ""
+msgstr "Prijungti"
 
 #: src/service/plugins/sftp.js:26
 msgid "Unmount"
@@ -605,7 +605,7 @@ msgstr "Bendrinti"
 
 #: src/service/plugins/share.js:35
 msgid "Share Text"
-msgstr ""
+msgstr "Bendrinti tekstą"
 
 #: src/service/plugins/share.js:43 src/service/ui/messaging.js:975
 #: src/service/ui/messaging.js:983
@@ -653,7 +653,7 @@ msgstr "Nepavyko gauti “%s” iš %s"
 #: src/service/plugins/share.js:233
 #, javascript-format
 msgid "Text Shared By %s"
-msgstr ""
+msgstr "%s bendrino tekstą"
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
 #: src/service/plugins/share.js:305
