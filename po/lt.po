@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-02-26 12:59\n"
+"PO-Revision-Date: 2019-02-26 13:12\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Lithuanian\n"
 "Language: lt\n"
@@ -146,7 +146,7 @@ msgstr "Pristabdyti mediją"
 
 #: data/device.ui:1007
 msgid "Ongoing Calls"
-msgstr ""
+msgstr "Vykstantys skambučiai"
 
 #: data/device.ui:1176
 msgid "Mute Microphone"
