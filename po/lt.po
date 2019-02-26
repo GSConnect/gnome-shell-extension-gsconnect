@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-02-26 12:08\n"
+"PO-Revision-Date: 2019-02-26 12:15\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Lithuanian\n"
 "Language: lt\n"
@@ -48,7 +48,7 @@ msgstr "Įrašykite telefono numerį ar vardą"
 
 #: data/contacts.ui:83
 msgid "No contacts"
-msgstr ""
+msgstr "Adresatų nėra"
 
 #: data/contacts.ui:95 data/menus.ui:33 data/messaging.ui:247
 msgid "Help"
@@ -56,7 +56,7 @@ msgstr "Žinynas"
 
 #: data/conversation.ui:76 data/conversation.ui:85 src/shell/notification.js:51
 msgid "Type a message"
-msgstr ""
+msgstr "Rašyti žinutę"
 
 #: data/conversation.ui:84
 msgid "Send Message"
@@ -101,7 +101,7 @@ msgstr "Komandų eilutė"
 
 #: data/device.ui:444 data/device.ui:445
 msgid "Choose an executable"
-msgstr ""
+msgstr "Pasirinkti vykdomąjį failą"
 
 #: data/device.ui:496 data/device.ui:511
 msgid "Add"
@@ -158,7 +158,7 @@ msgstr "Telefonija"
 
 #: data/device.ui:1265
 msgid "Action Shortcuts"
-msgstr ""
+msgstr "Veiksmų trumpiniai"
 
 #: data/device.ui:1280 data/device.ui:1349
 msgid "Reset All…"
@@ -166,7 +166,7 @@ msgstr "Atstatyti visus…"
 
 #: data/device.ui:1334
 msgid "Command Shortcuts"
-msgstr ""
+msgstr "Komandų trumpiniai"
 
 #: data/device.ui:1398
 msgid "Shortcuts"
@@ -380,11 +380,11 @@ msgstr "Siųsti į mobilųjį įrenginį"
 
 #: src/service/daemon.js:372
 msgid "Report"
-msgstr ""
+msgstr "Ataskaita"
 
 #: src/service/daemon.js:507
 msgid "Authentication Failure"
-msgstr ""
+msgstr "Tapatybės nustatymo nesėkmė"
 
 #: src/service/daemon.js:516
 msgid "Network Error"
@@ -396,20 +396,20 @@ msgstr "Spustelėkite, norėdami šalinti nesklandumus"
 
 #: src/service/daemon.js:524
 msgid "PulseAudio Error"
-msgstr ""
+msgstr "PulseAudio klaida"
 
 #: src/service/daemon.js:533
 msgid "Discovery has been disabled due to the number of devices on this network."
-msgstr ""
+msgstr "Aptikimas buvo išjungtas dėl šiame tinkle esančių įrenginių skaičiaus."
 
 #: src/service/daemon.js:541
 #, javascript-format
 msgid "%s Plugin Failed To Load"
-msgstr ""
+msgstr "Nepavyko įkelti %s įskiepio"
 
 #: src/service/daemon.js:542
 msgid "Click for more information"
-msgstr ""
+msgstr "Spustelėkite išsamesnei informacijai"
 
 #: src/service/daemon.js:724
 msgid "Dial Number"
@@ -682,7 +682,7 @@ msgstr "Siųsti failus į %s"
 #. TRANSLATORS: Mark the file to be opened once completed
 #: src/service/plugins/share.js:412
 msgid "Open when done"
-msgstr ""
+msgstr "Užbaigus, atverti failą"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
 #: src/service/plugins/share.js:451
@@ -696,15 +696,15 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:34
 msgid "New SMS (URI)"
-msgstr ""
+msgstr "Nauja SMS žinutė (URI)"
 
 #: src/service/plugins/sms.js:42 src/service/plugins/telephony.js:22
 msgid "Reply SMS"
-msgstr ""
+msgstr "Atsakyti į SMS žinutę"
 
 #: src/service/plugins/sms.js:58
 msgid "Share SMS"
-msgstr ""
+msgstr "Bendrinti SMS žinutę"
 
 #: src/service/plugins/systemvolume.js:11
 msgid "System Volume"
@@ -712,23 +712,23 @@ msgstr "Sistemos garsumas"
 
 #: src/service/plugins/telephony.js:30
 msgid "Mute Call"
-msgstr ""
+msgstr "Nutildyti skambutį"
 
 #. TRANSLATORS: The phone is ringing
 #: src/service/plugins/telephony.js:190
 msgid "Incoming call"
-msgstr ""
+msgstr "Gaunamas skambutis"
 
 #. TRANSLATORS: A phone call is active
 #: src/service/plugins/telephony.js:205
 msgid "Ongoing call"
-msgstr ""
+msgstr "Vykstantis skambutis"
 
 #. TRANSLATORS: All other phone number types
 #: src/service/ui/contacts.js:118 src/service/ui/contacts.js:139
 #, javascript-format
 msgid "%s・Other"
-msgstr ""
+msgstr "%s・Kiti"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:123
