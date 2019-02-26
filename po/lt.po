@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-02-26 12:33\n"
+"PO-Revision-Date: 2019-02-26 12:59\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Lithuanian\n"
 "Language: lt\n"
@@ -182,7 +182,7 @@ msgstr "Eksperimentinis"
 
 #: data/device.ui:1524
 msgid "Legacy SMS Support"
-msgstr ""
+msgstr "Pasenusių SMS palaikymas"
 
 #: data/device.ui:1598
 msgid "Delete"
@@ -258,7 +258,7 @@ msgstr "Šifravimo informacija"
 #. TRANSLATORS: Unpair the device and notify it
 #: data/menus.ui:74 src/service/device.js:432
 msgid "Unpair"
-msgstr ""
+msgstr "Panaikinti suporavimą"
 
 #. TRANSLATORS: Send clipboard content to device
 #: data/menus.ui:86
@@ -301,7 +301,7 @@ msgstr "Nepasirinktas joks pokalbis"
 
 #: data/messaging.ui:126
 msgid "Select or start a conversation"
-msgstr ""
+msgstr "Pasirinkite arba pradėkite pokalbį"
 
 #: data/messaging.ui:193 data/notification.ui:52 data/telephony.ui:52
 msgid "Device is disconnected"
@@ -368,10 +368,10 @@ msgstr "Mobilieji įrenginiai"
 #, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%d prijungtas"
+msgstr[1] "%d prijungti"
+msgstr[2] "%d prijungtų"
+msgstr[3] "%d prijungtas"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:112 webextension/gettext.js:31
@@ -421,7 +421,7 @@ msgstr "Bendrinti failą"
 
 #: src/service/device.js:161
 msgid "Not available"
-msgstr ""
+msgstr "Neprieinamas"
 
 #. TRANSLATORS: Bluetooth address for remote device
 #: src/service/device.js:165
@@ -458,7 +458,7 @@ msgstr "Stalinis kompiuteris"
 
 #: src/service/device.js:408 src/service/ui/device.js:15
 msgid "Reconnect"
-msgstr ""
+msgstr "Prisijungti iš naujo"
 
 #: src/service/device.js:416 src/service/ui/device.js:16
 #: src/service/ui/settings.js:371
@@ -481,7 +481,7 @@ msgstr "Priimti"
 
 #: src/service/plugins/battery.js:188 src/service/plugins/findmyphone.js:19
 msgid "Ring"
-msgstr ""
+msgstr "Rasti telefoną"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:197
@@ -593,7 +593,7 @@ msgstr "Visi failai"
 
 #: src/service/plugins/sftp.js:160
 msgid "Camera pictures"
-msgstr ""
+msgstr "Kameros nuotraukos"
 
 #: src/service/plugins/sftp.js:417
 msgid "Files"
@@ -844,7 +844,7 @@ msgstr "Pasirinkti"
 
 #: src/service/ui/settings.js:331
 msgid "Unpaired"
-msgstr ""
+msgstr "Nebesuporuotas"
 
 #: src/service/ui/settings.js:333
 msgid "Disconnected"
@@ -852,7 +852,7 @@ msgstr "Atjungtas"
 
 #: src/service/ui/settings.js:336
 msgid "Connected"
-msgstr ""
+msgstr "Prijungtas"
 
 #. TRANSLATORS: Description of where directly shared files are stored.
 #: src/service/ui/settings.js:406
