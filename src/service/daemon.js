@@ -95,6 +95,11 @@ const Service = GObject.registerClass({
         // Properties
         gsconnect.settings.bind('discoverable', this, 'discoverable', 0);
         gsconnect.settings.bind('public-name', this, 'name', 0);
+
+        // Changing the default public name to the computer's hostname
+        if (this.name == "-1") {
+            gsconnect.settings.set_string('public-name', GLib.get_host_name());
+        }
     }
 
     get certificate() {
