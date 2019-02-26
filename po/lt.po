@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-02-26 11:47\n"
+"PO-Revision-Date: 2019-02-26 11:58\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Lithuanian\n"
 "Language: lt\n"
@@ -19,7 +19,7 @@ msgstr ""
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/connect.ui:24 data/menus.ui:7
 msgid "Connect to…"
-msgstr ""
+msgstr "Prisijungti prie…"
 
 #. Action Buttons
 #: data/connect.ui:30 data/notification.ui:14 data/telephony.ui:14
@@ -32,15 +32,15 @@ msgstr "Atsisakyti"
 
 #: data/connect.ui:37
 msgid "Connect"
-msgstr ""
+msgstr "Prisijungti"
 
 #: data/connect.ui:98
 msgid "IP Address"
-msgstr ""
+msgstr "IP adresas"
 
 #: data/connect.ui:142
 msgid "Bluetooth Device"
-msgstr ""
+msgstr "Bluetooth įrenginys"
 
 #: data/contacts.ui:49
 msgid "Type a phone number or name"
@@ -52,7 +52,7 @@ msgstr ""
 
 #: data/contacts.ui:95 data/menus.ui:33 data/messaging.ui:247
 msgid "Help"
-msgstr ""
+msgstr "Žinynas"
 
 #: data/conversation.ui:76 data/conversation.ui:85 src/shell/notification.js:51
 msgid "Type a message"
@@ -60,7 +60,7 @@ msgstr ""
 
 #: data/conversation.ui:84
 msgid "Send Message"
-msgstr ""
+msgstr "Siųsti žinutę"
 
 #: data/device.ui:67 src/service/plugins/battery.js:12
 msgid "Battery"
@@ -68,11 +68,11 @@ msgstr "Baterija"
 
 #: data/device.ui:122
 msgid "Clipboard Sync"
-msgstr ""
+msgstr "Iškarpinės sinchronizavimas"
 
 #: data/device.ui:185
 msgid "Media Players"
-msgstr ""
+msgstr "Medijos leistuvės"
 
 #: data/device.ui:240
 msgid "Mouse & Keyboard"
@@ -80,11 +80,11 @@ msgstr "Pelė ir klaviatūra"
 
 #: data/device.ui:295
 msgid "Volume Control"
-msgstr ""
+msgstr "Garsumo reguliavimas"
 
 #: data/device.ui:345 data/device.ui:1728
 msgid "Sharing"
-msgstr ""
+msgstr "Bendrinimas"
 
 #: data/device.ui:374 data/device.ui:651 data/device.ui:1774
 #: src/service/plugins/runcommand.js:18 src/service/plugins/runcommand.js:169
@@ -138,7 +138,7 @@ msgstr "Gaunami skambučiai"
 
 #: data/device.ui:888 data/device.ui:1055
 msgid "Volume"
-msgstr ""
+msgstr "Garsumas"
 
 #: data/device.ui:954 data/device.ui:1120
 msgid "Pause Media"
@@ -170,7 +170,7 @@ msgstr ""
 
 #: data/device.ui:1398
 msgid "Shortcuts"
-msgstr ""
+msgstr "Trumpiniai"
 
 #: data/device.ui:1429
 msgid "Plugins"
@@ -178,7 +178,7 @@ msgstr "Įskiepiai"
 
 #: data/device.ui:1475
 msgid "Experimental"
-msgstr ""
+msgstr "Eksperimentinis"
 
 #: data/device.ui:1524
 msgid "Legacy SMS Support"
@@ -289,15 +289,15 @@ msgstr "Nutildyti"
 #: data/messaging.ui:12 src/service/plugins/sms.js:26
 #: src/service/ui/messaging.js:911
 msgid "Messaging"
-msgstr ""
+msgstr "Susirašinėjimai"
 
 #: data/messaging.ui:21 src/service/ui/messaging.js:992
 msgid "New Conversation"
-msgstr ""
+msgstr "Naujas pokalbis"
 
 #: data/messaging.ui:110
 msgid "No conversation selected"
-msgstr ""
+msgstr "Nepasirinktas joks pokalbis"
 
 #: data/messaging.ui:126
 msgid "Select or start a conversation"
@@ -309,7 +309,7 @@ msgstr "Įrenginys yra atsijungęs"
 
 #: data/messaging.ui:264
 msgid "No Conversations"
-msgstr ""
+msgstr "Pokalbių nėra"
 
 #: data/notification.ui:21 data/telephony.ui:21
 #: src/service/plugins/share.js:457
@@ -318,7 +318,7 @@ msgstr "Siųsti"
 
 #: data/settings.ui:10
 msgid "Searching for devices…"
-msgstr ""
+msgstr "Ieškoma įrenginių…"
 
 #: data/settings.ui:49 data/settings.ui:63
 msgid "Refresh"
@@ -330,19 +330,19 @@ msgstr "Mobiliųjų nustatymai"
 
 #: data/settings.ui:144 data/settings.ui:158
 msgid "Edit Device Name"
-msgstr ""
+msgstr "Taisyti įrenginio pavadinimą"
 
 #: data/settings.ui:236
 msgid "Devices"
-msgstr ""
+msgstr "Įrenginiai"
 
 #: data/settings.ui:299
 msgid "Browser Add-Ons"
-msgstr ""
+msgstr "Naršyklių priedai"
 
 #: data/settings.ui:579
 msgid "Enable"
-msgstr ""
+msgstr "Įjungti"
 
 #: data/settings.ui:611
 msgid "This device is invisible to unpaired devices"
@@ -493,7 +493,7 @@ msgstr ""
 #: src/service/plugins/battery.js:199
 #, javascript-format
 msgid "%d%% remaining"
-msgstr ""
+msgstr "Liko %d%%"
 
 #: src/service/plugins/clipboard.js:11
 msgid "Clipboard"
@@ -509,7 +509,7 @@ msgstr ""
 
 #: src/service/plugins/contacts.js:12
 msgid "Contacts"
-msgstr ""
+msgstr "Adresatai"
 
 #. Ensure we have a sender
 #. TRANSLATORS: No name or phone number
@@ -541,7 +541,7 @@ msgstr ""
 
 #: src/service/plugins/mpris.js:10
 msgid "MPRIS"
-msgstr ""
+msgstr "MPRIS"
 
 #: src/service/plugins/notification.js:26
 msgid "Cancel Notification"
@@ -577,7 +577,7 @@ msgstr "Vykdyti komandas"
 
 #: src/service/plugins/sftp.js:12
 msgid "SFTP"
-msgstr ""
+msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:18
 msgid "Mount"
@@ -589,7 +589,7 @@ msgstr "Atjungti"
 
 #: src/service/plugins/sftp.js:159
 msgid "All files"
-msgstr ""
+msgstr "Visi failai"
 
 #: src/service/plugins/sftp.js:160
 msgid "Camera pictures"
@@ -597,7 +597,7 @@ msgstr ""
 
 #: src/service/plugins/sftp.js:417
 msgid "Files"
-msgstr ""
+msgstr "Failai"
 
 #: src/service/plugins/share.js:13 src/service/plugins/share.js:19
 msgid "Share"
@@ -648,7 +648,7 @@ msgstr "Persiuntimas nepavyko"
 #: src/service/plugins/share.js:194
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
-msgstr ""
+msgstr "Nepavyko gauti “%s” iš %s"
 
 #: src/service/plugins/share.js:233
 #, javascript-format
@@ -671,7 +671,7 @@ msgstr "Išsiųsta „%s“ į %s"
 #: src/service/plugins/share.js:337
 #, javascript-format
 msgid "Failed to send “%s” to %s"
-msgstr ""
+msgstr "Nepavyko išsiųsti “%s” į %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:408
@@ -692,7 +692,7 @@ msgstr "Siųsti nuorodą į %s"
 
 #: src/service/plugins/sms.js:13
 msgid "SMS"
-msgstr ""
+msgstr "SMS"
 
 #: src/service/plugins/sms.js:34
 msgid "New SMS (URI)"
@@ -708,7 +708,7 @@ msgstr ""
 
 #: src/service/plugins/systemvolume.js:11
 msgid "System Volume"
-msgstr "Sistemos garsis"
+msgstr "Sistemos garsumas"
 
 #: src/service/plugins/telephony.js:30
 msgid "Mute Call"
@@ -762,30 +762,30 @@ msgstr "Siųsti %s"
 
 #: src/service/ui/device.js:608
 msgid "Open"
-msgstr ""
+msgstr "Atverti"
 
 #: src/service/ui/device.js:660 src/service/ui/device.js:673
 msgid "On"
-msgstr ""
+msgstr "Įjungta"
 
 #: src/service/ui/device.js:660 src/service/ui/device.js:673
 msgid "Off"
-msgstr ""
+msgstr "Išjungta"
 
 #: src/service/ui/device.js:798 src/service/ui/device.js:826
 #: src/service/ui/device.js:850
 msgid "Disabled"
-msgstr ""
+msgstr "Išjungta"
 
 #. TRANSLATORS: Title of keyboard shortcut dialog
 #: src/service/ui/keybindings.js:33
 msgid "Set Shortcut"
-msgstr ""
+msgstr "Nustatykite trumpinį"
 
 #. TRANSLATORS: Button to confirm the new shortcut
 #: src/service/ui/keybindings.js:47
 msgid "Set"
-msgstr ""
+msgstr "Nustatyti"
 
 #. TRANSLATORS: Summary of a keyboard shortcut function
 #. Example: Enter a new shortcut to change Messaging
@@ -809,7 +809,7 @@ msgstr ""
 #. TRANSLATORS: Less than a minute ago
 #: src/service/ui/messaging.js:65 src/service/ui/messaging.js:98
 msgid "Just now"
-msgstr ""
+msgstr "Ką tik"
 
 #. TRANSLATORS: Time duration in minutes (eg. 15 minutes)
 #: src/service/ui/messaging.js:70 src/service/ui/messaging.js:102
@@ -826,13 +826,13 @@ msgstr[3] ""
 #: src/service/ui/messaging.js:75
 #, javascript-format
 msgid "Yesterday・%s"
-msgstr ""
+msgstr "Vakar・%s"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:243
 #, javascript-format
 msgid "You: %s"
-msgstr ""
+msgstr "Jūs: %s"
 
 #: src/service/ui/service.js:31
 msgid "Select a Device"
