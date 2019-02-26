@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-02-19 03:15\n"
+"PO-Revision-Date: 2019-02-26 11:47\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Lithuanian\n"
 "Language: lt\n"
@@ -76,7 +76,7 @@ msgstr ""
 
 #: data/device.ui:240
 msgid "Mouse & Keyboard"
-msgstr ""
+msgstr "Pelė ir klaviatūra"
 
 #: data/device.ui:295
 msgid "Volume Control"
@@ -89,7 +89,7 @@ msgstr ""
 #: data/device.ui:374 data/device.ui:651 data/device.ui:1774
 #: src/service/plugins/runcommand.js:18 src/service/plugins/runcommand.js:169
 msgid "Commands"
-msgstr ""
+msgstr "Komandos"
 
 #: data/device.ui:424 data/device.ui:427
 msgid "Name"
@@ -97,7 +97,7 @@ msgstr "Pavadinimas"
 
 #: data/device.ui:440 data/device.ui:446
 msgid "Command Line"
-msgstr ""
+msgstr "Komandų eilutė"
 
 #: data/device.ui:444 data/device.ui:445
 msgid "Choose an executable"
@@ -105,23 +105,23 @@ msgstr ""
 
 #: data/device.ui:496 data/device.ui:511
 msgid "Add"
-msgstr ""
+msgstr "Pridėti"
 
 #: data/device.ui:527 data/device.ui:542
 msgid "Remove"
-msgstr ""
+msgstr "Šalinti"
 
 #: data/device.ui:576 data/device.ui:588
 msgid "Edit"
-msgstr ""
+msgstr "Taisyti"
 
 #: data/device.ui:604 data/device.ui:616
 msgid "Save"
-msgstr ""
+msgstr "Įrašyti"
 
 #: data/device.ui:712
 msgid "Share Notifications"
-msgstr ""
+msgstr "Bendrinimo pranešimai"
 
 #: data/device.ui:763
 msgid "Applications"
@@ -162,7 +162,7 @@ msgstr ""
 
 #: data/device.ui:1280 data/device.ui:1349
 msgid "Reset All…"
-msgstr ""
+msgstr "Atstatyti visus…"
 
 #: data/device.ui:1334
 msgid "Command Shortcuts"
@@ -186,55 +186,55 @@ msgstr ""
 
 #: data/device.ui:1598
 msgid "Delete"
-msgstr ""
+msgstr "Ištrinti"
 
 #: data/device.ui:1627
 msgid "Delete this device"
-msgstr ""
+msgstr "Ištrinti šį įrenginį"
 
 #: data/device.ui:1645
 msgid "Unpair and remove all settings and files"
-msgstr ""
+msgstr "Nebeporuoti ir pašalinti visus nustatymus ir failus"
 
 #: data/device.ui:1678 data/device.ui:1958
 msgid "Advanced"
-msgstr ""
+msgstr "Išplėstiniai"
 
 #: data/device.ui:1912
 msgid "Keyboard Shortcuts"
-msgstr ""
+msgstr "Klaviatūros trumpiniai"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/device.ui:2015 data/menus.ui:68 src/service/device.js:424
 msgid "Pair"
-msgstr ""
+msgstr "Suporuoti"
 
 #: data/device.ui:2047
 msgid "Device is unpaired"
-msgstr ""
+msgstr "Įrenginys yra nesuporuotas"
 
 #: data/device.ui:2062
 msgid "You may configure this device before pairing"
-msgstr ""
+msgstr "Prieš suporuodami, galite konfigūruoti šį įrenginį"
 
 #: data/menus.ui:12
 msgid "Display Mode"
-msgstr ""
+msgstr "Rodinio veiksena"
 
 #. TRANSLATORS: Show device indicators in the top bar
 #: data/menus.ui:15
 msgid "Panel"
-msgstr ""
+msgstr "Skydelis"
 
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
 #: data/menus.ui:21
 msgid "User Menu"
-msgstr ""
+msgstr "Naudotojo meniu"
 
 #. TRANSLATORS: Generate a support log
 #: data/menus.ui:29 src/service/ui/settings.js:536
 msgid "Generate Support Log"
-msgstr ""
+msgstr "Generuoti palaikymo žurnalą"
 
 #: data/menus.ui:38
 msgid "About"
@@ -243,17 +243,17 @@ msgstr "Apie"
 #. TRANSLATORS: Change the connection type to Bluetooth
 #: data/menus.ui:49
 msgid "Switch to Bluetooth"
-msgstr ""
+msgstr "Perjungti į Bluetooth"
 
 #. TRANSLATORS: Change the connection type to TCP/IP
 #: data/menus.ui:56
 msgid "Switch to LAN"
-msgstr ""
+msgstr "Perjungti į LAN"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
 #: data/menus.ui:63 src/service/ui/device.js:317
 msgid "Encryption Info"
-msgstr ""
+msgstr "Šifravimo informacija"
 
 #. TRANSLATORS: Unpair the device and notify it
 #: data/menus.ui:74 src/service/device.js:432
@@ -263,12 +263,12 @@ msgstr ""
 #. TRANSLATORS: Send clipboard content to device
 #: data/menus.ui:86
 msgid "To Device"
-msgstr ""
+msgstr "Į įrenginį"
 
 #. TRANSLATORS: Receive clipboard content from the device
 #: data/menus.ui:92
 msgid "From Device"
-msgstr ""
+msgstr "Iš įrenginio"
 
 #. TRANSLATORS: Don't change the system volume
 #: data/menus.ui:104 data/menus.ui:130
