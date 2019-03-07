@@ -66,42 +66,13 @@ var Plugin = GObject.registerClass({
         super._init(device, 'share');
     }
 
-    /**
-     * Get a GFile for @filename in ~/Downloads, with a numbered suffix if it
-     * already exists (eg. `picture.jpg (1)`)
-     *
-     * @param {String} filename - The basename of the file
-     * @return {Gio.File} - A new GFile for the given @filename in ~/Downloads
-     */
-    _getFile(filename) {
-        let download_dir = GLib.get_user_special_dir(
-            GLib.UserDirectory.DIRECTORY_DOWNLOAD
-        );
-
-        // Account for some corner cases with a fallback
-        if (!download_dir || download_dir === GLib.get_home_dir()) {
-            download_dir = GLib.build_filenamev([GLib.get_home_dir(), 'Downloads']);
-        }
-
-        let path = GLib.build_filenamev([download_dir, filename]);
-        let filepath = path;
-        let copyNum = 0;
-
-        while (GLib.file_test(filepath, GLib.FileTest.EXISTS)) {
-            copyNum += 1;
-            filepath = `${path} (${copyNum})`;
-        }
-
-        return Gio.File.new_for_path(filepath);
-    }
-
     async _handleFile(packet) {
         let file, stream, success, transfer;
         let title, body, iconName;
         let buttons = [];
 
         try {
-            file = this._getFile(packet.body.filename);
+            file = get_download_file(packet.body.filename);
 
             stream = await new Promise((resolve, reject) => {
                 file.replace_async(null, false, 0, 0, null, (file, res) => {
