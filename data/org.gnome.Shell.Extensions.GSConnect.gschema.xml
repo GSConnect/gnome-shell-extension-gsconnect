@@ -140,6 +140,11 @@
       <default>'{}'</default>
     </key>
   </schema>
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Photo">
+    <key name="share-camera" type="b">
+      <default>true</default>
+    </key>
+  </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Ping"/>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.RunCommand">
     <key name="command-list" type="a{sv}">

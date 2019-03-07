@@ -34,6 +34,13 @@ option(
 
 # External program paths
 option(
+  'ffmpeg_path',
+  type: 'string',
+  value: 'ffmpeg',
+  description: 'Path to ffmpeg binary'
+)
+
+option(
   'fusermount_path',
   type: 'string',
   value: 'fusermount',
