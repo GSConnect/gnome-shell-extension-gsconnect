@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-07 12:33-0800\n"
+"POT-Creation-Date: 2019-03-07 12:39-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -424,12 +424,12 @@ msgstr ""
 msgid "Share File"
 msgstr ""
 
-#: src/service/device.js:161
+#: src/service/device.js:174
 msgid "Not available"
 msgstr ""
 
 #. TRANSLATORS: Bluetooth address for remote device
-#: src/service/device.js:165
+#: src/service/device.js:179
 #, javascript-format
 msgid "Bluetooth device at %s"
 msgstr ""
@@ -440,24 +440,24 @@ msgstr ""
 #.
 #. Google Pixel Fingerprint:
 #. 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-#: src/service/device.js:183 src/service/device.js:185
+#: src/service/device.js:201 src/service/device.js:203
 #, javascript-format
 msgid "%s Fingerprint:"
 msgstr ""
 
-#: src/service/device.js:242
+#: src/service/device.js:261
 msgid "Laptop"
 msgstr ""
 
-#: src/service/device.js:244
+#: src/service/device.js:263
 msgid "Smartphone"
 msgstr ""
 
-#: src/service/device.js:246
+#: src/service/device.js:265
 msgid "Tablet"
 msgstr ""
 
-#: src/service/device.js:248
+#: src/service/device.js:267
 msgid "Desktop"
 msgstr ""
 
