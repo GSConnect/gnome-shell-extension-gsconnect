@@ -378,6 +378,9 @@ var DevicePreferences = GObject.registerClass({
         settings = this._getSettings('notification');
         this.actions.add_action(settings.create_action('send-notifications'));
 
+        settings = this._getSettings('photo');
+        this.actions.add_action(settings.create_action('share-camera'));
+
         settings = this._getSettings('sms');
         this.actions.add_action(settings.create_action('legacy-sms'));
 
