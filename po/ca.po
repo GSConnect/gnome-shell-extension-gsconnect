@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-03-08 09:43\n"
+"PO-Revision-Date: 2019-03-10 23:33\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -202,7 +202,7 @@ msgstr "Suprimeix aquest dispositiu"
 
 #: data/device.ui:1781
 msgid "Unpair and remove all settings and files"
-msgstr "Desaparella’l i suprimeix-li tots els paràmetres i fitxers"
+msgstr "Desaparella’l i suprimeix-ne tots els paràmetres i fitxers"
 
 #: data/device.ui:1814 data/device.ui:2094
 msgid "Advanced"
@@ -351,7 +351,7 @@ msgstr "Connectors per als navegadors"
 
 #: data/settings.ui:579
 msgid "Enable"
-msgstr ""
+msgstr "Activa"
 
 #: data/settings.ui:611
 msgid "This device is invisible to unpaired devices"
@@ -698,7 +698,7 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:34
 msgid "New SMS (URI)"
-msgstr ""
+msgstr "SMS nou (URI)"
 
 #: src/service/plugins/sms.js:42 src/service/plugins/telephony.js:22
 msgid "Reply SMS"
