@@ -1,19 +1,20 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
+"Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-07 22:51+0200\n"
-"PO-Revision-Date: 2019-03-07 23:12+0200\n"
-"Last-Translator: kotyhoroshko <45513802+kotyhoroshko2@users.noreply.github."
-"com>\n"
+"POT-Creation-Date: 2019-03-07 12:39-0800\n"
+"PO-Revision-Date: 2019-03-10 01:23\n"
+"Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Ukrainian\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
-"X-Generator: Gtranslator 2.91.7\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"X-Generator: crowdin.com\n"
+"X-Crowdin-Project: gsconnect\n"
+"X-Crowdin-Language: uk\n"
+"X-Crowdin-File: /master/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/connect.ui:24 data/menus.ui:7
@@ -85,9 +86,7 @@ msgstr "Миша та клавіатура"
 msgid "Volume Control"
 msgstr "Керування гучністю"
 
-# Назва вкладки, на якій користувач обирає, чим на цій системі може керувати віддалений пристрій
 #: data/device.ui:401 data/device.ui:1864
-#, fuzzy
 msgid "Sharing"
 msgstr "Надання доступу"
 
@@ -142,7 +141,6 @@ msgid "Contacts"
 msgstr "Контакти"
 
 #: data/device.ui:976
-#, fuzzy
 msgid "Incoming Calls"
 msgstr "Вхідні дзвінки"
 
@@ -155,7 +153,6 @@ msgid "Pause Media"
 msgstr "Призупинити відтворення"
 
 #: data/device.ui:1143
-#, fuzzy
 msgid "Ongoing Calls"
 msgstr "Під час дзвінків"
 
@@ -168,7 +165,6 @@ msgid "Telephony"
 msgstr "Телефонія"
 
 #: data/device.ui:1401
-#, fuzzy
 msgid "Action Shortcuts"
 msgstr "Скорочення для дій"
 
@@ -177,12 +173,10 @@ msgid "Reset All…"
 msgstr "Скинути всі…"
 
 #: data/device.ui:1470
-#, fuzzy
 msgid "Command Shortcuts"
 msgstr "Скорочення для команд"
 
 #: data/device.ui:1534
-#, fuzzy
 msgid "Shortcuts"
 msgstr "Скорочення"
 
@@ -256,13 +250,11 @@ msgstr "Про GSConnect"
 
 #. TRANSLATORS: Change the connection type to Bluetooth
 #: data/menus.ui:49
-#, fuzzy
 msgid "Switch to Bluetooth"
 msgstr "Перемкнутися до Bluetooth"
 
 #. TRANSLATORS: Change the connection type to TCP/IP
 #: data/menus.ui:56
-#, fuzzy
 msgid "Switch to LAN"
 msgstr "Перемкнутися до мережі"
 
@@ -340,10 +332,8 @@ msgstr "Пошук пристроїв…"
 msgid "Refresh"
 msgstr "Оновити"
 
-# The current translation gets cut as it is too long
 #. Service Menu -> "Mobile Settings"
 #: data/settings.ui:74 data/settings.ui:91 src/extension.js:104
-#, fuzzy
 msgid "Mobile Settings"
 msgstr "Параметри мобільних пристроїв"
 
@@ -389,10 +379,10 @@ msgid_plural "%d Connected"
 msgstr[0] "%d під'єднано"
 msgstr[1] "%d під'єднано"
 msgstr[2] "%d під'єднано"
+msgstr[3] ""
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:149 webextension/gettext.js:31
-#, fuzzy
 msgid "Send To Mobile Device"
 msgstr "Відправити до мобільного пристрою"
 
@@ -413,8 +403,7 @@ msgid "Click for help troubleshooting"
 msgstr "Натисніть, щоб допомогти усунути проблему"
 
 #: src/service/daemon.js:519
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Видимість було вимкнено через велику кількість пристроїв у цій мережі."
 
 #: src/service/daemon.js:527
@@ -427,7 +416,6 @@ msgid "Click for more information"
 msgstr "Натисніть для отримання додаткової інформації"
 
 #: src/service/daemon.js:681
-#, fuzzy
 msgid "Dial Number"
 msgstr "Набрати номер"
 
@@ -435,7 +423,6 @@ msgstr "Набрати номер"
 msgid "Share File"
 msgstr "Поділитися файлом"
 
-# Fingerprint: Not available
 #: src/service/device.js:174
 msgid "Not available"
 msgstr "недоступний"
@@ -474,7 +461,6 @@ msgid "Desktop"
 msgstr "Настільний комп'ютер"
 
 #: src/service/device.js:426 src/service/ui/device.js:15
-#, fuzzy
 msgid "Reconnect"
 msgstr "Перепід'єднатись"
 
@@ -498,7 +484,6 @@ msgid "Accept"
 msgstr "Прийняти"
 
 #: src/service/plugins/battery.js:155 src/service/plugins/findmyphone.js:19
-#, fuzzy
 msgid "Ring"
 msgstr "Дзвеніти"
 
@@ -519,18 +504,15 @@ msgid "Clipboard"
 msgstr "Буфер обміну"
 
 #: src/service/plugins/clipboard.js:17
-#, fuzzy
 msgid "Clipboard Push"
 msgstr "Поміщати у буфер обміну"
 
 #: src/service/plugins/clipboard.js:25
-#, fuzzy
 msgid "Clipboard Pull"
 msgstr "Отримувати з буферу обміну"
 
 #. Ensure we have a sender
 #. TRANSLATORS: No name or phone number
-#. HACK: fix missing contact names
 #: src/service/plugins/contacts.js:213 src/service/plugins/telephony.js:156
 #: src/service/plugins/telephony.js:207 src/service/plugins/telephony.js:247
 #: src/service/ui/contacts.js:156 src/service/ui/contacts.js:455
@@ -542,7 +524,6 @@ msgid "Find My Phone"
 msgstr "Знайти мій телефон"
 
 #: src/service/plugins/mousepad.js:14
-#, fuzzy
 msgid "Mousepad"
 msgstr "Тачпад"
 
@@ -551,7 +532,6 @@ msgid "Keyboard"
 msgstr "Клавіатура"
 
 #: src/service/plugins/mousepad.js:266
-#, fuzzy
 msgid "Additional Software Required"
 msgstr "Потребується додаткове програмне забезпечення"
 
@@ -624,7 +604,6 @@ msgid "Files"
 msgstr "Файли"
 
 #: src/service/plugins/share.js:13 src/service/plugins/share.js:19
-#, fuzzy
 msgid "Share"
 msgstr "Поділитись"
 
@@ -736,7 +715,6 @@ msgid "System Volume"
 msgstr "Гучність системи"
 
 #: src/service/plugins/telephony.js:30
-#, fuzzy
 msgid "Mute Call"
 msgstr "Приглушити дзвінок"
 
@@ -823,8 +801,7 @@ msgstr "Введіть нове скорочення, щоб замінити <b
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/service/ui/keybindings.js:83
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Натисніть Esc щоб скасувати або Backspace щоб скинути комбінацію клавіш"
+msgstr "Натисніть Esc щоб скасувати або Backspace щоб скинути комбінацію клавіш"
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -847,6 +824,7 @@ msgid_plural "%d minutes"
 msgstr[0] "%d хвилина"
 msgstr[1] "%d хвилини"
 msgstr[2] "%d хвилин"
+msgstr[3] ""
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
 #: src/service/ui/messaging.js:38
@@ -880,12 +858,10 @@ msgstr "Від'єднаний"
 msgid "Connected"
 msgstr "Під'єднаний"
 
-# Translating as if it was "Received files...", not "Transferred files..."
 #. TRANSLATORS: Description of where directly shared files are stored.
 #: src/service/ui/settings.js:398
-#, fuzzy, javascript-format
-msgid ""
-"Transferred files are placed in the <a href=\"%s\">Downloads</a> folder."
+#, javascript-format
+msgid "Transferred files are placed in the <a href=\"%s\">Downloads</a> folder."
 msgstr "Отримані файли розміщуються у теці <a href=\"%s\">Завантаження</a>."
 
 #: src/service/ui/settings.js:491
@@ -898,12 +874,8 @@ msgid "translator-credits"
 msgstr "kotyhoroshko"
 
 #: src/service/ui/settings.js:529
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Повідомлення налагодження записуються. Виконайте всі необхідні дії для "
-"відтворення проблеми, а потім перегляньте журнал."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Повідомлення налагодження записуються. Виконайте всі необхідні дії для відтворення проблеми, а потім перегляньте журнал."
 
 #: src/service/ui/settings.js:532
 msgid "Review Log"
@@ -917,14 +889,14 @@ msgstr "Повністю заряджений"
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
 #: src/shell/device.js:117
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%d%% (Estimating…)"
 msgstr "%d%% (Розраховується…)"
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
 #: src/shell/device.js:127
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
 msgstr "%d%% (%d∶%02d до зарядження)"
 
@@ -940,7 +912,6 @@ msgid "Do Not Disturb"
 msgstr "Не турбувати"
 
 #: src/shell/donotdisturb.js:156
-#, fuzzy
 msgid "Silence Mobile Device Notifications"
 msgstr "Заглушити сповіщення мобільних пристроїв"
 
@@ -967,6 +938,7 @@ msgid_plural "%d hours"
 msgstr[0] "%d година"
 msgstr[1] "%d години"
 msgstr[2] "%d годин"
+msgstr[3] ""
 
 #: src/shell/notification.js:42
 msgid "Reply"
@@ -979,11 +951,8 @@ msgstr "GSConnect"
 
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
-#, fuzzy
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
-"Поширюйте посилання за допомогою GSConnect, напряму до браузера або через "
-"SMS."
+msgstr "Поширюйте посилання за допомогою GSConnect, напряму до браузера або через SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:33
@@ -999,3 +968,4 @@ msgstr "Пристроїв не знайдено"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Відкрити у браузері"
+
