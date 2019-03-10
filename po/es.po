@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-03-07 20:56\n"
+"PO-Revision-Date: 2019-03-10 23:33\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -68,7 +68,7 @@ msgstr "Batería"
 
 #: data/device.ui:122
 msgid "Camera"
-msgstr ""
+msgstr "Cámara"
 
 #: data/device.ui:178
 msgid "Clipboard Sync"
@@ -246,7 +246,7 @@ msgstr "Generar registro para asistencia"
 
 #: data/menus.ui:38
 msgid "About GSConnect"
-msgstr ""
+msgstr "Acerca de GSConnect"
 
 #. TRANSLATORS: Change the connection type to Bluetooth
 #: data/menus.ui:49
@@ -559,7 +559,7 @@ msgstr "Enviar notificación"
 
 #: src/service/plugins/photo.js:11 src/service/plugins/photo.js:17
 msgid "Photo"
-msgstr ""
+msgstr "Fotografía"
 
 #: src/service/plugins/ping.js:11 src/service/plugins/ping.js:17
 #: src/service/plugins/ping.js:46
