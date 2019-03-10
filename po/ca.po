@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2019-01-22 11:34\n"
+"POT-Creation-Date: 2019-03-07 12:39-0800\n"
+"PO-Revision-Date: 2019-03-08 09:43\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -23,10 +23,10 @@ msgstr "Connecta amb…"
 
 #. Action Buttons
 #: data/connect.ui:30 data/notification.ui:14 data/telephony.ui:14
-#: src/service/plugins/share.js:139 src/service/plugins/share.js:310
-#: src/service/plugins/share.js:456 src/service/ui/device.js:607
+#: src/service/plugins/share.js:102 src/service/plugins/share.js:244
+#: src/service/plugins/share.js:387 src/service/ui/device.js:604
 #: src/service/ui/keybindings.js:44 src/service/ui/service.js:37
-#: src/service/ui/settings.js:539 src/shell/donotdisturb.js:215
+#: src/service/ui/settings.js:531 src/shell/donotdisturb.js:215
 msgid "Cancel"
 msgstr "Cancel·la"
 
@@ -42,15 +42,15 @@ msgstr "Adreça IP"
 msgid "Bluetooth Device"
 msgstr "Dispositiu Bluetooth"
 
-#: data/contacts.ui:49
+#: data/contacts.ui:48
 msgid "Type a phone number or name"
 msgstr "Introduïu un número telefònic o un nom"
 
-#: data/contacts.ui:83
+#: data/contacts.ui:82
 msgid "No contacts"
 msgstr "No hi ha cap contacte"
 
-#: data/contacts.ui:95 data/menus.ui:33 data/messaging.ui:247
+#: data/contacts.ui:94 data/menus.ui:33 data/messaging.ui:247
 msgid "Help"
 msgstr "Ajuda"
 
@@ -62,158 +62,166 @@ msgstr "Escriviu un missatge"
 msgid "Send Message"
 msgstr "Envia el missatge"
 
-#: data/device.ui:67 src/service/plugins/battery.js:12
+#: data/device.ui:67 src/service/plugins/battery.js:11
 msgid "Battery"
 msgstr "Bateria"
 
 #: data/device.ui:122
+msgid "Camera"
+msgstr "Càmera"
+
+#: data/device.ui:178
 msgid "Clipboard Sync"
 msgstr "Sincronització del porta-retalls"
 
-#: data/device.ui:185
+#: data/device.ui:241
 msgid "Media Players"
 msgstr "Reproductors multimèdia"
 
-#: data/device.ui:240
+#: data/device.ui:296
 msgid "Mouse & Keyboard"
 msgstr "Ratolí i teclat"
 
-#: data/device.ui:295
+#: data/device.ui:351
 msgid "Volume Control"
 msgstr "Control de volum"
 
-#: data/device.ui:345 data/device.ui:1728
+#: data/device.ui:401 data/device.ui:1864
 msgid "Sharing"
 msgstr "Compartició"
 
-#: data/device.ui:374 data/device.ui:651 data/device.ui:1774
-#: src/service/plugins/runcommand.js:18 src/service/plugins/runcommand.js:169
+#: data/device.ui:430 data/device.ui:707 data/device.ui:1910
+#: src/service/plugins/runcommand.js:18 src/service/plugins/runcommand.js:175
 msgid "Commands"
 msgstr "Ordres"
 
-#: data/device.ui:424 data/device.ui:427
+#: data/device.ui:480 data/device.ui:483
 msgid "Name"
 msgstr "Nom"
 
-#: data/device.ui:440 data/device.ui:446
+#: data/device.ui:496 data/device.ui:502
 msgid "Command Line"
 msgstr "Línia d’ordres"
 
-#: data/device.ui:444 data/device.ui:445
+#: data/device.ui:500 data/device.ui:501
 msgid "Choose an executable"
 msgstr "Trieu un executable"
 
-#: data/device.ui:496 data/device.ui:511
+#: data/device.ui:552 data/device.ui:567
 msgid "Add"
 msgstr "Afegeix"
 
-#: data/device.ui:527 data/device.ui:542
+#: data/device.ui:583 data/device.ui:598
 msgid "Remove"
 msgstr "Elimina"
 
-#: data/device.ui:576 data/device.ui:588
+#: data/device.ui:632 data/device.ui:644
 msgid "Edit"
 msgstr "Edita"
 
-#: data/device.ui:604 data/device.ui:616
+#: data/device.ui:660 data/device.ui:672
 msgid "Save"
 msgstr "Desa"
 
-#: data/device.ui:712
+#: data/device.ui:768
 msgid "Share Notifications"
 msgstr "Notificacions de compartició"
 
-#: data/device.ui:763
+#: data/device.ui:819
 msgid "Applications"
 msgstr "Aplicacions"
 
-#: data/device.ui:809 data/device.ui:1820
+#: data/device.ui:865 data/device.ui:1956
 #: src/service/plugins/notification.js:13
 msgid "Notifications"
 msgstr "Notificacions"
 
-#: data/device.ui:839
+#: data/device.ui:923 src/service/plugins/contacts.js:12
+msgid "Contacts"
+msgstr "Contactes"
+
+#: data/device.ui:976
 msgid "Incoming Calls"
 msgstr "Trucades entrants"
 
-#: data/device.ui:888 data/device.ui:1055
+#: data/device.ui:1025 data/device.ui:1191
 msgid "Volume"
 msgstr "Volum"
 
-#: data/device.ui:954 data/device.ui:1120
+#: data/device.ui:1090 data/device.ui:1256
 msgid "Pause Media"
 msgstr "Posa en pausa la multimèdia"
 
-#: data/device.ui:1007
+#: data/device.ui:1143
 msgid "Ongoing Calls"
 msgstr "Trucades en curs"
 
-#: data/device.ui:1176
+#: data/device.ui:1312
 msgid "Mute Microphone"
 msgstr "Silencia el micròfon"
 
-#: data/device.ui:1230 data/device.ui:1866 src/service/plugins/telephony.js:13
+#: data/device.ui:1366 data/device.ui:2002 src/service/plugins/telephony.js:13
 msgid "Telephony"
 msgstr "Telefonia"
 
-#: data/device.ui:1265
+#: data/device.ui:1401
 msgid "Action Shortcuts"
 msgstr "Dreceres d’accions"
 
-#: data/device.ui:1280 data/device.ui:1349
+#: data/device.ui:1416 data/device.ui:1485
 msgid "Reset All…"
 msgstr "Reinicialitza-ho tot…"
 
-#: data/device.ui:1334
+#: data/device.ui:1470
 msgid "Command Shortcuts"
 msgstr "Dreceres d’ordres"
 
-#: data/device.ui:1398
+#: data/device.ui:1534
 msgid "Shortcuts"
 msgstr "Dreceres"
 
-#: data/device.ui:1429
+#: data/device.ui:1565
 msgid "Plugins"
 msgstr "Connectors"
 
-#: data/device.ui:1475
+#: data/device.ui:1611
 msgid "Experimental"
 msgstr "Experiments"
 
-#: data/device.ui:1524
+#: data/device.ui:1660
 msgid "Legacy SMS Support"
 msgstr ""
 
-#: data/device.ui:1598
+#: data/device.ui:1734
 msgid "Delete"
 msgstr "Suprimeix"
 
-#: data/device.ui:1627
+#: data/device.ui:1763
 msgid "Delete this device"
 msgstr "Suprimeix aquest dispositiu"
 
-#: data/device.ui:1645
+#: data/device.ui:1781
 msgid "Unpair and remove all settings and files"
 msgstr "Desaparella’l i suprimeix-li tots els paràmetres i fitxers"
 
-#: data/device.ui:1678 data/device.ui:1958
+#: data/device.ui:1814 data/device.ui:2094
 msgid "Advanced"
 msgstr "Avançat"
 
-#: data/device.ui:1912
+#: data/device.ui:2048
 msgid "Keyboard Shortcuts"
 msgstr "Dreceres de teclat"
 
 #. TRANSLATORS: Send a pair request to the device
-#: data/device.ui:2015 data/menus.ui:68 src/service/device.js:424
+#: data/device.ui:2151 data/menus.ui:68
 msgid "Pair"
 msgstr "Aparella"
 
-#: data/device.ui:2047
+#: data/device.ui:2183
 msgid "Device is unpaired"
 msgstr "No s’ha aparellat el dispositiu"
 
-#: data/device.ui:2062
+#: data/device.ui:2198
 msgid "You may configure this device before pairing"
 msgstr "Podeu configurar el dispositiu abans d’aparellar-lo"
 
@@ -232,13 +240,13 @@ msgid "User Menu"
 msgstr "Menú d’usuari"
 
 #. TRANSLATORS: Generate a support log
-#: data/menus.ui:29 src/service/ui/settings.js:536
+#: data/menus.ui:29 src/service/ui/settings.js:528
 msgid "Generate Support Log"
 msgstr ""
 
 #: data/menus.ui:38
-msgid "About"
-msgstr "Quant a"
+msgid "About GSConnect"
+msgstr "Quant al GSConnect"
 
 #. TRANSLATORS: Change the connection type to Bluetooth
 #: data/menus.ui:49
@@ -251,12 +259,12 @@ msgid "Switch to LAN"
 msgstr "Canvia a LAN"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
-#: data/menus.ui:63 src/service/ui/device.js:317
+#: data/menus.ui:63 src/service/ui/device.js:308
 msgid "Encryption Info"
 msgstr "Informació de xifratge"
 
 #. TRANSLATORS: Unpair the device and notify it
-#: data/menus.ui:74 src/service/device.js:432
+#: data/menus.ui:74
 msgid "Unpair"
 msgstr "Desaparella"
 
@@ -282,16 +290,16 @@ msgstr "Abaixa"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the phone ringer
-#: data/menus.ui:118 data/menus.ui:144 src/service/plugins/telephony.js:194
+#: data/menus.ui:118 data/menus.ui:144 src/service/plugins/telephony.js:177
 msgid "Mute"
 msgstr "Silencia"
 
 #: data/messaging.ui:12 src/service/plugins/sms.js:26
-#: src/service/ui/messaging.js:911
+#: src/service/ui/messaging.js:881
 msgid "Messaging"
 msgstr "Missatgeria"
 
-#: data/messaging.ui:21 src/service/ui/messaging.js:992
+#: data/messaging.ui:21 src/service/ui/messaging.js:1005
 msgid "New Conversation"
 msgstr "Conversa nova"
 
@@ -303,7 +311,7 @@ msgstr "No s’ha seleccionat cap conversa"
 msgid "Select or start a conversation"
 msgstr "Seleccioneu una conversa o inicieu-ne una de nova"
 
-#: data/messaging.ui:193 data/notification.ui:52 data/telephony.ui:52
+#: data/messaging.ui:193 data/notification.ui:53 data/telephony.ui:53
 msgid "Device is disconnected"
 msgstr "El dispositiu està desconnectat"
 
@@ -312,7 +320,7 @@ msgid "No Conversations"
 msgstr "No hi ha cap conversa"
 
 #: data/notification.ui:21 data/telephony.ui:21
-#: src/service/plugins/share.js:457
+#: src/service/plugins/share.js:388
 msgid "Send"
 msgstr "Envia"
 
@@ -324,7 +332,8 @@ msgstr "S’estan cercant dispositius…"
 msgid "Refresh"
 msgstr "Actualitza"
 
-#: data/settings.ui:74 data/settings.ui:91 src/extension.js:105
+#. Service Menu -> "Mobile Settings"
+#: data/settings.ui:74 data/settings.ui:91 src/extension.js:104
 msgid "Mobile Settings"
 msgstr ""
 
@@ -348,23 +357,22 @@ msgstr ""
 msgid "This device is invisible to unpaired devices"
 msgstr "Aquest dispositiu és invisible als dispositius no aparellats"
 
-#: data/settings.ui:623 src/service/daemon.js:532
+#: data/settings.ui:623 src/service/daemon.js:518
 msgid "Discovery Disabled"
 msgstr ""
 
 #. TRANSLATORS: Share URL by SMS
-#: data/telephony.ui:9 src/service/daemon.js:718 src/service/plugins/sms.js:50
+#: data/telephony.ui:9 src/service/daemon.js:675 src/service/plugins/sms.js:50
 #: webextension/gettext.js:39
 msgid "Send SMS"
 msgstr "Envia un SMS"
 
 #. Service Menu
-#: src/extension.js:79 src/extension.js:255
+#: src/extension.js:79 src/extension.js:198
 msgid "Mobile Devices"
 msgstr "Dispositius mòbils"
 
-#. TRANSLATORS: %d is the number of devices connected
-#: src/extension.js:253
+#: src/extension.js:193
 #, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
@@ -372,57 +380,53 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
-#: src/nautilus-gsconnect.py:112 webextension/gettext.js:31
+#: src/nautilus-gsconnect.py:149 webextension/gettext.js:31
 msgid "Send To Mobile Device"
 msgstr "Envia al dispositiu mòbil"
 
-#: src/service/daemon.js:372
+#: src/service/daemon.js:373
 msgid "Report"
 msgstr ""
 
-#: src/service/daemon.js:507
+#: src/service/daemon.js:500
 msgid "Authentication Failure"
 msgstr ""
 
-#: src/service/daemon.js:516
+#: src/service/daemon.js:509
 msgid "Network Error"
 msgstr "Error de xarxa"
 
-#: src/service/daemon.js:517 src/service/daemon.js:525
+#: src/service/daemon.js:510
 msgid "Click for help troubleshooting"
 msgstr "Ajuda per a resoldre el problema"
 
-#: src/service/daemon.js:524
-msgid "PulseAudio Error"
-msgstr "Error de PulseAudio"
-
-#: src/service/daemon.js:533
+#: src/service/daemon.js:519
 msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr ""
 
-#: src/service/daemon.js:541
+#: src/service/daemon.js:527
 #, javascript-format
 msgid "%s Plugin Failed To Load"
 msgstr "No s’ha pogut carregar el connector %s"
 
-#: src/service/daemon.js:542
+#: src/service/daemon.js:528 src/service/daemon.js:542
 msgid "Click for more information"
 msgstr "Més informació"
 
-#: src/service/daemon.js:724
+#: src/service/daemon.js:681
 msgid "Dial Number"
 msgstr ""
 
-#: src/service/daemon.js:730 src/service/plugins/share.js:27
+#: src/service/daemon.js:687 src/service/plugins/share.js:27
 msgid "Share File"
 msgstr "Comparteix un fitxer"
 
-#: src/service/device.js:161
+#: src/service/device.js:174
 msgid "Not available"
 msgstr "No disponible"
 
 #. TRANSLATORS: Bluetooth address for remote device
-#: src/service/device.js:165
+#: src/service/device.js:179
 #, javascript-format
 msgid "Bluetooth device at %s"
 msgstr "Dispositiu Bluetooth a %s"
@@ -433,62 +437,62 @@ msgstr "Dispositiu Bluetooth a %s"
 #.
 #. Google Pixel Fingerprint:
 #. 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-#: src/service/device.js:183 src/service/device.js:185
+#: src/service/device.js:201 src/service/device.js:203
 #, javascript-format
 msgid "%s Fingerprint:"
 msgstr "Empremta de l’aparell %s:"
 
-#: src/service/device.js:242
+#: src/service/device.js:261
 msgid "Laptop"
 msgstr "Ordinador portàtil"
 
-#: src/service/device.js:244
+#: src/service/device.js:263
 msgid "Smartphone"
 msgstr "Telèfon intel·ligent"
 
-#: src/service/device.js:246
+#: src/service/device.js:265
 msgid "Tablet"
 msgstr "Tauleta"
 
-#: src/service/device.js:248
+#: src/service/device.js:267
 msgid "Desktop"
 msgstr "Ordinador d’escriptori"
 
-#: src/service/device.js:408 src/service/ui/device.js:15
+#: src/service/device.js:426 src/service/ui/device.js:15
 msgid "Reconnect"
 msgstr "Torna a connectar"
 
-#: src/service/device.js:416 src/service/ui/device.js:16
-#: src/service/ui/settings.js:371
+#: src/service/device.js:433 src/service/ui/device.js:16
+#: src/service/ui/settings.js:363
 msgid "Settings"
 msgstr "Paràmetres"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
-#: src/service/device.js:607
+#: src/service/device.js:615
 #, javascript-format
 msgid "Pair Request from %s"
 msgstr "Sol·licitud d’aparellament d’un %s"
 
-#: src/service/device.js:614
+#: src/service/device.js:622
 msgid "Reject"
 msgstr "Rebutja-la"
 
-#: src/service/device.js:619
+#: src/service/device.js:627
 msgid "Accept"
 msgstr "Accepta-la"
 
-#: src/service/plugins/battery.js:188 src/service/plugins/findmyphone.js:19
+#: src/service/plugins/battery.js:155 src/service/plugins/findmyphone.js:19
 msgid "Ring"
 msgstr "Truca"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
-#: src/service/plugins/battery.js:197
+#: src/service/plugins/battery.js:164
 #, javascript-format
 msgid "%s: Battery is low"
 msgstr ""
 
 #. TRANSLATORS: eg. 15% remaining
-#: src/service/plugins/battery.js:199
+#: src/service/plugins/battery.js:166
 #, javascript-format
 msgid "%d%% remaining"
 msgstr ""
@@ -505,15 +509,11 @@ msgstr ""
 msgid "Clipboard Pull"
 msgstr ""
 
-#: src/service/plugins/contacts.js:12
-msgid "Contacts"
-msgstr "Contactes"
-
 #. Ensure we have a sender
 #. TRANSLATORS: No name or phone number
-#: src/service/plugins/contacts.js:263 src/service/plugins/telephony.js:173
-#: src/service/plugins/telephony.js:224 src/service/plugins/telephony.js:264
-#: src/service/ui/contacts.js:156 src/service/ui/contacts.js:397
+#: src/service/plugins/contacts.js:213 src/service/plugins/telephony.js:156
+#: src/service/plugins/telephony.js:207 src/service/plugins/telephony.js:247
+#: src/service/ui/contacts.js:156 src/service/ui/contacts.js:455
 msgid "Unknown Contact"
 msgstr "Contacte desconegut"
 
@@ -525,15 +525,15 @@ msgstr "Troba el meu telèfon"
 msgid "Mousepad"
 msgstr ""
 
-#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:569
+#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:720
 msgid "Keyboard"
 msgstr "Teclat"
 
-#: src/service/plugins/mousepad.js:223
+#: src/service/plugins/mousepad.js:266
 msgid "Additional Software Required"
 msgstr "Cal programari addicional"
 
-#: src/service/plugins/mousepad.js:586
+#: src/service/plugins/mousepad.js:737
 msgid "Keyboard not ready"
 msgstr "El teclat no està preparat"
 
@@ -556,6 +556,10 @@ msgstr ""
 #: src/service/plugins/notification.js:50
 msgid "Send Notification"
 msgstr "Envia una notificació"
+
+#: src/service/plugins/photo.js:11 src/service/plugins/photo.js:17
+msgid "Photo"
+msgstr ""
 
 #: src/service/plugins/ping.js:11 src/service/plugins/ping.js:17
 #: src/service/plugins/ping.js:46
@@ -585,15 +589,15 @@ msgstr "Munta"
 msgid "Unmount"
 msgstr "Desmunta"
 
-#: src/service/plugins/sftp.js:159
+#: src/service/plugins/sftp.js:119
 msgid "All files"
 msgstr "Tots els fitxers"
 
-#: src/service/plugins/sftp.js:160
+#: src/service/plugins/sftp.js:120
 msgid "Camera pictures"
 msgstr "Fotografies de la càmera"
 
-#: src/service/plugins/sftp.js:417
+#: src/service/plugins/sftp.js:316
 msgid "Files"
 msgstr "Fitxers"
 
@@ -605,85 +609,85 @@ msgstr "Compartició"
 msgid "Share Text"
 msgstr "Comparteix text"
 
-#: src/service/plugins/share.js:43 src/service/ui/messaging.js:975
-#: src/service/ui/messaging.js:983
+#: src/service/plugins/share.js:43 src/service/ui/messaging.js:988
+#: src/service/ui/messaging.js:996
 msgid "Share Link"
 msgstr "Comparteix un enllaç"
 
-#: src/service/plugins/share.js:132 src/service/plugins/share.js:303
+#: src/service/plugins/share.js:95 src/service/plugins/share.js:237
 msgid "Starting Transfer"
 msgstr "S'està iniciant la transferència"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:134
+#: src/service/plugins/share.js:97
 #, javascript-format
 msgid "Receiving “%s” from %s"
 msgstr "S’està rebent «%s» del %s"
 
-#: src/service/plugins/share.js:172 src/service/plugins/share.js:327
+#: src/service/plugins/share.js:121 src/service/plugins/share.js:260
 msgid "Transfer Successful"
 msgstr ""
 
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:174
+#: src/service/plugins/share.js:123
 #, javascript-format
 msgid "Received “%s” from %s"
 msgstr "S’ha rebut «%s» del %s"
 
-#: src/service/plugins/share.js:180
+#: src/service/plugins/share.js:129
 msgid "Open Folder"
 msgstr "Obre la carpeta"
 
-#: src/service/plugins/share.js:185
+#: src/service/plugins/share.js:134
 msgid "Open File"
 msgstr "Obre el fitxer"
 
-#: src/service/plugins/share.js:192 src/service/plugins/share.js:335
+#: src/service/plugins/share.js:141 src/service/plugins/share.js:268
 msgid "Transfer Failed"
 msgstr "Ha fallat la transferència"
 
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:194
+#: src/service/plugins/share.js:143
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
 msgstr "No s’ha pogut rebre «%s» del %s"
 
-#: src/service/plugins/share.js:233
+#: src/service/plugins/share.js:171
 #, javascript-format
 msgid "Text Shared By %s"
 msgstr ""
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
-#: src/service/plugins/share.js:305
+#: src/service/plugins/share.js:239
 #, javascript-format
 msgid "Sending “%s” to %s"
 msgstr "S’està enviant «%s» al %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:329
+#: src/service/plugins/share.js:262
 #, javascript-format
 msgid "Sent “%s” to %s"
 msgstr "S’ha enviat «%s» al %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:337
+#: src/service/plugins/share.js:270
 #, javascript-format
 msgid "Failed to send “%s” to %s"
 msgstr "No s’ha pogut enviar «%s» al %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
-#: src/service/plugins/share.js:408
+#: src/service/plugins/share.js:339
 #, javascript-format
 msgid "Send files to %s"
 msgstr "Envia fitxers al %s"
 
 #. TRANSLATORS: Mark the file to be opened once completed
-#: src/service/plugins/share.js:412
+#: src/service/plugins/share.js:343
 msgid "Open when done"
 msgstr "Obre’l en finalitzar"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
-#: src/service/plugins/share.js:451
+#: src/service/plugins/share.js:382
 #, javascript-format
 msgid "Send a link to %s"
 msgstr "Envia un enllaç al %s"
@@ -713,12 +717,12 @@ msgid "Mute Call"
 msgstr "Silencia la trucada"
 
 #. TRANSLATORS: The phone is ringing
-#: src/service/plugins/telephony.js:190
+#: src/service/plugins/telephony.js:173
 msgid "Incoming call"
 msgstr "Trucada entrant"
 
 #. TRANSLATORS: A phone call is active
-#: src/service/plugins/telephony.js:205
+#: src/service/plugins/telephony.js:188
 msgid "Ongoing call"
 msgstr "Trucada en curs"
 
@@ -753,25 +757,25 @@ msgid "%s・Home"
 msgstr "%s・Particular"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
-#: src/service/ui/contacts.js:278 src/service/ui/contacts.js:292
+#: src/service/ui/contacts.js:367 src/service/ui/contacts.js:381
 #, javascript-format
 msgid "Send to %s"
 msgstr "Envia al %s"
 
-#: src/service/ui/device.js:608
+#: src/service/ui/device.js:605
 msgid "Open"
 msgstr "Obre"
 
-#: src/service/ui/device.js:660 src/service/ui/device.js:673
+#: src/service/ui/device.js:657 src/service/ui/device.js:670
 msgid "On"
 msgstr ""
 
-#: src/service/ui/device.js:660 src/service/ui/device.js:673
+#: src/service/ui/device.js:657 src/service/ui/device.js:670
 msgid "Off"
 msgstr ""
 
-#: src/service/ui/device.js:798 src/service/ui/device.js:826
-#: src/service/ui/device.js:850
+#: src/service/ui/device.js:795 src/service/ui/device.js:823
+#: src/service/ui/device.js:847
 msgid "Disabled"
 msgstr "Desactivat"
 
@@ -805,12 +809,12 @@ msgid "%s is already being used"
 msgstr "%s ja s’està fent servir"
 
 #. TRANSLATORS: Less than a minute ago
-#: src/service/ui/messaging.js:65 src/service/ui/messaging.js:98
+#: src/service/ui/messaging.js:28 src/service/ui/messaging.js:61
 msgid "Just now"
 msgstr "Ara mateix"
 
 #. TRANSLATORS: Time duration in minutes (eg. 15 minutes)
-#: src/service/ui/messaging.js:70 src/service/ui/messaging.js:102
+#: src/service/ui/messaging.js:33 src/service/ui/messaging.js:65
 #: src/shell/donotdisturb.js:266
 #, javascript-format
 msgid "%d minute"
@@ -819,13 +823,13 @@ msgstr[0] "%d minut"
 msgstr[1] "%d minuts"
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
-#: src/service/ui/messaging.js:75
+#: src/service/ui/messaging.js:38
 #, javascript-format
 msgid "Yesterday・%s"
 msgstr "Ahir・%s"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
-#: src/service/ui/messaging.js:243
+#: src/service/ui/messaging.js:207
 #, javascript-format
 msgid "You: %s"
 msgstr "Vós: %s"
@@ -838,64 +842,64 @@ msgstr "Seleccioneu un dispositiu"
 msgid "Select"
 msgstr "Selecciona"
 
-#: src/service/ui/settings.js:331
+#: src/service/ui/settings.js:323
 msgid "Unpaired"
 msgstr "Desaparellat"
 
-#: src/service/ui/settings.js:333
+#: src/service/ui/settings.js:325
 msgid "Disconnected"
 msgstr "Desconnectat"
 
-#: src/service/ui/settings.js:336
+#: src/service/ui/settings.js:328
 msgid "Connected"
 msgstr "Connectat"
 
 #. TRANSLATORS: Description of where directly shared files are stored.
-#: src/service/ui/settings.js:406
+#: src/service/ui/settings.js:398
 #, javascript-format
 msgid "Transferred files are placed in the <a href=\"%s\">Downloads</a> folder."
 msgstr "Els fitxers transferits es col·loquen a la carpeta <a href=\"%s\">Baixades</a>."
 
-#: src/service/ui/settings.js:499
+#: src/service/ui/settings.js:491
 msgid "A complete KDE Connect implementation for GNOME"
 msgstr "Una implementació completa de KDE Connect per al GNOME"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
-#: src/service/ui/settings.js:508
+#: src/service/ui/settings.js:500
 msgid "translator-credits"
 msgstr "Adolfo Jayme Barrientos <fitojb@ubuntu.com>, 2019\n"
 "Marc Riera Irigoyen <marc.riera.irigoyen@gmail.com>, 2019"
 
-#: src/service/ui/settings.js:537
+#: src/service/ui/settings.js:529
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
 msgstr ""
 
-#: src/service/ui/settings.js:540
+#: src/service/ui/settings.js:532
 msgid "Review Log"
 msgstr "Mostra el registre"
 
 #. TRANSLATORS: When the battery level is 100%
-#: src/shell/device.js:82
+#: src/shell/device.js:113
 msgid "Fully Charged"
 msgstr "Càrrega completa"
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
-#: src/shell/device.js:86
+#: src/shell/device.js:117
 #, javascript-format
 msgid "%d%% (Estimating…)"
 msgstr "%d%% (en estimació…)"
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
-#: src/shell/device.js:96
+#: src/shell/device.js:127
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
 msgstr ""
 
 #. TRANSLATORS: Estimated time until battery is empty
 #. EXAMPLE: 42% (12:15 Remaining)
-#: src/shell/device.js:104
+#: src/shell/device.js:135
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
 msgstr ""
