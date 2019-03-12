@@ -170,12 +170,12 @@ var Plugin = GObject.registerClass({
      * Write the plugin's cache to disk
      */
     async __cache_write() {
-        try {
-            if (this.__cache_lock) {
-                this.__cache_queue = true;
-                return;
-            }
+        if (this.__cache_lock) {
+            this.__cache_queue = true;
+            return;
+        }
 
+        try {
             this.__cache_lock = true;
 
             // Build the cache

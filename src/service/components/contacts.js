@@ -50,12 +50,12 @@ var Store = GObject.registerClass({
     }
 
     async __cache_write() {
-        try {
-            if (this.__cache_lock) {
-                this.__cache_queue = true;
-                return;
-            }
+        if (this.__cache_lock) {
+            this.__cache_queue = true;
+            return;
+        }
 
+        try {
             this.__cache_lock = true;
             await JSON.dump(this.__cache_data, this.__cache_file);
         } catch (e) {
