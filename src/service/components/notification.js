@@ -107,7 +107,8 @@ var Listener = class Listener {
         return new Promise((resolve, reject) => {
             Gio.DBusConnection.new_for_address(
                 Gio.dbus_address_get_for_bus_sync(Gio.BusType.SESSION, null),
-                Gio.DBusConnectionFlags.AUTHENTICATION_CLIENT,
+                Gio.DBusConnectionFlags.AUTHENTICATION_CLIENT |
+                Gio.DBusConnectionFlags.MESSAGE_BUS_CONNECTION,
                 null,
                 null,
                 (connection, res) => {
@@ -131,32 +132,6 @@ var Listener = class Listener {
                     reject(e);
                 }
             });
-        });
-    }
-
-    /**
-     * Introduce the monitoring connection to DBus
-     */
-    _helloConnection() {
-        return new Promise((resolve, reject) => {
-            this._monitor.call(
-                'org.freedesktop.DBus',
-                '/org/freedesktop/DBus',
-                'org.freedesktop.DBus',
-                'Hello',
-                null,
-                null,
-                Gio.DBusCallFlags.NONE,
-                -1,
-                null,
-                (connection, res) => {
-                    try {
-                        resolve(connection.call_finish(res));
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
-            );
         });
     }
 
@@ -370,7 +345,6 @@ var Listener = class Listener {
         try {
             this._session = await this._getConnection();
             this._monitor = await this._newConnection();
-            await this._helloConnection();
             await this._monitorConnection();
         } catch (e) {
             // FIXME: if something goes wrong the component will appear active
