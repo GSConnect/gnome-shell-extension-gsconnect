@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-03-07 20:56\n"
+"PO-Revision-Date: 2019-03-10 23:43\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -495,7 +495,7 @@ msgstr "%s: la batterie est faible"
 #: src/service/plugins/battery.js:166
 #, javascript-format
 msgid "%d%% remaining"
-msgstr "%d%% restant"
+msgstr "%d %% restant"
 
 #: src/service/plugins/clipboard.js:11
 msgid "Clipboard"
@@ -894,14 +894,14 @@ msgstr "%d %% (estimation en cours…)"
 #: src/shell/device.js:127
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
-msgstr "%d%% (%d∶%02d jusqu'à charge complète)"
+msgstr "%d %% (%d∶%02d jusqu'à charge complète)"
 
 #. TRANSLATORS: Estimated time until battery is empty
 #. EXAMPLE: 42% (12:15 Remaining)
 #: src/shell/device.js:135
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
-msgstr "%d%% (%d∶%02d restant)"
+msgstr "%d %% (%d∶%02d restant)"
 
 #: src/shell/donotdisturb.js:150 src/shell/donotdisturb.js:289
 msgid "Do Not Disturb"
@@ -931,8 +931,8 @@ msgstr "Terminé"
 #, javascript-format
 msgid "%d hour"
 msgid_plural "%d hours"
-msgstr[0] "%d heure(s)"
-msgstr[1] ""
+msgstr[0] "%d heure"
+msgstr[1] "%d heures"
 
 #: src/shell/notification.js:42
 msgid "Reply"
