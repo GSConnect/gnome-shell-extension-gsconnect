@@ -193,22 +193,28 @@ var ChannelService = class ChannelService {
     }
 
     _onIncomingIdentity() {
+        let host, data, packet;
+
+        // Try to peek the remote address, but don't prevent reading the data
         try {
-            // Most of the datagram methods don't work in GJS, so we "peek" for
-            // the host address first...
-            let host = this._udp.receive_message(
+            host = this._udp.receive_message(
                 [],
                 Gio.SocketMsgFlags.PEEK,
                 null
             )[1].address.to_string();
+        } catch (e) {
+            logError(e);
+        }
 
-            // ...then read the packet from a stream, filling in the tcpHost
-            let data = this._udp_stream.read_line_utf8(null)[0];
-            let packet = new Core.Packet(data);
-            packet.body.tcpHost = host;
+        try {
+            data = this._udp_stream.read_line_utf8(null)[0];
 
-            // Handle the rest asynchronously
-            this._onIdentity(packet);
+            // Only process the packet if we succeeded in peeking the address
+            if (host !== undefined) {
+                packet = new Core.Packet(data);
+                packet.body.tcpHost = host;
+                this._onIdentity(packet);
+            }
         } catch (e) {
             logError(e);
         }
