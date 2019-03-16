@@ -1,8 +1,11 @@
 'use strict';
 
+const Config = imports.misc.config;
 const Main = imports.ui.main;
 const Meta = imports.gi.Meta;
 const Shell = imports.gi.Shell;
+
+const SHELL_VERSION_MINOR = parseInt(Config.PACKAGE_VERSION.split('.')[1]);
 
 
 /**
@@ -51,7 +54,14 @@ var Manager = class Manager {
      * @return {Number} - A non-zero action id on success, or 0 on failure
      */
     add(accelerator, callback) {
-        let action = global.display.grab_accelerator(accelerator);
+        let action = Meta.KeyBindingAction.NONE;
+
+        // A flags argument was added somewhere between 3.30-3.32
+        if (SHELL_VERSION_MINOR > 30) {
+            action = global.display.grab_accelerator(accelerator, 0);
+        } else {
+            action = global.display.grab_accelerator(accelerator);
+        }
 
         if (action !== Meta.KeyBindingAction.NONE) {
             let name = Meta.external_binding_name_for_action(action);
