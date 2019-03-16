@@ -245,7 +245,7 @@ var Indicator = class Indicator extends PanelMenu.Button {
 /**
  * Re-wrap the Indicator class as a GObject subclass for GNOME Shell 3.32
  */
-if (imports.system.version > 15499) {
+if (gsconnect.shell_version > 30) {
     Indicator = GObject.registerClass(
         {GTypeName: 'GSConnectDeviceIndicator'},
         Indicator
