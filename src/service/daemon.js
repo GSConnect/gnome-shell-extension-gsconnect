@@ -95,11 +95,6 @@ const Service = GObject.registerClass({
         // Properties
         gsconnect.settings.bind('discoverable', this, 'discoverable', 0);
         gsconnect.settings.bind('public-name', this, 'name', 0);
-
-        // Changing the default public name to the computer's hostname
-        if (this.name == '-1') {
-            gsconnect.settings.set_string('public-name', GLib.get_host_name());
-        }
     }
 
     get certificate() {
@@ -597,6 +592,11 @@ const Service = GObject.registerClass({
             null
         );
         this._serviceMonitor.connect('changed', () => this.quit());
+
+        // Changing the default public name to the computer's hostname
+        if (this.name.length === 0) {
+            gsconnect.settings.set_string('public-name', GLib.get_host_name());
+        }
 
         // Init some resources
         let provider = new Gtk.CssProvider();
