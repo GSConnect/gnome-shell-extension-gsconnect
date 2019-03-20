@@ -94,8 +94,6 @@ var Plugin = GObject.registerClass({
      */
     async _setup(info) {
         try {
-            this._user = info.user;
-            this._password = info.password;
             this._port = info.port;
             this._uri = `sftp://${this.ip}:${this._port}/`;
 
@@ -134,19 +132,10 @@ var Plugin = GObject.registerClass({
 
             await this._setup(info);
 
-            let op = new Gio.MountOperation({
-                username: this._user,
-                password: this._password,
-                password_save: Gio.PasswordSave.NEVER
-            });
+            // Setup the the mount operation to auto-accept host keys
+            let op = new Gio.MountOperation();
 
-            // We already know the host, so just accept
             op.connect('ask-question', (op, message, choices) => {
-                op.reply(Gio.MountOperationResult.HANDLED);
-            });
-
-            // We set the password, so just accept
-            op.connect('ask-password', (op, message, user, domain, flags) => {
                 op.reply(Gio.MountOperationResult.HANDLED);
             });
 
