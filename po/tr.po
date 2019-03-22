@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-03-22 14:54\n"
+"PO-Revision-Date: 2019-03-22 15:17\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Turkish\n"
 "Language: tr\n"
@@ -452,7 +452,7 @@ msgstr "Telefon"
 
 #: src/service/device.js:265
 msgid "Tablet"
-msgstr ""
+msgstr "Tablet"
 
 #: src/service/device.js:267
 msgid "Desktop"
@@ -539,7 +539,7 @@ msgstr "Klavye hazır değil"
 
 #: src/service/plugins/mpris.js:10
 msgid "MPRIS"
-msgstr ""
+msgstr "MPRIS"
 
 #: src/service/plugins/notification.js:26
 msgid "Cancel Notification"
@@ -579,7 +579,7 @@ msgstr "Komutları Çalıştır"
 
 #: src/service/plugins/sftp.js:12
 msgid "SFTP"
-msgstr ""
+msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:18
 msgid "Mount"
@@ -694,7 +694,7 @@ msgstr "Bağlantı gönder %s"
 
 #: src/service/plugins/sms.js:13
 msgid "SMS"
-msgstr ""
+msgstr "SMS"
 
 #: src/service/plugins/sms.js:34
 msgid "New SMS (URI)"
@@ -943,7 +943,7 @@ msgstr "Yanıtla"
 #. TRANSLATORS: Extension name
 #: webextension/gettext.js:27
 msgid "GSConnect"
-msgstr ""
+msgstr "GSConnect"
 
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
