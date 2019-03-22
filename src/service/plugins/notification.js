@@ -53,6 +53,14 @@ var Metadata = {
             parameter_type: new GLib.VariantType('a{sv}'),
             incoming: [],
             outgoing: ['kdeconnect.notification']
+        },
+        activateNotification: {
+            label: _('Activate Notification'),
+            icon_name: 'preferences-system-notifications-symbolic',
+
+            parameter_type: new GLib.VariantType('(ss)'),
+            incoming: [],
+            outgoing: ['kdeconnect.notification.action']
         }
     }
 };
@@ -459,6 +467,7 @@ var Plugin = GObject.registerClass({
         try {
             // Set defaults
             let action = null;
+            let buttons = [];
             let id = packet.body.id;
             let title = packet.body.appName;
             let body = `${packet.body.title}: ${packet.body.text}`;
@@ -479,6 +488,17 @@ var Plugin = GObject.registerClass({
                         }
                     ])
                 };
+            }
+
+            // Check if the notification has actions
+            if (packet.body.actions) {
+                buttons = packet.body.actions.map(action => {
+                    return {
+                        label: action,
+                        action: 'activateNotification',
+                        parameter: new GLib.Variant('(ss)', [id, action])
+                    };
+                });
             }
 
             switch (true) {
@@ -517,7 +537,8 @@ var Plugin = GObject.registerClass({
                 title: title,
                 body: body,
                 icon: icon,
-                action: action
+                action: action,
+                buttons: buttons
             });
         } catch (e) {
             logError(e);
@@ -615,6 +636,22 @@ var Plugin = GObject.registerClass({
                 }
             });
         }
+    }
+
+    /**
+     * Activate a remote notification action
+     *
+     * @param {string} id - The remote notification id
+     * @param {string} action - The notification action (label)
+     */
+    activateAction (id, action) {
+        this.device.sendPacket({
+            type: 'kdeconnect.notification.action',
+            body: {
+                action: action,
+                key: id
+            }
+        });
     }
 
     /**
