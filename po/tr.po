@@ -934,7 +934,7 @@ msgstr "Tamam"
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d saat"
-msgstr[1] ""
+msgstr[1] "%d saat"
 
 #: src/shell/notification.js:42
 msgid "Reply"
