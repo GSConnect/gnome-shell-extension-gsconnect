@@ -97,6 +97,10 @@ var Plugin = GObject.registerClass({
      * Copy to the remote clipboard; called by _onLocalClipboardChanged()
      */
     clipboardPush() {
+        // Don't sync if the clipboard is empty or not text
+        if (this._localBuffer === null)
+            return;
+
         if (this._remoteBuffer !== this._localBuffer) {
             this._remoteBuffer = this._localBuffer;
 
