@@ -173,6 +173,7 @@ var Plugin = GObject.registerClass({
                 if (this._uri === uri) {
                     this._gmount = mount;
                     this._gmount.connect('unmounted', this.unmount.bind(this));
+                    this._addSymlink(mount);
 
                 // Or if it's a stale mount we need to cleanup
                 } else if (this._uriRegex.test(uri)) {
@@ -315,6 +316,54 @@ var Plugin = GObject.registerClass({
         if (action !== null) {
             this.device.menu.add_action(action, index);
         }
+    }
+
+    /**
+     * Create a symbolic link referring to the device by name
+     */
+    _addSymlink(mount) {
+        let by_name_dir = Gio.File.new_for_path(
+            gsconnect.runtimedir + '/by-name/'
+        );
+        try {
+            by_name_dir.make_directory_with_parents(null);
+        } catch (e) {
+            if ( ! e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.EXISTS) ) {
+                throw e;
+            }
+        }
+
+        // Replace path separator with a Unicode lookalike:
+        let safe_device_name = this.device.name.replace('/', '∕');
+        if ( safe_device_name == '.' ) {
+            safe_device_name = '·';
+        }
+        else if ( safe_device_name == '..' ) {
+            safe_device_name = '··';
+        }
+
+        let link_target = mount.get_root().get_path();
+        let link = Gio.File.new_for_path(
+            by_name_dir.get_path() + '/' + safe_device_name
+        );
+
+        // Check for and remove any existing stale link:
+        try {
+            let link_stat = link.query_info(
+                Gio.FileAttributeType.symlink_target,
+                Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
+                null
+            );
+            if ( link_stat.symlink_target != link_target ) {
+                link.delete(null);
+            }
+        } catch (e) {
+            if ( ! e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.NOT_FOUND) ) {
+                throw e;
+            }
+        }
+
+        link.make_symbolic_link(link_target, null);
     }
 
     /**
