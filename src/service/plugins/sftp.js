@@ -350,7 +350,7 @@ var Plugin = GObject.registerClass({
         // Check for and remove any existing stale link:
         try {
             let link_stat = link.query_info(
-                Gio.FileAttributeType.symlink_target,
+                'standard::symlink-target',
                 Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
                 null
             );
