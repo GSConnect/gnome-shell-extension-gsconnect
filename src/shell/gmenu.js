@@ -508,10 +508,12 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
         // Remove items
         while (removed > 0) {
             let button = this.box.get_child_at_index(position);
+            let action_name = button.action_name;
+            
             (button.submenu) ? button.submenu.destroy() : null;
             button.destroy();
 
-            this._menu_items.delete(button.action_name);
+            this._menu_items.delete(action_name);
             removed--;
         }
 
