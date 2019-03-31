@@ -337,8 +337,7 @@ var Plugin = GObject.registerClass({
         let safe_device_name = this.device.name.replace('/', '∕');
         if ( safe_device_name == '.' ) {
             safe_device_name = '·';
-        }
-        else if ( safe_device_name == '..' ) {
+        } else if ( safe_device_name == '..' ) {
             safe_device_name = '··';
         }
 
