@@ -62,9 +62,21 @@ var Plugin = GObject.registerClass({
     }
 
     handlePacket(packet) {
-        // Ensure we don't mount on top of an existing mount
-        if (packet.type === 'kdeconnect.sftp' && this._gmount === null) {
-            this._mount(packet.body);
+        if (packet.type === 'kdeconnect.sftp') {
+            // There was an error mounting the filesystem
+            if (packet.body.errorMessage) {
+                this.device.showNotification({
+                    id: 'sftp-error',
+                    title: `${this.device.name}: ${Metadata.label}`,
+                    body: packet.body.errorMessage,
+                    icon: new Gio.ThemedIcon({name: 'dialog-error-symbolic'}),
+                    priority: Gio.NotificationPriority.URGENT
+                });
+
+            // Ensure we don't mount on top of an existing mount
+            } else if (this._gmount === null) {
+                this._mount(packet.body);
+            }
         }
     }
 
