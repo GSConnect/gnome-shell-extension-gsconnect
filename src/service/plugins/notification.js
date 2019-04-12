@@ -18,6 +18,7 @@ var Metadata = {
     ],
     outgoingCapabilities: [
         'kdeconnect.notification',
+        'kdeconnect.notification.action',
         'kdeconnect.notification.reply',
         'kdeconnect.notification.request'
     ],
