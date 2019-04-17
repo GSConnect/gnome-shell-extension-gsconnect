@@ -321,48 +321,78 @@ var Plugin = GObject.registerClass({
     /**
      * Create a symbolic link referring to the device by name
      */
-    _addSymlink(mount) {
-        let by_name_dir = Gio.File.new_for_path(
-            gsconnect.runtimedir + '/by-name/'
-        );
+    async _addSymlink(mount) {
         try {
-            by_name_dir.make_directory_with_parents(null);
-        } catch (e) {
-            if ( ! e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.EXISTS) ) {
-                throw e;
-            }
-        }
-
-        // Replace path separator with a Unicode lookalike:
-        let safe_device_name = this.device.name.replace('/', '∕');
-        if ( safe_device_name == '.' ) {
-            safe_device_name = '·';
-        } else if ( safe_device_name == '..' ) {
-            safe_device_name = '··';
-        }
-
-        let link_target = mount.get_root().get_path();
-        let link = Gio.File.new_for_path(
-            by_name_dir.get_path() + '/' + safe_device_name
-        );
-
-        // Check for and remove any existing stale link:
-        try {
-            let link_stat = link.query_info(
-                'standard::symlink-target',
-                Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
-                null
+            let by_name_dir = Gio.File.new_for_path(
+                gsconnect.runtimedir + '/by-name/'
             );
-            if ( link_stat.symlink_target != link_target ) {
-                link.delete(null);
+            try {
+                by_name_dir.make_directory_with_parents(null);
+            } catch (e) {
+                if ( ! e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.EXISTS) ) {
+                    throw e;
+                }
             }
-        } catch (e) {
-            if ( ! e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.NOT_FOUND) ) {
-                throw e;
-            }
-        }
 
-        link.make_symbolic_link(link_target, null);
+            // Replace path separator with a Unicode lookalike:
+            let safe_device_name = this.device.name.replace('/', '∕');
+            if ( safe_device_name == '.' ) {
+                safe_device_name = '·';
+            } else if ( safe_device_name == '..' ) {
+                safe_device_name = '··';
+            }
+
+            let link_target = mount.get_root().get_path();
+            let link = Gio.File.new_for_path(
+                by_name_dir.get_path() + '/' + safe_device_name
+            );
+
+            // Check for and remove any existing stale link:
+            let link_stat;
+            try {
+                link_stat = await new Promise((resolve, reject) => {
+                    link.query_info_async(
+                        'standard::symlink-target',
+                        Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
+                        GLib.PRIORITY_DEFAULT,
+                        null,
+                        (link, res) => {
+                            try {
+                                resolve(link.query_info_finish(res));
+                            } catch (e) {
+                                reject(e);
+                            }
+                        },
+                    );
+                });
+
+                if ( link_stat.get_symlink_target() == link_target ) {
+                    return;
+                }
+
+                await new Promise((resolve, reject) => {
+                    link.delete_async(
+                        GLib.PRIORITY_DEFAULT,
+                        null,
+                        (link, res) => {
+                            try {
+                                resolve(link.delete_finish(res));
+                            } catch (e) {
+                                reject(e);
+                            }
+                        },
+                    );
+                });
+            } catch (e) {
+                if ( ! e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.NOT_FOUND) ) {
+                    throw e;
+                }
+            }
+
+            link.make_symbolic_link(link_target, null);
+        } catch (e) {
+            warning(e, `${this.device.name}: ${this.name}`);
+        }
     }
 
     /**
