@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-04-22 03:33\n"
+"PO-Revision-Date: 2019-04-22 13:04\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -105,7 +105,7 @@ msgstr "Kommandolinje"
 
 #: data/device.ui:500 data/device.ui:501
 msgid "Choose an executable"
-msgstr ""
+msgstr "Vælg en eksekverbar"
 
 #: data/device.ui:552 data/device.ui:567
 msgid "Add"
@@ -142,7 +142,7 @@ msgstr "Kontakter"
 
 #: data/device.ui:976
 msgid "Incoming Calls"
-msgstr ""
+msgstr "Indgående Opkald"
 
 #: data/device.ui:1025 data/device.ui:1191
 msgid "Volume"
@@ -150,11 +150,11 @@ msgstr "Lydstryke"
 
 #: data/device.ui:1090 data/device.ui:1256
 msgid "Pause Media"
-msgstr ""
+msgstr "Pause Media"
 
 #: data/device.ui:1143
 msgid "Ongoing Calls"
-msgstr ""
+msgstr "Igangværende Opkald"
 
 #: data/device.ui:1312
 msgid "Mute Microphone"
