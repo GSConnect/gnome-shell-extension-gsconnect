@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-04-22 03:13\n"
+"PO-Revision-Date: 2019-04-22 03:24\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -72,36 +72,36 @@ msgstr "Kamera"
 
 #: data/device.ui:178
 msgid "Clipboard Sync"
-msgstr ""
+msgstr "Udklipsholder synkroniseres"
 
 #: data/device.ui:241
 msgid "Media Players"
-msgstr ""
+msgstr "Medieafspillere"
 
 #: data/device.ui:296
 msgid "Mouse & Keyboard"
-msgstr ""
+msgstr "Mus & Tastatur"
 
 #: data/device.ui:351
 msgid "Volume Control"
-msgstr ""
+msgstr "Volumen Kontrol"
 
 #: data/device.ui:401 data/device.ui:1864
 msgid "Sharing"
-msgstr ""
+msgstr "Deling"
 
 #: data/device.ui:430 data/device.ui:707 data/device.ui:1910
 #: src/service/plugins/runcommand.js:18 src/service/plugins/runcommand.js:175
 msgid "Commands"
-msgstr ""
+msgstr "Kommandoer"
 
 #: data/device.ui:480 data/device.ui:483
 msgid "Name"
-msgstr ""
+msgstr "Navn"
 
 #: data/device.ui:496 data/device.ui:502
 msgid "Command Line"
-msgstr ""
+msgstr "Kommandolinje"
 
 #: data/device.ui:500 data/device.ui:501
 msgid "Choose an executable"
@@ -109,36 +109,36 @@ msgstr ""
 
 #: data/device.ui:552 data/device.ui:567
 msgid "Add"
-msgstr ""
+msgstr "Tilføje"
 
 #: data/device.ui:583 data/device.ui:598
 msgid "Remove"
-msgstr ""
+msgstr "Fjerne"
 
 #: data/device.ui:632 data/device.ui:644
 msgid "Edit"
-msgstr ""
+msgstr "Rediger"
 
 #: data/device.ui:660 data/device.ui:672
 msgid "Save"
-msgstr ""
+msgstr "Gem"
 
 #: data/device.ui:768
 msgid "Share Notifications"
-msgstr ""
+msgstr "Del Notifikationer"
 
 #: data/device.ui:819
 msgid "Applications"
-msgstr ""
+msgstr "Applikationer"
 
 #: data/device.ui:865 data/device.ui:1956
 #: src/service/plugins/notification.js:13
 msgid "Notifications"
-msgstr ""
+msgstr "Notifikationer"
 
 #: data/device.ui:923 src/service/plugins/contacts.js:12
 msgid "Contacts"
-msgstr ""
+msgstr "Kontakter"
 
 #: data/device.ui:976
 msgid "Incoming Calls"
@@ -146,7 +146,7 @@ msgstr ""
 
 #: data/device.ui:1025 data/device.ui:1191
 msgid "Volume"
-msgstr ""
+msgstr "Lydstryke"
 
 #: data/device.ui:1090 data/device.ui:1256
 msgid "Pause Media"
@@ -162,7 +162,7 @@ msgstr ""
 
 #: data/device.ui:1366 data/device.ui:2002 src/service/plugins/telephony.js:13
 msgid "Telephony"
-msgstr ""
+msgstr "Telefoni"
 
 #: data/device.ui:1401
 msgid "Action Shortcuts"
@@ -232,7 +232,7 @@ msgstr ""
 #. TRANSLATORS: Show device indicators in the top bar
 #: data/menus.ui:15
 msgid "Panel"
-msgstr ""
+msgstr "Panel"
 
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
 #: data/menus.ui:21
@@ -266,7 +266,7 @@ msgstr ""
 #. TRANSLATORS: Unpair the device and notify it
 #: data/menus.ui:74
 msgid "Unpair"
-msgstr ""
+msgstr "Unpair"
 
 #. TRANSLATORS: Send clipboard content to device
 #: data/menus.ui:86
@@ -281,7 +281,7 @@ msgstr ""
 #. TRANSLATORS: Don't change the system volume
 #: data/menus.ui:104 data/menus.ui:130
 msgid "Nothing"
-msgstr ""
+msgstr "Intet"
 
 #. TRANSLATORS: Lower the system volume
 #: data/menus.ui:111 data/menus.ui:137
