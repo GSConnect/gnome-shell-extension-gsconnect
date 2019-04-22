@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-04-22 01:33\n"
+"PO-Revision-Date: 2019-04-22 01:43\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -194,15 +194,15 @@ msgstr ""
 
 #: data/device.ui:1734
 msgid "Delete"
-msgstr ""
+msgstr "Slet"
 
 #: data/device.ui:1763
 msgid "Delete this device"
-msgstr ""
+msgstr "Slet dette enheden"
 
 #: data/device.ui:1781
 msgid "Unpair and remove all settings and files"
-msgstr ""
+msgstr "Uparret og fjerne alle indstillinger og filer"
 
 #: data/device.ui:1814 data/device.ui:2094
 msgid "Advanced"
@@ -210,7 +210,7 @@ msgstr "Avanceret"
 
 #: data/device.ui:2048
 msgid "Keyboard Shortcuts"
-msgstr ""
+msgstr "Tastaturgenveje"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/device.ui:2151 data/menus.ui:68
