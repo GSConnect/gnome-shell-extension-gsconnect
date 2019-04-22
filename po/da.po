@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-04-22 13:04\n"
+"PO-Revision-Date: 2019-04-22 13:13\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -158,7 +158,7 @@ msgstr "Igangværende Opkald"
 
 #: data/device.ui:1312
 msgid "Mute Microphone"
-msgstr ""
+msgstr "Stum Mikrofon"
 
 #: data/device.ui:1366 data/device.ui:2002 src/service/plugins/telephony.js:13
 msgid "Telephony"
