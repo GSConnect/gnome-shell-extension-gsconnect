@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-04-22 02:44\n"
+"PO-Revision-Date: 2019-04-22 02:54\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -852,7 +852,7 @@ msgstr "Frakoblet"
 
 #: src/service/ui/settings.js:328
 msgid "Connected"
-msgstr ""
+msgstr "Tilsluttet"
 
 #. TRANSLATORS: Description of where directly shared files are stored.
 #: src/service/ui/settings.js:398
@@ -867,7 +867,7 @@ msgstr ""
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/service/ui/settings.js:500
 msgid "translator-credits"
-msgstr ""
+msgstr "oversætter-kreditter"
 
 #: src/service/ui/settings.js:529
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
@@ -924,7 +924,7 @@ msgstr ""
 
 #: src/shell/donotdisturb.js:216
 msgid "Done"
-msgstr ""
+msgstr "Færdig"
 
 #. TRANSLATORS: Time duration in hours (eg. 2 hours)
 #: src/shell/donotdisturb.js:263
@@ -936,30 +936,30 @@ msgstr[1] ""
 
 #: src/shell/notification.js:42
 msgid "Reply"
-msgstr ""
+msgstr "Svar"
 
 #. TRANSLATORS: Extension name
 #: webextension/gettext.js:27
 msgid "GSConnect"
-msgstr ""
+msgstr "GSConnect"
 
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
+msgstr "Dele links med GSConnect, direkte til browseren eller via SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:33
 msgid "Service Unavailable"
-msgstr ""
+msgstr "Tjenesten er ikke tilgængelig"
 
 #. TRANSLATORS: No devices are known or available
 #: webextension/gettext.js:35
 msgid "No Device Found"
-msgstr ""
+msgstr "Ingen Enhed Fundet"
 
 #. TRANSLATORS: Open URL with the device's browser
 #: webextension/gettext.js:37
 msgid "Open in Browser"
-msgstr ""
+msgstr "Åbn i browser"
 
