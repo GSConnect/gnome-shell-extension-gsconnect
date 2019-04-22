@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-04-22 02:24\n"
+"PO-Revision-Date: 2019-04-22 02:33\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -305,11 +305,11 @@ msgstr "Ny Samtale"
 
 #: data/messaging.ui:110
 msgid "No conversation selected"
-msgstr ""
+msgstr "Ingen samtaler valgt"
 
 #: data/messaging.ui:126
 msgid "Select or start a conversation"
-msgstr ""
+msgstr "Vælg eller start en samtale"
 
 #: data/messaging.ui:193 data/notification.ui:53 data/telephony.ui:53
 msgid "Device is disconnected"
@@ -465,7 +465,7 @@ msgstr ""
 #: src/service/device.js:433 src/service/ui/device.js:16
 #: src/service/ui/settings.js:363
 msgid "Settings"
-msgstr ""
+msgstr "Indstillinger"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:615
@@ -475,15 +475,15 @@ msgstr ""
 
 #: src/service/device.js:622
 msgid "Reject"
-msgstr ""
+msgstr "Afvise"
 
 #: src/service/device.js:627
 msgid "Accept"
-msgstr ""
+msgstr "Acceptere"
 
 #: src/service/plugins/battery.js:155 src/service/plugins/findmyphone.js:19
 msgid "Ring"
-msgstr ""
+msgstr "Ring"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:164
