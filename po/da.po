@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-04-19 20:15\n"
+"PO-Revision-Date: 2019-04-22 01:33\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -28,19 +28,19 @@ msgstr ""
 #: src/service/ui/keybindings.js:44 src/service/ui/service.js:37
 #: src/service/ui/settings.js:531 src/shell/donotdisturb.js:215
 msgid "Cancel"
-msgstr ""
+msgstr "Anuller"
 
 #: data/connect.ui:37
 msgid "Connect"
-msgstr ""
+msgstr "Forbind"
 
 #: data/connect.ui:98
 msgid "IP Address"
-msgstr ""
+msgstr "IP adresse"
 
 #: data/connect.ui:142
 msgid "Bluetooth Device"
-msgstr ""
+msgstr "Bluetooth Enhed"
 
 #: data/contacts.ui:48
 msgid "Type a phone number or name"
@@ -52,7 +52,7 @@ msgstr ""
 
 #: data/contacts.ui:94 data/menus.ui:33 data/messaging.ui:247
 msgid "Help"
-msgstr ""
+msgstr "Hjælp"
 
 #: data/conversation.ui:76 data/conversation.ui:85 src/shell/notification.js:51
 msgid "Type a message"
@@ -64,7 +64,7 @@ msgstr ""
 
 #: data/device.ui:67 src/service/plugins/battery.js:11
 msgid "Battery"
-msgstr ""
+msgstr "Batteri"
 
 #: data/device.ui:122
 msgid "Camera"
@@ -206,7 +206,7 @@ msgstr ""
 
 #: data/device.ui:1814 data/device.ui:2094
 msgid "Advanced"
-msgstr ""
+msgstr "Avanceret"
 
 #: data/device.ui:2048
 msgid "Keyboard Shortcuts"
@@ -215,11 +215,11 @@ msgstr ""
 #. TRANSLATORS: Send a pair request to the device
 #: data/device.ui:2151 data/menus.ui:68
 msgid "Pair"
-msgstr ""
+msgstr "Par"
 
 #: data/device.ui:2183
 msgid "Device is unpaired"
-msgstr ""
+msgstr "Enheden er uparret"
 
 #: data/device.ui:2198
 msgid "You may configure this device before pairing"
