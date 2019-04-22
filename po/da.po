@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-04-22 02:03\n"
+"PO-Revision-Date: 2019-04-22 02:24\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -297,11 +297,11 @@ msgstr ""
 #: data/messaging.ui:12 src/service/plugins/sms.js:26
 #: src/service/ui/messaging.js:881
 msgid "Messaging"
-msgstr ""
+msgstr "Messaging"
 
 #: data/messaging.ui:21 src/service/ui/messaging.js:1005
 msgid "New Conversation"
-msgstr ""
+msgstr "Ny Samtale"
 
 #: data/messaging.ui:110
 msgid "No conversation selected"
@@ -313,20 +313,20 @@ msgstr ""
 
 #: data/messaging.ui:193 data/notification.ui:53 data/telephony.ui:53
 msgid "Device is disconnected"
-msgstr ""
+msgstr "Enheden er afbrudt"
 
 #: data/messaging.ui:264
 msgid "No Conversations"
-msgstr ""
+msgstr "Ingen Samtaler"
 
 #: data/notification.ui:21 data/telephony.ui:21
 #: src/service/plugins/share.js:388
 msgid "Send"
-msgstr ""
+msgstr "Send"
 
 #: data/settings.ui:10
 msgid "Searching for devices…"
-msgstr ""
+msgstr "Søger efter enheder…"
 
 #: data/settings.ui:49 data/settings.ui:63
 msgid "Refresh"
@@ -339,11 +339,11 @@ msgstr "Mobile Indstillinger"
 
 #: data/settings.ui:144 data/settings.ui:158
 msgid "Edit Device Name"
-msgstr ""
+msgstr "Rediger Enheds Navn"
 
 #: data/settings.ui:236
 msgid "Devices"
-msgstr ""
+msgstr "Enheder"
 
 #: data/settings.ui:299
 msgid "Browser Add-Ons"
