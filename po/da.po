@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-04-22 01:43\n"
+"PO-Revision-Date: 2019-04-22 02:03\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -223,7 +223,7 @@ msgstr "Enheden er uparret"
 
 #: data/device.ui:2198
 msgid "You may configure this device before pairing"
-msgstr ""
+msgstr "Du kan konfigurere denne enhed før parring"
 
 #: data/menus.ui:12
 msgid "Display Mode"
@@ -330,12 +330,12 @@ msgstr ""
 
 #: data/settings.ui:49 data/settings.ui:63
 msgid "Refresh"
-msgstr ""
+msgstr "Opdater"
 
 #. Service Menu -> "Mobile Settings"
 #: data/settings.ui:74 data/settings.ui:91 src/extension.js:104
 msgid "Mobile Settings"
-msgstr ""
+msgstr "Mobile Indstillinger"
 
 #: data/settings.ui:144 data/settings.ui:158
 msgid "Edit Device Name"
@@ -351,7 +351,7 @@ msgstr ""
 
 #: data/settings.ui:579
 msgid "Enable"
-msgstr ""
+msgstr "Aktiver"
 
 #: data/settings.ui:611
 msgid "This device is invisible to unpaired devices"
