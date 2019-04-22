@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-04-22 03:04\n"
+"PO-Revision-Date: 2019-04-22 03:13\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -19,7 +19,7 @@ msgstr ""
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/connect.ui:24 data/menus.ui:7
 msgid "Connect to…"
-msgstr ""
+msgstr "Forbind til…"
 
 #. Action Buttons
 #: data/connect.ui:30 data/notification.ui:14 data/telephony.ui:14
@@ -44,11 +44,11 @@ msgstr "Bluetooth Enhed"
 
 #: data/contacts.ui:48
 msgid "Type a phone number or name"
-msgstr ""
+msgstr "Indtast et telefonnummer eller navn"
 
 #: data/contacts.ui:82
 msgid "No contacts"
-msgstr ""
+msgstr "Ingen kontakter"
 
 #: data/contacts.ui:94 data/menus.ui:33 data/messaging.ui:247
 msgid "Help"
@@ -56,11 +56,11 @@ msgstr "Hjælp"
 
 #: data/conversation.ui:76 data/conversation.ui:85 src/shell/notification.js:51
 msgid "Type a message"
-msgstr ""
+msgstr "Skriv en meddelelse"
 
 #: data/conversation.ui:84
 msgid "Send Message"
-msgstr ""
+msgstr "Send Meddelelse"
 
 #: data/device.ui:67 src/service/plugins/battery.js:11
 msgid "Battery"
@@ -68,7 +68,7 @@ msgstr "Batteri"
 
 #: data/device.ui:122
 msgid "Camera"
-msgstr ""
+msgstr "Kamera"
 
 #: data/device.ui:178
 msgid "Clipboard Sync"
@@ -286,13 +286,13 @@ msgstr ""
 #. TRANSLATORS: Lower the system volume
 #: data/menus.ui:111 data/menus.ui:137
 msgid "Lower"
-msgstr ""
+msgstr "Reducere"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the phone ringer
 #: data/menus.ui:118 data/menus.ui:144 src/service/plugins/telephony.js:177
 msgid "Mute"
-msgstr ""
+msgstr "Lydløs"
 
 #: data/messaging.ui:12 src/service/plugins/sms.js:26
 #: src/service/ui/messaging.js:881
@@ -909,7 +909,7 @@ msgstr "Forstyr ikke"
 
 #: src/shell/donotdisturb.js:156
 msgid "Silence Mobile Device Notifications"
-msgstr ""
+msgstr "Stilhed mobilmeddelelser"
 
 #: src/shell/donotdisturb.js:171
 msgid "Until you turn off Do Not Disturb"
