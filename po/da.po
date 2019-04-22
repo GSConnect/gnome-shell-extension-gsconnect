@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-04-22 02:33\n"
+"PO-Revision-Date: 2019-04-22 02:44\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -471,7 +471,7 @@ msgstr "Indstillinger"
 #: src/service/device.js:615
 #, javascript-format
 msgid "Pair Request from %s"
-msgstr ""
+msgstr "Paranmodning fra %s"
 
 #: src/service/device.js:622
 msgid "Reject"
@@ -489,7 +489,7 @@ msgstr "Ring"
 #: src/service/plugins/battery.js:164
 #, javascript-format
 msgid "%s: Battery is low"
-msgstr ""
+msgstr "%s: Batteriet er lavt"
 
 #. TRANSLATORS: eg. 15% remaining
 #: src/service/plugins/battery.js:166
@@ -519,11 +519,11 @@ msgstr ""
 
 #: src/service/plugins/findmyphone.js:13
 msgid "Find My Phone"
-msgstr ""
+msgstr "Find min telefon"
 
 #: src/service/plugins/mousepad.js:14
 msgid "Mousepad"
-msgstr ""
+msgstr "Musemåtte"
 
 #: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:720
 msgid "Keyboard"
@@ -848,7 +848,7 @@ msgstr ""
 
 #: src/service/ui/settings.js:325
 msgid "Disconnected"
-msgstr ""
+msgstr "Frakoblet"
 
 #: src/service/ui/settings.js:328
 msgid "Connected"
