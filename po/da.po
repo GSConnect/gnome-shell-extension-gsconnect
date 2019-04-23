@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-04-22 13:36\n"
+"PO-Revision-Date: 2019-04-23 20:25\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -166,7 +166,7 @@ msgstr "Telefoni"
 
 #: data/device.ui:1401
 msgid "Action Shortcuts"
-msgstr ""
+msgstr "Handlings Genveje"
 
 #: data/device.ui:1416 data/device.ui:1485
 msgid "Reset All…"
@@ -178,15 +178,15 @@ msgstr ""
 
 #: data/device.ui:1534
 msgid "Shortcuts"
-msgstr ""
+msgstr "Genveje"
 
 #: data/device.ui:1565
 msgid "Plugins"
-msgstr ""
+msgstr "Plugins"
 
 #: data/device.ui:1611
 msgid "Experimental"
-msgstr ""
+msgstr "Eksperimentel"
 
 #: data/device.ui:1660
 msgid "Legacy SMS Support"
@@ -237,7 +237,7 @@ msgstr "Panel"
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
 #: data/menus.ui:21
 msgid "User Menu"
-msgstr ""
+msgstr "Bruger Menu"
 
 #. TRANSLATORS: Generate a support log
 #: data/menus.ui:29 src/service/ui/settings.js:528
@@ -246,7 +246,7 @@ msgstr ""
 
 #: data/menus.ui:38
 msgid "About GSConnect"
-msgstr ""
+msgstr "Om GSConnect"
 
 #. TRANSLATORS: Change the connection type to Bluetooth
 #: data/menus.ui:49
