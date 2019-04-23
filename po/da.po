@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-04-23 20:43\n"
+"PO-Revision-Date: 2019-04-23 20:54\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -452,15 +452,15 @@ msgstr "Smartphone"
 
 #: src/service/device.js:265
 msgid "Tablet"
-msgstr ""
+msgstr "Tablet"
 
 #: src/service/device.js:267
 msgid "Desktop"
-msgstr ""
+msgstr "Stationær Computer"
 
 #: src/service/device.js:426 src/service/ui/device.js:15
 msgid "Reconnect"
-msgstr ""
+msgstr "Tilslut Igen"
 
 #: src/service/device.js:433 src/service/ui/device.js:16
 #: src/service/ui/settings.js:363
@@ -495,19 +495,19 @@ msgstr "%s: Batteriet er lavt"
 #: src/service/plugins/battery.js:166
 #, javascript-format
 msgid "%d%% remaining"
-msgstr ""
+msgstr "%d%% tilbage"
 
 #: src/service/plugins/clipboard.js:11
 msgid "Clipboard"
-msgstr ""
+msgstr "Udklipsholder"
 
 #: src/service/plugins/clipboard.js:17
 msgid "Clipboard Push"
-msgstr ""
+msgstr "Udklipsholder Tryk"
 
 #: src/service/plugins/clipboard.js:25
 msgid "Clipboard Pull"
-msgstr ""
+msgstr "Udklipsholder Trække"
 
 #. Ensure we have a sender
 #. TRANSLATORS: No name or phone number
@@ -543,7 +543,7 @@ msgstr "MPRIS"
 
 #: src/service/plugins/notification.js:26
 msgid "Cancel Notification"
-msgstr ""
+msgstr "Annullere Besked"
 
 #: src/service/plugins/notification.js:34
 msgid "Close Notification"
@@ -564,14 +564,14 @@ msgstr "Foto"
 #: src/service/plugins/ping.js:11 src/service/plugins/ping.js:17
 #: src/service/plugins/ping.js:46
 msgid "Ping"
-msgstr ""
+msgstr "Ping"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
 #: src/service/plugins/ping.js:53
 #, javascript-format
 msgid "Ping: %s"
-msgstr ""
+msgstr "Ping: %s"
 
 #: src/service/plugins/runcommand.js:12
 msgid "Run Commands"
