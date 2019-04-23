@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-04-23 20:54\n"
+"PO-Revision-Date: 2019-04-23 21:04\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -547,7 +547,7 @@ msgstr "Annullere Besked"
 
 #: src/service/plugins/notification.js:34
 msgid "Close Notification"
-msgstr ""
+msgstr "Luk Besked"
 
 #: src/service/plugins/notification.js:42
 msgid "Reply Notification"
@@ -764,20 +764,20 @@ msgstr ""
 
 #: src/service/ui/device.js:605
 msgid "Open"
-msgstr ""
+msgstr "Åbn"
 
 #: src/service/ui/device.js:657 src/service/ui/device.js:670
 msgid "On"
-msgstr ""
+msgstr "Tænde"
 
 #: src/service/ui/device.js:657 src/service/ui/device.js:670
 msgid "Off"
-msgstr ""
+msgstr "Slukke"
 
 #: src/service/ui/device.js:795 src/service/ui/device.js:823
 #: src/service/ui/device.js:847
 msgid "Disabled"
-msgstr ""
+msgstr "Deaktiveret"
 
 #. TRANSLATORS: Title of keyboard shortcut dialog
 #: src/service/ui/keybindings.js:33
@@ -811,7 +811,7 @@ msgstr ""
 #. TRANSLATORS: Less than a minute ago
 #: src/service/ui/messaging.js:28 src/service/ui/messaging.js:61
 msgid "Just now"
-msgstr ""
+msgstr "Lige Nu"
 
 #. TRANSLATORS: Time duration in minutes (eg. 15 minutes)
 #: src/service/ui/messaging.js:33 src/service/ui/messaging.js:65
