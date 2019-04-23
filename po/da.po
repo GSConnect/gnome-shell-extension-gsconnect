@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-04-23 20:33\n"
+"PO-Revision-Date: 2019-04-23 20:43\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -386,7 +386,7 @@ msgstr ""
 
 #: src/service/daemon.js:373
 msgid "Report"
-msgstr ""
+msgstr "Anmeld"
 
 #: src/service/daemon.js:500
 msgid "Authentication Failure"
@@ -394,7 +394,7 @@ msgstr ""
 
 #: src/service/daemon.js:509
 msgid "Network Error"
-msgstr ""
+msgstr "Netværks Fejl"
 
 #: src/service/daemon.js:510
 msgid "Click for help troubleshooting"
@@ -419,17 +419,17 @@ msgstr ""
 
 #: src/service/daemon.js:687 src/service/plugins/share.js:27
 msgid "Share File"
-msgstr ""
+msgstr "Del Fil"
 
 #: src/service/device.js:174
 msgid "Not available"
-msgstr ""
+msgstr "Ikke Tilgængelig"
 
 #. TRANSLATORS: Bluetooth address for remote device
 #: src/service/device.js:179
 #, javascript-format
 msgid "Bluetooth device at %s"
-msgstr ""
+msgstr "Bluetooth enhed på %s"
 
 #. TRANSLATORS: Label for TLS Certificate fingerprint
 #.
@@ -440,15 +440,15 @@ msgstr ""
 #: src/service/device.js:201 src/service/device.js:203
 #, javascript-format
 msgid "%s Fingerprint:"
-msgstr ""
+msgstr "%s Fingeraftryk:"
 
 #: src/service/device.js:261
 msgid "Laptop"
-msgstr ""
+msgstr "Bærbar"
 
 #: src/service/device.js:263
 msgid "Smartphone"
-msgstr ""
+msgstr "Smartphone"
 
 #: src/service/device.js:265
 msgid "Tablet"
