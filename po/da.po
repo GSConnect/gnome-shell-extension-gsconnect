@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-04-23 20:25\n"
+"PO-Revision-Date: 2019-04-23 20:33\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -170,7 +170,7 @@ msgstr "Handlings Genveje"
 
 #: data/device.ui:1416 data/device.ui:1485
 msgid "Reset All…"
-msgstr ""
+msgstr "Nulstil Alle…"
 
 #: data/device.ui:1470
 msgid "Command Shortcuts"
@@ -251,17 +251,17 @@ msgstr "Om GSConnect"
 #. TRANSLATORS: Change the connection type to Bluetooth
 #: data/menus.ui:49
 msgid "Switch to Bluetooth"
-msgstr ""
+msgstr "Skift til Bluetooth"
 
 #. TRANSLATORS: Change the connection type to TCP/IP
 #: data/menus.ui:56
 msgid "Switch to LAN"
-msgstr ""
+msgstr "Skift til LAN"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
 #: data/menus.ui:63 src/service/ui/device.js:308
 msgid "Encryption Info"
-msgstr ""
+msgstr "Kryptering Info"
 
 #. TRANSLATORS: Unpair the device and notify it
 #: data/menus.ui:74
@@ -271,7 +271,7 @@ msgstr "Unpair"
 #. TRANSLATORS: Send clipboard content to device
 #: data/menus.ui:86
 msgid "To Device"
-msgstr ""
+msgstr "Til Enhed"
 
 #. TRANSLATORS: Receive clipboard content from the device
 #: data/menus.ui:92
