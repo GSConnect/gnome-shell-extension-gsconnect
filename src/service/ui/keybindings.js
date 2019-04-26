@@ -18,6 +18,48 @@ var ResponseType = {
 
 
 /**
+ * Check the minor version of gnome-shell.
+ *
+ * @param {number} - the minor version of gnome-shell
+ */
+async function getShellVersionMinor() {
+    try {
+        if (getShellVersionMinor.__value)
+            return getShellVersionMinor.__value;
+
+        getShellVersionMinor.__value = await new Promise((resolve, reject) => {
+            Gio.DBus.session.call(
+                'org.gnome.Shell',
+                '/org/gnome/Shell',
+                'org.freedesktop.DBus.Properties',
+                'Get',
+                new GLib.Variant('(ss)', ['org.gnome.Shell', 'ShellVersion']),
+                null,
+                Gio.DBusCallFlags.NONE,
+                -1,
+                null,
+                (connection, res) => {
+                    try {
+                        res = connection.call_finish(res);
+                        let version = res.deep_unpack()[0].get_string()[0];
+                        let minor = parseInt(version.split('.')[1], 10);
+                        resolve(minor);
+                    } catch (e) {
+                        reject(e);
+                    }
+                }
+            );
+        });
+
+        return getShellVersionMinor.__value;
+    } catch (e) {
+        logError(e);
+        return 32;
+    }
+}
+
+
+/**
  * A simplified version of the shortcut editor from GNOME Control Center
  */
 var ShortcutChooserDialog = GObject.registerClass({
@@ -258,14 +300,25 @@ var ShortcutChooserDialog = GObject.registerClass({
  * Check the availability of an accelerator using GNOME Shell's DBus interface.
  *
  * @param {string} - An accelerator
- * @param {number} - Flags
+ * @param {number} - Mode Flags
+ * @param {number} - Grab Flags
  * @param {boolean} - %true if available, %false on error or unavailable
  */
-async function check_accelerator(accelerator, flags = 0) {
+async function check_accelerator(accelerator, modeFlags = 0, grabFlags = 0) {
     let action;
     let result = false;
 
     try {
+        // Check whether we're >= gnome-shell 3.32
+        let minor = await getShellVersionMinor();
+        let params;
+
+        if (minor >= 32) {
+            params = new GLib.Variant('(suu)', [accelerator, modeFlags, grabFlags]);
+        } else {
+            params = new GLib.Variant('(su)', [accelerator, modeFlags]);
+        }
+
         // Use gnome-shell's DBus interface to try and grab the accelerator
         action = await new Promise((resolve, reject) => {
             Gio.DBus.session.call(
@@ -273,7 +326,7 @@ async function check_accelerator(accelerator, flags = 0) {
                 '/org/gnome/Shell',
                 'org.gnome.Shell',
                 'GrabAccelerator',
-                new GLib.Variant('(su)', [accelerator, flags]),
+                params,
                 null,
                 Gio.DBusCallFlags.NONE,
                 -1,
@@ -316,6 +369,7 @@ async function check_accelerator(accelerator, flags = 0) {
 
         return result;
     } catch (e) {
+        debug (e);
         return false;
     }
 }
