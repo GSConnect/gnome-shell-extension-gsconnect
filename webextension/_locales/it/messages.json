@@ -8,7 +8,7 @@
         "description": "The extension description"
     },
     "contextMenuMultipleDevices": {
-        "message": "Invia al Dispositivo Mobile",
+        "message": "Invia al dispositivo mobile",
         "description": "Top-level Context Menu label when multiple devices are available"
     },
     "contextMenuSinglePlugin": {
@@ -34,7 +34,7 @@
         "description": "Popup Menu label when no devices are connected or have supported plugins enabled"
     },
     "shareMessage": {
-        "message": "Apri nel Browser",
+        "message": "Apri nel browser",
         "description": "Context Menu label for opening a link in the device's web browser"
     },
     "smsMessage": {

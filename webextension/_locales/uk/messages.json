@@ -4,11 +4,11 @@
         "description": "The extension name"
     },
     "extensionDescription": {
-        "message": "Sdílet odkazy pomocí GSConnect, přímo do prohlížeče nebo prostřednictvím SMS.",
+        "message": "Поширюйте посилання за допомогою GSConnect, напряму до браузера або через SMS.",
         "description": "The extension description"
     },
     "contextMenuMultipleDevices": {
-        "message": "Odeslat do mobilního zařízení",
+        "message": "Відправити до мобільного пристрою",
         "description": "Top-level Context Menu label when multiple devices are available"
     },
     "contextMenuSinglePlugin": {
@@ -26,19 +26,19 @@
         }
     },
     "popupMenuDisconnected": {
-        "message": "Služba nedostupná",
+        "message": "Сервіс недоступний",
         "description": "Popup Menu label when disconnected from the GNOME Shell extension"
     },
     "popupMenuNoDevices": {
-        "message": "Nenalezeno žádné zařízení",
+        "message": "Пристроїв не знайдено",
         "description": "Popup Menu label when no devices are connected or have supported plugins enabled"
     },
     "shareMessage": {
-        "message": "Otevřít v prohlížeči",
+        "message": "Відкрити у браузері",
         "description": "Context Menu label for opening a link in the device's web browser"
     },
     "smsMessage": {
-        "message": "Poslat SMS",
+        "message": "Відправити SMS",
         "description": "Context Menu label for sharing a link in an SMS message"
     }
 }

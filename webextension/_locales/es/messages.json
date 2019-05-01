@@ -4,7 +4,7 @@
         "description": "The extension name"
     },
     "extensionDescription": {
-        "message": "Share links with GSConnect, direct to the browser or by SMS.",
+        "message": "Comparta enlaces con GSConnect, directamente al navegador o a través de SMS.",
         "description": "The extension description"
     },
     "contextMenuMultipleDevices": {
