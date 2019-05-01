@@ -20,7 +20,7 @@ elif [ "${1}" == "lint" ]; then
     exit
 
 # Common preparation for chrome & firefox
-elif [ "${1}" != "chrome" ] || [ "${1}" != "firefox" ]; then
+elif [ "${1}" == "chrome" ] || [ "${1}" == "firefox" ]; then
     # Clean-up old files
     rm -rf ${1}.zip
 
