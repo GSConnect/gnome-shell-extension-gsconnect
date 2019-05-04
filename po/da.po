@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-05-04 15:34\n"
+"PO-Revision-Date: 2019-05-04 15:44\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -799,7 +799,7 @@ msgstr ""
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/service/ui/keybindings.js:83
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
+msgstr "Tryk på Esc at annullere eller backspace-nøgle for at nulstille tastaturgenvejen."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
