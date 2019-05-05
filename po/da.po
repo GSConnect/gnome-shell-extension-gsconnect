@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-04-23 21:38\n"
+"PO-Revision-Date: 2019-05-04 15:44\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -174,7 +174,7 @@ msgstr "Nulstil Alle…"
 
 #: data/device.ui:1470
 msgid "Command Shortcuts"
-msgstr ""
+msgstr "Kommando Genveje"
 
 #: data/device.ui:1534
 msgid "Shortcuts"
@@ -575,7 +575,7 @@ msgstr "Ping: %s"
 
 #: src/service/plugins/runcommand.js:12
 msgid "Run Commands"
-msgstr ""
+msgstr "Udføre Kommando"
 
 #: src/service/plugins/sftp.js:12
 msgid "SFTP"
@@ -782,12 +782,12 @@ msgstr "Deaktiveret"
 #. TRANSLATORS: Title of keyboard shortcut dialog
 #: src/service/ui/keybindings.js:33
 msgid "Set Shortcut"
-msgstr ""
+msgstr "Indstil Genvej"
 
 #. TRANSLATORS: Button to confirm the new shortcut
 #: src/service/ui/keybindings.js:47
 msgid "Set"
-msgstr ""
+msgstr "Indstil"
 
 #. TRANSLATORS: Summary of a keyboard shortcut function
 #. Example: Enter a new shortcut to change Messaging
@@ -799,14 +799,14 @@ msgstr ""
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/service/ui/keybindings.js:83
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
+msgstr "Tryk på Esc at annullere eller backspace-nøgle for at nulstille tastaturgenvejen."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
 #: src/service/ui/keybindings.js:182
 #, javascript-format
 msgid "%s is already being used"
-msgstr ""
+msgstr "%s er allerede bliver brugt"
 
 #. TRANSLATORS: Less than a minute ago
 #: src/service/ui/messaging.js:28 src/service/ui/messaging.js:61
