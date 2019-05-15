@@ -283,7 +283,12 @@ String.prototype.linkify = function(title = null) {
  * @return {string} - Return the string stripped of leading 0, and ' ()-+'
  */
 String.prototype.toPhoneNumber = function() {
-    return this.replace(/^0*|[ ()+-]/g, '');
+    let strippedNumber = this.replace(/^0*|[ ()+-]/g, '');
+
+    if (strippedNumber.length)
+        return strippedNumber;
+
+    return this;
 };
 
 
