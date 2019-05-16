@@ -645,7 +645,7 @@ var Plugin = GObject.registerClass({
      * @param {string} id - The remote notification id
      * @param {string} action - The notification action (label)
      */
-    activateNotification (id, action) {
+    activateNotification(id, action) {
         this.device.sendPacket({
             type: 'kdeconnect.notification.action',
             body: {
