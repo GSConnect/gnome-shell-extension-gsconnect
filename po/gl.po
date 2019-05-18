@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-05-18 11:14\n"
+"PO-Revision-Date: 2019-05-18 11:34\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Galician\n"
 "Language: gl\n"
@@ -591,42 +591,42 @@ msgstr "Desmontar"
 
 #: src/service/plugins/sftp.js:119
 msgid "All files"
-msgstr ""
+msgstr "Todos os ficheiros"
 
 #: src/service/plugins/sftp.js:120
 msgid "Camera pictures"
-msgstr ""
+msgstr "Imaxes da cámara"
 
 #: src/service/plugins/sftp.js:316
 msgid "Files"
-msgstr ""
+msgstr "Ficheiros"
 
 #: src/service/plugins/share.js:13 src/service/plugins/share.js:19
 msgid "Share"
-msgstr ""
+msgstr "Compartir"
 
 #: src/service/plugins/share.js:35
 msgid "Share Text"
-msgstr ""
+msgstr "Compartir texto"
 
 #: src/service/plugins/share.js:43 src/service/ui/messaging.js:988
 #: src/service/ui/messaging.js:996
 msgid "Share Link"
-msgstr ""
+msgstr "Compartir ligazón"
 
 #: src/service/plugins/share.js:95 src/service/plugins/share.js:237
 msgid "Starting Transfer"
-msgstr ""
+msgstr "Comezar a transferencia"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:97
 #, javascript-format
 msgid "Receiving “%s” from %s"
-msgstr ""
+msgstr "Recibindo \"%s\" de %s"
 
 #: src/service/plugins/share.js:121 src/service/plugins/share.js:260
 msgid "Transfer Successful"
-msgstr ""
+msgstr "Transferencia correcta"
 
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:123
