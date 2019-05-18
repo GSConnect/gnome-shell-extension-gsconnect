@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-05-18 11:04\n"
+"PO-Revision-Date: 2019-05-18 11:14\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Galician\n"
 "Language: gl\n"
@@ -503,11 +503,11 @@ msgstr "Portapapeis"
 
 #: src/service/plugins/clipboard.js:17
 msgid "Clipboard Push"
-msgstr ""
+msgstr "Meter portapapeis"
 
 #: src/service/plugins/clipboard.js:25
 msgid "Clipboard Pull"
-msgstr ""
+msgstr "Sacar portapapeis"
 
 #. Ensure we have a sender
 #. TRANSLATORS: No name or phone number
@@ -515,79 +515,79 @@ msgstr ""
 #: src/service/plugins/telephony.js:207 src/service/plugins/telephony.js:247
 #: src/service/ui/contacts.js:156 src/service/ui/contacts.js:455
 msgid "Unknown Contact"
-msgstr ""
+msgstr "Contacto descoñecido"
 
 #: src/service/plugins/findmyphone.js:13
 msgid "Find My Phone"
-msgstr ""
+msgstr "Atopar o meu teléfono"
 
 #: src/service/plugins/mousepad.js:14
 msgid "Mousepad"
-msgstr ""
+msgstr "Área de rato"
 
 #: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:720
 msgid "Keyboard"
-msgstr ""
+msgstr "Teclado"
 
 #: src/service/plugins/mousepad.js:266
 msgid "Additional Software Required"
-msgstr ""
+msgstr "Requírese software adicional"
 
 #: src/service/plugins/mousepad.js:737
 msgid "Keyboard not ready"
-msgstr ""
+msgstr "O teclado non está listo"
 
 #: src/service/plugins/mpris.js:10
 msgid "MPRIS"
-msgstr ""
+msgstr "MPRIS"
 
 #: src/service/plugins/notification.js:26
 msgid "Cancel Notification"
-msgstr ""
+msgstr "Anular a notificación"
 
 #: src/service/plugins/notification.js:34
 msgid "Close Notification"
-msgstr ""
+msgstr "Pechar a notificación"
 
 #: src/service/plugins/notification.js:42
 msgid "Reply Notification"
-msgstr ""
+msgstr "Responder a notificación"
 
 #: src/service/plugins/notification.js:50
 msgid "Send Notification"
-msgstr ""
+msgstr "Enviar a notificación"
 
 #: src/service/plugins/photo.js:11 src/service/plugins/photo.js:17
 msgid "Photo"
-msgstr ""
+msgstr "Foto"
 
 #: src/service/plugins/ping.js:11 src/service/plugins/ping.js:17
 #: src/service/plugins/ping.js:46
 msgid "Ping"
-msgstr ""
+msgstr "Ping"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
 #: src/service/plugins/ping.js:53
 #, javascript-format
 msgid "Ping: %s"
-msgstr ""
+msgstr "Ping: %s"
 
 #: src/service/plugins/runcommand.js:12
 msgid "Run Commands"
-msgstr ""
+msgstr "Executar ordes"
 
 #: src/service/plugins/sftp.js:12
 msgid "SFTP"
-msgstr ""
+msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:18
 msgid "Mount"
-msgstr ""
+msgstr "Montar"
 
 #: src/service/plugins/sftp.js:26
 msgid "Unmount"
-msgstr ""
+msgstr "Desmontar"
 
 #: src/service/plugins/sftp.js:119
 msgid "All files"
