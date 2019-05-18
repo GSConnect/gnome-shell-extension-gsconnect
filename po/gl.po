@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-05-18 16:06\n"
+"PO-Revision-Date: 2019-05-18 16:14\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Galician\n"
 "Language: gl\n"
@@ -355,81 +355,81 @@ msgstr "Activar"
 
 #: data/settings.ui:611
 msgid "This device is invisible to unpaired devices"
-msgstr ""
+msgstr "Este dispositivo é invisíbel para dispositivos non emparellados"
 
 #: data/settings.ui:623 src/service/daemon.js:518
 msgid "Discovery Disabled"
-msgstr ""
+msgstr "Descuberta desactivada"
 
 #. TRANSLATORS: Share URL by SMS
 #: data/telephony.ui:9 src/service/daemon.js:675 src/service/plugins/sms.js:50
 #: webextension/gettext.js:39
 msgid "Send SMS"
-msgstr ""
+msgstr "Enviar SMS"
 
 #. Service Menu
 #: src/extension.js:79 src/extension.js:198
 msgid "Mobile Devices"
-msgstr ""
+msgstr "Dispositivos móbiles"
 
 #: src/extension.js:193
 #, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d Conectado"
+msgstr[1] "%d Conectados"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:149 webextension/gettext.js:31
 msgid "Send To Mobile Device"
-msgstr ""
+msgstr "Enviar a dispositivo móbil"
 
 #: src/service/daemon.js:373
 msgid "Report"
-msgstr ""
+msgstr "Informar"
 
 #: src/service/daemon.js:500
 msgid "Authentication Failure"
-msgstr ""
+msgstr "Fallo de autenticación"
 
 #: src/service/daemon.js:509
 msgid "Network Error"
-msgstr ""
+msgstr "Erro de rede"
 
 #: src/service/daemon.js:510
 msgid "Click for help troubleshooting"
-msgstr ""
+msgstr "Prema para obter axuda de solucións"
 
 #: src/service/daemon.js:519
 msgid "Discovery has been disabled due to the number of devices on this network."
-msgstr ""
+msgstr "A descuberta desactivouse debido ao número de dispositivos nesta rede."
 
 #: src/service/daemon.js:527
 #, javascript-format
 msgid "%s Plugin Failed To Load"
-msgstr ""
+msgstr "O engadido %s fallou ao cargar"
 
 #: src/service/daemon.js:528 src/service/daemon.js:542
 msgid "Click for more information"
-msgstr ""
+msgstr "Premer para ter máis información"
 
 #: src/service/daemon.js:681
 msgid "Dial Number"
-msgstr ""
+msgstr "Número en dial"
 
 #: src/service/daemon.js:687 src/service/plugins/share.js:27
 msgid "Share File"
-msgstr ""
+msgstr "Compartir ficheiro"
 
 #: src/service/device.js:174
 msgid "Not available"
-msgstr ""
+msgstr "Non dispoñíbel"
 
 #. TRANSLATORS: Bluetooth address for remote device
 #: src/service/device.js:179
 #, javascript-format
 msgid "Bluetooth device at %s"
-msgstr ""
+msgstr "Dispositivo bluetooth en %s"
 
 #. TRANSLATORS: Label for TLS Certificate fingerprint
 #.
@@ -440,23 +440,23 @@ msgstr ""
 #: src/service/device.js:201 src/service/device.js:203
 #, javascript-format
 msgid "%s Fingerprint:"
-msgstr ""
+msgstr "Dactilograma %s:"
 
 #: src/service/device.js:261
 msgid "Laptop"
-msgstr ""
+msgstr "Portátil"
 
 #: src/service/device.js:263
 msgid "Smartphone"
-msgstr ""
+msgstr "Móbil"
 
 #: src/service/device.js:265
 msgid "Tablet"
-msgstr ""
+msgstr "Tableta"
 
 #: src/service/device.js:267
 msgid "Desktop"
-msgstr ""
+msgstr "Escritorio"
 
 #: src/service/device.js:426 src/service/ui/device.js:15
 msgid "Reconnect"
@@ -887,14 +887,14 @@ msgstr ""
 #: src/shell/device.js:117
 #, javascript-format
 msgid "%d%% (Estimating…)"
-msgstr ""
+msgstr "%d%% (Estímase…)"
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
 #: src/shell/device.js:127
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
-msgstr ""
+msgstr "%d%% (%d:%02d Ata completar)"
 
 #. TRANSLATORS: Estimated time until battery is empty
 #. EXAMPLE: 42% (12:15 Remaining)
