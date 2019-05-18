@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-05-18 10:54\n"
+"PO-Revision-Date: 2019-05-18 11:04\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Galician\n"
 "Language: gl\n"
@@ -72,158 +72,158 @@ msgstr "Cámara"
 
 #: data/device.ui:178
 msgid "Clipboard Sync"
-msgstr ""
+msgstr "Sincronizar portapapeis"
 
 #: data/device.ui:241
 msgid "Media Players"
-msgstr ""
+msgstr "Reprodutores multimedia"
 
 #: data/device.ui:296
 msgid "Mouse & Keyboard"
-msgstr ""
+msgstr "Rato e teclado"
 
 #: data/device.ui:351
 msgid "Volume Control"
-msgstr ""
+msgstr "Control de volume"
 
 #: data/device.ui:401 data/device.ui:1864
 msgid "Sharing"
-msgstr ""
+msgstr "Compartindo"
 
 #: data/device.ui:430 data/device.ui:707 data/device.ui:1910
 #: src/service/plugins/runcommand.js:18 src/service/plugins/runcommand.js:175
 msgid "Commands"
-msgstr ""
+msgstr "Ordes"
 
 #: data/device.ui:480 data/device.ui:483
 msgid "Name"
-msgstr ""
+msgstr "Nome"
 
 #: data/device.ui:496 data/device.ui:502
 msgid "Command Line"
-msgstr ""
+msgstr "Liña de ordes"
 
 #: data/device.ui:500 data/device.ui:501
 msgid "Choose an executable"
-msgstr ""
+msgstr "Escoller un executábel"
 
 #: data/device.ui:552 data/device.ui:567
 msgid "Add"
-msgstr ""
+msgstr "Engadir"
 
 #: data/device.ui:583 data/device.ui:598
 msgid "Remove"
-msgstr ""
+msgstr "Retirar"
 
 #: data/device.ui:632 data/device.ui:644
 msgid "Edit"
-msgstr ""
+msgstr "Editar"
 
 #: data/device.ui:660 data/device.ui:672
 msgid "Save"
-msgstr ""
+msgstr "Gardar"
 
 #: data/device.ui:768
 msgid "Share Notifications"
-msgstr ""
+msgstr "Compartir notificacións"
 
 #: data/device.ui:819
 msgid "Applications"
-msgstr ""
+msgstr "Aplicativos"
 
 #: data/device.ui:865 data/device.ui:1956
 #: src/service/plugins/notification.js:13
 msgid "Notifications"
-msgstr ""
+msgstr "Notificacións"
 
 #: data/device.ui:923 src/service/plugins/contacts.js:12
 msgid "Contacts"
-msgstr ""
+msgstr "Contactos"
 
 #: data/device.ui:976
 msgid "Incoming Calls"
-msgstr ""
+msgstr "Chamadas entrantes"
 
 #: data/device.ui:1025 data/device.ui:1191
 msgid "Volume"
-msgstr ""
+msgstr "Volume"
 
 #: data/device.ui:1090 data/device.ui:1256
 msgid "Pause Media"
-msgstr ""
+msgstr "Deter reprodución"
 
 #: data/device.ui:1143
 msgid "Ongoing Calls"
-msgstr ""
+msgstr "Chamadas saíntes"
 
 #: data/device.ui:1312
 msgid "Mute Microphone"
-msgstr ""
+msgstr "Silenciar micrófono"
 
 #: data/device.ui:1366 data/device.ui:2002 src/service/plugins/telephony.js:13
 msgid "Telephony"
-msgstr ""
+msgstr "Telefonía"
 
 #: data/device.ui:1401
 msgid "Action Shortcuts"
-msgstr ""
+msgstr "Atallos de acción"
 
 #: data/device.ui:1416 data/device.ui:1485
 msgid "Reset All…"
-msgstr ""
+msgstr "Reiniciar todo…"
 
 #: data/device.ui:1470
 msgid "Command Shortcuts"
-msgstr ""
+msgstr "Atallos de ordes"
 
 #: data/device.ui:1534
 msgid "Shortcuts"
-msgstr ""
+msgstr "Atallos"
 
 #: data/device.ui:1565
 msgid "Plugins"
-msgstr ""
+msgstr "Engadidos"
 
 #: data/device.ui:1611
 msgid "Experimental"
-msgstr ""
+msgstr "Experimental"
 
 #: data/device.ui:1660
 msgid "Legacy SMS Support"
-msgstr ""
+msgstr "Compatibilidade con SMS herdados"
 
 #: data/device.ui:1734
 msgid "Delete"
-msgstr ""
+msgstr "Eliminar"
 
 #: data/device.ui:1763
 msgid "Delete this device"
-msgstr ""
+msgstr "Eliminar este dispositivo"
 
 #: data/device.ui:1781
 msgid "Unpair and remove all settings and files"
-msgstr ""
+msgstr "Desemparellar e retirar todos os axustes e ficheiros"
 
 #: data/device.ui:1814 data/device.ui:2094
 msgid "Advanced"
-msgstr ""
+msgstr "Avanzado"
 
 #: data/device.ui:2048
 msgid "Keyboard Shortcuts"
-msgstr ""
+msgstr "Atallos de teclado"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/device.ui:2151 data/menus.ui:68
 msgid "Pair"
-msgstr ""
+msgstr "Enparellar"
 
 #: data/device.ui:2183
 msgid "Device is unpaired"
-msgstr ""
+msgstr "O dispositivo non está emparellado"
 
 #: data/device.ui:2198
 msgid "You may configure this device before pairing"
-msgstr ""
+msgstr "Pode configurar este dispositivo antes do emparellado"
 
 #: data/menus.ui:12
 msgid "Display Mode"
@@ -460,46 +460,46 @@ msgstr ""
 
 #: src/service/device.js:426 src/service/ui/device.js:15
 msgid "Reconnect"
-msgstr ""
+msgstr "Reconectar"
 
 #: src/service/device.js:433 src/service/ui/device.js:16
 #: src/service/ui/settings.js:363
 msgid "Settings"
-msgstr ""
+msgstr "Configuración"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:615
 #, javascript-format
 msgid "Pair Request from %s"
-msgstr ""
+msgstr "Petición de emparellado desde %s"
 
 #: src/service/device.js:622
 msgid "Reject"
-msgstr ""
+msgstr "Rexeitar"
 
 #: src/service/device.js:627
 msgid "Accept"
-msgstr ""
+msgstr "Aceptar"
 
 #: src/service/plugins/battery.js:155 src/service/plugins/findmyphone.js:19
 msgid "Ring"
-msgstr ""
+msgstr "Timbre"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:164
 #, javascript-format
 msgid "%s: Battery is low"
-msgstr ""
+msgstr "%s: A batería está baixa"
 
 #. TRANSLATORS: eg. 15% remaining
 #: src/service/plugins/battery.js:166
 #, javascript-format
 msgid "%d%% remaining"
-msgstr ""
+msgstr "Queda o %d%%"
 
 #: src/service/plugins/clipboard.js:11
 msgid "Clipboard"
-msgstr ""
+msgstr "Portapapeis"
 
 #: src/service/plugins/clipboard.js:17
 msgid "Clipboard Push"
