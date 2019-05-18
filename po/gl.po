@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-05-18 11:34\n"
+"PO-Revision-Date: 2019-05-18 15:55\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Galician\n"
 "Language: gl\n"
@@ -227,102 +227,102 @@ msgstr "Pode configurar este dispositivo antes do emparellado"
 
 #: data/menus.ui:12
 msgid "Display Mode"
-msgstr ""
+msgstr "Modo de visualización"
 
 #. TRANSLATORS: Show device indicators in the top bar
 #: data/menus.ui:15
 msgid "Panel"
-msgstr ""
+msgstr "Panel"
 
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
 #: data/menus.ui:21
 msgid "User Menu"
-msgstr ""
+msgstr "Menú do usuario"
 
 #. TRANSLATORS: Generate a support log
 #: data/menus.ui:29 src/service/ui/settings.js:528
 msgid "Generate Support Log"
-msgstr ""
+msgstr "Xerar o rexistro para asistencia"
 
 #: data/menus.ui:38
 msgid "About GSConnect"
-msgstr ""
+msgstr "Verbo de GSConnect"
 
 #. TRANSLATORS: Change the connection type to Bluetooth
 #: data/menus.ui:49
 msgid "Switch to Bluetooth"
-msgstr ""
+msgstr "Trocar para bluetooth"
 
 #. TRANSLATORS: Change the connection type to TCP/IP
 #: data/menus.ui:56
 msgid "Switch to LAN"
-msgstr ""
+msgstr "Trocar para LAN"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
 #: data/menus.ui:63 src/service/ui/device.js:308
 msgid "Encryption Info"
-msgstr ""
+msgstr "Info de cifrado"
 
 #. TRANSLATORS: Unpair the device and notify it
 #: data/menus.ui:74
 msgid "Unpair"
-msgstr ""
+msgstr "Desemparellar"
 
 #. TRANSLATORS: Send clipboard content to device
 #: data/menus.ui:86
 msgid "To Device"
-msgstr ""
+msgstr "A dispositivo"
 
 #. TRANSLATORS: Receive clipboard content from the device
 #: data/menus.ui:92
 msgid "From Device"
-msgstr ""
+msgstr "Do dispositivo"
 
 #. TRANSLATORS: Don't change the system volume
 #: data/menus.ui:104 data/menus.ui:130
 msgid "Nothing"
-msgstr ""
+msgstr "Ningún"
 
 #. TRANSLATORS: Lower the system volume
 #: data/menus.ui:111 data/menus.ui:137
 msgid "Lower"
-msgstr ""
+msgstr "Baixar"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the phone ringer
 #: data/menus.ui:118 data/menus.ui:144 src/service/plugins/telephony.js:177
 msgid "Mute"
-msgstr ""
+msgstr "Silencio"
 
 #: data/messaging.ui:12 src/service/plugins/sms.js:26
 #: src/service/ui/messaging.js:881
 msgid "Messaging"
-msgstr ""
+msgstr "Mensaxes"
 
 #: data/messaging.ui:21 src/service/ui/messaging.js:1005
 msgid "New Conversation"
-msgstr ""
+msgstr "Nova conversa"
 
 #: data/messaging.ui:110
 msgid "No conversation selected"
-msgstr ""
+msgstr "Non se seleccionou conversa"
 
 #: data/messaging.ui:126
 msgid "Select or start a conversation"
-msgstr ""
+msgstr "Seleccionar ou comezar conversa"
 
 #: data/messaging.ui:193 data/notification.ui:53 data/telephony.ui:53
 msgid "Device is disconnected"
-msgstr ""
+msgstr "O dispositivo está desconectado"
 
 #: data/messaging.ui:264
 msgid "No Conversations"
-msgstr ""
+msgstr "Sen conversas"
 
 #: data/notification.ui:21 data/telephony.ui:21
 #: src/service/plugins/share.js:388
 msgid "Send"
-msgstr ""
+msgstr "Enviar"
 
 #: data/settings.ui:10
 msgid "Searching for devices…"
@@ -503,11 +503,11 @@ msgstr "Portapapeis"
 
 #: src/service/plugins/clipboard.js:17
 msgid "Clipboard Push"
-msgstr "Meter portapapeis"
+msgstr "Entregar do portapapeis"
 
 #: src/service/plugins/clipboard.js:25
 msgid "Clipboard Pull"
-msgstr "Sacar portapapeis"
+msgstr "Recoller no portapapeis"
 
 #. Ensure we have a sender
 #. TRANSLATORS: No name or phone number
