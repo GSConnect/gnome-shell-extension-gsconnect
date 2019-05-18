@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-05-18 15:55\n"
+"PO-Revision-Date: 2019-05-18 16:06\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Galician\n"
 "Language: gl\n"
@@ -326,32 +326,32 @@ msgstr "Enviar"
 
 #: data/settings.ui:10
 msgid "Searching for devices…"
-msgstr ""
+msgstr "Buscando dispositivos…"
 
 #: data/settings.ui:49 data/settings.ui:63
 msgid "Refresh"
-msgstr ""
+msgstr "Actualizar"
 
 #. Service Menu -> "Mobile Settings"
 #: data/settings.ui:74 data/settings.ui:91 src/extension.js:104
 msgid "Mobile Settings"
-msgstr ""
+msgstr "Configuración móbil"
 
 #: data/settings.ui:144 data/settings.ui:158
 msgid "Edit Device Name"
-msgstr ""
+msgstr "Editar o nome do dispositivo"
 
 #: data/settings.ui:236
 msgid "Devices"
-msgstr ""
+msgstr "Dispositivos"
 
 #: data/settings.ui:299
 msgid "Browser Add-Ons"
-msgstr ""
+msgstr "Engadidos de navegador"
 
 #: data/settings.ui:579
 msgid "Enable"
-msgstr ""
+msgstr "Activar"
 
 #: data/settings.ui:611
 msgid "This device is invisible to unpaired devices"
