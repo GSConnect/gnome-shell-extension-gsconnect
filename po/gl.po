@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-05-18 16:24\n"
+"PO-Revision-Date: 2019-05-18 16:34\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Galician\n"
 "Language: gl\n"
@@ -736,82 +736,82 @@ msgstr "%s・Outra"
 #: src/service/ui/contacts.js:123
 #, javascript-format
 msgid "%s・Fax"
-msgstr ""
+msgstr "%s・Fax"
 
 #. TRANSLATORS: A work phone number
 #: src/service/ui/contacts.js:127
 #, javascript-format
 msgid "%s・Work"
-msgstr ""
+msgstr "%s・Traballo"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:131
 #, javascript-format
 msgid "%s・Mobile"
-msgstr ""
+msgstr "%s・Móbil"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:135
 #, javascript-format
 msgid "%s・Home"
-msgstr ""
+msgstr "%s・Casa"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #: src/service/ui/contacts.js:367 src/service/ui/contacts.js:381
 #, javascript-format
 msgid "Send to %s"
-msgstr ""
+msgstr "Enviar a %s"
 
 #: src/service/ui/device.js:605
 msgid "Open"
-msgstr ""
+msgstr "Abrir"
 
 #: src/service/ui/device.js:657 src/service/ui/device.js:670
 msgid "On"
-msgstr ""
+msgstr "Aceso"
 
 #: src/service/ui/device.js:657 src/service/ui/device.js:670
 msgid "Off"
-msgstr ""
+msgstr "Apagado"
 
 #: src/service/ui/device.js:795 src/service/ui/device.js:823
 #: src/service/ui/device.js:847
 msgid "Disabled"
-msgstr ""
+msgstr "Desactivado"
 
 #. TRANSLATORS: Title of keyboard shortcut dialog
 #: src/service/ui/keybindings.js:33
 msgid "Set Shortcut"
-msgstr ""
+msgstr "Definir atallo"
 
 #. TRANSLATORS: Button to confirm the new shortcut
 #: src/service/ui/keybindings.js:47
 msgid "Set"
-msgstr ""
+msgstr "Definir"
 
 #. TRANSLATORS: Summary of a keyboard shortcut function
 #. Example: Enter a new shortcut to change Messaging
 #: src/service/ui/keybindings.js:54
 #, javascript-format
 msgid "Enter a new shortcut to change <b>%s</b>"
-msgstr ""
+msgstr "Escribir un novo atallo para cambiar<b>%s</b>"
 
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/service/ui/keybindings.js:83
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
+msgstr "Premer Esc para anular ou Retroceso para redefinir o atallo de teclado."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
 #: src/service/ui/keybindings.js:182
 #, javascript-format
 msgid "%s is already being used"
-msgstr ""
+msgstr "%s xa está en uso"
 
 #. TRANSLATORS: Less than a minute ago
 #: src/service/ui/messaging.js:28 src/service/ui/messaging.js:61
 msgid "Just now"
-msgstr ""
+msgstr "Agora mesmo"
 
 #. TRANSLATORS: Time duration in minutes (eg. 15 minutes)
 #: src/service/ui/messaging.js:33 src/service/ui/messaging.js:65
@@ -819,68 +819,68 @@ msgstr ""
 #, javascript-format
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d minuto"
+msgstr[1] "%d minutos"
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
 #: src/service/ui/messaging.js:38
 #, javascript-format
 msgid "Yesterday・%s"
-msgstr ""
+msgstr "Onte・%s"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:207
 #, javascript-format
 msgid "You: %s"
-msgstr ""
+msgstr "Vostede: %s"
 
 #: src/service/ui/service.js:31
 msgid "Select a Device"
-msgstr ""
+msgstr "Seleccionar un dispositivo"
 
 #: src/service/ui/service.js:35
 msgid "Select"
-msgstr ""
+msgstr "Seleccionar"
 
 #: src/service/ui/settings.js:323
 msgid "Unpaired"
-msgstr ""
+msgstr "Desemparellado"
 
 #: src/service/ui/settings.js:325
 msgid "Disconnected"
-msgstr ""
+msgstr "Desconectado"
 
 #: src/service/ui/settings.js:328
 msgid "Connected"
-msgstr ""
+msgstr "Conectado"
 
 #. TRANSLATORS: Description of where directly shared files are stored.
 #: src/service/ui/settings.js:398
 #, javascript-format
 msgid "Transferred files are placed in the <a href=\"%s\">Downloads</a> folder."
-msgstr ""
+msgstr "Os ficheiros transferidos están situados no cartafol <a href=\"%s\">Descargas</a>."
 
 #: src/service/ui/settings.js:491
 msgid "A complete KDE Connect implementation for GNOME"
-msgstr ""
+msgstr "Unha implementación completa de KDE Connect para GNOME"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/service/ui/settings.js:500
 msgid "translator-credits"
-msgstr ""
+msgstr "tradutor"
 
 #: src/service/ui/settings.js:529
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
-msgstr ""
+msgstr "Estanse a rexistrar as mensaxes de depuración. Faga o necesario para reproducir o problema e logo revise o rexistro."
 
 #: src/service/ui/settings.js:532
 msgid "Review Log"
-msgstr ""
+msgstr "Revisar o rexistro"
 
 #. TRANSLATORS: When the battery level is 100%
 #: src/shell/device.js:113
 msgid "Fully Charged"
-msgstr ""
+msgstr "Carga completa"
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
