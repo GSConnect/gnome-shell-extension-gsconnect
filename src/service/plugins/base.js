@@ -71,7 +71,7 @@ var Plugin = GObject.registerClass({
                 this[action.name].call(this);
             }
         } catch (e) {
-            debug(e);
+            debug(e, action.name);
         }
     }
 
