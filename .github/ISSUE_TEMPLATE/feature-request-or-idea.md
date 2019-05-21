@@ -1,7 +1,9 @@
 ---
 name: Feature request or idea
 about: Suggest an improvement to GSConnect
-labels:
+title: ''
+labels: ''
+assignees: ''
 
 ---
 
