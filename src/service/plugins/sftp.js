@@ -144,10 +144,19 @@ var Plugin = GObject.registerClass({
 
             await this._setup(info);
 
-            // Setup the the mount operation to auto-accept host keys
-            let op = new Gio.MountOperation();
+            let op = new Gio.MountOperation({
+                username: info.user,
+                password: info.password,
+                pasword_save: Gio.PasswordSave.NEVER
+            });
 
-            op.connect('ask-question', (op, message, choices) => {
+            // Auto-accept new host keys
+            let question_id = op.connect('ask-question', (op, message, choices) => {
+                op.reply(Gio.MountOperationResult.HANDLED);
+            });
+
+            // Automatically answer password requests
+            let password_id = op.connect('ask-password', (op, message, user, domain, flags) => {
                 op.reply(Gio.MountOperationResult.HANDLED);
             });
 
@@ -157,6 +166,8 @@ var Plugin = GObject.registerClass({
 
                 file.mount_enclosing_volume(0, op, null, (file, res) => {
                     try {
+                        op.disconnect(question_id);
+                        op.disconnect(password_id);
                         resolve(file.mount_enclosing_volume_finish(res));
                     } catch (e) {
                         // Special case when the GMount didn't unmount properly
