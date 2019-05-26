@@ -147,7 +147,7 @@ var Plugin = GObject.registerClass({
             let op = new Gio.MountOperation({
                 username: info.user,
                 password: info.password,
-                pasword_save: Gio.PasswordSave.NEVER
+                password_save: Gio.PasswordSave.NEVER
             });
 
             // Auto-accept new host keys
