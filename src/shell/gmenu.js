@@ -83,6 +83,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         this.box.clip_to_allocation = true;
         this.box.x_expand = true;
         this.box.add_style_class_name('gsconnect-list-box');
+        this.box.set_pivot_point(1, 1);
         this.box.connect('transitions-completed', this._onTransitionsCompleted);
         this.actor.add_child(this.box);
 
@@ -94,6 +95,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
             visible: false,
             x_expand: true
         });
+        this.sub.set_pivot_point(1, 1);
         this.sub.connect('key-press-event', this._onSubmenuCloseKey);
         this.sub.connect('transitions-completed', this._onTransitionsCompleted);
         this.sub._delegate = this;
@@ -122,12 +124,14 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
 
         // We use this instead of close() to avoid touching finalized objects
         } else {
-            this.box.show();
-            this.box.set_width(-1);
+            this.box.opacity = 255;
+            this.box.width = -1;
+            this.box.visible = true;
 
             this._submenu = null;
-            this.sub.hide();
-            this.sub.set_width(-1);
+            this.sub.opacity = 0;
+            this.sub.width = 0;
+            this.sub.visible = false;
             this.sub.get_children().map(menu => menu.hide());
         }
     }
@@ -272,13 +276,13 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         let menu = actor.get_parent()._delegate;
 
         if (menu.submenu) {
-            menu.box.hide();
-            menu.box.set_width(0);
+            menu.box.visible = false;
         } else {
-            menu.sub.hide();
-            menu.sub.set_width(0);
+            menu.sub.visible = false;
             menu.sub.get_children().map(menu => menu.hide());
         }
+
+        menu.actor.remove_clip();
     }
 
     get submenu() {
@@ -286,7 +290,22 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
     }
 
     set submenu(submenu) {
-        let allocWidth = this.actor.allocation.x2 - this.actor.allocation.x1;
+        // Get the current allocation and set the actor's clip
+        let allocation = this.actor.allocation;
+        let width = allocation.x2 - allocation.x1;
+        let height = allocation.y2 - allocation.y1;
+        this.actor.set_clip (0, 0, width, height);
+
+        // Prepare the appropriate child for tweening
+        if (submenu) {
+            this.sub.opacity = 0;
+            this.sub.width = 0;
+            this.sub.visible = true;
+        } else {
+            this.box.opacity = 0;
+            this.box.width = 0;
+            this.box.visible = true;
+        }
 
         // Setup the animation
         this.box.save_easing_state();
@@ -300,13 +319,17 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         if (submenu) {
             submenu.actor.show();
 
-            this.sub.set_width(allocWidth);
-            this.sub.show();
-            this.box.set_width(0);
+            this.sub.opacity = 255;
+            this.sub.width = width;
+
+            this.box.opacity = 0;
+            this.box.width = 0;
         } else {
-            this.box.set_width(allocWidth);
-            this.box.show();
-            this.sub.set_width(0);
+            this.box.opacity = 255;
+            this.box.width = width;
+
+            this.sub.opacity = 0;
+            this.sub.width = 0;
         }
 
         // Reset the animation
