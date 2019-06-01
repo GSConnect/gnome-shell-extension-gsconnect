@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-06-01 15:35\n"
+"PO-Revision-Date: 2019-06-01 15:44\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -355,7 +355,7 @@ msgstr "Aktiver"
 
 #: data/settings.ui:611
 msgid "This device is invisible to unpaired devices"
-msgstr ""
+msgstr "Denne enhed er usynlig til ikke parret enheder"
 
 #: data/settings.ui:623 src/service/daemon.js:518
 msgid "Discovery Disabled"
