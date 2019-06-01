@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-06-01 16:14\n"
+"PO-Revision-Date: 2019-06-01 16:25\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -690,7 +690,7 @@ msgstr ""
 #: src/service/plugins/share.js:382
 #, javascript-format
 msgid "Send a link to %s"
-msgstr ""
+msgstr "Send et link til %s"
 
 #: src/service/plugins/sms.js:13
 msgid "SMS"
@@ -714,41 +714,41 @@ msgstr "Systemlydstyrke"
 
 #: src/service/plugins/telephony.js:30
 msgid "Mute Call"
-msgstr ""
+msgstr "Stum Opkald"
 
 #. TRANSLATORS: The phone is ringing
 #: src/service/plugins/telephony.js:173
 msgid "Incoming call"
-msgstr ""
+msgstr "Indgående Opkald"
 
 #. TRANSLATORS: A phone call is active
 #: src/service/plugins/telephony.js:188
 msgid "Ongoing call"
-msgstr ""
+msgstr "Igangværende Opkald"
 
 #. TRANSLATORS: All other phone number types
 #: src/service/ui/contacts.js:118 src/service/ui/contacts.js:139
 #, javascript-format
 msgid "%s・Other"
-msgstr ""
+msgstr "%s・Anden"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:123
 #, javascript-format
 msgid "%s・Fax"
-msgstr ""
+msgstr "%s・Fax"
 
 #. TRANSLATORS: A work phone number
 #: src/service/ui/contacts.js:127
 #, javascript-format
 msgid "%s・Work"
-msgstr ""
+msgstr "%s・Arbejde"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:131
 #, javascript-format
 msgid "%s・Mobile"
-msgstr ""
+msgstr "%s・Mobil"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:135
