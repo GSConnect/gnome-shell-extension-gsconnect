@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-06-01 16:25\n"
+"PO-Revision-Date: 2019-06-01 16:33\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -402,20 +402,20 @@ msgstr "Klik for hjælp fejlfinding"
 
 #: src/service/daemon.js:519
 msgid "Discovery has been disabled due to the number of devices on this network."
-msgstr ""
+msgstr "Discovery er deaktiveret på grund af antallet af enheder på dette netværk."
 
 #: src/service/daemon.js:527
 #, javascript-format
 msgid "%s Plugin Failed To Load"
-msgstr ""
+msgstr "%s Plugin kunne ikke indlæses"
 
 #: src/service/daemon.js:528 src/service/daemon.js:542
 msgid "Click for more information"
-msgstr ""
+msgstr "Klik for mere information"
 
 #: src/service/daemon.js:681
 msgid "Dial Number"
-msgstr ""
+msgstr "Opkaldsnummer"
 
 #: src/service/daemon.js:687 src/service/plugins/share.js:27
 msgid "Share File"
@@ -515,7 +515,7 @@ msgstr "Udklipsholder Trække"
 #: src/service/plugins/telephony.js:207 src/service/plugins/telephony.js:247
 #: src/service/ui/contacts.js:156 src/service/ui/contacts.js:455
 msgid "Unknown Contact"
-msgstr ""
+msgstr "Ukendt Kontakt"
 
 #: src/service/plugins/findmyphone.js:13
 msgid "Find My Phone"
@@ -535,7 +535,7 @@ msgstr ""
 
 #: src/service/plugins/mousepad.js:737
 msgid "Keyboard not ready"
-msgstr ""
+msgstr "Tastaturet ikke klar"
 
 #: src/service/plugins/mpris.js:10
 msgid "MPRIS"
@@ -551,11 +551,11 @@ msgstr "Luk Besked"
 
 #: src/service/plugins/notification.js:42
 msgid "Reply Notification"
-msgstr ""
+msgstr "Svar Notifikation"
 
 #: src/service/plugins/notification.js:50
 msgid "Send Notification"
-msgstr ""
+msgstr "Send Notifikation"
 
 #: src/service/plugins/photo.js:11 src/service/plugins/photo.js:17
 msgid "Photo"
