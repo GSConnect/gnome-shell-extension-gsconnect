@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-06-01 16:43\n"
+"PO-Revision-Date: 2019-06-01 17:08\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -650,18 +650,18 @@ msgstr "Overførsel mislykkedes"
 #: src/service/plugins/share.js:143
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
-msgstr ""
+msgstr "Kunne ikke modtage \"%s\" fra %s"
 
 #: src/service/plugins/share.js:171
 #, javascript-format
 msgid "Text Shared By %s"
-msgstr ""
+msgstr "Tekst Deles Af %s"
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
 #: src/service/plugins/share.js:239
 #, javascript-format
 msgid "Sending “%s” to %s"
-msgstr ""
+msgstr "Sende \"%s\" til %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:262
