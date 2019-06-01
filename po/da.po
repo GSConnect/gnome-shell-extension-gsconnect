@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-06-01 15:44\n"
+"PO-Revision-Date: 2019-06-01 15:58\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -190,7 +190,7 @@ msgstr "Eksperimentel"
 
 #: data/device.ui:1660
 msgid "Legacy SMS Support"
-msgstr ""
+msgstr "Arv SMS"
 
 #: data/device.ui:1734
 msgid "Delete"
@@ -227,7 +227,7 @@ msgstr "Du kan konfigurere denne enhed før parring"
 
 #: data/menus.ui:12
 msgid "Display Mode"
-msgstr ""
+msgstr "Visningstilstand"
 
 #. TRANSLATORS: Show device indicators in the top bar
 #: data/menus.ui:15
@@ -365,24 +365,24 @@ msgstr ""
 #: data/telephony.ui:9 src/service/daemon.js:675 src/service/plugins/sms.js:50
 #: webextension/gettext.js:39
 msgid "Send SMS"
-msgstr ""
+msgstr "Send SMS"
 
 #. Service Menu
 #: src/extension.js:79 src/extension.js:198
 msgid "Mobile Devices"
-msgstr ""
+msgstr "Mobil Enheder"
 
 #: src/extension.js:193
 #, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d Tilsuttet"
+msgstr[1] "%d Tilsuttet"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:149 webextension/gettext.js:31
 msgid "Send To Mobile Device"
-msgstr ""
+msgstr "Send til Mobil Enhed"
 
 #: src/service/daemon.js:373
 msgid "Report"
@@ -390,7 +390,7 @@ msgstr "Anmeld"
 
 #: src/service/daemon.js:500
 msgid "Authentication Failure"
-msgstr ""
+msgstr "Godkendelsesfejl"
 
 #: src/service/daemon.js:509
 msgid "Network Error"
@@ -398,7 +398,7 @@ msgstr "Netværks Fejl"
 
 #: src/service/daemon.js:510
 msgid "Click for help troubleshooting"
-msgstr ""
+msgstr "Klik for hjælp fejlfinding"
 
 #: src/service/daemon.js:519
 msgid "Discovery has been disabled due to the number of devices on this network."
@@ -583,11 +583,11 @@ msgstr ""
 
 #: src/service/plugins/sftp.js:18
 msgid "Mount"
-msgstr ""
+msgstr "Monter"
 
 #: src/service/plugins/sftp.js:26
 msgid "Unmount"
-msgstr ""
+msgstr "Afmonter"
 
 #: src/service/plugins/sftp.js:119
 msgid "All files"
@@ -595,7 +595,7 @@ msgstr "Alle filer"
 
 #: src/service/plugins/sftp.js:120
 msgid "Camera pictures"
-msgstr ""
+msgstr "Kamera Billeder"
 
 #: src/service/plugins/sftp.js:316
 msgid "Files"
