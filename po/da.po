@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-05-04 15:44\n"
+"PO-Revision-Date: 2019-06-01 15:14\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -840,11 +840,11 @@ msgstr ""
 
 #: src/service/ui/service.js:35
 msgid "Select"
-msgstr ""
+msgstr "Vælg"
 
 #: src/service/ui/settings.js:323
 msgid "Unpaired"
-msgstr ""
+msgstr "Ikke parret"
 
 #: src/service/ui/settings.js:325
 msgid "Disconnected"
