@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-06-01 15:14\n"
+"PO-Revision-Date: 2019-06-01 15:24\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -826,17 +826,17 @@ msgstr[1] ""
 #: src/service/ui/messaging.js:38
 #, javascript-format
 msgid "Yesterday・%s"
-msgstr ""
+msgstr "I går・%s"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:207
 #, javascript-format
 msgid "You: %s"
-msgstr ""
+msgstr "Du: %s"
 
 #: src/service/ui/service.js:31
 msgid "Select a Device"
-msgstr ""
+msgstr "Vælg en mobil enhed"
 
 #: src/service/ui/service.js:35
 msgid "Select"
@@ -858,11 +858,11 @@ msgstr "Tilsluttet"
 #: src/service/ui/settings.js:398
 #, javascript-format
 msgid "Transferred files are placed in the <a href=\"%s\">Downloads</a> folder."
-msgstr ""
+msgstr "Overførte filer er placeret i <a href=\"%s\"> Downloads</a> mappe."
 
 #: src/service/ui/settings.js:491
 msgid "A complete KDE Connect implementation for GNOME"
-msgstr ""
+msgstr "En komplet KDE Connect implementering for GNOME"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/service/ui/settings.js:500
@@ -871,11 +871,11 @@ msgstr "oversætter-kreditter"
 
 #: src/service/ui/settings.js:529
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
-msgstr ""
+msgstr "Fejlmeddelelser er logges. Tage de nødvendige skridt til at reproducere et problem, og gennemgå loggen."
 
 #: src/service/ui/settings.js:532
 msgid "Review Log"
-msgstr ""
+msgstr "Gennemgå Loggen"
 
 #. TRANSLATORS: When the battery level is 100%
 #: src/shell/device.js:113
