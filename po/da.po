@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-06-01 15:58\n"
+"PO-Revision-Date: 2019-06-01 16:03\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -616,13 +616,13 @@ msgstr "Del Link"
 
 #: src/service/plugins/share.js:95 src/service/plugins/share.js:237
 msgid "Starting Transfer"
-msgstr ""
+msgstr "Begyndelse Overføre"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:97
 #, javascript-format
 msgid "Receiving “%s” from %s"
-msgstr ""
+msgstr "Modtager \"%s\" fra %s"
 
 #: src/service/plugins/share.js:121 src/service/plugins/share.js:260
 msgid "Transfer Successful"
