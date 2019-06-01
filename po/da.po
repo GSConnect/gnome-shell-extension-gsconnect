@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-06-01 16:33\n"
+"PO-Revision-Date: 2019-06-01 16:43\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -531,7 +531,7 @@ msgstr "Tastatur"
 
 #: src/service/plugins/mousepad.js:266
 msgid "Additional Software Required"
-msgstr ""
+msgstr "Ekstra Software Påkrævet"
 
 #: src/service/plugins/mousepad.js:737
 msgid "Keyboard not ready"
@@ -667,24 +667,24 @@ msgstr ""
 #: src/service/plugins/share.js:262
 #, javascript-format
 msgid "Sent “%s” to %s"
-msgstr ""
+msgstr "Sendt \"%s\" til %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:270
 #, javascript-format
 msgid "Failed to send “%s” to %s"
-msgstr ""
+msgstr "Kunne ikke send \"%s\" til %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:339
 #, javascript-format
 msgid "Send files to %s"
-msgstr ""
+msgstr "Send filer til %s"
 
 #. TRANSLATORS: Mark the file to be opened once completed
 #: src/service/plugins/share.js:343
 msgid "Open when done"
-msgstr ""
+msgstr "Åbne, når færdig"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
 #: src/service/plugins/share.js:382
