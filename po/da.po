@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-06-01 15:24\n"
+"PO-Revision-Date: 2019-06-01 15:35\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -276,7 +276,7 @@ msgstr "Til Apparat"
 #. TRANSLATORS: Receive clipboard content from the device
 #: data/menus.ui:92
 msgid "From Device"
-msgstr ""
+msgstr "Fra Enhed"
 
 #. TRANSLATORS: Don't change the system volume
 #: data/menus.ui:104 data/menus.ui:130
@@ -347,7 +347,7 @@ msgstr "Enheder"
 
 #: data/settings.ui:299
 msgid "Browser Add-Ons"
-msgstr ""
+msgstr "Webbrowser Tilføj-Ons"
 
 #: data/settings.ui:579
 msgid "Enable"
@@ -819,8 +819,8 @@ msgstr "Lige Nu"
 #, javascript-format
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d minut"
+msgstr[1] "%d minutter"
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
 #: src/service/ui/messaging.js:38
