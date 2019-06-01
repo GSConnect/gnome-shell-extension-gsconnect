@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-06-01 16:03\n"
+"PO-Revision-Date: 2019-06-01 16:14\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -242,7 +242,7 @@ msgstr "Bruger Menu"
 #. TRANSLATORS: Generate a support log
 #: data/menus.ui:29 src/service/ui/settings.js:528
 msgid "Generate Support Log"
-msgstr ""
+msgstr "Generere Underbygge Log"
 
 #: data/menus.ui:38
 msgid "About GSConnect"
@@ -359,7 +359,7 @@ msgstr "Denne enhed er usynlig til ikke parret enheder"
 
 #: data/settings.ui:623 src/service/daemon.js:518
 msgid "Discovery Disabled"
-msgstr ""
+msgstr "Discovery Deaktiveret"
 
 #. TRANSLATORS: Share URL by SMS
 #: data/telephony.ui:9 src/service/daemon.js:675 src/service/plugins/sms.js:50
@@ -579,7 +579,7 @@ msgstr "Udføre Kommando"
 
 #: src/service/plugins/sftp.js:12
 msgid "SFTP"
-msgstr ""
+msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:18
 msgid "Mount"
@@ -626,13 +626,13 @@ msgstr "Modtager \"%s\" fra %s"
 
 #: src/service/plugins/share.js:121 src/service/plugins/share.js:260
 msgid "Transfer Successful"
-msgstr ""
+msgstr "Overførsel Succesfuld"
 
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:123
 #, javascript-format
 msgid "Received “%s” from %s"
-msgstr ""
+msgstr "Modtaget \"%s\" fra %s"
 
 #: src/service/plugins/share.js:129
 msgid "Open Folder"
@@ -644,7 +644,7 @@ msgstr "Åben fil"
 
 #: src/service/plugins/share.js:141 src/service/plugins/share.js:268
 msgid "Transfer Failed"
-msgstr ""
+msgstr "Overførsel mislykkedes"
 
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:143
@@ -754,13 +754,13 @@ msgstr ""
 #: src/service/ui/contacts.js:135
 #, javascript-format
 msgid "%s・Home"
-msgstr ""
+msgstr "%s・Hjem"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #: src/service/ui/contacts.js:367 src/service/ui/contacts.js:381
 #, javascript-format
 msgid "Send to %s"
-msgstr ""
+msgstr "Send til %s"
 
 #: src/service/ui/device.js:605
 msgid "Open"
@@ -794,7 +794,7 @@ msgstr "Indstil"
 #: src/service/ui/keybindings.js:54
 #, javascript-format
 msgid "Enter a new shortcut to change <b>%s</b>"
-msgstr ""
+msgstr "Indtast en ny genvej for at ændre <b>%s</b>"
 
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/service/ui/keybindings.js:83
