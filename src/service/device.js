@@ -219,11 +219,9 @@ var Device = GObject.registerClass({
     get supported_plugins() {
         let supported = this.settings.get_strv('supported-plugins');
 
-        // Preempt clipboard and mousepad plugins on Wayland
+        // Preempt mousepad plugin on Wayland
         if (_WAYLAND) {
-            supported = supported.filter(name => {
-                return (name !== 'clipboard' && name !== 'mousepad');
-            });
+            supported = supported.filter(name => (name !== 'mousepad'));
         }
 
         return supported;

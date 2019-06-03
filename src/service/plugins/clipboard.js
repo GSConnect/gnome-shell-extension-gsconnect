@@ -45,8 +45,7 @@ var Plugin = GObject.registerClass({
         super._init(device, 'clipboard');
 
         try {
-            let display = Gdk.Display.get_default();
-            this._clipboard = Gtk.Clipboard.get_default(display);
+            this._clipboard = this.service.clipboard;
         } catch (e) {
             this.destroy();
             throw e;

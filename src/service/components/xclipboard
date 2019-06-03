@@ -1,0 +1,83 @@
+#!/usr/bin/env gjs
+
+'use strict';
+
+const Gdk = imports.gi.Gdk;
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+
+Gdk.set_allowed_backends('x11,*');
+
+Gtk.init (null);
+
+const clipboard = Gtk.Clipboard.get_default(Gdk.Display.get_default());
+var buffer = null;
+
+/*
+ * We use stdin and stdout to pipe changes to the parent process
+ */
+const stdin = new Gio.DataInputStream({
+    base_stream: new Gio.UnixInputStream({fd: 0}),
+    byte_order: Gio.DataStreamByteOrder.HOST_ENDIAN
+});
+
+const stdout = new Gio.DataOutputStream({
+    base_stream: new Gio.UnixOutputStream({fd: 1}),
+    byte_order: Gio.DataStreamByteOrder.HOST_ENDIAN
+});
+
+/*
+ * Read and write changes
+ */
+function readContent(text) {
+    try {
+        // Read the message
+        let length = stdin.read_int32(null);
+        let text = stdin.read_bytes(length, null).toArray();
+
+        if (text instanceof Uint8Array) {
+            text = imports.byteArray.toString(text);
+        }
+        
+        buffer = text;
+        clipboard.set_text(text, -1);
+    } catch (e) {
+        logError(e);
+    }
+    
+    return true;
+}
+
+function writeContent(text) {
+    try {
+        stdout.put_int32(text.length, null);
+        stdout.put_string(text, null);
+    } catch (e) {
+        logError(e);
+    }
+}
+
+/*
+ * When the clipboard changes, we send it to stdout (eg. the parent process)
+ */
+function onOwnerChange(clipboard, text) {
+    clipboard.request_text((clipboard, text) => {
+        // Prevent repeating duplicate copies
+        if (buffer != text) {
+            buffer = text;
+            writeContent(text);
+        }
+    });
+}
+
+clipboard.connect('owner-change', onOwnerChange);
+
+/*
+ * Watch stdin for incoming content
+ */
+let source = stdin.base_stream.create_source(null);
+source.set_callback(readContent);
+source.attach(null);
+
+Gtk.main();
+
