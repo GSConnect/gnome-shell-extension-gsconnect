@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-05-04 15:44\n"
+"PO-Revision-Date: 2019-06-01 17:08\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -190,7 +190,7 @@ msgstr "Eksperimentel"
 
 #: data/device.ui:1660
 msgid "Legacy SMS Support"
-msgstr ""
+msgstr "Arv SMS"
 
 #: data/device.ui:1734
 msgid "Delete"
@@ -227,7 +227,7 @@ msgstr "Du kan konfigurere denne enhed før parring"
 
 #: data/menus.ui:12
 msgid "Display Mode"
-msgstr ""
+msgstr "Visningstilstand"
 
 #. TRANSLATORS: Show device indicators in the top bar
 #: data/menus.ui:15
@@ -242,7 +242,7 @@ msgstr "Bruger Menu"
 #. TRANSLATORS: Generate a support log
 #: data/menus.ui:29 src/service/ui/settings.js:528
 msgid "Generate Support Log"
-msgstr ""
+msgstr "Generere Underbygge Log"
 
 #: data/menus.ui:38
 msgid "About GSConnect"
@@ -276,7 +276,7 @@ msgstr "Til Apparat"
 #. TRANSLATORS: Receive clipboard content from the device
 #: data/menus.ui:92
 msgid "From Device"
-msgstr ""
+msgstr "Fra Enhed"
 
 #. TRANSLATORS: Don't change the system volume
 #: data/menus.ui:104 data/menus.ui:130
@@ -347,7 +347,7 @@ msgstr "Enheder"
 
 #: data/settings.ui:299
 msgid "Browser Add-Ons"
-msgstr ""
+msgstr "Webbrowser Tilføj-Ons"
 
 #: data/settings.ui:579
 msgid "Enable"
@@ -355,34 +355,34 @@ msgstr "Aktiver"
 
 #: data/settings.ui:611
 msgid "This device is invisible to unpaired devices"
-msgstr ""
+msgstr "Denne enhed er usynlig til ikke parret enheder"
 
 #: data/settings.ui:623 src/service/daemon.js:518
 msgid "Discovery Disabled"
-msgstr ""
+msgstr "Discovery Deaktiveret"
 
 #. TRANSLATORS: Share URL by SMS
 #: data/telephony.ui:9 src/service/daemon.js:675 src/service/plugins/sms.js:50
 #: webextension/gettext.js:39
 msgid "Send SMS"
-msgstr ""
+msgstr "Send SMS"
 
 #. Service Menu
 #: src/extension.js:79 src/extension.js:198
 msgid "Mobile Devices"
-msgstr ""
+msgstr "Mobil Enheder"
 
 #: src/extension.js:193
 #, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d Tilsuttet"
+msgstr[1] "%d Tilsuttet"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:149 webextension/gettext.js:31
 msgid "Send To Mobile Device"
-msgstr ""
+msgstr "Send til Mobil Enhed"
 
 #: src/service/daemon.js:373
 msgid "Report"
@@ -390,7 +390,7 @@ msgstr "Anmeld"
 
 #: src/service/daemon.js:500
 msgid "Authentication Failure"
-msgstr ""
+msgstr "Godkendelsesfejl"
 
 #: src/service/daemon.js:509
 msgid "Network Error"
@@ -398,24 +398,24 @@ msgstr "Netværks Fejl"
 
 #: src/service/daemon.js:510
 msgid "Click for help troubleshooting"
-msgstr ""
+msgstr "Klik for hjælp fejlfinding"
 
 #: src/service/daemon.js:519
 msgid "Discovery has been disabled due to the number of devices on this network."
-msgstr ""
+msgstr "Discovery er deaktiveret på grund af antallet af enheder på dette netværk."
 
 #: src/service/daemon.js:527
 #, javascript-format
 msgid "%s Plugin Failed To Load"
-msgstr ""
+msgstr "%s Plugin kunne ikke indlæses"
 
 #: src/service/daemon.js:528 src/service/daemon.js:542
 msgid "Click for more information"
-msgstr ""
+msgstr "Klik for mere information"
 
 #: src/service/daemon.js:681
 msgid "Dial Number"
-msgstr ""
+msgstr "Opkaldsnummer"
 
 #: src/service/daemon.js:687 src/service/plugins/share.js:27
 msgid "Share File"
@@ -515,7 +515,7 @@ msgstr "Udklipsholder Trække"
 #: src/service/plugins/telephony.js:207 src/service/plugins/telephony.js:247
 #: src/service/ui/contacts.js:156 src/service/ui/contacts.js:455
 msgid "Unknown Contact"
-msgstr ""
+msgstr "Ukendt Kontakt"
 
 #: src/service/plugins/findmyphone.js:13
 msgid "Find My Phone"
@@ -531,11 +531,11 @@ msgstr "Tastatur"
 
 #: src/service/plugins/mousepad.js:266
 msgid "Additional Software Required"
-msgstr ""
+msgstr "Ekstra Software Påkrævet"
 
 #: src/service/plugins/mousepad.js:737
 msgid "Keyboard not ready"
-msgstr ""
+msgstr "Tastaturet ikke klar"
 
 #: src/service/plugins/mpris.js:10
 msgid "MPRIS"
@@ -551,11 +551,11 @@ msgstr "Luk Besked"
 
 #: src/service/plugins/notification.js:42
 msgid "Reply Notification"
-msgstr ""
+msgstr "Svar Notifikation"
 
 #: src/service/plugins/notification.js:50
 msgid "Send Notification"
-msgstr ""
+msgstr "Send Notifikation"
 
 #: src/service/plugins/photo.js:11 src/service/plugins/photo.js:17
 msgid "Photo"
@@ -579,15 +579,15 @@ msgstr "Udføre Kommando"
 
 #: src/service/plugins/sftp.js:12
 msgid "SFTP"
-msgstr ""
+msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:18
 msgid "Mount"
-msgstr ""
+msgstr "Monter"
 
 #: src/service/plugins/sftp.js:26
 msgid "Unmount"
-msgstr ""
+msgstr "Afmonter"
 
 #: src/service/plugins/sftp.js:119
 msgid "All files"
@@ -595,7 +595,7 @@ msgstr "Alle filer"
 
 #: src/service/plugins/sftp.js:120
 msgid "Camera pictures"
-msgstr ""
+msgstr "Kamera Billeder"
 
 #: src/service/plugins/sftp.js:316
 msgid "Files"
@@ -616,23 +616,23 @@ msgstr "Del Link"
 
 #: src/service/plugins/share.js:95 src/service/plugins/share.js:237
 msgid "Starting Transfer"
-msgstr ""
+msgstr "Begyndelse Overføre"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:97
 #, javascript-format
 msgid "Receiving “%s” from %s"
-msgstr ""
+msgstr "Modtager \"%s\" fra %s"
 
 #: src/service/plugins/share.js:121 src/service/plugins/share.js:260
 msgid "Transfer Successful"
-msgstr ""
+msgstr "Overførsel Succesfuld"
 
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:123
 #, javascript-format
 msgid "Received “%s” from %s"
-msgstr ""
+msgstr "Modtaget \"%s\" fra %s"
 
 #: src/service/plugins/share.js:129
 msgid "Open Folder"
@@ -644,53 +644,53 @@ msgstr "Åben fil"
 
 #: src/service/plugins/share.js:141 src/service/plugins/share.js:268
 msgid "Transfer Failed"
-msgstr ""
+msgstr "Overførsel mislykkedes"
 
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:143
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
-msgstr ""
+msgstr "Kunne ikke modtage \"%s\" fra %s"
 
 #: src/service/plugins/share.js:171
 #, javascript-format
 msgid "Text Shared By %s"
-msgstr ""
+msgstr "Tekst Deles Af %s"
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
 #: src/service/plugins/share.js:239
 #, javascript-format
 msgid "Sending “%s” to %s"
-msgstr ""
+msgstr "Sende \"%s\" til %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:262
 #, javascript-format
 msgid "Sent “%s” to %s"
-msgstr ""
+msgstr "Sendt \"%s\" til %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:270
 #, javascript-format
 msgid "Failed to send “%s” to %s"
-msgstr ""
+msgstr "Kunne ikke send \"%s\" til %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:339
 #, javascript-format
 msgid "Send files to %s"
-msgstr ""
+msgstr "Send filer til %s"
 
 #. TRANSLATORS: Mark the file to be opened once completed
 #: src/service/plugins/share.js:343
 msgid "Open when done"
-msgstr ""
+msgstr "Åbne, når færdig"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
 #: src/service/plugins/share.js:382
 #, javascript-format
 msgid "Send a link to %s"
-msgstr ""
+msgstr "Send et link til %s"
 
 #: src/service/plugins/sms.js:13
 msgid "SMS"
@@ -714,53 +714,53 @@ msgstr "Systemlydstyrke"
 
 #: src/service/plugins/telephony.js:30
 msgid "Mute Call"
-msgstr ""
+msgstr "Stum Opkald"
 
 #. TRANSLATORS: The phone is ringing
 #: src/service/plugins/telephony.js:173
 msgid "Incoming call"
-msgstr ""
+msgstr "Indgående Opkald"
 
 #. TRANSLATORS: A phone call is active
 #: src/service/plugins/telephony.js:188
 msgid "Ongoing call"
-msgstr ""
+msgstr "Igangværende Opkald"
 
 #. TRANSLATORS: All other phone number types
 #: src/service/ui/contacts.js:118 src/service/ui/contacts.js:139
 #, javascript-format
 msgid "%s・Other"
-msgstr ""
+msgstr "%s・Anden"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:123
 #, javascript-format
 msgid "%s・Fax"
-msgstr ""
+msgstr "%s・Fax"
 
 #. TRANSLATORS: A work phone number
 #: src/service/ui/contacts.js:127
 #, javascript-format
 msgid "%s・Work"
-msgstr ""
+msgstr "%s・Arbejde"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:131
 #, javascript-format
 msgid "%s・Mobile"
-msgstr ""
+msgstr "%s・Mobil"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:135
 #, javascript-format
 msgid "%s・Home"
-msgstr ""
+msgstr "%s・Hjem"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #: src/service/ui/contacts.js:367 src/service/ui/contacts.js:381
 #, javascript-format
 msgid "Send to %s"
-msgstr ""
+msgstr "Send til %s"
 
 #: src/service/ui/device.js:605
 msgid "Open"
@@ -794,7 +794,7 @@ msgstr "Indstil"
 #: src/service/ui/keybindings.js:54
 #, javascript-format
 msgid "Enter a new shortcut to change <b>%s</b>"
-msgstr ""
+msgstr "Indtast en ny genvej for at ændre <b>%s</b>"
 
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/service/ui/keybindings.js:83
@@ -819,32 +819,32 @@ msgstr "Lige Nu"
 #, javascript-format
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d minut"
+msgstr[1] "%d minutter"
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
 #: src/service/ui/messaging.js:38
 #, javascript-format
 msgid "Yesterday・%s"
-msgstr ""
+msgstr "I går・%s"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:207
 #, javascript-format
 msgid "You: %s"
-msgstr ""
+msgstr "Du: %s"
 
 #: src/service/ui/service.js:31
 msgid "Select a Device"
-msgstr ""
+msgstr "Vælg en mobil enhed"
 
 #: src/service/ui/service.js:35
 msgid "Select"
-msgstr ""
+msgstr "Vælg"
 
 #: src/service/ui/settings.js:323
 msgid "Unpaired"
-msgstr ""
+msgstr "Ikke parret"
 
 #: src/service/ui/settings.js:325
 msgid "Disconnected"
@@ -858,11 +858,11 @@ msgstr "Tilsluttet"
 #: src/service/ui/settings.js:398
 #, javascript-format
 msgid "Transferred files are placed in the <a href=\"%s\">Downloads</a> folder."
-msgstr ""
+msgstr "Overførte filer er placeret i <a href=\"%s\"> Downloads</a> mappe."
 
 #: src/service/ui/settings.js:491
 msgid "A complete KDE Connect implementation for GNOME"
-msgstr ""
+msgstr "En komplet KDE Connect implementering for GNOME"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/service/ui/settings.js:500
@@ -871,11 +871,11 @@ msgstr "oversætter-kreditter"
 
 #: src/service/ui/settings.js:529
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
-msgstr ""
+msgstr "Fejlmeddelelser er logges. Tage de nødvendige skridt til at reproducere et problem, og gennemgå loggen."
 
 #: src/service/ui/settings.js:532
 msgid "Review Log"
-msgstr ""
+msgstr "Gennemgå Loggen"
 
 #. TRANSLATORS: When the battery level is 100%
 #: src/shell/device.js:113
