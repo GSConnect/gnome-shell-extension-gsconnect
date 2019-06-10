@@ -182,6 +182,7 @@ gsconnect.installService = function() {
         [confDir + '/google-chrome/NativeMessagingHosts/', chrome],
         [confDir + '/google-chrome-beta/NativeMessagingHosts/', chrome],
         [confDir + '/google-chrome-unstable/NativeMessagingHosts/', chrome],
+        [confDir + '/BraveSoftware/Brave-Browser/NativeMessagingHosts/', chrome],
         [homeDir + '/.mozilla/native-messaging-hosts/', mozilla]
     ];
 
