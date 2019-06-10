@@ -355,7 +355,9 @@ var Plugin = GObject.registerClass({
                         cache.forEach(message => message.read = MessageStatus.READ);
                     }
 
-                    if (!cache || cache[cache.length - 1]._id < message._id) {
+                    // If we don't have a thread for this message or the last
+                    // message in the cache is older, request the full thread
+                    if (!cache || cache[cache.length - 1].date < message.date) {
                         this.requestConversation(message.thread_id);
                     }
                 }
