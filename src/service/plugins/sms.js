@@ -341,7 +341,7 @@ var Plugin = GObject.registerClass({
 
                 // Prune conversations
                 Object.keys(this.conversations).map(id => {
-                    if (!thread_ids.includes(parseInt(id))) {
+                    if (!thread_ids.includes(id)) {
                         delete this.conversations[id];
                     }
                 });
