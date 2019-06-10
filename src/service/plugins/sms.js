@@ -301,6 +301,7 @@ var Plugin = GObject.registerClass({
                 // TODO: invalid MessageType
                 if (message.type < 0 || message.type > 5) continue;
 
+                // If the message exists, update it from the new information
                 let extant = conversation.find(msg => msg._id === message._id);
 
                 if (extant) {
@@ -311,7 +312,7 @@ var Plugin = GObject.registerClass({
                 }
             }
 
-            // Sort and store the conversation
+            // Sort the conversation by date and write to cache
             this.conversations[thread_id] = conversation.sort((a, b) => {
                 return (a.date < b.date) ? -1 : 1;
             });
