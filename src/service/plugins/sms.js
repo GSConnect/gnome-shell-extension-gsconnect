@@ -313,7 +313,7 @@ var Plugin = GObject.registerClass({
 
             // Sort and store the conversation
             this.conversations[thread_id] = conversation.sort((a, b) => {
-                return (a._id < b._id) ? -1 : 1;
+                return (a.date < b.date) ? -1 : 1;
             });
 
             await this.__cache_write();
