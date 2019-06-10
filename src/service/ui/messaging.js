@@ -283,6 +283,7 @@ const ConversationWidget = GObject.registerClass({
 
         // Pending messages
         this.pending.id = GLib.MAXUINT32;
+        this.pending.date = GLib.MAXUINT32;
         this.bind_property(
             'has-pending',
             this.pending,
@@ -422,6 +423,7 @@ const ConversationWidget = GObject.registerClass({
             // Create a message, set the message id and prepend it
             let widget = new ConversationMessage(this.__messages.pop());
             this.__first.id = message._id;
+            this.__first.date = message.date;
             this.__first.messages.pack_end(widget, false, false, 0);
 
             // update the date tracker
