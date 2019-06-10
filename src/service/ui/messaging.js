@@ -396,8 +396,8 @@ const ConversationWidget = GObject.registerClass({
                 continue;
             }
 
-            date = date || message.date;
-            direction = direction || message.type;
+            date = (date !== undefined) ? date : message.date;
+            direction = (direction !== undefined) ? direction : message.type;
 
             // Break if we're definitely at the end of series
             if (message.type !== direction) break;
