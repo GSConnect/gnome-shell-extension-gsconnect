@@ -348,7 +348,7 @@ var serviceIndicator = null;
 
 function init() {
     // This is only relevant on gnome-shell <= 3.30
-    if (imports.system.version < 15500) {
+    if (gsconnect.shell_version <= 30) {
         Gtk.IconTheme.get_default().add_resource_path('/org/gnome/Shell/Extensions/GSConnect/icons');
     }
 
