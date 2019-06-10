@@ -182,7 +182,11 @@ const ConversationSummary = GObject.registerClass({
         grid.attach(this._body, 1, 1, 2, 1);
 
         this.contact = contact;
-        this.message = message;
+        this._message = message;
+    }
+
+    get date() {
+        return this._message.date;
     }
 
     get id() {
@@ -282,8 +286,7 @@ const ConversationWidget = GObject.registerClass({
         this.connect('destroy', this._onDestroy);
 
         // Pending messages
-        this.pending.id = GLib.MAXUINT32;
-        this.pending.date = GLib.MAXUINT32;
+        this.pending.date = Number.MAX_SAFE_INTEGER;
         this.bind_property(
             'has-pending',
             this.pending,
@@ -422,7 +425,6 @@ const ConversationWidget = GObject.registerClass({
 
             // Create a message, set the message id and prepend it
             let widget = new ConversationMessage(this.__messages.pop());
-            this.__first.id = message._id;
             this.__first.date = message.date;
             this.__first.messages.pack_end(widget, false, false, 0);
 
@@ -447,11 +449,7 @@ const ConversationWidget = GObject.registerClass({
     }
 
     _sortMessages(row1, row2) {
-        if (row1.id > row2.id) {
-            return 1;
-        }
-
-        return -1;
+        return (row1.date > row2.date) ? 1 : -1;
     }
 
     // message-entry::focus-in-event
@@ -513,7 +511,6 @@ const ConversationWidget = GObject.registerClass({
             hexpand: true
         });
         row.date = message.date;
-        row.id = message._id;
         row.type = message.type;
 
         let layout = new Gtk.Box({
@@ -559,7 +556,7 @@ const ConversationWidget = GObject.registerClass({
 
         // Ensure it's older than the last message (or the first)
         // TODO: with a lot of work we could probably handle this...
-        if (this.__last && this.__last.id > message._id) {
+        if (this.__last && this.__last.date > message.date) {
             warning('SMS message out of order', this.device.name);
             return;
         }
@@ -583,7 +580,6 @@ const ConversationWidget = GObject.registerClass({
 
         // Create a message, set the message id/date and append it
         let widget = new ConversationMessage(message);
-        this.__last.id = message._id;
         this.__last.date = message.date;
         this.__last.messages.pack_start(widget, false, false, 0);
 
@@ -886,7 +882,7 @@ var Window = GObject.registerClass({
     }
 
     _sortConversations(row1, row2) {
-        return (row1.message.date > row2.message.date) ? -1 : 1;
+        return (row1.date > row2.date) ? -1 : 1;
     }
 
     _timestampConversations() {
