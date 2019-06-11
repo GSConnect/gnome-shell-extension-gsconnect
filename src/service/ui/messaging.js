@@ -917,6 +917,27 @@ var Window = GObject.registerClass({
     }
 
     /**
+     * Find the conversation widget for a thread ID
+     *
+     * @param {string} id - A thread id
+     * @return {ConversationWidget|null} - The conversation widget or %null
+     */
+    getConversationByThread(thread_id) {
+        // This shouldn't happen
+        if (thread_id === null) return null;
+
+        for (let conversation of this.conversation_stack.get_children()) {
+            if (!conversation.thread_id) continue;
+
+            if (conversation.thread_id === thread_id) {
+                return conversation;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Find the conversation summary row for an address
      *
      * @param {string} address - A contact address
