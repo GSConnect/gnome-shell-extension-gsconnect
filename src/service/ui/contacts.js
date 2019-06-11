@@ -93,7 +93,7 @@ function getPixbuf(path, size = null) {
         loader.write(data);
         loader.close();
     } catch (e) {
-        warning(e, path);
+        debug(e, path);
     }
 
     let pixbuf = loader.get_pixbuf();
@@ -152,11 +152,27 @@ var Avatar = GObject.registerClass({
         super._init({
             height_request: 32,
             width_request: 32,
-            visible: true,
-            tooltip_text: contact.name || _('Unknown Contact')
+            visible: true
         });
 
         this._path = contact.avatar;
+    }
+
+    get path() {
+        if (this._path === undefined) {
+            this._path = null;
+        }
+
+        return this._path;
+    }
+
+    set path(path) {
+        if (this._path !== path) {
+            this._path = path;
+            this._pixbuf = undefined;
+
+            this._loadPixbuf();
+        }
     }
 
     _loadPixbuf() {
