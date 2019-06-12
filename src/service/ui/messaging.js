@@ -468,8 +468,6 @@ const ConversationWidget = GObject.registerClass({
         } else {
             vadj.set_value(vadj.get_upper() - vadj.get_page_size());
         }
-
-        this._onMessageAcknowledged();
     }
 
     // message-window::edge-reached

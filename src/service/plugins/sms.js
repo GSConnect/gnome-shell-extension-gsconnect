@@ -300,7 +300,7 @@ var Plugin = GObject.registerClass({
                     Object.assign(extant, message);
                 } else {
                     conversation.push(message);
-                    await this._handleMessage(contact, message);
+                    await this._handleMessage(message);
                 }
             }
 
