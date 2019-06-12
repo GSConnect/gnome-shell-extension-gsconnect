@@ -133,8 +133,8 @@ const Service = GObject.registerClass({
             });
 
             for (let name in imports.service.plugins) {
-                // Don't report clipbaord/mousepad support in Wayland sessions
-                if (_WAYLAND && ['clipboard', 'mousepad'].includes(name)) continue;
+                // Don't report mousepad support in Wayland sessions
+                if (_WAYLAND && name == 'mousepad') continue;
 
                 let meta = imports.service.plugins[name].Metadata;
 
@@ -278,7 +278,10 @@ const Service = GObject.registerClass({
         if (device) {
             // Stash the settings path before unpairing and removing
             let settings_path = device.settings.path;
-            device.sendPacket({type: 'kdeconnect.pair', pair: 'false'});
+            device.sendPacket({
+                type: 'kdeconnect.pair',
+                body: {pair: false}
+            });
 
             //
             device.destroy();
@@ -724,6 +727,12 @@ const Service = GObject.registerClass({
         this._devices.forEach(device => device.destroy());
 
         // Destroy the remaining components last
+        try {
+            if (this.clipboard) this.clipboard.destroy();
+        } catch (e) {
+            debug(e);
+        }
+        
         try {
             if (this.mpris) this.mpris.destroy();
         } catch (e) {
