@@ -295,6 +295,7 @@ var Plugin = GObject.registerClass({
                 number: messages[0].address
             });
 
+            // Handle each message
             for (let i = 0, len = messages.length; i < len; i++) {
                 let message = messages[i];
 
@@ -351,13 +352,14 @@ var Plugin = GObject.registerClass({
                     let message = messages[i];
                     let cache = this.conversations[message.thread_id];
 
-                    // If this is for an existing thread, mark the rest as read
+                    // If this message is marked read and it's for an existing
+                    // thread, we should mark the rest in this thread as read
                     if (cache && message.read === MessageStatus.READ) {
-                        cache.forEach(message => message.read = MessageStatus.READ);
+                        cache.forEach(msg => msg.read = MessageStatus.READ);
                     }
 
-                    // If we don't have a thread for this message or the last
-                    // message in the cache is older, request the full thread
+                    // If we don't have a thread for this message or it's newer
+                    // than the last message in the cache, request the thread
                     if (!cache || cache[cache.length - 1].date < message.date) {
                         this.requestConversation(message.thread_id);
                     }
