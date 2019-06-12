@@ -294,8 +294,6 @@ const ConversationWidget = GObject.registerClass({
             GObject.BindingFlags.DEFAULT
         );
 
-        this._notifications = [];
-
         // Message List
         this.message_list.set_header_func(this._headerMessages);
         this.message_list.set_sort_func(this._sortMessages);
@@ -450,20 +448,6 @@ const ConversationWidget = GObject.registerClass({
 
     _sortMessages(row1, row2) {
         return (row1.date > row2.date) ? 1 : -1;
-    }
-
-    // message-entry::focus-in-event
-    // FIXME: this is not working well
-    _onMessageAcknowledged() {
-        if (this.message_entry.has_focus) {
-            let notification = this.device.lookup_plugin('notification');
-
-            if (notification) {
-                while (this._notifications.length > 0) {
-                    notification.closeNotification(this._notifications.pop());
-                }
-            }
-        }
     }
 
     // message-list::size-allocate

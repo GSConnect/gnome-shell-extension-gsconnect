@@ -259,22 +259,16 @@ var Plugin = GObject.registerClass({
     /**
      * Handle a new single message
      */
-    _handleMessage(contact, message) {
+    _handleMessage(message) {
         let conversation = null;
 
+        // If the window is open, try and find an active conversation
         if (this._window) {
             conversation = this._window.getConversation(message.address);
         }
 
+        // If there's an active conversation, we should log the message now
         if (conversation) {
-            // Track expected ticker of outgoing messages so they can be closed
-            // FIXME: this is not working well
-            if (message.type === MessageType.SENT) {
-                conversation._notifications.push(
-                    `${contact.name}: ${message.body}`
-                );
-            }
-
             conversation.logMessage(message);
         }
     }
@@ -291,9 +285,6 @@ var Plugin = GObject.registerClass({
 
             let thread_id = messages[0].thread_id;
             let conversation = this.conversations[thread_id] || [];
-            let contact = this.device.contacts.query({
-                number: messages[0].address
-            });
 
             // Handle each message
             for (let i = 0, len = messages.length; i < len; i++) {
