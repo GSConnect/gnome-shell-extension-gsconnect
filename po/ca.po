@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-06-13 16:35\n"
+"PO-Revision-Date: 2019-06-13 16:49\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -626,7 +626,7 @@ msgstr "S’està rebent «%s» del %s"
 
 #: src/service/plugins/share.js:121 src/service/plugins/share.js:260
 msgid "Transfer Successful"
-msgstr ""
+msgstr "La transferència ha estat exitosa"
 
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:123
@@ -655,7 +655,7 @@ msgstr "No s’ha pogut rebre «%s» del %s"
 #: src/service/plugins/share.js:171
 #, javascript-format
 msgid "Text Shared By %s"
-msgstr ""
+msgstr "Text compartit per %s"
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
 #: src/service/plugins/share.js:239
