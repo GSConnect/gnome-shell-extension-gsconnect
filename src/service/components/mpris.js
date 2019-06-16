@@ -81,7 +81,8 @@ var Manager = GObject.registerClass({
             for (let i = 0, len = names.length; i < len; i++) {
                 let name = names[i];
 
-                if (name.startsWith('org.mpris.MediaPlayer2')) {
+                if (name.startsWith('org.mpris.MediaPlayer2') &&
+                    !name.includes('GSConnect')) {
                     this._addPlayer(name);
                 }
             }
@@ -121,7 +122,8 @@ var Manager = GObject.registerClass({
             if (signal_name === 'NameOwnerChanged') {
                 let [name, old_owner, new_owner] = parameters.deep_unpack();
 
-                if (name.startsWith('org.mpris.MediaPlayer2')) {
+                if (name.startsWith('org.mpris.MediaPlayer2') &&
+                    !name.includes('GSConnect')) {
                     if (new_owner.length) {
                         this._addPlayer(name);
                     } else if (old_owner.length) {
