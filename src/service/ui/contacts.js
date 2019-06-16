@@ -155,7 +155,21 @@ var Avatar = GObject.registerClass({
             visible: true
         });
 
+        this._contact = contact;
         this._path = contact.avatar;
+    }
+
+    get contact() {
+        if (this._contact === undefined) {
+            this._contact = null;
+        }
+
+        return this._contact;
+    }
+
+    set contact(contact) {
+        this._contact = contact;
+        this.path = contact.avatar;
     }
 
     get path() {
@@ -183,7 +197,7 @@ var Avatar = GObject.registerClass({
         if (this._pixbuf === undefined) {
             this._fallback = true;
 
-            this.bg_color = randomRGBA(this.tooltip_text);
+            this.bg_color = randomRGBA(this._contact.name);
 
             let info = Gtk.IconTheme.get_default().lookup_icon(
                 'avatar-default',
