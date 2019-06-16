@@ -280,9 +280,7 @@ var Interface = GObject.registerClass({
     }
 
     _exportMethods(info) {
-        if (info.methods.length === 0) {
-            return;
-        }
+        if (info.methods.length === 0) return;
 
         this.connect('handle-method-call', (impl, name, parameters, invocation) => {
             return this._call.call(
@@ -296,38 +294,47 @@ var Interface = GObject.registerClass({
     }
 
     _get(info, propertyName) {
-        // Look up the property info
         let propertyInfo = info.lookup_property(propertyName);
-        // Convert to lower_underscore case before getting
-        let value = this[propertyName.toUnderscoreCase()];
+        let value;
 
-        // TODO: better pack
-        if (value != undefined) {
-            return new GLib.Variant(propertyInfo.signature, value);
+        // Check before assuming native DBus case
+        if (this[propertyName] !== undefined) {
+            value = this[propertyName];
+        } else {
+            value = this[propertyName.toUnderscoreCase()];
         }
 
-        return null;
+        if (value !== undefined) {
+            return new GLib.Variant(propertyInfo.signature, value);
+        } else {
+            return null;
+        }
     }
 
     _set(info, name, value) {
+        // Unpack the value
         value = full_unpack(value);
 
+        if (this[name] !== undefined) {
+            this[name] = value;
+            return;
+        }
+
         if (!this._propertyCase) {
-            if (this[name.toUnderscoreCase()]) {
+            if (this[name.toUnderscoreCase()] !== undefined) {
                 this._propertyCase = 'toUnderScoreCase';
-            } else if (this[name.toCamelCase()]) {
+            } else if (this[name.toCamelCase()] !== undefined) {
                 this._propertyCase = 'toCamelCase';
             }
         }
 
         // Convert to lower_underscore case before setting
-        this[name[this._propertyCase]()] = value;
+        let nativeName = name[this._propertyCase]();
+        this[nativeName] = value;
     }
 
     _exportProperties(info) {
-        if (info.properties.length === 0) {
-            return;
-        }
+        if (info.properties.length === 0) return;
 
         this.connect('handle-property-get', (impl, name) => {
             return this._get.call(this._exportee, info, name);
@@ -356,7 +363,7 @@ var Interface = GObject.registerClass({
 
     _exportSignals(info) {
         for (let signal of info.signals) {
-            this._exportee.connect(signal.name.toHyphenCase(), (obj, ...args) => {
+            this._exportee.connect(signal.name, (obj, ...args) => {
                 this.emit_signal(
                     signal.name,
                     new GLib.Variant(
