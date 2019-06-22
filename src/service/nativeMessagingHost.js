@@ -28,7 +28,7 @@ var NativeMessagingHost = GObject.registerClass({
             this._devices = {};
         }
 
-        return Object.values(this._devices);
+        return this._devices;
     }
 
     vfunc_activate() {
@@ -131,7 +131,7 @@ var NativeMessagingHost = GObject.registerClass({
             // A request to invoke an action
             } else if (message.type === 'share') {
                 let actionName;
-                let device = this._devices[message.data.device];
+                let device = this.devices[message.data.device];
 
                 if (device) {
                     if (message.data.action === 'share') {
@@ -172,7 +172,7 @@ var NativeMessagingHost = GObject.registerClass({
 
         let available = [];
 
-        for (let device of this.devices) {
+        for (let device of Object.values(this.devices)) {
             let share = device.actions.get_action_enabled('shareUri');
             let telephony = device.actions.get_action_enabled('shareSms');
 
@@ -217,12 +217,12 @@ var NativeMessagingHost = GObject.registerClass({
             iface.g_object_path
         );
 
-        this._devices[iface.g_object_path] = iface;
+        this.devices[iface.g_object_path] = iface;
         this.sendDeviceList();
     }
 
     _onObjectRemoved(manager, object) {
-        delete this._devices[object.g_object_path];
+        delete this.devices[object.g_object_path];
         this.sendDeviceList();
     }
 });
