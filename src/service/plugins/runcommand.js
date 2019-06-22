@@ -47,6 +47,13 @@ var Plugin = GObject.registerClass({
 
     _init(device) {
         super._init(device, 'runcommand');
+        
+        // Setup a launcher with env variables for commands
+        this._launcher = new Gio.SubprocessLauncher();
+        this._launcher.setenv('GSCONNECT_DEVICE_ID', this.device.id, false);
+        this._launcher.setenv('GSCONNECT_DEVICE_NAME', this.device.name, false);
+        this._launcher.setenv('GSCONNECT_DEVICE_ICON', this.device.icon_name, false);
+        this._launcher.setenv('GSCONNECT_DEVICE_DBUS', this.device.object_path, false);
 
         // Local Commands
         this.settings.connect(
@@ -123,16 +130,23 @@ var Plugin = GObject.registerClass({
             if (!commandList.hasOwnProperty(key)) {
                 throw new Error(`Unknown command: ${key}`);
             }
-
-            GLib.spawn_async(
-                null,
-                ['/bin/sh', '-c', commandList[key].command],
-                null,
-                GLib.SpawnFlags.DEFAULT,
-                null
-            );
+            
+            let proc = this._launcher.spawnv([
+                '/bin/sh',
+                '-c',
+                commandList[key].command
+            ]);
+            proc.wait_check_async(null, this._commandExit);
         } catch (e) {
             logError(e, this.device.name);
+        }
+    }
+    
+    _commandExit(proc, res) {
+        try {
+            proc.wait_check_finish(res);
+        } catch (e) {
+            debug(e, this.name);
         }
     }
 
