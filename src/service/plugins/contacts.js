@@ -37,10 +37,12 @@ var Metadata = {
 /**
  * vCard 2.1 Patterns
  */
-const FIELD_BASIC = /^([^:;]+):(.+)$/;
-const FIELD_TYPED = /^([^:;]+);([^:]+):(.+)$/;
-const FIELD_TYPED_KEY = /item\d{1,2}\./;
-const FIELD_TYPED_META = /([a-z]+)=(.*)/i;
+const VCARD_FOLDING = /\r\n |\r |\n |=\n/g;
+const VCARD_SUPPORTED = /^fn|tel|photo|x-kdeconnect/i;
+const VCARD_BASIC = /^([^:;]+):(.+)$/;
+const VCARD_TYPED = /^([^:;]+);([^:]+):(.+)$/;
+const VCARD_TYPED_KEY = /item\d{1,2}\./;
+const VCARD_TYPED_META = /([a-z]+)=(.*)/i;
 
 
 /**
@@ -226,26 +228,26 @@ var Plugin = GObject.registerClass({
         };
 
         // Remove line folding and split
-        let lines = vcard_data.replace(/\n /g, '').split('\n');
+        let lines = vcard_data.replace(VCARD_FOLDING, '').split(/\r\n|\r|\n/);
 
         for (let i = 0, len = lines.length; i < len; i++) {
             let line = lines[i];
             let results, key, type, value;
 
-            // Empty line
-            if (!line) continue;
+            // Empty line or a property we aren't interested in
+            if (!line || !line.match(VCARD_SUPPORTED)) continue;
 
             // Basic Fields (fn, x-kdeconnect-timestamp, etc)
-            if ((results = line.match(FIELD_BASIC))) {
+            if ((results = line.match(VCARD_BASIC))) {
                 [results, key, value] = results;
                 vcard[key.toLowerCase()] = value;
                 continue;
             }
 
             // Typed Fields (tel, adr, etc)
-            if ((results = line.match(FIELD_TYPED))) {
+            if ((results = line.match(VCARD_TYPED))) {
                 [results, key, type, value] = results;
-                key = key.replace(FIELD_TYPED_KEY, '').toLowerCase();
+                key = key.replace(VCARD_TYPED_KEY, '').toLowerCase();
                 value = value.split(';');
                 type = type.split(';');
 
@@ -253,7 +255,7 @@ var Plugin = GObject.registerClass({
                 let meta = {};
 
                 for (let i = 0, len = type.length; i < len; i++) {
-                    let res = type[i].match(FIELD_TYPED_META);
+                    let res = type[i].match(VCARD_TYPED_META);
 
                     if (res) {
                         meta[res[1]] = res[2];
@@ -263,7 +265,7 @@ var Plugin = GObject.registerClass({
                 }
 
                 // Value(s)
-                if (!vcard[key]) vcard[key] = [];
+                if (vcard[key] === undefined) vcard[key] = [];
 
                 // Decode QUOTABLE-PRINTABLE
                 if (meta.ENCODING && meta.ENCODING === 'QUOTED-PRINTABLE') {
