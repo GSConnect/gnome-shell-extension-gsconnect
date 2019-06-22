@@ -7,6 +7,17 @@ const GObject = imports.gi.GObject;
 const PluginsBase = imports.service.plugins.base;
 const Contacts = imports.service.components.contacts;
 
+/*
+ * We prefer libebook's vCard parser if it's available
+ */
+var EBookContacts;
+
+try {
+    EBookContacts = imports.gi.EBookContacts;
+} catch (e) {
+    EBookContacts = null;
+}
+
 
 var Metadata = {
     label: _('Contacts'),
@@ -278,7 +289,7 @@ var Plugin = GObject.registerClass({
         return vcard;
     }
 
-    async parseContact(uid, vcard_data) {
+    async parseVCardNative(uid, vcard_data) {
         try {
             let vcard = this.parseVCard21(vcard_data);
 
@@ -313,6 +324,59 @@ var Plugin = GObject.registerClass({
             return undefined;
         }
     }
+    
+    async parseVCard(uid, vcard_data) {
+        try {
+            let contact = {
+                id: uid,
+                name: _('Unknown Contact'),
+                numbers: [],
+                origin: 'device',
+                timestamp: 0
+            };
+            
+            let evcard = EBookContacts.VCard.new_from_string(vcard_data);
+            let evattrs = evcard.get_attributes();
+            
+            for (let i = 0, len = evattrs.length; i < len; i++) {
+                let attr = evattrs[i];
+                let data, number;
+                
+                switch (attr.get_name().toLowerCase()) {
+                    case 'fn':
+                        contact.name = attr.get_value();
+                        break;
+                        
+                    case 'tel':
+                        number = {value: attr.get_value(), type: 'unknown'};
+                        
+                        if (attr.has_type('CELL'))
+                            number.type = 'cell';
+                        else if (attr.has_type('HOME'))
+                            number.type = 'home';
+                        else if (attr.has_type('WORK'))
+                            number.type = 'work';
+                        
+                        contact.numbers.push (number);
+                        break;
+                        
+                    case 'x-kdeconnect-timestamp':
+                        contact.timestamp = parseInt(attr.get_value());
+                        break;
+                        
+                    case 'photo':
+                        data = GLib.base64_decode(attr.get_value());
+                        contact.avatar = await this._store.storeAvatar(data);
+                        break;
+                }
+            }
+
+            return contact;
+        } catch (e) {
+            warning(e, `Failed to parse VCard contact "${uid}"`);
+            return undefined;
+        }
+    }
 
     async _handleVCards(packet) {
         try {
@@ -321,7 +385,13 @@ var Plugin = GObject.registerClass({
 
             // Parse each vCard and add the contact
             for (let [uid, vcard] of Object.entries(packet.body)) {
-                let contact = await this.parseContact(uid, vcard);
+                let contact;
+                
+                if (EBookContacts) {
+                    contact = await this.parseVCard(uid, vcard);
+                } else {
+                    contact = await this.parseVCardNative(uid, vcard);
+                }
 
                 if (contact) {
                     this._store.add(contact);
