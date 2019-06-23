@@ -899,10 +899,11 @@ const Service = GObject.registerClass({
             );
             
             let variant = result.unpack()[0].unpack();
+            let device;
             
-            for (let [object_path, object] of Object.entries(variant)) {
+            for (let object of Object.values(variant)) {
                 object = object.full_unpack();
-                let device = object['org.gnome.Shell.Extensions.GSConnect.Device'];
+                device = object['org.gnome.Shell.Extensions.GSConnect.Device'];
                 
                 if (!available || (device.Connected && device.Paired)) {
                     print(device.Id);
