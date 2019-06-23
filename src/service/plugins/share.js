@@ -202,7 +202,7 @@ var Plugin = GObject.registerClass({
     /**
      * Share local file path or URI
      *
-     * @param {string} path - Local file path or file URI
+     * @param {string} path - Local file path or URI
      * @param {boolean} open - Whether the file should be opened after transfer
      */
     async shareFile(path, open = false) {
@@ -210,7 +210,7 @@ var Plugin = GObject.registerClass({
         let title, body, iconName;
 
         try {
-            if (path.startsWith('file://')) {
+            if (path.includes('://')) {
                 file = Gio.File.new_for_uri(path);
             } else {
                 file = Gio.File.new_for_path(path);
