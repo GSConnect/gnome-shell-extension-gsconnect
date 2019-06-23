@@ -49,7 +49,13 @@ var Plugin = GObject.registerClass({
         super._init(device, 'runcommand');
         
         // Setup a launcher with env variables for commands
+        let application = GLib.build_filenamev([
+            gsconnect.extdatadir,
+            'service',
+            'daemon.js'
+        ]);
         this._launcher = new Gio.SubprocessLauncher();
+        this._launcher.setenv('GSCONNECT', application, false);
         this._launcher.setenv('GSCONNECT_DEVICE_ID', this.device.id, false);
         this._launcher.setenv('GSCONNECT_DEVICE_NAME', this.device.name, false);
         this._launcher.setenv('GSCONNECT_DEVICE_ICON', this.device.icon_name, false);
