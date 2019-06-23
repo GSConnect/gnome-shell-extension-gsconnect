@@ -30,10 +30,8 @@ try {
     }).get_option(6, 5);
 
     // Otherwise we can use Linux socket options
-    debug('Using Linux socket options');
     _LINUX_SOCKETS = true;
 } catch (e) {
-    debug('Using FreeBSD socket options');
     _LINUX_SOCKETS = false;
 }
 
