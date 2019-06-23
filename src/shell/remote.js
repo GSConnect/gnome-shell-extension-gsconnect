@@ -113,7 +113,7 @@ var Service = GObject.registerClass({
         try {
             let proxy = new Gio.DBusProxy({
                 g_connection: this.g_connection,
-                g_name: 'org.gnome.Shell.Extensions.GSConnect',
+                g_name: this.g_name,
                 g_object_path: object_path,
                 g_interface_name: DEVICE_NAME
             });
@@ -146,14 +146,14 @@ var Service = GObject.registerClass({
             // GActions
             proxy.action_group = Gio.DBusActionGroup.get(
                 proxy.g_connection,
-                proxy.g_name,
+                this.g_name_owner,
                 proxy.g_object_path
             );
 
             // GMenu
             proxy.menu_model = Gio.DBusMenuModel.get(
                 proxy.g_connection,
-                proxy.g_name,
+                this.g_name_owner,
                 proxy.g_object_path
             );
 
@@ -182,6 +182,9 @@ var Service = GObject.registerClass({
         try {
             // An empty list means only the object has been added
             if (Object.values(interfaces).length === 0) return;
+            
+            // This can still happen here
+            if (this.g_name_owner === null) return;
 
             // Skip existing proxies
             if (this._devices.has(object_path)) return;
