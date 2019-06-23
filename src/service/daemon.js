@@ -651,18 +651,20 @@ const Service = GObject.registerClass({
     }
 
     vfunc_dbus_register(connection, object_path) {
-        this.objectManager = new Gio.DBusObjectManagerServer({
-            connection: connection,
-            object_path: object_path
-        });
+        if (connection && object_path) {
+            this.objectManager = new Gio.DBusObjectManagerServer({
+                connection: connection,
+                object_path: object_path
+            });
 
-        // Load cached devices
-        for (let id of gsconnect.settings.get_strv('devices')) {
-            let device = new Device.Device({body: {deviceId: id}});
-            this._devices.set(id, device);
-            device.loadPlugins();
+            // Load cached devices
+            for (let id of gsconnect.settings.get_strv('devices')) {
+                let device = new Device.Device({body: {deviceId: id}});
+                this._devices.set(id, device);
+                device.loadPlugins();
+            }
         }
-
+        
         return true;
     }
 
