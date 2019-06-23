@@ -773,7 +773,7 @@ const Service = GObject.registerClass({
             'a'.charCodeAt(0),
             GLib.OptionFlags.NONE,
             GLib.OptionArg.NONE,
-            _('List available devices (connected and paired'),
+            _('List available devices (connected and paired)'),
             null
         );
         
