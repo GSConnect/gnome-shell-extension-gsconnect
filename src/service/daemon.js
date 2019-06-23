@@ -991,7 +991,7 @@ const Service = GObject.registerClass({
         }
     }
     
-    _cliPing(device) {
+    _cliPing(device, options) {
         try {
             let plugin = device.lookup_plugin('ping');
             
@@ -1114,6 +1114,18 @@ const Service = GObject.registerClass({
                 this._cliNotify(device, options);
             }
             
+            if (options.contains('photo')) {
+                this._cliPhoto(device, options);
+            }
+            
+            if (options.contains('ping')) {
+                this._cliPing(device, options);
+            }
+            
+            if (options.contains('ring')) {
+                this._cliRing(device, options);
+            }
+            
             if (options.contains('sms')) {
                 this._cliSms(device, options);
             }
@@ -1124,6 +1136,8 @@ const Service = GObject.registerClass({
         } catch (e) {
             logError(e);
         }
+        
+        return 0;
     }
 });
 
