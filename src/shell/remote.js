@@ -113,7 +113,7 @@ var Service = GObject.registerClass({
         try {
             let proxy = new Gio.DBusProxy({
                 g_connection: this.g_connection,
-                g_name: this.g_name_owner,
+                g_name: 'org.gnome.Shell.Extensions.GSConnect',
                 g_object_path: object_path,
                 g_interface_name: DEVICE_NAME
             });
