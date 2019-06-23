@@ -83,7 +83,8 @@ const Service = GObject.registerClass({
     _init() {
         super._init({
             application_id: gsconnect.app_id,
-            flags: Gio.ApplicationFlags.HANDLES_OPEN
+            flags: Gio.ApplicationFlags.HANDLES_OPEN |
+                   Gio.ApplicationFlags.HANDLES_COMMAND_LINE
         });
 
         GLib.set_prgname(gsconnect.app_id);
@@ -95,6 +96,9 @@ const Service = GObject.registerClass({
         // Properties
         gsconnect.settings.bind('discoverable', this, 'discoverable', 0);
         gsconnect.settings.bind('public-name', this, 'name', 0);
+        
+        // Command-line
+        this._initOptions();
     }
 
     get certificate() {
@@ -749,6 +753,377 @@ const Service = GObject.registerClass({
 
         // Chain up last (application->priv->did_shutdown)
         super.vfunc_shutdown();
+    }
+    
+    /*
+     * CLI
+     */
+    _initOptions() {
+        this.add_main_option(
+            'list-devices',
+            'l'.charCodeAt(0),
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.NONE,
+            _('List all devices'),
+            null
+        );
+        
+        this.add_main_option(
+            'list-available',
+            'a'.charCodeAt(0),
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.NONE,
+            _('List available devices (connected and paired'),
+            null
+        );
+        
+        this.add_main_option(
+            'device',
+            'd'.charCodeAt(0),
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.STRING,
+            _('ID of a device to handle command'),
+            '<device-id>'
+        );
+        
+        this.add_main_option(
+            'file',
+            'f'.charCodeAt(0),
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.FILENAME_ARRAY,
+            _('Share a local or remote file, by URI or absolute file path'),
+            '<filepath|URI>'
+        );
+        
+        this.add_main_option(
+            'notification',
+            'n'.charCodeAt(0),
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.NONE,
+            _('Send a notification'),
+            null
+        );
+        
+        this.add_main_option(
+            'photo',
+            'c'.charCodeAt(0),
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.NONE,
+            _('Take a photo with the device camera'),
+            null
+        );
+        
+        this.add_main_option(
+            'ping',
+            'p'.charCodeAt(0),
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.NONE,
+            _('Ping the device'),
+            null
+        );
+        
+        this.add_main_option(
+            'ring',
+            'r'.charCodeAt(0),
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.NONE,
+            _('Ring the device'),
+            null
+        );
+        
+        this.add_main_option(
+            'sms',
+            's'.charCodeAt(0),
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.STRING,
+            _('Send an SMS message'),
+            '<phone-number>'
+        );
+        
+        this.add_main_option(
+            'url',
+            'u'.charCodeAt(0),
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.STRING_ARRAY,
+            _('Send a URL'),
+            '<URL>'
+        );
+        
+        this.add_main_option(
+            'title',
+            't'.charCodeAt(0),
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.STRING,
+            _('Set the title for a notification'),
+            '<title>'
+        );
+        
+        this.add_main_option(
+            'body',
+            'b'.charCodeAt(0),
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.STRING,
+            _('Set the body for a notification, ping or SMS'),
+            '<body>'
+        );
+        
+        this.add_main_option(
+            'icon',
+            'i'.charCodeAt(0),
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.STRING,
+            _('Set the icon name for a notification'),
+            '<icon-name>'
+        );
+        
+        this.add_main_option(
+            'version',
+            'v'.charCodeAt(0),
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.NONE,
+            _('Show release version'),
+            null
+        );
+    }
+    
+    _listDevices(available = true) {
+        try {
+            let result = Gio.DBus.session.call_sync(
+                'org.gnome.Shell.Extensions.GSConnect',
+                '/org/gnome/Shell/Extensions/GSConnect',
+                'org.freedesktop.DBus.ObjectManager',
+                'GetManagedObjects',
+                null,
+                null,
+                Gio.DBusCallFlags.NONE,
+                -1,
+                null
+            );
+            
+            let variant = result.unpack()[0].unpack();
+            
+            for (let [object_path, object] of Object.entries(variant)) {
+                object = object.full_unpack();
+                let device = object['org.gnome.Shell.Extensions.GSConnect.Device'];
+                
+                if (!available || (device.Connected && device.Paired)) {
+                    print(device.Id);
+                }
+            }
+        } catch (e) {
+            logError(e);
+        }
+    }
+    
+    _cliFile(device, options) {
+        try {
+            let plugin = device.lookup_plugin('share');
+            
+            if (!plugin) {
+                throw new Error('Share plugin disabled');
+            }
+            
+            let uris = options.lookup_value('file', null).deep_unpack();
+            
+            uris.map(uri => {
+                if (uri instanceof Uint8Array) {
+                    uri = imports.byteArray.toString(uri);
+                }
+                
+                plugin.shareFile(uri);
+            });
+        } catch (e) {
+            logError(e);
+        }
+    }
+    
+    async _cliNotify(device, options) {
+        try {
+            let plugin = device.lookup_plugin('notification');
+            
+            if (!plugin) {
+                throw new Error('Notification plugin disabled');
+            }
+            
+            let title = 'GSConnect';
+            let body = '';
+            let icon = null;
+            
+            if (options.contains('title')) {
+                title = options.lookup_value('title', null).unpack();
+            }
+            
+            if (options.contains('body')) {
+                body = options.lookup_value('body', null).unpack();
+            }
+            
+            if (options.contains('icon')) {
+                icon = options.lookup_value('icon', null).unpack();
+            }
+
+            let packet = {
+                type: 'kdeconnect.notification',
+                body: {
+                    id: `${Date.now()}`,
+                    appName: title,
+                    ticker: body,
+                    isClearable: false
+                }
+            };
+
+            await plugin._uploadIcon(packet, icon);
+        } catch (e) {
+            logError(e);
+        }
+    }
+    
+    _cliPhoto(device) {
+        try {
+            let plugin = device.lookup_plugin('findmyphone');
+            
+            if (!plugin) {
+                throw new Error('Photo plugin disabled');
+            }
+            
+            plugin.photo();
+        } catch (e) {
+            logError(e);
+        }
+    }
+    
+    _cliPing(device) {
+        try {
+            let plugin = device.lookup_plugin('ping');
+            
+            if (!plugin) {
+                throw new Error('Ping plugin disabled');
+            }
+            
+            let body = '';
+            
+            if (options.contains('body')) {
+                body = options.lookup_value('body', null).deep_unpack();
+            }
+            
+            plugin.ping(body);
+        } catch (e) {
+            logError(e);
+        }
+    }
+    
+    _cliRing(device) {
+        try {
+            let plugin = device.lookup_plugin('findmyphone');
+            
+            if (!plugin) {
+                throw new Error('FindMyPhone plugin disabled');
+            }
+            
+            plugin.ring();
+        } catch (e) {
+            logError(e);
+        }
+    }
+    
+    _cliSms(device, options) {
+        try {
+            let plugin = device.lookup_plugin('sms');
+            
+            if (!plugin) {
+                throw new Error('SMS plugin disabled');
+            }
+            
+            if (!options.contains('body')) {
+                throw new Error('SMS body missing');
+            }
+            
+            let address = options.lookup_value('sms', null).deep_unpack();
+            let body = options.lookup_value('body', null).deep_unpack();
+            
+            plugin.sendSms(address, body);
+        } catch (e) {
+            logError(e);
+        }
+    }
+    
+    _cliUrl(device, options) {
+        try {
+            let plugin = device.lookup_plugin('share');
+            
+            if (!plugin) {
+                throw new Error('Share plugin disabled');
+            }
+            
+            let uris = options.lookup_value('url', null).deep_unpack();
+            
+            uris.map(uri => {
+                if (uri instanceof Uint8Array) {
+                    uri = imports.byteArray.toString(uri);
+                }
+                
+                plugin.shareUri(uri);
+            });
+        } catch (e) {
+            logError(e);
+        }
+    }
+    
+    vfunc_handle_local_options(options) {
+        if (options.contains('version')) {
+            print(`GSConnect ${gsconnect.metadata.version}`);
+            return 0;
+        }
+
+        try {
+            this.register(null);
+        } catch (e) {
+            return 1;
+        }
+        
+        if (options.contains('list-available')) {
+            this._listDevices(true);
+            return 0;
+        }
+        
+        if (options.contains('list-devices')) {
+            this._listDevices(false);
+            return 0;
+        }
+        
+        return -1;
+    }
+    
+    vfunc_command_line(command_line) {
+        try {
+            let options = command_line.get_options_dict();
+            
+            if (!options.contains('device')) return;
+            
+            let id = options.lookup_value('device', null).unpack();
+            let device = this._devices.get(id);
+            
+            if (!device || !device.connected || !device.paired) {
+                throw new Error(`Device not available: ${id}`);
+            }
+            
+            if (options.contains('file')) {
+                this._cliFile(device, options);
+            }
+            
+            if (options.contains('notification')) {
+                this._cliNotify(device, options);
+            }
+            
+            if (options.contains('sms')) {
+                this._cliSms(device, options);
+            }
+            
+            if (options.contains('url')) {
+                this._cliUrl(device, options);
+            }
+        } catch (e) {
+            logError(e);
+        }
     }
 });
 
