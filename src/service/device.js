@@ -695,7 +695,6 @@ var Device = GObject.registerClass({
 
         // Send a pair packet
         this.sendPacket({
-            id: 0,
             type: 'kdeconnect.pair',
             body: {pair: true}
         });
@@ -723,7 +722,6 @@ var Device = GObject.registerClass({
         // Send the unpair packet only if we're connected
         if (this.connected) {
             this.sendPacket({
-                id: 0,
                 type: 'kdeconnect.pair',
                 body: {pair: false}
             });

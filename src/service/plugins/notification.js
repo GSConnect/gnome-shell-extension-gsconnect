@@ -380,7 +380,6 @@ var Plugin = GObject.registerClass({
                 delete notif.icon;
 
                 let packet = {
-                    id: 0,
                     type: 'kdeconnect.notification',
                     body: notif
                 };

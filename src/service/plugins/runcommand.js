@@ -204,7 +204,6 @@ var Plugin = GObject.registerClass({
      */
     executeCommand(key) {
         this.device.sendPacket({
-            id: 0,
             type: 'kdeconnect.runcommand.request',
             body: {key: key}
         });
@@ -215,7 +214,6 @@ var Plugin = GObject.registerClass({
      */
     requestCommandList() {
         this.device.sendPacket({
-            id: 0,
             type: 'kdeconnect.runcommand.request',
             body: {requestCommandList: true}
         });
@@ -228,7 +226,6 @@ var Plugin = GObject.registerClass({
         let commands = this.settings.get_value('command-list').full_unpack();
 
         this.device.sendPacket({
-            id: 0,
             type: 'kdeconnect.runcommand',
             body: {commandList: commands}
         });

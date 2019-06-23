@@ -177,7 +177,6 @@ var Plugin = GObject.registerClass({
 
         // Send the sinkList
         this.device.sendPacket({
-            id: 0,
             type: 'kdeconnect.systemvolume',
             body: {
                 sinkList: sinkList

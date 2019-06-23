@@ -205,7 +205,6 @@ var Plugin = GObject.registerClass({
      */
     _requestState() {
         this.device.sendPacket({
-            id: 0,
             type: 'kdeconnect.battery.request',
             body: {request: true}
         });
