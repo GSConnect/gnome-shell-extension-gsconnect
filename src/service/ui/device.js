@@ -154,7 +154,7 @@ var DevicePreferences = GObject.registerClass({
         'clipboard', 'clipboard-sync', 'mousepad', 'mpris', 'systemvolume',
         // RunCommand
         'runcommand', 'runcommand-page',
-        'command-list', 'command-list-placeholder',
+        'command-list',
         'command-toolbar', 'command-add', 'command-remove', 'command-edit', 'command-save',
         'command-editor', 'command-name', 'command-line',
         // Notifications
@@ -482,7 +482,6 @@ var DevicePreferences = GObject.registerClass({
         this._commands = settings.get_value('command-list').full_unpack();
         this._commands = (typeof this._commands === 'string') ? {} : this._commands;
 
-        this.command_list.set_placeholder(this.command_list_placeholder);
         this.command_list.set_sort_func(title_sort);
         this.command_list.set_header_func(section_separators);
 

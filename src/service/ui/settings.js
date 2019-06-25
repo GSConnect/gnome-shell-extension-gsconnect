@@ -431,7 +431,6 @@ var Window = GObject.registerClass({
         this.device_list.set_header_func((row, before) => {
             if (before) row.set_header(new Gtk.Separator({visible: true}));
         });
-        this.device_list.set_placeholder(this.device_list_placeholder);
 
         // Setup devices
         this._devicesChangedId = gsconnect.settings.connect(

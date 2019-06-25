@@ -642,7 +642,7 @@ var Window = GObject.registerClass({
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/messaging.ui',
     Children: [
         'headerbar', 'infobar',
-        'conversation-list', 'conversation-list-placeholder', 'conversation-stack'
+        'conversation-list', 'conversation-stack'
     ]
 }, class Window extends Gtk.ApplicationWindow {
 
@@ -693,9 +693,6 @@ var Window = GObject.registerClass({
             60,
             this._timestampConversations.bind(this)
         );
-
-        // Conversations Placeholder
-        this.conversation_list.set_placeholder(this.conversation_list_placeholder);
 
         // Cleanup on ::destroy
         this.connect('destroy', this._onDestroy);

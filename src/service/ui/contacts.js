@@ -266,12 +266,7 @@ var ContactChooser = GObject.registerClass({
         }
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/contacts.ui',
-    Children: [
-        'contact-entry',
-        'contact-list',
-        'contact-placeholder',
-        'contact-window'
-    ]
+    Children: ['contact-entry', 'contact-list', 'contact-window']
 }, class ContactChooser extends Gtk.Grid {
 
     _init(params) {
@@ -290,7 +285,6 @@ var ContactChooser = GObject.registerClass({
         this.contact_list._entry = this.contact_entry.text;
         this.contact_list.set_filter_func(this._filter);
         this.contact_list.set_sort_func(this._sort);
-        this.contact_list.set_placeholder(this.contact_placeholder);
 
         // Cleanup on ::destroy
         this.connect('destroy', this._onDestroy);

@@ -21,6 +21,60 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <signal name="row-activated" handler="_onNumberSelected" swapped="no"/>
+                <child type="placeholder">
+                  <object class="GtkGrid" id="contact-placeholder">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                    <child>
+                      <object class="GtkImage">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="pixel_size">144</property>
+                        <property name="icon_name">avatar-default-symbolic</property>
+                        <style>
+                          <class name="placeholder-image"/>
+                        </style>
+                      </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">No contacts</property>
+                        <style>
+                          <class name="placeholder-title"/>
+                        </style>
+                      </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLinkButton">
+                        <property name="label" translatable="yes">Help</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="relief">none</property>
+                        <property name="uri">https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Help#contacts-dont-sync</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">2</property>
+                      </packing>
+                    </child>
+                    <style>
+                      <class name="placeholder"/>
+                    </style>
+                  </object>
+                </child>
                 <style>
                   <class name="contact-list"/>
                 </style>
@@ -55,56 +109,4 @@
       </packing>
     </child>
   </template>
-  <object class="GtkGrid" id="contact-placeholder">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="halign">center</property>
-    <property name="valign">center</property>
-    <child>
-      <object class="GtkImage">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="pixel_size">144</property>
-        <property name="icon_name">avatar-default-symbolic</property>
-        <style>
-          <class name="placeholder-image"/>
-        </style>
-      </object>
-      <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">0</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkLabel">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="label" translatable="yes">No contacts</property>
-        <style>
-          <class name="placeholder-title"/>
-        </style>
-      </object>
-      <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">1</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkLinkButton">
-        <property name="label" translatable="yes">Help</property>
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="receives_default">True</property>
-        <property name="relief">none</property>
-        <property name="uri">https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Help#contacts-dont-sync</property>
-      </object>
-      <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">2</property>
-      </packing>
-    </child>
-    <style>
-      <class name="placeholder"/>
-    </style>
-  </object>
 </interface>

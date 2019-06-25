@@ -62,6 +62,61 @@
                         <property name="can_focus">False</property>
                         <property name="vexpand">True</property>
                         <signal name="row-selected" handler="_onConversationSelected" swapped="no"/>
+                        <child type="placeholder">
+                          <object class="GtkGrid" id="conversation-list-placeholder">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">center</property>
+                            <property name="valign">center</property>
+                            <child>
+                              <object class="GtkImage">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="pixel_size">96</property>
+                                <property name="icon_name">view-list-symbolic</property>
+                                <style>
+                                  <class name="placeholder-image"/>
+                                </style>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLinkButton">
+                                <property name="label" translatable="yes">Help</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="relief">none</property>
+                                <property name="uri">https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Help#sms-messages-dont-sync</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="margin_top">12</property>
+                                <property name="label" translatable="yes">No Conversations</property>
+                                <style>
+                                  <class name="placeholder-title"/>
+                                </style>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">1</property>
+                              </packing>
+                            </child>
+                            <style>
+                              <class name="placeholder"/>
+                            </style>
+                          </object>
+                        </child>
                         <style>
                           <class name="conversation-list"/>
                         </style>
@@ -222,58 +277,5 @@
       </object>
     </child>
   </template>
-  <object class="GtkGrid" id="conversation-list-placeholder">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="halign">center</property>
-    <property name="valign">center</property>
-    <child>
-      <object class="GtkImage">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="pixel_size">96</property>
-        <property name="icon_name">view-list-symbolic</property>
-        <style>
-          <class name="placeholder-image"/>
-        </style>
-      </object>
-      <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">0</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkLinkButton">
-        <property name="label" translatable="yes">Help</property>
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="receives_default">True</property>
-        <property name="relief">none</property>
-        <property name="uri">https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Help#sms-messages-dont-sync</property>
-      </object>
-      <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">2</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkLabel">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="margin_top">12</property>
-        <property name="label" translatable="yes">No Conversations</property>
-        <style>
-          <class name="placeholder-title"/>
-        </style>
-      </object>
-      <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">1</property>
-      </packing>
-    </child>
-    <style>
-      <class name="placeholder"/>
-    </style>
-  </object>
 </interface>
 
