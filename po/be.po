@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-05-18 10:54\n"
+"PO-Revision-Date: 2019-08-09 00:14\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Belarusian\n"
 "Language: be\n"
@@ -379,7 +379,7 @@ msgid_plural "%d Connected"
 msgstr[0] "%d падлучана"
 msgstr[1] "%d падлучаны"
 msgstr[2] "%d падлучана"
-msgstr[3] ""
+msgstr[3] "%d падлучана"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:149 webextension/gettext.js:31
@@ -824,7 +824,7 @@ msgid_plural "%d minutes"
 msgstr[0] "%d хвіліна"
 msgstr[1] "%d хвіліны"
 msgstr[2] "%d хвілін"
-msgstr[3] ""
+msgstr[3] "%d хвіліны"
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
 #: src/service/ui/messaging.js:38
@@ -938,7 +938,7 @@ msgid_plural "%d hours"
 msgstr[0] "%d гадзіна"
 msgstr[1] "%d гадзіны"
 msgstr[2] "%d гадзін"
-msgstr[3] ""
+msgstr[3] "%d гадзіны"
 
 #: src/shell/notification.js:42
 msgid "Reply"
