@@ -169,9 +169,11 @@ gsconnect.installService = function() {
     let desktopDir = GLib.build_filenamev([dataDir, 'applications']);
     let desktopFile = `${gsconnect.app_id}.desktop`;
 
-    // Nautilus Extension
-    let nautDir = GLib.build_filenamev([dataDir, 'nautilus-python/extensions']);
-    let nautScript = GLib.build_filenamev([nautDir, 'nautilus-gsconnect.py']);
+    // File Manager Extensions
+    let fileManagers = [
+        [dataDir + '/nautilus-python/extensions', 'nautilus-gsconnect.py'],
+        [dataDir + '/nemo-python/extensions', 'nemo-gsconnect.py']
+    ];
 
     // WebExtension Manifests
     let manifestFile = 'org.gnome.shell.extensions.gsconnect.json';
@@ -187,10 +189,10 @@ gsconnect.installService = function() {
     ];
 
     // If running as a user extension, ensure the DBus service, desktop entry,
-    // Nautilus script and WebExtension manifests are installed.
+    // file manager scripts, and WebExtension manifests are installed.
     if (gsconnect.is_local) {
         // DBus Service
-        GLib.mkdir_with_parents(dbusDir, 493);
+        GLib.mkdir_with_parents(dbusDir, 493);  // 0755 in octal
         GLib.file_set_contents(
             GLib.build_filenamev([dbusDir, dbusFile]),
             gsconnect.get_resource(dbusFile)
@@ -203,16 +205,16 @@ gsconnect.installService = function() {
             gsconnect.get_resource(desktopFile)
         );
 
-        // Nautilus Extension
-        let script = Gio.File.new_for_path(nautScript);
-
-        if (!script.query_exists(null)) {
-            GLib.mkdir_with_parents(nautDir, 493); // 0755 in octal
-
-            script.make_symbolic_link(
-                gsconnect.extdatadir + '/nautilus-gsconnect.py',
-                null
-            );
+        // File Manager Extensions
+        for (let [dir, name] of fileManagers) {
+            let script = Gio.File.new_for_path(GLib.build_filenamev([dir, name]));
+            if (!script.query_exists(null)) {
+                GLib.mkdir_with_parents(dir, 493);
+                script.make_symbolic_link(
+                    gsconnect.extdatadir + '/nautilus-gsconnect.py',
+                    null
+                );
+            }
         }
 
         // WebExtension Manifests
@@ -229,11 +231,13 @@ gsconnect.installService = function() {
     } else {
         GLib.unlink(GLib.build_filenamev([dbusDir, dbusFile]));
         GLib.unlink(GLib.build_filenamev([desktopDir, desktopFile]));
-        GLib.unlink(nautScript);
+
+        for (let [dir, name] of fileManagers) {
+            GLib.unlink(GLib.build_filenamev([dir, name]));
+        }
 
         for (let dir of Object.keys(manifests)) {
             GLib.unlink(GLib.build_filenamev([dir, manifestFile]));
         }
     }
 };
-
