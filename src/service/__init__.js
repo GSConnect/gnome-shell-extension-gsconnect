@@ -291,6 +291,19 @@ String.prototype.toPhoneNumber = function() {
     return this;
 };
 
+/**
+ * A simple equality check for phone numbers based on `toPhoneNumber()`
+ *
+ * @param {string} number - A phone number string to compare
+ * @return {boolean} - If `this` and @number are equivalent phone numbers
+ */
+String.prototype.equalsPhoneNumber = function(number) {
+    let a = this.toPhoneNumber();
+    let b = number.toPhoneNumber()
+
+    return (a.endsWith(b) || b.endsWith(a));
+};
+
 
 /**
  * An implementation of `rm -rf` in Gio

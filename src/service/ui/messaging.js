@@ -446,6 +446,8 @@ const ConversationWidget = GObject.registerClass({
             hexpand: true,
             visible: true
         });
+
+        // Sort properties
         row.date = message.date;
         row.type = message.type;
         row.sender = message.addresses[0].address;
@@ -530,7 +532,8 @@ const ConversationWidget = GObject.registerClass({
             setAvatarVisible(row, true);
 
         // Or if the previous sender was the same, hide its avatar
-        } else if (row.type === before.type && row.sender === before.sender) {
+        } else if (row.type === before.type &&
+                   row.sender.equalsPhoneNumber(before.sender)) {
             setAvatarVisible(before, false);
             setAvatarVisible(row, true);
 
@@ -1016,7 +1019,7 @@ var Window = GObject.registerClass({
         this.notify('thread-id');
     }
 
-    addressesIncludesAddress(addresses, addressObj) {
+    _includesAddress(addresses, addressObj) {
         let number = addressObj.address.toPhoneNumber();
 
         for (let haystackObj of addresses) {
@@ -1062,7 +1065,7 @@ var Window = GObject.registerClass({
 
             // If we find a match, set `thread-id` on the conversation and the
             // child property `name`.
-            if (addresses.every(addr => this.addressesIncludesAddress(caddrs, addr))) {
+            if (addresses.every(addr => this._includesAddress(caddrs, addr))) {
                 conversation._thread_id = thread_id;
                 this.stack.child_set_property(conversation, 'name', thread_id);
 
