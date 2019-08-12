@@ -73,7 +73,8 @@ var Clipboard = GObject.registerClass({
                 );
             }
         } catch (e) {
-            logError(e, 'Clipboard');
+            logError(e, 'Clipboard Component');
+            this.destroy();
         }
     }
     
@@ -96,7 +97,7 @@ var Clipboard = GObject.registerClass({
 
             return true;
         } catch (e) {
-            // Silence errors; we get our errors from stderr directly
+            debug(e, 'XClipboard Proxy');
         }
     }
     
@@ -106,11 +107,11 @@ var Clipboard = GObject.registerClass({
                 let line = stream.read_line_finish_utf8(res)[0];
                 
                 if (line !== null) {
-                    debug(`XClipboard: ${line}`);
+                    warning(`XClipboard Proxy: ${line}`);
                     this._readError(stream);
                 }
             } catch (e) {
-                // Silence errors; we get our errors from stderr directly
+                debug(e, 'XClipboard Proxy');
             }
         });
     }
@@ -122,11 +123,16 @@ var Clipboard = GObject.registerClass({
             return;
         }
         
+        if (!text) {
+            warning(`Invalid or empty text '${text}'`);
+            return;
+        }
+
         try {
             this._stdin.put_int32(text.length, null);
             this._stdin.put_string(text, null);
         } catch (e) {
-            debug(e, 'XClipboard');
+            debug(e, 'XClipboard Proxy');
         }
     }
     
@@ -142,7 +148,7 @@ var Clipboard = GObject.registerClass({
             
             proc.wait_check_finish(res);
         } catch (e) {
-            debug(e, 'XClipboard');
+            logError(e, 'XClipboard Proxy');
         }
     }
     
@@ -154,7 +160,7 @@ var Clipboard = GObject.registerClass({
                 this._clipboard.set_text(text, length);
             }
         } catch (e) {
-            logError(e, 'Clipboard');
+            logError(e, 'Clipboard Component');
         }
     }
     
@@ -166,7 +172,7 @@ var Clipboard = GObject.registerClass({
                 this._clipboard.request_text(callback);
             }
         } catch (e) {
-            logError(e, 'Clipboard');
+            logError(e, 'Clipboard Component');
         }
     }
     
