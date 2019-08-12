@@ -75,12 +75,20 @@ option(
   description: 'Path to sshfs binary'
 )
 
-# Enable/Disable Nautilus/Nemo Python extension installation
+# Enable/Disable Nautilus Python extension installation
 option(
   'nautilus',
   type: 'boolean',
   value: true,
-  description: 'Install file browser extension for Nautilus/Nemo'
+  description: 'Install file browser extension for Nautilus'
+)
+
+# Enable/Disable Nemo Python extension installation
+option(
+  'nemo',
+  type: 'boolean',
+  value: true,
+  description: 'Install file browser extension for Nemo'
 )
 
 # Enable/Disable WebExtension manifest installation

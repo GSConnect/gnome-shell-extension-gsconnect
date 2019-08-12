@@ -109,6 +109,9 @@ if get_option('nautilus')
     'src/nautilus-gsconnect.py',
     install_dir: join_paths(datadir, 'nautilus-python', 'extensions')
   )
+endif
+
+if get_option('nemo')
   install_data(
     'src/nautilus-gsconnect.py',
     install_dir: join_paths(datadir, 'nemo-python', 'extensions')
