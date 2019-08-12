@@ -103,11 +103,18 @@ configure_file(
   install_dir: dbus_dir
 )
 
-# Nautilus Extension
+# Nautilus/Nemo Extension
 if get_option('nautilus')
   install_data(
     'src/nautilus-gsconnect.py',
     install_dir: join_paths(datadir, 'nautilus-python', 'extensions')
+  )
+endif
+
+if get_option('nemo')
+  install_data(
+    'src/nautilus-gsconnect.py',
+    install_dir: join_paths(datadir, 'nemo-python', 'extensions')
   )
 endif
 

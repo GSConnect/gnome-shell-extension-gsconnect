@@ -12,11 +12,26 @@ import locale
 import os.path
 
 import gi
-gi.require_version('Nautilus', '3.0')
 gi.require_version('Gio', '2.0')
 gi.require_version('GLib', '2.0')
 gi.require_version('GObject', '2.0')
-from gi.repository import Nautilus, Gio, GLib, GObject
+from gi.repository import Gio, GLib, GObject
+
+import sys
+
+# Host application detection
+#
+# Nemo seems to reliably identify itself as 'nemo' in argv[0], so we
+# can test for that. Nautilus detection is less reliable, so don't try.
+# See https://github.com/linuxmint/nemo-extensions/issues/330
+if "nemo" in sys.argv[0].lower():
+    # Host runtime is nemo-python
+    gi.require_version('Nemo', '3.0')
+    from gi.repository import Nemo as FileManager
+else:
+    # Otherwise, just assume it's nautilus-python
+    gi.require_version('Nautilus', '3.0')
+    from gi.repository import Nautilus as FileManager
 
 _ = gettext.gettext
 
@@ -34,7 +49,7 @@ SERVICE_PATH = '/org/gnome/Shell/Extensions/GSConnect'
 
 
 
-class GSConnectShareExtension(GObject.Object, Nautilus.MenuProvider):
+class GSConnectShareExtension(GObject.Object, FileManager.MenuProvider):
     """A context menu for sending files via GSConnect."""
 
     def __init__(self):
@@ -144,18 +159,18 @@ class GSConnectShareExtension(GObject.Object, Nautilus.MenuProvider):
             return ()
 
         # Context Menu Item
-        menu = Nautilus.MenuItem(
+        menu = FileManager.MenuItem(
             name='GSConnectShareExtension::Devices',
             label=_('Send To Mobile Device')
         )
 
         # Context Submenu
-        submenu = Nautilus.Menu()
+        submenu = FileManager.Menu()
         menu.set_submenu(submenu)
 
         # Context Submenu Items
         for name, action_group in devices:
-            item = Nautilus.MenuItem(
+            item = FileManager.MenuItem(
                 name='GSConnectShareExtension::Device' + name,
                 label=name
             )
