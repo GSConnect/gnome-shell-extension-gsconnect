@@ -40,8 +40,8 @@ const stdout = new Gio.DataOutputStream({
  * Watch GtkClipboard for changes and write them to stdout
  */
 function writeContent(clipboard, text) {
-    // Prevent repeating duplicate copies
-    if (text === buffer) return;
+    // Avoid duplicate copies and null values
+    if (text === null || text === buffer) return;
     
     try {
         buffer = text;
