@@ -41,7 +41,7 @@ const stdout = new Gio.DataOutputStream({
  */
 function writeContent(clipboard, text) {
     // Never write %null, and avoid duplicate copies
-    if (text === null || text === buffer) return;
+    if (!text || text === buffer) return;
     
     try {
         buffer = text;
@@ -72,8 +72,9 @@ function readContent(text) {
             text = imports.byteArray.toString(text);
         }
 
-        buffer = text;
-        clipboard.set_text(text, -1);
+        // Set the buffer and GtkClipboard
+        buffer = `${text}`;
+        clipboard.set_text(buffer, -1);
     } catch (e) {
         // If there's an error reading we exit so we don't end up in a bad loop
         logError(e);

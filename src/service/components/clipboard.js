@@ -67,19 +67,16 @@ var Clipboard = GObject.registerClass({
                 let display = Gdk.Display.get_default();
                 this._clipboard = Gtk.Clipboard.get_default(display);
                 
+                // Proxy GtkClipboard::owner-change emissions
                 this._ownerChangeId = this._clipboard.connect(
                     'owner-change',
-                    this._proxyOwnerChange.bind(this)
+                    () => this.emit('owner-change', null)
                 );
             }
         } catch (e) {
             logError(e, 'Clipboard Component');
             this.destroy();
         }
-    }
-    
-    _proxyOwnerChange(clipboard, event) {
-        this.emit('owner-change', '');
     }
     
     _readContent() {
@@ -92,8 +89,9 @@ var Clipboard = GObject.registerClass({
                 text = imports.byteArray.toString(text);
             }
             
-            this._buffer = text;
-            this._proxyOwnerChange();
+            // Set the buffer and emit a phony owner-change signal
+            this._buffer = `${text}`;
+            this.emit('owner-change', null);
 
             return true;
         } catch (e) {
@@ -137,12 +135,9 @@ var Clipboard = GObject.registerClass({
     _procExit(proc, res) {
         try {
             this._proc = null;
-            this._stdin.close(null);
-            this._stdin = null;
-            this._stdout.close(null);
-            this._stdout = null;
-            this._stderr.close(null);
-            this._stderr = null;
+            this._stdin = this._stdin.close(null);
+            this._stdout = this._stdout.close(null);
+            this._stderr = this._stderr.close(null);
             
             proc.wait_check_finish(res);
         } catch (e) {
