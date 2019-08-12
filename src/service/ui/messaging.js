@@ -880,6 +880,15 @@ var Window = GObject.registerClass({
 
             // If it's an existing conversation, update it
             if (message) {
+                // Ensure there's a contact mapping
+                let sender = message.addresses[0].address;
+
+                if (!row.contacts[sender]) {
+                    row.contacts[sender] = this.device.contacts.query({
+                        number: sender
+                    })
+                }
+
                 row.message = message;
                 delete messages[row.thread_id];
 
