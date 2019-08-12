@@ -123,10 +123,8 @@ var Clipboard = GObject.registerClass({
             return;
         }
         
-        if (!text) {
-            warning(`Invalid or empty text '${text}'`);
-            return;
-        }
+        // Never write %null
+        if (!text) return;
 
         try {
             this._stdin.put_int32(text.length, null);
