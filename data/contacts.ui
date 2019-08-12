@@ -6,7 +6,7 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <child>
-      <object class="GtkScrolledWindow" id="contact-window">
+      <object class="GtkScrolledWindow" id="scrolled">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="hexpand">True</property>
@@ -17,12 +17,13 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-              <object class="GtkListBox" id="contact-list">
+              <object class="GtkListBox" id="list">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <signal name="row-activated" handler="_onNumberSelected" swapped="no"/>
+                <property name="selection_mode">multiple</property>
+                <signal name="row-selected" handler="_onNumberSelected" swapped="no"/>
                 <child type="placeholder">
-                  <object class="GtkGrid" id="contact-placeholder">
+                  <object class="GtkGrid" id="placeholder">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">center</property>
@@ -92,7 +93,7 @@
       </packing>
     </child>
     <child>
-      <object class="GtkSearchEntry" id="contact-entry">
+      <object class="GtkSearchEntry" id="entry">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="margin_left">6</property>

@@ -50,7 +50,7 @@
 /**
  * GSConnectConversationWidget
  */
-.message-window {
+.message-scrolled {
   border-bottom: 1px solid @borders;
 }
 
@@ -62,56 +62,25 @@
   margin-bottom: 1em;
 }
 
-.conversation-list {
+.thread-list {
   background: @content_view_bg_color;
 }
-
 
 /**
  * Incoming Message Bubbles (GtkLabel subclass)
  */
 .message-in {
-  background: @theme_selected_bg_color;
-  color: @theme_selected_fg_color;
-  padding: 6px;
-  padding-right: 9px;
-  padding-left: 9px;
+  color: @theme_fg_color;
+  background: alpha(@theme_selected_bg_color, 0.2);
+  border: 1px solid alpha(@theme_selected_bg_color, 0.2);
+  border-radius: 5px;
+  box-shadow: 2px 2px 3px -2px rgba(0, 0, 0, 0.75);
+  padding: 6px 9px 6px 9px;
 }
 
 .message-in selection {
-  background-color: @theme_selected_fg_color;
   color: @theme_selected_bg_color;
-}
-
-.message-in:dir(ltr) {
-  border-radius: 0.25em 1em 1em 0.25em;
-}
-
-.message-in:first-child:dir(ltr) {
-  border-top-left-radius: 1em;
-}
-
-.message-in:last-child:dir(ltr) {
-  border-bottom-left-radius: 1em;
-}
-
-.message-in:dir(rtl) {
-  border-radius: 1em 0.25em 0.25em 1em;
-}
-
-.message-in:first-child:dir(rtl) {
-  border-top-right-radius: 1em;
-}
-
-.message-in:last-child:dir(rtl) {
-  border-bottom-right-radius: 1em;
-}
-
-/**
- * Must contrast with .message-in background
- */
-.message-in *:link {
-  color: @theme_selected_fg_color;
+  background-color: @theme_selected_fg_color;
 }
 
 
@@ -119,12 +88,14 @@
  * Outgoing Message Bubbles (GtkLabel subclass)
  */
 .message-out {
-  background: alpha(@theme_selected_bg_color, 0.2);
+  color: @theme_fg_color;
+  background-color: @theme_bg_color;
+  border: 1px solid alpha(@theme_fg_color, 0.1);
+  border-radius: 5px;
+  box-shadow: 2px 2px 3px -2px rgba(0, 0, 0, 0.75);
   caret-color: currentColor;
   -gtk-secondary-caret-color: currentColor;
-  padding: 6px;
-  padding-right: 6px;
-  padding-left: 9px;
+  padding: 6px 9px 6px 9px;
 }
 
 .message-out selection {
@@ -132,35 +103,10 @@
   color: @theme_selected_fg_color;
 }
 
-.message-out:dir(ltr) {
-  border-right: 3px solid @theme_selected_bg_color;
-  border-radius: 1em 0.25em 0.25em 1em;
-}
-
-.message-out:first-child:dir(ltr) {
-  border-top-right-radius: 1em;
-}
-
-.message-out:last-child:dir(ltr) {
-  border-bottom-right-radius: 1em;
-}
-
-.message-out:dir(rtl) {
-  border-left: 3px solid @theme_selected_bg_color;
-  border-radius: 0.25em 1em 1em 0.25em;
-}
-
-.message-out:first-child:dir(rtl) {
-  border-top-left-radius: 1em;
-}
-
-.message-out:last-child:dir(rtl) {
-  border-bottom-left-radius: 1em;
-}
-
 /**
- * Must contrast with .message-out background
+ * Must contrast with message background
  */
+.message-in *:link,
 .message-out *:link {
   color: @theme_fg_color;
 }

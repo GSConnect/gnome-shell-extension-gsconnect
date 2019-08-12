@@ -267,6 +267,30 @@ var Store = GObject.registerClass({
         }
     }
 
+    /**
+     * Lookup a contact for each address object in @addresses and return a
+     * dictionary of address (eg. phone number) to contact object.
+     *
+     * { "555-5555": { "name": "...", "numbers": [], ... } }
+     *
+     * @param {Array of object} addresses - A list of address objects
+     * @return {object} - A dictionary of phone numbers and contacts
+     */
+    lookupAddresses(addresses) {
+        let contacts = {};
+
+        // Lookup contacts for each address
+        for (let i = 0, len = addresses.length; i < len; i++) {
+            let address = addresses[i].address;
+
+            contacts[address] = this.query({
+                number: address
+            });
+        }
+
+        return contacts;
+    }
+
     async clear() {
         try {
             let contacts = this.contacts;
