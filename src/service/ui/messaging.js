@@ -76,17 +76,47 @@ function getShortTime(time) {
     }
 }
 
+function getContactsForAddresses(device, addresses) {
+    let contacts = {};
+
+    for (let i = 0, len = addresses.length; i < len; i++) {
+        let address = addresses[i].address;
+
+        contacts[address] = device.contacts.query({
+            number: address
+        });
+    }
+}
+
+const setAvatarVisible = function(row, visible) {
+    let incoming = (row.type === Sms.MessageBox.INBOX);
+
+    // Adjust the margins
+    if (visible) {
+        row.grid.margin_start = incoming ? 6 : 56;
+        row.grid.margin_bottom = 6;
+    } else {
+        row.grid.margin_start = incoming ? 44 : 56;
+        row.grid.margin_bottom = 0;
+    }
+
+    // Show hide the avatar
+    if (incoming) {
+        row.avatar.visible = visible;
+    }
+};
+
 
 /**
  * A simple GtkLabel subclass with a chat bubble appearance
  */
-var ConversationMessage = GObject.registerClass({
-    GTypeName: 'GSConnectConversationMessage'
-}, class ConversationMessage extends Gtk.Label {
+var MessageLabel = GObject.registerClass({
+    GTypeName: 'GSConnectMessageLabel'
+}, class MessageLabel extends Gtk.Label {
 
     _init(message) {
         this.message = message;
-        let incoming = (message.type === Sms.MessageType.INBOX);
+        let incoming = (message.type === Sms.MessageBox.INBOX);
 
         super._init({
             label: message.body.linkify(message.date),
@@ -131,22 +161,25 @@ var ConversationMessage = GObject.registerClass({
 /**
  * A ListBoxRow for a preview of a conversation
  */
-const ConversationSummary = GObject.registerClass({
-    GTypeName: 'GSConnectConversationSummary'
-}, class ConversationSummary extends Gtk.ListBoxRow {
-    _init(contact, message) {
+const ThreadRow = GObject.registerClass({
+    GTypeName: 'GSConnectThreadRow'
+}, class ThreadRow extends Gtk.ListBoxRow {
+    _init(contacts, message) {
         super._init({visible: true});
 
         // Row layout
         let grid = new Gtk.Grid({
-            margin: 6,
-            column_spacing: 6,
+            margin_top: 6,
+            margin_bottom: 6,
+            margin_start: 8,
+            margin_end: 8,
+            column_spacing: 8,
             visible: true
         });
         this.add(grid);
 
         // Contact Avatar
-        this._avatar = new Contacts.Avatar(contact);
+        this._avatar = new Contacts.Avatar(null);
         grid.attach(this._avatar, 0, 0, 1, 3);
 
         // Contact Name
@@ -181,15 +214,15 @@ const ConversationSummary = GObject.registerClass({
         });
         grid.attach(this._body, 1, 1, 2, 1);
 
-        this.contact = contact;
-        this._message = message;
+        this.contacts = contacts;
+        this.message = message;
     }
 
     get date() {
         return this._message.date;
     }
 
-    get id() {
+    get thread_id() {
         return this._message.thread_id;
     }
 
@@ -199,14 +232,26 @@ const ConversationSummary = GObject.registerClass({
 
     set message(message) {
         this._message = message;
+        this._sender = message.addresses[0].address;
+
+        // Contact Name
+        let nameLabel = _('Unknown Contact');
+
+        // Update avatar for single-recipient messages
+        if (message.addresses.length === 1) {
+            this._avatar.contact = this.contacts[this._sender];
+            nameLabel = this._avatar.contact.name;
+        } else {
+            this._avatar.contact = null;
+            nameLabel = _('Group Message');
+        }
 
         // Contact Name & Message body
-        let nameLabel = this.contact.name;
         let bodyLabel = message.body.split(/\r|\n/)[0];
         bodyLabel = GLib.markup_escape_text(bodyLabel, -1);
 
         // Ignore the 'read' flag if it's an outgoing message
-        if (message.type === Sms.MessageType.SENT) {
+        if (message.type === Sms.MessageBox.SENT) {
             // TRANSLATORS: An outgoing message body in a conversation summary
             bodyLabel = _('You: %s').format(bodyLabel);
 
@@ -242,35 +287,37 @@ const ConversationWidget = GObject.registerClass({
             GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
             GObject.Object
         ),
-        'address': GObject.ParamSpec.string(
-            'address',
-            'Address',
-            'The target phone number or other address',
-            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
-            ''
-        ),
         'has-pending': GObject.ParamSpec.boolean(
             'has-pending',
             'Has Pending',
             'Whether there are sent messages pending confirmation',
             GObject.ParamFlags.READABLE,
             false
+        ),
+        'thread-id': GObject.ParamSpec.string(
+            'thread-id',
+            'Thread ID',
+            'The current thread',
+            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            ''
         )
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/conversation.ui',
     Children: [
-        'message-entry', 'message-list', 'message-window',
+        'entry', 'list', 'scrolled',
         'pending', 'pending-box'
     ]
 }, class ConversationWidget extends Gtk.Grid {
 
     _init(params) {
         this.connect_template();
-        super._init(params);
+
+        super._init({device: params.device});
+        Object.assign(this, params);
 
         this.device.bind_property(
             'connected',
-            this.message_entry,
+            this.entry,
             'sensitive',
             GObject.BindingFlags.SYNC_CREATE
         );
@@ -291,38 +338,52 @@ const ConversationWidget = GObject.registerClass({
             'has-pending',
             this.pending,
             'visible',
-            GObject.BindingFlags.DEFAULT
+            GObject.BindingFlags.DEFAULT | GObject.BindingFlags.SYNC_CREATE
         );
 
         // Message List
-        this.message_list.set_header_func(this._headerMessages);
-        this.message_list.set_sort_func(this._sortMessages);
+        this.list.set_header_func(this._headerMessages);
+        this.list.set_sort_func(this._sortMessages);
         this._populateMessages();
 
         // HACK: This property was added in gtk-3.24; if it's not present this
         // will just become a useless JS variable instead of choking
-        this.message_entry.enable_emoji_completion = true;
+        this.entry.enable_emoji_completion = true;
     }
 
-    get address() {
-        if (this._address === undefined) {
-            this._address = null;
+    get addresses() {
+        if (this._addresses === undefined) {
+            this._addresses = [];
         }
 
-        return this._address;
+        return this._addresses;
     }
 
-    set address(value) {
-        this._address = value;
-    }
-
-    get contact() {
-        // Ensure we have a contact and hold a reference to it
-        if (!this._contact) {
-            this._contact = this.device.contacts.query({number: this.address});
+    set addresses(addresses) {
+        if (!addresses || addresses.length === 0) {
+            this._addresses = [];
+            this._contacts = {};
+            return;
         }
 
-        return this._contact;
+        this._addresses = addresses;
+
+        // Lookup a contact for each address object
+        for (let i = 0, len = this.addresses.length; i < len; i++) {
+            let address = this.addresses[i].address;
+
+            this.contacts[address] = this.device.contacts.query({
+                number: address
+            });
+        }
+    }
+
+    get contacts() {
+        if (this._contacts === undefined) {
+            this._contacts = {};
+        }
+
+        return this._contacts;
     }
 
     get has_pending() {
@@ -337,6 +398,24 @@ const ConversationWidget = GObject.registerClass({
         return this._sms;
     }
 
+    get thread_id() {
+        if (this._thread_id === undefined) {
+            this._thread_id = null;
+        }
+
+        return this._thread_id;
+    }
+
+    set thread_id(thread_id) {
+        let thread = this.sms.threads[thread_id];
+        let message = (thread) ? thread[0] : null;
+
+        if (message && this.addresses.length === 0) {
+            this.addresses = message.addresses;
+            this._thread_id = thread_id;
+        }
+    }
+
     _onConnected(device) {
         if (device.connected) {
             this.pending_box.foreach(msg => msg.destroy());
@@ -347,7 +426,7 @@ const ConversationWidget = GObject.registerClass({
         conversation.device.disconnect(conversation._connectedId);
         conversation.disconnect_template();
 
-        conversation.message_list.foreach(message => {
+        conversation.list.foreach(message => {
             // HACK: temporary mitigator for mysterious GtkListBox leak
             message.run_dispose();
             imports.system.gc();
@@ -357,77 +436,72 @@ const ConversationWidget = GObject.registerClass({
     /**
      * Messages
      */
+
+    _createMessageRow(message) {
+        let incoming = (message.type === Sms.MessageBox.INBOX);
+
+        let row = new Gtk.ListBoxRow({
+            activatable: false,
+            selectable: false,
+            hexpand: true,
+            visible: true
+        });
+        row.date = message.date;
+        row.type = message.type;
+        row.sender = message.addresses[0].address;
+
+        row.grid = new Gtk.Grid({
+            can_focus: false,
+            hexpand: true,
+            margin_top: 6,
+            margin_bottom: 6,
+            margin_start: 6,
+            margin_end: incoming ? 18 : 6,
+            //margin: 6,
+            column_spacing: 6,
+            halign: incoming ? Gtk.Align.START : Gtk.Align.END
+        });
+        row.add(row.grid);
+
+        // Add avatar for incoming messages
+        if (incoming) {
+            let address = message.addresses[0].address;
+
+            // Ensure we have a contact
+            if (!this.contacts[address]) {
+                this.contacts[address] = this.device.contacts.query({
+                    number: address
+                });
+            }
+
+            row.avatar = new Contacts.Avatar(this.contacts[address]);
+            row.avatar.valign = Gtk.Align.END;
+            row.grid.attach(row.avatar, 0, 0, 1, 1);
+        }
+
+        let widget = new MessageLabel(message);
+        row.grid.attach(widget, 1, 0, 1, 1);
+
+        row.show_all();
+
+        return row;
+    }
+
     _populateMessages() {
         this.__first = null;
         this.__last = null;
         this.__pos = 0;
         this.__messages = [];
 
-        // Try and find a conversation for this number
-        let number = this.address.toPhoneNumber();
-        let thread_id = null;
-
-        for (let thread of Object.values(this.sms.conversations)) {
-            let tnumber = thread[0].address.toPhoneNumber();
-
-            if (number.endsWith(tnumber) || tnumber.endsWith(number)) {
-                thread_id = thread[0].thread_id;
-                break;
-            }
+        // Try and find a thread_id for this number
+        if (this.thread_id === null && this.addresses.length) {
+            this._thread_id = this.sms.getThreadIdForAddresses(this.addresses);
         }
 
-        if (this.sms.conversations[thread_id]) {
-            this.__messages = this.sms.conversations[thread_id].slice(0);
-            this._populateBack();
-        }
-    }
-
-    /**
-     * Populate messages in reverse, in chunks of series
-     */
-    _populateBack() {
-        // Keep track of direction and date
-        let date, direction;
-
-        while (this.__messages.length > 0) {
-            let message = this.__messages[this.__messages.length - 1];
-
-            // TODO: Unsupported MessageType
-            if (message.type !== 1 && message.type !== 2) {
-                this.__messages.pop();
-                continue;
-            }
-
-            date = (date !== undefined) ? date : message.date;
-            direction = (direction !== undefined) ? direction : message.type;
-
-            // Break if we're definitely at the end of series
-            if (message.type !== direction) break;
-
-            // Start a new series if this is the first
-            if (!this.__first) {
-                this.__first = this._createSeries(message);
-                this.__last = this.__first;
-                this.message_list.prepend(this.__first);
-
-            // ...or there's more than an hour difference
-            } else if (date - message.date > GLib.TIME_SPAN_HOUR / 1000) {
-                this.__first = this._createSeries(message);
-                this.message_list.prepend(this.__first);
-
-            // ...or it's in a different direction
-            } else if (message.type !== this.__first.type) {
-                this.__first = this._createSeries(message);
-                this.message_list.prepend(this.__first);
-            }
-
-            // Create a message, set the message id and prepend it
-            let widget = new ConversationMessage(this.__messages.pop());
-            this.__first.date = message.date;
-            this.__first.messages.pack_end(widget, false, false, 0);
-
-            // update the date tracker
-            date = message.date;
+        // Make a copy of the thread and fill the window with messages
+        if (this.sms.threads[this.thread_id]) {
+            this.__messages = this.sms.threads[this.thread_id].slice(0);
+            this.logPrevious();
         }
     }
 
@@ -435,14 +509,34 @@ const ConversationWidget = GObject.registerClass({
         // Skip pending
         if (row.get_name() === 'pending') return;
 
-        // Check if the last series was more than an hour ago
-        if (before && (row.date - before.date) > GLib.TIME_SPAN_HOUR / 1000) {
-            let header = new Gtk.Label({
-                label: getTime(row.date),
-                visible: true
-            });
-            header.get_style_context().add_class('dim-label');
-            row.set_header(header);
+        if (before === null) {
+            setAvatarVisible(row, true);
+            return;
+        }
+
+        // Add date header if the last message was more than an hour ago
+        let header = row.get_header();
+
+        if ((row.date - before.date) > GLib.TIME_SPAN_HOUR / 1000) {
+            if (!header) {
+                header = new Gtk.Label({visible: true});
+                header.get_style_context().add_class('dim-label');
+                row.set_header(header);
+            }
+
+            header.label = getTime(row.date);
+
+            // Also show the avatar
+            setAvatarVisible(row, true);
+
+        // Or if the previous sender was the same, hide its avatar
+        } else if (row.type === before.type && row.sender === before.sender) {
+            setAvatarVisible(before, false);
+            setAvatarVisible(row, true);
+
+        // otherwise show the avatar
+        } else {
+            setAvatarVisible(row, true);
         }
     }
 
@@ -450,14 +544,14 @@ const ConversationWidget = GObject.registerClass({
         return (row1.date > row2.date) ? 1 : -1;
     }
 
-    // message-list::size-allocate
+    // GtkListBox::size-allocate
     _onMessageLogged(listbox, allocation) {
-        let vadj = this.message_window.vadjustment;
+        let vadj = this.scrolled.vadjustment;
 
         // Try loading more messages if there's room
         if (vadj.get_upper() <= vadj.get_page_size()) {
-            this._populateBack();
-            this.message_window.get_child().check_resize();
+            this.logPrevious();
+            this.scrolled.get_child().check_resize();
 
         // We've been asked to hold the position
         } else if (this.__pos) {
@@ -470,106 +564,55 @@ const ConversationWidget = GObject.registerClass({
         }
     }
 
-    // message-window::edge-reached
+    // GtkScrolledWindow::edge-reached
     _onMessageRequested(scrolled_window, pos) {
         if (pos === Gtk.PositionType.TOP) {
-            this.__pos = this.message_window.vadjustment.get_upper();
-            this._populateBack();
+            this.__pos = this.scrolled.vadjustment.get_upper();
+            this.logPrevious();
         }
     }
 
     /**
-     * Add a new row representing a series of sequential messages from one
-     * contact with a single instance of their avatar.
-     *
-     * @param {object} message - The message object to create a series for
-     */
-    _createSeries(message) {
-        let incoming = (message.type === Sms.MessageType.INBOX);
-
-        let row = new Gtk.ListBoxRow({
-            activatable: false,
-            selectable: false,
-            hexpand: true
-        });
-        row.date = message.date;
-        row.type = message.type;
-
-        let layout = new Gtk.Box({
-            can_focus: false,
-            hexpand: true,
-            margin: 6,
-            spacing: 6,
-            halign: incoming ? Gtk.Align.START : Gtk.Align.END
-        });
-        row.add(layout);
-
-        // Add avatar for incoming messages
-        if (incoming) {
-            let avatar = new Contacts.Avatar(this.contact);
-            avatar.valign = Gtk.Align.END;
-            layout.add(avatar);
-        }
-
-        // Messages
-        row.messages = new Gtk.Box({
-            orientation: Gtk.Orientation.VERTICAL,
-            spacing: 3,
-            halign: layout.halign,
-            // Avatar width (32px) + layout spacing (6px) + 6px
-            margin_end: incoming ? 44 : 0,
-            margin_start: incoming ? 0 : 44
-        });
-        layout.add(row.messages);
-
-        row.show_all();
-
-        return row;
-    }
-
-    /**
-     * Log a new message in the conversation
+     * Log the next message in the conversation.
      *
      * @param {Object} message - A sms message object
      */
-    logMessage(message) {
-        // TODO: Unsupported MessageType
-        if (message.type !== 1 && message.type !== 2) return;
-
-        // Ensure it's older than the last message (or the first)
-        // TODO: with a lot of work we could probably handle this...
-        if (this.__last && this.__last.date > message.date) {
-            warning('SMS message out of order', this.device.name);
+    logNext(message) {
+        // TODO: Unsupported MessageBox
+        if (message.type !== Sms.MessageBox.INBOX &&
+            message.type !== Sms.MessageBox.SENT)
             return;
-        }
 
-        // Start a new series if this is the first
-        if (!this.__first) {
-            this.__first = this._createSeries(message);
-            this.__last = this.__first;
-            this.message_list.add(this.__first);
-
-        // ...or there's more than an hour difference
-        } else if (message.date - this.__last.date > GLib.TIME_SPAN_HOUR / 1000) {
-            this.__last = this._createSeries(message);
-            this.message_list.add(this.__last);
-
-        // ...or it's in a different direction
-        } else if (message.type !== this.__last.type) {
-            this.__last = this._createSeries(message);
-            this.message_list.add(this.__last);
-        }
-
-        // Create a message, set the message id/date and append it
-        let widget = new ConversationMessage(message);
-        this.__last.date = message.date;
-        this.__last.messages.pack_start(widget, false, false, 0);
+        // Append the message
+        let row = this._createMessageRow(message);
+        this.list.add(row);
+        this.list.invalidate_headers();
 
         // Remove the first pending message
-        if (this.has_pending && message.type === Sms.MessageType.SENT) {
+        if (this.has_pending && message.type === Sms.MessageBox.SENT) {
             this.pending_box.get_children()[0].destroy();
             this.notify('has-pending');
         }
+    }
+
+    /**
+     * Log the previous message in the thread
+     */
+    logPrevious() {
+        let message = this.__messages.pop();
+
+        if (!message) return;
+
+        // TODO: Unsupported MessageBox
+        if (message.type !== Sms.MessageBox.INBOX &&
+            message.type !== Sms.MessageBox.SENT) {
+            return;
+        }
+
+        // Prepend the message
+        let row = this._createMessageRow(message);
+        this.list.prepend(row);
+        this.list.invalidate_headers();
     }
 
     /**
@@ -585,25 +628,22 @@ const ConversationWidget = GObject.registerClass({
      */
     sendMessage(entry, signal_id, event) {
         // Don't send empty texts
-        if (!this.message_entry.text.trim()) return;
+        if (!this.entry.text.trim()) return;
 
         // Send the message
-        this.device.activate_action(
-            'sendSms',
-            new GLib.Variant('(ss)', [this.address, entry.text])
-        );
+        this.sms.sendMessage(this.addresses, entry.text);
 
         // Log the message as pending
-        let message = new ConversationMessage({
+        let message = new MessageLabel({
             body: entry.text,
             date: Date.now(),
-            type: Sms.MessageType.SENT
+            type: Sms.MessageBox.SENT
         });
         this.pending_box.add(message);
         this.notify('has-pending');
 
         // Clear the entry
-        this.message_entry.text = '';
+        this.entry.text = '';
     }
 
     /**
@@ -612,8 +652,8 @@ const ConversationWidget = GObject.registerClass({
      * @param {String} text - The message to place in the entry
      */
     setMessage(text) {
-        this.message_entry.text = text;
-        this.message_entry.emit('move-cursor', 0, text.length, false);
+        this.entry.text = text;
+        this.entry.emit('move-cursor', 0, text.length, false);
     }
 });
 
@@ -624,25 +664,25 @@ const ConversationWidget = GObject.registerClass({
 var Window = GObject.registerClass({
     GTypeName: 'GSConnectMessagingWindow',
     Properties: {
-        'address': GObject.ParamSpec.string(
-            'address',
-            'Address',
-            'The phone number of the active conversation',
-            GObject.ParamFlags.READWRITE,
-            ''
-        ),
         'device': GObject.ParamSpec.object(
             'device',
             'Device',
             'The device associated with this window',
             GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
             GObject.Object
+        ),
+        'thread-id': GObject.ParamSpec.string(
+            'thread-id',
+            'Thread ID',
+            'The current thread',
+            GObject.ParamFlags.READWRITE,
+            ''
         )
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/messaging.ui',
     Children: [
         'headerbar', 'infobar',
-        'conversation-list', 'conversation-stack'
+        'thread-list', 'stack'
     ]
 }, class Window extends Gtk.ApplicationWindow {
 
@@ -669,94 +709,41 @@ var Window = GObject.registerClass({
         this.restore_geometry();
 
         // Contacts
-        this.contact_list = new Contacts.ContactChooser({
+        this.contact_chooser = new Contacts.ContactChooser({
             device: this.device,
             store: this.device.contacts
         });
-        this.conversation_stack.add_named(this.contact_list, 'contact-list');
+        this.stack.add_named(this.contact_chooser, 'contact-chooser');
 
-        this._numberSelectedId = this.contact_list.connect(
+        this._numberSelectedId = this.contact_chooser.connect(
             'number-selected',
             this._onNumberSelected.bind(this)
         );
 
-        // Conversations
-        this.conversation_list.set_sort_func(this._sortConversations);
+        // Threads
+        this.thread_list.set_sort_func(this._sortThreads);
 
-        this._conversationsChangedId = this.sms.connect(
-            'notify::conversations',
-            this._onConversationsChanged.bind(this)
+        this._threadsChangedId = this.sms.connect(
+            'notify::threads',
+            this._onThreadsChanged.bind(this)
         );
 
-        this._timestampConversationsId = GLib.timeout_add_seconds(
+        this._timestampThreadsId = GLib.timeout_add_seconds(
             GLib.PRIORITY_DEFAULT_IDLE,
             60,
-            this._timestampConversations.bind(this)
+            this._timestampThreads.bind(this)
         );
 
         // Cleanup on ::destroy
         this.connect('destroy', this._onDestroy);
 
         this._sync();
-        this._onConversationsChanged();
+        this._onThreadsChanged();
     }
 
     vfunc_delete_event(event) {
         this.save_geometry();
         return this.hide_on_delete();
-    }
-
-    get address() {
-        return this.conversation_stack.visible_child_name;
-    }
-
-    set address(address) {
-        if (!address) {
-            this.conversation_list.select_row(null);
-            this.conversation_stack.set_visible_child_name('placeholder');
-            return;
-        }
-
-        // Get a contact object for this address
-        let contact = this.device.contacts.query({number: address});
-
-        // Set the header bar title/subtitle
-        this.headerbar.title = contact.name;
-        this.headerbar.subtitle = address;
-
-        // See if we have a nicer display number
-        let number = address.toPhoneNumber();
-
-        for (let contactNumber of contact.numbers) {
-            let cnumber = contactNumber.value.toPhoneNumber();
-
-            if (number.endsWith(cnumber) || cnumber.endsWith(number)) {
-                this.headerbar.subtitle = contactNumber.value;
-                break;
-            }
-        }
-
-        // Create a conversation widget if there isn't one
-        let conversation = this.getConversation(address);
-
-        if (conversation === null) {
-            conversation = new ConversationWidget({
-                device: this.device,
-                address: address
-            });
-
-            this.conversation_stack.add_named(conversation, address);
-        }
-
-        // Select the conversation and entry active
-        this.conversation_stack.visible_child = conversation;
-        this.conversation_stack.visible_child.message_entry.has_focus = true;
-
-        // There was a pending message waiting for a contact to be chosen
-        if (this._pendingShare) {
-            conversation.setMessage(this._pendingShare);
-            this._pendingShare = null;
-        }
     }
 
     get sms() {
@@ -765,6 +752,76 @@ var Window = GObject.registerClass({
         }
 
         return this._sms;
+    }
+
+    get thread_id() {
+        return this.stack.visible_child_name;
+    }
+
+    set thread_id(thread_id) {
+        thread_id = `${thread_id}`; // FIXME
+
+        // Reset to the empty placeholder
+        if (!thread_id) {
+            this.thread_list.select_row(null);
+            this.stack.set_visible_child_name('placeholder');
+            return;
+        }
+
+        // Create a conversation widget if there isn't one
+        let conversation = this.stack.get_child_by_name(thread_id);
+        let thread = this.sms.threads[thread_id];
+
+        if (conversation === null) {
+            if (!thread) {
+                debug(`Thread ID ${thread_id} not found`);
+                return;
+            }
+
+            conversation = new ConversationWidget({
+                device: this.device,
+                thread_id: thread_id
+            });
+
+            this.stack.add_named(conversation, thread_id);
+        }
+
+        // Figure out whether this is a multi-recipient thread
+        this._setHeaderBar(thread[0].addresses);
+
+        // Select the conversation and entry active
+        this.stack.visible_child = conversation;
+        this.stack.visible_child.entry.has_focus = true;
+
+        // There was a pending message waiting for a conversation to be chosen
+        if (this._pendingShare) {
+            conversation.setMessage(this._pendingShare);
+            this._pendingShare = null;
+        }
+
+        this._thread_id = thread_id;
+        this.notify('thread_id');
+    }
+
+    _setHeaderBar(addresses = []) {
+        let address = addresses[0].address;
+        let contact = this.device.contacts.query({number: address});
+
+        if (addresses.length === 1) {
+            // Set the header bar title/subtitle
+            this.headerbar.title = contact.name;
+            this.headerbar.subtitle = Contacts.getDisplayNumber(contact, address);
+
+        } else {
+            let otherLength = addresses.length - 1;
+
+            this.headerbar.title = contact.name;
+            this.headerbar.subtitle = ngettext(
+                'And %d other contact',
+                'And %d others',
+                otherLength
+            ).format(otherLength);
+        }
     }
 
     _sync() {
@@ -782,76 +839,83 @@ var Window = GObject.registerClass({
     }
 
     _onDestroy(window) {
-        GLib.source_remove(window._timestampConversationsId);
-        window.contact_list.disconnect(window._numberSelectedId);
-        window.sms.disconnect(window._conversationsChangedId);
+        GLib.source_remove(window._timestampThreadsId);
+        window.contact_chooser.disconnect(window._numberSelectedId);
+        window.sms.disconnect(window._threadsChangedId);
         window.disconnect_template();
     }
 
     _onNewConversation() {
         this._sync();
-        this.conversation_stack.set_visible_child_name('contact-list');
-        this.conversation_list.select_row(null);
-        this.contact_list.contact_entry.has_focus = true;
+        this.stack.set_visible_child_name('contact-chooser');
+        this.thread_list.select_row(null);
+        this.contact_chooser.entry.has_focus = true;
     }
 
-    _onNumberSelected(list, number) {
-        let summary = this.getSummary(number);
-        this.conversation_list.select_row(summary);
-        this.address = number;
+    _onNumberSelected(chooser, number) {
+        let contacts = chooser.getSelected();
+        let row = this._getRowForContacts(contacts);
+
+        if (row) {
+            this.thread_list.select_row(row);
+        } else {
+            this.setContacts(contacts);
+        }
     }
 
     /**
-     * Conversations
+     * Threads
      */
-    _onConversationsChanged() {
-        let messages = new Map();
+    _onThreadsChanged() {
+        // Get the last message in each thread
+        let messages = {};
 
-        for (let thread of Object.values(this.sms.conversations)) {
-            let message = thread[thread.length - 1];
-            messages.set(message.thread_id, message);
+        for (let [thread_id, thread] of Object.entries(this.sms.threads)) {
+            messages[thread_id] = thread[thread.length - 1];
         }
 
         // Update existing summaries and destroy old ones
-        for (let summary of this.conversation_list.get_children()) {
-            let message = messages.get(summary.id);
+        for (let row of this.thread_list.get_children()) {
+            let message = messages[row.thread_id];
 
             // If it's an existing conversation, update it
             if (message) {
-                summary.message = message;
-                messages.delete(summary.id);
+                row.message = message;
+                delete messages[row.thread_id];
 
             // Otherwise destroy it
             } else {
-                // HACK: temporary mitigator for mysterious GtkListBox leak
-                summary.run_dispose();
-                imports.system.gc();
-
-                // Also delete the conversation
-                let conversation = this.getConversation(summary.message.address);
+                // Destroy the conversation widget
+                let conversation = this.stack.get_child_by_name(`${row.thread_id}`);
 
                 if (conversation) {
-                    conversation.run_dispose();
+                    conversation.destroy();
                     imports.system.gc();
                 }
+
+                // Then the summary widget
+                row.destroy();
+                // HACK: temporary mitigator for mysterious GtkListBox leak
+                imports.system.gc();
             }
         }
 
-        // Add new summaries
-        for (let message of messages.values()) {
-            let contact = this.device.contacts.query({number: message.address});
-            let conversation = new ConversationSummary(contact, message);
-            this.conversation_list.add(conversation);
+        // What's left in the dictionary is new summaries
+        for (let message of Object.values(messages)) {
+            let contacts = this.device.contacts.lookupAddresses(message.addresses);
+            let conversation = new ThreadRow(contacts, message);
+            this.thread_list.add(conversation);
         }
 
         // Re-sort the summaries
-        this.conversation_list.invalidate_sort();
+        this.thread_list.invalidate_sort();
     }
 
-    _onConversationSelected(box, row) {
+    // GtkListBox::row-selected
+    _onThreadSelected(box, row) {
         // Show the conversation for this number (if applicable)
         if (row) {
-            this.address = row.message.address;
+            this.thread_id = row.thread_id;
 
         // Show the placeholder
         } else {
@@ -860,76 +924,140 @@ var Window = GObject.registerClass({
         }
     }
 
-    _sortConversations(row1, row2) {
+    _sortThreads(row1, row2) {
         return (row1.date > row2.date) ? -1 : 1;
     }
 
-    _timestampConversations() {
+    _timestampThreads() {
         if (this.visible) {
-            this.conversation_list.foreach(summary => summary.update());
+            this.thread_list.foreach(row => row.update());
         }
 
         return GLib.SOURCE_CONTINUE;
     }
 
     /**
-     * Find the conversation widget for an address
+     * Find the thread row for @contacts
      *
-     * @param {string} address - A contact address
-     * @return {ConversationWidget|null} - The conversation widget or %null
+     * @param {Array of Object} contacts - A contact group
+     * @return {ThreadRow|null} - The thread row or %null
      */
-    getConversation(address) {
-        let number = address.toPhoneNumber();
+    _getRowForContacts(contacts) {
+        let addresses = Object.keys(contacts).map(address => {
+            return {address: address};
+        });
 
-        for (let conversation of this.conversation_stack.get_children()) {
-            // Skip contact list
-            if (!conversation.address) continue;
+        // Try to find a thread_id
+        let thread_id = this.sms.getThreadIdForAddresses(addresses);
 
-            let cnumber = conversation.address.toPhoneNumber();
-
-            if (cnumber.endsWith(number) || number.endsWith(cnumber)) {
-                return conversation;
-            }
+        for (let row of this.thread_list.get_children()) {
+            if (row.message.thread_id === thread_id)
+                return row;
         }
 
         return null;
     }
 
+    setContacts(contacts) {
+        // Group the addresses
+        let addresses = [];
+
+        for (let address of Object.keys(contacts)) {
+            addresses.push({address: address});
+        }
+
+        // Try to find a thread ID for this address group
+        let thread_id = this.sms.getThreadIdForAddresses(addresses);
+
+        if (thread_id === null) {
+            thread_id = GLib.uuid_string_random();
+        } else {
+            thread_id = thread_id.toString();
+        }
+
+        // Try to find a thread row for the ID
+        let row = this._getRowForContacts(contacts);
+
+        if (row !== null) {
+            this.thread_list.select_row(row);
+            return;
+        }
+
+        // We're creating a new conversation
+        let conversation = new ConversationWidget({
+            device: this.device,
+            addresses: addresses
+        });
+
+        // Set the headerbar
+        this._setHeaderBar(addresses);
+
+        // Select the conversation and entry active
+        this.stack.add_named(conversation, thread_id);
+        this.stack.visible_child = conversation;
+        this.stack.visible_child.entry.has_focus = true;
+
+        // There was a pending message waiting for a conversation to be chosen
+        if (this._pendingShare) {
+            conversation.setMessage(this._pendingShare);
+            this._pendingShare = null;
+        }
+
+        this._thread_id = thread_id;
+        this.notify('thread-id');
+    }
+
+    addressesIncludesAddress(addresses, addressObj) {
+        let number = addressObj.address.toPhoneNumber();
+
+        for (let haystackObj of addresses) {
+            let tnumber = haystackObj.address.toPhoneNumber();
+
+            if (number.endsWith(tnumber) || tnumber.endsWith(number)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /**
-     * Find the conversation widget for a thread ID
+     * Try and find an existing conversation widget for @message.
      *
-     * @param {string} id - A thread id
-     * @return {ConversationWidget|null} - The conversation widget or %null
+     * @param {object} message - A message object
+     * @return {ConversationWidget|null} - A conversation widget or %null
      */
-    getConversationByThread(thread_id) {
+    getConversationForMessage(message) {
         // This shouldn't happen
-        if (thread_id === null) return null;
+        if (message === null) return null;
 
-        for (let conversation of this.conversation_stack.get_children()) {
-            if (!conversation.thread_id) continue;
+        // First try to find a conversation by thread_id
+        let thread_id = `${message.thread_id}`;
+        let conversation = this.stack.get_child_by_name(thread_id);
 
-            if (conversation.thread_id === thread_id) {
-                return conversation;
-            }
+        if (conversation !== null) {
+            return conversation;
         }
 
-        return null;
-    }
+        // Try and find one by matching addresses, which is necessary if we've
+        // started a thread locally and haven't set the thread_id
+        let addresses = message.addresses;
 
-    /**
-     * Find the conversation summary row for an address
-     *
-     * @param {string} address - A contact address
-     * @return {ConversationSummary|null} - The conversation summary or %null
-     */
-    getSummary(address) {
-        let number = address.toPhoneNumber();
+        for (let conversation of this.stack.get_children()) {
+            if (conversation.addresses === undefined ||
+                conversation.addresses.length !== addresses.length) {
+                continue;
+            }
 
-        for (let summary of this.conversation_list.get_children()) {
-            let cnumber = summary.message.address.toPhoneNumber();
+            let caddrs = conversation.addresses;
 
-            if (cnumber.endsWith(number) || number.endsWith(cnumber)) {
-                return summary;
+            // If we find a match, set `thread-id` on the conversation and the
+            // child property `name`.
+            if (addresses.every(addr => this.addressesIncludesAddress(caddrs, addr))) {
+                conversation._thread_id = thread_id;
+                this.stack.child_set_property(conversation, 'name', thread_id);
+
+                return conversation;
             }
         }
 
@@ -941,7 +1069,7 @@ var Window = GObject.registerClass({
      * message of the currently selected conversation, otherwise mark the
      * message to be set for the next selected conversation.
      *
-     * @param {String} text - The message to place in the entry
+     * @param {string} text - The message to place in the entry
      * @param {boolean} pending - Wait for a conversation to be selected
      */
     setMessage(message, pending = false) {
@@ -949,7 +1077,7 @@ var Window = GObject.registerClass({
             if (pending) {
                 this._pendingShare = message;
             } else {
-                this.conversation_stack.visible_child.setMessage(message);
+                this.stack.visible_child.setMessage(message);
             }
         } catch (e) {
             warning(e);
@@ -990,13 +1118,13 @@ var ConversationChooser = GObject.registerClass({
         this.set_keep_above(true);
 
         // HeaderBar
-        let headerbar = new Gtk.HeaderBar({
+        this.headerbar = new Gtk.HeaderBar({
             title: _('Share Link'),
             subtitle: this.message,
             show_close_button: true,
             tooltip_text: this.message
         });
-        this.set_titlebar(headerbar);
+        this.set_titlebar(this.headerbar);
 
         let newButton = new Gtk.Button({
             image: new Gtk.Image({icon_name: 'list-add-symbolic'}),
@@ -1004,9 +1132,9 @@ var ConversationChooser = GObject.registerClass({
             always_show_image: true
         });
         newButton.connect('clicked', this._new.bind(this));
-        headerbar.pack_start(newButton);
+        this.headerbar.pack_start(newButton);
 
-        // Conversations
+        // Threads
         let scrolledWindow = new Gtk.ScrolledWindow({
             can_focus: false,
             hexpand: true,
@@ -1015,15 +1143,15 @@ var ConversationChooser = GObject.registerClass({
         });
         this.add(scrolledWindow);
 
-        this.conversation_list = new Gtk.ListBox({
+        this.thread_list = new Gtk.ListBox({
             activate_on_single_click: false
         });
-        this.conversation_list.set_sort_func(Window.prototype._sortConversations);
-        this.conversation_list.connect('row-activated', this._select.bind(this));
-        scrolledWindow.add(this.conversation_list);
+        this.thread_list.set_sort_func(Window.prototype._sortThreads);
+        this.thread_list.connect('row-activated', this._select.bind(this));
+        scrolledWindow.add(this.thread_list);
 
         // Filter Setup
-        Window.prototype._populateConversations.call(this);
+        Window.prototype._onThreadsChanged.call(this);
         this.show_all();
     }
 
@@ -1040,13 +1168,13 @@ var ConversationChooser = GObject.registerClass({
         this.destroy();
 
         this.sms.sms();
-        this.sms.window.address = null;
+        this.sms.window._onNewConversation();
         this.sms.window._pendingShare = message;
     }
 
     _select(box, row) {
         this.sms.sms();
-        this.sms.window.address = row.message.address;
+        this.sms.window.thread_id = row.message.thread_id.toString();
         this.sms.window.setMessage(this.message);
 
         this.destroy();

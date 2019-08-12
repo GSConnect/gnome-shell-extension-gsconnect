@@ -92,12 +92,15 @@ var Plugin = GObject.registerClass({
 
     _handleUids(packet) {
         try {
-            // Delete any contacts that were removed on the device
             let contacts = this._store.contacts;
             let remote_uids = packet.body.uids;
             let removed = false;
             delete packet.body.uids;
 
+            // Usually a failed request, so avoid wiping the cache
+            if (remote_uids.length === 0) return;
+
+            // Delete any contacts that were removed on the device
             for (let i = 0, len = contacts.length; i < len; i++) {
                 let contact = contacts[i];
 

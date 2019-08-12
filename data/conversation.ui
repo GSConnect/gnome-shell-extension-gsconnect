@@ -6,7 +6,7 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <child>
-      <object class="GtkScrolledWindow" id="message-window">
+      <object class="GtkScrolledWindow" id="scrolled">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="hexpand">True</property>
@@ -18,7 +18,7 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-              <object class="GtkListBox" id="message-list">
+              <object class="GtkListBox" id="list">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="valign">end</property>
@@ -60,7 +60,7 @@
           </object>
         </child>
         <style>
-          <class name="message-window"/>
+          <class name="message-scrolled"/>
           <class name="view"/>
         </style>
       </object>
@@ -70,7 +70,7 @@
       </packing>
     </child>
     <child>
-      <object class="GtkEntry" id="message-entry">
+      <object class="GtkEntry" id="entry">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="tooltip_text" translatable="yes">Type a message</property>

@@ -327,7 +327,7 @@ var Window = GObject.registerClass({
 
     _onDeleteSMS(button) {
         let device = this.application._devices.get(this.sms_device.active_id);
-        device.lookup_plugin('sms').conversations = {};
+        device.lookup_plugin('sms').threads = {};
         device.lookup_plugin('sms').__cache_write();
     }
 

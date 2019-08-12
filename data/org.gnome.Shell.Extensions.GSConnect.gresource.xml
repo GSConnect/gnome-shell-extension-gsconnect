@@ -31,7 +31,8 @@
     <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.GSConnect.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.GSConnect-symbolic.svg</file>
 
-    <!-- Action Icons -->
+    <!-- Action Icons c/o GNOME -->
+    <file compressed="true" preprocess="xml-stripblanks">group-avatar-symbolic.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">sms-send.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">sms-symbolic.svg</file>
 
