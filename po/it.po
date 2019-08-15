@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-05-18 10:54\n"
+"PO-Revision-Date: 2019-08-15 06:34\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -246,7 +246,7 @@ msgstr "Genera log di supporto"
 
 #: data/menus.ui:38
 msgid "About GSConnect"
-msgstr "Info su GSConnect"
+msgstr "Informazioni su GSConnect"
 
 #. TRANSLATORS: Change the connection type to Bluetooth
 #: data/menus.ui:49
