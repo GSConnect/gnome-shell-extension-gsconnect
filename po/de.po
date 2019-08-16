@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-08-16 23:43\n"
+"PO-Revision-Date: 2019-08-16 23:56\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -84,7 +84,7 @@ msgstr "Maus & Tastatur"
 
 #: data/device.ui:351
 msgid "Volume Control"
-msgstr "Lautstärken Kontrolle"
+msgstr "Lautstärkensteuerung"
 
 #: data/device.ui:401 data/device.ui:1864
 msgid "Sharing"
