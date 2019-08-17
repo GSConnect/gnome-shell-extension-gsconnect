@@ -889,7 +889,7 @@ var Window = GObject.registerClass({
                 if (!row.contacts[sender]) {
                     row.contacts[sender] = this.device.contacts.query({
                         number: sender
-                    })
+                    });
                 }
 
                 row.message = message;
