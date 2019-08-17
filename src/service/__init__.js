@@ -299,7 +299,7 @@ String.prototype.toPhoneNumber = function() {
  */
 String.prototype.equalsPhoneNumber = function(number) {
     let a = this.toPhoneNumber();
-    let b = number.toPhoneNumber()
+    let b = number.toPhoneNumber();
 
     return (a.endsWith(b) || b.endsWith(a));
 };
