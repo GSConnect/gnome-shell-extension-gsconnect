@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-08-17 00:08\n"
+"PO-Revision-Date: 2019-08-17 00:17\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -72,7 +72,7 @@ msgstr "Kamera"
 
 #: data/device.ui:178
 msgid "Clipboard Sync"
-msgstr "Synchronisiere die Zwischenablage"
+msgstr "Zwischenablage synchronisieren"
 
 #: data/device.ui:241
 msgid "Media Players"
