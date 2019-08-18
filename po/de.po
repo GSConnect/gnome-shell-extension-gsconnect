@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-08-18 16:44\n"
+"PO-Revision-Date: 2019-08-18 20:44\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -56,11 +56,11 @@ msgstr "Hilfe"
 
 #: data/conversation.ui:76 data/conversation.ui:85 src/shell/notification.js:51
 msgid "Type a message"
-msgstr "Verfasse eine Nachricht"
+msgstr "Eine Nachricht eigeben"
 
 #: data/conversation.ui:84
 msgid "Send Message"
-msgstr "Nachricht schicken"
+msgstr "Nachricht senden"
 
 #: data/device.ui:67 src/service/plugins/battery.js:11
 msgid "Battery"
@@ -150,7 +150,7 @@ msgstr "Lautstärke"
 
 #: data/device.ui:1090 data/device.ui:1256
 msgid "Pause Media"
-msgstr "Wiedergabe pausieren"
+msgstr "Medienwiedergabe pausieren"
 
 #: data/device.ui:1143
 msgid "Ongoing Calls"
@@ -335,7 +335,7 @@ msgstr "Aktualisieren"
 #. Service Menu -> "Mobile Settings"
 #: data/settings.ui:74 data/settings.ui:91 src/extension.js:104
 msgid "Mobile Settings"
-msgstr "Mobile Einstellungen"
+msgstr "Handy-Einstellungen"
 
 #: data/settings.ui:144 data/settings.ui:158
 msgid "Edit Device Name"
@@ -932,7 +932,7 @@ msgstr "Erledigt"
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d stunde"
-msgstr[1] "%d stunden"
+msgstr[1] "%d stunde"
 
 #: src/shell/notification.js:42
 msgid "Reply"
@@ -951,7 +951,7 @@ msgstr "Teile Links über GSConnect, direkt an den Browser oder per SMS."
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:33
 msgid "Service Unavailable"
-msgstr "Service nicht verfügbar"
+msgstr "Dienst nicht verfügbar"
 
 #. TRANSLATORS: No devices are known or available
 #: webextension/gettext.js:35
