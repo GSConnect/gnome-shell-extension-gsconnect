@@ -17,7 +17,7 @@ var Metadata = {
     actions: {
         ring: {
             label: _('Ring'),
-            icon_name: 'find-location-symbolic',
+            icon_name: 'phonelink-ring-symbolic',
 
             parameter_type: null,
             incoming: [],
@@ -135,7 +135,7 @@ const Dialog = GObject.registerClass({
         super._init({
             buttons: Gtk.ButtonsType.CLOSE,
             image: new Gtk.Image({
-                icon_name: 'find-location-symbolic',
+                icon_name: 'phonelink-ring-symbolic',
                 pixel_size: 128
             }),
             urgency_hint: true,
