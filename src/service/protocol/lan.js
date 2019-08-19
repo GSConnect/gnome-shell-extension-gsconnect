@@ -149,53 +149,92 @@ var ChannelService = class ChannelService {
     }
 
     _initUdpListener() {
-        this._udp = new Gio.Socket({
-            family: Gio.SocketFamily.IPV4,
-            type: Gio.SocketType.DATAGRAM,
-            protocol: Gio.SocketProtocol.UDP,
-            broadcast: true
-        });
-        this._udp.init(null);
-
-        try {
-            let addr = Gio.InetSocketAddress.new_from_string(
-                '0.0.0.0',
-                UDP_PORT
-            );
-
-            this._udp.bind(addr, false);
-        } catch (e) {
-            this._udp.close();
-
-            throw e;
-        }
-
         // Default broadcast address
         this._udp_address = Gio.InetSocketAddress.new_from_string(
             '255.255.255.255',
             UDP_PORT
         );
 
-        // Input stream
-        this._udp_stream = new Gio.DataInputStream({
-            base_stream: new Gio.UnixInputStream({
-                fd: this._udp.fd,
-                close_fd: false
-            })
-        });
+        try {
+            this._udp6 = new Gio.Socket({
+                family: Gio.SocketFamily.IPV6,
+                type: Gio.SocketType.DATAGRAM,
+                protocol: Gio.SocketProtocol.UDP,
+                broadcast: true
+            });
+            this._udp6.init(null);
 
-        // Watch input socket for incoming packets
-        this._udp_source = this._udp.create_source(GLib.IOCondition.IN, null);
-        this._udp_source.set_callback(this._onIncomingIdentity.bind(this));
-        this._udp_source.attach(null);
+            // Bind the socket
+            let inetAddr = Gio.InetAddress.new_any(Gio.SocketFamily.IPV6);
+            let sockAddr = Gio.InetSocketAddress.new(inetAddr, UDP_PORT);
+            this._udp6.bind(sockAddr, false);
+
+            // Input stream
+            this._udp6_stream = new Gio.DataInputStream({
+                base_stream: new Gio.UnixInputStream({
+                    fd: this._udp6.fd,
+                    close_fd: false
+                })
+            });
+
+            // Watch socket for incoming packets
+            this._udp6_source = this._udp6.create_source(GLib.IOCondition.IN, null);
+            this._udp6_source.set_callback(this._onIncomingIdentity.bind(this, this._udp6));
+            this._udp6_source.attach(null);
+        } catch (e) {
+            this._udp6.close();
+            this._udp6 = null;
+        }
+
+        // Our IPv6 socket also supports IPv4; we're all done
+        if (this._udp6 && this._udp6.speaks_ipv4()) {
+            this._udp4 = null;
+            return;
+        }
+
+        try {
+            this._udp4 = new Gio.Socket({
+                family: Gio.SocketFamily.IPV4,
+                type: Gio.SocketType.DATAGRAM,
+                protocol: Gio.SocketProtocol.UDP,
+                broadcast: true
+            });
+            this._udp4.init(null);
+
+            // Bind the socket
+            let inetAddr = Gio.InetAddress.new_any(Gio.SocketFamily.IPV4);
+            let sockAddr = Gio.InetSocketAddress.new(inetAddr, UDP_PORT);
+            this._udp4.bind(sockAddr, false);
+
+            // Input stream
+            this._udp4_stream = new Gio.DataInputStream({
+                base_stream: new Gio.UnixInputStream({
+                    fd: this._udp4.fd,
+                    close_fd: false
+                })
+            });
+
+            // Watch input socket for incoming packets
+            this._udp4_source = this._udp4.create_source(GLib.IOCondition.IN, null);
+            this._udp4_source.set_callback(this._onIncomingIdentity.bind(this, this._udp4));
+            this._udp4_source.attach(null);
+        } catch (e) {
+            this._udp4.close();
+            this._udp4 = null;
+
+            // We failed to get either an IPv4 or IPv6 socket to bind
+            if (this._udp6 == null) {
+                throw e;
+            }
+        }
     }
 
-    _onIncomingIdentity() {
+    _onIncomingIdentity(socket) {
         let host, data, packet;
 
         // Try to peek the remote address, but don't prevent reading the data
         try {
-            host = this._udp.receive_message(
+            host = socket.receive_message(
                 [],
                 Gio.SocketMsgFlags.PEEK,
                 null
@@ -205,7 +244,11 @@ var ChannelService = class ChannelService {
         }
 
         try {
-            data = this._udp_stream.read_line_utf8(null)[0];
+            if (socket === this._udp6) {
+                data = this._udp6_stream.read_line_utf8(null)[0];
+            } else {
+                data = this._udp4_stream.read_line_utf8(null)[0];
+            }
 
             // Only process the packet if we succeeded in peeking the address
             if (host !== undefined) {
@@ -303,18 +346,25 @@ var ChannelService = class ChannelService {
             if (!this._networkAvailable) {
                 debug('Network unavailable; aborting');
                 return;
+            }
 
             // Remember manual addresses so we know to accept connections
-            } else if (address instanceof Gio.InetSocketAddress) {
+            if (address instanceof Gio.InetSocketAddress) {
                 this.allowed.add(address.address.to_string());
 
-            // Only broadcast to the network if no address is specified
+            // Broadcast to the network if no address is specified
             } else {
                 debug('Broadcasting to LAN');
                 address = this._udp_address;
             }
 
-            this._udp.send_to(address, `${this.service.identity}`, null);
+            if (this._udp6 !== null) {
+                this._udp6.send_to(address, `${this.service.identity}`, null);
+            }
+
+            if (this._udp4 !== null) {
+                this._udp4.send_to(address, `${this.service.identity}`, null);
+            }
         } catch (e) {
             warning(e);
         }
@@ -326,9 +376,17 @@ var ChannelService = class ChannelService {
         this._tcp.stop();
         this._tcp.close();
 
-        this._udp_source.destroy();
-        this._udp_stream.close(null);
-        this._udp.close();
+        if (this._udp6 !== null) {
+            this._udp6_source.destroy();
+            this._udp6_stream.close(null);
+            this._udp6.close();
+        }
+
+        if (this._udp4 !== null) {
+            this._udp4_source.destroy();
+            this._udp4_stream.close(null);
+            this._udp4.close();
+        }
     }
 };
 
@@ -511,8 +569,6 @@ var Channel = class Channel extends Core.Channel {
      */
     _sendIdent(connection) {
         return new Promise((resolve, reject) => {
-            debug('sending identity');
-
             connection.output_stream.write_all_async(
                 `${this.service.identity}`,
                 GLib.PRIORITY_DEFAULT,
