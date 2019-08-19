@@ -25,26 +25,37 @@
     <!-- WebExtension Manifests -->
     <file compressed="true">org.gnome.shell.extensions.gsconnect.json-chrome</file>
     <file compressed="true">org.gnome.shell.extensions.gsconnect.json-mozilla</file>
+
+    <!-- Application Icons -->
+    <file compressed="true" preprocess="xml-stripblanks">icons/org.gnome.Shell.Extensions.GSConnect.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">icons/org.gnome.Shell.Extensions.GSConnect-symbolic.svg</file>
+
+    <!-- Device Icons (Fallback) c/o GNOME -->
+    <file compressed="true" preprocess="xml-stripblanks">icons/computer-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">icons/smartphone-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">icons/tv-symbolic.svg</file>
+
+    <!-- Device Icons (Fallbacks) c/o Numix
+
+         TODO: GNOME currently doesn't have an icon for `laptop`
+               The stock icon for `tablet` is actually a wacom tablet
+    -->
+    <file compressed="true" preprocess="xml-stripblanks">icons/laptop-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">icons/tablet-symbolic.svg</file>
+
+    <!-- Phonelink Icons c/o GNOME -->
+    <file compressed="true" preprocess="xml-stripblanks">icons/phonelink-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">icons/phonelink-delete-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">icons/phonelink-lock-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">icons/phonelink-off-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">icons/phonelink-ring-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">icons/phonelink-setup-symbolic.svg</file>
   </gresource>
   <gresource prefix="/org/gnome/Shell/Extensions/GSConnect/icons">
-    <!-- Application Icons -->
-    <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.GSConnect.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.GSConnect-symbolic.svg</file>
-
     <!-- Action Icons c/o GNOME -->
     <file compressed="true" preprocess="xml-stripblanks">group-avatar-symbolic.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">sms-send.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">sms-symbolic.svg</file>
-
-    <!-- Device Icons c/o Numix -->
-    <file compressed="true" preprocess="xml-stripblanks">computer.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">computer-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">laptop.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">laptop-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">smartphone.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">smartphone-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">tablet.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">tablet-symbolic.svg</file>
 
     <!-- Browser Badges -->
     <file compressed="true">firefox-badge.png</file>
