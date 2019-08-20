@@ -33,11 +33,9 @@ extconfig.set('LOCALEDIR', localedir)
 extconfig.set('EXTDATADIR', extdatadir)
 extconfig.set('GSCHEMADIR', gschemadir)
 extconfig.set('FFMPEG_PATH', get_option('ffmpeg_path'))
-extconfig.set('FUSERMOUNT_PATH', get_option('fusermount_path'))
 extconfig.set('OPENSSL_PATH', get_option('openssl_path'))
 extconfig.set('SSHADD_PATH', get_option('sshadd_path'))
 extconfig.set('SSHKEYGEN_PATH', get_option('sshkeygen_path'))
-extconfig.set('SSHFS_PATH', get_option('sshfs_path'))
 
 # ZIP targets for user extension builds
 run_target(
