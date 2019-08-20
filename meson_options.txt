@@ -87,13 +87,6 @@ option(
 
 # Override manifest install so that BROWSER_NMHDIR/foo.json
 option(
-  'brave_nmhdir',
-  type: 'string',
-  value: '',
-  description: 'Native Messaging Host directory for Brave'
-)
-
-option(
   'chrome_nmhdir',
   type: 'string',
   value: '',
