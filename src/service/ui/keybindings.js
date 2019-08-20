@@ -115,7 +115,7 @@ var ShortcutChooserDialog = GObject.registerClass({
         this.stack.add_named(editPage, 'edit');
 
         let editImage = new Gtk.Image({
-            resource: '/org/gnome/Shell/Extensions/GSConnect/enter-keyboard-shortcut.svg',
+            resource: '/org/gnome/Shell/Extensions/GSConnect/images/enter-keyboard-shortcut.svg',
             visible: true
         });
         editPage.attach(editImage, 0, 0, 1, 1);

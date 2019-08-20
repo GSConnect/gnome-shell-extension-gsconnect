@@ -1,4 +1,4 @@
-data/menus.ui
+data/gtk/menus.ui
 data/ui/connect.ui
 data/ui/contacts.ui
 data/ui/conversation.ui

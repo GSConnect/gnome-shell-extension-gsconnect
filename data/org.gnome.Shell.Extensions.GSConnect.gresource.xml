@@ -3,6 +3,7 @@
   <gresource prefix="/org/gnome/Shell/Extensions/GSConnect">
     <!-- UI -->
     <file compressed="true">application.css</file>
+    <file compressed="true" preprocess="xml-stripblanks">gtk/menus.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/connect.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/contacts.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/conversation.ui</file>
@@ -12,19 +13,12 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/notification.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/settings.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/telephony.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">enter-keyboard-shortcut.svg</file>
 
-    <!-- DBus Service -->
+    <!-- DBus Service Files -->
     <file compressed="true">org.gnome.Shell.Extensions.GSConnect.desktop</file>
     <file compressed="true">org.gnome.Shell.Extensions.GSConnect.service</file>
     <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.GSConnect.xml</file>
-
-    <!-- Bluetooth SDP -->
     <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.GSConnect.sdp.xml</file>
-
-    <!-- WebExtension Manifests -->
-    <file compressed="true">org.gnome.shell.extensions.gsconnect.json-chrome</file>
-    <file compressed="true">org.gnome.shell.extensions.gsconnect.json-mozilla</file>
 
     <!-- Application Icons -->
     <file compressed="true" preprocess="xml-stripblanks">icons/org.gnome.Shell.Extensions.GSConnect.svg</file>
@@ -51,17 +45,16 @@
     <file compressed="true" preprocess="xml-stripblanks">icons/phonelink-ring-symbolic.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">icons/phonelink-setup-symbolic.svg</file>
 
-    <!-- Misc Icons c/o GNOME -->
+    <!-- Misc Resources c/o GNOME -->
     <file compressed="true" preprocess="xml-stripblanks">icons/group-avatar-symbolic.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">icons/sms-send.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">icons/sms-symbolic.svg</file>
-  </gresource>
-  <gresource prefix="/org/gnome/Shell/Extensions/GSConnect/icons">
-    <!-- Browser Badges -->
-    <file compressed="true">firefox-badge.png</file>
-    <file compressed="true">chrome-badge.png</file>
-  </gresource>
-  <gresource prefix="/org/gnome/Shell/Extensions/GSConnect/gtk">
-    <file compressed="true" preprocess="xml-stripblanks">menus.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">images/enter-keyboard-shortcut.svg</file>
+
+    <!-- WebExtension Manifests & Badges -->
+    <file compressed="true">org.gnome.shell.extensions.gsconnect.json-chrome</file>
+    <file compressed="true">org.gnome.shell.extensions.gsconnect.json-mozilla</file>
+    <file compressed="true">images/chrome-badge.png</file>
+    <file compressed="true">images/firefox-badge.png</file>
   </gresource>
 </gresources>
