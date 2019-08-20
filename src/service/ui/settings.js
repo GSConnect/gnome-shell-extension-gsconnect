@@ -99,7 +99,7 @@ var ConnectDialog = GObject.registerClass({
             false
         )
     },
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/connect.ui',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/connect.ui',
     Children: [
         'cancel-button', 'connect-button',
         'lan-radio', 'lan-grid', 'lan-ip', 'lan-port',
@@ -341,7 +341,7 @@ var Window = GObject.registerClass({
             null
         )
     },
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/settings.ui',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/settings.ui',
     Children: [
         // HeaderBar
         'headerbar', 'infobar', 'stack',

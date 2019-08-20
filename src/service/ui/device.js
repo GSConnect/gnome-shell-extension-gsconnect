@@ -146,7 +146,7 @@ const SectionRow = GObject.registerClass({
 
 var DevicePreferences = GObject.registerClass({
     GTypeName: 'GSConnectDevicePreferences',
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/device.ui',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/device.ui',
     Children: [
         'sidebar', 'stack', 'infobar',
         // Sharing

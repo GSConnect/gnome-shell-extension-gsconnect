@@ -3,15 +3,15 @@
   <gresource prefix="/org/gnome/Shell/Extensions/GSConnect">
     <!-- UI -->
     <file compressed="true">application.css</file>
-    <file compressed="true" preprocess="xml-stripblanks">connect.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">contacts.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">conversation.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">devel.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">device.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">messaging.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">notification.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">settings.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">telephony.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/connect.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/contacts.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/conversation.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/devel.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/device.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/messaging.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/notification.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/settings.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/telephony.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">enter-keyboard-shortcut.svg</file>
 
     <!-- DBus Service -->
@@ -50,13 +50,13 @@
     <file compressed="true" preprocess="xml-stripblanks">icons/phonelink-off-symbolic.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">icons/phonelink-ring-symbolic.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">icons/phonelink-setup-symbolic.svg</file>
+
+    <!-- Misc Icons c/o GNOME -->
+    <file compressed="true" preprocess="xml-stripblanks">icons/group-avatar-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">icons/sms-send.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">icons/sms-symbolic.svg</file>
   </gresource>
   <gresource prefix="/org/gnome/Shell/Extensions/GSConnect/icons">
-    <!-- Action Icons c/o GNOME -->
-    <file compressed="true" preprocess="xml-stripblanks">group-avatar-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">sms-send.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">sms-symbolic.svg</file>
-
     <!-- Browser Badges -->
     <file compressed="true">firefox-badge.png</file>
     <file compressed="true">chrome-badge.png</file>

@@ -297,7 +297,7 @@ var ContactChooser = GObject.registerClass({
             'store',
             'Store',
             'The contacts store',
-            GObject.ParamFlags.READWRITE,
+            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT,
             GObject.Object
         )
     },
@@ -307,7 +307,7 @@ var ContactChooser = GObject.registerClass({
             param_types: [GObject.TYPE_STRING]
         }
     },
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/contacts.ui',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/contacts.ui',
     Children: ['entry', 'list', 'scrolled']
 }, class ContactChooser extends Gtk.Grid {
 

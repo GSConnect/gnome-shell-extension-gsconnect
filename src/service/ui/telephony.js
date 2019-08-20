@@ -19,7 +19,7 @@ var Dialog = GObject.registerClass({
             GObject.Object
         )
     },
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/telephony.ui',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/telephony.ui',
     Children: [
         'infobar', 'stack',
         'message-box', 'entry'
