@@ -126,6 +126,17 @@ if get_option('webextension')
     chrome_nmhdir = join_paths(sysconfdir, 'opt', 'chrome', 'native-messaging-hosts')
   endif
 
+  chrome_nmh = configure_file(
+    input: 'data/org.gnome.shell.extensions.gsconnect.json-chrome',
+    output: 'org.gnome.shell.extensions.gsconnect.json-chrome',
+    configuration: extconfig
+  )
+
+  install_data(
+    chrome_nmh,
+    rename: join_paths(chrome_nmhdir, 'org.gnome.shell.extensions.gsconnect.json')
+  )
+
   # Chromium
   if get_option('chromium_nmhdir') != ''
     chromium_nmhdir = get_option('chromium_nmhdir')
@@ -133,17 +144,15 @@ if get_option('webextension')
     chromium_nmhdir = join_paths(sysconfdir, 'chromium', 'native-messaging-hosts')
   endif
 
-  configure_file(
+  chromium_nmh = configure_file(
     input: 'data/org.gnome.shell.extensions.gsconnect.json-chrome',
-    output: 'org.gnome.shell.extensions.gsconnect.json-chrome',
+    output: 'org.gnome.shell.extensions.gsconnect.json-chromium',
     configuration: extconfig
   )
 
-  # HACK: use 'rename' in meson >=0.46.0
-  meson.add_install_script(
-    'meson/nmh.sh',
-    join_paths(chrome_nmhdir),
-    join_paths(chromium_nmhdir)
+  install_data(
+    chromium_nmh,
+    rename: join_paths(chromium_nmhdir, 'org.gnome.shell.extensions.gsconnect.json')
   )
 
   # Mozilla
