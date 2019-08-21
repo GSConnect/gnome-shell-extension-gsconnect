@@ -107,6 +107,14 @@ install_subdir(
   strip_directory: true
 )
 
+eslint = find_program('eslint', required: false)
+
+if eslint.found()
+  test('ESLint', eslint,
+    args: join_paths(meson.build_root(), extuuid)
+  )
+endif
+
 # Gettext Translations
 subdir('data')
 subdir('po')
