@@ -88,7 +88,7 @@ var Plugin = GObject.registerClass({
             this.device.lookup_action('mount').enabled = false;
             this.device.lookup_action('unmount').enabled = false;
 
-        // Request a mount; if using sshfs we will "delay-connect"
+        // Request a mount
         } else {
             this.mount();
         }

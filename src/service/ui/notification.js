@@ -16,7 +16,7 @@ var Dialog = GObject.registerClass({
             GObject.Object
         )
     },
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/notification.ui',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/notification.ui',
     Children: [
         'infobar',
         'notification-title', 'notification-body',

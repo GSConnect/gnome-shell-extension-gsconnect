@@ -150,7 +150,7 @@ msgstr "Lautstärke"
 
 #: data/device.ui:1090 data/device.ui:1256
 msgid "Pause Media"
-msgstr "Wiedergabe pausieren"
+msgstr "Medienwiedergabe pausieren"
 
 #: data/device.ui:1143
 msgid "Ongoing Calls"
@@ -335,7 +335,7 @@ msgstr "Auffrischen"
 #. Service Menu -> "Mobile Settings"
 #: data/settings.ui:74 data/settings.ui:91 src/extension.js:104
 msgid "Mobile Settings"
-msgstr "Mobile Einstellungen"
+msgstr "Handy-Einstellungen"
 
 #: data/settings.ui:144 data/settings.ui:158
 msgid "Edit Device Name"

@@ -302,7 +302,7 @@ const ConversationWidget = GObject.registerClass({
             ''
         )
     },
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/conversation.ui',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/conversation.ui',
     Children: [
         'entry', 'list', 'scrolled',
         'pending', 'pending-box'
@@ -682,7 +682,7 @@ var Window = GObject.registerClass({
             ''
         )
     },
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/messaging.ui',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/messaging.ui',
     Children: [
         'headerbar', 'infobar',
         'thread-list', 'stack'

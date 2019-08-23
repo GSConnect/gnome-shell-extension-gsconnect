@@ -11,10 +11,8 @@
     "gschemadir": "@GSCHEMADIR@",
     "bin": {
         "ffmpeg": "@FFMPEG_PATH@",
-        "fusermount": "@FUSERMOUNT_PATH@",
         "openssl": "@OPENSSL_PATH@",
         "ssh_add": "@SSHADD_PATH@",
-        "ssh_keygen": "@SSHKEYGEN_PATH@",
-        "sshfs": "@SSHFS_PATH@"
+        "ssh_keygen": "@SSHKEYGEN_PATH@"
     }
 }

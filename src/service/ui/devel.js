@@ -25,7 +25,7 @@ function getPID() {
 
 var Window = GObject.registerClass({
     GTypeName: 'GSConnectDevelWindow',
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/devel.ui',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/devel.ui',
     Children: [
         'headerbar', 'stack', 'switcher',
         'packet-device', 'packet-direction', 'packet-type', 'packet-body', 'packet-button',

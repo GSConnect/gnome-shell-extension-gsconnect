@@ -1,6 +1,7 @@
-project('gsconnect', 'c', version: '24', meson_version: '>= 0.45.0')
+project('gsconnect', 'c', version: '24', meson_version: '>= 0.49.0')
 
 gnome = import('gnome')
+i18n = import('i18n')
 
 prefix = get_option('prefix')
 datadir = join_paths(prefix, get_option('datadir'))
@@ -33,11 +34,9 @@ extconfig.set('LOCALEDIR', localedir)
 extconfig.set('EXTDATADIR', extdatadir)
 extconfig.set('GSCHEMADIR', gschemadir)
 extconfig.set('FFMPEG_PATH', get_option('ffmpeg_path'))
-extconfig.set('FUSERMOUNT_PATH', get_option('fusermount_path'))
 extconfig.set('OPENSSL_PATH', get_option('openssl_path'))
 extconfig.set('SSHADD_PATH', get_option('sshadd_path'))
 extconfig.set('SSHKEYGEN_PATH', get_option('sshkeygen_path'))
-extconfig.set('SSHFS_PATH', get_option('sshfs_path'))
 
 # ZIP targets for user extension builds
 run_target(
@@ -64,44 +63,26 @@ run_target(
     ]
 )
 
-# Extension Source
-install_subdir(
-  'src',
-  install_dir: extdatadir,
-  strip_directory: true
+# DEB targets for system extension builds
+run_target(
+    'make-deb',
+    command: [
+        find_program('env'),
+        'VERSION=' + meson.project_version(),
+        'INSTALL=no',
+        'meson/mkdeb.sh'
+    ]
+)
+run_target(
+    'install-deb',
+    command: [
+        find_program('env'),
+        'VERSION=' + meson.project_version(),
+        'INSTALL=yes',
+        'meson/mkdeb.sh'
+    ]
 )
 
-# metadata.json
-configure_file(
-  input: 'data/metadata.json.in',
-  output: 'metadata.json',
-  configuration: extconfig,
-  install_dir: extdatadir
-)
-
-# Desktop Entry
-install_data(
-    'data/org.gnome.Shell.Extensions.GSConnect.desktop',
-    install_dir: join_paths(datadir, 'applications')
-)
-
-# DBus Service
-dbus = dependency('dbus-1', required: false)
-
-if get_option('session_bus_services_dir') != ''
-  dbus_dir = get_option('session_bus_services_dir')
-elif dbus.found()
-  dbus_dir = dbus.get_pkgconfig_variable('session_bus_services_dir')
-else
-  dbus_dir = join_paths(datadir, 'dbus-1', 'services')
-endif
-
-configure_file(
-  input: 'data/org.gnome.Shell.Extensions.GSConnect.service',
-  output: 'org.gnome.Shell.Extensions.GSConnect.service',
-  configuration: extconfig,
-  install_dir: dbus_dir
-)
 
 # Nautilus/Nemo Extension
 if get_option('nautilus')
@@ -118,68 +99,24 @@ if get_option('nemo')
   )
 endif
 
-# WebExtension Manifests
-if get_option('webextension')
 
-  # Chrome
-  if get_option('chrome_nmhdir') != ''
-    chrome_nmhdir = get_option('chrome_nmhdir')
-  else
-    chrome_nmhdir = join_paths(sysconfdir, 'opt', 'chrome', 'native-messaging-hosts')
-  endif
+# Extension Source
+install_subdir(
+  'src',
+  install_dir: extdatadir,
+  strip_directory: true
+)
 
-  # Chromium
-  if get_option('chromium_nmhdir') != ''
-    chromium_nmhdir = get_option('chromium_nmhdir')
-  else
-    chromium_nmhdir = join_paths(sysconfdir, 'chromium', 'native-messaging-hosts')
-  endif
+eslint = find_program('eslint', required: false)
 
-  configure_file(
-    input: 'data/org.gnome.shell.extensions.gsconnect.json-chrome',
-    output: 'org.gnome.shell.extensions.gsconnect.json-chrome',
-    configuration: extconfig
-  )
-
-  # HACK: use 'rename' in meson >=0.46.0
-  meson.add_install_script(
-    'meson/nmh.sh',
-    join_paths(chrome_nmhdir),
-    join_paths(chromium_nmhdir)
-  )
-
-  # Mozilla
-  if get_option('mozilla_nmhdir') != ''
-    mozilla_nmhdir = get_option('mozilla_nmhdir')
-  else
-    mozilla_nmhdir = join_paths(libdir, 'mozilla', 'native-messaging-hosts')
-  endif
-
-  configure_file(
-    input: 'data/org.gnome.shell.extensions.gsconnect.json-mozilla',
-    output: 'org.gnome.shell.extensions.gsconnect.json',
-    configuration: extconfig,
-    install_dir: mozilla_nmhdir
+if eslint.found()
+  test('ESLint', eslint,
+    args: join_paths(meson.build_root(), extuuid)
   )
 endif
 
-# GSettings
-install_data(
-    'data/org.gnome.Shell.Extensions.GSConnect.gschema.xml',
-    install_dir: gschemadir
-)
-
-# GResource
-gnome.compile_resources(
-  'org.gnome.Shell.Extensions.GSConnect',
-  'data/org.gnome.Shell.Extensions.GSConnect.gresource.xml',
-  source_dir: 'data',
-  gresource_bundle: true,
-  install: true,
-  install_dir: extdatadir
-)
-
 # Gettext Translations
+subdir('data')
 subdir('po')
 
 # Post-Install Script for distributions without the hooks
