@@ -422,11 +422,6 @@ var Window = GObject.registerClass({
         generateSupportLog.connect('activate', this._generateSupportLog);
         this.add_action(generateSupportLog);
 
-        // App Menu (in-window only)
-        this.service_menu.set_menu_model(
-            this.application.get_menu_by_id('service-menu')
-        );
-
         // Device List
         this.device_list.set_header_func((row, before) => {
             if (before) row.set_header(new Gtk.Separator({visible: true}));

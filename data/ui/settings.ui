@@ -58,7 +58,7 @@
         </child>
         <child>
           <object class="GtkButton" id="prev-button">
-            <property name="visible">True</property>
+            <property name="visible">False</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="tooltip_text" translatable="yes">Mobile Settings</property>
@@ -90,6 +90,7 @@
         </child>
         <child>
           <object class="GtkMenuButton" id="service-menu">
+            <property name="menu_model">service-menu-ui</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
@@ -671,4 +672,45 @@
       </object>
     </child>
   </template>
+
+  <menu id="service-menu-ui">
+    <section>
+      <item>
+        <!-- TRANSLATORS: Open a dialog to connect to an IP or Bluez device -->
+        <attribute name="label" translatable="yes">Connect to…</attribute>
+        <attribute name="action">win.connect</attribute>
+      </item>
+    </section>
+    <section>
+      <attribute name="label" translatable="yes">Display Mode</attribute>
+      <item>
+        <!-- TRANSLATORS: Show device indicators in the top bar -->
+        <attribute name="label" translatable="yes">Panel</attribute>
+        <attribute name="action">win.display-mode</attribute>
+        <attribute name="target">panel</attribute>
+      </item>
+      <item>
+        <!-- TRANSLATORS: Show devices in the user menu like Bluetooth -->
+        <attribute name="label" translatable="yes">User Menu</attribute>
+        <attribute name="action">win.display-mode</attribute>
+        <attribute name="target">user-menu</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <!-- TRANSLATORS: Generate a support log -->
+        <attribute name="label" translatable="yes">Generate Support Log</attribute>
+        <attribute name="action">win.support-log</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Help</attribute>
+        <attribute name="action">app.wiki</attribute>
+        <attribute name="target">Help</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">About GSConnect</attribute>
+        <attribute name="action">win.about</attribute>
+      </item>
+    </section>
+  </menu>
 </interface>

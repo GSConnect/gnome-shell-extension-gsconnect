@@ -166,7 +166,6 @@ var DevicePreferences = GObject.registerClass({
         // Shortcuts
         'shortcuts-page',
         'shortcuts-actions', 'shortcuts-actions-title', 'shortcuts-actions-list',
-        'shortcuts-commands', 'shortcuts-commands-title', 'shortcuts-commands-list',
         // Advanced
         'advanced-page',
         'plugin-list', 'experimental-list', 'danger-list'
@@ -187,8 +186,8 @@ var DevicePreferences = GObject.registerClass({
 
         // GSettings
         this.settings = new Gio.Settings({
-            settings_schema: gsconnect.gschema.lookup('org.gnome.Shell.Extensions.GSConnect.Device', true),
-            path: '/org/gnome/shell/extensions/gsconnect/device/' + this.device.id + '/'
+            settings_schema: this.device.settings.settings_schema,
+            path: this.device.settings.path
         });
 
         // Infobar
@@ -202,6 +201,8 @@ var DevicePreferences = GObject.registerClass({
         this._setupActions();
 
         // Device Menu
+        let menus = Gtk.Builder.new_from_resource(gsconnect.app_path + '/gtk/menus.ui');
+        menus.translation_domain = 'org.gnome.Shell.Extensions.GSConnect';
         this.menu = this._menus.get_object('device-menu');
         this.menu.prepend_section(null, this.device.menu);
 
@@ -364,7 +365,6 @@ var DevicePreferences = GObject.registerClass({
         settings = this._getSettings('clipboard');
         this.actions.add_action(settings.create_action('send-content'));
         this.actions.add_action(settings.create_action('receive-content'));
-        this.clipboard_sync.set_menu_model(this._menus.get_object('clipboard-sync'));
 
         settings = this._getSettings('contacts');
         this.actions.add_action(settings.create_action('contacts-source'));
@@ -390,12 +390,10 @@ var DevicePreferences = GObject.registerClass({
         settings = this._getSettings('telephony');
         this.actions.add_action(settings.create_action('ringing-volume'));
         this.actions.add_action(settings.create_action('ringing-pause'));
-        this.ringing_volume.set_menu_model(this._menus.get_object('ringing-volume'));
 
         this.actions.add_action(settings.create_action('talking-volume'));
         this.actions.add_action(settings.create_action('talking-pause'));
         this.actions.add_action(settings.create_action('talking-microphone'));
-        this.talking_volume.set_menu_model(this._menus.get_object('talking-volume'));
 
         // Connect Actions
         let status_bluetooth = new Gio.SimpleAction({name: 'connect-bluetooth'});
@@ -780,11 +778,6 @@ var DevicePreferences = GObject.registerClass({
             'changed::keybindings',
             this._setPluginKeybindings.bind(this)
         );
-
-        // TODO: probably not used very often, but needs work
-        this.shortcuts_commands_list.set_header_func(section_separators);
-        this.shortcuts_commands_list.set_sort_func(title_sort);
-        this._populateCommandKeybindings();
     }
 
     _addPluginKeybinding(name) {
@@ -829,87 +822,6 @@ var DevicePreferences = GObject.registerClass({
 
         for (let action in keybindings) {
             if (!action.includes('::')) {
-                delete keybindings[action];
-            }
-        }
-
-        this.settings.set_value(
-            'keybindings',
-            new GLib.Variant('a{ss}', keybindings)
-        );
-    }
-
-    _addCommandKeybinding(uuid, command, keybindings) {
-        let action = `executeCommand::${uuid}`;
-
-        let widget = new Gtk.Label({
-            label: _('Disabled'),
-            visible: true
-        });
-        widget.get_style_context().add_class('dim-label');
-
-        if (keybindings[action]) {
-            let accel = Gtk.accelerator_parse(keybindings[action]);
-            widget.label = Gtk.accelerator_get_label(...accel);
-        }
-
-        let row = new SectionRow({
-            title: command.name,
-            subtitle: command.command,
-            widget: widget
-        });
-        row.action = action;
-        this.shortcuts_commands_list.add(row);
-    }
-
-    _populateCommandKeybindings() {
-        this.shortcuts_commands_list.foreach(row => {
-            // HACK: temporary mitigator for mysterious GtkListBox leak
-            //row.destroy();
-            row.run_dispose();
-            imports.system.gc();
-        });
-
-        let keybindings = this.settings.get_value('keybindings').deep_unpack();
-
-        // Exclude defunct commands
-        for (let action in keybindings) {
-            if (action.includes('::')) {
-                let uuid = action.split('::')[1];
-
-                if (!remoteCommands.hasOwnProperty(uuid)) {
-                    delete keybindings[action];
-                }
-            }
-        }
-
-        // Commands
-        let runcommand = this.device.lookup_plugin('runcommand');
-        let remoteCommands = (runcommand) ? runcommand.remote_commands : {};
-        let hasCommands = (Object.keys(remoteCommands).length > 0);
-        this.shortcuts_commands_title.visible = hasCommands;
-        this.shortcuts_commands.visible = hasCommands;
-
-        for (let [uuid, command] of Object.entries(remoteCommands)) {
-            this._addCommandKeybinding(uuid, command, keybindings);
-        }
-
-        for (let action in keybindings) {
-            if (action.includes('::')) {
-                let uuid = action.split('::')[1];
-
-                if (!remoteCommands.hasOwnProperty(uuid)) {
-                    delete keybindings[action];
-                }
-            }
-        }
-    }
-
-    _onResetCommandShortcuts(button) {
-        let keybindings = this.settings.get_value('keybindings').deep_unpack();
-
-        for (let action in keybindings) {
-            if (action.includes('::')) {
                 delete keybindings[action];
             }
         }

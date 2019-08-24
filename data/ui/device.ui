@@ -194,6 +194,7 @@
                                         <property name="halign">end</property>
                                         <property name="valign">center</property>
                                         <property name="relief">none</property>
+                                        <property name="menu_model">clipboard-sync-menu</property>
                                         <child>
                                           <object class="GtkImage">
                                             <property name="visible">True</property>
@@ -1055,6 +1056,7 @@
                                         <property name="halign">end</property>
                                         <property name="valign">center</property>
                                         <property name="relief">none</property>
+                                        <property name="menu_model">ringing-volume-menu</property>
                                         <child>
                                           <object class="GtkImage">
                                             <property name="visible">True</property>
@@ -1221,6 +1223,7 @@
                                         <property name="halign">end</property>
                                         <property name="valign">center</property>
                                         <property name="relief">none</property>
+                                        <property name="menu_model">talking-volume-menu</property>
                                         <child>
                                           <object class="GtkImage">
                                             <property name="visible">True</property>
@@ -1467,75 +1470,6 @@
                         <property name="expand">False</property>
                         <property name="fill">True</property>
                         <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkGrid" id="shortcuts-commands-title">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="margin_top">32</property>
-                        <property name="margin_bottom">12</property>
-                        <child>
-                          <object class="GtkLabel" id="command-shortcuts-label">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="halign">start</property>
-                            <property name="hexpand">True</property>
-                            <property name="label" translatable="yes">Command Shortcuts</property>
-                            <attributes>
-                              <attribute name="weight" value="bold"/>
-                            </attributes>
-                            <accessibility>
-                              <relation type="label-for" target="shortcuts-commands-list"/>
-                            </accessibility>
-                          </object>
-                          <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkButton">
-                            <property name="label" translatable="yes">Reset All…</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
-                            <signal name="clicked" handler="_onResetCommandShortcuts" swapped="no"/>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="top_attach">0</property>
-                          </packing>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkFrame" id="shortcuts-commands">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label_xalign">0</property>
-                        <child>
-                          <object class="GtkListBox" id="shortcuts-commands-list">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="hexpand">True</property>
-                            <property name="selection_mode">none</property>
-                            <signal name="row-activated" handler="_onShortcutRowActivated" swapped="no"/>
-                            <accessibility>
-                              <relation type="labelled-by" target="command-shortcuts-label"/>
-                            </accessibility>
-                          </object>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">3</property>
                       </packing>
                     </child>
                   </object>
@@ -2243,4 +2177,76 @@
       </packing>
     </child>
   </template>
+
+
+  <!-- Clipboard Popover -->
+  <menu id="clipboard-sync-menu">
+    <section>
+      <item>
+        <!-- TRANSLATORS: Send clipboard content to device -->
+        <attribute name="label" translatable="yes">To Device</attribute>
+        <attribute name="icon">edit-paste-symbolic</attribute>
+        <attribute name="action">settings.send-content</attribute>
+      </item>
+      <item>
+        <!-- TRANSLATORS: Receive clipboard content from the device -->
+        <attribute name="label" translatable="yes">From Device</attribute>
+        <attribute name="icon">edit-copy-symbolic</attribute>
+        <attribute name="action">settings.receive-content</attribute>
+      </item>
+    </section>
+  </menu>
+
+  <!-- Volume Popover (eg. Telephony) -->
+  <menu id="ringing-volume-menu">
+    <section>
+      <item>
+        <!-- TRANSLATORS: Don't change the system volume -->
+        <attribute name="label" translatable="yes">Nothing</attribute>
+        <attribute name="icon">audio-volume-medium-symbolic</attribute>
+        <attribute name="action">settings.ringing-volume</attribute>
+        <attribute name="target">nothing</attribute>
+      </item>
+      <item>
+        <!-- TRANSLATORS: Lower the system volume -->
+        <attribute name="label" translatable="yes">Lower</attribute>
+        <attribute name="icon">audio-volume-low-symbolic</attribute>
+        <attribute name="action">settings.ringing-volume</attribute>
+        <attribute name="target">lower</attribute>
+      </item>
+      <item>
+        <!-- TRANSLATORS: Mute the system volume -->
+        <attribute name="label" translatable="yes">Mute</attribute>
+        <attribute name="icon">audio-volume-muted-symbolic</attribute>
+        <attribute name="action">settings.ringing-volume</attribute>
+        <attribute name="target">mute</attribute>
+      </item>
+    </section>
+  </menu>
+
+  <menu id="talking-volume-menu">
+    <section>
+      <item>
+        <!-- TRANSLATORS: Don't change the system volume -->
+        <attribute name="label" translatable="yes">Nothing</attribute>
+        <attribute name="icon">audio-volume-medium-symbolic</attribute>
+        <attribute name="action">settings.talking-volume</attribute>
+        <attribute name="target">nothing</attribute>
+      </item>
+      <item>
+        <!-- TRANSLATORS: Lower the system volume -->
+        <attribute name="label" translatable="yes">Lower</attribute>
+        <attribute name="icon">audio-volume-low-symbolic</attribute>
+        <attribute name="action">settings.talking-volume</attribute>
+        <attribute name="target">lower</attribute>
+      </item>
+      <item>
+        <!-- TRANSLATORS: Mute the system volume -->
+        <attribute name="label" translatable="yes">Mute</attribute>
+        <attribute name="icon">audio-volume-muted-symbolic</attribute>
+        <attribute name="action">settings.talking-volume</attribute>
+        <attribute name="target">mute</attribute>
+      </item>
+    </section>
+  </menu>
 </interface>
