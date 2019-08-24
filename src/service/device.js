@@ -426,17 +426,11 @@ var Device = GObject.registerClass({
      */
     _registerActions() {
         // Stock device actions
-        let activate = new Gio.SimpleAction({
-            name: 'activate',
-            state: new GLib.Variant('(ss)', [_('Reconnect'), 'view-refresh-symbolic']),
-        });
+        let activate = new Gio.SimpleAction({name: 'activate'});
         activate.connect('activate', this.activate.bind(this));
         this.add_action(activate);
 
-        let openSettings = new Gio.SimpleAction({
-            name: 'openSettings',
-            state: new GLib.Variant('(ss)', [_('Settings'), 'preferences-system-symbolic'])
-        });
+        let openSettings = new Gio.SimpleAction({name: 'openSettings'});
         openSettings.connect('activate', this.openSettings.bind(this));
         this.add_action(openSettings);
 

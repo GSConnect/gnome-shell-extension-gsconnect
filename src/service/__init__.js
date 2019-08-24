@@ -400,9 +400,7 @@ Object.defineProperties(Gio.Menu.prototype, {
      * @return {Number} - The index of the added item
      */
     'add_action': {
-        value: function(action, index = -1) {
-            let [label, icon_name] = action.get_state().deep_unpack();
-
+        value: function(action, index = -1, label, icon_name) {
             let item = new Gio.MenuItem();
             item.set_label(label);
             item.set_icon(new Gio.ThemedIcon({name: icon_name}));

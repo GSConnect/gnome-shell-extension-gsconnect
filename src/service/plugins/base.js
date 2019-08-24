@@ -23,7 +23,7 @@ var Plugin = GObject.registerClass({
         // Init GSettings
         this.settings = new Gio.Settings({
             settings_schema: gsconnect.gschema.lookup(this._meta.id, false),
-            path: `${gsconnect.settings.path}device/${device.id}/plugin/${name}/`
+            path: `${device.settings.path}plugin/${name}/`
         });
 
         // GActions
@@ -33,7 +33,6 @@ var Plugin = GObject.registerClass({
             // Register based on device capabilities, which shouldn't change
             let deviceHandles = this.device.settings.get_strv('incoming-capabilities');
             let deviceProvides = this.device.settings.get_strv('outgoing-capabilities');
-            let disabled = this.device.settings.get_strv('disabled-actions');
             let menu = this.device.settings.get_strv('menu-actions');
 
             for (let name in this._meta.actions) {
@@ -41,7 +40,7 @@ var Plugin = GObject.registerClass({
 
                 if (meta.incoming.every(p => deviceProvides.includes(p)) &&
                     meta.outgoing.every(p => deviceHandles.includes(p))) {
-                    this._registerAction(name, meta, menu, disabled);
+                    this._registerAction(name, menu.indexOf(name), meta);
                 }
             }
         }
@@ -75,15 +74,12 @@ var Plugin = GObject.registerClass({
         }
     }
 
-    _registerAction(name, meta, menu, disabled) {
+    _registerAction(name, index, meta) {
         let action = new Gio.SimpleAction({
             name: name,
             parameter_type: meta.parameter_type,
-            state: new GLib.Variant('(ss)', [meta.label, meta.icon_name])
+            enabled: this.device.connected
         });
-
-        // Set the enabled state
-        action.set_enabled(this.device.connected && !disabled.includes(action.name));
 
         // Bind the activation
         action.connect('activate', this._activateAction.bind(this));
@@ -91,10 +87,8 @@ var Plugin = GObject.registerClass({
         this.device.add_action(action);
 
         // Menu
-        let index = menu.indexOf(action.name);
-
         if (index > -1) {
-            this.device.menu.add_action(action, index);
+            this.device.menu.add_action(action, index, meta.label, meta.icon_name);
         }
 
         this._gactions.push(action);
@@ -112,10 +106,8 @@ var Plugin = GObject.registerClass({
      * the connection state changing.
      */
     connected() {
-        let disabled = this.device.settings.get_strv('disabled-actions');
-
         for (let action of this._gactions) {
-            action.set_enabled(!disabled.includes(action.name));
+            action.set_enabled(true);
         }
     }
 

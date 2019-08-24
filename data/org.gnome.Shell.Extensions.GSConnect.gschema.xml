@@ -80,9 +80,6 @@
     <key name="disabled-plugins" type="as">
       <default>[]</default>
     </key>
-    <key name="disabled-actions" type="as">
-      <default>[]</default>
-    </key>
     <key name="supported-plugins" type="as">
       <default>[]</default>
     </key>
