@@ -118,25 +118,25 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
     async _init_async() {
         try {
             // Device Manager
-            this.manager = new Remote.Service();
+            this.service = new Remote.Service();
 
             // Watch for new and removed
-            this._deviceAddedId = this.manager.connect(
+            this._deviceAddedId = this.service.connect(
                 'device-added',
                 this._onDeviceAdded.bind(this)
             );
 
-            this._deviceRemovedId = this.manager.connect(
+            this._deviceRemovedId = this.service.connect(
                 'device-removed',
                 this._onDeviceRemoved.bind(this)
             );
 
-            this._availableChangedId = this.manager.connect(
+            this._availableChangedId = this.service.connect(
                 'available-changed',
                 this._sync.bind(this)
             );
 
-            await this.manager.start();
+            await this.service.start();
         } catch (e) {
             Gio.DBusError.strip_remote_error(e);
 
@@ -147,14 +147,14 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
     }
 
     _sync() {
-        let available = this.manager.available;
+        let available = this.service.available;
         let panelMode = gsconnect.settings.get_boolean('show-indicators');
 
         // Hide status indicator if in Panel mode or no devices are available
         this._indicator.visible = (!panelMode && available.length);
 
         // Show device indicators in Panel mode if available
-        for (let device of this.manager.devices) {
+        for (let device of this.service.devices) {
             let indicator = Main.panel.statusArea[device.g_object_path].actor;
             indicator.visible = panelMode && available.includes(device);
 
@@ -320,12 +320,12 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
     }
 
     destroy() {
-        // Unhook from any ObjectManager events
-        if (this.manager) {
-            this.manager.destroy();
-            this.manager.disconnect(this._deviceAddedId);
-            this.manager.disconnect(this._deviceRemovedId);
-            this.manager.disconnect(this._availableChangedId);
+        // Unhook from Remote.Service
+        if (this.service) {
+            this.service.destroy();
+            this.service.disconnect(this._deviceAddedId);
+            this.service.disconnect(this._deviceRemovedId);
+            this.service.disconnect(this._availableChangedId);
         }
 
         // Disconnect any keybindings
