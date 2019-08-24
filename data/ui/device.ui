@@ -565,6 +565,7 @@
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="tooltip_text" translatable="yes">Add</property>
+                                    <property name="sensitive" bind-source="command-editor" bind-property="visible" bind-flags="sync-create|invert-boolean"/>
                                     <signal name="clicked" handler="_onAddCommand" swapped="no"/>
                                     <child>
                                       <object class="GtkImage">
@@ -645,6 +646,7 @@
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="tooltip_text" translatable="yes">Edit</property>
+                                    <property name="sensitive" bind-source="command-editor" bind-property="visible" bind-flags="sync-create|invert-boolean"/>
                                     <signal name="clicked" handler="_onEditCommand" swapped="no"/>
                                     <child>
                                       <object class="GtkImage">
@@ -673,6 +675,7 @@
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="tooltip_text" translatable="yes">Save</property>
+                                    <property name="sensitive" bind-source="command-editor" bind-property="visible"/>
                                     <signal name="clicked" handler="_onSaveCommand" swapped="no"/>
                                     <child>
                                       <object class="GtkImage">

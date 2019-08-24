@@ -448,29 +448,6 @@ var DevicePreferences = GObject.registerClass({
      * RunCommand Page
      */
     _runcommandSettings() {
-        // Exclusively enable the editor or add button
-        this.command_editor.bind_property(
-            'visible',
-            this.command_add,
-            'sensitive',
-            GObject.BindingFlags.INVERT_BOOLEAN
-        );
-
-        // Bind the edit/save button sensitivity to the editor visibility
-        this.command_editor.bind_property(
-            'visible',
-            this.command_edit,
-            'sensitive',
-            GObject.BindingFlags.INVERT_BOOLEAN
-        );
-
-        this.command_editor.bind_property(
-            'visible',
-            this.command_save,
-            'sensitive',
-            GObject.BindingFlags.DEFAULT
-        );
-
         // Scroll with keyboard focus
         let runcommand_box = this.runcommand_page.get_child().get_child();
         runcommand_box.set_focus_vadjustment(this.runcommand_page.vadjustment);
