@@ -19,7 +19,7 @@ function toHyphenCase(string) {
     }
 
     return toHyphenCase.__cache[string];
-};
+}
 
 
 var Device = GObject.registerClass({
