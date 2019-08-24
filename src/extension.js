@@ -136,7 +136,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 this._sync.bind(this)
             );
 
-            await this.manager._init_async();
+            await this.manager.start();
         } catch (e) {
             Gio.DBusError.strip_remote_error(e);
 
@@ -169,7 +169,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
             // Hide the menu title and move it to the submenu item
             this._menus[device.g_object_path]._title.actor.visible = false;
-            this._item.label.text = device.Name;
+            this._item.label.text = device.name;
 
             // Destroy any other device's battery
             if (this._item._battery && this._item._battery.device !== device) {

@@ -38,6 +38,13 @@ var Device = GObject.registerClass({
             GObject.ParamFlags.READABLE,
             GObject.Object
         ),
+        'display-type': GObject.ParamSpec.string(
+            'display-type',
+            'Display Type',
+            'A user-visible type string',
+            GObject.ParamFlags.READABLE,
+            null
+        ),
         'encryption-info': GObject.ParamSpec.string(
             'encryption-info',
             'Encryption Info',
@@ -169,6 +176,19 @@ var Device = GObject.registerClass({
         }
     }
 
+    get display_type() {
+        switch (this.type) {
+            case 'laptop':
+                return _('Laptop');
+            case 'phone':
+                return _('Smartphone');
+            case 'tablet':
+                return _('Tablet');
+            default:
+                return _('Desktop');
+        }
+    }
+
     // TODO: should we just store the fingerprint instead of the pem?
     get encryption_info() {
         let fingerprint = _('Not available');
@@ -251,19 +271,6 @@ var Device = GObject.registerClass({
 
     get type() {
         return this.settings.get_string('type');
-    }
-
-    get display_type() {
-        switch (this.type) {
-            case 'laptop':
-                return _('Laptop');
-            case 'phone':
-                return _('Smartphone');
-            case 'tablet':
-                return _('Tablet');
-            default:
-                return _('Desktop');
-        }
     }
 
     get object_path() {

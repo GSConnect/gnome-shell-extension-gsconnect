@@ -4,14 +4,256 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
-
 const DEVICE_NAME = 'org.gnome.Shell.Extensions.GSConnect.Device';
-const DEVICE_INFO = gsconnect.dbusinfo.lookup_interface(DEVICE_NAME);
+
+
+function toHyphenCase(string) {
+    if (toHyphenCase.__cache === undefined) {
+        toHyphenCase.__cache = {};
+    }
+
+    if (!toHyphenCase.__cache[string]) {
+        toHyphenCase.__cache[string] = string.replace(/(?:[A-Z])/g, (c, i) => {
+            return (i > 0) ? '-' + c.toLowerCase() : c.toLowerCase();
+        }).replace(/[\s_]+/g, '');
+    }
+
+    return toHyphenCase.__cache[string];
+};
+
+
+var Device = GObject.registerClass({
+    GTypeName: 'GSConnectRemoteDevice',
+    Implements: [Gio.DBusInterface],
+    Properties: {
+        'connected': GObject.ParamSpec.boolean(
+            'connected',
+            'Connected',
+            'Whether the device is connected',
+            GObject.ParamFlags.READABLE,
+            null
+        ),
+        'display-type': GObject.ParamSpec.string(
+            'display-type',
+            'Display Type',
+            'A user-visible type string',
+            GObject.ParamFlags.READABLE,
+            null
+        ),
+        'encryption-info': GObject.ParamSpec.string(
+            'encryption-info',
+            'Encryption Info',
+            'A formatted string with the local and remote fingerprints',
+            GObject.ParamFlags.READABLE,
+            null
+        ),
+        'icon-name': GObject.ParamSpec.string(
+            'icon-name',
+            'Icon Name',
+            'Icon name representing the device',
+            GObject.ParamFlags.READABLE,
+            null
+        ),
+        'id': GObject.ParamSpec.string(
+            'id',
+            'deviceId',
+            'The device hostname or other unique id',
+            GObject.ParamFlags.READABLE,
+            ''
+        ),
+        'name': GObject.ParamSpec.string(
+            'name',
+            'deviceName',
+            'The device name',
+            GObject.ParamFlags.READABLE,
+            null
+        ),
+        'paired': GObject.ParamSpec.boolean(
+            'paired',
+            'Paired',
+            'Whether the device is paired',
+            GObject.ParamFlags.READABLE,
+            null
+        ),
+        'type': GObject.ParamSpec.string(
+            'type',
+            'deviceType',
+            'The device type',
+            GObject.ParamFlags.READABLE,
+            null
+        )
+    }
+}, class Device extends Gio.DBusProxy {
+
+    _init(parent, object_path) {
+        this._parent = parent;
+
+        super._init({
+            g_connection: parent.g_connection,
+            g_name: parent.g_name,
+            g_object_path: object_path,
+            g_interface_name: `${parent.g_name}.Device`
+        });
+    }
+
+    async start() {
+        try {
+            // Initialize the proxy
+            await new Promise((resolve, reject) => {
+                this.init_async(
+                    GLib.PRIORITY_DEFAULT,
+                    null,
+                    (proxy, res) => {
+                        try {
+                            resolve(proxy.init_finish(res));
+                        } catch (e) {
+                            reject(e);
+                        }
+                    }
+                );
+            });
+
+            // GActions
+            this.action_group = Gio.DBusActionGroup.get(
+                this.g_connection,
+                this._parent.g_name_owner,
+                this.g_object_path
+            );
+
+            // GMenu
+            this.menu_model = Gio.DBusMenuModel.get(
+                this.g_connection,
+                this._parent.g_name_owner,
+                this.g_object_path
+            );
+
+            // Subscribe to the GMenu
+            await new Promise((resolve, reject) => {
+                this.g_connection.call(
+                    this.g_name,
+                    this.g_object_path,
+                    'org.gtk.Menus',
+                    'Start',
+                    new GLib.Variant('(au)', [[0]]),
+                    null,
+                    Gio.DBusCallFlags.NONE,
+                    -1,
+                    null,
+                    (proxy, res) => {
+                        try {
+                            resolve(proxy.call_finish(res));
+                        } catch (e) {
+                            reject(e);
+                        }
+                    }
+                );
+            });
+
+            return true;
+        } catch (e) {
+            logError(e);
+            return false;
+        }
+    }
+
+    // Proxy GObject::notify signals
+    vfunc_g_properties_changed(changed, invalidated) {
+        for (let name in changed.deep_unpack()) {
+            this.notify(toHyphenCase(name));
+        }
+    }
+
+    get connected() {
+        return this.get_cached_property('Connected').unpack();
+    }
+
+    get display_type() {
+        switch (this.type) {
+            case 'laptop':
+                return _('Laptop');
+            case 'phone':
+                return _('Smartphone');
+            case 'tablet':
+                return _('Tablet');
+            default:
+                return _('Desktop');
+        }
+    }
+
+    get encryption_info() {
+        return this.get_cached_property('EncryptionInfo').unpack();
+    }
+
+    get icon_name() {
+        return this.get_cached_property('IconName').unpack();
+    }
+
+    get id() {
+        return this.get_cached_property('Id').unpack();
+    }
+
+    get name() {
+        return this.get_cached_property('Name').unpack();
+    }
+
+    get paired() {
+        return this.get_cached_property('Paired').unpack();
+    }
+
+    get settings() {
+        if (this._settings === undefined) {
+            this._settings = new Gio.Settings({
+                settings_schema: gsconnect.gschema.lookup(
+                    this.g_interface_name,
+                    true
+                ),
+                path: '/org/gnome/shell/extensions/gsconnect/device/' + this.id + '/'
+            });
+        }
+
+        return this._settings;
+    }
+
+    get type() {
+        return this.get_cached_property('Type').unpack();
+    }
+
+    get_incoming_supported(type) {
+        let incoming = this.settings.get_strv('incoming-capabilities');
+        return incoming.includes(`kdeconnect.${type}`);
+    }
+
+    get_outgoing_supported(type) {
+        let outgoing = this.settings.get_strv('outgoing-capabilities');
+        return outgoing.includes(`kdeconnect.${type}`);
+    }
+
+    destroy() {
+        this.action_group.run_dispose();
+        this.menu_model.run_dispose();
+
+        if (this.__propertiesChangedId)
+            this.disconnect(this.__propertiesChangedId);
+
+        if (this._settings)
+            this._settings.run_dispose();
+    }
+});
 
 
 var Service = GObject.registerClass({
     GTypeName: 'GSConnectRemoteService',
     Implements: [Gio.DBusInterface],
+    Properties: {
+        'devices': GObject.param_spec_variant(
+            'devices',
+            'Devices',
+            'A list of known devices',
+            new GLib.VariantType('as'),
+            null,
+            GObject.ParamFlags.READABLE
+        )
+    },
     Signals: {
         'available-changed': {
             flags: GObject.SignalFlags.RUN_FIRST
@@ -45,34 +287,23 @@ var Service = GObject.registerClass({
         );
     }
 
-    async _init_async() {
-        try {
-            await new Promise((resolve, reject) => {
-                this.init_async(
-                    GLib.PRIORITY_DEFAULT,
-                    null,
-                    (proxy, res) => {
-                        try {
-                            resolve(proxy.init_finish(res));
-                        } catch (e) {
-                            reject(e);
-                        }
-                    }
-                );
-            });
-
-            this._onNameOwnerChanged();
-        } catch (e) {
-            return Promise.reject(e);
-        }
-    }
-
     get available() {
-        return this.devices.filter(device => (device.Connected && device.Paired));
+        return this.devices.filter(device => (device.connected && device.paired));
     }
 
     get devices() {
         return Array.from(this._devices.values());
+    }
+
+    get settings() {
+        if (this._settings === undefined) {
+            this._settings = new Gio.Settings({
+                settings_schema: gsconnect.gschema.lookup(this.g_name, true),
+                path: '/org/gnome/shell/extensions/gsconnect/'
+            });
+        }
+
+        return this._settings;
     }
 
     vfunc_g_signal(sender_name, signal_name, parameters) {
@@ -99,76 +330,9 @@ var Service = GObject.registerClass({
     _onDeviceChanged(proxy, changed, invalidated) {
         changed = changed.deep_unpack();
 
-        if (changed.hasOwnProperty('Connected') || changed.hasOwnProperty('Paired')) {
+        if (changed.hasOwnProperty('Connected') ||
+            changed.hasOwnProperty('Paired')) {
             this.emit('available-changed');
-        }
-    }
-
-    _proxyGetter(name) {
-        let variant = this.get_cached_property(name);
-        return variant ? variant.deep_unpack() : null;
-    }
-
-    async _getProxy(object_path) {
-        try {
-            let proxy = new Gio.DBusProxy({
-                g_connection: this.g_connection,
-                g_name: this.g_name,
-                g_object_path: object_path,
-                g_interface_name: DEVICE_NAME
-            });
-
-            // Initialize the device proxy
-            await new Promise((resolve, reject) => {
-                proxy.init_async(
-                    GLib.PRIORITY_DEFAULT,
-                    null,
-                    (proxy, res) => {
-                        try {
-                            resolve(proxy.init_finish(res));
-                        } catch (e) {
-                            reject(e);
-                        }
-                    }
-                );
-            });
-
-            // Setup properties
-            for (let i = 0, len = DEVICE_INFO.properties.length; i < len; i++) {
-                let property = DEVICE_INFO.properties[i];
-
-                Object.defineProperty(proxy, property.name, {
-                    get: this._proxyGetter.bind(proxy, property.name),
-                    enumerable: true
-                });
-            }
-
-            // GActions
-            proxy.action_group = Gio.DBusActionGroup.get(
-                proxy.g_connection,
-                this.g_name_owner,
-                proxy.g_object_path
-            );
-
-            // GMenu
-            proxy.menu_model = Gio.DBusMenuModel.get(
-                proxy.g_connection,
-                this.g_name_owner,
-                proxy.g_object_path
-            );
-
-            await this._Start(object_path);
-
-            // GSettings
-            proxy.settings = new Gio.Settings({
-                settings_schema: gsconnect.gschema.lookup(DEVICE_NAME, true),
-                path: '/org/gnome/shell/extensions/gsconnect/device/' + proxy.Id + '/'
-            });
-
-            return proxy;
-        } catch (e) {
-            logError(e, object_path);
-            return undefined;
         }
     }
 
@@ -190,18 +354,19 @@ var Service = GObject.registerClass({
             if (this._devices.has(object_path)) return;
 
             // Create a proxy
-            let proxy = await this._getProxy(object_path);
-            if (proxy === undefined) return;
+            let device = new Device(this, object_path);
+            await device.start();
 
             // Watch for connected/paired changes
-            proxy.__deviceChangedId = proxy.connect(
+            device.__deviceChangedId = device.connect(
                 'g-properties-changed',
                 this._onDeviceChanged.bind(this)
             );
 
             // Hold the proxy and emit ::device-added
-            this._devices.set(object_path, proxy);
-            this.emit('device-added', proxy);
+            this._devices.set(object_path, device);
+            this.emit('device-added', device);
+            this.notify('devices');
         } catch (e) {
             logError(e, object_path);
         }
@@ -219,15 +384,16 @@ var Service = GObject.registerClass({
             if (interfaces.length === 0) return;
 
             // Get the proxy
-            let proxy = this._devices.get(object_path);
-            if (proxy === undefined) return;
+            let device = this._devices.get(object_path);
+            if (device === undefined) return;
 
             // Stop watching for connected/paired changes
-            proxy.disconnect(proxy.__deviceChangedId);
+            device.disconnect(device.__deviceChangedId);
 
             // Release the proxy and emit ::device-removed
             this._devices.delete(object_path);
-            this.emit('device-removed', proxy);
+            this.emit('device-removed', device);
+            this.notify('devices');
         } catch (e) {
             logError(e, object_path);
         }
@@ -278,35 +444,30 @@ var Service = GObject.registerClass({
         });
     }
 
-    /**
-     * org.gtk.Menus.Start
-     *
-     * We use this call to ensure that our connection is subscribed to GMenu
-     * changes if the device is added after the service has started.
-     *
-     * @param {string} object_path
-     */
-    _Start(object_path) {
-        return new Promise((resolve, reject) => {
-            this.g_connection.call(
-                this.g_name,
-                object_path,
-                'org.gtk.Menus',
-                'Start',
-                new GLib.Variant('(au)', [[0]]),
-                null,
-                Gio.DBusCallFlags.NONE,
-                -1,
+    async start() {
+        await new Promise((resolve, reject) => {
+            this.init_async(
+                GLib.PRIORITY_DEFAULT,
                 null,
                 (proxy, res) => {
                     try {
-                        resolve(proxy.call_finish(res));
+                        resolve(proxy.init_finish(res));
                     } catch (e) {
                         reject(e);
                     }
                 }
             );
         });
+
+        this._onNameOwnerChanged();
+    }
+
+    broadcast() {
+        this.action_group.activate_action('broadcast', null);
+    }
+
+    preferences() {
+        this.action_group.activate_action('preferences', null);
     }
 
     clear() {

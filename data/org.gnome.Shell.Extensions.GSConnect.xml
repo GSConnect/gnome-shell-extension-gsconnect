@@ -2,6 +2,7 @@
   <!-- Device -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Device">
     <property type="b" name="Connected" access="read"/>
+    <property type="s" name="DisplayType" access="read"/>
     <property type="s" name="EncryptionInfo" access="read"/>
     <property type="s" name="Id" access="read"/>
     <property type="s" name="Name" access="read"/>
