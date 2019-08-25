@@ -118,7 +118,6 @@ install_data(
 gnome.compile_resources(
   'org.gnome.Shell.Extensions.GSConnect',
   'org.gnome.Shell.Extensions.GSConnect.gresource.xml',
-  #source_dir: 'data',
   gresource_bundle: true,
   install: true,
   install_dir: extdatadir
