@@ -167,7 +167,7 @@ var DevicePreferences = GObject.registerClass({
         'shortcuts-actions', 'shortcuts-actions-title', 'shortcuts-actions-list',
         // Advanced
         'advanced-page',
-        'plugin-list', 'experimental-list', 'danger-list'
+        'plugin-list', 'experimental-list'
     ]
 }, class DevicePreferences extends Gtk.Grid {
 
@@ -336,11 +336,6 @@ var DevicePreferences = GObject.registerClass({
         });
         dialog.connect('response', (dialog) => dialog.destroy());
         dialog.present();
-    }
-
-    _onDeleteDevice(button) {
-        let application = Gio.Application.get_default();
-        application.deleteDevice(this.device.id);
     }
 
     dispose() {
