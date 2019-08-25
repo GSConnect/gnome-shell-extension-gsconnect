@@ -40,7 +40,6 @@ const Device = imports.service.device;
 const Lan = imports.service.protocol.lan;
 
 const ServiceUI = imports.service.ui.service;
-const Settings = imports.service.ui.settings;
 
 const _GITHUB = 'https://github.com/andyholmes/gnome-shell-extension-gsconnect';
 
@@ -400,20 +399,7 @@ const Service = GObject.registerClass({
             page = parameter.unpack();
         }
 
-        if (!this._window) {
-            this._window = new Settings.Window();
-        }
-
-        // Open to a specific page
-        if (typeof page === 'string' && this._window.stack.get_child_by_name(page)) {
-            this._window._onDeviceSelected(page);
-
-        // Open the main page
-        } else {
-            this._window._onPrevious();
-        }
-
-        this._window.present();
+        gsconnect.preferences();
     }
 
     _wiki(action, parameter) {

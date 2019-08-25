@@ -103,7 +103,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         this._item.menu.addMenuItem(new DoNotDisturb.MenuItem());
 
         // Service Menu -> "Mobile Settings"
-        this._item.menu.addAction(_('Mobile Settings'), this._settings);
+        this._item.menu.addAction(_('Mobile Settings'), gsconnect.preferences);
 
         // Watch for UI prefs
         this._gsettingsId = gsconnect.settings.connect(
@@ -206,27 +206,6 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 this._item._battery = null;
             }
         }
-    }
-
-    _settings() {
-        Gio.DBus.session.call(
-            'org.gnome.Shell.Extensions.GSConnect',
-            '/org/gnome/Shell/Extensions/GSConnect',
-            'org.freedesktop.Application',
-            'ActivateAction',
-            new GLib.Variant('(sava{sv})', ['settings', [], {}]),
-            null,
-            Gio.DBusCallFlags.NONE,
-            -1,
-            null,
-            (connection, res) => {
-                try {
-                    connection.call_finish(res);
-                } catch (e) {
-                    logError(e, 'GSConnect');
-                }
-            }
-        );
     }
 
     _onDeviceAdded(manager, device) {

@@ -1,0 +1,202 @@
+#!/usr/bin/env gjs
+
+'use strict';
+
+const Gettext = imports.gettext.domain('org.gnome.Shell.Extensions.GSConnect');
+const _ = Gettext.gettext;
+const System = imports.system;
+
+imports.gi.versions.Gdk = '3.0';
+imports.gi.versions.GdkPixbuf = '2.0';
+imports.gi.versions.Gio = '2.0';
+imports.gi.versions.GLib = '2.0';
+imports.gi.versions.GObject = '2.0';
+imports.gi.versions.Gtk = '3.0';
+
+const Gdk = imports.gi.Gdk;
+const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
+const GObject = imports.gi.GObject;
+const Gtk = imports.gi.Gtk;
+
+// Find the root datadir of the extension
+function get_datadir() {
+    let m = /@(.+):\d+/.exec((new Error()).stack.split('\n')[1]);
+    return Gio.File.new_for_path(m[1]).get_parent().get_path();
+}
+
+window.gsconnect = {extdatadir: get_datadir()};
+imports.searchPath.unshift(gsconnect.extdatadir);
+imports._gsconnect;
+
+const Remote = imports.shell.remote;
+const Settings = imports.preferences.service;
+
+const _GITHUB = 'https://github.com/andyholmes/gnome-shell-extension-gsconnect';
+
+
+const Preferences = GObject.registerClass({
+    GTypeName: 'GSConnectPreferences',
+    Properties: {
+        'devices': GObject.param_spec_variant(
+            'devices',
+            'Devices',
+            'A list of known devices',
+            new GLib.VariantType('as'),
+            null,
+            GObject.ParamFlags.READABLE
+        ),
+        'discoverable': GObject.ParamSpec.boolean(
+            'discoverable',
+            'Discoverable',
+            'Whether the service responds to discovery requests',
+            GObject.ParamFlags.READWRITE,
+            false
+        ),
+        'name': GObject.ParamSpec.string(
+            'name',
+            'deviceName',
+            'The name announced to the network',
+            GObject.ParamFlags.READWRITE,
+            'GSConnect'
+        ),
+        'type': GObject.ParamSpec.string(
+            'type',
+            'deviceType',
+            'The service device type',
+            GObject.ParamFlags.READABLE,
+            'desktop'
+        )
+    }
+}, class Preferences extends Gtk.Application {
+
+    _init() {
+        super._init({
+            application_id: `${gsconnect.app_id}.Preferences`
+        });
+
+        GLib.set_prgname(`${gsconnect.app_id}.Preferences`);
+        GLib.set_application_name(_('GSConnect Preferences'));
+        this.set_resource_base_path(gsconnect.app_path);
+
+        // Properties
+        gsconnect.settings.bind('public-name', this, 'name', 0);
+        gsconnect.settings.bind('discoverable', this, 'discoverable', 0);
+    }
+
+    async _init_async() {
+        try {
+            // Device Manager
+            this.service = new Remote.Service();
+
+            // Watch for new and removed
+            this._deviceAddedId = this.service.connect(
+                'device-added',
+                this._onDeviceAdded.bind(this)
+            );
+
+            this._deviceRemovedId = this.service.connect(
+                'device-removed',
+                this._onDeviceRemoved.bind(this)
+            );
+
+            await this.service.start();
+        } catch (e) {
+            Gio.DBusError.strip_remote_error(e);
+
+            if (!e.code || e.code !== Gio.IOErrorEnum.CANCELLED) {
+                logError(e, 'GSConnect');
+            }
+        }
+    }
+
+    _onDeviceAdded(service, device) {
+        this.window._onDeviceAdded(service, device);
+    }
+
+    _onDeviceRemoved(service, device) {
+        this.window._onDeviceRemoved(service, device);
+    }
+
+    get devices() {
+        return this.service.devices.map(device => device.id);
+    }
+
+    get window() {
+        if (this._window === undefined) {
+            this._window = new Settings.Window({
+                application: this
+            });
+        }
+
+        return this._window;
+    }
+
+    vfunc_activate() {
+        this.window.present();
+    }
+
+    vfunc_startup() {
+        super.vfunc_startup();
+
+        // Init some resources
+        let provider = new Gtk.CssProvider();
+        provider.load_from_resource(gsconnect.app_path + '/application.css');
+        Gtk.StyleContext.add_provider_for_screen(
+            Gdk.Screen.get_default(),
+            provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+        );
+
+        let actions = [
+            ['broadcast', this.broadcast.bind(this), null],
+            ['help', this.help, null]
+        ];
+
+        for (let [name, callback, type] of actions) {
+            let action = new Gio.SimpleAction({
+                name: name,
+                parameter_type: type
+            });
+            action.connect('activate', callback);
+            this.add_action(action);
+        }
+
+        this.add_action(gsconnect.settings.create_action('discoverable'));
+
+        this.set_accels_for_action('app.wiki::Help', ['F1']);
+
+        // Async setup
+        this._init_async();
+    }
+
+    help(action, parameter) {
+        let uri = 'https://github.com/andyholmes/gnome-shell-extension-gsconnect';
+        uri += '/wiki/Help';
+        Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
+    }
+
+    broadcast() {
+        log('FIXME: broadcast()');
+        this.service.broadcast();
+    }
+
+    vfunc_shutdown() {
+        // Chain up last (application->priv->did_shutdown)
+        super.vfunc_shutdown();
+    }
+
+    lookup_device(id) {
+        if (this.service === undefined) {
+            return null;
+        }
+
+        for (let device of this.service.devices) {
+            if (device.id === id) return device;
+        }
+
+        return null;
+    }
+});
+
+(new Preferences()).run([System.programInvocationName].concat(ARGV));

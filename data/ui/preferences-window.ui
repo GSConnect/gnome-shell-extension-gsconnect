@@ -22,7 +22,7 @@
       </object>
     </child>
   </object>
-  <template class="GSConnectSettingsWindow" parent="GtkApplicationWindow">
+  <template class="GSConnectPreferencesWindow" parent="GtkApplicationWindow">
     <property name="can_focus">False</property>
     <child type="titlebar">
       <object class="GtkHeaderBar" id="headerbar">
@@ -195,24 +195,6 @@
                         <property name="margin_top">32</property>
                         <property name="margin_bottom">32</property>
                         <property name="orientation">vertical</property>
-                        <child>
-                          <object class="GtkLabel" id="info-label">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="margin_bottom">32</property>
-                            <property name="label">Transferred files are placed in the &lt;a href="."&gt;Downloads&lt;/a&gt; folder.</property>
-                            <property name="use_markup">True</property>
-                            <property name="wrap">True</property>
-                            <property name="wrap_mode">word-char</property>
-                            <property name="track_visited_links">False</property>
-                            <property name="xalign">0</property>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
                         <child>
                           <object class="GtkGrid">
                             <property name="visible">True</property>
@@ -704,8 +686,7 @@
       </item>
       <item>
         <attribute name="label" translatable="yes">Help</attribute>
-        <attribute name="action">app.wiki</attribute>
-        <attribute name="target">Help</attribute>
+        <attribute name="action">app.help</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">About GSConnect</attribute>

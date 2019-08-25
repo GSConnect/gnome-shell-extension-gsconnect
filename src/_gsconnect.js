@@ -29,6 +29,13 @@ gsconnect.metadata = (() => {
 
     return JSON.parse(data);
 })();
+gsconnect.preferences = function() {
+    let proc = new Gio.Subprocess({
+        argv: [gsconnect.extdatadir + '/gsconnect-preferences']
+    });
+    proc.init(null);
+    proc.wait_async(null, null);
+};
 
 
 /**

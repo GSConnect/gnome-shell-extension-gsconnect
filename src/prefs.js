@@ -22,19 +22,20 @@ function init() {
 }
 
 function buildPrefsWidget() {
+    // Destroy the window once the mainloop starts
     let label = new Gtk.Label();
+
     GLib.timeout_add(GLib.PRIORITY_DEFAULT, 0, () => {
         label.get_toplevel().destroy();
         return false;
     });
 
-    let service = Gio.DBusActionGroup.get(
-        Gio.DBus.session,
-        'org.gnome.Shell.Extensions.GSConnect',
-        '/org/gnome/Shell/Extensions/GSConnect'
-    );
-    service.list_actions();
-    service.activate_action('settings', null);
+    // Exec `gsconnect-preferences
+    let proc = new Gio.Subprocess({
+        argv: [gsconnect.extdatadir + '/gsconnect-preferences']
+    });
+    proc.init(null);
+    proc.wait_async(null, null);
 
     return label;
 }

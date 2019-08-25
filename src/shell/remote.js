@@ -463,11 +463,32 @@ var Service = GObject.registerClass({
     }
 
     broadcast() {
-        this.action_group.activate_action('broadcast', null);
+        if (!this.g_connection) return;
+
+        let action_name = 'broadcast';
+
+        this.g_connection.call(
+            this.g_name,
+            this.g_object_path,
+            'org.gtk.Actions',
+            'Activate',
+            GLib.Variant.new('(sava{sv})', [action_name, [], {}]),
+            null,
+            Gio.DBusCallFlags.NONE,
+            -1,
+            null,
+            (proxy, res) => {
+                try {
+                    proxy.call_finish(res);
+                } catch (e) {
+                    logError(e);
+                }
+            }
+        );
     }
 
     preferences() {
-        this.action_group.activate_action('preferences', null);
+        gsconnect.preferences();
     }
 
     clear() {

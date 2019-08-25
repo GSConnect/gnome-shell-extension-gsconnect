@@ -8,10 +8,10 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/contacts.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/conversation.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/devel.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/device.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/device-preferences.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/messaging.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/notification.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/settings.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/preferences-window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/telephony.ui</file>
 
     <!-- DBus Service Files -->
