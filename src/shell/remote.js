@@ -163,41 +163,40 @@ var Device = GObject.registerClass({
         }
     }
 
-    get connected() {
-        return this.get_cached_property('Connected').unpack();
-    }
-
-    get display_type() {
-        switch (this.type) {
-            case 'laptop':
-                return _('Laptop');
-            case 'phone':
-                return _('Smartphone');
-            case 'tablet':
-                return _('Tablet');
-            default:
-                return _('Desktop');
+    _get(name, fallback = null) {
+        try {
+            return this.get_cached_property(name).unpack();
+        } catch (e) {
+            return fallback;
         }
     }
 
+    get connected() {
+        return this._get('Connected', false);
+    }
+
+    get display_type() {
+        return this._get('DisplayType', '');
+    }
+
     get encryption_info() {
-        return this.get_cached_property('EncryptionInfo').unpack();
+        return this._get('EncryptionInfo', '');
     }
 
     get icon_name() {
-        return this.get_cached_property('IconName').unpack();
+        return this._get('IconName', 'computer');
     }
 
     get id() {
-        return this.get_cached_property('Id').unpack();
+        return this._get('Id', '0');
     }
 
     get name() {
-        return this.get_cached_property('Name').unpack();
+        return this._get('Name', 'Unknown');
     }
 
     get paired() {
-        return this.get_cached_property('Paired').unpack();
+        return this._get('Paired', false);
     }
 
     get settings() {
@@ -215,7 +214,7 @@ var Device = GObject.registerClass({
     }
 
     get type() {
-        return this.get_cached_property('Type').unpack();
+        return this._get('Type', 'desktop');
     }
 
     get_incoming_supported(type) {
