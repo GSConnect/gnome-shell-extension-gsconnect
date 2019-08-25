@@ -177,11 +177,12 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
         // Title -> Name
         this._title.label.style_class = 'gsconnect-device-name';
         this._title.label.clutter_text.ellipsize = 0;
-        this._nameId = this.device.settings.connect(
-            'changed::name',
-            this._onNameChanged.bind(this)
+        this.device.bind_property(
+            'name',
+            this._title.label,
+            'text',
+            GObject.BindingFlags.SYNC_CREATE
         );
-        this.actor.connect('destroy', this._onDestroy);
 
         // Title -> Battery
         this._battery = new Battery({device: this.device});
@@ -201,14 +202,6 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
         }
 
         this.addMenuItem(this._actions);
-    }
-
-    _onDestroy(actor) {
-        actor._delegate.device.settings.disconnect(actor._delegate._nameId);
-    }
-
-    _onNameChanged(settings) {
-        this._title.label.text = settings.get_string('name');
     }
 
     isEmpty() {
