@@ -41,7 +41,8 @@ var Plugin = GObject.registerClass({
 
         // A reusable launcher for silence procs
         this._launcher = new Gio.SubprocessLauncher({
-            flags: Gio.SubprocessFlags.STDOUT_SILENCE | Gio.SubprocessFlags.STDERR_SILENCE
+            flags: (Gio.SubprocessFlags.STDOUT_SILENCE |
+                    Gio.SubprocessFlags.STDERR_SILENCE)
         });
     }
 
@@ -61,7 +62,10 @@ var Plugin = GObject.registerClass({
         let file, stream, success, transfer;
 
         try {
-            file = get_download_file(packet.body.filename);
+            // Remote device cancelled the photo operation
+            if (packet.body.cancel) return;
+
+            file = get_download_file(null, packet.body.filename);
 
             stream = await new Promise((resolve, reject) => {
                 file.replace_async(null, false, 0, 0, null, (file, res) => {

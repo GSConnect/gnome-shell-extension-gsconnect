@@ -26,15 +26,36 @@
                   <object class="GtkBox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="margin_left">48</property>
-                    <property name="margin_right">48</property>
+                    <property name="margin_start">48</property>
+                    <property name="margin_end">48</property>
                     <property name="margin_top">32</property>
                     <property name="margin_bottom">32</property>
                     <property name="orientation">vertical</property>
                     <child>
+                      <object class="GtkLabel" id="sharing-list-label">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="margin_bottom">12</property>
+                        <property name="label" translatable="yes">Desktop</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                        </attributes>
+                        <accessibility>
+                          <relation type="label-for" target="command-list"/>
+                        </accessibility>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
                       <object class="GtkFrame">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="margin_bottom">32</property>
                         <property name="label_xalign">0</property>
                         <child>
                           <object class="GtkListBox" id="sharing-list">
@@ -53,8 +74,8 @@
                                   <object class="GtkGrid">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="margin_left">12</property>
-                                    <property name="margin_right">12</property>
+                                    <property name="margin_start">12</property>
+                                    <property name="margin_end">12</property>
                                     <property name="column_spacing">12</property>
                                     <child>
                                       <object class="GtkLabel" id="share-battery-label">
@@ -108,8 +129,8 @@
                                   <object class="GtkGrid">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="margin_left">12</property>
-                                    <property name="margin_right">12</property>
+                                    <property name="margin_start">12</property>
+                                    <property name="margin_end">12</property>
                                     <property name="column_spacing">12</property>
                                     <child>
                                       <object class="GtkLabel" id="share-photo-label">
@@ -164,8 +185,8 @@
                                   <object class="GtkGrid">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="margin_left">12</property>
-                                    <property name="margin_right">12</property>
+                                    <property name="margin_start">12</property>
+                                    <property name="margin_end">12</property>
                                     <property name="column_spacing">12</property>
                                     <child>
                                       <object class="GtkLabel" id="clipboard-sync-label">
@@ -228,8 +249,8 @@
                                   <object class="GtkGrid">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="margin_left">12</property>
-                                    <property name="margin_right">12</property>
+                                    <property name="margin_start">12</property>
+                                    <property name="margin_end">12</property>
                                     <property name="column_spacing">12</property>
                                     <child>
                                       <object class="GtkLabel" id="share-mpris-label">
@@ -283,8 +304,8 @@
                                   <object class="GtkGrid">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="margin_left">12</property>
-                                    <property name="margin_right">12</property>
+                                    <property name="margin_start">12</property>
+                                    <property name="margin_end">12</property>
                                     <property name="column_spacing">12</property>
                                     <child>
                                       <object class="GtkLabel" id="share-mousepad-label">
@@ -338,8 +359,8 @@
                                   <object class="GtkGrid">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="margin_left">12</property>
-                                    <property name="margin_right">12</property>
+                                    <property name="margin_start">12</property>
+                                    <property name="margin_end">12</property>
                                     <property name="column_spacing">12</property>
                                     <child>
                                       <object class="GtkLabel" id="share-systemvolume-label">
@@ -383,62 +404,6 @@
                                 </accessibility>
                               </object>
                             </child>
-                            <child>
-                              <object class="GtkListBoxRow" id="share">
-                                <property name="height_request">56</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="selectable">False</property>
-                                <child>
-                                  <object class="GtkGrid">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="margin_left">12</property>
-                                    <property name="margin_right">12</property>
-                                    <property name="column_spacing">12</property>
-                                    <child>
-                                      <object class="GtkLabel" id="share-directory-label">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="halign">start</property>
-                                        <property name="valign">center</property>
-                                        <property name="hexpand">True</property>
-                                        <property name="vexpand">True</property>
-                                        <property name="label" translatable="yes">Download Directory</property>
-                                        <accessibility>
-                                          <relation type="label-for" target="share-directory"/>
-                                          <relation type="label-for" target="share"/>
-                                        </accessibility>
-                                      </object>
-                                      <packing>
-                                        <property name="left_attach">0</property>
-                                        <property name="top_attach">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkFileChooserButton" id="share-directory">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">True</property>
-                                        <property name="halign">end</property>
-                                        <property name="valign">center</property>
-                                        <property name="action">select-folder</property>
-                                        <property name="width_chars">10</property>
-                                        <accessibility>
-                                          <relation type="labelled-by" target="share-directory-label"/>
-                                        </accessibility>
-                                      </object>
-                                      <packing>
-                                        <property name="left_attach">1</property>
-                                        <property name="top_attach">0</property>
-                                      </packing>
-                                    </child>
-                                  </object>
-                                </child>
-                                <accessibility>
-                                  <relation type="labelled-by" target="share-directory-label"/>
-                                </accessibility>
-                              </object>
-                            </child>
                           </object>
                         </child>
                       </object>
@@ -446,6 +411,160 @@
                         <property name="expand">False</property>
                         <property name="fill">True</property>
                         <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="share-list-label">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="margin_bottom">12</property>
+                        <property name="label" translatable="yes">Files</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                        </attributes>
+                        <accessibility>
+                          <relation type="label-for" target="share-list"/>
+                        </accessibility>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkGrid" id="share">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <child>
+                          <object class="GtkFrame" id="share-frame">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label_xalign">0</property>
+                            <child>
+                              <object class="GtkListBox" id="share-list">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="hexpand">True</property>
+                                <property name="selection_mode">none</property>
+                                <child>
+                                  <object class="GtkListBoxRow" id="share-receive-row">
+                                    <property name="height_request">56</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="selectable">False</property>
+                                    <child>
+                                      <object class="GtkGrid">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                        <property name="column_spacing">12</property>
+                                        <property name="margin_start">12</property>
+                                        <property name="margin_end">12</property>
+                                        <child>
+                                          <object class="GtkLabel" id="share-receive-label">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="halign">start</property>
+                                            <property name="valign">center</property>
+                                            <property name="hexpand">True</property>
+                                            <property name="vexpand">True</property>
+                                            <property name="label" translatable="yes">Receive Files</property>
+                                            <accessibility>
+                                              <relation type="label-for" target="share-receive-row"/>
+                                              <relation type="label-for" target="receive-files"/>
+                                            </accessibility>
+                                          </object>
+                                          <packing>
+                                            <property name="left_attach">0</property>
+                                            <property name="top_attach">0</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkSwitch" id="receive-files">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                            <property name="halign">end</property>
+                                            <property name="valign">center</property>
+                                            <property name="action_name">settings.receive-files</property>
+                                            <accessibility>
+                                              <relation type="labelled-by" target="share-receive-label"/>
+                                            </accessibility>
+                                          </object>
+                                          <packing>
+                                            <property name="left_attach">1</property>
+                                            <property name="top_attach">0</property>
+                                          </packing>
+                                        </child>
+                                      </object>
+                                    </child>
+                                    <accessibility>
+                                      <relation type="labelled-by" target="share-receive-label"/>
+                                    </accessibility>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkGrid">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="column_spacing">12</property>
+                            <property name="sensitive" bind-source="receive-files" bind-property="active" bind-flags="sync-create"/>
+                            <child>
+                              <object class="GtkLabel" id="receive-directory-label">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="halign">start</property>
+                                <property name="valign">center</property>
+                                <property name="hexpand">True</property>
+                                <property name="vexpand">True</property>
+                                <property name="margin_start">12</property>
+                                <property name="label" translatable="yes">Directory</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkFileChooserButton" id="receive-directory">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="halign">end</property>
+                                <property name="valign">center</property>
+                                <property name="action">select-folder</property>
+                                <property name="width_chars">10</property>
+                                <property name="margin_end">12</property>
+                                <accessibility>
+                                  <relation type="labelled-by" target="receive-directory-label"/>
+                                </accessibility>
+                              </object>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="top_attach">0</property>
+                              </packing>
+                            </child>
+                            <style>
+                              <class name="inline-toolbar"/>
+                            </style>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">3</property>
                       </packing>
                     </child>
                   </object>
@@ -473,8 +592,8 @@
                   <object class="GtkBox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="margin_left">48</property>
-                    <property name="margin_right">48</property>
+                    <property name="margin_start">48</property>
+                    <property name="margin_end">48</property>
                     <property name="margin_top">32</property>
                     <property name="margin_bottom">32</property>
                     <property name="orientation">vertical</property>
@@ -536,8 +655,8 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="valign">start</property>
-                                    <property name="margin_left">12</property>
-                                    <property name="margin_right">12</property>
+                                    <property name="margin_start">12</property>
+                                    <property name="margin_end">12</property>
                                     <property name="margin_top">8</property>
                                     <property name="margin_bottom">8</property>
                                     <property name="hexpand">True</property>
@@ -797,8 +916,8 @@
                   <object class="GtkBox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="margin_left">48</property>
-                    <property name="margin_right">48</property>
+                    <property name="margin_start">48</property>
+                    <property name="margin_end">48</property>
                     <property name="margin_top">32</property>
                     <property name="margin_bottom">32</property>
                     <property name="orientation">vertical</property>
@@ -826,8 +945,8 @@
                                   <object class="GtkGrid">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="margin_left">12</property>
-                                    <property name="margin_right">12</property>
+                                    <property name="margin_start">12</property>
+                                    <property name="margin_end">12</property>
                                     <property name="hexpand">True</property>
                                     <property name="vexpand">True</property>
                                     <property name="column_spacing">12</property>
@@ -955,8 +1074,8 @@
                   <object class="GtkBox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="margin_left">48</property>
-                    <property name="margin_right">48</property>
+                    <property name="margin_start">48</property>
+                    <property name="margin_end">48</property>
                     <property name="margin_top">32</property>
                     <property name="margin_bottom">32</property>
                     <property name="orientation">vertical</property>
@@ -983,8 +1102,8 @@
                                   <object class="GtkGrid">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="margin_left">12</property>
-                                    <property name="margin_right">12</property>
+                                    <property name="margin_start">12</property>
+                                    <property name="margin_end">12</property>
                                     <property name="column_spacing">12</property>
                                     <child>
                                       <object class="GtkLabel" id="contacts-source-label">
@@ -1085,8 +1204,8 @@
                                   <object class="GtkGrid">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="margin_left">12</property>
-                                    <property name="margin_right">12</property>
+                                    <property name="margin_start">12</property>
+                                    <property name="margin_end">12</property>
                                     <property name="column_spacing">12</property>
                                     <child>
                                       <object class="GtkLabel" id="ringing-volume-label">
@@ -1151,8 +1270,8 @@
                                   <object class="GtkGrid">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="margin_left">12</property>
-                                    <property name="margin_right">12</property>
+                                    <property name="margin_start">12</property>
+                                    <property name="margin_end">12</property>
                                     <property name="column_spacing">12</property>
                                     <child>
                                       <object class="GtkLabel" id="ringing-pause-label">
@@ -1252,8 +1371,8 @@
                                   <object class="GtkGrid">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="margin_left">12</property>
-                                    <property name="margin_right">12</property>
+                                    <property name="margin_start">12</property>
+                                    <property name="margin_end">12</property>
                                     <property name="column_spacing">12</property>
                                     <child>
                                       <object class="GtkLabel" id="talking-volume-label">
@@ -1318,8 +1437,8 @@
                                   <object class="GtkGrid">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="margin_left">12</property>
-                                    <property name="margin_right">12</property>
+                                    <property name="margin_start">12</property>
+                                    <property name="margin_end">12</property>
                                     <property name="column_spacing">12</property>
                                     <child>
                                       <object class="GtkLabel" id="talking-pause-label">
@@ -1374,8 +1493,8 @@
                                   <object class="GtkGrid">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="margin_left">12</property>
-                                    <property name="margin_right">12</property>
+                                    <property name="margin_start">12</property>
+                                    <property name="margin_end">12</property>
                                     <property name="column_spacing">12</property>
                                     <child>
                                       <object class="GtkLabel" id="talking-microphone-label">
@@ -1458,8 +1577,8 @@
                   <object class="GtkBox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="margin_left">48</property>
-                    <property name="margin_right">48</property>
+                    <property name="margin_start">48</property>
+                    <property name="margin_end">48</property>
                     <property name="margin_top">32</property>
                     <property name="margin_bottom">32</property>
                     <property name="orientation">vertical</property>
@@ -1557,8 +1676,8 @@
                   <object class="GtkBox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="margin_left">48</property>
-                    <property name="margin_right">48</property>
+                    <property name="margin_start">48</property>
+                    <property name="margin_end">48</property>
                     <property name="margin_top">32</property>
                     <property name="margin_bottom">32</property>
                     <property name="orientation">vertical</property>
@@ -1653,8 +1772,8 @@
                                   <object class="GtkGrid">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="margin_left">12</property>
-                                    <property name="margin_right">12</property>
+                                    <property name="margin_start">12</property>
+                                    <property name="margin_end">12</property>
                                     <property name="column_spacing">12</property>
                                     <child>
                                       <object class="GtkLabel" id="legacy-sms-label">
@@ -1846,8 +1965,8 @@
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_left">8</property>
-                <property name="margin_right">8</property>
+                <property name="margin_start">8</property>
+                <property name="margin_end">8</property>
                 <property name="margin_top">12</property>
                 <property name="margin_bottom">12</property>
                 <property name="spacing">12</property>
@@ -1892,8 +2011,8 @@
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_left">8</property>
-                <property name="margin_right">8</property>
+                <property name="margin_start">8</property>
+                <property name="margin_end">8</property>
                 <property name="margin_top">12</property>
                 <property name="margin_bottom">12</property>
                 <property name="spacing">12</property>
@@ -1938,8 +2057,8 @@
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_left">8</property>
-                <property name="margin_right">8</property>
+                <property name="margin_start">8</property>
+                <property name="margin_end">8</property>
                 <property name="margin_top">12</property>
                 <property name="margin_bottom">12</property>
                 <property name="spacing">12</property>
@@ -1984,8 +2103,8 @@
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_left">8</property>
-                <property name="margin_right">8</property>
+                <property name="margin_start">8</property>
+                <property name="margin_end">8</property>
                 <property name="margin_top">12</property>
                 <property name="margin_bottom">12</property>
                 <property name="spacing">12</property>
@@ -2030,8 +2149,8 @@
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_left">8</property>
-                <property name="margin_right">8</property>
+                <property name="margin_start">8</property>
+                <property name="margin_end">8</property>
                 <property name="margin_top">12</property>
                 <property name="margin_bottom">12</property>
                 <property name="spacing">12</property>
@@ -2076,8 +2195,8 @@
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_left">8</property>
-                <property name="margin_right">8</property>
+                <property name="margin_start">8</property>
+                <property name="margin_end">8</property>
                 <property name="margin_top">12</property>
                 <property name="margin_bottom">12</property>
                 <property name="spacing">12</property>

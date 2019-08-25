@@ -149,7 +149,14 @@
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.SFTP"/>
-  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Share"/>
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Share">
+    <key name="receive-files" type="b">
+      <default>true</default>
+    </key>
+    <key name="receive-directory" type="s">
+      <default>""</default>
+    </key>
+  </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.SMS">
     <key name="legacy-sms" type="b">
       <default>false</default>

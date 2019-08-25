@@ -89,29 +89,31 @@ window.open_uri = function(uri) {
 };
 
 /**
- * Get a GFile for @filename in ~/Downloads, with a numbered suffix if it
- * already exists (eg. `picture.jpg (1)`)
+ * Get a GFile for @filename, with a numbered suffix if it already exists (eg.
+ * `picture.jpg (1)`). If @path is not given, a default directory for downloads
+ * will be determined, first with XDG then falling back to ~/Downloads.
  *
- * @param {String} filename - The basename of the file
- * @return {Gio.File} - A new GFile for the given @filename in ~/Downloads
+ * @param {string} [path] - Optional download directory
+ * @param {string} filename - The basename of the file
+ * @return {Gio.File} - A new GFile for the given @filename
  */
-window.get_download_file = function(filename) {
-    let download_dir = GLib.get_user_special_dir(
-        GLib.UserDirectory.DIRECTORY_DOWNLOAD
-    );
+window.get_download_file = function(path = null, filename) {
+    if (!path) {
+        path = GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_DOWNLOAD);
 
-    // Account for some corner cases with a fallback
-    if (!download_dir || download_dir === GLib.get_home_dir()) {
-        download_dir = GLib.build_filenamev([GLib.get_home_dir(), 'Downloads']);
+        // Account for some corner cases with a fallback
+        if (!path || path === GLib.get_home_dir()) {
+            path = GLib.build_filenamev([GLib.get_home_dir(), 'Downloads']);
+        }
     }
 
-    let path = GLib.build_filenamev([download_dir, filename]);
-    let filepath = path;
+    let basepath = GLib.build_filenamev([path, filename]);
+    let filepath = basepath;
     let copyNum = 0;
 
     while (GLib.file_test(filepath, GLib.FileTest.EXISTS)) {
         copyNum += 1;
-        filepath = `${path} (${copyNum})`;
+        filepath = `${basepath} (${copyNum})`;
     }
 
     return Gio.File.new_for_path(filepath);

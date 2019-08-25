@@ -64,6 +64,46 @@ var Plugin = GObject.registerClass({
 
     _init(device) {
         super._init(device, 'share');
+
+        // Ensure a download directory is set
+        if (this.settings.get_string('receive-directory').length === 0) {
+            let receiveDir = GLib.get_user_special_dir(
+                GLib.UserDirectory.DIRECTORY_DOWNLOAD
+            );
+
+            // Account for some corner cases with a fallback
+            if (!receiveDir || receiveDir === GLib.get_home_dir()) {
+                receiveDir = GLib.build_filenamev([
+                    GLib.get_home_dir(),
+                    'Downloads'
+                ]);
+            }
+
+            this.settings.set_string('receive-directory', receiveDir);
+        }
+    }
+
+    async _refuseFile(packet) {
+        try {
+            let transfer = this.device.createTransfer(Object.assign({
+                output_stream: null,
+                size: packet.payloadSize
+            }, packet.payloadTransferInfo));
+
+            await transfer.download();
+
+            this.device.showNotification({
+                id: transfer.uuid,
+                title: _('Transfer Refused'),
+                // TRANSLATORS: eg. Refused to receive 'book.pdf' from Google Pixel
+                body: _('Refused to receive “%s” from %s').format(
+                    packet.body.filename,
+                    this.device.name
+                ),
+                icon: new Gio.ThemedIcon({name: 'dialog-error-symbolic'})
+            });
+        } catch (e) {
+        }
     }
 
     async _handleFile(packet) {
@@ -72,7 +112,10 @@ var Plugin = GObject.registerClass({
         let buttons = [];
 
         try {
-            file = get_download_file(packet.body.filename);
+            file = get_download_file(
+                this.settings.get_string('receive-directory'),
+                packet.body.filename
+            );
 
             stream = await new Promise((resolve, reject) => {
                 file.replace_async(null, false, 0, 0, null, (file, res) => {
@@ -183,7 +226,11 @@ var Plugin = GObject.registerClass({
      */
     handlePacket(packet) {
         if (packet.body.hasOwnProperty('filename')) {
-            this._handleFile(packet);
+            if (this.settings.get_boolean('receive-files')) {
+                this._handleFile(packet);
+            } else {
+                this._refuseFile(packet);
+            }
         } else if (packet.body.hasOwnProperty('text')) {
             this._handleText(packet);
         } else if (packet.body.hasOwnProperty('url')) {

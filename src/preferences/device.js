@@ -148,7 +148,9 @@ var DevicePreferences = GObject.registerClass({
         'sidebar', 'stack', 'infobar',
         // Sharing
         'sharing-list', 'sharing-page',
-        'clipboard', 'clipboard-sync', 'mousepad', 'mpris', 'systemvolume',
+        'share', 'receive-files', 'receive-directory',
+        'clipboard', 'clipboard-sync',
+        'mousepad', 'mpris', 'systemvolume',
         // RunCommand
         'runcommand', 'runcommand-page',
         'command-list',
@@ -342,74 +344,84 @@ var DevicePreferences = GObject.registerClass({
     }
 
     dispose() {
-        this.disconnect_template();
+        if (this.__disposed === undefined) {
+            this.__disposed = true;
 
-        // Keybindings signals
-        this.device.disconnect(this._actionAddedId);
-        this.device.disconnect(this._actionRemovedId);
-        this.settings.disconnect(this._keybindingsId);
+            this.disconnect_template();
 
-        // Device state signals
-        this.device.disconnect(this._connectedId);
+            // Keybindings signals
+            this.device.disconnect(this._actionAddedId);
+            this.device.disconnect(this._actionRemovedId);
+            this.settings.disconnect(this._keybindingsId);
 
-        this.settings.disconnect(this._bluetoothHostChangedId);
-        this.settings.disconnect(this._tcpHostChangedId);
-        this.settings.disconnect(this._pluginsId);
-        this.settings.run_dispose();
+            // Plugin Settings
+            for (let settings of Object.values(this._pluginSettings)) {
+                settings.run_dispose();
+            }
+
+            // Device state signals
+            this.device.disconnect(this._connectedId);
+
+            this.settings.disconnect(this._bluetoothHostChangedId);
+            this.settings.disconnect(this._tcpHostChangedId);
+            this.settings.disconnect(this._pluginsId);
+            this.settings.run_dispose();
+        }
     }
 
-    _getSettings(name) {
-        if (this._gsettings === undefined) {
-            this._gsettings = {};
+    pluginSettings(name) {
+        if (this._pluginSettings === undefined) {
+            this._pluginSettings = {};
         }
 
-        if (this._gsettings.hasOwnProperty(name)) {
-            return this._gsettings[name];
+        if (!this._pluginSettings.hasOwnProperty(name)) {
+            let meta = imports.service.plugins[name].Metadata;
+
+            this._pluginSettings[name] = new Gio.Settings({
+                settings_schema: gsconnect.gschema.lookup(meta.id, -1),
+                path: this.settings.path + 'plugin/' + name + '/'
+            });
         }
 
-        let meta = imports.service.plugins[name].Metadata;
-
-        this._gsettings[name] = new Gio.Settings({
-            settings_schema: gsconnect.gschema.lookup(meta.id, -1),
-            path: this.settings.path + 'plugin/' + name + '/'
-        });
-
-        return this._gsettings[name];
+        return this._pluginSettings[name];
     }
 
     _setupActions() {
         this.actions = new Gio.SimpleActionGroup();
         this.insert_action_group('settings', this.actions);
 
-        let settings = this._getSettings('battery');
+        let settings = this.pluginSettings('battery');
         this.actions.add_action(settings.create_action('send-statistics'));
 
-        settings = this._getSettings('clipboard');
+        settings = this.pluginSettings('clipboard');
         this.actions.add_action(settings.create_action('send-content'));
         this.actions.add_action(settings.create_action('receive-content'));
 
-        settings = this._getSettings('contacts');
+        settings = this.pluginSettings('contacts');
         this.actions.add_action(settings.create_action('contacts-source'));
 
-        settings = this._getSettings('mousepad');
+        settings = this.pluginSettings('mousepad');
         this.actions.add_action(settings.create_action('share-control'));
 
-        settings = this._getSettings('mpris');
+        settings = this.pluginSettings('mpris');
         this.actions.add_action(settings.create_action('share-players'));
 
-        settings = this._getSettings('notification');
+        settings = this.pluginSettings('notification');
         this.actions.add_action(settings.create_action('send-notifications'));
 
-        settings = this._getSettings('photo');
+        settings = this.pluginSettings('photo');
         this.actions.add_action(settings.create_action('share-camera'));
 
-        settings = this._getSettings('sms');
+        settings = this.pluginSettings('share');
+        this.actions.add_action(settings.create_action('receive-files'));
+
+        settings = this.pluginSettings('sms');
         this.actions.add_action(settings.create_action('legacy-sms'));
 
-        settings = this._getSettings('systemvolume');
+        settings = this.pluginSettings('systemvolume');
         this.actions.add_action(settings.create_action('share-sinks'));
 
-        settings = this._getSettings('telephony');
+        settings = this.pluginSettings('telephony');
         this.actions.add_action(settings.create_action('ringing-volume'));
         this.actions.add_action(settings.create_action('ringing-pause'));
 
@@ -446,6 +458,20 @@ var DevicePreferences = GObject.registerClass({
      * Sharing Settings
      */
     _sharingSettings() {
+        // Share Plugin
+        let settings = this.pluginSettings('share');
+        this._onDownloadDirectoryChanged(settings, 'receive-directory');
+        settings.connect(
+            'changed::receive-directory',
+            this._onDownloadDirectoryChanged.bind(this)
+        );
+
+        this.receive_directory.connect(
+            'file-set',
+            this._onDownloadDirectorySet.bind(this)
+        );
+
+        // Visibility
         this.sharing_list.foreach(row => {
             let name = row.get_name();
             row.visible = this.device.get_outgoing_supported(`${name}.request`);
@@ -466,6 +492,41 @@ var DevicePreferences = GObject.registerClass({
         });
     }
 
+    _onDownloadDirectoryChanged(settings, key) {
+        let download_dir = settings.get_string(key);
+
+        if (download_dir.length === 0) {
+            download_dir = GLib.get_user_special_dir(
+                GLib.UserDirectory.DIRECTORY_DOWNLOAD
+            );
+
+            // Account for some corner cases with a fallback
+            if (!download_dir || download_dir === GLib.get_home_dir()) {
+                download_dir = GLib.build_filenamev([
+                    GLib.get_home_dir(),
+                    'Downloads'
+                ]);
+            }
+
+            settings.set_string(key, download_dir);
+            return;
+        }
+
+        if (this.receive_directory.get_filename() !== download_dir) {
+            this.receive_directory.set_filename(download_dir);
+        }
+    }
+
+    _onDownloadDirectorySet(button) {
+        let settings = this.pluginSettings('share');
+        let download_dir = settings.get_string('receive-directory');
+        let filename = button.get_filename();
+
+        if (filename !== download_dir) {
+            settings.set_string('receive-directory', filename);
+        }
+    }
+
     /**
      * RunCommand Page
      */
@@ -475,7 +536,7 @@ var DevicePreferences = GObject.registerClass({
         runcommand_box.set_focus_vadjustment(this.runcommand_page.vadjustment);
 
         // Local Command List
-        let settings = this._getSettings('runcommand');
+        let settings = this.pluginSettings('runcommand');
         this._commands = settings.get_value('command-list').full_unpack();
         this._commands = (typeof this._commands === 'string') ? {} : this._commands;
 
@@ -538,7 +599,7 @@ var DevicePreferences = GObject.registerClass({
         let row = this.command_list.get_selected_row();
         delete this._commands[row.get_name()];
 
-        this._getSettings('runcommand').set_value(
+        this.pluginSettings('runcommand').set_value(
             'command-list',
             GLib.Variant.full_pack(this._commands)
         );
@@ -579,7 +640,7 @@ var DevicePreferences = GObject.registerClass({
             row.title = this.command_name.text;
             row.subtitle = this.command_line.text;
 
-            this._getSettings('runcommand').set_value(
+            this.pluginSettings('runcommand').set_value(
                 'command-list',
                 GLib.Variant.full_pack(this._commands)
             );
@@ -616,7 +677,7 @@ var DevicePreferences = GObject.registerClass({
      * Notification Settings
      */
     _notificationSettings() {
-        let settings = this._getSettings('notification');
+        let settings = this.pluginSettings('notification');
 
         settings.bind(
             'send-notifications',
@@ -640,7 +701,7 @@ var DevicePreferences = GObject.registerClass({
     }
 
     _onNotificationRowActivated(box, row) {
-        let settings = this._getSettings('notification');
+        let settings = this.pluginSettings('notification');
         let applications = {};
 
         try {
