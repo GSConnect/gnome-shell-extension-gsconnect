@@ -229,9 +229,6 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             );
             this._onKeybindingsChanged(device);
 
-            // Try activating the device
-            device.action_group.activate_action('activate', null);
-
             this._sync();
         } catch (e) {
             logError(e, device.g_object_path);

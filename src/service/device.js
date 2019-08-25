@@ -425,15 +425,6 @@ var Device = GObject.registerClass({
      * Actions
      */
     _registerActions() {
-        // Stock device actions
-        let activate = new Gio.SimpleAction({name: 'activate'});
-        activate.connect('activate', this.activate.bind(this));
-        this.add_action(activate);
-
-        let openSettings = new Gio.SimpleAction({name: 'openSettings'});
-        openSettings.connect('activate', this.openSettings.bind(this));
-        this.add_action(openSettings);
-
         // Pairing notification actions
         let acceptPair = new Gio.SimpleAction({name: 'pair'});
         acceptPair.connect('activate', this.pair.bind(this));

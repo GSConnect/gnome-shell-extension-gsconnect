@@ -11,10 +11,7 @@ const Keybindings = imports.preferences.keybindings;
 
 // Build a list of plugins and shortcuts for devices
 const DEVICE_PLUGINS = [];
-const DEVICE_SHORTCUTS = {
-    activate: ['view-refresh-symbolic', _('Reconnect')],
-    openSettings: ['preferences-system-symbolic', _('Settings')]
-};
+const DEVICE_SHORTCUTS = {};
 
 for (let name in imports.service.plugins) {
     if (name === 'base') continue;
@@ -22,7 +19,7 @@ for (let name in imports.service.plugins) {
     // Plugins
     DEVICE_PLUGINS.push(name);
 
-    // Shortcuts
+    // Shortcuts (GActions without parameters)
     let meta = imports.service.plugins[name].Metadata;
 
     for (let [name, action] of Object.entries(meta.actions)) {
