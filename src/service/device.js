@@ -184,12 +184,13 @@ var Device = GObject.registerClass({
                 return _('Smartphone');
             case 'tablet':
                 return _('Tablet');
+            case 'tv':
+                return _('Television');
             default:
                 return _('Desktop');
         }
     }
 
-    // TODO: should we just store the fingerprint instead of the pem?
     get encryption_info() {
         let fingerprint = _('Not available');
 
@@ -260,6 +261,8 @@ var Device = GObject.registerClass({
                 return 'smartphone';
             case 'tablet':
                 return 'tablet';
+            case 'tv':
+                return 'tv';
             default:
                 return 'computer';
         }
