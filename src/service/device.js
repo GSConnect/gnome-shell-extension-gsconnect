@@ -282,6 +282,7 @@ var Device = GObject.registerClass({
         this.settings.set_string('name', packet.body.deviceName);
         this.settings.set_string('type', packet.body.deviceType);
 
+        // Connection
         if (packet.body.hasOwnProperty('bluetoothHost')) {
             this.settings.set_string('bluetooth-host', packet.body.bluetoothHost);
             this.settings.set_string('bluetooth-path', packet.body.bluetoothPath);
@@ -292,16 +293,14 @@ var Device = GObject.registerClass({
             this.settings.set_string('last-connection', 'tcp');
         }
 
-        this.settings.set_strv(
-            'incoming-capabilities',
-            packet.body.incomingCapabilities.sort()
-        );
+        // Packets
+        let incoming = packet.body.incomingCapabilities.sort();
+        let outgoing = packet.body.outgoingCapabilities.sort();
 
-        this.settings.set_strv(
-            'outgoing-capabilities',
-            packet.body.outgoingCapabilities.sort()
-        );
+        this.settings.set_strv('incoming-capabilities', incoming);
+        this.settings.set_strv('outgoing-capabilities', outgoing);
 
+        // Plugins
         let supported = [];
 
         for (let name in imports.service.plugins) {
@@ -310,10 +309,10 @@ var Device = GObject.registerClass({
             if (!meta) continue;
 
             // If we can handle packets it sends...
-            if (meta.incomingCapabilities.some(t => packet.body.outgoingCapabilities.includes(t))) {
+            if (meta.incomingCapabilities.some(t => outgoing.includes(t))) {
                 supported.push(name);
             // ...or we send packets it can handle
-            } else if (meta.outgoingCapabilities.some(t => packet.body.incomingCapabilities.includes(t))) {
+            } else if (meta.outgoingCapabilities.some(t => incoming.includes(t))) {
                 supported.push(name);
             }
         }
