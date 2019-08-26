@@ -248,6 +248,14 @@ var Service = GObject.registerClass({
     GTypeName: 'GSConnectRemoteService',
     Implements: [Gio.DBusInterface],
     Properties: {
+        'auto-start': GObject.ParamSpec.boolean(
+            'auto-start',
+            'Auto Start',
+            'Whether to keep the service running',
+            (GObject.ParamFlags.READWRITE |
+             GObject.ParamFlags.CONSTRUCT_ONLY),
+            null
+        ),
         'devices': GObject.param_spec_variant(
             'devices',
             'Devices',
@@ -288,6 +296,23 @@ var Service = GObject.registerClass({
             'notify::g-name-owner',
             this._onNameOwnerChanged.bind(this)
         );
+    }
+
+    get auto_start() {
+        if (this._auto_start === undefined) {
+            this._auto_start = true;
+        }
+
+        return this._auto_start;
+    }
+
+    set auto_start(bool) {
+        if (this.auto_start !== bool) {
+            this._auto_start = bool;
+            this.notify('auto-start');
+
+            this._onNameOwnerChanged();
+        }
     }
 
     get available() {
@@ -407,7 +432,10 @@ var Service = GObject.registerClass({
             // If the service stopped, clear all devices before restarting
             if (this.g_name_owner === null) {
                 this.clear();
-                await this._GetManagedObjects();
+
+                if (this.auto_start) {
+                    await this._GetManagedObjects();
+                }
 
             // Now that service is started, add each device manually
             } else {

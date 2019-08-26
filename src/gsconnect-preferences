@@ -87,7 +87,9 @@ const Preferences = GObject.registerClass({
     async _init_async() {
         try {
             // Device Manager
-            this.service = new Remote.Service();
+            this.service = new Remote.Service({
+                auto_start: false
+            });
 
             // Watch for new and removed
             this._deviceAddedId = this.service.connect(
