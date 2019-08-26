@@ -85,7 +85,7 @@ var Plugin = GObject.registerClass({
 
     async _refuseFile(packet) {
         try {
-            await this.device.refuseTransfer(packet);
+            await this.device.rejectTransfer(packet);
 
             this.device.showNotification({
                 id: `${Date.now()}`,
