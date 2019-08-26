@@ -88,11 +88,10 @@ var Plugin = GObject.registerClass({
             await this.device.refuseTransfer(packet);
 
             this.device.showNotification({
-                id: transfer.uuid,
-                title: _('Transfer Refused'),
-                // TRANSLATORS: eg. Refused to receive 'book.pdf' from Google Pixel
-                body: _('Refused to receive “%s” from %s').format(
-                    packet.body.filename,
+                id: `${Date.now()}`,
+                title: _('Transfer Failed'),
+                // TRANSLATORS: eg. Google Pixel is not allowed to upload files
+                body: _('%s is not allowed to upload files').format(
                     this.device.name
                 ),
                 icon: new Gio.ThemedIcon({name: 'dialog-error-symbolic'})
@@ -131,7 +130,7 @@ var Plugin = GObject.registerClass({
             // Notify that we're about to start the transfer
             this.device.showNotification({
                 id: transfer.uuid,
-                title: _('Starting Transfer'),
+                title: _('Transferring File'),
                 // TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
                 body: _('Receiving “%s” from %s').format(
                     packet.body.filename,
@@ -277,7 +276,7 @@ var Plugin = GObject.registerClass({
             // Notify that we're about to start the transfer
             this.device.showNotification({
                 id: transfer.uuid,
-                title: _('Starting Transfer'),
+                title: _('Transferring File'),
                 // TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
                 body: _('Sending “%s” to %s').format(
                     file.get_basename(),
