@@ -556,6 +556,26 @@ var Device = GObject.registerClass({
         }
     }
 
+    /**
+     * Reject the transfer payload described by @packet by passing an invalid
+     * stream to Core.Transfer.
+     *
+     * @param {Core.Packet} packet - A packet
+     */
+    async rejectTransfer(packet) {
+        if (!packet || !packet.payloadTransferInfo) return;
+
+        try {
+            let transfer = this.createTransfer(Object.assign({
+                output_stream: null,
+                size: packet.payloadSize
+            }, packet.payloadTransferInfo));
+
+            await transfer.download();
+        } catch (e) {
+        }
+    }
+
     openPath(action, parameter) {
         let path = parameter.unpack();
 

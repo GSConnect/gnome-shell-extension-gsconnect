@@ -85,12 +85,7 @@ var Plugin = GObject.registerClass({
 
     async _refuseFile(packet) {
         try {
-            let transfer = this.device.createTransfer(Object.assign({
-                output_stream: null,
-                size: packet.payloadSize
-            }, packet.payloadTransferInfo));
-
-            await transfer.download();
+            await this.device.refuseTransfer(packet);
 
             this.device.showNotification({
                 id: transfer.uuid,
@@ -103,6 +98,7 @@ var Plugin = GObject.registerClass({
                 icon: new Gio.ThemedIcon({name: 'dialog-error-symbolic'})
             });
         } catch (e) {
+            logError(e, this.device.name);
         }
     }
 

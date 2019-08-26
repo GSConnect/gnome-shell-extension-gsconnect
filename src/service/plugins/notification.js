@@ -141,9 +141,9 @@ var Plugin = GObject.registerClass({
         if (packet.body.hasOwnProperty('isCancel')) {
             this.device.hideNotification(packet.body.id);
 
-        // A silent notification; process it so we can abort the transfer
+        // A silent notification; silence it by aborting the icon transfer
         } else if (packet.body.hasOwnProperty('silent')) {
-            this.silenceNotification(packet);
+            this.device.rejectTransfer(packet);
 
         // A normal, remote notification
         } else {
@@ -542,31 +542,6 @@ var Plugin = GObject.registerClass({
             });
         } catch (e) {
             logError(e);
-        }
-    }
-
-    /**
-     * Handle a "silent" notification
-     *
-     * @param {kdeconnect.notification} packet - The notification packet
-     */
-    async silenceNotification(packet) {
-        try {
-            if (!packet.payloadTransferInfo) {
-                return null;
-            }
-
-            let transfer = this.device.createTransfer({
-                output_stream: null,
-                size: packet.payloadSize
-            });
-
-            // Since we've passed a bogus stream, this will abort the transfer
-            await transfer.download(
-                packet.payloadTransferInfo.port || packet.payloadTransferInfo.uuid
-            );
-        } catch (e) {
-            debug(e);
         }
     }
 
