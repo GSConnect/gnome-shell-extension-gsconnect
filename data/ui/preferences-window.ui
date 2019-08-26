@@ -686,7 +686,7 @@
       </item>
       <item>
         <attribute name="label" translatable="yes">Help</attribute>
-        <attribute name="action">app.help</attribute>
+        <attribute name="action">win.help</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">About GSConnect</attribute>

@@ -425,6 +425,11 @@ var Window = GObject.registerClass({
         generateSupportLog.connect('activate', this._generateSupportLog);
         this.add_action(generateSupportLog);
 
+        // "Help" GAction
+        let help = new Gio.SimpleAction({name: 'help'});
+        help.connect('activate', this._help);
+        this.add_action(help);
+
         // Device List
         this.device_list.set_header_func(rowSeparators);
 
@@ -543,6 +548,15 @@ var Window = GObject.registerClass({
         });
 
         dialog.show_all();
+    }
+
+    /**
+     * "Help" GAction
+     */
+    _help(action, parameter) {
+        let uri = 'https://github.com/andyholmes/gnome-shell-extension-gsconnect';
+        uri += '/wiki/Help';
+        Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
     }
 
     /**

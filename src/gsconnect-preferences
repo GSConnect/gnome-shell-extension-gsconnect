@@ -149,8 +149,7 @@ const Preferences = GObject.registerClass({
         );
 
         let actions = [
-            ['broadcast', this.broadcast.bind(this), null],
-            ['help', this.help, null]
+            ['broadcast', this.broadcast.bind(this), null]
         ];
 
         for (let [name, callback, type] of actions) {
@@ -164,16 +163,8 @@ const Preferences = GObject.registerClass({
 
         this.add_action(gsconnect.settings.create_action('discoverable'));
 
-        this.set_accels_for_action('app.wiki::Help', ['F1']);
-
         // Async setup
         this._init_async();
-    }
-
-    help(action, parameter) {
-        let uri = 'https://github.com/andyholmes/gnome-shell-extension-gsconnect';
-        uri += '/wiki/Help';
-        Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
     }
 
     broadcast() {
