@@ -612,41 +612,14 @@ var Window = GObject.registerClass({
         }
     }
 
-    _onDeviceSelected(box, row) {
-        if (!row) {
-            this._onPrevious();
-            return;
-        }
-
-        // Transition the panel
-        let name = row.get_name();
-        let prefs = this.stack.get_child_by_name(name);
-
-        this.stack.visible_child = prefs;
-        this._setDeviceMenu(prefs);
-
-        // HeaderBar (Device)
-        this.service_refresh.visible = false;
-        this.service_edit.visible = false;
-        this.service_menu.visible = false;
-
-        this.prev_button.visible = true;
-        this.device_menu.visible = true;
-
-        this.headerbar.title = prefs.device.name;
-        this.headerbar.subtitle = prefs.device.display_type;
-    }
-
     _onDeviceAdded(service, device) {
         try {
-            let id = device.id;
-
-            if (!this.stack.get_child_by_name(id)) {
-                // Add the device settings to the content stack
+            if (!this.stack.get_child_by_name(device.id)) {
+                // Add the device preferences
                 let prefs = new Device.DevicePreferences(device);
                 this.stack.add_titled(prefs, device.id, device.name);
 
-                // Sidebar
+                // Add a row to the device list
                 prefs.row = new DeviceRow(device);
                 this.device_list.add(prefs.row);
             }
@@ -656,22 +629,51 @@ var Window = GObject.registerClass({
     }
 
     _onDeviceRemoved(service, device) {
-        let id = device.id;
-
         try {
-            let prefs = this.stack.get_child_by_name(id);
+            let prefs = this.stack.get_child_by_name(device.id);
 
-            if (prefs) {
-                if (id === this.stack.get_visible_child_name()) {
+            if (prefs !== null) {
+                if (prefs === this.stack.get_visible_child()) {
                     this._onPrevious();
                 }
 
                 prefs.row.destroy();
+                prefs.row = null;
+
                 prefs.dispose();
                 prefs.destroy();
             }
         } catch (e) {
             logError (e);
+        }
+    }
+
+    _onDeviceSelected(box, row) {
+        try {
+            if (row === null) {
+                this._onPrevious();
+                return;
+            }
+
+            // Transition the panel
+            let name = row.get_name();
+            let prefs = this.stack.get_child_by_name(name);
+
+            this.stack.visible_child = prefs;
+            this._setDeviceMenu(prefs);
+
+            // HeaderBar (Device)
+            this.service_refresh.visible = false;
+            this.service_edit.visible = false;
+            this.service_menu.visible = false;
+
+            this.prev_button.visible = true;
+            this.device_menu.visible = true;
+
+            this.headerbar.title = prefs.device.name;
+            this.headerbar.subtitle = prefs.device.display_type;
+        } catch (e) {
+            logError(e);
         }
     }
 });
