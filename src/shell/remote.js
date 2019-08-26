@@ -85,14 +85,14 @@ var Device = GObject.registerClass({
     }
 }, class Device extends Gio.DBusProxy {
 
-    _init(parent, object_path) {
-        this._parent = parent;
+    _init(service, object_path) {
+        this._service = service;
 
         super._init({
-            g_connection: parent.g_connection,
-            g_name: parent.g_name,
+            g_connection: service.g_connection,
+            g_name: service.g_name,
             g_object_path: object_path,
-            g_interface_name: `${parent.g_name}.Device`
+            g_interface_name: `${service.g_name}.Device`
         });
     }
 
@@ -116,14 +116,14 @@ var Device = GObject.registerClass({
             // GActions
             this.action_group = Gio.DBusActionGroup.get(
                 this.g_connection,
-                this._parent.g_name_owner,
+                this._service.g_name_owner,
                 this.g_object_path
             );
 
             // GMenu
             this.menu_model = Gio.DBusMenuModel.get(
                 this.g_connection,
-                this._parent.g_name_owner,
+                this._service.g_name_owner,
                 this.g_object_path
             );
 
@@ -211,6 +211,10 @@ var Device = GObject.registerClass({
         }
 
         return this._settings;
+    }
+
+    get service() {
+        return this._service;
     }
 
     get type() {
