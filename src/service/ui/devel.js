@@ -8,21 +8,6 @@ const Gdk = imports.gi.Gdk;
 const System = imports.system;
 
 
-function getPID() {
-    return Gio.DBus.session.call_sync(
-        'org.freedesktop.DBus',
-        '/org/freedesktop/DBus',
-        'org.freedesktop.DBus',
-        'GetConnectionUnixProcessID',
-        new GLib.Variant('(s)', ['org.gnome.Shell.Extensions.GSConnect']),
-        null,
-        Gio.DBusCallFlags.NONE,
-        -1,
-        null
-    ).deep_unpack()[0];
-}
-
-
 var Window = GObject.registerClass({
     GTypeName: 'GSConnectDevelWindow',
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/devel.ui',
