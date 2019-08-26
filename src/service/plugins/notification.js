@@ -552,8 +552,6 @@ var Plugin = GObject.registerClass({
      * @param {string} id - The local notification id
      */
     withdrawNotification(id) {
-        debug(id);
-
         this.device.sendPacket({
             type: 'kdeconnect.notification',
             body: {
@@ -570,8 +568,6 @@ var Plugin = GObject.registerClass({
      * @param {string} id - The remote notification id
      */
     closeNotification(id) {
-        debug(id);
-
         let tickerId = this._sms[id];
 
         if (tickerId) {
@@ -593,8 +589,6 @@ var Plugin = GObject.registerClass({
      * @param {object} notification - The original notification
      */
     replyNotification(uuid, message, notification) {
-        debug([uuid, message]);
-
         // If the message has no content, we're being asked to open the dialog
         if (message.length === 0) {
             new NotificationUI.Dialog({
