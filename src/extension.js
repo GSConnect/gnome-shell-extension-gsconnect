@@ -247,7 +247,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
             this._sync();
         } catch (e) {
-            logError(e, device.g_object_path);
+            logError(e, device.name);
         }
     }
 
@@ -269,7 +269,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
             this._sync();
         } catch (e) {
-            logError(e, device.g_object_path);
+            logError(e, device.name);
         }
     }
 
@@ -299,18 +299,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 }
             }
         } catch (e) {
-            logError(e, device.g_object_path);
-        }
-    }
-
-    // TODO: need hardcoded keybinding for this
-    _openDeviceMenu(indicator) {
-        if (gsconnect.settings.get_boolean('show-indicators')) {
-            indicator.menu.toggle();
-        } else {
-            Main.panel._toggleMenu(AggregateMenu);
-            this._item.menu.toggle();
-            this._item.actor.grab_key_focus();
+            logError(e, device.name);
         }
     }
 
