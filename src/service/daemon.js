@@ -79,7 +79,7 @@ const Service = GObject.registerClass({
                    Gio.ApplicationFlags.HANDLES_COMMAND_LINE
         });
 
-        GLib.set_prgname(gsconnect.app_id);
+        GLib.set_prgname('GSConnect');
         GLib.set_application_name('GSConnect');
 
         // Track devices with id as key
