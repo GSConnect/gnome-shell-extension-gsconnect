@@ -179,7 +179,7 @@ var Plugin = GObject.registerClass({
                         // There's a good chance this is a host key verification
                         // error; regardless we'll remove the key for security.
                         } else {
-                            this._remove_host(this._port);
+                            this._removeHostKey();
                             reject(e);
                         }
                     }
@@ -257,32 +257,30 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * Remove old host keys from ~/.ssh/known_hosts for this host from the range
-     * used by KDE Connect (1739-1764).
-     *
-     * @param {number} port - The port to remove the host key for
+     * Remove all host keys from ~/.ssh/known_hosts for the device's IP in the
+     * port range used by KDE Connect (1739-1764).
      */
-    async _remove_host(port = 1739) {
-        try {
-            let ssh_keygen = this._launcher.spawnv([
-                gsconnect.metadata.bin.ssh_keygen,
-                '-R',
-                `[${this.ip}]:${port}`
-            ]);
+    async _removeHostKey() {
+        for (let port = 1739; port <= 1764; port++) {
+            try {
+                let ssh_keygen = this._launcher.spawnv([
+                    gsconnect.metadata.bin.ssh_keygen,
+                    '-R',
+                    `[${this.ip}]:${port}`
+                ]);
 
-            await new Promise((resolve, reject) => {
-                ssh_keygen.wait_check_async(null, (proc, res) => {
-                    try {
-                        resolve(proc.wait_check_finish(res));
-                    } catch (e) {
-                        reject(e);
-                    }
+                await new Promise((resolve, reject) => {
+                    ssh_keygen.wait_check_async(null, (proc, res) => {
+                        try {
+                            resolve(proc.wait_check_finish(res));
+                        } catch (e) {
+                            reject(e);
+                        }
+                    });
                 });
-            });
-
-            debug(`removed host key for [${this.ip}]:${port}`);
-        } catch (e) {
-            warning(e, `${this.device.name} (${this.name})`);
+            } catch (e) {
+                warning(e, `${this.device.name} (${this.name})`);
+            }
         }
     }
 
