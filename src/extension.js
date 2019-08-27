@@ -131,11 +131,6 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 this._onDeviceRemoved.bind(this)
             );
 
-            this._availableChangedId = this.service.connect(
-                'available-changed',
-                this._sync.bind(this)
-            );
-
             await this.service.start();
         } catch (e) {
             Gio.DBusError.strip_remote_error(e);
@@ -147,7 +142,9 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
     }
 
     _sync() {
-        let available = this.service.available;
+        let available = this.service.devices.filter(device => {
+            return (device.connected && device.paired);
+        });
         let panelMode = gsconnect.settings.get_boolean('show-indicators');
 
         // Hide status indicator if in Panel mode or no devices are available
@@ -208,6 +205,19 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         }
     }
 
+    _onDeviceChanged(device, changed, invalidated) {
+        try {
+            changed = changed.deep_unpack();
+
+            if (changed.hasOwnProperty('Connected') ||
+                changed.hasOwnProperty('Paired')) {
+                this._sync();
+            }
+        } catch (e) {
+            logError(e, device.name);
+        }
+    }
+
     _onDeviceAdded(manager, device) {
         try {
             // Device Indicator
@@ -229,6 +239,12 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             );
             this._onKeybindingsChanged(device);
 
+            // Watch the for status changes
+            device.__deviceChangedId = device.connect(
+                'g-properties-changed',
+                this._onDeviceChanged.bind(this)
+            );
+
             this._sync();
         } catch (e) {
             logError(e, device.g_object_path);
@@ -237,6 +253,9 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
     _onDeviceRemoved(manager, device) {
         try {
+            // Stop watching for status changes
+            device.disconnect(device.__deviceChangedId);
+
             // Release keybindings
             device.settings.disconnect(device._keybindingsChangedId);
             device._keybindings.map(id => this.keybindingManager.remove(id));

@@ -266,9 +266,6 @@ var Service = GObject.registerClass({
         )
     },
     Signals: {
-        'available-changed': {
-            flags: GObject.SignalFlags.RUN_FIRST
-        },
         'device-added': {
             flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [GObject.TYPE_OBJECT]
@@ -355,15 +352,6 @@ var Service = GObject.registerClass({
         }
     }
 
-    _onDeviceChanged(proxy, changed, invalidated) {
-        changed = changed.deep_unpack();
-
-        if (changed.hasOwnProperty('Connected') ||
-            changed.hasOwnProperty('Paired')) {
-            this.emit('available-changed');
-        }
-    }
-
     /**
      * org.freedesktop.DBus.ObjectManager.InterfacesAdded
      *
@@ -384,12 +372,6 @@ var Service = GObject.registerClass({
             // Create a proxy
             let device = new Device(this, object_path);
             await device.start();
-
-            // Watch for connected/paired changes
-            device.__deviceChangedId = device.connect(
-                'g-properties-changed',
-                this._onDeviceChanged.bind(this)
-            );
 
             // Hold the proxy and emit ::device-added
             this._devices.set(object_path, device);
@@ -414,9 +396,6 @@ var Service = GObject.registerClass({
             // Get the proxy
             let device = this._devices.get(object_path);
             if (device === undefined) return;
-
-            // Stop watching for connected/paired changes
-            device.disconnect(device.__deviceChangedId);
 
             // Release the proxy and emit ::device-removed
             this._devices.delete(object_path);
