@@ -173,7 +173,6 @@ var Plugin = GObject.registerClass({
                         // Special case when the GMount didn't unmount properly
                         // but is still on the same port and can be reused.
                         if (e.code && e.code === Gio.IOErrorEnum.ALREADY_MOUNTED) {
-                            debug(e, `${this.device.name} (${this.name})`);
                             resolve(true);
 
                         // There's a good chance this is a host key verification
@@ -375,19 +374,21 @@ var Plugin = GObject.registerClass({
             let by_name_dir = Gio.File.new_for_path(
                 gsconnect.runtimedir + '/by-name/'
             );
+
             try {
                 by_name_dir.make_directory_with_parents(null);
             } catch (e) {
-                if ( ! e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.EXISTS) ) {
+                if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.EXISTS)) {
                     throw e;
                 }
             }
 
             // Replace path separator with a Unicode lookalike:
             let safe_device_name = this.device.name.replace('/', '∕');
-            if ( safe_device_name == '.' ) {
+
+            if (safe_device_name === '.') {
                 safe_device_name = '·';
-            } else if ( safe_device_name == '..' ) {
+            } else if (safe_device_name === '..') {
                 safe_device_name = '··';
             }
 
@@ -396,10 +397,9 @@ var Plugin = GObject.registerClass({
                 by_name_dir.get_path() + '/' + safe_device_name
             );
 
-            // Check for and remove any existing stale link:
-            let link_stat;
+            // Check for and remove any existing stale link
             try {
-                link_stat = await new Promise((resolve, reject) => {
+                let link_stat = await new Promise((resolve, reject) => {
                     link.query_info_async(
                         'standard::symlink-target',
                         Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
@@ -415,7 +415,7 @@ var Plugin = GObject.registerClass({
                     );
                 });
 
-                if ( link_stat.get_symlink_target() == link_target ) {
+                if (link_stat.get_symlink_target() === link_target) {
                     return;
                 }
 
@@ -433,7 +433,7 @@ var Plugin = GObject.registerClass({
                     );
                 });
             } catch (e) {
-                if ( ! e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.NOT_FOUND) ) {
+                if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.NOT_FOUND)) {
                     throw e;
                 }
             }
