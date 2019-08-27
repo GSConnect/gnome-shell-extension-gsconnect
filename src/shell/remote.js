@@ -148,11 +148,10 @@ var Device = GObject.registerClass({
                     }
                 );
             });
-
-            return true;
         } catch (e) {
-            logError(e);
-            return false;
+            this.destroy();
+
+            throw e;
         }
     }
 
@@ -232,14 +231,20 @@ var Device = GObject.registerClass({
     }
 
     destroy() {
-        this.action_group.run_dispose();
-        this.menu_model.run_dispose();
+        if (this.__disposed === undefined) {
+            this.__disposed = true;
 
-        if (this.__propertiesChangedId)
-            this.disconnect(this.__propertiesChangedId);
+            if (this.action_group)
+                this.action_group.run_dispose();
 
-        if (this._settings)
-            this._settings.run_dispose();
+            if (this.menu_model)
+                this.menu_model.run_dispose();
+
+            if (this._settings)
+                this._settings.run_dispose();
+
+            this.run_dispose();
+        }
     }
 });
 
