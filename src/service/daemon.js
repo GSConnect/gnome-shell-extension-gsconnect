@@ -306,7 +306,7 @@ const Service = GObject.registerClass({
             ['devel', this._devel.bind(this)],
             ['device', this._device.bind(this), '(ssbv)'],
             ['error', this._error.bind(this), 'a{ss}'],
-            ['settings', this._settings.bind(this)],
+            ['preferences', this._preferences],
             ['wiki', this._wiki.bind(this), 's']
         ];
 
@@ -388,12 +388,12 @@ const Service = GObject.registerClass({
         }
     }
 
-    _settings(page = null, parameter = null) {
-        if (parameter instanceof GLib.Variant) {
-            page = parameter.unpack();
-        }
-
-        gsconnect.preferences();
+    _preferences() {
+        let proc = new Gio.Subprocess({
+            argv: [gsconnect.extdatadir + '/gsconnect-preferences']
+        });
+        proc.init(null);
+        proc.wait_async(null, null);
     }
 
     _wiki(action, parameter) {
