@@ -5,7 +5,7 @@
     <file compressed="true">application.css</file>
     <file compressed="true" preprocess="xml-stripblanks">gtk/menus.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/connect.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/contacts.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/contact-chooser.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/conversation.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/devel.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/device-preferences.ui</file>

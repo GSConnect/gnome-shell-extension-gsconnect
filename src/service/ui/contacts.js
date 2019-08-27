@@ -234,10 +234,11 @@ var Avatar = GObject.registerClass({
         if (!this._surface) {
             let colorSalt, iconName;
 
-            // If we weren't given a contact, it's a group message
+            // If we were given a contact, it's direct message
             if (this.contact) {
                 colorSalt = this.contact.name;
                 iconName = 'avatar-default-symbolic';
+            // Otherwise it's a group message
             } else {
                 colorSalt = GLib.uuid_string_random();
                 iconName = 'group-avatar-symbolic';
@@ -307,7 +308,7 @@ var ContactChooser = GObject.registerClass({
             param_types: [GObject.TYPE_STRING]
         }
     },
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/contacts.ui',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/contact-chooser.ui',
     Children: ['entry', 'list', 'scrolled']
 }, class ContactChooser extends Gtk.Grid {
 
@@ -366,8 +367,6 @@ var ContactChooser = GObject.registerClass({
 
         // Bind the new store
         if (this._store) {
-            this._store = store;
-
             // Connect to the new store
             this._contactAddedId = store.connect(
                 'contact-added',
@@ -389,6 +388,9 @@ var ContactChooser = GObject.registerClass({
         }
     }
 
+    /**
+     * ContactStore Callbacks
+     */
     _onContactAdded(store, id) {
         let contact = this.store.get_contact(id);
         this._addContact(contact);
@@ -520,19 +522,6 @@ var ContactChooser = GObject.registerClass({
         }
     }
 
-    _addContact(contact) {
-        // HACK: fix missing contact names
-        contact.name = contact.name || _('Unknown Contact');
-
-        if (contact.numbers.length === 1) {
-            return this._addContactNumber(contact, 0);
-        }
-
-        for (let i = 0, len = contact.numbers.length; i < len; i++) {
-            this._addContactNumber(contact, i);
-        }
-    }
-
     _addContactNumber(contact, index) {
         let row = new Gtk.ListBoxRow({
             activatable: true,
@@ -579,17 +568,39 @@ var ContactChooser = GObject.registerClass({
         return row;
     }
 
+    _addContact(contact) {
+        try {
+            // HACK: fix missing contact names
+            contact.name = contact.name || _('Unknown Contact');
+
+            if (contact.numbers.length === 1) {
+                return this._addContactNumber(contact, 0);
+            }
+
+            for (let i = 0, len = contact.numbers.length; i < len; i++) {
+                this._addContactNumber(contact, i);
+            }
+        } catch (e) {
+            logError(e);
+        }
+    }
+
     /**
      * Get a dictionary of number-contact pairs for each selected phone number.
      */
     getSelected() {
-        let selected = {};
+        try {
+            let selected = {};
 
-        for (let row of this.list.get_selected_rows()) {
-            selected[row.number.value] = row.contact;
+            for (let row of this.list.get_selected_rows()) {
+                selected[row.number.value] = row.contact;
+            }
+
+            return selected;
+        } catch (e) {
+            logError(e);
+            return {};
         }
-
-        return selected;
     }
 });
 
