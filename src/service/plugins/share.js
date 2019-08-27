@@ -71,12 +71,11 @@ var Plugin = GObject.registerClass({
                 GLib.UserDirectory.DIRECTORY_DOWNLOAD
             );
 
-            // Account for some corner cases with a fallback
-            if (!receiveDir || receiveDir === GLib.get_home_dir()) {
-                receiveDir = GLib.build_filenamev([
-                    GLib.get_home_dir(),
-                    'Downloads'
-                ]);
+            // Fallback to ~/Downloads
+            let homeDir = GLib.get_home_dir();
+
+            if (!receiveDir || receiveDir === homeDir) {
+                receiveDir = GLib.build_filenamev([homeDir, 'Downloads']);
             }
 
             this.settings.set_string('receive-directory', receiveDir);
