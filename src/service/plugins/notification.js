@@ -105,8 +105,6 @@ var Plugin = GObject.registerClass({
 
     _init(device) {
         super._init(device, 'notification');
-
-        this._sms = {};
     }
 
     handlePacket(packet) {
@@ -518,8 +516,6 @@ var Plugin = GObject.registerClass({
                         parameter: new GLib.Variant('s', packet.body.title)
                     };
                     icon = icon || new Gio.ThemedIcon({name: 'sms-symbolic'});
-
-                    this._sms[packet.body.ticker] = packet.body.id;
                     break;
 
                 // Ignore 'appName' if it's the same as 'title'
@@ -568,13 +564,6 @@ var Plugin = GObject.registerClass({
      * @param {string} id - The remote notification id
      */
     closeNotification(id) {
-        let tickerId = this._sms[id];
-
-        if (tickerId) {
-            delete this._sms[id];
-            id = tickerId;
-        }
-
         this.device.sendPacket({
             type: 'kdeconnect.notification.request',
             body: {cancel: id}
