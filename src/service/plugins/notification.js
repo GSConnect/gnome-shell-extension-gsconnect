@@ -586,16 +586,18 @@ var Plugin = GObject.registerClass({
      *
      * @param {string} uuid - The requestReplyId for the repliable notification
      * @param {string} message - The message to reply with
-     * @param {object} notification - The original notification
+     * @param {object} notification - The original notification packet
      */
     replyNotification(uuid, message, notification) {
-        // If the message has no content, we're being asked to open the dialog
-        if (message.length === 0) {
-            new NotificationUI.Dialog({
+        // If the message has no content, open a dialog for the user to add one
+        if (!message) {
+            new NotificationUI.ReplyDialog({
                 device: this.device,
                 uuid: uuid,
                 notification: notification
             });
+
+        // Otherwise just send the reply
         } else {
             this.device.sendPacket({
                 type: 'kdeconnect.notification.reply',

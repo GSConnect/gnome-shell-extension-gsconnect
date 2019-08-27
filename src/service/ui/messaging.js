@@ -329,9 +329,6 @@ const ConversationWidget = GObject.registerClass({
             this._onConnected.bind(this)
         );
 
-        // Cleanup on ::destroy
-        this.connect('destroy', this._onDestroy);
-
         // Pending messages
         this.pending.date = Number.MAX_SAFE_INTEGER;
         this.bind_property(
@@ -349,6 +346,9 @@ const ConversationWidget = GObject.registerClass({
         // HACK: This property was added in gtk-3.24; if it's not present this
         // will just become a useless JS variable instead of choking
         this.entry.enable_emoji_completion = true;
+
+        // Cleanup on ::destroy
+        this.connect('destroy', this._onDestroy);
     }
 
     get addresses() {
@@ -682,7 +682,7 @@ var Window = GObject.registerClass({
             ''
         )
     },
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/messaging.ui',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/messaging-window.ui',
     Children: [
         'headerbar', 'infobar',
         'thread-list', 'stack'

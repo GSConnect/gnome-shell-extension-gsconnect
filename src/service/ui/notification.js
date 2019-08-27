@@ -5,7 +5,7 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 
-var Dialog = GObject.registerClass({
+var ReplyDialog = GObject.registerClass({
     GTypeName: 'GSConnectNotificationReplyDialog',
     Properties: {
         'device': GObject.ParamSpec.object(
@@ -16,7 +16,7 @@ var Dialog = GObject.registerClass({
             GObject.Object
         )
     },
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/notification.ui',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/notification-reply-dialog.ui',
     Children: [
         'infobar',
         'notification-title', 'notification-body',
