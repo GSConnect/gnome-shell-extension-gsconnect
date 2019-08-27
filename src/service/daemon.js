@@ -258,7 +258,6 @@ const Service = GObject.registerClass({
 
             device = new Device.Device(packet);
             this._devices.set(device.id, device);
-            device.loadPlugins();
 
             gsconnect.settings.set_strv('devices', this.devices);
             this.notify('devices');
@@ -641,7 +640,6 @@ const Service = GObject.registerClass({
         for (let id of gsconnect.settings.get_strv('devices')) {
             let device = new Device.Device({body: {deviceId: id}});
             this._devices.set(id, device);
-            device.loadPlugins();
         }
 
         GLib.timeout_add_seconds(300, 5, this.reconnect.bind(this));

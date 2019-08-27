@@ -151,9 +151,11 @@ var Device = GObject.registerClass({
             g_interface_info: INTERFACE_INFO
         });
         this._dbus_object.add_interface(this._dbus);
+
+        // Load plugins
+        this._loadPlugins();
     }
 
-    /** Device Properties */
     get connected () {
         return this._connected;
     }
@@ -597,12 +599,12 @@ var Device = GObject.registerClass({
                 debug(`Pair accepted by ${this.name}`);
 
                 this._setPaired(true);
-                this.loadPlugins();
+                this._loadPlugins();
             // The device thinks we're unpaired
             } else if (this.paired) {
                 this._setPaired(true);
                 this.pair();
-                this.loadPlugins();
+                this._loadPlugins();
             // The device is requesting pairing
             } else {
                 debug(`Pair request from ${this.name}`);
@@ -613,7 +615,7 @@ var Device = GObject.registerClass({
             debug(`Pair rejected by ${this.name}`);
 
             this._setPaired(false);
-            this.unloadPlugins();
+            this._unloadPlugins();
         }
     }
 
@@ -703,7 +705,7 @@ var Device = GObject.registerClass({
             // then loop back around to send confirmation...
             this.pair();
             // ...before loading plugins
-            this.loadPlugins();
+            this._loadPlugins();
             return;
         }
 
@@ -742,7 +744,7 @@ var Device = GObject.registerClass({
         }
 
         this._setPaired(false);
-        this.unloadPlugins();
+        this._unloadPlugins();
     }
 
     /**
@@ -772,8 +774,8 @@ var Device = GObject.registerClass({
 
     _onDisabledPlugins(settings) {
         let disabled = this.settings.get_strv('disabled-plugins');
-        disabled.map(name => this.unloadPlugin(name));
-        this.allowed_plugins.map(name => this.loadPlugin(name));
+        disabled.map(name => this._unloadPlugin(name));
+        this.allowed_plugins.map(name => this._loadPlugin(name));
 
         // Make sure we're change the contacts store if the plugin was disabled
         if (!this.get_plugin_allowed('contacts')) {
@@ -781,7 +783,7 @@ var Device = GObject.registerClass({
         }
     }
 
-    loadPlugin(name) {
+    _loadPlugin(name) {
         let handler, plugin;
 
         try {
@@ -810,13 +812,13 @@ var Device = GObject.registerClass({
         }
     }
 
-    async loadPlugins() {
+    async _loadPlugins() {
         for (let name of this.allowed_plugins) {
-            await this.loadPlugin(name);
+            await this._loadPlugin(name);
         }
     }
 
-    unloadPlugin(name) {
+    _unloadPlugin(name) {
         let handler, plugin;
 
         try {
@@ -840,9 +842,9 @@ var Device = GObject.registerClass({
         }
     }
 
-    async unloadPlugins() {
+    async _unloadPlugins() {
         for (let name of this._plugins.keys()) {
-            await this.unloadPlugin(name);
+            await this._unloadPlugin(name);
         }
     }
 
