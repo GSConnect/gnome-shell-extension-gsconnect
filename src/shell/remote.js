@@ -388,7 +388,7 @@ var Service = GObject.registerClass({
      * @param {string} object_path - Path interfaces have been removed from
      * @param {string[]} - List of interface names removed
      */
-    async _onInterfacesRemoved(object_path, interfaces) {
+    _onInterfacesRemoved(object_path, interfaces) {
         try {
             // An empty interface list means the object is being removed
             if (interfaces.length === 0) return;
