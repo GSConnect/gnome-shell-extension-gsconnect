@@ -3,20 +3,6 @@
   <menu id="device-menu">
     <section>
       <item>
-        <!-- TRANSLATORS: Change the connection type to Bluetooth -->
-        <attribute name="label" translatable="yes">Switch to Bluetooth</attribute>
-        <attribute name="action">settings.connect-bluetooth</attribute>
-        <attribute name="verb-icon">bluetooth-symbolic</attribute>
-        <attribute name='hidden-when'>action-disabled</attribute>
-      </item>
-      <item>
-        <!-- TRANSLATORS: Change the connection type to TCP/IP -->
-        <attribute name="label" translatable="yes">Switch to LAN</attribute>
-        <attribute name="action">settings.connect-tcp</attribute>
-        <attribute name="verb-icon">network-wireless-symbolic</attribute>
-        <attribute name='hidden-when'>action-disabled</attribute>
-      </item>
-      <item>
         <!-- TRANSLATORS: View the TLS Certificate fingerprint -->
         <attribute name="label" translatable="yes">Encryption Info</attribute>
         <attribute name="action">settings.encryption-info</attribute>

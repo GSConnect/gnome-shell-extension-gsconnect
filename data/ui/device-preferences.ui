@@ -32,7 +32,7 @@
                     <property name="margin_bottom">32</property>
                     <property name="orientation">vertical</property>
                     <child>
-                      <object class="GtkLabel" id="sharing-list-label">
+                      <object class="GtkLabel" id="desktop-list-label">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">start</property>
@@ -58,7 +58,7 @@
                         <property name="margin_bottom">32</property>
                         <property name="label_xalign">0</property>
                         <child>
-                          <object class="GtkListBox" id="sharing-list">
+                          <object class="GtkListBox" id="desktop-list">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="hexpand">True</property>
@@ -448,6 +448,7 @@
                                 <property name="can_focus">False</property>
                                 <property name="hexpand">True</property>
                                 <property name="selection_mode">none</property>
+                                <signal name="row-activated" handler="_onToggleRowActivated" swapped="no"/>
                                 <child>
                                   <object class="GtkListBoxRow" id="share-receive-row">
                                     <property name="height_request">56</property>

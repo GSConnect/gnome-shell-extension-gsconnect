@@ -147,10 +147,9 @@ var DevicePreferences = GObject.registerClass({
     Children: [
         'sidebar', 'stack', 'infobar',
         // Sharing
-        'sharing-list', 'sharing-page',
+        'sharing', 'sharing-page',
+        'desktop-list', 'clipboard', 'clipboard-sync', 'mousepad', 'mpris', 'systemvolume',
         'share', 'receive-files', 'receive-directory',
-        'clipboard', 'clipboard-sync',
-        'mousepad', 'mpris', 'systemvolume',
         // RunCommand
         'runcommand', 'runcommand-page',
         'command-list',
@@ -222,16 +221,6 @@ var DevicePreferences = GObject.registerClass({
         });
 
         // Connected/Paired
-        this._bluetoothHostChangedId = this.settings.connect(
-            'changed::bluetooth-host',
-            this._onBluetoothHostChanged.bind(this)
-        );
-
-        this._tcpHostChangedId = this.settings.connect(
-            'changed::tcp-host',
-            this._onTcpHostChanged.bind(this)
-        );
-
         this._connectedId = this.device.connect(
             'notify::connected',
             this._onConnected.bind(this)
@@ -296,34 +285,7 @@ var DevicePreferences = GObject.registerClass({
     }
 
     _onConnected(device) {
-        this._onTcpHostChanged();
-        this._onBluetoothHostChanged();
-    }
-
-    _onBluetoothHostChanged() {
-        let action = this.actions.lookup_action('connect-bluetooth');
-        let hasBluetooth = (this.settings.get_string('bluetooth-host').length);
-        let isLan = (this.settings.get_string('last-connection') === 'tcp');
-
-        action.enabled = (isLan && hasBluetooth);
-    }
-
-    _onActivateBluetooth() {
-        this.settings.set_string('last-connection', 'bluetooth');
-        this.device.activate();
-    }
-
-    _onTcpHostChanged() {
-        let action = this.actions.lookup_action('connect-tcp');
-        let hasLan = (this.settings.get_string('tcp-host').length);
-        let isBluetooth = (this.settings.get_string('last-connection') === 'bluetooth');
-
-        action.enabled = (isBluetooth && hasLan);
-    }
-
-    _onActivateLan() {
-        this.settings.set_string('last-connection', 'tcp');
-        this.device.activate();
+        log('FIXME: _onConnected()');
     }
 
     _onEncryptionInfo() {
@@ -356,9 +318,6 @@ var DevicePreferences = GObject.registerClass({
 
             // Device state signals
             this.device.disconnect(this._connectedId);
-
-            this.settings.disconnect(this._bluetoothHostChangedId);
-            this.settings.disconnect(this._tcpHostChangedId);
             this.settings.disconnect(this._pluginsId);
             this.settings.run_dispose();
         }
@@ -424,15 +383,6 @@ var DevicePreferences = GObject.registerClass({
         this.actions.add_action(settings.create_action('talking-pause'));
         this.actions.add_action(settings.create_action('talking-microphone'));
 
-        // Connect Actions
-        let status_bluetooth = new Gio.SimpleAction({name: 'connect-bluetooth'});
-        status_bluetooth.connect('activate', this._onActivateBluetooth.bind(this));
-        this.actions.add_action(status_bluetooth);
-
-        let status_lan = new Gio.SimpleAction({name: 'connect-tcp'});
-        status_lan.connect('activate', this._onActivateLan.bind(this));
-        this.actions.add_action(status_lan);
-
         // Pair Actions
         let encryption_info = new Gio.SimpleAction({name: 'encryption-info'});
         encryption_info.connect('activate', this._onEncryptionInfo.bind(this));
@@ -467,7 +417,7 @@ var DevicePreferences = GObject.registerClass({
         );
 
         // Visibility
-        this.sharing_list.foreach(row => {
+        this.desktop_list.foreach(row => {
             let name = row.get_name();
             row.visible = this.device.get_outgoing_supported(`${name}.request`);
 
@@ -478,9 +428,9 @@ var DevicePreferences = GObject.registerClass({
         });
 
         // Separators & Sorting
-        this.sharing_list.set_header_func(section_separators);
+        this.desktop_list.set_header_func(section_separators);
 
-        this.sharing_list.set_sort_func((row1, row2) => {
+        this.desktop_list.set_sort_func((row1, row2) => {
             row1 = row1.get_child().get_child_at(0, 0);
             row2 = row2.get_child().get_child_at(0, 0);
             return row1.label.localeCompare(row2.label);
@@ -488,36 +438,36 @@ var DevicePreferences = GObject.registerClass({
     }
 
     _onDownloadDirectoryChanged(settings, key) {
-        let download_dir = settings.get_string(key);
+        let receiveDir = settings.get_string(key);
 
-        if (download_dir.length === 0) {
-            download_dir = GLib.get_user_special_dir(
+        if (receiveDir.length === 0) {
+            receiveDir = GLib.get_user_special_dir(
                 GLib.UserDirectory.DIRECTORY_DOWNLOAD
             );
 
             // Account for some corner cases with a fallback
-            if (!download_dir || download_dir === GLib.get_home_dir()) {
-                download_dir = GLib.build_filenamev([
+            if (!receiveDir || receiveDir === GLib.get_home_dir()) {
+                receiveDir = GLib.build_filenamev([
                     GLib.get_home_dir(),
                     'Downloads'
                 ]);
             }
 
-            settings.set_string(key, download_dir);
+            settings.set_string(key, receiveDir);
             return;
         }
 
-        if (this.receive_directory.get_filename() !== download_dir) {
-            this.receive_directory.set_filename(download_dir);
+        if (this.receive_directory.get_filename() !== receiveDir) {
+            this.receive_directory.set_filename(receiveDir);
         }
     }
 
     _onDownloadDirectorySet(button) {
         let settings = this.pluginSettings('share');
-        let download_dir = settings.get_string('receive-directory');
+        let receiveDir = settings.get_string('receive-directory');
         let filename = button.get_filename();
 
-        if (filename !== download_dir) {
+        if (filename !== receiveDir) {
             settings.set_string('receive-directory', filename);
         }
     }
