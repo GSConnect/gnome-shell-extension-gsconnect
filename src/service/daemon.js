@@ -203,17 +203,19 @@ const Service = GObject.registerClass({
      */
     reconnect() {
         for (let [id, device] of this._devices.entries()) {
-            if (!device.connected) {
-                if (device.paired) {
-                    device.activate();
+            switch (true) {
+                case device.connected:
+                    continue;
 
-                // Prune the device if the settings window is not open
-                } else if (!this._window || !this._window.visible) {
+                case device.paired:
+                    device.activate();
+                    break;
+
+                default:
                     device.destroy();
                     this._devices.delete(id);
                     gsconnect.settings.set_strv('devices', this.devices);
                     this.notify('devices');
-                }
             }
         }
 
