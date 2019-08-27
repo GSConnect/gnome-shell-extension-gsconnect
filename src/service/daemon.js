@@ -68,13 +68,6 @@ const Service = GObject.registerClass({
             'The name announced to the network',
             GObject.ParamFlags.READWRITE,
             'GSConnect'
-        ),
-        'type': GObject.ParamSpec.string(
-            'type',
-            'deviceType',
-            'The service device type',
-            GObject.ParamFlags.READABLE,
-            'desktop'
         )
     }
 }, class Service extends Gtk.Application {
