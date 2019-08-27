@@ -201,7 +201,7 @@ var DevicePreferences = GObject.registerClass({
         // menus.translation_domain = 'org.gnome.Shell.Extensions.GSConnect';
 
         // this.menu = menus.get_object('device-menu');
-        // this.menu.prepend_section(null, this.device.menu || this.device.menu_model);
+        // this.menu.prepend_section(null, this.device.menu || this.device.menu);
         // this.insert_action_group('device', this.device.action_group);
 
         // Settings Pages
@@ -243,7 +243,7 @@ var DevicePreferences = GObject.registerClass({
             menus.translation_domain = 'org.gnome.Shell.Extensions.GSConnect';
 
             this._menu = menus.get_object('device-menu');
-            this._menu.prepend_section(null, this.device.menu_model);
+            this._menu.prepend_section(null, this.device.menu);
             this.insert_action_group('device', this.device.action_group);
         }
 

@@ -121,7 +121,7 @@ var Device = GObject.registerClass({
             );
 
             // GMenu
-            this.menu_model = Gio.DBusMenuModel.get(
+            this.menu = Gio.DBusMenuModel.get(
                 this.g_connection,
                 this._service.g_name_owner,
                 this.g_object_path
@@ -237,8 +237,8 @@ var Device = GObject.registerClass({
             if (this.action_group)
                 this.action_group.run_dispose();
 
-            if (this.menu_model)
-                this.menu_model.run_dispose();
+            if (this.menu)
+                this.menu.run_dispose();
 
             if (this._settings)
                 this._settings.run_dispose();

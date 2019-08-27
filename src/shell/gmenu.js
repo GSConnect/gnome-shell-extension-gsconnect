@@ -109,11 +109,11 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         this.actor.connect('destroy', (actor) => actor.disconnect(_mappedId));
 
         // Watch the model for changes
-        let _menuId = this.menu_model.connect(
+        let _menuId = this.menu.connect(
             'items-changed',
             this._onItemsChanged.bind(this)
         );
-        this.connect('destroy', (menu) => menu.menu_model.disconnect(_menuId));
+        this.connect('destroy', (menu) => menu.menu.disconnect(_menuId));
 
         this._onItemsChanged();
     }
@@ -227,8 +227,8 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         this.sub.get_children().map(child => child.destroy());
 
 
-        for (let i = 0, len = this.menu_model.get_n_items(); i < len; i++) {
-            let info = getItemInfo(this.menu_model, i);
+        for (let i = 0, len = this.menu.get_n_items(); i < len; i++) {
+            let info = getItemInfo(this.menu, i);
             let item;
 
             // A regular item
@@ -465,7 +465,7 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
         this._menu_items = new Map();
 
         // GMenu
-        let _itemsChangedId = this.menu_model.connect(
+        let _itemsChangedId = this.menu.connect(
             'items-changed',
             this._onItemsChanged.bind(this)
         );
@@ -485,7 +485,7 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
         );
 
         this.connect('destroy', (actor) => {
-            actor.menu_model.disconnect(_itemsChangedId);
+            actor.menu.disconnect(_itemsChangedId);
             actor.action_group.disconnect(_actionAddedId);
             actor.action_group.disconnect(_actionEnabledChangedId);
             actor.action_group.disconnect(_actionRemovedId);
@@ -600,7 +600,7 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
 
     _setParent(parent) {
         super._setParent(parent);
-        this._onItemsChanged(this.menu_model, 0, 0, this.menu_model.get_n_items());
+        this._onItemsChanged(this.menu, 0, 0, this.menu.get_n_items());
     }
 };
 
