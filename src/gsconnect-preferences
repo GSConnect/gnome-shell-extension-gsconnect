@@ -45,27 +45,6 @@ const Preferences = GObject.registerClass({
             new GLib.VariantType('as'),
             null,
             GObject.ParamFlags.READABLE
-        ),
-        'discoverable': GObject.ParamSpec.boolean(
-            'discoverable',
-            'Discoverable',
-            'Whether the service responds to discovery requests',
-            GObject.ParamFlags.READWRITE,
-            false
-        ),
-        'name': GObject.ParamSpec.string(
-            'name',
-            'deviceName',
-            'The name announced to the network',
-            GObject.ParamFlags.READWRITE,
-            'GSConnect'
-        ),
-        'type': GObject.ParamSpec.string(
-            'type',
-            'deviceType',
-            'The service device type',
-            GObject.ParamFlags.READABLE,
-            'desktop'
         )
     }
 }, class Preferences extends Gtk.Application {
@@ -78,10 +57,6 @@ const Preferences = GObject.registerClass({
         GLib.set_prgname(`${gsconnect.app_id}.Preferences`);
         GLib.set_application_name(_('GSConnect Preferences'));
         this.set_resource_base_path(gsconnect.app_path);
-
-        // Properties
-        gsconnect.settings.bind('public-name', this, 'name', 0);
-        gsconnect.settings.bind('discoverable', this, 'discoverable', 0);
     }
 
     async _init_async() {
