@@ -455,6 +455,128 @@ var Device = GObject.registerClass({
     }
 
     /**
+     * Get the position of a GMenuItem with @actionName in the top level of the
+     * device menu.
+     *
+     * @param {string} actionName - An action name with scope (eg. device.foo)
+     * @return {number} - An 0-based index or -1 if not found
+     */
+    getMenuAction(actionName) {
+        for (let i = 0, len = this.menu.get_n_items(); i < len; i++) {
+            try {
+                let variant = this.menu.get_item_attribute_value(i, 'action', null);
+                let value = variant.unpack();
+
+                if (value === actionName) {
+                    return i;
+                }
+            } catch (e) {
+                debug(e);
+                continue;
+            }
+        }
+
+        return -1;
+    }
+
+    /**
+     * Add a GMenuItem to the top level of the device menu
+     *
+     * @param {Gio.MenuItem} menuItem - A GMenuItem
+     * @param {number} [index] - The position to place the item
+     * @return {number} - The position the item was placed
+     */
+    addMenuItem(menuItem, index = -1) {
+        try {
+            if (index > -1) {
+                this.menu.insert_item(index, menuItem);
+                return index;
+            }
+
+            this.menu.append_item(menuItem);
+            return this.menu.get_n_items();
+        } catch (e) {
+            logError(e, this.name);
+            return -1;
+        }
+    }
+
+    /**
+     * Add a Device GAction to the top level of the device menu
+     *
+     * @param {Gio.Action} action - A GAction
+     * @param {number} [index] - The position to place the item
+     * @param {string} label - A label for the item
+     * @param {string} icon_name - A themed icon name for the item
+     * @return {number} - The position the item was placed
+     */
+    addMenuAction(action, index = -1, label, icon_name) {
+        try {
+            // Create a GMenuItem for @action
+            let item = new Gio.MenuItem();
+
+            if (label)
+                item.set_label(label);
+
+            if (icon_name)
+                item.set_icon(new Gio.ThemedIcon({name: icon_name}));
+
+            item.set_attribute_value(
+                'hidden-when',
+                new GLib.Variant('s', 'action-disabled')
+            );
+
+            item.set_detailed_action(`device.${action.name}`);
+
+            return this.addMenuItem(item, index);
+        } catch (e) {
+            logError(e, this.name);
+            return -1;
+        }
+    }
+
+    /**
+     * Remove a GAction from the top level of the device menu by action name
+     *
+     * @param {string} actionName - A GAction name, including scope
+     * @return {number} - The position the item was removed from or -1
+     */
+    removeMenuAction(actionName) {
+        try {
+            let index = this.getMenuAction(actionName);
+
+            if (index > -1) {
+                this.menu.remove(index);
+            }
+
+            return index;
+        } catch (e) {
+            logError(e, this.name);
+            return -1;
+        }
+    }
+
+    /**
+     * Replace a GAction in the top level of the device menu with the name
+     * @actionName and insert @item in its place. If @actionName is not found
+     * @item will appended to the device menu.
+     *
+     * @param {string} actionName - A GAction name, including scope
+     * @param (Gio.MenuItem} menuItem - A GMenuItem
+     * @return {number} - The position the item was placed
+     */
+    replaceMenuAction(actionName, menuItem) {
+        try {
+            let index = this.removeMenuAction(actionName);
+
+            return this.addMenuItem(menuItem, index);
+        } catch (e) {
+            logError(e, this.name);
+            return -1;
+        }
+    }
+
+    /**
      * Hide a notification, device analog for GApplication.withdraw_notification()
      *
      * @param {string} id - Id for the notification to withdraw

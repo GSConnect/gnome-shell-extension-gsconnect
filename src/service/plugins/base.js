@@ -74,21 +74,25 @@ var Plugin = GObject.registerClass({
         }
     }
 
-    _registerAction(name, index, meta) {
+    _registerAction(name, menuIndex, meta) {
+        // Device Action
         let action = new Gio.SimpleAction({
             name: name,
             parameter_type: meta.parameter_type,
             enabled: this.device.connected
         });
-
-        // Bind the activation
         action.connect('activate', this._activateAction.bind(this));
 
         this.device.add_action(action);
 
         // Menu
-        if (index > -1) {
-            this.device.menu.add_action(action, index, meta.label, meta.icon_name);
+        if (menuIndex > -1) {
+            this.device.addMenuAction(
+                action,
+                menuIndex,
+                meta.label,
+                meta.icon_name
+            );
         }
 
         this._gactions.push(action);
@@ -96,6 +100,8 @@ var Plugin = GObject.registerClass({
 
     /**
      * This is called when a packet is received the plugin is a handler for
+     *
+     * @param {object} packet - A KDE Connect packet
      */
     handlePacket(packet) {
         throw new GObject.NotImplementedError();
@@ -196,7 +202,7 @@ var Plugin = GObject.registerClass({
      */
     destroy() {
         this._gactions.map(action => {
-            this.device.menu.remove_action(`device.${action.name}`);
+            this.device.removeMenuAction(`device.${action.name}`);
             this.device.remove_action(action.name);
         });
 

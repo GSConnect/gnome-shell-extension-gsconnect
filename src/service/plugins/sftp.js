@@ -286,58 +286,86 @@ var Plugin = GObject.registerClass({
         }
     }
 
+    _getUnmountSection() {
+        if (this._unmountSection === undefined) {
+            this._unmountSection = new Gio.Menu();
+
+            let unmountItem = new Gio.MenuItem();
+            unmountItem.set_label(Metadata.actions.unmount.label);
+            unmountItem.set_icon(new Gio.ThemedIcon({
+                name: Metadata.actions.unmount.icon_name
+            }));
+            unmountItem.set_detailed_action('device.unmount');
+            this._unmountSection.append_item(unmountItem);
+        }
+
+        return this._unmountSection;
+    }
+
+    _getSubmenuIcon() {
+        // TODO: this emblem often isn't very visible
+        if (this._submenuIcon === undefined) {
+            this._submenuIcon = new Gio.EmblemedIcon({
+                gicon: new Gio.ThemedIcon({name: 'folder-remote-symbolic'})
+            });
+
+            let emblem = new Gio.Emblem({
+                icon: new Gio.ThemedIcon({name: 'emblem-default'})
+            });
+
+            this._submenuIcon.add_emblem(emblem);
+        }
+
+        return this._submenuIcon;
+    }
+
     /**
      * Replace the 'Mount' item with a submenu of directories
      */
     _addSubmenu() {
-        // Sftp Submenu
-        let submenu = new Gio.Menu();
+        try {
+            // Directories Section
+            let dirSection = new Gio.Menu();
 
-        // Directories Section
-        let directories = new Gio.Menu();
+            for (let [name, uri] of Object.entries(this._directories)) {
+                dirSection.append(name, `device.openPath::${uri}`);
+            }
 
-        for (let [name, uri] of Object.entries(this._directories)) {
-            directories.append(name, `device.openPath::${uri}`);
+            // Unmount Section
+            let unmountSection = this._getUnmountSection();
+
+            // Files Submenu
+            let filesSubmenu = new Gio.Menu();
+            filesSubmenu.append_section(null, dirSection);
+            filesSubmenu.append_section(null, unmountSection);
+
+            // Files Item
+            let filesItem = new Gio.MenuItem();
+            filesItem.set_icon(this._getSubmenuIcon());
+            filesItem.set_label(_('Files'));
+            filesItem.set_submenu(filesSubmenu);
+
+            this.device.replaceMenuAction('device.mount', filesItem);
+        } catch (e) {
+            logError(e);
         }
-
-        submenu.append_section(null, directories);
-
-        // Unmount Section/Item
-        let unmount = new Gio.Menu();
-        unmount.add_action(this.device.lookup_action('unmount'));
-        submenu.append_section(null, unmount);
-
-        // Files Item
-        let item = new Gio.MenuItem();
-        item.set_detailed_action('device.mount');
-
-        // Icon with check emblem
-        // TODO: this emblem often isn't very visible
-        let icon = new Gio.EmblemedIcon({
-            gicon: new Gio.ThemedIcon({name: 'folder-remote-symbolic'})
-        });
-        let emblem = new Gio.Emblem({
-            icon: new Gio.ThemedIcon({name: 'emblem-default'})
-        });
-        icon.add_emblem(emblem);
-        item.set_icon(icon);
-
-        item.set_attribute_value(
-            'hidden-when',
-            new GLib.Variant('s', 'action-disabled')
-        );
-        item.set_label(_('Files'));
-        item.set_submenu(submenu);
-
-        this.device.menu.replace_action('device.mount', item);
     }
 
     _removeSubmenu() {
-        let index = this.device.menu.remove_action('device.mount');
-        let action = this.device.lookup_action('mount');
+        try {
+            let index = this.device.removeMenuAction('device.unmount');
+            let action = this.device.lookup_action('mount');
 
-        if (action !== null) {
-            this.device.menu.add_action(action, index);
+            if (action !== null) {
+                this.device.addMenuAction(
+                    action,
+                    index,
+                    Metadata.actions.mount.label,
+                    Metadata.actions.mount.icon_name
+                );
+            }
+        } catch (e) {
+            logError(e);
         }
     }
 
