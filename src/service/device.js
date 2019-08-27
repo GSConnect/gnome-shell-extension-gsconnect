@@ -806,8 +806,6 @@ var Device = GObject.registerClass({
                 this.connected ? plugin.connected() : plugin.disconnected();
             }
         } catch (e) {
-            e.name = (e.name === 'Error') ? 'PluginError' : e.name;
-            e.plugin = handler.Metadata.label;
             this.service.notify_error(e);
         }
     }

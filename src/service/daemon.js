@@ -464,7 +464,6 @@ const Service = GObject.registerClass({
      * Report a service-level error
      *
      * @param {object} error - An Error or object with name, message and stack
-     * @param {string} context - The scope of the error
      */
     notify_error(error) {
         try {
@@ -502,20 +501,6 @@ const Service = GObject.registerClass({
                     icon = new Gio.ThemedIcon({name: 'dialog-warning'});
                     priority = Gio.NotificationPriority.NORMAL;
                     notif.set_default_action('app.settings');
-                    break;
-
-                case 'PluginError':
-                    id = `${error.plugin}-error`;
-                    title = _('%s Plugin Failed To Load').format(error.plugin);
-                    body = _('Click for more information');
-                    icon = new Gio.ThemedIcon({name: 'dialog-error'});
-                    priority = Gio.NotificationPriority.HIGH;
-                    error = new GLib.Variant('a{ss}', {
-                        name: error.name.trim(),
-                        message: error.message.trim(),
-                        stack: error.stack.trim()
-                    });
-                    notif.set_default_action_and_target('app.error', error);
                     break;
 
                 default:
