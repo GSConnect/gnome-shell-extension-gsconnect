@@ -315,14 +315,6 @@ var ContactChooser = GObject.registerClass({
         this.connect_template();
         super._init(params);
 
-        // Make sure we're using the correct contacts store
-        this.device.bind_property(
-            'contacts',
-            this,
-            'store',
-            GObject.BindingFlags.DEFAULT | GObject.BindingFlags.SYNC_CREATE
-        );
-
         // Setup the contact list
         this.list._entry = this.entry.text;
         this.list.set_filter_func(this._filter);
@@ -331,25 +323,35 @@ var ContactChooser = GObject.registerClass({
         // Cleanup on ::destroy
         this.connect('destroy', this._onDestroy);
 
-        // Initial populate
-        this._populate();
+        // Make sure we're using the correct contacts store
+        this.device.bind_property(
+            'contacts',
+            this,
+            'store',
+            GObject.BindingFlags.SYNC_CREATE
+        );
     }
 
     get store() {
-        return this._store || null;
+        if (this._store === undefined) {
+            this._store = null;
+        }
+
+        return this._store;
     }
 
     set store(store) {
         // Do nothing if the store hasn't changed
-        if (this._store && this._store === store) return;
+        if (this.store === store) return;
 
+        // Unbind the old store
         if (this._store) {
-            // Disconnect the current store
+            // Disconnect from the store
             this._store.disconnect(this._contactAddedId);
             this._store.disconnect(this._contactRemovedId);
             this._store.disconnect(this._contactChangedId);
 
-            // Clear the current list
+            // Clear the contact list
             let rows = this.list.get_children();
 
             for (let i = 0, len = rows.length; i < len; i++) {
@@ -359,30 +361,31 @@ var ContactChooser = GObject.registerClass({
             }
         }
 
-        // Connect to the new store
-        this._contactAddedId = store.connect(
-            'contact-added',
-            this._onContactAdded.bind(this)
-        );
+        // Set the store
+        this._store = store;
 
-        this._contactRemovedId = store.connect(
-            'contact-removed',
-            this._onContactRemoved.bind(this)
-        );
-
-        this._contactChangedId = store.connect(
-            'contact-changed',
-            this._onContactChanged.bind(this)
-        );
-
-        // If we're replacing the store we need to repopulate now
+        // Bind the new store
         if (this._store) {
             this._store = store;
-            this._populate();
 
-        // Otherwise we're waiting for _init() to complete
-        } else {
-            this._store = store;
+            // Connect to the new store
+            this._contactAddedId = store.connect(
+                'contact-added',
+                this._onContactAdded.bind(this)
+            );
+
+            this._contactRemovedId = store.connect(
+                'contact-removed',
+                this._onContactRemoved.bind(this)
+            );
+
+            this._contactChangedId = store.connect(
+                'contact-changed',
+                this._onContactChanged.bind(this)
+            );
+
+            // Populate the list
+            this._populate();
         }
     }
 
