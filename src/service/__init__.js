@@ -575,26 +575,6 @@ GLib.Variant.prototype.full_unpack = _full_unpack;
 
 
 /**
- * A convenience functions for connecting/disconnecting Gtk template callbacks
- */
-Gtk.Widget.prototype.connect_template = function() {
-    this.$templateHandlers = [];
-
-    Gtk.Widget.set_connect_func.call(this, (builder, obj, signalName, handlerName, connectObj, flags) => {
-        this.$templateHandlers.push([
-            obj,
-            obj.connect(signalName, this[handlerName].bind(this))
-        ]);
-    });
-};
-
-Gtk.Widget.prototype.disconnect_template = function() {
-    Gtk.Widget.set_connect_func.call(this, function() {});
-    this.$templateHandlers.map(([obj, id]) => obj.disconnect(id));
-};
-
-
-/**
  * Convenience functions for saving/restoring window geometry
  */
 const _mutter = new Gio.Settings({schema_id: 'org.gnome.mutter'});

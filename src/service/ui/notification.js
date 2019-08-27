@@ -25,7 +25,6 @@ var ReplyDialog = GObject.registerClass({
 }, class Dialog extends Gtk.Dialog {
 
     _init(params) {
-        this.connect_template();
         super._init({
             application: Gio.Application.get_default(),
             device: params.device,
@@ -113,7 +112,6 @@ var ReplyDialog = GObject.registerClass({
     _onDestroy(window) {
         window.device.disconnect(window._connectedId);
         window.message_entry.buffer.disconnect(window._entryChangedId);
-        window.disconnect_template();
     }
 
     _onStateChanged() {

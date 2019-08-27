@@ -26,8 +26,6 @@ var Window = GObject.registerClass({
 }, class Window extends Gtk.ApplicationWindow {
 
     _init() {
-        this.connect_template();
-
         super._init({
             application: Gio.Application.get_default(),
             visible: true
@@ -68,7 +66,6 @@ var Window = GObject.registerClass({
     }
 
     vfunc_delete_event(event) {
-        this.disconnect_template();
         this.application.disconnect(this._devicesChangedId);
     }
 
@@ -319,7 +316,7 @@ var Window = GObject.registerClass({
     _onOpenURI(entry) {
         if (this.sms_uri.text) {
             log(this.sms_uri.text);
-            open_uri(this.sms_uri.text);
+            Gio.AppInfo.launch_default_for_uri_async(this.sms_uri.text, null, null, null);
         }
     }
 

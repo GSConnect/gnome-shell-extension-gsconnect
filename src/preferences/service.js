@@ -374,8 +374,6 @@ var Window = GObject.registerClass({
 }, class PreferencesWindow extends Gtk.ApplicationWindow {
 
     _init(params) {
-        this.connect_template();
-
         super._init(params);
 
         // GSettings

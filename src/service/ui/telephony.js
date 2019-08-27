@@ -27,7 +27,6 @@ var Dialog = GObject.registerClass({
 }, class Dialog extends Gtk.Dialog {
 
     _init(params) {
-        this.connect_template();
         super._init({
             application: Gio.Application.get_default(),
             device: params.device,
@@ -149,7 +148,6 @@ var Dialog = GObject.registerClass({
 
         window.device.disconnect(window._connectedId);
         window.entry.buffer.disconnect(window._entryChangedId);
-        window.disconnect_template();
     }
 
     _onNumberSelected(chooser, number) {

@@ -310,8 +310,6 @@ const ConversationWidget = GObject.registerClass({
 }, class ConversationWidget extends Gtk.Grid {
 
     _init(params) {
-        this.connect_template();
-
         super._init({device: params.device});
         Object.assign(this, params);
 
@@ -424,7 +422,6 @@ const ConversationWidget = GObject.registerClass({
 
     _onDestroy(conversation) {
         conversation.device.disconnect(conversation._connectedId);
-        conversation.disconnect_template();
 
         conversation.list.foreach(message => {
             // HACK: temporary mitigator for mysterious GtkListBox leak
@@ -690,7 +687,6 @@ var Window = GObject.registerClass({
 }, class Window extends Gtk.ApplicationWindow {
 
     _init(params) {
-        this.connect_template();
         super._init(params);
         this.headerbar.subtitle = this.device.name;
 
@@ -845,7 +841,6 @@ var Window = GObject.registerClass({
         GLib.source_remove(window._timestampThreadsId);
         window.contact_chooser.disconnect(window._numberSelectedId);
         window.sms.disconnect(window._threadsChangedId);
-        window.disconnect_template();
     }
 
     _onNewConversation() {
