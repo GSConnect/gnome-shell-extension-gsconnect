@@ -508,7 +508,6 @@ var Service = GObject.registerClass({
 
     clear() {
         for (let device of this.devices) {
-            device.disconnect(device.__deviceChangedId);
             this._devices.delete(device.g_object_path);
             this.emit('device-removed', device);
         }
