@@ -21,6 +21,14 @@ var Metadata = {
             parameter_type: new GLib.VariantType('s'),
             incoming: ['kdeconnect.runcommand'],
             outgoing: ['kdeconnect.runcommand.request']
+        },
+        executeCommand: {
+            label: _('Commands'),
+            icon_name: 'system-run-symbolic',
+
+            parameter_type: new GLib.VariantType('s'),
+            incoming: ['kdeconnect.runcommand'],
+            outgoing: ['kdeconnect.runcommand.request']
         }
     }
 };
@@ -71,15 +79,6 @@ var Plugin = GObject.registerClass({
         // when the device is offline.
         this._remote_commands = {};
         this.cacheProperties(['_remote_commands']);
-
-        // Define executeCommand here so since plugin actions are all stateful
-        let executeCommand = new Gio.SimpleAction({
-            name: 'executeCommand',
-            parameter_type: new GLib.VariantType('s')
-        });
-        executeCommand.connect('activate', this._activateAction.bind(this));
-        this.device.add_action(executeCommand);
-        this._gactions.push(executeCommand);
     }
 
     get remote_commands() {
