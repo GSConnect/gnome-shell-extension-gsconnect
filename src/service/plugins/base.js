@@ -223,8 +223,8 @@ var Plugin = GObject.registerClass({
         }
 
         // Try to avoid any cyclic references from signal handlers
-        GObject.signal_handlers_destroy(this);
-        GObject.signal_handlers_destroy(this.settings);
+        this.settings.run_dispose();
+        this.run_dispose();
     }
 });
 
