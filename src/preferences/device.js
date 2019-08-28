@@ -218,13 +218,6 @@ var DevicePreferences = GObject.registerClass({
             }
         });
 
-        // Connected/Paired
-        this._connectedId = this.device.connect(
-            'notify::connected',
-            this._onConnected.bind(this)
-        );
-        this._onConnected(this.device);
-
         // Hide elements for any disabled plugins
         for (let name of DEVICE_PLUGINS) {
             if (this.hasOwnProperty(name)) {
@@ -282,10 +275,6 @@ var DevicePreferences = GObject.registerClass({
         widget.active = !widget.active;
     }
 
-    _onConnected(device) {
-        log('FIXME: _onConnected()');
-    }
-
     _onEncryptionInfo() {
         let dialog = new Gtk.MessageDialog({
             buttons: Gtk.ButtonsType.OK,
@@ -313,7 +302,6 @@ var DevicePreferences = GObject.registerClass({
             }
 
             // Device state signals
-            this.device.disconnect(this._connectedId);
             this.settings.disconnect(this._pluginsId);
             this.settings.run_dispose();
         }
@@ -401,16 +389,12 @@ var DevicePreferences = GObject.registerClass({
     _sharingSettings() {
         // Share Plugin
         let settings = this.pluginSettings('share');
-        this._onDownloadDirectoryChanged(settings, 'receive-directory');
+
         settings.connect(
             'changed::receive-directory',
-            this._onDownloadDirectoryChanged.bind(this)
+            this._onReceiveDirectoryChanged.bind(this)
         );
-
-        this.receive_directory.connect(
-            'file-set',
-            this._onDownloadDirectorySet.bind(this)
-        );
+        this._onReceiveDirectoryChanged(settings, 'receive-directory');
 
         // Visibility
         this.desktop_list.foreach(row => {
@@ -433,7 +417,7 @@ var DevicePreferences = GObject.registerClass({
         });
     }
 
-    _onDownloadDirectoryChanged(settings, key) {
+    _onReceiveDirectoryChanged(settings, key) {
         let receiveDir = settings.get_string(key);
 
         if (receiveDir.length === 0) {
@@ -450,7 +434,6 @@ var DevicePreferences = GObject.registerClass({
             }
 
             settings.set_string(key, receiveDir);
-            return;
         }
 
         if (this.receive_directory.get_filename() !== receiveDir) {
@@ -458,7 +441,7 @@ var DevicePreferences = GObject.registerClass({
         }
     }
 
-    _onDownloadDirectorySet(button) {
+    _onReceiveDirectorySet(button) {
         let settings = this.pluginSettings('share');
         let receiveDir = settings.get_string('receive-directory');
         let filename = button.get_filename();

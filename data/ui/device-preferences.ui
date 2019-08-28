@@ -517,6 +517,8 @@
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="column_spacing">12</property>
+                            <property name="valign">start</property>
+                            <property name="height_request">56</property>
                             <property name="sensitive" bind-source="receive-files" bind-property="active" bind-flags="sync-create"/>
                             <child>
                               <object class="GtkLabel" id="receive-directory-label">
@@ -543,6 +545,7 @@
                                 <property name="action">select-folder</property>
                                 <property name="width_chars">10</property>
                                 <property name="margin_end">12</property>
+                                <signal name="file-set" handler="_onReceiveDirectorySet" swapped="no"/>
                                 <accessibility>
                                   <relation type="labelled-by" target="receive-directory-label"/>
                                 </accessibility>
