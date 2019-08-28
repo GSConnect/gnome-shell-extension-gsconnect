@@ -235,7 +235,7 @@ var Channel = class Channel {
      * The default implementation will always report failure, for protocols that
      * won't or don't yet support payload transfers.
      */
-    async download(packet) {
+    async download() {
         let result = false;
 
         try {
@@ -249,7 +249,7 @@ var Channel = class Channel {
         return result;
     }
 
-    async upload(port) {
+    async upload() {
         let result = false;
 
         try {
