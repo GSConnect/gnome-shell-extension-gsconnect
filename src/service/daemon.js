@@ -640,7 +640,7 @@ const Service = GObject.registerClass({
 
             try {
                 switch (file.get_uri_scheme()) {
-                    case 'message':
+                    case 'sms':
                         title = _('Send SMS');
                         action = 'uriSms';
                         parameter = new GLib.Variant('s', file.get_uri());
@@ -670,23 +670,20 @@ const Service = GObject.registerClass({
                     parameter: parameter
                 });
             } catch (e) {
-                logError(e, `GSConnect: Opening ${file.get_uri()}:`);
+                logError(e, `GSConnect: Opening ${file.get_uri()}`);
             }
         }
     }
 
     vfunc_shutdown() {
         // Destroy the channel providers first to avoid any further connections
-        try {
-            if (this.lan) this.lan.destroy();
-        } catch (e) {
-            debug(e);
-        }
-
-        try {
-            if (this.bluetooth) this.bluetooth.destroy();
-        } catch (e) {
-            debug(e);
+        for (let channelService of [this.lan, this.bluetooth]) {
+            try {
+                if (channelService !== undefined)
+                    channelService.destroy();
+            } catch (e) {
+                logError(e);
+            }
         }
 
         // This must be done before ::dbus-unregister is emitted
