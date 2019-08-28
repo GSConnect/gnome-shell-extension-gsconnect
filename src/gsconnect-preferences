@@ -145,7 +145,6 @@ const Preferences = GObject.registerClass({
     }
 
     broadcast() {
-        log('FIXME: broadcast()');
         this.service.broadcast();
     }
 
