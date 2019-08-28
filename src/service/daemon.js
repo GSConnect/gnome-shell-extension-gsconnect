@@ -601,6 +601,12 @@ const Service = GObject.registerClass({
         try {
             this.lan = new Lan.ChannelService();
         } catch (e) {
+            if (this.lan !== undefined) {
+                this.lan.destroy();
+                this.lan = undefined;
+            }
+
+            // Remove and add to settings window
             e.name = 'LanError';
             this.notify_error(e);
         }
