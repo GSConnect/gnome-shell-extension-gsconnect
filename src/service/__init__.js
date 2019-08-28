@@ -76,19 +76,6 @@ window.warning = function(message, prefix = null) {
 
 
 /**
- * Convenience Functions
- */
-window.open_uri = function(uri) {
-    Gio.AppInfo.launch_default_for_uri_async(uri, null, null, (src, res) => {
-        try {
-            Gio.AppInfo.launch_default_for_uri_finish(res);
-        } catch (e) {
-            logError(e, uri);
-        }
-    });
-};
-
-/**
  * Get a GFile for @filename, with a numbered suffix if it already exists (eg.
  * `picture.jpg (1)`). If @path is not given, a default directory for downloads
  * will be determined, first with XDG then falling back to ~/Downloads.

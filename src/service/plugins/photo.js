@@ -87,7 +87,8 @@ var Plugin = GObject.registerClass({
 
             // Open the photo on success
             if (success) {
-                open_uri (file.get_uri());
+                let uri = file.get_uri();
+                Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
 
             // Clean up the downloaded file on failure
             } else {

@@ -149,7 +149,8 @@ var Plugin = GObject.registerClass({
 
             // We've been asked to open this directly
             if (success && packet.body.open) {
-                open_uri(file.get_uri());
+                let uri = file.get_uri();
+                Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
                 return;
             }
 
@@ -200,7 +201,8 @@ var Plugin = GObject.registerClass({
     }
 
     _handleUri(packet) {
-        open_uri(packet.body.url);
+        let uri = packet.body.url;
+        Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
     }
 
     _handleText(packet) {

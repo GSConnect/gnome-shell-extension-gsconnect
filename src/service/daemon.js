@@ -402,7 +402,7 @@ const Service = GObject.registerClass({
 
     _github(path = []) {
         let uri = [_GITHUB].concat(path.split('/')).join('/');
-        open_uri(uri);
+        Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
     }
 
     /**
