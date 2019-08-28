@@ -292,8 +292,8 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
     set submenu(submenu) {
         // Get the current allocation and set the actor's clip
         let allocation = this.actor.allocation;
-        let width = allocation.x2 - allocation.x1;
-        let height = allocation.y2 - allocation.y1;
+        let width = Math.max(0, allocation.x2 - allocation.x1);
+        let height = Math.max(0, allocation.y2 - allocation.y1);
         this.actor.set_clip (0, 0, width, height);
 
         // Prepare the appropriate child for tweening
