@@ -238,98 +238,6 @@ var ConnectDialog = GObject.registerClass({
 });
 
 
-/**
- * A Device Row
- */
-const DeviceRow = GObject.registerClass({
-    GTypeName: 'GSConnectDeviceRow',
-    Properties: {
-        'connected': GObject.ParamSpec.boolean(
-            'connected',
-            'deviceConnected',
-            'Whether the device is connected',
-            GObject.ParamFlags.READWRITE,
-            false
-        ),
-        'paired': GObject.ParamSpec.boolean(
-            'paired',
-            'devicePaired',
-            'Whether the device is paired',
-            GObject.ParamFlags.READWRITE,
-            false
-        ),
-        'status': GObject.ParamSpec.string(
-            'status',
-            'Device Status',
-            'The status of the device',
-            GObject.ParamFlags.READWRITE,
-            null
-        )
-    }
-}, class GSConnectDeviceRow extends Gtk.ListBoxRow {
-
-    _init(device) {
-        super._init({
-            height_request: 52,
-            selectable: false
-        });
-
-        this.set_name(device.id);
-        this.device = device;
-
-        let grid = new Gtk.Grid({
-            column_spacing: 12,
-            margin_left: 20, // 20
-            margin_right: 20,
-            margin_bottom: 8, // 16
-            margin_top: 8
-        });
-        this.add(grid);
-
-        let icon = new Gtk.Image({
-            gicon: new Gio.ThemedIcon({name: `${this.device.icon_name}-symbolic`}),
-            icon_size: Gtk.IconSize.BUTTON
-        });
-        grid.attach(icon, 0, 0, 1, 1);
-
-        let title = new Gtk.Label({
-            halign: Gtk.Align.START,
-            hexpand: true,
-            valign: Gtk.Align.CENTER,
-            vexpand: true
-        });
-        device.settings.bind('name', title, 'label', 0);
-        grid.attach(title, 1, 0, 1, 1);
-
-        let status = new Gtk.Label({
-            halign: Gtk.Align.END,
-            hexpand: true,
-            valign: Gtk.Align.CENTER,
-            vexpand: true
-        });
-        this.bind_property('status', status, 'label', 2);
-        grid.attach(status, 2, 0, 1, 1);
-
-        this.connect('notify::connected', () => this.notify('status'));
-        device.bind_property('connected', this, 'connected', 2);
-        this.connect('notify::paired', () => this.notify('status'));
-        device.bind_property('paired', this, 'paired', 2);
-
-        this.show_all();
-    }
-
-    get status() {
-        if (!this.paired) {
-            return _('Unpaired');
-        } else if (!this.connected) {
-            return _('Disconnected');
-        }
-
-        return _('Connected');
-    }
-});
-
-
 function rowSeparators(row, before) {
     let header = row.get_header();
 
@@ -610,6 +518,78 @@ var Window = GObject.registerClass({
         }
     }
 
+    _onDeviceChanged(statusLabel, device, pspec) {
+        switch (false) {
+            case device.paired:
+                statusLabel.label = _('Unpaired');
+                break;
+
+            case device.connected:
+                statusLabel.label = _('Disconnected');
+                break;
+
+            default:
+                statusLabel.label = _('Connected');
+        }
+    }
+
+    _createDeviceRow(device) {
+        let row = new Gtk.ListBoxRow({
+            height_request: 52,
+            selectable: false,
+            visible: true
+        });
+        row.set_name(device.id);
+
+        let grid = new Gtk.Grid({
+            column_spacing: 12,
+            margin_left: 20,
+            margin_right: 20,
+            margin_bottom: 8,
+            margin_top: 8,
+            visible: true
+        });
+        row.add(grid);
+
+        let icon = new Gtk.Image({
+            gicon: new Gio.ThemedIcon({name: `${device.icon_name}-symbolic`}),
+            icon_size: Gtk.IconSize.BUTTON,
+            visible: true
+        });
+        grid.attach(icon, 0, 0, 1, 1);
+
+        let title = new Gtk.Label({
+            halign: Gtk.Align.START,
+            hexpand: true,
+            valign: Gtk.Align.CENTER,
+            vexpand: true,
+            visible: true
+        });
+        device.settings.bind('name', title, 'label', 0);
+        grid.attach(title, 1, 0, 1, 1);
+
+        let status = new Gtk.Label({
+            halign: Gtk.Align.END,
+            hexpand: true,
+            valign: Gtk.Align.CENTER,
+            vexpand: true,
+            visible: true
+        });
+        grid.attach(status, 2, 0, 1, 1);
+
+        device.connect(
+            'notify::connected',
+            this._onDeviceChanged.bind(null, status)
+        );
+        device.connect(
+            'notify::paired',
+            this._onDeviceChanged.bind(null, status)
+        );
+        this._onDeviceChanged(status, device, null);
+
+        return row;
+    }
+
     _onDeviceAdded(service, device) {
         try {
             if (!this.stack.get_child_by_name(device.id)) {
@@ -618,7 +598,7 @@ var Window = GObject.registerClass({
                 this.stack.add_titled(prefs, device.id, device.name);
 
                 // Add a row to the device list
-                prefs.row = new DeviceRow(device);
+                prefs.row = this._createDeviceRow(device);
                 this.device_list.add(prefs.row);
             }
         } catch (e) {
