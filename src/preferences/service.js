@@ -8,8 +8,9 @@ const Gtk = imports.gi.Gtk;
 
 const Device = imports.preferences.device;
 
-
-// Header for support logs
+/*
+ * Header for support logs
+ */
 const LOG_HEADER = new GLib.Bytes(`
 GSConnect Version: ${gsconnect.metadata.version}
 GSConnect Install: ${(gsconnect.is_local) ? 'user' : 'system'}
@@ -241,15 +242,15 @@ var ConnectDialog = GObject.registerClass({
 function rowSeparators(row, before) {
     let header = row.get_header();
 
-    if (!before) {
-        if (header) {
+    if (before === null) {
+        if (header !== null) {
             header.destroy();
         }
 
         return;
     }
 
-    if (!header) {
+    if (header === null) {
         header = new Gtk.Separator({visible: true});
         row.set_header(header);
     }
