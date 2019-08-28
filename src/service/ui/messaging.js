@@ -17,9 +17,9 @@ const Sms = imports.service.plugins.sms;
  * @return {String} - A timestamp similar to what Android Messages uses
  */
 function getTime(time) {
-    time = GLib.DateTime.new_from_unix_local(time / 1000);
+    let date = GLib.DateTime.new_from_unix_local(time / 1000);
     let now = GLib.DateTime.new_now_local();
-    let diff = now.difference(time);
+    let diff = now.difference(date);
 
     switch (true) {
         // Super recent
@@ -30,30 +30,34 @@ function getTime(time) {
         // Under an hour
         case (diff < GLib.TIME_SPAN_HOUR):
             // TRANSLATORS: Time duration in minutes (eg. 15 minutes)
-            return ngettext('%d minute', '%d minutes', (diff / GLib.TIME_SPAN_MINUTE)).format(diff / GLib.TIME_SPAN_MINUTE);
+            return ngettext(
+                '%d minute',
+                '%d minutes',
+                (diff / GLib.TIME_SPAN_MINUTE)
+            ).format(diff / GLib.TIME_SPAN_MINUTE);
 
         // Yesterday, but less than 24 hours ago
-        case (diff < GLib.TIME_SPAN_DAY && (now.get_day_of_month() !== time.get_day_of_month())):
+        case (diff < GLib.TIME_SPAN_DAY && (now.get_day_of_month() !== date.get_day_of_month())):
             // TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
-            return _('Yesterday・%s').format(time.format('%l:%M %p'));
+            return _('Yesterday・%s').format(date.format('%l:%M %p'));
 
         // Less than a day ago
         case (diff < GLib.TIME_SPAN_DAY):
-            return time.format('%l:%M %p');
+            return date.format('%l:%M %p');
 
         // Less than a week ago
         case (diff < (GLib.TIME_SPAN_DAY * 7)):
-            return time.format('%A・%l:%M %p');
+            return date.format('%A・%l:%M %p');
 
         default:
-            return time.format('%b %e');
+            return date.format('%b %e');
     }
 }
 
 
 function getShortTime(time) {
-    time = GLib.DateTime.new_from_unix_local(time / 1000);
-    let diff = GLib.DateTime.new_now_local().difference(time);
+    let date = GLib.DateTime.new_from_unix_local(time / 1000);
+    let diff = GLib.DateTime.new_now_local().difference(date);
 
     switch (true) {
         case (diff < GLib.TIME_SPAN_MINUTE):
@@ -62,17 +66,21 @@ function getShortTime(time) {
 
         case (diff < GLib.TIME_SPAN_HOUR):
             // TRANSLATORS: Time duration in minutes (eg. 15 minutes)
-            return ngettext('%d minute', '%d minutes', (diff / GLib.TIME_SPAN_MINUTE)).format(diff / GLib.TIME_SPAN_MINUTE);
+            return ngettext(
+                '%d minute',
+                '%d minutes',
+                (diff / GLib.TIME_SPAN_MINUTE)
+            ).format(diff / GLib.TIME_SPAN_MINUTE);
 
         // Less than a day ago
         case (diff < GLib.TIME_SPAN_DAY):
-            return time.format('%l:%M %p');
+            return date.format('%l:%M %p');
 
         case (diff < (GLib.TIME_SPAN_DAY * 7)):
-            return time.format('%a');
+            return date.format('%a');
 
         default:
-            return time.format('%b %e');
+            return date.format('%b %e');
     }
 }
 
