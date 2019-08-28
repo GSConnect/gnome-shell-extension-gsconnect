@@ -59,7 +59,7 @@ var Plugin = GObject.registerClass({
         this._launcher.setenv('GSCONNECT_DEVICE_ID', this.device.id, false);
         this._launcher.setenv('GSCONNECT_DEVICE_NAME', this.device.name, false);
         this._launcher.setenv('GSCONNECT_DEVICE_ICON', this.device.icon_name, false);
-        this._launcher.setenv('GSCONNECT_DEVICE_DBUS', this.device.object_path, false);
+        this._launcher.setenv('GSCONNECT_DEVICE_DBUS', this.device.g_object_path, false);
 
         // Local Commands
         this.settings.connect(
