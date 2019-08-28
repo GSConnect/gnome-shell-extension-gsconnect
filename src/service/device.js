@@ -6,6 +6,7 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 const Bluetooth = imports.service.protocol.bluetooth;
+const Core = imports.service.protocol.core;
 const Lan = imports.service.protocol.lan;
 const DBus = imports.service.components.dbus;
 
@@ -127,13 +128,13 @@ var Device = GObject.registerClass({
 
         // Export an object path for the device
         this._dbus_object = new Gio.DBusObjectSkeleton({
-            g_object_path: this.object_path
+            g_object_path: this.g_object_path
         });
         this.service.objectManager.export(this._dbus_object);
 
         // Export GActions
         this._actionsId = Gio.DBus.session.export_action_group(
-            this.object_path,
+            this.g_object_path,
             this
         );
         this._registerActions();
@@ -141,7 +142,7 @@ var Device = GObject.registerClass({
         // Export GMenu
         this.menu = new Gio.Menu();
         this._menuId = Gio.DBus.session.export_menu_model(
-            this.object_path,
+            this.g_object_path,
             this.menu
         );
 
@@ -278,7 +279,7 @@ var Device = GObject.registerClass({
         return this.settings.get_string('type');
     }
 
-    get object_path() {
+    get g_object_path() {
         return `${gsconnect.app_path}/Device/${this.id.replace(/\W+/g, '_')}`;
     }
 
@@ -344,6 +345,10 @@ var Device = GObject.registerClass({
      */
     _setDisconnected() {
         debug(`Disconnected from ${this.name} (${this.id})`);
+
+        // Clear the packet queue, because we've really disconnected
+        this._queue = [];
+        this._lock = false;
 
         this._channel = null;
         this._connected = false;
