@@ -79,7 +79,8 @@ async function generateSupportLog(time) {
             });
         });
 
-        open_uri(file.get_uri());
+        let uri = file.get_uri();
+        Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
     } catch (e) {
         logError(e);
     }
