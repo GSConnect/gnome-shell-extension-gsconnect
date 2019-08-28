@@ -980,6 +980,7 @@ var Device = GObject.registerClass({
     destroy() {
         //
         this.settings.disconnect(this._disabledPluginsId);
+        this.settings.run_dispose();
 
         // Close the channel if still connected
         if (this._channel !== null) {
