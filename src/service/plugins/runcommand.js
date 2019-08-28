@@ -62,7 +62,7 @@ var Plugin = GObject.registerClass({
         this._launcher.setenv('GSCONNECT_DEVICE_DBUS', this.device.g_object_path, false);
 
         // Local Commands
-        this.settings.connect(
+        this._commandListChangedId = this.settings.connect(
             'changed::command-list',
             this.sendCommandList.bind(this)
         );
@@ -235,6 +235,14 @@ var Plugin = GObject.registerClass({
             type: 'kdeconnect.runcommand',
             body: {commandList: commands}
         });
+    }
+
+    destroy() {
+        if (this._commandListChangedId) {
+            this.settings.disconnect(this._commandListChangedId);
+        }
+
+        super.destroy();
     }
 });
 
