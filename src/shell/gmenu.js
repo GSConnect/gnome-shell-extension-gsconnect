@@ -109,11 +109,11 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         this.actor.connect('destroy', (actor) => actor.disconnect(_mappedId));
 
         // Watch the model for changes
-        let _menuId = this.menu.connect(
+        let _menuId = this.model.connect(
             'items-changed',
             this._onItemsChanged.bind(this)
         );
-        this.connect('destroy', (menu) => menu.menu.disconnect(_menuId));
+        this.connect('destroy', (menu) => menu.model.disconnect(_menuId));
 
         this._onItemsChanged();
     }
@@ -187,7 +187,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
 
     _addGMenuSection(model) {
         let section = new ListBox({
-            menu_model: model,
+            model: model,
             action_group: this.action_group
         });
         this.addMenuItem(section);
@@ -210,7 +210,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
 
         // Create the submenu
         item.submenu = new ListBox({
-            menu_model: model,
+            model: model,
             action_group: this.action_group,
             submenu_for: item,
             _parent: this
@@ -227,8 +227,8 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         this.sub.get_children().map(child => child.destroy());
 
 
-        for (let i = 0, len = this.menu.get_n_items(); i < len; i++) {
-            let info = getItemInfo(this.menu, i);
+        for (let i = 0, len = this.model.get_n_items(); i < len; i++) {
+            let info = getItemInfo(this.model, i);
             let item;
 
             // A regular item
@@ -384,7 +384,7 @@ var IconButton = GObject.registerClass({
                 this.connect('notify::checked', this._onChecked);
 
                 this.submenu = new ListBox({
-                    menu_model: link.value,
+                    model: link.value,
                     action_group: this.action_group
                 });
 
@@ -465,31 +465,33 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
         this._menu_items = new Map();
 
         // GMenu
-        let _itemsChangedId = this.menu.connect(
+        this._itemsChangedId = this.model.connect(
             'items-changed',
             this._onItemsChanged.bind(this)
         );
 
         // GActions
-        let _actionAddedId = this.action_group.connect(
+        this._actionAddedId = this.action_group.connect(
             'action-added',
             this._onActionChanged.bind(this)
         );
-        let _actionEnabledChangedId = this.action_group.connect(
+        this._actionEnabledChangedId = this.action_group.connect(
             'action-enabled-changed',
             this._onActionChanged.bind(this)
         );
-        let _actionRemovedId = this.action_group.connect(
+        this._actionRemovedId = this.action_group.connect(
             'action-removed',
             this._onActionChanged.bind(this)
         );
 
-        this.connect('destroy', (actor) => {
-            actor.menu.disconnect(_itemsChangedId);
-            actor.action_group.disconnect(_actionAddedId);
-            actor.action_group.disconnect(_actionEnabledChangedId);
-            actor.action_group.disconnect(_actionRemovedId);
-        });
+        this.connect('destroy', this._onDestroy);
+    }
+
+    _onDestroy(iconBox) {
+        iconBox.model.disconnect(iconBox._itemsChangedId);
+        iconBox.action_group.disconnect(iconBox._actionAddedId);
+        iconBox.action_group.disconnect(iconBox._actionEnabledChangedId);
+        iconBox.action_group.disconnect(iconBox._actionRemovedId);
     }
 
     get submenu() {
@@ -600,7 +602,7 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
 
     _setParent(parent) {
         super._setParent(parent);
-        this._onItemsChanged(this.menu, 0, 0, this.menu.get_n_items());
+        this._onItemsChanged(this.model, 0, 0, this.model.get_n_items());
     }
 };
 
