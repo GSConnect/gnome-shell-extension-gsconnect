@@ -1,5 +1,6 @@
 'use strict';
 
+const Gdk = imports.gi.Gdk;
 const GdkPixbuf = imports.gi.GdkPixbuf;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
@@ -276,6 +277,7 @@ var Window = GObject.registerClass({
         'service-menu', 'service-edit', 'service-entry', 'service-refresh',
         'device-menu', 'prev-button',
 
+        // Focus Box
         'service-window', 'service-box',
 
         // Device List
@@ -349,7 +351,7 @@ var Window = GObject.registerClass({
         );
 
         // Restore window size/maximized/position
-        this.restore_geometry();
+        this._restoreGeometry();
     }
 
     get display_mode() {
@@ -364,14 +366,12 @@ var Window = GObject.registerClass({
         gsconnect.settings.set_boolean('show-indicators', (mode === 'panel'));
     }
 
-    //vfunc_delete_event(event) {
-    //     this.save_geometry();
-    //     return this.hide_on_delete();
+    vfunc_delete_event(event) {
+        this._saveGeometry();
+        GLib.source_remove(this._refreshSource);
 
-    //     GLib.source_remove (this._refreshSource);
-
-    //     return false;
-    // }
+        return false;
+    }
 
     _refresh() {
         if (this.stack.visible_child_name === 'service' &&
@@ -383,6 +383,47 @@ var Window = GObject.registerClass({
         }
 
         return GLib.SOURCE_CONTINUE;
+    }
+
+    _restoreGeometry() {
+        if (this._mutterSettings === undefined) {
+            this._mutterSettings = new Gio.Settings({
+                schema_id: 'org.gnome.mutter'
+            });
+        }
+
+        // Restore geometry, even if we're going to maximize
+        let [width, height] = this.settings.get_value('window-size').deep_unpack();
+        this.set_default_size(width, height);
+
+        // Respect mutter's settings
+        if (!this._mutterSettings.get_boolean('center-new-windows')) {
+            let [x, y] = this.settings.get_value('window-position').deep_unpack();
+            this.move(x, y);
+        }
+
+        // Maximize if set
+        if (this.settings.get_boolean('window-maximized'))
+            this.maximize();
+    }
+
+    _saveGeometry() {
+        let state = this.get_window().get_state();
+
+        // Maximized State
+        let maximized = (state & Gdk.WindowState.MAXIMIZED);
+        this.settings.set_boolean('window-maximized', maximized);
+
+        // Leave the size and position at the values before maximizing
+        if (maximized || (state & Gdk.WindowState.FULLSCREEN))
+            return;
+
+        // Save the size and position
+        let size = this.get_size();
+        this.settings.set_value('window-size', new GLib.Variant('(ii)', size));
+
+        let position = this.get_position();
+        this.settings.set_value('window-position', new GLib.Variant('(ii)', position));
     }
 
     /**
