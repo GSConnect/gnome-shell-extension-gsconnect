@@ -192,12 +192,12 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
         if (this.menu_type === 'icon') {
             this._actions = new GMenu.IconBox({
                 action_group: this.device.action_group,
-                menu_model: this.device.menu
+                model: this.device.menu
             });
         } else if (this.menu_type === 'list') {
             this._actions = new GMenu.ListBox({
                 action_group: this.device.action_group,
-                menu_model: this.device.menu
+                model: this.device.menu
             });
         }
 
