@@ -54,7 +54,7 @@ const Preferences = GObject.registerClass({
             application_id: `${gsconnect.app_id}.Preferences`
         });
 
-        GLib.set_prgname(`${gsconnect.app_id}.Preferences`);
+        GLib.set_prgname(_('GSConnect Preferences'));
         GLib.set_application_name(_('GSConnect Preferences'));
         this.set_resource_base_path(gsconnect.app_path);
     }
@@ -150,6 +150,12 @@ const Preferences = GObject.registerClass({
     }
 
     vfunc_shutdown() {
+        if (this.service) {
+            this.service.disconnect(this._deviceAddedId);
+            this.service.disconnect(this._deviceRemovedId);
+            this.service.destroy();
+        }
+
         // Chain up last (application->priv->did_shutdown)
         super.vfunc_shutdown();
     }
