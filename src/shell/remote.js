@@ -317,10 +317,6 @@ var Service = GObject.registerClass({
         }
     }
 
-    get available() {
-        return this.devices.filter(device => (device.connected && device.paired));
-    }
-
     get devices() {
         return Array.from(this._devices.values());
     }
@@ -406,6 +402,8 @@ var Service = GObject.registerClass({
             this._devices.delete(object_path);
             this.emit('device-removed', device);
             this.notify('devices');
+
+            device.destroy();
         } catch (e) {
             logError(e, object_path);
         }
@@ -510,12 +508,16 @@ var Service = GObject.registerClass({
         for (let device of this.devices) {
             this._devices.delete(device.g_object_path);
             this.emit('device-removed', device);
+            device.destroy();
         }
+
+        this.notify('devices');
     }
 
     destroy() {
         this.disconnect(this._nameOwnerChangedId);
         this.clear();
+        this.run_dispose();
     }
 });
 
