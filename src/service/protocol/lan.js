@@ -223,7 +223,7 @@ var ChannelService = class ChannelService {
             this._udp4 = null;
 
             // We failed to get either an IPv4 or IPv6 socket to bind
-            if (this._udp6 == null) {
+            if (this._udp6 === null) {
                 throw e;
             }
         }
@@ -592,7 +592,7 @@ var Channel = class Channel extends Core.Channel {
      */
     async accept(connection) {
         try {
-            this._connection = await this._initSocket(connection);
+            this._connection = this._initSocket(connection);
             this._connection = await this._receiveIdent(this._connection);
             this._connection = await this._clientEncryption(this._connection);
         } catch (e) {
@@ -608,7 +608,7 @@ var Channel = class Channel extends Core.Channel {
      */
     async open(connection) {
         try {
-            this._connection = await this._initSocket(connection);
+            this._connection = this._initSocket(connection);
             this._connection = await this._sendIdent(this._connection);
             this._connection = await this._serverEncryption(this._connection);
         } catch (e) {
