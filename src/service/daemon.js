@@ -320,8 +320,6 @@ const Service = GObject.registerClass({
         }
 
         this.add_action(gsconnect.settings.create_action('discoverable'));
-
-        this.set_accels_for_action('app.wiki::Help', ['F1']);
     }
 
     /**
