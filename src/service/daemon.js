@@ -105,7 +105,7 @@ const Service = GObject.registerClass({
     }
 
     get devices() {
-        return Array.from(this._devices.keys());
+        return Array.from(this._devices.values());
     }
 
     get fingerprint() {
@@ -205,17 +205,20 @@ const Service = GObject.registerClass({
         for (let [id, device] of this._devices.entries()) {
             switch (true) {
                 case device.connected:
-                    continue;
+                    break;
 
                 case device.paired:
                     device.activate();
                     break;
 
                 default:
-                    device.destroy();
                     this._devices.delete(id);
-                    gsconnect.settings.set_strv('devices', this.devices);
+                    gsconnect.settings.set_strv(
+                        'devices',
+                        Array.from(this._devices.keys())
+                    );
                     this.notify('devices');
+                    device.destroy();
             }
         }
 
@@ -254,7 +257,11 @@ const Service = GObject.registerClass({
             device = new Device.Device(packet);
             this._devices.set(device.id, device);
 
-            gsconnect.settings.set_strv('devices', this.devices);
+            // Notify
+            gsconnect.settings.set_strv(
+                'devices',
+                Array.from(this._devices.keys())
+            );
             this.notify('devices');
         }
 
@@ -292,7 +299,10 @@ const Service = GObject.registerClass({
             Gio.File.rm_rf(cache);
 
             // Notify
-            gsconnect.settings.set_strv('devices', this.devices);
+            gsconnect.settings.set_strv(
+                'devices',
+                Array.from(this._devices.keys())
+            );
             this.notify('devices');
         }
     }
