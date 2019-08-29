@@ -483,15 +483,15 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
             'action-removed',
             this._onActionChanged.bind(this)
         );
-
-        this.connect('destroy', this._onDestroy);
     }
 
-    _onDestroy(iconBox) {
-        iconBox.model.disconnect(iconBox._itemsChangedId);
-        iconBox.action_group.disconnect(iconBox._actionAddedId);
-        iconBox.action_group.disconnect(iconBox._actionEnabledChangedId);
-        iconBox.action_group.disconnect(iconBox._actionRemovedId);
+    destroy() {
+        this.model.disconnect(this._itemsChangedId);
+        this.action_group.disconnect(this._actionAddedId);
+        this.action_group.disconnect(this._actionEnabledChangedId);
+        this.action_group.disconnect(this._actionRemovedId);
+
+        super.destroy();
     }
 
     get submenu() {
