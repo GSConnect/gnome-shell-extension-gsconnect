@@ -241,10 +241,6 @@ var Device = GObject.registerClass({
             if (this.action_group)
                 this.action_group.run_dispose();
 
-            // FIXME: results in segfault?
-            // if (this.menu)
-            //     this.menu.run_dispose();
-
             if (this._settings)
                 this._settings.run_dispose();
 
