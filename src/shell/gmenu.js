@@ -404,6 +404,10 @@ var IconButton = GObject.registerClass({
             this.child = new St.Icon({gicon: params.info.icon});
         }
 
+        if (params.info.hasOwnProperty('hidden-when')) {
+            this.hidden_when = params.info.hidden_when;
+        }
+
         // Submenu
         for (let link of params.info.links) {
             if (link.name === 'submenu') {
@@ -599,17 +603,21 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
             });
 
             // Set the visibility based on the enabled state
-            button.visible = this.action_group.get_action_enabled(
-                button.action_name
-            );
+            if (button.action_name && button.hidden_when === 'action-disabled') {
+                button.visible = this.action_group.get_action_enabled(
+                    button.action_name
+                );
+            }
 
             // If it has a submenu, add it as a sibling
             if (button.submenu) {
                 this.sub.add_child(button.submenu.actor);
             }
 
-            // Track the item
-            this._menu_items.set(button.action_name, button);
+            // Track the item if it has an action
+            if (button.action_name !== undefined) {
+                this._menu_items.set(button.action_name, button);
+            }
 
             // Insert it in the box at the defined position
             this.box.insert_child_at_index(button, index);
