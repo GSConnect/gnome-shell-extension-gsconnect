@@ -162,7 +162,7 @@ var Plugin = GObject.registerClass({
 
             // This is the actual call to mount the device
             await new Promise((resolve, reject) => {
-                let file = Gio.File.new_for_uri(this._uri);
+                let file = Gio.File.new_for_uri(this.info.uri);
 
                 file.mount_enclosing_volume(0, op, null, (file, res) => {
                     try {
@@ -192,7 +192,7 @@ var Plugin = GObject.registerClass({
                 let uri = mount.get_root().get_uri();
 
                 // Check if this is our mount
-                if (this._uri === uri) {
+                if (this.info.uri === uri) {
                     this._gmount = mount;
                     this._gmount.connect('unmounted', this.unmount.bind(this));
                     this._addSymlink(mount);
@@ -340,6 +340,7 @@ var Plugin = GObject.registerClass({
 
             // Files Item
             let filesItem = new Gio.MenuItem();
+            filesItem.set_detailed_action('device.mount');
             filesItem.set_icon(this._getSubmenuIcon());
             filesItem.set_label(_('Files'));
             filesItem.set_submenu(filesSubmenu);
@@ -352,7 +353,7 @@ var Plugin = GObject.registerClass({
 
     _removeSubmenu() {
         try {
-            let index = this.device.removeMenuAction('device.unmount');
+            let index = this.device.removeMenuAction('device.mount');
             let action = this.device.lookup_action('mount');
 
             if (action !== null) {
