@@ -273,7 +273,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         }
     }
 
-    async _onKeybindingsChanged(device) {
+    _onKeybindingsChanged(device) {
         try {
             // Reset any existing keybindings
             if (device.hasOwnProperty('_keybindings')) {
