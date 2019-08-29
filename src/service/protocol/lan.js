@@ -425,42 +425,38 @@ var Channel = class Channel extends Core.Channel {
     }
 
     async _authenticate(connection) {
-        try {
-            // Standard TLS Handshake
-            await this._handshake(connection);
+        // Standard TLS Handshake
+        await this._handshake(connection);
 
-            // Get a GSettings object for this deviceId
-            let id = (this.device) ? this.device.id : this.identity.body.deviceId;
-            let settings = new Gio.Settings({
-                settings_schema: gsconnect.gschema.lookup(
-                    'org.gnome.Shell.Extensions.GSConnect.Device',
-                    true
-                ),
-                path: `/org/gnome/shell/extensions/gsconnect/device/${id}/`
-            });
-            let cert_pem = settings.get_string('certificate-pem');
+        // Get a GSettings object for this deviceId
+        let id = (this.device) ? this.device.id : this.identity.body.deviceId;
+        let settings = new Gio.Settings({
+            settings_schema: gsconnect.gschema.lookup(
+                'org.gnome.Shell.Extensions.GSConnect.Device',
+                true
+            ),
+            path: `/org/gnome/shell/extensions/gsconnect/device/${id}/`
+        });
+        let cert_pem = settings.get_string('certificate-pem');
 
-            // If we have a certificate for this deviceId, we can verify it
-            if (cert_pem !== '') {
-                let certificate = Gio.TlsCertificate.new_from_pem(cert_pem, -1);
-                let valid = certificate.is_same(connection.peer_certificate);
+        // If we have a certificate for this deviceId, we can verify it
+        if (cert_pem !== '') {
+            let certificate = Gio.TlsCertificate.new_from_pem(cert_pem, -1);
+            let valid = certificate.is_same(connection.peer_certificate);
 
-                // This is a fraudulent certificate; notify the user
-                if (!valid) {
-                    let error = new Error();
-                    error.name = 'AuthenticationError';
-                    error.deviceName = this.identity.body.deviceName;
-                    error.deviceHost = connection.base_io_stream.get_remote_address().address.to_string();
-                    this.service.notify_error(error);
+            // This is a fraudulent certificate; notify the user
+            if (!valid) {
+                let error = new Error();
+                error.name = 'AuthenticationError';
+                error.deviceName = this.identity.body.deviceName;
+                error.deviceHost = connection.base_io_stream.get_remote_address().address.to_string();
+                this.service.notify_error(error);
 
-                    throw error;
-                }
+                throw error;
             }
-
-            return connection;
-        } catch (e) {
-            return Promise.reject(e);
         }
+
+        return connection;
     }
 
     /**
