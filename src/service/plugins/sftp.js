@@ -214,7 +214,9 @@ var Plugin = GObject.registerClass({
         }
     }
 
-    _unmount(mount) {
+    _unmount(mount = null) {
+        if (!mount) return Promise.resolve();
+
         return new Promise((resolve, reject) => {
             let op = new Gio.MountOperation();
 
@@ -450,7 +452,9 @@ var Plugin = GObject.registerClass({
     mount() {
         this.device.sendPacket({
             type: 'kdeconnect.sftp.request',
-            body: {startBrowsing: true}
+            body: {
+                startBrowsing: true
+            }
         });
     }
 
@@ -459,19 +463,19 @@ var Plugin = GObject.registerClass({
      */
     async unmount() {
         try {
-            // Skip since this will always fail
-            if (this._gmount) {
-                await this._unmount(this._gmount);
-            }
+            await this._unmount(this._gmount);
         } catch (e) {
             debug(e, this.device.name);
+        }
 
         // Always reset the state and menu
-        } finally {
+        try {
             this._directories = {};
             this._gmount = null;
             this._mounting = false;
             this._removeSubmenu();
+        } catch (e) {
+            debug(e);
         }
     }
 
