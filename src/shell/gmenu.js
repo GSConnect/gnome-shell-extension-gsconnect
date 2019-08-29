@@ -281,16 +281,14 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
     }
 
     _onTransitionsCompleted(actor) {
-        let menu = actor.get_parent()._delegate;
-
-        if (menu.submenu) {
-            menu.box.visible = false;
+        if (this.submenu) {
+            this.box.visible = false;
         } else {
-            menu.sub.visible = false;
-            menu.sub.get_children().map(menu => menu.hide());
+            this.sub.visible = false;
+            this.sub.get_children().map(menu => menu.hide());
         }
 
-        menu.actor.remove_clip();
+        this.actor.remove_clip();
     }
 
     get submenu() {
