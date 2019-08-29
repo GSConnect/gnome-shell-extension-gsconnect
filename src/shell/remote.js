@@ -390,7 +390,7 @@ var Service = GObject.registerClass({
         try {
             // If the service stopped, clear all devices before restarting
             if (this.g_name_owner === null) {
-                this.clear();
+                this._clearDevices();
                 await this._GetManagedObjects();
 
             // Now that service is started, add each device manually
@@ -430,6 +430,16 @@ var Service = GObject.registerClass({
                 }
             );
         });
+    }
+
+    _clearDevices() {
+        for (let [object_path, device] of this._devices) {
+            this._devices.delete(object_path);
+            this.emit('device-removed', device);
+            device.destroy();
+        }
+
+        this.notify('devices');
     }
 
     async start() {
@@ -480,22 +490,12 @@ var Service = GObject.registerClass({
         gsconnect.preferences();
     }
 
-    clear() {
-        for (let device of this.devices) {
-            this._devices.delete(device.g_object_path);
-            this.emit('device-removed', device);
-            device.destroy();
-        }
-
-        this.notify('devices');
-    }
-
     destroy() {
         if (this.__disposed === undefined) {
             this.__disposed = true;
 
             this.disconnect(this._nameOwnerChangedId);
-            this.clear();
+            this._clearDevices();
             this.run_dispose();
         }
     }
