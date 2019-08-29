@@ -238,11 +238,10 @@ var Device = GObject.registerClass({
         if (this.__disposed === undefined) {
             this.__disposed = true;
 
-            if (this.action_group)
-                this.action_group.run_dispose();
-
-            if (this._settings)
+            if (this._settings) {
                 this._settings.run_dispose();
+                this._settings = null;
+            }
 
             this.run_dispose();
         }
