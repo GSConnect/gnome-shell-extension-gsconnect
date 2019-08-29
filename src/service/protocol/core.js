@@ -177,10 +177,13 @@ var Channel = class Channel {
                         debug(packet, device.name);
                         device.receivePacket(packet);
                     } catch (e) {
-                        warning(e);
+                        debug(e, device.name);
                     }
                 } catch (e) {
-                    debug(e, device.name);
+                    if (!e.code || e.code !== Gio.IOErrorEnum.CANCELLED) {
+                        debug(e, device.name);
+                    }
+
                     this.close();
                 }
             }
