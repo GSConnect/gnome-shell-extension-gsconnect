@@ -560,39 +560,3 @@ function _full_unpack(obj) {
 
 GLib.Variant.prototype.full_unpack = _full_unpack;
 
-
-/**
- * Convenience functions for saving/restoring window geometry
- */
-const _mutter = new Gio.Settings({schema_id: 'org.gnome.mutter'});
-
-Gtk.Window.prototype.restore_geometry = function() {
-    let [width, height] = this.settings.get_value('window-size').deep_unpack();
-    this.set_default_size(width, height);
-
-    if (!_mutter.get_boolean('center-new-windows')) {
-        let [x, y] = this.settings.get_value('window-position').deep_unpack();
-        this.move(x, y);
-    }
-
-    if (this.settings.get_boolean('window-maximized'))
-        this.maximize();
-};
-
-Gtk.Window.prototype.save_geometry = function() {
-    let state = this.get_window().get_state();
-
-    let maximized = (state & Gdk.WindowState.MAXIMIZED);
-    this.settings.set_boolean('window-maximized', maximized);
-
-    if (maximized || (state & Gdk.WindowState.FULLSCREEN))
-        return;
-
-    // GLib.Variant.new() can handle arrays just fine
-    let size = this.get_size();
-    this.settings.set_value('window-size', new GLib.Variant('(ii)', size));
-
-    let position = this.get_position();
-    this.settings.set_value('window-position', new GLib.Variant('(ii)', position));
-};
-
