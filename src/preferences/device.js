@@ -31,9 +31,20 @@ for (let name in imports.service.plugins) {
 
 
 // A GtkListBoxUpdateHeaderFunc for sections
-function section_separators(row, before) {
-    if (before) {
-        row.set_header(new Gtk.Separator({visible: true}));
+function rowSeparators(row, before) {
+    let header = row.get_header();
+
+    if (before === null) {
+        if (header !== null) {
+            header.destroy();
+        }
+
+        return;
+    }
+
+    if (header === null) {
+        header = new Gtk.Separator({visible: true});
+        row.set_header(header);
     }
 }
 
@@ -146,24 +157,35 @@ var DevicePreferences = GObject.registerClass({
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/device-preferences.ui',
     Children: [
         'sidebar', 'stack', 'infobar',
+
         // Sharing
         'sharing', 'sharing-page',
         'desktop-list', 'clipboard', 'clipboard-sync', 'mousepad', 'mpris', 'systemvolume',
         'share', 'receive-files', 'receive-directory',
+
+        // Battery
+        'battery',
+        'battery-device-label', 'battery-device', 'battery-device-list',
+        'battery-system-label', 'battery-system', 'battery-system-list',
+
         // RunCommand
         'runcommand', 'runcommand-page',
         'command-list',
         'command-toolbar', 'command-add', 'command-remove', 'command-edit', 'command-save',
         'command-editor', 'command-name', 'command-line',
+
         // Notifications
         'notification', 'notification-page',
         'notification-list', 'notification-apps',
+
         // Telephony
         'telephony', 'telephony-page',
         'ringing-list', 'ringing-volume', 'talking-list', 'talking-volume',
+
         // Shortcuts
         'shortcuts-page',
         'shortcuts-actions', 'shortcuts-actions-title', 'shortcuts-actions-list',
+
         // Advanced
         'advanced-page',
         'plugin-list', 'experimental-list'
@@ -204,6 +226,7 @@ var DevicePreferences = GObject.registerClass({
 
         // Settings Pages
         this._sharingSettings();
+        this._batterySettings();
         this._runcommandSettings();
         this._notificationSettings();
         this._telephonySettings();
@@ -330,6 +353,8 @@ var DevicePreferences = GObject.registerClass({
 
         let settings = this.pluginSettings('battery');
         this.actions.add_action(settings.create_action('send-statistics'));
+        this.actions.add_action(settings.create_action('low-battery-notification'));
+        this.actions.add_action(settings.create_action('full-battery-notification'));
 
         settings = this.pluginSettings('clipboard');
         this.actions.add_action(settings.create_action('send-content'));
@@ -400,15 +425,10 @@ var DevicePreferences = GObject.registerClass({
         this.desktop_list.foreach(row => {
             let name = row.get_name();
             row.visible = this.device.get_outgoing_supported(`${name}.request`);
-
-            // Extra check for battery reporting
-            if (name === 'battery') {
-                row.visible = row.visible && true; // FIXME this.service.type === 'laptop';
-            }
         });
 
         // Separators & Sorting
-        this.desktop_list.set_header_func(section_separators);
+        this.desktop_list.set_header_func(rowSeparators);
 
         this.desktop_list.set_sort_func((row1, row2) => {
             row1 = row1.get_child().get_child_at(0, 0);
@@ -452,6 +472,58 @@ var DevicePreferences = GObject.registerClass({
     }
 
     /**
+     * Battery Settings
+     */
+    async _batterySettings() {
+        try {
+            this.battery_device_list.set_header_func(rowSeparators);
+            this.battery_system_list.set_header_func(rowSeparators);
+
+            // If the device can't handle statistics we're done
+            if (!this.device.get_incoming_supported('battery')) {
+                this.battery_system_label.visible = false;
+                this.battery_system.visible = false;
+                return;
+            }
+
+            // Check UPower for a battery
+            let hasBattery = await new Promise((resolve, reject) => {
+                Gio.DBus.system.call(
+                    'org.freedesktop.UPower',
+                    '/org/freedesktop/UPower/devices/DisplayDevice',
+                    'org.freedesktop.DBus.Properties',
+                    'Get',
+                    new GLib.Variant('(ss)', [
+                        'org.freedesktop.UPower.Device',
+                        'IsPresent'
+                    ]),
+                    null,
+                    Gio.DBusCallFlags.NONE,
+                    -1,
+                    null,
+                    (connection, res) => {
+                        try {
+                            let variant = connection.call_finish(res);
+                            let value = variant.deep_unpack()[0];
+                            let isPresent = value.get_boolean();
+
+                            resolve(isPresent);
+                        } catch (e) {
+                            resolve(false);
+                        }
+                    }
+                );
+            });
+
+            this.battery_system_label.visible = hasBattery;
+            this.battery_system.visible = hasBattery;
+        } catch (e) {
+            this.battery_system_label.visible = false;
+            this.battery_system.visible = false;
+        }
+    }
+
+    /**
      * RunCommand Page
      */
     _runcommandSettings() {
@@ -465,7 +537,7 @@ var DevicePreferences = GObject.registerClass({
         this._commands = (typeof this._commands === 'string') ? {} : this._commands;
 
         this.command_list.set_sort_func(title_sort);
-        this.command_list.set_header_func(section_separators);
+        this.command_list.set_header_func(rowSeparators);
 
         Object.keys(this._commands).map(uuid => this._insertCommand(uuid));
     }
@@ -619,7 +691,7 @@ var DevicePreferences = GObject.registerClass({
         this.notification_apps.prev = this.notification_list;
 
         this.notification_apps.set_sort_func(title_sort);
-        this.notification_apps.set_header_func(section_separators);
+        this.notification_apps.set_header_func(rowSeparators);
 
         this._populateApplications(settings);
     }
@@ -710,8 +782,8 @@ var DevicePreferences = GObject.registerClass({
         this.ringing_list.next = this.talking_list;
         this.talking_list.prev = this.ringing_list;
 
-        this.ringing_list.set_header_func(section_separators);
-        this.talking_list.set_header_func(section_separators);
+        this.ringing_list.set_header_func(rowSeparators);
+        this.talking_list.set_header_func(rowSeparators);
     }
 
     /**
@@ -724,7 +796,7 @@ var DevicePreferences = GObject.registerClass({
 
         // Filter & Sort
         this.shortcuts_actions_list.set_filter_func(this._filterPluginKeybindings.bind(this));
-        this.shortcuts_actions_list.set_header_func(section_separators);
+        this.shortcuts_actions_list.set_header_func(rowSeparators);
         this.shortcuts_actions_list.set_sort_func(title_sort);
 
         // Init
@@ -833,7 +905,7 @@ var DevicePreferences = GObject.registerClass({
         advanced_box.set_focus_vadjustment(this.advanced_page.vadjustment);
 
         //
-        this.plugin_list.set_header_func(section_separators);
+        this.plugin_list.set_header_func(rowSeparators);
 
         // Continue focus chain between lists
         this.plugin_list.next = this.experimental_list;

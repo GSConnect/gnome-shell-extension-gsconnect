@@ -146,10 +146,10 @@ var Plugin = GObject.registerClass({
     /**
      * Notify that the remote device considers the battery level low
      */
-    _notifyState() {
+    _batteryNotification(event, title, body, iconName) {
         let buttons = [];
 
-        // Offer the option to locate the device, if available
+        // Offer the option to ring the device, if available
         if (this.device.get_action_enabled('ring')) {
             buttons = [{
                 label: _('Ring'),
@@ -159,17 +159,48 @@ var Plugin = GObject.registerClass({
         }
 
         this.device.showNotification({
-            id: 'battery|threshold',
-            // TRANSLATORS: eg. Google Pixel: Battery is low
-            title: _('%s: Battery is low').format(this.device.name),
-            // TRANSLATORS: eg. 15% remaining
-            body: _('%d%% remaining').format(this.level),
-            icon: new Gio.ThemedIcon({name: 'battery-caution-symbolic'}),
+            id: `battery|${event}`,
+            title: title,
+            body: body,
+            icon: new Gio.ThemedIcon({name: iconName}),
             buttons: buttons
         });
 
         // Save the threshold level
         this._thresholdLevel = this.level;
+    }
+
+    _lowBatteryNotification() {
+        if (!this.settings.get_boolean('low-battery-notification')) {
+            return;
+        }
+
+        this._batteryNotification(
+            'battery|low',
+            // TRANSLATORS: eg. Google Pixel: Battery is low
+            _('%s: Battery is low').format(this.device.name),
+            // TRANSLATORS: eg. 15% remaining
+            _('%d%% remaining').format(this.level),
+            'battery-caution-symbolic'
+        );
+
+        // Save the threshold level
+        this._thresholdLevel = this.level;
+    }
+
+    _fullBatteryNotification() {
+        if (!this.settings.get_boolean('full-battery-notification')) {
+            return;
+        }
+
+        this._batteryNotification(
+            'battery|full',
+            // TRANSLATORS: eg. Google Pixel: Battery is full
+            _('%s: Battery is full').format(this.device.name),
+            // TRANSLATORS: when the battery is fully charged
+            _('Fully Charged'),
+            'battery-full-charged-symbolic'
+        );
     }
 
     /**
@@ -185,14 +216,24 @@ var Plugin = GObject.registerClass({
         if (this._level !== packet.body.currentCharge) {
             this._level = packet.body.currentCharge;
 
+            // If the level is above the threshold hide the notification
             if (this._level > this._thresholdLevel) {
-                this.device.hideNotification('battery|threshold');
+                this.device.hideNotification('battery|low');
+            }
+
+            // If the level just changed to full show a notification
+            if (this._level === 100) {
+                this._fullBatteryNotification();
+
+            // Otherwise hide it
+            } else {
+                this.device.hideNotification('battery|full');
             }
         }
 
         // Device considers the level low
         if (packet.body.thresholdEvent > 0) {
-            this._notifyState();
+            this._lowBatteryNotification();
         }
 
         this._updateEstimate();

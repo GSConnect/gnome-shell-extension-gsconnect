@@ -104,6 +104,12 @@
     <key name="send-statistics" type="b">
       <default>false</default>
     </key>
+    <key name="low-battery-notification" type="b">
+      <default>true</default>
+    </key>
+    <key name="full-battery-notification" type="b">
+      <default>false</default>
+    </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Clipboard">
     <key name="receive-content" type="b">
