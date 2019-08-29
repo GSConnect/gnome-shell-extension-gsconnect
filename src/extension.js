@@ -251,7 +251,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         }
     }
 
-    _onDeviceRemoved(manager, device) {
+    _onDeviceRemoved(service, device, sync = true) {
         try {
             // Stop watching for status changes
             device.disconnect(device.__deviceChangedId);
@@ -267,7 +267,9 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             this._menus[device.g_object_path].destroy();
             delete this._menus[device.g_object_path];
 
-            this._sync();
+            if (sync) {
+                this._sync();
+            }
         } catch (e) {
             logError(e, device.name);
         }
@@ -306,10 +308,13 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
     destroy() {
         // Unhook from Remote.Service
         if (this.service) {
-            this.service.destroy();
             this.service.disconnect(this._deviceAddedId);
             this.service.disconnect(this._deviceRemovedId);
-            this.service.disconnect(this._availableChangedId);
+
+            for (let device of this.service.devices) {
+                this._onDeviceRemoved(this.service, device, false);
+            }
+
             this.service.destroy();
         }
 
