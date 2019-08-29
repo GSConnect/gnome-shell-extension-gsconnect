@@ -717,8 +717,7 @@ var Window = GObject.registerClass({
 
         // Contacts
         this.contact_chooser = new Contacts.ContactChooser({
-            device: this.device,
-            store: this.device.contacts
+            device: this.device
         });
         this.stack.add_named(this.contact_chooser, 'contact-chooser');
 
