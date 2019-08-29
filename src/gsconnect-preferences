@@ -77,11 +77,7 @@ const Preferences = GObject.registerClass({
 
             await this.service.start();
         } catch (e) {
-            Gio.DBusError.strip_remote_error(e);
-
-            if (!e.code || e.code !== Gio.IOErrorEnum.CANCELLED) {
-                logError(e, 'GSConnect');
-            }
+            logError(e, 'GSConnect');
         }
     }
 
