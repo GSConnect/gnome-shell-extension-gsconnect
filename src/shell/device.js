@@ -189,19 +189,21 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
         this._title.actor.add_child(this._battery);
 
         // Actions
+        let actions;
+
         if (this.menu_type === 'icon') {
-            this._actions = new GMenu.IconBox({
+            actions = new GMenu.IconBox({
                 action_group: this.device.action_group,
                 model: this.device.menu
             });
         } else if (this.menu_type === 'list') {
-            this._actions = new GMenu.ListBox({
+            actions = new GMenu.ListBox({
                 action_group: this.device.action_group,
                 model: this.device.menu
             });
         }
 
-        this.addMenuItem(this._actions);
+        this.addMenuItem(actions);
     }
 
     isEmpty() {
