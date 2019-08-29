@@ -70,7 +70,7 @@ var Plugin = GObject.registerClass({
                 this[action.name].call(this);
             }
         } catch (e) {
-            debug(e, action.name);
+            logError(e, action.name);
         }
     }
 
