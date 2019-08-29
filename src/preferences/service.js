@@ -306,7 +306,7 @@ var Window = GObject.registerClass({
         );
 
         // HeaderBar (Service Name)
-        this.headerbar.title = gsconnect.settings.get_string('public-name');
+        this.headerbar.title = gsconnect.settings.get_string('name');
         this.service_entry.text = this.headerbar.title;
 
         // Scroll with keyboard focus
@@ -520,7 +520,7 @@ var Window = GObject.registerClass({
         this.service_edit.visible = true;
         this.service_menu.visible = true;
 
-        this.headerbar.title = gsconnect.settings.get_string('public-name');
+        this.headerbar.title = gsconnect.settings.get_string('name');
         this.headerbar.subtitle = null;
 
         // Panel
@@ -540,7 +540,7 @@ var Window = GObject.registerClass({
     _onSetServiceName(button, event) {
         if (this.service_entry.text.length) {
             this.headerbar.title = this.service_entry.text;
-            gsconnect.settings.set_string('public-name', this.service_entry.text);
+            gsconnect.settings.set_string('name', this.service_entry.text);
         }
 
         this.service_edit.active = false;

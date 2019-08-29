@@ -87,7 +87,7 @@ const Service = GObject.registerClass({
 
         // Properties
         gsconnect.settings.bind('discoverable', this, 'discoverable', 0);
-        gsconnect.settings.bind('public-name', this, 'name', 0);
+        gsconnect.settings.bind('name', this, 'name', 0);
         
         // Command-line
         this._initOptions();
@@ -573,9 +573,17 @@ const Service = GObject.registerClass({
         );
         this._serviceMonitor.connect('changed', () => this.quit());
 
-        // Changing the default public name to the computer's hostname
+        // TODO: added v25, remove after a few releases
+        let publicName = gsconnect.settings.get_string('public-name');
+
+        if (publicName.length > 0) {
+            gsconnect.settings.set_string('name', publicName);
+            gsconnect.settings.reset('public-name');
+        }
+
+        // Set the default name to the computer's hostname
         if (this.name.length === 0) {
-            gsconnect.settings.set_string('public-name', GLib.get_host_name());
+            gsconnect.settings.set_string('name', GLib.get_host_name());
         }
 
         // Init some resources
@@ -593,11 +601,11 @@ const Service = GObject.registerClass({
             appInfo.add_supports_type('x-scheme-handler/sms');
             appInfo.add_supports_type('x-scheme-handler/tel');
         } catch (e) {
-            warning(e);
+            logError(e);
         }
 
         // Keep identity updated and broadcast any name changes
-        gsconnect.settings.connect('changed::public-name', (settings) => {
+        gsconnect.settings.connect('changed::name', (settings) => {
             this.identity.body.deviceName = this.name;
         });
 
