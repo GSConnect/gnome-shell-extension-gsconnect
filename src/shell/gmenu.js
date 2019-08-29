@@ -168,28 +168,40 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         return Clutter.EVENT_PROPAGATE;
     }
 
-    _addGMenuItem(info) {
-        let action_name = info.action.split('.')[1];
-        let action_target = info.target;
+    _onGMenuItemActivate(item, event) {
+        this.emit('activate', item);
 
+        if (item.submenu) {
+            this.submenu = item.submenu;
+        } else if (item.action_name) {
+            this.action_group.activate_action(
+                item.action_name,
+                item.action_target
+            );
+            this.itemActivated();
+        }
+    }
+
+    _addGMenuItem(info) {
         // TODO: Use an image menu item if there's an icon?
         let item = new PopupMenu.PopupMenuItem(info.label);
-        item.actor.visible = this.action_group.get_action_enabled(action_name);
         this.addMenuItem(item);
+
+        if (info.action !== undefined) {
+            item.action_name = info.action.split('.')[1];
+            item.action_target = info.target;
+
+            item.actor.visible = this.action_group.get_action_enabled(
+                item.action_name
+            );
+        }
 
         // Modify the ::activate callback to invoke the GAction or submenu
         item.disconnect(item._activateId);
-
-        item._activateId = item.connect('activate', (item, event) => {
-            this.emit('activate', item);
-
-            if (item.submenu) {
-                this.submenu = item.submenu;
-            } else {
-                this.action_group.activate_action(action_name, action_target);
-                this.itemActivated();
-            }
-        });
+        item._activateId = item.connect(
+            'activate',
+            this._onGMenuItemActivate.bind(this)
+        );
 
         return item;
     }
