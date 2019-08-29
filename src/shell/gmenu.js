@@ -110,7 +110,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         );
 
         // Handle keyboard navigation
-        this._keyPressEventId = this.sub.connect(
+        this._submenuCloseKeyId = this.sub.connect(
             'key-press-event',
             this._onSubmenuCloseKey.bind(this)
         );
