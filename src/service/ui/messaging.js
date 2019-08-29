@@ -1,5 +1,6 @@
 'use strict';
 
+const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
@@ -743,7 +744,6 @@ var Window = GObject.registerClass({
 
         this._sync();
         this._onThreadsChanged();
-
         this._restoreGeometry();
     }
 
