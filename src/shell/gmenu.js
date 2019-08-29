@@ -235,7 +235,6 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         this.removeAll();
         this.sub.get_children().map(child => child.destroy());
 
-
         for (let i = 0, len = this.model.get_n_items(); i < len; i++) {
             let info = getItemInfo(this.model, i);
             let item;
@@ -525,12 +524,12 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
 
     set submenu(submenu) {
         if (submenu) {
-            this.box.get_children().map(button => {
+            for (let button of this.box.get_children()) {
                 if (button.submenu && this._submenu && button.submenu !== submenu) {
                     button.checked = false;
                     button.submenu.actor.hide();
                 }
-            });
+            }
 
             this.sub.set_height(0);
             submenu.actor.show();
