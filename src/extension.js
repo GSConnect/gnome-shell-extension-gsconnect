@@ -310,6 +310,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             this.service.disconnect(this._deviceAddedId);
             this.service.disconnect(this._deviceRemovedId);
             this.service.disconnect(this._availableChangedId);
+            this.service.destroy();
         }
 
         // Disconnect any keybindings
