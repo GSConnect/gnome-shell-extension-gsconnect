@@ -46,6 +46,12 @@ var Plugin = GObject.registerClass({
 
         try {
             this._clipboard = this.service.clipboard;
+
+            // Watch local clipboard for changes
+            this._ownerChangeId = this._clipboard.connect(
+                'owner-change',
+                this._onLocalClipboardChanged.bind(this)
+            );
         } catch (e) {
             this.destroy();
             throw e;
@@ -55,15 +61,12 @@ var Plugin = GObject.registerClass({
         this._localBuffer = '';
         this._remoteBuffer = '';
 
-        // Watch local clipboard for changes
-        this._ownerChangeId = this._clipboard.connect(
-            'owner-change',
-            this._onLocalClipboardChanged.bind(this)
-        );
     }
 
     handlePacket(packet) {
-        if (packet.body.hasOwnProperty('content')) {
+        if (!packet.body.hasOwnProperty('content')) return;
+
+        if (packet.type === 'kdeconnect.clipboard') {
             this._onRemoteClipboardChanged(packet.body.content);
         }
     }
@@ -105,7 +108,9 @@ var Plugin = GObject.registerClass({
 
             this.device.sendPacket({
                 type: 'kdeconnect.clipboard',
-                body: {content: this._localBuffer}
+                body: {
+                    content: this._localBuffer
+                }
             });
         }
     }
@@ -122,7 +127,9 @@ var Plugin = GObject.registerClass({
     }
 
     destroy() {
-        this._clipboard.disconnect(this._ownerChangeId);
+        if (this._clipboard && this._ownerChangeId) {
+            this._clipboard.disconnect(this._ownerChangeId);
+        }
 
         super.destroy();
     }
