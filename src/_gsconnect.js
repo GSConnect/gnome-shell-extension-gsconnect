@@ -1,10 +1,8 @@
 'use strict';
 
-const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
 const GIRepository = imports.gi.GIRepository;
 const GLib = imports.gi.GLib;
-const Gtk = imports.gi.Gtk;
 
 
 /**
