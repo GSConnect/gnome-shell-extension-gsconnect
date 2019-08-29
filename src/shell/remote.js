@@ -487,9 +487,13 @@ var Service = GObject.registerClass({
     }
 
     destroy() {
-        this.disconnect(this._nameOwnerChangedId);
-        this.clear();
-        this.run_dispose();
+        if (this.__disposed === undefined) {
+            this.__disposed = true;
+
+            this.disconnect(this._nameOwnerChangedId);
+            this.clear();
+            this.run_dispose();
+        }
     }
 });
 
