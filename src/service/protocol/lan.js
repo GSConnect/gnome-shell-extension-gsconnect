@@ -108,6 +108,7 @@ var ChannelService = class ChannelService {
             channel.identity.body.tcpHost = host;
             channel.identity.body.tcpPort = '1716';
 
+            // Find a device for the channel
             device = this.service._devices.get(channel.identity.body.deviceId);
 
             switch (true) {
@@ -116,8 +117,8 @@ var ChannelService = class ChannelService {
                     break;
 
                 // A response to a "direct" broadcast, or we're discoverable
-                case this.allowed.has(host):
                 case this.service.discoverable:
+                case this.allowed.has(host):
                     device = await this.service._ensureDevice(channel.identity);
                     break;
 
