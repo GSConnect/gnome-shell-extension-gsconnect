@@ -75,27 +75,31 @@ var Plugin = GObject.registerClass({
     }
 
     _registerAction(name, menuIndex, meta) {
-        // Device Action
-        let action = new Gio.SimpleAction({
-            name: name,
-            parameter_type: meta.parameter_type,
-            enabled: this.device.connected
-        });
-        action.connect('activate', this._activateAction.bind(this));
+        try {
+            // Device Action
+            let action = new Gio.SimpleAction({
+                name: name,
+                parameter_type: meta.parameter_type,
+                enabled: this.device.connected
+            });
+            action.connect('activate', this._activateAction.bind(this));
 
-        this.device.add_action(action);
+            this.device.add_action(action);
 
-        // Menu
-        if (menuIndex > -1) {
-            this.device.addMenuAction(
-                action,
-                menuIndex,
-                meta.label,
-                meta.icon_name
-            );
+            // Menu
+            if (menuIndex > -1) {
+                this.device.addMenuAction(
+                    action,
+                    menuIndex,
+                    meta.label,
+                    meta.icon_name
+                );
+            }
+
+            this._gactions.push(action);
+        } catch (e) {
+            logError(e, `${this.device.name}: ${this.name}`);
         }
-
-        this._gactions.push(action);
     }
 
     /**
@@ -108,8 +112,8 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * These two methods are optional and called by the device in response to
-     * the connection state changing.
+     * These two methods are called by the device in response to the connection
+     * state changing.
      */
     connected() {
         for (let action of this._gactions) {
@@ -201,10 +205,11 @@ var Plugin = GObject.registerClass({
      * any dangling signal handlers.
      */
     destroy() {
-        this._gactions.map(action => {
+        for (let action of this._gactions) {
             this.device.removeMenuAction(`device.${action.name}`);
             this.device.remove_action(action.name);
-        });
+            action.run_dispose();
+        }
 
         // Write the cache to disk synchronously
         if (this.__cache_file && !this.__cache_lock) {
