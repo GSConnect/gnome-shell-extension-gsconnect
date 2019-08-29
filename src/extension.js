@@ -117,7 +117,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
     async _init_async() {
         try {
-            // Device Manager
+            // Service Proxy
             this.service = new Remote.Service();
 
             // Watch for new and removed
@@ -218,7 +218,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         }
     }
 
-    _onDeviceAdded(manager, device) {
+    _onDeviceAdded(service, device) {
         try {
             // Device Indicator
             let indicator = new Device.Indicator({device: device});
@@ -324,7 +324,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         // Disconnect from any GSettings changes
         gsconnect.settings.disconnect(this._gsettingsId);
 
-        // Destroy the UI
+        // Destroy the PanelMenu.SystemIndicator actors
         delete AggregateMenu._gsconnect;
         this.indicators.destroy();
         this._item.destroy();
