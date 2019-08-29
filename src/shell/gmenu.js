@@ -84,7 +84,6 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         this.box.x_expand = true;
         this.box.add_style_class_name('gsconnect-list-box');
         this.box.set_pivot_point(1, 1);
-        this.box.connect('transitions-completed', this._onTransitionsCompleted);
         this.actor.add_child(this.box);
 
         // Submenu Container
@@ -96,25 +95,37 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
             x_expand: true
         });
         this.sub.set_pivot_point(1, 1);
-        this.sub.connect('key-press-event', this._onSubmenuCloseKey);
-        this.sub.connect('transitions-completed', this._onTransitionsCompleted);
         this.sub._delegate = this;
         this.actor.add_child(this.sub);
 
+        // Handle transitions
+        this._boxTransitionsCompletedId = this.box.connect(
+            'transitions-completed',
+            this._onTransitionsCompleted.bind(this)
+        );
+
+        this._subTransitionsCompletedId = this.sub.connect(
+            'transitions-completed',
+            this._onTransitionsCompleted.bind(this)
+        );
+
+        // Handle keyboard navigation
+        this._keyPressEventId = this.sub.connect(
+            'key-press-event',
+            this._onSubmenuCloseKey.bind(this)
+        );
+
         // Refresh the menu when mapped
-        let _mappedId = this.actor.connect(
+        this._mappedId = this.actor.connect(
             'notify::mapped',
             this._onMapped.bind(this)
         );
-        this.actor.connect('destroy', (actor) => actor.disconnect(_mappedId));
 
         // Watch the model for changes
-        let _menuId = this.model.connect(
+        this._itemsChangedId = this.model.connect(
             'items-changed',
             this._onItemsChanged.bind(this)
         );
-        this.connect('destroy', (menu) => menu.model.disconnect(_menuId));
-
         this._onItemsChanged();
     }
 
@@ -137,11 +148,9 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
     }
 
     _onSubmenuCloseKey(actor, event) {
-        let menu = actor.get_parent()._delegate;
-
-        if (menu.submenu && event.get_key_symbol() == Clutter.KEY_Left) {
-            menu.submenu.submenu_for.setActive(true);
-            menu.submenu = null;
+        if (this.submenu && event.get_key_symbol() == Clutter.KEY_Left) {
+            this.submenu.submenu_for.setActive(true);
+            this.submenu = null;
             return Clutter.EVENT_STOP;
         }
 
@@ -339,6 +348,16 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         //
         this._submenu = submenu;
     }
+
+    destroy() {
+        this.actor.disconnect(this._mappedId);
+        this.box.disconnect(this._boxTransitionsCompletedId);
+        this.sub.disconnect(this._subTransitionsCompletedId);
+        this.sub.disconnect(this._submenuCloseKeyId);
+        this.model.disconnect(this._itemsChangedId);
+
+        super.destroy();
+    }
 };
 
 
@@ -441,7 +460,6 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
             vertical: true,
             x_expand: true
         });
-        this.actor.connect('notify::mapped', this._onMapped);
         this.actor._delegate = this;
 
         // Button Box
@@ -463,6 +481,12 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
 
         // Track menu items so we can use ::items-changed
         this._menu_items = new Map();
+
+        // PopupMenu
+        this._mappedId = this.actor.connect(
+            'notify::mapped',
+            this._onMapped.bind(this)
+        );
 
         // GMenu
         this._itemsChangedId = this.model.connect(
@@ -486,6 +510,7 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
     }
 
     destroy() {
+        this.actor.disconnect(this._mappedId);
         this.model.disconnect(this._itemsChangedId);
         this.action_group.disconnect(this._actionAddedId);
         this.action_group.disconnect(this._actionEnabledChangedId);
@@ -519,6 +544,14 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
         this.sub.restore_easing_state();
 
         this._submenu = submenu;
+    }
+
+    _onMapped(actor) {
+        if (!actor.mapped) {
+            this._submenu = null;
+            this.box.get_children().map(button => button.checked = false);
+            this.sub.get_children().map(submenu => submenu.hide());
+        }
     }
 
     _onActionChanged(group, name, enabled) {
@@ -571,16 +604,6 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
 
             // Insert it in the box at the defined position
             this.box.insert_child_at_index(button, index);
-        }
-    }
-
-    _onMapped(actor) {
-        // Close everything down manually when unmapped
-        if (!actor.mapped) {
-            let menu = actor._delegate;
-            menu._submenu = null;
-            menu.box.get_children().map(button => button.checked = false);
-            menu.sub.get_children().map(submenu => submenu.hide());
         }
     }
 
