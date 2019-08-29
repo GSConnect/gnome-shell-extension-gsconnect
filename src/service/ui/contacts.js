@@ -320,9 +320,6 @@ var ContactChooser = GObject.registerClass({
         this.list.set_filter_func(this._filter);
         this.list.set_sort_func(this._sort);
 
-        // Cleanup on ::destroy
-        this.connect('destroy', this._onDestroy);
-
         // Make sure we're using the correct contacts store
         this.device.bind_property(
             'contacts',
@@ -330,6 +327,9 @@ var ContactChooser = GObject.registerClass({
             'store',
             GObject.BindingFlags.SYNC_CREATE
         );
+
+        // Cleanup on ::destroy
+        this.connect('destroy', this._onDestroy);
     }
 
     get store() {
@@ -415,10 +415,7 @@ var ContactChooser = GObject.registerClass({
     }
 
     _onDestroy(chooser) {
-        chooser.store.disconnect(chooser._contactAddedId);
-        chooser.store.disconnect(chooser._contactRemovedId);
-        chooser.store.disconnect(chooser._contactChangedId);
-
+        chooser.store = null;
     }
 
     _onSearchChanged(entry) {
