@@ -107,6 +107,7 @@ var Device = GObject.registerClass({
                         try {
                             resolve(proxy.init_finish(res));
                         } catch (e) {
+                            Gio.DBusError.strip_remote_error(e);
                             reject(e);
                         }
                     }
@@ -143,6 +144,7 @@ var Device = GObject.registerClass({
                         try {
                             resolve(proxy.call_finish(res));
                         } catch (e) {
+                            Gio.DBusError.strip_remote_error(e);
                             reject(e);
                         }
                     }
@@ -400,6 +402,7 @@ var Service = GObject.registerClass({
                 }
             }
         } catch (e) {
+            Gio.DBusError.strip_remote_error(e);
             logError(e);
         }
     }
@@ -438,6 +441,7 @@ var Service = GObject.registerClass({
                     try {
                         resolve(proxy.init_finish(res));
                     } catch (e) {
+                        Gio.DBusError.strip_remote_error(e);
                         reject(e);
                     }
                 }
