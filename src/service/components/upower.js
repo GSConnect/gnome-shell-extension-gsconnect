@@ -14,7 +14,7 @@ var Battery = GObject.registerClass({
     _init() {
         super._init();
 
-        // This will throw an exception
+        // This may throw an exception?
         this.set_object_path_sync(
             '/org/freedesktop/UPower/devices/DisplayDevice',
             null
@@ -49,11 +49,14 @@ var Battery = GObject.registerClass({
             return 0;
         }
     }
+
+    destroy() {
+    }
 });
 
 
 /**
  * The service class for this component
  */
-var Service = Battery;
+var Component = Battery;
 

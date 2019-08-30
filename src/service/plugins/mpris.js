@@ -34,23 +34,25 @@ var Plugin = GObject.registerClass({
         super._init(device, 'mpris');
 
         try {
-            this._notifyPlayersId = this.service.mpris.connect(
+            this._mpris = this.service.components.get('mpris');
+
+            this._notifyPlayersId = this._mpris.connect(
                 'notify::players',
                 this._sendPlayerList.bind(this)
             );
 
-            this._playerChangedId = this.service.mpris.connect(
+            this._playerChangedId = this._mpris.connect(
                 'player-changed',
                 this._onPlayerChanged.bind(this)
             );
 
-            this._playerSeekedId = this.service.mpris.connect(
+            this._playerSeekedId = this._mpris.connect(
                 'player-seeked',
                 this._onPlayerSeeked.bind(this)
             );
         } catch (e) {
             this.destroy();
-            throw new Error('mpris-error');
+            throw e;
         }
     }
 
@@ -148,7 +150,7 @@ var Plugin = GObject.registerClass({
             this._sendPlayerList();
 
         // A request for an unknown player; send the list of players
-        } else if (!this.service.mpris.players.has(packet.body.player)) {
+        } else if (!this._mpris.players.has(packet.body.player)) {
             this._sendPlayerList();
 
         // An album art request
@@ -174,7 +176,7 @@ var Plugin = GObject.registerClass({
         try {
             this._updating = true;
 
-            let player = this.service.mpris.players.get(packet.body.player);
+            let player = this._mpris.players.get(packet.body.player);
 
             // Player Actions
             if (packet.body.hasOwnProperty('action')) {
@@ -312,7 +314,7 @@ var Plugin = GObject.registerClass({
                 return;
             }
 
-            let player = this.service.mpris.players.get(packet.body.player);
+            let player = this._mpris.players.get(packet.body.player);
 
             if (player.Metadata === null) {
                 return;
@@ -356,7 +358,7 @@ var Plugin = GObject.registerClass({
         let playerList = [];
 
         if (this.settings.get_boolean('share-players')) {
-            playerList = this.service.mpris.identities;
+            playerList = this._mpris.identities;
         }
 
         this.device.sendPacket({
@@ -370,9 +372,9 @@ var Plugin = GObject.registerClass({
 
     destroy() {
         try {
-            this.service.mpris.disconnect(this._notifyPlayersId);
-            this.service.mpris.disconnect(this._playerChangedId);
-            this.service.mpris.disconnect(this._playerSeekedId);
+            this._mpris.disconnect(this._notifyPlayersId);
+            this._mpris.disconnect(this._playerChangedId);
+            this._mpris.disconnect(this._playerSeekedId);
         } catch (e) {
             // Silence errors
         }

@@ -45,7 +45,7 @@ var Plugin = GObject.registerClass({
         super._init(device, 'clipboard');
 
         try {
-            this._clipboard = this.service.clipboard;
+            this._clipboard = this.service.components.get('clipboard');
 
             // Watch local clipboard for changes
             this._ownerChangeId = this._clipboard.connect(

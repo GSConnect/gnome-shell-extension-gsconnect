@@ -104,6 +104,14 @@ const Service = GObject.registerClass({
         return Array.from(this._devices.values());
     }
 
+    get components() {
+        if (this._components === undefined) {
+            this._components = new Map();
+        }
+
+        return this._components;
+    }
+
     get fingerprint() {
         return this.certificate.fingerprint();
     }
@@ -345,8 +353,7 @@ const Service = GObject.registerClass({
      */
     _initActions() {
         let actions = [
-            ['broadcast', this._broadcast.bind(this)],
-            ['connect', this._identify.bind(this), 's'],
+            ['broadcast', this.broadcast.bind(this)],
             ['devel', this._devel.bind(this)],
             ['device', this._device.bind(this), '(ssbv)'],
             ['error', this._error.bind(this), 'a{ss}'],
@@ -445,6 +452,24 @@ const Service = GObject.registerClass({
     _github(path = []) {
         let uri = [_GITHUB].concat(path.split('/')).join('/');
         Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
+    }
+
+    /**
+     * Components
+     */
+    _initComponents() {
+        for (let name in imports.service.components) {
+            try {
+                let module = imports.service.components[name];
+
+                if (module.hasOwnProperty('Component')) {
+                    let component = new module.Component();
+                    this.components.set(name, component);
+                }
+            } catch (e) {
+                logError(e, `'${name}' Component`);
+            }
+        }
     }
 
     /**
@@ -572,23 +597,6 @@ const Service = GObject.registerClass({
         }
     }
 
-    /**
-     * Load each script in components/ and instantiate a Service if it has one
-     */
-    _loadComponents() {
-        for (let name in imports.service.components) {
-            try {
-                let module = imports.service.components[name];
-
-                if (module.hasOwnProperty('Service')) {
-                    this[name] = new module.Service();
-                }
-            } catch (e) {
-                logError(e);
-            }
-        }
-    }
-
     vfunc_activate() {
         super.vfunc_activate();
     }
@@ -628,9 +636,7 @@ const Service = GObject.registerClass({
         // GActions & GSettings
         this._initSettings();
         this._initActions();
-
-        // Components (PulseAudio, UPower, etc)
-        this._loadComponents();
+        this._initComponents();
 
         // Lan.ChannelService
         try {
@@ -734,23 +740,13 @@ const Service = GObject.registerClass({
         // This must be done before ::dbus-unregister is emitted
         this._devices.forEach(device => device.destroy());
 
-        // Destroy the remaining components last
-        try {
-            if (this.clipboard) this.clipboard.destroy();
-        } catch (e) {
-            debug(e);
-        }
-        
-        try {
-            if (this.mpris) this.mpris.destroy();
-        } catch (e) {
-            debug(e);
-        }
-
-        try {
-            if (this.notification) this.notification.destroy();
-        } catch (e) {
-            debug(e);
+        // Destroy the components last
+        for (let [name, component] of this.components) {
+            try {
+                component.destroy();
+            } catch (e) {
+                logError(e, `'${name}' Component`);
+            }
         }
 
         // Chain up last (application->priv->did_shutdown)

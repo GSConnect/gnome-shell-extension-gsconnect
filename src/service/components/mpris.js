@@ -254,5 +254,5 @@ var Manager = GObject.registerClass({
 /**
  * The service class for this component
  */
-var Service = Manager;
+var Component = Manager;
 

@@ -259,14 +259,18 @@ var Plugin = GObject.registerClass({
             return;
         }
 
-        this.device.sendPacket({
-            type: 'kdeconnect.battery',
-            body: {
-                currentCharge: this.service.upower.level,
-                isCharging: this.service.upower.charging,
-                thresholdEvent: this.service.upower.threshold
-            }
-        });
+        let upower = this.service.get('upower');
+
+        if (upower) {
+            this.device.sendPacket({
+                type: 'kdeconnect.battery',
+                body: {
+                    currentCharge: upower.level,
+                    isCharging: upower.charging,
+                    thresholdEvent: upower.threshold
+                }
+            });
+        }
     }
 
     /**
@@ -274,16 +278,17 @@ var Plugin = GObject.registerClass({
      */
     _monitorState() {
         try {
+            let upower = this.service.components.get('upower');
+
             switch (true) {
-                // upower failed, already monitoring, no battery or no support
-                case (!this.service.upower):
-                case (this._upowerId > 0):
-                case (this.service.type !== 'laptop'):
                 case (!this.device.get_incoming_supported('battery')):
+                case (this._upowerId > 0):
+                case (!upower):
+                case (!upower.is_present):
                     return;
             }
 
-            this._upowerId = this.service.upower.connect(
+            this._upowerId = upower.connect(
                 'changed',
                 this._sendState.bind(this)
             );
@@ -296,9 +301,18 @@ var Plugin = GObject.registerClass({
     }
 
     _unmonitorState() {
-        if (this._upowerId > 0) {
-            this.service.upower.disconnect(this._upowerId);
-            this._upowerId = 0;
+        try {
+            if (this._upowerId > 0) {
+                let upower = this.service.components.get('upower');
+
+                if (upower) {
+                    upower.disconnect(this._upowerId);
+                }
+
+                this._upowerId = 0;
+            }
+        } catch (e) {
+            logError(e, this.device.name);
         }
     }
 

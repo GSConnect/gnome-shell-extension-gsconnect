@@ -87,24 +87,30 @@ var Plugin = GObject.registerClass({
      * @param {String} eventType - 'ringing' or 'talking'
      */
     _setMediaState(eventType) {
-        if (this.service.pulseaudio) {
+        // Mixer Volume
+        let pulseaudio = this.service.components.get('pulseaudio');
+
+        if (pulseaudio) {
             switch (this.settings.get_string(`${eventType}-volume`)) {
                 case 'lower':
-                    this.service.pulseaudio.lowerVolume();
+                    pulseaudio.lowerVolume();
                     break;
 
                 case 'mute':
-                    this.service.pulseaudio.muteVolume();
+                    pulseaudio.muteVolume();
                     break;
             }
 
             if (eventType === 'talking' && this.settings.get_boolean('talking-microphone')) {
-                this.service.pulseaudio.muteMicrophone();
+                pulseaudio.muteMicrophone();
             }
         }
 
-        if (this.service.mpris && this.settings.get_boolean(`${eventType}-pause`)) {
-            this.service.mpris.pauseAll();
+        // Media Playback
+        let mpris = this.service.components.get('mpris');
+
+        if (mpris && this.settings.get_boolean(`${eventType}-pause`)) {
+            mpris.pauseAll();
         }
     }
 
@@ -113,12 +119,18 @@ var Plugin = GObject.registerClass({
      * sure to unpause before raising volume.
      */
     _restoreMediaState() {
-        if (this.service.mpris) {
-            this.service.mpris.unpauseAll();
+        // Media Playback
+        let mpris = this.service.components.get('mpris');
+
+        if (mpris) {
+            mpris.unpauseAll();
         }
 
-        if (this.service.pulseaudio) {
-            this.service.pulseaudio.restore();
+        // Mixer Volume
+        let pulseaudio = this.service.components.get('pulseaudio');
+
+        if (pulseaudio) {
+            pulseaudio.restore();
         }
     }
 

@@ -184,5 +184,5 @@ var Clipboard = GObject.registerClass({
 /**
  * The service class for this component
  */
-var Service = Clipboard;
+var Component = Clipboard;
 

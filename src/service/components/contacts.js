@@ -366,11 +366,14 @@ var Store = GObject.registerClass({
             debug(e, 'Loading folks');
         }
     }
+
+    destroy() {
+    }
 });
 
 
 /**
  * The service class for this component
  */
-var Service = Store;
+var Component = Store;
 

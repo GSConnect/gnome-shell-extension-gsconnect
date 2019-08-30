@@ -216,11 +216,14 @@ var Mixer = GObject.registerClass({
             logError(e);
         }
     }
+
+    destroy() {
+    }
 });
 
 
 /**
  * The service class for this component
  */
-var Service = Mixer;
+var Component = Mixer;
 
