@@ -619,9 +619,13 @@ const ConversationWidget = GObject.registerClass({
         }
 
         // Prepend the message
-        let row = this._createMessageRow(message);
-        this.list.prepend(row);
-        this.list.invalidate_headers();
+        try {
+            let row = this._createMessageRow(message);
+            this.list.prepend(row);
+            this.list.invalidate_headers();
+        } catch (e) {
+            warning(e);
+        }
     }
 
     /**
