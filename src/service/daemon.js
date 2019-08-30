@@ -84,10 +84,6 @@ const Service = GObject.registerClass({
 
         // Track devices with id as key
         this._devices = new Map();
-
-        // Properties
-        gsconnect.settings.bind('discoverable', this, 'discoverable', 0);
-        gsconnect.settings.bind('name', this, 'name', 0);
         
         // Command-line
         this._initOptions();
@@ -213,7 +209,7 @@ const Service = GObject.registerClass({
 
                 default:
                     this._devices.delete(id);
-                    gsconnect.settings.set_strv(
+                    this.settings.set_strv(
                         'devices',
                         Array.from(this._devices.keys())
                     );
@@ -258,7 +254,7 @@ const Service = GObject.registerClass({
             this._devices.set(device.id, device);
 
             // Notify
-            gsconnect.settings.set_strv(
+            this.settings.set_strv(
                 'devices',
                 Array.from(this._devices.keys())
             );
@@ -299,7 +295,7 @@ const Service = GObject.registerClass({
             Gio.File.rm_rf(cache);
 
             // Notify
-            gsconnect.settings.set_strv(
+            this.settings.set_strv(
                 'devices',
                 Array.from(this._devices.keys())
             );
@@ -308,11 +304,49 @@ const Service = GObject.registerClass({
     }
 
     /**
-     * Service GActions
+     * GSettings
+     */
+    _initSettings() {
+        this.settings = new Gio.Settings({
+            settings_schema: gsconnect.gschema.lookup(gsconnect.app_id, true)
+        });
+
+        // TODO: added v25, remove after a few releases
+        let publicName = this.settings.get_string('public-name');
+
+        if (publicName.length > 0) {
+            this.settings.set_string('name', publicName);
+            this.settings.reset('public-name');
+        }
+
+        // Bound Properties
+        this.settings.bind('discoverable', this, 'discoverable', 0);
+        this.settings.bind('name', this, 'name', 0);
+
+        // Set the default name to the computer's hostname
+        if (this.name.length === 0) {
+            this.settings.set_string('name', GLib.get_host_name());
+        }
+
+        // Keep identity updated and broadcast any name changes
+        this._nameChangedId = this.settings.connect(
+            'changed::name',
+            this._onNameChanged.bind(this)
+        );
+    }
+
+    _onNameChanged(settings, key) {
+        this.identity.body.deviceName = this.name;
+        this._broadcast();
+    }
+
+    /**
+     * GActions
      */
     _initActions() {
         let actions = [
-            ['broadcast', this.broadcast.bind(this)],
+            ['broadcast', this._broadcast.bind(this)],
+            ['connect', this._identify.bind(this), 's'],
             ['devel', this._devel.bind(this)],
             ['device', this._device.bind(this), '(ssbv)'],
             ['error', this._error.bind(this), 'a{ss}'],
@@ -329,7 +363,7 @@ const Service = GObject.registerClass({
             this.add_action(action);
         }
 
-        this.add_action(gsconnect.settings.create_action('discoverable'));
+        this.add_action(this.settings.create_action('discoverable'));
     }
 
     /**
@@ -425,7 +459,7 @@ const Service = GObject.registerClass({
         }
 
         let now = GLib.DateTime.new_now_local().to_unix();
-        let dnd = (gsconnect.settings.get_int('donotdisturb') <= now);
+        let dnd = (this.settings.get_int('donotdisturb') <= now);
 
         // TODO: Maybe the 'enable-sound-alerts' should be left alone/queried
         this._notificationSettings.set_boolean('enable-sound-alerts', dnd);
@@ -573,19 +607,6 @@ const Service = GObject.registerClass({
         );
         this._serviceMonitor.connect('changed', () => this.quit());
 
-        // TODO: added v25, remove after a few releases
-        let publicName = gsconnect.settings.get_string('public-name');
-
-        if (publicName.length > 0) {
-            gsconnect.settings.set_string('name', publicName);
-            gsconnect.settings.reset('public-name');
-        }
-
-        // Set the default name to the computer's hostname
-        if (this.name.length === 0) {
-            gsconnect.settings.set_string('name', GLib.get_host_name());
-        }
-
         // Init some resources
         let provider = new Gtk.CssProvider();
         provider.load_from_resource(gsconnect.app_path + '/application.css');
@@ -604,12 +625,8 @@ const Service = GObject.registerClass({
             logError(e);
         }
 
-        // Keep identity updated and broadcast any name changes
-        gsconnect.settings.connect('changed::name', (settings) => {
-            this.identity.body.deviceName = this.name;
-        });
-
-        // GActions
+        // GActions & GSettings
+        this._initSettings();
         this._initActions();
 
         // Components (PulseAudio, UPower, etc)
@@ -639,7 +656,7 @@ const Service = GObject.registerClass({
         }
 
         // Load cached devices
-        for (let id of gsconnect.settings.get_strv('devices')) {
+        for (let id of this.settings.get_strv('devices')) {
             let device = new Device.Device({body: {deviceId: id}});
             this._devices.set(id, device);
         }
@@ -700,6 +717,10 @@ const Service = GObject.registerClass({
     }
 
     vfunc_shutdown() {
+        // Dispose GSettings
+        this.settings.disconnect(this._nameChangedId);
+        this.settings.run_dispose();
+
         // Destroy the channel providers first to avoid any further connections
         for (let channelService of [this.lan, this.bluetooth]) {
             try {
