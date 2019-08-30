@@ -94,9 +94,17 @@ var Window = GObject.registerClass({
      * Toggling Bluetooth for testing purposes
      */
     _onBluetoothEnabled(widget) {
-        if (widget.active) {
-            this.application.bluetooth = new imports.service.bluetooth.ChannelService();
-            widget.sensitive = false;
+        if (!widget.active || this.application.backends.has('bluetooth')) {
+            return;
+        }
+
+        try {
+            let backend = new imports.service.bluetooth.ChannelService();
+            this.application.backends.set('bluetooth', backend);
+        } catch (e) {
+            logError(e);
+        } finally {
+            widget.sensitive = !this.application.backends.has('bluetooth');
         }
     }
 

@@ -34,10 +34,8 @@ imports.searchPath.unshift(gsconnect.extdatadir);
 imports._gsconnect;
 
 // Local Imports
-const Bluetooth = imports.service.protocol.bluetooth;
 const Core = imports.service.protocol.core;
 const Device = imports.service.device;
-const Lan = imports.service.protocol.lan;
 
 const ServiceUI = imports.service.ui.service;
 
@@ -102,6 +100,14 @@ const Service = GObject.registerClass({
 
     get devices() {
         return Array.from(this._devices.values());
+    }
+
+    get backends() {
+        if (this._backends === undefined) {
+            this._backends = new Map();
+        }
+
+        return this._backends;
     }
 
     get components() {
@@ -473,6 +479,33 @@ const Service = GObject.registerClass({
     }
 
     /**
+     * Backends
+     */
+    _initBackends() {
+        let backends = [
+            //'bluetooth',
+            'lan'
+        ];
+
+        for (let name of backends) {
+            try {
+                let module = imports.service.protocol[name];
+                let backend = new module.ChannelService();
+                this.backends.set(name, backend);
+            } catch (e) {
+                logError(e, `'${name}' Component`);
+
+                // TODO: destroy on failure
+
+                if (name === 'lan') {
+                    e.name = 'LanError';
+                    this.notify_error(e);
+                }
+            }
+        }
+    }
+
+    /**
      * Override Gio.Application.send_notification() to respect donotdisturb
      */
     send_notification(id, notification) {
@@ -637,29 +670,7 @@ const Service = GObject.registerClass({
         this._initSettings();
         this._initActions();
         this._initComponents();
-
-        // Lan.ChannelService
-        try {
-            this.lan = new Lan.ChannelService();
-        } catch (e) {
-            if (this.lan !== undefined) {
-                this.lan.destroy();
-                this.lan = undefined;
-            }
-
-            // Remove and add to settings window
-            e.name = 'LanError';
-            this.notify_error(e);
-        }
-
-        // Bluetooth.ChannelService
-        try {
-            //this.bluetooth = new Bluetooth.ChannelService();
-        } catch (e) {
-            if (this.bluetooth) {
-                this.bluetooth.destroy();
-            }
-        }
+        this._initBackends();
 
         // Load cached devices
         for (let id of this.settings.get_strv('devices')) {
@@ -667,6 +678,7 @@ const Service = GObject.registerClass({
             this._devices.set(id, device);
         }
 
+        // Reconnect to paired devices every 5 seconds
         GLib.timeout_add_seconds(300, 5, this._reconnect.bind(this));
     }
 
@@ -727,17 +739,16 @@ const Service = GObject.registerClass({
         this.settings.disconnect(this._nameChangedId);
         this.settings.run_dispose();
 
-        // Destroy the channel providers first to avoid any further connections
-        for (let channelService of [this.lan, this.bluetooth]) {
+        // Destroy the backends first to avoid any further connections
+        for (let [name, backend] of this.backends) {
             try {
-                if (channelService !== undefined)
-                    channelService.destroy();
+                backend.destroy();
             } catch (e) {
-                logError(e);
+                logError(e, `'${name}' Backend`);
             }
         }
 
-        // This must be done before ::dbus-unregister is emitted
+        // We must unexport the devices before ::dbus-unregister is emitted
         this._devices.forEach(device => device.destroy());
 
         // Destroy the components last
