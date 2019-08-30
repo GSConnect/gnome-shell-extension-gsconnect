@@ -190,7 +190,7 @@ const Service = GObject.registerClass({
 
                 // If not discoverable we'll only broadcast to paired devices
                 case !this.discoverable:
-                    this.reconnect();
+                    this._reconnect();
                     break;
 
                 // We only do true "broadcasts" for LAN
@@ -200,33 +200,6 @@ const Service = GObject.registerClass({
         } catch (e) {
             logError(e);
         }
-    }
-
-    /**
-     * Try to reconnect to each paired device that has disconnected
-     */
-    reconnect() {
-        for (let [id, device] of this._devices.entries()) {
-            switch (true) {
-                case device.connected:
-                    break;
-
-                case device.paired:
-                    device.activate();
-                    break;
-
-                default:
-                    this._devices.delete(id);
-                    this.settings.set_strv(
-                        'devices',
-                        Array.from(this._devices.keys())
-                    );
-                    this.notify('devices');
-                    device.destroy();
-            }
-        }
-
-        return GLib.SOURCE_CONTINUE;
     }
 
     /**
@@ -443,6 +416,33 @@ const Service = GObject.registerClass({
         });
         proc.init(null);
         proc.wait_async(null, null);
+    }
+
+    /**
+     * A GSourceFunc that tries to reconnect to each paired device
+     */
+    _reconnect() {
+        for (let [id, device] of this._devices.entries()) {
+            switch (true) {
+                case device.connected:
+                    break;
+
+                case device.paired:
+                    device.activate();
+                    break;
+
+                default:
+                    this._devices.delete(id);
+                    this.settings.set_strv(
+                        'devices',
+                        Array.from(this._devices.keys())
+                    );
+                    this.notify('devices');
+                    device.destroy();
+            }
+        }
+
+        return GLib.SOURCE_CONTINUE;
     }
 
     _wiki(action, parameter) {
@@ -667,7 +667,7 @@ const Service = GObject.registerClass({
             this._devices.set(id, device);
         }
 
-        GLib.timeout_add_seconds(300, 5, this.reconnect.bind(this));
+        GLib.timeout_add_seconds(300, 5, this._reconnect.bind(this));
     }
 
     vfunc_dbus_register(connection, object_path) {
