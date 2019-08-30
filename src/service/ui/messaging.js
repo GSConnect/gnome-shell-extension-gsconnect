@@ -960,9 +960,13 @@ var Window = GObject.registerClass({
 
         // What's left in the dictionary is new summaries
         for (let message of Object.values(messages)) {
-            let contacts = this.device.contacts.lookupAddresses(message.addresses);
-            let conversation = new ThreadRow(contacts, message);
-            this.thread_list.add(conversation);
+            try {
+                let contacts = this.device.contacts.lookupAddresses(message.addresses);
+                let conversation = new ThreadRow(contacts, message);
+                this.thread_list.add(conversation);
+            } catch (e) {
+                warning(e);
+            }
         }
 
         // Re-sort the summaries
