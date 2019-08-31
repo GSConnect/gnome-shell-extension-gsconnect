@@ -84,6 +84,14 @@ var Channel = class Channel {
         Object.assign(this, params);
     }
 
+    get backend() {
+        return this._backend || null;
+    }
+
+    set backend(backend) {
+        this._backend = backend;
+    }
+
     get cancellable() {
         if (this._cancellable === undefined) {
             this._cancellable = new Gio.Cancellable();

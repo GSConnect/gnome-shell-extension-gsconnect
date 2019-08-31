@@ -288,6 +288,7 @@ var ChannelService = class ChannelService {
 
             // Create a new channel
             let channel = new Channel({
+                backend: this,
                 host: packet.body.tcpHost,
                 identity: packet
             });
