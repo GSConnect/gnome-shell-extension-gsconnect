@@ -4,8 +4,6 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
-const DEVICE_NAME = 'org.gnome.Shell.Extensions.GSConnect.Device';
-
 
 function toHyphenCase(string) {
     if (toHyphenCase.__cache === undefined) {
@@ -90,9 +88,9 @@ var Device = GObject.registerClass({
 
         super._init({
             g_connection: service.g_connection,
-            g_name: service.g_name,
+            g_name: 'org.gnome.Shell.Extensions.GSConnect',
             g_object_path: object_path,
-            g_interface_name: `${service.g_name}.Device`
+            g_interface_name: 'org.gnome.Shell.Extensions.GSConnect.Device'
         });
     }
 
@@ -117,14 +115,14 @@ var Device = GObject.registerClass({
             // GActions
             this.action_group = Gio.DBusActionGroup.get(
                 this.g_connection,
-                this._service.g_name_owner,
+                this.service.g_name_owner,
                 this.g_object_path
             );
 
             // GMenu
             this.menu = Gio.DBusMenuModel.get(
                 this.g_connection,
-                this._service.g_name_owner,
+                this.service.g_name_owner,
                 this.g_object_path
             );
 
@@ -301,7 +299,10 @@ var Service = GObject.registerClass({
     get settings() {
         if (this._settings === undefined) {
             this._settings = new Gio.Settings({
-                settings_schema: gsconnect.gschema.lookup(this.g_name, true),
+                settings_schema: gsconnect.gschema.lookup(
+                    'org.gnome.Shell.Extensions.GSConnect',
+                    true
+                ),
                 path: '/org/gnome/shell/extensions/gsconnect/'
             });
         }
