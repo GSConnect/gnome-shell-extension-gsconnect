@@ -928,7 +928,12 @@ var Window = GObject.registerClass({
         let messages = {};
 
         for (let [thread_id, thread] of Object.entries(this.sms.threads)) {
-            messages[thread_id] = thread[thread.length - 1];
+            let message = thread[thread.length - 1];
+
+            // Skip messages without a body (eg. MMS messages without text)
+            if (message.body) {
+                messages[thread_id] = thread[thread.length - 1];
+            }
         }
 
         // Update existing summaries and destroy old ones
@@ -968,13 +973,9 @@ var Window = GObject.registerClass({
 
         // What's left in the dictionary is new summaries
         for (let message of Object.values(messages)) {
-            try {
-                let contacts = this.device.contacts.lookupAddresses(message.addresses);
-                let conversation = new ThreadRow(contacts, message);
-                this.thread_list.add(conversation);
-            } catch (e) {
-                warning(e);
-            }
+            let contacts = this.device.contacts.lookupAddresses(message.addresses);
+            let conversation = new ThreadRow(contacts, message);
+            this.thread_list.add(conversation);
         }
 
         // Re-sort the summaries
