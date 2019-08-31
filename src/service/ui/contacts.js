@@ -83,7 +83,7 @@ function getPixbufForPath(path, size = null) {
     try {
         data = GLib.file_get_contents(path)[1];
     } catch (e) {
-        warning(e.message, path);
+        debug(e, path);
         return undefined;
     }
 

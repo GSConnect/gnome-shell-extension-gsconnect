@@ -344,7 +344,7 @@ var Plugin = GObject.registerClass({
                 }
             });
         } catch (e) {
-            warning(e, `${this.device.name}: transferring album art`);
+            debug(e, 'transferring album art');
         } finally {
             this._transferring = false;
         }
@@ -913,7 +913,7 @@ var RemotePlayer = GObject.registerClass({
     }
 
     OpenUri(uri) {
-        warning(`${this._Identity}: OpenUri(${uri}): Not Supported`);
+        debug(`OpenUri(${uri}): Not Supported`);
     }
 
     destroy() {

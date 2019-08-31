@@ -156,7 +156,7 @@ var Plugin = GObject.registerClass({
             modifier = keymap.get_entries_for_keyval(Gdk.KEY_Super_L)[1][0];
             XKeycode.Super_L = modifier.keycode;
         } catch (e) {
-            warning('using default modifier keycodes', this.name);
+            debug('using default modifier keycodes');
         }
 
         this.settings.bind(
@@ -913,8 +913,6 @@ var KeyboardInputDialog = GObject.registerClass({
     _grab() {
         if (!this.visible || this._device) return;
 
-        debug('acquiring grab');
-
         let seat = Gdk.Display.get_default().get_default_seat();
         let status = seat.grab(
             this.get_window(),
@@ -926,7 +924,7 @@ var KeyboardInputDialog = GObject.registerClass({
         );
 
         if (status !== Gdk.GrabStatus.SUCCESS) {
-            warning('Grabbing keyboard failed');
+            logError(new Error('Grabbing keyboard failed'));
             return;
         }
 
@@ -937,8 +935,6 @@ var KeyboardInputDialog = GObject.registerClass({
 
     _ungrab() {
         if (this._device) {
-            debug('releasing grab');
-
             this._device.get_seat().ungrab();
             this._device = null;
             this.grab_remove();

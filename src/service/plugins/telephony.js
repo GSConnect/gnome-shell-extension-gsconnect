@@ -148,7 +148,7 @@ var Plugin = GObject.registerClass({
             loader.write(data);
             loader.close();
         } catch (e) {
-            warning(e);
+            debug(e);
         }
 
         return loader.get_pixbuf();
