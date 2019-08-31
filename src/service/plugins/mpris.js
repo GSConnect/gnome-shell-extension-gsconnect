@@ -365,7 +365,7 @@ var Plugin = GObject.registerClass({
             type: 'kdeconnect.mpris',
             body: {
                 playerList: playerList,
-                supportAlbumArtPayload: (this.device.connection_type === 'tcp')
+                supportAlbumArtPayload: true
             }
         });
     }

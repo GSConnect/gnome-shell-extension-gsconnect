@@ -211,10 +211,6 @@ var Plugin = GObject.registerClass({
             }
 
             switch (true) {
-                // TODO: Currently we skip icons for bluetooth connections
-                case (this.device.connection_type === 'bluetooth'):
-                    return this.device.sendPacket(packet);
-
                 // GBytesIcon
                 case (icon instanceof Gio.BytesIcon):
                     return this._uploadBytesIcon(packet, icon.get_bytes());
