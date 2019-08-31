@@ -5,9 +5,7 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
-const Bluetooth = imports.service.protocol.bluetooth;
 const Core = imports.service.protocol.core;
-const Lan = imports.service.protocol.lan;
 const DBus = imports.service.components.dbus;
 
 const UUID = 'org.gnome.Shell.Extensions.GSConnect.Device';
@@ -662,22 +660,19 @@ var Device = GObject.registerClass({
     }
 
     createTransfer(params) {
-        params.device = this;
+        try {
+            params.device = this;
 
-        switch (this.connection_type) {
-            case 'tcp':
-                return new Lan.Transfer(params);
+            return this._channel.createTransfer(params);
+        } catch (e) {
+            logError(e, this.name);
 
-            case 'bluetooth':
-                return new Bluetooth.Transfer(params);
-
-            // Fallback to returning a mock transfer that always appears to fail
-            default:
-                return {
-                    uuid: 'mock-transfer',
-                    download: () => false,
-                    upload: () => false
-                };
+            // Return a mock transfer that always appears to fail
+            return {
+                uuid: 'mock-transfer',
+                download: () => false,
+                upload: () => false
+            };
         }
     }
 

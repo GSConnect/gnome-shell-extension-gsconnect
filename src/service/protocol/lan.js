@@ -449,6 +449,22 @@ var Channel = class Channel extends Core.Channel {
         return 'tcp';
     }
 
+    get port() {
+        if (this._port === undefined) {
+            if (this.identity && this.identity.body.tcpPort) {
+                this._port = this.identity.body.tcpPort;
+            } else {
+                return 1716;
+            }
+        }
+
+        return this._port;
+    }
+
+    set port(port) {
+        this._port = port;
+    }
+
     _initSocket(connection) {
         connection.socket.set_keepalive(true);
 
@@ -709,6 +725,13 @@ var Channel = class Channel extends Core.Channel {
             this.close();
         }
     }
+
+    createTransfer(params) {
+        params.backend = this.backend;
+        params.host = this.host;
+
+        return new Transfer(params);
+    }
 };
 
 
@@ -759,9 +782,8 @@ var Transfer = class Transfer extends Channel {
                 let client = new Gio.SocketClient({enable_proxy: false});
 
                 // Use the address from GSettings with @port
-                // TODO: find a better way to get the device host
                 let address = Gio.InetSocketAddress.new_from_string(
-                    this.device._channel.host,
+                    this.host,
                     this.port
                 );
 

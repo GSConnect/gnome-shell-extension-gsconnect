@@ -240,12 +240,17 @@ var Channel = class Channel {
     }
 
     /**
-     * Override these in subclasses to negotiate payload transfers. Both methods
-     * should cleanup after themselves and return a success boolean.
+     * Override these in subclasses to negotiate payload transfers. `download()`
+     * and `upload()` should cleanup after themselves and return a success
+     * boolean.
      *
      * The default implementation will always report failure, for protocols that
      * won't or don't yet support payload transfers.
      */
+    createTransfer(params) {
+        throw new GObject.NotImplementedError();
+    }
+
     async download() {
         let result = false;
 
