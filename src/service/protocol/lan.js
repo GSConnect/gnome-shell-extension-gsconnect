@@ -728,6 +728,7 @@ var Channel = class Channel extends Core.Channel {
 
     createTransfer(params) {
         params.backend = this.backend;
+        params.certificate = this.certificate;
         params.host = this.host;
 
         return new Transfer(params);
