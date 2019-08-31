@@ -619,9 +619,13 @@ const ConversationWidget = GObject.registerClass({
         }
 
         // Prepend the message
-        let row = this._createMessageRow(message);
-        this.list.prepend(row);
-        this.list.invalidate_headers();
+        try {
+            let row = this._createMessageRow(message);
+            this.list.prepend(row);
+            this.list.invalidate_headers();
+        } catch (e) {
+            warning(e);
+        }
     }
 
     /**
@@ -960,9 +964,13 @@ var Window = GObject.registerClass({
 
         // What's left in the dictionary is new summaries
         for (let message of Object.values(messages)) {
-            let contacts = this.device.contacts.lookupAddresses(message.addresses);
-            let conversation = new ThreadRow(contacts, message);
-            this.thread_list.add(conversation);
+            try {
+                let contacts = this.device.contacts.lookupAddresses(message.addresses);
+                let conversation = new ThreadRow(contacts, message);
+                this.thread_list.add(conversation);
+            } catch (e) {
+                warning(e);
+            }
         }
 
         // Re-sort the summaries
