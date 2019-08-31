@@ -27,17 +27,16 @@ var Packet = class Packet {
         }
     }
 
-    /**
-     * Update the packet from a string of JSON
-     *
-     * @param {string} data - A string of text
-     */
-    fromString(data) {
-        try {
-            let json = JSON.parse(data);
-            Object.assign(this, json);
-        } catch (e) {
-            throw Error(`Malformed packet: ${e.message}`);
+    [Symbol.toPrimitive](hint) {
+        this.id = Date.now();
+
+        switch (hint) {
+            case 'string':
+                return `${JSON.stringify(this)}\n`;
+            case 'number':
+                return `${JSON.stringify(this)}\n`.length;
+            default:
+                return true;
         }
     }
 
@@ -56,19 +55,41 @@ var Packet = class Packet {
         }
     }
 
-    [Symbol.toPrimitive](hint) {
-        this.id = Date.now();
-
-        switch (hint) {
-            case 'string':
-                return `${JSON.stringify(this)}\n`;
-            case 'number':
-                return `${JSON.stringify(this)}\n`.length;
-            default:
-                return true;
+    /**
+     * Update the packet from a string of JSON
+     *
+     * @param {string} data - A string of text
+     */
+    fromString(data) {
+        try {
+            let json = JSON.parse(data);
+            Object.assign(this, json);
+        } catch (e) {
+            throw Error(`Malformed packet: ${e.message}`);
         }
     }
 
+    /**
+     * Make a deep copy of the packet, using and intermediate call to
+     * JSON.stringify() to avoid reference entanglement.
+     *
+     * @return {Core.Packet} - A new packet
+     */
+    toObject() {
+        try {
+            let data = JSON.stringify(this);
+            return new Packet(data);
+        } catch (e) {
+            throw Error(`Malformed packet: ${e.message}`);
+        }
+    }
+
+    /**
+     * Serialize the packet as a single line with a terminating new-line (\n)
+     * character, ready to be written to a channel.
+     *
+     * @return {string} - A serialized packet
+     */
     toString() {
         return `${this}`;
     }
