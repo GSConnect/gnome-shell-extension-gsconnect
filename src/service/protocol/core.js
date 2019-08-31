@@ -97,7 +97,38 @@ var Packet = class Packet {
 
 
 /**
- * Data Channel
+ * Channel
+ *
+ * Channels are essentially wrappers around an I/O stream pair that handle KDE
+ * Connect identity exchange and either packet or data exchange.
+ *
+ * There are effectively two types of channels: packet exchange channels and
+ * data transfer channels. Both channel types begin by exchanging identity
+ * packets and then performing whatever encryption or authentication is
+ * appropriate for the transport protocol.
+ *
+ *
+ * Packet Channels
+ *
+ * Packet exchange channels are used to send or receive packets, which are JSON
+ * objects serialized as single line with a terminating new-line character
+ * marking the end of the packet. The only packet type allowed to be exchanged
+ * before authentication is `kdeconnect.identity`. The only packets allowed
+ * before pairing are `kdeconnect.identity` and `kdeconnect.pair`.
+ *
+ *
+ * Transfer Channels
+ *
+ * Data transfer channels are used to send or receive streams of binary data and
+ * are only possible for paired and authenticated devices. Once the
+ * identification and authentication has completed, the binary payload is read
+ * or written and then the channel is closed (unless cancelled first).
+ *
+ * These channels are opened when the uploading party sends a packet with two
+ * extra fields in the top-level of the packet: `payloadSize` (size in bytes)
+ * and `payloadTransferInfo` which contains protocol specific information such
+ * as a TCP port. The uploading party then waits for an incoming connection that
+ * corresponds with the `payloadTransferInfo` field.
  */
 var Channel = class Channel {
 
