@@ -200,9 +200,7 @@ var Device = GObject.registerClass({
         // Bluetooth connections have no certificate so we use the host address
         if (this.connection_type === 'bluetooth') {
             // TRANSLATORS: Bluetooth address for remote device
-            return _('Bluetooth device at %s').format(
-                this.settings.get_string('bluetooth-host')
-            );
+            return _('Bluetooth device at %s').format('???');
 
         // If the device is connected use the certificate from the connection
         } else if (this.connected) {
