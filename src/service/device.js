@@ -463,14 +463,12 @@ var Device = GObject.registerClass({
     getMenuAction(actionName) {
         for (let i = 0, len = this.menu.get_n_items(); i < len; i++) {
             try {
-                let variant = this.menu.get_item_attribute_value(i, 'action', null);
-                let value = variant.unpack();
+                let val = this.menu.get_item_attribute_value(i, 'action', null);
 
-                if (value === actionName) {
+                if (val.unpack() === actionName) {
                     return i;
                 }
             } catch (e) {
-                debug(e);
                 continue;
             }
         }
@@ -650,12 +648,16 @@ var Device = GObject.registerClass({
      * File Transfers
      */
     cancelTransfer(action, parameter) {
-        let uuid = parameter.unpack();
-        let transfer = this._transfers.get(uuid);
+        try {
+            let uuid = parameter.unpack();
+            let transfer = this._transfers.get(uuid);
 
-        if (transfer !== undefined) {
-            this._transfers.delete(uuid);
-            transfer.close();
+            if (transfer !== undefined) {
+                transfer.close();
+                this._transfers.delete(uuid);
+            }
+        } catch (e) {
+            logError(e, this.name);
         }
     }
 
@@ -816,34 +818,36 @@ var Device = GObject.registerClass({
      * Send or accept an incoming pair request; also exported as a GAction
      */
     pair() {
-        // We're accepting an incoming pair request...
-        if (this._incomingPairRequest) {
-            // so set the paired state to true...
-            this._setPaired(true);
-            // then loop back around to send confirmation...
-            this.pair();
-            // ...before loading plugins
-            this._loadPlugins();
-            return;
-        }
+        try {
+            // We're accepting an incoming pair request...
+            if (this._incomingPairRequest) {
+                // so set the paired state to true...
+                this._setPaired(true);
+                // then loop back around to send confirmation...
+                this.pair();
+                // ...before loading plugins
+                this._loadPlugins();
+                return;
+            }
 
-        // Send a pair packet
-        this.sendPacket({
-            type: 'kdeconnect.pair',
-            body: {pair: true}
-        });
+            // Send a pair packet
+            this.sendPacket({
+                type: 'kdeconnect.pair',
+                body: {pair: true}
+            });
 
-        // We're initiating an outgoing pair request
-        if (!this.paired) {
-            this._resetPairRequest();
+            // We're initiating an outgoing pair request
+            if (!this.paired) {
+                this._resetPairRequest();
 
-            this._outgoingPairRequest = GLib.timeout_add_seconds(
-                GLib.PRIORITY_DEFAULT,
-                30,
-                this._setPaired.bind(this, false)
-            );
-
-            debug(`Pair request sent to ${this.name}`);
+                this._outgoingPairRequest = GLib.timeout_add_seconds(
+                    GLib.PRIORITY_DEFAULT,
+                    30,
+                    this._setPaired.bind(this, false)
+                );
+            }
+        } catch (e) {
+            logError(e, this.name);
         }
     }
 
@@ -851,18 +855,19 @@ var Device = GObject.registerClass({
      * Unpair or reject an incoming pair request; also exported as a GAction
      */
     unpair() {
-        debug(`${this.name} (${this.id})`);
+        try {
+            if (this.connected) {
+                this.sendPacket({
+                    type: 'kdeconnect.pair',
+                    body: {pair: false}
+                });
+            }
 
-        // Send the unpair packet only if we're connected
-        if (this.connected) {
-            this.sendPacket({
-                type: 'kdeconnect.pair',
-                body: {pair: false}
-            });
+            this._setPaired(false);
+            this._unloadPlugins();
+        } catch (e) {
+            logError(e, this.name);
         }
-
-        this._setPaired(false);
-        this._unloadPlugins();
     }
 
     /**
