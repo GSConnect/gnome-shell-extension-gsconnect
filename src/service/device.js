@@ -285,8 +285,13 @@ var Device = GObject.registerClass({
 
     _handleIdentity(packet) {
         this.settings.set_string('id', packet.body.deviceId);
-        this.settings.set_string('name', packet.body.deviceName);
         this.settings.set_string('type', packet.body.deviceType);
+
+        // The name may change so we check and notify if so
+        if (this.name !== packet.body.deviceName) {
+            this.settings.set_string('name', packet.body.deviceName);
+            this.notify('name');
+        }
 
         // Connection
         if (packet.body.hasOwnProperty('bluetoothHost')) {
