@@ -587,20 +587,24 @@ const ConversationWidget = GObject.registerClass({
      * @param {Object} message - A sms message object
      */
     logNext(message) {
-        // TODO: Unsupported MessageBox
-        if (message.type !== Sms.MessageBox.INBOX &&
-            message.type !== Sms.MessageBox.SENT)
-            return;
+        try {
+            // TODO: Unsupported MessageBox
+            if (message.type !== Sms.MessageBox.INBOX &&
+                message.type !== Sms.MessageBox.SENT)
+                return;
 
-        // Append the message
-        let row = this._createMessageRow(message);
-        this.list.add(row);
-        this.list.invalidate_headers();
+            // Append the message
+            let row = this._createMessageRow(message);
+            this.list.add(row);
+            this.list.invalidate_headers();
 
-        // Remove the first pending message
-        if (this.has_pending && message.type === Sms.MessageBox.SENT) {
-            this.pending_box.get_children()[0].destroy();
-            this.notify('has-pending');
+            // Remove the first pending message
+            if (this.has_pending && message.type === Sms.MessageBox.SENT) {
+                this.pending_box.get_children()[0].destroy();
+                this.notify('has-pending');
+            }
+        } catch (e) {
+            debug(e);
         }
     }
 
@@ -608,23 +612,23 @@ const ConversationWidget = GObject.registerClass({
      * Log the previous message in the thread
      */
     logPrevious() {
-        let message = this.__messages.pop();
-
-        if (!message) return;
-
-        // TODO: Unsupported MessageBox
-        if (message.type !== Sms.MessageBox.INBOX &&
-            message.type !== Sms.MessageBox.SENT) {
-            return;
-        }
-
-        // Prepend the message
         try {
+            let message = this.__messages.pop();
+
+            if (!message) return;
+
+            // TODO: Unsupported MessageBox
+            if (message.type !== Sms.MessageBox.INBOX &&
+                message.type !== Sms.MessageBox.SENT) {
+                return;
+            }
+
+            // Prepend the message
             let row = this._createMessageRow(message);
             this.list.prepend(row);
             this.list.invalidate_headers();
         } catch (e) {
-            warning(e);
+            debug(e);
         }
     }
 
