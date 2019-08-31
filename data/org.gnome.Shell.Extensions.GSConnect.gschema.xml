@@ -86,18 +86,6 @@
     <key name="supported-plugins" type="as">
       <default>[]</default>
     </key>
-    <key name="tcp-host" type="s">
-      <default>""</default>
-    </key>
-    <key name="tcp-port" type="u">
-      <default>1716</default>
-    </key>
-    <key name="bluetooth-host" type="s">
-      <default>""</default>
-    </key>
-    <key name="bluetooth-path" type="s">
-      <default>""</default>
-    </key>
     <key name="last-connection" type="s">
       <default>""</default>
     </key>

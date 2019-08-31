@@ -294,14 +294,12 @@ var Device = GObject.registerClass({
         }
 
         // Connection
-        if (packet.body.hasOwnProperty('bluetoothHost')) {
-            this.settings.set_string('bluetooth-host', packet.body.bluetoothHost);
-            this.settings.set_string('bluetooth-path', packet.body.bluetoothPath);
-            this.settings.set_string('last-connection', 'bluetooth');
+        if (packet.body.hasOwnProperty('bluetoothPath')) {
+            let address = `bluetooth://${packet.body.bluetoothPath}`;
+            this.settings.set_string('last-connection', address);
         } else if (packet.body.hasOwnProperty('tcpHost')) {
-            this.settings.set_string('tcp-host', packet.body.tcpHost);
-            this.settings.set_uint('tcp-port', packet.body.tcpPort);
-            this.settings.set_string('last-connection', 'tcp');
+            let address = `lan://${packet.body.tcpHost}:${packet.body.tcpPort}`;
+            this.settings.set_string('last-connection', address);
         }
 
         // Packets
@@ -311,7 +309,7 @@ var Device = GObject.registerClass({
         this.settings.set_strv('incoming-capabilities', incoming);
         this.settings.set_strv('outgoing-capabilities', outgoing);
 
-        // Plugins
+        // Determine supported plugins by matching incoming to outgoing types
         let supported = [];
 
         for (let name in imports.service.plugins) {
@@ -336,8 +334,6 @@ var Device = GObject.registerClass({
      */
     _setConnected() {
         debug(`Connected to ${this.name} (${this.id})`);
-
-        this.settings.set_string('last-connection', this._channel.type);
 
         this._connected = true;
         this.notify('connected');
@@ -366,28 +362,22 @@ var Device = GObject.registerClass({
      * Request a connection from the device
      */
     activate() {
-        let lastConnection = this.settings.get_string('last-connection');
+        try {
+            // `last-connection` is a URI of the form `backend://address`
+            let lastConnection = this.settings.get_string('last-connection');
+            let [backend, address] = lastConnection.split('://');
 
-        // If the same channel type is currently open bail...
-        if (this._channel !== null && this.connection_type === lastConnection) {
-            debug(`${this.name}: ${lastConnection} connection already active`);
-            return;
+            // If the same channel type is currently open bail...
+            if (this._channel !== null && this._channel.type === backend) {
+                debug(`${this.name}: ${backend} connection already active`);
+                return;
+            }
 
+            let parameter = GLib.Variant.new_string(lastConnection);
+            this.service.activate_action('connect', parameter);
+        } catch (e) {
+            logError(e, this.name);
         }
-
-        let address;
-
-        if (lastConnection === 'bluetooth') {
-            let path = this.settings.get_string('bluetooth-path');
-            address = GLib.Variant.new_string(`bluetooth://${path}`);
-
-        } else {
-            let host = this.settings.get_string('tcp-host');
-            let port = this.settings.get_uint('tcp-port');
-            address = GLib.Variant.new_string(`lan://${host}:${port}`);
-        }
-
-        this.service.activate_action('connect', address);
     }
 
     /**

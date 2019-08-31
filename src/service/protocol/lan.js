@@ -100,25 +100,27 @@ var ChannelService = class ChannelService {
         let channel, host, device;
 
         try {
-            channel = new Channel();
-            host = connection.get_remote_address().address.to_string();
+            channel = new Channel({
+                backend: this,
+                host: connection.get_remote_address().address.to_string()
+            });
 
             // Accept the connection
             await channel.accept(connection);
-            channel.identity.body.tcpHost = host;
-            channel.identity.body.tcpPort = '1716';
+            channel.identity.body.tcpHost = channel.host;
+            channel.identity.body.tcpPort = 1716;
 
             // Find a device for the channel
             device = this.service._devices.get(channel.identity.body.deviceId);
 
             switch (true) {
-                // An existing device
+                // We know this device
                 case (device !== undefined):
                     break;
 
-                // A response to a "direct" broadcast, or we're discoverable
+                // We're discoverable or we know this host
                 case this.service.discoverable:
-                case this.allowed.has(host):
+                case this.allowed.has(channel.host):
                     device = await this.service._ensureDevice(channel.identity);
                     break;
 
@@ -285,7 +287,10 @@ var ChannelService = class ChannelService {
             }
 
             // Create a new channel
-            let channel = new Channel({identity: packet});
+            let channel = new Channel({
+                host: packet.body.tcpHost,
+                identity: packet
+            });
 
             let connection = await new Promise((resolve, reject) => {
                 let address = Gio.InetSocketAddress.new_from_string(
@@ -327,7 +332,14 @@ var ChannelService = class ChannelService {
                 return;
             }
 
-            // Remember manual addresses so we know to accept connections
+            // Try to parse strings as <host>:<port>
+            if (typeof address === 'string') {
+                let [host, port] = address.split(':');
+                port = parseInt(port) || 1716;
+                address = Gio.InetSocketAddress.new_from_string(host, port);
+            }
+
+            // If we succeed, remember this host
             if (address instanceof Gio.InetSocketAddress) {
                 this.allowed.add(address.address.to_string());
 
@@ -345,7 +357,7 @@ var ChannelService = class ChannelService {
                 this._udp4.send_to(address, `${this.service.identity}`, null);
             }
         } catch (e) {
-            warning(e);
+            debug(e, address);
         }
     }
 
@@ -380,6 +392,18 @@ var Channel = class Channel extends Core.Channel {
 
     get certificate() {
         return this._connection.get_peer_certificate();
+    }
+
+    get host() {
+        if (this._host === undefined) {
+            this._host = null;
+        }
+
+        return this._host;
+    }
+
+    set host(host) {
+        this._host = host;
     }
 
     get type() {
@@ -699,8 +723,9 @@ var Transfer = class Transfer extends Channel {
                 let client = new Gio.SocketClient({enable_proxy: false});
 
                 // Use the address from GSettings with @port
+                // TODO: find a better way to get the device host
                 let address = Gio.InetSocketAddress.new_from_string(
-                    this.device.settings.get_string('tcp-host'),
+                    this.device._channel.host,
                     this.port
                 );
 
