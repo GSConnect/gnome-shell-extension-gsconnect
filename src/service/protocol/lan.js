@@ -281,7 +281,7 @@ var ChannelService = class ChannelService {
         try {
             // Bail if the deviceId is missing
             if (!packet.body.hasOwnProperty('deviceId')) {
-                warning('missing deviceId', packet.body.deviceName);
+                debug(`${packet.body.deviceName}: missing deviceId`);
                 return;
             }
 
@@ -307,7 +307,7 @@ var ChannelService = class ChannelService {
 
                 // ...otherwise bail
                 default:
-                    warning('device not allowed', packet.body.deviceName);
+                    debug(`${packet.body.deviceName}: not allowed`);
                     return;
             }
 
