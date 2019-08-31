@@ -120,15 +120,16 @@ const Preferences = GObject.registerClass({
         );
 
         let actions = [
-            ['broadcast', this.broadcast.bind(this), null]
+            ['broadcast', null],
+            ['connect',   GLib.VariantType.new('s')]
         ];
 
-        for (let [name, callback, type] of actions) {
+        for (let [name, type] of actions) {
             let action = new Gio.SimpleAction({
                 name: name,
                 parameter_type: type
             });
-            action.connect('activate', callback);
+            action.connect('activate', this._proxyAction.bind(this));
             this.add_action(action);
         }
 
@@ -138,8 +139,12 @@ const Preferences = GObject.registerClass({
         this._init_async();
     }
 
-    broadcast() {
-        this.service.broadcast();
+    _proxyAction(action, parameter) {
+        try {
+            this.service.activate_action(action.name, parameter);
+        } catch (e) {
+            logError(e, action.name);
+        }
     }
 
     vfunc_shutdown() {

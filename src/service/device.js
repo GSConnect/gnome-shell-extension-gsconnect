@@ -368,17 +368,21 @@ var Device = GObject.registerClass({
             debug(`${this.name}: ${lastConnection} connection already active`);
             return;
 
-        } else if (lastConnection === 'bluetooth') {
-            this.service.broadcast(this.settings.get_string('bluetooth-path'));
+        }
+
+        let address;
+
+        if (lastConnection === 'bluetooth') {
+            let path = this.settings.get_string('bluetooth-path');
+            address = GLib.Variant.new_string(`bluetooth://${path}`);
 
         } else {
-            let tcpAddress = Gio.InetSocketAddress.new_from_string(
-                this.settings.get_string('tcp-host'),
-                this.settings.get_uint('tcp-port')
-            );
-
-            this.service.broadcast(tcpAddress);
+            let host = this.settings.get_string('tcp-host');
+            let port = this.settings.get_uint('tcp-port');
+            address = GLib.Variant.new_string(`lan://${host}:${port}`);
         }
+
+        this.service.activate_action('connect', address);
     }
 
     /**

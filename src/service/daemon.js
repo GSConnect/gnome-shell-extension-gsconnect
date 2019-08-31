@@ -179,36 +179,6 @@ const Service = GObject.registerClass({
     }
 
     /**
-     * Send identity to @address or broadcast if %null
-     *
-     * @param {string|Gio.InetSocketAddress} - TCP address, bluez path or %null
-     */
-    broadcast(address = null) {
-        try {
-            switch (true) {
-                case (address instanceof Gio.InetSocketAddress):
-                    this.lan.broadcast(address);
-                    break;
-
-                case (typeof address === 'string'):
-                    this.bluetooth.broadcast(address);
-                    break;
-
-                // If not discoverable we'll only broadcast to paired devices
-                case !this.discoverable:
-                    this._reconnect();
-                    break;
-
-                // We only do true "broadcasts" for LAN
-                default:
-                    this.lan.broadcast();
-            }
-        } catch (e) {
-            logError(e);
-        }
-    }
-
-    /**
      * Return a device for @packet, creating it and adding it to the list of
      * of known devices if it doesn't exist.
      *
@@ -324,7 +294,7 @@ const Service = GObject.registerClass({
 
     _onNameChanged(settings, key) {
         this.identity.body.deviceName = this.name;
-        this._broadcast();
+        this._identify();
     }
 
     /**
@@ -332,7 +302,8 @@ const Service = GObject.registerClass({
      */
     _initActions() {
         let actions = [
-            ['broadcast', this.broadcast.bind(this)],
+            ['broadcast', this._identify.bind(this)],
+            ['connect', this._identify.bind(this), 's'],
             ['devel', this._devel.bind(this)],
             ['device', this._device.bind(this), '(ssbv)'],
             ['error', this._error.bind(this), 'a{ss}'],
@@ -411,6 +382,34 @@ const Service = GObject.registerClass({
             });
 
             dialog.show();
+        } catch (e) {
+            logError(e);
+        }
+    }
+
+    _identify(action, parameter) {
+        try {
+            // If we're passed a parameter, try and find a backend for it
+            if (parameter instanceof GLib.Variant) {
+                let uri = parameter.unpack();
+                let [scheme, address] = uri.split('://');
+
+                let backend = this.backends.get(scheme);
+
+                if (backend) {
+                    backend.broadcast(address);
+                }
+
+            // If we're not discoverable, only try to reconnect known devices
+            } else if (!this.discoverable) {
+                this._reconnect();
+
+            // Otherwise have each backend broadcast to it's network
+            } else {
+                for (let backend of this.backends.values()) {
+                    backend.broadcast();
+                }
+            }
         } catch (e) {
             logError(e);
         }

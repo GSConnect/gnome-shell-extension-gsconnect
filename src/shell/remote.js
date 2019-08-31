@@ -461,17 +461,21 @@ var Service = GObject.registerClass({
         this._onNameOwnerChanged();
     }
 
-    broadcast() {
+    activate_action(name, parameter) {
         if (!this.g_connection) return;
 
-        let action_name = 'broadcast';
+        let paramArray = [];
+
+        if (parameter instanceof GLib.Variant) {
+            paramArray[0] = parameter;
+        }
 
         this.g_connection.call(
-            this.g_name,
-            this.g_object_path,
+            'org.gnome.Shell.Extensions.GSConnect',
+            '/org/gnome/Shell/Extensions/GSConnect',
             'org.gtk.Actions',
             'Activate',
-            GLib.Variant.new('(sava{sv})', [action_name, [], {}]),
+            GLib.Variant.new('(sava{sv})', [name, paramArray, {}]),
             null,
             Gio.DBusCallFlags.NONE,
             -1,

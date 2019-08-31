@@ -180,19 +180,19 @@ var ConnectDialog = GObject.registerClass({
 
                 // Bluetooth device selected
                 if (this.bluez_device.visible && this.bluez_radio.active) {
-                    address = this.bluez_device.active_id;
+                    let path = this.bluez_device.active_id;
+                    address = GLib.Variant.new_string(`bluetooth://${path}`);
 
                 // Lan host/port entered
                 } else if (this.lan_ip.text) {
-                    address = Gio.InetSocketAddress.new_from_string(
-                        this.lan_ip.text,
-                        this.lan_port.value
-                    );
+                    let host = this.lan_ip.text;
+                    let port = this.lan_port.value;
+                    address = GLib.Variant.new_string(`lan://${host}:${port}`);
                 } else {
                     return false;
                 }
 
-                this.application.broadcast(address);
+                this.application.activate_action('connect', address);
             } catch (e) {
                 logError(e);
             }
@@ -376,8 +376,8 @@ var Window = GObject.registerClass({
     _refresh() {
         if (this.stack.visible_child_name === 'service' &&
             this.device_list.get_children().length < 1) {
-            this.application.broadcast();
             this.device_list_spinner.active = true;
+            this.application.activate_action('broadcast', null);
         } else {
             this.device_list_spinner.active = false;
         }
