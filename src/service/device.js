@@ -982,10 +982,6 @@ var Device = GObject.registerClass({
         }
     }
 
-    openSettings() {
-        this.service._settings(this.id);
-    }
-
     destroy() {
         //
         this.settings.disconnect(this._disabledPluginsId);
