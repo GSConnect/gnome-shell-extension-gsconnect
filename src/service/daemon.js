@@ -60,6 +60,13 @@ const Service = GObject.registerClass({
             GObject.ParamFlags.READWRITE,
             false
         ),
+        'id': GObject.ParamSpec.string(
+            'id',
+            'Id',
+            'The service id',
+            GObject.ParamFlags.READWRITE,
+            'GSConnect'
+        ),
         'name': GObject.ParamSpec.string(
             'name',
             'deviceName',
@@ -87,21 +94,6 @@ const Service = GObject.registerClass({
         this._initOptions();
     }
 
-    get certificate() {
-        if (this._certificate === undefined) {
-            this._certificate = Gio.TlsCertificate.new_for_paths(
-                GLib.build_filenamev([gsconnect.configdir, 'certificate.pem']),
-                GLib.build_filenamev([gsconnect.configdir, 'private.pem'])
-            );
-        }
-
-        return this._certificate;
-    }
-
-    get devices() {
-        return Array.from(this._devices.values());
-    }
-
     get backends() {
         if (this._backends === undefined) {
             this._backends = new Map();
@@ -118,8 +110,8 @@ const Service = GObject.registerClass({
         return this._components;
     }
 
-    get fingerprint() {
-        return this.certificate.fingerprint();
+    get devices() {
+        return Array.from(this._devices.values());
     }
 
     get identity() {
@@ -128,7 +120,7 @@ const Service = GObject.registerClass({
                 id: 0,
                 type: 'kdeconnect.identity',
                 body: {
-                    deviceId: this.certificate.common_name,
+                    deviceId: this.id,
                     deviceName: this.name,
                     deviceType: this.type,
                     tcpPort: 1716,
@@ -278,6 +270,7 @@ const Service = GObject.registerClass({
 
         // Bound Properties
         this.settings.bind('discoverable', this, 'discoverable', 0);
+        this.settings.bind('id', this, 'id', 0);
         this.settings.bind('name', this, 'name', 0);
 
         // Set the default name to the computer's hostname

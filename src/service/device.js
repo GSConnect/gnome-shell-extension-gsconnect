@@ -204,7 +204,7 @@ var Device = GObject.registerClass({
 
         // If the device is connected use the certificate from the connection
         } else if (this.connected) {
-            fingerprint = this._channel.certificate.fingerprint();
+            fingerprint = this._channel.peer_certificate.fingerprint();
 
         // Otherwise pull it out of the settings
         } else if (this.paired) {
@@ -223,7 +223,7 @@ var Device = GObject.registerClass({
         return _('%s Fingerprint:').format(this.name) + '\n' +
             fingerprint + '\n\n' +
             _('%s Fingerprint:').format(this.service.name) + '\n' +
-            this.service.fingerprint;
+            this.service.backends.get('lan').certificate.fingerprint();
     }
 
     get id() {
@@ -362,8 +362,8 @@ var Device = GObject.registerClass({
     activate() {
         try {
             // `last-connection` is a URI of the form `backend://address`
-            let lastConnection = this.settings.get_string('last-connection');
-            let [backend, address] = lastConnection.split('://');
+            let lastConnection = this.settings.get_value('last-connection');
+            let backend = lastConnection.unpack().split('://')[0];
 
             // If the same channel type is currently open bail...
             if (this._channel !== null && this._channel.type === backend) {
@@ -371,8 +371,7 @@ var Device = GObject.registerClass({
                 return;
             }
 
-            let parameter = GLib.Variant.new_string(lastConnection);
-            this.service.activate_action('connect', parameter);
+            this.service.activate_action('connect', lastConnection);
         } catch (e) {
             logError(e, this.name);
         }
@@ -807,7 +806,7 @@ var Device = GObject.registerClass({
             if (bool) {
                 this.settings.set_string(
                     'certificate-pem',
-                    this._channel.certificate.certificate_pem
+                    this._channel.peer_certificate.certificate_pem
                 );
             } else {
                 this.settings.reset('certificate-pem');

@@ -52,6 +52,9 @@ var ChannelService = class ChannelService {
     constructor() {
         this.allowed = new Set();
 
+        // Ensure a certificate exists
+        this._initCertificate();
+
         // Start TCP/UDP listeners
         this._initUdpListener();
         this._initTcpListener();
@@ -65,6 +68,10 @@ var ChannelService = class ChannelService {
         );
     }
 
+    get certificate() {
+        return this._certificate;
+    }
+
     get service() {
         return Gio.Application.get_default();
     }
@@ -73,6 +80,23 @@ var ChannelService = class ChannelService {
         if (this._networkAvailable !== network_available) {
             this._networkAvailable = network_available;
             this.broadcast();
+        }
+    }
+
+    _initCertificate() {
+        let certPath = GLib.build_filenamev([
+            gsconnect.configdir,
+            'certificate.pem'
+        ]);
+        let keyPath = GLib.build_filenamev([
+            gsconnect.configdir,
+            'private.pem'
+        ]);
+
+        this._certificate = Gio.TlsCertificate.new_for_paths(certPath, keyPath);
+
+        if (gsconnect.settings.get_string('id').length === 0) {
+            gsconnect.settings.set_string('id', this._certificate.common_name);
         }
     }
 
@@ -97,11 +121,12 @@ var ChannelService = class ChannelService {
     }
 
     async _onIncomingChannel(listener, connection) {
-        let channel, host, device;
+        let channel, device;
 
         try {
             channel = new Channel({
                 backend: this,
+                certificate: this.certificate,
                 host: connection.get_remote_address().address.to_string()
             });
 
@@ -289,6 +314,7 @@ var ChannelService = class ChannelService {
             // Create a new channel
             let channel = new Channel({
                 backend: this,
+                certificate: this.certificate,
                 host: packet.body.tcpHost,
                 identity: packet
             });
@@ -392,7 +418,19 @@ var ChannelService = class ChannelService {
 var Channel = class Channel extends Core.Channel {
 
     get certificate() {
-        return this._connection.get_peer_certificate();
+        return this._certificate || null;
+    }
+
+    set certificate(certificate) {
+        this._certificate = certificate;
+    }
+
+    get peer_certificate() {
+        if (this._connection instanceof Gio.TlsConnection) {
+            return this._connection.get_peer_certificate();
+        }
+
+        return null;
     }
 
     get host() {
@@ -495,7 +533,7 @@ var Channel = class Channel extends Core.Channel {
             connection,
             connection.socket.remote_address
         );
-        connection.set_certificate(this.service.certificate);
+        connection.set_certificate(this.certificate);
 
         return this._authenticate(connection);
     }
@@ -507,10 +545,7 @@ var Channel = class Channel extends Core.Channel {
      * @return {Gio.TlsServerConnection} - The authenticated connection
      */
     _serverEncryption(connection) {
-        connection = Gio.TlsServerConnection.new(
-            connection,
-            this.service.certificate
-        );
+        connection = Gio.TlsServerConnection.new(connection, this.certificate);
 
         // We're the server so we trust-on-first-use and verify after
         let _id = connection.connect('accept-certificate', (connection) => {
