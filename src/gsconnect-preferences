@@ -157,18 +157,6 @@ const Preferences = GObject.registerClass({
         // Chain up last (application->priv->did_shutdown)
         super.vfunc_shutdown();
     }
-
-    lookup_device(id) {
-        if (this.service === undefined) {
-            return null;
-        }
-
-        for (let device of this.service.devices) {
-            if (device.id === id) return device;
-        }
-
-        return null;
-    }
 });
 
 (new Preferences()).run([System.programInvocationName].concat(ARGV));
