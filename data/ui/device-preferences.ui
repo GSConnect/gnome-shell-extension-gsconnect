@@ -1848,7 +1848,7 @@
                                 <property name="height_request">56</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
-                                <property name="action_name">settings.send-notifications</property>
+                                <property name="action_name">settings.low-battery-notification</property>
                                 <property name="selectable">False</property>
                                 <child>
                                   <object class="GtkGrid">
@@ -1907,6 +1907,8 @@
                                 <property name="height_request">56</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
+                                <property name="action_name">settings.full-battery-notification</property>
+                                <property name="selectable">False</property>
                                 <child>
                                   <object class="GtkGrid">
                                     <property name="visible">True</property>
@@ -2004,6 +2006,7 @@
                                 <property name="height_request">56</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
+                                <property name="action_name">settings.send-statistics</property>
                                 <child>
                                   <object class="GtkGrid">
                                     <property name="visible">True</property>
