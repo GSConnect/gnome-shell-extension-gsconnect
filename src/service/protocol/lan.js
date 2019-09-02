@@ -376,6 +376,9 @@ var ChannelService = class ChannelService {
                 address = this._udp_address;
             }
 
+            // Set the tcpPort before broadcasting
+            this.service.identity.body.tcpPort = this.port;
+
             if (this._udp6 !== null) {
                 this._udp6.send_to(address, `${this.service.identity}`, null);
             }
@@ -385,6 +388,8 @@ var ChannelService = class ChannelService {
             }
         } catch (e) {
             debug(e, address);
+        } finally {
+            this.service.identity.body.tcpPort = undefined;
         }
     }
 

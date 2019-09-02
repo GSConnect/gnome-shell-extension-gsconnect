@@ -123,7 +123,6 @@ const Service = GObject.registerClass({
                     deviceId: this.id,
                     deviceName: this.name,
                     deviceType: this.type,
-                    tcpPort: 1716,
                     protocolVersion: 7,
                     incomingCapabilities: [],
                     outgoingCapabilities: []
