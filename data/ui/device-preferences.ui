@@ -459,7 +459,6 @@
                         </child>
                         <child>
                           <object class="GtkGrid">
-                            <property name="height_request">56</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="valign">start</property>
@@ -470,9 +469,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="halign">start</property>
-                                <property name="valign">center</property>
                                 <property name="margin_start">12</property>
-                                <property name="hexpand">True</property>
                                 <property name="vexpand">True</property>
                                 <property name="label" translatable="yes">Directory</property>
                               </object>
@@ -485,11 +482,8 @@
                               <object class="GtkFileChooserButton" id="receive-directory">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="halign">end</property>
-                                <property name="valign">center</property>
-                                <property name="margin_end">12</property>
+                                <property name="hexpand">True</property>
                                 <property name="action">select-folder</property>
-                                <property name="width_chars">10</property>
                                 <signal name="file-set" handler="_onReceiveDirectorySet" swapped="no"/>
                                 <accessibility>
                                   <relation type="labelled-by" target="receive-directory-label"/>
