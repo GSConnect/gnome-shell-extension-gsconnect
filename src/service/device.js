@@ -160,11 +160,9 @@ var Device = GObject.registerClass({
     }
 
     get connection_type() {
-        if (this._channel !== null) {
-            return this._channel.type;
-        }
+        let lastConnection = this.settings.get_string('last-connection');
 
-        return this.settings.get_string('last-connection');
+        return lastConnection.split('://')[0];
     }
 
     get contacts() {
@@ -290,12 +288,8 @@ var Device = GObject.registerClass({
         }
 
         // Connection
-        if (packet.body.hasOwnProperty('bluetoothPath')) {
-            let address = `bluetooth://${packet.body.bluetoothPath}`;
-            this.settings.set_string('last-connection', address);
-        } else if (packet.body.hasOwnProperty('tcpHost')) {
-            let address = `lan://${packet.body.tcpHost}:${packet.body.tcpPort}`;
-            this.settings.set_string('last-connection', address);
+        if (this._channel) {
+            this.settings.set_string('last-connection', this._channel.address);
         }
 
         // Packets

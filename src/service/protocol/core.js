@@ -136,6 +136,10 @@ var Channel = class Channel {
         Object.assign(this, params);
     }
 
+    get address() {
+        throw new GObject.NotImplementedError();
+    }
+
     get backend() {
         return this._backend || null;
     }

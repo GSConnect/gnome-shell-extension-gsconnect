@@ -90,7 +90,7 @@ var Plugin = GObject.registerClass({
         super.connected();
 
         // Disable for all bluetooth connections
-        if (this.device.connection_type === 'bluetooth') {
+        if (this.device.connection_type !== 'lan') {
             this.device.lookup_action('mount').enabled = false;
             this.device.lookup_action('unmount').enabled = false;
 

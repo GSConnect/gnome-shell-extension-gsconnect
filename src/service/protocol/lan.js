@@ -422,6 +422,10 @@ var ChannelService = class ChannelService {
  */
 var Channel = class Channel extends Core.Channel {
 
+    get address() {
+        return `lan://${this.host}:${this.port}`;
+    }
+
     get certificate() {
         return this._certificate || null;
     }
@@ -677,7 +681,7 @@ var Channel = class Channel extends Core.Channel {
      * Close all streams associated with this channel, silencing any errors
      */
     close() {
-        debug(`${this.constructor.name} (${this.type})`);
+        debug(`${this.constructor.name} (${this.address})`);
 
         // Cancel any queued operations
         this.cancellable.cancel();
