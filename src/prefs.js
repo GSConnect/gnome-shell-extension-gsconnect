@@ -18,7 +18,6 @@ imports._gsconnect;
 
 function init() {
     gsconnect.installService();
-    Gtk.IconTheme.get_default().add_resource_path(gsconnect.app_path);
 }
 
 function buildPrefsWidget() {
