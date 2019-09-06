@@ -122,7 +122,7 @@ const Service = GObject.registerClass({
                 body: {
                     deviceId: this.id,
                     deviceName: this.name,
-                    deviceType: this.type,
+                    deviceType: this._getDeviceType(),
                     protocolVersion: 7,
                     incomingCapabilities: [],
                     outgoingCapabilities: []
@@ -150,23 +150,27 @@ const Service = GObject.registerClass({
         return this._identity;
     }
 
-    get type() {
-        if (this._type === undefined) {
-            try {
-                let type = GLib.file_get_contents('/sys/class/dmi/id/chassis_type')[1];
+    /**
+     * Helpers
+     */
+    _getDeviceType() {
+        try {
+            let type = GLib.file_get_contents('/sys/class/dmi/id/chassis_type')[1];
 
-                if (type instanceof Uint8Array) {
-                    type = imports.byteArray.toString(type);
-                }
-
-                type = Number(type);
-                this._type = [8, 9, 10, 14].includes(type) ? 'laptop' : 'desktop';
-            } catch (e) {
-                this._type = 'desktop';
+            if (type instanceof Uint8Array) {
+                type = imports.byteArray.toString(type);
             }
-        }
 
-        return this._type;
+            type = Number(type);
+
+            if ([8, 9, 10, 14].includes(type)) {
+                return 'laptop';
+            }
+
+            return 'desktop';
+        } catch (e) {
+            return 'desktop';
+        }
     }
 
     /**
