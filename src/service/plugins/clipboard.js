@@ -10,8 +10,14 @@ const PluginsBase = imports.service.plugins.base;
 var Metadata = {
     label: _('Clipboard'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Clipboard',
-    incomingCapabilities: ['kdeconnect.clipboard'],
-    outgoingCapabilities: ['kdeconnect.clipboard'],
+    incomingCapabilities: [
+        'kdeconnect.clipboard',
+        'kdeconnect.clipboard.connect'
+    ],
+    outgoingCapabilities: [
+        'kdeconnect.clipboard',
+        'kdeconnect.clipboard.connect'
+    ],
     actions: {
         clipboardPush: {
             label: _('Clipboard Push'),
@@ -59,14 +65,41 @@ var Plugin = GObject.registerClass({
 
         // Buffer content to allow selective sync
         this._localBuffer = '';
+        this._localTimestamp = 0;
         this._remoteBuffer = '';
+    }
 
+    connected() {
+        super.connected();
+
+        if (this._localBuffer && this._localTimestamp) {
+            this.device.sendPacket({
+                type: 'kdeconnect.clipboard.connect',
+                body: {
+                    content: this._localBuffer,
+                    timestamp: this._localTimestamp
+                }
+            });
+        }
     }
 
     handlePacket(packet) {
         if (!packet.body.hasOwnProperty('content')) return;
 
         if (packet.type === 'kdeconnect.clipboard') {
+            this._handleContent(packet);
+        } else if (packet.type === 'kdeconnect.clipboard.connect') {
+            this._handleConnectContent(packet);
+        }
+    }
+
+    _handleContent(packet) {
+        this._onRemoteClipboardChanged(packet.body.content);
+    }
+
+    _handleConnectContent(packet) {
+        if (packet.body.hasOwnProperty('timestamp') &&
+            packet.body.timestamp > this._localTimestamp) {
             this._onRemoteClipboardChanged(packet.body.content);
         }
     }
@@ -77,6 +110,7 @@ var Plugin = GObject.registerClass({
     _onLocalClipboardChanged(clipboard, event) {
         clipboard.request_text((clipboard, text) => {
             this._localBuffer = text;
+            this._localTimestamp = Date.now();
 
             if (this.settings.get_boolean('send-content')) {
                 this.clipboardPush();
@@ -100,8 +134,7 @@ var Plugin = GObject.registerClass({
      */
     clipboardPush() {
         // Don't sync if the clipboard is empty or not text
-        if (this._localBuffer === null)
-            return;
+        if (!this._localBuffer || !this._localTimestamp) return;
 
         if (this._remoteBuffer !== this._localBuffer) {
             this._remoteBuffer = this._localBuffer;
@@ -121,6 +154,7 @@ var Plugin = GObject.registerClass({
     clipboardPull() {
         if (this._localBuffer !== this._remoteBuffer) {
             this._localBuffer = this._remoteBuffer;
+            this._localTimestamp = Date.now();
 
             this._clipboard.set_text(this._remoteBuffer, -1);
         }
