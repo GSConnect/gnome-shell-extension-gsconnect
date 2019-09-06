@@ -50,7 +50,9 @@ try {
 var ChannelService = class ChannelService {
 
     constructor() {
-        this.allowed = new Set();
+        // Track hosts we identify to directly, allowing them to ignore the
+        // discoverable state of the service.
+        this._allowed = new Set();
 
         // Ensure a certificate exists
         this._initCertificate();
@@ -145,7 +147,7 @@ var ChannelService = class ChannelService {
 
                 // We're discoverable or we know this host
                 case this.service.discoverable:
-                case this.allowed.has(channel.host):
+                case this._allowed.has(channel.host):
                     device = await this.service._ensureDevice(channel.identity);
                     break;
 
@@ -301,7 +303,7 @@ var ChannelService = class ChannelService {
 
                 // Or the service is discoverable or host is allowed...
                 case this.service.discoverable:
-                case this.allowed.has(packet.body.tcpHost):
+                case this._allowed.has(packet.body.tcpHost):
                     device = this.service._ensureDevice(packet);
                     break;
 
@@ -368,7 +370,7 @@ var ChannelService = class ChannelService {
 
             // If we succeed, remember this host
             if (address instanceof Gio.InetSocketAddress) {
-                this.allowed.add(address.address.to_string());
+                this._allowed.add(address.address.to_string());
 
             // Broadcast to the network if no address is specified
             } else {
@@ -589,8 +591,6 @@ var Channel = class Channel extends Core.Channel {
      */
     _receiveIdent(connection) {
         return new Promise((resolve, reject) => {
-            debug('receiving identity');
-
             let stream = new Gio.DataInputStream({
                 base_stream: connection.input_stream,
                 close_base_stream: false
