@@ -216,41 +216,28 @@ const Service = GObject.registerClass({
     }
 
     /**
-     * Delete a known device.
+     * Permanently remove a device.
      *
-     * Removes the device from the list of known devices, unpairs it, destroys
-     * it and deletes all GSettings and cached files.
+     * Removes the device from the list of known devices, deletes all GSettings
+     * and files.
      *
      * @param {String} id - The id of the device to delete
      */
-    deleteDevice(id) {
-        let device = this._devices.get(id);
+    _removeDevice(id) {
+        // Delete all GSettings
+        let settings_path = '/org/gnome/shell/extensions/gsconnect/' + id + '/');
+        GLib.spawn_command_line_async(`dconf reset -f ${settings_path}`);
 
-        if (device) {
-            // Stash the settings path before unpairing and removing
-            let settings_path = device.settings.path;
-            device.sendPacket({
-                type: 'kdeconnect.pair',
-                body: {pair: false}
-            });
+        // Delete the cache
+        let cache = GLib.build_filenamev([gsconnect.cachedir, id]);
+        Gio.File.rm_rf(cache);
 
-            //
-            device.destroy();
-            this._devices.delete(id);
-
-            // Delete all GSettings
-            GLib.spawn_command_line_async(`dconf reset -f ${settings_path}`);
-
-            // Delete the cache
-            let cache = GLib.build_filenamev([gsconnect.cachedir, id]);
-            Gio.File.rm_rf(cache);
-
-            // Notify
-            this.settings.set_strv(
-                'devices',
-                Array.from(this._devices.keys())
-            );
-        }
+        // Forget the device
+        this._devices.delete(id);
+        this.settings.set_strv(
+            'devices',
+            Array.from(this._devices.keys())
+        );
     }
 
     /**
@@ -413,7 +400,8 @@ const Service = GObject.registerClass({
     }
 
     /**
-     * A GSourceFunc that tries to reconnect to each paired device
+     * A GSourceFunc that tries to reconnect to each paired device, while
+     * pruning unpaired devices that have disconnected.
      */
     _reconnect() {
         for (let [id, device] of this._devices.entries()) {
@@ -426,11 +414,7 @@ const Service = GObject.registerClass({
                     break;
 
                 default:
-                    this._devices.delete(id);
-                    this.settings.set_strv(
-                        'devices',
-                        Array.from(this._devices.keys())
-                    );
+                    this._removeDevice(id);
                     device.destroy();
             }
         }
