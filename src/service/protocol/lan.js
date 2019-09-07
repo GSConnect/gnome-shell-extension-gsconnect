@@ -54,12 +54,18 @@ var ChannelService = class ChannelService {
         // discoverable state of the service.
         this._allowed = new Set();
 
-        // Ensure a certificate exists
-        this._initCertificate();
+        //
+        this._tcp = null;
+        this._udp4 = null;
+        this._udp6 = null;
 
         // Monitor network status
         this._networkMonitor = Gio.NetworkMonitor.get_default();
         this._networkAvailable = false;
+        this._networkChangedId = 0;
+
+        // Ensure a certificate exists
+        this._initCertificate();
     }
 
     get certificate() {
@@ -350,7 +356,6 @@ var ChannelService = class ChannelService {
     broadcast(address = null) {
         try {
             if (!this._networkAvailable) {
-                debug('Network unavailable; aborting');
                 return;
             }
 
@@ -390,15 +395,22 @@ var ChannelService = class ChannelService {
 
     start() {
         // Start TCP/UDP listeners
-        this._initUdpListener();
-        this._initTcpListener();
+        if (this._udp4 === null && this._udp6 === null) {
+            this._initUdpListener();
+        }
+
+        if (this._tcp === null) {
+            this._initTcpListener();
+        }
 
         // Monitor network changes
-        this._networkAvailable = this._networkMonitor.network_available;
-        this._networkChangedId = this._networkMonitor.connect(
-            'network-changed',
-            this._onNetworkChanged.bind(this)
-        );
+        if (this._networkChangedId === 0) {
+            this._networkAvailable = this._networkMonitor.network_available;
+            this._networkChangedId = this._networkMonitor.connect(
+                'network-changed',
+                this._onNetworkChanged.bind(this)
+            );
+        }
     }
 
     stop() {
@@ -408,20 +420,20 @@ var ChannelService = class ChannelService {
             this._networkAvailable = false;
         }
 
-        if (this._tcp) {
+        if (this._tcp !== null) {
             this._tcp.stop();
             this._tcp.close();
             this._tcp = null;
         }
 
-        if (this._udp6) {
+        if (this._udp6 !== null) {
             this._udp6_source.destroy();
             this._udp6_stream.close(null);
             this._udp6.close();
             this._udp6 = null;
         }
 
-        if (this._udp4) {
+        if (this._udp4 !== null) {
             this._udp4_source.destroy();
             this._udp4_stream.close(null);
             this._udp4.close();
