@@ -57,17 +57,9 @@ var ChannelService = class ChannelService {
         // Ensure a certificate exists
         this._initCertificate();
 
-        // Start TCP/UDP listeners
-        this._initUdpListener();
-        this._initTcpListener();
-
-        // Monitor network changes
+        // Monitor network status
         this._networkMonitor = Gio.NetworkMonitor.get_default();
-        this._networkAvailable = this._networkMonitor.network_available;
-        this._networkChangedId = this._networkMonitor.connect(
-            'network-changed',
-            this._onNetworkChanged.bind(this)
-        );
+        this._networkAvailable = false;
     }
 
     get certificate() {
@@ -240,6 +232,7 @@ var ChannelService = class ChannelService {
 
             // We failed to get either an IPv4 or IPv6 socket to bind
             if (this._udp6 === null) {
+                e.name = 'LanError';
                 throw e;
             }
         }
@@ -395,22 +388,52 @@ var ChannelService = class ChannelService {
         }
     }
 
-    destroy() {
-        this._networkMonitor.disconnect(this._networkChangedId);
+    start() {
+        // Start TCP/UDP listeners
+        this._initUdpListener();
+        this._initTcpListener();
 
-        this._tcp.stop();
-        this._tcp.close();
+        // Monitor network changes
+        this._networkAvailable = this._networkMonitor.network_available;
+        this._networkChangedId = this._networkMonitor.connect(
+            'network-changed',
+            this._onNetworkChanged.bind(this)
+        );
+    }
 
-        if (this._udp6 !== null) {
+    stop() {
+        if (this._networkChangedId) {
+            this._networkMonitor.disconnect(this._networkChangedId);
+            this._networkChangedId = 0;
+            this._networkAvailable = false;
+        }
+
+        if (this._tcp) {
+            this._tcp.stop();
+            this._tcp.close();
+            this._tcp = null;
+        }
+
+        if (this._udp6) {
             this._udp6_source.destroy();
             this._udp6_stream.close(null);
             this._udp6.close();
+            this._udp6 = null;
         }
 
-        if (this._udp4 !== null) {
+        if (this._udp4) {
             this._udp4_source.destroy();
             this._udp4_stream.close(null);
             this._udp4.close();
+            this._udp4 = null;
+        }
+    }
+
+    destroy() {
+        try {
+            this.stop();
+        } catch (e) {
+            debug(e);
         }
     }
 };

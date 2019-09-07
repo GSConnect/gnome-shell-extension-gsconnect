@@ -476,18 +476,15 @@ const Service = GObject.registerClass({
 
         for (let name of backends) {
             try {
+                // Try to create the backend and track it if successful
                 let module = imports.service.protocol[name];
                 let backend = new module.ChannelService();
                 this.backends.set(name, backend);
+
+                // Now try to start the backend, allowing us to retry if we fail
+                backend.start();
             } catch (e) {
-                logError(e, `'${name}' Component`);
-
-                // TODO: destroy on failure
-
-                if (name === 'lan') {
-                    e.name = 'LanError';
-                    this.notify_error(e);
-                }
+                this.notify_error(e);
             }
         }
     }
