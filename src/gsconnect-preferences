@@ -139,7 +139,34 @@ const Preferences = GObject.registerClass({
 
     _proxyAction(action, parameter) {
         try {
-            this.service.activate_action(action.name, parameter);
+            // Build the paramter array
+            let paramArray = [];
+
+            if (parameter instanceof GLib.Variant) {
+                paramArray[0] = parameter;
+            }
+
+            // Invoke on our DBus connection
+            let connection = this.get_dbus_connection();
+
+            connection.call(
+                'org.gnome.Shell.Extensions.GSConnect',
+                '/org/gnome/Shell/Extensions/GSConnect',
+                'org.gtk.Actions',
+                'Activate',
+                GLib.Variant.new('(sava{sv})', [action.name, paramArray, {}]),
+                null,
+                Gio.DBusCallFlags.NONE,
+                -1,
+                null,
+                (proxy, res) => {
+                    try {
+                        proxy.call_finish(res);
+                    } catch (e) {
+                        logError(e);
+                    }
+                }
+            );
         } catch (e) {
             logError(e, action.name);
         }
