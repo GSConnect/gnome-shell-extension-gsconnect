@@ -300,7 +300,6 @@ const Service = GObject.registerClass({
         let actions = [
             ['broadcast', this._identify.bind(this)],
             ['connect', this._identify.bind(this), 's'],
-            ['devel', this._devel.bind(this)],
             ['device', this._device.bind(this), '(ssbv)'],
             ['error', this._error.bind(this), 'a{ss}'],
             ['preferences', this._preferences],
@@ -345,10 +344,6 @@ const Service = GObject.registerClass({
                 );
             }
         }
-    }
-
-    _devel() {
-        (new imports.service.ui.devel.Window()).present();
     }
 
     _error(action, parameter) {
