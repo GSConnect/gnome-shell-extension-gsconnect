@@ -32,8 +32,6 @@ imports._gsconnect;
 const Remote = imports.shell.remote;
 const Settings = imports.preferences.service;
 
-const _GITHUB = 'https://github.com/andyholmes/gnome-shell-extension-gsconnect';
-
 
 const Preferences = GObject.registerClass({
     GTypeName: 'GSConnectPreferences',
