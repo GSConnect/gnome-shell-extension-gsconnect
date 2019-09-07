@@ -210,7 +210,6 @@ const Service = GObject.registerClass({
                 'devices',
                 Array.from(this._devices.keys())
             );
-            this.notify('devices');
         }
 
         return device;
@@ -251,7 +250,6 @@ const Service = GObject.registerClass({
                 'devices',
                 Array.from(this._devices.keys())
             );
-            this.notify('devices');
         }
     }
 
@@ -433,7 +431,6 @@ const Service = GObject.registerClass({
                         'devices',
                         Array.from(this._devices.keys())
                     );
-                    this.notify('devices');
                     device.destroy();
             }
         }
