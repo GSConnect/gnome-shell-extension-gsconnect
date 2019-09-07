@@ -225,7 +225,7 @@ const Service = GObject.registerClass({
      */
     _removeDevice(id) {
         // Delete all GSettings
-        let settings_path = '/org/gnome/shell/extensions/gsconnect/' + id + '/');
+        let settings_path = '/org/gnome/shell/extensions/gsconnect/' + id + '/';
         GLib.spawn_command_line_async(`dconf reset -f ${settings_path}`);
 
         // Delete the cache
