@@ -451,7 +451,38 @@ const Service = GObject.registerClass({
 
     /**
      * Backends
+     *
+     * These are the implementations of Core.ChannelService that emit
+     * Core.ChannelService::channel with objects implementing Core.Channel.
      */
+    _onChannel(backend, channel) {
+        try {
+            let device = this._devices.get(channel.identity.body.deviceId);
+
+            switch (true) {
+                // Proceed if this is an existing device...
+                case (device !== undefined):
+                    break;
+
+                // Or the service is discoverable...
+                case this.discoverable:
+                    device = this.service._ensureDevice(packet);
+                    break;
+
+                // ...otherwise bail
+                default:
+                    debug(`${channel.identity.body.deviceName}: not allowed`);
+                    return false;
+            }
+
+            channel.attach(device);
+            return true;
+        } catch (e) {
+            logError(e, backend.name);
+            return false;
+        }
+    }
+
     _initBackends() {
         let backends = [
             //'bluetooth',
@@ -464,6 +495,12 @@ const Service = GObject.registerClass({
                 let module = imports.service.protocol[name];
                 let backend = new module.ChannelService();
                 this.backends.set(name, backend);
+
+                // Connect to the backend
+                backend.__channelId = backend.connect(
+                    'channel',
+                    this._onChannel.bind(this)
+                );
 
                 // Now try to start the backend, allowing us to retry if we fail
                 backend.start();

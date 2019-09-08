@@ -47,9 +47,17 @@ try {
  * from the UDP packet itself. We respond to incoming packets by opening a TCP
  * connection and broadcast outgoing packets to 255.255.255.255.
  */
-var ChannelService = class ChannelService {
+var ChannelService = GObject.registerClass({
+    GTypeName: 'GSConnectLanChannelService',
+    Implements: [Core.ChannelService],
+    Properties: {
+        'name': GObject.ParamSpec.override('name', Core.ChannelService),
+    }
+}, class LanChannelService extends GObject.Object {
 
-    constructor() {
+    _init() {
+        super._init();
+
         // Track hosts we identify to directly, allowing them to ignore the
         // discoverable state of the service.
         this._allowed = new Set();
@@ -70,6 +78,10 @@ var ChannelService = class ChannelService {
 
     get certificate() {
         return this._certificate;
+    }
+
+    get name() {
+        return 'lan';
     }
 
     get service() {
@@ -121,10 +133,8 @@ var ChannelService = class ChannelService {
     }
 
     async _onIncomingChannel(listener, connection) {
-        let channel, device;
-
         try {
-            channel = new Channel({
+            let channel = new Channel({
                 backend: this,
                 certificate: this.certificate,
                 host: connection.get_remote_address().address.to_string()
@@ -135,28 +145,7 @@ var ChannelService = class ChannelService {
             channel.identity.body.tcpHost = channel.host;
             channel.identity.body.tcpPort = 1716;
 
-            // Find a device for the channel
-            device = this.service._devices.get(channel.identity.body.deviceId);
-
-            switch (true) {
-                // We know this device
-                case (device !== undefined):
-                    break;
-
-                // We're discoverable or we know this host
-                case this.service.discoverable:
-                case this._allowed.has(channel.host):
-                    device = await this.service._ensureDevice(channel.identity);
-                    break;
-
-                // ...otherwise bail
-                default:
-                    channel.close();
-                    throw Error('device not allowed');
-            }
-
-            // Attach a device to the channel
-            channel.attach(device);
+            this.channel(channel);
         } catch (e) {
             debug(e);
         }
@@ -247,7 +236,7 @@ var ChannelService = class ChannelService {
     _onIncomingIdentity(socket) {
         let host, data, packet;
 
-        // Try to peek the remote address, but don't prevent reading the data
+        // Try to peek the remote address
         try {
             host = socket.receive_message(
                 [],
@@ -258,6 +247,7 @@ var ChannelService = class ChannelService {
             logError(e);
         }
 
+        // Whether or not we peeked the address, we need to read the packet
         try {
             if (socket === this._udp6) {
                 data = this._udp6_stream.read_line_utf8(null)[0];
@@ -293,25 +283,6 @@ var ChannelService = class ChannelService {
 
             debug(packet);
 
-            let device = this.service._devices.get(packet.body.deviceId);
-
-            switch (true) {
-                // Proceed if this is an existing device...
-                case (device !== undefined):
-                    break;
-
-                // Or the service is discoverable or host is allowed...
-                case this.service.discoverable:
-                case this._allowed.has(packet.body.tcpHost):
-                    device = this.service._ensureDevice(packet);
-                    break;
-
-                // ...otherwise bail
-                default:
-                    debug(`${packet.body.deviceName}: not allowed`);
-                    return;
-            }
-
             // Create a new channel
             let channel = new Channel({
                 backend: this,
@@ -338,7 +309,8 @@ var ChannelService = class ChannelService {
 
             // Connect the channel and attach it to the device on success
             await channel.open(connection);
-            channel.attach(device);
+
+            this.channel(channel);
         } catch (e) {
             logError(e);
         }
@@ -448,16 +420,24 @@ var ChannelService = class ChannelService {
             debug(e);
         }
     }
-};
+});
 
 
 /**
- * Lan Base Channel
+ * Lan Channel
  *
  * This class essentially just extends Core.Channel to set TCP socket options
  * and negotiate TLS encrypted connections.
  */
-var Channel = class Channel extends Core.Channel {
+var Channel = GObject.registerClass({
+    GTypeName: 'GSConnectLanChannel',
+    Implements: [Core.Channel]
+}, class Channel extends GObject.Object {
+
+    _init(params) {
+        super._init();
+        Object.assign(this, params);
+    }
 
     get address() {
         return `lan://${this.host}:${this.port}`;
@@ -777,13 +757,15 @@ var Channel = class Channel extends Core.Channel {
 
         return new Transfer(params);
     }
-};
+});
 
 
 /**
- * Lan Transfer Channel
+ * Lan Transfer
  */
-var Transfer = class Transfer extends Channel {
+var Transfer = GObject.registerClass({
+    GTypeName: 'GSConnectLanTransfer'
+}, class Transfer extends Channel {
 
     /**
      * @param {object} params - Transfer parameters
@@ -792,8 +774,8 @@ var Transfer = class Transfer extends Channel {
      * @param {Gio.OutputStream} params.output_stream - The output stream (write)
      * @param {number} params.size - The size of the transfer in bytes
      */
-    constructor(params) {
-        super(params);
+    _init(params) {
+        super._init(params);
 
         // The device tracks transfers it owns so they can be closed from the
         // notification action.
@@ -961,5 +943,5 @@ var Transfer = class Transfer extends Channel {
 
         return result;
     }
-};
+});
 

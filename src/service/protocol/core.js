@@ -130,11 +130,10 @@ var Packet = class Packet {
  * as a TCP port. The uploading party then waits for an incoming connection that
  * corresponds with the `payloadTransferInfo` field.
  */
-var Channel = class Channel {
-
-    constructor(params) {
-        Object.assign(this, params);
-    }
+var Channel = GObject.registerClass({
+    GTypeName: 'GSConnectChannel',
+    Requires: [GObject.Object]
+}, class Channel extends GObject.Interface {
 
     get address() {
         throw new GObject.NotImplementedError();
@@ -334,5 +333,81 @@ var Channel = class Channel {
 
         return result;
     }
-};
+});
+
+
+/**
+ * ChannelService
+ */
+var ChannelService = GObject.registerClass({
+    GTypeName: 'GSConnectChannelService',
+    Requires: [GObject.Object],
+    Properties: {
+        'name': GObject.ParamSpec.string(
+            'name',
+            'Name',
+            'The name of the backend',
+            GObject.ParamFlags.READABLE,
+            null
+        )
+    },
+    Signals: {
+        'channel': {
+            flags: GObject.SignalFlags.RUN_LAST,
+            param_types: [Channel.$gtype],
+            return_type: GObject.TYPE_BOOLEAN
+        },
+    }
+}, class ChannelService extends GObject.Interface {
+
+    get name() {
+        throw new GObject.NotImplementedError();
+    }
+
+    /**
+     * Broadcast directly to @address or the whole network if %null
+     *
+     * @param {string} [address] - A string address
+     */
+    broadcast(address = null) {
+        throw new GObject.NotImplementedError();
+    }
+
+    /**
+     * Emit Core.ChannelService::channel
+     *
+     * @param {Core.Channel} channel - The new channel
+     */
+    channel(channel) {
+        try {
+            if (!this.emit('channel', channel)) {
+                channel.close();
+            }
+        } catch (e) {
+            logError(e);
+        }
+    }
+
+    /**
+     * Start the channel service. Implementations should throw an error if the
+     * service fails to meet any of its requirements for opening or accepting
+     * connections.
+     */
+    start() {
+        throw new GObject.NotImplementedError();
+    }
+
+    /**
+     * Stop the channel service.
+     */
+    stop() {
+        throw new GObject.NotImplementedError();
+    }
+
+    /**
+     * Destroy the channel service.
+     */
+    destroy() {
+    }
+});
 
