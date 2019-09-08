@@ -466,7 +466,7 @@ const Service = GObject.registerClass({
 
                 // Or the service is discoverable...
                 case this.discoverable:
-                    device = this.service._ensureDevice(packet);
+                    device = this._ensureDevice(channel.identity);
                     break;
 
                 // ...otherwise bail
