@@ -39,13 +39,13 @@ try {
 /**
  * Lan.ChannelService consists of two parts.
  *
- * The TCP Listener listens on a port (usually 1716) and constructs a Channel
- * object from the incoming Gio.TcpConnection.
+ * The TCP Listener listens on a port and constructs a Channel object from the
+ * incoming Gio.TcpConnection.
  *
- * The UDP Listener listens on a port 1716 for incoming JSON identity packets
- * which include the TCP port for connections, while the IP address is taken
- * from the UDP packet itself. We respond to incoming packets by opening a TCP
- * connection and broadcast outgoing packets to 255.255.255.255.
+ * The UDP Listener listens on a port for incoming JSON identity packets which
+ * include the TCP port for connections, while the IP address is taken from the
+ * UDP packet itself. We respond to incoming packets by opening a TCP connection
+ * and broadcast outgoing packets to 255.255.255.255.
  */
 var ChannelService = GObject.registerClass({
     GTypeName: 'GSConnectLanChannelService',
@@ -137,19 +137,6 @@ var ChannelService = GObject.registerClass({
 
     _initTcpListener() {
         this._tcp = new Gio.SocketService();
-
-        try {
-        } catch (e) {
-            this._tcp.stop();
-            this._tcp.close();
-
-            // The UDP listener must have succeeded so shut it down, too
-            this._udp_source.destroy();
-            this._udp_stream.close(null);
-            this._udp.close();
-
-            throw e;
-        }
         this._tcp.add_inet_port(this.port, null);
 
         this._tcp.connect('incoming', this._onIncomingChannel.bind(this));
@@ -455,7 +442,7 @@ var ChannelService = GObject.registerClass({
 var Channel = GObject.registerClass({
     GTypeName: 'GSConnectLanChannel',
     Implements: [Core.Channel]
-}, class Channel extends GObject.Object {
+}, class LanChannel extends GObject.Object {
 
     _init(params) {
         super._init();
@@ -667,12 +654,16 @@ var Channel = GObject.registerClass({
      */
     _sendIdent(connection) {
         return new Promise((resolve, reject) => {
+            this.service.identity.body.tcpPort = this.backend.port;
+
             connection.output_stream.write_all_async(
                 `${this.service.identity}`,
                 GLib.PRIORITY_DEFAULT,
                 this.cancellable,
                 (stream, res) => {
                     try {
+                        this.service.identity.body.tcpPort = undefined;
+
                         stream.write_all_finish(res);
                         resolve(connection);
                     } catch (e) {
