@@ -45,14 +45,6 @@ const _GITHUB = 'https://github.com/andyholmes/gnome-shell-extension-gsconnect';
 const Service = GObject.registerClass({
     GTypeName: 'GSConnectService',
     Properties: {
-        'devices': GObject.param_spec_variant(
-            'devices',
-            'Devices',
-            'A list of known devices',
-            new GLib.VariantType('as'),
-            null,
-            GObject.ParamFlags.READABLE
-        ),
         'discoverable': GObject.ParamSpec.boolean(
             'discoverable',
             'Discoverable',

@@ -252,16 +252,6 @@ var Device = GObject.registerClass({
 var Service = GObject.registerClass({
     GTypeName: 'GSConnectRemoteService',
     Implements: [Gio.DBusInterface],
-    Properties: {
-        'devices': GObject.param_spec_variant(
-            'devices',
-            'Devices',
-            'A list of known devices',
-            new GLib.VariantType('as'),
-            null,
-            GObject.ParamFlags.READABLE
-        )
-    },
     Signals: {
         'device-added': {
             flags: GObject.SignalFlags.RUN_FIRST,
@@ -355,7 +345,6 @@ var Service = GObject.registerClass({
             // Hold the proxy and emit ::device-added
             this._devices.set(object_path, device);
             this.emit('device-added', device);
-            this.notify('devices');
         } catch (e) {
             logError(e, object_path);
         }
@@ -379,7 +368,6 @@ var Service = GObject.registerClass({
             // Release the proxy and emit ::device-removed
             this._devices.delete(object_path);
             this.emit('device-removed', device);
-            this.notify('devices');
 
             device.destroy();
         } catch (e) {
@@ -439,8 +427,6 @@ var Service = GObject.registerClass({
             this.emit('device-removed', device);
             device.destroy();
         }
-
-        this.notify('devices');
     }
 
     async start() {
