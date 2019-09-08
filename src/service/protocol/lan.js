@@ -481,10 +481,6 @@ var Channel = GObject.registerClass({
         this._host = host;
     }
 
-    get type() {
-        return 'tcp';
-    }
-
     get port() {
         if (this._port === undefined) {
             if (this.identity && this.identity.body.tcpPort) {
