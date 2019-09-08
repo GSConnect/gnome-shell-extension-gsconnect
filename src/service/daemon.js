@@ -992,20 +992,21 @@ const Service = GObject.registerClass({
         }
     }
 
-    _cliAction(id, name, target = null) {
-        if (target instanceof GLib.Variant) {
-            target = GLib.Variant.new('(ssbv)', [id, name, true, target]);
-        } else {
-            target = GLib.Variant.new_string('');
-            target = GLib.Variant.new('(ssbv)', [id, name, false, target]);
+    _cliAction(id, name, parameter = null) {
+        let parameters = [];
+
+        if (parameter instanceof GLib.Variant) {
+            parameters[0] = parameter;
         }
+
+        id = id.replace(/\W+/g, '_');
 
         Gio.DBus.session.call_sync(
             'org.gnome.Shell.Extensions.GSConnect',
-            '/org/gnome/Shell/Extensions/GSConnect',
-            'org.freedesktop.Application',
-            'ActivateAction',
-            GLib.Variant.new('(sava{sv})', ['device', [target], {}]),
+            `/org/gnome/Shell/Extensions/GSConnect/Device/${id}`,
+            'org.gtk.Actions',
+            'Activate',
+            GLib.Variant.new('(sava{sv})', [name, parameters, {}]),
             null,
             Gio.DBusCallFlags.NONE,
             -1,
@@ -1072,7 +1073,7 @@ const Service = GObject.registerClass({
             }
 
             if (!options.contains('device')) {
-                throw new Error('No device specified');
+                return 0;
             }
 
             let id = options.lookup_value('device', null).unpack();
@@ -1107,7 +1108,6 @@ const Service = GObject.registerClass({
             }
         } catch (e) {
             logError(e);
-
             return 1;
         }
     }
