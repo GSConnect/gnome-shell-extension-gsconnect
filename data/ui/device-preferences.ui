@@ -465,29 +465,12 @@
                             <property name="sensitive" bind-source="receive-files" bind-property="active" bind-flags="sync-create"/>
                             <property name="column_spacing">12</property>
                             <child>
-                              <object class="GtkLabel" id="receive-directory-label">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="halign">start</property>
-                                <property name="margin_start">12</property>
-                                <property name="vexpand">True</property>
-                                <property name="label" translatable="yes">Directory</property>
-                              </object>
-                              <packing>
-                                <property name="left_attach">0</property>
-                                <property name="top_attach">0</property>
-                              </packing>
-                            </child>
-                            <child>
                               <object class="GtkFileChooserButton" id="receive-directory">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="hexpand">True</property>
                                 <property name="action">select-folder</property>
                                 <signal name="file-set" handler="_onReceiveDirectorySet" swapped="no"/>
-                                <accessibility>
-                                  <relation type="labelled-by" target="receive-directory-label"/>
-                                </accessibility>
                               </object>
                               <packing>
                                 <property name="left_attach">1</property>
