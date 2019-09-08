@@ -647,10 +647,7 @@ const Service = GObject.registerClass({
         // Watch *this* file and stop the service if it's updated/uninstalled
         this._serviceMonitor = Gio.File.new_for_path(
             gsconnect.extdatadir + '/service/daemon.js'
-        ).monitor(
-            Gio.FileMonitorFlags.WATCH_MOVES,
-            null
-        );
+        ).monitor(Gio.FileMonitorFlags.WATCH_MOVES, null);
         this._serviceMonitor.connect('changed', () => this.quit());
 
         // Init some resources
