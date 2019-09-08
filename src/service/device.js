@@ -93,7 +93,6 @@ var Device = GObject.registerClass({
         super._init();
 
         this._channel = null;
-        this._connected = false;
 
         // GLib.Source timeout id's for pairing requests
         this._incomingPairRequest = 0;
@@ -156,6 +155,10 @@ var Device = GObject.registerClass({
     }
 
     get connected () {
+        if (this._connected === undefined) {
+            this._connected = false;
+        }
+
         return this._connected;
     }
 
@@ -325,10 +328,12 @@ var Device = GObject.registerClass({
     _setConnected() {
         debug(`Connected to ${this.name} (${this.id})`);
 
-        this._connected = true;
-        this.notify('connected');
+        if (!this.connected) {
+            this._connected = true;
+            this.notify('connected');
 
-        this._plugins.forEach(async (plugin) => plugin.connected());
+            this._plugins.forEach(async (plugin) => plugin.connected());
+        }
     }
 
     /**
@@ -337,15 +342,13 @@ var Device = GObject.registerClass({
     _setDisconnected() {
         debug(`Disconnected from ${this.name} (${this.id})`);
 
-        // Clear the packet queue, because we've really disconnected
-        this._queue = [];
-        this._lock = false;
+        if (this.connected) {
+            this._channel = null;
+            this._connected = false;
+            this.notify('connected');
 
-        this._channel = null;
-        this._connected = false;
-        this.notify('connected');
-
-        this._plugins.forEach(async (plugin) => plugin.disconnected());
+            this._plugins.forEach(async (plugin) => plugin.disconnected());
+        }
     }
 
     /**
