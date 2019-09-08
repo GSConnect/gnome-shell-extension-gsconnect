@@ -10,9 +10,9 @@ const Core = imports.service.protocol.core;
 /**
  * TCP Port Constants
  */
-const TCP_MIN_PORT = 1716;
-const TCP_MAX_PORT = 1764;
-const UDP_PORT = 1716;
+const DEFAULT_PORT = 1716;
+const TRANSFER_MIN = 1739;
+const TRANSFER_MAX = 1764;
 
 
 /**
@@ -52,11 +52,19 @@ var ChannelService = GObject.registerClass({
     Implements: [Core.ChannelService],
     Properties: {
         'name': GObject.ParamSpec.override('name', Core.ChannelService),
+        'port': GObject.ParamSpec.uint(
+            'port',
+            'Port',
+            'The port used by the service',
+            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            0,  GLib.MAXUINT16,
+            DEFAULT_PORT
+        ),
     }
 }, class LanChannelService extends GObject.Object {
 
-    _init() {
-        super._init();
+    _init(params) {
+        super._init(params);
 
         // Track hosts we identify to directly, allowing them to ignore the
         // discoverable state of the service.
@@ -82,6 +90,21 @@ var ChannelService = GObject.registerClass({
 
     get name() {
         return 'lan';
+    }
+
+    get port() {
+        if (this._port === undefined) {
+            this._port = DEFAULT_PORT;
+        }
+
+        return this._port;
+    }
+
+    set port(port) {
+        if (this.port !== port) {
+            this._port = port;
+            this.notify('port');
+        }
     }
 
     get service() {
@@ -116,7 +139,6 @@ var ChannelService = GObject.registerClass({
         this._tcp = new Gio.SocketService();
 
         try {
-            this._tcp.add_inet_port(TCP_MIN_PORT, null);
         } catch (e) {
             this._tcp.stop();
             this._tcp.close();
@@ -128,6 +150,7 @@ var ChannelService = GObject.registerClass({
 
             throw e;
         }
+        this._tcp.add_inet_port(this.port, null);
 
         this._tcp.connect('incoming', this._onIncomingChannel.bind(this));
     }
@@ -143,7 +166,7 @@ var ChannelService = GObject.registerClass({
             // Accept the connection
             await channel.accept(connection);
             channel.identity.body.tcpHost = channel.host;
-            channel.identity.body.tcpPort = 1716;
+            channel.identity.body.tcpPort = DEFAULT_PORT;
 
             this.channel(channel);
         } catch (e) {
@@ -155,7 +178,7 @@ var ChannelService = GObject.registerClass({
         // Default broadcast address
         this._udp_address = Gio.InetSocketAddress.new_from_string(
             '255.255.255.255',
-            UDP_PORT
+            this.port
         );
 
         try {
@@ -169,7 +192,7 @@ var ChannelService = GObject.registerClass({
 
             // Bind the socket
             let inetAddr = Gio.InetAddress.new_any(Gio.SocketFamily.IPV6);
-            let sockAddr = Gio.InetSocketAddress.new(inetAddr, UDP_PORT);
+            let sockAddr = Gio.InetSocketAddress.new(inetAddr, this.port);
             this._udp6.bind(sockAddr, false);
 
             // Input stream
@@ -206,7 +229,7 @@ var ChannelService = GObject.registerClass({
 
             // Bind the socket
             let inetAddr = Gio.InetAddress.new_any(Gio.SocketFamily.IPV4);
-            let sockAddr = Gio.InetSocketAddress.new(inetAddr, UDP_PORT);
+            let sockAddr = Gio.InetSocketAddress.new(inetAddr, this.port);
             this._udp4.bind(sockAddr, false);
 
             // Input stream
@@ -334,7 +357,7 @@ var ChannelService = GObject.registerClass({
             // Try to parse strings as <host>:<port>
             if (typeof address === 'string') {
                 let [host, port] = address.split(':');
-                port = parseInt(port) || 1716;
+                port = parseInt(port) || DEFAULT_PORT;
                 address = Gio.InetSocketAddress.new_from_string(host, port);
             }
 
@@ -480,7 +503,7 @@ var Channel = GObject.registerClass({
             if (this.identity && this.identity.body.tcpPort) {
                 this._port = this.identity.body.tcpPort;
             } else {
-                return 1716;
+                return DEFAULT_PORT;
             }
         }
 
