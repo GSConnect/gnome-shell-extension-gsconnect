@@ -111,6 +111,7 @@ var ConnectDialog = GObject.registerClass({
 }, class ConnectDialog extends Gtk.Dialog {
 
     _init(parent = null) {
+        this.connectTemplate();
         super._init({
             application: Gio.Application.get_default(),
             modal: (parent),
@@ -202,6 +203,7 @@ var ConnectDialog = GObject.registerClass({
             this.application.bluetooth.disconnect(this._devicesId);
         }
 
+        this.disconnectTemplate();
         this.destroy();
         return false;
     }
@@ -286,6 +288,7 @@ var Window = GObject.registerClass({
 }, class PreferencesWindow extends Gtk.ApplicationWindow {
 
     _init(params) {
+        this.connectTemplate();
         super._init(params);
 
         // GSettings
@@ -368,6 +371,7 @@ var Window = GObject.registerClass({
 
     vfunc_delete_event(event) {
         this._saveGeometry();
+        this.disconnectTemplate();
         GLib.source_remove(this._refreshSource);
 
         return false;
