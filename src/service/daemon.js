@@ -938,21 +938,6 @@ const Service = GObject.registerClass({
             }
         }
     }
-    
-    _cliMessage(device, options) {
-        let plugin = device.lookup_plugin('sms');
-
-        if (!plugin) {
-            throw new Error('SMS plugin disabled');
-        }
-
-        if (!options.contains('message-body')) return;
-
-        let address = options.lookup_value('message', null).deep_unpack();
-        let body = options.lookup_value('message-body', null).deep_unpack();
-
-        plugin.sendSms(address, body);
-    }
 
     async _cliNotify(device, options) {
         try {
@@ -995,61 +980,55 @@ const Service = GObject.registerClass({
         }
     }
 
-    _cliPhoto(device) {
-        let plugin = device.lookup_plugin('photo');
-
-        if (!plugin) {
-            throw new Error('Photo plugin disabled');
+    _cliAction(id, name, target = null) {
+        if (target instanceof GLib.Variant) {
+            target = GLib.Variant.new('(ssbv)', [id, name, true, target]);
+        } else {
+            target = GLib.Variant.new_string('');
+            target = GLib.Variant.new('(ssbv)', [id, name, false, target]);
         }
 
-        plugin.photo();
+        Gio.DBus.session.call_sync(
+            'org.gnome.Shell.Extensions.GSConnect',
+            '/org/gnome/Shell/Extensions/GSConnect',
+            'org.freedesktop.Application',
+            'ActivateAction',
+            GLib.Variant.new('(sava{sv})', ['device', [target], {}]),
+            null,
+            Gio.DBusCallFlags.NONE,
+            -1,
+            null
+        );
     }
-    
-    _cliPing(device, options) {
-        let plugin = device.lookup_plugin('ping');
 
-        if (!plugin) {
-            throw new Error('Ping plugin disabled');
+    _cliMessage(device, options) {
+        if (!options.contains('message-body')) {
+            throw new TypeError('missing --message-body option');
         }
 
-        plugin.ping();
-    }
-    
-    _cliRing(device) {
-        let plugin = device.lookup_plugin('findmyphone');
+        let address = options.lookup_value('message', null).deep_unpack();
+        let body = options.lookup_value('message-body', null).deep_unpack();
 
-        if (!plugin) {
-            throw new Error('FindMyPhone plugin disabled');
-        }
-
-        plugin.ring();
+        this._cliAction(device, 'sendSms', GLib.Variant.new('(ss)', [address, body]));
     }
     
     _cliShareFile(device, options) {
-        let plugin = device.lookup_plugin('share');
+        let files = options.lookup_value('share-file', null);
 
-        if (!plugin) {
-            throw new Error('Share plugin disabled');
-        }
+        debug(files.print(true));
 
-        let files = options.lookup_value('share-file', null).deep_unpack();
+        files = files.deep_unpack();
 
         files.map(file => {
             if (file instanceof Uint8Array) {
                 file = imports.byteArray.toString(file);
             }
 
-            plugin.shareFile(file);
+            this._cliAction(device, 'shareFile', GLib.Variant.new('(sb)', [file, false]));
         });
     }
 
     _cliShareLink(device, options) {
-        let plugin = device.lookup_plugin('share');
-
-        if (!plugin) {
-            throw new Error('Share plugin disabled');
-        }
-
         let uris = options.lookup_value('share-link', null).deep_unpack();
 
         uris.map(uri => {
@@ -1057,10 +1036,10 @@ const Service = GObject.registerClass({
                 uri = imports.byteArray.toString(uri);
             }
             
-            plugin.shareUri(uri);
+            this._cliAction(device, 'shareUri', GLib.Variant.new_string(uri));
         });
     }
-    
+
     vfunc_handle_local_options(options) {
         try {
             if (options.contains('version')) {
@@ -1080,7 +1059,40 @@ const Service = GObject.registerClass({
                 return 0;
             }
 
-            return -1;
+            if (!options.contains('device')) {
+                throw new Error('No device specified');
+            }
+
+            let id = options.lookup_value('device', null).unpack();
+
+            switch (true) {
+                case options.contains('message'):
+                    this._cliMessage(id, options);
+                    return 0;
+
+                case options.contains('ping'):
+                    this._cliAction(id, 'ping', GLib.Variant.new_string(''));
+                    return 0;
+
+                case options.contains('photo'):
+                    this._cliAction(id, 'photo');
+                    return 0;
+
+                case options.contains('ring'):
+                    this._cliAction(id, 'ring');
+                    return 0;
+
+                case options.contains('share-file'):
+                    this._cliShareFile(id, options);
+                    return 0;
+
+                case options.contains('share-link'):
+                    this._cliShareLink(id, options);
+                    return 0;
+
+                default:
+                    return -1;
+            }
         } catch (e) {
             logError(e);
 
@@ -1100,36 +1112,13 @@ const Service = GObject.registerClass({
             if (!device || !device.connected || !device.paired) {
                 throw new Error(`Device not available: ${id}`);
             }
-            
-            if (options.contains('message')) {
-                this._cliMessage(device, options);
-            }
 
             if (options.contains('notification')) {
                 this._cliNotify(device, options);
             }
-            
-            if (options.contains('photo')) {
-                this._cliPhoto(device, options);
-            }
-            
-            if (options.contains('ping')) {
-                this._cliPing(device, options);
-            }
-            
-            if (options.contains('ring')) {
-                this._cliRing(device, options);
-            }
-            
-            if (options.contains('share-file')) {
-                this._cliShareFile(device, options);
-            }
-
-            if (options.contains('share-link')) {
-                this._cliLink(device, options);
-            }
         } catch (e) {
             logError(e);
+            return 1;
         }
         
         return 0;
