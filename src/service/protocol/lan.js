@@ -863,19 +863,19 @@ var Transfer = GObject.registerClass({
      * @return {boolean} - %true on success or %false on fail
      */
     async upload(packet) {
-        let port = 1739;
+        let port = TRANSFER_MIN;
         let result = false;
 
         try {
             // Start listening on the first available port between 1739-1764
             let listener = new Gio.SocketListener();
 
-            while (port <= TCP_MAX_PORT) {
+            while (port <= TRANSFER_MAX) {
                 try {
                     listener.add_inet_port(port, null);
                     break;
                 } catch (e) {
-                    if (port < TCP_MAX_PORT) {
+                    if (port < TRANSFER_MAX) {
                         port++;
                         continue;
                     } else {
