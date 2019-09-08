@@ -724,7 +724,7 @@ var Channel = class Channel extends Core.Channel {
         // Close any streams
         [this._connection, this.input_stream, this.output_stream].map(stream => {
             try {
-                stream.close(null);
+                stream.close_async(0, null, null);
             } catch (e) {
                 // Silence errors
             }
