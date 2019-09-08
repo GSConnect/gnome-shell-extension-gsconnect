@@ -215,16 +215,6 @@ var DevicePreferences = GObject.registerClass({
 
         this._setupActions();
 
-        // Device Menu
-        // let menus = Gtk.Builder.new_from_resource(
-        //     '/org/gnome/Shell/Extensions/GSConnect/gtk/menus.ui'
-        // );
-        // menus.translation_domain = 'org.gnome.Shell.Extensions.GSConnect';
-
-        // this.menu = menus.get_object('device-menu');
-        // this.menu.prepend_section(null, this.device.menu || this.device.menu);
-        // this.insert_action_group('device', this.device.action_group);
-
         // Settings Pages
         this._sharingSettings();
         this._batterySettings();
@@ -263,10 +253,6 @@ var DevicePreferences = GObject.registerClass({
         }
 
         return this._menu;
-    }
-
-    get service() {
-        return Gio.Application.get_default();
     }
 
     get supported_plugins() {
