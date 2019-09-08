@@ -543,16 +543,22 @@ var Channel = GObject.registerClass({
         // Standard TLS Handshake
         await this._handshake(connection);
 
-        // Get a GSettings object for this deviceId
-        let id = (this.device) ? this.device.id : this.identity.body.deviceId;
-        let settings = new Gio.Settings({
-            settings_schema: gsconnect.gschema.lookup(
-                'org.gnome.Shell.Extensions.GSConnect.Device',
-                true
-            ),
-            path: `/org/gnome/shell/extensions/gsconnect/device/${id}/`
-        });
-        let cert_pem = settings.get_string('certificate-pem');
+        // Try to find a certificate for this deviceId
+        let cert_pem;
+
+        if (this.device) {
+            cert_pem = this.device.settings.get_string('certificate-pem');
+        } else {
+            let id = this.identity.body.deviceId;
+            let settings = new Gio.Settings({
+                settings_schema: gsconnect.gschema.lookup(
+                    'org.gnome.Shell.Extensions.GSConnect.Device',
+                    true
+                ),
+                path: `/org/gnome/shell/extensions/gsconnect/device/${id}/`
+            });
+            cert_pem = settings.get_string('certificate-pem');
+        }
 
         // If we have a certificate for this deviceId, we can verify it
         if (cert_pem !== '') {
