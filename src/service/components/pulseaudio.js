@@ -61,22 +61,23 @@ class Stream {
     /**
      * Gradually raise or lower the stream volume to @value
      *
-     * @param {Number} value - A number in the range 0-1
+     * @param {number} value - A number in the range 0-1
+     * @param {number} [duration] - Duration to fade in seconds
      */
-    fade(value) {
+    fade(value, duration = 1) {
         Tweener.removeTweens(this);
 
         if (this._stream.volume > value) {
             Tweener.addTween(this, {
                 volume: value,
-                time: 1,
                 transition: 'easeOutCubic'
+                time: duration,
             });
         } else if (this._stream.volume < value) {
             Tweener.addTween(this, {
                 volume: value,
-                time: 1,
                 transition: 'easeInCubic'
+                time: duration,
             });
         }
     }
@@ -151,11 +152,11 @@ var Mixer = GObject.registerClass({
     /**
      * Store the current output volume then lower it to %15
      */
-    lowerVolume() {
+    lowerVolume(duration = 1) {
         try {
             if (this.output.volume > 0.15) {
                 this._previousVolume = Number(this.output.volume);
-                this.output.fade(0.15);
+                this.output.fade(0.15, duration);
             }
         } catch (e) {
             logError(e);
