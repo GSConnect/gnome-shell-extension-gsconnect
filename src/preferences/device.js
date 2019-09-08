@@ -308,17 +308,16 @@ var DevicePreferences = GObject.registerClass({
             // Template
             this.disconnectTemplate();
 
-            // Keybindings signals
-            this.device.disconnect(this._actionAddedId);
-            this.device.disconnect(this._actionRemovedId);
-            this.settings.disconnect(this._keybindingsId);
+            // Device signals
+            this.device.action_group.disconnect(this._actionAddedId);
+            this.device.action_group.disconnect(this._actionRemovedId);
 
-            // Plugin Settings
+            // GSettings
             for (let settings of Object.values(this._pluginSettings)) {
                 settings.run_dispose();
             }
 
-            // Device state signals
+            this.settings.disconnect(this._keybindingsId);
             this.settings.disconnect(this._pluginsId);
             this.settings.run_dispose();
         }
