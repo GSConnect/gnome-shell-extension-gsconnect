@@ -646,6 +646,12 @@ const ConversationWidget = GObject.registerClass({
      * Send the contents of the message entry to the address
      */
     sendMessage(entry, signal_id, event) {
+        // TODO: removed when multi-target messages are supported
+        if (this.addresses.length > 1) {
+            this.entry.get_style_context().add_class('error');
+            return;
+        }
+
         // Don't send empty texts
         if (!this.entry.text.trim()) return;
 
