@@ -159,10 +159,6 @@ var Channel = GObject.registerClass({
         return Gio.Application.get_default();
     }
 
-    get type() {
-        return null;
-    }
-
     get uuid() {
         if (this._uuid === undefined) {
             this._uuid = GLib.uuid_string_random();
