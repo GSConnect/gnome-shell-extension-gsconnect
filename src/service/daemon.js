@@ -307,19 +307,31 @@ const Service = GObject.registerClass({
      * @param {GLib.Variant(v)} parameter[3] - GAction parameter
      */
     _device(action, parameter) {
-        parameter = parameter.unpack();
+        try {
+            parameter = parameter.unpack();
 
-        let id = parameter[0].unpack();
-        let devices = (id === '*') ? this._devices.values() : [this._devices.get(id)];
+            // Select the appropriate device(s)
+            let devices;
+            let id = parameter[0].unpack();
 
-        for (let device of devices) {
-            // If the device is available
-            if (device) {
-                device.activate_action(
-                    parameter[1].unpack(),
-                    parameter[2].unpack() ? parameter[3].unpack() : null
-                );
+            if (id === '*') {
+                devices = this._devices.values();
+            } else {
+                devices = [this._devices.get(id)];
             }
+
+            // Unpack the action data
+            let name = parameter[1].unpack();
+            let target = parameter[2].unpack() ? parameter[3].unpack() : null;
+
+            // Activate the action on each available device
+            for (let device of devices) {
+                if (device) {
+                    device.activate_action(name, target);
+                }
+            }
+        } catch (e) {
+            logError(e);
         }
     }
 
