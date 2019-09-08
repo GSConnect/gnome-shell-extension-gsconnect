@@ -319,6 +319,7 @@ const ConversationWidget = GObject.registerClass({
 }, class ConversationWidget extends Gtk.Grid {
 
     _init(params) {
+        this.connectTemplate();
         super._init({device: params.device});
         Object.assign(this, params);
 
@@ -430,6 +431,8 @@ const ConversationWidget = GObject.registerClass({
     }
 
     _onDestroy(conversation) {
+        conversation.disconnectTemplate();
+
         conversation.device.disconnect(conversation._connectedId);
 
         conversation.list.foreach(message => {
@@ -442,7 +445,6 @@ const ConversationWidget = GObject.registerClass({
     /**
      * Messages
      */
-
     _createMessageRow(message) {
         let incoming = (message.type === Sms.MessageBox.INBOX);
 
@@ -704,6 +706,7 @@ var Window = GObject.registerClass({
 }, class Window extends Gtk.ApplicationWindow {
 
     _init(params) {
+        this.connectTemplate();
         super._init(params);
         this.headerbar.subtitle = this.device.name;
 
@@ -853,6 +856,7 @@ var Window = GObject.registerClass({
     }
 
     _onDestroy(window) {
+        window.disconnectTemplate();
         GLib.source_remove(window._timestampThreadsId);
         window.contact_chooser.disconnect(window._numberSelectedId);
         window.sms.disconnect(window._threadsChangedId);

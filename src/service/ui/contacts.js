@@ -313,6 +313,7 @@ var ContactChooser = GObject.registerClass({
 }, class ContactChooser extends Gtk.Grid {
 
     _init(params) {
+        this.connectTemplate();
         super._init(params);
 
         // Setup the contact list
@@ -416,6 +417,7 @@ var ContactChooser = GObject.registerClass({
 
     _onDestroy(chooser) {
         chooser.store = null;
+        chooser.disconnectTemplate();
     }
 
     _onSearchChanged(entry) {
