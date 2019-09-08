@@ -356,16 +356,7 @@ var Device = GObject.registerClass({
      */
     activate() {
         try {
-            // `last-connection` is a URI of the form `backend://address`
             let lastConnection = this.settings.get_value('last-connection');
-            let backend = lastConnection.unpack().split('://')[0];
-
-            // If the same channel type is currently open bail...
-            if (this._channel !== null && this._channel.type === backend) {
-                debug(`${this.name}: ${backend} connection already active`);
-                return;
-            }
-
             this.service.activate_action('connect', lastConnection);
         } catch (e) {
             logError(e, this.name);
