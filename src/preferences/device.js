@@ -297,6 +297,10 @@ var DevicePreferences = GObject.registerClass({
         dialog.present();
     }
 
+    _deviceAction(action, parameter) {
+        this.action_group.activate_action(action.name, parameter);
+    }
+
     dispose() {
         if (this.__disposed === undefined) {
             this.__disposed = true;
@@ -388,25 +392,14 @@ var DevicePreferences = GObject.registerClass({
         this.actions.add_action(encryption_info);
 
         let status_pair = new Gio.SimpleAction({name: 'pair'});
-        status_pair.connect('activate', this._pair.bind(this.device));
+        status_pair.connect('activate', this._deviceAction.bind(this.device));
         this.settings.bind('paired', status_pair, 'enabled', 16);
         this.actions.add_action(status_pair);
 
         let status_unpair = new Gio.SimpleAction({name: 'unpair'});
-        status_pair.connect('activate', this._unpair.bind(this.device));
+        status_unpair.connect('activate', this._deviceAction.bind(this.device));
         this.settings.bind('paired', status_unpair, 'enabled', 0);
         this.actions.add_action(status_unpair);
-    }
-
-    /**
-     * Pair/Unpair Actions
-     */
-    _pair() {
-        this.action_group.activate_action('pair', null);
-    }
-
-    _unpair() {
-        this.action_group.activate_action('pair', null);
     }
 
     /**
