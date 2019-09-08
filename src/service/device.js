@@ -710,24 +710,21 @@ var Device = GObject.registerClass({
         if (packet.body.pair) {
             // The device is accepting our request
             if (this._outgoingPairRequest) {
-                debug(`Pair accepted by ${this.name}`);
-
                 this._setPaired(true);
                 this._loadPlugins();
+
             // The device thinks we're unpaired
             } else if (this.paired) {
                 this._setPaired(true);
                 this.pair();
                 this._loadPlugins();
+
             // The device is requesting pairing
             } else {
-                debug(`Pair request from ${this.name}`);
                 this._notifyPairRequest();
             }
         // Device is requesting unpairing/rejecting our request
         } else {
-            debug(`Pair rejected by ${this.name}`);
-
             this._setPaired(false);
             this._unloadPlugins();
         }
@@ -793,7 +790,7 @@ var Device = GObject.registerClass({
         this._resetPairRequest();
 
         // For TCP connections we store or reset the TLS Certificate
-        if (this.connection_type === 'tcp') {
+        if (this.connection_type === 'lan') {
             if (bool) {
                 this.settings.set_string(
                     'certificate-pem',
