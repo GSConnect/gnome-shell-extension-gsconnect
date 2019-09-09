@@ -59,7 +59,7 @@ var ChannelService = GObject.registerClass({
             GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
             0,  GLib.MAXUINT16,
             DEFAULT_PORT
-        ),
+        )
     }
 }, class LanChannelService extends GObject.Object {
 
@@ -86,6 +86,14 @@ var ChannelService = GObject.registerClass({
 
     get certificate() {
         return this._certificate;
+    }
+
+    get channels() {
+        if (this._channels === undefined) {
+            this._channels = new Map();
+        }
+
+        return this._channels;
     }
 
     get name() {
@@ -304,9 +312,18 @@ var ChannelService = GObject.registerClass({
                 backend: this,
                 certificate: this.certificate,
                 host: packet.body.tcpHost,
+                port: packet.body.tcpPort,
                 identity: packet
             });
 
+            // Check if channel is already open with this address
+            if (this.channels.has(channel.address)) {
+                return;
+            } else {
+                this.channels.set(channel.address, channel);
+            }
+
+            // Open a TCP connection
             let connection = await new Promise((resolve, reject) => {
                 let address = Gio.InetSocketAddress.new_from_string(
                     packet.body.tcpHost,
@@ -689,6 +706,8 @@ var Channel = GObject.registerClass({
      */
     async accept(connection) {
         try {
+            this.backend.channels.set(this.address, this);
+
             this._connection = this._initSocket(connection);
             this._connection = await this._receiveIdent(this._connection);
             this._connection = await this._clientEncryption(this._connection);
@@ -705,6 +724,8 @@ var Channel = GObject.registerClass({
      */
     async open(connection) {
         try {
+            this.backend.channels.set(this.address, this);
+
             this._connection = this._initSocket(connection);
             this._connection = await this._sendIdent(this._connection);
             this._connection = await this._serverEncryption(this._connection);
@@ -720,6 +741,7 @@ var Channel = GObject.registerClass({
     close() {
         if (this._closed === undefined) {
             this._closed = true;
+            this.backend.channels.delete(this.address);
 
             debug(`${this.address} (${this.uuid})`);
 
@@ -771,7 +793,7 @@ var Channel = GObject.registerClass({
 
             // Start listening for packets
             this.receive(device);
-            device.setConnected();
+            device._setConnected();
         } catch (e) {
             logError(e);
             this.close();
