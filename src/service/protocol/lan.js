@@ -148,7 +148,7 @@ var ChannelService = GObject.registerClass({
 
     async _onIncomingChannel(listener, connection) {
         try {
-            let host = connection.get_remote_address().address.to_string()
+            let host = connection.get_remote_address().address.to_string();
 
             // Decide whether we should try to accept this connection
             if (!this._allowed.has(host) && !this.service.discoverable) {
