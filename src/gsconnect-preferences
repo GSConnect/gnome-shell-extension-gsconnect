@@ -57,44 +57,14 @@ const Preferences = GObject.registerClass({
         this.set_resource_base_path(gsconnect.app_path);
     }
 
-    async _init_async() {
-        try {
-            // Device Manager
-            this.service = new Remote.Service();
-
-            // Watch for new and removed
-            this._deviceAddedId = this.service.connect(
-                'device-added',
-                this.window._onDeviceAdded.bind(this.window)
-            );
-
-            this._deviceRemovedId = this.service.connect(
-                'device-removed',
-                this.window._onDeviceRemoved.bind(this.window)
-            );
-
-            await this.service.start();
-        } catch (e) {
-            logError(e, 'GSConnect');
-        }
-    }
-
-    get devices() {
-        return this.service.devices.map(device => device.id);
-    }
-
-    get window() {
+    vfunc_activate() {
         if (this._window === undefined) {
             this._window = new Settings.Window({
                 application: this
             });
         }
 
-        return this._window;
-    }
-
-    vfunc_activate() {
-        this.window.present();
+        this._window.present();
     }
 
     vfunc_startup() {
@@ -122,9 +92,6 @@ const Preferences = GObject.registerClass({
             action.connect('activate', this._proxyAction.bind(this));
             this.add_action(action);
         }
-
-        // Async setup
-        this._init_async();
     }
 
     _proxyAction(action, parameter) {
@@ -160,17 +127,6 @@ const Preferences = GObject.registerClass({
         } catch (e) {
             logError(e, action.name);
         }
-    }
-
-    vfunc_shutdown() {
-        if (this.service) {
-            this.service.disconnect(this._deviceAddedId);
-            this.service.disconnect(this._deviceRemovedId);
-            this.service.destroy();
-        }
-
-        // Chain up last (application->priv->did_shutdown)
-        super.vfunc_shutdown();
     }
 });
 

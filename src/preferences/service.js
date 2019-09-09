@@ -8,6 +8,7 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 const Device = imports.preferences.device;
+const Remote = imports.shell.remote;
 
 /*
  * Header for support logs
@@ -331,6 +332,9 @@ var Window = GObject.registerClass({
 
         // Restore window size/maximized/position
         this._restoreGeometry();
+
+        // Start the remote service
+        this._init_async();
     }
 
     get display_mode() {
@@ -346,11 +350,40 @@ var Window = GObject.registerClass({
     }
 
     vfunc_delete_event(event) {
+        if (this.service) {
+            this.service.disconnect(this._deviceAddedId);
+            this.service.disconnect(this._deviceRemovedId);
+            this.service.destroy();
+            this.service = null;
+        }
+
         this._saveGeometry();
         this.disconnectTemplate();
         GLib.source_remove(this._refreshSource);
 
         return false;
+    }
+
+    async _init_async() {
+        try {
+            // Device Manager
+            this.service = new Remote.Service();
+
+            // Watch for new and removed
+            this._deviceAddedId = this.service.connect(
+                'device-added',
+                this._onDeviceAdded.bind(this)
+            );
+
+            this._deviceRemovedId = this.service.connect(
+                'device-removed',
+                this._onDeviceRemoved.bind(this)
+            );
+
+            await this.service.start();
+        } catch (e) {
+            logError(e, 'GSConnect');
+        }
     }
 
     _initMenu() {
