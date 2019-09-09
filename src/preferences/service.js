@@ -300,14 +300,6 @@ var Window = GObject.registerClass({
             path: '/org/gnome/shell/extensions/gsconnect/preferences/'
         });
 
-        // Discoverable
-        gsconnect.settings.bind(
-            'discoverable',
-            this.infobar,
-            'reveal-child',
-            Gio.SettingsBindFlags.INVERT_BOOLEAN
-        );
-
         // HeaderBar (Service Name)
         this.headerbar.title = gsconnect.settings.get_string('name');
         this.service_entry.text = this.headerbar.title;
@@ -315,36 +307,20 @@ var Window = GObject.registerClass({
         // Scroll with keyboard focus
         this.service_box.set_focus_vadjustment(this.service_window.vadjustment);
 
-        //
-        let displayMode = new Gio.PropertyAction({
-            name: 'display-mode',
-            property_name: 'display-mode',
-            object: this
-        });
-        this.add_action(displayMode);
-
-        // About Dialog
-        let aboutDialog = new Gio.SimpleAction({name: 'about'});
-        aboutDialog.connect('activate', this._aboutDialog.bind(this));
-        this.add_action(aboutDialog);
-
-        // "Connect to..." Dialog
-        let connectDialog = new Gio.SimpleAction({name: 'connect'});
-        connectDialog.connect('activate', this._connectDialog);
-        this.add_action(connectDialog);
-
-        // "Generate Support Log" GAction
-        let generateSupportLog = new Gio.SimpleAction({name: 'support-log'});
-        generateSupportLog.connect('activate', this._generateSupportLog);
-        this.add_action(generateSupportLog);
-
-        // "Help" GAction
-        let help = new Gio.SimpleAction({name: 'help'});
-        help.connect('activate', this._help);
-        this.add_action(help);
-
         // Device List
         this.device_list.set_header_func(rowSeparators);
+
+        // Discoverable InfoBar
+        gsconnect.settings.bind(
+            'discoverable',
+            this.infobar,
+            'reveal-child',
+            Gio.SettingsBindFlags.INVERT_BOOLEAN
+        );
+        this.add_action(gsconnect.settings.create_action('discoverable'));
+
+        // Application Menu
+        this._initMenu();
 
         // If there are no devices, it's safe to auto-broadcast
         this._refreshSource = GLib.timeout_add_seconds(
@@ -375,6 +351,36 @@ var Window = GObject.registerClass({
         GLib.source_remove(this._refreshSource);
 
         return false;
+    }
+
+    _initMenu() {
+        // Panel/User Menu mode
+        let displayMode = new Gio.PropertyAction({
+            name: 'display-mode',
+            property_name: 'display-mode',
+            object: this
+        });
+        this.add_action(displayMode);
+
+        // About Dialog
+        let aboutDialog = new Gio.SimpleAction({name: 'about'});
+        aboutDialog.connect('activate', this._aboutDialog.bind(this));
+        this.add_action(aboutDialog);
+
+        // "Connect to..." Dialog
+        let connectDialog = new Gio.SimpleAction({name: 'connect'});
+        connectDialog.connect('activate', this._connectDialog);
+        this.add_action(connectDialog);
+
+        // "Generate Support Log" GAction
+        let generateSupportLog = new Gio.SimpleAction({name: 'support-log'});
+        generateSupportLog.connect('activate', this._generateSupportLog);
+        this.add_action(generateSupportLog);
+
+        // "Help" GAction
+        let help = new Gio.SimpleAction({name: 'help'});
+        help.connect('activate', this._help);
+        this.add_action(help);
     }
 
     _refresh() {

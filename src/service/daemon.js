@@ -187,7 +187,7 @@ const Service = GObject.registerClass({
             });
 
             if (unpaired.length === 3 && this.discoverable) {
-                this.activate_action('discoverable', null);
+                this.discoverable = false;
 
                 let error = new Error();
                 error.name = 'DiscoveryWarning';
@@ -291,8 +291,6 @@ const Service = GObject.registerClass({
             action.connect('activate', callback);
             this.add_action(action);
         }
-
-        this.add_action(this.settings.create_action('discoverable'));
     }
 
     /**

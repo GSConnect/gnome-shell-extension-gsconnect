@@ -131,8 +131,6 @@ const Preferences = GObject.registerClass({
             this.add_action(action);
         }
 
-        this.add_action(gsconnect.settings.create_action('discoverable'));
-
         // Async setup
         this._init_async();
     }
