@@ -228,7 +228,10 @@ var Channel = GObject.registerClass({
                     let data = stream.read_line_finish_utf8(res)[0];
 
                     if (data === null) {
-                        throw new Error('End of stream');
+                        throw new Gio.IOErrorEnum({
+                            message: 'End of stream',
+                            code: Gio.IOErrorEnum.CONNECTION_CLOSED
+                        });
                     }
 
                     // Queue another receive() before handling the packet
