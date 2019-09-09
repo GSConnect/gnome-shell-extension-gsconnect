@@ -322,7 +322,7 @@ var Window = GObject.registerClass({
         // Application Menu
         this._initMenu();
 
-        // If there are no devices, it's safe to auto-broadcast
+        // Broadcast automatically every 5 seconds if there are no devices yet
         this._refreshSource = GLib.timeout_add_seconds(
             GLib.PRIORITY_DEFAULT,
             5,
@@ -384,8 +384,7 @@ var Window = GObject.registerClass({
     }
 
     _refresh() {
-        if (this.stack.visible_child_name === 'service' &&
-            this.device_list.get_children().length < 1) {
+        if (this.device_list.get_children().length < 1) {
             this.device_list_spinner.active = true;
             this.application.activate_action('broadcast', null);
         } else {
