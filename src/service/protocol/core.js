@@ -156,7 +156,11 @@ var Channel = GObject.registerClass({
     }
 
     get service() {
-        return Gio.Application.get_default();
+        if (this._service === undefined) {
+            this._service = Gio.Application.get_default();
+        }
+
+        return this._service;
     }
 
     get uuid() {
