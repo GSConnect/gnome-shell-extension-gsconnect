@@ -193,6 +193,7 @@ var Device = GObject.registerClass({
         }
     }
 
+    // FIXME: backend should do this stuff
     get encryption_info() {
         let fingerprint = _('Not available');
 
@@ -955,10 +956,6 @@ var Device = GObject.registerClass({
     }
 
     destroy() {
-        //
-        this.settings.disconnect(this._disabledPluginsId);
-        this.settings.run_dispose();
-
         // Close the channel if still connected
         if (this._channel !== null) {
             this._channel.close();
@@ -976,6 +973,12 @@ var Device = GObject.registerClass({
         this._dbus_object.remove_interface(this._dbus);
         this._dbus_object.flush();
         this.service.objectManager.unexport(this._dbus_object.g_object_path);
+
+        // Dispose GSettings
+        this.settings.disconnect(this._disabledPluginsId);
+        this.settings.run_dispose();
+
+        this.run_dispose();
     }
 });
 
