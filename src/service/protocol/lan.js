@@ -761,11 +761,7 @@ var Channel = GObject.registerClass({
 
             // Start listening for packets
             this.receive(device);
-
-            // Emit connected:: if necessary
-            if (!device.connected) {
-                device._setConnected();
-            }
+            device.setConnected();
         } catch (e) {
             logError(e);
             this.close();
