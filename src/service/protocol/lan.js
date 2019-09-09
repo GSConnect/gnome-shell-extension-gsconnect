@@ -712,19 +712,29 @@ var Channel = GObject.registerClass({
      * Close all streams associated with this channel, silencing any errors
      */
     close() {
-        debug(`${this.constructor.name} (${this.address})`);
+        if (this._closed === undefined) {
+            this._closed = true;
 
-        // Cancel any queued operations
-        this.cancellable.cancel();
+            debug(`${this.address} (${this.uuid})`);
 
-        // Close any streams
-        [this._connection, this.input_stream, this.output_stream].map(stream => {
-            try {
-                stream.close_async(0, null, null);
-            } catch (e) {
-                // Silence errors
+            // Cancel any queued operations
+            this.cancellable.cancel();
+
+            // Close any streams
+            let streams = [
+                this._connection,
+                this.input_stream,
+                this.output_stream
+            ];
+
+            for (let stream of streams) {
+                try {
+                    stream.close_async(0, null, null);
+                } catch (e) {
+                    // Silence errors
+                }
             }
-        });
+        }
     }
 
     /**
