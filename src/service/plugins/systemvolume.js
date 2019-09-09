@@ -117,6 +117,12 @@ var Plugin = GObject.registerClass({
      * @param {Number} id - The Id of the stream that changed
      */
     _sendSink(mixer, id) {
+        // Avoid starving the packet channel when fading
+        if (this._pulseaudio.fading) {
+            return;
+        }
+
+        // Check the cache
         let stream = this._pulseaudio.lookup_stream_id(id);
 
         // Get a cache to check for changes

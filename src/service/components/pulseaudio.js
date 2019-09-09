@@ -36,8 +36,10 @@ Object.defineProperty(Gvc.MixerStream.prototype, 'display_name', {
  */
 class Stream {
     constructor(mixer, stream) {
-        this._max = mixer.get_vol_max_norm();
+        this._mixer = mixer;
         this._stream = stream;
+
+        this._max = mixer.get_vol_max_norm();
     }
 
     get muted() {
@@ -66,18 +68,21 @@ class Stream {
      */
     fade(value, duration = 1) {
         Tweener.removeTweens(this);
+        this._mixer.fading = true;
 
         if (this._stream.volume > value) {
             Tweener.addTween(this, {
                 volume: value,
-                transition: 'easeOutCubic'
                 time: duration,
+                transition: 'easeOutCubic',
+                onComplete: () => this._mixer.fading = false
             });
         } else if (this._stream.volume < value) {
             Tweener.addTween(this, {
                 volume: value,
-                transition: 'easeInCubic'
                 time: duration,
+                transition: 'easeInCubic',
+                onComplete: () => this._mixer.fading = false
             });
         }
     }
@@ -102,6 +107,24 @@ var Mixer = GObject.registerClass({
         this._previousVolume = undefined;
         this._volumeMuted = false;
         this._microphoneMuted = false;
+    }
+
+    get fading() {
+        if (this._fading === undefined) {
+            this._fading = false;
+        }
+
+        return this._fading;
+    }
+
+    set fading(bool) {
+        if (this.fading !== bool) {
+            this._fading = bool;
+
+            if (!this.fading) {
+                this.emit('stream-changed', this._output._stream.id);
+            }
+        }
     }
 
     get input() {
