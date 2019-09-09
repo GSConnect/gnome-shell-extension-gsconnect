@@ -847,7 +847,6 @@ var Transfer = GObject.registerClass({
      * When finished the channel and local input stream will be closed whether
      * or not the transfer succeeds.
      *
-     * @param {number} port - The port the transfer is listening for connection
      * @return {boolean} - %true on success or %false on fail
      */
     async download() {
@@ -877,7 +876,7 @@ var Transfer = GObject.registerClass({
             this.input_stream = this._connection.get_input_stream();
 
             // Start the transfer
-            result = await this._transfer();
+            result = await this.transfer();
         } catch (e) {
             logError(e, this.device.name);
         } finally {
@@ -909,6 +908,7 @@ var Transfer = GObject.registerClass({
             while (port <= TRANSFER_MAX) {
                 try {
                     listener.add_inet_port(port, null);
+                    this._port = port;
                     break;
                 } catch (e) {
                     if (port < TRANSFER_MAX) {
@@ -947,46 +947,9 @@ var Transfer = GObject.registerClass({
             this.output_stream = this._connection.get_output_stream();
 
             // Start the transfer
-            result = await this._transfer();
+            result = await this.transfer();
         } catch (e) {
             logError(e, this.device.name);
-        } finally {
-            this.close();
-        }
-
-        return result;
-    }
-
-    /**
-     * Transfer using g_output_stream_splice()
-     *
-     * @return {Boolean} - %true on success, %false on failure.
-     */
-    async _transfer() {
-        let result = false;
-
-        try {
-            result = await new Promise((resolve, reject) => {
-                this.output_stream.splice_async(
-                    this.input_stream,
-                    Gio.OutputStreamSpliceFlags.NONE,
-                    GLib.PRIORITY_DEFAULT,
-                    this.cancellable,
-                    (source, res) => {
-                        try {
-                            if (source.splice_finish(res) < this.size) {
-                                throw new Error('incomplete data');
-                            }
-
-                            resolve(true);
-                        } catch (e) {
-                            reject(e);
-                        }
-                    }
-                );
-            });
-        } catch (e) {
-            debug(e, this.device.name);
         } finally {
             this.close();
         }
