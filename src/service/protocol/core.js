@@ -360,6 +360,14 @@ var ChannelService = GObject.registerClass({
         throw new GObject.NotImplementedError();
     }
 
+    get service() {
+        if (this._service === undefined) {
+            this._service = Gio.Application.get_default();
+        }
+
+        return this._service;
+    }
+
     /**
      * Broadcast directly to @address or the whole network if %null
      *

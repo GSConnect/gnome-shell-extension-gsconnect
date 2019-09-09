@@ -107,10 +107,6 @@ var ChannelService = GObject.registerClass({
         }
     }
 
-    get service() {
-        return Gio.Application.get_default();
-    }
-
     _onNetworkChanged(monitor, network_available) {
         if (this._networkAvailable !== network_available) {
             this._networkAvailable = network_available;
