@@ -140,10 +140,20 @@ var ChannelService = GObject.registerClass({
 
     async _onIncomingChannel(listener, connection) {
         try {
+            let host = connection.get_remote_address().address.to_string()
+
+            // Decide whether we should try to accept this connection
+            if (!this._allowed.has(host) && !this.service.discoverable) {
+                connection.close_async(0, null, null);
+                return;
+            }
+
+            // Create a channel
             let channel = new Channel({
                 backend: this,
                 certificate: this.certificate,
-                host: connection.get_remote_address().address.to_string()
+                host: host,
+                port: DEFAULT_PORT
             });
 
             // Accept the connection
