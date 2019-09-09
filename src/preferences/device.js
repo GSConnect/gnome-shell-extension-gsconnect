@@ -312,6 +312,10 @@ var DevicePreferences = GObject.registerClass({
             this.device.action_group.disconnect(this._actionAddedId);
             this.device.action_group.disconnect(this._actionRemovedId);
 
+            // GActions/GMenu
+            this.menu.run_dispose();
+            this.actions.run_dispose();
+
             // GSettings
             for (let settings of Object.values(this._pluginSettings)) {
                 settings.run_dispose();
