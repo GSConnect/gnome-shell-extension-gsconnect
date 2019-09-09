@@ -65,26 +65,18 @@ const Preferences = GObject.registerClass({
             // Watch for new and removed
             this._deviceAddedId = this.service.connect(
                 'device-added',
-                this._onDeviceAdded.bind(this)
+                this.window._onDeviceAdded.bind(this.window)
             );
 
             this._deviceRemovedId = this.service.connect(
                 'device-removed',
-                this._onDeviceRemoved.bind(this)
+                this.window._onDeviceRemoved.bind(this.window)
             );
 
             await this.service.start();
         } catch (e) {
             logError(e, 'GSConnect');
         }
-    }
-
-    _onDeviceAdded(service, device) {
-        this.window._onDeviceAdded(service, device);
-    }
-
-    _onDeviceRemoved(service, device) {
-        this.window._onDeviceRemoved(service, device);
     }
 
     get devices() {
