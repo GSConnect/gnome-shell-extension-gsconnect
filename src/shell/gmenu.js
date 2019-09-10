@@ -135,13 +135,15 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
 
         // We use this instead of close() to avoid touching finalized objects
         } else {
-            this.box.opacity = 255;
-            this.box.width = 0;
+            this.box.set_opacity(255);
+            this.box.set_width(-1);
+            this.box.set_height(-1);
             this.box.visible = true;
 
             this._submenu = null;
-            this.sub.opacity = 0;
-            this.sub.width = 0;
+            this.sub.set_opacity(0);
+            this.sub.set_width(0);
+            this.sub.set_height(0);
             this.sub.visible = false;
             this.sub.get_children().map(menu => menu.hide());
         }
@@ -316,12 +318,14 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
 
         // Prepare the appropriate child for tweening
         if (submenu) {
-            this.sub.opacity = 0;
-            this.sub.width = 0;
+            this.sub.set_opacity(0);
+            this.sub.set_width(0);
+            this.sub.set_height(0);
             this.sub.visible = true;
         } else {
-            this.box.opacity = 0;
-            this.box.width = 0;
+            this.box.set_opacity(0);
+            this.box.set_width(0);
+            this.sub.set_height(0);
             this.box.visible = true;
         }
 
@@ -337,17 +341,21 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         if (submenu) {
             submenu.actor.show();
 
-            this.sub.opacity = 255;
-            this.sub.width = width;
+            this.sub.set_opacity(255);
+            this.sub.set_width(width);
+            this.sub.set_height(-1);
 
-            this.box.opacity = 0;
-            this.box.width = 0;
+            this.box.set_opacity(0);
+            this.box.set_width(0);
+            this.box.set_height(0);
         } else {
-            this.box.opacity = 255;
-            this.box.width = width;
+            this.box.set_opacity(255);
+            this.box.set_width(width);
+            this.box.set_height(-1);
 
-            this.sub.opacity = 0;
-            this.sub.width = 0;
+            this.sub.set_opacity(0);
+            this.sub.set_width(0);
+            this.sub.set_height(0);
         }
 
         // Reset the animation
