@@ -136,7 +136,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         // We use this instead of close() to avoid touching finalized objects
         } else {
             this.box.opacity = 255;
-            this.box.width = -1;
+            this.box.width = 0;
             this.box.visible = true;
 
             this._submenu = null;
