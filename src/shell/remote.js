@@ -224,16 +224,6 @@ var Device = GObject.registerClass({
         return this._get('Type', 'desktop');
     }
 
-    get_incoming_supported(type) {
-        let incoming = this.settings.get_strv('incoming-capabilities');
-        return incoming.includes(`kdeconnect.${type}`);
-    }
-
-    get_outgoing_supported(type) {
-        let outgoing = this.settings.get_strv('outgoing-capabilities');
-        return outgoing.includes(`kdeconnect.${type}`);
-    }
-
     destroy() {
         if (this.__disposed === undefined) {
             this.__disposed = true;
