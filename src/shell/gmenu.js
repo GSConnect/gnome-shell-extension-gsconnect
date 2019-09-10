@@ -75,7 +75,8 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
 
         // Main Actor
         this.actor = new St.BoxLayout({
-            x_expand: true
+            x_expand: true,
+            clip_to_allocation: true
         });
         this.actor._delegate = this;
 
@@ -310,11 +311,9 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
     }
 
     set submenu(submenu) {
-        // Get the current allocation and set the actor's clip
+        // Get the current allocation to hold the menu width
         let allocation = this.actor.allocation;
         let width = Math.max(0, allocation.x2 - allocation.x1);
-        let height = Math.max(0, allocation.y2 - allocation.y1);
-        this.actor.set_clip (0, 0, width, height);
 
         // Prepare the appropriate child for tweening
         if (submenu) {
