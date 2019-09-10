@@ -276,14 +276,13 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
             }
         }
 
-        // If this is a submenu of another item, prepend a "go back" item
+        // If this is a submenu of another item...
         if (this.submenu_for) {
+            // Prepend an "<= Go Back" item, bold with a unicode arrow
             let prev = new PopupMenu.PopupMenuItem(this.submenu_for.label.text);
-            this.addMenuItem(prev, 0);
-
-            // Make the title bold and replace the ornament with an arrow
             prev.label.style = 'font-weight: bold;';
             prev._ornamentLabel.text = '\u25C2';
+            this.addMenuItem(prev, 0);
 
             // Modify the ::activate callback to close the submenu
             prev.disconnect(prev._activateId);
