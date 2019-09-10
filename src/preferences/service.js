@@ -274,8 +274,11 @@ var Window = GObject.registerClass({
     Children: [
         // HeaderBar
         'headerbar', 'infobar', 'stack',
-        'service-menu', 'service-edit', 'service-entry', 'service-refresh',
+        'service-menu', 'service-edit', 'service-refresh',
         'device-menu', 'prev-button',
+
+        // Popover
+        'rename-popover', 'rename', 'rename-label', 'rename-entry', 'rename-submit',
 
         // Focus Box
         'service-window', 'service-box',
@@ -318,7 +321,7 @@ var Window = GObject.registerClass({
 
         // HeaderBar (Service Name)
         this.headerbar.title = gsconnect.settings.get_string('name');
-        this.service_entry.text = this.headerbar.title;
+        this.rename_entry.text = this.headerbar.title;
 
         // Scroll with keyboard focus
         this.service_box.set_focus_vadjustment(this.service_window.vadjustment);
@@ -580,7 +583,7 @@ var Window = GObject.registerClass({
     }
 
     _onEditServiceName(button, event) {
-        this.service_entry.text = this.headerbar.title;
+        this.rename_entry.text = this.headerbar.title;
     }
 
     _onUnfocusServiceName(entry, event) {
@@ -589,9 +592,9 @@ var Window = GObject.registerClass({
     }
 
     _onSetServiceName(button, event) {
-        if (this.service_entry.text.length) {
-            this.headerbar.title = this.service_entry.text;
-            gsconnect.settings.set_string('name', this.service_entry.text);
+        if (this.rename_entry.text.length) {
+            this.headerbar.title = this.rename_entry.text;
+            gsconnect.settings.set_string('name', this.rename_entry.text);
         }
 
         this.service_edit.active = false;
