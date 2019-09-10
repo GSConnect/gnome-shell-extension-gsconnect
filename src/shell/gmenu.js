@@ -302,8 +302,6 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
             this.sub.visible = false;
             this.sub.get_children().map(menu => menu.hide());
         }
-
-        this.actor.remove_clip();
     }
 
     get submenu() {
