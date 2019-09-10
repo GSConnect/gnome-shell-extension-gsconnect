@@ -34,17 +34,7 @@ const Settings = imports.preferences.service;
 
 
 const Preferences = GObject.registerClass({
-    GTypeName: 'GSConnectPreferences',
-    Properties: {
-        'devices': GObject.param_spec_variant(
-            'devices',
-            'Devices',
-            'A list of known devices',
-            new GLib.VariantType('as'),
-            null,
-            GObject.ParamFlags.READABLE
-        )
-    }
+    GTypeName: 'GSConnectPreferences'
 }, class Preferences extends Gtk.Application {
 
     _init() {
