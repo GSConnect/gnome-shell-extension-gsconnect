@@ -83,7 +83,7 @@ Object.defineProperties(Gio.TlsCertificate.prototype, {
                 proc.init(null);
 
                 let stdout = proc.communicate_utf8(this.certificate_pem, null)[1];
-                this.__common_name = /[a-zA-Z0-9-]{36}/.exec(stdout)[0];
+                this.__common_name = /(?:cn|CN)\ ?=\ ?([^,]*)/.exec(stdout)[1];
 
                 proc.wait_check(null);
             }
