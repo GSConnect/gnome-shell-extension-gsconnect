@@ -637,7 +637,7 @@ var Window = GObject.registerClass({
         row.add(grid);
 
         let icon = new Gtk.Image({
-            gicon: new Gio.ThemedIcon({name: `${device.icon_name}-symbolic`}),
+            gicon: new Gio.ThemedIcon({name: device.icon_name}),
             icon_size: Gtk.IconSize.BUTTON,
             visible: true
         });

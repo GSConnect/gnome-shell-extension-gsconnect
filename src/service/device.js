@@ -257,15 +257,15 @@ var Device = GObject.registerClass({
     get icon_name() {
         switch (this.type) {
             case 'laptop':
-                return 'laptop';
+                return 'laptop-symbolic';
             case 'phone':
-                return 'smartphone';
+                return 'smartphone-symbolic';
             case 'tablet':
-                return 'tablet';
+                return 'tablet-symbolic';
             case 'tv':
-                return 'tv';
+                return 'tv-symbolic';
             default:
-                return 'computer';
+                return 'computer-symbolic';
         }
     }
 
