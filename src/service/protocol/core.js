@@ -155,6 +155,38 @@ var Channel = GObject.registerClass({
         return this._cancellable;
     }
 
+    get input_stream() {
+        if (this._input_stream === undefined) {
+            if (this._connection instanceof Gio.IOStream) {
+                return this._connection.get_input_stream();
+            }
+
+            return null;
+        }
+
+        return this._input_stream;
+    }
+
+    set input_stream(stream) {
+        this._input_stream = stream;
+    }
+
+    get output_stream() {
+        if (this._output_stream === undefined) {
+            if (this._connection instanceof Gio.IOStream) {
+                return this._connection.get_output_stream();
+            }
+
+            return null;
+        }
+
+        return this._output_stream;
+    }
+
+    set output_stream(stream) {
+        this._output_stream = stream;
+    }
+
     get service() {
         if (this._service === undefined) {
             this._service = Gio.Application.get_default();
