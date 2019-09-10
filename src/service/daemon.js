@@ -72,8 +72,7 @@ const Service = GObject.registerClass({
     _init() {
         super._init({
             application_id: gsconnect.app_id,
-            flags: Gio.ApplicationFlags.HANDLES_OPEN |
-                   Gio.ApplicationFlags.HANDLES_COMMAND_LINE
+            flags: Gio.ApplicationFlags.HANDLES_OPEN
         });
 
         GLib.set_prgname('GSConnect');
@@ -780,16 +779,16 @@ const Service = GObject.registerClass({
             'l'.charCodeAt(0),
             GLib.OptionFlags.NONE,
             GLib.OptionArg.NONE,
-            _('List all devices'),
+            _('List available devices'),
             null
         );
         
         this.add_main_option(
-            'list-available',
+            'list-all',
             'a'.charCodeAt(0),
             GLib.OptionFlags.NONE,
             GLib.OptionArg.NONE,
-            _('List available devices (connected and paired)'),
+            _('List all devices'),
             null
         );
         
@@ -800,6 +799,27 @@ const Service = GObject.registerClass({
             GLib.OptionArg.STRING,
             _('Target Device'),
             '<device-id>'
+        );
+
+        /**
+         * Pairing
+         */
+        this.add_main_option(
+            'pair',
+            null,
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.NONE,
+            _('Pair'),
+            null
+        );
+
+        this.add_main_option(
+            'unpair',
+            null,
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.NONE,
+            _('Unpair'),
+            null
         );
 
         /*
@@ -836,6 +856,15 @@ const Service = GObject.registerClass({
         );
         
         this.add_main_option(
+            'notification-appname',
+            null,
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.STRING,
+            _('Notification App Name'),
+            '<name>'
+        );
+
+        this.add_main_option(
             'notification-body',
             null,
             GLib.OptionFlags.NONE,
@@ -849,7 +878,7 @@ const Service = GObject.registerClass({
             null,
             GLib.OptionFlags.NONE,
             GLib.OptionArg.STRING,
-            _('Notification Icon Name'),
+            _('Notification Icon'),
             '<icon-name>'
         );
 
@@ -867,7 +896,7 @@ const Service = GObject.registerClass({
             null,
             GLib.OptionFlags.NONE,
             GLib.OptionArg.NONE,
-            _('Open the device camera'),
+            _('Photo'),
             null
         );
         
@@ -876,7 +905,7 @@ const Service = GObject.registerClass({
             null,
             GLib.OptionFlags.NONE,
             GLib.OptionArg.NONE,
-            _('Ping the device'),
+            _('Ping'),
             null
         );
         
@@ -885,7 +914,7 @@ const Service = GObject.registerClass({
             null,
             GLib.OptionFlags.NONE,
             GLib.OptionArg.NONE,
-            _('Ring the device'),
+            _('Ring'),
             null
         );
 
@@ -922,73 +951,6 @@ const Service = GObject.registerClass({
             null
         );
     }
-    
-    _listDevices(available = true) {
-        let result = Gio.DBus.session.call_sync(
-            'org.gnome.Shell.Extensions.GSConnect',
-            '/org/gnome/Shell/Extensions/GSConnect',
-            'org.freedesktop.DBus.ObjectManager',
-            'GetManagedObjects',
-            null,
-            null,
-            Gio.DBusCallFlags.NONE,
-            -1,
-            null
-        );
-
-        let variant = result.unpack()[0].unpack();
-        let device;
-
-        for (let object of Object.values(variant)) {
-            object = object.full_unpack();
-            device = object['org.gnome.Shell.Extensions.GSConnect.Device'];
-            
-            if (!available || (device.Connected && device.Paired)) {
-                print(device.Id);
-            }
-        }
-    }
-
-    async _cliNotify(device, options) {
-        try {
-            let plugin = device.lookup_plugin('notification');
-            
-            if (!plugin) {
-                throw new Error('Notification plugin disabled');
-            }
-            
-            let title = options.lookup_value('notification', null).unpack();
-            let body = '';
-            let icon = null;
-            let id = `${Date.now()}`;
-            
-            if (options.contains('notification-id')) {
-                id = options.lookup_value('notification-id', null).unpack();
-            }
-            
-            if (options.contains('notification-body')) {
-                body = options.lookup_value('notification-body', null).unpack();
-            }
-            
-            if (options.contains('notification-icon')) {
-                icon = options.lookup_value('notification-icon', null).unpack();
-            }
-
-            let packet = {
-                type: 'kdeconnect.notification',
-                body: {
-                    id: id,
-                    appName: title,
-                    ticker: body,
-                    isClearable: false
-                }
-            };
-
-            await plugin._uploadIcon(packet, icon);
-        } catch (e) {
-            logError(e);
-        }
-    }
 
     _cliAction(id, name, parameter = null) {
         let parameters = [];
@@ -1011,8 +973,36 @@ const Service = GObject.registerClass({
             null
         );
     }
+    
+    _cliListDevices(full = true) {
+        let result = Gio.DBus.session.call_sync(
+            'org.gnome.Shell.Extensions.GSConnect',
+            '/org/gnome/Shell/Extensions/GSConnect',
+            'org.freedesktop.DBus.ObjectManager',
+            'GetManagedObjects',
+            null,
+            null,
+            Gio.DBusCallFlags.NONE,
+            -1,
+            null
+        );
 
-    _cliMessage(device, options) {
+        let variant = result.unpack()[0].unpack();
+        let device;
+
+        for (let object of Object.values(variant)) {
+            object = object.full_unpack();
+            device = object['org.gnome.Shell.Extensions.GSConnect.Device'];
+            
+            if (full) {
+                print(`${device.Id}\t${device.Name}\t${device.Connected}\t${device.Paired}`);
+            } else if (device.Connected && device.Paired) {
+                print(device.Id);
+            }
+        }
+    }
+
+    _cliMessage(id, options) {
         if (!options.contains('message-body')) {
             throw new TypeError('missing --message-body option');
         }
@@ -1020,7 +1010,46 @@ const Service = GObject.registerClass({
         let address = options.lookup_value('message', null).deep_unpack();
         let body = options.lookup_value('message-body', null).deep_unpack();
 
-        this._cliAction(device, 'sendSms', GLib.Variant.new('(ss)', [address, body]));
+        this._cliAction(id, 'sendSms', GLib.Variant.new('(ss)', [address, body]));
+    }
+
+    _cliNotify(id, options) {
+        let title = options.lookup_value('notification', null).unpack();
+        let body = '';
+        let icon = null;
+        let nid = `${Date.now()}`;
+        let appName = gsconnect.settings.get_string('name');
+
+        if (options.contains('notification-id')) {
+            nid = options.lookup_value('notification-id', null).unpack();
+        }
+
+        if (options.contains('notification-body')) {
+            body = options.lookup_value('notification-body', null).unpack();
+        }
+
+        if (options.contains('notification-app')) {
+            appName = options.lookup_value('notification-appname', null).unpack();
+        }
+
+        if (options.contains('notification-icon')) {
+            icon = options.lookup_value('notification-icon', null).unpack();
+            icon = Gio.Icon.new_for_string(icon);
+        }
+
+        let notif = {
+            appName: appName,
+            id: nid,
+            title: title,
+            text: body,
+            ticker: `${title}: ${body}`,
+            time: `${Date.now()}`,
+            isClearable: true,
+            icon: icon
+        };
+
+        let parameter = GLib.Variant.full_pack(notif);
+        this._cliAction(id, 'sendNotification', parameter);
     }
     
     _cliShareFile(device, options) {
@@ -1060,78 +1089,68 @@ const Service = GObject.registerClass({
 
             this.register(null);
 
-            if (options.contains('list-available')) {
-                this._listDevices(true);
-                return 0;
-            }
-
             if (options.contains('list-devices')) {
-                this._listDevices(false);
+                this._cliListDevices(false);
                 return 0;
             }
 
+            if (options.contains('list-all')) {
+                this._cliListDevices(true);
+                return 0;
+            }
+
+            // We need a device for anything else; exit since this is probably
+            // the daemon being started.
             if (!options.contains('device')) {
+                return -1;
+            }
+
+            let id = options.lookup_value('device', null).unpack();
+
+            // Pairing
+            if (options.contains('pair')) {
+                this._cliAction(id, 'pair');
+            }
+
+            if (options.contains('unpair')) {
+                this._cliAction(id, 'unpair');
                 return 0;
             }
 
-            let id = options.lookup_value('device', null).unpack();
-
-            switch (true) {
-                case options.contains('message'):
-                    this._cliMessage(id, options);
-                    return 0;
-
-                case options.contains('ping'):
-                    this._cliAction(id, 'ping', GLib.Variant.new_string(''));
-                    return 0;
-
-                case options.contains('photo'):
-                    this._cliAction(id, 'photo');
-                    return 0;
-
-                case options.contains('ring'):
-                    this._cliAction(id, 'ring');
-                    return 0;
-
-                case options.contains('share-file'):
-                    this._cliShareFile(id, options);
-                    return 0;
-
-                case options.contains('share-link'):
-                    this._cliShareLink(id, options);
-                    return 0;
-
-                default:
-                    return -1;
-            }
-        } catch (e) {
-            logError(e);
-            return 1;
-        }
-    }
-    
-    vfunc_command_line(command_line) {
-        try {
-            let options = command_line.get_options_dict();
-            
-            if (!options.contains('device')) return;
-            
-            let id = options.lookup_value('device', null).unpack();
-            let device = this._devices.get(id);
-            
-            if (!device || !device.connected || !device.paired) {
-                throw new Error(`Device not available: ${id}`);
+            // Plugins
+            if (options.contains('message')) {
+                this._cliMessage(id, options);
             }
 
             if (options.contains('notification')) {
-                this._cliNotify(device, options);
+                this._cliNotify(id, options);
             }
+
+            if (options.contains('photo')) {
+                this._cliAction(id, 'photo');
+            }
+
+            if (options.contains('ping')) {
+                this._cliAction(id, 'ping', GLib.Variant.new_string(''));
+            }
+
+            if (options.contains('ring')) {
+                this._cliAction(id, 'ring');
+            }
+
+            if (options.contains('share-file')) {
+                this._cliShareFile(id, options);
+            }
+
+            if (options.contains('share-link')) {
+                this._cliShareFile(id, options);
+            }
+
+            return 0;
         } catch (e) {
             logError(e);
             return 1;
         }
-        
-        return 0;
     }
 });
 
