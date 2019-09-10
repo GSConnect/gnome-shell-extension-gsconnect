@@ -88,9 +88,9 @@ var Device = GObject.registerClass({
 
         super._init({
             g_connection: service.g_connection,
-            g_name: 'org.gnome.Shell.Extensions.GSConnect',
+            g_name: service.g_name,
             g_object_path: object_path,
-            g_interface_name: 'org.gnome.Shell.Extensions.GSConnect.Device'
+            g_interface_name: `${service.g_name}.Device`
         });
     }
 
@@ -448,8 +448,8 @@ var Service = GObject.registerClass({
         }
 
         this.g_connection.call(
-            'org.gnome.Shell.Extensions.GSConnect',
-            '/org/gnome/Shell/Extensions/GSConnect',
+            this.g_name,
+            this.g_object_path,
             'org.gtk.Actions',
             'Activate',
             GLib.Variant.new('(sava{sv})', [name, paramArray, {}]),
@@ -461,6 +461,7 @@ var Service = GObject.registerClass({
                 try {
                     proxy.call_finish(res);
                 } catch (e) {
+                    Gio.DBusError.strip_remote_error(e);
                     logError(e);
                 }
             }
