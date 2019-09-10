@@ -706,6 +706,7 @@ var Channel = GObject.registerClass({
      */
     async accept(connection) {
         try {
+            debug(`${this.address} (${this.uuid})`);
             this.backend.channels.set(this.address, this);
 
             this._connection = this._initSocket(connection);
@@ -724,6 +725,7 @@ var Channel = GObject.registerClass({
      */
     async open(connection) {
         try {
+            debug(`${this.address} (${this.uuid})`);
             this.backend.channels.set(this.address, this);
 
             this._connection = this._initSocket(connection);
@@ -740,19 +742,19 @@ var Channel = GObject.registerClass({
      */
     close() {
         if (this._closed === undefined) {
+            debug(`${this.address} (${this.uuid})`);
+
             this._closed = true;
             this.backend.channels.delete(this.address);
-
-            debug(`${this.address} (${this.uuid})`);
 
             // Cancel any queued operations
             this.cancellable.cancel();
 
             // Close any streams
             let streams = [
-                this._connection,
                 this.input_stream,
-                this.output_stream
+                this.output_stream,
+                this._connection
             ];
 
             for (let stream of streams) {
@@ -772,10 +774,13 @@ var Channel = GObject.registerClass({
      */
     attach(device) {
         try {
-            // Detach any existing channel
+            // Detach any existing channel and avoid an unnecessary disconnect
             if (device._channel && device._channel !== this) {
-                device._channel.cancellable.disconnect(device._channel._id);
-                device._channel.close();
+                debug(`${device._channel.address} (${device._channel.uuid}) => ${this.address} (${this.uuid})`);
+
+                let channel = device._channel;
+                channel.cancellable.disconnect(channel._id);
+                channel.close();
             }
 
             // Attach the new channel and parse it's identity
@@ -801,9 +806,11 @@ var Channel = GObject.registerClass({
     }
 
     createTransfer(params) {
-        params.backend = this.backend;
-        params.certificate = this.certificate;
-        params.host = this.host;
+        params = Object.assign(params, {
+            backend: this.backend,
+            certificate: this.certificate,
+            host: this.host
+        });
 
         return new Transfer(params);
     }
