@@ -2,29 +2,83 @@
 <!-- Generated with glade 3.22.1 -->
 <interface domain="org.gnome.Shell.Extensions.GSConnect">
   <requires lib="gtk+" version="3.20"/>
-  <object class="GtkPopover" id="service-popover">
+  <object class="GtkPopover" id="rename-popover">
     <property name="can_focus">False</property>
+    <signal name="focus-out-event" handler="_onUnfocusServiceName" swapped="no"/>
     <child>
-      <object class="GtkEntry" id="service-entry">
+      <object class="GtkGrid" id="rename">
+        <property name="name">rename</property>
         <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="receives_default">True</property>
-        <property name="halign">center</property>
-        <property name="valign">center</property>
+        <property name="can_focus">False</property>
         <property name="margin_left">6</property>
         <property name="margin_right">6</property>
+        <property name="margin_start">10</property>
+        <property name="margin_end">10</property>
         <property name="margin_top">6</property>
         <property name="margin_bottom">6</property>
-        <property name="hexpand">True</property>
-        <property name="input_purpose">name</property>
-        <signal name="activate" handler="_onSetServiceName" swapped="no"/>
-        <signal name="focus-out-event" handler="_onUnfocusServiceName" swapped="no"/>
+        <property name="row_spacing">6</property>
+        <property name="column_spacing">6</property>
+        <child>
+          <object class="GtkLabel" id="rename-label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="halign">start</property>
+            <property name="margin_left">2</property>
+            <property name="margin_right">2</property>
+            <property name="margin_bottom">2</property>
+            <property name="label" translatable="yes">Device Name</property>
+            <property name="mnemonic_widget">rename-entry</property>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">0</property>
+            <property name="width">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="rename-entry">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="hexpand">True</property>
+            <property name="input_purpose">name</property>
+            <signal name="activate" handler="_onSetServiceName" swapped="no"/>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="rename-submit">
+            <property name="label" translatable="yes">_Rename</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="can_default">False</property>
+            <property name="has_default">False</property>
+            <property name="receives_default">False</property>
+            <property name="use_underline">True</property>
+            <signal name="clicked" handler="_onSetServiceName" swapped="no"/>
+            <style>
+              <class name="suggested-action"/>
+            </style>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">1</property>
+          </packing>
+        </child>
       </object>
     </child>
   </object>
   <template class="GSConnectPreferencesWindow" parent="GtkApplicationWindow">
     <property name="can_focus">False</property>
-    <property name="icon_name">org.gnome.Shell.Extensions.GSConnect-symbolic</property>>
+    <property name="icon_name">org.gnome.Shell.Extensions.GSConnect-symbolic</property>
     <child type="titlebar">
       <object class="GtkHeaderBar" id="headerbar">
         <property name="visible">True</property>
@@ -137,7 +191,7 @@
             <property name="halign">start</property>
             <property name="valign">center</property>
             <property name="hexpand">True</property>
-            <property name="popover">service-popover</property>
+            <property name="popover">rename-popover</property>
             <child>
               <object class="GtkImage">
                 <property name="visible">True</property>
