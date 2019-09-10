@@ -205,9 +205,9 @@ var Plugin = GObject.registerClass({
      */
     async _uploadIcon(packet, icon) {
         try {
-            // Normalize icon-name strings into GIcons
+            // Normalize strings into GIcons
             if (typeof icon === 'string') {
-                icon = new Gio.ThemedIcon({name: icon});
+                icon = Gio.Icon.new_for_string(icon);
             }
 
             switch (true) {
