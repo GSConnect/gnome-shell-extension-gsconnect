@@ -883,14 +883,6 @@ var Device = GObject.registerClass({
         return outgoing.includes(`kdeconnect.${type}`);
     }
 
-    get_plugin_supported(name) {
-        return this.supported_plugins.includes(name);
-    }
-
-    get_plugin_allowed(name) {
-        return this.allowed_plugins.includes(name);
-    }
-
     lookup_plugin(name) {
         return this._plugins.get(name) || null;
     }
@@ -898,10 +890,12 @@ var Device = GObject.registerClass({
     _onDisabledPlugins(settings) {
         let disabled = this.settings.get_strv('disabled-plugins');
         disabled.map(name => this._unloadPlugin(name));
-        this.allowed_plugins.map(name => this._loadPlugin(name));
 
-        // Make sure we're change the contacts store if the plugin was disabled
-        if (!this.get_plugin_allowed('contacts')) {
+        let allowed = this.allowed_plugins;
+        allowed.map(name => this._loadPlugin(name));
+
+        // Make sure we change the contacts store if the plugin was disabled
+        if (!allowed.includes('contacts')) {
             this.notify('contacts');
         }
     }

@@ -331,7 +331,7 @@ var Service = GObject.registerClass({
         try {
             // An empty list means only the object has been added
             if (Object.values(interfaces).length === 0) return;
-            
+
             // This can still happen here
             if (this.g_name_owner === null) return;
 
