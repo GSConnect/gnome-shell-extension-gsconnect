@@ -93,6 +93,7 @@ var Device = GObject.registerClass({
         super._init();
 
         this._channel = null;
+        this._id = identity.body.deviceId;
 
         // GLib.Source timeout id's for pairing requests
         this._incomingPairRequest = 0;
@@ -103,13 +104,10 @@ var Device = GObject.registerClass({
         this._handlers = new Map();
         this._transfers = new Map();
 
-        // We at least need the device Id for GSettings and the DBus interface
-        let deviceId = identity.body.deviceId;
-
         // GSettings
         this.settings = new Gio.Settings({
             settings_schema: gsconnect.gschema.lookup(UUID, true),
-            path: '/org/gnome/shell/extensions/gsconnect/device/' + deviceId + '/'
+            path: '/org/gnome/shell/extensions/gsconnect/device/' + this.id + '/'
         });
 
         // Watch for plugins changes
@@ -227,7 +225,11 @@ var Device = GObject.registerClass({
     }
 
     get id() {
-        return this.settings.get_string('id');
+        if (this._id === undefined) {
+            this._id = this.settings.get_string('id');
+        }
+
+        return this._id;
     }
 
     get name() {
