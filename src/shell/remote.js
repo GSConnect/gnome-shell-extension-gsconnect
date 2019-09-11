@@ -432,22 +432,25 @@ var Service = GObject.registerClass({
     }
 
     async start() {
-        await new Promise((resolve, reject) => {
-            this.init_async(
-                GLib.PRIORITY_DEFAULT,
-                null,
-                (proxy, res) => {
-                    try {
-                        resolve(proxy.init_finish(res));
-                    } catch (e) {
-                        Gio.DBusError.strip_remote_error(e);
-                        reject(e);
+        if (this._initted === undefined) {
+            await new Promise((resolve, reject) => {
+                this.init_async(
+                    GLib.PRIORITY_DEFAULT,
+                    null,
+                    (proxy, res) => {
+                        try {
+                            resolve(proxy.init_finish(res));
+                        } catch (e) {
+                            Gio.DBusError.strip_remote_error(e);
+                            reject(e);
+                        }
                     }
-                }
-            );
-        });
+                );
+            });
+            this._initted = true;
+        }
 
-        this._onNameOwnerChanged();
+        await this._onNameOwnerChanged();
     }
 
     activate_action(name, parameter) {
