@@ -251,11 +251,6 @@ var Device = GObject.registerClass({
         return supported;
     }
 
-    get allowed_plugins() {
-        let disabled = this.settings.get_strv('disabled-plugins');
-        return this.supported_plugins.filter(name => !disabled.includes(name));
-    }
-
     get icon_name() {
         switch (this.type) {
             case 'laptop':
@@ -891,13 +886,19 @@ var Device = GObject.registerClass({
 
     _onDisabledPlugins(settings) {
         let disabled = this.settings.get_strv('disabled-plugins');
-        disabled.map(name => this._unloadPlugin(name));
 
-        let allowed = this.allowed_plugins;
-        allowed.map(name => this._loadPlugin(name));
+        for (let name of disabled) {
+            await this._unloadPlugin(name);
+        }
+
+        for (let name of this.supported_plugins) {
+            if (!disabled.includes(name)) {
+                await this._loadPlugin(name);
+            }
+        }
 
         // Make sure we change the contacts store if the plugin was disabled
-        if (!allowed.includes('contacts')) {
+        if (disabled.includes('contacts')) {
             this.notify('contacts');
         }
     }
@@ -930,8 +931,12 @@ var Device = GObject.registerClass({
     }
 
     async _loadPlugins() {
-        for (let name of this.allowed_plugins) {
-            await this._loadPlugin(name);
+        let disabled = this.settings.get_strv('disabled-plugins');
+
+        for (let name of this.supported_plugins) {
+            if (!disabled.includes(name)) {
+                await this._loadPlugin(name);
+            }
         }
     }
 
