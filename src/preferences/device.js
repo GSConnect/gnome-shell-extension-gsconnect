@@ -200,7 +200,10 @@ var DevicePreferences = GObject.registerClass({
 
         // GSettings
         this.settings = new Gio.Settings({
-            settings_schema: this.device.settings.settings_schema,
+            settings_schema: gsconnect.gschema.lookup(
+                'org.gnome.Shell.Extensions.GSConnect.Device',
+                null
+            ),
             path: this.device.settings.path
         });
 
