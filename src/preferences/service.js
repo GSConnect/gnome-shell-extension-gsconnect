@@ -362,6 +362,8 @@ var Window = GObject.registerClass({
         this.disconnectTemplate();
         GLib.source_remove(this._refreshSource);
 
+        // FIXME: this wouldn't be necessary if we were disposing devices right
+        this.application.quit();
         return false;
     }
 
@@ -656,12 +658,6 @@ var Window = GObject.registerClass({
             vexpand: true,
             visible: true
         });
-        device.bind_property(
-            'name',
-            title,
-            'label',
-            GObject.BindingFlags.SYNC_CREATE
-        );
         grid.attach(title, 1, 0, 1, 1);
 
         let status = new Gtk.Label({
@@ -673,6 +669,15 @@ var Window = GObject.registerClass({
         });
         grid.attach(status, 2, 0, 1, 1);
 
+        // Keep name up to date
+        device.bind_property(
+            'name',
+            title,
+            'label',
+            GObject.BindingFlags.SYNC_CREATE
+        );
+
+        // Keep status up to date
         device.connect(
             'notify::connected',
             this._onDeviceChanged.bind(null, status)
