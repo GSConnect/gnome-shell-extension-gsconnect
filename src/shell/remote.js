@@ -451,33 +451,28 @@ var Service = GObject.registerClass({
     }
 
     activate_action(name, parameter) {
-        if (!this.g_connection) return;
+        try {
+            let paramArray = [];
 
-        let paramArray = [];
-
-        if (parameter instanceof GLib.Variant) {
-            paramArray[0] = parameter;
-        }
-
-        this.g_connection.call(
-            this.g_name,
-            this.g_object_path,
-            'org.gtk.Actions',
-            'Activate',
-            GLib.Variant.new('(sava{sv})', [name, paramArray, {}]),
-            null,
-            Gio.DBusCallFlags.NONE,
-            -1,
-            null,
-            (proxy, res) => {
-                try {
-                    proxy.call_finish(res);
-                } catch (e) {
-                    Gio.DBusError.strip_remote_error(e);
-                    logError(e);
-                }
+            if (parameter instanceof GLib.Variant) {
+                paramArray[0] = parameter;
             }
-        );
+
+            this.g_connection.call(
+                this.g_name,
+                this.g_object_path,
+                'org.gtk.Actions',
+                'Activate',
+                GLib.Variant.new('(sava{sv})', [name, paramArray, {}]),
+                null,
+                Gio.DBusCallFlags.NONE,
+                -1,
+                null,
+                null
+            );
+        } catch (e) {
+            logError(e);
+        }
     }
 
     destroy() {
