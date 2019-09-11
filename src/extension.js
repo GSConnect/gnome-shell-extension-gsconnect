@@ -118,7 +118,10 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         this._item.menu.addMenuItem(dndItem);
 
         // Service Menu -> "Mobile Settings"
-        this._item.menu.addAction(_('Mobile Settings'), gsconnect.preferences);
+        this._item.menu.addAction(
+            _('Mobile Settings'),
+            () => this.service.activate_action('preferences', null)
+        );
 
         // Async setup
         this._init_async();
@@ -332,6 +335,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
         // Disconnect from any GSettings changes
         this.settings.disconnect(this._panelModeId);
+        this.settings.run_dispose();
 
         // Destroy the PanelMenu.SystemIndicator actors
         delete AggregateMenu._gsconnect;

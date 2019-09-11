@@ -393,7 +393,6 @@ var Service = GObject.registerClass({
                 }
             }
         } catch (e) {
-            Gio.DBusError.strip_remote_error(e);
             logError(e);
         }
     }
@@ -416,6 +415,7 @@ var Service = GObject.registerClass({
                         let variant = proxy.call_finish(res);
                         resolve(variant.deep_unpack()[0]);
                     } catch (e) {
+                        Gio.DBusError.strip_remote_error(e);
                         reject(e);
                     }
                 }
@@ -478,10 +478,6 @@ var Service = GObject.registerClass({
                 }
             }
         );
-    }
-
-    preferences() {
-        gsconnect.preferences();
     }
 
     destroy() {
