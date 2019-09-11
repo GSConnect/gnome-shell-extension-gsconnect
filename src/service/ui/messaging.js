@@ -327,7 +327,10 @@ const ConversationWidget = GObject.registerClass({
 
     _init(params) {
         this.connectTemplate();
-        super._init({device: params.device});
+        super._init({
+            device: params.device,
+            plugin: params.plugin
+        });
         Object.assign(this, params);
 
         this.device.bind_property(
@@ -405,15 +408,11 @@ const ConversationWidget = GObject.registerClass({
         return (this.pending_box.get_children().length);
     }
 
-    get sms() {
-        if (this._sms === undefined) {
-            this._sms = null;
-        }
-
-        return this._sms;
+    get plugin() {
+        return this._plugin || null;
     }
 
-    set sms(plugin) {
+    set plugin(plugin) {
         this._plugin = plugin;
     }
 
