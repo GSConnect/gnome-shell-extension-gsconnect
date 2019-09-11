@@ -419,7 +419,7 @@ var Window = GObject.registerClass({
     _refresh() {
         if (this.device_list.get_children().length < 1) {
             this.device_list_spinner.active = true;
-            this.application.activate_action('broadcast', null);
+            this.service.activate_action('refresh', null);
         } else {
             this.device_list_spinner.active = false;
         }
