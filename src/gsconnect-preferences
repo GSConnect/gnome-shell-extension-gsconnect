@@ -79,13 +79,12 @@ const Preferences = GObject.registerClass({
                 name: name,
                 parameter_type: type
             });
-            action.connect('activate', this._proxyAction.bind(this));
             this.add_action(action);
         }
     }
 
-    _proxyAction(action, parameter) {
-        this._window.service.activate_action(action.name, parameter);
+    vfunc_activate_action(action_name, parameter) {
+        this._window.service.activate_action(action_name, parameter);
     }
 });
 
