@@ -656,7 +656,12 @@ var Window = GObject.registerClass({
             vexpand: true,
             visible: true
         });
-        device.settings.bind('name', title, 'label', 0);
+        device.bind_property(
+            'name',
+            title,
+            'label',
+            GObject.BindingFlags.SYNC_CREATE
+        );
         grid.attach(title, 1, 0, 1, 1);
 
         let status = new Gtk.Label({
