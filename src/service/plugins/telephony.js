@@ -54,7 +54,7 @@ var Plugin = GObject.registerClass({
     get legacy_sms() {
         // We have to do this lookup each time, because if we hold a reference
         // to the plugin we don't know if it's disabled
-        let sms = this.device.lookup_plugin('sms');
+        let sms = this.device._plugins.get('sms');
         return (sms && sms.settings.get_boolean('legacy-sms'));
     }
 
@@ -260,7 +260,8 @@ var Plugin = GObject.registerClass({
                 body: packet.body.messageBody,
                 sender: packet.body.contactName || _('Unknown Contact'),
                 type: 1
-            }
+            },
+            plugin: this
         });
         window.present();
     }

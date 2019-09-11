@@ -167,7 +167,7 @@ var Device = GObject.registerClass({
     }
 
     get contacts() {
-        let contacts = this.lookup_plugin('contacts');
+        let contacts = this._plugins.get('contacts');
 
         if (contacts && contacts.settings.get_boolean('contacts-source')) {
             return contacts._store;
@@ -870,20 +870,6 @@ var Device = GObject.registerClass({
     /**
      * Plugin Functions
      */
-    get_incoming_supported(type) {
-        let incoming = this.settings.get_strv('incoming-capabilities');
-        return incoming.includes(`kdeconnect.${type}`);
-    }
-
-    get_outgoing_supported(type) {
-        let outgoing = this.settings.get_strv('outgoing-capabilities');
-        return outgoing.includes(`kdeconnect.${type}`);
-    }
-
-    lookup_plugin(name) {
-        return this._plugins.get(name) || null;
-    }
-
     _onDisabledPlugins(settings) {
         let disabled = this.settings.get_strv('disabled-plugins');
 

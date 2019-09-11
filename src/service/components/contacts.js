@@ -335,7 +335,7 @@ var Store = GObject.registerClass({
         }
     }
 
-    async _loadFolks() {
+    async fetch() {
         try {
             let folks = await new Promise((resolve, reject) => {
                 let proc = this._launcher.spawnv([

@@ -230,13 +230,17 @@ var Plugin = GObject.registerClass({
 
     get window() {
         if (this.settings.get_boolean('legacy-sms')) {
-            return new TelephonyUI.Dialog({device: this.device});
+            return new TelephonyUI.Dialog({
+                device: this.device,
+                plugin: this
+            });
         }
 
         if (this._window === undefined) {
             this._window = new Messaging.Window({
                 application: this.service,
-                device: this.device
+                device: this.device,
+                plugin: this
             });
         }
 
@@ -518,7 +522,8 @@ var Plugin = GObject.registerClass({
             let window = new Messaging.ConversationChooser({
                 application: this.service,
                 device: this.device,
-                message: url
+                message: url,
+                plugin: this
             });
 
             window.present();

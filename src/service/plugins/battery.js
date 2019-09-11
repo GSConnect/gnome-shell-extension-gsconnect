@@ -279,9 +279,10 @@ var Plugin = GObject.registerClass({
     _monitorState() {
         try {
             let upower = this.service.components.get('upower');
+            let incoming = this.device.settings.get_strv('incoming-capabilities');
 
             switch (true) {
-                case (!this.device.get_incoming_supported('battery')):
+                case (!incoming.includes('kdeconnect.battery')):
                 case (this._upowerId > 0):
                 case (!upower):
                 case (!upower.is_present):

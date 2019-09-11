@@ -56,6 +56,7 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'contacts');
         this._store = new Contacts.Store(device.id);
+        this._store.fetch = this.requestUids.bind(this);
 
         // Notify when the store is ready
         this._contactsStoreReadyId = this._store.connect(
