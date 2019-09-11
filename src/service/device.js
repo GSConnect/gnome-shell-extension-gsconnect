@@ -333,7 +333,14 @@ var Device = GObject.registerClass({
             this._connected = true;
             this.notify('connected');
 
-            this._plugins.forEach(async (plugin) => plugin.connected());
+            // Run the connected hook for each plugin
+            this._plugins.forEach(async (plugin) => {
+                try {
+                    plugin.connected();
+                } catch (e) {
+                    logError(e, `${this.name}: ${plugin.name}`);
+                }
+            });
         }
     }
 
@@ -348,7 +355,14 @@ var Device = GObject.registerClass({
             this._connected = false;
             this.notify('connected');
 
-            this._plugins.forEach(async (plugin) => plugin.disconnected());
+            // Run the disconnected hook for each plugin
+            this._plugins.forEach(async (plugin) => {
+                try {
+                    plugin.disconnected();
+                } catch (e) {
+                    logError(e, `${this.name}: ${plugin.name}`);
+                }
+            });
         }
     }
 
