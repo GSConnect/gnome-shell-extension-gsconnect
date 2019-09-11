@@ -123,9 +123,10 @@ var RadioButton = GObject.registerClass({
 
 var Dialog = class Dialog extends ModalDialog.ModalDialog {
 
-    constructor() {
+    constructor(settings) {
         super({styleClass: 'gsconnect-dnd-dialog'});
 
+        this.settings = settings;
         this.contentLayout.style_class = 'nm-dialog-content';
 
         // Header
@@ -218,7 +219,7 @@ var Dialog = class Dialog extends ModalDialog.ModalDialog {
     }
 
     _cancel() {
-        gsconnect.settings.reset('donotdisturb');
+        this.settings.reset('donotdisturb');
         this.close();
     }
 
@@ -232,7 +233,7 @@ var Dialog = class Dialog extends ModalDialog.ModalDialog {
             time = GLib.MAXINT32;
         }
 
-        gsconnect.settings.set_int('donotdisturb', time);
+        this.settings.set_int('donotdisturb', time);
         this.close();
     }
 
@@ -285,22 +286,22 @@ var Dialog = class Dialog extends ModalDialog.ModalDialog {
 
 var MenuItem = class MenuItem extends PopupMenu.PopupSwitchMenuItem {
 
-    constructor() {
+    constructor(settings) {
         super(_('Do Not Disturb'), false);
 
         // Update the toggle state when 'paintable'
         this.actor.connect('notify::mapped', () => {
             let now = GLib.DateTime.new_now_local().to_unix();
-            this.setToggleState(gsconnect.settings.get_int('donotdisturb') > now);
+            this.setToggleState(settings.get_int('donotdisturb') > now);
         });
 
         this.connect('toggled', (item) => {
             // The state has already been changed when this is emitted
             if (item.state) {
-                let dialog = new Dialog();
+                let dialog = new Dialog(settings);
                 dialog.open();
             } else {
-                gsconnect.settings.reset('donotdisturb');
+                settings.reset('donotdisturb');
             }
 
             item._getTopMenu().close(true);

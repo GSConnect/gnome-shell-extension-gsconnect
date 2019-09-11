@@ -67,6 +67,20 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
         this.keybindingManager = new Keybindings.Manager();
 
+        // GSettings
+        this.settings = new Gio.Settings({
+            settings_schema: gsconnect.gschema.lookup(
+                'org.gnome.Shell.Extensions.GSConnect',
+                null
+            ),
+            path: '/org/gnome/shell/extensions/gsconnect/'
+        });
+
+        this._panelModeId = this.settings.connect(
+            'changed::show-indicators',
+            this._sync.bind(this)
+        );
+
         // Service Indicator
         this._indicator = this._addIndicator();
         this._indicator.gicon = gsconnect.get_gicon(
@@ -88,7 +102,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         // Service Menu -> Devices Section
         this.deviceSection = new PopupMenu.PopupMenuSection();
         this.deviceSection.actor.add_style_class_name('gsconnect-device-section');
-        gsconnect.settings.bind(
+        this.settings.bind(
             'show-indicators',
             this.deviceSection.actor,
             'visible',
@@ -100,16 +114,10 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         this._item.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
         // Service Menu -> "Do Not Disturb"
-        this._item.menu.addMenuItem(new DoNotDisturb.MenuItem());
+        this._item.menu.addMenuItem(new DoNotDisturb.MenuItem(this.settings));
 
         // Service Menu -> "Mobile Settings"
         this._item.menu.addAction(_('Mobile Settings'), gsconnect.preferences);
-
-        // Watch for UI prefs
-        this._gsettingsId = gsconnect.settings.connect(
-            'changed::show-indicators',
-            this._sync.bind(this)
-        );
 
         // Async setup
         this._init_async();
@@ -145,7 +153,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         let available = this.service.devices.filter(device => {
             return (device.connected && device.paired);
         });
-        let panelMode = gsconnect.settings.get_boolean('show-indicators');
+        let panelMode = this.settings.get_boolean('show-indicators');
 
         // Hide status indicator if in Panel mode or no devices are available
         this._indicator.visible = (!panelMode && available.length);
@@ -322,7 +330,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         this.keybindingManager.destroy();
 
         // Disconnect from any GSettings changes
-        gsconnect.settings.disconnect(this._gsettingsId);
+        this.settings.disconnect(this._panelModeId);
 
         // Destroy the PanelMenu.SystemIndicator actors
         delete AggregateMenu._gsconnect;
