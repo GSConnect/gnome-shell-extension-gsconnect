@@ -226,7 +226,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 this._sync();
             }
         } catch (e) {
-            logError(e, device.name);
+            logError(e);
         }
     }
 
@@ -261,7 +261,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
             this._sync();
         } catch (e) {
-            logError(e, device.name);
+            logError(e);
         }
     }
 
@@ -287,7 +287,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 this._sync();
             }
         } catch (e) {
-            logError(e, device.name);
+            logError(e);
         }
     }
 
@@ -317,7 +317,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 }
             }
         } catch (e) {
-            logError(e, device.name);
+            logError(e);
         }
     }
 
