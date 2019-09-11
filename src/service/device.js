@@ -870,22 +870,24 @@ var Device = GObject.registerClass({
     /**
      * Plugin Functions
      */
-    _onDisabledPlugins(settings) {
+    async _onDisabledPlugins(settings) {
         let disabled = this.settings.get_strv('disabled-plugins');
 
+        // Unload disabled plugins
         for (let name of disabled) {
             await this._unloadPlugin(name);
-        }
-
-        for (let name of this.supported_plugins) {
-            if (!disabled.includes(name)) {
-                await this._loadPlugin(name);
-            }
         }
 
         // Make sure we change the contacts store if the plugin was disabled
         if (disabled.includes('contacts')) {
             this.notify('contacts');
+        }
+
+        // Load allowed plugins
+        for (let name of this.supported_plugins) {
+            if (!disabled.includes(name)) {
+                await this._loadPlugin(name);
+            }
         }
     }
 
