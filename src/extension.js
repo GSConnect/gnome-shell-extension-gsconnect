@@ -245,11 +245,13 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             this.deviceSection.addMenuItem(menu);
 
             // Keyboard Shortcuts
-            device._keybindingsChangedId = device.settings.connect(
-                'changed::keybindings',
-                this._onKeybindingsChanged.bind(this, device)
-            );
-            this._onKeybindingsChanged(device);
+            if (device.settings.settings_schema.has_key('keybindings')) {
+                device.__keybindingsChangedId = device.settings.connect(
+                    'changed::keybindings',
+                    this._onKeybindingsChanged.bind(this, device)
+                );
+                this._onKeybindingsChanged(device);
+            }
 
             // Watch the for status changes
             device.__deviceChangedId = device.connect(
@@ -269,8 +271,10 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             device.disconnect(device.__deviceChangedId);
 
             // Release keybindings
-            device.settings.disconnect(device._keybindingsChangedId);
-            device._keybindings.map(id => this.keybindingManager.remove(id));
+            if (device.__keybindingsChangedId) {
+                device.settings.disconnect(device.__keybindingsChangedId);
+                device._keybindings.map(id => this.keybindingManager.remove(id));
+            }
 
             // Destroy the indicator
             Main.panel.statusArea[device.g_object_path].destroy();
