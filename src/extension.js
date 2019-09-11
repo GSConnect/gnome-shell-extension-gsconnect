@@ -268,7 +268,9 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
     _onDeviceRemoved(service, device, sync = true) {
         try {
             // Stop watching for status changes
-            device.disconnect(device.__deviceChangedId);
+            if (device.__deviceChangedId) {
+                device.disconnect(device.__deviceChangedId);
+            }
 
             // Release keybindings
             if (device.__keybindingsChangedId) {
