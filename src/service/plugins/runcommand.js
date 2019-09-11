@@ -117,10 +117,10 @@ var Plugin = GObject.registerClass({
     cacheLoaded() {
         if (this.device.connected) {
             this.connected();
-        }
 
-        if (this.device.get_incoming_supported('runcommand.request')) {
-            this._handleCommandList(this.remote_commands);
+            if (this.device.lookup_action('executeCommand').enabled) {
+                this._handleCommandList(this.remote_commands);
+            }
         }
     }
 
