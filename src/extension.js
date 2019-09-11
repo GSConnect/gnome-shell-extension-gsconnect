@@ -114,7 +114,8 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         this._item.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
         // Service Menu -> "Do Not Disturb"
-        this._item.menu.addMenuItem(new DoNotDisturb.MenuItem(this.settings));
+        let dndItem = new DoNotDisturb.createMenuItem(this.settings);
+        this._item.menu.addMenuItem(dndItem);
 
         // Service Menu -> "Mobile Settings"
         this._item.menu.addAction(_('Mobile Settings'), gsconnect.preferences);
