@@ -209,7 +209,7 @@ var Device = GObject.registerClass({
                     this.g_interface_name,
                     true
                 ),
-                path: '/org/gnome/shell/extensions/gsconnect/device/' + this.id + '/'
+                path: `${this.g_object_path.toLowerCase()}/${this.id}/`
             });
         }
 
@@ -292,11 +292,8 @@ var Service = GObject.registerClass({
     get settings() {
         if (this._settings === undefined) {
             this._settings = new Gio.Settings({
-                settings_schema: gsconnect.gschema.lookup(
-                    'org.gnome.Shell.Extensions.GSConnect',
-                    true
-                ),
-                path: '/org/gnome/shell/extensions/gsconnect/'
+                settings_schema: gsconnect.gschema.lookup(this.g_name, true),
+                path: `${this.g_object_path.toLowerCase()}/`
             });
         }
 
