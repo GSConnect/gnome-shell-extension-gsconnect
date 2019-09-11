@@ -195,7 +195,8 @@ var Plugin = GObject.registerClass({
         item.set_submenu(submenu);
 
         // If the submenu item is already present it will be replaced
-        this.device.replaceMenuAction('commands', item);
+        let index = this.device.removeMenuAction('commands');
+        this.device.addMenuItem(item, index);
     }
 
     /**
