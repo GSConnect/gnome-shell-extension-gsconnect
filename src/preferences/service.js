@@ -353,6 +353,7 @@ var Window = GObject.registerClass({
         if (this.service) {
             this.service.disconnect(this._deviceAddedId);
             this.service.disconnect(this._deviceRemovedId);
+            this.service.disconnect(this._serviceChangedId);
             this.service.destroy();
             this.service = null;
         }
@@ -378,6 +379,11 @@ var Window = GObject.registerClass({
             this._deviceRemovedId = this.service.connect(
                 'device-removed',
                 this._onDeviceRemoved.bind(this)
+            );
+
+            this._serviceChangedId = this.service.connect(
+                'notify::active',
+                this._onServiceChanged.bind(this)
             );
 
             await this.service.start();
@@ -417,7 +423,7 @@ var Window = GObject.registerClass({
     }
 
     _refresh() {
-        if (this.device_list.get_children().length < 1) {
+        if (this.service.active && this.device_list.get_children().length < 1) {
             this.device_list_spinner.active = true;
             this.service.activate_action('refresh', null);
         } else {
@@ -737,6 +743,14 @@ var Window = GObject.registerClass({
             this.headerbar.subtitle = prefs.device.display_type;
         } catch (e) {
             logError(e);
+        }
+    }
+
+    _onServiceChanged(service, pspec) {
+        if (this.service.active) {
+            this.device_list_placeholder.label = _('Searching for devices…');
+        } else {
+            this.device_list_placeholder.label = _('Waiting for service…');
         }
     }
 });

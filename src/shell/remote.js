@@ -242,6 +242,15 @@ var Device = GObject.registerClass({
 var Service = GObject.registerClass({
     GTypeName: 'GSConnectRemoteService',
     Implements: [Gio.DBusInterface],
+    Properties: {
+        'active': GObject.ParamSpec.boolean(
+            'active',
+            'Active',
+            'Whether the service is running',
+            GObject.ParamFlags.READABLE,
+            false
+        )
+    },
     Signals: {
         'device-added': {
             flags: GObject.SignalFlags.RUN_FIRST,
@@ -270,6 +279,10 @@ var Service = GObject.registerClass({
             'notify::g-name-owner',
             this._onNameOwnerChanged.bind(this)
         );
+    }
+
+    get active() {
+        return (this.g_name_owner !== null);
     }
 
     get devices() {
@@ -371,10 +384,12 @@ var Service = GObject.registerClass({
             if (this.g_name_owner === null) {
                 this._clearDevices();
                 await this._GetManagedObjects();
+                this.notify('active');
 
             // Now that service is started, add each device manually
             } else {
                 let objects = await this._GetManagedObjects();
+                this.notify('active');
 
                 for (let [object_path, object] of Object.entries(objects)) {
                     await this._onInterfacesAdded(object_path, object);
