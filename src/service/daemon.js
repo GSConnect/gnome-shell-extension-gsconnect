@@ -2,8 +2,6 @@
 
 'use strict';
 
-const System = imports.system;
-
 imports.gi.versions.Atspi = '2.0';
 imports.gi.versions.Gdk = '3.0';
 imports.gi.versions.GdkPixbuf = '2.0';
@@ -1152,5 +1150,5 @@ const Service = GObject.registerClass({
     }
 });
 
-(new Service()).run([System.programInvocationName].concat(ARGV));
+(new Service()).run([imports.system.programInvocationName].concat(ARGV));
 
