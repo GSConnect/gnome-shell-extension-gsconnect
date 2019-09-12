@@ -176,8 +176,8 @@ gsconnect.installService = function() {
 
     // Application Icon
     let iconDir = GLib.build_filenamev([dataDir, 'icons', 'hicolor', 'scalable', 'apps']);
-    let iconFull = `${gsconnect.app_id}.svg`
-    let iconSym = `${gsconnect.app_id}-symbolic.svg`
+    let iconFull = `${gsconnect.app_id}.svg`;
+    let iconSym = `${gsconnect.app_id}-symbolic.svg`;
 
     // File Manager Extensions
     let fileManagers = [
