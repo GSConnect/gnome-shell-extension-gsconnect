@@ -3,15 +3,15 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 12:39-0800\n"
-"PO-Revision-Date: 2019-08-19 02:34+0200\n"
-"Last-Translator: Tobias Bannert <tobannert@gmail.com>\n"
+"PO-Revision-Date: 2019-09-12 23:05\n"
+"Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: German\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.3\n"
+"X-Generator: crowdin.com\n"
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Language: de\n"
 "X-Crowdin-File: /master/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
@@ -223,7 +223,7 @@ msgstr "Gerät ist nicht gekoppelt"
 
 #: data/device.ui:2198
 msgid "You may configure this device before pairing"
-msgstr "Sie können dieses Gerät vor dem Koppeln konfigurieren"
+msgstr "Sie können dieses Gerät vor der Paarung konfigurieren"
 
 #: data/menus.ui:12
 msgid "Display Mode"
@@ -326,7 +326,7 @@ msgstr "Senden"
 
 #: data/settings.ui:10
 msgid "Searching for devices…"
-msgstr "Geräte werden gesucht …"
+msgstr "Geräte werden gesucht…"
 
 #: data/settings.ui:49 data/settings.ui:63
 msgid "Refresh"
@@ -401,11 +401,8 @@ msgid "Click for help troubleshooting"
 msgstr "Für Hilfe bei der Fehlerbehebung hier klicken"
 
 #: src/service/daemon.js:519
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
-msgstr ""
-"Erkennen wurde deaktiviert, aufgrund der Anzahl an Geräten in diesem "
-"Netzwerk."
+msgid "Discovery has been disabled due to the number of devices on this network."
+msgstr "Erkennen wurde deaktiviert, aufgrund der Anzahl an Geräten in diesem Netzwerk."
 
 #: src/service/daemon.js:527
 #, javascript-format
@@ -610,7 +607,7 @@ msgstr "Teilen"
 
 #: src/service/plugins/share.js:35
 msgid "Share Text"
-msgstr "Text freigeben"
+msgstr "Text teilen"
 
 #: src/service/plugins/share.js:43 src/service/ui/messaging.js:988
 #: src/service/ui/messaging.js:996
@@ -797,14 +794,12 @@ msgstr "Festlegen"
 #: src/service/ui/keybindings.js:54
 #, javascript-format
 msgid "Enter a new shortcut to change <b>%s</b>"
-msgstr "Ein neues Tastenkürzel eingeben, um <b>%s<b> zu Ändern"
+msgstr "Ein neues Tastenkürzel eingeben, um <b>%s</b> zu Ändern"
 
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/service/ui/keybindings.js:83
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"ESC zum Abbrechen oder die Rücktaste drücken, um das Tastenkürzel "
-"zurückzusetzen."
+msgstr "ESC zum Abbrechen oder die Rücktaste drücken, um das Tastenkürzel zurückzusetzen."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -862,10 +857,8 @@ msgstr "Verbunden"
 #. TRANSLATORS: Description of where directly shared files are stored.
 #: src/service/ui/settings.js:398
 #, javascript-format
-msgid ""
-"Transferred files are placed in the <a href=\"%s\">Downloads</a> folder."
-msgstr ""
-"Übertragene Dateien befinden sich im Ordner <a href=\"%s\">Downloads</a>."
+msgid "Transferred files are placed in the <a href=\"%s\">Downloads</a> folder."
+msgstr "Übertragene Dateien befinden sich im Ordner <a href=\"%s\">Downloads</a>."
 
 #: src/service/ui/settings.js:491
 msgid "A complete KDE Connect implementation for GNOME"
@@ -874,18 +867,12 @@ msgstr "Eine vollständige KDE-Connect-Implementierung für GNOME"
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/service/ui/settings.js:500
 msgid "translator-credits"
-msgstr ""
-"taaem <taaem@mailbox.org>\n"
+msgstr "taaem <taaem@mailbox.org>\n"
 "Tobias Bannert <tobannert@gmail.com>"
 
 #: src/service/ui/settings.js:529
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Fehlersuchmeldungen werden protokolliert. Führen Sie alle erforderlichen "
-"Schritte aus, um ein Problem zu reproduzieren, und überprüfen Sie das "
-"Protokoll."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Fehlersuchmeldungen werden protokolliert. Führen Sie alle erforderlichen Schritte aus, um ein Problem zu reproduzieren, und überprüfen Sie das Protokoll."
 
 #: src/service/ui/settings.js:532
 msgid "Review Log"
@@ -976,3 +963,4 @@ msgstr "Kein Gerät gefunden"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Im Browser öffnen"
+
