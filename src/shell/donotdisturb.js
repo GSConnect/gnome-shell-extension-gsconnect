@@ -10,6 +10,7 @@ const ModalDialog = imports.ui.modalDialog;
 const PopupMenu = imports.ui.popupMenu;
 const Util = imports.misc.util;
 
+// eslint-disable-next-line no-redeclare
 const _ = gsconnect._;
 const Tooltip = imports.shell.tooltip;
 

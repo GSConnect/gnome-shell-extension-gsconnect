@@ -8,6 +8,7 @@ const St = imports.gi.St;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
 
+// eslint-disable-next-line no-redeclare
 const _ = gsconnect._;
 const GMenu = imports.shell.gmenu;
 const Tooltip = imports.shell.tooltip;

@@ -58,12 +58,18 @@
                 "allow": ["!!"]
             }
         ],
+        "no-prototype-builtins": [
+            "off"
+        ],
         "no-unused-vars": [
             "error",
             {
                 "args": "none",
                 "vars": "local"
             }
+        ],
+        "nonblock-statement-body-position": [
+            "off"
         ],
         "object-curly-newline": [
             "error",

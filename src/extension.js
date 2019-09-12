@@ -18,7 +18,7 @@ window.gsconnect = {
 imports.searchPath.unshift(gsconnect.extdatadir);
 imports._gsconnect;
 
-// Local Imports
+// eslint-disable-next-line no-redeclare
 const _ = gsconnect._;
 const Device = imports.shell.device;
 const DoNotDisturb = imports.shell.donotdisturb;

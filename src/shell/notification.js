@@ -8,6 +8,7 @@ const Main = imports.ui.main;
 const MessageTray = imports.ui.messageTray;
 const NotificationDaemon = imports.ui.notificationDaemon;
 
+// eslint-disable-next-line no-redeclare
 const _ = gsconnect._;
 
 
