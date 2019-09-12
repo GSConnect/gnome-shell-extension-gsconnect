@@ -13,18 +13,16 @@ const Keybindings = imports.preferences.keybindings;
 const DEVICE_PLUGINS = [];
 const DEVICE_SHORTCUTS = {};
 
-for (let name in imports.service.plugins) {
-    if (name === 'base') continue;
+for (let [name, module] of Object.entries(imports.service.plugins)) {
+    if (module.Metadata) {
+        // Plugins
+        DEVICE_PLUGINS.push(name);
 
-    // Plugins
-    DEVICE_PLUGINS.push(name);
-
-    // Shortcuts (GActions without parameters)
-    let meta = imports.service.plugins[name].Metadata;
-
-    for (let [name, action] of Object.entries(meta.actions)) {
-        if (action.parameter_type === null) {
-            DEVICE_SHORTCUTS[name] = [action.icon_name, action.label];
+        // Shortcuts (GActions without parameters
+        for (let [name, action] of Object.entries(module.Metadata.actions)) {
+            if (action.parameter_type === null) {
+                DEVICE_SHORTCUTS[name] = [action.icon_name, action.label];
+            }
         }
     }
 }
@@ -202,9 +200,9 @@ var DevicePreferences = GObject.registerClass({
         this.settings = new Gio.Settings({
             settings_schema: gsconnect.gschema.lookup(
                 'org.gnome.Shell.Extensions.GSConnect.Device',
-                null
+                true
             ),
-            path: this.device.settings.path
+            path: '/org/gnome/shell/extensions/gsconnect/device/' + device.id + '/'
         });
 
         // Infobar
