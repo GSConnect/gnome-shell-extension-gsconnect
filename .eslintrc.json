@@ -122,8 +122,6 @@
         "_N": false,
         "ngettext": false,
 
-        "_GSOUND_CONTEXT": false,
-        "_SFX_BACKEND": false,
         "_WAYLAND": false
     },
     "parserOptions": {
