@@ -385,8 +385,8 @@ var Service = GObject.registerClass({
 
             // Now that service is started, add each device manually
             } else {
-                let objects = await this._GetManagedObjects();
                 this.notify('active');
+                let objects = await this._GetManagedObjects();
 
                 for (let [object_path, object] of Object.entries(objects)) {
                     await this._onInterfacesAdded(object_path, object);
