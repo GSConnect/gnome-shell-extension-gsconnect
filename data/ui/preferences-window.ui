@@ -93,7 +93,7 @@
             <property name="receives_default">True</property>
             <property name="tooltip_text" translatable="yes">Refresh</property>
             <property name="valign">center</property>
-            <property name="action_name">app.broadcast</property>
+            <property name="action_name">app.refresh</property>
             <child>
               <object class="GtkImage">
                 <property name="visible">True</property>

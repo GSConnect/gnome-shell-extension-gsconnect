@@ -356,6 +356,7 @@ var Window = GObject.registerClass({
         if (this.service) {
             this.service.disconnect(this._deviceAddedId);
             this.service.disconnect(this._deviceRemovedId);
+            this.service.disconnect(this._serviceChangedId);
             this.service.destroy();
             this.service = null;
         }
@@ -364,6 +365,8 @@ var Window = GObject.registerClass({
         this.disconnectTemplate();
         GLib.source_remove(this._refreshSource);
 
+        // FIXME: this wouldn't be necessary if we were disposing devices right
+        this.application.quit();
         return false;
     }
 
@@ -381,6 +384,11 @@ var Window = GObject.registerClass({
             this._deviceRemovedId = this.service.connect(
                 'device-removed',
                 this._onDeviceRemoved.bind(this)
+            );
+
+            this._serviceChangedId = this.service.connect(
+                'notify::active',
+                this._onServiceChanged.bind(this)
             );
 
             await this.service.start();
@@ -420,9 +428,9 @@ var Window = GObject.registerClass({
     }
 
     _refresh() {
-        if (this.device_list.get_children().length < 1) {
+        if (this.service.active && this.device_list.get_children().length < 1) {
             this.device_list_spinner.active = true;
-            this.application.activate_action('broadcast', null);
+            this.service.activate_action('refresh', null);
         } else {
             this.device_list_spinner.active = false;
         }
@@ -640,7 +648,7 @@ var Window = GObject.registerClass({
         row.add(grid);
 
         let icon = new Gtk.Image({
-            gicon: new Gio.ThemedIcon({name: `${device.icon_name}-symbolic`}),
+            gicon: new Gio.ThemedIcon({name: device.icon_name}),
             icon_size: Gtk.IconSize.BUTTON,
             visible: true
         });
@@ -653,7 +661,6 @@ var Window = GObject.registerClass({
             vexpand: true,
             visible: true
         });
-        device.settings.bind('name', title, 'label', 0);
         grid.attach(title, 1, 0, 1, 1);
 
         let status = new Gtk.Label({
@@ -665,6 +672,15 @@ var Window = GObject.registerClass({
         });
         grid.attach(status, 2, 0, 1, 1);
 
+        // Keep name up to date
+        device.bind_property(
+            'name',
+            title,
+            'label',
+            GObject.BindingFlags.SYNC_CREATE
+        );
+
+        // Keep status up to date
         device.connect(
             'notify::connected',
             this._onDeviceChanged.bind(null, status)
@@ -740,6 +756,14 @@ var Window = GObject.registerClass({
             this.headerbar.subtitle = prefs.device.display_type;
         } catch (e) {
             logError(e);
+        }
+    }
+
+    _onServiceChanged(service, pspec) {
+        if (this.service.active) {
+            this.device_list_placeholder.label = _('Searching for devices…');
+        } else {
+            this.device_list_placeholder.label = _('Waiting for service…');
         }
     }
 });

@@ -117,10 +117,10 @@ var Plugin = GObject.registerClass({
     cacheLoaded() {
         if (this.device.connected) {
             this.connected();
-        }
 
-        if (this.device.get_incoming_supported('runcommand.request')) {
-            this._handleCommandList(this.remote_commands);
+            if (this.device.lookup_action('executeCommand').enabled) {
+                this._handleCommandList(this.remote_commands);
+            }
         }
     }
 
@@ -195,7 +195,8 @@ var Plugin = GObject.registerClass({
         item.set_submenu(submenu);
 
         // If the submenu item is already present it will be replaced
-        this.device.replaceMenuAction('commands', item);
+        let index = this.device.removeMenuAction('commands');
+        this.device.addMenuItem(item, index);
     }
 
     /**

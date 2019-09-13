@@ -88,9 +88,9 @@ var Device = GObject.registerClass({
 
         super._init({
             g_connection: service.g_connection,
-            g_name: 'org.gnome.Shell.Extensions.GSConnect',
+            g_name: service.g_name,
             g_object_path: object_path,
-            g_interface_name: 'org.gnome.Shell.Extensions.GSConnect.Device'
+            g_interface_name: `${service.g_name}.Device`
         });
     }
 
@@ -209,7 +209,7 @@ var Device = GObject.registerClass({
                     this.g_interface_name,
                     true
                 ),
-                path: '/org/gnome/shell/extensions/gsconnect/device/' + this.id + '/'
+                path: `${this.g_object_path.toLowerCase()}/${this.id}/`
             });
         }
 
@@ -222,16 +222,6 @@ var Device = GObject.registerClass({
 
     get type() {
         return this._get('Type', 'desktop');
-    }
-
-    get_incoming_supported(type) {
-        let incoming = this.settings.get_strv('incoming-capabilities');
-        return incoming.includes(`kdeconnect.${type}`);
-    }
-
-    get_outgoing_supported(type) {
-        let outgoing = this.settings.get_strv('outgoing-capabilities');
-        return outgoing.includes(`kdeconnect.${type}`);
     }
 
     destroy() {
@@ -252,6 +242,15 @@ var Device = GObject.registerClass({
 var Service = GObject.registerClass({
     GTypeName: 'GSConnectRemoteService',
     Implements: [Gio.DBusInterface],
+    Properties: {
+        'active': GObject.ParamSpec.boolean(
+            'active',
+            'Active',
+            'Whether the service is running',
+            GObject.ParamFlags.READABLE,
+            false
+        )
+    },
     Signals: {
         'device-added': {
             flags: GObject.SignalFlags.RUN_FIRST,
@@ -282,6 +281,10 @@ var Service = GObject.registerClass({
         );
     }
 
+    get active() {
+        return (this.g_name_owner !== null);
+    }
+
     get devices() {
         return Array.from(this._devices.values());
     }
@@ -289,11 +292,8 @@ var Service = GObject.registerClass({
     get settings() {
         if (this._settings === undefined) {
             this._settings = new Gio.Settings({
-                settings_schema: gsconnect.gschema.lookup(
-                    'org.gnome.Shell.Extensions.GSConnect',
-                    true
-                ),
-                path: '/org/gnome/shell/extensions/gsconnect/'
+                settings_schema: gsconnect.gschema.lookup(this.g_name, true),
+                path: `${this.g_object_path.toLowerCase()}/`
             });
         }
 
@@ -331,7 +331,7 @@ var Service = GObject.registerClass({
         try {
             // An empty list means only the object has been added
             if (Object.values(interfaces).length === 0) return;
-            
+
             // This can still happen here
             if (this.g_name_owner === null) return;
 
@@ -381,17 +381,18 @@ var Service = GObject.registerClass({
             if (this.g_name_owner === null) {
                 this._clearDevices();
                 await this._GetManagedObjects();
+                this.notify('active');
 
             // Now that service is started, add each device manually
             } else {
                 let objects = await this._GetManagedObjects();
+                this.notify('active');
 
                 for (let [object_path, object] of Object.entries(objects)) {
                     await this._onInterfacesAdded(object_path, object);
                 }
             }
         } catch (e) {
-            Gio.DBusError.strip_remote_error(e);
             logError(e);
         }
     }
@@ -414,6 +415,7 @@ var Service = GObject.registerClass({
                         let variant = proxy.call_finish(res);
                         resolve(variant.deep_unpack()[0]);
                     } catch (e) {
+                        Gio.DBusError.strip_remote_error(e);
                         reject(e);
                     }
                 }
@@ -430,55 +432,50 @@ var Service = GObject.registerClass({
     }
 
     async start() {
-        await new Promise((resolve, reject) => {
-            this.init_async(
-                GLib.PRIORITY_DEFAULT,
-                null,
-                (proxy, res) => {
-                    try {
-                        resolve(proxy.init_finish(res));
-                    } catch (e) {
-                        Gio.DBusError.strip_remote_error(e);
-                        reject(e);
+        if (this._initted === undefined) {
+            await new Promise((resolve, reject) => {
+                this.init_async(
+                    GLib.PRIORITY_DEFAULT,
+                    null,
+                    (proxy, res) => {
+                        try {
+                            resolve(proxy.init_finish(res));
+                        } catch (e) {
+                            Gio.DBusError.strip_remote_error(e);
+                            reject(e);
+                        }
                     }
-                }
-            );
-        });
+                );
+            });
+            this._initted = true;
+        }
 
-        this._onNameOwnerChanged();
+        await this._onNameOwnerChanged();
     }
 
     activate_action(name, parameter) {
-        if (!this.g_connection) return;
+        try {
+            let paramArray = [];
 
-        let paramArray = [];
-
-        if (parameter instanceof GLib.Variant) {
-            paramArray[0] = parameter;
-        }
-
-        this.g_connection.call(
-            'org.gnome.Shell.Extensions.GSConnect',
-            '/org/gnome/Shell/Extensions/GSConnect',
-            'org.gtk.Actions',
-            'Activate',
-            GLib.Variant.new('(sava{sv})', [name, paramArray, {}]),
-            null,
-            Gio.DBusCallFlags.NONE,
-            -1,
-            null,
-            (proxy, res) => {
-                try {
-                    proxy.call_finish(res);
-                } catch (e) {
-                    logError(e);
-                }
+            if (parameter instanceof GLib.Variant) {
+                paramArray[0] = parameter;
             }
-        );
-    }
 
-    preferences() {
-        gsconnect.preferences();
+            this.g_connection.call(
+                this.g_name,
+                this.g_object_path,
+                'org.gtk.Actions',
+                'Activate',
+                GLib.Variant.new('(sava{sv})', [name, paramArray, {}]),
+                null,
+                Gio.DBusCallFlags.NONE,
+                -1,
+                null,
+                null
+            );
+        } catch (e) {
+            logError(e);
+        }
     }
 
     destroy() {

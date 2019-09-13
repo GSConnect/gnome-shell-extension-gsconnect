@@ -93,6 +93,7 @@ var Device = GObject.registerClass({
         super._init();
 
         this._channel = null;
+        this._id = identity.body.deviceId;
 
         // GLib.Source timeout id's for pairing requests
         this._incomingPairRequest = 0;
@@ -103,13 +104,10 @@ var Device = GObject.registerClass({
         this._handlers = new Map();
         this._transfers = new Map();
 
-        // We at least need the device Id for GSettings and the DBus interface
-        let deviceId = identity.body.deviceId;
-
         // GSettings
         this.settings = new Gio.Settings({
             settings_schema: gsconnect.gschema.lookup(UUID, true),
-            path: '/org/gnome/shell/extensions/gsconnect/device/' + deviceId + '/'
+            path: '/org/gnome/shell/extensions/gsconnect/device/' + this.id + '/'
         });
 
         // Watch for plugins changes
@@ -169,7 +167,7 @@ var Device = GObject.registerClass({
     }
 
     get contacts() {
-        let contacts = this.lookup_plugin('contacts');
+        let contacts = this._plugins.get('contacts');
 
         if (contacts && contacts.settings.get_boolean('contacts-source')) {
             return contacts._store;
@@ -227,7 +225,11 @@ var Device = GObject.registerClass({
     }
 
     get id() {
-        return this.settings.get_string('id');
+        if (this._id === undefined) {
+            this._id = this.settings.get_string('id');
+        }
+
+        return this._id;
     }
 
     get name() {
@@ -249,23 +251,18 @@ var Device = GObject.registerClass({
         return supported;
     }
 
-    get allowed_plugins() {
-        let disabled = this.settings.get_strv('disabled-plugins');
-        return this.supported_plugins.filter(name => !disabled.includes(name));
-    }
-
     get icon_name() {
         switch (this.type) {
             case 'laptop':
-                return 'laptop';
+                return 'laptop-symbolic';
             case 'phone':
-                return 'smartphone';
+                return 'smartphone-symbolic';
             case 'tablet':
-                return 'tablet';
+                return 'tablet-symbolic';
             case 'tv':
-                return 'tv';
+                return 'tv-symbolic';
             default:
-                return 'computer';
+                return 'computer-symbolic';
         }
     }
 
@@ -274,7 +271,11 @@ var Device = GObject.registerClass({
     }
 
     get type() {
-        return this.settings.get_string('type');
+        if (this._type === undefined) {
+            return 'desktop';
+        }
+
+        return this._type;
     }
 
     get g_object_path() {
@@ -283,7 +284,12 @@ var Device = GObject.registerClass({
 
     _handleIdentity(packet) {
         this.settings.set_string('id', packet.body.deviceId);
-        this.settings.set_string('type', packet.body.deviceType);
+
+        if (this._type === undefined) {
+            this._type = packet.body.deviceType;
+            this.notify('type');
+            this.notify('icon-name');
+        }
 
         // The name may change so we check and notify if so
         if (this.name !== packet.body.deviceName) {
@@ -333,7 +339,14 @@ var Device = GObject.registerClass({
             this._connected = true;
             this.notify('connected');
 
-            this._plugins.forEach(async (plugin) => plugin.connected());
+            // Run the connected hook for each plugin
+            this._plugins.forEach(async (plugin) => {
+                try {
+                    plugin.connected();
+                } catch (e) {
+                    logError(e, `${this.name}: ${plugin.name}`);
+                }
+            });
         }
     }
 
@@ -348,7 +361,14 @@ var Device = GObject.registerClass({
             this._connected = false;
             this.notify('connected');
 
-            this._plugins.forEach(async (plugin) => plugin.disconnected());
+            // Run the disconnected hook for each plugin
+            this._plugins.forEach(async (plugin) => {
+                try {
+                    plugin.disconnected();
+                } catch (e) {
+                    logError(e, `${this.name}: ${plugin.name}`);
+                }
+            });
         }
     }
 
@@ -859,36 +879,24 @@ var Device = GObject.registerClass({
     /**
      * Plugin Functions
      */
-    get_incoming_supported(type) {
-        let incoming = this.settings.get_strv('incoming-capabilities');
-        return incoming.includes(`kdeconnect.${type}`);
-    }
-
-    get_outgoing_supported(type) {
-        let outgoing = this.settings.get_strv('outgoing-capabilities');
-        return outgoing.includes(`kdeconnect.${type}`);
-    }
-
-    get_plugin_supported(name) {
-        return this.supported_plugins.includes(name);
-    }
-
-    get_plugin_allowed(name) {
-        return this.allowed_plugins.includes(name);
-    }
-
-    lookup_plugin(name) {
-        return this._plugins.get(name) || null;
-    }
-
-    _onDisabledPlugins(settings) {
+    async _onDisabledPlugins(settings) {
         let disabled = this.settings.get_strv('disabled-plugins');
-        disabled.map(name => this._unloadPlugin(name));
-        this.allowed_plugins.map(name => this._loadPlugin(name));
 
-        // Make sure we're change the contacts store if the plugin was disabled
-        if (!this.get_plugin_allowed('contacts')) {
+        // Unload disabled plugins
+        for (let name of disabled) {
+            await this._unloadPlugin(name);
+        }
+
+        // Make sure we change the contacts store if the plugin was disabled
+        if (disabled.includes('contacts')) {
             this.notify('contacts');
+        }
+
+        // Load allowed plugins
+        for (let name of this.supported_plugins) {
+            if (!disabled.includes(name)) {
+                await this._loadPlugin(name);
+            }
         }
     }
 
@@ -920,8 +928,12 @@ var Device = GObject.registerClass({
     }
 
     async _loadPlugins() {
-        for (let name of this.allowed_plugins) {
-            await this._loadPlugin(name);
+        let disabled = this.settings.get_strv('disabled-plugins');
+
+        for (let name of this.supported_plugins) {
+            if (!disabled.includes(name)) {
+                await this._loadPlugin(name);
+            }
         }
     }
 

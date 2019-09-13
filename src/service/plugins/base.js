@@ -20,7 +20,7 @@ var Plugin = GObject.registerClass({
         this._name = name;
         this._meta = imports.service.plugins[name].Metadata;
 
-        // Init GSettings
+        // GSettings
         this.settings = new Gio.Settings({
             settings_schema: gsconnect.gschema.lookup(this._meta.id, false),
             path: `${device.settings.path}plugin/${name}/`
@@ -30,18 +30,11 @@ var Plugin = GObject.registerClass({
         this._gactions = [];
 
         if (this._meta.actions) {
-            // Register based on device capabilities, which shouldn't change
-            let deviceHandles = this.device.settings.get_strv('incoming-capabilities');
-            let deviceProvides = this.device.settings.get_strv('outgoing-capabilities');
             let menu = this.device.settings.get_strv('menu-actions');
 
             for (let name in this._meta.actions) {
                 let meta = this._meta.actions[name];
-
-                if (meta.incoming.every(p => deviceProvides.includes(p)) &&
-                    meta.outgoing.every(p => deviceHandles.includes(p))) {
-                    this._registerAction(name, menu.indexOf(name), meta);
-                }
+                this._registerAction(name, menu.indexOf(name), meta);
             }
         }
     }
@@ -58,16 +51,16 @@ var Plugin = GObject.registerClass({
         return Gio.Application.get_default();
     }
 
-    _activateAction(action, parameter) {
+    _activateAction(action, parameter = null) {
         try {
-            parameter = parameter ? parameter.full_unpack() : null;
+            if (parameter instanceof GLib.Variant) {
+                parameter = parameter.full_unpack();
+            }
 
             if (Array.isArray(parameter)) {
                 this[action.name].apply(this, parameter);
-            } else if (parameter) {
-                this[action.name].call(this, parameter);
             } else {
-                this[action.name].call(this);
+                this[action.name].call(this, parameter);
             }
         } catch (e) {
             logError(e, action.name);
@@ -80,7 +73,7 @@ var Plugin = GObject.registerClass({
             let action = new Gio.SimpleAction({
                 name: name,
                 parameter_type: meta.parameter_type,
-                enabled: this.device.connected
+                enabled: false
             });
             action.connect('activate', this._activateAction.bind(this));
 
@@ -116,8 +109,17 @@ var Plugin = GObject.registerClass({
      * state changing.
      */
     connected() {
+        // Enabled based on device capabilities, which might change
+        let incoming = this.device.settings.get_strv('incoming-capabilities');
+        let outgoing = this.device.settings.get_strv('outgoing-capabilities');
+
         for (let action of this._gactions) {
-            action.set_enabled(true);
+            let meta = this._meta.actions[action.name];
+
+            if (meta.incoming.every(type => outgoing.includes(type)) &&
+                meta.outgoing.every(type => incoming.includes(type))) {
+                action.set_enabled(true);
+            }
         }
     }
 

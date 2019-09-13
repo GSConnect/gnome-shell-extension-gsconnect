@@ -174,6 +174,11 @@ gsconnect.installService = function() {
     let desktopDir = GLib.build_filenamev([dataDir, 'applications']);
     let desktopFile = `${gsconnect.app_id}.desktop`;
 
+    // Application Icon
+    let iconDir = GLib.build_filenamev([dataDir, 'icons', 'hicolor', 'scalable', 'apps']);
+    let iconFull = `${gsconnect.app_id}.svg`;
+    let iconSym = `${gsconnect.app_id}-symbolic.svg`;
+
     // File Manager Extensions
     let fileManagers = [
         [dataDir + '/nautilus-python/extensions', 'nautilus-gsconnect.py'],
@@ -210,6 +215,17 @@ gsconnect.installService = function() {
             gsconnect.get_resource(desktopFile)
         );
 
+        // Application Icon
+        GLib.mkdir_with_parents(iconDir, 493);
+        GLib.file_set_contents(
+            GLib.build_filenamev([iconDir, iconFull]),
+            gsconnect.get_resource(`icons/${iconFull}`)
+        );
+        GLib.file_set_contents(
+            GLib.build_filenamev([iconDir, iconSym]),
+            gsconnect.get_resource(`icons/${iconSym}`)
+        );
+
         // File Manager Extensions
         for (let [dir, name] of fileManagers) {
             let script = Gio.File.new_for_path(GLib.build_filenamev([dir, name]));
@@ -236,6 +252,8 @@ gsconnect.installService = function() {
     } else {
         GLib.unlink(GLib.build_filenamev([dbusDir, dbusFile]));
         GLib.unlink(GLib.build_filenamev([desktopDir, desktopFile]));
+        GLib.unlink(GLib.build_filenamev([iconDir, iconFull]));
+        GLib.unlink(GLib.build_filenamev([iconDir, iconSym]));
 
         for (let [dir, name] of fileManagers) {
             GLib.unlink(GLib.build_filenamev([dir, name]));

@@ -579,7 +579,8 @@ var Plugin = GObject.registerClass({
             new NotificationUI.ReplyDialog({
                 device: this.device,
                 uuid: uuid,
-                notification: notification
+                notification: notification,
+                plugin: this
             });
 
         // Otherwise just send the reply

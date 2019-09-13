@@ -75,7 +75,8 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
 
         // Main Actor
         this.actor = new St.BoxLayout({
-            x_expand: true
+            x_expand: true,
+            clip_to_allocation: true
         });
         this.actor._delegate = this;
 
@@ -135,13 +136,15 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
 
         // We use this instead of close() to avoid touching finalized objects
         } else {
-            this.box.opacity = 255;
-            this.box.width = -1;
+            this.box.set_opacity(255);
+            this.box.set_width(-1);
+            this.box.set_height(-1);
             this.box.visible = true;
 
             this._submenu = null;
-            this.sub.opacity = 0;
-            this.sub.width = 0;
+            this.sub.set_opacity(0);
+            this.sub.set_width(0);
+            this.sub.set_height(0);
             this.sub.visible = false;
             this.sub.get_children().map(menu => menu.hide());
         }
@@ -273,14 +276,13 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
             }
         }
 
-        // If this is a submenu of another item, prepend a "go back" item
+        // If this is a submenu of another item...
         if (this.submenu_for) {
+            // Prepend an "<= Go Back" item, bold with a unicode arrow
             let prev = new PopupMenu.PopupMenuItem(this.submenu_for.label.text);
-            this.addMenuItem(prev, 0);
-
-            // Make the title bold and replace the ornament with an arrow
             prev.label.style = 'font-weight: bold;';
             prev._ornamentLabel.text = '\u25C2';
+            this.addMenuItem(prev, 0);
 
             // Modify the ::activate callback to close the submenu
             prev.disconnect(prev._activateId);
@@ -299,8 +301,6 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
             this.sub.visible = false;
             this.sub.get_children().map(menu => menu.hide());
         }
-
-        this.actor.remove_clip();
     }
 
     get submenu() {
@@ -308,20 +308,20 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
     }
 
     set submenu(submenu) {
-        // Get the current allocation and set the actor's clip
+        // Get the current allocation to hold the menu width
         let allocation = this.actor.allocation;
         let width = Math.max(0, allocation.x2 - allocation.x1);
-        let height = Math.max(0, allocation.y2 - allocation.y1);
-        this.actor.set_clip (0, 0, width, height);
 
         // Prepare the appropriate child for tweening
         if (submenu) {
-            this.sub.opacity = 0;
-            this.sub.width = 0;
+            this.sub.set_opacity(0);
+            this.sub.set_width(0);
+            this.sub.set_height(0);
             this.sub.visible = true;
         } else {
-            this.box.opacity = 0;
-            this.box.width = 0;
+            this.box.set_opacity(0);
+            this.box.set_width(0);
+            this.sub.set_height(0);
             this.box.visible = true;
         }
 
@@ -337,17 +337,21 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         if (submenu) {
             submenu.actor.show();
 
-            this.sub.opacity = 255;
-            this.sub.width = width;
+            this.sub.set_opacity(255);
+            this.sub.set_width(width);
+            this.sub.set_height(-1);
 
-            this.box.opacity = 0;
-            this.box.width = 0;
+            this.box.set_opacity(0);
+            this.box.set_width(0);
+            this.box.set_height(0);
         } else {
-            this.box.opacity = 255;
-            this.box.width = width;
+            this.box.set_opacity(255);
+            this.box.set_width(width);
+            this.box.set_height(-1);
 
-            this.sub.opacity = 0;
-            this.sub.width = 0;
+            this.sub.set_opacity(0);
+            this.sub.set_width(0);
+            this.sub.set_height(0);
         }
 
         // Reset the animation

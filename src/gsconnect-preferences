@@ -70,7 +70,7 @@ const Preferences = GObject.registerClass({
         );
 
         let actions = [
-            ['broadcast', null],
+            ['refresh', null],
             ['connect',   GLib.VariantType.new('s')]
         ];
 
@@ -79,44 +79,12 @@ const Preferences = GObject.registerClass({
                 name: name,
                 parameter_type: type
             });
-            action.connect('activate', this._proxyAction.bind(this));
             this.add_action(action);
         }
     }
 
-    _proxyAction(action, parameter) {
-        try {
-            // Build the paramter array
-            let paramArray = [];
-
-            if (parameter instanceof GLib.Variant) {
-                paramArray[0] = parameter;
-            }
-
-            // Invoke on our DBus connection
-            let connection = this.get_dbus_connection();
-
-            connection.call(
-                'org.gnome.Shell.Extensions.GSConnect',
-                '/org/gnome/Shell/Extensions/GSConnect',
-                'org.gtk.Actions',
-                'Activate',
-                GLib.Variant.new('(sava{sv})', [action.name, paramArray, {}]),
-                null,
-                Gio.DBusCallFlags.NONE,
-                -1,
-                null,
-                (proxy, res) => {
-                    try {
-                        proxy.call_finish(res);
-                    } catch (e) {
-                        logError(e);
-                    }
-                }
-            );
-        } catch (e) {
-            logError(e, action.name);
-        }
+    vfunc_activate_action(action_name, parameter) {
+        this._window.service.activate_action(action_name, parameter);
     }
 });
 

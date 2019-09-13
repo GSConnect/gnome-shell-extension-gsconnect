@@ -17,6 +17,13 @@ var Dialog = GObject.registerClass({
             'The device associated with this window',
             GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
             GObject.Object
+        ),
+        'plugin': GObject.ParamSpec.object(
+            'plugin',
+            'Plugin',
+            'The plugin providing messages',
+            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            GObject.Object
         )
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/telephony.ui',
@@ -94,9 +101,18 @@ var Dialog = GObject.registerClass({
 
             this.stack.visible_child_name = 'contact-chooser';
         }
+    }
 
-        // Cleanup on ::destroy
-        this.connect('destroy', this._onDestroy);
+    vfunc_delete_event() {
+        if (this._numberSelectedId) {
+            this.contact_chooser.disconnect(this._numberSelectedId);
+            this.contact_chooser.destroy();
+        }
+
+        this.device.disconnect(this._connectedId);
+        this.entry.buffer.disconnect(this._entryChangedId);
+
+        return false;
     }
 
     vfunc_response(response_id) {
@@ -104,7 +120,7 @@ var Dialog = GObject.registerClass({
             // Refuse to send empty or whitespace only texts
             if (!this.entry.buffer.text.trim()) return;
 
-            this.sms.sendMessage(
+            this.plugin.sendMessage(
                 this._addresses,
                 this.entry.buffer.text,
                 1,
@@ -135,21 +151,12 @@ var Dialog = GObject.registerClass({
         this._onStateChanged();
     }
 
-    get sms() {
-        if (!this._sms) {
-            this._sms = this.device.lookup_plugin('sms');
-        }
-
-        return this._sms;
+    get plugin() {
+        return this._plugin || null;
     }
 
-    _onDestroy(window) {
-        if (window._numberSelectedId) {
-            window.contact_chooser.disconnect(window._numberSelectedId);
-        }
-
-        window.device.disconnect(window._connectedId);
-        window.entry.buffer.disconnect(window._entryChangedId);
+    set plugin(plugin) {
+        this._plugin = plugin;
     }
 
     _onNumberSelected(chooser, number) {

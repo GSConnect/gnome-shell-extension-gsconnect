@@ -200,7 +200,10 @@ var DevicePreferences = GObject.registerClass({
 
         // GSettings
         this.settings = new Gio.Settings({
-            settings_schema: this.device.settings.settings_schema,
+            settings_schema: gsconnect.gschema.lookup(
+                'org.gnome.Shell.Extensions.GSConnect.Device',
+                null
+            ),
             path: this.device.settings.path
         });
 
@@ -264,6 +267,16 @@ var DevicePreferences = GObject.registerClass({
         }
 
         return supported;
+    }
+
+    get_incoming_supported(type) {
+        let incoming = this.settings.get_strv('incoming-capabilities');
+        return incoming.includes(`kdeconnect.${type}`);
+    }
+
+    get_outgoing_supported(type) {
+        let outgoing = this.settings.get_strv('outgoing-capabilities');
+        return outgoing.includes(`kdeconnect.${type}`);
     }
 
     _onKeynavFailed(widget, direction) {
@@ -421,7 +434,7 @@ var DevicePreferences = GObject.registerClass({
         // Visibility
         this.desktop_list.foreach(row => {
             let name = row.get_name();
-            row.visible = this.device.get_outgoing_supported(`${name}.request`);
+            row.visible = this.get_outgoing_supported(`${name}.request`);
         });
 
         // Separators & Sorting
@@ -477,7 +490,7 @@ var DevicePreferences = GObject.registerClass({
             this.battery_system_list.set_header_func(rowSeparators);
 
             // If the device can't handle statistics we're done
-            if (!this.device.get_incoming_supported('battery')) {
+            if (!this.get_incoming_supported('battery')) {
                 this.battery_system_label.visible = false;
                 this.battery_system.visible = false;
                 return;

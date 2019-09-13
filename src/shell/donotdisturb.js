@@ -121,18 +121,110 @@ var RadioButton = GObject.registerClass({
 });
 
 
-var Dialog = class Dialog extends ModalDialog.ModalDialog {
+/**
+ * Dialog helpers
+ */
+function _getTimeLabel(time) {
+    let now = GLib.DateTime.new_now_local();
+    let duration;
 
-    constructor() {
-        super({styleClass: 'gsconnect-dnd-dialog'});
+    if (time >= 60 * 60) {
+        // TRANSLATORS: Time duration in hours (eg. 2 hours)
+        duration = gsconnect.ngettext(
+            '%d hour',
+            '%d hours',
+            (time / 3600)
+        ).format(time / 3600);
+    } else {
+        // TRANSLATORS: Time duration in minutes (eg. 15 minutes)
+        duration = gsconnect.ngettext(
+            '%d minute',
+            '%d minutes',
+            (time / 60)
+        ).format(time / 60);
+    }
 
-        this.contentLayout.style_class = 'nm-dialog-content';
+    // TRANSLATORS: Time until change with time duration
+    // EXAMPLE: Until 10:00 (2 hours)
+    return _('Until %s (%s)').format(
+        Util.formatTime(now.add_seconds(time)),
+        duration
+    );
+}
+
+function _addTime(button) {
+    if (this._time < 60 * 60) {
+        this._time += 15 * 60;
+    } else {
+        this._time += 60 * 60;
+    }
+
+    // Set the button reactivity
+    this._timerRemove.reactive = (this._time > 15 * 60);
+    this._timerAdd.reactive = (this._time < 12 * 60 * 60);
+
+    // Update the label
+    this.timerLabel.text = _getTimeLabel(this._time);
+}
+
+function _removeTime(button) {
+    if (this._time <= 60 * 60) {
+        this._time -= 15 * 60;
+    } else {
+        this._time -= 60 * 60;
+    }
+
+    // Set the button reactivity
+    this._timerRemove.reactive = (this._time > 15 * 60);
+    this._timerAdd.reactive = (this._time < 12 * 60 * 60);
+
+    // Update the label
+    this.timerLabel.text = _getTimeLabel(this._time);
+}
+
+function _resetTime() {
+    this.settings.reset('donotdisturb');
+    this.close();
+}
+
+function _setTime() {
+    let time;
+
+    if (this._radioDuration.active) {
+        let now = GLib.DateTime.new_now_local();
+        time = now.add_seconds(this._time).to_unix();
+    } else {
+        time = GLib.MAXINT32;
+    }
+
+    this.settings.set_int('donotdisturb', time);
+    this.close();
+}
+
+
+/**
+ * Show a dialog for configuring "Do Not Disturb" timeout.
+ *
+ * @param {Gio.Settings} settings - The extension settings object
+ */
+function showDialog(settings) {
+    try {
+        // Create the dialog
+        let dialog = new ModalDialog.ModalDialog({
+            styleClass: 'gsconnect-dnd-dialog'
+        });
+
+        dialog.contentLayout.style_class = 'nm-dialog-content';
+        dialog.settings = settings;
+
+        // 1 hour in seconds
+        dialog._time = 1 * 60 * 60;
 
         // Header
         let headerBox = new St.BoxLayout({
             style_class: 'nm-dialog-header-hbox'
         });
-        this.contentLayout.add(headerBox);
+        dialog.contentLayout.add(headerBox);
 
         let icon = new St.Icon({
             style_class: 'nm-dialog-header-icon',
@@ -145,32 +237,29 @@ var Dialog = class Dialog extends ModalDialog.ModalDialog {
         let titleBox = new St.BoxLayout({vertical: true});
         headerBox.add(titleBox);
 
-        let header = new St.Label({
+        let title = new St.Label({
             style_class: 'nm-dialog-header',
             text: _('Do Not Disturb')
         });
-        titleBox.add(header);
+        titleBox.add(title);
 
-        let subheader = new St.Label({
+        let subtitle = new St.Label({
             style_class: 'nm-dialog-subheader',
             text: _('Silence Mobile Device Notifications')
         });
-        titleBox.add(subheader);
+        titleBox.add(subtitle);
 
         // Content
         let radioList = new St.BoxLayout({
             style_class: 'gsconnect-radio-list',
             vertical: true
         });
-        this.contentLayout.add(radioList);
+        dialog.contentLayout.add(radioList);
 
-        // 1 hour in seconds
-        this._time = 1 * 60 * 60;
-
-        this._radioIndefinite = new RadioButton({
+        let radioIndefinite = new RadioButton({
             text: _('Until you turn off Do Not Disturb')
         });
-        radioList.add(this._radioIndefinite);
+        radioList.add(radioIndefinite);
 
         // Duration Timer
         let timer = new St.BoxLayout({
@@ -179,131 +268,82 @@ var Dialog = class Dialog extends ModalDialog.ModalDialog {
             style_class: 'gsconnect-dnd-timer'
         });
 
-        let now = GLib.DateTime.new_now_local();
-        this.timerLabel = new St.Label({
-            text: _('Until %s (%s)').format(
-                Util.formatTime(now.add_seconds(this._time)),
-                this._getDurationLabel()
-            ),
+        dialog.timerLabel = new St.Label({
+            text: _getTimeLabel(dialog._time),
             y_align: Clutter.ActorAlign.CENTER
         });
-        timer.add_child(this.timerLabel);
+        timer.add_child(dialog.timerLabel);
 
-        this._timerRemove = new St.Button({
+        dialog._timerRemove = new St.Button({
             style_class: 'pager-button',
             child: new St.Icon({icon_name: 'list-remove-symbolic'})
         });
-        this._timerRemove.connect('clicked', this._removeTime.bind(this));
-        timer.add_child(this._timerRemove);
+        dialog._timerRemove.connect('clicked', _removeTime.bind(dialog));
+        timer.add_child(dialog._timerRemove);
 
-        this._timerAdd = new St.Button({
+        dialog._timerAdd = new St.Button({
             style_class: 'pager-button',
             child: new St.Icon({icon_name: 'list-add-symbolic'})
         });
-        this._timerAdd.connect('clicked', this._addTime.bind(this));
-        timer.add_child(this._timerAdd);
+        dialog._timerAdd.connect('clicked', _addTime.bind(dialog));
+        timer.add_child(dialog._timerAdd);
 
-        this._radioDuration = new RadioButton({
+        dialog._radioDuration = new RadioButton({
             widget: timer,
-            group: this._radioIndefinite.group,
+            group: radioIndefinite.group,
             active: true
         });
-        radioList.add(this._radioDuration);
+        radioList.add_child(dialog._radioDuration);
 
         // Dialog Buttons
-        this.setButtons([
-            {label: _('Cancel'), action: this._cancel.bind(this), default: true},
-            {label: _('Done'), action: this._done.bind(this)}
+        dialog.setButtons([
+            {label: _('Cancel'), action: _resetTime.bind(dialog), default: true},
+            {label: _('Done'), action: _setTime.bind(dialog)}
         ]);
+
+        dialog.open();
+    } catch (e) {
+        logError(e);
     }
+}
 
-    _cancel() {
-        gsconnect.settings.reset('donotdisturb');
-        this.close();
+
+/**
+ * Item Helper Functions
+ */
+function _onItemMapped(actor) {
+    try {
+        let item = actor._delegate;
+        let now = GLib.DateTime.new_now_local().to_unix();
+        item.setToggleState(item.settings.get_int('donotdisturb') > now);
+    } catch (e) {
+        logError(e);
     }
+}
 
-    _done() {
-        let time;
-
-        if (this._radioDuration.active) {
-            let now = GLib.DateTime.new_now_local();
-            time = now.add_seconds(this._time).to_unix();
+function _onItemToggled(item, active) {
+    try {
+        // The state has already been changed when this is emitted
+        if (item.state) {
+            showDialog(item.settings);
         } else {
-            time = GLib.MAXINT32;
+            item.settings.reset('donotdisturb');
         }
 
-        gsconnect.settings.set_int('donotdisturb', time);
-        this.close();
+        item._getTopMenu().close(true);
+    } catch (e) {
+        logError(e);
     }
-
-    _addTime() {
-        if (this._time < 60 * 60) {
-            this._time += 15 * 60;
-        } else {
-            this._time += 60 * 60;
-        }
-
-        this._setTimeLabel();
-    }
-
-    _removeTime() {
-        if (this._time <= 60 * 60) {
-            this._time -= 15 * 60;
-        } else {
-            this._time -= 60 * 60;
-        }
-
-        this._setTimeLabel();
-    }
-
-    _getDurationLabel() {
-        if (this._time >= 60 * 60) {
-            let hours = this._time / 3600;
-            // TRANSLATORS: Time duration in hours (eg. 2 hours)
-            return gsconnect.ngettext('%d hour', '%d hours', hours).format(hours);
-        } else {
-            // TRANSLATORS: Time duration in minutes (eg. 15 minutes)
-            return gsconnect.ngettext('%d minute', '%d minutes', (this._time / 60)).format(this._time / 60);
-        }
-    }
-
-    _setTimeLabel() {
-        this._timerRemove.reactive = (this._time > 15 * 60);
-        this._timerAdd.reactive = (this._time < 12 * 60 * 60);
-
-        let now = GLib.DateTime.new_now_local();
-
-        // TRANSLATORS: Time until change with time duration
-        // EXAMPLE: Until 10:00 (2 hours)
-        this.timerLabel.text = _('Until %s (%s)').format(
-            Util.formatTime(now.add_seconds(this._time)),
-            this._getDurationLabel()
-        );
-    }
-};
+}
 
 
-var MenuItem = class MenuItem extends PopupMenu.PopupSwitchMenuItem {
+function createMenuItem(settings) {
+    let item = new PopupMenu.PopupSwitchMenuItem(_('Do Not Disturb'), false, {});
+    item.settings = settings;
 
-    constructor() {
-        super(_('Do Not Disturb'), false);
+    item.actor.connect('notify::mapped', _onItemMapped);
+    item.connect('toggled', _onItemToggled);
 
-        // Update the toggle state when 'paintable'
-        this.actor.connect('notify::mapped', () => {
-            let now = GLib.DateTime.new_now_local().to_unix();
-            this.setToggleState(gsconnect.settings.get_int('donotdisturb') > now);
-        });
+    return item;
+}
 
-        this.connect('toggled', (item) => {
-            // The state has already been changed when this is emitted
-            if (item.state) {
-                let dialog = new Dialog();
-                dialog.open();
-            } else {
-                gsconnect.settings.reset('donotdisturb');
-            }
-
-            item._getTopMenu().close(true);
-        });
-    }
-};

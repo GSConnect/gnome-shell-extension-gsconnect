@@ -274,7 +274,7 @@ const Service = GObject.registerClass({
      */
     _initActions() {
         let actions = [
-            ['broadcast', this._identify.bind(this)],
+            ['refresh', this._identify.bind(this)],
             ['connect', this._identify.bind(this), 's'],
             ['device', this._device.bind(this), '(ssbv)'],
             ['error', this._error.bind(this), 'a{ss}'],

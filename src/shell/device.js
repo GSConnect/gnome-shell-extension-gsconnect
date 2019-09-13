@@ -223,7 +223,7 @@ var Indicator = class Indicator extends PanelMenu.Button {
 
         // Device Icon
         let icon = new St.Icon({
-            gicon: gsconnect.get_gicon(`${this.device.icon_name}-symbolic`),
+            gicon: gsconnect.get_gicon(this.device.icon_name),
             style_class: 'system-status-icon gsconnect-device-indicator'
         });
         this.actor.add_child(icon);

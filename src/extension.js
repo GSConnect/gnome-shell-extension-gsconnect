@@ -67,6 +67,20 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
         this.keybindingManager = new Keybindings.Manager();
 
+        // GSettings
+        this.settings = new Gio.Settings({
+            settings_schema: gsconnect.gschema.lookup(
+                'org.gnome.Shell.Extensions.GSConnect',
+                null
+            ),
+            path: '/org/gnome/shell/extensions/gsconnect/'
+        });
+
+        this._panelModeId = this.settings.connect(
+            'changed::show-indicators',
+            this._sync.bind(this)
+        );
+
         // Service Indicator
         this._indicator = this._addIndicator();
         this._indicator.gicon = gsconnect.get_gicon(
@@ -88,7 +102,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         // Service Menu -> Devices Section
         this.deviceSection = new PopupMenu.PopupMenuSection();
         this.deviceSection.actor.add_style_class_name('gsconnect-device-section');
-        gsconnect.settings.bind(
+        this.settings.bind(
             'show-indicators',
             this.deviceSection.actor,
             'visible',
@@ -100,15 +114,13 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         this._item.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
         // Service Menu -> "Do Not Disturb"
-        this._item.menu.addMenuItem(new DoNotDisturb.MenuItem());
+        let dndItem = new DoNotDisturb.createMenuItem(this.settings);
+        this._item.menu.addMenuItem(dndItem);
 
         // Service Menu -> "Mobile Settings"
-        this._item.menu.addAction(_('Mobile Settings'), gsconnect.preferences);
-
-        // Watch for UI prefs
-        this._gsettingsId = gsconnect.settings.connect(
-            'changed::show-indicators',
-            this._sync.bind(this)
+        this._item.menu.addAction(
+            _('Mobile Settings'),
+            () => this.service.activate_action('preferences', null)
         );
 
         // Async setup
@@ -145,7 +157,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         let available = this.service.devices.filter(device => {
             return (device.connected && device.paired);
         });
-        let panelMode = gsconnect.settings.get_boolean('show-indicators');
+        let panelMode = this.settings.get_boolean('show-indicators');
 
         // Hide status indicator if in Panel mode or no devices are available
         this._indicator.visible = (!panelMode && available.length);
@@ -214,7 +226,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 this._sync();
             }
         } catch (e) {
-            logError(e, device.name);
+            logError(e);
         }
     }
 
@@ -233,11 +245,13 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             this.deviceSection.addMenuItem(menu);
 
             // Keyboard Shortcuts
-            device._keybindingsChangedId = device.settings.connect(
-                'changed::keybindings',
-                this._onKeybindingsChanged.bind(this, device)
-            );
-            this._onKeybindingsChanged(device);
+            if (device.settings.settings_schema.has_key('keybindings')) {
+                device.__keybindingsChangedId = device.settings.connect(
+                    'changed::keybindings',
+                    this._onKeybindingsChanged.bind(this, device)
+                );
+                this._onKeybindingsChanged(device);
+            }
 
             // Watch the for status changes
             device.__deviceChangedId = device.connect(
@@ -247,18 +261,22 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
             this._sync();
         } catch (e) {
-            logError(e, device.name);
+            logError(e);
         }
     }
 
     _onDeviceRemoved(service, device, sync = true) {
         try {
             // Stop watching for status changes
-            device.disconnect(device.__deviceChangedId);
+            if (device.__deviceChangedId) {
+                device.disconnect(device.__deviceChangedId);
+            }
 
             // Release keybindings
-            device.settings.disconnect(device._keybindingsChangedId);
-            device._keybindings.map(id => this.keybindingManager.remove(id));
+            if (device.__keybindingsChangedId) {
+                device.settings.disconnect(device.__keybindingsChangedId);
+                device._keybindings.map(id => this.keybindingManager.remove(id));
+            }
 
             // Destroy the indicator
             Main.panel.statusArea[device.g_object_path].destroy();
@@ -271,7 +289,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 this._sync();
             }
         } catch (e) {
-            logError(e, device.name);
+            logError(e);
         }
     }
 
@@ -301,7 +319,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 }
             }
         } catch (e) {
-            logError(e, device.name);
+            logError(e);
         }
     }
 
@@ -322,7 +340,8 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         this.keybindingManager.destroy();
 
         // Disconnect from any GSettings changes
-        gsconnect.settings.disconnect(this._gsettingsId);
+        this.settings.disconnect(this._panelModeId);
+        this.settings.run_dispose();
 
         // Destroy the PanelMenu.SystemIndicator actors
         delete AggregateMenu._gsconnect;

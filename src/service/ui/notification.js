@@ -14,6 +14,13 @@ var ReplyDialog = GObject.registerClass({
             'The device associated with this window',
             GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
             GObject.Object
+        ),
+        'plugin': GObject.ParamSpec.object(
+            'plugin',
+            'Plugin',
+            'The plugin that owns this notification',
+            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            GObject.Object
         )
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/notification-reply-dialog.ui',
@@ -69,9 +76,13 @@ var ReplyDialog = GObject.registerClass({
             'changed',
             this._onStateChanged.bind(this)
         );
+    }
 
-        // Cleanup on ::destroy
-        this.connect('destroy', this._onDestroy);
+    vfunc_delete_event() {
+        this.device.disconnect(this._connectedId);
+        this.message_entry.buffer.disconnect(this._entryChangedId);
+
+        return false;
     }
 
     vfunc_response(response_id) {
@@ -104,16 +115,11 @@ var ReplyDialog = GObject.registerClass({
     }
 
     get plugin() {
-        if (!this._plugin) {
-            this._plugin = this.device.lookup_plugin('notification');
-        }
-
-        return this._plugin;
+        return this._plugin || null;
     }
 
-    _onDestroy(window) {
-        window.device.disconnect(window._connectedId);
-        window.message_entry.buffer.disconnect(window._entryChangedId);
+    set plugin(plugin) {
+        this._plugin = plugin;
     }
 
     _onStateChanged() {
