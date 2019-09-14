@@ -477,10 +477,10 @@ var Service = GObject.registerClass({
     }
 
     destroy() {
-        if (this.__disposed === undefined) {
-            this.__disposed = true;
-
+        if (this._nameOwnerChangedId > 0) {
             this.disconnect(this._nameOwnerChangedId);
+            this._nameOwnerChangedId = 0;
+
             this._clearDevices();
             this.run_dispose();
         }
