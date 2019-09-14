@@ -303,7 +303,7 @@ var Service = GObject.registerClass({
     vfunc_g_signal(sender_name, signal_name, parameters) {
         try {
             // Don't emit signals until the name is properly owned
-            if (!this.g_name_owner === null) return;
+            if (this.g_name_owner === null) return;
 
             parameters = parameters.deep_unpack();
 
@@ -331,9 +331,6 @@ var Service = GObject.registerClass({
         try {
             // An empty list means only the object has been added
             if (Object.values(interfaces).length === 0) return;
-
-            // This can still happen here
-            if (this.g_name_owner === null) return;
 
             // Skip existing proxies
             if (this._devices.has(object_path)) return;
