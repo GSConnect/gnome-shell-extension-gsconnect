@@ -380,8 +380,9 @@ var Service = GObject.registerClass({
             // If the service stopped, clear all devices before restarting
             if (this.g_name_owner === null) {
                 this._clearDevices();
-                await this._GetManagedObjects();
                 this.notify('active');
+
+                await this._GetManagedObjects();
 
             // Now that service is started, add each device manually
             } else {
