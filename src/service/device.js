@@ -460,6 +460,14 @@ var Device = GObject.registerClass({
         });
         openPath.connect('activate', this.openPath);
         this.add_action(openPath);
+
+        // Preference helpers
+        let clearCache = new Gio.SimpleAction({
+            name: 'clearCache',
+            parameter_type: new GLib.VariantType('s')
+        });
+        clearCache.connect('activate', this._clearCache.bind(this));
+        this.add_action(clearCache);
     }
 
     /**
@@ -713,6 +721,22 @@ var Device = GObject.registerClass({
         // Normalize paths to URIs, assuming local file
         let uri = path.includes('://') ? path : `file://${path}`;
         Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
+    }
+
+    _clearCache(action, parameter) {
+        try {
+            let context = parameter.unpack();
+
+            if (context && this._plugins.has(context)) {
+                let plugin = this._plugins.get(context);
+
+                if (typeof plugin.cacheClear === 'function') {
+                    plugin.cacheClear();
+                }
+            }
+        } catch (e) {
+            logError(e, this.name);
+        }
     }
 
     /**

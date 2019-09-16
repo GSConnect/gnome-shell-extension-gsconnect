@@ -960,22 +960,23 @@ var DevicePreferences = GObject.registerClass({
         });
         grid.add(widget);
 
-        // if (plugin.Plugin.prototype.cacheClear) {
-        //     let button = new Gtk.Button({
-        //         image: new Gtk.Image({
-        //             icon_name: 'edit-clear-all-symbolic',
-        //             pixel_size: 16,
-        //             visible: true
-        //         }),
-        //         valign: Gtk.Align.CENTER,
-        //         vexpand: true,
-        //         visible: true
-        //     });
-        //     button.connect('clicked', this._clearPluginCache.bind(this, name));
-        //     button.get_style_context().add_class('flat');
-        //     widget.bind_property('active', button, 'sensitive', 2);
-        //     grid.add(button);
-        // }
+        if (plugin.Plugin.prototype.cacheClear) {
+            let button = new Gtk.Button({
+                action_name: 'device.clearCache',
+                action_target: GLib.Variant.new_string(name),
+                image: new Gtk.Image({
+                    icon_name: 'edit-clear-all-symbolic',
+                    pixel_size: 16,
+                    visible: true
+                }),
+                valign: Gtk.Align.CENTER,
+                vexpand: true,
+                visible: true
+            });
+            button.get_style_context().add_class('flat');
+            widget.bind_property('active', button, 'sensitive', 2);
+            grid.add(button);
+        }
 
         this.plugin_list.add(row);
 
@@ -986,14 +987,6 @@ var DevicePreferences = GObject.registerClass({
 
         if (this.hasOwnProperty(name)) {
             this[name].visible = widget.active;
-        }
-    }
-
-    _clearPluginCache(name) {
-        try {
-            this.device.lookup_plugin(name).cacheClear();
-        } catch (e) {
-            warning(e, `${this.device.name}: ${this.name}`);
         }
     }
 
