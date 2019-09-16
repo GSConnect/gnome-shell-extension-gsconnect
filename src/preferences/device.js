@@ -13,8 +13,10 @@ const Keybindings = imports.preferences.keybindings;
 const DEVICE_PLUGINS = [];
 const DEVICE_SHORTCUTS = {};
 
-for (let [name, module] of Object.entries(imports.service.plugins)) {
-    if (module.Metadata) {
+for (let name in imports.service.plugins) {
+    let module = imports.service.plugins[name];
+
+    if (module.Metadata !== undefined) {
         // Plugins
         DEVICE_PLUGINS.push(name);
 
