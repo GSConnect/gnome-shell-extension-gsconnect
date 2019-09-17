@@ -132,10 +132,17 @@ var ChannelService = GObject.registerClass({
             'private.pem'
         ]);
 
-        this._certificate = Gio.TlsCertificate.new_for_paths(certPath, keyPath);
+        // Ensure a certificate exists with our id as the common name
+        this._certificate = Gio.TlsCertificate.new_for_paths(
+            certPath,
+            keyPath,
+            this.service.id
+        );
 
-        if (gsconnect.settings.get_string('id').length === 0) {
-            gsconnect.settings.set_string('id', this._certificate.common_name);
+        // If the service id doesn't match the common name, this is probably a
+        // certificate from an earlier version and we need to set it now
+        if (this.service.settings.get_string('id') !== this._certificate.common_name) {
+            this.service.settings.get_string('id') = this._certificate.common_name;
         }
     }
 
