@@ -216,7 +216,6 @@ var ChannelService = GObject.registerClass({
             this._udp6_source.set_callback(this._onIncomingIdentity.bind(this, this._udp6));
             this._udp6_source.attach(null);
         } catch (e) {
-            this._udp6.close();
             this._udp6 = null;
         }
 
@@ -253,7 +252,6 @@ var ChannelService = GObject.registerClass({
             this._udp4_source.set_callback(this._onIncomingIdentity.bind(this, this._udp4));
             this._udp4_source.attach(null);
         } catch (e) {
-            this._udp4.close();
             this._udp4 = null;
 
             // We failed to get either an IPv4 or IPv6 socket to bind
