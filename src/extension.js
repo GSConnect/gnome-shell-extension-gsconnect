@@ -164,12 +164,19 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
         // Show device indicators in Panel mode if available
         for (let device of this.service.devices) {
-            let indicator = Main.panel.statusArea[device.g_object_path].actor;
-            indicator.visible = panelMode && available.includes(device);
+            let isAvailable = available.includes(device);
+            let indicator = Main.panel.statusArea[device.g_object_path];
+
+            // TODO: remove after 3.34+
+            if (gsconnect.shell_version >= 34) {
+                indicator.visible = panelMode && isAvailable;
+            } else {
+                indicator.actor.visible = panelMode && isAvailable;
+            }
 
             let menu = this._menus[device.g_object_path];
-            menu.actor.visible = !panelMode && available.includes(device);
-            menu._title.actor.visible = menu.actor.visible;
+            menu.actor.visible = !panelMode && isAvailable;
+            menu._title.actor.visible = !panelMode && isAvailable;
         }
 
         // One connected device in User Menu mode

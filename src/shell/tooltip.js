@@ -22,93 +22,111 @@ var TOOLTIP_BROWSE_MODE = false;
 var Tooltip = class Tooltip {
 
     constructor(params) {
-        // Properties
-        Object.defineProperties(this, {
-            'custom': {
-                get: () => this._custom || false,
-                set: (actor) => {
-                    this._custom = actor;
-                    this._markup = null;
-                    this._text = null;
-                    this._update();
-                }
-            },
-            'markup': {
-                get: () => this._markup || false,
-                set: (value) => {
-                    this._markup = value;
-                    this._text = null;
-                    this._update();
-                }
-            },
-            'text': {
-                get: () => this._text || false,
-                set: (value) => {
-                    this._markup = null;
-                    this._text = value;
-                    this._update();
-                }
-            },
-            'icon_name': {
-                get: () => this._gicon.name,
-                set: (icon_name) => {
-                    if (!icon_name) {
-                        this.gicon = null;
-                    } else {
-                        this.gicon = new Gio.ThemedIcon({
-                            name: icon_name
-                        });
-                    }
-                }
-            },
-            'gicon': {
-                get: () => this._gicon || false,
-                set: (gicon) => {
-                    this._gicon = gicon;
-                    this._update();
-                }
-            },
-            'x_offset': {
-                get: () => (this._x_offset === undefined) ? 0 : this._x_offset,
-                set: (offset) => {
-                    this._x_offset = (Number.isInteger(offset)) ? offset : 0;
-                }
-            },
-            'y_offset': {
-                get: () => (this._y_offset === undefined) ? 0 : this._y_offset,
-                set: (offset) => {
-                    this._y_offset = (Number.isInteger(offset)) ? offset : 0;
-                }
-            }
-        });
-
-        this._parent = params.parent;
-
-        for (let param in params) {
-            if (param !== 'parent') {
-                this[param] = params[param];
-            }
-        }
+        Object.assign(this, params);
 
         this._hoverTimeoutId = 0;
         this._showing = false;
 
-        // TODO: oddly fuzzy on menu items, sometimes
-        if (this._parent.actor) {
-            this._parent = this._parent.actor;
-        }
+        this._destroyId = this.parent.connect(
+            'destroy',
+            this.destroy.bind(this)
+        );
 
-        this._hoverId = this._parent.connect(
+        this._hoverId = this.parent.connect(
             'notify::hover',
             this._onHover.bind(this)
         );
 
-        this._pressId = this._parent.connect(
+        this._buttonPressEventId = this.parent.connect(
             'button-press-event',
             this._hide.bind(this)
         );
+    }
 
-        this._parent.connect('destroy', this.destroy.bind(this));
+    get custom() {
+        if (this._custom === undefined) {
+            this._custom = null;
+        }
+
+        return this._custom;
+    }
+
+    set custom(actor) {
+        this._custom = actor;
+        this._markup = null;
+        this._text = null;
+        this._update();
+    }
+
+    get gicon() {
+        if (this._gicon === undefined) {
+            this._gicon = null;
+        }
+
+        return this._gicon;
+    }
+
+    set gicon(gicon) {
+        this._gicon = gicon;
+        this._update();
+    }
+
+    get icon() {
+        return (this.gicon) ? this.gicon.name : null;
+    }
+
+    set icon(icon_name) {
+        if (!icon_name) {
+            this.gicon = null;
+        } else {
+            this.gicon = new Gio.ThemedIcon({
+                name: icon_name
+            });
+        }
+    }
+
+    get markup() {
+        if (this._markup === undefined) {
+            this._markup = null;
+        }
+
+        return this._markup;
+    }
+
+    set markup(text) {
+        this._markup = text;
+        this._text = null;
+        this._update();
+    }
+
+    get text() {
+        if (this._text === undefined) {
+            this._text = null;
+        }
+
+        return this._text;
+    }
+
+    set text(text) {
+        this._markup = null;
+        this._text = text;
+        this._update();
+    }
+
+    get x_offset() {
+        return (this._x_offset === undefined) ? 0 : this._x_offset;
+    }
+
+    set x_offset(offset) {
+        this._x_offset = (Number.isInteger(offset)) ? offset : 0;
+    }
+
+    get y_offset() {
+        return (this._y_offset === undefined) ? 0 : this._y_offset;
+    }
+
+    set y_offset(offset) {
+        this._y_offset = (Number.isInteger(offset)) ? offset : 0;
     }
 
     _update() {
@@ -170,8 +188,8 @@ var Tooltip = class Tooltip {
         }
 
         // Position tooltip
-        let [x, y] = this._parent.get_transformed_position();
-        x = (x + (this._parent.width / 2)) - Math.round(this.bin.width / 2);
+        let [x, y] = this.parent.get_transformed_position();
+        x = (x + (this.parent.width / 2)) - Math.round(this.bin.width / 2);
 
         x += this.x_offset;
         y += this.y_offset;
@@ -244,7 +262,7 @@ var Tooltip = class Tooltip {
     }
 
     _onHover() {
-        if (this._parent.hover) {
+        if (this.parent.hover) {
             if (!this._hoverTimeoutId) {
                 if (this._showing) {
                     this._show();
@@ -266,8 +284,9 @@ var Tooltip = class Tooltip {
     }
 
     destroy() {
-        this._parent.disconnect(this._hoverId);
-        this._parent.disconnect(this._pressId);
+        this.parent.disconnect(this._destroyId);
+        this.parent.disconnect(this._hoverId);
+        this.parent.disconnect(this._buttonPressEventId);
 
         if (this.custom) {
             this.custom.destroy();
