@@ -111,14 +111,11 @@ var ConnectDialog = GObject.registerClass({
     ]
 }, class ConnectDialog extends Gtk.Dialog {
 
-    _init(parent = null) {
+    _init(params = {}) {
         this.connectTemplate();
-        super._init({
-            application: Gio.Application.get_default(),
-            modal: (parent),
-            transient_for: parent,
+        super._init(Object.assign({
             use_header_bar: true
-        });
+        }, params));
 
         // Bluez Device ComboBox
         let iconCell = new Gtk.CellRendererPixbuf({xpad: 6});
@@ -410,7 +407,7 @@ var Window = GObject.registerClass({
 
         // "Connect to..." Dialog
         let connectDialog = new Gio.SimpleAction({name: 'connect'});
-        connectDialog.connect('activate', this._connectDialog);
+        connectDialog.connect('activate', this._connectDialog.bind(this));
         this.add_action(connectDialog);
 
         // "Generate Support Log" GAction
@@ -517,7 +514,11 @@ var Window = GObject.registerClass({
      * Connect to..." Dialog
      */
     _connectDialog() {
-        new ConnectDialog(Gio.Application.get_default()._window);
+        new ConnectDialog({
+            application: Gio.Application.get_default(),
+            modal: true,
+            transient_for: this
+        });
     }
 
     /**
