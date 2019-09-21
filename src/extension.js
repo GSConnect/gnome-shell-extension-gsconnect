@@ -286,9 +286,9 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             if (device.settings.settings_schema.has_key('keybindings')) {
                 device.__keybindingsChangedId = device.settings.connect(
                     'changed::keybindings',
-                    this._onKeybindingsChanged.bind(this, device)
+                    this._onDeviceKeybindingsChanged.bind(this, device)
                 );
-                this._onKeybindingsChanged(device);
+                this._onDeviceKeybindingsChanged(device);
             }
 
             // Watch the for status changes
@@ -331,7 +331,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         }
     }
 
-    _onKeybindingsChanged(device) {
+    _onDeviceKeybindingsChanged(device) {
         try {
             // Reset any existing keybindings
             if (device.hasOwnProperty('_keybindings')) {
