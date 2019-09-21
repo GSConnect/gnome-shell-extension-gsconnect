@@ -53,7 +53,7 @@ const Service = GObject.registerClass({
             'Id',
             'The service id',
             GObject.ParamFlags.READWRITE,
-            'GSConnect'
+            null
         ),
         'name': GObject.ParamSpec.string(
             'name',
@@ -270,12 +270,12 @@ const Service = GObject.registerClass({
      */
     _initActions() {
         let actions = [
-            ['refresh', this._identify.bind(this)],
             ['connect', this._identify.bind(this), 's'],
             ['device', this._device.bind(this), '(ssbv)'],
             ['error', this._error.bind(this), 'a{ss}'],
             ['preferences', this._preferences],
             ['quit', () => this.quit()],
+            ['refresh', this._identify.bind(this)],
             ['wiki', this._wiki.bind(this), 's']
         ];
 
