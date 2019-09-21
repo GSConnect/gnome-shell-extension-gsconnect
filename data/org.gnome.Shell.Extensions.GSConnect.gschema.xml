@@ -2,6 +2,9 @@
 <schemalist gettext-domain="org.gnome.Shell.Extensions.GSConnect">
   <schema id="org.gnome.Shell.Extensions.GSConnect" path="/org/gnome/shell/extensions/gsconnect/">
     <!-- Extension Settings -->
+    <key name="enabled" type="b">
+      <default>true</default>
+    </key>
     <key name="show-indicators" type="b">
       <default>false</default>
     </key>

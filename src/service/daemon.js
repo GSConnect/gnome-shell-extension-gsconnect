@@ -275,6 +275,7 @@ const Service = GObject.registerClass({
             ['device', this._device.bind(this), '(ssbv)'],
             ['error', this._error.bind(this), 'a{ss}'],
             ['preferences', this._preferences],
+            ['quit', () => this.quit()],
             ['wiki', this._wiki.bind(this), 's']
         ];
 

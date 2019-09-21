@@ -76,9 +76,32 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             path: '/org/gnome/shell/extensions/gsconnect/'
         });
 
+        this._enabledId = this.settings.connect(
+            'changed::enabled',
+            this._onEnabledChanged.bind(this)
+        );
+
         this._panelModeId = this.settings.connect(
             'changed::show-indicators',
             this._sync.bind(this)
+        );
+
+        // Service Proxy
+        this.service = new Remote.Service();
+
+        this._deviceAddedId = this.service.connect(
+            'device-added',
+            this._onDeviceAdded.bind(this)
+        );
+
+        this._deviceRemovedId = this.service.connect(
+            'device-removed',
+            this._onDeviceRemoved.bind(this)
+        );
+
+        this._serviceChangedId = this.service.connect(
+            'notify::active',
+            this._onServiceChanged.bind(this)
         );
 
         // Service Indicator
@@ -117,39 +140,47 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         let dndItem = new DoNotDisturb.createMenuItem(this.settings);
         this._item.menu.addMenuItem(dndItem);
 
+        // Service Menu -> "Turn On/Off"
+        this._enableItem = this._item.menu.addAction(
+            _('Turn On'),
+            this._enable.bind(this)
+        );
+
         // Service Menu -> "Mobile Settings"
         this._item.menu.addAction(
             _('Mobile Settings'),
             () => this.service.activate_action('preferences', null)
         );
 
-        // Async setup
-        this._init_async();
+        // Prime the service
+        this._initService();
     }
 
-    async _init_async() {
+    async _initService() {
         try {
-            // Service Proxy
-            this.service = new Remote.Service();
-
-            // Watch for new and removed
-            this._deviceAddedId = this.service.connect(
-                'device-added',
-                this._onDeviceAdded.bind(this)
-            );
-
-            this._deviceRemovedId = this.service.connect(
-                'device-removed',
-                this._onDeviceRemoved.bind(this)
-            );
-
-            await this.service.start();
+            await this.service.reload();
         } catch (e) {
-            Gio.DBusError.strip_remote_error(e);
+            logError(e, 'GSConnect');
+        }
+    }
 
-            if (!e.code || e.code !== Gio.IOErrorEnum.CANCELLED) {
-                logError(e, 'GSConnect');
+    _enable() {
+        try {
+            let enabled = this.settings.get_boolean('enabled');
+
+            // If for some reason the service state doesn't match the enabled
+            // setting, we should change it by toggling the setting
+            if (this.service.active !== enabled) {
+                this.settings.set_boolean('enabled', !enabled);
+
+            // Otherwise, we should just change the service state directly
+            } else if (this.service.active) {
+               this.service.stop();
+            } else {
+               this.service.start();
             }
+        } catch (e) {
+            logError(e, 'GSConnect');
         }
     }
 
@@ -233,7 +264,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 this._sync();
             }
         } catch (e) {
-            logError(e);
+            logError(e, 'GSConnect' );
         }
     }
 
@@ -268,7 +299,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
             this._sync();
         } catch (e) {
-            logError(e);
+            logError(e, 'GSConnect');
         }
     }
 
@@ -296,7 +327,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 this._sync();
             }
         } catch (e) {
-            logError(e);
+            logError(e, 'GSConnect');
         }
     }
 
@@ -326,13 +357,43 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 }
             }
         } catch (e) {
-            logError(e);
+            logError(e, 'GSConnect');
+        }
+    }
+
+    async _onEnabledChanged(settings, key) {
+        try {
+            if (this.settings.get_boolean('enabled')) {
+                await this.service.start();
+            } else {
+                await this.service.stop();
+            }
+        } catch (e) {
+            logError(e, 'GSConnect');
+        }
+    }
+
+    async _onServiceChanged(service, pspec) {
+        try {
+            if (this.service.active) {
+                this._enableItem.label.text = _('Turn Off');
+            } else {
+                this._enableItem.label.text = _('Turn On');
+
+                // If it's enabled, we should try to restart now
+                if (this.settings.get_boolean('enabled')) {
+                    await this.service.start();
+                }
+            }
+        } catch (e) {
+            logError(e, 'GSConnect');
         }
     }
 
     destroy() {
         // Unhook from Remote.Service
         if (this.service) {
+            this.service.disconnect(this._serviceChangedId);
             this.service.disconnect(this._deviceAddedId);
             this.service.disconnect(this._deviceRemovedId);
 

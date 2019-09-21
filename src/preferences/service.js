@@ -301,6 +301,24 @@ var Window = GObject.registerClass({
             path: '/org/gnome/shell/extensions/gsconnect/preferences/'
         });
 
+        // Service Proxy
+        this.service = new Remote.Service();
+
+        this._deviceAddedId = this.service.connect(
+            'device-added',
+            this._onDeviceAdded.bind(this)
+        );
+
+        this._deviceRemovedId = this.service.connect(
+            'device-removed',
+            this._onDeviceRemoved.bind(this)
+        );
+
+        this._serviceChangedId = this.service.connect(
+            'notify::active',
+            this._onServiceChanged.bind(this)
+        );
+
         // HeaderBar (Service Name)
         this.headerbar.title = gsconnect.settings.get_string('name');
         this.service_entry.text = this.headerbar.title;
@@ -333,8 +351,8 @@ var Window = GObject.registerClass({
         // Restore window size/maximized/position
         this._restoreGeometry();
 
-        // Start the remote service
-        this._init_async();
+        // Prime the service
+        this._initService();
     }
 
     get display_mode() {
@@ -367,28 +385,10 @@ var Window = GObject.registerClass({
         return false;
     }
 
-    async _init_async() {
+    async _initService() {
         try {
-            // Device Manager
-            this.service = new Remote.Service();
-
-            // Watch for new and removed
-            this._deviceAddedId = this.service.connect(
-                'device-added',
-                this._onDeviceAdded.bind(this)
-            );
-
-            this._deviceRemovedId = this.service.connect(
-                'device-removed',
-                this._onDeviceRemoved.bind(this)
-            );
-
-            this._serviceChangedId = this.service.connect(
-                'notify::active',
-                this._onServiceChanged.bind(this)
-            );
-
-            await this.service.start();
+            this._onServiceChanged(this.service, null);
+            await this.service.reload();
         } catch (e) {
             logError(e, 'GSConnect');
         }
