@@ -175,9 +175,9 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
             // Otherwise, we should just change the service state directly
             } else if (this.service.active) {
-               this.service.stop();
+                this.service.stop();
             } else {
-               this.service.start();
+                this.service.start();
             }
         } catch (e) {
             logError(e, 'GSConnect');
