@@ -71,7 +71,7 @@ const Preferences = GObject.registerClass({
 
         let actions = [
             ['refresh', null],
-            ['connect',   GLib.VariantType.new('s')]
+            ['connect', GLib.VariantType.new('s')]
         ];
 
         for (let [name, type] of actions) {
@@ -84,7 +84,28 @@ const Preferences = GObject.registerClass({
     }
 
     vfunc_activate_action(action_name, parameter) {
-        this._window.service.activate_action(action_name, parameter);
+        try {
+            let paramArray = [];
+
+            if (parameter instanceof GLib.Variant) {
+                paramArray[0] = parameter;
+            }
+
+            this.get_dbus_connection().call(
+                'org.gnome.Shell.Extensions.GSConnect',
+                '/org/gnome/Shell/Extensions/GSConnect',
+                'org.freedesktop.Application',
+                'ActivateAction',
+                GLib.Variant.new('(sava{sv})', [action_name, paramArray, {}]),
+                null,
+                Gio.DBusCallFlags.NONE,
+                -1,
+                null,
+                null
+            );
+        } catch (e) {
+            logError(e);
+        }
     }
 });
 
