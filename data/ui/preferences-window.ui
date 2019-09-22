@@ -4,7 +4,6 @@
   <requires lib="gtk+" version="3.20"/>
   <object class="GtkPopover" id="rename-popover">
     <property name="can_focus">False</property>
-    <signal name="focus-out-event" handler="_onUnfocusServiceName" swapped="no"/>
     <child>
       <object class="GtkGrid" id="rename">
         <property name="visible">True</property>
@@ -183,6 +182,7 @@
             <property name="valign">center</property>
             <property name="hexpand">True</property>
             <property name="popover">rename-popover</property>
+            <signal name="clicked" handler="_onEditServiceName" swapped="no"/>
             <child>
               <object class="GtkImage">
                 <property name="visible">True</property>

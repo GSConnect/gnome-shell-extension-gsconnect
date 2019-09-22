@@ -584,9 +584,10 @@ var Window = GObject.registerClass({
 
     _onEditServiceName(button, event) {
         this.rename_entry.text = this.headerbar.title;
+        this.rename_entry.has_focus = true;
     }
 
-    _onSetServiceName(button, event) {
+    _onSetServiceName(widget) {
         if (this.rename_entry.text.length) {
             this.headerbar.title = this.rename_entry.text;
             gsconnect.settings.set_string('name', this.rename_entry.text);
