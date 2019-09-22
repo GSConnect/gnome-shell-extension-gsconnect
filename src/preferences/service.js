@@ -586,11 +586,6 @@ var Window = GObject.registerClass({
         this.rename_entry.text = this.headerbar.title;
     }
 
-    _onUnfocusServiceName(entry, event) {
-        this.service_edit.active = false;
-        return false;
-    }
-
     _onSetServiceName(button, event) {
         if (this.rename_entry.text.length) {
             this.headerbar.title = this.rename_entry.text;

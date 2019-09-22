@@ -7,15 +7,8 @@
     <signal name="focus-out-event" handler="_onUnfocusServiceName" swapped="no"/>
     <child>
       <object class="GtkGrid" id="rename">
-        <property name="name">rename</property>
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="margin_left">6</property>
-        <property name="margin_right">6</property>
-        <property name="margin_start">10</property>
-        <property name="margin_end">10</property>
-        <property name="margin_top">6</property>
-        <property name="margin_bottom">6</property>
+        <property name="margin">10</property>
         <property name="row_spacing">6</property>
         <property name="column_spacing">6</property>
         <child>
@@ -23,9 +16,6 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">start</property>
-            <property name="margin_left">2</property>
-            <property name="margin_right">2</property>
-            <property name="margin_bottom">2</property>
             <property name="label" translatable="yes">Device Name</property>
             <property name="mnemonic_widget">rename-entry</property>
             <attributes>
@@ -47,6 +37,7 @@
             <property name="valign">center</property>
             <property name="hexpand">True</property>
             <property name="input_purpose">name</property>
+            <property name="width_chars">20</property>
             <signal name="activate" handler="_onSetServiceName" swapped="no"/>
           </object>
           <packing>
