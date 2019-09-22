@@ -1,10 +1,10 @@
 data/gtk/menus.ui
 data/ui/connect.ui
-data/ui/contacts.ui
+data/ui/contact-chooser.ui
 data/ui/conversation.ui
 data/ui/device-preferences.ui
-data/ui/messaging.ui
-data/ui/notification.ui
+data/ui/messaging-window.ui
+data/ui/notification-reply-dialog.ui
 data/ui/preferences-window.ui
 data/ui/telephony.ui
 src/extension.js
