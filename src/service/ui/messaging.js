@@ -1171,7 +1171,7 @@ var Window = GObject.registerClass({
                 this.stack.visible_child.setMessage(message);
             }
         } catch (e) {
-            warning(e);
+            debug(e);
         }
     }
 });

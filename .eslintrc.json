@@ -120,7 +120,6 @@
         "global": false,
         "gsconnect": false,
         "debug": false,
-        "warning": false,
         "get_download_file": false,
         "open_uri": false,
         "_": false,

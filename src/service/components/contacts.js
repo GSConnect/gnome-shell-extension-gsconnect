@@ -59,7 +59,7 @@ var Store = GObject.registerClass({
             this.__cache_lock = true;
             await JSON.dump(this.__cache_data, this.__cache_file);
         } catch (e) {
-            warning(e);
+            debug(e);
         } finally {
             this.__cache_lock = false;
 
@@ -132,7 +132,7 @@ var Store = GObject.registerClass({
                             file.replace_contents_finish(res);
                             resolve(file.get_path());
                         } catch (e) {
-                            warning(e, 'Storing avatar');
+                            debug(e, 'Storing avatar');
                             resolve(undefined);
                         }
                     }
@@ -301,7 +301,7 @@ var Store = GObject.registerClass({
 
             await this.__cache_write();
         } catch (e) {
-            warning(e, 'Clearing contacts');
+            debug(e, 'Clearing contacts');
         }
     }
 
@@ -331,7 +331,7 @@ var Store = GObject.registerClass({
 
             await this.__cache_write();
         } catch (e) {
-            warning(e, 'Updating contacts');
+            debug(e, 'Updating contacts');
         }
     }
 

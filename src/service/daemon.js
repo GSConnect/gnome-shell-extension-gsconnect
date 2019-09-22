@@ -718,8 +718,7 @@ const Service = GObject.registerClass({
                         break;
 
                     default:
-                        warning(`Unsupported URI: ${file.get_uri()}`);
-                        return;
+                        throw new Error(`Unsupported URI: ${file.get_uri()}`);
                 }
 
                 // Show chooser dialog

@@ -414,7 +414,7 @@ var Device = GObject.registerClass({
                     throw new Error(`Unsupported packet type (${packet.type})`);
             }
         } catch (e) {
-            warning(e, this.name);
+            debug(e, this.name);
         }
     }
 
@@ -929,8 +929,6 @@ var Device = GObject.registerClass({
 
         try {
             if (this.paired && !this._plugins.has(name)) {
-                debug(`loading '${name}' plugin`, this.name);
-
                 // Instantiate the handler
                 handler = imports.service.plugins[name];
                 plugin = new handler.Plugin(this);
@@ -966,8 +964,6 @@ var Device = GObject.registerClass({
 
         try {
             if (this._plugins.has(name)) {
-                debug(`unloading '${name}' plugin`, this.name);
-
                 // Unregister packet handlers
                 handler = imports.service.plugins[name];
                 plugin = this._plugins.get(name);

@@ -82,7 +82,7 @@ while ((info = iter.next_file(null))) {
     let langCode = lang.replace('_', '-');
     langCode = langCode.replace('@latin', '-Latn');
 
-    print(`Processing "${lang}" as "${langCode}"`);
+    print(`Processing ${lang} as ${langCode}`);
 
     // Make a new dir and file
     let jsondir = localedir.get_child(langCode);

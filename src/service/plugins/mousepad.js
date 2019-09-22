@@ -263,7 +263,7 @@ var Plugin = GObject.registerClass({
 
                 // Caribou not available or key out of range
                 } else {
-                    warning(_('Additional Software Required') + ': libcaribou');
+                    debug('Additional Software Required: libcaribou');
                 }
                 break;
 

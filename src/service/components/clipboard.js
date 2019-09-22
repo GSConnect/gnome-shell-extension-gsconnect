@@ -105,7 +105,7 @@ var Clipboard = GObject.registerClass({
                 let line = stream.read_line_finish_utf8(res)[0];
                 
                 if (line !== null) {
-                    warning(`XClipboard Proxy: ${line}`);
+                    logError(new Error(`XClipboard Proxy: ${line}`));
                     this._readError(stream);
                 }
             } catch (e) {
@@ -117,7 +117,7 @@ var Clipboard = GObject.registerClass({
     _writeContent(text) {
         // Bail if xclipboard failed
         if (!this._proc) {
-            warning('XClipboard not running');
+            logError(new Error('XClipboard not running'));
             return;
         }
         

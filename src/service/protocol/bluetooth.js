@@ -190,7 +190,7 @@ var ChannelService = GObject.registerClass({
                 Gio.DBusError.strip_remote_error(e);
             }
 
-            warning(`GSConnect: Bluetooth Error: ${e.message}`);
+            debug(`GSConnect: Bluetooth Error: ${e.message}`);
             this.destroy();
         }
     }
@@ -249,7 +249,7 @@ var ChannelService = GObject.registerClass({
 
             return proxy;
         } catch (e) {
-            warning(e);
+            debug(e);
             return undefined;
         }
     }
@@ -491,7 +491,7 @@ var ChannelService = GObject.registerClass({
                 bdevice._channel = null;
             }
 
-            warning(e, bdevice.Alias);
+            debug(e, bdevice.Alias);
         }
     }
 

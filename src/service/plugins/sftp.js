@@ -455,7 +455,7 @@ var Plugin = GObject.registerClass({
 
             link.make_symbolic_link(link_target, null);
         } catch (e) {
-            warning(e, `${this.device.name}: ${this.name}`);
+            debug(e, `${this.device.name}: ${this.name}`);
         }
     }
 

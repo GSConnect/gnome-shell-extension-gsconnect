@@ -58,24 +58,6 @@ gsconnect.settings.connect('changed::debug', (settings) => {
 
 
 /**
- * A simple warning function along the lines of logError()
- *
- * @param {Error|string} message - A string or Error to log
- * @param {string} [prefix] - An optional prefix for the warning
- */
-window.warning = function(message, prefix = null) {
-    message = (message.message) ? message.message : message;
-    message = (prefix) ? `${prefix}: ${message}` : message;
-
-    GLib.log_structured(
-        'GSConnect',
-        GLib.LogLevelFlags.LEVEL_WARNING,
-        {MESSAGE: `WARNING: ${message}`}
-    );
-};
-
-
-/**
  * Get a GFile for @filename, with a numbered suffix if it already exists (eg.
  * `picture.jpg (1)`). If @path is not given, a default directory for downloads
  * will be determined, first with XDG then falling back to ~/Downloads.

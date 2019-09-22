@@ -211,7 +211,7 @@ var Plugin = GObject.registerClass({
 
             // Say "chowdah" frenchie!
             } catch (e) {
-                warning(`Failed to decode UTF-8 VCard field "${input}"`);
+                debug(e, `Failed to decode UTF-8 VCard field ${input}`);
                 return input;
             }
         }
@@ -326,7 +326,7 @@ var Plugin = GObject.registerClass({
 
             return contact;
         } catch (e) {
-            warning(e, `Failed to parse VCard contact "${uid}"`);
+            debug(e, `Failed to parse VCard contact ${uid}`);
             return undefined;
         }
     }
@@ -379,7 +379,7 @@ var Plugin = GObject.registerClass({
 
             return contact;
         } catch (e) {
-            warning(e, `Failed to parse VCard contact "${uid}"`);
+            debug(e, `Failed to parse VCard contact ${uid}`);
             return undefined;
         }
     }

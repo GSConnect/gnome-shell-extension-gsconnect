@@ -110,7 +110,7 @@ var ReplyDialog = GObject.registerClass({
             this._uuid = uuid;
         } else {
             this.destroy();
-            warning('no uuid for repliable notification');
+            debug('no uuid for repliable notification');
         }
     }
 

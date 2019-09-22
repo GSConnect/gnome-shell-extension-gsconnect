@@ -325,7 +325,7 @@ var Plugin = GObject.registerClass({
                 icon: new Gio.ThemedIcon({name: iconName})
             });
         } catch (e) {
-            warning(e, this.device.name);
+            debug(e, this.device.name);
         }
     }
 
