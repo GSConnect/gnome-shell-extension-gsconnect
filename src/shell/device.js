@@ -227,6 +227,7 @@ var Indicator = class Indicator extends PanelMenu.Button {
             gicon: gsconnect.get_gicon(this.device.icon_name),
             style_class: 'system-status-icon gsconnect-device-indicator'
         });
+        this._icon = icon;
 
         // TODO: remove after 3.34+
         if (gsconnect.shell_version >= 34) {
@@ -241,6 +242,10 @@ var Indicator = class Indicator extends PanelMenu.Button {
             menu_type: 'icon'
         });
         this.menu.addMenuItem(menu);
+    }
+
+    update_icon(icon_name) {
+        this._icon.gicon = gsconnect.get_gicon(icon_name);
     }
 };
 
