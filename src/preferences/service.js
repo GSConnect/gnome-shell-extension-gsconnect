@@ -94,20 +94,10 @@ async function generateSupportLog(time) {
  */
 var ConnectDialog = GObject.registerClass({
     GTypeName: 'GSConnectConnectDialog',
-    Properties: {
-        'has-devices': GObject.ParamSpec.boolean(
-            'has-devices',
-            'Has Devices',
-            'Whether any KDE Connect enabled bluetooth devices are present',
-            GObject.ParamFlags.READABLE,
-            false
-        )
-    },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/connect.ui',
     Children: [
         'cancel-button', 'connect-button',
-        'lan-radio', 'lan-grid', 'lan-ip', 'lan-port',
-        'bluez-radio', 'bluez-grid', 'bluez-device', 'bluez-devices'
+        'lan-radio', 'lan-grid', 'lan-ip', 'lan-port'
     ]
 }, class ConnectDialog extends Gtk.Dialog {
 
@@ -116,60 +106,6 @@ var ConnectDialog = GObject.registerClass({
         super._init(Object.assign({
             use_header_bar: true
         }, params));
-
-        // Bluez Device ComboBox
-        let iconCell = new Gtk.CellRendererPixbuf({xpad: 6});
-        this.bluez_device.pack_start(iconCell, false);
-        this.bluez_device.add_attribute(iconCell, 'pixbuf', 0);
-
-        let nameCell = new Gtk.CellRendererText();
-        this.bluez_device.pack_start(nameCell, true);
-        this.bluez_device.add_attribute(nameCell, 'text', 1);
-
-        if (this.application.bluetooth) {
-            this._devicesId = this.application.bluetooth.connect(
-                'notify::devices',
-                this.populate.bind(this)
-            );
-            this.populate();
-        }
-
-        // Connection type selection
-        this.lan_radio.bind_property(
-            'active',
-            this.lan_grid,
-            'sensitive',
-            GObject.BindingFlags.SYNC_CREATE
-        );
-
-        this.bluez_radio.bind_property(
-            'active',
-            this.bluez_grid,
-            'sensitive',
-            GObject.BindingFlags.SYNC_CREATE
-        );
-
-        // Hide Bluez and selection if there are no supported bluetooth devices
-        this.bind_property(
-            'has-devices',
-            this.bluez_radio,
-            'visible',
-            GObject.BindingFlags.SYNC_CREATE
-        );
-
-        this.bind_property(
-            'has-devices',
-            this.bluez_grid,
-            'visible',
-            GObject.BindingFlags.SYNC_CREATE
-        );
-
-        this.bind_property(
-            'has-devices',
-            this.lan_radio,
-            'visible',
-            GObject.BindingFlags.SYNC_CREATE
-        );
     }
 
     vfunc_response(response_id) {
@@ -177,16 +113,11 @@ var ConnectDialog = GObject.registerClass({
             try {
                 let address;
 
-                // Bluetooth device selected
-                if (this.bluez_device.visible && this.bluez_radio.active) {
-                    let path = this.bluez_device.active_id;
-                    address = GLib.Variant.new_string(`bluetooth://${path}`);
-
                 // Lan host/port entered
-                } else if (this.lan_ip.text) {
+                if (this.lan_ip.text) {
                     let host = this.lan_ip.text;
                     let port = this.lan_port.value;
-                    address = GLib.Variant.new_string(`lan://${host}:${port}`);
+                    address = GLib.Variant.new_string('lan://' + host + ':' + port);
                 } else {
                     return false;
                 }
@@ -204,39 +135,6 @@ var ConnectDialog = GObject.registerClass({
         this.disconnectTemplate();
         this.destroy();
         return false;
-    }
-
-    get has_devices() {
-        if (!this.application.bluetooth) {
-            return false;
-        }
-
-        return this.application.bluetooth.devices.length > 0;
-    }
-
-    populate() {
-        this.bluez_devices.clear();
-        let theme = Gtk.IconTheme.get_default();
-
-        if (this.has_devices) {
-            for (let device of this.application.bluetooth.devices) {
-                let pixbuf = theme.load_icon(
-                    device.Icon,
-                    16,
-                    Gtk.IconLookupFlags.FORCE_SIZE
-                );
-
-                this.bluez_devices.set(
-                    this.bluez_devices.append(),
-                    [0, 1, 2],
-                    [pixbuf, `${device.Alias} (${device.Adapter})`, device.g_object_path]
-                );
-            }
-
-            this.bluez_device.active_id = this.application.bluetooth.devices[0].g_object_path;
-        }
-
-        this.notify('has-devices');
     }
 });
 
