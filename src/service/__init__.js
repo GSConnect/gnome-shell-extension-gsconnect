@@ -58,38 +58,6 @@ gsconnect.settings.connect('changed::debug', (settings) => {
 
 
 /**
- * Get a GFile for @filename, with a numbered suffix if it already exists (eg.
- * `picture.jpg (1)`). If @path is not given, a default directory for downloads
- * will be determined, first with XDG then falling back to ~/Downloads.
- *
- * @param {string} [path] - Optional download directory
- * @param {string} filename - The basename of the file
- * @return {Gio.File} - A new GFile for the given @filename
- */
-window.get_download_file = function(path = null, filename) {
-    if (!path) {
-        path = GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_DOWNLOAD);
-
-        // Account for some corner cases with a fallback
-        if (!path || path === GLib.get_home_dir()) {
-            path = GLib.build_filenamev([GLib.get_home_dir(), 'Downloads']);
-        }
-    }
-
-    let basepath = GLib.build_filenamev([path, filename]);
-    let filepath = basepath;
-    let copyNum = 0;
-
-    while (GLib.file_test(filepath, GLib.FileTest.EXISTS)) {
-        copyNum += 1;
-        filepath = `${basepath} (${copyNum})`;
-    }
-
-    return Gio.File.new_for_path(filepath);
-};
-
-
-/**
  * Convenience function for loading JSON from a file
  *
  * @param {Gio.File|string} file - A Gio.File or path to a JSON file

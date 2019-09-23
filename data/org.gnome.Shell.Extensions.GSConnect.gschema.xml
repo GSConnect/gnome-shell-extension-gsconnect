@@ -141,6 +141,9 @@
     <key name="share-camera" type="b">
       <default>true</default>
     </key>
+    <key name="receive-directory" type="s">
+      <default>""</default>
+    </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Ping"/>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.RunCommand">

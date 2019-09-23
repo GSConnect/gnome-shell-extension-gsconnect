@@ -58,6 +58,47 @@ var Plugin = GObject.registerClass({
         }
     }
 
+    _ensureReceiveDirectory() {
+        let receiveDir = this.settings.get_string('receive-directory');
+
+        // Ensure a directory is set
+        if (!receiveDir) {
+            receiveDir = GLib.get_user_special_dir(
+                GLib.UserDirectory.DIRECTORY_PICTURES
+            );
+
+            // Fallback to ~/Pictures
+            let homeDir = GLib.get_home_dir();
+
+            if (!receiveDir || receiveDir === homeDir) {
+                receiveDir = GLib.build_filenamev([homeDir, 'Pictures']);
+            }
+
+            this.settings.set_string('receive-directory', receiveDir);
+        }
+
+        // Ensure the directory exists
+        if (!GLib.file_test(receiveDir, GLib.FileTest.IS_DIR)) {
+            GLib.mkdir_with_parents(receiveDir, 448);
+        }
+
+        return receiveDir;
+    }
+
+    _getFile(filename) {
+        let dirpath = this._ensureReceiveDirectory();
+        let basepath = GLib.build_filenamev([dirpath, filename]);
+        let filepath = basepath;
+        let copyNum = 0;
+
+        while (GLib.file_test(filepath, GLib.FileTest.EXISTS)) {
+            copyNum += 1;
+            filepath = `${basepath} (${copyNum})`;
+        }
+
+        return Gio.File.new_for_path(filepath);
+    }
+
     async _receivePhoto(packet) {
         let file, stream, success, transfer;
 
@@ -65,7 +106,7 @@ var Plugin = GObject.registerClass({
             // Remote device cancelled the photo operation
             if (packet.body.cancel) return;
 
-            file = get_download_file(null, packet.body.filename);
+            file = this._getFile(packet.body.filename);
 
             stream = await new Promise((resolve, reject) => {
                 file.replace_async(null, false, 0, 0, null, (file, res) => {

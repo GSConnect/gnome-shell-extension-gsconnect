@@ -64,10 +64,14 @@ var Plugin = GObject.registerClass({
 
     _init(device) {
         super._init(device, 'share');
+    }
 
-        // Ensure a download directory is set
-        if (this.settings.get_string('receive-directory').length === 0) {
-            let receiveDir = GLib.get_user_special_dir(
+    _ensureReceiveDirectory() {
+        let receiveDir = this.settings.get_string('receive-directory');
+
+        // Ensure a directory is set
+        if (!receiveDir) {
+            receiveDir = GLib.get_user_special_dir(
                 GLib.UserDirectory.DIRECTORY_DOWNLOAD
             );
 
@@ -80,6 +84,27 @@ var Plugin = GObject.registerClass({
 
             this.settings.set_string('receive-directory', receiveDir);
         }
+
+        // Ensure the directory exists
+        if (!GLib.file_test(receiveDir, GLib.FileTest.IS_DIR)) {
+            GLib.mkdir_with_parents(receiveDir, 448);
+        }
+
+        return receiveDir;
+    }
+
+    _getFile(filename) {
+        let dirpath = this._ensureReceiveDirectory();
+        let basepath = GLib.build_filenamev([dirpath, filename]);
+        let filepath = basepath;
+        let copyNum = 0;
+
+        while (GLib.file_test(filepath, GLib.FileTest.EXISTS)) {
+            copyNum += 1;
+            filepath = `${basepath} (${copyNum})`;
+        }
+
+        return Gio.File.new_for_path(filepath);
     }
 
     async _refuseFile(packet) {
@@ -106,10 +131,7 @@ var Plugin = GObject.registerClass({
         let buttons = [];
 
         try {
-            file = get_download_file(
-                this.settings.get_string('receive-directory'),
-                packet.body.filename
-            );
+            file = this._getFile(packet.body.filename);
 
             stream = await new Promise((resolve, reject) => {
                 file.replace_async(null, false, 0, 0, null, (file, res) => {
