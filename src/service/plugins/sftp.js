@@ -115,8 +115,10 @@ var Plugin = GObject.registerClass({
 
         this.info.directories = {};
         this.info.mount = null;
-        this.info.regex = new RegExp(`sftp://(${this.info.ip}):(1739|17[4-5][0-9]|176[0-4])`);
-        this.info.uri = `sftp://${this.info.ip}:${this.info.port}/`;
+        this.info.regex = new RegExp(
+            'sftp://(' + this.info.ip + '):(1739|17[4-5][0-9]|176[0-4])'
+        );
+        this.info.uri = 'sftp://' + this.info.ip + ':' + this.info.port + '/';
 
         // If 'multiPaths' is present setup a local URI for each
         if (info.hasOwnProperty('multiPaths')) {

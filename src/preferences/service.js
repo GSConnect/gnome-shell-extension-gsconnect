@@ -396,7 +396,7 @@ var Window = GObject.registerClass({
                 program_name: 'GSConnect',
                 // TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
                 translator_credits: _('translator-credits'),
-                version: `${gsconnect.metadata.version}`,
+                version: gsconnect.metadata.version.toString(),
                 website: gsconnect.metadata.url,
                 license_type: Gtk.License.GPL_2_0,
                 modal: true,
