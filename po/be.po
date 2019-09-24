@@ -3,16 +3,14 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 14:16-0400\n"
-"PO-Revision-Date: 2019-08-09 00:14\n"
+"PO-Revision-Date: 2019-09-24 18:29\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Belarusian\n"
-"Language: be\n"
+"Language: be_BY\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || n%10>=5 && n%10<=9 || n"
-"%100>=11 && n%100<=14 ? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || n%10>=5 && n%10<=9 || n%100>=11 && n%100<=14 ? 2 : 3);\n"
 "X-Generator: crowdin.com\n"
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Language: be\n"
@@ -220,29 +218,24 @@ msgid "Advanced"
 msgstr "Пашыраныя"
 
 #: data/ui/device-preferences.ui:1796
-#, fuzzy
 msgid "Device Battery"
-msgstr "Акумулятар"
+msgstr ""
 
 #: data/ui/device-preferences.ui:1847
-#, fuzzy
 msgid "Low Battery Notification"
-msgstr "Адказаць на апавяшчэнне"
+msgstr ""
 
 #: data/ui/device-preferences.ui:1908
-#, fuzzy
 msgid "Fully Charged Notification"
-msgstr "Абагульваць апавяшчэнні"
+msgstr ""
 
 #: data/ui/device-preferences.ui:1955
-#, fuzzy
 msgid "System Battery"
-msgstr "Акумулятар"
+msgstr ""
 
 #: data/ui/device-preferences.ui:2006
-#, fuzzy
 msgid "Share Statistics"
-msgstr "Абагульваць апавяшчэнні"
+msgstr ""
 
 #: data/ui/device-preferences.ui:2055 data/ui/device-preferences.ui:2151
 #: src/service/plugins/battery.js:11
@@ -320,9 +313,8 @@ msgid "Send"
 msgstr "Адправіць"
 
 #: data/ui/preferences-window.ui:18
-#, fuzzy
 msgid "Device Name"
-msgstr "Рэдагаваць назву прылады"
+msgstr ""
 
 #: data/ui/preferences-window.ui:49
 msgid "_Rename"
@@ -457,8 +449,7 @@ msgstr "Увядзіце новыя спалучэнні, каб змяніць 
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/preferences/keybindings.js:125
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Націсніце Esc, каб скасаваць або Прабел, каб скінуць спалучэнне клавіш."
+msgstr "Націсніце Esc, каб скасаваць або Прабел, каб скінуць спалучэнне клавіш."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -477,12 +468,8 @@ msgid "translator-credits"
 msgstr "Maksim Krapiŭka <metalomaniax@gmail.com>"
 
 #: src/preferences/service.js:431
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Паведамленні адладкі былі запісаны ў журнал. Зрабіце любыя крокі неабходныя "
-"для ўзнаўлення праблемы і затым праглядзіце журнал."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Паведамленні адладкі былі запісаны ў журнал. Зрабіце любыя крокі неабходныя для ўзнаўлення праблемы і затым праглядзіце журнал."
 
 #: src/preferences/service.js:434
 msgid "Review Log"
@@ -501,9 +488,8 @@ msgid "Connected"
 msgstr "Падлучана"
 
 #: src/preferences/service.js:661
-#, fuzzy
 msgid "Waiting for service…"
-msgstr "Пошук прылад…"
+msgstr ""
 
 #: src/service/daemon.js:341
 msgid "Report"
@@ -522,8 +508,7 @@ msgid "Click for help troubleshooting"
 msgstr "Націсніце для дапамогі ў выпраўленні непаладак"
 
 #: src/service/daemon.js:603
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Знаходжанне было адключана праз колькасць прылад у гэтай сетцы."
 
 #: src/service/daemon.js:612
@@ -540,19 +525,16 @@ msgid "Share File"
 msgstr "Абагуліць файл"
 
 #: src/service/daemon.js:778
-#, fuzzy
 msgid "List available devices"
-msgstr "Недаступны"
+msgstr ""
 
 #: src/service/daemon.js:787
-#, fuzzy
 msgid "List all devices"
-msgstr "Мабільныя прылады"
+msgstr ""
 
 #: src/service/daemon.js:796
-#, fuzzy
 msgid "Target Device"
-msgstr "На прыладу"
+msgstr ""
 
 #: src/service/daemon.js:838
 msgid "Message Body"
@@ -563,24 +545,20 @@ msgid "Send Notification"
 msgstr "Адправіць апавяшчэнне"
 
 #: src/service/daemon.js:859
-#, fuzzy
 msgid "Notification App Name"
-msgstr "Апавяшчэнні"
+msgstr ""
 
 #: src/service/daemon.js:868
-#, fuzzy
 msgid "Notification Body"
-msgstr "Апавяшчэнні"
+msgstr ""
 
 #: src/service/daemon.js:877
-#, fuzzy
 msgid "Notification Icon"
-msgstr "Апавяшчэнні"
+msgstr ""
 
 #: src/service/daemon.js:886
-#, fuzzy
 msgid "Notification ID"
-msgstr "Апавяшчэнні"
+msgstr ""
 
 #: src/service/daemon.js:895 src/service/plugins/photo.js:11
 #: src/service/plugins/photo.js:17
@@ -619,9 +597,8 @@ msgid "Tablet"
 msgstr "Планшэт"
 
 #: src/service/device.js:188
-#, fuzzy
 msgid "Television"
-msgstr "Тэлефанія"
+msgstr ""
 
 #: src/service/device.js:196
 msgid "Not available"
@@ -672,9 +649,9 @@ msgstr "%d%% засталося"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:199
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s: Battery is full"
-msgstr "%s: нізкі зарад акумулятара"
+msgstr ""
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
@@ -738,9 +715,8 @@ msgid "Reply Notification"
 msgstr "Адказаць на апавяшчэнне"
 
 #: src/service/plugins/notification.js:59
-#, fuzzy
 msgid "Activate Notification"
-msgstr "Абагульваць апавяшчэнні"
+msgstr ""
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -793,9 +769,8 @@ msgid "%s is not allowed to upload files"
 msgstr ""
 
 #: src/service/plugins/share.js:154 src/service/plugins/share.js:302
-#, fuzzy
 msgid "Transferring File"
-msgstr "Збой перадачы"
+msgstr ""
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:156
@@ -959,9 +934,8 @@ msgid "Yesterday・%s"
 msgstr "Учора・%s"
 
 #: src/service/ui/messaging.js:255
-#, fuzzy
 msgid "Group Message"
-msgstr "Адправіць паведамленне"
+msgstr ""
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:265
@@ -1068,43 +1042,3 @@ msgstr "Не знойдзена прылад"
 msgid "Open in Browser"
 msgstr "Адкрыць у браўзеры"
 
-#~ msgid "Bluetooth Device"
-#~ msgstr "Bluetooth прылада"
-
-#~ msgid "Command Shortcuts"
-#~ msgstr "Камандныя спалучэнні клавіш"
-
-#~ msgid "Delete"
-#~ msgstr "Выдаліць"
-
-#~ msgid "Delete this device"
-#~ msgstr "Выдаліць гэту прыладу"
-
-#~ msgid "Unpair and remove all settings and files"
-#~ msgstr "Разлучыць і выдаліць усе налады і файлы"
-
-#~ msgid "Switch to Bluetooth"
-#~ msgstr "Пераключыць на Bluetooth"
-
-#~ msgid "Switch to LAN"
-#~ msgstr "Пераключыць на LAN"
-
-#~ msgid "%s Plugin Failed To Load"
-#~ msgstr "%s убудова не загрузілася"
-
-#~ msgid "Reconnect"
-#~ msgstr "Перападлучыцца"
-
-#~ msgid "Settings"
-#~ msgstr "Налады"
-
-#~ msgid "Additional Software Required"
-#~ msgstr "Патрабуецца дадатковае ПЗ"
-
-#~ msgid "Starting Transfer"
-#~ msgstr "Пачынаецца перадача"
-
-#~ msgid ""
-#~ "Transferred files are placed in the <a href=\"%s\">Downloads</a> folder."
-#~ msgstr ""
-#~ "Перанесеныя файлы размяшчаюцца ў папцы <a href=\"%s\">Спампоўкі</a>."
