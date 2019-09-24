@@ -3,10 +3,10 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 14:16-0400\n"
-"PO-Revision-Date: 2019-09-13 19:10\n"
+"PO-Revision-Date: 2019-09-24 18:29\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Italian\n"
-"Language: it\n"
+"Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -218,29 +218,24 @@ msgid "Advanced"
 msgstr "Avanzate"
 
 #: data/ui/device-preferences.ui:1796
-#, fuzzy
 msgid "Device Battery"
-msgstr "Batteria"
+msgstr ""
 
 #: data/ui/device-preferences.ui:1847
-#, fuzzy
 msgid "Low Battery Notification"
-msgstr "Rispondi alla notifica"
+msgstr ""
 
 #: data/ui/device-preferences.ui:1908
-#, fuzzy
 msgid "Fully Charged Notification"
-msgstr "Condividi notifiche"
+msgstr ""
 
 #: data/ui/device-preferences.ui:1955
-#, fuzzy
 msgid "System Battery"
-msgstr "Batteria"
+msgstr ""
 
 #: data/ui/device-preferences.ui:2006
-#, fuzzy
 msgid "Share Statistics"
-msgstr "Condividi notifiche"
+msgstr ""
 
 #: data/ui/device-preferences.ui:2055 data/ui/device-preferences.ui:2151
 #: src/service/plugins/battery.js:11
@@ -318,9 +313,8 @@ msgid "Send"
 msgstr "Invia"
 
 #: data/ui/preferences-window.ui:18
-#, fuzzy
 msgid "Device Name"
-msgstr "Modifica il nome del dispositivo"
+msgstr ""
 
 #: data/ui/preferences-window.ui:49
 msgid "_Rename"
@@ -472,12 +466,8 @@ msgid "translator-credits"
 msgstr "Jimmy Scionti <jimmy.scionti@gmail.com>"
 
 #: src/preferences/service.js:431
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"I messaggi di debug vengono registrati. Adotta tutte le misure necessarie "
-"per riprodurre un problema, quindi rivedi il registro."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "I messaggi di debug vengono registrati. Adotta tutte le misure necessarie per riprodurre un problema, quindi rivedi il registro."
 
 #: src/preferences/service.js:434
 msgid "Review Log"
@@ -496,9 +486,8 @@ msgid "Connected"
 msgstr "Connesso"
 
 #: src/preferences/service.js:661
-#, fuzzy
 msgid "Waiting for service…"
-msgstr "Ricerca dei dispositivi…"
+msgstr ""
 
 #: src/service/daemon.js:341
 msgid "Report"
@@ -517,11 +506,8 @@ msgid "Click for help troubleshooting"
 msgstr "Click per la risoluzione del problema"
 
 #: src/service/daemon.js:603
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
-msgstr ""
-"La ricerca è stata disattivata a causa dell'elevato numero di dispositivi "
-"nella rete."
+msgid "Discovery has been disabled due to the number of devices on this network."
+msgstr "La ricerca è stata disattivata a causa dell'elevato numero di dispositivi nella rete."
 
 #: src/service/daemon.js:612
 msgid "Click for more information"
@@ -537,19 +523,16 @@ msgid "Share File"
 msgstr "Invia file"
 
 #: src/service/daemon.js:778
-#, fuzzy
 msgid "List available devices"
-msgstr "Non disponibile"
+msgstr ""
 
 #: src/service/daemon.js:787
-#, fuzzy
 msgid "List all devices"
-msgstr "Dispositivi mobili"
+msgstr ""
 
 #: src/service/daemon.js:796
-#, fuzzy
 msgid "Target Device"
-msgstr "Al dispositivo"
+msgstr ""
 
 #: src/service/daemon.js:838
 msgid "Message Body"
@@ -560,24 +543,20 @@ msgid "Send Notification"
 msgstr "Invia notifica"
 
 #: src/service/daemon.js:859
-#, fuzzy
 msgid "Notification App Name"
-msgstr "Notifiche"
+msgstr ""
 
 #: src/service/daemon.js:868
-#, fuzzy
 msgid "Notification Body"
-msgstr "Notifiche"
+msgstr ""
 
 #: src/service/daemon.js:877
-#, fuzzy
 msgid "Notification Icon"
-msgstr "Notifiche"
+msgstr ""
 
 #: src/service/daemon.js:886
-#, fuzzy
 msgid "Notification ID"
-msgstr "Notifiche"
+msgstr ""
 
 #: src/service/daemon.js:895 src/service/plugins/photo.js:11
 #: src/service/plugins/photo.js:17
@@ -616,9 +595,8 @@ msgid "Tablet"
 msgstr "Tablet"
 
 #: src/service/device.js:188
-#, fuzzy
 msgid "Television"
-msgstr "Telefonia"
+msgstr ""
 
 #: src/service/device.js:196
 msgid "Not available"
@@ -669,9 +647,9 @@ msgstr "%d%% rimanenti"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:199
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s: Battery is full"
-msgstr "%s: batteria quasi scarica"
+msgstr ""
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
@@ -735,9 +713,8 @@ msgid "Reply Notification"
 msgstr "Rispondi alla notifica"
 
 #: src/service/plugins/notification.js:59
-#, fuzzy
 msgid "Activate Notification"
-msgstr "Condividi notifiche"
+msgstr ""
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -790,9 +767,8 @@ msgid "%s is not allowed to upload files"
 msgstr ""
 
 #: src/service/plugins/share.js:154 src/service/plugins/share.js:302
-#, fuzzy
 msgid "Transferring File"
-msgstr "Trasferimento fallito"
+msgstr ""
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:156
@@ -954,9 +930,8 @@ msgid "Yesterday・%s"
 msgstr "Ieri・%s"
 
 #: src/service/ui/messaging.js:255
-#, fuzzy
 msgid "Group Message"
-msgstr "Invia un messaggio"
+msgstr ""
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:265
@@ -1042,8 +1017,7 @@ msgstr "GSConnect"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
-"Condividi collegamenti con GSConnect, direttamente nel browser o via SMS."
+msgstr "Condividi collegamenti con GSConnect, direttamente nel browser o via SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:33
@@ -1060,44 +1034,3 @@ msgstr "Dispositivo non trovato"
 msgid "Open in Browser"
 msgstr "Apri nel browser"
 
-#~ msgid "Bluetooth Device"
-#~ msgstr "Dispositivo Bluetooth"
-
-#~ msgid "Command Shortcuts"
-#~ msgstr "Scorciatoie comandi"
-
-#~ msgid "Delete"
-#~ msgstr "Elimina"
-
-#~ msgid "Delete this device"
-#~ msgstr "Elimina questo dispositivo"
-
-#~ msgid "Unpair and remove all settings and files"
-#~ msgstr "Disaccoppia e rimuovi impostazioni e file"
-
-#~ msgid "Switch to Bluetooth"
-#~ msgstr "Passa a Bluetooth"
-
-#~ msgid "Switch to LAN"
-#~ msgstr "Passa a LAN"
-
-#~ msgid "%s Plugin Failed To Load"
-#~ msgstr "Fallito caricamento del plugin %s"
-
-#~ msgid "Reconnect"
-#~ msgstr "Riconnetti"
-
-#~ msgid "Settings"
-#~ msgstr "Impostazioni"
-
-#~ msgid "Additional Software Required"
-#~ msgstr "Software addizionale richiesto"
-
-#~ msgid "Starting Transfer"
-#~ msgstr "Avvia trasferimento"
-
-#~ msgid ""
-#~ "Transferred files are placed in the <a href=\"%s\">Downloads</a> folder."
-#~ msgstr ""
-#~ "I file trasferiti sono collocati nella cartella <a href=\"%s\">Scaricati</"
-#~ "a>."
