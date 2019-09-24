@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-22 23:16+0200\n"
+"POT-Creation-Date: 2019-09-24 14:16-0400\n"
 "PO-Revision-Date: 2019-09-22 23:57+0200\n"
 "Last-Translator: Báthory Péter <bathory86p@gmail.com>\n"
 "Language-Team: \n"
@@ -35,31 +35,27 @@ msgid "Unpair"
 msgstr "Párosítás megszűntetése"
 
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
-#: data/ui/connect.ui:24 data/ui/preferences-window.ui:708
+#: data/ui/connect.ui:14 data/ui/preferences-window.ui:708
 msgid "Connect to…"
 msgstr "Kapcsolódás egy eszközhöz…"
 
 #. Action Buttons
-#: data/ui/connect.ui:30 data/ui/notification-reply-dialog.ui:14
+#: data/ui/connect.ui:20 data/ui/notification-reply-dialog.ui:14
 #: data/ui/telephony.ui:14 src/preferences/device.js:667
-#: src/preferences/keybindings.js:86 src/preferences/service.js:535
-#: src/service/plugins/share.js:139 src/service/plugins/share.js:287
-#: src/service/plugins/share.js:430 src/service/ui/service.js:37
+#: src/preferences/keybindings.js:86 src/preferences/service.js:433
+#: src/service/plugins/share.js:161 src/service/plugins/share.js:309
+#: src/service/plugins/share.js:452 src/service/ui/service.js:37
 #: src/shell/donotdisturb.js:301
 msgid "Cancel"
 msgstr "Mégse"
 
-#: data/ui/connect.ui:37
+#: data/ui/connect.ui:27
 msgid "Connect"
 msgstr "Csatlakozás"
 
-#: data/ui/connect.ui:98
+#: data/ui/connect.ui:74
 msgid "IP Address"
 msgstr "IP-cím"
-
-#: data/ui/connect.ui:142
-msgid "Bluetooth Device"
-msgstr "Bluetooth Eszköz"
 
 #: data/ui/contact-chooser.ui:50
 msgid "No contacts"
@@ -107,7 +103,7 @@ msgstr "Egér és billentyűzet"
 msgid "Volume Control"
 msgstr "Hangerőszabályzó"
 
-#: data/ui/device-preferences.ui:367 src/service/plugins/sftp.js:357
+#: data/ui/device-preferences.ui:367 src/service/plugins/sftp.js:359
 msgid "Files"
 msgstr "Fájlok"
 
@@ -314,7 +310,7 @@ msgid "Device is disconnected"
 msgstr "Az eszköz nincs csatlakoztatva"
 
 #: data/ui/notification-reply-dialog.ui:21 data/ui/telephony.ui:21
-#: src/service/plugins/share.js:431
+#: src/service/plugins/share.js:453
 msgid "Send"
 msgstr "Küldés"
 
@@ -343,7 +339,7 @@ msgstr "Eszköz nevének szerkesztése"
 msgid "Devices"
 msgstr "Eszközök"
 
-#: data/ui/preferences-window.ui:305 src/preferences/service.js:761
+#: data/ui/preferences-window.ui:305 src/preferences/service.js:659
 msgid "Searching for devices…"
 msgstr "Eszközök keresése…"
 
@@ -378,7 +374,7 @@ msgid "User Menu"
 msgstr "Felhasználói menü"
 
 #. TRANSLATORS: Generate a support log
-#: data/ui/preferences-window.ui:730 src/preferences/service.js:532
+#: data/ui/preferences-window.ui:730 src/preferences/service.js:430
 msgid "Generate Support Log"
 msgstr "Naplófájl készítése terméktámogatáshoz"
 
@@ -393,22 +389,22 @@ msgid "Send SMS"
 msgstr "SMS küldése"
 
 #. Service Menu
-#: src/extension.js:118 src/extension.js:247
+#: src/extension.js:118 src/extension.js:249
 msgid "Mobile Devices"
 msgstr "Mobil eszközök"
 
-#: src/extension.js:145 src/extension.js:381
+#: src/extension.js:145 src/extension.js:383
 msgid "Turn On"
 msgstr "Bekapcsolás"
 
-#: src/extension.js:242
+#: src/extension.js:244
 #, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
 msgstr[0] "Egy eszköz csatlakoztatva"
 msgstr[1] "%d eszköz csatlakoztatva"
 
-#: src/extension.js:379
+#: src/extension.js:381
 msgid "Turn Off"
 msgstr "Kikapcsolás"
 
@@ -464,16 +460,16 @@ msgstr ""
 msgid "%s is already being used"
 msgstr "%s már használatban van"
 
-#: src/preferences/service.js:491
+#: src/preferences/service.js:389
 msgid "A complete KDE Connect implementation for GNOME"
 msgstr "Teljes KDE Connect implementáció GNOME-hoz"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
-#: src/preferences/service.js:500
+#: src/preferences/service.js:398
 msgid "translator-credits"
 msgstr "Báthory Péter <bathory86p@gmail.com>"
 
-#: src/preferences/service.js:533
+#: src/preferences/service.js:431
 msgid ""
 "Debug messages are being logged. Take any steps necessary to reproduce a "
 "problem then review the log."
@@ -481,23 +477,23 @@ msgstr ""
 "A hibakeresési üzenetek naplózásra kerülnek. Csinálj a hiba reprodukálásához "
 "szükséges lépést, majd nézd át a naplót."
 
-#: src/preferences/service.js:536
+#: src/preferences/service.js:434
 msgid "Review Log"
 msgstr "Napló átnézése"
 
-#: src/preferences/service.js:617
+#: src/preferences/service.js:515
 msgid "Unpaired"
 msgstr "Nincs párosítva"
 
-#: src/preferences/service.js:621
+#: src/preferences/service.js:519
 msgid "Disconnected"
 msgstr "Nincs csatlakoztatva"
 
-#: src/preferences/service.js:625
+#: src/preferences/service.js:523
 msgid "Connected"
 msgstr "Csatlakoztatva"
 
-#: src/preferences/service.js:763
+#: src/preferences/service.js:661
 msgid "Waiting for service…"
 msgstr "Várakozás a szolgáltatásra…"
 
@@ -752,11 +748,11 @@ msgstr "Csatolás"
 msgid "Unmount"
 msgstr "Leválasztás"
 
-#: src/service/plugins/sftp.js:132
+#: src/service/plugins/sftp.js:134
 msgid "All files"
 msgstr "Összes fájl"
 
-#: src/service/plugins/sftp.js:133
+#: src/service/plugins/sftp.js:135
 msgid "Camera pictures"
 msgstr "Kamera fényképek"
 
@@ -768,87 +764,87 @@ msgstr "Megosztás"
 msgid "Share Text"
 msgstr "Szöveg megosztása"
 
-#: src/service/plugins/share.js:91 src/service/plugins/share.js:179
-#: src/service/plugins/share.js:311
+#: src/service/plugins/share.js:116 src/service/plugins/share.js:201
+#: src/service/plugins/share.js:333
 msgid "Transfer Failed"
 msgstr "Sikertelen átvitel"
 
 #. TRANSLATORS: eg. Google Pixel is not allowed to upload files
-#: src/service/plugins/share.js:93
+#: src/service/plugins/share.js:118
 #, javascript-format
 msgid "%s is not allowed to upload files"
 msgstr "% számára nem engedélyezett a fájlok feltöltése"
 
-#: src/service/plugins/share.js:132 src/service/plugins/share.js:280
+#: src/service/plugins/share.js:154 src/service/plugins/share.js:302
 msgid "Transferring File"
 msgstr "Fájl átvitele"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:134
+#: src/service/plugins/share.js:156
 #, javascript-format
 msgid "Receiving “%s” from %s"
 msgstr "„%s” fogadása innen: %s"
 
-#: src/service/plugins/share.js:159 src/service/plugins/share.js:303
+#: src/service/plugins/share.js:181 src/service/plugins/share.js:325
 msgid "Transfer Successful"
 msgstr "Sikeres átvitel"
 
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:161
+#: src/service/plugins/share.js:183
 #, javascript-format
 msgid "Received “%s” from %s"
 msgstr "„%s” fogadva innen: %s"
 
-#: src/service/plugins/share.js:167
+#: src/service/plugins/share.js:189
 msgid "Open Folder"
 msgstr "Könyvtár megnyitása"
 
-#: src/service/plugins/share.js:172
+#: src/service/plugins/share.js:194
 msgid "Open File"
 msgstr "Fájl megnyitása"
 
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:181
+#: src/service/plugins/share.js:203
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
 msgstr "„%s” fogadása %s eszközről nem sikerült"
 
-#: src/service/plugins/share.js:210
+#: src/service/plugins/share.js:232
 #, javascript-format
 msgid "Text Shared By %s"
 msgstr "%s által megosztott szöveg"
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
-#: src/service/plugins/share.js:282
+#: src/service/plugins/share.js:304
 #, javascript-format
 msgid "Sending “%s” to %s"
 msgstr "„%s” küldése ide: %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:305
+#: src/service/plugins/share.js:327
 #, javascript-format
 msgid "Sent “%s” to %s"
 msgstr "„%s” elküldve ide: %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:313
+#: src/service/plugins/share.js:335
 #, javascript-format
 msgid "Failed to send “%s” to %s"
 msgstr "„%s” küldése %s eszközre nem sikerült"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
-#: src/service/plugins/share.js:382
+#: src/service/plugins/share.js:404
 #, javascript-format
 msgid "Send files to %s"
 msgstr "Fájlok küldése ide: %s"
 
 #. TRANSLATORS: Mark the file to be opened once completed
-#: src/service/plugins/share.js:386
+#: src/service/plugins/share.js:408
 msgid "Open when done"
 msgstr "Megnyitás ha kész"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
-#: src/service/plugins/share.js:425
+#: src/service/plugins/share.js:447
 #, javascript-format
 msgid "Send a link to %s"
 msgstr "Hivatkozás küldése ide: %s"
@@ -1047,6 +1043,9 @@ msgstr "Nem található eszköz"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Megnyitás böngészőben"
+
+#~ msgid "Bluetooth Device"
+#~ msgstr "Bluetooth Eszköz"
 
 #~ msgid "Command Shortcuts"
 #~ msgstr "Parancs gyorsbillentyűk"
