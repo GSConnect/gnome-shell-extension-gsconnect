@@ -3,10 +3,10 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 14:16-0400\n"
-"PO-Revision-Date: 2019-06-01 17:08\n"
+"PO-Revision-Date: 2019-09-24 18:29\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Danish\n"
-"Language: da\n"
+"Language: da_DK\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -218,29 +218,24 @@ msgid "Advanced"
 msgstr "Avanceret"
 
 #: data/ui/device-preferences.ui:1796
-#, fuzzy
 msgid "Device Battery"
-msgstr "Batteri"
+msgstr ""
 
 #: data/ui/device-preferences.ui:1847
-#, fuzzy
 msgid "Low Battery Notification"
-msgstr "Svar Notifikation"
+msgstr ""
 
 #: data/ui/device-preferences.ui:1908
-#, fuzzy
 msgid "Fully Charged Notification"
-msgstr "Del Notifikationer"
+msgstr ""
 
 #: data/ui/device-preferences.ui:1955
-#, fuzzy
 msgid "System Battery"
-msgstr "Batteri"
+msgstr ""
 
 #: data/ui/device-preferences.ui:2006
-#, fuzzy
 msgid "Share Statistics"
-msgstr "Del Notifikationer"
+msgstr ""
 
 #: data/ui/device-preferences.ui:2055 data/ui/device-preferences.ui:2151
 #: src/service/plugins/battery.js:11
@@ -318,9 +313,8 @@ msgid "Send"
 msgstr "Send"
 
 #: data/ui/preferences-window.ui:18
-#, fuzzy
 msgid "Device Name"
-msgstr "Rediger Enheds Navn"
+msgstr ""
 
 #: data/ui/preferences-window.ui:49
 msgid "_Rename"
@@ -453,9 +447,7 @@ msgstr "Indtast en ny genvej for at ændre <b>%s</b>"
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/preferences/keybindings.js:125
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Tryk på Esc at annullere eller backspace-nøgle for at nulstille "
-"tastaturgenvejen."
+msgstr "Tryk på Esc at annullere eller backspace-nøgle for at nulstille tastaturgenvejen."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -474,12 +466,8 @@ msgid "translator-credits"
 msgstr "oversætter-kreditter"
 
 #: src/preferences/service.js:431
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Fejlmeddelelser er logges. Tage de nødvendige skridt til at reproducere et "
-"problem, og gennemgå loggen."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Fejlmeddelelser er logges. Tage de nødvendige skridt til at reproducere et problem, og gennemgå loggen."
 
 #: src/preferences/service.js:434
 msgid "Review Log"
@@ -498,9 +486,8 @@ msgid "Connected"
 msgstr "Tilsluttet"
 
 #: src/preferences/service.js:661
-#, fuzzy
 msgid "Waiting for service…"
-msgstr "Søger efter enheder…"
+msgstr ""
 
 #: src/service/daemon.js:341
 msgid "Report"
@@ -519,10 +506,8 @@ msgid "Click for help troubleshooting"
 msgstr "Klik for hjælp fejlfinding"
 
 #: src/service/daemon.js:603
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
-msgstr ""
-"Discovery er deaktiveret på grund af antallet af enheder på dette netværk."
+msgid "Discovery has been disabled due to the number of devices on this network."
+msgstr "Discovery er deaktiveret på grund af antallet af enheder på dette netværk."
 
 #: src/service/daemon.js:612
 msgid "Click for more information"
@@ -538,19 +523,16 @@ msgid "Share File"
 msgstr "Del Fil"
 
 #: src/service/daemon.js:778
-#, fuzzy
 msgid "List available devices"
-msgstr "Ikke Tilgængelig"
+msgstr ""
 
 #: src/service/daemon.js:787
-#, fuzzy
 msgid "List all devices"
-msgstr "Mobil Enheder"
+msgstr ""
 
 #: src/service/daemon.js:796
-#, fuzzy
 msgid "Target Device"
-msgstr "Til Apparat"
+msgstr ""
 
 #: src/service/daemon.js:838
 msgid "Message Body"
@@ -561,24 +543,20 @@ msgid "Send Notification"
 msgstr "Send Notifikation"
 
 #: src/service/daemon.js:859
-#, fuzzy
 msgid "Notification App Name"
-msgstr "Notifikationer"
+msgstr ""
 
 #: src/service/daemon.js:868
-#, fuzzy
 msgid "Notification Body"
-msgstr "Notifikationer"
+msgstr ""
 
 #: src/service/daemon.js:877
-#, fuzzy
 msgid "Notification Icon"
-msgstr "Notifikationer"
+msgstr ""
 
 #: src/service/daemon.js:886
-#, fuzzy
 msgid "Notification ID"
-msgstr "Notifikationer"
+msgstr ""
 
 #: src/service/daemon.js:895 src/service/plugins/photo.js:11
 #: src/service/plugins/photo.js:17
@@ -617,9 +595,8 @@ msgid "Tablet"
 msgstr "Tablet"
 
 #: src/service/device.js:188
-#, fuzzy
 msgid "Television"
-msgstr "Telefoni"
+msgstr ""
 
 #: src/service/device.js:196
 msgid "Not available"
@@ -670,9 +647,9 @@ msgstr "%d%% tilbage"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:199
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s: Battery is full"
-msgstr "%s: Batteriet er lavt"
+msgstr ""
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
@@ -736,9 +713,8 @@ msgid "Reply Notification"
 msgstr "Svar Notifikation"
 
 #: src/service/plugins/notification.js:59
-#, fuzzy
 msgid "Activate Notification"
-msgstr "Del Notifikationer"
+msgstr ""
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -791,9 +767,8 @@ msgid "%s is not allowed to upload files"
 msgstr ""
 
 #: src/service/plugins/share.js:154 src/service/plugins/share.js:302
-#, fuzzy
 msgid "Transferring File"
-msgstr "Overførsel mislykkedes"
+msgstr ""
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:156
@@ -955,9 +930,8 @@ msgid "Yesterday・%s"
 msgstr "I går・%s"
 
 #: src/service/ui/messaging.js:255
-#, fuzzy
 msgid "Group Message"
-msgstr "Send Meddelelse"
+msgstr ""
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:265
@@ -1060,42 +1034,3 @@ msgstr "Ingen Enhed Fundet"
 msgid "Open in Browser"
 msgstr "Åbn i browser"
 
-#~ msgid "Bluetooth Device"
-#~ msgstr "Bluetooth Enhed"
-
-#~ msgid "Command Shortcuts"
-#~ msgstr "Kommando Genveje"
-
-#~ msgid "Delete"
-#~ msgstr "Slet"
-
-#~ msgid "Delete this device"
-#~ msgstr "Slet dette enheden"
-
-#~ msgid "Unpair and remove all settings and files"
-#~ msgstr "Uparret og fjerne alle indstillinger og filer"
-
-#~ msgid "Switch to Bluetooth"
-#~ msgstr "Skift til Bluetooth"
-
-#~ msgid "Switch to LAN"
-#~ msgstr "Skift til LAN"
-
-#~ msgid "%s Plugin Failed To Load"
-#~ msgstr "%s Plugin kunne ikke indlæses"
-
-#~ msgid "Reconnect"
-#~ msgstr "Tilslut Igen"
-
-#~ msgid "Settings"
-#~ msgstr "Indstillinger"
-
-#~ msgid "Additional Software Required"
-#~ msgstr "Ekstra Software Påkrævet"
-
-#~ msgid "Starting Transfer"
-#~ msgstr "Begyndelse Overføre"
-
-#~ msgid ""
-#~ "Transferred files are placed in the <a href=\"%s\">Downloads</a> folder."
-#~ msgstr "Overførte filer er placeret i <a href=\"%s\"> Downloads</a> mappe."
