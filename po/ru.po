@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 14:16-0400\n"
-"PO-Revision-Date: 2019-09-24 18:29\n"
+"PO-Revision-Date: 2019-09-24 18:46\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Russian\n"
 "Language: ru_RU\n"
@@ -219,15 +219,15 @@ msgstr "Дополнительные"
 
 #: data/ui/device-preferences.ui:1796
 msgid "Device Battery"
-msgstr ""
+msgstr "Батарея устройства"
 
 #: data/ui/device-preferences.ui:1847
 msgid "Low Battery Notification"
-msgstr ""
+msgstr "Уведомление о низком уровне заряда"
 
 #: data/ui/device-preferences.ui:1908
 msgid "Fully Charged Notification"
-msgstr ""
+msgstr "Индикация полной зарядки"
 
 #: data/ui/device-preferences.ui:1955
 msgid "System Battery"
@@ -235,7 +235,7 @@ msgstr ""
 
 #: data/ui/device-preferences.ui:2006
 msgid "Share Statistics"
-msgstr ""
+msgstr "Поделиться статистикой"
 
 #: data/ui/device-preferences.ui:2055 data/ui/device-preferences.ui:2151
 #: src/service/plugins/battery.js:11
@@ -314,11 +314,11 @@ msgstr "Отправить"
 
 #: data/ui/preferences-window.ui:18
 msgid "Device Name"
-msgstr ""
+msgstr "Название устройства"
 
 #: data/ui/preferences-window.ui:49
 msgid "_Rename"
-msgstr ""
+msgstr "_Переименовать"
 
 #: data/ui/preferences-window.ui:84 data/ui/preferences-window.ui:98
 msgid "Refresh"
@@ -393,7 +393,7 @@ msgstr "Устройства"
 
 #: src/extension.js:145 src/extension.js:383
 msgid "Turn On"
-msgstr ""
+msgstr "Включить"
 
 #: src/extension.js:244
 #, javascript-format
@@ -406,7 +406,7 @@ msgstr[3] "%d подключено"
 
 #: src/extension.js:381
 msgid "Turn Off"
-msgstr ""
+msgstr "Выключить"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:164 webextension/gettext.js:31
@@ -489,7 +489,7 @@ msgstr "Подключено"
 
 #: src/preferences/service.js:661
 msgid "Waiting for service…"
-msgstr ""
+msgstr "Ожидание службы…"
 
 #: src/service/daemon.js:341
 msgid "Report"
@@ -526,11 +526,11 @@ msgstr "Поделиться файлом"
 
 #: src/service/daemon.js:778
 msgid "List available devices"
-msgstr ""
+msgstr "Список доступных устройств"
 
 #: src/service/daemon.js:787
 msgid "List all devices"
-msgstr ""
+msgstr "Список всех устройств"
 
 #: src/service/daemon.js:796
 msgid "Target Device"
@@ -538,7 +538,7 @@ msgstr ""
 
 #: src/service/daemon.js:838
 msgid "Message Body"
-msgstr ""
+msgstr "Текст сообщения"
 
 #: src/service/daemon.js:850 src/service/plugins/notification.js:51
 msgid "Send Notification"
@@ -546,7 +546,7 @@ msgstr "Отправить"
 
 #: src/service/daemon.js:859
 msgid "Notification App Name"
-msgstr ""
+msgstr "Имя приложения"
 
 #: src/service/daemon.js:868
 msgid "Notification Body"
