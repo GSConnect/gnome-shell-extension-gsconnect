@@ -3,10 +3,10 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 14:16-0400\n"
-"PO-Revision-Date: 2019-05-18 10:54\n"
+"PO-Revision-Date: 2019-09-24 18:29\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Turkish\n"
-"Language: tr\n"
+"Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -218,29 +218,24 @@ msgid "Advanced"
 msgstr "Gelişmiş"
 
 #: data/ui/device-preferences.ui:1796
-#, fuzzy
 msgid "Device Battery"
-msgstr "Batarya"
+msgstr ""
 
 #: data/ui/device-preferences.ui:1847
-#, fuzzy
 msgid "Low Battery Notification"
-msgstr "Bildirimi Yanıtla"
+msgstr ""
 
 #: data/ui/device-preferences.ui:1908
-#, fuzzy
 msgid "Fully Charged Notification"
-msgstr "Bildirimleri Paylaş"
+msgstr ""
 
 #: data/ui/device-preferences.ui:1955
-#, fuzzy
 msgid "System Battery"
-msgstr "Batarya"
+msgstr ""
 
 #: data/ui/device-preferences.ui:2006
-#, fuzzy
 msgid "Share Statistics"
-msgstr "Bildirimleri Paylaş"
+msgstr ""
 
 #: data/ui/device-preferences.ui:2055 data/ui/device-preferences.ui:2151
 #: src/service/plugins/battery.js:11
@@ -318,9 +313,8 @@ msgid "Send"
 msgstr "Gönder"
 
 #: data/ui/preferences-window.ui:18
-#, fuzzy
 msgid "Device Name"
-msgstr "Cihaz Adını Düzenle"
+msgstr ""
 
 #: data/ui/preferences-window.ui:49
 msgid "_Rename"
@@ -453,8 +447,7 @@ msgstr "Değiştirmek için yeni bir kısayol gir <b>%s</b>"
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/preferences/keybindings.js:125
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Klavye kısayolunu sıfırlamak için iptal, geri almak için ESC tuşuna bas."
+msgstr "Klavye kısayolunu sıfırlamak için iptal, geri almak için ESC tuşuna bas."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -470,18 +463,13 @@ msgstr "GNOME için eksiksiz bir KDE Connect uygulaması"
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:398
 msgid "translator-credits"
-msgstr ""
-"Serdar Sağlam <teknomobil@yandex.com>\n"
+msgstr "Serdar Sağlam <teknomobil@yandex.com>\n"
 "Orhan Engin Okay <orhanenginokay@hotmail.com>\n"
 "A. Burak Tektaş <abtektas@gmail.com>"
 
 #: src/preferences/service.js:431
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Hata ayıklama mesajları kaydediliyor. Sorunu yeniden oluşturmak için gerekli "
-"adımları izleyin ve günlüğü inceleyin."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Hata ayıklama mesajları kaydediliyor. Sorunu yeniden oluşturmak için gerekli adımları izleyin ve günlüğü inceleyin."
 
 #: src/preferences/service.js:434
 msgid "Review Log"
@@ -500,9 +488,8 @@ msgid "Connected"
 msgstr "Bağlı"
 
 #: src/preferences/service.js:661
-#, fuzzy
 msgid "Waiting for service…"
-msgstr "Cihazlar aranıyor…"
+msgstr ""
 
 #: src/service/daemon.js:341
 msgid "Report"
@@ -521,8 +508,7 @@ msgid "Click for help troubleshooting"
 msgstr "Sorun giderme konusunda yardım için tıkla"
 
 #: src/service/daemon.js:603
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Bu ağdaki cihazların sayısı nedeniyle keşif devre dışı bırakıldı."
 
 #: src/service/daemon.js:612
@@ -539,19 +525,16 @@ msgid "Share File"
 msgstr "Dosya Paylaşımı"
 
 #: src/service/daemon.js:778
-#, fuzzy
 msgid "List available devices"
-msgstr "Müsait Değil"
+msgstr ""
 
 #: src/service/daemon.js:787
-#, fuzzy
 msgid "List all devices"
-msgstr "Mobil Cihazlar"
+msgstr ""
 
 #: src/service/daemon.js:796
-#, fuzzy
 msgid "Target Device"
-msgstr "Cihaza"
+msgstr ""
 
 #: src/service/daemon.js:838
 msgid "Message Body"
@@ -562,24 +545,20 @@ msgid "Send Notification"
 msgstr "Bildirim Gönder"
 
 #: src/service/daemon.js:859
-#, fuzzy
 msgid "Notification App Name"
-msgstr "Bildirimler"
+msgstr ""
 
 #: src/service/daemon.js:868
-#, fuzzy
 msgid "Notification Body"
-msgstr "Bildirimler"
+msgstr ""
 
 #: src/service/daemon.js:877
-#, fuzzy
 msgid "Notification Icon"
-msgstr "Bildirimler"
+msgstr ""
 
 #: src/service/daemon.js:886
-#, fuzzy
 msgid "Notification ID"
-msgstr "Bildirimler"
+msgstr ""
 
 #: src/service/daemon.js:895 src/service/plugins/photo.js:11
 #: src/service/plugins/photo.js:17
@@ -618,9 +597,8 @@ msgid "Tablet"
 msgstr "Tablet"
 
 #: src/service/device.js:188
-#, fuzzy
 msgid "Television"
-msgstr "Telefon"
+msgstr ""
 
 #: src/service/device.js:196
 msgid "Not available"
@@ -671,9 +649,9 @@ msgstr "%d%% kaldı"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:199
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s: Battery is full"
-msgstr "%s: Düşük batarya"
+msgstr ""
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
@@ -737,9 +715,8 @@ msgid "Reply Notification"
 msgstr "Bildirimi Yanıtla"
 
 #: src/service/plugins/notification.js:59
-#, fuzzy
 msgid "Activate Notification"
-msgstr "Bildirimleri Paylaş"
+msgstr ""
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -792,9 +769,8 @@ msgid "%s is not allowed to upload files"
 msgstr ""
 
 #: src/service/plugins/share.js:154 src/service/plugins/share.js:302
-#, fuzzy
 msgid "Transferring File"
-msgstr "Aktarım Başarısız"
+msgstr ""
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:156
@@ -956,9 +932,8 @@ msgid "Yesterday・%s"
 msgstr "Dün %s"
 
 #: src/service/ui/messaging.js:255
-#, fuzzy
 msgid "Group Message"
-msgstr "Mesaj Gönder"
+msgstr ""
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:265
@@ -1061,43 +1036,3 @@ msgstr "Cihaz Bulunamadı"
 msgid "Open in Browser"
 msgstr "Tarayıcıda Aç"
 
-#~ msgid "Bluetooth Device"
-#~ msgstr "Bluetooth Cihazı"
-
-#~ msgid "Command Shortcuts"
-#~ msgstr "Komut Kısayolları"
-
-#~ msgid "Delete"
-#~ msgstr "Sil"
-
-#~ msgid "Delete this device"
-#~ msgstr "Bu Cihazı Sil"
-
-#~ msgid "Unpair and remove all settings and files"
-#~ msgstr "Tüm ayarları sıfırla ve dosyaları kaldır"
-
-#~ msgid "Switch to Bluetooth"
-#~ msgstr "Bluetooth'a Geç"
-
-#~ msgid "Switch to LAN"
-#~ msgstr "LAN'a Geç"
-
-#~ msgid "%s Plugin Failed To Load"
-#~ msgstr "%s Eklentisi Yüklenemedi"
-
-#~ msgid "Reconnect"
-#~ msgstr "Yeniden Bağlan"
-
-#~ msgid "Settings"
-#~ msgstr "Ayarlar"
-
-#~ msgid "Additional Software Required"
-#~ msgstr "Gerekli Ek Yazılım"
-
-#~ msgid "Starting Transfer"
-#~ msgstr "Aktarım Başlatılıyor"
-
-#~ msgid ""
-#~ "Transferred files are placed in the <a href=\"%s\">Downloads</a> folder."
-#~ msgstr ""
-#~ "Aktarılan dosyalar <a href=\"%s\">İndirilenler</a> klasörüne eklenir."
