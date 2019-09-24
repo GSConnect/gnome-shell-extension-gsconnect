@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 14:16-0400\n"
-"PO-Revision-Date: 2019-09-24 18:29\n"
+"PO-Revision-Date: 2019-09-24 18:46\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Turkish\n"
 "Language: tr_TR\n"
@@ -107,7 +107,7 @@ msgstr "Dosyalar"
 
 #: data/ui/device-preferences.ui:418
 msgid "Receive Files"
-msgstr ""
+msgstr "Alınan Dosyalar"
 
 #: data/ui/device-preferences.ui:503 data/ui/device-preferences.ui:2105
 msgid "Sharing"
@@ -219,23 +219,23 @@ msgstr "Gelişmiş"
 
 #: data/ui/device-preferences.ui:1796
 msgid "Device Battery"
-msgstr ""
+msgstr "Cihaz Bataryası"
 
 #: data/ui/device-preferences.ui:1847
 msgid "Low Battery Notification"
-msgstr ""
+msgstr "Düşük Batarya Bildirimi"
 
 #: data/ui/device-preferences.ui:1908
 msgid "Fully Charged Notification"
-msgstr ""
+msgstr "Tam Şarj Bildirimi"
 
 #: data/ui/device-preferences.ui:1955
 msgid "System Battery"
-msgstr ""
+msgstr "Sistem Bataryası"
 
 #: data/ui/device-preferences.ui:2006
 msgid "Share Statistics"
-msgstr ""
+msgstr "İstatistikleri Paylaş"
 
 #: data/ui/device-preferences.ui:2055 data/ui/device-preferences.ui:2151
 #: src/service/plugins/battery.js:11
@@ -314,11 +314,11 @@ msgstr "Gönder"
 
 #: data/ui/preferences-window.ui:18
 msgid "Device Name"
-msgstr ""
+msgstr "Cihaz Adı"
 
 #: data/ui/preferences-window.ui:49
 msgid "_Rename"
-msgstr ""
+msgstr "_Adlandır"
 
 #: data/ui/preferences-window.ui:84 data/ui/preferences-window.ui:98
 msgid "Refresh"
@@ -393,7 +393,7 @@ msgstr "Mobil Cihazlar"
 
 #: src/extension.js:145 src/extension.js:383
 msgid "Turn On"
-msgstr ""
+msgstr "Aç"
 
 #: src/extension.js:244
 #, javascript-format
@@ -404,7 +404,7 @@ msgstr[1] "%d Bağlı"
 
 #: src/extension.js:381
 msgid "Turn Off"
-msgstr ""
+msgstr "Kapat"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:164 webextension/gettext.js:31
@@ -489,7 +489,7 @@ msgstr "Bağlı"
 
 #: src/preferences/service.js:661
 msgid "Waiting for service…"
-msgstr ""
+msgstr "Hizmet bekleniyor…"
 
 #: src/service/daemon.js:341
 msgid "Report"
@@ -526,19 +526,19 @@ msgstr "Dosya Paylaşımı"
 
 #: src/service/daemon.js:778
 msgid "List available devices"
-msgstr ""
+msgstr "Kullanılabilir cihazları listele"
 
 #: src/service/daemon.js:787
 msgid "List all devices"
-msgstr ""
+msgstr "Tüm cihazları listele"
 
 #: src/service/daemon.js:796
 msgid "Target Device"
-msgstr ""
+msgstr "Hedef Cihaz"
 
 #: src/service/daemon.js:838
 msgid "Message Body"
-msgstr ""
+msgstr "Mesaj Metni"
 
 #: src/service/daemon.js:850 src/service/plugins/notification.js:51
 msgid "Send Notification"
@@ -546,19 +546,19 @@ msgstr "Bildirim Gönder"
 
 #: src/service/daemon.js:859
 msgid "Notification App Name"
-msgstr ""
+msgstr "Bildirim Uygulama Adı"
 
 #: src/service/daemon.js:868
 msgid "Notification Body"
-msgstr ""
+msgstr "Bildirim Metni"
 
 #: src/service/daemon.js:877
 msgid "Notification Icon"
-msgstr ""
+msgstr "Bildirim Simgesi"
 
 #: src/service/daemon.js:886
 msgid "Notification ID"
-msgstr ""
+msgstr "Bildirim Kimliği"
 
 #: src/service/daemon.js:895 src/service/plugins/photo.js:11
 #: src/service/plugins/photo.js:17
@@ -598,7 +598,7 @@ msgstr "Tablet"
 
 #: src/service/device.js:188
 msgid "Television"
-msgstr ""
+msgstr "Televizyon"
 
 #: src/service/device.js:196
 msgid "Not available"
@@ -651,7 +651,7 @@ msgstr "%d%% kaldı"
 #: src/service/plugins/battery.js:199
 #, javascript-format
 msgid "%s: Battery is full"
-msgstr ""
+msgstr "%s: Batarya dolu"
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
@@ -716,7 +716,7 @@ msgstr "Bildirimi Yanıtla"
 
 #: src/service/plugins/notification.js:59
 msgid "Activate Notification"
-msgstr ""
+msgstr "Bildirimi Etkinleştir"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -770,7 +770,7 @@ msgstr ""
 
 #: src/service/plugins/share.js:154 src/service/plugins/share.js:302
 msgid "Transferring File"
-msgstr ""
+msgstr "Dosya Aktarımı"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:156
@@ -933,7 +933,7 @@ msgstr "Dün %s"
 
 #: src/service/ui/messaging.js:255
 msgid "Group Message"
-msgstr ""
+msgstr "Grup Mesajı"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:265
