@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 19:00-0400\n"
-"PO-Revision-Date: 2019-09-24 23:10\n"
+"PO-Revision-Date: 2019-09-24 23:24\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
@@ -318,7 +318,7 @@ msgstr "Nome del dispositivo"
 
 #: data/ui/preferences-window.ui:49
 msgid "_Rename"
-msgstr "_Rinonima"
+msgstr "_Rinomina"
 
 #: data/ui/preferences-window.ui:84 data/ui/preferences-window.ui:98
 msgid "Refresh"
