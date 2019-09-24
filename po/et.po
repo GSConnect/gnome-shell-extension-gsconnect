@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 14:16-0400\n"
-"PO-Revision-Date: 2019-09-24 18:29\n"
+"PO-Revision-Date: 2019-09-24 18:46\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Estonian\n"
 "Language: et_EE\n"
@@ -107,7 +107,7 @@ msgstr "Failid"
 
 #: data/ui/device-preferences.ui:418
 msgid "Receive Files"
-msgstr ""
+msgstr "Võta faile vastu"
 
 #: data/ui/device-preferences.ui:503 data/ui/device-preferences.ui:2105
 msgid "Sharing"
@@ -219,23 +219,23 @@ msgstr "Täpsemad"
 
 #: data/ui/device-preferences.ui:1796
 msgid "Device Battery"
-msgstr ""
+msgstr "Seadme aku"
 
 #: data/ui/device-preferences.ui:1847
 msgid "Low Battery Notification"
-msgstr ""
+msgstr "Tühjeneva aku teade"
 
 #: data/ui/device-preferences.ui:1908
 msgid "Fully Charged Notification"
-msgstr ""
+msgstr "Täislaetud aku teade"
 
 #: data/ui/device-preferences.ui:1955
 msgid "System Battery"
-msgstr ""
+msgstr "Süsteemi aku"
 
 #: data/ui/device-preferences.ui:2006
 msgid "Share Statistics"
-msgstr ""
+msgstr "Jaga statistikat"
 
 #: data/ui/device-preferences.ui:2055 data/ui/device-preferences.ui:2151
 #: src/service/plugins/battery.js:11
@@ -314,11 +314,11 @@ msgstr "Saada"
 
 #: data/ui/preferences-window.ui:18
 msgid "Device Name"
-msgstr ""
+msgstr "Seadme nimi"
 
 #: data/ui/preferences-window.ui:49
 msgid "_Rename"
-msgstr ""
+msgstr "Nimeta ümber"
 
 #: data/ui/preferences-window.ui:84 data/ui/preferences-window.ui:98
 msgid "Refresh"
@@ -393,7 +393,7 @@ msgstr "Mobiilseadmed"
 
 #: src/extension.js:145 src/extension.js:383
 msgid "Turn On"
-msgstr ""
+msgstr "Lülita sisse"
 
 #: src/extension.js:244
 #, javascript-format
@@ -404,7 +404,7 @@ msgstr[1] "%d ühendatud"
 
 #: src/extension.js:381
 msgid "Turn Off"
-msgstr ""
+msgstr "Lülita välja"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:164 webextension/gettext.js:31
@@ -487,7 +487,7 @@ msgstr "Ühendatud"
 
 #: src/preferences/service.js:661
 msgid "Waiting for service…"
-msgstr ""
+msgstr "Teenuse ootamine…"
 
 #: src/service/daemon.js:341
 msgid "Report"
@@ -524,19 +524,19 @@ msgstr "Jaga faili"
 
 #: src/service/daemon.js:778
 msgid "List available devices"
-msgstr ""
+msgstr "Kuva saadaolevad seadmed"
 
 #: src/service/daemon.js:787
 msgid "List all devices"
-msgstr ""
+msgstr "Kuva kõik seadmed"
 
 #: src/service/daemon.js:796
 msgid "Target Device"
-msgstr ""
+msgstr "Sihtseade"
 
 #: src/service/daemon.js:838
 msgid "Message Body"
-msgstr ""
+msgstr "Sõnumi sisu"
 
 #: src/service/daemon.js:850 src/service/plugins/notification.js:51
 msgid "Send Notification"
@@ -544,19 +544,19 @@ msgstr "Saada teade"
 
 #: src/service/daemon.js:859
 msgid "Notification App Name"
-msgstr ""
+msgstr "Teavitava rakenduse nimi"
 
 #: src/service/daemon.js:868
 msgid "Notification Body"
-msgstr ""
+msgstr "Teate sisu"
 
 #: src/service/daemon.js:877
 msgid "Notification Icon"
-msgstr ""
+msgstr "Teate ikoon"
 
 #: src/service/daemon.js:886
 msgid "Notification ID"
-msgstr ""
+msgstr "Teate ID"
 
 #: src/service/daemon.js:895 src/service/plugins/photo.js:11
 #: src/service/plugins/photo.js:17
@@ -580,7 +580,7 @@ msgstr "Jaga linki"
 
 #: src/service/daemon.js:946
 msgid "Show release version"
-msgstr ""
+msgstr "Kuva väljalaskeversiooni"
 
 #: src/service/device.js:182
 msgid "Laptop"
@@ -596,7 +596,7 @@ msgstr "Tahvelarvuti"
 
 #: src/service/device.js:188
 msgid "Television"
-msgstr ""
+msgstr "Televisioon"
 
 #: src/service/device.js:196
 msgid "Not available"
@@ -649,7 +649,7 @@ msgstr "%d%% jäänud"
 #: src/service/plugins/battery.js:199
 #, javascript-format
 msgid "%s: Battery is full"
-msgstr ""
+msgstr "%s: aku on täis"
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
@@ -714,7 +714,7 @@ msgstr "Vasta teatele"
 
 #: src/service/plugins/notification.js:59
 msgid "Activate Notification"
-msgstr ""
+msgstr "Aktiveeri teade"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -764,7 +764,7 @@ msgstr "Ülekanne ebaõnnestus"
 #: src/service/plugins/share.js:118
 #, javascript-format
 msgid "%s is not allowed to upload files"
-msgstr ""
+msgstr "%s ei tohi faile üles laadida"
 
 #: src/service/plugins/share.js:154 src/service/plugins/share.js:302
 msgid "Transferring File"
