@@ -378,8 +378,10 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
     async _onServiceChanged(service, pspec) {
         try {
             if (this.service.active) {
+                // TRANSLATORS: A menu option to deactivate the extension
                 this._enableItem.label.text = _('Turn Off');
             } else {
+                // TRANSLATORS: A menu option to activate the extension
                 this._enableItem.label.text = _('Turn On');
 
                 // If it's enabled, we should try to restart now
