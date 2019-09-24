@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 14:16-0400\n"
-"PO-Revision-Date: 2019-09-24 18:54\n"
+"PO-Revision-Date: 2019-09-24 21:34\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
@@ -223,11 +223,11 @@ msgstr "Batteria del dispositivo"
 
 #: data/ui/device-preferences.ui:1847
 msgid "Low Battery Notification"
-msgstr "Notifica batteria scarica"
+msgstr "Notifica di batteria scarica"
 
 #: data/ui/device-preferences.ui:1908
 msgid "Fully Charged Notification"
-msgstr "Notifica ricarica completa"
+msgstr "Notifica di ricarica completa"
 
 #: data/ui/device-preferences.ui:1955
 msgid "System Battery"
