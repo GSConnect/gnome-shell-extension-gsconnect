@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 14:16-0400\n"
-"PO-Revision-Date: 2019-09-24 18:29\n"
+"PO-Revision-Date: 2019-09-24 18:46\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
@@ -107,7 +107,7 @@ msgstr "File"
 
 #: data/ui/device-preferences.ui:418
 msgid "Receive Files"
-msgstr ""
+msgstr "Ricezione file"
 
 #: data/ui/device-preferences.ui:503 data/ui/device-preferences.ui:2105
 msgid "Sharing"
@@ -219,23 +219,23 @@ msgstr "Avanzate"
 
 #: data/ui/device-preferences.ui:1796
 msgid "Device Battery"
-msgstr ""
+msgstr "Batteria del dispositivo"
 
 #: data/ui/device-preferences.ui:1847
 msgid "Low Battery Notification"
-msgstr ""
+msgstr "Notifica batteria scarica"
 
 #: data/ui/device-preferences.ui:1908
 msgid "Fully Charged Notification"
-msgstr ""
+msgstr "Notifica ricarica completa"
 
 #: data/ui/device-preferences.ui:1955
 msgid "System Battery"
-msgstr ""
+msgstr "Batteria di sistema"
 
 #: data/ui/device-preferences.ui:2006
 msgid "Share Statistics"
-msgstr ""
+msgstr "Condivisione statistiche"
 
 #: data/ui/device-preferences.ui:2055 data/ui/device-preferences.ui:2151
 #: src/service/plugins/battery.js:11
@@ -314,11 +314,11 @@ msgstr "Invia"
 
 #: data/ui/preferences-window.ui:18
 msgid "Device Name"
-msgstr ""
+msgstr "Nome del dispositivo"
 
 #: data/ui/preferences-window.ui:49
 msgid "_Rename"
-msgstr ""
+msgstr "_Rinonima"
 
 #: data/ui/preferences-window.ui:84 data/ui/preferences-window.ui:98
 msgid "Refresh"
