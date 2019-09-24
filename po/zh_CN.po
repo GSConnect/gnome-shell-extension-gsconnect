@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 14:16-0400\n"
-"PO-Revision-Date: 2019-09-13 19:10\n"
+"PO-Revision-Date: 2019-09-24 18:29\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -218,29 +218,24 @@ msgid "Advanced"
 msgstr "高级"
 
 #: data/ui/device-preferences.ui:1796
-#, fuzzy
 msgid "Device Battery"
-msgstr "电池"
+msgstr ""
 
 #: data/ui/device-preferences.ui:1847
-#, fuzzy
 msgid "Low Battery Notification"
-msgstr "回复通知"
+msgstr ""
 
 #: data/ui/device-preferences.ui:1908
-#, fuzzy
 msgid "Fully Charged Notification"
-msgstr "共享通知"
+msgstr ""
 
 #: data/ui/device-preferences.ui:1955
-#, fuzzy
 msgid "System Battery"
-msgstr "电池"
+msgstr ""
 
 #: data/ui/device-preferences.ui:2006
-#, fuzzy
 msgid "Share Statistics"
-msgstr "共享通知"
+msgstr ""
 
 #: data/ui/device-preferences.ui:2055 data/ui/device-preferences.ui:2151
 #: src/service/plugins/battery.js:11
@@ -318,9 +313,8 @@ msgid "Send"
 msgstr "发送"
 
 #: data/ui/preferences-window.ui:18
-#, fuzzy
 msgid "Device Name"
-msgstr "编辑设备名称"
+msgstr ""
 
 #: data/ui/preferences-window.ui:49
 msgid "_Rename"
@@ -471,9 +465,7 @@ msgid "translator-credits"
 msgstr "翻译贡献"
 
 #: src/preferences/service.js:431
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
 msgstr "正在记录调试日志。采取任何必要的步骤来重现问题，然后查看日志。"
 
 #: src/preferences/service.js:434
@@ -493,9 +485,8 @@ msgid "Connected"
 msgstr "已连接"
 
 #: src/preferences/service.js:661
-#, fuzzy
 msgid "Waiting for service…"
-msgstr "正在搜索设备…"
+msgstr ""
 
 #: src/service/daemon.js:341
 msgid "Report"
@@ -514,8 +505,7 @@ msgid "Click for help troubleshooting"
 msgstr "单击以获取疑难解答帮助"
 
 #: src/service/daemon.js:603
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "由于此网络上的设备数量，已禁用发现。"
 
 #: src/service/daemon.js:612
@@ -532,19 +522,16 @@ msgid "Share File"
 msgstr "共享文件"
 
 #: src/service/daemon.js:778
-#, fuzzy
 msgid "List available devices"
-msgstr "无法使用的"
+msgstr ""
 
 #: src/service/daemon.js:787
-#, fuzzy
 msgid "List all devices"
-msgstr "移动设备"
+msgstr ""
 
 #: src/service/daemon.js:796
-#, fuzzy
 msgid "Target Device"
-msgstr "到设备"
+msgstr ""
 
 #: src/service/daemon.js:838
 msgid "Message Body"
@@ -555,24 +542,20 @@ msgid "Send Notification"
 msgstr "发送通知"
 
 #: src/service/daemon.js:859
-#, fuzzy
 msgid "Notification App Name"
-msgstr "通知"
+msgstr ""
 
 #: src/service/daemon.js:868
-#, fuzzy
 msgid "Notification Body"
-msgstr "通知"
+msgstr ""
 
 #: src/service/daemon.js:877
-#, fuzzy
 msgid "Notification Icon"
-msgstr "通知"
+msgstr ""
 
 #: src/service/daemon.js:886
-#, fuzzy
 msgid "Notification ID"
-msgstr "通知"
+msgstr ""
 
 #: src/service/daemon.js:895 src/service/plugins/photo.js:11
 #: src/service/plugins/photo.js:17
@@ -611,9 +594,8 @@ msgid "Tablet"
 msgstr "平板电脑"
 
 #: src/service/device.js:188
-#, fuzzy
 msgid "Television"
-msgstr "电话"
+msgstr ""
 
 #: src/service/device.js:196
 msgid "Not available"
@@ -664,9 +646,9 @@ msgstr "剩余 %d%%"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:199
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s: Battery is full"
-msgstr "%s: 电池电量低"
+msgstr ""
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
@@ -730,9 +712,8 @@ msgid "Reply Notification"
 msgstr "回复通知"
 
 #: src/service/plugins/notification.js:59
-#, fuzzy
 msgid "Activate Notification"
-msgstr "共享通知"
+msgstr ""
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -785,9 +766,8 @@ msgid "%s is not allowed to upload files"
 msgstr ""
 
 #: src/service/plugins/share.js:154 src/service/plugins/share.js:302
-#, fuzzy
 msgid "Transferring File"
-msgstr "传输失败"
+msgstr ""
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:156
@@ -948,9 +928,8 @@ msgid "Yesterday・%s"
 msgstr "昨天・%s"
 
 #: src/service/ui/messaging.js:255
-#, fuzzy
 msgid "Group Message"
-msgstr "发送消息"
+msgstr ""
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:265
@@ -1051,42 +1030,3 @@ msgstr "找不到设备"
 msgid "Open in Browser"
 msgstr "在浏览器中打开"
 
-#~ msgid "Bluetooth Device"
-#~ msgstr "蓝牙设备"
-
-#~ msgid "Command Shortcuts"
-#~ msgstr "命令快捷方式"
-
-#~ msgid "Delete"
-#~ msgstr "删除"
-
-#~ msgid "Delete this device"
-#~ msgstr "删除此设备"
-
-#~ msgid "Unpair and remove all settings and files"
-#~ msgstr "取消配对并删除所有设置和文件"
-
-#~ msgid "Switch to Bluetooth"
-#~ msgstr "切换到蓝牙"
-
-#~ msgid "Switch to LAN"
-#~ msgstr "切换到 LAN"
-
-#~ msgid "%s Plugin Failed To Load"
-#~ msgstr "%s 插件加载失败"
-
-#~ msgid "Reconnect"
-#~ msgstr "重新连接"
-
-#~ msgid "Settings"
-#~ msgstr "设置"
-
-#~ msgid "Additional Software Required"
-#~ msgstr "需要附加软件"
-
-#~ msgid "Starting Transfer"
-#~ msgstr "开始传输"
-
-#~ msgid ""
-#~ "Transferred files are placed in the <a href=\"%s\">Downloads</a> folder."
-#~ msgstr "传输的文件位于 <a href=\"%s\">下载</a> 目录."
