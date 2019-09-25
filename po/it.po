@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 19:00-0400\n"
-"PO-Revision-Date: 2019-09-24 23:24\n"
+"PO-Revision-Date: 2019-09-25 06:35\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
@@ -394,7 +394,7 @@ msgstr "Dispositivi mobili"
 #. TRANSLATORS: A menu option to activate the extension
 #: src/extension.js:145 src/extension.js:385
 msgid "Turn On"
-msgstr "Accendere"
+msgstr "Attiva"
 
 #: src/extension.js:244
 #, javascript-format
@@ -406,7 +406,7 @@ msgstr[1] "%d connessi"
 #. TRANSLATORS: A menu option to deactivate the extension
 #: src/extension.js:382
 msgid "Turn Off"
-msgstr "Spegnere"
+msgstr "Disattiva"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:164 webextension/gettext.js:31
