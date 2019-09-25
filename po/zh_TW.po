@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 19:00-0400\n"
-"PO-Revision-Date: 2019-09-25 14:09\n"
+"PO-Revision-Date: 2019-09-25 14:16\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -400,7 +400,7 @@ msgstr "開啟"
 #, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
-msgstr[0] ""
+msgstr[0] "%d 已連線"
 
 #. TRANSLATORS: A menu option to deactivate the extension
 #: src/extension.js:382
@@ -414,7 +414,7 @@ msgstr "傳送到手機"
 
 #: src/preferences/device.js:668
 msgid "Open"
-msgstr ""
+msgstr "打開"
 
 #: src/preferences/device.js:720 src/preferences/device.js:733
 msgid "On"
@@ -431,12 +431,12 @@ msgstr "停用"
 #. TRANSLATORS: Title of keyboard shortcut dialog
 #: src/preferences/keybindings.js:75
 msgid "Set Shortcut"
-msgstr ""
+msgstr "設置快捷鍵"
 
 #. TRANSLATORS: Button to confirm the new shortcut
 #: src/preferences/keybindings.js:89
 msgid "Set"
-msgstr ""
+msgstr "設定"
 
 #. TRANSLATORS: Summary of a keyboard shortcut function
 #. Example: Enter a new shortcut to change Messaging
