@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 19:00-0400\n"
-"PO-Revision-Date: 2019-09-24 23:09\n"
+"PO-Revision-Date: 2019-09-25 00:53\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -107,7 +107,7 @@ msgstr "Dateien"
 
 #: data/ui/device-preferences.ui:418
 msgid "Receive Files"
-msgstr ""
+msgstr "Dateien empfangen"
 
 #: data/ui/device-preferences.ui:503 data/ui/device-preferences.ui:2105
 msgid "Sharing"
@@ -219,23 +219,23 @@ msgstr "Erweitert"
 
 #: data/ui/device-preferences.ui:1796
 msgid "Device Battery"
-msgstr ""
+msgstr "Geräte Akku"
 
 #: data/ui/device-preferences.ui:1847
 msgid "Low Battery Notification"
-msgstr ""
+msgstr "Benachrichtigung bei geringen Akkustand"
 
 #: data/ui/device-preferences.ui:1908
 msgid "Fully Charged Notification"
-msgstr ""
+msgstr "Vollständig geladen Benachrichtigung"
 
 #: data/ui/device-preferences.ui:1955
 msgid "System Battery"
-msgstr ""
+msgstr "Systembatterie"
 
 #: data/ui/device-preferences.ui:2006
 msgid "Share Statistics"
-msgstr ""
+msgstr "Statistik teilen"
 
 #: data/ui/device-preferences.ui:2055 data/ui/device-preferences.ui:2151
 #: src/service/plugins/battery.js:11
@@ -314,11 +314,11 @@ msgstr "Senden"
 
 #: data/ui/preferences-window.ui:18
 msgid "Device Name"
-msgstr ""
+msgstr "Gerätename"
 
 #: data/ui/preferences-window.ui:49
 msgid "_Rename"
-msgstr ""
+msgstr "_Umbenennen"
 
 #: data/ui/preferences-window.ui:84 data/ui/preferences-window.ui:98
 msgid "Refresh"
@@ -394,7 +394,7 @@ msgstr "Mobile Geräte"
 #. TRANSLATORS: A menu option to activate the extension
 #: src/extension.js:145 src/extension.js:385
 msgid "Turn On"
-msgstr ""
+msgstr "Aktivieren"
 
 #: src/extension.js:244
 #, javascript-format
@@ -406,7 +406,7 @@ msgstr[1] "%d verbunden"
 #. TRANSLATORS: A menu option to deactivate the extension
 #: src/extension.js:382
 msgid "Turn Off"
-msgstr ""
+msgstr "Deaktivieren"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:164 webextension/gettext.js:31
@@ -531,7 +531,7 @@ msgstr ""
 
 #: src/service/daemon.js:787
 msgid "List all devices"
-msgstr ""
+msgstr "Alle Geräte anzeigen"
 
 #: src/service/daemon.js:796
 msgid "Target Device"
@@ -539,7 +539,7 @@ msgstr ""
 
 #: src/service/daemon.js:838
 msgid "Message Body"
-msgstr ""
+msgstr "Nachrichtentext"
 
 #: src/service/daemon.js:850 src/service/plugins/notification.js:51
 msgid "Send Notification"
@@ -555,11 +555,11 @@ msgstr ""
 
 #: src/service/daemon.js:877
 msgid "Notification Icon"
-msgstr ""
+msgstr "Benachrichtigungs-Symbol"
 
 #: src/service/daemon.js:886
 msgid "Notification ID"
-msgstr ""
+msgstr "Mitteilungs-ID"
 
 #: src/service/daemon.js:895 src/service/plugins/photo.js:11
 #: src/service/plugins/photo.js:17
@@ -583,7 +583,7 @@ msgstr "Verweis freigeben"
 
 #: src/service/daemon.js:946
 msgid "Show release version"
-msgstr ""
+msgstr "Neuste Version zeigen"
 
 #: src/service/device.js:182
 msgid "Laptop"
@@ -599,7 +599,7 @@ msgstr "Tablet"
 
 #: src/service/device.js:188
 msgid "Television"
-msgstr ""
+msgstr "Fernseher"
 
 #: src/service/device.js:196
 msgid "Not available"
