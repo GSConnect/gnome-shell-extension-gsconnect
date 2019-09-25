@@ -251,7 +251,7 @@ var Plugin = GObject.registerClass({
     }
 
     legacyReply(packet) {
-        let window = new TelephonyUI.Dialog({
+        let dialog = new TelephonyUI.LegacyMessagingDialog({
             address: packet.body.phoneNumber,
             device: this.device,
             message: {
@@ -263,7 +263,7 @@ var Plugin = GObject.registerClass({
             },
             plugin: this
         });
-        window.present();
+        dialog.present();
     }
 
     /**

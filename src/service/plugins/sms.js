@@ -230,7 +230,7 @@ var Plugin = GObject.registerClass({
 
     get window() {
         if (this.settings.get_boolean('legacy-sms')) {
-            return new TelephonyUI.Dialog({
+            return new TelephonyUI.LegacyMessagingDialog({
                 device: this.device,
                 plugin: this
             });

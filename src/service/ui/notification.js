@@ -76,6 +76,8 @@ var ReplyDialog = GObject.registerClass({
             'changed',
             this._onStateChanged.bind(this)
         );
+
+        this.restoreGeometry('notification-reply-dialog');
     }
 
     vfunc_delete_event() {
@@ -97,6 +99,7 @@ var ReplyDialog = GObject.registerClass({
         }
 
         this.disconnectTemplate();
+        this.saveGeometry();
         this.destroy();
     }
 

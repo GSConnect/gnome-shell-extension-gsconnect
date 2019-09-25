@@ -8,7 +8,7 @@ const Contacts = imports.service.ui.contacts;
 const Messaging = imports.service.ui.messaging;
 
 
-var Dialog = GObject.registerClass({
+var LegacyMessagingDialog = GObject.registerClass({
     GTypeName: 'GSConnectLegacyMessagingDialog',
     Properties: {
         'device': GObject.ParamSpec.object(
@@ -38,8 +38,7 @@ var Dialog = GObject.registerClass({
         super._init({
             application: Gio.Application.get_default(),
             device: params.device,
-            use_header_bar: true,
-            visible: true
+            use_header_bar: true
         });
 
         this.set_response_sensitive(Gtk.ResponseType.OK, false);
@@ -101,6 +100,8 @@ var Dialog = GObject.registerClass({
 
             this.stack.visible_child_name = 'contact-chooser';
         }
+
+        this.restoreGeometry('legacy-messaging-dialog');
     }
 
     vfunc_delete_event() {
@@ -129,6 +130,7 @@ var Dialog = GObject.registerClass({
         }
 
         this.disconnectTemplate();
+        this.saveGeometry();
         this.destroy();
     }
 

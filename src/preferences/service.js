@@ -190,15 +190,6 @@ var Window = GObject.registerClass({
         this.connectTemplate();
         super._init(params);
 
-        // GSettings
-        this.settings = new Gio.Settings({
-            settings_schema: gsconnect.gschema.lookup(
-                'org.gnome.Shell.Extensions.GSConnect.Preferences',
-                true
-            ),
-            path: '/org/gnome/shell/extensions/gsconnect/preferences/'
-        });
-
         // Service Proxy
         this.service = new Remote.Service();
 
@@ -333,26 +324,29 @@ var Window = GObject.registerClass({
         return GLib.SOURCE_CONTINUE;
     }
 
+    /**
+     * Window State
+     */
     _restoreGeometry() {
-        if (this._mutterSettings === undefined) {
-            this._mutterSettings = new Gio.Settings({
-                schema_id: 'org.gnome.mutter'
-            });
+        this._windowState = new Gio.Settings({
+            settings_schema: gsconnect.gschema.lookup(
+                'org.gnome.Shell.Extensions.GSConnect.WindowState',
+                true
+            ),
+            path: '/org/gnome/shell/extensions/gsconnect/preferences/'
+        });
+
+        // Size
+        let [width, height] = this._windowState.get_value('window-size').deep_unpack();
+
+        if (width && height) {
+            this.set_default_size(width, height);
         }
 
-        // Restore geometry, even if we're going to maximize
-        let [width, height] = this.settings.get_value('window-size').deep_unpack();
-        this.set_default_size(width, height);
-
-        // Respect mutter's settings
-        if (!this._mutterSettings.get_boolean('center-new-windows')) {
-            let [x, y] = this.settings.get_value('window-position').deep_unpack();
-            this.move(x, y);
-        }
-
-        // Maximize if set
-        if (this.settings.get_boolean('window-maximized'))
+        // Maximized State
+        if (this._windowState.get_boolean('window-maximized')) {
             this.maximize();
+        }
     }
 
     _saveGeometry() {
@@ -360,18 +354,15 @@ var Window = GObject.registerClass({
 
         // Maximized State
         let maximized = (state & Gdk.WindowState.MAXIMIZED);
-        this.settings.set_boolean('window-maximized', maximized);
+        this._windowState.set_boolean('window-maximized', maximized);
 
-        // Leave the size and position at the values before maximizing
+        // Leave the size at the value before maximizing
         if (maximized || (state & Gdk.WindowState.FULLSCREEN))
             return;
 
-        // Save the size and position
+        // Size
         let size = this.get_size();
-        this.settings.set_value('window-size', new GLib.Variant('(ii)', size));
-
-        let position = this.get_position();
-        this.settings.set_value('window-position', new GLib.Variant('(ii)', position));
+        this._windowState.set_value('window-size', new GLib.Variant('(ii)', size));
     }
 
     /**

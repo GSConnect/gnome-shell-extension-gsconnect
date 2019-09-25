@@ -576,12 +576,13 @@ var Plugin = GObject.registerClass({
     replyNotification(uuid, message, notification) {
         // If the message has no content, open a dialog for the user to add one
         if (!message) {
-            new NotificationUI.ReplyDialog({
+            let dialog = new NotificationUI.ReplyDialog({
                 device: this.device,
                 uuid: uuid,
                 notification: notification,
                 plugin: this
             });
+            dialog.present();
 
         // Otherwise just send the reply
         } else {

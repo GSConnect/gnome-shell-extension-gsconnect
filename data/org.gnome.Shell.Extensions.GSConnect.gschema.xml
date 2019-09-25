@@ -33,24 +33,10 @@
     </key>
   </schema>
 
-  <schema id="org.gnome.Shell.Extensions.GSConnect.Messaging" path="/org/gnome/shell/extensions/gsconnect/messaging/">
-    <key name="window-position" type="(ii)">
-      <default>(0, 0)</default>
-    </key>
+  <!-- Window Geometry -->
+  <schema id="org.gnome.Shell.Extensions.GSConnect.WindowState">
     <key name="window-size" type="(ii)">
-      <default>(300, 300)</default>
-    </key>
-    <key name="window-maximized" type="b">
-      <default>false</default>
-    </key>
-  </schema>
-
-  <schema id="org.gnome.Shell.Extensions.GSConnect.Preferences" path="/org/gnome/shell/extensions/gsconnect/preferences/">
-    <key name="window-position" type="(ii)">
       <default>(0, 0)</default>
-    </key>
-    <key name="window-size" type="(ii)">
-      <default>(640, 440)</default>
     </key>
     <key name="window-maximized" type="b">
       <default>false</default>

@@ -69,6 +69,8 @@
   <template class="GSConnectPreferencesWindow" parent="GtkApplicationWindow">
     <property name="can_focus">False</property>
     <property name="icon_name">org.gnome.Shell.Extensions.GSConnect-symbolic</property>
+    <property name="default_width">640</property>
+    <property name="default_height">440</property>
     <child type="titlebar">
       <object class="GtkHeaderBar" id="headerbar">
         <property name="visible">True</property>
