@@ -34,7 +34,7 @@ var Manager = class Manager {
         );
     }
 
-    _onAcceleratorActivated(display, action, deviceId, timestamp) {
+    _onAcceleratorActivated(display, action, inputDevice, timestamp) {
         try {
             let binding = this._keybindings.get(action);
 
@@ -54,24 +54,28 @@ var Manager = class Manager {
      * @return {Number} - A non-zero action id on success, or 0 on failure
      */
     add(accelerator, callback) {
-        let action = Meta.KeyBindingAction.NONE;
+        try {
+            let action = Meta.KeyBindingAction.NONE;
 
-        // A flags argument was added somewhere between 3.30-3.32
-        if (SHELL_VERSION_MINOR > 30) {
-            action = global.display.grab_accelerator(accelerator, 0);
-        } else {
-            action = global.display.grab_accelerator(accelerator);
+            // A flags argument was added somewhere between 3.30-3.32
+            if (SHELL_VERSION_MINOR > 30) {
+                action = global.display.grab_accelerator(accelerator, 0);
+            } else {
+                action = global.display.grab_accelerator(accelerator);
+            }
+
+            if (action !== Meta.KeyBindingAction.NONE) {
+                let name = Meta.external_binding_name_for_action(action);
+                Main.wm.allowKeybinding(name, Shell.ActionMode.ALL);
+                this._keybindings.set(action, {name: name, callback: callback});
+            } else {
+                throw new Error(`Failed to add keybinding: '${accelerator}'`);
+            }
+
+            return action;
+        } catch (e) {
+            logError(e);
         }
-
-        if (action !== Meta.KeyBindingAction.NONE) {
-            let name = Meta.external_binding_name_for_action(action);
-            Main.wm.allowKeybinding(name, Shell.ActionMode.ALL);
-            this._keybindings.set(action, {name: name, callback: callback});
-        } else {
-            logError(new Error(`Failed to add keybinding: '${accelerator}'`));
-        }
-
-        return action;
     }
 
     /**

@@ -172,7 +172,7 @@ var Device = GObject.registerClass({
                     this.g_interface_name,
                     true
                 ),
-                path: `${this.g_object_path.toLowerCase()}/${this.id}/`
+                path: `${this.g_object_path.toLowerCase()}/`
             });
         }
 
