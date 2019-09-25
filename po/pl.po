@@ -2,17 +2,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-24 14:16-0400\n"
-"PO-Revision-Date: 2019-05-18 10:54\n"
+"POT-Creation-Date: 2019-09-24 19:00-0400\n"
+"PO-Revision-Date: 2019-09-25 20:37\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Polish\n"
-"Language: pl\n"
+"Language: pl_PL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n"
-"%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n"
-"%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
 "X-Generator: crowdin.com\n"
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Language: pl\n"
@@ -109,7 +107,7 @@ msgstr "Pliki"
 
 #: data/ui/device-preferences.ui:418
 msgid "Receive Files"
-msgstr ""
+msgstr "Odbieranie plików"
 
 #: data/ui/device-preferences.ui:503 data/ui/device-preferences.ui:2105
 msgid "Sharing"
@@ -220,29 +218,24 @@ msgid "Advanced"
 msgstr "Zaawansowane"
 
 #: data/ui/device-preferences.ui:1796
-#, fuzzy
 msgid "Device Battery"
-msgstr "Akumulator"
+msgstr "Akumulator urządzenia"
 
 #: data/ui/device-preferences.ui:1847
-#, fuzzy
 msgid "Low Battery Notification"
-msgstr "Odpowiedz na powiadomienie"
+msgstr "Powiadomienie o niskim poziomie naładowania akumulatora"
 
 #: data/ui/device-preferences.ui:1908
-#, fuzzy
 msgid "Fully Charged Notification"
-msgstr "Udostępnianie powiadomień"
+msgstr "Powiadomienie o pełnym naładowaniu"
 
 #: data/ui/device-preferences.ui:1955
-#, fuzzy
 msgid "System Battery"
-msgstr "Akumulator"
+msgstr "Akumulator komputera"
 
 #: data/ui/device-preferences.ui:2006
-#, fuzzy
 msgid "Share Statistics"
-msgstr "Udostępnianie powiadomień"
+msgstr "Udostępnianie statystyk"
 
 #: data/ui/device-preferences.ui:2055 data/ui/device-preferences.ui:2151
 #: src/service/plugins/battery.js:11
@@ -320,13 +313,12 @@ msgid "Send"
 msgstr "Wyślij"
 
 #: data/ui/preferences-window.ui:18
-#, fuzzy
 msgid "Device Name"
-msgstr "Modyfikuje nazwę urządzenia"
+msgstr "Nazwa urządzenia"
 
 #: data/ui/preferences-window.ui:49
 msgid "_Rename"
-msgstr ""
+msgstr "_Zmień nazwę"
 
 #: data/ui/preferences-window.ui:84 data/ui/preferences-window.ui:98
 msgid "Refresh"
@@ -399,9 +391,10 @@ msgstr "Wyślij SMS"
 msgid "Mobile Devices"
 msgstr "Urządzenia mobilne"
 
-#: src/extension.js:145 src/extension.js:383
+#. TRANSLATORS: A menu option to activate the extension
+#: src/extension.js:145 src/extension.js:385
 msgid "Turn On"
-msgstr ""
+msgstr "Włącz"
 
 #: src/extension.js:244
 #, javascript-format
@@ -412,9 +405,10 @@ msgstr[1] "%d połączone urządzenia"
 msgstr[2] "%d połączonych urządzeń"
 msgstr[3] "%d połączonych urządzeń"
 
-#: src/extension.js:381
+#. TRANSLATORS: A menu option to deactivate the extension
+#: src/extension.js:382
 msgid "Turn Off"
-msgstr ""
+msgstr "Wyłącz"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:164 webextension/gettext.js:31
@@ -473,18 +467,13 @@ msgstr "Pełna implementacja KDE Connect dla środowiska GNOME"
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:398
 msgid "translator-credits"
-msgstr ""
-"Adrian Kryński <krynkaxd@gmail.com>, 2017\n"
-"Piotr Drąg <piotrdrag@gmail.com>, 2018\n"
-"Aviary.pl <community-poland@mozilla.org>, 2018"
+msgstr "Adrian Kryński <krynkaxd@gmail.com>, 2017\n"
+"Piotr Drąg <piotrdrag@gmail.com>, 2018-2019\n"
+"Aviary.pl <community-poland@mozilla.org>, 2018-2019"
 
 #: src/preferences/service.js:431
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Komunikaty debugowania są zapisywane w dzienniku. Proszę podjąć działania "
-"niezbędne do powtórzenia problemu, a następnie przejrzeć dziennik."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Komunikaty debugowania są zapisywane w dzienniku. Proszę podjąć działania niezbędne do powtórzenia problemu, a następnie przejrzeć dziennik."
 
 #: src/preferences/service.js:434
 msgid "Review Log"
@@ -503,9 +492,8 @@ msgid "Connected"
 msgstr "Połączone"
 
 #: src/preferences/service.js:661
-#, fuzzy
 msgid "Waiting for service…"
-msgstr "Wyszukiwanie urządzeń…"
+msgstr "Oczekiwanie na usługę…"
 
 #: src/service/daemon.js:341
 msgid "Report"
@@ -524,8 +512,7 @@ msgid "Click for help troubleshooting"
 msgstr "Uzyskaj pomoc w rozwiązaniu problemu"
 
 #: src/service/daemon.js:603
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Wykrywanie zostało wyłączone z powodu liczby urządzeń w tej sieci."
 
 #: src/service/daemon.js:612
@@ -542,47 +529,40 @@ msgid "Share File"
 msgstr "Udostępnij plik"
 
 #: src/service/daemon.js:778
-#, fuzzy
 msgid "List available devices"
-msgstr "Niedostępne"
+msgstr "Wyświetla listę dostępnych urządzeń"
 
 #: src/service/daemon.js:787
-#, fuzzy
 msgid "List all devices"
-msgstr "Urządzenia mobilne"
+msgstr "Wyświetla listę wszystkich urządzeń"
 
 #: src/service/daemon.js:796
-#, fuzzy
 msgid "Target Device"
-msgstr "Do urządzenia"
+msgstr "Urządzenie docelowe"
 
 #: src/service/daemon.js:838
 msgid "Message Body"
-msgstr ""
+msgstr "Treść wiadomości"
 
 #: src/service/daemon.js:850 src/service/plugins/notification.js:51
 msgid "Send Notification"
 msgstr "Wyślij powiadomienie"
 
 #: src/service/daemon.js:859
-#, fuzzy
 msgid "Notification App Name"
-msgstr "Powiadomienia"
+msgstr "Nazwa aplikacji powiadomienia"
 
 #: src/service/daemon.js:868
-#, fuzzy
 msgid "Notification Body"
-msgstr "Powiadomienia"
+msgstr "Treść powiadomienia"
 
 #: src/service/daemon.js:877
-#, fuzzy
 msgid "Notification Icon"
-msgstr "Powiadomienia"
+msgstr "Ikona powiadomienia"
 
 #: src/service/daemon.js:886
-#, fuzzy
 msgid "Notification ID"
-msgstr "Powiadomienia"
+msgstr "Identyfikator powiadomienia"
 
 #: src/service/daemon.js:895 src/service/plugins/photo.js:11
 #: src/service/plugins/photo.js:17
@@ -606,7 +586,7 @@ msgstr "Udostępnij odnośnik"
 
 #: src/service/daemon.js:946
 msgid "Show release version"
-msgstr ""
+msgstr "Wyświetla wersję wydania"
 
 #: src/service/device.js:182
 msgid "Laptop"
@@ -621,9 +601,8 @@ msgid "Tablet"
 msgstr "Tablet"
 
 #: src/service/device.js:188
-#, fuzzy
 msgid "Television"
-msgstr "Komunikacja"
+msgstr "Telewizor"
 
 #: src/service/device.js:196
 msgid "Not available"
@@ -674,9 +653,9 @@ msgstr "Pozostało %d%%"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:199
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s: Battery is full"
-msgstr "%s: poziom naładowania akumulatora jest niski"
+msgstr "%s: akumulator jest w pełni naładowany"
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
@@ -740,9 +719,8 @@ msgid "Reply Notification"
 msgstr "Odpowiedz na powiadomienie"
 
 #: src/service/plugins/notification.js:59
-#, fuzzy
 msgid "Activate Notification"
-msgstr "Udostępnianie powiadomień"
+msgstr "Aktywuj powiadomienie"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -792,12 +770,11 @@ msgstr "Przesłanie się nie powiodło"
 #: src/service/plugins/share.js:118
 #, javascript-format
 msgid "%s is not allowed to upload files"
-msgstr ""
+msgstr "Urządzenie %s nie może wysyłać plików"
 
 #: src/service/plugins/share.js:154 src/service/plugins/share.js:302
-#, fuzzy
 msgid "Transferring File"
-msgstr "Przesłanie się nie powiodło"
+msgstr "Przesyłanie pliku"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:156
@@ -961,9 +938,8 @@ msgid "Yesterday・%s"
 msgstr "Wczoraj・%s"
 
 #: src/service/ui/messaging.js:255
-#, fuzzy
 msgid "Group Message"
-msgstr "Wysyła wiadomość"
+msgstr "Wiadomość grupowa"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:265
@@ -975,10 +951,10 @@ msgstr "Ja: %s"
 #, javascript-format
 msgid "And %d other contact"
 msgid_plural "And %d others"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "I %d inny kontakt"
+msgstr[1] "I %d inne kontakty"
+msgstr[2] "I %d innych kontaktów"
+msgstr[3] "I %d innych kontaktów"
 
 #: src/service/ui/service.js:31
 msgid "Select a Device"
@@ -1053,9 +1029,7 @@ msgstr "GSConnect"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
-"Udostępnianie odnośników za pomocą GSConnect, bezpośrednio do przeglądarki "
-"lub przez wiadomość SMS."
+msgstr "Udostępnianie odnośników za pomocą GSConnect, bezpośrednio do przeglądarki lub przez wiadomość SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:33
@@ -1072,43 +1046,3 @@ msgstr "Nie odnaleziono żadnego urządzenia"
 msgid "Open in Browser"
 msgstr "Otwórz w przeglądarce"
 
-#~ msgid "Bluetooth Device"
-#~ msgstr "Urządzenie Bluetooth"
-
-#~ msgid "Command Shortcuts"
-#~ msgstr "Skróty poleceń"
-
-#~ msgid "Delete"
-#~ msgstr "Usuń"
-
-#~ msgid "Delete this device"
-#~ msgstr "Usuń to urządzenie"
-
-#~ msgid "Unpair and remove all settings and files"
-#~ msgstr "Odwiąż i usuń wszystkie ustawienia i pliki"
-
-#~ msgid "Switch to Bluetooth"
-#~ msgstr "Przełącz na sieć Bluetooth"
-
-#~ msgid "Switch to LAN"
-#~ msgstr "Przełącz na sieć LAN"
-
-#~ msgid "%s Plugin Failed To Load"
-#~ msgstr "Wczytanie wtyczki %s się nie powiodło"
-
-#~ msgid "Reconnect"
-#~ msgstr "Połącz ponownie"
-
-#~ msgid "Settings"
-#~ msgstr "Ustawienia"
-
-#~ msgid "Additional Software Required"
-#~ msgstr "Wymagane jest dodatkowe oprogramowanie"
-
-#~ msgid "Starting Transfer"
-#~ msgstr "Rozpoczynanie przesyłania"
-
-#~ msgid ""
-#~ "Transferred files are placed in the <a href=\"%s\">Downloads</a> folder."
-#~ msgstr ""
-#~ "Przesłane pliki są umieszczane w katalogu <a href=\"%s\">Pobrane</a>."
