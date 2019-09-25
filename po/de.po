@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 19:00-0400\n"
-"PO-Revision-Date: 2019-09-25 00:53\n"
+"PO-Revision-Date: 2019-09-25 01:01\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -527,7 +527,7 @@ msgstr "Datei freigeben"
 
 #: src/service/daemon.js:778
 msgid "List available devices"
-msgstr ""
+msgstr "Alle verfügbaren Geräte anzeigen"
 
 #: src/service/daemon.js:787
 msgid "List all devices"
@@ -771,7 +771,7 @@ msgstr ""
 
 #: src/service/plugins/share.js:154 src/service/plugins/share.js:302
 msgid "Transferring File"
-msgstr ""
+msgstr "Übertrage Datei"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:156
@@ -934,7 +934,7 @@ msgstr "Gestern・%s"
 
 #: src/service/ui/messaging.js:255
 msgid "Group Message"
-msgstr ""
+msgstr "Gruppennachricht"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:265
