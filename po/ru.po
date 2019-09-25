@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 19:00-0400\n"
-"PO-Revision-Date: 2019-09-25 20:25\n"
+"PO-Revision-Date: 2019-09-25 20:26\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Russian\n"
 "Language: ru_RU\n"
@@ -600,7 +600,7 @@ msgstr "Планшет"
 
 #: src/service/device.js:188
 msgid "Television"
-msgstr ""
+msgstr "Телевидение"
 
 #: src/service/device.js:196
 msgid "Not available"
@@ -653,7 +653,7 @@ msgstr "%d%% осталось"
 #: src/service/plugins/battery.js:199
 #, javascript-format
 msgid "%s: Battery is full"
-msgstr ""
+msgstr "%s: Аккумулятор заряжен"
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
@@ -718,7 +718,7 @@ msgstr "Ответить"
 
 #: src/service/plugins/notification.js:59
 msgid "Activate Notification"
-msgstr ""
+msgstr "Активировать уведомление"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -768,11 +768,11 @@ msgstr "Передача не удалась"
 #: src/service/plugins/share.js:118
 #, javascript-format
 msgid "%s is not allowed to upload files"
-msgstr ""
+msgstr "%s не разрешено загружать файлы"
 
 #: src/service/plugins/share.js:154 src/service/plugins/share.js:302
 msgid "Transferring File"
-msgstr ""
+msgstr "Передача файла"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:156
@@ -937,7 +937,7 @@ msgstr "Вчера・%s"
 
 #: src/service/ui/messaging.js:255
 msgid "Group Message"
-msgstr ""
+msgstr "Групповое сообщение"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:265
