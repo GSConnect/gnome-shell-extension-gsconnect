@@ -2,11 +2,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-24 14:16-0400\n"
-"PO-Revision-Date: 2019-05-18 10:54\n"
+"POT-Creation-Date: 2019-09-24 19:00-0400\n"
+"PO-Revision-Date: 2019-09-25 20:37\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Czech\n"
-"Language: cs\n"
+"Language: cs_CZ\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -107,7 +107,7 @@ msgstr "Soubory"
 
 #: data/ui/device-preferences.ui:418
 msgid "Receive Files"
-msgstr ""
+msgstr "Přijmout soubory"
 
 #: data/ui/device-preferences.ui:503 data/ui/device-preferences.ui:2105
 msgid "Sharing"
@@ -218,29 +218,24 @@ msgid "Advanced"
 msgstr "Pokročilé"
 
 #: data/ui/device-preferences.ui:1796
-#, fuzzy
 msgid "Device Battery"
-msgstr "Akumulátor"
+msgstr "Akumulátor zařízení"
 
 #: data/ui/device-preferences.ui:1847
-#, fuzzy
 msgid "Low Battery Notification"
-msgstr "Odpovědět na oznámení"
+msgstr "Upozornění na téměř vybitý akumulátor"
 
 #: data/ui/device-preferences.ui:1908
-#, fuzzy
 msgid "Fully Charged Notification"
-msgstr "Sdílet oznámení"
+msgstr "Oznámení o úplném dobití"
 
 #: data/ui/device-preferences.ui:1955
-#, fuzzy
 msgid "System Battery"
-msgstr "Akumulátor"
+msgstr "Systémový akumulátor"
 
 #: data/ui/device-preferences.ui:2006
-#, fuzzy
 msgid "Share Statistics"
-msgstr "Sdílet oznámení"
+msgstr "Sdílet statistiky"
 
 #: data/ui/device-preferences.ui:2055 data/ui/device-preferences.ui:2151
 #: src/service/plugins/battery.js:11
@@ -318,13 +313,12 @@ msgid "Send"
 msgstr "Poslat"
 
 #: data/ui/preferences-window.ui:18
-#, fuzzy
 msgid "Device Name"
-msgstr "Upravit název zařízení"
+msgstr "Název zařízení"
 
 #: data/ui/preferences-window.ui:49
 msgid "_Rename"
-msgstr ""
+msgstr "_Přejmenovat"
 
 #: data/ui/preferences-window.ui:84 data/ui/preferences-window.ui:98
 msgid "Refresh"
@@ -397,9 +391,10 @@ msgstr "Poslat SMS"
 msgid "Mobile Devices"
 msgstr "Mobilní zařízení"
 
-#: src/extension.js:145 src/extension.js:383
+#. TRANSLATORS: A menu option to activate the extension
+#: src/extension.js:145 src/extension.js:385
 msgid "Turn On"
-msgstr ""
+msgstr "Zapnout"
 
 #: src/extension.js:244
 #, javascript-format
@@ -410,9 +405,10 @@ msgstr[1] "%d připojené"
 msgstr[2] "%d připojených"
 msgstr[3] "%d připojených"
 
-#: src/extension.js:381
+#. TRANSLATORS: A menu option to deactivate the extension
+#: src/extension.js:382
 msgid "Turn Off"
-msgstr ""
+msgstr "Vypnout"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:164 webextension/gettext.js:31
@@ -474,12 +470,8 @@ msgid "translator-credits"
 msgstr "Pavel Borecki <pavel.borecki@gmail.com>"
 
 #: src/preferences/service.js:431
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Ladící zprávy jsou zaznamenávány. Podnikněte kroky, potřebné pro vyvolání "
-"problému a pak si záznam prohlédněte."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Ladící zprávy jsou zaznamenávány. Podnikněte kroky, potřebné pro vyvolání problému a pak si záznam prohlédněte."
 
 #: src/preferences/service.js:434
 msgid "Review Log"
@@ -498,9 +490,8 @@ msgid "Connected"
 msgstr "Připojeno"
 
 #: src/preferences/service.js:661
-#, fuzzy
 msgid "Waiting for service…"
-msgstr "Vyhledávání zařízení…"
+msgstr "Čeká se na službu…"
 
 #: src/service/daemon.js:341
 msgid "Report"
@@ -519,8 +510,7 @@ msgid "Click for help troubleshooting"
 msgstr "Kliknutím otevřete nápovědu pro odstraňování potíží"
 
 #: src/service/daemon.js:603
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Kvůli velkému množství zařízení na této síti bylo objevování vypnuto."
 
 #: src/service/daemon.js:612
@@ -537,47 +527,40 @@ msgid "Share File"
 msgstr "Sdílet soubor"
 
 #: src/service/daemon.js:778
-#, fuzzy
 msgid "List available devices"
-msgstr "Není k dispozici"
+msgstr "Vypsat zařízení k dispozici"
 
 #: src/service/daemon.js:787
-#, fuzzy
 msgid "List all devices"
-msgstr "Mobilní zařízení"
+msgstr "Vypsat všechna zařízení"
 
 #: src/service/daemon.js:796
-#, fuzzy
 msgid "Target Device"
-msgstr "Do zařízení"
+msgstr "Cílové zařízení"
 
 #: src/service/daemon.js:838
 msgid "Message Body"
-msgstr ""
+msgstr "Tělo zprávy"
 
 #: src/service/daemon.js:850 src/service/plugins/notification.js:51
 msgid "Send Notification"
 msgstr "Poslat oznámení"
 
 #: src/service/daemon.js:859
-#, fuzzy
 msgid "Notification App Name"
-msgstr "Oznámení"
+msgstr "Název oznamovací aplikace"
 
 #: src/service/daemon.js:868
-#, fuzzy
 msgid "Notification Body"
-msgstr "Oznámení"
+msgstr "Tělo oznámení"
 
 #: src/service/daemon.js:877
-#, fuzzy
 msgid "Notification Icon"
-msgstr "Oznámení"
+msgstr "Ikona oznámení"
 
 #: src/service/daemon.js:886
-#, fuzzy
 msgid "Notification ID"
-msgstr "Oznámení"
+msgstr "Identif. oznámení"
 
 #: src/service/daemon.js:895 src/service/plugins/photo.js:11
 #: src/service/plugins/photo.js:17
@@ -601,7 +584,7 @@ msgstr "Sdílet odkaz"
 
 #: src/service/daemon.js:946
 msgid "Show release version"
-msgstr ""
+msgstr "Zobrazit verzi vydání"
 
 #: src/service/device.js:182
 msgid "Laptop"
@@ -616,9 +599,8 @@ msgid "Tablet"
 msgstr "Tablet"
 
 #: src/service/device.js:188
-#, fuzzy
 msgid "Television"
-msgstr "Telefonie"
+msgstr "Televize"
 
 #: src/service/device.js:196
 msgid "Not available"
@@ -669,9 +651,9 @@ msgstr "%d%% zbývá"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:199
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s: Battery is full"
-msgstr "%s: Akumulátor je téměř vybitý"
+msgstr "%s: Akumulátor je nabitý"
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
@@ -735,9 +717,8 @@ msgid "Reply Notification"
 msgstr "Odpovědět na oznámení"
 
 #: src/service/plugins/notification.js:59
-#, fuzzy
 msgid "Activate Notification"
-msgstr "Sdílet oznámení"
+msgstr "Zapnout oznamování"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -787,12 +768,11 @@ msgstr "Přenos se nezdařil"
 #: src/service/plugins/share.js:118
 #, javascript-format
 msgid "%s is not allowed to upload files"
-msgstr ""
+msgstr "%s není umožněno nahrávat soubory"
 
 #: src/service/plugins/share.js:154 src/service/plugins/share.js:302
-#, fuzzy
 msgid "Transferring File"
-msgstr "Přenos se nezdařil"
+msgstr "Přenášení souboru"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:156
@@ -956,9 +936,8 @@ msgid "Yesterday・%s"
 msgstr "Včera・%s"
 
 #: src/service/ui/messaging.js:255
-#, fuzzy
 msgid "Group Message"
-msgstr "Odeslat zprávu"
+msgstr "Skupinová zpráva"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:265
@@ -970,10 +949,10 @@ msgstr "Vy: %s"
 #, javascript-format
 msgid "And %d other contact"
 msgid_plural "And %d others"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "A %d další kontakt"
+msgstr[1] "A %d další kontakty"
 msgstr[2] ""
-msgstr[3] ""
+msgstr[3] "A %d další"
 
 #: src/service/ui/service.js:31
 msgid "Select a Device"
@@ -1048,8 +1027,7 @@ msgstr "GSConnect"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
-"Sdílet odkazy pomocí GSConnect, přímo do prohlížeče nebo prostřednictvím SMS."
+msgstr "Sdílet odkazy pomocí GSConnect, přímo do prohlížeče nebo prostřednictvím SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:33
@@ -1066,43 +1044,3 @@ msgstr "Nenalezeno žádné zařízení"
 msgid "Open in Browser"
 msgstr "Otevřít v prohlížeči"
 
-#~ msgid "Bluetooth Device"
-#~ msgstr "Zařízení Bluetooth"
-
-#~ msgid "Command Shortcuts"
-#~ msgstr "Zkratky příkazů"
-
-#~ msgid "Delete"
-#~ msgstr "Smazat"
-
-#~ msgid "Delete this device"
-#~ msgstr "Odstranit toto zařízení"
-
-#~ msgid "Unpair and remove all settings and files"
-#~ msgstr "Zrušit spárování a odebrat všechna nastavení a soubory"
-
-#~ msgid "Switch to Bluetooth"
-#~ msgstr "Přejít na Bluetooth"
-
-#~ msgid "Switch to LAN"
-#~ msgstr "Přejít na LAN"
-
-#~ msgid "%s Plugin Failed To Load"
-#~ msgstr "Zásuvný modul %s se nepodařilo načíst"
-
-#~ msgid "Reconnect"
-#~ msgstr "Znovu připojit"
-
-#~ msgid "Settings"
-#~ msgstr "Nastavení"
-
-#~ msgid "Additional Software Required"
-#~ msgstr "Je zapotřebí další software"
-
-#~ msgid "Starting Transfer"
-#~ msgstr "Přenos začíná"
-
-#~ msgid ""
-#~ "Transferred files are placed in the <a href=\"%s\">Downloads</a> folder."
-#~ msgstr ""
-#~ "Přenesené soubory jsou umístěny do složky <a href=\"%s\">Stažené</a>."

@@ -2,11 +2,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-24 14:16-0400\n"
-"PO-Revision-Date: 2019-05-18 10:54\n"
+"POT-Creation-Date: 2019-09-24 19:00-0400\n"
+"PO-Revision-Date: 2019-09-25 20:37\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Estonian\n"
-"Language: et\n"
+"Language: et_EE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -107,7 +107,7 @@ msgstr "Failid"
 
 #: data/ui/device-preferences.ui:418
 msgid "Receive Files"
-msgstr ""
+msgstr "Võta faile vastu"
 
 #: data/ui/device-preferences.ui:503 data/ui/device-preferences.ui:2105
 msgid "Sharing"
@@ -218,29 +218,24 @@ msgid "Advanced"
 msgstr "Täpsemad"
 
 #: data/ui/device-preferences.ui:1796
-#, fuzzy
 msgid "Device Battery"
-msgstr "Aku"
+msgstr "Seadme aku"
 
 #: data/ui/device-preferences.ui:1847
-#, fuzzy
 msgid "Low Battery Notification"
-msgstr "Vasta teatele"
+msgstr "Tühjeneva aku teade"
 
 #: data/ui/device-preferences.ui:1908
-#, fuzzy
 msgid "Fully Charged Notification"
-msgstr "Jaga teateid"
+msgstr "Täislaetud aku teade"
 
 #: data/ui/device-preferences.ui:1955
-#, fuzzy
 msgid "System Battery"
-msgstr "Aku"
+msgstr "Süsteemi aku"
 
 #: data/ui/device-preferences.ui:2006
-#, fuzzy
 msgid "Share Statistics"
-msgstr "Jaga teateid"
+msgstr "Jaga statistikat"
 
 #: data/ui/device-preferences.ui:2055 data/ui/device-preferences.ui:2151
 #: src/service/plugins/battery.js:11
@@ -318,13 +313,12 @@ msgid "Send"
 msgstr "Saada"
 
 #: data/ui/preferences-window.ui:18
-#, fuzzy
 msgid "Device Name"
-msgstr "Muuda seadme nime"
+msgstr "Seadme nimi"
 
 #: data/ui/preferences-window.ui:49
 msgid "_Rename"
-msgstr ""
+msgstr "Nimeta ümber"
 
 #: data/ui/preferences-window.ui:84 data/ui/preferences-window.ui:98
 msgid "Refresh"
@@ -397,9 +391,10 @@ msgstr "Saada SMS"
 msgid "Mobile Devices"
 msgstr "Mobiilseadmed"
 
-#: src/extension.js:145 src/extension.js:383
+#. TRANSLATORS: A menu option to activate the extension
+#: src/extension.js:145 src/extension.js:385
 msgid "Turn On"
-msgstr ""
+msgstr "Lülita sisse"
 
 #: src/extension.js:244
 #, javascript-format
@@ -408,9 +403,10 @@ msgid_plural "%d Connected"
 msgstr[0] "%d ühendatud"
 msgstr[1] "%d ühendatud"
 
-#: src/extension.js:381
+#. TRANSLATORS: A menu option to deactivate the extension
+#: src/extension.js:382
 msgid "Turn Off"
-msgstr ""
+msgstr "Lülita välja"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:164 webextension/gettext.js:31
@@ -453,8 +449,7 @@ msgstr "Sisesta <b>%s</b> muutmiseks uus otsetee"
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/preferences/keybindings.js:125
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Vajuta tühistamiseks Esc või klaviatuuriotsetee lähtestamiseks Tagasilüke."
+msgstr "Vajuta tühistamiseks Esc või klaviatuuriotsetee lähtestamiseks Tagasilüke."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -473,12 +468,8 @@ msgid "translator-credits"
 msgstr "Madis O, 2018."
 
 #: src/preferences/service.js:431
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Silumissõnumid logitakse. Teosta mistahes vajalikud sammud probleemi "
-"taasloomiseks, seejärel vaata logi üle."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Silumissõnumid logitakse. Teosta mistahes vajalikud sammud probleemi taasloomiseks, seejärel vaata logi üle."
 
 #: src/preferences/service.js:434
 msgid "Review Log"
@@ -497,9 +488,8 @@ msgid "Connected"
 msgstr "Ühendatud"
 
 #: src/preferences/service.js:661
-#, fuzzy
 msgid "Waiting for service…"
-msgstr "Seadmete otsimine…"
+msgstr "Teenuse ootamine…"
 
 #: src/service/daemon.js:341
 msgid "Report"
@@ -518,8 +508,7 @@ msgid "Click for help troubleshooting"
 msgstr "Klõpsa, et saada veaotsingul abi"
 
 #: src/service/daemon.js:603
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Avastamine on keelatud selles võrgus olevate seadmete arvu tõttu."
 
 #: src/service/daemon.js:612
@@ -536,47 +525,40 @@ msgid "Share File"
 msgstr "Jaga faili"
 
 #: src/service/daemon.js:778
-#, fuzzy
 msgid "List available devices"
-msgstr "Pole saadaval"
+msgstr "Kuva saadaolevad seadmed"
 
 #: src/service/daemon.js:787
-#, fuzzy
 msgid "List all devices"
-msgstr "Mobiilseadmed"
+msgstr "Kuva kõik seadmed"
 
 #: src/service/daemon.js:796
-#, fuzzy
 msgid "Target Device"
-msgstr "Seadmesse"
+msgstr "Sihtseade"
 
 #: src/service/daemon.js:838
 msgid "Message Body"
-msgstr ""
+msgstr "Sõnumi sisu"
 
 #: src/service/daemon.js:850 src/service/plugins/notification.js:51
 msgid "Send Notification"
 msgstr "Saada teade"
 
 #: src/service/daemon.js:859
-#, fuzzy
 msgid "Notification App Name"
-msgstr "Teated"
+msgstr "Teavitava rakenduse nimi"
 
 #: src/service/daemon.js:868
-#, fuzzy
 msgid "Notification Body"
-msgstr "Teated"
+msgstr "Teate sisu"
 
 #: src/service/daemon.js:877
-#, fuzzy
 msgid "Notification Icon"
-msgstr "Teated"
+msgstr "Teate ikoon"
 
 #: src/service/daemon.js:886
-#, fuzzy
 msgid "Notification ID"
-msgstr "Teated"
+msgstr "Teate ID"
 
 #: src/service/daemon.js:895 src/service/plugins/photo.js:11
 #: src/service/plugins/photo.js:17
@@ -600,7 +582,7 @@ msgstr "Jaga linki"
 
 #: src/service/daemon.js:946
 msgid "Show release version"
-msgstr ""
+msgstr "Kuva väljalaskeversiooni"
 
 #: src/service/device.js:182
 msgid "Laptop"
@@ -615,9 +597,8 @@ msgid "Tablet"
 msgstr "Tahvelarvuti"
 
 #: src/service/device.js:188
-#, fuzzy
 msgid "Television"
-msgstr "Telefonifunktsioon"
+msgstr "Televisioon"
 
 #: src/service/device.js:196
 msgid "Not available"
@@ -668,9 +649,9 @@ msgstr "%d%% jäänud"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:199
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s: Battery is full"
-msgstr "%s: aku on tühi"
+msgstr "%s: aku on täis"
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
@@ -734,9 +715,8 @@ msgid "Reply Notification"
 msgstr "Vasta teatele"
 
 #: src/service/plugins/notification.js:59
-#, fuzzy
 msgid "Activate Notification"
-msgstr "Jaga teateid"
+msgstr "Aktiveeri teade"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -786,12 +766,11 @@ msgstr "Ülekanne ebaõnnestus"
 #: src/service/plugins/share.js:118
 #, javascript-format
 msgid "%s is not allowed to upload files"
-msgstr ""
+msgstr "%s ei tohi faile üles laadida"
 
 #: src/service/plugins/share.js:154 src/service/plugins/share.js:302
-#, fuzzy
 msgid "Transferring File"
-msgstr "Ülekanne ebaõnnestus"
+msgstr "Faili edastamine"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:156
@@ -953,9 +932,8 @@ msgid "Yesterday・%s"
 msgstr "Eile・%s"
 
 #: src/service/ui/messaging.js:255
-#, fuzzy
 msgid "Group Message"
-msgstr "Saada sõnum"
+msgstr "Grupisõnum"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:265
@@ -967,8 +945,8 @@ msgstr "Sina: %s"
 #, javascript-format
 msgid "And %d other contact"
 msgid_plural "And %d others"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ja %d teine kontakt"
+msgstr[1] "Ja %d teist"
 
 #: src/service/ui/service.js:31
 msgid "Select a Device"
@@ -1058,43 +1036,3 @@ msgstr "Seadet ei leitud"
 msgid "Open in Browser"
 msgstr "Ava brauseris"
 
-#~ msgid "Bluetooth Device"
-#~ msgstr "Bluetooth-seade"
-
-#~ msgid "Command Shortcuts"
-#~ msgstr "Käskluste otseteed"
-
-#~ msgid "Delete"
-#~ msgstr "Kustuta"
-
-#~ msgid "Delete this device"
-#~ msgstr "Kustuta see seade"
-
-#~ msgid "Unpair and remove all settings and files"
-#~ msgstr "Eemalda paardumine ja kustuta kõik seadistused ning failid"
-
-#~ msgid "Switch to Bluetooth"
-#~ msgstr "Lülitu Bluetoothile"
-
-#~ msgid "Switch to LAN"
-#~ msgstr "Lülitu LANile"
-
-#~ msgid "%s Plugin Failed To Load"
-#~ msgstr "%s plugina laadimine ebaõnnestus"
-
-#~ msgid "Reconnect"
-#~ msgstr "Taasühenda"
-
-#~ msgid "Settings"
-#~ msgstr "Seaded"
-
-#~ msgid "Additional Software Required"
-#~ msgstr "Lisatarkvara on nõutud"
-
-#~ msgid "Starting Transfer"
-#~ msgstr "Alustan ülekannet"
-
-#~ msgid ""
-#~ "Transferred files are placed in the <a href=\"%s\">Downloads</a> folder."
-#~ msgstr ""
-#~ "Edastatud failid asetatakse <a href=\"%s\">Allalaadimiste</a> kausta."

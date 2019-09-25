@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-24 14:16-0400\n"
-"PO-Revision-Date: 2019-09-13 19:10\n"
+"POT-Creation-Date: 2019-09-24 19:00-0400\n"
+"PO-Revision-Date: 2019-09-25 20:37\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -107,7 +107,7 @@ msgstr "文件"
 
 #: data/ui/device-preferences.ui:418
 msgid "Receive Files"
-msgstr ""
+msgstr "文件接收"
 
 #: data/ui/device-preferences.ui:503 data/ui/device-preferences.ui:2105
 msgid "Sharing"
@@ -218,29 +218,24 @@ msgid "Advanced"
 msgstr "高级"
 
 #: data/ui/device-preferences.ui:1796
-#, fuzzy
 msgid "Device Battery"
-msgstr "电池"
+msgstr "设备电量"
 
 #: data/ui/device-preferences.ui:1847
-#, fuzzy
 msgid "Low Battery Notification"
-msgstr "回复通知"
+msgstr "低电量通知"
 
 #: data/ui/device-preferences.ui:1908
-#, fuzzy
 msgid "Fully Charged Notification"
-msgstr "共享通知"
+msgstr "充满电通知"
 
 #: data/ui/device-preferences.ui:1955
-#, fuzzy
 msgid "System Battery"
-msgstr "电池"
+msgstr "系统电池"
 
 #: data/ui/device-preferences.ui:2006
-#, fuzzy
 msgid "Share Statistics"
-msgstr "共享通知"
+msgstr "分享统计信息"
 
 #: data/ui/device-preferences.ui:2055 data/ui/device-preferences.ui:2151
 #: src/service/plugins/battery.js:11
@@ -318,13 +313,12 @@ msgid "Send"
 msgstr "发送"
 
 #: data/ui/preferences-window.ui:18
-#, fuzzy
 msgid "Device Name"
-msgstr "编辑设备名称"
+msgstr "设备名称"
 
 #: data/ui/preferences-window.ui:49
 msgid "_Rename"
-msgstr ""
+msgstr "修改名称"
 
 #: data/ui/preferences-window.ui:84 data/ui/preferences-window.ui:98
 msgid "Refresh"
@@ -397,9 +391,10 @@ msgstr "发送短信"
 msgid "Mobile Devices"
 msgstr "移动设备"
 
-#: src/extension.js:145 src/extension.js:383
+#. TRANSLATORS: A menu option to activate the extension
+#: src/extension.js:145 src/extension.js:385
 msgid "Turn On"
-msgstr ""
+msgstr "开启"
 
 #: src/extension.js:244
 #, javascript-format
@@ -407,9 +402,10 @@ msgid "%d Connected"
 msgid_plural "%d Connected"
 msgstr[0] "%d 连接"
 
-#: src/extension.js:381
+#. TRANSLATORS: A menu option to deactivate the extension
+#: src/extension.js:382
 msgid "Turn Off"
-msgstr ""
+msgstr "关闭"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:164 webextension/gettext.js:31
@@ -471,10 +467,8 @@ msgid "translator-credits"
 msgstr "翻译贡献"
 
 #: src/preferences/service.js:431
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr "正在记录调试日志。采取任何必要的步骤来重现问题，然后查看日志。"
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "正在记录调试日志。请采取任何必要的步骤来重现问题，然后即可查看日志。"
 
 #: src/preferences/service.js:434
 msgid "Review Log"
@@ -493,9 +487,8 @@ msgid "Connected"
 msgstr "已连接"
 
 #: src/preferences/service.js:661
-#, fuzzy
 msgid "Waiting for service…"
-msgstr "正在搜索设备…"
+msgstr "等待服务响应..."
 
 #: src/service/daemon.js:341
 msgid "Report"
@@ -514,8 +507,7 @@ msgid "Click for help troubleshooting"
 msgstr "单击以获取疑难解答帮助"
 
 #: src/service/daemon.js:603
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "由于此网络上的设备数量，已禁用发现。"
 
 #: src/service/daemon.js:612
@@ -532,47 +524,40 @@ msgid "Share File"
 msgstr "共享文件"
 
 #: src/service/daemon.js:778
-#, fuzzy
 msgid "List available devices"
-msgstr "无法使用的"
+msgstr "可用设备列表"
 
 #: src/service/daemon.js:787
-#, fuzzy
 msgid "List all devices"
-msgstr "移动设备"
+msgstr "所有可用设备"
 
 #: src/service/daemon.js:796
-#, fuzzy
 msgid "Target Device"
-msgstr "到设备"
+msgstr "目标设备"
 
 #: src/service/daemon.js:838
 msgid "Message Body"
-msgstr ""
+msgstr "消息正文"
 
 #: src/service/daemon.js:850 src/service/plugins/notification.js:51
 msgid "Send Notification"
 msgstr "发送通知"
 
 #: src/service/daemon.js:859
-#, fuzzy
 msgid "Notification App Name"
-msgstr "通知"
+msgstr "通知的应用名称"
 
 #: src/service/daemon.js:868
-#, fuzzy
 msgid "Notification Body"
-msgstr "通知"
+msgstr "通知的信息正文"
 
 #: src/service/daemon.js:877
-#, fuzzy
 msgid "Notification Icon"
-msgstr "通知"
+msgstr "通知的图标"
 
 #: src/service/daemon.js:886
-#, fuzzy
 msgid "Notification ID"
-msgstr "通知"
+msgstr "通知的ID"
 
 #: src/service/daemon.js:895 src/service/plugins/photo.js:11
 #: src/service/plugins/photo.js:17
@@ -582,7 +567,7 @@ msgstr "照片"
 #: src/service/daemon.js:904 src/service/plugins/ping.js:11
 #: src/service/plugins/ping.js:17 src/service/plugins/ping.js:46
 msgid "Ping"
-msgstr ""
+msgstr "Ping"
 
 #: src/service/daemon.js:913 src/service/plugins/battery.js:155
 #: src/service/plugins/findmyphone.js:19
@@ -596,7 +581,7 @@ msgstr "共享链接"
 
 #: src/service/daemon.js:946
 msgid "Show release version"
-msgstr ""
+msgstr "显示版本信息"
 
 #: src/service/device.js:182
 msgid "Laptop"
@@ -611,9 +596,8 @@ msgid "Tablet"
 msgstr "平板电脑"
 
 #: src/service/device.js:188
-#, fuzzy
 msgid "Television"
-msgstr "电话"
+msgstr "电视"
 
 #: src/service/device.js:196
 msgid "Not available"
@@ -664,9 +648,9 @@ msgstr "剩余 %d%%"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:199
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s: Battery is full"
-msgstr "%s: 电池电量低"
+msgstr "%s: 电池已充满"
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
@@ -715,7 +699,7 @@ msgstr "键盘未就绪"
 
 #: src/service/plugins/mpris.js:12
 msgid "MPRIS"
-msgstr ""
+msgstr "MPRIS"
 
 #: src/service/plugins/notification.js:27
 msgid "Cancel Notification"
@@ -730,16 +714,15 @@ msgid "Reply Notification"
 msgstr "回复通知"
 
 #: src/service/plugins/notification.js:59
-#, fuzzy
 msgid "Activate Notification"
-msgstr "共享通知"
+msgstr "激活通知"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
 #: src/service/plugins/ping.js:53
 #, javascript-format
 msgid "Ping: %s"
-msgstr ""
+msgstr "Ping: %s"
 
 #: src/service/plugins/runcommand.js:12
 msgid "Run Commands"
@@ -747,7 +730,7 @@ msgstr "运行命令"
 
 #: src/service/plugins/sftp.js:12
 msgid "SFTP"
-msgstr ""
+msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:18
 msgid "Mount"
@@ -782,12 +765,11 @@ msgstr "传输失败"
 #: src/service/plugins/share.js:118
 #, javascript-format
 msgid "%s is not allowed to upload files"
-msgstr ""
+msgstr "%s 不允许上传文件"
 
 #: src/service/plugins/share.js:154 src/service/plugins/share.js:302
-#, fuzzy
 msgid "Transferring File"
-msgstr "传输失败"
+msgstr "文件传输中"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:156
@@ -948,9 +930,8 @@ msgid "Yesterday・%s"
 msgstr "昨天・%s"
 
 #: src/service/ui/messaging.js:255
-#, fuzzy
 msgid "Group Message"
-msgstr "发送消息"
+msgstr "群组消息"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:265
@@ -962,7 +943,7 @@ msgstr "你: %s"
 #, javascript-format
 msgid "And %d other contact"
 msgid_plural "And %d others"
-msgstr[0] ""
+msgstr[0] "添加 %d 位联系人"
 
 #: src/service/ui/service.js:31
 msgid "Select a Device"
@@ -1029,7 +1010,7 @@ msgstr "回复"
 #. TRANSLATORS: Extension name
 #: webextension/gettext.js:27
 msgid "GSConnect"
-msgstr ""
+msgstr "GSConnect"
 
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
@@ -1044,49 +1025,10 @@ msgstr "服务不可用"
 #. TRANSLATORS: No devices are known or available
 #: webextension/gettext.js:35
 msgid "No Device Found"
-msgstr "找不到设备"
+msgstr "没有找到设备"
 
 #. TRANSLATORS: Open URL with the device's browser
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "在浏览器中打开"
 
-#~ msgid "Bluetooth Device"
-#~ msgstr "蓝牙设备"
-
-#~ msgid "Command Shortcuts"
-#~ msgstr "命令快捷方式"
-
-#~ msgid "Delete"
-#~ msgstr "删除"
-
-#~ msgid "Delete this device"
-#~ msgstr "删除此设备"
-
-#~ msgid "Unpair and remove all settings and files"
-#~ msgstr "取消配对并删除所有设置和文件"
-
-#~ msgid "Switch to Bluetooth"
-#~ msgstr "切换到蓝牙"
-
-#~ msgid "Switch to LAN"
-#~ msgstr "切换到 LAN"
-
-#~ msgid "%s Plugin Failed To Load"
-#~ msgstr "%s 插件加载失败"
-
-#~ msgid "Reconnect"
-#~ msgstr "重新连接"
-
-#~ msgid "Settings"
-#~ msgstr "设置"
-
-#~ msgid "Additional Software Required"
-#~ msgstr "需要附加软件"
-
-#~ msgid "Starting Transfer"
-#~ msgstr "开始传输"
-
-#~ msgid ""
-#~ "Transferred files are placed in the <a href=\"%s\">Downloads</a> folder."
-#~ msgstr "传输的文件位于 <a href=\"%s\">下载</a> 目录."
