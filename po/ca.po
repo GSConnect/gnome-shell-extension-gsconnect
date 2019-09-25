@@ -2,11 +2,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-24 14:16-0400\n"
-"PO-Revision-Date: 2019-09-22 01:33\n"
+"POT-Creation-Date: 2019-09-24 19:00-0400\n"
+"PO-Revision-Date: 2019-09-25 20:37\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Catalan\n"
-"Language: ca\n"
+"Language: ca_ES\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -218,29 +218,24 @@ msgid "Advanced"
 msgstr "Avançat"
 
 #: data/ui/device-preferences.ui:1796
-#, fuzzy
 msgid "Device Battery"
-msgstr "Bateria"
+msgstr "Bateria del dispositiu"
 
 #: data/ui/device-preferences.ui:1847
-#, fuzzy
 msgid "Low Battery Notification"
-msgstr "Notificacions de compartició"
+msgstr "Notificació de bateria baixa"
 
 #: data/ui/device-preferences.ui:1908
-#, fuzzy
 msgid "Fully Charged Notification"
-msgstr "Notificacions de compartició"
+msgstr "Notificació de bateria carregada"
 
 #: data/ui/device-preferences.ui:1955
-#, fuzzy
 msgid "System Battery"
-msgstr "Bateria"
+msgstr "Bateria del sistema"
 
 #: data/ui/device-preferences.ui:2006
-#, fuzzy
 msgid "Share Statistics"
-msgstr "Notificacions de compartició"
+msgstr ""
 
 #: data/ui/device-preferences.ui:2055 data/ui/device-preferences.ui:2151
 #: src/service/plugins/battery.js:11
@@ -318,9 +313,8 @@ msgid "Send"
 msgstr "Envia"
 
 #: data/ui/preferences-window.ui:18
-#, fuzzy
 msgid "Device Name"
-msgstr "Edita el nom del dispositiu"
+msgstr "Nom del dispositiu"
 
 #: data/ui/preferences-window.ui:49
 msgid "_Rename"
@@ -333,7 +327,7 @@ msgstr "Actualitza"
 #: data/ui/preferences-window.ui:109 data/ui/preferences-window.ui:126
 #: src/extension.js:151
 msgid "Mobile Settings"
-msgstr ""
+msgstr "Paràmetres del mòbil"
 
 #: data/ui/preferences-window.ui:180 data/ui/preferences-window.ui:195
 msgid "Edit Device Name"
@@ -380,7 +374,7 @@ msgstr "Menú d’usuari"
 #. TRANSLATORS: Generate a support log
 #: data/ui/preferences-window.ui:730 src/preferences/service.js:430
 msgid "Generate Support Log"
-msgstr ""
+msgstr "Genera un registre d'assistència"
 
 #: data/ui/preferences-window.ui:738
 msgid "About GSConnect"
@@ -397,7 +391,8 @@ msgstr "Envia un SMS"
 msgid "Mobile Devices"
 msgstr "Dispositius mòbils"
 
-#: src/extension.js:145 src/extension.js:383
+#. TRANSLATORS: A menu option to activate the extension
+#: src/extension.js:145 src/extension.js:385
 msgid "Turn On"
 msgstr ""
 
@@ -408,7 +403,8 @@ msgid_plural "%d Connected"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/extension.js:381
+#. TRANSLATORS: A menu option to deactivate the extension
+#: src/extension.js:382
 msgid "Turn Off"
 msgstr ""
 
@@ -453,9 +449,7 @@ msgstr ""
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/preferences/keybindings.js:125
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Premeu Esc per a cancel·lar o Retrocés per a reinicialitzar la drecera de "
-"teclat."
+msgstr "Premeu Esc per a cancel·lar o Retrocés per a reinicialitzar la drecera de teclat."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -471,17 +465,12 @@ msgstr "Una implementació completa de KDE Connect per al GNOME"
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:398
 msgid "translator-credits"
-msgstr ""
-"Adolfo Jayme Barrientos <fitojb@ubuntu.com>, 2019\n"
+msgstr "Adolfo Jayme Barrientos <fitojb@ubuntu.com>, 2019\n"
 "Marc Riera Irigoyen <marc.riera.irigoyen@gmail.com>, 2019"
 
 #: src/preferences/service.js:431
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"S’estan registrant els missatges de depuració. Efectueu els passos "
-"necessaris per a reproduir un problema i, tot seguit, reviseu el registre."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "S’estan registrant els missatges de depuració. Efectueu els passos necessaris per a reproduir un problema i, tot seguit, reviseu el registre."
 
 #: src/preferences/service.js:434
 msgid "Review Log"
@@ -500,9 +489,8 @@ msgid "Connected"
 msgstr "Connectat"
 
 #: src/preferences/service.js:661
-#, fuzzy
 msgid "Waiting for service…"
-msgstr "S’estan cercant dispositius…"
+msgstr ""
 
 #: src/service/daemon.js:341
 msgid "Report"
@@ -521,8 +509,7 @@ msgid "Click for help troubleshooting"
 msgstr "Ajuda per a resoldre el problema"
 
 #: src/service/daemon.js:603
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr ""
 
 #: src/service/daemon.js:612
@@ -539,47 +526,40 @@ msgid "Share File"
 msgstr "Comparteix un fitxer"
 
 #: src/service/daemon.js:778
-#, fuzzy
 msgid "List available devices"
-msgstr "No disponible"
+msgstr ""
 
 #: src/service/daemon.js:787
-#, fuzzy
 msgid "List all devices"
-msgstr "Dispositius mòbils"
+msgstr ""
 
 #: src/service/daemon.js:796
-#, fuzzy
 msgid "Target Device"
-msgstr "Al dispositiu"
+msgstr ""
 
 #: src/service/daemon.js:838
 msgid "Message Body"
-msgstr ""
+msgstr "Cos del missatge"
 
 #: src/service/daemon.js:850 src/service/plugins/notification.js:51
 msgid "Send Notification"
 msgstr "Envia una notificació"
 
 #: src/service/daemon.js:859
-#, fuzzy
 msgid "Notification App Name"
-msgstr "Notificacions"
+msgstr ""
 
 #: src/service/daemon.js:868
-#, fuzzy
 msgid "Notification Body"
-msgstr "Notificacions"
+msgstr ""
 
 #: src/service/daemon.js:877
-#, fuzzy
 msgid "Notification Icon"
-msgstr "Notificacions"
+msgstr "Icona de notificació"
 
 #: src/service/daemon.js:886
-#, fuzzy
 msgid "Notification ID"
-msgstr "Notificacions"
+msgstr ""
 
 #: src/service/daemon.js:895 src/service/plugins/photo.js:11
 #: src/service/plugins/photo.js:17
@@ -618,9 +598,8 @@ msgid "Tablet"
 msgstr "Tauleta"
 
 #: src/service/device.js:188
-#, fuzzy
 msgid "Television"
-msgstr "Telefonia"
+msgstr "Televisió"
 
 #: src/service/device.js:196
 msgid "Not available"
@@ -737,9 +716,8 @@ msgid "Reply Notification"
 msgstr ""
 
 #: src/service/plugins/notification.js:59
-#, fuzzy
 msgid "Activate Notification"
-msgstr "Notificacions de compartició"
+msgstr ""
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -792,9 +770,8 @@ msgid "%s is not allowed to upload files"
 msgstr ""
 
 #: src/service/plugins/share.js:154 src/service/plugins/share.js:302
-#, fuzzy
 msgid "Transferring File"
-msgstr "Ha fallat la transferència"
+msgstr ""
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:156
@@ -956,9 +933,8 @@ msgid "Yesterday・%s"
 msgstr "Ahir・%s"
 
 #: src/service/ui/messaging.js:255
-#, fuzzy
 msgid "Group Message"
-msgstr "Envia el missatge"
+msgstr ""
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:265
@@ -1044,9 +1020,7 @@ msgstr "GSConnect"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
-"Compartiu enllaços amb el GSConnect, directament al navegador o mitjançant "
-"SMS."
+msgstr "Compartiu enllaços amb el GSConnect, directament al navegador o mitjançant SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:33
@@ -1063,44 +1037,3 @@ msgstr "No s'ha trobat cap dispositiu"
 msgid "Open in Browser"
 msgstr "Obre al navegador"
 
-#~ msgid "Bluetooth Device"
-#~ msgstr "Dispositiu Bluetooth"
-
-#~ msgid "Command Shortcuts"
-#~ msgstr "Dreceres d’ordres"
-
-#~ msgid "Delete"
-#~ msgstr "Suprimeix"
-
-#~ msgid "Delete this device"
-#~ msgstr "Suprimeix aquest dispositiu"
-
-#~ msgid "Unpair and remove all settings and files"
-#~ msgstr "Desaparella’l i suprimeix-ne tots els paràmetres i fitxers"
-
-#~ msgid "Switch to Bluetooth"
-#~ msgstr "Canvia a Bluetooth"
-
-#~ msgid "Switch to LAN"
-#~ msgstr "Canvia a LAN"
-
-#~ msgid "%s Plugin Failed To Load"
-#~ msgstr "No s’ha pogut carregar el connector %s"
-
-#~ msgid "Reconnect"
-#~ msgstr "Torna a connectar"
-
-#~ msgid "Settings"
-#~ msgstr "Paràmetres"
-
-#~ msgid "Additional Software Required"
-#~ msgstr "Cal programari addicional"
-
-#~ msgid "Starting Transfer"
-#~ msgstr "S'està iniciant la transferència"
-
-#~ msgid ""
-#~ "Transferred files are placed in the <a href=\"%s\">Downloads</a> folder."
-#~ msgstr ""
-#~ "Els fitxers transferits es col·loquen a la carpeta <a href=\"%s"
-#~ "\">Baixades</a>."
