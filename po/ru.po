@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 19:00-0400\n"
-"PO-Revision-Date: 2019-09-24 23:10\n"
+"PO-Revision-Date: 2019-09-25 20:24\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Russian\n"
 "Language: ru_RU\n"
@@ -536,7 +536,7 @@ msgstr "Список всех устройств"
 
 #: src/service/daemon.js:796
 msgid "Target Device"
-msgstr ""
+msgstr "Целевое устройство"
 
 #: src/service/daemon.js:838
 msgid "Message Body"
@@ -556,11 +556,11 @@ msgstr ""
 
 #: src/service/daemon.js:877
 msgid "Notification Icon"
-msgstr ""
+msgstr "Иконка уведомления"
 
 #: src/service/daemon.js:886
 msgid "Notification ID"
-msgstr ""
+msgstr "ID уведомления"
 
 #: src/service/daemon.js:895 src/service/plugins/photo.js:11
 #: src/service/plugins/photo.js:17
@@ -584,7 +584,7 @@ msgstr "Поделиться ссылкой"
 
 #: src/service/daemon.js:946
 msgid "Show release version"
-msgstr ""
+msgstr "Показать версию программы"
 
 #: src/service/device.js:182
 msgid "Laptop"
