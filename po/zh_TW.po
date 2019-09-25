@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 19:00-0400\n"
-"PO-Revision-Date: 2019-09-25 13:39\n"
+"PO-Revision-Date: 2019-09-25 13:46\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -410,7 +410,7 @@ msgstr ""
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:164 webextension/gettext.js:31
 msgid "Send To Mobile Device"
-msgstr "发送到手机"
+msgstr "傳送到手機"
 
 #: src/preferences/device.js:668
 msgid "Open"
@@ -577,7 +577,7 @@ msgstr "響音"
 #: src/service/daemon.js:934 src/service/plugins/share.js:43
 #: src/service/ui/messaging.js:1212 src/service/ui/messaging.js:1220
 msgid "Share Link"
-msgstr "共享链接"
+msgstr "共享鏈結"
 
 #: src/service/daemon.js:946
 msgid "Show release version"
@@ -585,11 +585,11 @@ msgstr ""
 
 #: src/service/device.js:182
 msgid "Laptop"
-msgstr "笔记本电脑"
+msgstr "筆電"
 
 #: src/service/device.js:184
 msgid "Smartphone"
-msgstr "智能手机"
+msgstr "智慧型手機"
 
 #: src/service/device.js:186
 msgid "Tablet"
@@ -628,7 +628,7 @@ msgstr "%s 的配对请求"
 
 #: src/service/device.js:786
 msgid "Reject"
-msgstr "拒绝"
+msgstr "拒絕"
 
 #: src/service/device.js:791
 msgid "Accept"
@@ -660,7 +660,7 @@ msgstr "充满"
 
 #: src/service/plugins/clipboard.js:11
 msgid "Clipboard"
-msgstr "剪贴板"
+msgstr "剪貼簿"
 
 #: src/service/plugins/clipboard.js:23
 msgid "Clipboard Push"
@@ -679,7 +679,7 @@ msgstr ""
 #: src/service/plugins/telephony.js:261 src/service/ui/contacts.js:571
 #: src/service/ui/messaging.js:247
 msgid "Unknown Contact"
-msgstr "未知联系人"
+msgstr "未知的聯絡人"
 
 #: src/service/plugins/findmyphone.js:13
 msgid "Find My Phone"
@@ -726,7 +726,7 @@ msgstr "Ping: %s"
 
 #: src/service/plugins/runcommand.js:12
 msgid "Run Commands"
-msgstr "运行命令"
+msgstr "執行指令"
 
 #: src/service/plugins/sftp.js:12
 msgid "SFTP"
@@ -759,7 +759,7 @@ msgstr "分享文字"
 #: src/service/plugins/share.js:116 src/service/plugins/share.js:201
 #: src/service/plugins/share.js:333
 msgid "Transfer Failed"
-msgstr "传输失败"
+msgstr "傳輸失敗"
 
 #. TRANSLATORS: eg. Google Pixel is not allowed to upload files
 #: src/service/plugins/share.js:118
@@ -816,7 +816,7 @@ msgstr "正在将「%s」发送到%s"
 #: src/service/plugins/share.js:327
 #, javascript-format
 msgid "Sent “%s” to %s"
-msgstr "「%s」已发送到%s"
+msgstr "「%s」已傳送到「%s」"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:335
@@ -828,7 +828,7 @@ msgstr "傳送「“%s”」到「%s」失敗"
 #: src/service/plugins/share.js:404
 #, javascript-format
 msgid "Send files to %s"
-msgstr "将文件发送到%s"
+msgstr "將檔案傳送到「%s」"
 
 #. TRANSLATORS: Mark the file to be opened once completed
 #: src/service/plugins/share.js:408
@@ -839,7 +839,7 @@ msgstr ""
 #: src/service/plugins/share.js:447
 #, javascript-format
 msgid "Send a link to %s"
-msgstr "发送一个链接到%s"
+msgstr "發送一個鏈結到「%s」"
 
 #: src/service/plugins/sms.js:13
 msgid "SMS"
@@ -859,7 +859,7 @@ msgstr ""
 
 #: src/service/plugins/systemvolume.js:11
 msgid "System Volume"
-msgstr "系统音量"
+msgstr "系統音量"
 
 #: src/service/plugins/telephony.js:30
 msgid "Mute Call"
@@ -885,7 +885,7 @@ msgstr ""
 #: src/service/ui/contacts.js:131
 #, javascript-format
 msgid "%s・Fax"
-msgstr "%s・传真"
+msgstr "%s・傳真"
 
 #. TRANSLATORS: A work phone number
 #: src/service/ui/contacts.js:135
@@ -909,7 +909,7 @@ msgstr ""
 #: src/service/ui/contacts.js:433 src/service/ui/contacts.js:447
 #, javascript-format
 msgid "Send to %s"
-msgstr "发送到%s"
+msgstr "傳送到「%s」"
 
 #. TRANSLATORS: Less than a minute ago
 #: src/service/ui/messaging.js:29 src/service/ui/messaging.js:66
@@ -947,18 +947,18 @@ msgstr[0] ""
 
 #: src/service/ui/service.js:31
 msgid "Select a Device"
-msgstr "选择一个设备"
+msgstr "選擇裝置"
 
 #: src/service/ui/service.js:35
 msgid "Select"
-msgstr "选择"
+msgstr "選擇"
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
 #: src/shell/device.js:118
 #, javascript-format
 msgid "%d%% (Estimating…)"
-msgstr "%d%% (估计中Estimating…)"
+msgstr "%d%% (計算中…)"
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
@@ -972,7 +972,7 @@ msgstr ""
 #: src/shell/device.js:136
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
-msgstr "%d%% (%d∶%02d 剩余)"
+msgstr "%d%% (%d∶%02d 剩餘)"
 
 #: src/shell/donotdisturb.js:135
 #, javascript-format
