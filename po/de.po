@@ -2,11 +2,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-24 14:16-0400\n"
-"PO-Revision-Date: 2019-09-12 23:05\n"
+"POT-Creation-Date: 2019-09-24 19:00-0400\n"
+"PO-Revision-Date: 2019-09-25 20:37\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: German\n"
-"Language: de\n"
+"Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -107,7 +107,7 @@ msgstr "Dateien"
 
 #: data/ui/device-preferences.ui:418
 msgid "Receive Files"
-msgstr ""
+msgstr "Dateien empfangen"
 
 #: data/ui/device-preferences.ui:503 data/ui/device-preferences.ui:2105
 msgid "Sharing"
@@ -218,29 +218,24 @@ msgid "Advanced"
 msgstr "Erweitert"
 
 #: data/ui/device-preferences.ui:1796
-#, fuzzy
 msgid "Device Battery"
-msgstr "Akku"
+msgstr "Geräte Akku"
 
 #: data/ui/device-preferences.ui:1847
-#, fuzzy
 msgid "Low Battery Notification"
-msgstr "Auf Benachrichtigung antworten"
+msgstr "Benachrichtigung bei geringen Akkustand"
 
 #: data/ui/device-preferences.ui:1908
-#, fuzzy
 msgid "Fully Charged Notification"
-msgstr "Benachrichtigungen freigeben"
+msgstr "Vollständig geladen Benachrichtigung"
 
 #: data/ui/device-preferences.ui:1955
-#, fuzzy
 msgid "System Battery"
-msgstr "Akku"
+msgstr "Systembatterie"
 
 #: data/ui/device-preferences.ui:2006
-#, fuzzy
 msgid "Share Statistics"
-msgstr "Benachrichtigungen freigeben"
+msgstr "Statistik teilen"
 
 #: data/ui/device-preferences.ui:2055 data/ui/device-preferences.ui:2151
 #: src/service/plugins/battery.js:11
@@ -318,13 +313,12 @@ msgid "Send"
 msgstr "Senden"
 
 #: data/ui/preferences-window.ui:18
-#, fuzzy
 msgid "Device Name"
-msgstr "Gerätename bearbeiten"
+msgstr "Gerätename"
 
 #: data/ui/preferences-window.ui:49
 msgid "_Rename"
-msgstr ""
+msgstr "_Umbenennen"
 
 #: data/ui/preferences-window.ui:84 data/ui/preferences-window.ui:98
 msgid "Refresh"
@@ -397,9 +391,10 @@ msgstr "SMS senden"
 msgid "Mobile Devices"
 msgstr "Mobile Geräte"
 
-#: src/extension.js:145 src/extension.js:383
+#. TRANSLATORS: A menu option to activate the extension
+#: src/extension.js:145 src/extension.js:385
 msgid "Turn On"
-msgstr ""
+msgstr "Aktivieren"
 
 #: src/extension.js:244
 #, javascript-format
@@ -408,9 +403,10 @@ msgid_plural "%d Connected"
 msgstr[0] "%d verbunden"
 msgstr[1] "%d verbunden"
 
-#: src/extension.js:381
+#. TRANSLATORS: A menu option to deactivate the extension
+#: src/extension.js:382
 msgid "Turn Off"
-msgstr ""
+msgstr "Deaktivieren"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:164 webextension/gettext.js:31
@@ -453,9 +449,7 @@ msgstr "Ein neues Tastenkürzel eingeben, um <b>%s</b> zu Ändern"
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/preferences/keybindings.js:125
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"ESC zum Abbrechen oder die Rücktaste drücken, um das Tastenkürzel "
-"zurückzusetzen."
+msgstr "ESC zum Abbrechen oder die Rücktaste drücken, um das Tastenkürzel zurückzusetzen."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -471,18 +465,12 @@ msgstr "Eine vollständige KDE-Connect-Implementierung für GNOME"
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:398
 msgid "translator-credits"
-msgstr ""
-"taaem <taaem@mailbox.org>\n"
+msgstr "taaem <taaem@mailbox.org>\n"
 "Tobias Bannert <tobannert@gmail.com>"
 
 #: src/preferences/service.js:431
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Fehlersuchmeldungen werden protokolliert. Führen Sie alle erforderlichen "
-"Schritte aus, um ein Problem zu reproduzieren, und überprüfen Sie das "
-"Protokoll."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Fehlersuchmeldungen werden protokolliert. Führen Sie alle erforderlichen Schritte aus, um ein Problem zu reproduzieren, und überprüfen Sie das Protokoll."
 
 #: src/preferences/service.js:434
 msgid "Review Log"
@@ -501,9 +489,8 @@ msgid "Connected"
 msgstr "Verbunden"
 
 #: src/preferences/service.js:661
-#, fuzzy
 msgid "Waiting for service…"
-msgstr "Geräte werden gesucht…"
+msgstr ""
 
 #: src/service/daemon.js:341
 msgid "Report"
@@ -522,11 +509,8 @@ msgid "Click for help troubleshooting"
 msgstr "Für Hilfe bei der Fehlerbehebung hier klicken"
 
 #: src/service/daemon.js:603
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
-msgstr ""
-"Erkennen wurde deaktiviert, aufgrund der Anzahl an Geräten in diesem "
-"Netzwerk."
+msgid "Discovery has been disabled due to the number of devices on this network."
+msgstr "Erkennen wurde deaktiviert, aufgrund der Anzahl an Geräten in diesem Netzwerk."
 
 #: src/service/daemon.js:612
 msgid "Click for more information"
@@ -542,47 +526,40 @@ msgid "Share File"
 msgstr "Datei freigeben"
 
 #: src/service/daemon.js:778
-#, fuzzy
 msgid "List available devices"
-msgstr "Nicht verfügbar"
+msgstr "Alle verfügbaren Geräte anzeigen"
 
 #: src/service/daemon.js:787
-#, fuzzy
 msgid "List all devices"
-msgstr "Mobile Geräte"
+msgstr "Alle Geräte anzeigen"
 
 #: src/service/daemon.js:796
-#, fuzzy
 msgid "Target Device"
-msgstr "Zum Gerät"
+msgstr ""
 
 #: src/service/daemon.js:838
 msgid "Message Body"
-msgstr ""
+msgstr "Nachrichtentext"
 
 #: src/service/daemon.js:850 src/service/plugins/notification.js:51
 msgid "Send Notification"
 msgstr "Benachrichtigung senden"
 
 #: src/service/daemon.js:859
-#, fuzzy
 msgid "Notification App Name"
-msgstr "Benachrichtigungen"
+msgstr ""
 
 #: src/service/daemon.js:868
-#, fuzzy
 msgid "Notification Body"
-msgstr "Benachrichtigungen"
+msgstr ""
 
 #: src/service/daemon.js:877
-#, fuzzy
 msgid "Notification Icon"
-msgstr "Benachrichtigungen"
+msgstr "Benachrichtigungs-Symbol"
 
 #: src/service/daemon.js:886
-#, fuzzy
 msgid "Notification ID"
-msgstr "Benachrichtigungen"
+msgstr "Mitteilungs-ID"
 
 #: src/service/daemon.js:895 src/service/plugins/photo.js:11
 #: src/service/plugins/photo.js:17
@@ -606,7 +583,7 @@ msgstr "Verweis freigeben"
 
 #: src/service/daemon.js:946
 msgid "Show release version"
-msgstr ""
+msgstr "Neuste Version zeigen"
 
 #: src/service/device.js:182
 msgid "Laptop"
@@ -621,9 +598,8 @@ msgid "Tablet"
 msgstr "Tablet"
 
 #: src/service/device.js:188
-#, fuzzy
 msgid "Television"
-msgstr "Telefonie"
+msgstr "Fernseher"
 
 #: src/service/device.js:196
 msgid "Not available"
@@ -674,9 +650,9 @@ msgstr "%d%% verbleibend"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:199
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s: Battery is full"
-msgstr "%s: Akku ist leer"
+msgstr ""
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
@@ -740,9 +716,8 @@ msgid "Reply Notification"
 msgstr "Auf Benachrichtigung antworten"
 
 #: src/service/plugins/notification.js:59
-#, fuzzy
 msgid "Activate Notification"
-msgstr "Benachrichtigungen freigeben"
+msgstr ""
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -795,9 +770,8 @@ msgid "%s is not allowed to upload files"
 msgstr ""
 
 #: src/service/plugins/share.js:154 src/service/plugins/share.js:302
-#, fuzzy
 msgid "Transferring File"
-msgstr "Übertragung gescheitert"
+msgstr "Übertrage Datei"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:156
@@ -959,9 +933,8 @@ msgid "Yesterday・%s"
 msgstr "Gestern・%s"
 
 #: src/service/ui/messaging.js:255
-#, fuzzy
 msgid "Group Message"
-msgstr "Nachricht senden"
+msgstr "Gruppennachricht"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:265
@@ -1064,43 +1037,3 @@ msgstr "Kein Gerät gefunden"
 msgid "Open in Browser"
 msgstr "Im Browser öffnen"
 
-#~ msgid "Bluetooth Device"
-#~ msgstr "Bluetooth-Gerät"
-
-#~ msgid "Command Shortcuts"
-#~ msgstr "Befehlstastenkürzel"
-
-#~ msgid "Delete"
-#~ msgstr "Löschen"
-
-#~ msgid "Delete this device"
-#~ msgstr "Dieses Gerät löschen"
-
-#~ msgid "Unpair and remove all settings and files"
-#~ msgstr "Alle Einstellungen und Dateien entkoppeln und entfernen"
-
-#~ msgid "Switch to Bluetooth"
-#~ msgstr "Zu Bluetooth wechseln"
-
-#~ msgid "Switch to LAN"
-#~ msgstr "Zu LAN wechseln"
-
-#~ msgid "%s Plugin Failed To Load"
-#~ msgstr "%s-Modul konnte nicht geladen werden"
-
-#~ msgid "Reconnect"
-#~ msgstr "Neuverbinden"
-
-#~ msgid "Settings"
-#~ msgstr "Einstellungen"
-
-#~ msgid "Additional Software Required"
-#~ msgstr "Zusätzliche Programme benötigt"
-
-#~ msgid "Starting Transfer"
-#~ msgstr "Übertragung starten"
-
-#~ msgid ""
-#~ "Transferred files are placed in the <a href=\"%s\">Downloads</a> folder."
-#~ msgstr ""
-#~ "Übertragene Dateien befinden sich im Ordner <a href=\"%s\">Downloads</a>."
