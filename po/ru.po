@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 19:00-0400\n"
-"PO-Revision-Date: 2019-09-25 20:24\n"
+"PO-Revision-Date: 2019-09-25 20:25\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Russian\n"
 "Language: ru_RU\n"
@@ -552,7 +552,7 @@ msgstr "Имя приложения"
 
 #: src/service/daemon.js:868
 msgid "Notification Body"
-msgstr ""
+msgstr "Текст уведомления"
 
 #: src/service/daemon.js:877
 msgid "Notification Icon"
