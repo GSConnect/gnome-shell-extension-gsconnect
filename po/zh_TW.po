@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 19:00-0400\n"
-"PO-Revision-Date: 2019-09-25 13:30\n"
+"PO-Revision-Date: 2019-09-25 13:39\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -19,7 +19,7 @@ msgstr ""
 #. TRANSLATORS: View the TLS Certificate fingerprint
 #: data/gtk/menus.ui:7 src/preferences/device.js:304
 msgid "Encryption Info"
-msgstr ""
+msgstr "加密資訊"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/gtk/menus.ui:12 data/ui/device-preferences.ui:2438
@@ -211,7 +211,7 @@ msgstr "實驗性質"
 
 #: data/ui/device-preferences.ui:1712
 msgid "Legacy SMS Support"
-msgstr "舊版 SMS 支援"
+msgstr "舊版簡訊支援"
 
 #: data/ui/device-preferences.ui:1765 data/ui/device-preferences.ui:2381
 msgid "Advanced"
@@ -359,26 +359,26 @@ msgstr ""
 
 #: data/ui/preferences-window.ui:713
 msgid "Display Mode"
-msgstr ""
+msgstr "顯示模式"
 
 #. TRANSLATORS: Show device indicators in the top bar
 #: data/ui/preferences-window.ui:716
 msgid "Panel"
-msgstr ""
+msgstr "頂端列"
 
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
 #: data/ui/preferences-window.ui:722
 msgid "User Menu"
-msgstr ""
+msgstr "使用者選單"
 
 #. TRANSLATORS: Generate a support log
 #: data/ui/preferences-window.ui:730 src/preferences/service.js:430
 msgid "Generate Support Log"
-msgstr ""
+msgstr "產生支援 Log"
 
 #: data/ui/preferences-window.ui:738
 msgid "About GSConnect"
-msgstr ""
+msgstr "關於 GSConnect"
 
 #. TRANSLATORS: Share URL by SMS
 #: data/ui/telephony.ui:9 src/service/daemon.js:703 src/service/daemon.js:829
@@ -476,15 +476,15 @@ msgstr ""
 
 #: src/preferences/service.js:515
 msgid "Unpaired"
-msgstr ""
+msgstr "未配對"
 
 #: src/preferences/service.js:519
 msgid "Disconnected"
-msgstr ""
+msgstr "已中斷連線"
 
 #: src/preferences/service.js:523
 msgid "Connected"
-msgstr ""
+msgstr "已連接"
 
 #: src/preferences/service.js:661
 msgid "Waiting for service…"
@@ -618,7 +618,7 @@ msgstr "在 %s 的藍牙裝置"
 #: src/service/device.js:221 src/service/device.js:223
 #, javascript-format
 msgid "%s Fingerprint:"
-msgstr ""
+msgstr "「%s」數位指紋："
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:779
@@ -765,7 +765,7 @@ msgstr "传输失败"
 #: src/service/plugins/share.js:118
 #, javascript-format
 msgid "%s is not allowed to upload files"
-msgstr "不允許 %s 上傳檔案"
+msgstr "不允許「%s」上傳檔案"
 
 #: src/service/plugins/share.js:154 src/service/plugins/share.js:302
 msgid "Transferring File"
@@ -799,12 +799,12 @@ msgstr "打开文件"
 #: src/service/plugins/share.js:203
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
-msgstr "從 %s 接收 “%s” 失敗"
+msgstr "從「%s」接收「“%s”」失敗"
 
 #: src/service/plugins/share.js:232
 #, javascript-format
 msgid "Text Shared By %s"
-msgstr ""
+msgstr "「%s」分享的文字"
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
 #: src/service/plugins/share.js:304
@@ -822,7 +822,7 @@ msgstr "「%s」已发送到%s"
 #: src/service/plugins/share.js:335
 #, javascript-format
 msgid "Failed to send “%s” to %s"
-msgstr ""
+msgstr "傳送「“%s”」到「%s」失敗"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:404
@@ -843,7 +843,7 @@ msgstr "发送一个链接到%s"
 
 #: src/service/plugins/sms.js:13
 msgid "SMS"
-msgstr ""
+msgstr "簡訊"
 
 #: src/service/plugins/sms.js:34
 msgid "New SMS (URI)"
@@ -1010,7 +1010,7 @@ msgstr ""
 #. TRANSLATORS: Extension name
 #: webextension/gettext.js:27
 msgid "GSConnect"
-msgstr ""
+msgstr "GSConnect"
 
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
@@ -1020,15 +1020,15 @@ msgstr ""
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:33
 msgid "Service Unavailable"
-msgstr ""
+msgstr "服務無法使用"
 
 #. TRANSLATORS: No devices are known or available
 #: webextension/gettext.js:35
 msgid "No Device Found"
-msgstr ""
+msgstr "找不到裝置"
 
 #. TRANSLATORS: Open URL with the device's browser
 #: webextension/gettext.js:37
 msgid "Open in Browser"
-msgstr ""
+msgstr "以瀏覽器開啟"
 
