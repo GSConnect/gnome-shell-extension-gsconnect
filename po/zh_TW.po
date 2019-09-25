@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 19:00-0400\n"
-"PO-Revision-Date: 2019-09-25 13:16\n"
+"PO-Revision-Date: 2019-09-25 13:30\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -211,7 +211,7 @@ msgstr "實驗性質"
 
 #: data/ui/device-preferences.ui:1712
 msgid "Legacy SMS Support"
-msgstr ""
+msgstr "舊版 SMS 支援"
 
 #: data/ui/device-preferences.ui:1765 data/ui/device-preferences.ui:2381
 msgid "Advanced"
@@ -284,19 +284,19 @@ msgstr "静音"
 #: data/ui/messaging-window.ui:12 src/service/plugins/sms.js:26
 #: src/service/ui/messaging.js:1012
 msgid "Messaging"
-msgstr ""
+msgstr "發送簡訊"
 
 #: data/ui/messaging-window.ui:21 src/service/ui/messaging.js:1229
 msgid "New Conversation"
-msgstr ""
+msgstr "新的對話"
 
 #: data/ui/messaging-window.ui:105
 msgid "No Conversations"
-msgstr ""
+msgstr "沒有對話"
 
 #: data/ui/messaging-window.ui:165
 msgid "No conversation selected"
-msgstr ""
+msgstr "尚無對話"
 
 #: data/ui/messaging-window.ui:181
 msgid "Select or start a conversation"
@@ -521,19 +521,19 @@ msgstr ""
 #: src/service/daemon.js:715 src/service/daemon.js:925
 #: src/service/plugins/share.js:27
 msgid "Share File"
-msgstr ""
+msgstr "分享檔案"
 
 #: src/service/daemon.js:778
 msgid "List available devices"
-msgstr ""
+msgstr "列出可用裝置"
 
 #: src/service/daemon.js:787
 msgid "List all devices"
-msgstr ""
+msgstr "列出所有裝置"
 
 #: src/service/daemon.js:796
 msgid "Target Device"
-msgstr ""
+msgstr "目標裝置"
 
 #: src/service/daemon.js:838
 msgid "Message Body"
@@ -541,7 +541,7 @@ msgstr ""
 
 #: src/service/daemon.js:850 src/service/plugins/notification.js:51
 msgid "Send Notification"
-msgstr ""
+msgstr "發送通知"
 
 #: src/service/daemon.js:859
 msgid "Notification App Name"
@@ -562,17 +562,17 @@ msgstr ""
 #: src/service/daemon.js:895 src/service/plugins/photo.js:11
 #: src/service/plugins/photo.js:17
 msgid "Photo"
-msgstr ""
+msgstr "照片"
 
 #: src/service/daemon.js:904 src/service/plugins/ping.js:11
 #: src/service/plugins/ping.js:17 src/service/plugins/ping.js:46
 msgid "Ping"
-msgstr ""
+msgstr "Ping"
 
 #: src/service/daemon.js:913 src/service/plugins/battery.js:155
 #: src/service/plugins/findmyphone.js:19
 msgid "Ring"
-msgstr ""
+msgstr "響音"
 
 #: src/service/daemon.js:934 src/service/plugins/share.js:43
 #: src/service/ui/messaging.js:1212 src/service/ui/messaging.js:1220
@@ -597,7 +597,7 @@ msgstr "平板"
 
 #: src/service/device.js:188
 msgid "Television"
-msgstr ""
+msgstr "電視"
 
 #: src/service/device.js:196
 msgid "Not available"
@@ -607,7 +607,7 @@ msgstr ""
 #: src/service/device.js:201
 #, javascript-format
 msgid "Bluetooth device at %s"
-msgstr ""
+msgstr "在 %s 的藍牙裝置"
 
 #. TRANSLATORS: Label for TLS Certificate fingerprint
 #.
@@ -638,19 +638,19 @@ msgstr "接受"
 #: src/service/plugins/battery.js:181
 #, javascript-format
 msgid "%s: Battery is low"
-msgstr ""
+msgstr "%s: 電量過低"
 
 #. TRANSLATORS: eg. 15% remaining
 #: src/service/plugins/battery.js:183
 #, javascript-format
 msgid "%d%% remaining"
-msgstr ""
+msgstr "剩下 %d%% 電量"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:199
 #, javascript-format
 msgid "%s: Battery is full"
-msgstr ""
+msgstr "%s: 電池已充飽"
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
@@ -683,7 +683,7 @@ msgstr "未知联系人"
 
 #: src/service/plugins/findmyphone.js:13
 msgid "Find My Phone"
-msgstr ""
+msgstr "找尋我的手機"
 
 #: src/service/plugins/mousepad.js:14
 msgid "Mousepad"
@@ -691,7 +691,7 @@ msgstr ""
 
 #: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:720
 msgid "Keyboard"
-msgstr ""
+msgstr "鍵盤"
 
 #: src/service/plugins/mousepad.js:737
 msgid "Keyboard not ready"
@@ -699,7 +699,7 @@ msgstr ""
 
 #: src/service/plugins/mpris.js:12
 msgid "MPRIS"
-msgstr ""
+msgstr "MPRIS"
 
 #: src/service/plugins/notification.js:27
 msgid "Cancel Notification"
@@ -722,7 +722,7 @@ msgstr ""
 #: src/service/plugins/ping.js:53
 #, javascript-format
 msgid "Ping: %s"
-msgstr ""
+msgstr "Ping: %s"
 
 #: src/service/plugins/runcommand.js:12
 msgid "Run Commands"
@@ -730,11 +730,11 @@ msgstr "运行命令"
 
 #: src/service/plugins/sftp.js:12
 msgid "SFTP"
-msgstr ""
+msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:18
 msgid "Mount"
-msgstr ""
+msgstr "掛載"
 
 #: src/service/plugins/sftp.js:26
 msgid "Unmount"
@@ -742,11 +742,11 @@ msgstr "卸载"
 
 #: src/service/plugins/sftp.js:134
 msgid "All files"
-msgstr ""
+msgstr "所有檔案"
 
 #: src/service/plugins/sftp.js:135
 msgid "Camera pictures"
-msgstr ""
+msgstr "相機照片"
 
 #: src/service/plugins/share.js:13 src/service/plugins/share.js:19
 msgid "Share"
@@ -754,7 +754,7 @@ msgstr "共享"
 
 #: src/service/plugins/share.js:35
 msgid "Share Text"
-msgstr ""
+msgstr "分享文字"
 
 #: src/service/plugins/share.js:116 src/service/plugins/share.js:201
 #: src/service/plugins/share.js:333
@@ -765,11 +765,11 @@ msgstr "传输失败"
 #: src/service/plugins/share.js:118
 #, javascript-format
 msgid "%s is not allowed to upload files"
-msgstr ""
+msgstr "不允許 %s 上傳檔案"
 
 #: src/service/plugins/share.js:154 src/service/plugins/share.js:302
 msgid "Transferring File"
-msgstr ""
+msgstr "檔案傳送中"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:156
@@ -799,7 +799,7 @@ msgstr "打开文件"
 #: src/service/plugins/share.js:203
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
-msgstr ""
+msgstr "從 %s 接收 “%s” 失敗"
 
 #: src/service/plugins/share.js:232
 #, javascript-format
