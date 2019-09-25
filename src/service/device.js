@@ -225,10 +225,6 @@ var Device = GObject.registerClass({
     }
 
     get id() {
-        if (this._id === undefined) {
-            this._id = this.settings.get_string('id');
-        }
-
         return this._id;
     }
 
@@ -283,8 +279,6 @@ var Device = GObject.registerClass({
     }
 
     _handleIdentity(packet) {
-        this.settings.set_string('id', packet.body.deviceId);
-
         if (this._type === undefined) {
             this._type = packet.body.deviceType;
             this.notify('type');
