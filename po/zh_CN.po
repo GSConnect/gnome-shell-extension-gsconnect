@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 19:00-0400\n"
-"PO-Revision-Date: 2019-09-25 08:06\n"
+"PO-Revision-Date: 2019-09-25 08:09\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -468,7 +468,7 @@ msgstr "翻译贡献"
 
 #: src/preferences/service.js:431
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
-msgstr "正在记录调试日志。采取任何必要的步骤来重现问题，然后查看日志。"
+msgstr "正在记录调试日志。请采取任何必要的步骤来重现问题，然后即可查看日志。"
 
 #: src/preferences/service.js:434
 msgid "Review Log"
@@ -1025,7 +1025,7 @@ msgstr "服务不可用"
 #. TRANSLATORS: No devices are known or available
 #: webextension/gettext.js:35
 msgid "No Device Found"
-msgstr "找不到设备"
+msgstr "没有找到设备"
 
 #. TRANSLATORS: Open URL with the device's browser
 #: webextension/gettext.js:37
