@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 19:00-0400\n"
-"PO-Revision-Date: 2019-09-25 08:09\n"
+"PO-Revision-Date: 2019-09-25 08:18\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -107,7 +107,7 @@ msgstr "文件"
 
 #: data/ui/device-preferences.ui:418
 msgid "Receive Files"
-msgstr ""
+msgstr "文件接收"
 
 #: data/ui/device-preferences.ui:503 data/ui/device-preferences.ui:2105
 msgid "Sharing"
