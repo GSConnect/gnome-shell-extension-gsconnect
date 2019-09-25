@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 19:00-0400\n"
-"PO-Revision-Date: 2019-09-25 20:26\n"
+"PO-Revision-Date: 2019-09-25 20:33\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Russian\n"
 "Language: ru_RU\n"
@@ -107,7 +107,7 @@ msgstr "Файлы"
 
 #: data/ui/device-preferences.ui:418
 msgid "Receive Files"
-msgstr ""
+msgstr "Принять файлы"
 
 #: data/ui/device-preferences.ui:503 data/ui/device-preferences.ui:2105
 msgid "Sharing"
@@ -231,7 +231,7 @@ msgstr "Индикация полной зарядки"
 
 #: data/ui/device-preferences.ui:1955
 msgid "System Battery"
-msgstr ""
+msgstr "Системная батарея"
 
 #: data/ui/device-preferences.ui:2006
 msgid "Share Statistics"
