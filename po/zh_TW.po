@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 19:00-0400\n"
-"PO-Revision-Date: 2019-09-25 13:58\n"
+"PO-Revision-Date: 2019-09-25 14:09\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -35,7 +35,7 @@ msgstr "取消配對"
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/connect.ui:14 data/ui/preferences-window.ui:708
 msgid "Connect to…"
-msgstr "連線到"
+msgstr "連線到…"
 
 #. Action Buttons
 #: data/ui/connect.ui:20 data/ui/notification-reply-dialog.ui:14
@@ -257,12 +257,12 @@ msgstr ""
 #. TRANSLATORS: Send clipboard content to device
 #: data/ui/device-preferences.ui:2526
 msgid "To Device"
-msgstr ""
+msgstr "到裝置"
 
 #. TRANSLATORS: Receive clipboard content from the device
 #: data/ui/device-preferences.ui:2532
 msgid "From Device"
-msgstr ""
+msgstr "從裝置"
 
 #. TRANSLATORS: Don't change the system volume
 #: data/ui/device-preferences.ui:2544 data/ui/device-preferences.ui:2570
@@ -314,11 +314,11 @@ msgstr "傳送"
 
 #: data/ui/preferences-window.ui:18
 msgid "Device Name"
-msgstr ""
+msgstr "裝置名稱"
 
 #: data/ui/preferences-window.ui:49
 msgid "_Rename"
-msgstr ""
+msgstr "重新命名（_R）"
 
 #: data/ui/preferences-window.ui:84 data/ui/preferences-window.ui:98
 msgid "Refresh"
@@ -331,27 +331,27 @@ msgstr "手機設置"
 
 #: data/ui/preferences-window.ui:180 data/ui/preferences-window.ui:195
 msgid "Edit Device Name"
-msgstr ""
+msgstr "修改裝置名稱"
 
 #: data/ui/preferences-window.ui:255
 msgid "Devices"
-msgstr ""
+msgstr "裝置"
 
 #: data/ui/preferences-window.ui:305 src/preferences/service.js:659
 msgid "Searching for devices…"
-msgstr ""
+msgstr "正在搜尋裝置…"
 
 #: data/ui/preferences-window.ui:330
 msgid "Browser Add-Ons"
-msgstr ""
+msgstr "瀏覽器外掛"
 
 #: data/ui/preferences-window.ui:610
 msgid "Enable"
-msgstr ""
+msgstr "啟用"
 
 #: data/ui/preferences-window.ui:642
 msgid "This device is invisible to unpaired devices"
-msgstr ""
+msgstr "未配對裝置看不到此裝置"
 
 #: data/ui/preferences-window.ui:654 src/service/daemon.js:602
 msgid "Discovery Disabled"
@@ -394,7 +394,7 @@ msgstr "行動裝置"
 #. TRANSLATORS: A menu option to activate the extension
 #: src/extension.js:145 src/extension.js:385
 msgid "Turn On"
-msgstr ""
+msgstr "開啟"
 
 #: src/extension.js:244
 #, javascript-format
@@ -405,7 +405,7 @@ msgstr[0] ""
 #. TRANSLATORS: A menu option to deactivate the extension
 #: src/extension.js:382
 msgid "Turn Off"
-msgstr ""
+msgstr "關閉"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:164 webextension/gettext.js:31
@@ -418,15 +418,15 @@ msgstr ""
 
 #: src/preferences/device.js:720 src/preferences/device.js:733
 msgid "On"
-msgstr ""
+msgstr "開啟"
 
 #: src/preferences/device.js:720 src/preferences/device.js:733
 msgid "Off"
-msgstr ""
+msgstr "關閉"
 
 #: src/preferences/device.js:838 src/preferences/device.js:866
 msgid "Disabled"
-msgstr ""
+msgstr "停用"
 
 #. TRANSLATORS: Title of keyboard shortcut dialog
 #: src/preferences/keybindings.js:75
@@ -855,7 +855,7 @@ msgstr "回覆簡訊"
 
 #: src/service/plugins/sms.js:66
 msgid "Share SMS"
-msgstr ""
+msgstr "分享簡訊"
 
 #: src/service/plugins/systemvolume.js:11
 msgid "System Volume"
@@ -914,30 +914,30 @@ msgstr "傳送到「%s」"
 #. TRANSLATORS: Less than a minute ago
 #: src/service/ui/messaging.js:29 src/service/ui/messaging.js:66
 msgid "Just now"
-msgstr ""
+msgstr "就在剛才"
 
 #: src/service/ui/messaging.js:35 src/service/ui/messaging.js:71
 #: src/shell/donotdisturb.js:142
 #, javascript-format
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] ""
+msgstr[0] "%d 分鐘"
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
 #: src/service/ui/messaging.js:43
 #, javascript-format
 msgid "Yesterday・%s"
-msgstr ""
+msgstr "昨天・%s"
 
 #: src/service/ui/messaging.js:255
 msgid "Group Message"
-msgstr ""
+msgstr "群組簡訊"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:265
 #, javascript-format
 msgid "You: %s"
-msgstr ""
+msgstr "你：%s"
 
 #: src/service/ui/messaging.js:861
 #, javascript-format
@@ -965,7 +965,7 @@ msgstr "%d%% (計算中…)"
 #: src/shell/device.js:128
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
-msgstr ""
+msgstr "%d%%（距離充滿還需 %d∶%02d ）"
 
 #. TRANSLATORS: Estimated time until battery is empty
 #. EXAMPLE: 42% (12:15 Remaining)
@@ -978,7 +978,7 @@ msgstr "%d%% (%d∶%02d 剩餘)"
 #, javascript-format
 msgid "%d hour"
 msgid_plural "%d hours"
-msgstr[0] ""
+msgstr[0] "%d 小時"
 
 #. TRANSLATORS: Time until change with time duration
 #. EXAMPLE: Until 10:00 (2 hours)
@@ -989,7 +989,7 @@ msgstr ""
 
 #: src/shell/donotdisturb.js:243 src/shell/donotdisturb.js:342
 msgid "Do Not Disturb"
-msgstr ""
+msgstr "勿擾模式"
 
 #: src/shell/donotdisturb.js:249
 msgid "Silence Mobile Device Notifications"
@@ -997,15 +997,15 @@ msgstr ""
 
 #: src/shell/donotdisturb.js:261
 msgid "Until you turn off Do Not Disturb"
-msgstr ""
+msgstr "直到您關閉勿擾模式"
 
 #: src/shell/donotdisturb.js:302
 msgid "Done"
-msgstr ""
+msgstr "完成"
 
 #: src/shell/notification.js:43
 msgid "Reply"
-msgstr ""
+msgstr "回覆"
 
 #. TRANSLATORS: Extension name
 #: webextension/gettext.js:27
