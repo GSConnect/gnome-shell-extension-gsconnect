@@ -2,17 +2,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-24 14:16-0400\n"
-"PO-Revision-Date: 2019-05-18 10:54\n"
+"POT-Creation-Date: 2019-09-24 19:00-0400\n"
+"PO-Revision-Date: 2019-09-25 20:37\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Russian\n"
-"Language: ru\n"
+"Language: ru_RU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 "
-"&& n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 "
-"&& n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
 "X-Generator: crowdin.com\n"
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Language: ru\n"
@@ -109,7 +107,7 @@ msgstr "Файлы"
 
 #: data/ui/device-preferences.ui:418
 msgid "Receive Files"
-msgstr ""
+msgstr "Принять файлы"
 
 #: data/ui/device-preferences.ui:503 data/ui/device-preferences.ui:2105
 msgid "Sharing"
@@ -220,29 +218,24 @@ msgid "Advanced"
 msgstr "Дополнительные"
 
 #: data/ui/device-preferences.ui:1796
-#, fuzzy
 msgid "Device Battery"
-msgstr "Батарея"
+msgstr "Батарея устройства"
 
 #: data/ui/device-preferences.ui:1847
-#, fuzzy
 msgid "Low Battery Notification"
-msgstr "Ответить"
+msgstr "Уведомление о низком уровне заряда"
 
 #: data/ui/device-preferences.ui:1908
-#, fuzzy
 msgid "Fully Charged Notification"
-msgstr "Отправлять уведомления"
+msgstr "Индикация полной зарядки"
 
 #: data/ui/device-preferences.ui:1955
-#, fuzzy
 msgid "System Battery"
-msgstr "Батарея"
+msgstr "Системная батарея"
 
 #: data/ui/device-preferences.ui:2006
-#, fuzzy
 msgid "Share Statistics"
-msgstr "Отправлять уведомления"
+msgstr "Поделиться статистикой"
 
 #: data/ui/device-preferences.ui:2055 data/ui/device-preferences.ui:2151
 #: src/service/plugins/battery.js:11
@@ -320,13 +313,12 @@ msgid "Send"
 msgstr "Отправить"
 
 #: data/ui/preferences-window.ui:18
-#, fuzzy
 msgid "Device Name"
-msgstr "Редактировать название устройства"
+msgstr "Название устройства"
 
 #: data/ui/preferences-window.ui:49
 msgid "_Rename"
-msgstr ""
+msgstr "_Переименовать"
 
 #: data/ui/preferences-window.ui:84 data/ui/preferences-window.ui:98
 msgid "Refresh"
@@ -399,9 +391,10 @@ msgstr "Отправить СМС"
 msgid "Mobile Devices"
 msgstr "Устройства"
 
-#: src/extension.js:145 src/extension.js:383
+#. TRANSLATORS: A menu option to activate the extension
+#: src/extension.js:145 src/extension.js:385
 msgid "Turn On"
-msgstr ""
+msgstr "Включить"
 
 #: src/extension.js:244
 #, javascript-format
@@ -412,9 +405,10 @@ msgstr[1] "%d подключено"
 msgstr[2] "%d подключено"
 msgstr[3] "%d подключено"
 
-#: src/extension.js:381
+#. TRANSLATORS: A menu option to deactivate the extension
+#: src/extension.js:382
 msgid "Turn Off"
-msgstr ""
+msgstr "Выключить"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:164 webextension/gettext.js:31
@@ -476,12 +470,8 @@ msgid "translator-credits"
 msgstr "'Losted' <losted@wants.dicksinhisan.us>"
 
 #: src/preferences/service.js:431
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Отладочные сообщения будут записаны. Произведите действия при которых "
-"произошла проблема, затем посмотрите журнал."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Отладочные сообщения будут записаны. Произведите действия при которых произошла проблема, затем посмотрите журнал."
 
 #: src/preferences/service.js:434
 msgid "Review Log"
@@ -500,9 +490,8 @@ msgid "Connected"
 msgstr "Подключено"
 
 #: src/preferences/service.js:661
-#, fuzzy
 msgid "Waiting for service…"
-msgstr "Поиск устройств…"
+msgstr "Ожидание службы…"
 
 #: src/service/daemon.js:341
 msgid "Report"
@@ -521,8 +510,7 @@ msgid "Click for help troubleshooting"
 msgstr "Нажмите для решения проблем"
 
 #: src/service/daemon.js:603
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Обнаружение было выключено из-за количества устройств в этой сети."
 
 #: src/service/daemon.js:612
@@ -539,47 +527,40 @@ msgid "Share File"
 msgstr "Поделиться файлом"
 
 #: src/service/daemon.js:778
-#, fuzzy
 msgid "List available devices"
-msgstr "Недоступно"
+msgstr "Список доступных устройств"
 
 #: src/service/daemon.js:787
-#, fuzzy
 msgid "List all devices"
-msgstr "Устройства"
+msgstr "Список всех устройств"
 
 #: src/service/daemon.js:796
-#, fuzzy
 msgid "Target Device"
-msgstr "На устройство"
+msgstr "Целевое устройство"
 
 #: src/service/daemon.js:838
 msgid "Message Body"
-msgstr ""
+msgstr "Текст сообщения"
 
 #: src/service/daemon.js:850 src/service/plugins/notification.js:51
 msgid "Send Notification"
 msgstr "Отправить"
 
 #: src/service/daemon.js:859
-#, fuzzy
 msgid "Notification App Name"
-msgstr "Уведомления"
+msgstr "Имя приложения"
 
 #: src/service/daemon.js:868
-#, fuzzy
 msgid "Notification Body"
-msgstr "Уведомления"
+msgstr "Текст уведомления"
 
 #: src/service/daemon.js:877
-#, fuzzy
 msgid "Notification Icon"
-msgstr "Уведомления"
+msgstr "Иконка уведомления"
 
 #: src/service/daemon.js:886
-#, fuzzy
 msgid "Notification ID"
-msgstr "Уведомления"
+msgstr "ID уведомления"
 
 #: src/service/daemon.js:895 src/service/plugins/photo.js:11
 #: src/service/plugins/photo.js:17
@@ -603,7 +584,7 @@ msgstr "Поделиться ссылкой"
 
 #: src/service/daemon.js:946
 msgid "Show release version"
-msgstr ""
+msgstr "Показать версию программы"
 
 #: src/service/device.js:182
 msgid "Laptop"
@@ -618,9 +599,8 @@ msgid "Tablet"
 msgstr "Планшет"
 
 #: src/service/device.js:188
-#, fuzzy
 msgid "Television"
-msgstr "Телефония"
+msgstr "Телевидение"
 
 #: src/service/device.js:196
 msgid "Not available"
@@ -671,9 +651,9 @@ msgstr "%d%% осталось"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:199
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s: Battery is full"
-msgstr "%s: Аккумулятор разряжен"
+msgstr "%s: Аккумулятор заряжен"
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
@@ -737,9 +717,8 @@ msgid "Reply Notification"
 msgstr "Ответить"
 
 #: src/service/plugins/notification.js:59
-#, fuzzy
 msgid "Activate Notification"
-msgstr "Отправлять уведомления"
+msgstr "Активировать уведомление"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -789,12 +768,11 @@ msgstr "Передача не удалась"
 #: src/service/plugins/share.js:118
 #, javascript-format
 msgid "%s is not allowed to upload files"
-msgstr ""
+msgstr "%s не разрешено загружать файлы"
 
 #: src/service/plugins/share.js:154 src/service/plugins/share.js:302
-#, fuzzy
 msgid "Transferring File"
-msgstr "Передача не удалась"
+msgstr "Передача файла"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:156
@@ -958,9 +936,8 @@ msgid "Yesterday・%s"
 msgstr "Вчера・%s"
 
 #: src/service/ui/messaging.js:255
-#, fuzzy
 msgid "Group Message"
-msgstr "Отправить сообщение"
+msgstr "Групповое сообщение"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:265
@@ -1067,42 +1044,3 @@ msgstr "Устройства не найдены"
 msgid "Open in Browser"
 msgstr "Открыть в браузере"
 
-#~ msgid "Bluetooth Device"
-#~ msgstr "Bluetooth устройство"
-
-#~ msgid "Command Shortcuts"
-#~ msgstr "Комбинации клавиш"
-
-#~ msgid "Delete"
-#~ msgstr "Удалить"
-
-#~ msgid "Delete this device"
-#~ msgstr "Удалить устройство"
-
-#~ msgid "Unpair and remove all settings and files"
-#~ msgstr "Забыть и удалить все настройки и файлы"
-
-#~ msgid "Switch to Bluetooth"
-#~ msgstr "Переключиться на Bluetooth"
-
-#~ msgid "Switch to LAN"
-#~ msgstr "Переключиться на LAN"
-
-#~ msgid "%s Plugin Failed To Load"
-#~ msgstr "Ошибка загрузки плагина %s"
-
-#~ msgid "Reconnect"
-#~ msgstr "Переподключиться"
-
-#~ msgid "Settings"
-#~ msgstr "Настройки"
-
-#~ msgid "Additional Software Required"
-#~ msgstr "Необходимо дополнительное ПО"
-
-#~ msgid "Starting Transfer"
-#~ msgstr "Начало передачи"
-
-#~ msgid ""
-#~ "Transferred files are placed in the <a href=\"%s\">Downloads</a> folder."
-#~ msgstr "Переданные файлы помещаются в папку <a href=\"%s\">Загрузки</a>."
