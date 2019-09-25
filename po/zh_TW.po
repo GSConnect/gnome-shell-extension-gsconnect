@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 19:00-0400\n"
-"PO-Revision-Date: 2019-09-25 13:46\n"
+"PO-Revision-Date: 2019-09-25 13:58\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -66,7 +66,7 @@ msgstr "幫助"
 
 #: data/ui/contact-chooser.ui:103
 msgid "Type a phone number or name"
-msgstr "键入电话号码或姓名"
+msgstr "輸入電話號碼或姓名"
 
 #: data/ui/conversation.ui:76 data/ui/conversation.ui:85
 #: src/shell/notification.js:52
@@ -121,7 +121,7 @@ msgstr "指令"
 
 #: data/ui/device-preferences.ui:596 data/ui/device-preferences.ui:599
 msgid "Name"
-msgstr "名称"
+msgstr "名稱"
 
 #: data/ui/device-preferences.ui:612 data/ui/device-preferences.ui:618
 msgid "Command Line"
@@ -153,7 +153,7 @@ msgstr "分享通知"
 
 #: data/ui/device-preferences.ui:938
 msgid "Applications"
-msgstr "应用"
+msgstr "應用程式"
 
 #: data/ui/device-preferences.ui:984 data/ui/device-preferences.ui:2243
 #: src/service/plugins/notification.js:13
@@ -166,7 +166,7 @@ msgstr "聯繫人"
 
 #: data/ui/device-preferences.ui:1095
 msgid "Incoming Calls"
-msgstr "来电"
+msgstr "來電"
 
 #: data/ui/device-preferences.ui:1144 data/ui/device-preferences.ui:1311
 msgid "Volume"
@@ -174,7 +174,7 @@ msgstr "音量"
 
 #: data/ui/device-preferences.ui:1210 data/ui/device-preferences.ui:1377
 msgid "Pause Media"
-msgstr "暂停媒体"
+msgstr "暫停媒體"
 
 #: data/ui/device-preferences.ui:1263
 msgid "Ongoing Calls"
@@ -182,12 +182,12 @@ msgstr "通話中"
 
 #: data/ui/device-preferences.ui:1433
 msgid "Mute Microphone"
-msgstr "静音麦克风"
+msgstr "靜音麥克風"
 
 #: data/ui/device-preferences.ui:1487 data/ui/device-preferences.ui:2289
 #: src/service/plugins/telephony.js:13
 msgid "Telephony"
-msgstr "电话"
+msgstr "電話"
 
 #: data/ui/device-preferences.ui:1522
 msgid "Action Shortcuts"
@@ -203,7 +203,7 @@ msgstr ""
 
 #: data/ui/device-preferences.ui:1617
 msgid "Plugins"
-msgstr "插件"
+msgstr "外掛"
 
 #: data/ui/device-preferences.ui:1663
 msgid "Experimental"
@@ -240,7 +240,7 @@ msgstr ""
 #: data/ui/device-preferences.ui:2055 data/ui/device-preferences.ui:2151
 #: src/service/plugins/battery.js:11
 msgid "Battery"
-msgstr "电池"
+msgstr "電池"
 
 #: data/ui/device-preferences.ui:2335
 msgid "Keyboard Shortcuts"
@@ -267,7 +267,7 @@ msgstr ""
 #. TRANSLATORS: Don't change the system volume
 #: data/ui/device-preferences.ui:2544 data/ui/device-preferences.ui:2570
 msgid "Nothing"
-msgstr "没有任何东西"
+msgstr "無動作"
 
 #. TRANSLATORS: Lower the system volume
 #: data/ui/device-preferences.ui:2551 data/ui/device-preferences.ui:2577
@@ -305,12 +305,12 @@ msgstr ""
 #: data/ui/messaging-window.ui:248 data/ui/notification-reply-dialog.ui:53
 #: data/ui/telephony.ui:53
 msgid "Device is disconnected"
-msgstr "设备已断开"
+msgstr "設備已斷開"
 
 #: data/ui/notification-reply-dialog.ui:21 data/ui/telephony.ui:21
 #: src/service/plugins/share.js:453
 msgid "Send"
-msgstr "发送"
+msgstr "傳送"
 
 #: data/ui/preferences-window.ui:18
 msgid "Device Name"
@@ -322,12 +322,12 @@ msgstr ""
 
 #: data/ui/preferences-window.ui:84 data/ui/preferences-window.ui:98
 msgid "Refresh"
-msgstr "刷新"
+msgstr "重新整理"
 
 #: data/ui/preferences-window.ui:109 data/ui/preferences-window.ui:126
 #: src/extension.js:151
 msgid "Mobile Settings"
-msgstr "手机设置"
+msgstr "手機設置"
 
 #: data/ui/preferences-window.ui:180 data/ui/preferences-window.ui:195
 msgid "Edit Device Name"
@@ -384,12 +384,12 @@ msgstr "關於 GSConnect"
 #: data/ui/telephony.ui:9 src/service/daemon.js:703 src/service/daemon.js:829
 #: src/service/plugins/sms.js:58 webextension/gettext.js:39
 msgid "Send SMS"
-msgstr "发送短信"
+msgstr "發送簡訊"
 
 #. Service Menu
 #: src/extension.js:118 src/extension.js:249
 msgid "Mobile Devices"
-msgstr "手机设备"
+msgstr "行動裝置"
 
 #. TRANSLATORS: A menu option to activate the extension
 #: src/extension.js:145 src/extension.js:385
@@ -775,7 +775,7 @@ msgstr "檔案傳送中"
 #: src/service/plugins/share.js:156
 #, javascript-format
 msgid "Receiving “%s” from %s"
-msgstr "正在从%s接收 「%s」 ..."
+msgstr "正在從「%s」接收「“%s”」"
 
 #: src/service/plugins/share.js:181 src/service/plugins/share.js:325
 msgid "Transfer Successful"
@@ -785,15 +785,15 @@ msgstr "传输成功"
 #: src/service/plugins/share.js:183
 #, javascript-format
 msgid "Received “%s” from %s"
-msgstr "从 %s接收到「%s」 ."
+msgstr "從「%s」接收到「“%s”」"
 
 #: src/service/plugins/share.js:189
 msgid "Open Folder"
-msgstr "打开文件夹"
+msgstr "打開資料夾"
 
 #: src/service/plugins/share.js:194
 msgid "Open File"
-msgstr "打开文件"
+msgstr "打開檔案"
 
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:203
@@ -810,13 +810,13 @@ msgstr "「%s」分享的文字"
 #: src/service/plugins/share.js:304
 #, javascript-format
 msgid "Sending “%s” to %s"
-msgstr "正在将「%s」发送到%s"
+msgstr "正在將「“%s”」傳送到「%s」"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:327
 #, javascript-format
 msgid "Sent “%s” to %s"
-msgstr "「%s」已傳送到「%s」"
+msgstr "「“%s”」已傳送到「%s」"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:335
@@ -851,7 +851,7 @@ msgstr ""
 
 #: src/service/plugins/sms.js:42 src/service/plugins/telephony.js:22
 msgid "Reply SMS"
-msgstr ""
+msgstr "回覆簡訊"
 
 #: src/service/plugins/sms.js:66
 msgid "Share SMS"
@@ -863,17 +863,17 @@ msgstr "系統音量"
 
 #: src/service/plugins/telephony.js:30
 msgid "Mute Call"
-msgstr ""
+msgstr "通話靜音"
 
 #. TRANSLATORS: The phone is ringing
 #: src/service/plugins/telephony.js:187
 msgid "Incoming call"
-msgstr ""
+msgstr "來電"
 
 #. TRANSLATORS: A phone call is active
 #: src/service/plugins/telephony.js:202
 msgid "Ongoing call"
-msgstr ""
+msgstr "通話中"
 
 #. TRANSLATORS: All other phone number types
 #: src/service/ui/contacts.js:126 src/service/ui/contacts.js:147
