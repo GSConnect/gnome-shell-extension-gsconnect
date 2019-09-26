@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 19:00-0400\n"
-"PO-Revision-Date: 2019-09-25 20:37\n"
+"PO-Revision-Date: 2019-09-26 20:14\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Lithuanian\n"
 "Language: lt_LT\n"
@@ -394,7 +394,7 @@ msgstr "Mobilieji įrenginiai"
 #. TRANSLATORS: A menu option to activate the extension
 #: src/extension.js:145 src/extension.js:385
 msgid "Turn On"
-msgstr ""
+msgstr "Įjungti"
 
 #: src/extension.js:244
 #, javascript-format
@@ -408,7 +408,7 @@ msgstr[3] "%d prijungtas"
 #. TRANSLATORS: A menu option to deactivate the extension
 #: src/extension.js:382
 msgid "Turn Off"
-msgstr ""
+msgstr "Išjungti"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:164 webextension/gettext.js:31
@@ -528,15 +528,15 @@ msgstr "Bendrinti failą"
 
 #: src/service/daemon.js:778
 msgid "List available devices"
-msgstr ""
+msgstr "Išvardyti prieinamus įrenginius"
 
 #: src/service/daemon.js:787
 msgid "List all devices"
-msgstr ""
+msgstr "Išvardyti visus įrenginius"
 
 #: src/service/daemon.js:796
 msgid "Target Device"
-msgstr ""
+msgstr "Paskirties įrenginys"
 
 #: src/service/daemon.js:838
 msgid "Message Body"
@@ -584,7 +584,7 @@ msgstr "Bendrinti nuorodą"
 
 #: src/service/daemon.js:946
 msgid "Show release version"
-msgstr ""
+msgstr "Rodyti laidos versiją"
 
 #: src/service/device.js:182
 msgid "Laptop"
@@ -600,7 +600,7 @@ msgstr "Planšetė"
 
 #: src/service/device.js:188
 msgid "Television"
-msgstr ""
+msgstr "Televizija"
 
 #: src/service/device.js:196
 msgid "Not available"
