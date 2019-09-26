@@ -190,6 +190,14 @@ var Window = GObject.registerClass({
         this.connectTemplate();
         super._init(params);
 
+        // Service Settings
+        this.settings = new Gio.Settings({
+            settings_schema: gsconnect.gschema.lookup(
+                'org.gnome.Shell.Extensions.GSConnect',
+                true
+            )
+        });
+
         // Service Proxy
         this.service = new Remote.Service();
 
@@ -209,7 +217,7 @@ var Window = GObject.registerClass({
         );
 
         // HeaderBar (Service Name)
-        this.headerbar.title = gsconnect.settings.get_string('name');
+        this.headerbar.title = this.settings.get_string('name');
         this.rename_entry.text = this.headerbar.title;
 
         // Scroll with keyboard focus
@@ -219,13 +227,13 @@ var Window = GObject.registerClass({
         this.device_list.set_header_func(rowSeparators);
 
         // Discoverable InfoBar
-        gsconnect.settings.bind(
+        this.settings.bind(
             'discoverable',
             this.infobar,
             'reveal-child',
             Gio.SettingsBindFlags.INVERT_BOOLEAN
         );
-        this.add_action(gsconnect.settings.create_action('discoverable'));
+        this.add_action(this.settings.create_action('discoverable'));
 
         // Application Menu
         this._initMenu();
@@ -245,7 +253,7 @@ var Window = GObject.registerClass({
     }
 
     get display_mode() {
-        if (gsconnect.settings.get_boolean('show-indicators')) {
+        if (this.settings.get_boolean('show-indicators')) {
             return 'panel';
         } else {
             return 'user-menu';
@@ -253,7 +261,7 @@ var Window = GObject.registerClass({
     }
 
     set display_mode(mode) {
-        gsconnect.settings.set_boolean('show-indicators', (mode === 'panel'));
+        this.settings.set_boolean('show-indicators', (mode === 'panel'));
     }
 
     vfunc_delete_event(event) {
@@ -425,12 +433,12 @@ var Window = GObject.registerClass({
         dialog.add_button(_('Review Log'), Gtk.ResponseType.OK);
 
         // Enable debug logging and mark the current time
-        gsconnect.settings.set_boolean('debug', true);
+        this.settings.set_boolean('debug', true);
         let now = GLib.DateTime.new_now_local().format('%R');
 
         dialog.connect('response', (dialog, response_id) => {
             // Disable debug logging and destroy the dialog
-            gsconnect.settings.set_boolean('debug', false);
+            this.settings.set_boolean('debug', false);
             dialog.destroy();
 
             // Only generate a log if instructed
@@ -463,7 +471,7 @@ var Window = GObject.registerClass({
         this.service_edit.visible = true;
         this.service_menu.visible = true;
 
-        this.headerbar.title = gsconnect.settings.get_string('name');
+        this.headerbar.title = this.settings.get_string('name');
         this.headerbar.subtitle = null;
 
         // Panel
@@ -479,7 +487,7 @@ var Window = GObject.registerClass({
     _onSetServiceName(widget) {
         if (this.rename_entry.text.length) {
             this.headerbar.title = this.rename_entry.text;
-            gsconnect.settings.set_string('name', this.rename_entry.text);
+            this.settings.set_string('name', this.rename_entry.text);
         }
 
         this.service_edit.active = false;
