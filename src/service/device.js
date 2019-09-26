@@ -277,6 +277,13 @@ var Device = GObject.registerClass({
         // Packets
         let incoming = packet.body.incomingCapabilities.sort();
         let outgoing = packet.body.outgoingCapabilities.sort();
+        let inc = this.settings.get_strv('incoming-capabilities');
+        let out = this.settings.get_strv('outgoing-capabilities');
+
+        // Skip if nothing's changed
+        if (incoming.join('') == inc.join('') && outgoing.join('') == out.join('')) {
+            return;
+        }
 
         this.settings.set_strv('incoming-capabilities', incoming);
         this.settings.set_strv('outgoing-capabilities', outgoing);
