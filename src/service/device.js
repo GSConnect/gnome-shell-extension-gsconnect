@@ -37,13 +37,6 @@ var Device = GObject.registerClass({
             GObject.ParamFlags.READABLE,
             GObject.Object
         ),
-        'display-type': GObject.ParamSpec.string(
-            'display-type',
-            'Display Type',
-            'A user-visible type string',
-            GObject.ParamFlags.READABLE,
-            null
-        ),
         'encryption-info': GObject.ParamSpec.string(
             'encryption-info',
             'Encryption Info',
@@ -173,21 +166,6 @@ var Device = GObject.registerClass({
             return contacts._store;
         } else {
             return this.service.contacts;
-        }
-    }
-
-    get display_type() {
-        switch (this.type) {
-            case 'laptop':
-                return _('Laptop');
-            case 'phone':
-                return _('Smartphone');
-            case 'tablet':
-                return _('Tablet');
-            case 'tv':
-                return _('Television');
-            default:
-                return _('Desktop');
         }
     }
 

@@ -55,13 +55,6 @@ var Device = GObject.registerClass({
             GObject.ParamFlags.READABLE,
             null
         ),
-        'display-type': GObject.ParamSpec.string(
-            'display-type',
-            'Display Type',
-            'A user-visible type string',
-            GObject.ParamFlags.READABLE,
-            null
-        ),
         'encryption-info': GObject.ParamSpec.string(
             'encryption-info',
             'Encryption Info',
@@ -139,10 +132,6 @@ var Device = GObject.registerClass({
 
     get connected() {
         return this._get('Connected', false);
-    }
-
-    get display_type() {
-        return this._get('DisplayType', '');
     }
 
     get encryption_info() {

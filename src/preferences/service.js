@@ -488,6 +488,21 @@ var Window = GObject.registerClass({
     /**
      * Context Switcher
      */
+    _getTypeLabel(device) {
+        switch (device.type) {
+            case 'laptop':
+                return _('Laptop');
+            case 'phone':
+                return _('Smartphone');
+            case 'tablet':
+                return _('Tablet');
+            case 'tv':
+                return _('Television');
+            default:
+                return _('Desktop');
+        }
+    }
+
     _setDeviceMenu(panel = null) {
         this.device_menu.insert_action_group('device', null);
         this.device_menu.insert_action_group('settings', null);
@@ -639,7 +654,7 @@ var Window = GObject.registerClass({
             this.device_menu.visible = true;
 
             this.headerbar.title = prefs.device.name;
-            this.headerbar.subtitle = prefs.device.display_type;
+            this.headerbar.subtitle = this._getTypeLabel(prefs.device);
         } catch (e) {
             logError(e);
         }
