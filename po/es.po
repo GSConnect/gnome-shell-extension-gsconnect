@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 19:00-0400\n"
-"PO-Revision-Date: 2019-09-25 20:37\n"
+"PO-Revision-Date: 2019-09-27 09:37\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Spanish\n"
 "Language: es_ES\n"
@@ -107,7 +107,7 @@ msgstr "Archivos"
 
 #: data/ui/device-preferences.ui:418
 msgid "Receive Files"
-msgstr ""
+msgstr "Recibir archivos"
 
 #: data/ui/device-preferences.ui:503 data/ui/device-preferences.ui:2105
 msgid "Sharing"
@@ -219,19 +219,19 @@ msgstr "Avanzado"
 
 #: data/ui/device-preferences.ui:1796
 msgid "Device Battery"
-msgstr ""
+msgstr "Batería del dispositivo"
 
 #: data/ui/device-preferences.ui:1847
 msgid "Low Battery Notification"
-msgstr ""
+msgstr "Notificación de batería baja"
 
 #: data/ui/device-preferences.ui:1908
 msgid "Fully Charged Notification"
-msgstr ""
+msgstr "Notificación de carga completa"
 
 #: data/ui/device-preferences.ui:1955
 msgid "System Battery"
-msgstr ""
+msgstr "Batería del sistema"
 
 #: data/ui/device-preferences.ui:2006
 msgid "Share Statistics"
@@ -314,11 +314,11 @@ msgstr "Enviar"
 
 #: data/ui/preferences-window.ui:18
 msgid "Device Name"
-msgstr ""
+msgstr "Nombre del dispositivo"
 
 #: data/ui/preferences-window.ui:49
 msgid "_Rename"
-msgstr ""
+msgstr "_Cambiar nombre"
 
 #: data/ui/preferences-window.ui:84 data/ui/preferences-window.ui:98
 msgid "Refresh"
@@ -394,7 +394,7 @@ msgstr "Dispositivos móviles"
 #. TRANSLATORS: A menu option to activate the extension
 #: src/extension.js:145 src/extension.js:385
 msgid "Turn On"
-msgstr ""
+msgstr "Encender"
 
 #: src/extension.js:244
 #, javascript-format
@@ -406,7 +406,7 @@ msgstr[1] "%d conectados"
 #. TRANSLATORS: A menu option to deactivate the extension
 #: src/extension.js:382
 msgid "Turn Off"
-msgstr ""
+msgstr "Apagar"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:164 webextension/gettext.js:31
@@ -489,7 +489,7 @@ msgstr "Conectado"
 
 #: src/preferences/service.js:661
 msgid "Waiting for service…"
-msgstr ""
+msgstr "Esperando el servicio…"
 
 #: src/service/daemon.js:341
 msgid "Report"
@@ -526,19 +526,19 @@ msgstr "Compartir archivo"
 
 #: src/service/daemon.js:778
 msgid "List available devices"
-msgstr ""
+msgstr "Enumerar dispositivos disponibles"
 
 #: src/service/daemon.js:787
 msgid "List all devices"
-msgstr ""
+msgstr "Enumerar todos los dispositivos"
 
 #: src/service/daemon.js:796
 msgid "Target Device"
-msgstr ""
+msgstr "Dispositivo de destino"
 
 #: src/service/daemon.js:838
 msgid "Message Body"
-msgstr ""
+msgstr "Cuerpo del mensaje"
 
 #: src/service/daemon.js:850 src/service/plugins/notification.js:51
 msgid "Send Notification"
@@ -550,15 +550,15 @@ msgstr ""
 
 #: src/service/daemon.js:868
 msgid "Notification Body"
-msgstr ""
+msgstr "Cuerpo de la notificación"
 
 #: src/service/daemon.js:877
 msgid "Notification Icon"
-msgstr ""
+msgstr "Icono de la notificación"
 
 #: src/service/daemon.js:886
 msgid "Notification ID"
-msgstr ""
+msgstr "Identificador de la notificación"
 
 #: src/service/daemon.js:895 src/service/plugins/photo.js:11
 #: src/service/plugins/photo.js:17
@@ -598,7 +598,7 @@ msgstr "Tableta"
 
 #: src/service/device.js:188
 msgid "Television"
-msgstr ""
+msgstr "Televisión"
 
 #: src/service/device.js:196
 msgid "Not available"
@@ -933,7 +933,7 @@ msgstr "Ayer・%s"
 
 #: src/service/ui/messaging.js:255
 msgid "Group Message"
-msgstr ""
+msgstr "Mensaje grupal"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:265
