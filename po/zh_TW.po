@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 19:00-0400\n"
-"PO-Revision-Date: 2019-09-28 08:23\n"
+"PO-Revision-Date: 2019-09-28 08:33\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -57,7 +57,7 @@ msgstr "IP 位址"
 
 #: data/ui/contact-chooser.ui:50
 msgid "No contacts"
-msgstr ""
+msgstr "沒有聯絡人"
 
 #: data/ui/contact-chooser.ui:62 data/ui/messaging-window.ui:88
 #: data/ui/preferences-window.ui:734
@@ -87,7 +87,7 @@ msgstr "攝影機"
 
 #: data/ui/device-preferences.ui:144
 msgid "Clipboard Sync"
-msgstr "同步剪貼板"
+msgstr "同步剪貼簿"
 
 #: data/ui/device-preferences.ui:208
 msgid "Media Players"
@@ -235,7 +235,7 @@ msgstr "系統電池"
 
 #: data/ui/device-preferences.ui:2006
 msgid "Share Statistics"
-msgstr ""
+msgstr "分享狀態"
 
 #: data/ui/device-preferences.ui:2055 data/ui/device-preferences.ui:2151
 #: src/service/plugins/battery.js:11
@@ -607,7 +607,7 @@ msgstr "無法使用"
 #: src/service/device.js:201
 #, javascript-format
 msgid "Bluetooth device at %s"
-msgstr "在 %s 的藍牙裝置"
+msgstr "在「%s」的藍牙裝置"
 
 #. TRANSLATORS: Label for TLS Certificate fingerprint
 #.
@@ -638,25 +638,25 @@ msgstr "接受"
 #: src/service/plugins/battery.js:181
 #, javascript-format
 msgid "%s: Battery is low"
-msgstr "%s: 電量過低"
+msgstr "%s：電量過低"
 
 #. TRANSLATORS: eg. 15% remaining
 #: src/service/plugins/battery.js:183
 #, javascript-format
 msgid "%d%% remaining"
-msgstr "剩下 %d%% 電量"
+msgstr "剩下 %d%%"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:199
 #, javascript-format
 msgid "%s: Battery is full"
-msgstr "%s: 電池已充飽"
+msgstr "%s：電池已充飽"
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
 #: src/service/plugins/battery.js:201 src/shell/device.js:114
 msgid "Fully Charged"
-msgstr "充满"
+msgstr "充飽"
 
 #: src/service/plugins/clipboard.js:11
 msgid "Clipboard"
@@ -664,11 +664,11 @@ msgstr "剪貼簿"
 
 #: src/service/plugins/clipboard.js:23
 msgid "Clipboard Push"
-msgstr ""
+msgstr "推送剪貼簿"
 
 #: src/service/plugins/clipboard.js:31
 msgid "Clipboard Pull"
-msgstr ""
+msgstr "接收剪貼簿"
 
 #. Ensure we have a sender
 #. TRANSLATORS: No name or phone number
@@ -779,7 +779,7 @@ msgstr "正在接收「%s」，來自於「%s」"
 
 #: src/service/plugins/share.js:181 src/service/plugins/share.js:325
 msgid "Transfer Successful"
-msgstr "传输成功"
+msgstr "傳輸成功"
 
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:183
