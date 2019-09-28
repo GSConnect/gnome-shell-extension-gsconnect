@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 19:00-0400\n"
-"PO-Revision-Date: 2019-09-28 08:43\n"
+"PO-Revision-Date: 2019-09-28 08:53\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -581,7 +581,7 @@ msgstr "共享鏈結"
 
 #: src/service/daemon.js:946
 msgid "Show release version"
-msgstr ""
+msgstr "顯示版本"
 
 #: src/service/device.js:182
 msgid "Laptop"
