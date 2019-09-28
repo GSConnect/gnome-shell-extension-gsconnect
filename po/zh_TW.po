@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 19:00-0400\n"
-"PO-Revision-Date: 2019-09-28 08:13\n"
+"PO-Revision-Date: 2019-09-28 08:23\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -443,7 +443,7 @@ msgstr "設定"
 #: src/preferences/keybindings.js:96
 #, javascript-format
 msgid "Enter a new shortcut to change <b>%s</b>"
-msgstr ""
+msgstr "輸入新的快捷鍵取代 <b>%s</b>"
 
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/preferences/keybindings.js:125
@@ -775,7 +775,7 @@ msgstr "檔案傳送中"
 #: src/service/plugins/share.js:156
 #, javascript-format
 msgid "Receiving “%s” from %s"
-msgstr "正在接收「%s」來自於「%s」"
+msgstr "正在接收「%s」，來自於「%s」"
 
 #: src/service/plugins/share.js:181 src/service/plugins/share.js:325
 msgid "Transfer Successful"
@@ -785,7 +785,7 @@ msgstr "传输成功"
 #: src/service/plugins/share.js:183
 #, javascript-format
 msgid "Received “%s” from %s"
-msgstr "已接收「%s」來自於「%s」"
+msgstr "已接收「%s」，來自於「%s」"
 
 #: src/service/plugins/share.js:189
 msgid "Open Folder"
@@ -810,19 +810,19 @@ msgstr "「%s」分享的文字"
 #: src/service/plugins/share.js:304
 #, javascript-format
 msgid "Sending “%s” to %s"
-msgstr "正在將「“%s”」傳送到「%s」"
+msgstr "正在將「%s」傳送到「%s」"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:327
 #, javascript-format
 msgid "Sent “%s” to %s"
-msgstr "「“%s”」已傳送到「%s」"
+msgstr "「%s」已傳送到「%s」"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:335
 #, javascript-format
 msgid "Failed to send “%s” to %s"
-msgstr "傳送「“%s”」到「%s」失敗"
+msgstr "傳送「%s」到「%s」失敗"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:404
