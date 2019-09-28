@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 19:00-0400\n"
-"PO-Revision-Date: 2019-09-28 08:03\n"
+"PO-Revision-Date: 2019-09-28 08:13\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -455,20 +455,20 @@ msgstr ""
 #: src/preferences/keybindings.js:224
 #, javascript-format
 msgid "%s is already being used"
-msgstr ""
+msgstr "「%s」已經被使用"
 
 #: src/preferences/service.js:389
 msgid "A complete KDE Connect implementation for GNOME"
-msgstr ""
+msgstr "一個為 GNOME 完整實做的 KDE Connect"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:398
 msgid "translator-credits"
-msgstr ""
+msgstr "翻譯組員"
 
 #: src/preferences/service.js:431
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
-msgstr ""
+msgstr "除錯訊息已被紀錄。請執行任何可能造成問題的動作，然後查看日誌。"
 
 #: src/preferences/service.js:434
 msgid "Review Log"
@@ -601,7 +601,7 @@ msgstr "電視"
 
 #: src/service/device.js:196
 msgid "Not available"
-msgstr ""
+msgstr "無法使用"
 
 #. TRANSLATORS: Bluetooth address for remote device
 #: src/service/device.js:201
@@ -624,7 +624,7 @@ msgstr "「%s」數位指紋："
 #: src/service/device.js:779
 #, javascript-format
 msgid "Pair Request from %s"
-msgstr "%s 的配对请求"
+msgstr "「%s」的配對請求"
 
 #: src/service/device.js:786
 msgid "Reject"
@@ -775,7 +775,7 @@ msgstr "檔案傳送中"
 #: src/service/plugins/share.js:156
 #, javascript-format
 msgid "Receiving “%s” from %s"
-msgstr "正在從「%s」接收「“%s”」"
+msgstr "正在接收「%s」來自於「%s」"
 
 #: src/service/plugins/share.js:181 src/service/plugins/share.js:325
 msgid "Transfer Successful"
@@ -785,7 +785,7 @@ msgstr "传输成功"
 #: src/service/plugins/share.js:183
 #, javascript-format
 msgid "Received “%s” from %s"
-msgstr "從「%s」接收到「“%s”」"
+msgstr "已接收「%s」來自於「%s」"
 
 #: src/service/plugins/share.js:189
 msgid "Open Folder"
@@ -799,7 +799,7 @@ msgstr "打開檔案"
 #: src/service/plugins/share.js:203
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
-msgstr "從「%s」接收「“%s”」失敗"
+msgstr "接收「%s」失敗，來自於「%s」"
 
 #: src/service/plugins/share.js:232
 #, javascript-format
@@ -993,7 +993,7 @@ msgstr "勿擾模式"
 
 #: src/shell/donotdisturb.js:249
 msgid "Silence Mobile Device Notifications"
-msgstr ""
+msgstr "靜音行動裝置通知"
 
 #: src/shell/donotdisturb.js:261
 msgid "Until you turn off Do Not Disturb"
