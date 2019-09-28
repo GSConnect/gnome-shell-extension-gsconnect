@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 19:00-0400\n"
-"PO-Revision-Date: 2019-09-27 15:15\n"
+"PO-Revision-Date: 2019-09-28 08:03\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -199,7 +199,7 @@ msgstr "全部重設"
 
 #: data/ui/device-preferences.ui:1586
 msgid "Shortcuts"
-msgstr ""
+msgstr "快捷鍵"
 
 #: data/ui/device-preferences.ui:1617
 msgid "Plugins"
@@ -252,7 +252,7 @@ msgstr "裝置已取消配對"
 
 #: data/ui/device-preferences.ui:2485
 msgid "You may configure this device before pairing"
-msgstr ""
+msgstr "您可以在配對此裝置前進行設置"
 
 #. TRANSLATORS: Send clipboard content to device
 #: data/ui/device-preferences.ui:2526
@@ -279,7 +279,7 @@ msgstr "降低音量"
 #: data/ui/device-preferences.ui:2558 data/ui/device-preferences.ui:2584
 #: src/service/plugins/telephony.js:191
 msgid "Mute"
-msgstr "静音"
+msgstr "靜音"
 
 #: data/ui/messaging-window.ui:12 src/service/plugins/sms.js:26
 #: src/service/ui/messaging.js:1012
@@ -300,7 +300,7 @@ msgstr "尚無對話"
 
 #: data/ui/messaging-window.ui:181
 msgid "Select or start a conversation"
-msgstr ""
+msgstr "選擇或開始聊天"
 
 #: data/ui/messaging-window.ui:248 data/ui/notification-reply-dialog.ui:53
 #: data/ui/telephony.ui:53
@@ -355,7 +355,7 @@ msgstr "未配對裝置看不到此裝置"
 
 #: data/ui/preferences-window.ui:654 src/service/daemon.js:602
 msgid "Discovery Disabled"
-msgstr ""
+msgstr "禁止被探索"
 
 #: data/ui/preferences-window.ui:713
 msgid "Display Mode"
@@ -472,7 +472,7 @@ msgstr ""
 
 #: src/preferences/service.js:434
 msgid "Review Log"
-msgstr ""
+msgstr "查看日誌"
 
 #: src/preferences/service.js:515
 msgid "Unpaired"
@@ -488,19 +488,19 @@ msgstr "已連接"
 
 #: src/preferences/service.js:661
 msgid "Waiting for service…"
-msgstr ""
+msgstr "等待伺服器…"
 
 #: src/service/daemon.js:341
 msgid "Report"
-msgstr ""
+msgstr "回報"
 
 #: src/service/daemon.js:584
 msgid "Authentication Failure"
-msgstr ""
+msgstr "認證失敗"
 
 #: src/service/daemon.js:593
 msgid "Network Error"
-msgstr ""
+msgstr "網路錯誤"
 
 #: src/service/daemon.js:594
 msgid "Click for help troubleshooting"
@@ -516,7 +516,7 @@ msgstr ""
 
 #: src/service/daemon.js:709
 msgid "Dial Number"
-msgstr ""
+msgstr "撥打電話"
 
 #: src/service/daemon.js:715 src/service/daemon.js:925
 #: src/service/plugins/share.js:27
@@ -738,7 +738,7 @@ msgstr "掛載"
 
 #: src/service/plugins/sftp.js:26
 msgid "Unmount"
-msgstr "卸载"
+msgstr "卸載"
 
 #: src/service/plugins/sftp.js:134
 msgid "All files"
@@ -833,7 +833,7 @@ msgstr "將檔案傳送到「%s」"
 #. TRANSLATORS: Mark the file to be opened once completed
 #: src/service/plugins/share.js:408
 msgid "Open when done"
-msgstr ""
+msgstr "當完成時開啟"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
 #: src/service/plugins/share.js:447
@@ -879,7 +879,7 @@ msgstr "通話中"
 #: src/service/ui/contacts.js:126 src/service/ui/contacts.js:147
 #, javascript-format
 msgid "%s・Other"
-msgstr ""
+msgstr "%s・其他"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:131
@@ -891,19 +891,19 @@ msgstr "%s・傳真"
 #: src/service/ui/contacts.js:135
 #, javascript-format
 msgid "%s・Work"
-msgstr ""
+msgstr "%s・工作"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:139
 #, javascript-format
 msgid "%s・Mobile"
-msgstr ""
+msgstr "%s・手機"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:143
 #, javascript-format
 msgid "%s・Home"
-msgstr ""
+msgstr "%s・家裡"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #: src/service/ui/contacts.js:433 src/service/ui/contacts.js:447
@@ -985,7 +985,7 @@ msgstr[0] "%d 小時"
 #: src/shell/donotdisturb.js:150
 #, javascript-format
 msgid "Until %s (%s)"
-msgstr ""
+msgstr "直到 %s（%s）"
 
 #: src/shell/donotdisturb.js:243 src/shell/donotdisturb.js:342
 msgid "Do Not Disturb"
