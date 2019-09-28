@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 19:00-0400\n"
-"PO-Revision-Date: 2019-09-28 08:53\n"
+"PO-Revision-Date: 2019-09-28 09:13\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -537,7 +537,7 @@ msgstr "目標裝置"
 
 #: src/service/daemon.js:838
 msgid "Message Body"
-msgstr ""
+msgstr "訊息內文"
 
 #: src/service/daemon.js:850 src/service/plugins/notification.js:51
 msgid "Send Notification"
@@ -545,19 +545,19 @@ msgstr "發送通知"
 
 #: src/service/daemon.js:859
 msgid "Notification App Name"
-msgstr ""
+msgstr "程式名稱通知"
 
 #: src/service/daemon.js:868
 msgid "Notification Body"
-msgstr ""
+msgstr "通知欄本身"
 
 #: src/service/daemon.js:877
 msgid "Notification Icon"
-msgstr ""
+msgstr "通知圖示"
 
 #: src/service/daemon.js:886
 msgid "Notification ID"
-msgstr ""
+msgstr "ID 通知"
 
 #: src/service/daemon.js:895 src/service/plugins/photo.js:11
 #: src/service/plugins/photo.js:17
@@ -695,7 +695,7 @@ msgstr "鍵盤"
 
 #: src/service/plugins/mousepad.js:737
 msgid "Keyboard not ready"
-msgstr ""
+msgstr "鍵盤尚未準備好"
 
 #: src/service/plugins/mpris.js:12
 msgid "MPRIS"
@@ -847,7 +847,7 @@ msgstr "簡訊"
 
 #: src/service/plugins/sms.js:34
 msgid "New SMS (URI)"
-msgstr ""
+msgstr "新增簡訊（URI）"
 
 #: src/service/plugins/sms.js:42 src/service/plugins/telephony.js:22
 msgid "Reply SMS"
@@ -943,7 +943,7 @@ msgstr "你：%s"
 #, javascript-format
 msgid "And %d other contact"
 msgid_plural "And %d others"
-msgstr[0] ""
+msgstr[0] "和 %d 位其他聯絡人"
 
 #: src/service/ui/service.js:31
 msgid "Select a Device"
