@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 19:00-0400\n"
-"PO-Revision-Date: 2019-09-28 09:13\n"
+"PO-Revision-Date: 2019-09-28 14:24\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -656,7 +656,7 @@ msgstr "%s：電池已充飽"
 #. TRANSLATORS: When the battery level is 100%
 #: src/service/plugins/battery.js:201 src/shell/device.js:114
 msgid "Fully Charged"
-msgstr "充飽"
+msgstr "充電完成"
 
 #: src/service/plugins/clipboard.js:11
 msgid "Clipboard"
