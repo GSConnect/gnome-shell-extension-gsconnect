@@ -290,17 +290,6 @@ var Service = GObject.registerClass({
         return Array.from(this._devices.values());
     }
 
-    get settings() {
-        if (this._settings === undefined) {
-            this._settings = new Gio.Settings({
-                settings_schema: gsconnect.gschema.lookup(this.g_name, true),
-                path: `${this.g_object_path.toLowerCase()}/`
-            });
-        }
-
-        return this._settings;
-    }
-
     vfunc_g_signal(sender_name, signal_name, parameters) {
         try {
             // Don't emit signals until the ObjectManager has started
