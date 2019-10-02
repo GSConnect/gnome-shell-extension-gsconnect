@@ -36,6 +36,7 @@ var ReplyDialog = GObject.registerClass({
         super._init({
             application: Gio.Application.get_default(),
             device: params.device,
+            plugin: params.plugin,
             use_header_bar: true
         });
 
