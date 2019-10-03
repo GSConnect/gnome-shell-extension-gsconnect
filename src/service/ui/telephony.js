@@ -77,17 +77,19 @@ var LegacyMessagingDialog = GObject.registerClass({
         // Set the message if given
         if (params.message) {
             this.message = params.message;
-            let message = new Messaging.MessageLabel(this.message);
-            message.margin_bottom = 12;
-            this.message_box.add(message);
+            this.addresses = params.message.addresses;
+
+            let label = new Messaging.MessageLabel(this.message);
+            label.margin_bottom = 12;
+            this.message_box.add(label);
+
+        // Otherwise set the address(es) if we were passed those
+        } else if (params.addresses) {
+            this.addresses = params.addresses;
         }
 
-        // Set the address if given
-        if (params.addresses) {
-            this.addresses = params.addresses;
-
-        // Otherwise load the contact list
-        } else {
+        // Load the contact list if we weren't supplied with an address
+        if (this.addresses.length === 0) {
             this.contact_chooser = new Contacts.ContactChooser({
                 device: this.device
             });
