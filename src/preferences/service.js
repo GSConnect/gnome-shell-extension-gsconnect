@@ -312,7 +312,7 @@ var Window = GObject.registerClass({
 
         // "Generate Support Log" GAction
         let generateSupportLog = new Gio.SimpleAction({name: 'support-log'});
-        generateSupportLog.connect('activate', this._generateSupportLog);
+        generateSupportLog.connect('activate', this._generateSupportLog.bind(this));
         this.add_action(generateSupportLog);
 
         // "Help" GAction
