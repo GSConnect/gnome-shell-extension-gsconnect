@@ -123,7 +123,7 @@ var LegacyMessagingDialog = GObject.registerClass({
             if (!this.entry.buffer.text.trim()) return;
 
             this.plugin.sendMessage(
-                this._addresses,
+                this.addresses,
                 this.entry.buffer.text,
                 1,
                 true
@@ -174,7 +174,7 @@ var LegacyMessagingDialog = GObject.registerClass({
         switch (false) {
             case this.device.connected:
             case (this.entry.buffer.text.trim().length):
-            case (this.stack.visible_child_name === 'message'):
+            case (this.stack.visible_child_name === 'message-editor'):
                 this.set_response_sensitive(Gtk.ResponseType.OK, false);
                 break;
 
