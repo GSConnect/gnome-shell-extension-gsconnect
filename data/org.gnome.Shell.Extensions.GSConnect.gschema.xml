@@ -60,6 +60,9 @@
     <key name="paired" type="b">
       <default>false</default>
     </key>
+    <key name="type" type="s">
+      <default>"smartphone"</default>
+    </key>
     <key name="incoming-capabilities" type="as">
       <default>[]</default>
     </key>

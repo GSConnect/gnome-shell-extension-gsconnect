@@ -245,11 +245,7 @@ var Device = GObject.registerClass({
     }
 
     get type() {
-        if (this._type === undefined) {
-            return 'desktop';
-        }
-
-        return this._type;
+        return this.settings.get_string('type');
     }
 
     get g_object_path() {
@@ -257,8 +253,9 @@ var Device = GObject.registerClass({
     }
 
     _handleIdentity(packet) {
-        if (this._type === undefined) {
-            this._type = packet.body.deviceType;
+        // The type won't change, but it might not be properly set yet
+        if (this.type !== packet.body.deviceType) {
+            this.settings.set_string('type', packet.body.deviceType);
             this.notify('type');
             this.notify('icon-name');
         }
