@@ -24,11 +24,7 @@ var ReplyDialog = GObject.registerClass({
         )
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/notification-reply-dialog.ui',
-    Children: [
-        'infobar',
-        'notification-title', 'notification-body',
-        'message-entry'
-    ]
+    Children: ['infobar', 'notification-title', 'notification-body', 'entry']
 }, class Dialog extends Gtk.Dialog {
 
     _init(params) {
@@ -63,7 +59,7 @@ var ReplyDialog = GObject.registerClass({
         // Message Entry/Send Button
         this.device.bind_property(
             'connected',
-            this.message_entry,
+            this.entry,
             'sensitive',
             GObject.BindingFlags.DEFAULT
         );
@@ -73,17 +69,24 @@ var ReplyDialog = GObject.registerClass({
             this._onStateChanged.bind(this)
         );
 
-        this._entryChangedId = this.message_entry.buffer.connect(
+        this._entryChangedId = this.entry.buffer.connect(
             'changed',
             this._onStateChanged.bind(this)
         );
 
         this.restoreGeometry('notification-reply-dialog');
+
+        this.connect('destroy', this._onDestroy);
+    }
+
+    _onDestroy(dialog) {
+        dialog.entry.buffer.disconnect(dialog._entryChangedId);
+        dialog.device.disconnect(dialog._connectedId);
     }
 
     vfunc_delete_event() {
-        this.device.disconnect(this._connectedId);
-        this.message_entry.buffer.disconnect(this._entryChangedId);
+        this.disconnectTemplate();
+        this.saveGeometry();
 
         return false;
     }
@@ -91,16 +94,14 @@ var ReplyDialog = GObject.registerClass({
     vfunc_response(response_id) {
         if (response_id === Gtk.ResponseType.OK) {
             // Refuse to send empty or whitespace only messages
-            if (!this.message_entry.buffer.text.trim()) return;
+            if (!this.entry.buffer.text.trim()) return;
 
             this.plugin.replyNotification(
                 this.uuid,
-                this.message_entry.buffer.text
+                this.entry.buffer.text
             );
         }
 
-        this.disconnectTemplate();
-        this.saveGeometry();
         this.destroy();
     }
 
@@ -129,7 +130,7 @@ var ReplyDialog = GObject.registerClass({
     _onStateChanged() {
         switch (false) {
             case this.device.connected:
-            case (this.message_entry.buffer.text.trim() !== ''):
+            case (this.entry.buffer.text.trim().length):
                 break;
 
             default:
