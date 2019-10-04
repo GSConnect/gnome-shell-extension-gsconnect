@@ -105,18 +105,23 @@ var LegacyMessagingDialog = GObject.registerClass({
         }
 
         this.restoreGeometry('legacy-messaging-dialog');
+
+        this.connect('destroy', this._onDestroy);
+    }
+
+    _onDestroy(dialog) {
+        if (dialog._numberSelectedId !== undefined) {
+            dialog.contact_chooser.disconnect(dialog._numberSelectedId);
+            dialog.contact_chooser.destroy();
+        }
+
+        dialog.entry.buffer.disconnect(dialog._entryChangedId);
+        dialog.device.disconnect(dialog._connectedId);
     }
 
     vfunc_delete_event() {
-        if (this._numberSelectedId) {
-            this.contact_chooser.disconnect(this._numberSelectedId);
-            this.contact_chooser.destroy();
-        }
-
-        this.device.disconnect(this._connectedId);
-        this.entry.buffer.disconnect(this._entryChangedId);
-
-        return false;
+        this.disconnectTemplate();
+        this.saveGeometry();
     }
 
     vfunc_response(response_id) {
@@ -132,8 +137,6 @@ var LegacyMessagingDialog = GObject.registerClass({
             );
         }
 
-        this.disconnectTemplate();
-        this.saveGeometry();
         this.destroy();
     }
 
