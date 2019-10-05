@@ -122,6 +122,8 @@ var LegacyMessagingDialog = GObject.registerClass({
     vfunc_delete_event() {
         this.disconnectTemplate();
         this.saveGeometry();
+
+        return false;
     }
 
     vfunc_response(response_id) {
