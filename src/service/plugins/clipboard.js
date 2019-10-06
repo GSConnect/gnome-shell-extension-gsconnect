@@ -75,7 +75,7 @@ var Plugin = GObject.registerClass({
         // TODO: if we're not auto-syncing local->remote, but we are doing the
         //       reverse, it's possible older remote content will end up
         //       overwriting newer local content.
-        if (!this.settings('send-content')) return;
+        if (!this.settings.get_boolean('send-content')) return;
 
         if (this._localBuffer !== null && this._localTimestamp) {
             this.device.sendPacket({
