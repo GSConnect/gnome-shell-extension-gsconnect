@@ -40,20 +40,63 @@ const stdout = new Gio.DataOutputStream({
  * Watch GtkClipboard for changes and write them to stdout
  */
 function writeContent(clipboard, text) {
-    // Never write %null, and avoid duplicate copies
-    if (!text || text === buffer) return;
+    // Avoid duplicate copies
+    if (text === buffer) return;
     
     try {
         buffer = text;
-        stdout.put_int32(text.length, null);
-        stdout.put_string(text, null);
+
+        // Non-textual content
+        if (text === null) {
+            stdout.put_int32(-1, null);
+
+        // Text content (including empty string)
+        } else {
+            stdout.put_int32(text.length, null);
+            stdout.put_string(text, null);
+        }
     } catch (e) {
-        logError(e);
+        printerr(e.message);
     }
 }
 
 function onOwnerChange(clipboard, event) {
-    clipboard.request_text(writeContent);
+    let atoms = clipboard.wait_for_targets()[1];
+
+    // Empty clipboard
+    if (atoms === null) {
+        return writeContent(clipboard, '');
+    }
+
+    let hasText = false;
+
+    for (let type of Array.from(atoms)) {
+        if (type === 'UTF8_STRING') {
+            hasText = true;
+            continue;
+        }
+
+        // Serialized text formats
+        if (type === 'text/html')
+            return writeContent(clipboard, null);
+
+        if (type === 'text/rdf' || type === 'text/richtext')
+            return writeContent(clipboard, null);
+
+        // URI list
+        if (type === 'text/uri-list')
+            return writeContent(clipboard, null);
+
+        // Image
+        if (type.startsWith('image/'))
+            return writeContent(clipboard, null);
+    }
+
+    if (hasText) {
+        clipboard.request_text(writeContent);
+    } else {
+        writeContent(clipboard, '');
+    }
 }
 
 clipboard.connect('owner-change', onOwnerChange);
@@ -66,18 +109,31 @@ function readContent(text) {
     try {
         // Read the message
         let length = stdin.read_int32(null);
-        let text = stdin.read_bytes(length, null).toArray();
 
-        if (text instanceof Uint8Array) {
-            text = imports.byteArray.toString(text);
+        // Text content
+        if (length > 0) {
+            let text = stdin.read_bytes(length, null).toArray();
+
+            if (text instanceof Uint8Array) {
+                text = imports.byteArray.toString(text);
+            }
+
+            // Set the buffer and GtkClipboard
+            buffer = `${text}`;
+            clipboard.set_text(buffer, -1);
+
+        // We're being asked to clear the clipboard
+        } else if (length === 0) {
+            buffer = '';
+            clipboard.clear();
+
+        // We currently don't support non-text content, so this is a no-op
+        } else if (length === -1) {
+            buffer = null;
         }
-
-        // Set the buffer and GtkClipboard
-        buffer = `${text}`;
-        clipboard.set_text(buffer, -1);
     } catch (e) {
         // If there's an error reading we exit so we don't end up in a bad loop
-        logError(e);
+        printerr(e.message);
         Gtk.main_quit();
     }
     

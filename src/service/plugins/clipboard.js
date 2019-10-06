@@ -54,8 +54,8 @@ var Plugin = GObject.registerClass({
             this._clipboard = this.service.components.get('clipboard');
 
             // Watch local clipboard for changes
-            this._ownerChangeId = this._clipboard.connect(
-                'owner-change',
+            this._textChangedId = this._clipboard.connect(
+                'notify::text',
                 this._onLocalClipboardChanged.bind(this)
             );
         } catch (e) {
@@ -64,7 +64,7 @@ var Plugin = GObject.registerClass({
         }
 
         // Buffer content to allow selective sync
-        this._localBuffer = '';
+        this._localBuffer = null;
         this._localTimestamp = 0;
         this._remoteBuffer = '';
     }
@@ -72,7 +72,12 @@ var Plugin = GObject.registerClass({
     connected() {
         super.connected();
 
-        if (this._localBuffer && this._localTimestamp) {
+        // TODO: if we're not auto-syncing local->remote, but we are doing the
+        //       reverse, it's possible older remote content will end up
+        //       overwriting newer local content.
+        if (!this.settings('send-content')) return;
+
+        if (this._localBuffer !== null && this._localTimestamp) {
             this.device.sendPacket({
                 type: 'kdeconnect.clipboard.connect',
                 body: {
@@ -107,15 +112,13 @@ var Plugin = GObject.registerClass({
     /**
      * Store the updated clipboard content and forward it if enabled
      */
-    _onLocalClipboardChanged(clipboard, event) {
-        clipboard.request_text((clipboard, text) => {
-            this._localBuffer = text;
-            this._localTimestamp = Date.now();
+    _onLocalClipboardChanged(clipboard, pspec) {
+        this._localBuffer = clipboard.text;
+        this._localTimestamp = Date.now();
 
-            if (this.settings.get_boolean('send-content')) {
-                this.clipboardPush();
-            }
-        });
+        if (this.settings.get_boolean('send-content')) {
+            this.clipboardPush();
+        }
     }
 
     /**
@@ -134,17 +137,21 @@ var Plugin = GObject.registerClass({
      */
     clipboardPush() {
         // Don't sync if the clipboard is empty or not text
-        if (!this._localBuffer || !this._localTimestamp) return;
+        if (!this._localTimestamp) return;
 
         if (this._remoteBuffer !== this._localBuffer) {
             this._remoteBuffer = this._localBuffer;
 
-            this.device.sendPacket({
-                type: 'kdeconnect.clipboard',
-                body: {
-                    content: this._localBuffer
-                }
-            });
+            // If the buffer is %null, the clipboard contains non-text content,
+            // so we neither clear the remote clipboard nor pass the content
+            if (this._localBuffer !== null) {
+                this.device.sendPacket({
+                    type: 'kdeconnect.clipboard',
+                    body: {
+                        content: this._localBuffer
+                    }
+                });
+            }
         }
     }
 
@@ -156,13 +163,13 @@ var Plugin = GObject.registerClass({
             this._localBuffer = this._remoteBuffer;
             this._localTimestamp = Date.now();
 
-            this._clipboard.set_text(this._remoteBuffer, -1);
+            this._clipboard.text = this._remoteBuffer;
         }
     }
 
     destroy() {
-        if (this._clipboard && this._ownerChangeId) {
-            this._clipboard.disconnect(this._ownerChangeId);
+        if (this._clipboard && this._textChangedId) {
+            this._clipboard.disconnect(this._textChangedId);
         }
 
         super.destroy();

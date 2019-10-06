@@ -9,18 +9,20 @@ const GObject = imports.gi.GObject;
 
 var Clipboard = GObject.registerClass({
     GTypeName: 'GSConnectClipboard',
-    Signals: {
-        'owner-change': {
-            flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [GObject.TYPE_STRING]
-        }
+    Properties: {
+        'text': GObject.ParamSpec.string(
+            'text',
+            'Text Content',
+            'The current text content of the clipboard',
+            GObject.ParamFlags.READWRITE,
+            null
+        )
     }
 }, class Clipboard extends GObject.Object {
 
     _init() {
         super._init();
         
-        this._buffer = null;
         this._proc = null;
         
         try {
@@ -67,35 +69,107 @@ var Clipboard = GObject.registerClass({
                 let display = Gdk.Display.get_default();
                 this._clipboard = Gtk.Clipboard.get_default(display);
                 
-                // Proxy GtkClipboard::owner-change emissions
                 this._ownerChangeId = this._clipboard.connect(
                     'owner-change',
-                    () => this.emit('owner-change', null)
+                    this._onOwnerChange.bind(this)
                 );
             }
         } catch (e) {
-            logError(e, 'Clipboard Component');
             this.destroy();
+            throw e;
         }
     }
     
+    get text() {
+        if (this._text === undefined) {
+            this._text = null;
+        }
+
+        return this._text;
+    }
+
+    set text(content) {
+        if (this.text !== content) {
+            this._text = content;
+            this.notify('text');
+
+            this._setText(content);
+        }
+    }
+
+    _onTextReceived(clipboard, text) {
+        this.text = text;
+    }
+
+    _onTargetsReceived(clipboard, atoms) {
+        // Empty clipboard
+        if (atoms === null) {
+            return this.text = '';
+        }
+
+        let hasText = false;
+
+        for (let type of Array.from(atoms)) {
+            if (type === 'UTF8_STRING') {
+                hasText = true;
+                continue;
+            }
+
+            // Serialized text formats
+            if (type === 'text/html')
+                return this.text = null;
+
+            if (type === 'text/rdf' || type === 'text/richtext')
+                return this.text = null;
+
+            // URI list
+            if (type === 'text/uri-list')
+                return this.text = null;
+
+            // Image
+            if (type.startsWith('image/'))
+                return this.text = null;
+        }
+
+        if (hasText) {
+            clipboard.request_text(this._onTextReceived.bind(this));
+        } else {
+            this.text = '';
+        }
+    }
+
+    _onOwnerChange(clipboard, event) {
+        clipboard.request_targets(this._onTargetsReceived.bind(this));
+    }
+
     _readContent() {
         try {
             // Read the message
             let length = this._stdout.read_int32(null);
-            let text = this._stdout.read_bytes(length, null).toArray();
 
-            if (text instanceof Uint8Array) {
-                text = imports.byteArray.toString(text);
+            // We're being sent text content
+            if (length > 0) {
+                let text = this._stdout.read_bytes(length, null).toArray();
+
+                if (text instanceof Uint8Array) {
+                    text = imports.byteArray.toString(text);
+                }
+
+                this.text = `${text}`;
+
+            // The clipboard was cleared
+            } else if (length === 0) {
+                this.text = '';
+
+            // The clipboard contains non-text content
+            } else {
+                this.text = null;
             }
-            
-            // Set the buffer and emit a phony owner-change signal
-            this._buffer = `${text}`;
-            this.emit('owner-change', null);
 
             return true;
         } catch (e) {
-            debug(e, 'XClipboard Proxy');
+            debug(e);
+            return false;
         }
     }
     
@@ -105,11 +179,11 @@ var Clipboard = GObject.registerClass({
                 let line = stream.read_line_finish_utf8(res)[0];
                 
                 if (line !== null) {
-                    logError(new Error(`XClipboard Proxy: ${line}`));
+                    logError(new Error(line), 'XClipboard Proxy');
                     this._readError(stream);
                 }
             } catch (e) {
-                debug(e, 'XClipboard Proxy');
+                debug(e);
             }
         });
     }
@@ -120,13 +194,14 @@ var Clipboard = GObject.registerClass({
             logError(new Error('XClipboard not running'));
             return;
         }
-        
-        // Never write %null
-        if (!text) return;
 
         try {
-            this._stdin.put_int32(text.length, null);
-            this._stdin.put_string(text, null);
+            if (text === null) {
+                this._stdin.put_int32(-1, null);
+            } else {
+                this._stdin.put_int32(text.length, null);
+                this._stdin.put_string(text, null);
+            }
         } catch (e) {
             debug(e, 'XClipboard Proxy');
         }
@@ -145,30 +220,22 @@ var Clipboard = GObject.registerClass({
         }
     }
     
-    set_text(text, length) {
+    _setText(text) {
         try {
+            // If we're using the XWayland subprocess, we'll ostensibly write
+            // anything, so even if it's %null the value can be buffered
             if (_WAYLAND) {
                 this._writeContent(text);
-            } else {
-                this._clipboard.set_text(text, length);
+
+            // If we're wrapping GtkClipboard, we only set actual text content
+            } else if (text !== null) {
+                this._clipboard.set_text(text, -1);
             }
         } catch (e) {
-            logError(e, 'Clipboard Component');
+            logError(e);
         }
     }
-    
-    request_text(callback) {
-        try {
-            if (_WAYLAND) {
-                callback(this, this._buffer);
-            } else {
-                this._clipboard.request_text(callback);
-            }
-        } catch (e) {
-            logError(e, 'Clipboard Component');
-        }
-    }
-    
+
     destroy() {
         if (this._proc) {
             this._proc.force_exit();
