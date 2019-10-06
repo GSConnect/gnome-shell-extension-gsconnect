@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 19:00-0400\n"
-"PO-Revision-Date: 2019-10-06 14:03\n"
+"PO-Revision-Date: 2019-10-06 14:13\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Arabic\n"
 "Language: ar_SA\n"
@@ -195,39 +195,39 @@ msgstr "اختصارات اﻹجراءات"
 
 #: data/ui/device-preferences.ui:1537
 msgid "Reset All…"
-msgstr ""
+msgstr "إعادة تعيين الكل…"
 
 #: data/ui/device-preferences.ui:1586
 msgid "Shortcuts"
-msgstr ""
+msgstr "الاختصارات"
 
 #: data/ui/device-preferences.ui:1617
 msgid "Plugins"
-msgstr ""
+msgstr "الإضافات"
 
 #: data/ui/device-preferences.ui:1663
 msgid "Experimental"
-msgstr ""
+msgstr "تجريبي"
 
 #: data/ui/device-preferences.ui:1712
 msgid "Legacy SMS Support"
-msgstr ""
+msgstr "دعم الرسائل النصية القديم"
 
 #: data/ui/device-preferences.ui:1765 data/ui/device-preferences.ui:2381
 msgid "Advanced"
-msgstr ""
+msgstr "خيارات متقدمة"
 
 #: data/ui/device-preferences.ui:1796
 msgid "Device Battery"
-msgstr ""
+msgstr "بطارية الجهاز"
 
 #: data/ui/device-preferences.ui:1847
 msgid "Low Battery Notification"
-msgstr ""
+msgstr "إشعار انخفاض البطارية"
 
 #: data/ui/device-preferences.ui:1908
 msgid "Fully Charged Notification"
-msgstr ""
+msgstr "إشعار امتلاء البطارية"
 
 #: data/ui/device-preferences.ui:1955
 msgid "System Battery"
