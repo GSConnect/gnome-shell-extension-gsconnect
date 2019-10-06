@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 19:00-0400\n"
-"PO-Revision-Date: 2019-10-06 14:33\n"
+"PO-Revision-Date: 2019-10-06 14:44\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Arabic\n"
 "Language: ar_SA\n"
@@ -267,36 +267,36 @@ msgstr "من الجهاز"
 #. TRANSLATORS: Don't change the system volume
 #: data/ui/device-preferences.ui:2544 data/ui/device-preferences.ui:2570
 msgid "Nothing"
-msgstr ""
+msgstr "لا شيء"
 
 #. TRANSLATORS: Lower the system volume
 #: data/ui/device-preferences.ui:2551 data/ui/device-preferences.ui:2577
 msgid "Lower"
-msgstr ""
+msgstr "منخفض"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the phone ringer
 #: data/ui/device-preferences.ui:2558 data/ui/device-preferences.ui:2584
 #: src/service/plugins/telephony.js:191
 msgid "Mute"
-msgstr ""
+msgstr "كتم"
 
 #: data/ui/messaging-window.ui:12 src/service/plugins/sms.js:26
 #: src/service/ui/messaging.js:1012
 msgid "Messaging"
-msgstr ""
+msgstr "المراسة"
 
 #: data/ui/messaging-window.ui:21 src/service/ui/messaging.js:1229
 msgid "New Conversation"
-msgstr ""
+msgstr "محادثة جديدة"
 
 #: data/ui/messaging-window.ui:105
 msgid "No Conversations"
-msgstr ""
+msgstr "لا توجد محادثات"
 
 #: data/ui/messaging-window.ui:165
 msgid "No conversation selected"
-msgstr ""
+msgstr "لم يتم تحديد أي محادثة"
 
 #: data/ui/messaging-window.ui:181
 msgid "Select or start a conversation"
@@ -1040,15 +1040,15 @@ msgstr ""
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:33
 msgid "Service Unavailable"
-msgstr ""
+msgstr "الخدمة غير متاحة"
 
 #. TRANSLATORS: No devices are known or available
 #: webextension/gettext.js:35
 msgid "No Device Found"
-msgstr ""
+msgstr "لم يتم العثور على أي جهاز"
 
 #. TRANSLATORS: Open URL with the device's browser
 #: webextension/gettext.js:37
 msgid "Open in Browser"
-msgstr ""
+msgstr "فتح في المتصفح"
 
