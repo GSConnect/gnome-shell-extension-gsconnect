@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 19:00-0400\n"
-"PO-Revision-Date: 2019-10-06 14:13\n"
+"PO-Revision-Date: 2019-10-06 14:33\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Arabic\n"
 "Language: ar_SA\n"
@@ -231,38 +231,38 @@ msgstr "إشعار امتلاء البطارية"
 
 #: data/ui/device-preferences.ui:1955
 msgid "System Battery"
-msgstr ""
+msgstr "بطارية الجهاز"
 
 #: data/ui/device-preferences.ui:2006
 msgid "Share Statistics"
-msgstr ""
+msgstr "مشاركة الاحصائيات"
 
 #: data/ui/device-preferences.ui:2055 data/ui/device-preferences.ui:2151
 #: src/service/plugins/battery.js:11
 msgid "Battery"
-msgstr ""
+msgstr "البطارية"
 
 #: data/ui/device-preferences.ui:2335
 msgid "Keyboard Shortcuts"
-msgstr ""
+msgstr "اختصارات لوحة المفاتيح"
 
 #: data/ui/device-preferences.ui:2470
 msgid "Device is unpaired"
-msgstr ""
+msgstr "الجهاز غير مقترن"
 
 #: data/ui/device-preferences.ui:2485
 msgid "You may configure this device before pairing"
-msgstr ""
+msgstr "قد تحتاج إلى إعداد هذا الجهاز أولا قبل اﻹقتران"
 
 #. TRANSLATORS: Send clipboard content to device
 #: data/ui/device-preferences.ui:2526
 msgid "To Device"
-msgstr ""
+msgstr "إلى الجهاز"
 
 #. TRANSLATORS: Receive clipboard content from the device
 #: data/ui/device-preferences.ui:2532
 msgid "From Device"
-msgstr ""
+msgstr "من الجهاز"
 
 #. TRANSLATORS: Don't change the system volume
 #: data/ui/device-preferences.ui:2544 data/ui/device-preferences.ui:2570
