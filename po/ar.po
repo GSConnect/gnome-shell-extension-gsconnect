@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 19:00-0400\n"
-"PO-Revision-Date: 2019-09-25 20:37\n"
+"PO-Revision-Date: 2019-10-06 14:44\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Arabic\n"
 "Language: ar_SA\n"
@@ -19,23 +19,23 @@ msgstr ""
 #. TRANSLATORS: View the TLS Certificate fingerprint
 #: data/gtk/menus.ui:7 src/preferences/device.js:304
 msgid "Encryption Info"
-msgstr ""
+msgstr "معلومات التشفير"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/gtk/menus.ui:12 data/ui/device-preferences.ui:2438
 #: src/service/daemon.js:808
 msgid "Pair"
-msgstr ""
+msgstr "اقتران"
 
 #. TRANSLATORS: Unpair the device and notify it
 #: data/gtk/menus.ui:18 src/service/daemon.js:817
 msgid "Unpair"
-msgstr ""
+msgstr "إلغاء الاقتران"
 
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/connect.ui:14 data/ui/preferences-window.ui:708
 msgid "Connect to…"
-msgstr ""
+msgstr "الاتصال بـ…"
 
 #. Action Buttons
 #: data/ui/connect.ui:20 data/ui/notification-reply-dialog.ui:14
@@ -45,258 +45,258 @@ msgstr ""
 #: src/service/plugins/share.js:452 src/service/ui/service.js:37
 #: src/shell/donotdisturb.js:301
 msgid "Cancel"
-msgstr ""
+msgstr "إلغاء"
 
 #: data/ui/connect.ui:27
 msgid "Connect"
-msgstr ""
+msgstr "اتصال"
 
 #: data/ui/connect.ui:74
 msgid "IP Address"
-msgstr ""
+msgstr "عنوان الـ IP"
 
 #: data/ui/contact-chooser.ui:50
 msgid "No contacts"
-msgstr ""
+msgstr "لا توجد جهات اتصال"
 
 #: data/ui/contact-chooser.ui:62 data/ui/messaging-window.ui:88
 #: data/ui/preferences-window.ui:734
 msgid "Help"
-msgstr ""
+msgstr "المساعدة"
 
 #: data/ui/contact-chooser.ui:103
 msgid "Type a phone number or name"
-msgstr ""
+msgstr "اكتب رقم هاتف أو اسم"
 
 #: data/ui/conversation.ui:76 data/ui/conversation.ui:85
 #: src/shell/notification.js:52
 msgid "Type a message"
-msgstr ""
+msgstr "اكتب رسالة"
 
 #: data/ui/conversation.ui:84 src/service/plugins/sms.js:50
 msgid "Send Message"
-msgstr ""
+msgstr "إرسال رسالة"
 
 #: data/ui/device-preferences.ui:40 src/service/device.js:190
 msgid "Desktop"
-msgstr ""
+msgstr "سطح المكتب"
 
 #: data/ui/device-preferences.ui:88
 msgid "Camera"
-msgstr ""
+msgstr "الكاميرا"
 
 #: data/ui/device-preferences.ui:144
 msgid "Clipboard Sync"
-msgstr ""
+msgstr "مزامنة الحافظة"
 
 #: data/ui/device-preferences.ui:208
 msgid "Media Players"
-msgstr ""
+msgstr "مشغلات الوسائط"
 
 #: data/ui/device-preferences.ui:263
 msgid "Mouse & Keyboard"
-msgstr ""
+msgstr "الفأرة ولوحة المفاتيح"
 
 #: data/ui/device-preferences.ui:318
 msgid "Volume Control"
-msgstr ""
+msgstr "التحكم بمستوى الصوت"
 
 #: data/ui/device-preferences.ui:367 src/service/plugins/sftp.js:359
 msgid "Files"
-msgstr ""
+msgstr "الملفات"
 
 #: data/ui/device-preferences.ui:418
 msgid "Receive Files"
-msgstr ""
+msgstr "استلام ملفات"
 
 #: data/ui/device-preferences.ui:503 data/ui/device-preferences.ui:2105
 msgid "Sharing"
-msgstr ""
+msgstr "المشاركة"
 
 #: data/ui/device-preferences.ui:532 data/ui/device-preferences.ui:826
 #: data/ui/device-preferences.ui:2197 src/service/plugins/runcommand.js:18
 #: src/service/plugins/runcommand.js:26 src/service/plugins/runcommand.js:194
 msgid "Commands"
-msgstr ""
+msgstr "اﻷوامر"
 
 #: data/ui/device-preferences.ui:596 data/ui/device-preferences.ui:599
 msgid "Name"
-msgstr ""
+msgstr "الاسم"
 
 #: data/ui/device-preferences.ui:612 data/ui/device-preferences.ui:618
 msgid "Command Line"
-msgstr ""
+msgstr "سطر الأوامر"
 
 #: data/ui/device-preferences.ui:616 data/ui/device-preferences.ui:617
 msgid "Choose an executable"
-msgstr ""
+msgstr "اختر ملف تنفيذي"
 
 #: data/ui/device-preferences.ui:668 data/ui/device-preferences.ui:684
 msgid "Add"
-msgstr ""
+msgstr "إضافة"
 
 #: data/ui/device-preferences.ui:700 data/ui/device-preferences.ui:715
 msgid "Remove"
-msgstr ""
+msgstr "إزالة"
 
 #: data/ui/device-preferences.ui:749 data/ui/device-preferences.ui:762
 msgid "Edit"
-msgstr ""
+msgstr "تعديل"
 
 #: data/ui/device-preferences.ui:778 data/ui/device-preferences.ui:791
 msgid "Save"
-msgstr ""
+msgstr "حفظ"
 
 #: data/ui/device-preferences.ui:887
 msgid "Share Notifications"
-msgstr ""
+msgstr "مشاركة الإشعارات"
 
 #: data/ui/device-preferences.ui:938
 msgid "Applications"
-msgstr ""
+msgstr "التطبيقات"
 
 #: data/ui/device-preferences.ui:984 data/ui/device-preferences.ui:2243
 #: src/service/plugins/notification.js:13
 msgid "Notifications"
-msgstr ""
+msgstr "الإشعارات"
 
 #: data/ui/device-preferences.ui:1042 src/service/plugins/contacts.js:23
 msgid "Contacts"
-msgstr ""
+msgstr "جهات الاتصال"
 
 #: data/ui/device-preferences.ui:1095
 msgid "Incoming Calls"
-msgstr ""
+msgstr "المكالمات الواردة"
 
 #: data/ui/device-preferences.ui:1144 data/ui/device-preferences.ui:1311
 msgid "Volume"
-msgstr ""
+msgstr "مستوى الصوت"
 
 #: data/ui/device-preferences.ui:1210 data/ui/device-preferences.ui:1377
 msgid "Pause Media"
-msgstr ""
+msgstr "إيقاف الوسائط"
 
 #: data/ui/device-preferences.ui:1263
 msgid "Ongoing Calls"
-msgstr ""
+msgstr "المكالمة الحالية"
 
 #: data/ui/device-preferences.ui:1433
 msgid "Mute Microphone"
-msgstr ""
+msgstr "كتم المايكروفون"
 
 #: data/ui/device-preferences.ui:1487 data/ui/device-preferences.ui:2289
 #: src/service/plugins/telephony.js:13
 msgid "Telephony"
-msgstr ""
+msgstr "المهاتفة"
 
 #: data/ui/device-preferences.ui:1522
 msgid "Action Shortcuts"
-msgstr ""
+msgstr "اختصارات اﻹجراءات"
 
 #: data/ui/device-preferences.ui:1537
 msgid "Reset All…"
-msgstr ""
+msgstr "إعادة تعيين الكل…"
 
 #: data/ui/device-preferences.ui:1586
 msgid "Shortcuts"
-msgstr ""
+msgstr "الاختصارات"
 
 #: data/ui/device-preferences.ui:1617
 msgid "Plugins"
-msgstr ""
+msgstr "الإضافات"
 
 #: data/ui/device-preferences.ui:1663
 msgid "Experimental"
-msgstr ""
+msgstr "تجريبي"
 
 #: data/ui/device-preferences.ui:1712
 msgid "Legacy SMS Support"
-msgstr ""
+msgstr "دعم الرسائل النصية القديم"
 
 #: data/ui/device-preferences.ui:1765 data/ui/device-preferences.ui:2381
 msgid "Advanced"
-msgstr ""
+msgstr "خيارات متقدمة"
 
 #: data/ui/device-preferences.ui:1796
 msgid "Device Battery"
-msgstr ""
+msgstr "بطارية الجهاز"
 
 #: data/ui/device-preferences.ui:1847
 msgid "Low Battery Notification"
-msgstr ""
+msgstr "إشعار انخفاض البطارية"
 
 #: data/ui/device-preferences.ui:1908
 msgid "Fully Charged Notification"
-msgstr ""
+msgstr "إشعار امتلاء البطارية"
 
 #: data/ui/device-preferences.ui:1955
 msgid "System Battery"
-msgstr ""
+msgstr "بطارية الجهاز"
 
 #: data/ui/device-preferences.ui:2006
 msgid "Share Statistics"
-msgstr ""
+msgstr "مشاركة الاحصائيات"
 
 #: data/ui/device-preferences.ui:2055 data/ui/device-preferences.ui:2151
 #: src/service/plugins/battery.js:11
 msgid "Battery"
-msgstr ""
+msgstr "البطارية"
 
 #: data/ui/device-preferences.ui:2335
 msgid "Keyboard Shortcuts"
-msgstr ""
+msgstr "اختصارات لوحة المفاتيح"
 
 #: data/ui/device-preferences.ui:2470
 msgid "Device is unpaired"
-msgstr ""
+msgstr "الجهاز غير مقترن"
 
 #: data/ui/device-preferences.ui:2485
 msgid "You may configure this device before pairing"
-msgstr ""
+msgstr "قد تحتاج إلى إعداد هذا الجهاز أولا قبل اﻹقتران"
 
 #. TRANSLATORS: Send clipboard content to device
 #: data/ui/device-preferences.ui:2526
 msgid "To Device"
-msgstr ""
+msgstr "إلى الجهاز"
 
 #. TRANSLATORS: Receive clipboard content from the device
 #: data/ui/device-preferences.ui:2532
 msgid "From Device"
-msgstr ""
+msgstr "من الجهاز"
 
 #. TRANSLATORS: Don't change the system volume
 #: data/ui/device-preferences.ui:2544 data/ui/device-preferences.ui:2570
 msgid "Nothing"
-msgstr ""
+msgstr "لا شيء"
 
 #. TRANSLATORS: Lower the system volume
 #: data/ui/device-preferences.ui:2551 data/ui/device-preferences.ui:2577
 msgid "Lower"
-msgstr ""
+msgstr "منخفض"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the phone ringer
 #: data/ui/device-preferences.ui:2558 data/ui/device-preferences.ui:2584
 #: src/service/plugins/telephony.js:191
 msgid "Mute"
-msgstr ""
+msgstr "كتم"
 
 #: data/ui/messaging-window.ui:12 src/service/plugins/sms.js:26
 #: src/service/ui/messaging.js:1012
 msgid "Messaging"
-msgstr ""
+msgstr "المراسة"
 
 #: data/ui/messaging-window.ui:21 src/service/ui/messaging.js:1229
 msgid "New Conversation"
-msgstr ""
+msgstr "محادثة جديدة"
 
 #: data/ui/messaging-window.ui:105
 msgid "No Conversations"
-msgstr ""
+msgstr "لا توجد محادثات"
 
 #: data/ui/messaging-window.ui:165
 msgid "No conversation selected"
-msgstr ""
+msgstr "لم يتم تحديد أي محادثة"
 
 #: data/ui/messaging-window.ui:181
 msgid "Select or start a conversation"
@@ -1040,15 +1040,15 @@ msgstr ""
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:33
 msgid "Service Unavailable"
-msgstr ""
+msgstr "الخدمة غير متاحة"
 
 #. TRANSLATORS: No devices are known or available
 #: webextension/gettext.js:35
 msgid "No Device Found"
-msgstr ""
+msgstr "لم يتم العثور على أي جهاز"
 
 #. TRANSLATORS: Open URL with the device's browser
 #: webextension/gettext.js:37
 msgid "Open in Browser"
-msgstr ""
+msgstr "فتح في المتصفح"
 
