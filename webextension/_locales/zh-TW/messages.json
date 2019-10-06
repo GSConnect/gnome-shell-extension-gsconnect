@@ -4,11 +4,11 @@
         "description": "The extension name"
     },
     "extensionDescription": {
-        "message": "Dele links med GSConnect, direkte til browseren eller via SMS.",
+        "message": "直接用瀏覽器或經由簡訊和 GSConnect 共享鏈結",
         "description": "The extension description"
     },
     "contextMenuMultipleDevices": {
-        "message": "Send til Mobil Enhed",
+        "message": "傳送到手機",
         "description": "Top-level Context Menu label when multiple devices are available"
     },
     "contextMenuSinglePlugin": {
@@ -26,19 +26,19 @@
         }
     },
     "popupMenuDisconnected": {
-        "message": "Tjenesten er ikke tilgængelig",
+        "message": "服務無法使用",
         "description": "Popup Menu label when disconnected from the GNOME Shell extension"
     },
     "popupMenuNoDevices": {
-        "message": "Ingen Enhed Fundet",
+        "message": "找不到裝置",
         "description": "Popup Menu label when no devices are connected or have supported plugins enabled"
     },
     "shareMessage": {
-        "message": "Åbn i browser",
+        "message": "以瀏覽器開啟",
         "description": "Context Menu label for opening a link in the device's web browser"
     },
     "smsMessage": {
-        "message": "Send SMS",
+        "message": "發送簡訊",
         "description": "Context Menu label for sharing a link in an SMS message"
     }
 }

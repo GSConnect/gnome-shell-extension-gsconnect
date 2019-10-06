@@ -4,7 +4,7 @@
         "description": "The extension name"
     },
     "extensionDescription": {
-        "message": "Teile Links über GSConnect, direkt an den Browser oder per SMS.",
+        "message": "Verweise mit GSConnect direkt an den Browser oder per SMS freigeben.",
         "description": "The extension description"
     },
     "contextMenuMultipleDevices": {
@@ -26,7 +26,7 @@
         }
     },
     "popupMenuDisconnected": {
-        "message": "Service nicht verfügbar",
+        "message": "Dienst nicht verfügbar",
         "description": "Popup Menu label when disconnected from the GNOME Shell extension"
     },
     "popupMenuNoDevices": {
