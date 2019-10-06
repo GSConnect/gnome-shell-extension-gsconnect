@@ -56,6 +56,31 @@ var DeviceChooserDialog = GObject.registerClass({
         });
         scrolledWindow.add(this.list);
 
+        // Placeholder
+        let placeholder = new Gtk.Grid({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER,
+            visible: true
+        });
+        placeholder.get_style_context().add_class('placeholder');
+        this.list.set_placeholder(placeholder);
+
+        let placeholderImage = new Gtk.Image({
+            icon_name: 'org.gnome.Shell.Extensions.GSConnect-symbolic',
+            pixel_size: 64,
+            visible: true
+        });
+        placeholderImage.get_style_context().add_class('placeholder-image');
+        placeholder.attach(placeholderImage, 0, 0, 1, 1);
+
+        let placeholderLabel = new Gtk.Label({
+            label: _('No Device Found'),
+            margin_top: 12,
+            visible: true
+        });
+        placeholderLabel.get_style_context().add_class('placeholder-title');
+        placeholder.attach(placeholderLabel, 0, 1, 1, 1);
+
         this.list.connect(
             'row-activated',
             this._onDeviceActivated.bind(this)
@@ -94,21 +119,18 @@ var DeviceChooserDialog = GObject.registerClass({
     }
 
     _populate() {
-        let devices = [];
-
         for (let device of this.application._devices.values()) {
-            if (device.get_action_enabled(this._action)) {
-                devices.push(device);
-            }
-        }
+            let action = device.lookup_action(this._action);
 
-        for (let device of devices) {
-            let row = new Gtk.ListBoxRow({visible: true});
-            this.list.add(row);
+            let row = new Gtk.ListBoxRow({
+                visible: action.enabled
+            });
+
+            action.bind_property('enabled', row, 'visible', 0);
             row.device = device;
 
             let grid = new Gtk.Grid({
-                column_spacing: 6,
+                column_spacing: 12,
                 margin: 6,
                 visible: true
             });
@@ -128,7 +150,10 @@ var DeviceChooserDialog = GObject.registerClass({
                 visible: true
             });
             grid.attach(name, 1, 0, 1, 1);
+            this.list.add(row);
         }
+
+        this.list.select_row(this.list.get_row_at_index(0));
     }
 });
 
