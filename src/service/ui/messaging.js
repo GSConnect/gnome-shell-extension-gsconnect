@@ -452,6 +452,19 @@ const ConversationWidget = GObject.registerClass({
         });
     }
 
+    _onKeyPressEvent(entry, event) {
+        let keyval = event.get_keyval()[1];
+        let state = event.get_state()[1];
+        let mask = state & Gtk.accelerator_get_default_mod_mask();
+
+        if (keyval === Gdk.KEY_Return && (mask & Gdk.ModifierType.SHIFT_MASK)) {
+            entry.emit('insert-at-cursor', '\n');
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * Messages
      */

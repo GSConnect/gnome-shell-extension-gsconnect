@@ -86,6 +86,7 @@
         <signal name="activate" handler="sendMessage" swapped="no"/>
         <signal name="changed" handler="_onEntryChanged" swapped="no"/>
         <signal name="icon-release" handler="sendMessage" swapped="no"/>
+        <signal name="key-release-event" handler="_onKeyPressEvent" swapped="no"/>
       </object>
       <packing>
         <property name="left_attach">0</property>
