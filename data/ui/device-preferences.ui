@@ -1678,7 +1678,6 @@
                       <object class="GtkFrame">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_bottom">32</property>
                         <property name="label_xalign">0</property>
                         <child>
                           <object class="GtkListBox" id="experimental-list">
