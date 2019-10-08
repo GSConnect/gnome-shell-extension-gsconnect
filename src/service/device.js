@@ -266,13 +266,11 @@ var Device = GObject.registerClass({
         let inc = this.settings.get_strv('incoming-capabilities');
         let out = this.settings.get_strv('outgoing-capabilities');
 
-        // Skip if nothing's changed
-        if (incoming.join('') == inc.join('') && outgoing.join('') == out.join('')) {
-            return;
+        // Only write GSettings if something has changed
+        if (incoming.join('') != inc.join('') || outgoing.join('') != out.join('')) {
+            this.settings.set_strv('incoming-capabilities', incoming);
+            this.settings.set_strv('outgoing-capabilities', outgoing);
         }
-
-        this.settings.set_strv('incoming-capabilities', incoming);
-        this.settings.set_strv('outgoing-capabilities', outgoing);
 
         // Determine supported plugins by matching incoming to outgoing types
         let supported = [];
@@ -291,7 +289,13 @@ var Device = GObject.registerClass({
             }
         }
 
-        this.settings.set_strv('supported-plugins', supported.sort());
+        // Only write GSettings if something has changed
+        let currentSupported = this.settings.get_strv('supported-plugins');
+        supported.sort();
+
+        if (currentSupported.join('') !== supported.join('')) {
+            this.settings.set_strv('supported-plugins', supported);
+        }
     }
 
     /**
