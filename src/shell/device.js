@@ -38,7 +38,8 @@ var Battery = GObject.registerClass({
 
         // Battery Icon
         this.icon = new St.Icon({
-            fallback_icon_name: 'battery-missing-symbolic'
+            fallback_icon_name: 'battery-missing-symbolic',
+            icon_size: 16
         });
         this.add_child(this.icon);
 
