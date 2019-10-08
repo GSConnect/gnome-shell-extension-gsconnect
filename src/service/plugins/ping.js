@@ -38,8 +38,6 @@ var Plugin = GObject.registerClass({
     }
 
     handlePacket(packet) {
-        debug(packet);
-
         // Notification
         let notif = {
             title: this.device.name,
