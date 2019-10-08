@@ -23,6 +23,7 @@ src/service/plugins/mpris.js
 src/service/plugins/notification.js
 src/service/plugins/photo.js
 src/service/plugins/ping.js
+src/service/plugins/presenter.js
 src/service/plugins/runcommand.js
 src/service/plugins/sftp.js
 src/service/plugins/share.js
