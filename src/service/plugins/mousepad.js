@@ -37,23 +37,6 @@ var Metadata = {
 
 
 /**
- * Printable ASCII range
- */
-const _ASCII = /[\x20-\x7E]/;
-
-
-/**
- * Modifier Keycode Defaults
- */
-const XKeycode = {
-    Alt_L: 0x40,
-    Control_L: 0x25,
-    Shift_L: 0x32,
-    Super_L: 0x85
-};
-
-
-/**
  * A map of "KDE Connect" keyvals to Gdk
  */
 const KeyMap = new Map([
@@ -121,43 +104,7 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'mousepad');
 
-        // Atspi.init() return 2 on fail, but still marks itself as inited. We
-        // uninit before throwing an error otherwise any future call to init()
-        // will appear successful and other calls will cause GSConnect to exit.
-        // See: https://gitlab.gnome.org/GNOME/at-spi2-core/blob/master/atspi/atspi-misc.c
-        if (Atspi.init() === 2) {
-            Atspi.exit();
-            this.destroy();
-            throw new Error('Failed to start AT-SPI');
-        }
-
-        try {
-            this._display = Gdk.Display.get_default();
-            this._seat = this._display.get_default_seat();
-            this._pointer = this._seat.get_pointer();
-        } catch (e) {
-            this.destroy();
-            throw e;
-        }
-
-        // Try to read modifier keycodes from Gdk
-        try {
-            let keymap = Gdk.Keymap.get_default();
-
-            let modifier = keymap.get_entries_for_keyval(Gdk.KEY_Alt_L)[1][0];
-            XKeycode.Alt_L = modifier.keycode;
-
-            modifier = keymap.get_entries_for_keyval(Gdk.KEY_Control_L)[1][0];
-            XKeycode.Control_L = modifier.keycode;
-
-            modifier = keymap.get_entries_for_keyval(Gdk.KEY_Shift_L)[1][0];
-            XKeycode.Shift_L = modifier.keycode;
-
-            modifier = keymap.get_entries_for_keyval(Gdk.KEY_Super_L)[1][0];
-            XKeycode.Super_L = modifier.keycode;
-        } catch (e) {
-            debug('using default modifier keycodes');
-        }
+        this._input = this.service.components.get('input');
 
         this.settings.bind(
             'share-control',
@@ -166,22 +113,11 @@ var Plugin = GObject.registerClass({
             Gio.SettingsBindFlags.GET
         );
 
-        this._state = false;
         this._stateId = 0;
     }
 
     connected() {
         super.connected();
-
-        // Recheck for Caribou
-        if (!this._virtual_keyboard) {
-            try {
-                let Caribou = imports.gi.Caribou;
-                this._virtual_keyboard = Caribou.DisplayAdapter.get_default();
-            } catch (e) {
-                this._virtual_keyboard = false;
-            }
-        }
 
         this.sendState();
     }
@@ -189,13 +125,18 @@ var Plugin = GObject.registerClass({
     disconnected() {
         super.disconnected();
 
+        // Set the keyboard state to inactive
         this._state = false;
         this._stateId = 0;
         this.notify('state');
     }
 
     get state() {
-        return (this._state);
+        if (this._state === undefined) {
+            this._state = false;
+        }
+
+        return this._state;
     }
 
     get virtual_keyboard() {
@@ -221,336 +162,71 @@ var Plugin = GObject.registerClass({
     }
 
     _handleInput(input) {
-        let mods = false;
+        let keysym;
+        let modifiers = 0;
 
         // These are ordered, as much as possible, to create the shortest code
         // path for high-frequency, low-latency events (eg. mouse movement)
         switch (true) {
             case input.hasOwnProperty('scroll'):
-                if (input.dy < 0) {
-                    this.clickPointer(5);
-                } else if (input.dy > 0) {
-                    this.clickPointer(4);
-                }
+                this._input.scrollPointer(input.dx, input.dy);
                 break;
 
             case (input.hasOwnProperty('dx') && input.hasOwnProperty('dy')):
-                this.movePointer(input.dx, input.dy);
+                this._input.movePointer(input.dx, input.dy);
                 break;
 
             case (input.hasOwnProperty('key') || input.hasOwnProperty('specialKey')):
                 // NOTE: \u0000 sometimes sent in advance of a specialKey packet
                 if (input.key && input.key === '\u0000') return;
 
-                // We need to decide if we have modifiers to deal with
-                mods = (input.alt || input.ctrl || input.shift || input.super);
+                // Modifiers
+                if (input.alt || input.ctrl || input.shift || input.super) {
+                    if (input.alt) modifiers |= Gdk.ModifierType.MOD1_MASK;
+                    if (input.ctrl) modifiers |= Gdk.ModifierType.CONTROL_MASK;
+                    if (input.shift) modifiers |= Gdk.ModifierType.SHIFT_MASK;
+                    if (input.super) modifiers |= Gdk.ModifierType.SUPER_MASK;
+                }
+
+                // Regular key (printable ASCII or Unicode)
+                if (input.key) {
+                    this._input.pressKey(input.key, modifiers);
+                    this.sendEcho(input);
 
                 // Special key (eg. non-printable ASCII)
-                if (input.specialKey && KeyMap.has(input.specialKey)) {
-                    this.pressSpecialKey(input);
-
-                // Regular key (printable ASCII)
-                } else if (input.key && _ASCII.test(input.key)) {
-                    this.pressKey(input);
-
-                // Unicode character without modifiers
-                } else if (input.key && !_ASCII.test(input.key) && !mods) {
-                    this.pressUnicodeKey(input);
-
-                // Unicode character with modifiers; Caribou/XTest is required
-                } else if (this.virtual_keyboard) {
-                    this.pressKeySym(input);
-
-                // Caribou not available or key out of range
-                } else {
-                    debug('Additional Software Required: libcaribou');
+                } else if (input.specialKey && KeyMap.has(input.specialKey)) {
+                    keysym = KeyMap.get(input.specialKey);
+                    this._input.pressKey(keysym, modifiers);
+                    this.sendEcho(input);
                 }
                 break;
 
             case input.hasOwnProperty('singleclick'):
-                this.clickPointer(1);
+                this._input.clickPointer(Gdk.BUTTON_PRIMARY);
                 break;
 
             case input.hasOwnProperty('doubleclick'):
-                this.doubleclickPointer(1);
+                this._input.doubleclickPointer(Gdk.BUTTON_PRIMARY);
                 break;
 
             case input.hasOwnProperty('middleclick'):
-                this.clickPointer(2);
+                this._input.clickPointer(Gdk.BUTTON_MIDDLE);
                 break;
 
             case input.hasOwnProperty('rightclick'):
-                this.clickPointer(3);
+                this._input.clickPointer(Gdk.BUTTON_SECONDARY);
                 break;
 
             case input.hasOwnProperty('singlehold'):
-                this.pressPointer(1);
+                this._input.pressPointer(Gdk.BUTTON_PRIMARY);
                 break;
 
-            // This is not used, hold is released with a regular click instead
             case input.hasOwnProperty('singlerelease'):
-                this.releasePointer(1);
+                this._input.releasePointer(Gdk.BUTTON_PRIMARY);
                 break;
-        }
-    }
 
-    /**
-     * Pointer events
-     */
-    clickPointer(button) {
-        try {
-            let [, x, y] = this._pointer.get_position();
-            let monitor = this._display.get_monitor_at_point(x, y);
-            let scale = monitor.get_scale_factor();
-            Atspi.generate_mouse_event(scale * x, scale * y, `b${button}c`);
-        } catch (e) {
-            logError(e, this.device.name);
-        }
-    }
-
-    doubleclickPointer(button) {
-        try {
-            let [, x, y] = this._pointer.get_position();
-            let monitor = this._display.get_monitor_at_point(x, y);
-            let scale = monitor.get_scale_factor();
-            Atspi.generate_mouse_event(scale * x, scale * y, `b${button}d`);
-        } catch (e) {
-            logError(e, this.device.name);
-        }
-    }
-
-    movePointer(dx, dy) {
-        try {
-            let [, x, y] = this._pointer.get_position();
-            let monitor = this._display.get_monitor_at_point(x, y);
-            let scale = monitor.get_scale_factor();
-            Atspi.generate_mouse_event(scale * dx, scale * dy, 'rel');
-        } catch (e) {
-            logError(e, this.device.name);
-        }
-    }
-
-    pressPointer(button) {
-        try {
-            let [, x, y] = this._pointer.get_position();
-            let monitor = this._display.get_monitor_at_point(x, y);
-            let scale = monitor.get_scale_factor();
-            Atspi.generate_mouse_event(scale * x, scale * y, `b${button}p`);
-        } catch (e) {
-            logError(e, this.device.name);
-        }
-    }
-
-    releasePointer(button) {
-        try {
-            let [, x, y] = this._pointer.get_position();
-            let monitor = this._display.get_monitor_at_point(x, y);
-            let scale = monitor.get_scale_factor();
-            Atspi.generate_mouse_event(scale * x, scale * y, `b${button}r`);
-        } catch (e) {
-            logError(e, this.device.name);
-        }
-    }
-
-    /**
-     * Phony virtual keyboard helpers
-     */
-    keyval_press(keyval) {
-        Atspi.generate_keyboard_event(
-            keyval,
-            null,
-            Atspi.KeySynthType.PRESS | Atspi.KeySynthType.SYM
-        );
-    }
-
-    keyval_release(keyval) {
-        Atspi.generate_keyboard_event(
-            keyval,
-            null,
-            Atspi.KeySynthType.RELEASE | Atspi.KeySynthType.SYM
-        );
-    }
-
-    keyval_pressrelease(keyval) {
-        Atspi.generate_keyboard_event(
-            keyval,
-            null,
-            Atspi.KeySynthType.PRESSRELEASE | Atspi.KeySynthType.SYM
-        );
-    }
-
-    mode_lock(keycode) {
-        Atspi.generate_keyboard_event(
-            keycode,
-            null,
-            Atspi.KeySynthType.PRESS
-        );
-    }
-
-    mode_unlock(keycode) {
-        Atspi.generate_keyboard_event(
-            keycode,
-            null,
-            Atspi.KeySynthType.RELEASE
-        );
-    }
-
-    /**
-     * Simulate a keypress in the printable ASCII range (x20-x7E)
-     *
-     * @param {object} input - 'body' of a 'kdeconnect.mousepad.request' packet
-     */
-    pressKey(input) {
-        try {
-            debug(`key: ${input.key}`);
-
-            // Press Modifiers
-            if (input.alt) this.mode_lock(XKeycode.Alt_L);
-            if (input.ctrl) this.mode_lock(XKeycode.Control_L);
-            if (input.shift) this.mode_lock(XKeycode.Shift_L);
-            if (input.super) this.mode_lock(XKeycode.Super_L);
-
-            Atspi.generate_keyboard_event(
-                0,
-                input.key,
-                Atspi.KeySynthType.STRING
-            );
-
-            // Release Modifiers
-            if (input.alt) this.mode_unlock(XKeycode.Alt_L);
-            if (input.ctrl) this.mode_unlock(XKeycode.Control_L);
-            if (input.shift) this.mode_unlock(XKeycode.Shift_L);
-            if (input.super) this.mode_unlock(XKeycode.Super_L);
-
-            this.sendEcho(input);
-        } catch (e) {
-            logError(e, this.device.name);
-        }
-    }
-
-    /**
-     * Simulate a special key from KeyMap (F1, Home, Esc, etc)
-     *
-     * @param {object} input - 'body' of a 'kdeconnect.mousepad.request' packet
-     */
-    pressSpecialKey(input) {
-        try {
-            debug(`specialKey: ${KeyMap.get(input.specialKey)}`);
-
-            // Press Modifiers
-            if (input.alt) this.mode_lock(XKeycode.Alt_L);
-            if (input.ctrl) this.mode_lock(XKeycode.Control_L);
-            if (input.shift) this.mode_lock(XKeycode.Shift_L);
-            if (input.super) this.mode_lock(XKeycode.Super_L);
-
-            Atspi.generate_keyboard_event(
-                KeyMap.get(input.specialKey),
-                null,
-                Atspi.KeySynthType.PRESSRELEASE | Atspi.KeySynthType.SYM
-            );
-
-            // Release Modifiers
-            if (input.alt) this.mode_unlock(XKeycode.Alt_L);
-            if (input.ctrl) this.mode_unlock(XKeycode.Control_L);
-            if (input.shift) this.mode_unlock(XKeycode.Shift_L);
-            if (input.super) this.mode_unlock(XKeycode.Super_L);
-
-            this.sendEcho(input);
-        } catch (e) {
-            logError(e, this.device.name);
-        }
-    }
-
-    /**
-     * Simulate the composition of a unicode character with Control+Shift+u, [hex], Return
-     *
-     * @param {object} input - 'body' of a 'kdeconnect.mousepad.request' packet
-     */
-    pressUnicodeKey(input) {
-        try {
-            debug(`unicodeKey: ${input.key}`);
-
-            // TODO: Hardcoded Control_L and Shift_L keycodes.
-            // Using Control and Shift keysym is not working (it triggers key release)
-            // Probably using LOCKMODIFIERS will not work either as unlocking the modifier
-            // will not trigger a release
-            
-            let ucode = input.key.charCodeAt(0).toString(16);
-            let ukeyval;
-        
-            // Press Control_L & Shift_L
-            this.mode_lock(XKeycode.Control_L);
-            this.mode_lock(XKeycode.Shift_L);
-
-            // Press and release 'u'
-            this.keyval_pressrelease(Gdk.KEY_U);
-
-            // Release Control_L & Shift_L
-            this.mode_unlock(XKeycode.Control_L);
-            this.mode_unlock(XKeycode.Shift_L);
-            
-            // Press and release hex code
-            for (let h = 0; h < ucode.length; h++) {
-                ukeyval = Gdk.unicode_to_keyval(ucode.charAt(h).codePointAt(0));
-                this.keyval_pressrelease(ukeyval);
-            }
-            
-            // Press and release Return
-            this.keyval_pressrelease(Gdk.KEY_Return);
-
-            this.sendEcho(input);
-        } catch (e) {
-            logError(e, this.device.name);
-        }
-    }
-
-    /**
-     * Simulate a unicode key press with modifiers using libcaribou
-     *
-     * @param {object} input - 'body' of a 'kdeconnect.mousepad.request' packet
-     * @param {number} mask - Modifier mask for keypress
-     */
-    pressKeySym(input) {
-        try {
-            debug('simulating keypress with libcaribou');
-
-            // Transform unicode to hex code
-            let ucode = input.key.charCodeAt(0).toString(16);
-            let ukeyvar;
-
-            // Prepare modifier mask
-            let mask = 0;
-            if (input.alt) mask |= Gdk.ModifierType.MOD1_MASK;
-            if (input.ctrl) mask |= Gdk.ModifierType.CONTROL_MASK;
-            if (input.shift) mask |= Gdk.ModifierType.SHIFT_MASK;
-            if (input.super) mask |= Gdk.ModifierType.MOD4_MASK;
-
-            debug(`unicode hex: /u${ucode}, mask: ${mask}`);
-
-            // Press Control + Shift
-            // NOTE: .mod_un/lock does not work as mod_unlock is not equivalent
-            // to a key release
-            this.virtual_keyboard.keyval_press(Gdk.KEY_Control_L);
-            this.virtual_keyboard.keyval_press(Gdk.KEY_Shift_L);
-
-            // Press and release 'u'
-            this.virtual_keyboard.keyval_press(Gdk.KEY_U);
-            this.virtual_keyboard.keyval_release(Gdk.KEY_U);
-
-            // Press and release hex code
-            for (let h = 0; h < ucode.length; h++) {
-                ukeyvar = Gdk.unicode_to_keyval(ucode.charAt(h).codePointAt(0));
-                this.virtual_keyboard.keyval_press(ukeyvar);
-                this.virtual_keyboard.keyval_release(ukeyvar);
-            }
-
-            // Release Control + Shift
-            this.virtual_keyboard.keyval_release(Gdk.KEY_Shift_L);
-            this.virtual_keyboard.keyval_release(Gdk.KEY_Control_L);
-
-            this.sendEcho(input);
-        } catch (e) {
-            logError(e, this.device.name);
+            default:
+                logError(new Error('Unknown input'));
         }
     }
 

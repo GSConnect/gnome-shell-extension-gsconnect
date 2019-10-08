@@ -2,7 +2,6 @@
 
 'use strict';
 
-imports.gi.versions.Atspi = '2.0';
 imports.gi.versions.Gdk = '3.0';
 imports.gi.versions.GdkPixbuf = '2.0';
 imports.gi.versions.Gio = '2.0';
@@ -117,9 +116,6 @@ const Service = GObject.registerClass({
             });
 
             for (let name in imports.service.plugins) {
-                // Don't report mousepad support in Wayland sessions
-                if (_WAYLAND && name == 'mousepad') continue;
-
                 let meta = imports.service.plugins[name].Metadata;
 
                 if (!meta) continue;

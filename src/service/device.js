@@ -214,17 +214,6 @@ var Device = GObject.registerClass({
         return this.settings.get_boolean('paired');
     }
 
-    get supported_plugins() {
-        let supported = this.settings.get_strv('supported-plugins');
-
-        // Preempt mousepad plugin on Wayland
-        if (_WAYLAND) {
-            supported = supported.filter(name => (name !== 'mousepad'));
-        }
-
-        return supported;
-    }
-
     get icon_name() {
         switch (this.type) {
             case 'laptop':
@@ -893,7 +882,7 @@ var Device = GObject.registerClass({
         }
 
         // Load allowed plugins
-        for (let name of this.supported_plugins) {
+        for (let name of this.settings.get_strv('supported-plugins')) {
             if (!disabled.includes(name)) {
                 await this._loadPlugin(name);
             }
@@ -928,7 +917,7 @@ var Device = GObject.registerClass({
     async _loadPlugins() {
         let disabled = this.settings.get_strv('disabled-plugins');
 
-        for (let name of this.supported_plugins) {
+        for (let name of this.settings.get_strv('supported-plugins')) {
             if (!disabled.includes(name)) {
                 await this._loadPlugin(name);
             }

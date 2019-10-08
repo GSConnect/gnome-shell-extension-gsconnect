@@ -258,17 +258,6 @@ var DevicePreferences = GObject.registerClass({
         return this._menu;
     }
 
-    get supported_plugins() {
-        let supported = this.settings.get_strv('supported-plugins');
-
-        // Preempt mousepad plugin on Wayland
-        if (_WAYLAND) {
-            supported = supported.filter(name => (name !== 'mousepad'));
-        }
-
-        return supported;
-    }
-
     get_incoming_supported(type) {
         let incoming = this.settings.get_strv('incoming-capabilities');
         return incoming.includes(`kdeconnect.${type}`);
@@ -930,7 +919,7 @@ var DevicePreferences = GObject.registerClass({
 
     get_plugin_allowed(name) {
         let disabled = this.settings.get_strv('disabled-plugins');
-        let supported = this.supported_plugins;
+        let supported = this.settings.get_strv('supported-plugins');
 
         return supported.filter(name => !disabled.includes(name)).includes(name);
     }
@@ -991,7 +980,7 @@ var DevicePreferences = GObject.registerClass({
     }
 
     _populatePlugins() {
-        let supported = this.supported_plugins;
+        let supported = this.settings.get_strv('supported-plugins');
 
         for (let row of this.plugin_list.get_children()) {
             let checkbutton = row.get_child().get_child_at(0, 0);
