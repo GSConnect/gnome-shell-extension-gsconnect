@@ -998,7 +998,7 @@ msgid "Do Not Disturb"
 msgstr "Rahatsız Etme"
 
 #: src/shell/donotdisturb.js:249
-msgid "Silence Mobile Device Notifications"
+msgid "Silence Notifications from Mobile Devices"
 msgstr "Sessiz Mobil Cihaz Bildirimleri"
 
 #: src/shell/donotdisturb.js:261

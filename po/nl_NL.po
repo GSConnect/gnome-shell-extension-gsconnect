@@ -1023,7 +1023,7 @@ msgid "Do Not Disturb"
 msgstr "Niet storen"
 
 #: src/shell/donotdisturb.js:249
-msgid "Silence Mobile Device Notifications"
+msgid "Silence Notifications from Mobile Devices"
 msgstr "Geen geluid bij mobiele meldingen"
 
 #: src/shell/donotdisturb.js:261

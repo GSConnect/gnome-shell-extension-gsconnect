@@ -1034,7 +1034,7 @@ msgid "Do Not Disturb"
 msgstr "Stoor mij niet"
 
 #: src/shell/donotdisturb.js:249
-msgid "Silence Mobile Device Notifications"
+msgid "Silence Notifications from Mobile Devices"
 msgstr "Geen GSM-notificaties"
 
 #: src/shell/donotdisturb.js:261

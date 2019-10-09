@@ -246,7 +246,7 @@ function showDialog(settings) {
 
         let subtitle = new St.Label({
             style_class: 'nm-dialog-subheader',
-            text: _('Silence Mobile Device Notifications')
+            text: _('Silence Notifications from Mobile Devices')
         });
         titleBox.add(subtitle);
 

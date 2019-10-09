@@ -996,7 +996,7 @@ msgid "Do Not Disturb"
 msgstr "Mitte segada"
 
 #: src/shell/donotdisturb.js:249
-msgid "Silence Mobile Device Notifications"
+msgid "Silence Notifications from Mobile Devices"
 msgstr "Vaigista mobiilseadme teated"
 
 #: src/shell/donotdisturb.js:261

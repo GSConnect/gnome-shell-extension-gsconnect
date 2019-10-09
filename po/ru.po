@@ -1004,7 +1004,7 @@ msgid "Do Not Disturb"
 msgstr "Не беспокоить"
 
 #: src/shell/donotdisturb.js:249
-msgid "Silence Mobile Device Notifications"
+msgid "Silence Notifications from Mobile Devices"
 msgstr "Отключить уведомления с устройства"
 
 #: src/shell/donotdisturb.js:261

@@ -1007,7 +1007,7 @@ msgid "Do Not Disturb"
 msgstr "Nevyrušovať"
 
 #: src/shell/donotdisturb.js:249
-msgid "Silence Mobile Device Notifications"
+msgid "Silence Notifications from Mobile Devices"
 msgstr "Stíšenie oznámení z mobilného zariadenia"
 
 #: src/shell/donotdisturb.js:261
