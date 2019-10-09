@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 19:00-0400\n"
-"PO-Revision-Date: 2019-10-09 09:42\n"
+"PO-Revision-Date: 2019-10-09 10:04\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -998,7 +998,7 @@ msgstr "Nicht stören"
 
 #: src/shell/donotdisturb.js:249
 msgid "Silence Notifications from Mobile Devices"
-msgstr ""
+msgstr "Schalte Benachrichtigungen von Mobilgeräten stumm"
 
 #: src/shell/donotdisturb.js:261
 msgid "Until you turn off Do Not Disturb"
