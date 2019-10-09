@@ -104,8 +104,17 @@ var Plugin = GObject.registerClass({
     connected() {
         super.connected();
 
+        // Disable the commands action until we know better
+        this.device.lookup_action('commands').enabled = false;
+
         this.sendCommandList();
         this.requestCommandList();
+
+        if (this.device.lookup_action('executeCommand').enabled) {
+            this._handleCommandList(this.remote_commands);
+        } else {
+            this.device.lookup_action('commands').enabled = false;
+        }
     }
 
     cacheClear() {
@@ -117,10 +126,6 @@ var Plugin = GObject.registerClass({
     cacheLoaded() {
         if (this.device.connected) {
             this.connected();
-
-            if (this.device.lookup_action('executeCommand').enabled) {
-                this._handleCommandList(this.remote_commands);
-            }
         }
     }
 
@@ -151,7 +156,7 @@ var Plugin = GObject.registerClass({
         try {
             proc.wait_check_finish(res);
         } catch (e) {
-            debug(e, this.name);
+            debug(e);
         }
     }
 
