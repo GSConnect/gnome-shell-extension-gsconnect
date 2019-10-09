@@ -119,6 +119,9 @@
     <key name="send-notifications" type="b">
       <default>true</default>
     </key>
+    <key name="send-active" type="b">
+      <default>true</default>
+    </key>
     <key name="applications" type="s">
       <default>'{}'</default>
     </key>

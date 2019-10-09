@@ -105,6 +105,8 @@ var Plugin = GObject.registerClass({
 
     _init(device) {
         super._init(device, 'notification');
+
+        this._session = this.service.components.get('session');
     }
 
     handlePacket(packet) {
@@ -343,7 +345,10 @@ var Plugin = GObject.registerClass({
                 return;
             }
 
-            debug(`(${notif.appName}) ${notif.title}: ${notif.text}`);
+            // Sending when the session is active is forbidden
+            if (this._session.active && !this.settings.get_boolean('send-active')) {
+                return;
+            }
 
             // TODO: revisit application notification settings
             let applications = JSON.parse(this.settings.get_string('applications'));

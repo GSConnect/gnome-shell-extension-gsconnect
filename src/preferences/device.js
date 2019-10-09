@@ -370,6 +370,7 @@ var DevicePreferences = GObject.registerClass({
 
         settings = this.pluginSettings('notification');
         this.actions.add_action(settings.create_action('send-notifications'));
+        this.actions.add_action(settings.create_action('send-active'));
 
         settings = this.pluginSettings('photo');
         this.actions.add_action(settings.create_action('share-camera'));
@@ -680,6 +681,9 @@ var DevicePreferences = GObject.registerClass({
             'sensitive',
             Gio.SettingsBindFlags.DEFAULT
         );
+
+        // Separators & Sorting
+        this.notification_list.set_header_func(rowSeparators);
 
         // Scroll with keyboard focus
         let notification_box = this.notification_page.get_child().get_child();
