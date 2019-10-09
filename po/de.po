@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 19:00-0400\n"
-"PO-Revision-Date: 2019-10-09 07:26\n"
+"PO-Revision-Date: 2019-10-09 09:42\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -490,7 +490,7 @@ msgstr "Verbunden"
 
 #: src/preferences/service.js:661
 msgid "Waiting for service…"
-msgstr ""
+msgstr "Warte auf Dienst…"
 
 #: src/service/daemon.js:341
 msgid "Report"
@@ -535,7 +535,7 @@ msgstr "Alle Geräte anzeigen"
 
 #: src/service/daemon.js:796
 msgid "Target Device"
-msgstr ""
+msgstr "Zielgerät"
 
 #: src/service/daemon.js:838
 msgid "Message Body"
@@ -652,7 +652,7 @@ msgstr "%d%% verbleibend"
 #: src/service/plugins/battery.js:199
 #, javascript-format
 msgid "%s: Battery is full"
-msgstr ""
+msgstr "%s: Akku ist voll"
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
@@ -717,7 +717,7 @@ msgstr "Auf Benachrichtigung antworten"
 
 #: src/service/plugins/notification.js:59
 msgid "Activate Notification"
-msgstr ""
+msgstr "Benachrichtigungen aktivieren"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -767,7 +767,7 @@ msgstr "Übertragung gescheitert"
 #: src/service/plugins/share.js:118
 #, javascript-format
 msgid "%s is not allowed to upload files"
-msgstr ""
+msgstr "%s besitzt keine Berechtigung Dateien hochzuladen"
 
 #: src/service/plugins/share.js:154 src/service/plugins/share.js:302
 msgid "Transferring File"
