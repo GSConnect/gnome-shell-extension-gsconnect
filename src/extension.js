@@ -285,13 +285,11 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             this.deviceSection.addMenuItem(menu);
 
             // Keyboard Shortcuts
-            if (device.settings.settings_schema.has_key('keybindings')) {
-                device.__keybindingsChangedId = device.settings.connect(
-                    'changed::keybindings',
-                    this._onDeviceKeybindingsChanged.bind(this, device)
-                );
-                this._onDeviceKeybindingsChanged(device);
-            }
+            device.__keybindingsChangedId = device.settings.connect(
+                'changed::keybindings',
+                this._onDeviceKeybindingsChanged.bind(this, device)
+            );
+            this._onDeviceKeybindingsChanged(device);
 
             // Watch the for status changes
             device.__deviceChangedId = device.connect(
