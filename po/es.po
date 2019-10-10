@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 19:00-0400\n"
-"PO-Revision-Date: 2019-10-10 03:34\n"
+"PO-Revision-Date: 2019-10-10 05:14\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Spanish\n"
 "Language: es_ES\n"
@@ -582,7 +582,7 @@ msgstr "Compartir enlace"
 
 #: src/service/daemon.js:946
 msgid "Show release version"
-msgstr ""
+msgstr "Mostrar versión"
 
 #: src/service/device.js:182
 msgid "Laptop"
@@ -651,7 +651,7 @@ msgstr "%d %% restante"
 #: src/service/plugins/battery.js:199
 #, javascript-format
 msgid "%s: Battery is full"
-msgstr ""
+msgstr "%s: batería cargada"
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
