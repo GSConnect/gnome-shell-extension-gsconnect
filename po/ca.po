@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-24 19:00-0400\n"
+"POT-Creation-Date: 2019-10-10 07:07-0400\n"
 "PO-Revision-Date: 2019-09-27 09:37\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Catalan\n"
@@ -17,30 +17,30 @@ msgstr ""
 "X-Crowdin-File: /master/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
-#: data/gtk/menus.ui:7 src/preferences/device.js:304
+#: data/gtk/menus.ui:7 src/preferences/device.js:293
 msgid "Encryption Info"
 msgstr "Informació de xifratge"
 
 #. TRANSLATORS: Send a pair request to the device
-#: data/gtk/menus.ui:12 data/ui/device-preferences.ui:2438
-#: src/service/daemon.js:808
+#: data/gtk/menus.ui:12 data/ui/device-preferences.ui:2497
+#: src/service/daemon.js:804
 msgid "Pair"
 msgstr "Aparella"
 
 #. TRANSLATORS: Unpair the device and notify it
-#: data/gtk/menus.ui:18 src/service/daemon.js:817
+#: data/gtk/menus.ui:18 src/service/daemon.js:813
 msgid "Unpair"
 msgstr "Desaparella"
 
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
-#: data/ui/connect.ui:14 data/ui/preferences-window.ui:708
+#: data/ui/connect.ui:14 data/ui/preferences-window.ui:710
 msgid "Connect to…"
 msgstr "Connecta amb…"
 
 #. Action Buttons
-#: data/ui/connect.ui:20 data/ui/notification-reply-dialog.ui:14
-#: data/ui/telephony.ui:14 src/preferences/device.js:667
-#: src/preferences/keybindings.js:86 src/preferences/service.js:433
+#: data/ui/connect.ui:20 data/ui/notification-reply-dialog.ui:13
+#: data/ui/telephony.ui:14 src/preferences/device.js:657
+#: src/preferences/keybindings.js:86 src/preferences/service.js:432
 #: src/service/plugins/share.js:161 src/service/plugins/share.js:309
 #: src/service/plugins/share.js:452 src/service/ui/service.js:37
 #: src/shell/donotdisturb.js:301
@@ -59,8 +59,8 @@ msgstr "Adreça IP"
 msgid "No contacts"
 msgstr "No hi ha cap contacte"
 
-#: data/ui/contact-chooser.ui:62 data/ui/messaging-window.ui:88
-#: data/ui/preferences-window.ui:734
+#: data/ui/contact-chooser.ui:62 data/ui/messaging-window.ui:91
+#: data/ui/preferences-window.ui:736
 msgid "Help"
 msgstr "Ajuda"
 
@@ -77,7 +77,7 @@ msgstr "Escriviu un missatge"
 msgid "Send Message"
 msgstr "Envia el missatge"
 
-#: data/ui/device-preferences.ui:40 src/service/device.js:190
+#: data/ui/device-preferences.ui:40 src/preferences/service.js:510
 msgid "Desktop"
 msgstr "Ordinador d’escriptori"
 
@@ -109,13 +109,13 @@ msgstr "Fitxers"
 msgid "Receive Files"
 msgstr ""
 
-#: data/ui/device-preferences.ui:503 data/ui/device-preferences.ui:2105
+#: data/ui/device-preferences.ui:503 data/ui/device-preferences.ui:2164
 msgid "Sharing"
 msgstr "Compartició"
 
 #: data/ui/device-preferences.ui:532 data/ui/device-preferences.ui:826
-#: data/ui/device-preferences.ui:2197 src/service/plugins/runcommand.js:18
-#: src/service/plugins/runcommand.js:26 src/service/plugins/runcommand.js:194
+#: data/ui/device-preferences.ui:2256 src/service/plugins/runcommand.js:18
+#: src/service/plugins/runcommand.js:26 src/service/plugins/runcommand.js:199
 msgid "Commands"
 msgstr "Ordres"
 
@@ -151,163 +151,167 @@ msgstr "Desa"
 msgid "Share Notifications"
 msgstr "Notificacions de compartició"
 
-#: data/ui/device-preferences.ui:938
+#: data/ui/device-preferences.ui:947
+msgid "Share When Active"
+msgstr ""
+
+#: data/ui/device-preferences.ui:998
 msgid "Applications"
 msgstr "Aplicacions"
 
-#: data/ui/device-preferences.ui:984 data/ui/device-preferences.ui:2243
+#: data/ui/device-preferences.ui:1044 data/ui/device-preferences.ui:2302
 #: src/service/plugins/notification.js:13
 msgid "Notifications"
 msgstr "Notificacions"
 
-#: data/ui/device-preferences.ui:1042 src/service/plugins/contacts.js:23
+#: data/ui/device-preferences.ui:1102 src/service/plugins/contacts.js:23
 msgid "Contacts"
 msgstr "Contactes"
 
-#: data/ui/device-preferences.ui:1095
+#: data/ui/device-preferences.ui:1155
 msgid "Incoming Calls"
 msgstr "Trucades entrants"
 
-#: data/ui/device-preferences.ui:1144 data/ui/device-preferences.ui:1311
+#: data/ui/device-preferences.ui:1204 data/ui/device-preferences.ui:1371
 msgid "Volume"
 msgstr "Volum"
 
-#: data/ui/device-preferences.ui:1210 data/ui/device-preferences.ui:1377
+#: data/ui/device-preferences.ui:1270 data/ui/device-preferences.ui:1437
 msgid "Pause Media"
 msgstr "Posa en pausa la multimèdia"
 
-#: data/ui/device-preferences.ui:1263
+#: data/ui/device-preferences.ui:1323
 msgid "Ongoing Calls"
 msgstr "Trucades en curs"
 
-#: data/ui/device-preferences.ui:1433
+#: data/ui/device-preferences.ui:1493
 msgid "Mute Microphone"
 msgstr "Silencia el micròfon"
 
-#: data/ui/device-preferences.ui:1487 data/ui/device-preferences.ui:2289
+#: data/ui/device-preferences.ui:1547 data/ui/device-preferences.ui:2348
 #: src/service/plugins/telephony.js:13
 msgid "Telephony"
 msgstr "Telefonia"
 
-#: data/ui/device-preferences.ui:1522
+#: data/ui/device-preferences.ui:1582
 msgid "Action Shortcuts"
 msgstr "Dreceres d’accions"
 
-#: data/ui/device-preferences.ui:1537
+#: data/ui/device-preferences.ui:1597
 msgid "Reset All…"
 msgstr "Reinicialitza-ho tot…"
 
-#: data/ui/device-preferences.ui:1586
+#: data/ui/device-preferences.ui:1646
 msgid "Shortcuts"
 msgstr "Dreceres"
 
-#: data/ui/device-preferences.ui:1617
+#: data/ui/device-preferences.ui:1677
 msgid "Plugins"
 msgstr "Connectors"
 
-#: data/ui/device-preferences.ui:1663
+#: data/ui/device-preferences.ui:1723
 msgid "Experimental"
 msgstr "Experiments"
 
-#: data/ui/device-preferences.ui:1712
+#: data/ui/device-preferences.ui:1771
 msgid "Legacy SMS Support"
 msgstr ""
 
-#: data/ui/device-preferences.ui:1765 data/ui/device-preferences.ui:2381
+#: data/ui/device-preferences.ui:1824 data/ui/device-preferences.ui:2440
 msgid "Advanced"
 msgstr "Avançat"
 
-#: data/ui/device-preferences.ui:1796
+#: data/ui/device-preferences.ui:1855
 msgid "Device Battery"
 msgstr "Bateria del dispositiu"
 
-#: data/ui/device-preferences.ui:1847
+#: data/ui/device-preferences.ui:1906
 msgid "Low Battery Notification"
 msgstr "Notificació de bateria baixa"
 
-#: data/ui/device-preferences.ui:1908
+#: data/ui/device-preferences.ui:1967
 msgid "Fully Charged Notification"
 msgstr "Notificació de bateria carregada"
 
-#: data/ui/device-preferences.ui:1955
+#: data/ui/device-preferences.ui:2014
 msgid "System Battery"
 msgstr "Bateria del sistema"
 
-#: data/ui/device-preferences.ui:2006
+#: data/ui/device-preferences.ui:2065
 msgid "Share Statistics"
 msgstr ""
 
-#: data/ui/device-preferences.ui:2055 data/ui/device-preferences.ui:2151
+#: data/ui/device-preferences.ui:2114 data/ui/device-preferences.ui:2210
 #: src/service/plugins/battery.js:11
 msgid "Battery"
 msgstr "Bateria"
 
-#: data/ui/device-preferences.ui:2335
+#: data/ui/device-preferences.ui:2394
 msgid "Keyboard Shortcuts"
 msgstr "Dreceres de teclat"
 
-#: data/ui/device-preferences.ui:2470
+#: data/ui/device-preferences.ui:2529
 msgid "Device is unpaired"
 msgstr "No s’ha aparellat el dispositiu"
 
-#: data/ui/device-preferences.ui:2485
+#: data/ui/device-preferences.ui:2544
 msgid "You may configure this device before pairing"
 msgstr "Podeu configurar el dispositiu abans d’aparellar-lo"
 
 #. TRANSLATORS: Send clipboard content to device
-#: data/ui/device-preferences.ui:2526
+#: data/ui/device-preferences.ui:2585
 msgid "To Device"
 msgstr "Al dispositiu"
 
 #. TRANSLATORS: Receive clipboard content from the device
-#: data/ui/device-preferences.ui:2532
+#: data/ui/device-preferences.ui:2591
 msgid "From Device"
 msgstr "Des del dispositiu"
 
 #. TRANSLATORS: Don't change the system volume
-#: data/ui/device-preferences.ui:2544 data/ui/device-preferences.ui:2570
+#: data/ui/device-preferences.ui:2603 data/ui/device-preferences.ui:2629
 msgid "Nothing"
 msgstr "Res"
 
 #. TRANSLATORS: Lower the system volume
-#: data/ui/device-preferences.ui:2551 data/ui/device-preferences.ui:2577
+#: data/ui/device-preferences.ui:2610 data/ui/device-preferences.ui:2636
 msgid "Lower"
 msgstr "Abaixa"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the phone ringer
-#: data/ui/device-preferences.ui:2558 data/ui/device-preferences.ui:2584
+#: data/ui/device-preferences.ui:2617 data/ui/device-preferences.ui:2643
 #: src/service/plugins/telephony.js:191
 msgid "Mute"
 msgstr "Silencia"
 
-#: data/ui/messaging-window.ui:12 src/service/plugins/sms.js:26
-#: src/service/ui/messaging.js:1012
+#: data/ui/messaging-window.ui:14 src/service/plugins/sms.js:26
+#: src/service/ui/messaging.js:976
 msgid "Messaging"
 msgstr "Missatgeria"
 
-#: data/ui/messaging-window.ui:21 src/service/ui/messaging.js:1229
+#: data/ui/messaging-window.ui:23 src/service/ui/messaging.js:1193
 msgid "New Conversation"
 msgstr "Conversa nova"
 
-#: data/ui/messaging-window.ui:105
+#: data/ui/messaging-window.ui:108
 msgid "No Conversations"
 msgstr "No hi ha cap conversa"
 
-#: data/ui/messaging-window.ui:165
+#: data/ui/messaging-window.ui:168
 msgid "No conversation selected"
 msgstr "No s’ha seleccionat cap conversa"
 
-#: data/ui/messaging-window.ui:181
+#: data/ui/messaging-window.ui:184
 msgid "Select or start a conversation"
 msgstr "Seleccioneu una conversa o inicieu-ne una de nova"
 
-#: data/ui/messaging-window.ui:248 data/ui/notification-reply-dialog.ui:53
+#: data/ui/messaging-window.ui:251 data/ui/notification-reply-dialog.ui:52
 #: data/ui/telephony.ui:53
 msgid "Device is disconnected"
 msgstr "El dispositiu està desconnectat"
 
-#: data/ui/notification-reply-dialog.ui:21 data/ui/telephony.ui:21
+#: data/ui/notification-reply-dialog.ui:20 data/ui/telephony.ui:21
 #: src/service/plugins/share.js:453
 msgid "Send"
 msgstr "Envia"
@@ -320,68 +324,68 @@ msgstr "Nom del dispositiu"
 msgid "_Rename"
 msgstr "_Canvia el nom"
 
-#: data/ui/preferences-window.ui:84 data/ui/preferences-window.ui:98
+#: data/ui/preferences-window.ui:86 data/ui/preferences-window.ui:100
 msgid "Refresh"
 msgstr "Actualitza"
 
-#: data/ui/preferences-window.ui:109 data/ui/preferences-window.ui:126
+#: data/ui/preferences-window.ui:111 data/ui/preferences-window.ui:128
 #: src/extension.js:151
 msgid "Mobile Settings"
 msgstr "Paràmetres del mòbil"
 
-#: data/ui/preferences-window.ui:180 data/ui/preferences-window.ui:195
+#: data/ui/preferences-window.ui:182 data/ui/preferences-window.ui:197
 msgid "Edit Device Name"
 msgstr "Edita el nom del dispositiu"
 
-#: data/ui/preferences-window.ui:255
+#: data/ui/preferences-window.ui:257
 msgid "Devices"
 msgstr "Dispositius"
 
-#: data/ui/preferences-window.ui:305 src/preferences/service.js:659
+#: data/ui/preferences-window.ui:307 src/preferences/service.js:673
 msgid "Searching for devices…"
 msgstr "S’estan cercant dispositius…"
 
-#: data/ui/preferences-window.ui:330
+#: data/ui/preferences-window.ui:332
 msgid "Browser Add-Ons"
 msgstr "Connectors per als navegadors"
 
-#: data/ui/preferences-window.ui:610
+#: data/ui/preferences-window.ui:612
 msgid "Enable"
 msgstr "Activa"
 
-#: data/ui/preferences-window.ui:642
+#: data/ui/preferences-window.ui:644
 msgid "This device is invisible to unpaired devices"
 msgstr "Aquest dispositiu és invisible als dispositius no aparellats"
 
-#: data/ui/preferences-window.ui:654 src/service/daemon.js:602
+#: data/ui/preferences-window.ui:656 src/service/daemon.js:598
 msgid "Discovery Disabled"
 msgstr ""
 
-#: data/ui/preferences-window.ui:713
+#: data/ui/preferences-window.ui:715
 msgid "Display Mode"
 msgstr "Mode de visualització"
 
 #. TRANSLATORS: Show device indicators in the top bar
-#: data/ui/preferences-window.ui:716
+#: data/ui/preferences-window.ui:718
 msgid "Panel"
 msgstr "Plafó"
 
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
-#: data/ui/preferences-window.ui:722
+#: data/ui/preferences-window.ui:724
 msgid "User Menu"
 msgstr "Menú d’usuari"
 
 #. TRANSLATORS: Generate a support log
-#: data/ui/preferences-window.ui:730 src/preferences/service.js:430
+#: data/ui/preferences-window.ui:732 src/preferences/service.js:429
 msgid "Generate Support Log"
 msgstr "Genera un registre d'assistència"
 
-#: data/ui/preferences-window.ui:738
+#: data/ui/preferences-window.ui:740
 msgid "About GSConnect"
 msgstr "Quant al GSConnect"
 
 #. TRANSLATORS: Share URL by SMS
-#: data/ui/telephony.ui:9 src/service/daemon.js:703 src/service/daemon.js:829
+#: data/ui/telephony.ui:9 src/service/daemon.js:699 src/service/daemon.js:825
 #: src/service/plugins/sms.js:58 webextension/gettext.js:39
 msgid "Send SMS"
 msgstr "Envia un SMS"
@@ -392,7 +396,7 @@ msgid "Mobile Devices"
 msgstr "Dispositius mòbils"
 
 #. TRANSLATORS: A menu option to activate the extension
-#: src/extension.js:145 src/extension.js:385
+#: src/extension.js:145 src/extension.js:383
 msgid "Turn On"
 msgstr ""
 
@@ -404,7 +408,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. TRANSLATORS: A menu option to deactivate the extension
-#: src/extension.js:382
+#: src/extension.js:380
 msgid "Turn Off"
 msgstr ""
 
@@ -413,19 +417,19 @@ msgstr ""
 msgid "Send To Mobile Device"
 msgstr "Envia al dispositiu mòbil"
 
-#: src/preferences/device.js:668
+#: src/preferences/device.js:658
 msgid "Open"
 msgstr "Obre"
 
-#: src/preferences/device.js:720 src/preferences/device.js:733
+#: src/preferences/device.js:713 src/preferences/device.js:726
 msgid "On"
 msgstr ""
 
-#: src/preferences/device.js:720 src/preferences/device.js:733
+#: src/preferences/device.js:713 src/preferences/device.js:726
 msgid "Off"
 msgstr ""
 
-#: src/preferences/device.js:838 src/preferences/device.js:866
+#: src/preferences/device.js:831 src/preferences/device.js:859
 msgid "Disabled"
 msgstr "Desactivat"
 
@@ -449,7 +453,9 @@ msgstr ""
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/preferences/keybindings.js:125
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr "Premeu Esc per a cancel·lar o Retrocés per a reinicialitzar la drecera de teclat."
+msgstr ""
+"Premeu Esc per a cancel·lar o Retrocés per a reinicialitzar la drecera de "
+"teclat."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -458,155 +464,161 @@ msgstr "Premeu Esc per a cancel·lar o Retrocés per a reinicialitzar la drecera
 msgid "%s is already being used"
 msgstr "%s ja s’està fent servir"
 
-#: src/preferences/service.js:389
+#: src/preferences/service.js:388
 msgid "A complete KDE Connect implementation for GNOME"
 msgstr "Una implementació completa de KDE Connect per al GNOME"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
-#: src/preferences/service.js:398
+#: src/preferences/service.js:397
 msgid "translator-credits"
-msgstr "Adolfo Jayme Barrientos <fitojb@ubuntu.com>, 2019\n"
+msgstr ""
+"Adolfo Jayme Barrientos <fitojb@ubuntu.com>, 2019\n"
 "Marc Riera Irigoyen <marc.riera.irigoyen@gmail.com>, 2019"
 
-#: src/preferences/service.js:431
-msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
-msgstr "S’estan registrant els missatges de depuració. Efectueu els passos necessaris per a reproduir un problema i, tot seguit, reviseu el registre."
+#: src/preferences/service.js:430
+msgid ""
+"Debug messages are being logged. Take any steps necessary to reproduce a "
+"problem then review the log."
+msgstr ""
+"S’estan registrant els missatges de depuració. Efectueu els passos "
+"necessaris per a reproduir un problema i, tot seguit, reviseu el registre."
 
-#: src/preferences/service.js:434
+#: src/preferences/service.js:433
 msgid "Review Log"
 msgstr "Mostra el registre"
 
-#: src/preferences/service.js:515
+#: src/preferences/service.js:502
+msgid "Laptop"
+msgstr "Ordinador portàtil"
+
+#: src/preferences/service.js:504
+msgid "Smartphone"
+msgstr "Telèfon intel·ligent"
+
+#: src/preferences/service.js:506
+msgid "Tablet"
+msgstr "Tauleta"
+
+#: src/preferences/service.js:508
+msgid "Television"
+msgstr "Televisió"
+
+#: src/preferences/service.js:529
 msgid "Unpaired"
 msgstr "Desaparellat"
 
-#: src/preferences/service.js:519
+#: src/preferences/service.js:533
 msgid "Disconnected"
 msgstr "Desconnectat"
 
-#: src/preferences/service.js:523
+#: src/preferences/service.js:537
 msgid "Connected"
 msgstr "Connectat"
 
-#: src/preferences/service.js:661
+#: src/preferences/service.js:675
 msgid "Waiting for service…"
 msgstr ""
 
-#: src/service/daemon.js:341
+#: src/service/daemon.js:337
 msgid "Report"
 msgstr ""
 
-#: src/service/daemon.js:584
+#: src/service/daemon.js:580
 msgid "Authentication Failure"
 msgstr ""
 
-#: src/service/daemon.js:593
+#: src/service/daemon.js:589
 msgid "Network Error"
 msgstr "Error de xarxa"
 
-#: src/service/daemon.js:594
+#: src/service/daemon.js:590
 msgid "Click for help troubleshooting"
 msgstr "Ajuda per a resoldre el problema"
 
-#: src/service/daemon.js:603
-msgid "Discovery has been disabled due to the number of devices on this network."
+#: src/service/daemon.js:599
+msgid ""
+"Discovery has been disabled due to the number of devices on this network."
 msgstr ""
 
-#: src/service/daemon.js:612
+#: src/service/daemon.js:608
 msgid "Click for more information"
 msgstr "Més informació"
 
-#: src/service/daemon.js:709
+#: src/service/daemon.js:705
 msgid "Dial Number"
 msgstr ""
 
-#: src/service/daemon.js:715 src/service/daemon.js:925
+#: src/service/daemon.js:711 src/service/daemon.js:921
 #: src/service/plugins/share.js:27
 msgid "Share File"
 msgstr "Comparteix un fitxer"
 
-#: src/service/daemon.js:778
+#: src/service/daemon.js:774
 msgid "List available devices"
 msgstr "Enumera els dispositius disponibles"
 
-#: src/service/daemon.js:787
+#: src/service/daemon.js:783
 msgid "List all devices"
 msgstr "Enumera tots els dispositius"
 
-#: src/service/daemon.js:796
+#: src/service/daemon.js:792
 msgid "Target Device"
 msgstr ""
 
-#: src/service/daemon.js:838
+#: src/service/daemon.js:834
 msgid "Message Body"
 msgstr "Cos del missatge"
 
-#: src/service/daemon.js:850 src/service/plugins/notification.js:51
+#: src/service/daemon.js:846 src/service/plugins/notification.js:51
 msgid "Send Notification"
 msgstr "Envia una notificació"
 
-#: src/service/daemon.js:859
+#: src/service/daemon.js:855
 msgid "Notification App Name"
 msgstr ""
 
-#: src/service/daemon.js:868
+#: src/service/daemon.js:864
 msgid "Notification Body"
 msgstr ""
 
-#: src/service/daemon.js:877
+#: src/service/daemon.js:873
 msgid "Notification Icon"
 msgstr "Icona de notificació"
 
-#: src/service/daemon.js:886
+#: src/service/daemon.js:882
 msgid "Notification ID"
 msgstr ""
 
-#: src/service/daemon.js:895 src/service/plugins/photo.js:11
+#: src/service/daemon.js:891 src/service/plugins/photo.js:11
 #: src/service/plugins/photo.js:17
 msgid "Photo"
 msgstr ""
 
-#: src/service/daemon.js:904 src/service/plugins/ping.js:11
-#: src/service/plugins/ping.js:17 src/service/plugins/ping.js:46
+#: src/service/daemon.js:900 src/service/plugins/ping.js:11
+#: src/service/plugins/ping.js:17 src/service/plugins/ping.js:44
 msgid "Ping"
 msgstr "Comprovació de connectivitat"
 
-#: src/service/daemon.js:913 src/service/plugins/battery.js:155
+#: src/service/daemon.js:909 src/service/plugins/battery.js:155
 #: src/service/plugins/findmyphone.js:19
 msgid "Ring"
 msgstr "Truca"
 
-#: src/service/daemon.js:934 src/service/plugins/share.js:43
-#: src/service/ui/messaging.js:1212 src/service/ui/messaging.js:1220
+#: src/service/daemon.js:930 src/service/plugins/share.js:43
+#: src/service/ui/messaging.js:1176 src/service/ui/messaging.js:1184
 msgid "Share Link"
 msgstr "Comparteix un enllaç"
 
-#: src/service/daemon.js:946
+#: src/service/daemon.js:942
 msgid "Show release version"
 msgstr ""
 
-#: src/service/device.js:182
-msgid "Laptop"
-msgstr "Ordinador portàtil"
-
-#: src/service/device.js:184
-msgid "Smartphone"
-msgstr "Telèfon intel·ligent"
-
-#: src/service/device.js:186
-msgid "Tablet"
-msgstr "Tauleta"
-
-#: src/service/device.js:188
-msgid "Television"
-msgstr "Televisió"
-
-#: src/service/device.js:196
+#: src/service/device.js:174
 msgid "Not available"
 msgstr "No disponible"
 
 #. TRANSLATORS: Bluetooth address for remote device
-#: src/service/device.js:201
+#: src/service/device.js:179
 #, javascript-format
 msgid "Bluetooth device at %s"
 msgstr "Dispositiu Bluetooth a %s"
@@ -617,22 +629,22 @@ msgstr "Dispositiu Bluetooth a %s"
 #.
 #. Google Pixel Fingerprint:
 #. 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-#: src/service/device.js:221 src/service/device.js:223
+#: src/service/device.js:199 src/service/device.js:201
 #, javascript-format
 msgid "%s Fingerprint:"
 msgstr "Empremta de l’aparell %s:"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
-#: src/service/device.js:779
+#: src/service/device.js:748
 #, javascript-format
 msgid "Pair Request from %s"
 msgstr "Sol·licitud d’aparellament d’un %s"
 
-#: src/service/device.js:786
+#: src/service/device.js:755
 msgid "Reject"
 msgstr "Rebutja-la"
 
-#: src/service/device.js:791
+#: src/service/device.js:760
 msgid "Accept"
 msgstr "Accepta-la"
 
@@ -656,7 +668,7 @@ msgstr ""
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
-#: src/service/plugins/battery.js:201 src/shell/device.js:114
+#: src/service/plugins/battery.js:201 src/shell/device.js:115
 msgid "Fully Charged"
 msgstr "Càrrega completa"
 
@@ -678,7 +690,7 @@ msgstr ""
 #. Contact Name
 #: src/service/plugins/contacts.js:230 src/service/plugins/contacts.js:338
 #: src/service/plugins/telephony.js:170 src/service/plugins/telephony.js:221
-#: src/service/plugins/telephony.js:261 src/service/ui/contacts.js:571
+#: src/service/plugins/telephony.js:267 src/service/ui/contacts.js:571
 #: src/service/ui/messaging.js:247
 msgid "Unknown Contact"
 msgstr "Contacte desconegut"
@@ -691,11 +703,11 @@ msgstr "Troba el meu telèfon"
 msgid "Mousepad"
 msgstr ""
 
-#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:720
+#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:396
 msgid "Keyboard"
 msgstr "Teclat"
 
-#: src/service/plugins/mousepad.js:737
+#: src/service/plugins/mousepad.js:413
 msgid "Keyboard not ready"
 msgstr "El teclat no està preparat"
 
@@ -721,10 +733,14 @@ msgstr ""
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
-#: src/service/plugins/ping.js:53
+#: src/service/plugins/ping.js:51
 #, javascript-format
 msgid "Ping: %s"
 msgstr "Comprovació de connectivitat: %s"
+
+#: src/service/plugins/presenter.js:9
+msgid "Presentation"
+msgstr ""
 
 #: src/service/plugins/runcommand.js:12
 msgid "Run Commands"
@@ -942,7 +958,7 @@ msgstr ""
 msgid "You: %s"
 msgstr "Vós: %s"
 
-#: src/service/ui/messaging.js:861
+#: src/service/ui/messaging.js:869
 #, javascript-format
 msgid "And %d other contact"
 msgid_plural "And %d others"
@@ -957,23 +973,28 @@ msgstr "Seleccioneu un dispositiu"
 msgid "Select"
 msgstr "Selecciona"
 
+#. TRANSLATORS: No devices are known or available
+#: src/service/ui/service.js:77 webextension/gettext.js:35
+msgid "No Device Found"
+msgstr "No s'ha trobat cap dispositiu"
+
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
-#: src/shell/device.js:118
+#: src/shell/device.js:119
 #, javascript-format
 msgid "%d%% (Estimating…)"
 msgstr "%d%% (en estimació…)"
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
-#: src/shell/device.js:128
+#: src/shell/device.js:129
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
 msgstr ""
 
 #. TRANSLATORS: Estimated time until battery is empty
 #. EXAMPLE: 42% (12:15 Remaining)
-#: src/shell/device.js:136
+#: src/shell/device.js:137
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
 msgstr "%d%% (%d∶%02d restants)"
@@ -1020,20 +1041,16 @@ msgstr "GSConnect"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr "Compartiu enllaços amb el GSConnect, directament al navegador o mitjançant SMS."
+msgstr ""
+"Compartiu enllaços amb el GSConnect, directament al navegador o mitjançant "
+"SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:33
 msgid "Service Unavailable"
 msgstr "El servei no està disponible"
 
-#. TRANSLATORS: No devices are known or available
-#: webextension/gettext.js:35
-msgid "No Device Found"
-msgstr "No s'ha trobat cap dispositiu"
-
 #. TRANSLATORS: Open URL with the device's browser
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Obre al navegador"
-
