@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 19:00-0400\n"
-"PO-Revision-Date: 2019-10-09 07:26\n"
+"PO-Revision-Date: 2019-10-10 04:03\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Catalan\n"
 "Language: ca_ES\n"
@@ -535,7 +535,7 @@ msgstr "Enumera tots els dispositius"
 
 #: src/service/daemon.js:796
 msgid "Target Device"
-msgstr ""
+msgstr "Dispositiu de destinació"
 
 #: src/service/daemon.js:838
 msgid "Message Body"
