@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-24 19:00-0400\n"
-"PO-Revision-Date: 2019-10-10 04:03\n"
+"PO-Revision-Date: 2019-10-10 05:13\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Catalan\n"
 "Language: ca_ES\n"
@@ -490,7 +490,7 @@ msgstr "Connectat"
 
 #: src/preferences/service.js:661
 msgid "Waiting for service…"
-msgstr ""
+msgstr "S’està esperant el servei…"
 
 #: src/service/daemon.js:341
 msgid "Report"
