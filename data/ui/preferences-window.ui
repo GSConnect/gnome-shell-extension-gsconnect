@@ -530,7 +530,7 @@
                                 <property name="receives_default">True</property>
                                 <property name="halign">start</property>
                                 <property name="relief">none</property>
-                                <property name="uri">https://openrepos.net/content/piggz/kde-connect</property>
+                                <property name="uri">https://openrepos.net/content/r1tschy/sailfish-connect</property>
                                 <accessibility>
                                   <relation type="labelled-by" target="kdeconnect-sailfish"/>
                                 </accessibility>
