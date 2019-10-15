@@ -49,7 +49,7 @@ var Controller = class {
 
         // Try to read modifier keycodes from Gdk
         try {
-            let keymap = Gdk.Keymap.get_default();
+            let keymap = Gdk.Keymap.get_for_display(this._display);
             let modifier;
 
             modifier = keymap.get_entries_for_keyval(Gdk.KEY_Alt_L)[1][0];
