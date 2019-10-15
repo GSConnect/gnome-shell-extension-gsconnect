@@ -163,14 +163,14 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
     _enable() {
         try {
+            // If the service state matches the enabled setting, we should
+            // toggle the service by toggling the setting
             let enabled = this.settings.get_boolean('enabled');
 
-            // If for some reason the service state doesn't match the enabled
-            // setting, we should change it by toggling the setting
-            if (this.service.active !== enabled) {
+            if (this.service.active === enabled) {
                 this.settings.set_boolean('enabled', !enabled);
 
-            // Otherwise, we should just change the service state directly
+            // Otherwise, we should change the service to match the setting
             } else if (this.service.active) {
                 this.service.stop();
             } else {
