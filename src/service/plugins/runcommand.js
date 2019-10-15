@@ -105,16 +105,10 @@ var Plugin = GObject.registerClass({
         super.connected();
 
         // Disable the commands action until we know better
-        this.device.lookup_action('commands').enabled = false;
-
         this.sendCommandList();
         this.requestCommandList();
 
-        if (this.device.lookup_action('executeCommand').enabled) {
-            this._handleCommandList(this.remote_commands);
-        } else {
-            this.device.lookup_action('commands').enabled = false;
-        }
+        this._handleCommandList(this.remote_commands);
     }
 
     cacheClear() {
@@ -200,8 +194,12 @@ var Plugin = GObject.registerClass({
         item.set_submenu(submenu);
 
         // If the submenu item is already present it will be replaced
-        let index = this.device.removeMenuAction('commands');
-        this.device.addMenuItem(item, index);
+        let index = this.device.settings.get_strv('menu-actions').indexOf('commands');
+
+        if (index > -1) {
+            this.device.removeMenuAction('commands');
+            this.device.addMenuItem(item, index);
+        }
     }
 
     /**
