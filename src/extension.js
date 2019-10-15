@@ -147,10 +147,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         );
 
         // Service Menu -> "Mobile Settings"
-        this._item.menu.addAction(
-            _('Mobile Settings'),
-            () => this.service.activate_action('preferences', null)
-        );
+        this._item.menu.addAction(_('Mobile Settings'), this._preferences);
 
         // Prime the service
         this._initService();
@@ -182,6 +179,14 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         } catch (e) {
             logError(e, 'GSConnect');
         }
+    }
+
+    _preferences() {
+        let proc = new Gio.Subprocess({
+            argv: [gsconnect.extdatadir + '/gsconnect-preferences']
+        });
+        proc.init(null);
+        proc.wait_async(null, null);
     }
 
     _sync() {
