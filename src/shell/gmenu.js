@@ -408,10 +408,6 @@ var IconButton = GObject.registerClass({
             this.child = new St.Icon({gicon: params.info.icon});
         }
 
-        if (params.info.hasOwnProperty('hidden-when')) {
-            this.hidden_when = params.info.hidden_when;
-        }
-
         // Submenu
         for (let link of params.info.links) {
             if (link.name === 'submenu') {
@@ -607,7 +603,7 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
             });
 
             // Set the visibility based on the enabled state
-            if (button.action_name && button.hidden_when === 'action-disabled') {
+            if (button.action_name !== undefined) {
                 button.visible = this.action_group.get_action_enabled(
                     button.action_name
                 );
