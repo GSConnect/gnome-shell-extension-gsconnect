@@ -1,4 +1,4 @@
-project('gsconnect', 'c', version: '26', meson_version: '>= 0.49.0')
+project('gsconnect', 'c', version: '27', meson_version: '>= 0.49.0')
 
 gnome = import('gnome')
 i18n = import('i18n')
