@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-10-10 07:07-0400\n"
-"PO-Revision-Date: 2019-09-25 20:37\n"
+"PO-Revision-Date: 2019-10-10 11:13\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -471,9 +471,7 @@ msgid "translator-credits"
 msgstr "翻译贡献"
 
 #: src/preferences/service.js:430
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
 msgstr "正在记录调试日志。请采取任何必要的步骤来重现问题，然后即可查看日志。"
 
 #: src/preferences/service.js:433
@@ -529,8 +527,7 @@ msgid "Click for help troubleshooting"
 msgstr "单击以获取疑难解答帮助"
 
 #: src/service/daemon.js:599
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "由于此网络上的设备数量，已禁用发现。"
 
 #: src/service/daemon.js:608
@@ -1042,3 +1039,4 @@ msgstr "服务不可用"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "在浏览器中打开"
+

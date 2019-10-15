@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-10-10 07:07-0400\n"
-"PO-Revision-Date: 2019-09-25 20:37\n"
+"PO-Revision-Date: 2019-10-10 11:34\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Estonian\n"
 "Language: et_EE\n"
@@ -153,7 +153,7 @@ msgstr "Jaga teateid"
 
 #: data/ui/device-preferences.ui:947
 msgid "Share When Active"
-msgstr ""
+msgstr "Jaga, kui on aktiivne"
 
 #: data/ui/device-preferences.ui:998
 msgid "Applications"
@@ -453,8 +453,7 @@ msgstr "Sisesta <b>%s</b> muutmiseks uus otsetee"
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/preferences/keybindings.js:125
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Vajuta tühistamiseks Esc või klaviatuuriotsetee lähtestamiseks Tagasilüke."
+msgstr "Vajuta tühistamiseks Esc või klaviatuuriotsetee lähtestamiseks Tagasilüke."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -473,12 +472,8 @@ msgid "translator-credits"
 msgstr "Madis O, 2018."
 
 #: src/preferences/service.js:430
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Silumissõnumid logitakse. Teosta mistahes vajalikud sammud probleemi "
-"taasloomiseks, seejärel vaata logi üle."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Silumissõnumid logitakse. Teosta mistahes vajalikud sammud probleemi taasloomiseks, seejärel vaata logi üle."
 
 #: src/preferences/service.js:433
 msgid "Review Log"
@@ -533,8 +528,7 @@ msgid "Click for help troubleshooting"
 msgstr "Klõpsa, et saada veaotsingul abi"
 
 #: src/service/daemon.js:599
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Avastamine on keelatud selles võrgus olevate seadmete arvu tõttu."
 
 #: src/service/daemon.js:608
@@ -737,7 +731,7 @@ msgstr "Ping: %s"
 
 #: src/service/plugins/presenter.js:9
 msgid "Presentation"
-msgstr ""
+msgstr "Esitlus"
 
 #: src/service/plugins/runcommand.js:12
 msgid "Run Commands"
@@ -1016,7 +1010,7 @@ msgstr "Mitte segada"
 
 #: src/shell/donotdisturb.js:249
 msgid "Silence Notifications from Mobile Devices"
-msgstr "Vaigista mobiilseadme teated"
+msgstr "Vaigista mobiilseadmete teated"
 
 #: src/shell/donotdisturb.js:261
 msgid "Until you turn off Do Not Disturb"
@@ -1049,3 +1043,4 @@ msgstr "Teenus pole saadaval"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Ava brauseris"
+

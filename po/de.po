@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-10-10 07:07-0400\n"
-"PO-Revision-Date: 2019-09-25 20:37\n"
+"PO-Revision-Date: 2019-10-10 11:34\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -153,7 +153,7 @@ msgstr "Benachrichtigungen freigeben"
 
 #: data/ui/device-preferences.ui:947
 msgid "Share When Active"
-msgstr ""
+msgstr "Teilen wenn aktiv"
 
 #: data/ui/device-preferences.ui:998
 msgid "Applications"
@@ -453,9 +453,7 @@ msgstr "Ein neues Tastenkürzel eingeben, um <b>%s</b> zu Ändern"
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/preferences/keybindings.js:125
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"ESC zum Abbrechen oder die Rücktaste drücken, um das Tastenkürzel "
-"zurückzusetzen."
+msgstr "ESC zum Abbrechen oder die Rücktaste drücken, um das Tastenkürzel zurückzusetzen."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -471,18 +469,12 @@ msgstr "Eine vollständige KDE-Connect-Implementierung für GNOME"
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:397
 msgid "translator-credits"
-msgstr ""
-"taaem <taaem@mailbox.org>\n"
+msgstr "taaem <taaem@mailbox.org>\n"
 "Tobias Bannert <tobannert@gmail.com>"
 
 #: src/preferences/service.js:430
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Fehlersuchmeldungen werden protokolliert. Führen Sie alle erforderlichen "
-"Schritte aus, um ein Problem zu reproduzieren, und überprüfen Sie das "
-"Protokoll."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Fehlersuchmeldungen werden protokolliert. Führen Sie alle erforderlichen Schritte aus, um ein Problem zu reproduzieren, und überprüfen Sie das Protokoll."
 
 #: src/preferences/service.js:433
 msgid "Review Log"
@@ -518,7 +510,7 @@ msgstr "Verbunden"
 
 #: src/preferences/service.js:675
 msgid "Waiting for service…"
-msgstr ""
+msgstr "Warte auf Dienst…"
 
 #: src/service/daemon.js:337
 msgid "Report"
@@ -537,11 +529,8 @@ msgid "Click for help troubleshooting"
 msgstr "Für Hilfe bei der Fehlerbehebung hier klicken"
 
 #: src/service/daemon.js:599
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
-msgstr ""
-"Erkennen wurde deaktiviert, aufgrund der Anzahl an Geräten in diesem "
-"Netzwerk."
+msgid "Discovery has been disabled due to the number of devices on this network."
+msgstr "Erkennen wurde deaktiviert, aufgrund der Anzahl an Geräten in diesem Netzwerk."
 
 #: src/service/daemon.js:608
 msgid "Click for more information"
@@ -566,7 +555,7 @@ msgstr "Alle Geräte anzeigen"
 
 #: src/service/daemon.js:792
 msgid "Target Device"
-msgstr ""
+msgstr "Zielgerät"
 
 #: src/service/daemon.js:834
 msgid "Message Body"
@@ -667,7 +656,7 @@ msgstr "%d%% verbleibend"
 #: src/service/plugins/battery.js:199
 #, javascript-format
 msgid "%s: Battery is full"
-msgstr ""
+msgstr "%s: Akku ist voll"
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
@@ -732,7 +721,7 @@ msgstr "Auf Benachrichtigung antworten"
 
 #: src/service/plugins/notification.js:59
 msgid "Activate Notification"
-msgstr ""
+msgstr "Benachrichtigungen aktivieren"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -743,7 +732,7 @@ msgstr "Ping: %s"
 
 #: src/service/plugins/presenter.js:9
 msgid "Presentation"
-msgstr ""
+msgstr "Präsentation"
 
 #: src/service/plugins/runcommand.js:12
 msgid "Run Commands"
@@ -786,7 +775,7 @@ msgstr "Übertragung gescheitert"
 #: src/service/plugins/share.js:118
 #, javascript-format
 msgid "%s is not allowed to upload files"
-msgstr ""
+msgstr "%s besitzt keine Berechtigung Dateien hochzuladen"
 
 #: src/service/plugins/share.js:154 src/service/plugins/share.js:302
 msgid "Transferring File"
@@ -1022,7 +1011,7 @@ msgstr "Nicht stören"
 
 #: src/shell/donotdisturb.js:249
 msgid "Silence Notifications from Mobile Devices"
-msgstr "Mobile Benachrichtigungen stumm stellen"
+msgstr "Schalte Benachrichtigungen von Mobilgeräten stumm"
 
 #: src/shell/donotdisturb.js:261
 msgid "Until you turn off Do Not Disturb"
@@ -1055,3 +1044,4 @@ msgstr "Dienst nicht verfügbar"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Im Browser öffnen"
+
