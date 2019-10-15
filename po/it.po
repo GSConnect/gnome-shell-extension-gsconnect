@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-10-10 07:07-0400\n"
-"PO-Revision-Date: 2019-09-25 20:37\n"
+"PO-Revision-Date: 2019-10-11 06:25\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
@@ -153,7 +153,7 @@ msgstr "Condividi notifiche"
 
 #: data/ui/device-preferences.ui:947
 msgid "Share When Active"
-msgstr ""
+msgstr "Condividi quando attivo"
 
 #: data/ui/device-preferences.ui:998
 msgid "Applications"
@@ -472,12 +472,8 @@ msgid "translator-credits"
 msgstr "Jimmy Scionti <jimmy.scionti@gmail.com>"
 
 #: src/preferences/service.js:430
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"I messaggi di debug vengono registrati. Adotta tutte le misure necessarie "
-"per riprodurre un problema, quindi rivedi il registro."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "I messaggi di debug vengono registrati. Adotta tutte le misure necessarie per riprodurre un problema, quindi rivedi il registro."
 
 #: src/preferences/service.js:433
 msgid "Review Log"
@@ -532,11 +528,8 @@ msgid "Click for help troubleshooting"
 msgstr "Click per la risoluzione del problema"
 
 #: src/service/daemon.js:599
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
-msgstr ""
-"La ricerca è stata disattivata a causa dell'elevato numero di dispositivi "
-"nella rete."
+msgid "Discovery has been disabled due to the number of devices on this network."
+msgstr "La ricerca è stata disattivata a causa dell'elevato numero di dispositivi nella rete."
 
 #: src/service/daemon.js:608
 msgid "Click for more information"
@@ -738,7 +731,7 @@ msgstr "Ping: %s"
 
 #: src/service/plugins/presenter.js:9
 msgid "Presentation"
-msgstr ""
+msgstr "Presentazione"
 
 #: src/service/plugins/runcommand.js:12
 msgid "Run Commands"
@@ -1017,7 +1010,7 @@ msgstr "Non disturbare"
 
 #: src/shell/donotdisturb.js:249
 msgid "Silence Notifications from Mobile Devices"
-msgstr "Silenzia le notifiche del dispositivo mobile"
+msgstr "Silenziare le notifiche dai dispositivi mobili"
 
 #: src/shell/donotdisturb.js:261
 msgid "Until you turn off Do Not Disturb"
@@ -1039,8 +1032,7 @@ msgstr "GSConnect"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
-"Condividi collegamenti con GSConnect, direttamente nel browser o via SMS."
+msgstr "Condividi collegamenti con GSConnect, direttamente nel browser o via SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:33
@@ -1051,3 +1043,4 @@ msgstr "Servizio non disponibile"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Apri nel browser"
+

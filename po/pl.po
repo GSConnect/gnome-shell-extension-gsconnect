@@ -3,16 +3,14 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-10-10 07:07-0400\n"
-"PO-Revision-Date: 2019-09-25 20:37\n"
+"PO-Revision-Date: 2019-10-10 11:34\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Polish\n"
 "Language: pl_PL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n"
-"%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n"
-"%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
 "X-Generator: crowdin.com\n"
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Language: pl\n"
@@ -155,7 +153,7 @@ msgstr "Udostępnianie powiadomień"
 
 #: data/ui/device-preferences.ui:947
 msgid "Share When Active"
-msgstr ""
+msgstr "Udostępnianie podczas aktywności"
 
 #: data/ui/device-preferences.ui:998
 msgid "Applications"
@@ -473,18 +471,13 @@ msgstr "Pełna implementacja KDE Connect dla środowiska GNOME"
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:397
 msgid "translator-credits"
-msgstr ""
-"Adrian Kryński <krynkaxd@gmail.com>, 2017\n"
+msgstr "Adrian Kryński <krynkaxd@gmail.com>, 2017\n"
 "Piotr Drąg <piotrdrag@gmail.com>, 2018-2019\n"
 "Aviary.pl <community-poland@mozilla.org>, 2018-2019"
 
 #: src/preferences/service.js:430
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Komunikaty debugowania są zapisywane w dzienniku. Proszę podjąć działania "
-"niezbędne do powtórzenia problemu, a następnie przejrzeć dziennik."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Komunikaty debugowania są zapisywane w dzienniku. Proszę podjąć działania niezbędne do powtórzenia problemu, a następnie przejrzeć dziennik."
 
 #: src/preferences/service.js:433
 msgid "Review Log"
@@ -539,8 +532,7 @@ msgid "Click for help troubleshooting"
 msgstr "Uzyskaj pomoc w rozwiązaniu problemu"
 
 #: src/service/daemon.js:599
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Wykrywanie zostało wyłączone z powodu liczby urządzeń w tej sieci."
 
 #: src/service/daemon.js:608
@@ -743,7 +735,7 @@ msgstr "Ping: %s"
 
 #: src/service/plugins/presenter.js:9
 msgid "Presentation"
-msgstr ""
+msgstr "Prezentacja"
 
 #: src/service/plugins/runcommand.js:12
 msgid "Run Commands"
@@ -1050,9 +1042,7 @@ msgstr "GSConnect"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
-"Udostępnianie odnośników za pomocą GSConnect, bezpośrednio do przeglądarki "
-"lub przez wiadomość SMS."
+msgstr "Udostępnianie odnośników za pomocą GSConnect, bezpośrednio do przeglądarki lub przez wiadomość SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:33
@@ -1063,3 +1053,4 @@ msgstr "Usługa jest niedostępna"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Otwórz w przeglądarce"
+

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-10-10 07:07-0400\n"
-"PO-Revision-Date: 2019-09-25 20:37\n"
+"PO-Revision-Date: 2019-10-12 14:03\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -83,7 +83,7 @@ msgstr "Ordinateur de bureau"
 
 #: data/ui/device-preferences.ui:88
 msgid "Camera"
-msgstr ""
+msgstr "Appareil photo"
 
 #: data/ui/device-preferences.ui:144
 msgid "Clipboard Sync"
@@ -153,7 +153,7 @@ msgstr "Synchroniser les notifications"
 
 #: data/ui/device-preferences.ui:947
 msgid "Share When Active"
-msgstr ""
+msgstr "Partager quand actif"
 
 #: data/ui/device-preferences.ui:998
 msgid "Applications"
@@ -223,15 +223,15 @@ msgstr "Avancé"
 
 #: data/ui/device-preferences.ui:1855
 msgid "Device Battery"
-msgstr ""
+msgstr "Batterie de l'appareil"
 
 #: data/ui/device-preferences.ui:1906
 msgid "Low Battery Notification"
-msgstr ""
+msgstr "Notification de batterie faible"
 
 #: data/ui/device-preferences.ui:1967
 msgid "Fully Charged Notification"
-msgstr ""
+msgstr "Notification entièrement chargée"
 
 #: data/ui/device-preferences.ui:2014
 msgid "System Battery"
@@ -239,7 +239,7 @@ msgstr ""
 
 #: data/ui/device-preferences.ui:2065
 msgid "Share Statistics"
-msgstr ""
+msgstr "Partager les statistiques"
 
 #: data/ui/device-preferences.ui:2114 data/ui/device-preferences.ui:2210
 #: src/service/plugins/battery.js:11
@@ -318,11 +318,11 @@ msgstr "Envoyer"
 
 #: data/ui/preferences-window.ui:18
 msgid "Device Name"
-msgstr ""
+msgstr "Nom de l'appareil"
 
 #: data/ui/preferences-window.ui:49
 msgid "_Rename"
-msgstr ""
+msgstr "_Renommer"
 
 #: data/ui/preferences-window.ui:86 data/ui/preferences-window.ui:100
 msgid "Refresh"
@@ -382,7 +382,7 @@ msgstr "Générer des logs pour le support"
 
 #: data/ui/preferences-window.ui:740
 msgid "About GSConnect"
-msgstr ""
+msgstr "À propos de GSConnect"
 
 #. TRANSLATORS: Share URL by SMS
 #: data/ui/telephony.ui:9 src/service/daemon.js:699 src/service/daemon.js:825
@@ -453,9 +453,7 @@ msgstr "Entrer un nouveau raccourci pour modifier <b>%s</b>"
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/preferences/keybindings.js:125
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Appuyez sur Echap pour annuler ou sur Retour Arrière pour réinitialiser le "
-"raccourci clavier."
+msgstr "Appuyez sur Echap pour annuler ou sur Retour Arrière pour réinitialiser le raccourci clavier."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -474,12 +472,8 @@ msgid "translator-credits"
 msgstr "Mickaël Coiraton <mickael.coiraton@gmail.com>"
 
 #: src/preferences/service.js:430
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Les messages de dépannage sont enregistrés. Faites le nécessaire pour "
-"reproduire le problème puis vérifiez le fichier de log."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Les messages de dépannage sont enregistrés. Faites le nécessaire pour reproduire le problème puis vérifiez le fichier de log."
 
 #: src/preferences/service.js:433
 msgid "Review Log"
@@ -499,7 +493,7 @@ msgstr "Tablette"
 
 #: src/preferences/service.js:508
 msgid "Television"
-msgstr ""
+msgstr "Télévision"
 
 #: src/preferences/service.js:529
 msgid "Unpaired"
@@ -534,11 +528,8 @@ msgid "Click for help troubleshooting"
 msgstr "Cliquer pour l'aide de dépannage"
 
 #: src/service/daemon.js:599
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
-msgstr ""
-"La découverte a été désactivée en raison du nombre de périphériques sur ce "
-"réseau."
+msgid "Discovery has been disabled due to the number of devices on this network."
+msgstr "La découverte a été désactivée en raison du nombre de périphériques sur ce réseau."
 
 #: src/service/daemon.js:608
 msgid "Click for more information"
@@ -1041,8 +1032,7 @@ msgstr "GSConnect"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
-"Partagez des liens avec GSConnect, directement vers le navigateur ou par SMS."
+msgstr "Partagez des liens avec GSConnect, directement vers le navigateur ou par SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:33
@@ -1053,3 +1043,4 @@ msgstr "Service indisponible"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Ouvrir dans le navigateur"
+

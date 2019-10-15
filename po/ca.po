@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-10-10 07:07-0400\n"
-"PO-Revision-Date: 2019-09-27 09:37\n"
+"PO-Revision-Date: 2019-10-11 11:25\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Catalan\n"
 "Language: ca_ES\n"
@@ -398,19 +398,19 @@ msgstr "Dispositius mòbils"
 #. TRANSLATORS: A menu option to activate the extension
 #: src/extension.js:145 src/extension.js:383
 msgid "Turn On"
-msgstr ""
+msgstr "Activa"
 
 #: src/extension.js:244
 #, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d connectat"
+msgstr[1] "%d connectats"
 
 #. TRANSLATORS: A menu option to deactivate the extension
 #: src/extension.js:380
 msgid "Turn Off"
-msgstr ""
+msgstr "Desactiva"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:164 webextension/gettext.js:31
@@ -453,9 +453,7 @@ msgstr ""
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/preferences/keybindings.js:125
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Premeu Esc per a cancel·lar o Retrocés per a reinicialitzar la drecera de "
-"teclat."
+msgstr "Premeu Esc per a cancel·lar o Retrocés per a reinicialitzar la drecera de teclat."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -471,17 +469,12 @@ msgstr "Una implementació completa de KDE Connect per al GNOME"
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:397
 msgid "translator-credits"
-msgstr ""
-"Adolfo Jayme Barrientos <fitojb@ubuntu.com>, 2019\n"
+msgstr "Adolfo Jayme Barrientos <fitojb@ubuntu.com>, 2019\n"
 "Marc Riera Irigoyen <marc.riera.irigoyen@gmail.com>, 2019"
 
 #: src/preferences/service.js:430
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"S’estan registrant els missatges de depuració. Efectueu els passos "
-"necessaris per a reproduir un problema i, tot seguit, reviseu el registre."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "S’estan registrant els missatges de depuració. Efectueu els passos necessaris per a reproduir un problema i, tot seguit, reviseu el registre."
 
 #: src/preferences/service.js:433
 msgid "Review Log"
@@ -517,7 +510,7 @@ msgstr "Connectat"
 
 #: src/preferences/service.js:675
 msgid "Waiting for service…"
-msgstr ""
+msgstr "S’està esperant el servei…"
 
 #: src/service/daemon.js:337
 msgid "Report"
@@ -536,8 +529,7 @@ msgid "Click for help troubleshooting"
 msgstr "Ajuda per a resoldre el problema"
 
 #: src/service/daemon.js:599
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr ""
 
 #: src/service/daemon.js:608
@@ -563,7 +555,7 @@ msgstr "Enumera tots els dispositius"
 
 #: src/service/daemon.js:792
 msgid "Target Device"
-msgstr ""
+msgstr "Dispositiu de destinació"
 
 #: src/service/daemon.js:834
 msgid "Message Body"
@@ -740,7 +732,7 @@ msgstr "Comprovació de connectivitat: %s"
 
 #: src/service/plugins/presenter.js:9
 msgid "Presentation"
-msgstr ""
+msgstr "Presentació"
 
 #: src/service/plugins/runcommand.js:12
 msgid "Run Commands"
@@ -1041,9 +1033,7 @@ msgstr "GSConnect"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
-"Compartiu enllaços amb el GSConnect, directament al navegador o mitjançant "
-"SMS."
+msgstr "Compartiu enllaços amb el GSConnect, directament al navegador o mitjançant SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:33
@@ -1054,3 +1044,4 @@ msgstr "El servei no està disponible"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Obre al navegador"
+
