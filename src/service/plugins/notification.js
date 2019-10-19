@@ -142,7 +142,7 @@ var Plugin = GObject.registerClass({
             this.device.hideNotification(packet.body.id);
 
         // A silent notification; silence it by aborting the icon transfer
-        } else if (packet.body.hasOwnProperty('silent')) {
+        } else if (packet.body.hasOwnProperty('silent') && packet.body.silent) {
             this.device.rejectTransfer(packet);
 
         // A normal, remote notification
