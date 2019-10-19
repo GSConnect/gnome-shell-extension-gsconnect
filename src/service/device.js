@@ -165,7 +165,7 @@ var Device = GObject.registerClass({
         if (contacts && contacts.settings.get_boolean('contacts-source')) {
             return contacts._store;
         } else {
-            return this.service.contacts;
+            return this.service.components.get('contacts');
         }
     }
 
