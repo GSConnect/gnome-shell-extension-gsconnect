@@ -42,7 +42,7 @@ const stdout = new Gio.DataOutputStream({
 function writeContent(clipboard, text) {
     // Avoid duplicate copies
     if (text === buffer) return;
-    
+
     try {
         buffer = text;
 
@@ -63,10 +63,10 @@ function writeContent(clipboard, text) {
 function onOwnerChange(clipboard, event) {
     let atoms = clipboard.wait_for_targets()[1];
 
-    // Empty clipboard
-    if (atoms === null) {
-        return writeContent(clipboard, '');
-    }
+    // TODO: This often means the selection owner has disappeared, which happens
+    // frequently in Wayland because Mutter seems to use a temporary selection.
+    // However, it's difficult or impossible to tell if we should clear it.
+    if (atoms.length === 0) return;
 
     let hasText = false;
 
