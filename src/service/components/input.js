@@ -357,7 +357,6 @@ const Controller = class Controller {
         let remainder = Math.floor(this._sessionExpiry - (Date.now() / 1000));
 
         if (remainder > 0) {
-            debug('rescheduling expiry');
             this._sessionExpiryId = GLib.timeout_add_seconds(
                 GLib.PRIORITY_DEFAULT,
                 remainder,
@@ -368,7 +367,6 @@ const Controller = class Controller {
         }
 
         // If there's a current session, close it
-        debug(`${(this._adapter instanceof RemoteSession)}`);
         if (this._adapter instanceof RemoteSession) {
             this._adapter.stop();
         }
