@@ -155,7 +155,11 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
     async _initService() {
         try {
-            await this.service.reload();
+            if (this.settings.get_boolean('enabled')) {
+                await this.service.start();
+            } else {
+                await this.service.reload();
+            }
         } catch (e) {
             logError(e, 'GSConnect');
         }
