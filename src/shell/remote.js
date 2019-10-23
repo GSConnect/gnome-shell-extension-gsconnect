@@ -424,10 +424,11 @@ var Service = GObject.registerClass({
             // If the service stopped, remove each device and mark it inactive
             if (this.g_name_owner === null) {
                 this._clearDevices();
+
                 this._active = false;
                 this.notify('active');
 
-            // If the name is owned, try to query the ObjectManager...
+            // If the service started, mark it active and add each device
             } else {
                 this._active = true;
                 this.notify('active');
@@ -457,14 +458,15 @@ var Service = GObject.registerClass({
      */
     async reload() {
         try {
-            if (this._starting) return;
-            this._starting = true;
+            if (this._starting === false) {
+                this._starting = true;
 
-            this._clearDevices();
-            await _proxyInit(this);
-            await this._onNameOwnerChanged();
+                this._clearDevices();
+                await _proxyInit(this);
+                await this._onNameOwnerChanged();
 
-            this._starting = false;
+                this._starting = false;
+            }
         } catch (e) {
             this._starting = false;
             throw e;
@@ -476,7 +478,7 @@ var Service = GObject.registerClass({
      */
     async start() {
         try {
-            if (this._starting === false && !this.active) {
+            if (this._starting === false && this.active === false) {
                 this._starting = true;
 
                 // Ensure the proxy is ready
