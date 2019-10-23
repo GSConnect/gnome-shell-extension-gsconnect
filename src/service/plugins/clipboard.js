@@ -66,7 +66,7 @@ var Plugin = GObject.registerClass({
         // Buffer content to allow selective sync
         this._localBuffer = null;
         this._localTimestamp = 0;
-        this._remoteBuffer = '';
+        this._remoteBuffer = null;
     }
 
     connected() {
