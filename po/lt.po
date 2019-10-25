@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-10-10 07:07-0400\n"
-"PO-Revision-Date: 2019-10-10 11:12\n"
+"PO-Revision-Date: 2019-10-25 19:04\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Lithuanian\n"
 "Language: lt_LT\n"
@@ -153,7 +153,7 @@ msgstr "Bendrinimo pranešimai"
 
 #: data/ui/device-preferences.ui:947
 msgid "Share When Active"
-msgstr ""
+msgstr "Bendrinti, kai aktyvus"
 
 #: data/ui/device-preferences.ui:998
 msgid "Applications"
@@ -733,7 +733,7 @@ msgstr "Ryšio patikrinimas: %s"
 
 #: src/service/plugins/presenter.js:9
 msgid "Presentation"
-msgstr ""
+msgstr "Pristatymas"
 
 #: src/service/plugins/runcommand.js:12
 msgid "Run Commands"
@@ -1018,7 +1018,7 @@ msgstr "Netrukdyti"
 
 #: src/shell/donotdisturb.js:249
 msgid "Silence Notifications from Mobile Devices"
-msgstr "Nutildyti mobiliojo įrenginio pranešimus"
+msgstr "Nutildyti pranešimus iš mobiliųjų įrenginių"
 
 #: src/shell/donotdisturb.js:261
 msgid "Until you turn off Do Not Disturb"
