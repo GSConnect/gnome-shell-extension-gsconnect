@@ -315,62 +315,6 @@ var Service = GObject.registerClass({
     }
 
     /**
-     * org.freedesktop.Application.Activate
-     *
-     * @param {object} platformData - Dictionary of platform data
-     * @return {object} - Dictionary of managed object paths and interface names
-     */
-    _Activate(platformData = {}) {
-        return new Promise((resolve, reject) => {
-            this.g_connection.call(
-                this.g_name,
-                this.g_object_path,
-                'org.freedesktop.Application',
-                'Activate',
-                GLib.Variant.new('(a{sv})', [platformData]),
-                null,
-                Gio.DBusCallFlags.NONE,
-                -1,
-                null,
-                (proxy, res) => {
-                    try {
-                        resolve(proxy.call_finish(res));
-                    } catch (e) {
-                        Gio.DBusError.strip_remote_error(e);
-                        reject(e);
-                    }
-                }
-            );
-        });
-    }
-
-    /**
-     * org.freedesktop.DBus.ObjectManager.GetManagedObjects
-     *
-     * @return {object} - Dictionary of managed object paths and interface names
-     */
-    _GetManagedObjects() {
-        return new Promise((resolve, reject) => {
-            this.call(
-                'GetManagedObjects',
-                null,
-                Gio.DBusCallFlags.NONE,
-                -1,
-                null,
-                (proxy, res) => {
-                    try {
-                        let variant = proxy.call_finish(res);
-                        resolve(variant.deep_unpack()[0]);
-                    } catch (e) {
-                        Gio.DBusError.strip_remote_error(e);
-                        reject(e);
-                    }
-                }
-            );
-        });
-    }
-
-    /**
      * org.freedesktop.DBus.ObjectManager.InterfacesAdded
      *
      * @param {string} object_path - Path interfaces have been added to
@@ -422,6 +366,39 @@ var Service = GObject.registerClass({
         }
     }
 
+    async _addDevices() {
+        let objects = await new Promise((resolve, reject) => {
+            this.call(
+                'GetManagedObjects',
+                null,
+                Gio.DBusCallFlags.NONE,
+                -1,
+                null,
+                (proxy, res) => {
+                    try {
+                        let variant = proxy.call_finish(res);
+                        resolve(variant.deep_unpack()[0]);
+                    } catch (e) {
+                        Gio.DBusError.strip_remote_error(e);
+                        reject(e);
+                    }
+                }
+            );
+        });
+
+        for (let [object_path, object] of Object.entries(objects)) {
+            await this._onInterfacesAdded(object_path, object);
+        }
+    }
+
+    _clearDevices() {
+        for (let [object_path, device] of this._devices) {
+            this._devices.delete(object_path);
+            this.emit('device-removed', device);
+            device.destroy();
+        }
+    }
+
     async _onNameOwnerChanged() {
         try {
             // If the service stopped, remove each device and mark it inactive
@@ -436,22 +413,10 @@ var Service = GObject.registerClass({
                 this._active = true;
                 this.notify('active');
 
-                let objects = await this._GetManagedObjects();
-
-                for (let [object_path, object] of Object.entries(objects)) {
-                    await this._onInterfacesAdded(object_path, object);
-                }
+                await this._addDevices();
             }
         } catch (e) {
             logError(e);
-        }
-    }
-
-    _clearDevices() {
-        for (let [object_path, device] of this._devices) {
-            this._devices.delete(object_path);
-            this.emit('device-removed', device);
-            device.destroy();
         }
     }
 
@@ -484,14 +449,32 @@ var Service = GObject.registerClass({
             if (this._starting === false && this.active === false) {
                 this._starting = true;
 
-                // Ensure the proxy is ready
                 await _proxyInit(this);
-
-                // Activate the service if it's not already running
                 await this._onNameOwnerChanged();
 
+                // Activate the service if it's not already running
                 if (!this.active) {
-                    await this._Activate();
+                    await new Promise((resolve, reject) => {
+                        this.g_connection.call(
+                            DBUS_NAME,
+                            DBUS_PATH,
+                            'org.freedesktop.Application',
+                            'Activate',
+                            GLib.Variant.new('(a{sv})', [{}]),
+                            null,
+                            Gio.DBusCallFlags.NONE,
+                            -1,
+                            null,
+                            (proxy, res) => {
+                                try {
+                                    resolve(proxy.call_finish(res));
+                                } catch (e) {
+                                    Gio.DBusError.strip_remote_error(e);
+                                    reject(e);
+                                }
+                            }
+                        );
+                    });
                 }
 
                 this._starting = false;
