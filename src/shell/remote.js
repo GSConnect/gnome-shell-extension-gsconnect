@@ -4,6 +4,9 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
+const DBUS_NAME = 'org.gnome.Shell.Extensions.GSConnect';
+const DBUS_PATH = '/org/gnome/Shell/Extensions/GSConnect';
+
 
 function toHyphenCase(string) {
     if (toHyphenCase.__cache === undefined) {
@@ -105,9 +108,9 @@ var Device = GObject.registerClass({
 
         super._init({
             g_connection: service.g_connection,
-            g_name: service.g_name,
+            g_name: DBUS_NAME,
             g_object_path: object_path,
-            g_interface_name: `${service.g_name}.Device`
+            g_interface_name: 'org.gnome.Shell.Extensions.GSConnect.Device'
         });
     }
 
@@ -198,7 +201,7 @@ var Device = GObject.registerClass({
             // Subscribe to the GMenu
             await new Promise((resolve, reject) => {
                 this.g_connection.call(
-                    this.g_name,
+                    DBUS_NAME,
                     this.g_object_path,
                     'org.gtk.Menus',
                     'Start',
@@ -265,8 +268,8 @@ var Service = GObject.registerClass({
     _init() {
         super._init({
             g_bus_type: Gio.BusType.SESSION,
-            g_name: 'org.gnome.Shell.Extensions.GSConnect',
-            g_object_path: '/org/gnome/Shell/Extensions/GSConnect',
+            g_name: DBUS_NAME,
+            g_object_path: DBUS_PATH,
             g_interface_name: 'org.freedesktop.DBus.ObjectManager',
             g_flags: Gio.DBusProxyFlags.DO_NOT_AUTO_START_AT_CONSTRUCTION
         });
@@ -519,8 +522,8 @@ var Service = GObject.registerClass({
             let connection = this.g_connection || Gio.DBus.session;
 
             connection.call(
-                this.g_name,
-                this.g_object_path,
+                DBUS_NAME,
+                DBUS_PATH,
                 'org.freedesktop.Application',
                 'ActivateAction',
                 GLib.Variant.new('(sava{sv})', [name, paramArray, {}]),
