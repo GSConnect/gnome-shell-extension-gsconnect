@@ -72,22 +72,14 @@ JSON.load = function (file, sync = false) {
     if (sync) {
         let contents = file.load_contents(null)[1];
 
-        if (contents instanceof Uint8Array) {
-            contents = ByteArray.toString(contents);
-        }
-
-        return JSON.parse(contents);
+        return JSON.parse(ByteArray.toString(contents));
     } else {
         return new Promise((resolve, reject) => {
             file.load_contents_async(null, (file, res) => {
                 try {
                     let contents = file.load_contents_finish(res)[1];
 
-                    if (contents instanceof Uint8Array) {
-                        contents = ByteArray.toString(contents);
-                    }
-
-                    resolve(JSON.parse(contents));
+                    resolve(JSON.parse(ByteArray.toString(contents)));
                 } catch (e) {
                     reject(e);
                 }

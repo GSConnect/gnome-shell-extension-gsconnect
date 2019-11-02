@@ -140,11 +140,7 @@ const Service = GObject.registerClass({
         try {
             let type = GLib.file_get_contents('/sys/class/dmi/id/chassis_type')[1];
 
-            if (type instanceof Uint8Array) {
-                type = imports.byteArray.toString(type);
-            }
-
-            type = Number(type);
+            type = Number(imports.byteArray.toString(type));
 
             if ([8, 9, 10, 14].includes(type)) {
                 return 'laptop';
@@ -1052,9 +1048,7 @@ const Service = GObject.registerClass({
         files = files.deep_unpack();
 
         files.map(file => {
-            if (file instanceof Uint8Array) {
-                file = imports.byteArray.toString(file);
-            }
+            file = imports.byteArray.toString(file);
 
             this._cliAction(device, 'shareFile', GLib.Variant.new('(sb)', [file, false]));
         });
@@ -1064,9 +1058,7 @@ const Service = GObject.registerClass({
         let uris = options.lookup_value('share-link', null).deep_unpack();
 
         uris.map(uri => {
-            if (uri instanceof Uint8Array) {
-                uri = imports.byteArray.toString(uri);
-            }
+            uri = imports.byteArray.toString(uri);
             
             this._cliAction(device, 'shareUri', GLib.Variant.new_string(uri));
         });

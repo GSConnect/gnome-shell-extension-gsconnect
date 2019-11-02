@@ -116,13 +116,8 @@ var NativeMessagingHost = GObject.registerClass({
         try {
             // Read the message
             let length = this.stdin.read_int32(null);
-            let message = this.stdin.read_bytes(length, null).toArray();
-
-            if (message instanceof Uint8Array) {
-                message = imports.byteArray.toString(message);
-            }
-
-            message = JSON.parse(message);
+            let bytes = this.stdin.read_bytes(length, null).toArray();
+            let message = JSON.parse(imports.byteArray.toString(bytes));
 
             // A request for a list of devices
             if (message.type === 'devices') {

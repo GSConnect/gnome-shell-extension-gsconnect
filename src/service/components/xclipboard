@@ -114,12 +114,8 @@ function readContent(text) {
         if (length > 0) {
             let text = stdin.read_bytes(length, null).toArray();
 
-            if (text instanceof Uint8Array) {
-                text = imports.byteArray.toString(text);
-            }
-
             // Set the buffer and GtkClipboard
-            buffer = `${text}`;
+            buffer = imports.byteArray.toString(text);
             clipboard.set_text(buffer, -1);
 
         // We're being asked to clear the clipboard

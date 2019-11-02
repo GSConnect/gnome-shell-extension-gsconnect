@@ -21,11 +21,7 @@ gsconnect.is_local = gsconnect.extdatadir.startsWith(GLib.get_user_data_dir());
 gsconnect.metadata = (() => {
     let data = GLib.file_get_contents(gsconnect.extdatadir + '/metadata.json')[1];
 
-    if (data instanceof Uint8Array) {
-        data = imports.byteArray.toString(data);
-    }
-
-    return JSON.parse(data);
+    return JSON.parse(imports.byteArray.toString(data));
 })();
 
 
@@ -128,11 +124,7 @@ gsconnect.get_resource = function(rel_path) {
         Gio.ResourceLookupFlags.NONE
     ).toArray();
 
-    if (array instanceof Uint8Array) {
-        array = imports.byteArray.toString(array);
-    } else {
-        array = array.toString();
-    }
+    array = imports.byteArray.toString(array);
 
     return array.replace('@EXTDATADIR@', gsconnect.extdatadir);
 };

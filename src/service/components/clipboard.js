@@ -151,11 +151,7 @@ var Clipboard = GObject.registerClass({
             if (length > 0) {
                 let text = this._stdout.read_bytes(length, null).toArray();
 
-                if (text instanceof Uint8Array) {
-                    text = imports.byteArray.toString(text);
-                }
-
-                this.text = `${text}`;
+                this.text = imports.byteArray.toString(text);
 
             // The clipboard was cleared
             } else if (length === 0) {
