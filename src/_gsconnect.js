@@ -101,13 +101,9 @@ const Gettext = imports.gettext.domain(gsconnect.app_id);
 if (typeof _ !== 'function') {
     window._ = Gettext.gettext;
     window.ngettext = Gettext.ngettext;
-    window.C_ = Gettext.pgettext;
-    window.N_ = (s) => s;
 } else {
     gsconnect._ = Gettext.gettext;
     gsconnect.ngettext = Gettext.ngettext;
-    gsconnect.C_ = Gettext.pgettext;
-    gsconnect.N_ = (s) => s;
 }
 
 
