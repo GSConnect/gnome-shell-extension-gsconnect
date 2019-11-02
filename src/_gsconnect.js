@@ -195,21 +195,21 @@ gsconnect.installService = function() {
     // file manager scripts, and WebExtension manifests are installed.
     if (gsconnect.is_local) {
         // DBus Service
-        GLib.mkdir_with_parents(dbusDir, 493);  // 0755 in octal
+        GLib.mkdir_with_parents(dbusDir, 0o755);
         GLib.file_set_contents(
             GLib.build_filenamev([dbusDir, dbusFile]),
             gsconnect.get_resource(dbusFile)
         );
 
         // Desktop Entry
-        GLib.mkdir_with_parents(desktopDir, 493);
+        GLib.mkdir_with_parents(desktopDir, 0o755);
         GLib.file_set_contents(
             GLib.build_filenamev([desktopDir, desktopFile]),
             gsconnect.get_resource(desktopFile)
         );
 
         // Application Icon
-        GLib.mkdir_with_parents(iconDir, 493);
+        GLib.mkdir_with_parents(iconDir, 0o755);
         GLib.file_set_contents(
             GLib.build_filenamev([iconDir, iconFull]),
             gsconnect.get_resource(`icons/${iconFull}`)
@@ -223,7 +223,7 @@ gsconnect.installService = function() {
         for (let [dir, name] of fileManagers) {
             let script = Gio.File.new_for_path(GLib.build_filenamev([dir, name]));
             if (!script.query_exists(null)) {
-                GLib.mkdir_with_parents(dir, 493);
+                GLib.mkdir_with_parents(dir, 0o755);
                 script.make_symbolic_link(
                     gsconnect.extdatadir + '/nautilus-gsconnect.py',
                     null
@@ -233,7 +233,7 @@ gsconnect.installService = function() {
 
         // WebExtension Manifests
         for (let [dir, manifest] of manifests) {
-            GLib.mkdir_with_parents(dir, 493);
+            GLib.mkdir_with_parents(dir, 0o755);
             GLib.file_set_contents(
                 GLib.build_filenamev([dir, manifestFile]),
                 manifest
