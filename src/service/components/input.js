@@ -307,12 +307,6 @@ const Controller = class Controller {
 
     _onNameAppeared(connection, name, name_owner) {
         try {
-            // Destroy any old Atspi adapter
-            if (!this.connection && this._adapter) {
-                this._adapter.destroy();
-                this._adapter = null;
-            }
-
             this._connection = connection;
         } catch (e) {
             logError(e);
@@ -416,10 +410,7 @@ const Controller = class Controller {
 
             // Mutter's RemoteDesktop portal is not available
             if (!this.connection) {
-                debug('Falling back to Atspi');
-
-                let fallback = imports.service.components.atspi;
-                this._adapter = new fallback.Controller();
+                throw new Error('RemoteDesktop not available');
 
             // Mutter is available and there isn't another session starting
             } else if (this._sessionStarting === false) {
