@@ -86,7 +86,7 @@ class RepliableNotificationBanner extends MessageTray.NotificationBanner {
         let text = clutter_text.text;
         clutter_text.text = '';
 
-        let {deviceId, requestReplyId, source} = this.notification;
+        let {deviceId, requestReplyId} = this.notification;
 
         let target = new GLib.Variant('(ssbv)', [
             deviceId,
