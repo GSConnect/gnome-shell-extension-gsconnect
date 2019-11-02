@@ -217,25 +217,20 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
 /**
  * An indicator representing a Device in the Status Area
  */
-var Indicator = class Indicator extends PanelMenu.Button {
+var Indicator = GObject.registerClass({
+    GTypeName: 'GSConnectDeviceIndicator'
+}, class Indicator extends PanelMenu.Button {
 
     _init(params) {
         super._init(0.0, `${params.device.name} Indicator`, false);
         Object.assign(this, params);
 
         // Device Icon
-        let icon = new St.Icon({
+        this._icon = new St.Icon({
             gicon: gsconnect.get_gicon(this.device.icon_name),
             style_class: 'system-status-icon gsconnect-device-indicator'
         });
-        this._icon = icon;
-
-        // TODO: remove after 3.34+
-        if (gsconnect.shell_version >= 34) {
-            this.add_child(icon);
-        } else {
-            this.actor.add_child(icon);
-        }
+        this.add_child(this._icon);
 
         // Menu
         let menu = new Menu({
@@ -248,15 +243,5 @@ var Indicator = class Indicator extends PanelMenu.Button {
     update_icon(icon_name) {
         this._icon.gicon = gsconnect.get_gicon(icon_name);
     }
-};
-
-/**
- * Re-wrap the Indicator class as a GObject subclass for GNOME Shell 3.32
- */
-if (gsconnect.shell_version > 30) {
-    Indicator = GObject.registerClass(
-        {GTypeName: 'GSConnectDeviceIndicator'},
-        Indicator
-    );
-}
+});
 

@@ -4,7 +4,6 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
 
-const Config = imports.misc.config;
 const Main = imports.ui.main;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
@@ -12,8 +11,7 @@ const AggregateMenu = Main.panel.statusArea.aggregateMenu;
 
 // Bootstrap
 window.gsconnect = {
-    extdatadir: imports.misc.extensionUtils.getCurrentExtension().path,
-    shell_version: parseInt(Config.PACKAGE_VERSION.split('.')[1], 10)
+    extdatadir: imports.misc.extensionUtils.getCurrentExtension().path
 };
 imports.searchPath.unshift(gsconnect.extdatadir);
 imports._gsconnect;
@@ -37,7 +35,7 @@ function get_gicon(name) {
         get_gicon.theme = Gtk.IconTheme.get_default();
     }
 
-    if (gsconnect.shell_version <= 30 || get_gicon.theme.has_icon(name))
+    if (get_gicon.theme.has_icon(name))
         return new Gio.ThemedIcon({name: name});
 
     if (!get_gicon.icons[name]) {
@@ -207,13 +205,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             let isAvailable = available.includes(device);
             let indicator = Main.panel.statusArea[device.g_object_path];
 
-            // TODO: remove after 3.34+
-            if (gsconnect.shell_version >= 34) {
-                indicator.visible = panelMode && isAvailable;
-            } else {
-                indicator.actor.visible = panelMode && isAvailable;
-            }
-
+            indicator.visible = panelMode && isAvailable;
             indicator.update_icon(device.icon_name);
 
             let menu = this._menus[device.g_object_path];
@@ -435,11 +427,6 @@ var serviceIndicator = null;
 
 
 function init() {
-    // This is only relevant on gnome-shell <= 3.30
-    if (gsconnect.shell_version <= 30) {
-        Gtk.IconTheme.get_default().add_resource_path('/org/gnome/Shell/Extensions/GSConnect/icons');
-    }
-
     // If installed as a user extension, this will install the Desktop entry,
     // DBus and systemd service files necessary for DBus activation and
     // GNotifications. Since there's no uninit()/uninstall() hook for extensions
