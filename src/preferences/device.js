@@ -193,7 +193,6 @@ var DevicePreferences = GObject.registerClass({
 }, class DevicePreferences extends Gtk.Grid {
 
     _init(device) {
-        this.connectTemplate();
         super._init();
 
         this.device = device;
@@ -306,9 +305,6 @@ var DevicePreferences = GObject.registerClass({
     dispose() {
         if (this.__disposed === undefined) {
             this.__disposed = true;
-
-            // Template
-            this.disconnectTemplate();
 
             // Device signals
             this.device.action_group.disconnect(this._actionAddedId);

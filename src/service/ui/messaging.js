@@ -326,7 +326,6 @@ const ConversationWidget = GObject.registerClass({
 }, class ConversationWidget extends Gtk.Grid {
 
     _init(params) {
-        this.connectTemplate();
         super._init({
             device: params.device,
             plugin: params.plugin
@@ -437,8 +436,6 @@ const ConversationWidget = GObject.registerClass({
     }
 
     _onDestroy(conversation) {
-        conversation.disconnectTemplate();
-
         conversation.device.disconnect(conversation._connectedId);
 
         conversation.list.foreach(message => {
@@ -738,7 +735,6 @@ var Window = GObject.registerClass({
 }, class Window extends Gtk.ApplicationWindow {
 
     _init(params) {
-        this.connectTemplate();
         super._init(params);
         this.headerbar.subtitle = this.device.name;
 
@@ -875,7 +871,6 @@ var Window = GObject.registerClass({
     }
 
     _onDestroy(window) {
-        window.disconnectTemplate();
         GLib.source_remove(window._timestampThreadsId);
         window.contact_chooser.disconnect(window._numberSelectedId);
         window.plugin.disconnect(window._threadsChangedId);

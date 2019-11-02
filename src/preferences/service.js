@@ -102,7 +102,6 @@ var ConnectDialog = GObject.registerClass({
 }, class ConnectDialog extends Gtk.Dialog {
 
     _init(params = {}) {
-        this.connectTemplate();
         super._init(Object.assign({
             use_header_bar: true
         }, params));
@@ -132,7 +131,6 @@ var ConnectDialog = GObject.registerClass({
             this.application.bluetooth.disconnect(this._devicesId);
         }
 
-        this.disconnectTemplate();
         this.destroy();
         return false;
     }
@@ -187,7 +185,6 @@ var Window = GObject.registerClass({
 }, class PreferencesWindow extends Gtk.ApplicationWindow {
 
     _init(params) {
-        this.connectTemplate();
         super._init(params);
 
         // Service Settings
@@ -274,7 +271,6 @@ var Window = GObject.registerClass({
         }
 
         this._saveGeometry();
-        this.disconnectTemplate();
         GLib.source_remove(this._refreshSource);
 
         // FIXME: this wouldn't be necessary if we were disposing devices right

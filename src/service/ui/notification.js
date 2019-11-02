@@ -28,7 +28,6 @@ var ReplyDialog = GObject.registerClass({
 }, class Dialog extends Gtk.Dialog {
 
     _init(params) {
-        this.connectTemplate();
         super._init({
             application: Gio.Application.get_default(),
             device: params.device,
@@ -85,7 +84,6 @@ var ReplyDialog = GObject.registerClass({
     }
 
     vfunc_delete_event() {
-        this.disconnectTemplate();
         this.saveGeometry();
 
         return false;
