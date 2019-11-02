@@ -88,25 +88,34 @@ class RepliableNotificationBanner extends MessageTray.NotificationBanner {
 
         let {deviceId, requestReplyId, source} = this.notification;
 
-        source._createApp((app, error) => {
-            // Bail on error in case we can try again
-            if (error !== null) return;
+        let target = new GLib.Variant('(ssbv)', [
+            deviceId,
+            'replyNotification',
+            true,
+            new GLib.Variant('(ssa{ss})', [requestReplyId, text, {}])
+        ]);
+        let platformData = NotificationDaemon.getPlatformData();
 
-            let target = new GLib.Variant('(ssbv)', [
-                deviceId,
-                'replyNotification',
-                true,
-                new GLib.Variant('(ssa{ss})', [requestReplyId, text, {}])
-            ]);
+        Gio.DBus.session.call(
+            'org.gnome.Shell.Extensions.GSConnect',
+            '/org/gnome/Shell/Extensions/GSConnect',
+            'org.freedesktop.Application',
+            'ActivateAction',
+            GLib.Variant.new('(sava{sv})', ['device', [target], platformData]),
+            null,
+            Gio.DBusCallFlags.NO_AUTO_START,
+            -1,
+            null,
+            (proxy, res) => {
+                try {
+                    proxy.call_finish(res);
+                } catch (e) {
+                    // Silence errors
+                }
+            }
+        );
 
-            app.ActivateActionRemote(
-                'device',
-                [target],
-                NotificationDaemon.getPlatformData()
-            );
-
-            this.close();
-        });
+        this.close();
     }
 }
 
@@ -138,26 +147,33 @@ class Source extends NotificationDaemon.GtkNotificationDaemonAppSource {
 
         notification._remoteClosed = true;
 
-        this._createApp((app, error) => {
-            // Bail on error and reset in case we can try again
-            if (error !== null) {
-                notification._remoteClosed = false;
-                return;
+        let target = new GLib.Variant('(ssbv)', [
+            notification.deviceId,
+            'closeNotification',
+            true,
+            new GLib.Variant('s', notification.remoteId)
+        ]);
+        let platformData = NotificationDaemon.getPlatformData();
+
+        Gio.DBus.session.call(
+            'org.gnome.Shell.Extensions.GSConnect',
+            '/org/gnome/Shell/Extensions/GSConnect',
+            'org.freedesktop.Application',
+            'ActivateAction',
+            GLib.Variant.new('(sava{sv})', ['device', [target], platformData]),
+            null,
+            Gio.DBusCallFlags.NO_AUTO_START,
+            -1,
+            null,
+            (proxy, res) => {
+                try {
+                    proxy.call_finish(res);
+                } catch (e) {
+                    // If we fail, reset in case we can try again
+                    notification._remoteClosed = false;
+                }
             }
-
-            let target = new GLib.Variant('(ssbv)', [
-                notification.deviceId,
-                'closeNotification',
-                true,
-                new GLib.Variant('s', notification.remoteId)
-            ]);
-
-            app.ActivateActionRemote(
-                'device',
-                [target],
-                NotificationDaemon.getPlatformData()
-            );
-        });
+        );
     }
 
     /**
@@ -343,15 +359,6 @@ function patchGtkNotificationSources() {
         this._notificationPending = false;
     };
 
-    let _createGSConnectApp = function(callback) {
-        return new NotificationDaemon.FdoApplicationProxy(
-            Gio.DBus.session,
-            'org.gnome.Shell.Extensions.GSConnect',
-            '/org/gnome/Shell/Extensions/GSConnect',
-            callback
-        );
-    };
-
     let _withdrawGSConnectNotification = function(id, notification, reason) {
         if (reason !== MessageTray.NotificationDestroyedReason.DISMISSED) {
             return;
@@ -364,39 +371,43 @@ function patchGtkNotificationSources() {
 
         notification._remoteWithdrawn = true;
 
-        this._createGSConnectApp((app, error) => {
-            // Bail on error and reset in case we can try again
-            if (error !== null) {
-                notification._remoteWithdrawn = false;
-                return;
+        // Recreate the notification id as it would've been sent
+        let target = new GLib.Variant('(ssbv)', [
+            '*',
+            'withdrawNotification',
+            true,
+            new GLib.Variant('s', `gtk|${this._appId}|${id}`)
+        ]);
+        let platformData = NotificationDaemon.getPlatformData();
+
+        Gio.DBus.session.call(
+            'org.gnome.Shell.Extensions.GSConnect',
+            '/org/gnome/Shell/Extensions/GSConnect',
+            'org.freedesktop.Application',
+            'ActivateAction',
+            GLib.Variant.new('(sava{sv})', ['device', [target], platformData]),
+            null,
+            Gio.DBusCallFlags.NO_AUTO_START,
+            -1,
+            null,
+            (proxy, res) => {
+                try {
+                    proxy.call_finish(res);
+                } catch (e) {
+                    // If we fail, reset in case we can try again
+                    notification._remoteWithdrawn = false;
+                }
             }
-
-            // Recreate the notification id as it would've been sent
-            let target = new GLib.Variant('(ssbv)', [
-                '*',
-                'withdrawNotification',
-                true,
-                // Recreate the notification id as it would've been sent
-                new GLib.Variant('s', `gtk|${this._appId}|${id}`)
-            ]);
-
-            app.ActivateActionRemote(
-                'device',
-                [target],
-                NotificationDaemon.getPlatformData()
-            );
-        });
+        );
     };
 
     NotificationDaemon.GtkNotificationDaemonAppSource.prototype.addNotification = addNotification;
-    NotificationDaemon.GtkNotificationDaemonAppSource.prototype._createGSConnectApp = _createGSConnectApp;
     NotificationDaemon.GtkNotificationDaemonAppSource.prototype._withdrawGSConnectNotification = _withdrawGSConnectNotification;
 }
 
 
 function unpatchGtkNotificationSources() {
     NotificationDaemon.GtkNotificationDaemonAppSource.prototype.addNotification = _addNotification;
-    delete NotificationDaemon.GtkNotificationDaemonAppSource.prototype._createGSConnectApp;
     delete NotificationDaemon.GtkNotificationDaemonAppSource.prototype._withdrawGSConnectNotification;
 }
 
