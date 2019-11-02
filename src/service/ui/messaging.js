@@ -361,10 +361,6 @@ const ConversationWidget = GObject.registerClass({
         this.list.set_sort_func(this._sortMessages);
         this._populateMessages();
 
-        // HACK: This property was added in gtk-3.24; if it's not present this
-        // will just become a useless JS variable instead of choking
-        this.entry.enable_emoji_completion = true;
-
         // Cleanup on ::destroy
         this.connect('destroy', this._onDestroy);
     }

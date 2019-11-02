@@ -73,6 +73,7 @@
       <object class="GtkEntry" id="entry">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
+        <property name="enable_emoji_completion">True</property>
         <property name="tooltip_text" translatable="yes">Type a message</property>
         <property name="margin_left">6</property>
         <property name="margin_right">6</property>
