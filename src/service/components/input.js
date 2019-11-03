@@ -280,8 +280,8 @@ const RemoteSession = GObject.registerClass({
 
 const Controller = class Controller {
     constructor() {
-        this._adapter = null;
         this._nameAppearedId = 0;
+        this._session = null;
         this._sessionCloseId = 0;
         this._sessionExpiry = 0;
         this._sessionExpiryId = 0;
@@ -315,20 +315,9 @@ const Controller = class Controller {
 
     _onNameVanished(connection, name) {
         try {
-            // Destroy any old RemoteDesktop session
-            if (this._adapter instanceof RemoteSession) {
-                // Disconnect from the session
-                if (this._sessionClosedId > 0) {
-                    this._adapter.disconnect(this._sessionClosedId);
-                    this._sessionClosedId = 0;
-                }
-
-                // Destroy the session
-                this._adapter.destroy();
-                this._adapter = null;
+            if (this._session !== null) {
+                this._onSessionClosed(this._session);
             }
-
-            this._connection = null;
         } catch (e) {
             logError(e);
         }
@@ -343,7 +332,7 @@ const Controller = class Controller {
 
         // Destroy the session
         session.destroy();
-        this._adapter = null;
+        this._session = null;
     }
 
     _onSessionExpired() {
@@ -360,9 +349,9 @@ const Controller = class Controller {
             return GLib.SOURCE_REMOVE;
         }
 
-        // If there's a current session, close it
-        if (this._adapter instanceof RemoteSession) {
-            this._adapter.stop();
+        // Otherwise if there's an active session, close it
+        if (this._session !== null) {
+            this._session.stop();
         }
 
         // Reset the GSource Id
@@ -405,24 +394,24 @@ const Controller = class Controller {
             // Update the timestamp of the last event
             this._sessionExpiry = Math.floor((Date.now() / 1000) + SESSION_TIMEOUT);
 
-            // Adapter is ensured
-            if (this._adapter) return;
+            // Session is active
+            if (this._session !== null) return;
 
             // Mutter's RemoteDesktop portal is not available
-            if (!this.connection) {
+            if (this.connection === null)
                 throw new Error('RemoteDesktop not available');
 
             // Mutter is available and there isn't another session starting
-            } else if (this._sessionStarting === false) {
-                debug('Creating Mutter RemoteDesktop session');
-
+            if (this._sessionStarting === false) {
                 this._sessionStarting = true;
 
-                let objectPath = await this._createSession();
-                this._adapter = new RemoteSession(objectPath);
-                this._adapter.start();
+                debug('Creating Mutter RemoteDesktop session');
 
-                this._sessionClosedId = this._adapter.connect(
+                let objectPath = await this._createSession();
+                this._session = new RemoteSession(objectPath);
+                this._session.start();
+
+                this._sessionClosedId = this._session.connect(
                     'closed',
                     this._onSessionClosed.bind(this)
                 );
@@ -434,13 +423,17 @@ const Controller = class Controller {
                         this._onSessionExpired.bind(this)
                     );
                 }
+
+                this._sessionStarting = false;
             }
         } catch (e) {
             logError(e);
 
-            this._adapter.destroy();
-            this._adapter = null;
-        } finally {
+            if (this._session !== null) {
+                this._session.destroy();
+                this._session = null;
+            }
+
             this._sessionStarting = false;
         }
     }
@@ -453,7 +446,7 @@ const Controller = class Controller {
             if (dx === 0 && dy === 0) return;
 
             this._ensureAdapter();
-            this._adapter.movePointer(dx, dy);
+            this._session.movePointer(dx, dy);
         } catch (e) {
             debug(e);
         }
@@ -462,7 +455,7 @@ const Controller = class Controller {
     pressPointer(button) {
         try {
             this._ensureAdapter();
-            this._adapter.pressPointer(button);
+            this._session.pressPointer(button);
         } catch (e) {
             debug(e);
         }
@@ -471,7 +464,7 @@ const Controller = class Controller {
     releasePointer(button) {
         try {
             this._ensureAdapter();
-            this._adapter.releasePointer(button);
+            this._session.releasePointer(button);
         } catch (e) {
             debug(e);
         }
@@ -480,7 +473,7 @@ const Controller = class Controller {
     clickPointer(button) {
         try {
             this._ensureAdapter();
-            this._adapter.clickPointer(button);
+            this._session.clickPointer(button);
         } catch (e) {
             debug(e);
         }
@@ -489,7 +482,7 @@ const Controller = class Controller {
     doubleclickPointer(button) {
         try {
             this._ensureAdapter();
-            this._adapter.doubleclickPointer(button);
+            this._session.doubleclickPointer(button);
         } catch (e) {
             debug(e);
         }
@@ -500,7 +493,7 @@ const Controller = class Controller {
 
         try {
             this._ensureAdapter();
-            this._adapter.scrollPointer(dx, dy);
+            this._session.scrollPointer(dx, dy);
         } catch (e) {
             debug(e);
         }
@@ -512,7 +505,7 @@ const Controller = class Controller {
     pressKeysym(keysym) {
         try {
             this._ensureAdapter();
-            this._adapter.pressKeysym(keysym);
+            this._session.pressKeysym(keysym);
         } catch (e) {
             debug(e);
         }
@@ -521,7 +514,7 @@ const Controller = class Controller {
     releaseKeysym(keysym) {
         try {
             this._ensureAdapter();
-            this._adapter.releaseKeysym(keysym);
+            this._session.releaseKeysym(keysym);
         } catch (e) {
             debug(e);
         }
@@ -530,7 +523,7 @@ const Controller = class Controller {
     pressreleaseKeysym(keysym) {
         try {
             this._ensureAdapter();
-            this._adapter.pressreleaseKeysym(keysym);
+            this._session.pressreleaseKeysym(keysym);
         } catch (e) {
             debug(e);
         }
@@ -542,22 +535,22 @@ const Controller = class Controller {
     pressKey(input, modifiers) {
         try {
             this._ensureAdapter();
-            this._adapter.pressKey(input, modifiers);
+            this._session.pressKey(input, modifiers);
         } catch (e) {
             debug(e);
         }
     }
 
     destroy() {
-        if (this._adapter !== null) {
+        if (this._session !== null) {
             // Disconnect from the session
             if (this._sessionClosedId > 0) {
-                this._adapter.disconnect(this._sessionClosedId);
+                this._session.disconnect(this._sessionClosedId);
                 this._sessionClosedId = 0;
             }
 
-            this._adapter.destroy();
-            this._adapter = null;
+            this._session.destroy();
+            this._session = null;
         }
 
         if (this._nameWatcherId > 0) {
