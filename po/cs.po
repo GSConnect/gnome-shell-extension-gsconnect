@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-10 07:07-0400\n"
+"POT-Creation-Date: 2019-11-02 21:17-0400\n"
 "PO-Revision-Date: 2019-10-10 11:57\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Czech\n"
@@ -17,18 +17,18 @@ msgstr ""
 "X-Crowdin-File: /master/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
-#: data/gtk/menus.ui:7 src/preferences/device.js:293
+#: data/gtk/menus.ui:7 src/preferences/device.js:292
 msgid "Encryption Info"
 msgstr "Informace o šifrování"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/gtk/menus.ui:12 data/ui/device-preferences.ui:2497
-#: src/service/daemon.js:804
+#: src/service/daemon.js:800
 msgid "Pair"
 msgstr "Spárování"
 
 #. TRANSLATORS: Unpair the device and notify it
-#: data/gtk/menus.ui:18 src/service/daemon.js:813
+#: data/gtk/menus.ui:18 src/service/daemon.js:809
 msgid "Unpair"
 msgstr "Zrušit spárování"
 
@@ -39,8 +39,8 @@ msgstr "Připojit k…"
 
 #. Action Buttons
 #: data/ui/connect.ui:20 data/ui/notification-reply-dialog.ui:13
-#: data/ui/telephony.ui:14 src/preferences/device.js:657
-#: src/preferences/keybindings.js:86 src/preferences/service.js:432
+#: data/ui/telephony.ui:14 src/preferences/device.js:653
+#: src/preferences/keybindings.js:44 src/preferences/service.js:428
 #: src/service/plugins/share.js:161 src/service/plugins/share.js:309
 #: src/service/plugins/share.js:452 src/service/ui/service.js:37
 #: src/shell/donotdisturb.js:301
@@ -68,16 +68,16 @@ msgstr "Nápověda"
 msgid "Type a phone number or name"
 msgstr "Napište telefonní číslo nebo jméno"
 
-#: data/ui/conversation.ui:76 data/ui/conversation.ui:85
+#: data/ui/conversation.ui:77 data/ui/conversation.ui:86
 #: src/shell/notification.js:52
 msgid "Type a message"
 msgstr "Napsat zprávu"
 
-#: data/ui/conversation.ui:84 src/service/plugins/sms.js:50
+#: data/ui/conversation.ui:85 src/service/plugins/sms.js:50
 msgid "Send Message"
 msgstr "Odeslat zprávu"
 
-#: data/ui/device-preferences.ui:40 src/preferences/service.js:510
+#: data/ui/device-preferences.ui:40 src/preferences/service.js:506
 msgid "Desktop"
 msgstr "Počítač"
 
@@ -115,7 +115,7 @@ msgstr "Sdílení"
 
 #: data/ui/device-preferences.ui:532 data/ui/device-preferences.ui:826
 #: data/ui/device-preferences.ui:2256 src/service/plugins/runcommand.js:18
-#: src/service/plugins/runcommand.js:26 src/service/plugins/runcommand.js:199
+#: src/service/plugins/runcommand.js:26 src/service/plugins/runcommand.js:193
 msgid "Commands"
 msgstr "Příkazy"
 
@@ -286,11 +286,11 @@ msgid "Mute"
 msgstr "Ztlumit"
 
 #: data/ui/messaging-window.ui:14 src/service/plugins/sms.js:26
-#: src/service/ui/messaging.js:976
+#: src/service/ui/messaging.js:967
 msgid "Messaging"
 msgstr "Zasílání zpráv"
 
-#: data/ui/messaging-window.ui:23 src/service/ui/messaging.js:1193
+#: data/ui/messaging-window.ui:23 src/service/ui/messaging.js:1184
 msgid "New Conversation"
 msgstr "Nová konverzace"
 
@@ -328,8 +328,9 @@ msgstr "_Přejmenovat"
 msgid "Refresh"
 msgstr "Obnovit"
 
+#. Service Menu -> "Mobile Settings"
 #: data/ui/preferences-window.ui:111 data/ui/preferences-window.ui:128
-#: src/extension.js:151
+#: src/extension.js:148
 msgid "Mobile Settings"
 msgstr "Nastavení telefonu"
 
@@ -341,7 +342,7 @@ msgstr "Upravit název zařízení"
 msgid "Devices"
 msgstr "Zařízení"
 
-#: data/ui/preferences-window.ui:307 src/preferences/service.js:673
+#: data/ui/preferences-window.ui:307 src/preferences/service.js:669
 msgid "Searching for devices…"
 msgstr "Vyhledávání zařízení…"
 
@@ -357,7 +358,7 @@ msgstr "Zapnout"
 msgid "This device is invisible to unpaired devices"
 msgstr "Toto zařízení je pro nespárovaná zařízení neviditelné"
 
-#: data/ui/preferences-window.ui:656 src/service/daemon.js:598
+#: data/ui/preferences-window.ui:656 src/service/daemon.js:594
 msgid "Discovery Disabled"
 msgstr "Objevování vypnuto"
 
@@ -376,7 +377,7 @@ msgid "User Menu"
 msgstr "Uživatelská nabídka"
 
 #. TRANSLATORS: Generate a support log
-#: data/ui/preferences-window.ui:732 src/preferences/service.js:429
+#: data/ui/preferences-window.ui:732 src/preferences/service.js:425
 msgid "Generate Support Log"
 msgstr "Vytvořit záznam událostí pro podporu"
 
@@ -385,22 +386,22 @@ msgid "About GSConnect"
 msgstr "O GSConnect"
 
 #. TRANSLATORS: Share URL by SMS
-#: data/ui/telephony.ui:9 src/service/daemon.js:699 src/service/daemon.js:825
+#: data/ui/telephony.ui:9 src/service/daemon.js:695 src/service/daemon.js:821
 #: src/service/plugins/sms.js:58 webextension/gettext.js:39
 msgid "Send SMS"
 msgstr "Poslat SMS"
 
 #. Service Menu
-#: src/extension.js:118 src/extension.js:249
+#: src/extension.js:116 src/extension.js:250
 msgid "Mobile Devices"
 msgstr "Mobilní zařízení"
 
 #. TRANSLATORS: A menu option to activate the extension
-#: src/extension.js:145 src/extension.js:383
+#: src/extension.js:143 src/extension.js:384
 msgid "Turn On"
 msgstr "Zapnout"
 
-#: src/extension.js:244
+#: src/extension.js:245
 #, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
@@ -410,7 +411,7 @@ msgstr[2] "%d připojených"
 msgstr[3] "%d připojených"
 
 #. TRANSLATORS: A menu option to deactivate the extension
-#: src/extension.js:380
+#: src/extension.js:381
 msgid "Turn Off"
 msgstr "Vypnout"
 
@@ -419,190 +420,195 @@ msgstr "Vypnout"
 msgid "Send To Mobile Device"
 msgstr "Odeslat do mobilního zařízení"
 
-#: src/preferences/device.js:658
+#: src/preferences/device.js:654
 msgid "Open"
 msgstr "Otevřít"
 
-#: src/preferences/device.js:713 src/preferences/device.js:726
+#: src/preferences/device.js:709 src/preferences/device.js:722
 msgid "On"
 msgstr "Zap."
 
-#: src/preferences/device.js:713 src/preferences/device.js:726
+#: src/preferences/device.js:709 src/preferences/device.js:722
 msgid "Off"
 msgstr "Vyp."
 
-#: src/preferences/device.js:831 src/preferences/device.js:859
+#: src/preferences/device.js:827 src/preferences/device.js:855
 msgid "Disabled"
 msgstr "Vypnuto"
 
 #. TRANSLATORS: Title of keyboard shortcut dialog
-#: src/preferences/keybindings.js:75
+#: src/preferences/keybindings.js:33
 msgid "Set Shortcut"
 msgstr "Nastavení klávesové zkratky"
 
 #. TRANSLATORS: Button to confirm the new shortcut
-#: src/preferences/keybindings.js:89
+#: src/preferences/keybindings.js:47
 msgid "Set"
 msgstr "Nastavit"
 
 #. TRANSLATORS: Summary of a keyboard shortcut function
 #. Example: Enter a new shortcut to change Messaging
-#: src/preferences/keybindings.js:96
+#: src/preferences/keybindings.js:54
 #, javascript-format
 msgid "Enter a new shortcut to change <b>%s</b>"
 msgstr "Zadejte novou zkratku pro <b>%s</b>"
 
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
-#: src/preferences/keybindings.js:125
+#: src/preferences/keybindings.js:83
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
 msgstr "Zrušíte stiskem Esc nebo pomocí Backspace vrátíte do původního stavu."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
-#: src/preferences/keybindings.js:224
+#: src/preferences/keybindings.js:182
 #, javascript-format
 msgid "%s is already being used"
 msgstr "%s už je používáno"
 
-#: src/preferences/service.js:388
+#: src/preferences/service.js:384
 msgid "A complete KDE Connect implementation for GNOME"
 msgstr "Úplná (re)implementace KDE Connect pro GNOME"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
-#: src/preferences/service.js:397
+#: src/preferences/service.js:393
 msgid "translator-credits"
 msgstr "Pavel Borecki <pavel.borecki@gmail.com>"
 
-#: src/preferences/service.js:430
-msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
-msgstr "Ladící zprávy jsou zaznamenávány. Podnikněte kroky, potřebné pro vyvolání problému a pak si záznam prohlédněte."
+#: src/preferences/service.js:426
+msgid ""
+"Debug messages are being logged. Take any steps necessary to reproduce a "
+"problem then review the log."
+msgstr ""
+"Ladící zprávy jsou zaznamenávány. Podnikněte kroky, potřebné pro vyvolání "
+"problému a pak si záznam prohlédněte."
 
-#: src/preferences/service.js:433
+#: src/preferences/service.js:429
 msgid "Review Log"
 msgstr "Prohlédnout si záznam událostí"
 
-#: src/preferences/service.js:502
+#: src/preferences/service.js:498
 msgid "Laptop"
 msgstr "Notebook"
 
-#: src/preferences/service.js:504
+#: src/preferences/service.js:500
 msgid "Smartphone"
 msgstr "Chytrý telefon"
 
-#: src/preferences/service.js:506
+#: src/preferences/service.js:502
 msgid "Tablet"
 msgstr "Tablet"
 
-#: src/preferences/service.js:508
+#: src/preferences/service.js:504
 msgid "Television"
 msgstr "Televize"
 
-#: src/preferences/service.js:529
+#: src/preferences/service.js:525
 msgid "Unpaired"
 msgstr "Nespárováno"
 
-#: src/preferences/service.js:533
+#: src/preferences/service.js:529
 msgid "Disconnected"
 msgstr "Odpojeno"
 
-#: src/preferences/service.js:537
+#: src/preferences/service.js:533
 msgid "Connected"
 msgstr "Připojeno"
 
-#: src/preferences/service.js:675
+#: src/preferences/service.js:671
 msgid "Waiting for service…"
 msgstr "Čeká se na službu…"
 
-#: src/service/daemon.js:337
+#: src/service/daemon.js:333
 msgid "Report"
 msgstr "Hlášení"
 
-#: src/service/daemon.js:580
+#: src/service/daemon.js:576
 msgid "Authentication Failure"
 msgstr "Ověření se nezdařilo"
 
-#: src/service/daemon.js:589
+#: src/service/daemon.js:585
 msgid "Network Error"
 msgstr "Chyba sítě"
 
-#: src/service/daemon.js:590
+#: src/service/daemon.js:586
 msgid "Click for help troubleshooting"
 msgstr "Kliknutím otevřete nápovědu pro odstraňování potíží"
 
-#: src/service/daemon.js:599
-msgid "Discovery has been disabled due to the number of devices on this network."
+#: src/service/daemon.js:595
+msgid ""
+"Discovery has been disabled due to the number of devices on this network."
 msgstr "Kvůli velkému množství zařízení na této síti bylo objevování vypnuto."
 
-#: src/service/daemon.js:608
+#: src/service/daemon.js:604
 msgid "Click for more information"
 msgstr "Další informace získáte kliknutím"
 
-#: src/service/daemon.js:705
+#: src/service/daemon.js:701
 msgid "Dial Number"
 msgstr "Vytočit číslo"
 
-#: src/service/daemon.js:711 src/service/daemon.js:921
+#: src/service/daemon.js:707 src/service/daemon.js:917
 #: src/service/plugins/share.js:27
 msgid "Share File"
 msgstr "Sdílet soubor"
 
-#: src/service/daemon.js:774
+#: src/service/daemon.js:770
 msgid "List available devices"
 msgstr "Vypsat zařízení k dispozici"
 
-#: src/service/daemon.js:783
+#: src/service/daemon.js:779
 msgid "List all devices"
 msgstr "Vypsat všechna zařízení"
 
-#: src/service/daemon.js:792
+#: src/service/daemon.js:788
 msgid "Target Device"
 msgstr "Cílové zařízení"
 
-#: src/service/daemon.js:834
+#: src/service/daemon.js:830
 msgid "Message Body"
 msgstr "Tělo zprávy"
 
-#: src/service/daemon.js:846 src/service/plugins/notification.js:51
+#: src/service/daemon.js:842 src/service/plugins/notification.js:51
 msgid "Send Notification"
 msgstr "Poslat oznámení"
 
-#: src/service/daemon.js:855
+#: src/service/daemon.js:851
 msgid "Notification App Name"
 msgstr "Název oznamovací aplikace"
 
-#: src/service/daemon.js:864
+#: src/service/daemon.js:860
 msgid "Notification Body"
 msgstr "Tělo oznámení"
 
-#: src/service/daemon.js:873
+#: src/service/daemon.js:869
 msgid "Notification Icon"
 msgstr "Ikona oznámení"
 
-#: src/service/daemon.js:882
+#: src/service/daemon.js:878
 msgid "Notification ID"
 msgstr "Identif. oznámení"
 
-#: src/service/daemon.js:891 src/service/plugins/photo.js:11
+#: src/service/daemon.js:887 src/service/plugins/photo.js:11
 #: src/service/plugins/photo.js:17
 msgid "Photo"
 msgstr "Fotka"
 
-#: src/service/daemon.js:900 src/service/plugins/ping.js:11
+#: src/service/daemon.js:896 src/service/plugins/ping.js:11
 #: src/service/plugins/ping.js:17 src/service/plugins/ping.js:44
 msgid "Ping"
 msgstr "Ping"
 
-#: src/service/daemon.js:909 src/service/plugins/battery.js:155
+#: src/service/daemon.js:905 src/service/plugins/battery.js:155
 #: src/service/plugins/findmyphone.js:19
 msgid "Ring"
 msgstr "Vyzvánění"
 
-#: src/service/daemon.js:930 src/service/plugins/share.js:43
-#: src/service/ui/messaging.js:1176 src/service/ui/messaging.js:1184
+#: src/service/daemon.js:926 src/service/plugins/share.js:43
+#: src/service/ui/messaging.js:1167 src/service/ui/messaging.js:1175
 msgid "Share Link"
 msgstr "Sdílet odkaz"
 
-#: src/service/daemon.js:942
+#: src/service/daemon.js:938
 msgid "Show release version"
 msgstr "Zobrazit verzi vydání"
 
@@ -683,7 +689,7 @@ msgstr "Stahování schránky"
 #. Contact Name
 #: src/service/plugins/contacts.js:230 src/service/plugins/contacts.js:338
 #: src/service/plugins/telephony.js:170 src/service/plugins/telephony.js:221
-#: src/service/plugins/telephony.js:267 src/service/ui/contacts.js:571
+#: src/service/plugins/telephony.js:267 src/service/ui/contacts.js:569
 #: src/service/ui/messaging.js:247
 msgid "Unknown Contact"
 msgstr "Neznámý kontakt"
@@ -917,7 +923,7 @@ msgid "%s・Home"
 msgstr "%s・Domů"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
-#: src/service/ui/contacts.js:433 src/service/ui/contacts.js:447
+#: src/service/ui/contacts.js:431 src/service/ui/contacts.js:445
 #, javascript-format
 msgid "Send to %s"
 msgstr "Poslat na %s"
@@ -953,7 +959,7 @@ msgstr "Skupinová zpráva"
 msgid "You: %s"
 msgstr "Vy: %s"
 
-#: src/service/ui/messaging.js:869
+#: src/service/ui/messaging.js:861
 #, javascript-format
 msgid "And %d other contact"
 msgid_plural "And %d others"
@@ -1040,7 +1046,8 @@ msgstr "GSConnect"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr "Sdílet odkazy pomocí GSConnect, přímo do prohlížeče nebo prostřednictvím SMS."
+msgstr ""
+"Sdílet odkazy pomocí GSConnect, přímo do prohlížeče nebo prostřednictvím SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:33
@@ -1051,4 +1058,3 @@ msgstr "Služba nedostupná"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Otevřít v prohlížeči"
-
