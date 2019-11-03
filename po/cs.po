@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2019-10-10 11:57\n"
+"PO-Revision-Date: 2019-11-03 05:14\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Czech\n"
 "Language: cs_CZ\n"
@@ -475,12 +475,8 @@ msgid "translator-credits"
 msgstr "Pavel Borecki <pavel.borecki@gmail.com>"
 
 #: src/preferences/service.js:426
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Ladící zprávy jsou zaznamenávány. Podnikněte kroky, potřebné pro vyvolání "
-"problému a pak si záznam prohlédněte."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Ladící zprávy jsou zaznamenávány. Podnikněte kroky, potřebné pro vyvolání problému a pak si záznam prohlédněte."
 
 #: src/preferences/service.js:429
 msgid "Review Log"
@@ -535,8 +531,7 @@ msgid "Click for help troubleshooting"
 msgstr "Kliknutím otevřete nápovědu pro odstraňování potíží"
 
 #: src/service/daemon.js:595
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Kvůli velkému množství zařízení na této síti bylo objevování vypnuto."
 
 #: src/service/daemon.js:604
@@ -1046,8 +1041,7 @@ msgstr "GSConnect"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
-"Sdílet odkazy pomocí GSConnect, přímo do prohlížeče nebo prostřednictvím SMS."
+msgstr "Sdílet odkazy pomocí GSConnect, přímo do prohlížeče nebo prostřednictvím SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:33
@@ -1058,3 +1052,4 @@ msgstr "Služba nedostupná"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Otevřít v prohlížeči"
+
