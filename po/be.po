@@ -3,16 +3,14 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2019-10-13 23:34\n"
+"PO-Revision-Date: 2019-11-03 05:14\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Belarusian\n"
 "Language: be_BY\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || n%10>=5 && n%10<=9 || n"
-"%100>=11 && n%100<=14 ? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || n%10>=5 && n%10<=9 || n%100>=11 && n%100<=14 ? 2 : 3);\n"
 "X-Generator: crowdin.com\n"
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Language: be\n"
@@ -458,8 +456,7 @@ msgstr "Увядзіце новыя спалучэнні, каб змяніць 
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/preferences/keybindings.js:83
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Націсніце Esc, каб скасаваць або Прабел, каб скінуць спалучэнне клавіш."
+msgstr "Націсніце Esc, каб скасаваць або Прабел, каб скінуць спалучэнне клавіш."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -478,12 +475,8 @@ msgid "translator-credits"
 msgstr "Maksim Krapiŭka <metalomaniax@gmail.com>"
 
 #: src/preferences/service.js:426
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Паведамленні адладкі былі запісаны ў журнал. Зрабіце любыя крокі неабходныя "
-"для ўзнаўлення праблемы і затым праглядзіце журнал."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Паведамленні адладкі былі запісаны ў журнал. Зрабіце любыя крокі неабходныя для ўзнаўлення праблемы і затым праглядзіце журнал."
 
 #: src/preferences/service.js:429
 msgid "Review Log"
@@ -538,8 +531,7 @@ msgid "Click for help troubleshooting"
 msgstr "Націсніце для дапамогі ў выпраўленні непаладак"
 
 #: src/service/daemon.js:595
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Знаходжанне было адключана праз колькасць прылад у гэтай сетцы."
 
 #: src/service/daemon.js:604
@@ -1060,3 +1052,4 @@ msgstr "Сэрвіс недаступны"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Адкрыць у браўзеры"
+
