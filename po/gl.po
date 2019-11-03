@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2019-10-10 11:12\n"
+"PO-Revision-Date: 2019-11-03 05:13\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Galician\n"
 "Language: gl_ES\n"
@@ -454,8 +454,7 @@ msgstr "Escribir un novo atallo para cambiar<b>%s</b>"
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/preferences/keybindings.js:83
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Premer Esc para anular ou Retroceso para redefinir o atallo de teclado."
+msgstr "Premer Esc para anular ou Retroceso para redefinir o atallo de teclado."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -474,12 +473,8 @@ msgid "translator-credits"
 msgstr "tradutor"
 
 #: src/preferences/service.js:426
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Estanse a rexistrar as mensaxes de depuración. Faga o necesario para "
-"reproducir o problema e logo revise o rexistro."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Estanse a rexistrar as mensaxes de depuración. Faga o necesario para reproducir o problema e logo revise o rexistro."
 
 #: src/preferences/service.js:429
 msgid "Review Log"
@@ -534,8 +529,7 @@ msgid "Click for help troubleshooting"
 msgstr "Prema para obter axuda de solucións"
 
 #: src/service/daemon.js:595
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "A descuberta desactivouse debido ao número de dispositivos nesta rede."
 
 #: src/service/daemon.js:604
@@ -1017,7 +1011,7 @@ msgstr "Non molestar"
 
 #: src/shell/donotdisturb.js:249
 msgid "Silence Notifications from Mobile Devices"
-msgstr "Silenciar notificacións no dispositivo móbiil"
+msgstr ""
 
 #: src/shell/donotdisturb.js:261
 msgid "Until you turn off Do Not Disturb"
@@ -1039,8 +1033,7 @@ msgstr "GSConnect"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
-"Compartir ligazóns con GSConnect, directamente co navegador ou por SMS."
+msgstr "Compartir ligazóns con GSConnect, directamente co navegador ou por SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:33
@@ -1051,3 +1044,4 @@ msgstr "Servizo non dispoñíbel"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Abrir no navegador"
+
