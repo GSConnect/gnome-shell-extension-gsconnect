@@ -56,21 +56,7 @@ const RemoteSession = GObject.registerClass({
     _call(name, parameters = null) {
         if (!this._started) return;
 
-        this.call(
-            name,
-            parameters,
-            Gio.DBusCallFlags.NONE,
-            -1,
-            null,
-            (proxy, res) => {
-                try {
-                    proxy.call_finish(res);
-                } catch (e) {
-                    Gio.DBusError.strip_remote_error(e);
-                    logError(e);
-                }
-            }
-        );
+        this.call(name, parameters, Gio.DBusCallFlags.NONE, -1, null, null);
     }
 
     async start() {
