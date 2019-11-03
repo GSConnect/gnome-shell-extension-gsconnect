@@ -12,15 +12,6 @@ const SESSION_TIMEOUT = 15;
 const RemoteSession = GObject.registerClass({
     GTypeName: 'GSConnectRemoteSession',
     Implements: [Gio.DBusInterface],
-    Properties: {
-        'session-id': GObject.ParamSpec.string(
-            'session-id',
-            'SessionId',
-            'The unique session ID',
-            GObject.ParamFlags.READABLE,
-            null
-        )
-    },
     Signals: {
         'closed': {
             flags: GObject.SignalFlags.RUN_FIRST
@@ -33,7 +24,8 @@ const RemoteSession = GObject.registerClass({
             g_bus_type: Gio.BusType.SESSION,
             g_name: 'org.gnome.Mutter.RemoteDesktop',
             g_object_path: objectPath,
-            g_interface_name: 'org.gnome.Mutter.RemoteDesktop.Session'
+            g_interface_name: 'org.gnome.Mutter.RemoteDesktop.Session',
+            g_flags: Gio.DBusProxyFlags.DO_NOT_LOAD_PROPERTIES
         });
 
         this._started = false;
@@ -43,14 +35,6 @@ const RemoteSession = GObject.registerClass({
         if (signal_name === 'Closed') {
             this.emit('closed');
         }
-    }
-
-    get session_id() {
-        if (this._id === undefined) {
-            this._id = this.get_cached_property('SessionId').unpack();
-        }
-
-        return this._id;
     }
 
     _call(name, parameters = null) {
