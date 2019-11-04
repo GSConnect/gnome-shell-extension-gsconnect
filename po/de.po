@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2019-11-03 05:14\n"
+"PO-Revision-Date: 2019-11-04 07:04\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -99,7 +99,7 @@ msgstr "Maus & Tastatur"
 
 #: data/ui/device-preferences.ui:318
 msgid "Volume Control"
-msgstr "Lautstärkenregler"
+msgstr "Lautstärkeregler"
 
 #: data/ui/device-preferences.ui:367 src/service/plugins/sftp.js:359
 msgid "Files"
