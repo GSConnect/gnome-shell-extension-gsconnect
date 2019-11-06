@@ -367,12 +367,15 @@ const Controller = class Controller {
             // Session is active
             if (this._session !== null) return;
 
-            // Mutter's RemoteDesktop portal is not available
-            if (this.connection === null)
-                throw new Error('RemoteDesktop not available');
+            // Mutter's RemoteDesktop is not available, fall back to Atspi
+            if (this.connection === null) {
+                debug('Falling back to Atspi');
+
+                let fallback = imports.service.components.atspi;
+                this._session = new fallback.Controller();
 
             // Mutter is available and there isn't another session starting
-            if (this._sessionStarting === false) {
+            } else if (this._sessionStarting === false) {
                 this._sessionStarting = true;
 
                 debug('Creating Mutter RemoteDesktop session');
