@@ -382,7 +382,7 @@ const Controller = class Controller {
 
                 let objectPath = await this._createSession();
                 this._session = new RemoteSession(objectPath);
-                this._session.start();
+                await this._session.start();
 
                 this._sessionClosedId = this._session.connect(
                     'closed',
