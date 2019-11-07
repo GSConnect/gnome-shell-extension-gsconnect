@@ -161,7 +161,7 @@ var DevicePreferences = GObject.registerClass({
         // Sharing
         'sharing', 'sharing-page',
         'desktop-list', 'clipboard', 'clipboard-sync', 'mousepad', 'mpris', 'systemvolume',
-        'share', 'receive-files', 'receive-directory',
+        'share', 'share-list', 'receive-files', 'receive-directory',
 
         // Battery
         'battery',
@@ -431,6 +431,15 @@ var DevicePreferences = GObject.registerClass({
             row2 = row2.get_child().get_child_at(0, 0);
             return row1.label.localeCompare(row2.label);
         });
+        this.share_list.set_header_func(rowSeparators);
+
+        // Scroll with keyboard focus
+        let sharing_box = this.sharing_page.get_child().get_child();
+        sharing_box.set_focus_vadjustment(this.sharing_page.vadjustment);
+
+        // Continue focus chain between lists
+        this.desktop_list.next = this.share_list;
+        this.share_list.prev = this.desktop_list;
     }
 
     _onReceiveDirectoryChanged(settings, key) {

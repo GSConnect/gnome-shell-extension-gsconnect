@@ -64,6 +64,7 @@
                             <property name="hexpand">True</property>
                             <property name="selection_mode">none</property>
                             <signal name="row-activated" handler="_onToggleRowActivated" swapped="no"/>
+                            <signal name="keynav-failed" handler="_onKeynavFailed" swapped="no"/>
                             <child>
                               <object class="GtkListBoxRow" id="photo">
                                 <property name="height_request">56</property>
@@ -394,6 +395,7 @@
                                 <property name="hexpand">True</property>
                                 <property name="selection_mode">none</property>
                                 <signal name="row-activated" handler="_onToggleRowActivated" swapped="no"/>
+                                <signal name="keynav-failed" handler="_onKeynavFailed" swapped="no"/>
                                 <child>
                                   <object class="GtkListBoxRow" id="share-receive-row">
                                     <property name="height_request">56</property>
@@ -449,41 +451,68 @@
                                     </accessibility>
                                   </object>
                                 </child>
+                                <child>
+                                  <object class="GtkListBoxRow" id="share-directory-row">
+                                    <property name="height_request">56</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="activatable">False</property>
+                                    <property name="selectable">False</property>
+                                    <property name="sensitive" bind-source="receive-files" bind-property="active" bind-flags="sync-create"/>
+                                    <child>
+                                      <object class="GtkGrid">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                        <property name="margin_start">12</property>
+                                        <property name="margin_end">12</property>
+                                        <property name="column_spacing">12</property>
+                                        <child>
+                                          <object class="GtkLabel" id="receive-directory-label">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="halign">start</property>
+                                            <property name="valign">center</property>
+                                            <property name="vexpand">True</property>
+                                            <property name="xalign">0</property>
+                                            <property name="label" translatable="yes">Save files to</property>
+                                            <accessibility>
+                                              <relation type="label-for" target="share-directory-row"/>
+                                              <relation type="label-for" target="receive-directory"/>
+                                            </accessibility>
+                                          </object>
+                                          <packing>
+                                            <property name="left_attach">0</property>
+                                            <property name="top_attach">0</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkFileChooserButton" id="receive-directory">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                            <property name="halign">end</property>
+                                            <property name="hexpand">True</property>
+                                            <property name="valign">center</property>
+                                            <property name="action">select-folder</property>
+                                            <signal name="file-set" handler="_onReceiveDirectorySet" swapped="no"/>
+                                          </object>
+                                          <packing>
+                                            <property name="left_attach">1</property>
+                                            <property name="top_attach">0</property>
+                                          </packing>
+                                        </child>
+                                      </object>
+                                    </child>
+                                    <accessibility>
+                                      <relation type="labelled-by" target="receive-directory-label"/>
+                                    </accessibility>
+                                  </object>
+                                </child>
                               </object>
                             </child>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
                             <property name="top_attach">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkGrid">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="valign">start</property>
-                            <property name="sensitive" bind-source="receive-files" bind-property="active" bind-flags="sync-create"/>
-                            <property name="column_spacing">12</property>
-                            <child>
-                              <object class="GtkFileChooserButton" id="receive-directory">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="hexpand">True</property>
-                                <property name="action">select-folder</property>
-                                <signal name="file-set" handler="_onReceiveDirectorySet" swapped="no"/>
-                              </object>
-                              <packing>
-                                <property name="left_attach">1</property>
-                                <property name="top_attach">0</property>
-                              </packing>
-                            </child>
-                            <style>
-                              <class name="inline-toolbar"/>
-                            </style>
-                          </object>
-                          <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">1</property>
                           </packing>
                         </child>
                       </object>
