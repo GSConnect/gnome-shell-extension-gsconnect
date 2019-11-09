@@ -3,16 +3,14 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2019-10-10 11:34\n"
+"PO-Revision-Date: 2019-11-07 10:57\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Russian\n"
 "Language: ru_RU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 "
-"&& n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 "
-"&& n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
 "X-Generator: crowdin.com\n"
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Language: ru\n"
@@ -155,7 +153,7 @@ msgstr "Отправлять уведомления"
 
 #: data/ui/device-preferences.ui:947
 msgid "Share When Active"
-msgstr ""
+msgstr "Поделиться при доступности"
 
 #: data/ui/device-preferences.ui:998
 msgid "Applications"
@@ -477,12 +475,8 @@ msgid "translator-credits"
 msgstr "'Losted' <losted@wants.dicksinhisan.us>"
 
 #: src/preferences/service.js:426
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Отладочные сообщения будут записаны. Произведите действия при которых "
-"произошла проблема, затем посмотрите журнал."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Отладочные сообщения будут записаны. Произведите действия при которых произошла проблема, затем посмотрите журнал."
 
 #: src/preferences/service.js:429
 msgid "Review Log"
@@ -537,8 +531,7 @@ msgid "Click for help troubleshooting"
 msgstr "Нажмите для решения проблем"
 
 #: src/service/daemon.js:595
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Обнаружение было выключено из-за количества устройств в этой сети."
 
 #: src/service/daemon.js:604
@@ -1026,7 +1019,7 @@ msgstr "Не беспокоить"
 
 #: src/shell/donotdisturb.js:249
 msgid "Silence Notifications from Mobile Devices"
-msgstr "Отключить уведомления с устройства"
+msgstr "Заглушить уведомления от мобильных устройств"
 
 #: src/shell/donotdisturb.js:261
 msgid "Until you turn off Do Not Disturb"
@@ -1059,3 +1052,4 @@ msgstr "Сервис недоступен"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Открыть в браузере"
+

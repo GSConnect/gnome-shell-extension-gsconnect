@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2019-10-10 11:34\n"
+"PO-Revision-Date: 2019-11-04 07:36\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -99,7 +99,7 @@ msgstr "Maus & Tastatur"
 
 #: data/ui/device-preferences.ui:318
 msgid "Volume Control"
-msgstr "Lautstärkenregler"
+msgstr "Lautstärkeregler"
 
 #: data/ui/device-preferences.ui:367 src/service/plugins/sftp.js:359
 msgid "Files"
@@ -454,9 +454,7 @@ msgstr "Ein neues Tastenkürzel eingeben, um <b>%s</b> zu Ändern"
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/preferences/keybindings.js:83
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"ESC zum Abbrechen oder die Rücktaste drücken, um das Tastenkürzel "
-"zurückzusetzen."
+msgstr "ESC zum Abbrechen oder die Rücktaste drücken, um das Tastenkürzel zurückzusetzen."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -472,18 +470,12 @@ msgstr "Eine vollständige KDE-Connect-Implementierung für GNOME"
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:393
 msgid "translator-credits"
-msgstr ""
-"taaem <taaem@mailbox.org>\n"
+msgstr "taaem <taaem@mailbox.org>\n"
 "Tobias Bannert <tobannert@gmail.com>"
 
 #: src/preferences/service.js:426
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Fehlersuchmeldungen werden protokolliert. Führen Sie alle erforderlichen "
-"Schritte aus, um ein Problem zu reproduzieren, und überprüfen Sie das "
-"Protokoll."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Fehlersuchmeldungen werden protokolliert. Führen Sie alle erforderlichen Schritte aus, um ein Problem zu reproduzieren, und überprüfen Sie das Protokoll."
 
 #: src/preferences/service.js:429
 msgid "Review Log"
@@ -538,11 +530,8 @@ msgid "Click for help troubleshooting"
 msgstr "Für Hilfe bei der Fehlerbehebung hier klicken"
 
 #: src/service/daemon.js:595
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
-msgstr ""
-"Erkennen wurde deaktiviert, aufgrund der Anzahl an Geräten in diesem "
-"Netzwerk."
+msgid "Discovery has been disabled due to the number of devices on this network."
+msgstr "Erkennen wurde deaktiviert, aufgrund der Anzahl an Geräten in diesem Netzwerk."
 
 #: src/service/daemon.js:604
 msgid "Click for more information"
@@ -583,7 +572,7 @@ msgstr ""
 
 #: src/service/daemon.js:860
 msgid "Notification Body"
-msgstr ""
+msgstr "Mitteilungsinhalt"
 
 #: src/service/daemon.js:869
 msgid "Notification Icon"
@@ -966,8 +955,8 @@ msgstr "Sie: %s"
 #, javascript-format
 msgid "And %d other contact"
 msgid_plural "And %d others"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Und %d anderer Kontakt"
+msgstr[1] "Und %d Andere"
 
 #: src/service/ui/service.js:31
 msgid "Select a Device"
@@ -1056,3 +1045,4 @@ msgstr "Dienst nicht verfügbar"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Im Browser öffnen"
+

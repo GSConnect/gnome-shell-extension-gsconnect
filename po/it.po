@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2019-10-11 06:25\n"
+"PO-Revision-Date: 2019-11-03 05:13\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
@@ -473,12 +473,8 @@ msgid "translator-credits"
 msgstr "Jimmy Scionti <jimmy.scionti@gmail.com>"
 
 #: src/preferences/service.js:426
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"I messaggi di debug vengono registrati. Adotta tutte le misure necessarie "
-"per riprodurre un problema, quindi rivedi il registro."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "I messaggi di debug vengono registrati. Adotta tutte le misure necessarie per riprodurre un problema, quindi rivedi il registro."
 
 #: src/preferences/service.js:429
 msgid "Review Log"
@@ -533,11 +529,8 @@ msgid "Click for help troubleshooting"
 msgstr "Click per la risoluzione del problema"
 
 #: src/service/daemon.js:595
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
-msgstr ""
-"La ricerca è stata disattivata a causa dell'elevato numero di dispositivi "
-"nella rete."
+msgid "Discovery has been disabled due to the number of devices on this network."
+msgstr "La ricerca è stata disattivata a causa dell'elevato numero di dispositivi nella rete."
 
 #: src/service/daemon.js:604
 msgid "Click for more information"
@@ -1040,8 +1033,7 @@ msgstr "GSConnect"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
-"Condividi collegamenti con GSConnect, direttamente nel browser o via SMS."
+msgstr "Condividi collegamenti con GSConnect, direttamente nel browser o via SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:33
@@ -1052,3 +1044,4 @@ msgstr "Servizio non disponibile"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Apri nel browser"
+

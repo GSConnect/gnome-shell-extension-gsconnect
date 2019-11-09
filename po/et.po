@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2019-10-10 11:34\n"
+"PO-Revision-Date: 2019-11-03 05:14\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Estonian\n"
 "Language: et_EE\n"
@@ -454,8 +454,7 @@ msgstr "Sisesta <b>%s</b> muutmiseks uus otsetee"
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/preferences/keybindings.js:83
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Vajuta tühistamiseks Esc või klaviatuuriotsetee lähtestamiseks Tagasilüke."
+msgstr "Vajuta tühistamiseks Esc või klaviatuuriotsetee lähtestamiseks Tagasilüke."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -474,12 +473,8 @@ msgid "translator-credits"
 msgstr "Madis O, 2018."
 
 #: src/preferences/service.js:426
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Silumissõnumid logitakse. Teosta mistahes vajalikud sammud probleemi "
-"taasloomiseks, seejärel vaata logi üle."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Silumissõnumid logitakse. Teosta mistahes vajalikud sammud probleemi taasloomiseks, seejärel vaata logi üle."
 
 #: src/preferences/service.js:429
 msgid "Review Log"
@@ -534,8 +529,7 @@ msgid "Click for help troubleshooting"
 msgstr "Klõpsa, et saada veaotsingul abi"
 
 #: src/service/daemon.js:595
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Avastamine on keelatud selles võrgus olevate seadmete arvu tõttu."
 
 #: src/service/daemon.js:604
@@ -1050,3 +1044,4 @@ msgstr "Teenus pole saadaval"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Ava brauseris"
+

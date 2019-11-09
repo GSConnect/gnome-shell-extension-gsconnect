@@ -3,16 +3,14 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2019-10-10 11:13\n"
+"PO-Revision-Date: 2019-11-03 05:14\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Ukrainian\n"
 "Language: uk_UA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 "
-"&& n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 "
-"&& n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
 "X-Generator: crowdin.com\n"
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Language: uk\n"
@@ -458,8 +456,7 @@ msgstr "Введіть нове скорочення, щоб замінити <b
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/preferences/keybindings.js:83
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Натисніть Esc щоб скасувати або Backspace щоб скинути комбінацію клавіш"
+msgstr "Натисніть Esc щоб скасувати або Backspace щоб скинути комбінацію клавіш"
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -478,12 +475,8 @@ msgid "translator-credits"
 msgstr "kotyhoroshko"
 
 #: src/preferences/service.js:426
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Повідомлення налагодження записуються. Виконайте всі необхідні дії для "
-"відтворення проблеми, а потім перегляньте журнал."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Повідомлення налагодження записуються. Виконайте всі необхідні дії для відтворення проблеми, а потім перегляньте журнал."
 
 #: src/preferences/service.js:429
 msgid "Review Log"
@@ -538,8 +531,7 @@ msgid "Click for help troubleshooting"
 msgstr "Натисніть, щоб допомогти усунути проблему"
 
 #: src/service/daemon.js:595
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Видимість було вимкнено через велику кількість пристроїв у цій мережі."
 
 #: src/service/daemon.js:604
@@ -1027,7 +1019,7 @@ msgstr "Не турбувати"
 
 #: src/shell/donotdisturb.js:249
 msgid "Silence Notifications from Mobile Devices"
-msgstr "Заглушити сповіщення мобільних пристроїв"
+msgstr ""
 
 #: src/shell/donotdisturb.js:261
 msgid "Until you turn off Do Not Disturb"
@@ -1049,9 +1041,7 @@ msgstr "GSConnect"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
-"Поширюйте посилання за допомогою GSConnect, напряму до браузера або через "
-"SMS."
+msgstr "Поширюйте посилання за допомогою GSConnect, напряму до браузера або через SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:33
@@ -1062,3 +1052,4 @@ msgstr "Сервіс недоступний"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Відкрити у браузері"
+
