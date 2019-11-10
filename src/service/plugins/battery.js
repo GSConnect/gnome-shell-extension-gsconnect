@@ -259,7 +259,7 @@ var Plugin = GObject.registerClass({
             return;
         }
 
-        let upower = this.service.get('upower');
+        let upower = this.service.components.get('upower');
 
         if (upower) {
             this.device.sendPacket({
