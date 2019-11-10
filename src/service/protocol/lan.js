@@ -786,6 +786,8 @@ var Channel = GObject.registerClass({
                 let channel = device._channel;
                 channel.cancellable.disconnect(channel._id);
                 channel.close();
+
+                this._output_queue = channel._output_queue;
             }
 
             // Attach the new channel and parse it's identity
@@ -797,8 +799,6 @@ var Channel = GObject.registerClass({
             this.input_stream = new Gio.DataInputStream({
                 base_stream: this._connection.input_stream
             });
-
-            this.output_queue = [];
             this.output_stream = this._connection.output_stream;
 
             // Start listening for packets

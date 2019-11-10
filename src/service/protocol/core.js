@@ -171,6 +171,14 @@ var Channel = GObject.registerClass({
         this._input_stream = stream;
     }
 
+    get output_queue() {
+        if (this._output_queue === undefined) {
+            this._output_queue = [];
+        }
+
+        return this._output_queue;
+    }
+
     get output_stream() {
         if (this._output_stream === undefined) {
             if (this._connection instanceof Gio.IOStream) {
