@@ -76,7 +76,7 @@ function getFgRGBA(rgba) {
  *
  * @param {string} path - A local file path
  */
-function getPixbufForPath(path, size = null) {
+function getPixbufForPath(path, size = null, scale) {
     let data, loader, pixbuf;
 
     // Catch missing avatar files
@@ -98,12 +98,9 @@ function getPixbufForPath(path, size = null) {
 
     pixbuf = loader.get_pixbuf();
 
-    // Scale if requested
-    if (size !== null) {
-        return pixbuf.scale_simple(size, size, GdkPixbuf.InterpType.HYPER);
-    } else {
-        return pixbuf;
-    }
+    // Scale to monitor
+    size = size * scale;
+    return pixbuf.scale_simple(size, size, GdkPixbuf.InterpType.HYPER);
 }
 
 function getPixbufForIcon(name, size, scale, bgColor) {
@@ -225,6 +222,11 @@ var Avatar = GObject.registerClass({
     }
 
     _loadSurface() {
+        // Get the monitor scale
+        let display = Gdk.Display.get_default();
+        let monitor = display.get_monitor_at_window(this.get_window());
+        let scale = monitor.get_scale_factor();
+
         // If there's a contact with an avatar, try to load it
         if (this.contact && this.contact.avatar) {
             // Check the cache
@@ -234,7 +236,8 @@ var Avatar = GObject.registerClass({
             if (!this._surface) {
                 let pixbuf = getPixbufForPath(
                     this.contact.avatar,
-                    this.width_request
+                    this.width_request,
+                    scale
                 );
 
                 if (pixbuf) {
@@ -263,9 +266,6 @@ var Avatar = GObject.registerClass({
             this._offset = (this.width_request - 24) / 2;
 
             // Load the fallback
-            let display = Gdk.Display.get_default();
-            let monitor = display.get_monitor_at_window(this.get_window());
-            let scale = monitor.get_scale_factor();
             let pixbuf = getPixbufForIcon(iconName, 24, scale, this.rgba);
 
             this._surface = Gdk.cairo_surface_create_from_pixbuf(
