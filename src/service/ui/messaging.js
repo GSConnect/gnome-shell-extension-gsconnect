@@ -389,6 +389,15 @@ const ConversationWidget = GObject.registerClass({
                 number: address
             });
         }
+
+        // TODO: Mark the entry as insensitive for group messages
+        if (this.addresses.length > 1) {
+            this.entry.placeholder_text = _('Not available');
+            this.entry.secondary_icon_name = null;
+            this.entry.secondary_icon_tooltip_text = null;
+            this.entry.sensitive = false;
+            this.entry.tooltip_text = null;
+        }
     }
 
     get contacts() {
@@ -662,12 +671,6 @@ const ConversationWidget = GObject.registerClass({
      * Send the contents of the message entry to the address
      */
     sendMessage(entry, signal_id, event) {
-        // TODO: removed when multi-target messages are supported
-        if (this.addresses.length > 1) {
-            this.entry.get_style_context().add_class('error');
-            return;
-        }
-
         // Don't send empty texts
         if (!this.entry.text.trim()) return;
 
