@@ -377,10 +377,26 @@ var Plugin = GObject.registerClass({
             // If messages is empty there's nothing to do...
             if (messages.length === 0) return;
 
-            // If there's multiple thread_id's it's a summary of threads
-            // COERCION: thread_id's to strings
-            let thread_ids = messages.map(msg => `${msg.thread_id}`);
+            let thread_ids = [];
 
+            // Perform some modification of the messages
+            for (let i = 0, len = messages.length; i < len; i++) {
+                let message = messages[i];
+
+                // COERCION: thread_id's to strings
+                message.thread_id = `${message.thread_id}`;
+                thread_ids.push (message.thread_id);
+
+                // TODO: Remove bogus `insert-address-token` entries
+                let a = message.addresses.length;
+
+                while (a--) {
+                    if (message.addresses[a].address === 'insert-address-token')
+                        message.addresses.splice(a, 1);
+                }
+            }
+
+            // If there's multiple thread_id's it's a summary of threads
             if (thread_ids.some(id => id !== thread_ids[0])) {
                 this._handleDigest(messages, thread_ids);
 
