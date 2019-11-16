@@ -582,11 +582,10 @@
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="hexpand">True</property>
-                            <property name="activate_on_single_click">False</property>
+                            <property name="activate_on_single_click">True</property>
                             <signal name="row-activated" handler="_onEditCommand" swapped="no"/>
-                            <signal name="selected-rows-changed" handler="_onCommandSelected" swapped="no"/>
                             <child type="placeholder">
-                              <object class="GtkImage" id="command-list-placeholder">
+                              <object class="GtkImage">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="halign">center</property>
@@ -600,70 +599,26 @@
                               </object>
                             </child>
                             <child>
-                              <object class="GtkListBoxRow" id="command-editor">
-                                <property name="can_focus">False</property>
-                                <property name="hexpand">True</property>
-                                <property name="activatable">False</property>
+                              <object class="GtkListBoxRow" id="command-add">
+                                <property name="activatable">True</property>
                                 <property name="selectable">False</property>
+                                <property name="visible">True</property>
                                 <child>
-                                  <object class="GtkGrid">
+                                  <object class="GtkImage">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="valign">start</property>
-                                    <property name="margin_start">12</property>
-                                    <property name="margin_end">12</property>
-                                    <property name="margin_top">8</property>
-                                    <property name="margin_bottom">8</property>
+                                    <property name="halign">center</property>
                                     <property name="hexpand">True</property>
-                                    <property name="vexpand">True</property>
-                                    <property name="row_spacing">6</property>
-                                    <property name="column_spacing">12</property>
-                                    <child>
-                                      <object class="GtkEntry" id="command-name">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">True</property>
-                                        <property name="tooltip_text" translatable="yes">Name</property>
-                                        <property name="valign">center</property>
-                                        <property name="hexpand">True</property>
-                                        <property name="placeholder_text" translatable="yes">Name</property>
-                                        <signal name="activate" handler="_onSaveCommand" swapped="no"/>
-                                      </object>
-                                      <packing>
-                                        <property name="left_attach">0</property>
-                                        <property name="top_attach">0</property>
-                                        <property name="width">2</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkEntry" id="command-line">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">True</property>
-                                        <property name="tooltip_text" translatable="yes">Command Line</property>
-                                        <property name="valign">center</property>
-                                        <property name="hexpand">True</property>
-                                        <property name="secondary_icon_stock">gtk-open</property>
-                                        <property name="secondary_icon_tooltip_text" translatable="yes">Choose an executable</property>
-                                        <property name="secondary_icon_tooltip_markup" translatable="yes">Choose an executable</property>
-                                        <property name="placeholder_text" translatable="yes">Command Line</property>
-                                        <signal name="activate" handler="_onSaveCommand" swapped="no"/>
-                                        <signal name="icon-release" handler="_onBrowseCommand" swapped="no"/>
-                                      </object>
-                                      <packing>
-                                        <property name="left_attach">0</property>
-                                        <property name="top_attach">1</property>
-                                        <property name="width">2</property>
-                                      </packing>
-                                    </child>
+                                    <property name="valign">center</property>
+                                    <property name="pixel_size">16</property>
+                                    <property name="margin">6</property>
+                                    <property name="icon_name">list-add-symbolic</property>
                                   </object>
                                 </child>
-                                <accessibility>
-                                  <relation type="controlled-by" target="command-save"/>
-                                </accessibility>
                               </object>
                             </child>
                             <accessibility>
                               <relation type="controlled-by" target="command-add"/>
-                              <relation type="controlled-by" target="command-remove"/>
                               <relation type="labelled-by" target="command-list-label"/>
                             </accessibility>
                           </object>
@@ -673,176 +628,6 @@
                         <property name="expand">False</property>
                         <property name="fill">True</property>
                         <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkToolbar" id="command-toolbar">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <child>
-                          <object class="GtkToolItem">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <child>
-                              <object class="GtkBox">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="halign">start</property>
-                                <property name="hexpand">True</property>
-                                <child>
-                                  <object class="GtkButton" id="command-add">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="receives_default">True</property>
-                                    <property name="tooltip_text" translatable="yes">Add</property>
-                                    <property name="sensitive" bind-source="command-editor" bind-property="visible" bind-flags="sync-create|invert-boolean"/>
-                                    <signal name="clicked" handler="_onAddCommand" swapped="no"/>
-                                    <child>
-                                      <object class="GtkImage">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="icon_name">list-add-symbolic</property>
-                                        <property name="icon_size">2</property>
-                                      </object>
-                                    </child>
-                                    <accessibility>
-                                      <relation type="controller-for" target="command-list"/>
-                                    </accessibility>
-                                    <child internal-child="accessible">
-                                      <object class="AtkObject" id="command-add-atkobject">
-                                        <property name="AtkObject::accessible-name" translatable="yes">Add</property>
-                                      </object>
-                                    </child>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkButton" id="command-remove">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="receives_default">True</property>
-                                    <property name="tooltip_text" translatable="yes">Remove</property>
-                                    <signal name="clicked" handler="_onRemoveCommand" swapped="no"/>
-                                    <child>
-                                      <object class="GtkImage">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="icon_name">list-remove-symbolic</property>
-                                        <property name="icon_size">2</property>
-                                      </object>
-                                    </child>
-                                    <accessibility>
-                                      <relation type="controller-for" target="command-list"/>
-                                    </accessibility>
-                                    <child internal-child="accessible">
-                                      <object class="AtkObject" id="command-remove-atkobject">
-                                        <property name="AtkObject::accessible-name" translatable="yes">Remove</property>
-                                      </object>
-                                    </child>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                              </object>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="expand">True</property>
-                            <property name="homogeneous">False</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkToolItem">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <child>
-                              <object class="GtkBox">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="halign">start</property>
-                                <property name="hexpand">True</property>
-                                <child>
-                                  <object class="GtkButton" id="command-edit">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="receives_default">True</property>
-                                    <property name="tooltip_text" translatable="yes">Edit</property>
-                                    <property name="sensitive" bind-source="command-editor" bind-property="visible" bind-flags="sync-create|invert-boolean"/>
-                                    <signal name="clicked" handler="_onEditCommand" swapped="no"/>
-                                    <child>
-                                      <object class="GtkImage">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="icon_name">document-edit-symbolic</property>
-                                        <property name="icon_size">2</property>
-                                      </object>
-                                    </child>
-                                    <child internal-child="accessible">
-                                      <object class="AtkObject" id="command-edit-atkobject">
-                                        <property name="AtkObject::accessible-name" translatable="yes">Edit</property>
-                                      </object>
-                                    </child>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkButton" id="command-save">
-                                    <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="receives_default">True</property>
-                                    <property name="tooltip_text" translatable="yes">Save</property>
-                                    <property name="sensitive" bind-source="command-editor" bind-property="visible"/>
-                                    <signal name="clicked" handler="_onSaveCommand" swapped="no"/>
-                                    <child>
-                                      <object class="GtkImage">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="icon_name">document-save-symbolic</property>
-                                        <property name="icon_size">2</property>
-                                      </object>
-                                    </child>
-                                    <child internal-child="accessible">
-                                      <object class="AtkObject" id="command-save-atkobject">
-                                        <property name="AtkObject::accessible-name" translatable="yes">Save</property>
-                                      </object>
-                                    </child>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                              </object>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="homogeneous">False</property>
-                          </packing>
-                        </child>
-                        <style>
-                          <class name="inline-toolbar"/>
-                        </style>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">2</property>
                       </packing>
                     </child>
                   </object>

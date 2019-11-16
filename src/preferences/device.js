@@ -152,6 +152,64 @@ const SectionRow = GObject.registerClass({
 });
 
 
+/**
+ * Command Editor Dialog
+ */
+const CommandEditor = GObject.registerClass({
+    GTypeName: 'GSConnectCommandEditor',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/command-editor.ui',
+    Children: [
+        'cancel-button', 'save-button',
+        'command-entry', 'name-entry'
+    ]
+}, class CommandEditor extends Gtk.Dialog {
+
+    _onBrowseCommand(entry, icon_pos, event) {
+        let filter = new Gtk.FileFilter();
+        filter.add_mime_type('application/x-executable');
+
+        let dialog = new Gtk.FileChooserDialog({
+            filter: filter,
+            modal: true,
+            transient_for: this
+        });
+        dialog.add_button(_('Cancel'), Gtk.ResponseType.CANCEL);
+        dialog.add_button(_('Open'), Gtk.ResponseType.OK);
+        dialog.set_default_response(Gtk.ResponseType.OK);
+
+        dialog.connect('response', (dialog, response_id) => {
+            if (response_id === Gtk.ResponseType.OK) {
+                this.command_entry.text = dialog.get_filename();
+            }
+
+            dialog.destroy();
+        });
+
+        dialog.show_all();
+    }
+
+    _onEntryChanged(entry, pspec) {
+        this.save_button.sensitive = (this.command_name && this.command_line);
+    }
+
+    get command_line() {
+        return this.command_entry.text;
+    }
+
+    set command_line(text) {
+        this.command_entry.text = text;
+    }
+
+    get command_name() {
+        return this.name_entry.text;
+    }
+
+    set command_name(text) {
+        this.name_entry.text = text;
+    }
+});
+
+
 var DevicePreferences = GObject.registerClass({
     GTypeName: 'GSConnectDevicePreferences',
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/device-preferences.ui',
@@ -170,9 +228,7 @@ var DevicePreferences = GObject.registerClass({
 
         // RunCommand
         'runcommand', 'runcommand-page',
-        'command-list',
-        'command-toolbar', 'command-add', 'command-remove', 'command-edit', 'command-save',
-        'command-editor', 'command-name', 'command-line',
+        'command-list', 'command-add',
 
         // Notifications
         'notification', 'notification-page',
@@ -305,6 +361,10 @@ var DevicePreferences = GObject.registerClass({
     dispose() {
         if (this.__disposed === undefined) {
             this.__disposed = true;
+
+            if (this._commandEditor !== undefined) {
+                this._commandEditor.destroy();
+            }
 
             // Device signals
             this.device.action_group.disconnect(this._actionAddedId);
@@ -541,137 +601,135 @@ var DevicePreferences = GObject.registerClass({
         this._commands = settings.get_value('command-list').full_unpack();
         this._commands = (typeof this._commands === 'string') ? {} : this._commands;
 
-        this.command_list.set_sort_func(title_sort);
+        this.command_list.set_sort_func(this._sortCommands);
         this.command_list.set_header_func(rowSeparators);
 
         Object.keys(this._commands).map(uuid => this._insertCommand(uuid));
     }
 
-    _resetCommandEditor() {
-        // Reset the command editor
-        delete this.command_editor.uuid;
-        this.command_name.text = '';
-        this.command_line.text = '';
-        this.command_editor.visible = false;
+    _sortCommands(row1, row2) {
+        if (!row1.title || !row2.title) return 1;
 
-        this.command_list.foreach(child => {
-            if (child !== this.command_editor) {
-                child.visible = true;
-                child.sensitive = true;
-            }
-        });
-
-        this.command_list.invalidate_sort();
-        this.command_list.invalidate_headers();
+        return row1.title.localeCompare(row2.title);
     }
 
     _insertCommand(uuid) {
         let row = new SectionRow({
             title: this._commands[uuid].name,
             subtitle: this._commands[uuid].command,
-            selectable: true
+            activatable: false
         });
         row.set_name(uuid);
         row._subtitle.ellipsize = Pango.EllipsizeMode.MIDDLE;
+
+        let editButton = new Gtk.Button({
+            image: new Gtk.Image({
+                icon_name: 'document-edit-symbolic',
+                pixel_size: 16,
+                visible: true
+            }),
+            tooltip_text: _('Edit'),
+            valign: Gtk.Align.CENTER,
+            vexpand: true,
+            visible: true
+        });
+        editButton.connect('clicked', this._onEditCommand.bind(this));
+        row.get_child().attach(editButton, 2, 0, 1, 2);
+
+        let deleteButton = new Gtk.Button({
+            image: new Gtk.Image({
+                icon_name: 'edit-delete-symbolic',
+                pixel_size: 16,
+                visible: true
+            }),
+            tooltip_text: _('Remove'),
+            valign: Gtk.Align.CENTER,
+            vexpand: true,
+            visible: true
+        });
+        deleteButton.connect('clicked', this._onDeleteCommand.bind(this));
+        row.get_child().attach(deleteButton, 3, 0, 1, 2);
 
         this.command_list.add(row);
 
         return row;
     }
 
-    _onCommandSelected(box) {
-        let selected = (box.get_selected_row() !== null);
-        this.command_edit.sensitive = selected;
-        this.command_remove.sensitive = selected;
+    _onEditCommand(widget) {
+        if (this._commandEditor === undefined) {
+            this._commandEditor = new CommandEditor({
+                modal: true,
+                transient_for: this.get_toplevel(),
+                use_header_bar: true
+            });
+
+            this._commandEditor.connect(
+                'response',
+                this._onSaveCommand.bind(this)
+            );
+
+            this._commandEditor.resize(1, 1);
+        }
+
+        if (widget instanceof Gtk.Button) {
+            let row = widget.get_parent().get_parent();
+            let uuid = row.get_name();
+
+            this._commandEditor.uuid = uuid;
+            this._commandEditor.command_name = this._commands[uuid].name;
+            this._commandEditor.command_line = this._commands[uuid].command;
+        } else {
+            this._commandEditor.uuid = GLib.uuid_string_random();
+            this._commandEditor.command_name = '';
+            this._commandEditor.command_line = '';
+        }
+
+        this._commandEditor.show();
     }
 
-    // The [+] button in the toolbar
-    _onAddCommand(button) {
-        let uuid = GLib.uuid_string_random();
-        this._commands[uuid] = {name: '', command: ''};
-
-        let row = this._insertCommand(uuid);
-        this.command_list.select_row(row);
-        this._onEditCommand();
-    }
-
-    // The [-] button in the toolbar
-    _onRemoveCommand(button) {
-        let row = this.command_list.get_selected_row();
+    _onDeleteCommand(button) {
+        let row = button.get_parent().get_parent();
         delete this._commands[row.get_name()];
+        row.destroy();
 
         this.pluginSettings('runcommand').set_value(
             'command-list',
             GLib.Variant.full_pack(this._commands)
         );
-
-        row.destroy();
-        this._resetCommandEditor();
     }
 
-    // 'Edit' icon in the toolbar
-    _onEditCommand(button) {
-        let row = this.command_list.get_selected_row();
-        let uuid = row.get_name();
-
-        this.command_editor.uuid = uuid;
-        this.command_name.text = this._commands[uuid].name;
-        this.command_line.text = this._commands[uuid].command;
-
-        row.visible = false;
-        this.command_editor.visible = true;
-        this.command_name.has_focus = true;
-
-        this.command_list.foreach(child => {
-            child.sensitive = (child === this.command_editor);
-        });
-    }
-
-    // 'Save' icon in the toolbar
-    _onSaveCommand(button) {
-        let row = this.command_list.get_selected_row();
-        let uuid = row.get_name();
-
-        if (this.command_name.text && this.command_line.text) {
-            this._commands[uuid] = {
-                name: this.command_name.text,
-                command: this.command_line.text
+    _onSaveCommand(dialog, response_id) {
+        if (response_id === Gtk.ResponseType.ACCEPT) {
+            this._commands[dialog.uuid] = {
+                name: dialog.command_name,
+                command: dialog.command_line
             };
-
-            row.title = this.command_name.text;
-            row.subtitle = this.command_line.text;
 
             this.pluginSettings('runcommand').set_value(
                 'command-list',
                 GLib.Variant.full_pack(this._commands)
             );
-        } else {
-            delete this._commands[uuid];
-            row.destroy();
-        }
 
-        this._resetCommandEditor();
-    }
+            //
+            let row = null;
 
-    // The 'folder' icon in the command editor GtkEntry
-    _onBrowseCommand(entry, icon_pos, event) {
-        let filter = new Gtk.FileFilter();
-        filter.add_mime_type('application/x-executable');
-
-        let dialog = new Gtk.FileChooserDialog({filter: filter});
-        dialog.add_button(_('Cancel'), Gtk.ResponseType.CANCEL);
-        dialog.add_button(_('Open'), Gtk.ResponseType.OK);
-        dialog.set_default_response(Gtk.ResponseType.OK);
-
-        dialog.connect('response', (dialog, response_id) => {
-            if (response_id === Gtk.ResponseType.OK) {
-                this.command_line.text = dialog.get_filename();
+            for (let child of this.command_list.get_children()) {
+                if (child.get_name() === dialog.uuid) {
+                    row = child;
+                    break;
+                }
             }
 
-            dialog.destroy();
-        });
+            if (row === null) {
+                this._insertCommand(dialog.uuid);
+            } else {
+                row.set_name(dialog.uuid);
+                row.title = dialog.command_name;
+                row.subtitle = dialog.command_line;
+            }
+        }
 
-        dialog.show_all();
+        dialog.hide();
     }
 
     /**

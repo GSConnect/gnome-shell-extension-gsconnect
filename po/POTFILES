@@ -1,4 +1,5 @@
 data/gtk/menus.ui
+data/ui/command-editor.ui
 data/ui/connect.ui
 data/ui/contact-chooser.ui
 data/ui/conversation.ui
