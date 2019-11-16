@@ -103,10 +103,14 @@ var Device = GObject.registerClass({
             path: '/org/gnome/shell/extensions/gsconnect/device/' + this.id + '/'
         });
 
-        // Watch for plugins changes
-        this._disabledPluginsId = this.settings.connect(
+        // Watch for changes to supported and disabled plugins
+        this._disabledPluginsChangedId = this.settings.connect(
             'changed::disabled-plugins',
-            this._onDisabledPlugins.bind(this)
+            this._onAllowedPluginsChanged.bind(this)
+        );
+        this._supportedPluginsChangedId = this.settings.connect(
+            'changed::supported-plugins',
+            this._onAllowedPluginsChanged.bind(this)
         );
 
         // Parse identity if initialized with a proper packet
@@ -872,24 +876,26 @@ var Device = GObject.registerClass({
     /**
      * Plugin Functions
      */
-    async _onDisabledPlugins(settings) {
+    _onAllowedPluginsChanged(settings) {
         let disabled = this.settings.get_strv('disabled-plugins');
+        let supported = this.settings.get_strv('supported-plugins');
+        let allowed = supported.filter(name => !disabled.includes(name));
 
-        // Unload disabled plugins
-        for (let name of disabled) {
-            await this._unloadPlugin(name);
-        }
+        // Unload any plugins that are disabled or unsupported
+        this._plugins.forEach(plugin => {
+            if (!allowed.includes(plugin.name)) {
+                this._unloadPlugin(plugin.name);
+            }
+        });
 
         // Make sure we change the contacts store if the plugin was disabled
-        if (disabled.includes('contacts')) {
+        if (!allowed.includes('contacts')) {
             this.notify('contacts');
         }
 
         // Load allowed plugins
-        for (let name of this.settings.get_strv('supported-plugins')) {
-            if (!disabled.includes(name)) {
-                await this._loadPlugin(name);
-            }
+        for (let name of allowed) {
+            this._loadPlugin(name);
         }
     }
 
@@ -976,7 +982,8 @@ var Device = GObject.registerClass({
         this.service.objectManager.unexport(this._dbus_object.g_object_path);
 
         // Dispose GSettings
-        this.settings.disconnect(this._disabledPluginsId);
+        this.settings.disconnect(this._disabledPluginsChangedId);
+        this.settings.disconnect(this._supportedPluginsChangedId);
         this.settings.run_dispose();
 
         this.run_dispose();
