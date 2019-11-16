@@ -13,6 +13,7 @@ const ByteArray = imports.byteArray;
  * https://wiki.gnome.org/Accessibility/Wayland#Bugs.2FIssues_We_Must_Address
  */
 window._WAYLAND = GLib.getenv('XDG_SESSION_TYPE') === 'wayland';
+window.HAVE_REMOTEINPUT = GLib.getenv('GDMSESSION') !== 'ubuntu-wayland';
 
 
 /**

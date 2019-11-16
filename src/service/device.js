@@ -280,6 +280,9 @@ var Device = GObject.registerClass({
         let supported = [];
 
         for (let name in imports.service.plugins) {
+            // Don't report mousepad support in Ubuntu Wayland sessions
+            if (name === 'mousepad' && !HAVE_REMOTEINPUT) continue;
+
             let meta = imports.service.plugins[name].Metadata;
 
             if (!meta) continue;

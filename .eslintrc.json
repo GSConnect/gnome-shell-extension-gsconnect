@@ -126,7 +126,8 @@
         "_N": false,
         "ngettext": false,
 
-        "_WAYLAND": false
+        "_WAYLAND": false,
+        "HAVE_REMOTEINPUT": false
     },
     "parserOptions": {
         "ecmaVersion": 2017

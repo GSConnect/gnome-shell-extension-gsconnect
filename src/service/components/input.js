@@ -275,6 +275,29 @@ const Controller = class Controller {
         return this._connection;
     }
 
+    _checkWayland() {
+        if (_WAYLAND) {
+            // eslint-disable-next-line no-global-assign
+            HAVE_REMOTEINPUT = false;
+            let service = Gio.Application.get_default();
+
+            // First we're going to disabled the mousepad plugin on all devices
+            for (let device of service.devices) {
+                let supported = device.settings.get_strv('supported-plugins');
+                supported = supported.splice(supported.indexOf('mousepad'), 1);
+                device.settings.set_strv('supported-plugins', supported);
+            }
+
+            // Second we need to amend the service identity and broadcast
+            service._identity = undefined;
+            service._identify();
+
+            return true;
+        }
+
+        return false;
+    }
+
     _onNameAppeared(connection, name, name_owner) {
         try {
             this._connection = connection;
@@ -370,6 +393,9 @@ const Controller = class Controller {
             // Mutter's RemoteDesktop is not available, fall back to Atspi
             if (this.connection === null) {
                 debug('Falling back to Atspi');
+
+                // If we got here in Wayland, we need to re-adjust and bail
+                if (this._checkWayland()) return;
 
                 let fallback = imports.service.components.atspi;
                 this._session = new fallback.Controller();
