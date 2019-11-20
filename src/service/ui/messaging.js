@@ -582,21 +582,23 @@ const ConversationWidget = GObject.registerClass({
 
     // GtkListBox::size-allocate
     _onMessageLogged(listbox, allocation) {
-        let vadj = this.scrolled.vadjustment;
+        let vadj = this.scrolled.get_vadjustment();
+        let upper = vadj.get_upper();
+        let pageSize = vadj.get_page_size();
 
         // Try loading more messages if there's room
-        if (vadj.get_upper() <= vadj.get_page_size()) {
+        if (upper <= pageSize) {
             this.logPrevious();
             this.scrolled.get_child().check_resize();
 
         // We've been asked to hold the position
         } else if (this.__pos) {
-            vadj.set_value(vadj.get_upper() - this.__pos);
+            vadj.set_value(upper - this.__pos);
             this.__pos = 0;
 
         // Otherwise scroll to the bottom
         } else {
-            vadj.set_value(vadj.get_upper() - vadj.get_page_size());
+            vadj.set_value(upper - pageSize);
         }
     }
 
@@ -853,7 +855,7 @@ var Window = GObject.registerClass({
 
         if (addresses.length === 1) {
             // Set the header bar title/subtitle
-            this.headerbar.title = contact.name;
+            this.headerbar.title = GLib.markup_escape_text(contact.name, -1);
             this.headerbar.subtitle = Contacts.getDisplayNumber(contact, address);
 
         } else {

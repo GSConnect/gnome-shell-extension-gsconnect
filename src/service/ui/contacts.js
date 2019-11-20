@@ -163,11 +163,11 @@ function getDisplayNumber(contact, address) {
         let cnumber = contactNumber.value.toPhoneNumber();
 
         if (number.endsWith(cnumber) || cnumber.endsWith(number)) {
-            return contactNumber.value;
+            return GLib.markup_escape_text(contactNumber.value, -1);
         }
     }
 
-    return address;
+    return GLib.markup_escape_text(address, -1);
 }
 
 
