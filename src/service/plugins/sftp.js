@@ -185,7 +185,7 @@ var Plugin = GObject.registerClass({
                         // There's a good chance this is a host key verification
                         // error; regardless we'll remove the key for security.
                         } else {
-                            this._removeHostKey();
+                            this._removeHostKey(this.info.ip);
                             reject(e);
                         }
                     }
