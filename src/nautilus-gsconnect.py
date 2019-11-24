@@ -8,8 +8,8 @@ https://github.com/Bajoja/indicator-kdeconnect/blob/master/data/extensions/kdeco
 """
 
 import gettext
-import locale
 import os.path
+import sys
 
 import gi
 gi.require_version('Gio', '2.0')
@@ -17,7 +17,6 @@ gi.require_version('GLib', '2.0')
 gi.require_version('GObject', '2.0')
 from gi.repository import Gio, GLib, GObject
 
-import sys
 
 # Host application detection
 #
@@ -33,45 +32,37 @@ else:
     gi.require_version('Nautilus', '3.0')
     from gi.repository import Nautilus as FileManager
 
-_ = gettext.gettext
 
+SERVICE_NAME = 'org.gnome.Shell.Extensions.GSConnect'
+SERVICE_PATH = '/org/gnome/Shell/Extensions/GSConnect'
 USER_DIR = os.path.join(GLib.get_user_data_dir(),
                         'gnome-shell/extensions/gsconnect@andyholmes.github.io')
 
+# Init gettext translations
 if os.path.exists(USER_DIR):
     LOCALE_DIR = os.path.join(USER_DIR, 'locale')
 else:
     LOCALE_DIR = None
 
-
-SERVICE_NAME = 'org.gnome.Shell.Extensions.GSConnect'
-SERVICE_PATH = '/org/gnome/Shell/Extensions/GSConnect'
-
+i18n = gettext.translation(SERVICE_NAME, LOCALE_DIR)
+_ = i18n.gettext
 
 
 class GSConnectShareExtension(GObject.Object, FileManager.MenuProvider):
     """A context menu for sending files via GSConnect."""
 
     def __init__(self):
-        """Initialize the translations and DBus ObjectManager"""
+        """Initialize the DBus ObjectManager"""
 
         GObject.Object.__init__(self)
 
-        # Prepare the translations
-        try:
-            locale.setlocale(locale.LC_ALL, '')
-            gettext.bindtextdomain(SERVICE_NAME, LOCALE_DIR)
-        except:
-            pass
-
         self.devices = {}
 
-        # Initialize an ObjectManager asynchronously
         Gio.DBusProxy.new_for_bus(Gio.BusType.SESSION,
                                   Gio.DBusProxyFlags.DO_NOT_AUTO_START,
                                   None,
-                                  'org.gnome.Shell.Extensions.GSConnect',
-                                  '/org/gnome/Shell/Extensions/GSConnect',
+                                  SERVICE_NAME,
+                                  SERVICE_PATH,
                                   'org.freedesktop.DBus.ObjectManager',
                                   None,
                                   self._init_async,
