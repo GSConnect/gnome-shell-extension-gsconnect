@@ -7,6 +7,83 @@ const Gio = imports.gi.Gio;
 const GObject = imports.gi.GObject;
 
 
+const ClipboardProxy = GObject.registerClass({
+    GTypeName: 'GSConnectClipboardProxy',
+    Implements: [Gio.DBusInterface],
+    Properties: {
+        'text': GObject.ParamSpec.string(
+            'text',
+            'Text Content',
+            'The current text content of the clipboard',
+            GObject.ParamFlags.READWRITE,
+            ''
+        )
+    }
+}, class ClipboardProxy extends Gio.DBusProxy {
+
+    _init() {
+        super._init({
+            g_bus_type: Gio.BusType.SESSION,
+            g_name: 'org.gnome.Shell.Extensions.GSConnect.Clipboard',
+            g_object_path: '/org/gnome/Shell/Extensions/GSConnect/Clipboard',
+            g_interface_name: 'org.gnome.Shell.Extensions.GSConnect.Clipboard'
+        });
+    }
+
+    vfunc_g_properties_changed(changed, invalidated) {
+        let properties = changed.deep_unpack();
+
+        if (properties.hasOwnProperty('Text')) {
+            let content = this.get_cached_property('Text').unpack();
+
+            if (this.text !== content) {
+                this._text = content;
+                this.notify('text');
+            }
+        }
+    }
+
+    get text() {
+        if (this._text === undefined) {
+            this._text = this.get_cached_property('Text').unpack();
+        }
+
+        return this._text;
+    }
+
+    set text(content) {
+        if (this.text !== content) {
+            this._text = content;
+            this.notify('text');
+
+            this._setProperty('Text', 's', content);
+        }
+    }
+
+    _setProperty(name, signature, value) {
+        let variant = new GLib.Variant(signature, value);
+
+        this.set_cached_property(name, variant);
+
+        this.call(
+            'org.freedesktop.DBus.Properties.Set',
+            new GLib.Variant('(ssv)', [this.g_interface_name, name, variant]),
+            Gio.DBusCallFlags.NONE,
+            -1,
+            null,
+            null
+        );
+    }
+
+    destroy() {
+        if (this.__disposed === undefined) {
+            this.__disposed = true;
+            this.run_dispose();
+        }
+    }
+});
+
+
 var Clipboard = GObject.registerClass({
     GTypeName: 'GSConnectClipboard',
     Properties: {
@@ -15,7 +92,7 @@ var Clipboard = GObject.registerClass({
             'Text Content',
             'The current text content of the clipboard',
             GObject.ParamFlags.READWRITE,
-            null
+            ''
         )
     }
 }, class Clipboard extends GObject.Object {
@@ -23,46 +100,18 @@ var Clipboard = GObject.registerClass({
     _init() {
         super._init();
         
-        this._proc = null;
-        
         try {
-            // On Wayland we use a small subprocess running in XWayland where
-            // GtkClipboard still functions properly.
+            this._clipboard = null;
+
+            // On Wayland we use a small DBus server exported from the Shell
             if (_WAYLAND) {
-                this._proc = new Gio.Subprocess({
-                    argv: [gsconnect.extdatadir + '/service/components/xclipboard'],
-                    flags: Gio.SubprocessFlags.STDIN_PIPE |
-                           Gio.SubprocessFlags.STDOUT_PIPE |
-                           Gio.SubprocessFlags.STDERR_PIPE
-                });
-                this._proc.init(null);
-                
-                // IO Channels
-                this._stdin = new Gio.DataOutputStream({
-                    base_stream: this._proc.get_stdin_pipe(),
-                    byte_order: Gio.DataStreamByteOrder.HOST_ENDIAN
-                });
-                
-                this._stdout = new Gio.DataInputStream({
-                    base_stream: this._proc.get_stdout_pipe(),
-                    byte_order: Gio.DataStreamByteOrder.HOST_ENDIAN
-                });
-
-                this._stderr = new Gio.DataInputStream({
-                    base_stream: this._proc.get_stderr_pipe(),
-                    byte_order: Gio.DataStreamByteOrder.HOST_ENDIAN
-                });
-                
-                // Watch for premature exits
-                this._proc.wait_check_async(null, this._procExit.bind(this));
-
-                // Watch for clipboard content
-                let source = this._stdout.base_stream.create_source(null);
-                source.set_callback(this._readContent.bind(this));
-                source.attach(null);
-                
-                // Watch for errors
-                this._readError(this._stderr);
+                this._nameWatcherId = Gio.bus_watch_name(
+                    Gio.BusType.SESSION,
+                    'org.gnome.Shell.Extensions.GSConnect.Clipboard',
+                    Gio.BusNameWatcherFlags.NONE,
+                    this._onNameAppeared.bind(this),
+                    this._onNameVanished.bind(this)
+                );
                 
             // If we're in X11/Xorg we're just a wrapper around GtkClipboard
             } else {
@@ -82,7 +131,7 @@ var Clipboard = GObject.registerClass({
     
     get text() {
         if (this._text === undefined) {
-            this._text = null;
+            this._text = '';
         }
 
         return this._text;
@@ -93,148 +142,89 @@ var Clipboard = GObject.registerClass({
             this._text = content;
             this.notify('text');
 
-            this._setText(content);
-        }
-    }
-
-    _onTextReceived(clipboard, text) {
-        this.text = text;
-    }
-
-    _onTargetsReceived(clipboard, atoms) {
-        // Empty clipboard
-        if (atoms === null) {
-            return this.text = '';
-        }
-
-        let hasText = false;
-
-        for (let type of Array.from(atoms)) {
-            if (type === 'UTF8_STRING') {
-                hasText = true;
-                continue;
+            if (!_WAYLAND && content !== null) {
+                this._clipboard.set_text(content, -1);
             }
-
-            // Serialized text formats
-            if (type === 'text/html')
-                return this.text = null;
-
-            if (type === 'text/rdf' || type === 'text/richtext')
-                return this.text = null;
-
-            // URI list
-            if (type === 'text/uri-list')
-                return this.text = null;
-
-            // Image
-            if (type.startsWith('image/'))
-                return this.text = null;
-        }
-
-        if (hasText) {
-            clipboard.request_text(this._onTextReceived.bind(this));
-        } else {
-            this.text = '';
         }
     }
 
-    _onOwnerChange(clipboard, event) {
-        clipboard.request_targets(this._onTargetsReceived.bind(this));
-    }
-
-    _readContent() {
+    async _onNameAppeared(connection, name, name_owner) {
         try {
-            // Read the message
-            let length = this._stdout.read_int32(null);
+            this._clipboard = new ClipboardProxy();
 
-            // We're being sent text content
-            if (length > 0) {
-                let text = this._stdout.read_bytes(length, null).toArray();
+            await new Promise((resolve, reject) => {
+                this._clipboard.init_async(
+                    GLib.PRIORITY_DEFAULT,
+                    null,
+                    (proxy, res) => {
+                        try {
+                            proxy.init_finish(res);
+                            resolve();
+                        } catch (e) {
+                            this._clipboard = null;
+                            reject(e);
+                        }
+                    }
+                );
+            });
 
-                this.text = imports.byteArray.toString(text);
-
-            // The clipboard was cleared
-            } else if (length === 0) {
-                this.text = '';
-
-            // The clipboard contains non-text content
-            } else {
-                this.text = null;
-            }
-
-            return true;
+            this._clipboard.bind_property(
+                'text',
+                this,
+                'text',
+                (GObject.BindingFlags.BIDIRECTIONAL |
+                 GObject.BindingFlags.SYNC_CREATE)
+            );
         } catch (e) {
-            debug(e);
-            return false;
+            logError(e);
         }
     }
-    
-    _readError(stderr) {
-        stderr.read_line_async(GLib.PRIORITY_DEFAULT, null, (stream, res) => {
-            try {
-                let line = stream.read_line_finish_utf8(res)[0];
-                
-                if (line !== null) {
-                    logError(new Error(line), 'XClipboard Proxy');
-                    this._readError(stream);
-                }
-            } catch (e) {
-                debug(e);
-            }
-        });
-    }
-    
-    _writeContent(text) {
-        // Bail if xclipboard failed
-        if (!this._proc) {
-            logError(new Error('XClipboard not running'));
-            return;
-        }
 
+    _onNameVanished(connection, name) {
         try {
-            if (text === null) {
-                this._stdin.put_int32(-1, null);
-            } else {
-                this._stdin.put_int32(text.length, null);
-                this._stdin.put_string(text, null);
-            }
-        } catch (e) {
-            debug(e, 'XClipboard Proxy');
-        }
-    }
-    
-    _procExit(proc, res) {
-        try {
-            this._proc = null;
-            this._stdin = this._stdin.close(null);
-            this._stdout = this._stdout.close(null);
-            this._stderr = this._stderr.close(null);
-            
-            proc.wait_check_finish(res);
-        } catch (e) {
-            logError(e, 'XClipboard Proxy');
-        }
-    }
-    
-    _setText(text) {
-        try {
-            // If we're using the XWayland subprocess, we'll ostensibly write
-            // anything, so even if it's %null the value can be buffered
-            if (_WAYLAND) {
-                this._writeContent(text);
-
-            // If we're wrapping GtkClipboard, we only set actual text content
-            } else if (text !== null) {
-                this._clipboard.set_text(text, -1);
+            if (this._clipboard !== null) {
+                this._clipboard.destroy();
+                this._clipboard = null;
             }
         } catch (e) {
             logError(e);
         }
     }
 
+    _onTextReceived(clipboard, text) {
+        if (typeof text === 'string' && this.text !== text) {
+            this._text = text;
+            this.notify('text');
+        }
+    }
+
+    _onTargetsReceived(clipboard, atoms) {
+        // Empty clipboard
+        if (atoms.length === 0) {
+            this._onTextReceived(clipboard, '');
+            return;
+        }
+
+        // As a special case we need to ignore copied files (eg. in Nautilus)
+        if (atoms.includes('text/uri-list')) {
+            return;
+        }
+
+        // Let GtkClipboard filter for supported types
+        clipboard.request_text(this._onTextReceived.bind(this));
+    }
+
+    _onOwnerChange(clipboard, event) {
+        clipboard.request_targets(this._onTargetsReceived.bind(this));
+    }
+
     destroy() {
-        if (this._proc) {
-            this._proc.force_exit();
+        if (this._nameWatcherId) {
+            Gio.bus_unwatch_name(this._nameWatcherId);
+
+            if (this._clipboard !== null) {
+                this._clipboard.destroy();
+            }
         }
         
         if (this._ownerChangeId) {
