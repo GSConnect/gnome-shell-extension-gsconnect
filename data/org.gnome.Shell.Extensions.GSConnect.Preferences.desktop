@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=GSConnect Preferences
+Exec=gapplication action org.gnome.Shell.Extensions.GSConnect preferences
+Terminal=false
+NoDisplay=true
+Icon=org.gnome.Shell.Extensions.GSConnect
+Categories=Network;
+

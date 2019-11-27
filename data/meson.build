@@ -15,11 +15,21 @@ desktop_file = configure_file(
   install_dir: join_paths(datadir, 'applications')
 )
 
+desktop_prefs_file = configure_file(
+  input: 'org.gnome.Shell.Extensions.GSConnect.Preferences.desktop',
+  output: 'org.gnome.Shell.Extensions.GSConnect.Preferences.desktop',
+  configuration: extconfig,
+  install_dir: join_paths(datadir, 'applications')
+)
+
 desktop_utils = find_program('desktop-file-validate', required: false)
 
 if desktop_utils.found()
   test('Validate desktop file', desktop_utils,
     args: [desktop_file]
+  )
+  test('Validate desktop file (Preferences)', desktop_utils,
+    args: [desktop_prefs_file]
   )
 endif
 

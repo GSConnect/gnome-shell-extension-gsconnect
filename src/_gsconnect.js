@@ -154,6 +154,7 @@ gsconnect.installService = function() {
     // Desktop Entry
     let desktopDir = GLib.build_filenamev([dataDir, 'applications']);
     let desktopFile = `${gsconnect.app_id}.desktop`;
+    let desktopPrefsFile = `${gsconnect.app_id}.Preferences.desktop`;
 
     // Application Icon
     let iconDir = GLib.build_filenamev([dataDir, 'icons', 'hicolor', 'scalable', 'apps']);
@@ -189,11 +190,15 @@ gsconnect.installService = function() {
             gsconnect.get_resource(dbusFile)
         );
 
-        // Desktop Entry
+        // Desktop Entries
         GLib.mkdir_with_parents(desktopDir, 0o755);
         GLib.file_set_contents(
             GLib.build_filenamev([desktopDir, desktopFile]),
             gsconnect.get_resource(desktopFile)
+        );
+        GLib.file_set_contents(
+            GLib.build_filenamev([desktopDir, desktopPrefsFile]),
+            gsconnect.get_resource(desktopPrefsFile)
         );
 
         // Application Icon
@@ -233,6 +238,7 @@ gsconnect.installService = function() {
     } else {
         GLib.unlink(GLib.build_filenamev([dbusDir, dbusFile]));
         GLib.unlink(GLib.build_filenamev([desktopDir, desktopFile]));
+        GLib.unlink(GLib.build_filenamev([desktopDir, desktopPrefsFile]));
         GLib.unlink(GLib.build_filenamev([iconDir, iconFull]));
         GLib.unlink(GLib.build_filenamev([iconDir, iconSym]));
 
