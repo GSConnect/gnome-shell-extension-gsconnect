@@ -18,6 +18,7 @@ imports._gsconnect;
 
 // eslint-disable-next-line no-redeclare
 const _ = gsconnect._;
+const Clipboard = imports.shell.clipboard;
 const Device = imports.shell.device;
 const DoNotDisturb = imports.shell.donotdisturb;
 const Keybindings = imports.shell.keybindings;
@@ -439,6 +440,10 @@ function init() {
     // to leave them applied.
     Notification.patchGSConnectNotificationSource();
     Notification.patchGtkNotificationDaemon();
+
+    // This watches for the service to start and exports a custom clipboard
+    // portal for use on Wayland
+    Clipboard.watchService(true);
 }
 
 
