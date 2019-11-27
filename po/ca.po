@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2019-11-03 05:14\n"
+"PO-Revision-Date: 2019-11-27 18:00\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Catalan\n"
 "Language: ca_ES\n"
@@ -107,7 +107,7 @@ msgstr "Fitxers"
 
 #: data/ui/device-preferences.ui:418
 msgid "Receive Files"
-msgstr ""
+msgstr "Rep arxius"
 
 #: data/ui/device-preferences.ui:503 data/ui/device-preferences.ui:2164
 msgid "Sharing"
@@ -153,7 +153,7 @@ msgstr "Notificacions de compartició"
 
 #: data/ui/device-preferences.ui:947
 msgid "Share When Active"
-msgstr ""
+msgstr "Comparteix quan estigui actiu"
 
 #: data/ui/device-preferences.ui:998
 msgid "Applications"
@@ -215,7 +215,7 @@ msgstr "Experiments"
 
 #: data/ui/device-preferences.ui:1771
 msgid "Legacy SMS Support"
-msgstr ""
+msgstr "Suport de SMS llegat"
 
 #: data/ui/device-preferences.ui:1824 data/ui/device-preferences.ui:2440
 msgid "Advanced"
@@ -239,7 +239,7 @@ msgstr "Bateria del sistema"
 
 #: data/ui/device-preferences.ui:2065
 msgid "Share Statistics"
-msgstr ""
+msgstr "Comparteix estadístiques"
 
 #: data/ui/device-preferences.ui:2114 data/ui/device-preferences.ui:2210
 #: src/service/plugins/battery.js:11
@@ -360,7 +360,7 @@ msgstr "Aquest dispositiu és invisible als dispositius no aparellats"
 
 #: data/ui/preferences-window.ui:656 src/service/daemon.js:594
 msgid "Discovery Disabled"
-msgstr ""
+msgstr "Descobriment deshabilitat"
 
 #: data/ui/preferences-window.ui:715
 msgid "Display Mode"
@@ -424,11 +424,11 @@ msgstr "Obre"
 
 #: src/preferences/device.js:709 src/preferences/device.js:722
 msgid "On"
-msgstr ""
+msgstr "Activat"
 
 #: src/preferences/device.js:709 src/preferences/device.js:722
 msgid "Off"
-msgstr ""
+msgstr "Desactivat"
 
 #: src/preferences/device.js:827 src/preferences/device.js:855
 msgid "Disabled"
@@ -471,7 +471,7 @@ msgstr "Una implementació completa de KDE Connect per al GNOME"
 #: src/preferences/service.js:393
 msgid "translator-credits"
 msgstr "Adolfo Jayme Barrientos <fitojb@ubuntu.com>, 2019\n"
-"Marc Riera Irigoyen <marc.riera.irigoyen@gmail.com>, 2019"
+"Marc Riera Irigoyen <marcriera@softcatala.org>, 2019"
 
 #: src/preferences/service.js:426
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
@@ -585,7 +585,7 @@ msgstr ""
 #: src/service/daemon.js:887 src/service/plugins/photo.js:11
 #: src/service/plugins/photo.js:17
 msgid "Photo"
-msgstr ""
+msgstr "Foto"
 
 #: src/service/daemon.js:896 src/service/plugins/ping.js:11
 #: src/service/plugins/ping.js:17 src/service/plugins/ping.js:44
