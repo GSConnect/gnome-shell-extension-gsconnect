@@ -19,6 +19,7 @@ var Metadata = {
     ],
     actions: {
         legacyReply: {
+            // TRANSLATORS: Respond to an incoming call via SMS
             label: _('Reply SMS'),
             icon_name: 'sms-symbolic',
 
@@ -27,6 +28,7 @@ var Metadata = {
             outgoing: ['kdeconnect.sms.request']
         },
         muteCall: {
+            // TRANSLATORS: Silence the actively ringing call
             label: _('Mute Call'),
             icon_name: 'audio-volume-muted-symbolic',
 
@@ -187,7 +189,7 @@ var Plugin = GObject.registerClass({
             body = _('Incoming call');
             buttons = [{
                 action: 'muteCall',
-                // TRANSLATORS: Silence the phone ringer
+                // TRANSLATORS: Silence the actively ringing call
                 label: _('Mute'),
                 parameter: null
             }];
