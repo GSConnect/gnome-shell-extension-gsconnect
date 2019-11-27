@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2019-11-03 05:13\n"
+"PO-Revision-Date: 2019-11-27 17:26\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
@@ -186,7 +186,7 @@ msgstr "Chiamate in uscita"
 
 #: data/ui/device-preferences.ui:1493
 msgid "Mute Microphone"
-msgstr "Silenzia il microfono"
+msgstr "Disattiva il microfono"
 
 #: data/ui/device-preferences.ui:1547 data/ui/device-preferences.ui:2348
 #: src/service/plugins/telephony.js:13
@@ -1011,7 +1011,7 @@ msgstr "Non disturbare"
 
 #: src/shell/donotdisturb.js:249
 msgid "Silence Notifications from Mobile Devices"
-msgstr "Silenziare le notifiche dai dispositivi mobili"
+msgstr "Disattivare le notifiche dai dispositivi mobili"
 
 #: src/shell/donotdisturb.js:261
 msgid "Until you turn off Do Not Disturb"
