@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: gsconnect\n"
+"Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
 "PO-Revision-Date: 2019-11-03 05:14\n"
