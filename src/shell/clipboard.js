@@ -78,8 +78,8 @@ var Clipboard = GObject.registerClass({
             Gio.BusType.SESSION,
             DBUS_NAME,
             Gio.BusNameOwnerFlags.NONE,
+            this._onBusAcquired.bind(this),
             null,
-            this._onNameAcquired.bind(this),
             this._onNameLost.bind(this)
         );
     }
@@ -153,7 +153,7 @@ var Clipboard = GObject.registerClass({
         });
     }
 
-    _onNameAcquired(connection, name) {
+    _onBusAcquired(connection, name) {
         try {
             this.export(connection, DBUS_PATH);
         } catch (e) {
@@ -163,7 +163,7 @@ var Clipboard = GObject.registerClass({
 
     _onNameLost(connection, name) {
         try {
-            this.unexport_from_connection(connection);
+            this.unexport();
         } catch (e) {
             logError(e);
         }
