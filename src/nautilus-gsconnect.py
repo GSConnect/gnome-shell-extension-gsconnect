@@ -35,17 +35,26 @@ else:
 
 SERVICE_NAME = 'org.gnome.Shell.Extensions.GSConnect'
 SERVICE_PATH = '/org/gnome/Shell/Extensions/GSConnect'
-USER_DIR = os.path.join(GLib.get_user_data_dir(),
-                        'gnome-shell/extensions/gsconnect@andyholmes.github.io')
 
 # Init gettext translations
-if os.path.exists(USER_DIR):
-    LOCALE_DIR = os.path.join(USER_DIR, 'locale')
-else:
+LOCALE_DIR = os.path.join(GLib.get_user_data_dir(),
+                          'gnome-shell', 'extensions',
+                          'gsconnect@andyholmes.github.io', 'locale')
+
+if not os.path.exists(LOCALE_DIR):
     LOCALE_DIR = None
 
-i18n = gettext.translation(SERVICE_NAME, LOCALE_DIR)
-_ = i18n.gettext
+try:
+    i18n = gettext.translation(SERVICE_NAME,
+                               localedir=LOCALE_DIR)
+    _ = i18n.gettext
+
+except OSError as e:
+    print('GSConnect: {0}'.format(e.strerror))
+    i18n = gettext.translation(SERVICE_NAME,
+                               localedir=LOCALE_DIR,
+                               fallback=True)
+    _ = i18n.gettext
 
 
 class GSConnectShareExtension(GObject.Object, FileManager.MenuProvider):
