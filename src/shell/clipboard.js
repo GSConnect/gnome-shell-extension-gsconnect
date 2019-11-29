@@ -259,5 +259,10 @@ function unwatchService() {
         Gio.bus_unwatch_name(_portalId);
         _portalId = 0;
     }
+
+    if (_portal !== null) {
+        _portal.destroy();
+        _portal = null;
+    }
 }
 
