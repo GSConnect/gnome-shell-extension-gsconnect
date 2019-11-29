@@ -64,12 +64,12 @@ var Clipboard = GObject.registerClass({
         );
 
         // Prepare DBus interface
-        this._onHandlePropertyGetId = this.connect(
+        this._handlePropertyGetId = this.connect(
             'handle-property-get',
             this._onHandlePropertyGet.bind(this)
         );
 
-        this._onHandlePropertySetId = this.connect(
+        this._handlePropertySetId = this.connect(
             'handle-property-set',
             this._onHandlePropertySet.bind(this)
         );
@@ -209,10 +209,10 @@ var Clipboard = GObject.registerClass({
 
             Gio.bus_unown_name(this._nameId);
 
-            this.disconnect(this._onHandlePropertyGetId);
-            this.disconnect(this._onHandlePropertySetId);
             this.flush();
             this.unexport();
+            this.disconnect(this._handlePropertyGetId);
+            this.disconnect(this._handlePropertySetId);
 
             this.run_dispose();
         }
