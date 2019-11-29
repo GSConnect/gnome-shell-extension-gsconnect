@@ -47,8 +47,8 @@ var Clipboard = GObject.registerClass({
             g_interface_info: DBUS_INFO
         });
 
-        this._transferring = false;
         this._text = '';
+        this._transferring = false;
 
         // Get the current clipboard content
         this.clipboard.get_text(
