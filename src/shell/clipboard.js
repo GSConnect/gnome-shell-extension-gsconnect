@@ -101,16 +101,17 @@ var Clipboard = GObject.registerClass({
     }
 
     set text(content) {
-        if (this.text !== content) {
+        if (typeof content !== 'string')
+            return;
+
+        if (this._text !== content) {
             this._text = content;
             this.notify('text');
 
-            if (this._text !== null) {
-                this.emit_property_changed(
-                    'Text',
-                    GLib.Variant.new('s', this._text)
-                );
-            }
+            this.emit_property_changed(
+                'Text',
+                GLib.Variant.new('s', content)
+            );
         }
     }
 
@@ -184,8 +185,11 @@ var Clipboard = GObject.registerClass({
         try {
             let content = value.unpack();
 
-            if (this.text !== content) {
-                this._text = value.unpack();
+            if (typeof content !== 'string')
+                return;
+
+            if (this._text !== content) {
+                this._text = content;
                 this.notify('text');
 
                 this.clipboard.set_text(
