@@ -443,7 +443,7 @@ function init() {
 
     // This watches for the service to start and exports a custom clipboard
     // portal for use on Wayland
-    Clipboard.watchService(true);
+    Clipboard.watchService();
 }
 
 

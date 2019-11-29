@@ -225,11 +225,9 @@ var _portalId = 0;
 
 /**
  * Watch for the service to start and export the clipboard portal when it does.
- *
- * @param {boolean} waylandOnly - Only watch in Wayland sessions
  */
-function watchService(waylandOnly = true) {
-    if (waylandOnly && GLib.getenv('XDG_SESSION_TYPE') !== 'wayland')
+function watchService() {
+    if (GLib.getenv('XDG_SESSION_TYPE') !== 'wayland')
         return;
 
     if (_portalId > 0)
