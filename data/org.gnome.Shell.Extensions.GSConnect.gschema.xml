@@ -52,7 +52,7 @@
       <default>{}</default>
     </key>
     <key name="menu-actions" type="as">
-      <default>["sms", "ring", "mount", "commands", "share", "photo", "keyobard"]</default>
+      <default>["sms", "ring", "mount", "commands", "share", "photo", "keyboard"]</default>
     </key>
     <key name="name" type="s">
       <default>""</default>
@@ -102,7 +102,7 @@
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Contacts">
     <key name="contacts-source" type="b">
       <default>true</default>
-    </key>
+    </key>f
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.FindMyPhone"/>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Mousepad">
