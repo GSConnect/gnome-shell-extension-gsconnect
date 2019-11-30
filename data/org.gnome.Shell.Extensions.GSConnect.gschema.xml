@@ -102,7 +102,7 @@
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Contacts">
     <key name="contacts-source" type="b">
       <default>true</default>
-    </key>f
+    </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.FindMyPhone"/>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Mousepad">
