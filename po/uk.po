@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2019-12-01 11:44\n"
+"PO-Revision-Date: 2019-12-01 12:05\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Ukrainian\n"
 "Language: uk_UA\n"
@@ -569,7 +569,7 @@ msgstr "Відправити сповіщення"
 
 #: src/service/daemon.js:851
 msgid "Notification App Name"
-msgstr ""
+msgstr "Назва додатка для сповіщень"
 
 #: src/service/daemon.js:860
 msgid "Notification Body"
@@ -958,9 +958,9 @@ msgstr "Ви: %s"
 #, javascript-format
 msgid "And %d other contact"
 msgid_plural "And %d others"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "І ще %d інший контакт"
+msgstr[1] "І ще %d інших"
+msgstr[2] "І ще %d інших"
 msgstr[3] ""
 
 #: src/service/ui/service.js:31
