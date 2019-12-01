@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2019-12-01 10:44\n"
+"PO-Revision-Date: 2019-12-01 10:53\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Ukrainian\n"
 "Language: uk_UA\n"
@@ -318,11 +318,11 @@ msgstr "Відправити"
 
 #: data/ui/preferences-window.ui:18
 msgid "Device Name"
-msgstr ""
+msgstr "Ім'я пристрою"
 
 #: data/ui/preferences-window.ui:49
 msgid "_Rename"
-msgstr ""
+msgstr "_Перейменувати"
 
 #: data/ui/preferences-window.ui:86 data/ui/preferences-window.ui:100
 msgid "Refresh"
@@ -399,7 +399,7 @@ msgstr "Мобільні пристрої"
 #. TRANSLATORS: A menu option to activate the extension
 #: src/extension.js:143 src/extension.js:384
 msgid "Turn On"
-msgstr ""
+msgstr "Увімкнути"
 
 #: src/extension.js:245
 #, javascript-format
@@ -413,7 +413,7 @@ msgstr[3] ""
 #. TRANSLATORS: A menu option to deactivate the extension
 #: src/extension.js:381
 msgid "Turn Off"
-msgstr ""
+msgstr "Вимкнути"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:164 webextension/gettext.js:31
@@ -496,7 +496,7 @@ msgstr "Планшет"
 
 #: src/preferences/service.js:504
 msgid "Television"
-msgstr ""
+msgstr "Телевізор"
 
 #: src/preferences/service.js:525
 msgid "Unpaired"
