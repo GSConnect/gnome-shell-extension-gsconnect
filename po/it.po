@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
+"Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2019-11-27 17:47\n"
+"PO-Revision-Date: 2019-12-01 14:25\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
@@ -332,7 +332,7 @@ msgstr "Aggiorna"
 #: data/ui/preferences-window.ui:111 data/ui/preferences-window.ui:128
 #: src/extension.js:148
 msgid "Mobile Settings"
-msgstr "Impostazioni mobile"
+msgstr "Impostazioni dispositivi mobili"
 
 #: data/ui/preferences-window.ui:182 data/ui/preferences-window.ui:197
 msgid "Edit Device Name"
@@ -873,7 +873,7 @@ msgstr "Volume di sistema"
 
 #: src/service/plugins/telephony.js:30
 msgid "Mute Call"
-msgstr "Silenzia chiamata"
+msgstr "Silenzia la chiamata in arrivo"
 
 #. TRANSLATORS: The phone is ringing
 #: src/service/plugins/telephony.js:187

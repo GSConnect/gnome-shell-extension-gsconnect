@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
+"Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2019-11-03 05:14\n"
+"PO-Revision-Date: 2019-12-01 12:05\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Ukrainian\n"
 "Language: uk_UA\n"
@@ -107,7 +107,7 @@ msgstr "Файли"
 
 #: data/ui/device-preferences.ui:418
 msgid "Receive Files"
-msgstr ""
+msgstr "Отримувати файли"
 
 #: data/ui/device-preferences.ui:503 data/ui/device-preferences.ui:2164
 msgid "Sharing"
@@ -153,7 +153,7 @@ msgstr "Ділитися сповіщеннями"
 
 #: data/ui/device-preferences.ui:947
 msgid "Share When Active"
-msgstr ""
+msgstr "Ділитися при активності"
 
 #: data/ui/device-preferences.ui:998
 msgid "Applications"
@@ -223,23 +223,23 @@ msgstr "Додатково"
 
 #: data/ui/device-preferences.ui:1855
 msgid "Device Battery"
-msgstr ""
+msgstr "Акумулятор пристрою"
 
 #: data/ui/device-preferences.ui:1906
 msgid "Low Battery Notification"
-msgstr ""
+msgstr "Сповіщення про низький рівень заряду"
 
 #: data/ui/device-preferences.ui:1967
 msgid "Fully Charged Notification"
-msgstr ""
+msgstr "Сповіщення про повний заряд"
 
 #: data/ui/device-preferences.ui:2014
 msgid "System Battery"
-msgstr ""
+msgstr "Системний акумулятор"
 
 #: data/ui/device-preferences.ui:2065
 msgid "Share Statistics"
-msgstr ""
+msgstr "Ділитися статистикою"
 
 #: data/ui/device-preferences.ui:2114 data/ui/device-preferences.ui:2210
 #: src/service/plugins/battery.js:11
@@ -318,11 +318,11 @@ msgstr "Відправити"
 
 #: data/ui/preferences-window.ui:18
 msgid "Device Name"
-msgstr ""
+msgstr "Ім'я пристрою"
 
 #: data/ui/preferences-window.ui:49
 msgid "_Rename"
-msgstr ""
+msgstr "_Перейменувати"
 
 #: data/ui/preferences-window.ui:86 data/ui/preferences-window.ui:100
 msgid "Refresh"
@@ -399,7 +399,7 @@ msgstr "Мобільні пристрої"
 #. TRANSLATORS: A menu option to activate the extension
 #: src/extension.js:143 src/extension.js:384
 msgid "Turn On"
-msgstr ""
+msgstr "Увімкнути"
 
 #: src/extension.js:245
 #, javascript-format
@@ -413,7 +413,7 @@ msgstr[3] ""
 #. TRANSLATORS: A menu option to deactivate the extension
 #: src/extension.js:381
 msgid "Turn Off"
-msgstr ""
+msgstr "Вимкнути"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:164 webextension/gettext.js:31
@@ -496,7 +496,7 @@ msgstr "Планшет"
 
 #: src/preferences/service.js:504
 msgid "Television"
-msgstr ""
+msgstr "Телевізор"
 
 #: src/preferences/service.js:525
 msgid "Unpaired"
@@ -512,7 +512,7 @@ msgstr "Під'єднаний"
 
 #: src/preferences/service.js:671
 msgid "Waiting for service…"
-msgstr ""
+msgstr "Очікування сервісу…"
 
 #: src/service/daemon.js:333
 msgid "Report"
@@ -549,19 +549,19 @@ msgstr "Поділитися файлом"
 
 #: src/service/daemon.js:770
 msgid "List available devices"
-msgstr ""
+msgstr "Перелічити доступні пристрої"
 
 #: src/service/daemon.js:779
 msgid "List all devices"
-msgstr ""
+msgstr "Перелічити всі пристрої"
 
 #: src/service/daemon.js:788
 msgid "Target Device"
-msgstr ""
+msgstr "Цільовий пристрій"
 
 #: src/service/daemon.js:830
 msgid "Message Body"
-msgstr ""
+msgstr "Тіло повідомлення"
 
 #: src/service/daemon.js:842 src/service/plugins/notification.js:51
 msgid "Send Notification"
@@ -569,19 +569,19 @@ msgstr "Відправити сповіщення"
 
 #: src/service/daemon.js:851
 msgid "Notification App Name"
-msgstr ""
+msgstr "Назва додатка для сповіщень"
 
 #: src/service/daemon.js:860
 msgid "Notification Body"
-msgstr ""
+msgstr "Тіло сповіщення"
 
 #: src/service/daemon.js:869
 msgid "Notification Icon"
-msgstr ""
+msgstr "Піктограма сповіщення"
 
 #: src/service/daemon.js:878
 msgid "Notification ID"
-msgstr ""
+msgstr "Ідентифікатор сповіщення"
 
 #: src/service/daemon.js:887 src/service/plugins/photo.js:11
 #: src/service/plugins/photo.js:17
@@ -605,7 +605,7 @@ msgstr "Поділитися посиланням"
 
 #: src/service/daemon.js:938
 msgid "Show release version"
-msgstr ""
+msgstr "Показати версію програми"
 
 #: src/service/device.js:174
 msgid "Not available"
@@ -658,7 +658,7 @@ msgstr "залишилось %d%%"
 #: src/service/plugins/battery.js:199
 #, javascript-format
 msgid "%s: Battery is full"
-msgstr ""
+msgstr "%s: Акумулятор заряджений"
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
@@ -723,7 +723,7 @@ msgstr "Відповісти на сповіщення"
 
 #: src/service/plugins/notification.js:59
 msgid "Activate Notification"
-msgstr ""
+msgstr "Активувати сповіщення"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -734,7 +734,7 @@ msgstr "Пінг: %s"
 
 #: src/service/plugins/presenter.js:9
 msgid "Presentation"
-msgstr ""
+msgstr "Презентація"
 
 #: src/service/plugins/runcommand.js:12
 msgid "Run Commands"
@@ -777,11 +777,11 @@ msgstr "Помилка передачі"
 #: src/service/plugins/share.js:118
 #, javascript-format
 msgid "%s is not allowed to upload files"
-msgstr ""
+msgstr "%s не має дозволу завантажувати файли"
 
 #: src/service/plugins/share.js:154 src/service/plugins/share.js:302
 msgid "Transferring File"
-msgstr ""
+msgstr "Передача файлу"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:156
@@ -946,7 +946,7 @@ msgstr "Учора・%s"
 
 #: src/service/ui/messaging.js:255
 msgid "Group Message"
-msgstr ""
+msgstr "Групове повідомлення"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:265
@@ -958,9 +958,9 @@ msgstr "Ви: %s"
 #, javascript-format
 msgid "And %d other contact"
 msgid_plural "And %d others"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "І ще %d інший контакт"
+msgstr[1] "І ще %d інших"
+msgstr[2] "І ще %d інших"
 msgstr[3] ""
 
 #: src/service/ui/service.js:31
@@ -1019,7 +1019,7 @@ msgstr "Не турбувати"
 
 #: src/shell/donotdisturb.js:249
 msgid "Silence Notifications from Mobile Devices"
-msgstr ""
+msgstr "Заглушити сповіщення від мобільних пристроїв"
 
 #: src/shell/donotdisturb.js:261
 msgid "Until you turn off Do Not Disturb"
