@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2019-12-01 11:34\n"
+"PO-Revision-Date: 2019-12-01 11:44\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Ukrainian\n"
 "Language: uk_UA\n"
@@ -781,7 +781,7 @@ msgstr "%s не має дозволу завантажувати файли"
 
 #: src/service/plugins/share.js:154 src/service/plugins/share.js:302
 msgid "Transferring File"
-msgstr ""
+msgstr "Передача файлу"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:156
@@ -946,7 +946,7 @@ msgstr "Учора・%s"
 
 #: src/service/ui/messaging.js:255
 msgid "Group Message"
-msgstr ""
+msgstr "Групове повідомлення"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:265
@@ -1019,7 +1019,7 @@ msgstr "Не турбувати"
 
 #: src/shell/donotdisturb.js:249
 msgid "Silence Notifications from Mobile Devices"
-msgstr ""
+msgstr "Заглушити сповіщення від мобільних пристроїв"
 
 #: src/shell/donotdisturb.js:261
 msgid "Until you turn off Do Not Disturb"
