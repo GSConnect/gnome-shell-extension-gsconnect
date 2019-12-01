@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2019-12-01 11:04\n"
+"PO-Revision-Date: 2019-12-01 11:14\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Ukrainian\n"
 "Language: uk_UA\n"
@@ -549,11 +549,11 @@ msgstr "Поділитися файлом"
 
 #: src/service/daemon.js:770
 msgid "List available devices"
-msgstr ""
+msgstr "Перелічити доступні пристрої"
 
 #: src/service/daemon.js:779
 msgid "List all devices"
-msgstr ""
+msgstr "Перелічити всі пристрої"
 
 #: src/service/daemon.js:788
 msgid "Target Device"
@@ -561,7 +561,7 @@ msgstr "Цільовий пристрій"
 
 #: src/service/daemon.js:830
 msgid "Message Body"
-msgstr ""
+msgstr "Тіло повідомлення"
 
 #: src/service/daemon.js:842 src/service/plugins/notification.js:51
 msgid "Send Notification"
