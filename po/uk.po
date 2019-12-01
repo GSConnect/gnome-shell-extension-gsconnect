@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2019-12-01 10:33\n"
+"PO-Revision-Date: 2019-12-01 10:44\n"
 "Last-Translator: Andy Holmes (andyholmes)\n"
 "Language-Team: Ukrainian\n"
 "Language: uk_UA\n"
@@ -223,23 +223,23 @@ msgstr "Додатково"
 
 #: data/ui/device-preferences.ui:1855
 msgid "Device Battery"
-msgstr ""
+msgstr "Акумулятор пристрою"
 
 #: data/ui/device-preferences.ui:1906
 msgid "Low Battery Notification"
-msgstr ""
+msgstr "Сповіщення про низький рівень заряду"
 
 #: data/ui/device-preferences.ui:1967
 msgid "Fully Charged Notification"
-msgstr ""
+msgstr "Сповіщення про повний заряд"
 
 #: data/ui/device-preferences.ui:2014
 msgid "System Battery"
-msgstr ""
+msgstr "Системний акумулятор"
 
 #: data/ui/device-preferences.ui:2065
 msgid "Share Statistics"
-msgstr ""
+msgstr "Ділитися статистикою"
 
 #: data/ui/device-preferences.ui:2114 data/ui/device-preferences.ui:2210
 #: src/service/plugins/battery.js:11
