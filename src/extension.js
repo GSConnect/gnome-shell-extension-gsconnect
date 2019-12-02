@@ -30,24 +30,51 @@ const Remote = imports.shell.remote;
  * A function to fetch a GIcon with fallback support for getting unthemed icons
  * from our GResource in gnome-shell >= 3.32
  */
+const FALLBACK_ICONS = [
+    'org.gnome.Shell.Extensions.GSConnect',
+    'org.gnome.Shell.Extensions.GSConnect-symbolic',
+    'computer-symbolic',
+    'laptop-symbolic',
+    'smartphone-symbolic',
+    'tablet-symbolic',
+    'tv-symbolic',
+    'phonelink-symbolic',
+    'phonelink-delete-symbolic',
+    'phonelink-lock-symbolic',
+    'phonelink-off-symbolic',
+    'phonelink-ring-symbolic',
+    'phonelink-setup-symbolic',
+    'group-avatar-symbolic',
+    'sms-send',
+    'sms-symbolic',
+    'enter-keyboard-shortcut'
+];
+
 function get_gicon(name) {
-    if (get_gicon.icons === undefined) {
-        get_gicon.icons = {};
-        get_gicon.theme = Gtk.IconTheme.get_default();
+    if (get_gicon.__cache === undefined) {
+        get_gicon.__cache = {};
+        get_gicon.__theme = Gtk.IconTheme.get_default();
     }
 
-    if (get_gicon.theme.has_icon(name))
-        return new Gio.ThemedIcon({name: name});
+    if (get_gicon.__cache[name] !== undefined)
+        return get_gicon.__cache[name];
 
-    if (!get_gicon.icons[name]) {
-        get_gicon.icons[name] = new Gio.FileIcon({
+    if (get_gicon.__theme !== null && get_gicon.__theme.has_icon(name)) {
+        get_gicon.__cache[name] = new Gio.ThemedIcon({name: name});
+        return get_gicon.__cache[name];
+    }
+
+    if (FALLBACK_ICONS.includes(name)) {
+        get_gicon.__cache[name] = new Gio.FileIcon({
             file: Gio.File.new_for_uri(
                 `resource://org/gnome/Shell/Extensions/GSConnect/icons/${name}.svg`
             )
         });
+    } else {
+        get_gicon.__cache[name] = new Gio.ThemedIcon({name: name});
     }
 
-    return get_gicon.icons[name];
+    return get_gicon.__cache[name];
 }
 
 gsconnect.get_gicon = get_gicon;
