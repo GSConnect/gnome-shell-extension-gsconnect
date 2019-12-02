@@ -135,15 +135,15 @@ var Plugin = GObject.registerClass({
 
     /**
      * Handle an incoming notification or closed report.
+     *
+     * FIXME: upstream kdeconnect-android is tagging many notifications as
+     *        `silent`, causing them to never be shown. Since we already handle
+     *        duplicates in the Shell, we ignore that flag for now.
      */
     _handleNotification(packet) {
         // A report that a remote notification has been dismissed
         if (packet.body.hasOwnProperty('isCancel')) {
             this.device.hideNotification(packet.body.id);
-
-        // A silent notification; silence it by aborting the icon transfer
-        } else if (packet.body.hasOwnProperty('silent') && packet.body.silent) {
-            this.device.rejectTransfer(packet);
 
         // A normal, remote notification
         } else {
