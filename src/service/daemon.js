@@ -1019,7 +1019,7 @@ const Service = GObject.registerClass({
             body = options.lookup_value('notification-body', null).unpack();
         }
 
-        if (options.contains('notification-app')) {
+        if (options.contains('notification-appname')) {
             appName = options.lookup_value('notification-appname', null).unpack();
         }
 
@@ -1045,8 +1045,6 @@ const Service = GObject.registerClass({
     
     _cliShareFile(device, options) {
         let files = options.lookup_value('share-file', null);
-
-        debug(files.print(true));
 
         files = files.deep_unpack();
 
