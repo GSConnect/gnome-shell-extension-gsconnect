@@ -246,6 +246,7 @@ gsconnect.installService = function() {
             GLib.unlink(GLib.build_filenamev([dir, name]));
         }
 
+        // eslint-disable-next-line no-unused-vars
         for (let [dir, manifest] of manifests) {
             GLib.unlink(GLib.build_filenamev([dir, manifestFile]));
         }
