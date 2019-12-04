@@ -598,7 +598,7 @@ const Service = GObject.registerClass({
                     body = _('Discovery has been disabled due to the number of devices on this network.');
                     icon = new Gio.ThemedIcon({name: 'dialog-warning'});
                     priority = Gio.NotificationPriority.NORMAL;
-                    notif.set_default_action('app.settings');
+                    notif.set_default_action('app.preferences');
                     break;
 
                 default:
