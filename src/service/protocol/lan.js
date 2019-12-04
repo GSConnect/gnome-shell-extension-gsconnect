@@ -567,37 +567,58 @@ var Channel = GObject.registerClass({
         // Standard TLS Handshake
         await this._handshake(connection);
 
-        // Try to find a certificate for this deviceId
-        let cert_pem;
+        // Get a settings object for the device
+        let settings;
 
         if (this.device) {
-            cert_pem = this.device.settings.get_string('certificate-pem');
+            settings = this.device.settings;
         } else {
             let id = this.identity.body.deviceId;
-            let settings = new Gio.Settings({
+            settings = new Gio.Settings({
                 settings_schema: gsconnect.gschema.lookup(
                     'org.gnome.Shell.Extensions.GSConnect.Device',
                     true
                 ),
                 path: `/org/gnome/shell/extensions/gsconnect/device/${id}/`
             });
-            cert_pem = settings.get_string('certificate-pem');
         }
 
         // If we have a certificate for this deviceId, we can verify it
+        let cert_pem = settings.get_string('certificate-pem');
+
         if (cert_pem !== '') {
-            let certificate = Gio.TlsCertificate.new_from_pem(cert_pem, -1);
-            let valid = certificate.is_same(connection.peer_certificate);
+            let certificate = null;
+            let verified = false;
 
-            // This is a fraudulent certificate; notify the user
-            if (!valid) {
-                let error = new Error();
-                error.name = 'AuthenticationError';
-                error.deviceName = this.identity.body.deviceName;
-                error.deviceHost = connection.base_io_stream.get_remote_address().address.to_string();
-                this.service.notify_error(error);
+            try {
+                certificate = Gio.TlsCertificate.new_from_pem(cert_pem, -1);
+                verified = certificate.is_same(connection.peer_certificate);
+            } catch (e) {
+                logError(e);
+            }
 
-                throw error;
+            /* The certificate is incorrect for one of two reasons, but both
+             * result in us resetting the certificate and unpairing the device.
+             *
+             * If the certificate failed to load, it is probably corrupted or
+             * otherwise invalid. In this case, if we try to continue we will
+             * certainly crash the Android app.
+             *
+             * If the certificate did not match what we expected the obvious
+             * thing to do is to notify the user, however experience tells us
+             * this is a result of the user doing something masochistic like
+             * nuking the Android app data or copying settings between machines.
+             */
+            if (verified === false) {
+                if (this.device) {
+                    this.device.unpair();
+                } else {
+                    settings.reset('paired');
+                    settings.reset('certificate-pem');
+                }
+
+                let name = this.identity.body.deviceName;
+                throw new Error(`${name}: Authentication Failure`);
             }
         }
 

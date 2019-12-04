@@ -569,20 +569,10 @@ const Service = GObject.registerClass({
             logError(error);
 
             // Create an new notification
-            let id, title, body, icon, priority, time;
+            let id, title, body, icon, priority;
             let notif = new Gio.Notification();
 
             switch (error.name) {
-                // A TLS certificate failure
-                case 'AuthenticationError':
-                    id = `"${error.deviceName}"@${error.deviceHost}`;
-                    title = _('Authentication Failure');
-                    time = GLib.DateTime.new_now_local().format('%F %R');
-                    body = `"${error.deviceName}"@${error.deviceHost} (${time})`;
-                    icon = new Gio.ThemedIcon({name: 'dialog-error'});
-                    priority = Gio.NotificationPriority.URGENT;
-                    break;
-
                 case 'LanError':
                     id = error.name;
                     title = _('Network Error');
