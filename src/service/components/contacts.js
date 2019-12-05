@@ -45,28 +45,7 @@ var Store = GObject.registerClass({
 
         // Automatically prepare the desktop store
         if (context === null) {
-            this.prepare();
-        }
-    }
-
-    async __cache_write() {
-        if (this.__cache_lock) {
-            this.__cache_queue = true;
-            return;
-        }
-
-        try {
-            this.__cache_lock = true;
-            await JSON.dump(this.__cache_data, this.__cache_file);
-        } catch (e) {
-            debug(e);
-        } finally {
-            this.__cache_lock = false;
-
-            if (this.__cache_queue) {
-                this.__cache_queue = false;
-                this.__cache_write();
-            }
+            this.load();
         }
     }
 
@@ -139,17 +118,6 @@ var Store = GObject.registerClass({
                 );
             }
         });
-    }
-
-    // TODO: ensure this can only be called once
-    async prepare() {
-        try {
-            this.__cache_data = await JSON.load(this.__cache_file);
-        } catch (e) {
-            debug(e);
-        } finally {
-            this.notify('context');
-        }
     }
 
     /**
@@ -244,7 +212,7 @@ var Store = GObject.registerClass({
 
         // Write if requested
         if (write) {
-            this.__cache_write();
+            this.save();
         }
     }
 
@@ -262,7 +230,7 @@ var Store = GObject.registerClass({
 
             // Write if requested
             if (write) {
-                this.__cache_write();
+                this.save();
             }
         }
     }
@@ -299,7 +267,7 @@ var Store = GObject.registerClass({
                 await this.remove(contacts[i].id, false);
             }
 
-            await this.__cache_write();
+            await this.save();
         } catch (e) {
             debug(e, 'Clearing contacts');
         }
@@ -329,7 +297,7 @@ var Store = GObject.registerClass({
                 }
             }
 
-            await this.__cache_write();
+            await this.save();
         } catch (e) {
             debug(e, 'Updating contacts');
         }
@@ -364,6 +332,43 @@ var Store = GObject.registerClass({
             await this.update(folks);
         } catch (e) {
             debug(e, 'Loading folks');
+        }
+    }
+
+    /**
+     * Save the contacts to disk.
+     */
+    async save() {
+        if (this.__cache_lock) {
+            this.__cache_queue = true;
+            return;
+        }
+
+        try {
+            this.__cache_lock = true;
+            await JSON.dump(this.__cache_data, this.__cache_file);
+        } catch (e) {
+            debug(e);
+        } finally {
+            this.__cache_lock = false;
+
+            if (this.__cache_queue) {
+                this.__cache_queue = false;
+                this.save();
+            }
+        }
+    }
+
+    /**
+     * Load the contacts from disk.
+     */
+    async load() {
+        try {
+            this.__cache_data = await JSON.load(this.__cache_file);
+        } catch (e) {
+            debug(e);
+        } finally {
+            this.notify('context');
         }
     }
 

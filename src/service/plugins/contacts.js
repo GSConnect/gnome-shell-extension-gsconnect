@@ -70,8 +70,8 @@ var Plugin = GObject.registerClass({
             () => this.device.notify('contacts')
         );
 
-        // Prepare the store
-        this._store.prepare();
+        // Load the cache
+        this._store.load();
     }
 
     connected() {
@@ -111,8 +111,6 @@ var Plugin = GObject.registerClass({
                 }
             }
 
-            if (removed) this._store.__cache_write();
-
             // Build a list of new or updated contacts
             let uids = [];
 
@@ -127,6 +125,11 @@ var Plugin = GObject.registerClass({
             // Send a request for any new or updated contacts
             if (uids.length) {
                 this.requestVCards(uids);
+            }
+
+            // If we removed any contacts, save the cache
+            if (removed) {
+                this._store.save();
             }
         } catch (e) {
             logError(e);
