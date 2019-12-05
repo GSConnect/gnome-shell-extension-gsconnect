@@ -17,7 +17,7 @@ var Store = GObject.registerClass({
             'Context',
             'Used as the cache directory, relative to gsconnect.cachedir',
             GObject.ParamFlags.CONSTRUCT_ONLY | GObject.ParamFlags.READWRITE,
-            ''
+            null
         )
     },
     Signals: {
@@ -62,7 +62,11 @@ var Store = GObject.registerClass({
     }
 
     get context() {
-        return this._context || null;
+        if (this._context === undefined) {
+            this._context = null;
+        }
+
+        return this._context;
     }
 
     set context(context) {
@@ -94,7 +98,10 @@ var Store = GObject.registerClass({
      */
     storeAvatar(contents) {
         return new Promise((resolve, reject) => {
-            let md5 = GLib.compute_checksum_for_data(GLib.ChecksumType.MD5, contents);
+            let md5 = GLib.compute_checksum_for_data(
+                GLib.ChecksumType.MD5,
+                contents
+            );
             let file = this.__cache_dir.get_child(`${md5}`);
 
             if (file.query_exists(null)) {
@@ -205,6 +212,8 @@ var Store = GObject.registerClass({
         if (this.__cache_data[contact.id]) {
             this.__cache_data[contact.id] = contact;
             this.emit('contact-changed', contact.id);
+
+        // This is a new contact
         } else {
             this.__cache_data[contact.id] = contact;
             this.emit('contact-added', contact.id);
@@ -273,6 +282,11 @@ var Store = GObject.registerClass({
         }
     }
 
+    /**
+     * Update the contact store from a dictionary of our custom contact objects.
+     *
+     * @param {Object} json - an Object of contact Objects
+     */
     async update(json = {}) {
         try {
             let contacts = Object.values(json);
@@ -336,6 +350,19 @@ var Store = GObject.registerClass({
     }
 
     /**
+     * Load the contacts from disk.
+     */
+    async load() {
+        try {
+            this.__cache_data = await JSON.load(this.__cache_file);
+        } catch (e) {
+            debug(e);
+        } finally {
+            this.notify('context');
+        }
+    }
+
+    /**
      * Save the contacts to disk.
      */
     async save() {
@@ -356,19 +383,6 @@ var Store = GObject.registerClass({
                 this.__cache_queue = false;
                 this.save();
             }
-        }
-    }
-
-    /**
-     * Load the contacts from disk.
-     */
-    async load() {
-        try {
-            this.__cache_data = await JSON.load(this.__cache_file);
-        } catch (e) {
-            debug(e);
-        } finally {
-            this.notify('context');
         }
     }
 
