@@ -1,22 +1,23 @@
 # Brazilian Portuguese translation for GSConnect.
-# Copyright (C) 2018 Andy Holmes
+# Copyright (C) 2019 Andy Holmes
 # This file is distributed under the same license as the org.gnome.Shell.Extensions.GSConnect package.
 # Ricardo Silva Veloso <ricvelozo@gmail.com>, 2018.
+# Rafael Fontenelle <rafaelff@gnome.org>, 2019.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2018-11-24 21:11-0200\n"
-"Last-Translator: Ricardo Silva Veloso <ricvelozo@gmail.com>\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2019-12-05 13:54-0300\n"
+"Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
+"Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 2.2\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"X-Generator: Gtranslator 3.32.0\n"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
 #: data/gtk/menus.ui:7 src/preferences/device.js:292
@@ -55,12 +56,11 @@ msgstr "Conectar"
 
 #: data/ui/connect.ui:74
 msgid "IP Address"
-msgstr ""
+msgstr "Endereço IP"
 
 #: data/ui/contact-chooser.ui:50
-#, fuzzy
 msgid "No contacts"
-msgstr "Contatos"
+msgstr "Nenhum contato"
 
 #: data/ui/contact-chooser.ui:62 data/ui/messaging-window.ui:91
 #: data/ui/preferences-window.ui:736
@@ -77,9 +77,8 @@ msgid "Type a message"
 msgstr "Escrever uma mensagem"
 
 #: data/ui/conversation.ui:85 src/service/plugins/sms.js:50
-#, fuzzy
 msgid "Send Message"
-msgstr "Nova mensagem"
+msgstr "Enviar mensagem"
 
 #: data/ui/device-preferences.ui:40 src/preferences/service.js:506
 msgid "Desktop"
@@ -87,7 +86,7 @@ msgstr "Computador"
 
 #: data/ui/device-preferences.ui:88
 msgid "Camera"
-msgstr ""
+msgstr "Câmera"
 
 #: data/ui/device-preferences.ui:144
 msgid "Clipboard Sync"
@@ -111,7 +110,7 @@ msgstr "Arquivos"
 
 #: data/ui/device-preferences.ui:418
 msgid "Receive Files"
-msgstr ""
+msgstr "Receber arquivos"
 
 #: data/ui/device-preferences.ui:503 data/ui/device-preferences.ui:2164
 msgid "Sharing"
@@ -137,19 +136,19 @@ msgstr "Escolher um executável"
 
 #: data/ui/device-preferences.ui:668 data/ui/device-preferences.ui:684
 msgid "Add"
-msgstr ""
+msgstr "Adicionar"
 
 #: data/ui/device-preferences.ui:700 data/ui/device-preferences.ui:715
 msgid "Remove"
-msgstr ""
+msgstr "Remover"
 
 #: data/ui/device-preferences.ui:749 data/ui/device-preferences.ui:762
 msgid "Edit"
-msgstr ""
+msgstr "Editar"
 
 #: data/ui/device-preferences.ui:778 data/ui/device-preferences.ui:791
 msgid "Save"
-msgstr ""
+msgstr "Salvar"
 
 #: data/ui/device-preferences.ui:887
 msgid "Share Notifications"
@@ -157,7 +156,7 @@ msgstr "Compartilhar notificações"
 
 #: data/ui/device-preferences.ui:947
 msgid "Share When Active"
-msgstr ""
+msgstr "Compartilhar quando ativo"
 
 #: data/ui/device-preferences.ui:998
 msgid "Applications"
@@ -215,40 +214,35 @@ msgstr "Plugins"
 
 #: data/ui/device-preferences.ui:1723
 msgid "Experimental"
-msgstr ""
+msgstr "Experimental"
 
 #: data/ui/device-preferences.ui:1771
 msgid "Legacy SMS Support"
-msgstr ""
+msgstr "Suporte a SMS legado"
 
 #: data/ui/device-preferences.ui:1824 data/ui/device-preferences.ui:2440
 msgid "Advanced"
 msgstr "Avançado"
 
 #: data/ui/device-preferences.ui:1855
-#, fuzzy
 msgid "Device Battery"
-msgstr "Bateria"
+msgstr "Bateria do dispositivo"
 
 #: data/ui/device-preferences.ui:1906
-#, fuzzy
 msgid "Low Battery Notification"
-msgstr "Responder notificação"
+msgstr "Notificação de bateria baixa"
 
 #: data/ui/device-preferences.ui:1967
-#, fuzzy
 msgid "Fully Charged Notification"
-msgstr "Compartilhar notificações"
+msgstr "Notificação de bateria cheia"
 
 #: data/ui/device-preferences.ui:2014
-#, fuzzy
 msgid "System Battery"
-msgstr "Bateria"
+msgstr "Bateria do sistema"
 
 #: data/ui/device-preferences.ui:2065
-#, fuzzy
 msgid "Share Statistics"
-msgstr "Compartilhar notificações"
+msgstr "Compartilhar estatísticas"
 
 #: data/ui/device-preferences.ui:2114 data/ui/device-preferences.ui:2210
 #: src/service/plugins/battery.js:11
@@ -260,13 +254,12 @@ msgid "Keyboard Shortcuts"
 msgstr "Atalhos de teclado"
 
 #: data/ui/device-preferences.ui:2529
-#, fuzzy
 msgid "Device is unpaired"
 msgstr "Dispositivo está desconectado"
 
 #: data/ui/device-preferences.ui:2544
 msgid "You may configure this device before pairing"
-msgstr ""
+msgstr "Você pode configurar esse dispositivo antes de parear"
 
 #. TRANSLATORS: Send clipboard content to device
 #: data/ui/device-preferences.ui:2585
@@ -301,23 +294,20 @@ msgid "Messaging"
 msgstr "Mensagens"
 
 #: data/ui/messaging-window.ui:23 src/service/ui/messaging.js:1184
-#, fuzzy
 msgid "New Conversation"
-msgstr "Selecione uma conversa"
+msgstr "Nova conversa"
 
 #: data/ui/messaging-window.ui:108
-#, fuzzy
 msgid "No Conversations"
-msgstr "Selecione uma conversa"
+msgstr "Nenhuma conversa"
 
 #: data/ui/messaging-window.ui:168
 msgid "No conversation selected"
-msgstr ""
+msgstr "Nenhuma conversa selecionada"
 
 #: data/ui/messaging-window.ui:184
-#, fuzzy
 msgid "Select or start a conversation"
-msgstr "Selecione uma conversa"
+msgstr "Selecione ou inicie uma conversa"
 
 #: data/ui/messaging-window.ui:251 data/ui/notification-reply-dialog.ui:52
 #: data/ui/telephony.ui:53
@@ -330,13 +320,12 @@ msgid "Send"
 msgstr "Enviar"
 
 #: data/ui/preferences-window.ui:18
-#, fuzzy
 msgid "Device Name"
-msgstr "Para o dispositivo"
+msgstr "Nome do dispositivo"
 
 #: data/ui/preferences-window.ui:49
 msgid "_Rename"
-msgstr ""
+msgstr "_Renomear"
 
 #: data/ui/preferences-window.ui:86 data/ui/preferences-window.ui:100
 msgid "Refresh"
@@ -350,29 +339,27 @@ msgstr "Configurações de dispositivos"
 
 #: data/ui/preferences-window.ui:182 data/ui/preferences-window.ui:197
 msgid "Edit Device Name"
-msgstr ""
+msgstr "Editar nome do dispositivo"
 
 #: data/ui/preferences-window.ui:257
-#, fuzzy
 msgid "Devices"
-msgstr "Para o dispositivo"
+msgstr "Dispositivos"
 
 #: data/ui/preferences-window.ui:307 src/preferences/service.js:669
 msgid "Searching for devices…"
-msgstr ""
+msgstr "Pesquisando por dispositivos…"
 
 #: data/ui/preferences-window.ui:332
 msgid "Browser Add-Ons"
 msgstr "Complementos para navegadores"
 
 #: data/ui/preferences-window.ui:612
-#, fuzzy
 msgid "Enable"
-msgstr "Tablet"
+msgstr "Ativar"
 
 #: data/ui/preferences-window.ui:644
 msgid "This device is invisible to unpaired devices"
-msgstr ""
+msgstr "Este dispositivo está invisível para dispositivos não pareados"
 
 #: data/ui/preferences-window.ui:656 src/service/daemon.js:594
 msgid "Discovery Disabled"
@@ -395,12 +382,11 @@ msgstr "Menu do usuário"
 #. TRANSLATORS: Generate a support log
 #: data/ui/preferences-window.ui:732 src/preferences/service.js:425
 msgid "Generate Support Log"
-msgstr ""
+msgstr "Gerar log de suporte"
 
 #: data/ui/preferences-window.ui:740
-#, fuzzy
 msgid "About GSConnect"
-msgstr "GSConnect"
+msgstr "Sobre o GSConnect"
 
 #. TRANSLATORS: Share URL by SMS
 #: data/ui/telephony.ui:9 src/service/daemon.js:695 src/service/daemon.js:821
@@ -416,7 +402,7 @@ msgstr "Dispositivos móveis"
 #. TRANSLATORS: A menu option to activate the extension
 #: src/extension.js:143 src/extension.js:384
 msgid "Turn On"
-msgstr ""
+msgstr "Ligar"
 
 #: src/extension.js:245
 #, javascript-format
@@ -428,7 +414,7 @@ msgstr[1] "%d conectados"
 #. TRANSLATORS: A menu option to deactivate the extension
 #: src/extension.js:381
 msgid "Turn Off"
-msgstr ""
+msgstr "Desligar"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:164 webextension/gettext.js:31
@@ -488,17 +474,21 @@ msgstr "Uma implementação completa do KDE Connect para o GNOME"
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:393
 msgid "translator-credits"
-msgstr "Ricardo Silva Veloso <ricvelozo@gmail.com>"
+msgstr ""
+"Ricardo Silva Veloso <ricvelozo@gmail.com>\n"
+"Rafael Fontenelle <rafaelff@gnome.org>"
 
 #: src/preferences/service.js:426
 msgid ""
 "Debug messages are being logged. Take any steps necessary to reproduce a "
 "problem then review the log."
 msgstr ""
+"As mensagens de depuração estão sendo registradas. Execute as etapas "
+"necessárias para reproduzir um problema e revise o log."
 
 #: src/preferences/service.js:429
 msgid "Review Log"
-msgstr ""
+msgstr "Revisar log"
 
 #: src/preferences/service.js:498
 msgid "Laptop"
@@ -513,28 +503,24 @@ msgid "Tablet"
 msgstr "Tablet"
 
 #: src/preferences/service.js:504
-#, fuzzy
 msgid "Television"
-msgstr "Telefonia"
+msgstr "Televisão"
 
 #: src/preferences/service.js:525
-#, fuzzy
 msgid "Unpaired"
-msgstr "Esquecer"
+msgstr "Não pareado"
 
 #: src/preferences/service.js:529
-#, fuzzy
 msgid "Disconnected"
-msgstr "Dispositivo está desconectado"
+msgstr "Desconectado"
 
 #: src/preferences/service.js:533
-#, fuzzy
 msgid "Connected"
-msgstr "Conectar"
+msgstr "Conectado"
 
 #: src/preferences/service.js:671
 msgid "Waiting for service…"
-msgstr ""
+msgstr "Aguardando pelo serviço…"
 
 #: src/service/daemon.js:333
 msgid "Report"
@@ -572,53 +558,45 @@ msgid "Share File"
 msgstr "Compartilhar arquivo"
 
 #: src/service/daemon.js:770
-#, fuzzy
 msgid "List available devices"
-msgstr "Indisponível"
+msgstr "Listar dispositivos disponíveis"
 
 #: src/service/daemon.js:779
-#, fuzzy
 msgid "List all devices"
-msgstr "Dispositivos móveis"
+msgstr "Listar todos dispositivo"
 
 #: src/service/daemon.js:788
-#, fuzzy
 msgid "Target Device"
-msgstr "Para o dispositivo"
+msgstr "Dispositivo alvo"
 
 #: src/service/daemon.js:830
-#, fuzzy
 msgid "Message Body"
-msgstr "Nova mensagem"
+msgstr "Corpo da mensagem"
 
 #: src/service/daemon.js:842 src/service/plugins/notification.js:51
 msgid "Send Notification"
 msgstr "Enviar notificação"
 
 #: src/service/daemon.js:851
-#, fuzzy
 msgid "Notification App Name"
-msgstr "Notificações"
+msgstr "Nome do aplicativo de notificação"
 
 #: src/service/daemon.js:860
-#, fuzzy
 msgid "Notification Body"
-msgstr "Notificações"
+msgstr "Corpo da notificação"
 
 #: src/service/daemon.js:869
-#, fuzzy
 msgid "Notification Icon"
-msgstr "Notificações"
+msgstr "Ícone de notificação"
 
 #: src/service/daemon.js:878
-#, fuzzy
 msgid "Notification ID"
-msgstr "Notificações"
+msgstr "ID da notificação"
 
 #: src/service/daemon.js:887 src/service/plugins/photo.js:11
 #: src/service/plugins/photo.js:17
 msgid "Photo"
-msgstr ""
+msgstr "Foto"
 
 #: src/service/daemon.js:896 src/service/plugins/ping.js:11
 #: src/service/plugins/ping.js:17 src/service/plugins/ping.js:44
@@ -627,9 +605,8 @@ msgstr "Ping"
 
 #: src/service/daemon.js:905 src/service/plugins/battery.js:155
 #: src/service/plugins/findmyphone.js:19
-#, fuzzy
 msgid "Ring"
-msgstr "Localizar"
+msgstr "Toque"
 
 #: src/service/daemon.js:926 src/service/plugins/share.js:43
 #: src/service/ui/messaging.js:1167 src/service/ui/messaging.js:1175
@@ -637,9 +614,8 @@ msgid "Share Link"
 msgstr "Compartilhar link"
 
 #: src/service/daemon.js:938
-#, fuzzy
 msgid "Show release version"
-msgstr "Selecione uma conversa"
+msgstr "Mostrar versão de lançamento"
 
 #: src/service/device.js:174
 msgid "Not available"
@@ -690,9 +666,9 @@ msgstr "%d%% restante"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:199
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s: Battery is full"
-msgstr "%s: bateria fraca"
+msgstr "%s: bateria cheia"
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
@@ -756,9 +732,8 @@ msgid "Reply Notification"
 msgstr "Responder notificação"
 
 #: src/service/plugins/notification.js:59
-#, fuzzy
 msgid "Activate Notification"
-msgstr "Compartilhar notificações"
+msgstr "Ativar notificação"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -768,9 +743,8 @@ msgid "Ping: %s"
 msgstr "Ping: %s"
 
 #: src/service/plugins/presenter.js:9
-#, fuzzy
 msgid "Presentation"
-msgstr "Integração com arquivos"
+msgstr "Apresentação"
 
 #: src/service/plugins/runcommand.js:12
 msgid "Run Commands"
@@ -813,12 +787,11 @@ msgstr "Transferência falhou"
 #: src/service/plugins/share.js:118
 #, javascript-format
 msgid "%s is not allowed to upload files"
-msgstr ""
+msgstr "%s não tem permissão para enviar arquivos"
 
 #: src/service/plugins/share.js:154 src/service/plugins/share.js:302
-#, fuzzy
 msgid "Transferring File"
-msgstr "Transferência falhou"
+msgstr "Transferindo arquivo"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:156
@@ -881,9 +854,8 @@ msgstr "Enviar arquivos para %s"
 
 #. TRANSLATORS: Mark the file to be opened once completed
 #: src/service/plugins/share.js:408
-#, fuzzy
 msgid "Open when done"
-msgstr "Abrir no navegador"
+msgstr "Abrir quando finalizado"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
 #: src/service/plugins/share.js:447
@@ -981,22 +953,21 @@ msgid "Yesterday・%s"
 msgstr "Ontem・%s"
 
 #: src/service/ui/messaging.js:255
-#, fuzzy
 msgid "Group Message"
-msgstr "Nova mensagem"
+msgstr "Mensagem de grupo"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:265
 #, javascript-format
 msgid "You: %s"
-msgstr ""
+msgstr "Você: %s"
 
 #: src/service/ui/messaging.js:861
 #, javascript-format
 msgid "And %d other contact"
 msgid_plural "And %d others"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "e %d outro contato"
+msgstr[1] "e %d outros"
 
 #: src/service/ui/service.js:31
 msgid "Select a Device"
@@ -1033,10 +1004,10 @@ msgid "%d%% (%d∶%02d Remaining)"
 msgstr "%d%% (%d∶%02d restante)"
 
 #: src/shell/donotdisturb.js:135
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%d hour"
 msgid_plural "%d hours"
-msgstr[0] "Uma hora"
+msgstr[0] "%d hora"
 msgstr[1] "%d horas"
 
 #. TRANSLATORS: Time until change with time duration
@@ -1063,9 +1034,8 @@ msgid "Done"
 msgstr "Pronto"
 
 #: src/shell/notification.js:43
-#, fuzzy
 msgid "Reply"
-msgstr "Responder SMS"
+msgstr "Responder"
 
 #. TRANSLATORS: Extension name
 #: webextension/gettext.js:27
