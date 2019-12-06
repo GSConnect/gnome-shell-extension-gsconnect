@@ -668,6 +668,9 @@ const Service = GObject.registerClass({
     }
 
     vfunc_dbus_register(connection, object_path) {
+        if (!super.vfunc_dbus_register(connection, object_path))
+            return false;
+
         this.objectManager = new Gio.DBusObjectManagerServer({
             connection: connection,
             object_path: object_path
