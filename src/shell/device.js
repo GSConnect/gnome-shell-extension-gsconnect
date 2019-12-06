@@ -227,7 +227,7 @@ var Indicator = GObject.registerClass({
 
         // Device Icon
         this._icon = new St.Icon({
-            gicon: gsconnect.get_gicon(this.device.icon_name),
+            gicon: gsconnect.getIcon(this.device.icon_name),
             style_class: 'system-status-icon gsconnect-device-indicator'
         });
         this.add_child(this._icon);
@@ -241,7 +241,7 @@ var Indicator = GObject.registerClass({
     }
 
     update_icon(icon_name) {
-        this._icon.gicon = gsconnect.get_gicon(icon_name);
+        this._icon.gicon = gsconnect.getIcon(icon_name);
     }
 });
 

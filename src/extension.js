@@ -28,56 +28,54 @@ const Remote = imports.shell.remote;
 
 /**
  * A function to fetch a GIcon with fallback support for getting unthemed icons
- * from our GResource in gnome-shell >= 3.32
+ * from our GResource
  */
-const FALLBACK_ICONS = [
-    'org.gnome.Shell.Extensions.GSConnect',
-    'org.gnome.Shell.Extensions.GSConnect-symbolic',
-    'computer-symbolic',
-    'laptop-symbolic',
-    'smartphone-symbolic',
-    'tablet-symbolic',
-    'tv-symbolic',
-    'phonelink-symbolic',
-    'phonelink-delete-symbolic',
-    'phonelink-lock-symbolic',
-    'phonelink-off-symbolic',
-    'phonelink-ring-symbolic',
-    'phonelink-setup-symbolic',
-    'group-avatar-symbolic',
-    'sms-send',
-    'sms-symbolic',
-    'enter-keyboard-shortcut'
-];
-
-function get_gicon(name) {
-    if (get_gicon.__cache === undefined) {
-        get_gicon.__cache = {};
-        get_gicon.__theme = Gtk.IconTheme.get_default();
-    }
-
-    if (get_gicon.__cache[name] !== undefined)
-        return get_gicon.__cache[name];
-
-    if (get_gicon.__theme !== null && get_gicon.__theme.has_icon(name)) {
-        get_gicon.__cache[name] = new Gio.ThemedIcon({name: name});
-        return get_gicon.__cache[name];
-    }
-
-    if (FALLBACK_ICONS.includes(name)) {
-        get_gicon.__cache[name] = new Gio.FileIcon({
-            file: Gio.File.new_for_uri(
-                `resource://org/gnome/Shell/Extensions/GSConnect/icons/${name}.svg`
-            )
+gsconnect.getIcon = function(name) {
+    if (gsconnect.getIcon._extension === undefined) {
+        // Setup the desktop icons
+        let settings = imports.gi.St.Settings.get();
+        gsconnect.getIcon._desktop = new Gtk.IconTheme();
+        gsconnect.getIcon._desktop.set_custom_theme(settings.gtk_icon_theme);
+        settings.connect('notify::gtk-icon-theme', (settings) => {
+            gsconnect.getIcon._desktop.set_custom_theme(settings.gtk_icon_theme);
         });
-    } else {
-        get_gicon.__cache[name] = new Gio.ThemedIcon({name: name});
+
+        // Preload our fallbacks
+        let basePath = 'resource://org/gnome/Shell/Extensions/GSConnect/icons/';
+        let iconNames = [
+            'org.gnome.Shell.Extensions.GSConnect',
+            'org.gnome.Shell.Extensions.GSConnect-symbolic',
+            'computer-symbolic',
+            'laptop-symbolic',
+            'smartphone-symbolic',
+            'tablet-symbolic',
+            'tv-symbolic',
+            'phonelink-ring-symbolic',
+            'sms-symbolic'
+        ];
+
+        gsconnect.getIcon._extension = {};
+
+        for (let iconName of iconNames) {
+            gsconnect.getIcon._extension[iconName] = new Gio.FileIcon({
+                file: Gio.File.new_for_uri(`${basePath}${iconName}.svg`)
+            });
+        }
     }
 
-    return get_gicon.__cache[name];
-}
+    // Check the desktop icon theme
+    if (gsconnect.getIcon._desktop.has_icon(name)) {
+        return new Gio.ThemedIcon({name: name});
+    }
 
-gsconnect.get_gicon = get_gicon;
+    // Check our GResource
+    if (gsconnect.getIcon._extension[name] !== undefined) {
+        return gsconnect.getIcon._extension[name];
+    }
+
+    // Fallback to hoping it's in the theme somewhere
+    return new Gio.ThemedIcon({name: name});
+}
 
 
 /**
@@ -132,7 +130,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
         // Service Indicator
         this._indicator = this._addIndicator();
-        this._indicator.gicon = gsconnect.get_gicon(
+        this._indicator.gicon = gsconnect.getIcon(
             'org.gnome.Shell.Extensions.GSConnect-symbolic'
         );
         this._indicator.visible = false;
