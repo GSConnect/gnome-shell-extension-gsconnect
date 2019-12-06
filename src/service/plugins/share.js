@@ -230,7 +230,8 @@ var Plugin = GObject.registerClass({
     _handleText(packet) {
         let dialog = new Gtk.MessageDialog({
             text: _('Text Shared By %s').format(this.device.name),
-            secondary_text: packet.body.text,
+            secondary_text: packet.body.text.linkify(),
+            secondary_use_markup: true,
             buttons: Gtk.ButtonsType.CLOSE
         });
         dialog.message_area.get_children()[1].selectable = true;
