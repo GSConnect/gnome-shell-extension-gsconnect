@@ -75,7 +75,7 @@ gsconnect.getIcon = function(name) {
 
     // Fallback to hoping it's in the theme somewhere
     return new Gio.ThemedIcon({name: name});
-}
+};
 
 
 /**
