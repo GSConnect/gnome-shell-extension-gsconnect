@@ -28,7 +28,7 @@ If applicable, add screenshots to help explain your problem. You can drag-and-dr
 
 **Support Log**
 
-Please generate a support log ([Instructions](wiki/Help#generate-support-log)) and paste any messages related to this issue between the two ``` lines below.
+Please generate a support log ([Instructions](../wiki/Help#generate-support-log)) and paste any messages related to this issue between the two ``` lines below.
 
 ```
 
