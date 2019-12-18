@@ -80,11 +80,8 @@ var Store = GObject.registerClass({
             if (econtact.full_name)
                 contact.name = econtact.full_name;
 
-            // If there's no phone number, we're not interested
+            // Parse phone numbers
             let nums = econtact.get_attributes(EBookContacts.ContactField.TEL);
-
-            if (nums.length === 0)
-                return undefined;
 
             for (let attr of nums) {
                 let number = {
@@ -152,7 +149,7 @@ var Store = GObject.registerClass({
 
     _getEContacts(client, query = '', cancellable = null) {
         return new Promise((resolve, reject) => {
-            client.get_contacts('', cancellable, (client, res) => {
+            client.get_contacts(query, cancellable, (client, res) => {
                 try {
                     resolve(client.get_contacts_finish(res)[1]);
                 } catch (e) {
@@ -247,8 +244,8 @@ var Store = GObject.registerClass({
         try {
             // Get an EBookClient and EBookView
             let uid = source.get_uid();
-            let client = await this._getEBookClient(source);
-            let view = await this._getEBookView(client);
+            let client = await this._getEBookClient(source, 'exists "tel"');
+            let view = await this._getEBookView(client, 'exists "tel"');
 
             // Watch the view for changes to the address book
             let connection = view.get_connection();
