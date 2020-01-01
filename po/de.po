@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2020-01-01 22:15\n"
+"PO-Revision-Date: 2020-01-01 22:33\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -470,7 +470,8 @@ msgstr "Eine vollständige KDE-Connect-Implementierung für GNOME"
 #: src/preferences/service.js:393
 msgid "translator-credits"
 msgstr "taaem <taaem@mailbox.org>\n"
-"Tobias Bannert <tobannert@gmail.com>"
+"Tobias Bannert <tobannert@gmail.com>\n"
+"Björn Daase (BjoernDaase)"
 
 #: src/preferences/service.js:426
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
