@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2020-01-02 01:33\n"
+"PO-Revision-Date: 2020-01-02 01:53\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Danish\n"
 "Language: da_DK\n"
@@ -321,7 +321,7 @@ msgstr ""
 
 #: data/ui/preferences-window.ui:49
 msgid "_Rename"
-msgstr ""
+msgstr "_Omdøbe"
 
 #: data/ui/preferences-window.ui:86 data/ui/preferences-window.ui:100
 msgid "Refresh"
@@ -778,7 +778,7 @@ msgstr ""
 
 #: src/service/plugins/share.js:154 src/service/plugins/share.js:302
 msgid "Transferring File"
-msgstr ""
+msgstr "Overfører Fil"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:156
@@ -941,7 +941,7 @@ msgstr "I går・%s"
 
 #: src/service/ui/messaging.js:255
 msgid "Group Message"
-msgstr ""
+msgstr "Gruppebesked"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:265
@@ -953,8 +953,8 @@ msgstr "Du: %s"
 #, javascript-format
 msgid "And %d other contact"
 msgid_plural "And %d others"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Og %d andre kontakt"
+msgstr[1] "Og %d andre"
 
 #: src/service/ui/service.js:31
 msgid "Select a Device"
@@ -1010,7 +1010,7 @@ msgstr "Forstyr ikke"
 
 #: src/shell/donotdisturb.js:249
 msgid "Silence Notifications from Mobile Devices"
-msgstr ""
+msgstr "Stilhed Notifikationer fra mobil enheder"
 
 #: src/shell/donotdisturb.js:261
 msgid "Until you turn off Do Not Disturb"
