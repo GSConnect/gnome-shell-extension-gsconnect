@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2020-01-02 02:03\n"
+"PO-Revision-Date: 2020-01-02 02:13\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Danish\n"
 "Language: da_DK\n"
@@ -226,11 +226,11 @@ msgstr "Enhedens Batteri"
 
 #: data/ui/device-preferences.ui:1906
 msgid "Low Battery Notification"
-msgstr ""
+msgstr "Lavt Batteri Notifikation"
 
 #: data/ui/device-preferences.ui:1967
 msgid "Fully Charged Notification"
-msgstr ""
+msgstr "Fuldt Opladet Notifikation"
 
 #: data/ui/device-preferences.ui:2014
 msgid "System Battery"
@@ -493,7 +493,7 @@ msgstr "Tablet"
 
 #: src/preferences/service.js:504
 msgid "Television"
-msgstr ""
+msgstr "Fjernsyn"
 
 #: src/preferences/service.js:525
 msgid "Unpaired"
@@ -554,7 +554,7 @@ msgstr ""
 
 #: src/service/daemon.js:788
 msgid "Target Device"
-msgstr ""
+msgstr "Målet Enhed"
 
 #: src/service/daemon.js:830
 msgid "Message Body"
