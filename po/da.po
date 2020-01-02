@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2020-01-01 22:10\n"
+"PO-Revision-Date: 2020-01-02 01:33\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Danish\n"
 "Language: da_DK\n"
@@ -29,7 +29,7 @@ msgstr "Par"
 #. TRANSLATORS: Unpair the device and notify it
 #: data/gtk/menus.ui:18 src/service/daemon.js:809
 msgid "Unpair"
-msgstr "Unpair"
+msgstr "Koble fra en enhed"
 
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/connect.ui:14 data/ui/preferences-window.ui:710
@@ -98,7 +98,7 @@ msgstr "Mus & Tastatur"
 
 #: data/ui/device-preferences.ui:318
 msgid "Volume Control"
-msgstr "Volumen Kontrol"
+msgstr "Lydstyring"
 
 #: data/ui/device-preferences.ui:367 src/service/plugins/sftp.js:359
 msgid "Files"
