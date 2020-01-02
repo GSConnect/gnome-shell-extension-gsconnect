@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2020-01-02 01:53\n"
+"PO-Revision-Date: 2020-01-02 02:03\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Danish\n"
 "Language: da_DK\n"
@@ -106,7 +106,7 @@ msgstr "Filer"
 
 #: data/ui/device-preferences.ui:418
 msgid "Receive Files"
-msgstr ""
+msgstr "Modtag Filer"
 
 #: data/ui/device-preferences.ui:503 data/ui/device-preferences.ui:2164
 msgid "Sharing"
@@ -152,7 +152,7 @@ msgstr "Del Notifikationer"
 
 #: data/ui/device-preferences.ui:947
 msgid "Share When Active"
-msgstr ""
+msgstr "Del Når Aktiv"
 
 #: data/ui/device-preferences.ui:998
 msgid "Applications"
@@ -222,7 +222,7 @@ msgstr "Avanceret"
 
 #: data/ui/device-preferences.ui:1855
 msgid "Device Battery"
-msgstr ""
+msgstr "Enhedens Batteri"
 
 #: data/ui/device-preferences.ui:1906
 msgid "Low Battery Notification"
@@ -398,7 +398,7 @@ msgstr "Mobil Enheder"
 #. TRANSLATORS: A menu option to activate the extension
 #: src/extension.js:143 src/extension.js:384
 msgid "Turn On"
-msgstr ""
+msgstr "Tænde For"
 
 #: src/extension.js:245
 #, javascript-format
@@ -410,7 +410,7 @@ msgstr[1] "%d Tilsuttet"
 #. TRANSLATORS: A menu option to deactivate the extension
 #: src/extension.js:381
 msgid "Turn Off"
-msgstr ""
+msgstr "Sluk"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:164 webextension/gettext.js:31
@@ -655,7 +655,7 @@ msgstr "%d%% tilbage"
 #: src/service/plugins/battery.js:199
 #, javascript-format
 msgid "%s: Battery is full"
-msgstr ""
+msgstr "%s: Batteriet er fyldt"
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
@@ -774,7 +774,7 @@ msgstr "Overførsel mislykkedes"
 #: src/service/plugins/share.js:118
 #, javascript-format
 msgid "%s is not allowed to upload files"
-msgstr ""
+msgstr "%s er ikke tilladt at uploade filer"
 
 #: src/service/plugins/share.js:154 src/service/plugins/share.js:302
 msgid "Transferring File"
