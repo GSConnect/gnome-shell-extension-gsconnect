@@ -397,7 +397,7 @@ var Plugin = GObject.registerClass({
         let file, path, stream, success, transfer;
 
         try {
-            if (!packet.payloadSize) {
+            if (!packet.payloadTransferInfo || !packet.payloadTransferInfo.port) {
                 return null;
             }
 
