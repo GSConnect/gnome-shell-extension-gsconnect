@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2020-01-03 00:24\n"
+"PO-Revision-Date: 2020-01-03 00:34\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Danish\n"
 "Language: da_DK\n"
@@ -234,7 +234,7 @@ msgstr "Fuldt Opladet Notifikation"
 
 #: data/ui/device-preferences.ui:2014
 msgid "System Battery"
-msgstr ""
+msgstr "System Batteri"
 
 #: data/ui/device-preferences.ui:2065
 msgid "Share Statistics"
@@ -509,7 +509,7 @@ msgstr "Tilsluttet"
 
 #: src/preferences/service.js:671
 msgid "Waiting for service…"
-msgstr ""
+msgstr "Venter på service…"
 
 #: src/service/daemon.js:333
 msgid "Report"
@@ -546,11 +546,11 @@ msgstr "Del Fil"
 
 #: src/service/daemon.js:770
 msgid "List available devices"
-msgstr ""
+msgstr "Liste over tilgængelige enheder"
 
 #: src/service/daemon.js:779
 msgid "List all devices"
-msgstr ""
+msgstr "Liste alle enheder"
 
 #: src/service/daemon.js:788
 msgid "Target Device"
@@ -558,7 +558,7 @@ msgstr "Målet Enhed"
 
 #: src/service/daemon.js:830
 msgid "Message Body"
-msgstr ""
+msgstr "Beskedkrop"
 
 #: src/service/daemon.js:842 src/service/plugins/notification.js:51
 msgid "Send Notification"
@@ -720,7 +720,7 @@ msgstr "Svar Notifikation"
 
 #: src/service/plugins/notification.js:59
 msgid "Activate Notification"
-msgstr ""
+msgstr "Aktiver Notifikation"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -731,7 +731,7 @@ msgstr "Ping: %s"
 
 #: src/service/plugins/presenter.js:9
 msgid "Presentation"
-msgstr ""
+msgstr "Præsentation"
 
 #: src/service/plugins/runcommand.js:12
 msgid "Run Commands"
