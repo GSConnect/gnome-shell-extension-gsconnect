@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2020-01-02 02:13\n"
+"PO-Revision-Date: 2020-01-03 00:24\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Danish\n"
 "Language: da_DK\n"
@@ -238,7 +238,7 @@ msgstr ""
 
 #: data/ui/device-preferences.ui:2065
 msgid "Share Statistics"
-msgstr ""
+msgstr "Del Statistikker"
 
 #: data/ui/device-preferences.ui:2114 data/ui/device-preferences.ui:2210
 #: src/service/plugins/battery.js:11
@@ -317,7 +317,7 @@ msgstr "Send"
 
 #: data/ui/preferences-window.ui:18
 msgid "Device Name"
-msgstr ""
+msgstr "Enheds Navn"
 
 #: data/ui/preferences-window.ui:49
 msgid "_Rename"
