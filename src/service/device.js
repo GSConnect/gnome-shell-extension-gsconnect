@@ -678,7 +678,7 @@ var Device = GObject.registerClass({
      * @param {Core.Packet} packet - A packet
      */
     async rejectTransfer(packet) {
-        if (!packet || !packet.payloadTransferInfo) return;
+        if (!packet || !packet.hasPayload()) return;
 
         try {
             let transfer = this.createTransfer(Object.assign({
