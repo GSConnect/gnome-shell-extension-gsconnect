@@ -309,7 +309,7 @@ function _full_pack(obj) {
         case (type === 'boolean'):
             return GLib.Variant.new('b', obj);
 
-        case (obj instanceof ByteArray.ByteArray):
+        case (obj instanceof Uint8Array):
             return GLib.Variant.new('ay', obj);
 
         case (obj === null):
@@ -362,7 +362,7 @@ function _full_unpack(obj) {
         case (obj instanceof GLib.Variant):
             return _full_unpack(obj.deep_unpack());
 
-        case (obj instanceof ByteArray.ByteArray):
+        case (obj instanceof Uint8Array):
             return obj;
 
         case (typeof obj.map === 'function'):
