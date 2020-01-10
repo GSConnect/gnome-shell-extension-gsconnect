@@ -244,7 +244,7 @@ var Store = GObject.registerClass({
         try {
             // Get an EBookClient and EBookView
             let uid = source.get_uid();
-            let client = await this._getEBookClient(source, 'exists "tel"');
+            let client = await this._getEBookClient(source);
             let view = await this._getEBookView(client, 'exists "tel"');
 
             // Watch the view for changes to the address book
