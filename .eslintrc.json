@@ -120,6 +120,7 @@
         "global": false,
         "gsconnect": false,
         "debug": false,
+        "hasPayload": false,
         "open_uri": false,
         "_": false,
         "_C": false,

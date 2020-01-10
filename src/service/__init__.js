@@ -137,14 +137,14 @@ JSON.dump = function (obj, file, sync = false) {
  *
  * @returns (boolean} - %true if @packet has a payload
  */
-Object.prototype.hasPayload = function() {
-    if (!this.hasOwnProperty('payloadSize') || this.payloadSize === 0)
+window.hasPayload = function(packet) {
+    if (!packet.hasOwnProperty('payloadSize'))
         return false;
 
-    if (!this.hasOwnProperty('payloadTransferInfo'))
+    if (!packet.hasOwnProperty('payloadTransferInfo'))
         return false;
 
-    return (Object.keys(this.payloadTransferInfo).length > 0);
+    return (Object.keys(packet.payloadTransferInfo).length > 0);
 };
 
 
