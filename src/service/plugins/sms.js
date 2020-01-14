@@ -391,7 +391,8 @@ var Plugin = GObject.registerClass({
                 let a = message.addresses.length;
 
                 while (a--) {
-                    if (message.addresses[a].address === 'insert-address-token')
+                    if (message.addresses[a].address === undefined ||
+                        message.addresses[a].address === 'insert-address-token')
                         message.addresses.splice(a, 1);
                 }
             }

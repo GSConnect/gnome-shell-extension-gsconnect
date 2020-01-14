@@ -241,7 +241,7 @@ const ThreadRow = GObject.registerClass({
 
     set message(message) {
         this._message = message;
-        this._sender = message.addresses[0].address;
+        this._sender = message.addresses[0].address || 'unknown';
 
         // Contact Name
         let nameLabel = _('Unknown Contact');
@@ -483,7 +483,7 @@ const ConversationWidget = GObject.registerClass({
         // Sort properties
         row.date = message.date;
         row.type = message.type;
-        row.sender = message.addresses[0].address;
+        row.sender = message.addresses[0].address || 'unknown';
 
         row.grid = new Gtk.Grid({
             can_focus: false,
@@ -500,16 +500,14 @@ const ConversationWidget = GObject.registerClass({
 
         // Add avatar for incoming messages
         if (incoming) {
-            let address = message.addresses[0].address;
-
             // Ensure we have a contact
-            if (!this.contacts[address]) {
-                this.contacts[address] = this.device.contacts.query({
-                    number: address
+            if (this.contacts[row.sender] === undefined) {
+                this.contacts[row.sender] = this.device.contacts.query({
+                    number: row.sender
                 });
             }
 
-            row.avatar = new Contacts.Avatar(this.contacts[address]);
+            row.avatar = new Contacts.Avatar(this.contacts[row.sender]);
             row.avatar.valign = Gtk.Align.END;
             row.grid.attach(row.avatar, 0, 0, 1, 1);
         }
@@ -922,9 +920,9 @@ var Window = GObject.registerClass({
             // If it's an existing conversation, update it
             if (message) {
                 // Ensure there's a contact mapping
-                let sender = message.addresses[0].address;
+                let sender = message.addresses[0].address || 'unknown';
 
-                if (!row.contacts[sender]) {
+                if (row.contacts[sender] === undefined) {
                     row.contacts[sender] = this.device.contacts.query({
                         number: sender
                     });
