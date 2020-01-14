@@ -93,6 +93,21 @@ var Packet = class Packet {
     toString() {
         return `${this}`;
     }
+
+    /**
+     * Check if the packet has a payload.
+     *
+     * @returns (boolean} - %true if @packet has a payload
+     */
+    hasPayload() {
+        if (!this.hasOwnProperty('payloadSize'))
+            return false;
+
+        if (!this.hasOwnProperty('payloadTransferInfo'))
+            return false;
+
+        return (Object.keys(this.payloadTransferInfo).length > 0);
+    }
 };
 
 

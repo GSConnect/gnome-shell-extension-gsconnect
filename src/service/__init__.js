@@ -133,22 +133,6 @@ JSON.dump = function (obj, file, sync = false) {
 
 
 /**
- * A convenience function for checking if a KDE Connect packet has a payload.
- *
- * @returns (boolean} - %true if @packet has a payload
- */
-window.hasPayload = function(packet) {
-    if (!packet.hasOwnProperty('payloadSize'))
-        return false;
-
-    if (!packet.hasOwnProperty('payloadTransferInfo'))
-        return false;
-
-    return (Object.keys(packet.payloadTransferInfo).length > 0);
-};
-
-
-/**
  * Idle Promise
  *
  * @param {number} priority - The priority of the idle source
