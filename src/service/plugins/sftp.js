@@ -113,6 +113,7 @@ var Plugin = GObject.registerClass({
     _parseInfo(info) {
         this._info = info;
 
+        this.info.ip = this.device.channel.host;
         this.info.directories = {};
         this.info.mount = null;
         this.info.regex = new RegExp(

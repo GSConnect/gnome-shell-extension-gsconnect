@@ -149,6 +149,14 @@ var Device = GObject.registerClass({
         this._loadPlugins();
     }
 
+    get channel() {
+        if (this._channel === undefined) {
+            this._channel = null;
+        }
+
+        return this._channel;
+    }
+
     get connected () {
         if (this._connected === undefined) {
             this._connected = false;
