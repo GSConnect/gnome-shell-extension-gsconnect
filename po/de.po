@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2020-01-01 22:43\n"
+"PO-Revision-Date: 2020-01-25 18:23\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -222,11 +222,11 @@ msgstr "Erweitert"
 
 #: data/ui/device-preferences.ui:1855
 msgid "Device Battery"
-msgstr "Geräte Akku"
+msgstr "Geräteakku"
 
 #: data/ui/device-preferences.ui:1906
 msgid "Low Battery Notification"
-msgstr "Benachrichtigung bei geringen Akkustand"
+msgstr "Benachrichtigung bei geringem Akkustand"
 
 #: data/ui/device-preferences.ui:1967
 msgid "Fully Charged Notification"
@@ -234,7 +234,7 @@ msgstr "Vollständig geladen Benachrichtigung"
 
 #: data/ui/device-preferences.ui:2014
 msgid "System Battery"
-msgstr "Systembatterie"
+msgstr "Systemakku"
 
 #: data/ui/device-preferences.ui:2065
 msgid "Share Statistics"
@@ -291,7 +291,7 @@ msgstr "Nachrichten"
 
 #: data/ui/messaging-window.ui:23 src/service/ui/messaging.js:1184
 msgid "New Conversation"
-msgstr "Neues Gespräch"
+msgstr "Neue Konversation"
 
 #: data/ui/messaging-window.ui:108
 msgid "No Conversations"
@@ -299,11 +299,11 @@ msgstr "Keine Konversationen"
 
 #: data/ui/messaging-window.ui:168
 msgid "No conversation selected"
-msgstr "Keine Unterhaltung ausgewählt"
+msgstr "Keine Konversation ausgewählt"
 
 #: data/ui/messaging-window.ui:184
 msgid "Select or start a conversation"
-msgstr "Eine Unterhaltung auswähle oder starten"
+msgstr "Wähle oder starte eine Konversation"
 
 #: data/ui/messaging-window.ui:251 data/ui/notification-reply-dialog.ui:52
 #: data/ui/telephony.ui:53
@@ -325,7 +325,7 @@ msgstr "_Umbenennen"
 
 #: data/ui/preferences-window.ui:86 data/ui/preferences-window.ui:100
 msgid "Refresh"
-msgstr "Auffrischen"
+msgstr "Aktualisieren"
 
 #. Service Menu -> "Mobile Settings"
 #: data/ui/preferences-window.ui:111 data/ui/preferences-window.ui:128
@@ -448,12 +448,12 @@ msgstr "Festlegen"
 #: src/preferences/keybindings.js:54
 #, javascript-format
 msgid "Enter a new shortcut to change <b>%s</b>"
-msgstr "Ein neues Tastenkürzel eingeben, um <b>%s</b> zu Ändern"
+msgstr "Ein neues Tastenkürzel eingeben, um <b>%s</b> zu ändern"
 
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/preferences/keybindings.js:83
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr "ESC zum Abbrechen oder die Rücktaste drücken, um das Tastenkürzel zurückzusetzen."
+msgstr "Zum Abbrechen ESC oder die Rücktaste drücken, um das Tastenkürzel zurückzusetzen."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -475,7 +475,7 @@ msgstr "taaem <taaem@mailbox.org>\n"
 
 #: src/preferences/service.js:426
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
-msgstr "Fehlersuchmeldungen werden protokolliert. Führen Sie alle erforderlichen Schritte aus, um ein Problem zu reproduzieren, und überprüfen Sie das Protokoll."
+msgstr "Debug-Meldungen werden protokolliert. Führen Sie alle erforderlichen Schritte aus, um ein Problem zu reproduzieren und überprüfen Sie das Protokoll."
 
 #: src/preferences/service.js:429
 msgid "Review Log"
@@ -531,7 +531,7 @@ msgstr "Für Hilfe bei der Fehlerbehebung hier klicken"
 
 #: src/service/daemon.js:595
 msgid "Discovery has been disabled due to the number of devices on this network."
-msgstr "Erkennen wurde deaktiviert, aufgrund der Anzahl an Geräten in diesem Netzwerk."
+msgstr "Erkennen wurde aufgrund der Anzahl an Geräten in diesem Netzwerk deaktiviert."
 
 #: src/service/daemon.js:604
 msgid "Click for more information"
@@ -600,7 +600,7 @@ msgstr "Klingeln"
 #: src/service/daemon.js:926 src/service/plugins/share.js:43
 #: src/service/ui/messaging.js:1167 src/service/ui/messaging.js:1175
 msgid "Share Link"
-msgstr "Verweis freigeben"
+msgstr "Link freigeben"
 
 #: src/service/daemon.js:938
 msgid "Show release version"
@@ -614,7 +614,7 @@ msgstr "Nicht verfügbar"
 #: src/service/device.js:179
 #, javascript-format
 msgid "Bluetooth device at %s"
-msgstr "Bluetooth-Gerät bei %s"
+msgstr "Bluetooth-Gerät an %s"
 
 #. TRANSLATORS: Label for TLS Certificate fingerprint
 #.
@@ -844,13 +844,13 @@ msgstr "Dateien an %s senden"
 #. TRANSLATORS: Mark the file to be opened once completed
 #: src/service/plugins/share.js:408
 msgid "Open when done"
-msgstr "Öffnen nach Erledigung"
+msgstr "Öffnen wenn abgeschlossen"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
 #: src/service/plugins/share.js:447
 #, javascript-format
 msgid "Send a link to %s"
-msgstr "Verweis an %s senden"
+msgstr "Link an %s senden"
 
 #: src/service/plugins/sms.js:13
 msgid "SMS"
@@ -874,7 +874,7 @@ msgstr "Systemlautstärke"
 
 #: src/service/plugins/telephony.js:30
 msgid "Mute Call"
-msgstr "Anruf stumm stellen"
+msgstr "Anruf stumm schalten"
 
 #. TRANSLATORS: The phone is ringing
 #: src/service/plugins/telephony.js:187
@@ -983,7 +983,7 @@ msgstr "%d%% (wird geschätzt …)"
 #: src/shell/device.js:129
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
-msgstr "%d%% (%d:%02d bis vollständig geladen)"
+msgstr "%d%% (%d:%02d bis vollständig aufgeladen)"
 
 #. TRANSLATORS: Estimated time until battery is empty
 #. EXAMPLE: 42% (12:15 Remaining)
@@ -1034,7 +1034,7 @@ msgstr "GSConnect"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr "Verweise mit GSConnect direkt an den Browser oder per SMS freigeben."
+msgstr "Teilen Sie Links mit GSConnect, direkt mit dem Browser oder per SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:33
