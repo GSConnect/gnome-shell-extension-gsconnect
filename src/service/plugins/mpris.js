@@ -457,42 +457,42 @@ var RemotePlayer = GObject.registerClass({
             'Can Go Next',
             'Whether the client can call the Next method.',
             GObject.ParamFlags.READABLE,
-            null
+            false
         ),
         'CanGoPrevious': GObject.ParamSpec.boolean(
             'CanGoPrevious',
             'Can Go Previous',
             'Whether the client can call the Previous method.',
             GObject.ParamFlags.READABLE,
-            null
+            false
         ),
         'CanPlay': GObject.ParamSpec.boolean(
             'CanPlay',
             'Can Play',
             'Whether playback can be started using Play or PlayPause.',
             GObject.ParamFlags.READABLE,
-            null
+            false
         ),
         'CanPause': GObject.ParamSpec.boolean(
             'CanPause',
             'Can Pause',
             'Whether playback can be paused using Play or PlayPause.',
             GObject.ParamFlags.READABLE,
-            null
+            false
         ),
         'CanSeek': GObject.ParamSpec.boolean(
             'CanSeek',
             'Can Seek',
             'Whether the client can control the playback position using Seek and SetPosition.',
             GObject.ParamFlags.READABLE,
-            null
+            false
         ),
         'CanControl': GObject.ParamSpec.boolean(
             'CanControl',
             'Can Control',
             'Whether the media player may be controlled over this interface.',
             GObject.ParamFlags.READABLE,
-            null
+            false
         )
     },
     Signals: {
