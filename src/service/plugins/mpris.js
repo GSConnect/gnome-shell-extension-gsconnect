@@ -506,46 +506,90 @@ var RemotePlayer = GObject.registerClass({
     _init(device, initialState) {
         super._init();
 
-        this._isPlaying = false;
         this._device = device;
+        this._isPlaying = false;
+
+        this._ownerId = 0;
+        this._applicationIface = null;
+        this._playerIface = null;
+
         this.parseState(initialState);
-
-        // Own name
-        let name = [device.name, this.Identity].join('').replace(/[\W]*/g, '');
-
-        this._ownerId = Gio.bus_own_name(
-            Gio.BusType.SESSION,
-            `org.mpris.MediaPlayer2.GSConnect.${name}`,
-            Gio.BusNameOwnerFlags.NONE,
-            this._onBusAcquired.bind(this),
-            this._onNameAcquired.bind(this),
-            this._onNameLost.bind(this)
-        );
-    }
-
-    _onBusAcquired(connection, name) {
-        debug(arguments);
-
-        this._applicationIface = new DBus.Interface({
-            g_instance: this,
-            g_connection: Gio.DBus.session,
-            g_object_path: '/org/mpris/MediaPlayer2',
-            g_interface_info: MPRISIface
-        });
-
-        this._playerIface = new DBus.Interface({
-            g_instance: this,
-            g_connection: Gio.DBus.session,
-            g_object_path: '/org/mpris/MediaPlayer2',
-            g_interface_info: MPRISPlayerIface
-        });
     }
 
     _onNameAcquired(connection, name) {
+        debug(name);
+
+        if (!this._applicationIface) {
+            this._applicationIface = new DBus.Interface({
+                g_instance: this,
+                g_connection: connection,
+                g_object_path: '/org/mpris/MediaPlayer2',
+                g_interface_info: MPRISIface
+            });
+        }
+
+        if (!this._playerIface) {
+            this._playerIface = new DBus.Interface({
+                g_instance: this,
+                g_connection: connection,
+                g_object_path: '/org/mpris/MediaPlayer2',
+                g_interface_info: MPRISPlayerIface
+            });
+        }
     }
 
     _onNameLost(connection, name) {
-        debug(arguments);
+        debug(name);
+
+        if (this._applicationIface) {
+            this._applicationIface.destroy();
+            this._applicationIface = null;
+        }
+
+        if (this._playerIface) {
+            this._playerIface.destroy();
+            this._playerIface = null;
+        }
+    }
+
+    async export() {
+        try {
+            if (this._ownerId === 0) {
+                let name = [
+                    this.device.name,
+                    this.Identity
+                ].join('').replace(/[\W]*/g, '');
+
+                let connection = await DBus.newConnection();
+
+                this._ownerId = Gio.bus_own_name_on_connection(
+                    connection,
+                    `org.mpris.MediaPlayer2.GSConnect.${name}`,
+                    Gio.BusNameOwnerFlags.NONE,
+                    this._onNameAcquired.bind(this),
+                    this._onNameLost.bind(this)
+                );
+            }
+        } catch (e) {
+            logError(e);
+        }
+    }
+
+    unexport() {
+        if (this._ownerId !== 0) {
+            Gio.bus_unown_name(this._ownerId);
+            this._ownerId = 0;
+        }
+
+        if (this._applicationIface) {
+            this._applicationIface.destroy();
+            this._applicationIface = null;
+        }
+
+        if (this._playerIface) {
+            this._playerIface.destroy();
+            this._playerIface = null;
+        }
     }
 
     parseState(state) {
@@ -619,6 +663,12 @@ var RemotePlayer = GObject.registerClass({
 
         if (state.hasOwnProperty('volume')) {
             this.volume = state.volume / 100;
+        }
+
+        if (!this._isPlaying && !this.CanControl) {
+            this.unexport();
+        } else {
+            this.export();
         }
     }
 
@@ -811,7 +861,7 @@ var RemotePlayer = GObject.registerClass({
             this._CanControl = false;
         }
 
-        return true;
+        return (this.CanPlay || this.CanPause);
     }
 
     Next() {
@@ -917,17 +967,7 @@ var RemotePlayer = GObject.registerClass({
     }
 
     destroy() {
-        if (this._ownerId != 0) {
-            Gio.bus_unown_name(this._ownerId);
-        }
-
-        if (this._applicationIface) {
-            this._applicationIface.destroy();
-        }
-
-        if (this._playerIface) {
-            this._playerIface.destroy();
-        }
+        this.unexport();
     }
 });
 
