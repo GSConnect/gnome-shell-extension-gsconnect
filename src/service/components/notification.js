@@ -4,6 +4,8 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GjsPrivate = imports.gi.GjsPrivate;
 
+const DBus = imports.service.components.dbus;
+
 
 let _nodeInfo = Gio.DBusNodeInfo.new_for_xml(`
 <node>
@@ -98,41 +100,6 @@ var Listener = class Listener {
                 this._applications[appInfo.get_name()] = appSettings;
             }
         }
-    }
-
-    /**
-     * Setup a dedicated DBus connection for monitoring
-     */
-    _newConnection() {
-        return new Promise((resolve, reject) => {
-            Gio.DBusConnection.new_for_address(
-                Gio.dbus_address_get_for_bus_sync(Gio.BusType.SESSION, null),
-                Gio.DBusConnectionFlags.AUTHENTICATION_CLIENT |
-                Gio.DBusConnectionFlags.MESSAGE_BUS_CONNECTION,
-                null,
-                null,
-                (connection, res) => {
-                    try {
-                        resolve(Gio.DBusConnection.new_for_address_finish(res));
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
-            );
-
-        });
-    }
-
-    _getConnection(type = Gio.BusType.SESSION) {
-        return new Promise((resolve, reject) => {
-            Gio.bus_get(type, null, (connection, res) => {
-                try {
-                    resolve(Gio.bus_get_finish(res));
-                } catch (e) {
-                    reject(e);
-                }
-            });
-        });
     }
 
     _listNames() {
@@ -343,8 +310,8 @@ var Listener = class Listener {
 
     async _init_async() {
         try {
-            this._session = await this._getConnection();
-            this._monitor = await this._newConnection();
+            this._session = await DBus.getConnection();
+            this._monitor = await DBus.newConnection();
             await this._monitorConnection();
         } catch (e) {
             // FIXME: if something goes wrong the component will appear active
