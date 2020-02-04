@@ -558,7 +558,7 @@ var ContactChooser = GObject.registerClass({
             grid.attach(avatar, 0, 0, 1, 2);
 
             let nameLabel = new Gtk.Label({
-                label: contact.name,
+                label: GLib.markup_escape_text(contact.name, -1),
                 halign: Gtk.Align.START,
                 hexpand: true,
                 visible: true
