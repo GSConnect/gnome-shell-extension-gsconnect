@@ -852,10 +852,8 @@ var Window = GObject.registerClass({
         let contact = this.device.contacts.query({number: address});
 
         if (addresses.length === 1) {
-            // Set the header bar title/subtitle
-            this.headerbar.title = GLib.markup_escape_text(contact.name, -1);
+            this.headerbar.title = contact.name;
             this.headerbar.subtitle = Contacts.getDisplayNumber(contact, address);
-
         } else {
             let otherLength = addresses.length - 1;
 
