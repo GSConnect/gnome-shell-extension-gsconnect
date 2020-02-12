@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2020-02-12 09:08\n"
+"PO-Revision-Date: 2020-02-12 09:30\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Estonian\n"
 "Language: et_EE\n"
@@ -213,10 +213,10 @@ msgid "Experimental"
 msgstr "Katseline"
 
 msgid "Device Cache"
-msgstr ""
+msgstr "Seadme vahemälu"
 
 msgid "Clear Cache…"
-msgstr ""
+msgstr "Tühjenda vahemälu…"
 
 #: data/ui/device-preferences.ui:1771
 msgid "Legacy SMS Support"
