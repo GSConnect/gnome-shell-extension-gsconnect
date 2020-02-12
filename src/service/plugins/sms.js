@@ -254,7 +254,7 @@ var Plugin = GObject.registerClass({
         }
     }
 
-    cacheClear() {
+    clearCache() {
         this.threads = {};
         this.__cache_write();
         this.notify('threads');

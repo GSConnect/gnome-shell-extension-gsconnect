@@ -448,7 +448,7 @@ var Device = GObject.registerClass({
         // Preference helpers
         let clearCache = new Gio.SimpleAction({
             name: 'clearCache',
-            parameter_type: new GLib.VariantType('s')
+            parameter_type: null
         });
         clearCache.connect('activate', this._clearCache.bind(this));
         this.add_action(clearCache);
@@ -709,14 +709,8 @@ var Device = GObject.registerClass({
 
     _clearCache(action, parameter) {
         try {
-            let context = parameter.unpack();
-
-            if (context && this._plugins.has(context)) {
-                let plugin = this._plugins.get(context);
-
-                if (typeof plugin.cacheClear === 'function') {
-                    plugin.cacheClear();
-                }
+            for (let plugin of this._plugins.values()) {
+                plugin.clearCache();
             }
         } catch (e) {
             logError(e, this.name);
