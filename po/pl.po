@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2020-01-01 22:10\n"
+"PO-Revision-Date: 2020-02-12 16:17\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Polish\n"
 "Language: pl_PL\n"
@@ -211,6 +211,12 @@ msgstr "Wtyczki"
 #: data/ui/device-preferences.ui:1723
 msgid "Experimental"
 msgstr "Eksperymentalne"
+
+msgid "Device Cache"
+msgstr "Pamięć podręczna urządzenia"
+
+msgid "Clear Cache…"
+msgstr "Wyczyść pamięć podręczną…"
 
 #: data/ui/device-preferences.ui:1771
 msgid "Legacy SMS Support"

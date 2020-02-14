@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2020-01-01 22:10\n"
+"PO-Revision-Date: 2020-02-13 00:13\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Belarusian\n"
 "Language: be_BY\n"
@@ -211,6 +211,12 @@ msgstr "Убудовы"
 #: data/ui/device-preferences.ui:1723
 msgid "Experimental"
 msgstr "Эксперыментальныя"
+
+msgid "Device Cache"
+msgstr "Кэш прылады"
+
+msgid "Clear Cache…"
+msgstr "Ачыстка кэшу…"
 
 #: data/ui/device-preferences.ui:1771
 msgid "Legacy SMS Support"
