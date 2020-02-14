@@ -166,6 +166,13 @@ var Plugin = GObject.registerClass({
     }
 
     /**
+     * An overridable function that is invoked when the on-disk cache is being
+     * cleared. Implementations should use this function to clear any in-memory
+     * cache data.
+     */
+    clearCache() {}
+
+    /**
      * An overridable function that is invoked when the cache is done loading
      */
     cacheLoaded() {}

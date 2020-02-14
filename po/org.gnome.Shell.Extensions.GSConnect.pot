@@ -215,6 +215,12 @@ msgstr ""
 msgid "Experimental"
 msgstr ""
 
+msgid "Device Cache"
+msgstr ""
+
+msgid "Clear Cache…"
+msgstr ""
+
 #: data/ui/device-preferences.ui:1771
 msgid "Legacy SMS Support"
 msgstr ""

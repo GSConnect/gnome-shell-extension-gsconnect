@@ -79,7 +79,7 @@ var Plugin = GObject.registerClass({
         this.requestUids();
     }
 
-    cacheClear() {
+    clearCache() {
         this._store.clear();
     }
 

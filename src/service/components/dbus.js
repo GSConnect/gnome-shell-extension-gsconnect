@@ -668,3 +668,47 @@ function makeInterfaceProxy(info) {
     return makeInterfaceProxy._cache[info.name];
 }
 
+/**
+ * Get the DBus connection on @busType
+ *
+ * @param {Gio.BusType} [busType] - a Gio.BusType constant
+ * @param (Gio.Cancellable} [cancellable] - an optional Gio.Cancellable
+ */
+function getConnection(busType = Gio.BusType.SESSION, cancellable = null) {
+    return new Promise((resolve, reject) => {
+        Gio.bus_get(busType, cancellable, (connection, res) => {
+            try {
+                resolve(Gio.bus_get_finish(res));
+            } catch (e) {
+                reject(e);
+            }
+        });
+    });
+}
+
+/**
+ * Get a new dedicated DBus connection on @busType
+ *
+ * @param {Gio.BusType} [busType] - a Gio.BusType constant
+ * @param (Gio.Cancellable} [cancellable] - an optional Gio.Cancellable
+ */
+function newConnection(busType = Gio.BusType.SESSION, cancellable = null) {
+    return new Promise((resolve, reject) => {
+        Gio.DBusConnection.new_for_address(
+            Gio.dbus_address_get_for_bus_sync(Gio.BusType.SESSION, cancellable),
+            Gio.DBusConnectionFlags.AUTHENTICATION_CLIENT |
+            Gio.DBusConnectionFlags.MESSAGE_BUS_CONNECTION,
+            null,
+            cancellable,
+            (connection, res) => {
+                try {
+                    resolve(Gio.DBusConnection.new_for_address_finish(res));
+                } catch (e) {
+                    reject(e);
+                }
+            }
+        );
+
+    });
+}
+

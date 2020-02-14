@@ -249,7 +249,7 @@ const ThreadRow = GObject.registerClass({
         // Update avatar for single-recipient messages
         if (message.addresses.length === 1) {
             this._avatar.contact = this.contacts[this._sender];
-            nameLabel = this._avatar.contact.name;
+            nameLabel = GLib.markup_escape_text(this._avatar.contact.name, -1);
         } else {
             this._avatar.contact = null;
             nameLabel = _('Group Message');
@@ -852,10 +852,8 @@ var Window = GObject.registerClass({
         let contact = this.device.contacts.query({number: address});
 
         if (addresses.length === 1) {
-            // Set the header bar title/subtitle
-            this.headerbar.title = GLib.markup_escape_text(contact.name, -1);
+            this.headerbar.title = contact.name;
             this.headerbar.subtitle = Contacts.getDisplayNumber(contact, address);
-
         } else {
             let otherLength = addresses.length - 1;
 

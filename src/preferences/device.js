@@ -977,6 +977,8 @@ var DevicePreferences = GObject.registerClass({
         this.plugin_list.next = this.experimental_list;
         this.experimental_list.prev = this.plugin_list;
 
+        this.experimental_list.set_header_func(rowSeparators);
+
         this._pluginsId = this.settings.connect(
             'changed::supported-plugins',
             this._populatePlugins.bind(this)
@@ -1015,24 +1017,6 @@ var DevicePreferences = GObject.registerClass({
             visible: true
         });
         grid.add(widget);
-
-        if (plugin.Plugin.prototype.cacheClear) {
-            let button = new Gtk.Button({
-                action_name: 'device.clearCache',
-                action_target: GLib.Variant.new_string(name),
-                image: new Gtk.Image({
-                    icon_name: 'edit-clear-all-symbolic',
-                    pixel_size: 16,
-                    visible: true
-                }),
-                valign: Gtk.Align.CENTER,
-                vexpand: true,
-                visible: true
-            });
-            button.get_style_context().add_class('flat');
-            widget.bind_property('active', button, 'sensitive', 2);
-            grid.add(button);
-        }
 
         this.plugin_list.add(row);
 
