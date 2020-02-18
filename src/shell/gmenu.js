@@ -417,7 +417,8 @@ var IconButton = GObject.registerClass({
 
                 this.submenu = new ListBox({
                     model: link.value,
-                    action_group: this.action_group
+                    action_group: this.action_group,
+                    _parent: this._parent
                 });
 
                 this.submenu.actor.style_class = 'popup-sub-menu';
@@ -553,7 +554,7 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
         this.sub.set_easing_duration(250);
         this.sub.set_easing_mode(Clutter.AnimationMode.EASE_IN_OUT_CUBIC);
 
-        this.sub.set_height(submenu ? -1 : 0);
+        this.sub.set_height(submenu ? submenu.actor.get_preferred_size()[1] : 0);
         this.sub.restore_easing_state();
 
         this._submenu = submenu;
@@ -633,6 +634,8 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
                 button.submenu.actor.hide();
             }
         });
+
+        menu.sub.set_height(-1);
     }
 
     // PopupMenu.PopupMenuBase overrides
