@@ -710,8 +710,10 @@ msgstr ""
 msgid "Keyboard"
 msgstr ""
 
+#. TRANSLATORS: Displayed when the remote keyboard is not ready to accept input
 #: src/service/plugins/mousepad.js:413
-msgid "Keyboard not ready"
+#, javascript-format
+msgid "The remote keyboard on %s is not active"
 msgstr ""
 
 #: src/service/plugins/mpris.js:12

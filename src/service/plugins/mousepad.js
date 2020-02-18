@@ -410,8 +410,17 @@ var KeyboardInputDialog = GObject.registerClass({
         let infoicon = new Gtk.Image({icon_name: 'dialog-warning-symbolic'});
         bar.get_content_area().add(infoicon);
 
-        let infolabel = new Gtk.Label({label: _('Keyboard not ready')});
+        let infolabel = new Gtk.Label({
+            // TRANSLATORS: Displayed when the remote keyboard is not ready to accept input
+            label: _('Remote keyboard on %s is not active').format(this.device.name)
+        });
         bar.get_content_area().add(infolabel);
+
+        let infolink = new Gtk.LinkButton({
+            label: _('Help'),
+            uri: 'https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Help#remote-keyboard-not-active'
+        });
+        bar.get_action_area().add(infolink);
 
         // Content
         let layout = new Gtk.Grid({
