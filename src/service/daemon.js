@@ -1121,7 +1121,7 @@ const Service = GObject.registerClass({
             }
 
             if (options.contains('share-link')) {
-                this._cliShareFile(id, options);
+                this._cliShareLink(id, options);
             }
 
             return 0;
