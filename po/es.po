@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2020-02-19 11:34\n"
+"PO-Revision-Date: 2020-02-19 11:44\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Spanish\n"
 "Language: es_ES\n"
@@ -152,7 +152,7 @@ msgstr "Notificaciones de compartición"
 
 #: data/ui/device-preferences.ui:947
 msgid "Share When Active"
-msgstr ""
+msgstr "Compartir mientras haya actividad"
 
 #: data/ui/device-preferences.ui:998
 msgid "Applications"
