@@ -922,6 +922,15 @@ const Service = GObject.registerClass({
             _('Share Link'),
             '<URL>'
         );
+
+        this.add_main_option(
+            'share-text',
+            null,
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.STRING,
+            _('Share Text'),
+            '<text>'
+        );
         
         /*
          * Misc
@@ -1056,6 +1065,12 @@ const Service = GObject.registerClass({
             
             this._cliAction(device, 'shareUri', GLib.Variant.new_string(uri));
         });
+    }
+
+    _cliShareText(device, options) {
+        let text = options.lookup_value('share-text', null).unpack();
+
+        this._cliAction(device, 'shareText', GLib.Variant.new_string(text));
     }
 
     vfunc_handle_local_options(options) {
