@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2020-02-19 01:34\n"
+"PO-Revision-Date: 2020-02-19 07:55\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Catalan\n"
 "Language: ca_ES\n"
@@ -213,10 +213,10 @@ msgid "Experimental"
 msgstr "Experiments"
 
 msgid "Device Cache"
-msgstr ""
+msgstr "Memòria cau del dispositiu"
 
 msgid "Clear Cache…"
-msgstr ""
+msgstr "Neteja la memòria cau…"
 
 #: data/ui/device-preferences.ui:1771
 msgid "Legacy SMS Support"
@@ -475,7 +475,7 @@ msgstr "Una implementació completa de KDE Connect per al GNOME"
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:393
 msgid "translator-credits"
-msgstr "Adolfo Jayme Barrientos <fitojb@ubuntu.com>, 2019\n"
+msgstr "Adolfo Jayme Barrientos <fitojb@ubuntu.com>, 2019-2020\n"
 "Marc Riera Irigoyen <marcriera@softcatala.org>, 2019"
 
 #: src/preferences/service.js:426
@@ -709,7 +709,7 @@ msgstr "Teclat"
 #: src/service/plugins/mousepad.js:413
 #, javascript-format
 msgid "The remote keyboard on %s is not active"
-msgstr ""
+msgstr "El teclat remot a %s no és actiu"
 
 #: src/service/plugins/mpris.js:12
 msgid "MPRIS"
