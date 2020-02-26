@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2020-02-17 18:45\n"
+"PO-Revision-Date: 2020-02-20 00:35\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Ukrainian\n"
 "Language: uk_UA\n"
@@ -706,9 +706,12 @@ msgstr "Тачпад"
 msgid "Keyboard"
 msgstr "Клавіатура"
 
+#. TRANSLATORS: Displayed when the remote keyboard is not ready to accept input
+#. eg. The remote keyboard on Pixel 3 is not active
 #: src/service/plugins/mousepad.js:413
-msgid "Keyboard not ready"
-msgstr "Клавіатура не готова"
+#, javascript-format
+msgid "The remote keyboard on %s is not active"
+msgstr "Віддалена клавіатура на пристрої %s не активна"
 
 #: src/service/plugins/mpris.js:12
 msgid "MPRIS"

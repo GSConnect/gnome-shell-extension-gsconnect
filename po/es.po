@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2020-02-12 09:08\n"
+"PO-Revision-Date: 2020-02-20 00:34\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Spanish\n"
 "Language: es_ES\n"
@@ -152,7 +152,7 @@ msgstr "Notificaciones de compartición"
 
 #: data/ui/device-preferences.ui:947
 msgid "Share When Active"
-msgstr ""
+msgstr "Compartir mientras haya actividad"
 
 #: data/ui/device-preferences.ui:998
 msgid "Applications"
@@ -213,10 +213,10 @@ msgid "Experimental"
 msgstr "Experimentos"
 
 msgid "Device Cache"
-msgstr ""
+msgstr "Antememoria de dispositivo"
 
 msgid "Clear Cache…"
-msgstr ""
+msgstr "Vaciar antememoria…"
 
 #: data/ui/device-preferences.ui:1771
 msgid "Legacy SMS Support"
@@ -704,9 +704,12 @@ msgstr "Mousepad"
 msgid "Keyboard"
 msgstr "Teclado"
 
+#. TRANSLATORS: Displayed when the remote keyboard is not ready to accept input
+#. eg. The remote keyboard on Pixel 3 is not active
 #: src/service/plugins/mousepad.js:413
-msgid "Keyboard not ready"
-msgstr "El teclado no está preparado"
+#, javascript-format
+msgid "The remote keyboard on %s is not active"
+msgstr "El teclado remoto de %s no está activo"
 
 #: src/service/plugins/mpris.js:12
 msgid "MPRIS"
@@ -784,7 +787,7 @@ msgstr "%s no tiene permitido cargar archivos"
 
 #: src/service/plugins/share.js:154 src/service/plugins/share.js:302
 msgid "Transferring File"
-msgstr ""
+msgstr "Transferencia de archivo en curso"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:156
