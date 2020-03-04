@@ -2,6 +2,7 @@
 
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
+const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 const Main = imports.ui.main;
@@ -82,10 +83,12 @@ gsconnect.getIcon = function(name) {
  * A System Indicator used as the hub for spawning device indicators and
  * indicating that the extension is active when there are none.
  */
-class ServiceIndicator extends PanelMenu.SystemIndicator {
+const ServiceIndicator = GObject.registerClass({
+    GTypeName: 'GSConnectServiceIndicator'
+}, class ServiceIndicator extends PanelMenu.SystemIndicator {
 
-    constructor() {
-        super();
+    _init() {
+        super._init();
 
         this._menus = {};
 
@@ -446,7 +449,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         this._item.destroy();
         this.menu.destroy();
     }
-}
+});
 
 
 var serviceIndicator = null;
