@@ -75,52 +75,6 @@ PanelMenu.Button.gsconnect-device-indicator
 }
 
 
-/* Do Not Disturb Dialog
-
-ModalDialog.ModalDialog.gsconnect-dnd-dialog
-    StBoxLayout.nm-dialog-header-hbox
-        StIcon.nm-dialog-header-icon
-        StBoxLayout
-            StLabel.nm-dialog-header
-            StLabel.nm-dialog-subheader
-    StBoxLayout.nm-dialog-content
-        StBoxLayout.gsconnect-radio-list
-            StBoxLayout.gsconnect-radio-button (Until you turn off...)
-                StButton.pager-button
-                    StIcon
-                StLabel
-            StBoxLayout.gsconnect-radio-button (Until 00:00)
-                StButton.pager-button
-                    StIcon
-                StBoxLayout.gsconnect-dnd-timer
-                    StLabel
-                    StButton.pager-button
-                        StIcon
-                    StButton.pager-button
-                        StIcon
- */
-
-.gsconnect-radio-list {
-    spacing: 0.25em;
-}
-
-.gsconnect-radio-button {
-    spacing: 0.25em;
-}
-
-.gsconnect-radio-button .pager-button {
-    /* fix for arc-theme */
-    color: inherit;
-}
-
-.gsconnect-radio-button StIcon {
-    icon-size: 16px;
-}
-
-.gsconnect-dnd-timer {
-    spacing: 0.25em;
-}
-
 /* Tooltip
 
 StBin.gsconnect-tooltip (inherits from .osd-window)
@@ -151,4 +105,3 @@ StBin.gsconnect-tooltip (inherits from .osd-window)
 .gsconnect-tooltip StLabel:rtl {
     text-align: right;
 }
-
