@@ -21,7 +21,6 @@ imports._gsconnect;
 const _ = gsconnect._;
 const Clipboard = imports.shell.clipboard;
 const Device = imports.shell.device;
-const DoNotDisturb = imports.shell.donotdisturb;
 const Keybindings = imports.shell.keybindings;
 const Notification = imports.shell.notification;
 const Remote = imports.shell.remote;
@@ -162,10 +161,6 @@ const ServiceIndicator = GObject.registerClass({
 
         // Service Menu -> Separator
         this._item.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
-
-        // Service Menu -> "Do Not Disturb"
-        let dndItem = new DoNotDisturb.createMenuItem(this.settings);
-        this._item.menu.addMenuItem(dndItem);
 
         // Service Menu -> "Turn On/Off"
         this._enableItem = this._item.menu.addAction(

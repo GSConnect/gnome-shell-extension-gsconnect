@@ -36,6 +36,5 @@ src/service/ui/messaging.js
 src/service/ui/service.js
 src/service/ui/telephony.js
 src/shell/device.js
-src/shell/donotdisturb.js
 src/shell/notification.js
 webextension/gettext.js
