@@ -238,7 +238,7 @@ class Source extends NotificationDaemon.GtkNotificationDaemonAppSource {
         }
 
         if (showBanner && !repeat)
-            this.notify(notification);
+            this.showNotification(notification);
         else
             this.pushNotification(notification);
 
@@ -247,14 +247,14 @@ class Source extends NotificationDaemon.GtkNotificationDaemonAppSource {
 
     /**
      * Override to lift the usual notification limit (3)
-     * See: https://gitlab.gnome.org/GNOME/gnome-shell/blob/master/js/ui/messageTray.js#L773-L786
+     * See: https://github.com/GNOME/gnome-shell/blob/mainline/js/ui/messageTray.js#L842
      */
     pushNotification(notification) {
         if (this.notifications.includes(notification))
             return;
 
         notification.connect('destroy', this._onNotificationDestroy.bind(this));
-        notification.connect('acknowledged-changed', this.countUpdated.bind(this));
+        notification.connect('notify::acknowledged', this.countUpdated.bind(this));
         this.notifications.push(notification);
         this.emit('notification-added', notification);
 
