@@ -222,7 +222,7 @@ gsconnect.installService = function() {
 
         // Desktop Entries
         installResource(appDir, appFile, appFile);
-        installResource(appDir, appFile, appPrefsFile);
+        installResource(appDir, appPrefsFile, appPrefsFile);
 
         // Application Icon
         installResource(iconDir, iconFull, `icons/${iconFull}`);
