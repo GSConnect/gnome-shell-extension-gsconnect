@@ -1,5 +1,7 @@
 'use strict';
 
+const ByteArray = imports.byteArray;
+
 const Gio = imports.gi.Gio;
 const GIRepository = imports.gi.GIRepository;
 const GLib = imports.gi.GLib;
@@ -142,6 +144,37 @@ gsconnect.dbusinfo.nodes.forEach(info => info.cache_build());
 /**
  * Install desktop files for user installs
  */
+function installFile(dirname, basename, contents) {
+    try {
+        let filename = GLib.build_filenamev([dirname, basename]);
+        GLib.mkdir_with_parents(dirname, 0o755);
+
+        return GLib.file_set_contents(filename, contents);
+    } catch (e) {
+        logError(e, 'GSConnect');
+
+        return false;
+    }
+}
+
+function installResource(dirname, basename, rel_path) {
+    try {
+        let bytes = Gio.resources_lookup_data(
+            GLib.build_filenamev([gsconnect.app_path, rel_path]),
+            Gio.ResourceLookupFlags.NONE
+        );
+
+        let source = ByteArray.toString(bytes.toArray());
+        let contents = source.replace('@EXTDATADIR@', gsconnect.extdatadir);
+
+        return installFile(dirname, basename, contents);
+    } catch (e) {
+        logError(e, 'GSConnect');
+
+        return false;
+    }
+}
+
 gsconnect.installService = function() {
     let confDir = GLib.get_user_config_dir();
     let dataDir = GLib.get_user_data_dir();
@@ -152,9 +185,9 @@ gsconnect.installService = function() {
     let dbusFile = `${gsconnect.app_id}.service`;
 
     // Desktop Entry
-    let desktopDir = GLib.build_filenamev([dataDir, 'applications']);
-    let desktopFile = `${gsconnect.app_id}.desktop`;
-    let desktopPrefsFile = `${gsconnect.app_id}.Preferences.desktop`;
+    let appDir = GLib.build_filenamev([dataDir, 'applications']);
+    let appFile = `${gsconnect.app_id}.desktop`;
+    let appPrefsFile = `${gsconnect.app_id}.Preferences.desktop`;
 
     // Application Icon
     let iconDir = GLib.build_filenamev([dataDir, 'icons', 'hicolor', 'scalable', 'apps']);
@@ -184,33 +217,16 @@ gsconnect.installService = function() {
     // file manager scripts, and WebExtension manifests are installed.
     if (gsconnect.is_local) {
         // DBus Service
-        GLib.mkdir_with_parents(dbusDir, 0o755);
-        GLib.file_set_contents(
-            GLib.build_filenamev([dbusDir, dbusFile]),
-            gsconnect.get_resource(dbusFile)
-        );
+        if (!installResource(dbusDir, dbusFile, dbusFile))
+            throw Error('GSConnect: Failed to install DBus Service');
 
         // Desktop Entries
-        GLib.mkdir_with_parents(desktopDir, 0o755);
-        GLib.file_set_contents(
-            GLib.build_filenamev([desktopDir, desktopFile]),
-            gsconnect.get_resource(desktopFile)
-        );
-        GLib.file_set_contents(
-            GLib.build_filenamev([desktopDir, desktopPrefsFile]),
-            gsconnect.get_resource(desktopPrefsFile)
-        );
+        installResource(appDir, appFile, appFile);
+        installResource(appDir, appFile, appPrefsFile);
 
         // Application Icon
-        GLib.mkdir_with_parents(iconDir, 0o755);
-        GLib.file_set_contents(
-            GLib.build_filenamev([iconDir, iconFull]),
-            gsconnect.get_resource(`icons/${iconFull}`)
-        );
-        GLib.file_set_contents(
-            GLib.build_filenamev([iconDir, iconSym]),
-            gsconnect.get_resource(`icons/${iconSym}`)
-        );
+        installResource(iconDir, iconFull, `icons/${iconFull}`);
+        installResource(iconDir, iconSym, `icons/${iconSym}`);
 
         // File Manager Extensions
         for (let [dir, name] of fileManagers) {
@@ -225,20 +241,16 @@ gsconnect.installService = function() {
         }
 
         // WebExtension Manifests
-        for (let [dir, manifest] of manifests) {
-            GLib.mkdir_with_parents(dir, 0o755);
-            GLib.file_set_contents(
-                GLib.build_filenamev([dir, manifestFile]),
-                manifest
-            );
+        for (let [dirname, contents] of manifests) {
+            installFile(dirname, manifestFile, contents);
         }
 
     // Otherwise, if running as a system extension, ensure anything previously
     // installed when running as a user extension is removed.
     } else {
         GLib.unlink(GLib.build_filenamev([dbusDir, dbusFile]));
-        GLib.unlink(GLib.build_filenamev([desktopDir, desktopFile]));
-        GLib.unlink(GLib.build_filenamev([desktopDir, desktopPrefsFile]));
+        GLib.unlink(GLib.build_filenamev([appDir, appFile]));
+        GLib.unlink(GLib.build_filenamev([appDir, appPrefsFile]));
         GLib.unlink(GLib.build_filenamev([iconDir, iconFull]));
         GLib.unlink(GLib.build_filenamev([iconDir, iconSym]));
 
