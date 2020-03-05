@@ -109,9 +109,9 @@ const RepliableNotificationBanner = GObject.registerClass({
             Gio.DBusCallFlags.NO_AUTO_START,
             -1,
             null,
-            (proxy, res) => {
+            (connection, res) => {
                 try {
-                    proxy.call_finish(res);
+                    connection.call_finish(res);
                 } catch (e) {
                     // Silence errors
                 }
@@ -164,9 +164,9 @@ const Source = GObject.registerClass({
             Gio.DBusCallFlags.NO_AUTO_START,
             -1,
             null,
-            (proxy, res) => {
+            (connection, res) => {
                 try {
-                    proxy.call_finish(res);
+                    connection.call_finish(res);
                 } catch (e) {
                     // If we fail, reset in case we can try again
                     notification._remoteClosed = false;
@@ -389,9 +389,9 @@ function patchGtkNotificationSources() {
             Gio.DBusCallFlags.NO_AUTO_START,
             -1,
             null,
-            (proxy, res) => {
+            (connection, res) => {
                 try {
-                    proxy.call_finish(res);
+                    connection.call_finish(res);
                 } catch (e) {
                     // If we fail, reset in case we can try again
                     notification._remoteWithdrawn = false;
