@@ -383,7 +383,7 @@ var IconButton = GObject.registerClass({
 
     _init(params) {
         super._init({
-            style_class: 'system-menu-action gsconnect-icon-button',
+            style_class: 'gsconnect-icon-button',
             can_focus: true
         });
         Object.assign(this, params);
