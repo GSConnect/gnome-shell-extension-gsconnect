@@ -2,6 +2,7 @@
 
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
+const GObject = imports.gi.GObject;
 const St = imports.gi.St;
 
 const Main = imports.ui.main;
@@ -22,10 +23,12 @@ const REPLY_REGEX = /^([^|]+)\|(.+)\|([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[
 /**
  * A slightly modified Notification Banner with an entry field
  */
-class RepliableNotificationBanner extends MessageTray.NotificationBanner {
+const RepliableNotificationBanner = GObject.registerClass({
+    GTypeName: 'GSConnectRepliableNotificationBanner'
+}, class RepliableNotificationBanner extends MessageTray.NotificationBanner {
 
-    constructor(notification) {
-        super(notification);
+    _init(notification) {
+        super._init(notification);
 
         // Ensure there's an action area
         if (!this._buttonBox) {
@@ -117,7 +120,7 @@ class RepliableNotificationBanner extends MessageTray.NotificationBanner {
 
         this.close();
     }
-}
+});
 
 
 /**
@@ -127,7 +130,9 @@ class RepliableNotificationBanner extends MessageTray.NotificationBanner {
  *
  * See: https://gitlab.gnome.org/GNOME/gnome-shell/blob/master/js/ui/notificationDaemon.js#L631-724
  */
-class Source extends NotificationDaemon.GtkNotificationDaemonAppSource {
+const Source = GObject.registerClass({
+    GTypeName: 'GSConnnectNotificationSource'
+}, class Source extends NotificationDaemon.GtkNotificationDaemonAppSource {
 
     _closeGSConnectNotification(notification, reason) {
         if (reason !== MessageTray.NotificationDestroyedReason.DISMISSED) {
@@ -272,7 +277,7 @@ class Source extends NotificationDaemon.GtkNotificationDaemonAppSource {
             return new MessageTray.NotificationBanner(notification);
         }
     }
-}
+});
 
 
 /**
