@@ -139,12 +139,6 @@ const Source = GObject.registerClass({
             return;
         }
 
-        // TODO: Sometimes @notification is the object, sometimes it's the id?
-        if (typeof notification === 'string') {
-            notification = this.notifications[notification];
-            if (!notification) return;
-        }
-
         // Avoid sending the request multiple times
         if (notification._remoteClosed) {
             return;
@@ -220,7 +214,7 @@ const Source = GObject.registerClass({
 
         // Device Notification
         } else if (idMatch) {
-            notification = new NotificationDaemon.GtkNotificationDaemonNotification(this, notificationParams);
+            notification = this._createNotification(notificationParams);
 
             notification.deviceId = deviceId;
             notification.remoteId = remoteId;
@@ -235,7 +229,7 @@ const Source = GObject.registerClass({
 
         // Service Notification
         } else {
-            notification = new NotificationDaemon.GtkNotificationDaemonNotification(this, notificationParams);
+            notification = this._createNotification(notificationParams);
             notification.connect('destroy', (notification, reason) => {
                 delete this._notifications[localId];
             });
@@ -349,7 +343,7 @@ function patchGtkNotificationSources() {
         if (this._notifications[notificationId])
             this._notifications[notificationId].destroy();
 
-        let notification = new NotificationDaemon.GtkNotificationDaemonNotification(this, notificationParams);
+        let notification = this._createNotification(notificationParams);
         notification.connect('destroy', (notification, reason) => {
             this._withdrawGSConnectNotification(notification, reason);
             delete this._notifications[notificationId];
@@ -357,7 +351,7 @@ function patchGtkNotificationSources() {
         this._notifications[notificationId] = notification;
 
         if (showBanner)
-            this.notify(notification);
+            this.showNotification(notification);
         else
             this.pushNotification(notification);
 
