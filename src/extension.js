@@ -137,7 +137,7 @@ const ServiceIndicator = GObject.registerClass({
         );
         this._indicator.visible = false;
 
-        AggregateMenu._indicators.insert_child_at_index(this.indicators, 0);
+        AggregateMenu._indicators.insert_child_at_index(this, 0);
         AggregateMenu._gsconnect = this;
 
         // Service Menu
@@ -439,10 +439,11 @@ const ServiceIndicator = GObject.registerClass({
         this.settings.run_dispose();
 
         // Destroy the PanelMenu.SystemIndicator actors
-        delete AggregateMenu._gsconnect;
-        this.indicators.destroy();
         this._item.destroy();
         this.menu.destroy();
+
+        delete AggregateMenu._gsconnect;
+        super.destroy();
     }
 });
 
