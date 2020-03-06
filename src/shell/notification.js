@@ -11,6 +11,8 @@ const NotificationDaemon = imports.ui.notificationDaemon;
 
 // eslint-disable-next-line no-redeclare
 const _ = gsconnect._;
+const APP_ID = 'org.gnome.Shell.Extensions.GSConnect';
+const APP_PATH = '/org/gnome/Shell/Extensions/GSConnect';
 
 
 // deviceId Pattern (<device-id>|<remote-id>)
@@ -116,8 +118,8 @@ const NotificationBanner = GObject.registerClass({
         let platformData = NotificationDaemon.getPlatformData();
 
         Gio.DBus.session.call(
-            'org.gnome.Shell.Extensions.GSConnect',
-            '/org/gnome/Shell/Extensions/GSConnect',
+            APP_ID,
+            APP_PATH,
             'org.freedesktop.Application',
             'ActivateAction',
             GLib.Variant.new('(sava{sv})', ['device', [target], platformData]),
@@ -143,8 +145,6 @@ const NotificationBanner = GObject.registerClass({
  * A custom notification source for spawning notifications and closing device
  * notifications. This source isn't actually used, but it's methods are patched
  * into existing sources.
- *
- * See: https://gitlab.gnome.org/GNOME/gnome-shell/blob/master/js/ui/notificationDaemon.js#L631-724
  */
 const Source = GObject.registerClass({
     GTypeName: 'GSConnnectNotificationSource'
@@ -177,8 +177,8 @@ const Source = GObject.registerClass({
         let platformData = NotificationDaemon.getPlatformData();
 
         Gio.DBus.session.call(
-            'org.gnome.Shell.Extensions.GSConnect',
-            '/org/gnome/Shell/Extensions/GSConnect',
+            APP_ID,
+            APP_PATH,
             'org.freedesktop.Application',
             'ActivateAction',
             GLib.Variant.new('(sava{sv})', ['device', [target], platformData]),
@@ -199,7 +199,6 @@ const Source = GObject.registerClass({
 
     /**
      * Override to control notification spawning
-     * https://gitlab.gnome.org/GNOME/gnome-shell/blob/master/js/ui/notificationDaemon.js#L685-L703
      */
     addNotification(notificationId, notificationParams, showBanner) {
         let idMatch, deviceId, requestReplyId, remoteId, localId;
@@ -213,6 +212,8 @@ const Source = GObject.registerClass({
         } else if ((idMatch = notificationId.match(DEVICE_REGEX))) {
             [idMatch, deviceId, remoteId] = idMatch;
             localId = `${deviceId}|${remoteId}`;
+
+        // Must be a service notification
         } else {
             localId = notificationId;
         }
@@ -268,7 +269,6 @@ const Source = GObject.registerClass({
 
     /**
      * Override to lift the usual notification limit (3)
-     * See: https://github.com/GNOME/gnome-shell/blob/mainline/js/ui/messageTray.js#L842
      */
     pushNotification(notification) {
         if (this.notifications.includes(notification))
@@ -293,7 +293,7 @@ const Source = GObject.registerClass({
  * extension is loaded, it has to be patched in place.
  */
 function patchGSConnectNotificationSource() {
-    let source = Main.notificationDaemon._gtkNotificationDaemon._sources[gsconnect.app_id];
+    let source = Main.notificationDaemon._gtkNotificationDaemon._sources[APP_ID];
 
     if (source !== undefined) {
         // Patch in the subclassed methods
@@ -323,7 +323,7 @@ const __ensureAppSource = NotificationDaemon.GtkNotificationDaemon.prototype._en
 const _ensureAppSource = function(appId) {
     let source = __ensureAppSource.call(this, appId);
 
-    if (source._appId === 'org.gnome.Shell.Extensions.GSConnect') {
+    if (source._appId === APP_ID) {
         source._closeGSConnectNotification = Source.prototype._closeGSConnectNotification;
         source.addNotification = Source.prototype.addNotification;
         source.pushNotification = Source.prototype.pushNotification;
@@ -394,8 +394,8 @@ function patchGtkNotificationSources() {
         let platformData = NotificationDaemon.getPlatformData();
 
         Gio.DBus.session.call(
-            'org.gnome.Shell.Extensions.GSConnect',
-            '/org/gnome/Shell/Extensions/GSConnect',
+            APP_ID,
+            APP_PATH,
             'org.freedesktop.Application',
             'ActivateAction',
             GLib.Variant.new('(sava{sv})', ['device', [target], platformData]),
