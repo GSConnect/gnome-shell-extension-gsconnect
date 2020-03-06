@@ -23,14 +23,18 @@ const REPLY_REGEX = /^([^|]+)\|(.+)\|([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[
 /**
  * A slightly modified Notification Banner with an entry field
  */
-const RepliableNotificationBanner = GObject.registerClass({
-    GTypeName: 'GSConnectRepliableNotificationBanner'
-}, class RepliableNotificationBanner extends MessageTray.NotificationBanner {
+const NotificationBanner = GObject.registerClass({
+    GTypeName: 'GSConnectNotificationBanner'
+}, class NotificationBanner extends MessageTray.NotificationBanner {
 
     _init(notification) {
         super._init(notification);
 
-        // Ensure there's an action area
+        if (notification.requestReplyId !== undefined)
+            this._addReplyAction();
+    }
+
+    _addReplyAction() {
         if (!this._buttonBox) {
             this._buttonBox = new St.BoxLayout({
                 style_class: 'notification-actions',
@@ -47,43 +51,57 @@ const RepliableNotificationBanner = GObject.registerClass({
             x_expand: true,
             can_focus: true
         });
+
+        button.connect(
+            'clicked',
+            this._onEntryRequested.bind(this)
+        );
+
         this._buttonBox.add_child(button);
 
         // Reply Entry
-        let entry = new St.Entry({
+        this._replyEntry = new St.Entry({
             can_focus: true,
             hint_text: _('Type a message'),
             style_class: 'chat-response',
             x_expand: true,
             visible: false
         });
-        this._buttonBox.add_child(entry);
 
-        // Enter to send
-        // TODO: secondary-icon
-        entry.clutter_text.connect(
+        this._buttonBox.add_child(this._replyEntry);
+    }
+
+    _onEntryRequested(button) {
+        this.focused = true;
+
+        for (let child of this._buttonBox.get_children()) {
+            child.visible = (child === this._replyEntry);
+        }
+
+        // Release the notification focus with the entry focus
+        this._replyEntry.connect(
+            'key-focus-out',
+            this._onEntryDismissed.bind(this)
+        );
+
+        this._replyEntry.clutter_text.connect(
             'activate',
             this._onEntryActivated.bind(this)
         );
 
-        // Swap the button out for the entry
-        button.connect('clicked', (button) => {
-            this.focused = true;
-            entry.visible = true;
-            entry.clutter_text.grab_key_focus();
-            button.visible = false;
-        });
+        this._replyEntry.grab_key_focus();
+    }
 
-        // Make sure we release the focus when it's time
-        entry.clutter_text.connect('key-focus-out', () => {
-            this.focused = false;
-            this.emit('unfocused');
-        });
+    _onEntryDismissed(entry) {
+        this.focused = false;
+        this.emit('unfocused');
     }
 
     _onEntryActivated(clutter_text) {
         // Refuse to send empty replies
         if (clutter_text.text === '') return;
+
+        clutter_text.disconnect(this._entryActivatedId);
 
         // Copy the text, then clear the entry
         let text = clutter_text.text;
@@ -260,16 +278,8 @@ const Source = GObject.registerClass({
         this.countUpdated();
     }
 
-    /**
-     * Override to spawn repliable banners when appropriate
-     * https://gitlab.gnome.org/GNOME/gnome-shell/blob/master/js/ui/messageTray.js#L745-L747
-     */
     createBanner(notification) {
-        if (notification.requestReplyId) {
-            return new RepliableNotificationBanner(notification);
-        } else {
-            return new MessageTray.NotificationBanner(notification);
-        }
+        return new NotificationBanner(notification);
     }
 });
 
