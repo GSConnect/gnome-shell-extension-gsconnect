@@ -101,8 +101,6 @@ const NotificationBanner = GObject.registerClass({
         // Refuse to send empty replies
         if (clutter_text.text === '') return;
 
-        clutter_text.disconnect(this._entryActivatedId);
-
         // Copy the text, then clear the entry
         let text = clutter_text.text;
         clutter_text.text = '';
@@ -155,6 +153,12 @@ const Source = GObject.registerClass({
     _closeGSConnectNotification(notification, reason) {
         if (reason !== MessageTray.NotificationDestroyedReason.DISMISSED) {
             return;
+        }
+
+        // TODO: Sometimes @notification is the object, sometimes it's the id?
+        if (typeof notification === 'string') {
+            notification = this.notifications[notification];
+            if (!notification) return;
         }
 
         // Avoid sending the request multiple times
