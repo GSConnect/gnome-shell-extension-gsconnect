@@ -90,7 +90,6 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         // Submenu Container
         this.sub = new St.BoxLayout({
             clip_to_allocation: true,
-            style_class: 'popup-sub-menu',
             vertical: false,
             visible: false,
             x_expand: true
@@ -485,7 +484,6 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
         // Submenu Container
         this.sub = new St.BoxLayout({
             clip_to_allocation: true,
-            style_class: 'popup-sub-menu',
             vertical: true,
             x_expand: true
         });
