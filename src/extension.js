@@ -11,19 +11,16 @@ const PopupMenu = imports.ui.popupMenu;
 const AggregateMenu = Main.panel.statusArea.aggregateMenu;
 
 // Bootstrap
-window.gsconnect = {
-    extdatadir: imports.misc.extensionUtils.getCurrentExtension().path
-};
-imports.searchPath.unshift(gsconnect.extdatadir);
-imports._gsconnect;
+const Extension = imports.misc.extensionUtils.getCurrentExtension();
+Extension.imports._gsconnect;
 
 // eslint-disable-next-line no-redeclare
 const _ = gsconnect._;
-const Clipboard = imports.shell.clipboard;
-const Device = imports.shell.device;
-const Keybindings = imports.shell.keybindings;
-const Notification = imports.shell.notification;
-const Remote = imports.shell.remote;
+const Clipboard = Extension.imports.shell.clipboard;
+const Device = Extension.imports.shell.device;
+const Keybindings = Extension.imports.shell.keybindings;
+const Notification = Extension.imports.shell.notification;
+const Remote = Extension.imports.shell.remote;
 
 
 /**

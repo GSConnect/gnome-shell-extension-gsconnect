@@ -8,7 +8,9 @@ const St = imports.gi.St;
 
 const PopupMenu = imports.ui.popupMenu;
 
-const Tooltip = imports.shell.tooltip;
+const Extension = imports.misc.extensionUtils.getCurrentExtension();
+
+const Tooltip = Extension.imports.shell.tooltip;
 
 
 /**
