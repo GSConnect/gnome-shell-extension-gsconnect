@@ -35,8 +35,9 @@ gsconnect.configdir = GLib.build_filenamev([GLib.get_user_config_dir(), 'gsconne
 gsconnect.runtimedir = GLib.build_filenamev([GLib.get_user_runtime_dir(), 'gsconnect']);
 
 for (let path of [gsconnect.cachedir, gsconnect.configdir, gsconnect.runtimedir]) {
-    GLib.mkdir_with_parents(path, 448);
+    GLib.mkdir_with_parents(path, 0o755);
 }
+
 
 /**
  * Setup global object for user or system install
