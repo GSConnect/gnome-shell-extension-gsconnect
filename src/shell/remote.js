@@ -117,6 +117,9 @@ var Device = GObject.registerClass({
     // Proxy GObject::notify signals
     vfunc_g_properties_changed(changed, invalidated) {
         try {
+            if (this.__disposed !== undefined)
+                return;
+
             for (let name in changed.deep_unpack()) {
                 this.notify(toHyphenCase(name));
             }
