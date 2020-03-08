@@ -642,12 +642,15 @@ function makeInterfaceProxy(info) {
         }
 
         vfunc_g_properties_changed(changed, invalidated) {
-            for (let name in changed.deep_unpack()) {
-                try {
+            try {
+                if (this.__disposed !== undefined)
+                    return;
+
+                for (let name in changed.deepUnpack()) {
                     this.notify(name);
-                } catch (e) {
-                    logError(e, name);
                 }
+            } catch (e) {
+                logError(e);
             }
         }
 
@@ -661,7 +664,10 @@ function makeInterfaceProxy(info) {
         }
 
         destroy() {
-            GObject.signal_handlers_destroy(this);
+            if (this.__disposed === undefined) {
+                this.__disposed = true;
+                this.run_dispose();
+            }
         }
     });
 
