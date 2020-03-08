@@ -2,6 +2,7 @@
 
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
+const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 const Main = imports.ui.main;
@@ -10,20 +11,16 @@ const PopupMenu = imports.ui.popupMenu;
 const AggregateMenu = Main.panel.statusArea.aggregateMenu;
 
 // Bootstrap
-window.gsconnect = {
-    extdatadir: imports.misc.extensionUtils.getCurrentExtension().path
-};
-imports.searchPath.unshift(gsconnect.extdatadir);
-imports._gsconnect;
+const Extension = imports.misc.extensionUtils.getCurrentExtension();
+Extension.imports._gsconnect;
 
 // eslint-disable-next-line no-redeclare
 const _ = gsconnect._;
-const Clipboard = imports.shell.clipboard;
-const Device = imports.shell.device;
-const DoNotDisturb = imports.shell.donotdisturb;
-const Keybindings = imports.shell.keybindings;
-const Notification = imports.shell.notification;
-const Remote = imports.shell.remote;
+const Clipboard = Extension.imports.shell.clipboard;
+const Device = Extension.imports.shell.device;
+const Keybindings = Extension.imports.shell.keybindings;
+const Notification = Extension.imports.shell.notification;
+const Remote = Extension.imports.shell.remote;
 
 
 /**
@@ -82,10 +79,12 @@ gsconnect.getIcon = function(name) {
  * A System Indicator used as the hub for spawning device indicators and
  * indicating that the extension is active when there are none.
  */
-class ServiceIndicator extends PanelMenu.SystemIndicator {
+const ServiceIndicator = GObject.registerClass({
+    GTypeName: 'GSConnectServiceIndicator'
+}, class ServiceIndicator extends PanelMenu.SystemIndicator {
 
-    constructor() {
-        super();
+    _init() {
+        super._init();
 
         this._menus = {};
 
@@ -135,7 +134,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         );
         this._indicator.visible = false;
 
-        AggregateMenu._indicators.insert_child_at_index(this.indicators, 0);
+        AggregateMenu._indicators.insert_child_at_index(this, 0);
         AggregateMenu._gsconnect = this;
 
         // Service Menu
@@ -159,10 +158,6 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
         // Service Menu -> Separator
         this._item.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
-
-        // Service Menu -> "Do Not Disturb"
-        let dndItem = new DoNotDisturb.createMenuItem(this.settings);
-        this._item.menu.addMenuItem(dndItem);
 
         // Service Menu -> "Turn On/Off"
         this._enableItem = this._item.menu.addAction(
@@ -441,12 +436,13 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         this.settings.run_dispose();
 
         // Destroy the PanelMenu.SystemIndicator actors
-        delete AggregateMenu._gsconnect;
-        this.indicators.destroy();
         this._item.destroy();
         this.menu.destroy();
+
+        delete AggregateMenu._gsconnect;
+        super.destroy();
     }
-}
+});
 
 
 var serviceIndicator = null;

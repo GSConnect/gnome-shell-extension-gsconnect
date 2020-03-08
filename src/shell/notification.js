@@ -2,6 +2,7 @@
 
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
+const GObject = imports.gi.GObject;
 const St = imports.gi.St;
 
 const Main = imports.ui.main;
@@ -10,6 +11,8 @@ const NotificationDaemon = imports.ui.notificationDaemon;
 
 // eslint-disable-next-line no-redeclare
 const _ = gsconnect._;
+const APP_ID = 'org.gnome.Shell.Extensions.GSConnect';
+const APP_PATH = '/org/gnome/Shell/Extensions/GSConnect';
 
 
 // deviceId Pattern (<device-id>|<remote-id>)
@@ -22,12 +25,18 @@ const REPLY_REGEX = /^([^|]+)\|(.+)\|([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[
 /**
  * A slightly modified Notification Banner with an entry field
  */
-class RepliableNotificationBanner extends MessageTray.NotificationBanner {
+const NotificationBanner = GObject.registerClass({
+    GTypeName: 'GSConnectNotificationBanner'
+}, class NotificationBanner extends MessageTray.NotificationBanner {
 
-    constructor(notification) {
-        super(notification);
+    _init(notification) {
+        super._init(notification);
 
-        // Ensure there's an action area
+        if (notification.requestReplyId !== undefined)
+            this._addReplyAction();
+    }
+
+    _addReplyAction() {
         if (!this._buttonBox) {
             this._buttonBox = new St.BoxLayout({
                 style_class: 'notification-actions',
@@ -44,38 +53,50 @@ class RepliableNotificationBanner extends MessageTray.NotificationBanner {
             x_expand: true,
             can_focus: true
         });
+
+        button.connect(
+            'clicked',
+            this._onEntryRequested.bind(this)
+        );
+
         this._buttonBox.add_child(button);
 
         // Reply Entry
-        let entry = new St.Entry({
+        this._replyEntry = new St.Entry({
             can_focus: true,
             hint_text: _('Type a message'),
             style_class: 'chat-response',
             x_expand: true,
             visible: false
         });
-        this._buttonBox.add_child(entry);
 
-        // Enter to send
-        // TODO: secondary-icon
-        entry.clutter_text.connect(
+        this._buttonBox.add_child(this._replyEntry);
+    }
+
+    _onEntryRequested(button) {
+        this.focused = true;
+
+        for (let child of this._buttonBox.get_children()) {
+            child.visible = (child === this._replyEntry);
+        }
+
+        // Release the notification focus with the entry focus
+        this._replyEntry.connect(
+            'key-focus-out',
+            this._onEntryDismissed.bind(this)
+        );
+
+        this._replyEntry.clutter_text.connect(
             'activate',
             this._onEntryActivated.bind(this)
         );
 
-        // Swap the button out for the entry
-        button.connect('clicked', (button) => {
-            this.focused = true;
-            entry.visible = true;
-            entry.clutter_text.grab_key_focus();
-            button.visible = false;
-        });
+        this._replyEntry.grab_key_focus();
+    }
 
-        // Make sure we release the focus when it's time
-        entry.clutter_text.connect('key-focus-out', () => {
-            this.focused = false;
-            this.emit('unfocused');
-        });
+    _onEntryDismissed(entry) {
+        this.focused = false;
+        this.emit('unfocused');
     }
 
     _onEntryActivated(clutter_text) {
@@ -97,8 +118,8 @@ class RepliableNotificationBanner extends MessageTray.NotificationBanner {
         let platformData = NotificationDaemon.getPlatformData();
 
         Gio.DBus.session.call(
-            'org.gnome.Shell.Extensions.GSConnect',
-            '/org/gnome/Shell/Extensions/GSConnect',
+            APP_ID,
+            APP_PATH,
             'org.freedesktop.Application',
             'ActivateAction',
             GLib.Variant.new('(sava{sv})', ['device', [target], platformData]),
@@ -106,9 +127,9 @@ class RepliableNotificationBanner extends MessageTray.NotificationBanner {
             Gio.DBusCallFlags.NO_AUTO_START,
             -1,
             null,
-            (proxy, res) => {
+            (connection, res) => {
                 try {
-                    proxy.call_finish(res);
+                    connection.call_finish(res);
                 } catch (e) {
                     // Silence errors
                 }
@@ -117,17 +138,17 @@ class RepliableNotificationBanner extends MessageTray.NotificationBanner {
 
         this.close();
     }
-}
+});
 
 
 /**
  * A custom notification source for spawning notifications and closing device
  * notifications. This source isn't actually used, but it's methods are patched
  * into existing sources.
- *
- * See: https://gitlab.gnome.org/GNOME/gnome-shell/blob/master/js/ui/notificationDaemon.js#L631-724
  */
-class Source extends NotificationDaemon.GtkNotificationDaemonAppSource {
+const Source = GObject.registerClass({
+    GTypeName: 'GSConnnectNotificationSource'
+}, class Source extends NotificationDaemon.GtkNotificationDaemonAppSource {
 
     _closeGSConnectNotification(notification, reason) {
         if (reason !== MessageTray.NotificationDestroyedReason.DISMISSED) {
@@ -156,8 +177,8 @@ class Source extends NotificationDaemon.GtkNotificationDaemonAppSource {
         let platformData = NotificationDaemon.getPlatformData();
 
         Gio.DBus.session.call(
-            'org.gnome.Shell.Extensions.GSConnect',
-            '/org/gnome/Shell/Extensions/GSConnect',
+            APP_ID,
+            APP_PATH,
             'org.freedesktop.Application',
             'ActivateAction',
             GLib.Variant.new('(sava{sv})', ['device', [target], platformData]),
@@ -165,9 +186,9 @@ class Source extends NotificationDaemon.GtkNotificationDaemonAppSource {
             Gio.DBusCallFlags.NO_AUTO_START,
             -1,
             null,
-            (proxy, res) => {
+            (connection, res) => {
                 try {
-                    proxy.call_finish(res);
+                    connection.call_finish(res);
                 } catch (e) {
                     // If we fail, reset in case we can try again
                     notification._remoteClosed = false;
@@ -178,7 +199,6 @@ class Source extends NotificationDaemon.GtkNotificationDaemonAppSource {
 
     /**
      * Override to control notification spawning
-     * https://gitlab.gnome.org/GNOME/gnome-shell/blob/master/js/ui/notificationDaemon.js#L685-L703
      */
     addNotification(notificationId, notificationParams, showBanner) {
         let idMatch, deviceId, requestReplyId, remoteId, localId;
@@ -192,6 +212,8 @@ class Source extends NotificationDaemon.GtkNotificationDaemonAppSource {
         } else if ((idMatch = notificationId.match(DEVICE_REGEX))) {
             [idMatch, deviceId, remoteId] = idMatch;
             localId = `${deviceId}|${remoteId}`;
+
+        // Must be a service notification
         } else {
             localId = notificationId;
         }
@@ -215,7 +237,7 @@ class Source extends NotificationDaemon.GtkNotificationDaemonAppSource {
 
         // Device Notification
         } else if (idMatch) {
-            notification = new NotificationDaemon.GtkNotificationDaemonNotification(this, notificationParams);
+            notification = this._createNotification(notificationParams);
 
             notification.deviceId = deviceId;
             notification.remoteId = remoteId;
@@ -230,7 +252,7 @@ class Source extends NotificationDaemon.GtkNotificationDaemonAppSource {
 
         // Service Notification
         } else {
-            notification = new NotificationDaemon.GtkNotificationDaemonNotification(this, notificationParams);
+            notification = this._createNotification(notificationParams);
             notification.connect('destroy', (notification, reason) => {
                 delete this._notifications[localId];
             });
@@ -238,7 +260,7 @@ class Source extends NotificationDaemon.GtkNotificationDaemonAppSource {
         }
 
         if (showBanner && !repeat)
-            this.notify(notification);
+            this.showNotification(notification);
         else
             this.pushNotification(notification);
 
@@ -247,32 +269,23 @@ class Source extends NotificationDaemon.GtkNotificationDaemonAppSource {
 
     /**
      * Override to lift the usual notification limit (3)
-     * See: https://gitlab.gnome.org/GNOME/gnome-shell/blob/master/js/ui/messageTray.js#L773-L786
      */
     pushNotification(notification) {
         if (this.notifications.includes(notification))
             return;
 
         notification.connect('destroy', this._onNotificationDestroy.bind(this));
-        notification.connect('acknowledged-changed', this.countUpdated.bind(this));
+        notification.connect('notify::acknowledged', this.countUpdated.bind(this));
         this.notifications.push(notification);
         this.emit('notification-added', notification);
 
         this.countUpdated();
     }
 
-    /**
-     * Override to spawn repliable banners when appropriate
-     * https://gitlab.gnome.org/GNOME/gnome-shell/blob/master/js/ui/messageTray.js#L745-L747
-     */
     createBanner(notification) {
-        if (notification.requestReplyId) {
-            return new RepliableNotificationBanner(notification);
-        } else {
-            return new MessageTray.NotificationBanner(notification);
-        }
+        return new NotificationBanner(notification);
     }
-}
+});
 
 
 /**
@@ -280,7 +293,7 @@ class Source extends NotificationDaemon.GtkNotificationDaemonAppSource {
  * extension is loaded, it has to be patched in place.
  */
 function patchGSConnectNotificationSource() {
-    let source = Main.notificationDaemon._gtkNotificationDaemon._sources[gsconnect.app_id];
+    let source = Main.notificationDaemon._gtkNotificationDaemon._sources[APP_ID];
 
     if (source !== undefined) {
         // Patch in the subclassed methods
@@ -310,7 +323,7 @@ const __ensureAppSource = NotificationDaemon.GtkNotificationDaemon.prototype._en
 const _ensureAppSource = function(appId) {
     let source = __ensureAppSource.call(this, appId);
 
-    if (source._appId === 'org.gnome.Shell.Extensions.GSConnect') {
+    if (source._appId === APP_ID) {
         source._closeGSConnectNotification = Source.prototype._closeGSConnectNotification;
         source.addNotification = Source.prototype.addNotification;
         source.pushNotification = Source.prototype.pushNotification;
@@ -344,7 +357,7 @@ function patchGtkNotificationSources() {
         if (this._notifications[notificationId])
             this._notifications[notificationId].destroy();
 
-        let notification = new NotificationDaemon.GtkNotificationDaemonNotification(this, notificationParams);
+        let notification = this._createNotification(notificationParams);
         notification.connect('destroy', (notification, reason) => {
             this._withdrawGSConnectNotification(notification, reason);
             delete this._notifications[notificationId];
@@ -352,7 +365,7 @@ function patchGtkNotificationSources() {
         this._notifications[notificationId] = notification;
 
         if (showBanner)
-            this.notify(notification);
+            this.showNotification(notification);
         else
             this.pushNotification(notification);
 
@@ -381,8 +394,8 @@ function patchGtkNotificationSources() {
         let platformData = NotificationDaemon.getPlatformData();
 
         Gio.DBus.session.call(
-            'org.gnome.Shell.Extensions.GSConnect',
-            '/org/gnome/Shell/Extensions/GSConnect',
+            APP_ID,
+            APP_PATH,
             'org.freedesktop.Application',
             'ActivateAction',
             GLib.Variant.new('(sava{sv})', ['device', [target], platformData]),
@@ -390,9 +403,9 @@ function patchGtkNotificationSources() {
             Gio.DBusCallFlags.NO_AUTO_START,
             -1,
             null,
-            (proxy, res) => {
+            (connection, res) => {
                 try {
-                    proxy.call_finish(res);
+                    connection.call_finish(res);
                 } catch (e) {
                     // If we fail, reset in case we can try again
                     notification._remoteWithdrawn = false;

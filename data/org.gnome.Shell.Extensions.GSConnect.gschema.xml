@@ -22,9 +22,6 @@
     <key name="devices" type="as">
       <default>[]</default>
     </key>
-    <key name="donotdisturb" type="i">
-      <default>0</default>
-    </key>
     <key name="debug" type="b">
       <default>false</default>
     </key>

@@ -8,7 +8,9 @@ const St = imports.gi.St;
 
 const PopupMenu = imports.ui.popupMenu;
 
-const Tooltip = imports.shell.tooltip;
+const Extension = imports.misc.extensionUtils.getCurrentExtension();
+
+const Tooltip = Extension.imports.shell.tooltip;
 
 
 /**
@@ -90,7 +92,6 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         // Submenu Container
         this.sub = new St.BoxLayout({
             clip_to_allocation: true,
-            style_class: 'popup-sub-menu',
             vertical: false,
             visible: false,
             x_expand: true
@@ -383,7 +384,7 @@ var IconButton = GObject.registerClass({
 
     _init(params) {
         super._init({
-            style_class: 'system-menu-action gsconnect-icon-button',
+            style_class: 'gsconnect-icon-button',
             can_focus: true
         });
         Object.assign(this, params);
@@ -485,7 +486,6 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
         // Submenu Container
         this.sub = new St.BoxLayout({
             clip_to_allocation: true,
-            style_class: 'popup-sub-menu',
             vertical: true,
             x_expand: true
         });

@@ -504,27 +504,6 @@ const Service = GObject.registerClass({
     }
 
     /**
-     * Override Gio.Application.send_notification() to respect donotdisturb
-     */
-    send_notification(id, notification) {
-        if (!this._notificationSettings) {
-            this._notificationSettings = new Gio.Settings({
-                schema_id: 'org.gnome.desktop.notifications.application',
-                path: '/org/gnome/desktop/notifications/application/org-gnome-shell-extensions-gsconnect/'
-            });
-        }
-
-        let now = GLib.DateTime.new_now_local().to_unix();
-        let dnd = (this.settings.get_int('donotdisturb') <= now);
-
-        // TODO: Maybe the 'enable-sound-alerts' should be left alone/queried
-        this._notificationSettings.set_boolean('enable-sound-alerts', dnd);
-        this._notificationSettings.set_boolean('show-banners', dnd);
-
-        super.send_notification(id, notification);
-    }
-
-    /**
      * Remove a local libnotify or Gtk notification.
      *
      * @param {String|Number} id - Gtk (string) or libnotify id (uint32)

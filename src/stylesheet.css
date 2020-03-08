@@ -64,62 +64,18 @@ PanelMenu.Button.gsconnect-device-indicator
 }
 
 .gsconnect-icon-button {
-    border: none;
-    border-radius: 16px;
-    padding: 8px;
+    border-radius: 1em;
+    padding: 0.5em;
 }
 
 .gsconnect-icon-button:hover, .gsconnect-icon-button:focus {
-    border: none;
-    padding: 8px;
+    background-color: rgba(255, 255, 255, 0.125);
 }
 
-
-/* Do Not Disturb Dialog
-
-ModalDialog.ModalDialog.gsconnect-dnd-dialog
-    StBoxLayout.nm-dialog-header-hbox
-        StIcon.nm-dialog-header-icon
-        StBoxLayout
-            StLabel.nm-dialog-header
-            StLabel.nm-dialog-subheader
-    StBoxLayout.nm-dialog-content
-        StBoxLayout.gsconnect-radio-list
-            StBoxLayout.gsconnect-radio-button (Until you turn off...)
-                StButton.pager-button
-                    StIcon
-                StLabel
-            StBoxLayout.gsconnect-radio-button (Until 00:00)
-                StButton.pager-button
-                    StIcon
-                StBoxLayout.gsconnect-dnd-timer
-                    StLabel
-                    StButton.pager-button
-                        StIcon
-                    StButton.pager-button
-                        StIcon
- */
-
-.gsconnect-radio-list {
-    spacing: 0.25em;
+.gsconnect-icon-button StIcon {
+    icon-size: 1em;
 }
 
-.gsconnect-radio-button {
-    spacing: 0.25em;
-}
-
-.gsconnect-radio-button .pager-button {
-    /* fix for arc-theme */
-    color: inherit;
-}
-
-.gsconnect-radio-button StIcon {
-    icon-size: 16px;
-}
-
-.gsconnect-dnd-timer {
-    spacing: 0.25em;
-}
 
 /* Tooltip
 
@@ -151,4 +107,3 @@ StBin.gsconnect-tooltip (inherits from .osd-window)
 .gsconnect-tooltip StLabel:rtl {
     text-align: right;
 }
-
