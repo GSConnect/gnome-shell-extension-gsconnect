@@ -309,17 +309,15 @@ var Interface = GObject.registerClass({
             return;
         }
 
-        if (!this._propertyCase) {
+        if (!this._nativeCase) {
             if (this[toUnderscoreCase(name)] !== undefined) {
-                this._propertyCase = 'toUnderScoreCase';
+                this._nativeCase = toUnderScoreCase;
             } else if (this[toCamelCase(name)] !== undefined) {
-                this._propertyCase = 'toCamelCase';
+                this._nativeCase = toCamelCase;
             }
         }
 
-        // Convert to lower_underscore case before setting
-        let nativeName = name[this._propertyCase]();
-        this[nativeName] = value;
+        this[this._nativeCase(name)] = value;
     }
 
     _exportProperties(info) {
