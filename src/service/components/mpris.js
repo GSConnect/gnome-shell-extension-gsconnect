@@ -631,10 +631,6 @@ var Manager = GObject.registerClass({
         return this._paused;
     }
 
-    get service() {
-        return Gio.Application.get_default();
-    }
-
     vfunc_g_signal(sender_name, signal_name, parameters) {
         try {
             if (signal_name === 'NameOwnerChanged') {
