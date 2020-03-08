@@ -29,7 +29,7 @@ window.gsconnect = {extdatadir: get_datadir()};
 imports.searchPath.unshift(gsconnect.extdatadir);
 imports._gsconnect;
 
-const Remote = imports.shell.remote;
+const Remote = imports.utils.remote;
 const Settings = imports.preferences.service;
 
 

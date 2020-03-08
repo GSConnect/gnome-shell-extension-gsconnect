@@ -8,7 +8,7 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 const Device = imports.preferences.device;
-const Remote = imports.shell.remote;
+const Remote = imports.utils.remote;
 
 /*
  * Header for support logs

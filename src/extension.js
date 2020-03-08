@@ -20,7 +20,7 @@ const Clipboard = Extension.imports.shell.clipboard;
 const Device = Extension.imports.shell.device;
 const Keybindings = Extension.imports.shell.keybindings;
 const Notification = Extension.imports.shell.notification;
-const Remote = Extension.imports.shell.remote;
+const Remote = Extension.imports.utils.remote;
 
 
 /**
