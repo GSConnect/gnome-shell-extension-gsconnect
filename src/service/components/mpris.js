@@ -679,12 +679,12 @@ var Manager = GObject.registerClass({
             let player = new Player(name);
             await player.initPromise();
 
-            player._propertiesId = player.connect(
+            player.__propertiesId = player.connect(
                 'g-properties-changed',
                 (player) => this.emit('player-changed', player)
             );
 
-            player._seekedId = player.connect(
+            player.__seekedId = player.connect(
                 'Seeked',
                 (player) => this.emit('player-seeked', player)
             );
