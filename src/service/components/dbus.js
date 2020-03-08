@@ -36,63 +36,6 @@ function toUnderscoreCase(string) {
 
 
 /**
- * A convenience function to recursively unpack a GVariant
- *
- * @param {*} obj - May be a GLib.Variant, Array, standard Object or literal.
- * @return {*} - Returns the contents of @obj with any GVariants unpacked to
- *               their native JavaScript equivalents.
- */
-function full_unpack(obj) {
-    let unpacked;
-
-    switch (true) {
-        case (obj === null):
-            return obj;
-
-        case (obj instanceof GLib.Variant):
-            return full_unpack(obj.deepUnpack());
-
-        case (obj instanceof imports.byteArray.ByteArray):
-            return obj;
-
-        case (typeof obj.map === 'function'):
-            return obj.map(e => full_unpack(e));
-
-        case (typeof obj === 'object'):
-            unpacked = {};
-
-            for (let [key, value] of Object.entries(obj)) {
-                // Try to detect and deserialize GIcons
-                try {
-                    if (key === 'icon' && value.get_type_string() === '(sv)') {
-                        unpacked[key] = Gio.Icon.deserialize(value);
-                    } else {
-                        unpacked[key] = full_unpack(value);
-                    }
-                } catch (e) {
-                    unpacked[key] = full_unpack(value);
-                }
-            }
-
-            return unpacked;
-
-        default:
-            return obj;
-    }
-}
-
-
-function _makeOutSignature(args) {
-    var ret = '(';
-    for (var i = 0; i < args.length; i++)
-        ret += args[i].signature;
-
-    return ret + ')';
-}
-
-
-
-/**
  * Convert a string of GVariantType to a list of GType
  *
  * @param {string} types - A string of GVariantType characters (eg. a{sv})
@@ -156,6 +99,18 @@ function vtype_to_gtype(types) {
 
 
 /**
+ * Build a GVariant type string from an method argument list.
+ */
+function _makeOutSignature(args) {
+    var ret = '(';
+    for (var i = 0; i < args.length; i++)
+        ret += args[i].signature;
+
+    return ret + ')';
+}
+
+
+/**
  * DBus.Interface represents a DBus interface bound to an object instance, meant
  * to be exported over DBus.
  */
@@ -198,11 +153,11 @@ var Interface = GObject.registerClass({
         // Convert member casing to native casing
         let nativeName;
 
-        if (this[memberName]) {
+        if (this[memberName] !== undefined) {
             nativeName = memberName;
-        } else if (this[toUnderscoreCase(memberName)]) {
+        } else if (this[toUnderscoreCase(memberName)] !== undefined) {
             nativeName = toUnderscoreCase(memberName);
-        } else if (this[toCamelCase(memberName)]) {
+        } else if (this[toCamelCase(memberName)] !== undefined) {
             nativeName = toCamelCase(memberName);
         }
 
@@ -216,7 +171,7 @@ var Interface = GObject.registerClass({
                     let idx = parameter.deepUnpack();
                     return fds.get(idx);
                 } else {
-                    return full_unpack(parameter);
+                    return parameter.recursiveUnpack();
                 }
             });
 
@@ -301,11 +256,10 @@ var Interface = GObject.registerClass({
     }
 
     _set(info, name, value) {
-        // Unpack the value
-        value = full_unpack(value);
+        let nativeValue = value.recursiveUnpack();
 
         if (this[name] !== undefined) {
-            this[name] = value;
+            this[name] = nativeValue;
             return;
         }
 
@@ -317,7 +271,7 @@ var Interface = GObject.registerClass({
             }
         }
 
-        this[this._nativeCase(name)] = value;
+        this[this._nativeCase(name)] = nativeValue;
     }
 
     _exportProperties(info) {
@@ -377,26 +331,24 @@ var Interface = GObject.registerClass({
  * @return {*} - A native property value
  */
 function _proxyGetter(name) {
-    let variant;
-
     try {
-        if (this.no_cache) {
-            // Call returns '(v)' so unpack the tuple and return that variant
-            variant = this.call_sync(
+        let value = this.get_cached_property(name);
+
+        if (value === null) {
+            value = this.call_sync(
                 'org.freedesktop.DBus.Properties.Get',
                 new GLib.Variant('(ss)', [this.g_interface_name, name]),
-                Gio.DBusCallFlags.NONE,
+                Gio.DBusCallFlags.NO_AUTO_START,
                 -1,
                 null
             ).deepUnpack()[0];
         }
-    } catch (e) {
-        logError(e);
-    }
 
-    // Fallback to cached property...
-    variant = variant ? variant : this.get_cached_property(name);
-    return variant ? full_unpack(variant) : null;
+        return value.recursiveUnpack();
+    } catch (e) {
+        logError(e, this.g_interface_name);
+        return null;
+    }
 }
 
 
