@@ -311,7 +311,7 @@ var Interface = GObject.registerClass({
 
         if (!this._nativeCase) {
             if (this[toUnderscoreCase(name)] !== undefined) {
-                this._nativeCase = toUnderScoreCase;
+                this._nativeCase = toUnderscoreCase;
             } else if (this[toCamelCase(name)] !== undefined) {
                 this._nativeCase = toCamelCase;
             }
