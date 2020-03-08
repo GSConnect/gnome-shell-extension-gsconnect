@@ -9,41 +9,30 @@ const GObject = imports.gi.GObject;
 /**
  * Some utility methods
  */
-String.prototype.toDBusCase = function(string) {
-    string = string || this;
-
-    return string.replace(/(?:^\w|[A-Z]|\b\w)/g, (ltr, offset) => {
-        return ltr.toUpperCase();
-    }).replace(/[\s_-]+/g, '');
-};
-
-
-String.prototype.toCamelCase = function(string) {
-    string = string || this;
-
+function toCamelCase(string) {
     return string.replace(/(?:^\w|[A-Z]|\b\w)/g, (ltr, offset) => {
         return (offset === 0) ? ltr.toLowerCase() : ltr.toUpperCase();
     }).replace(/[\s_-]+/g, '');
-};
+}
 
+function toDBusCase(string) {
+    return string.replace(/(?:^\w|[A-Z]|\b\w)/g, (ltr, offset) => {
+        return ltr.toUpperCase();
+    }).replace(/[\s_-]+/g, '');
+}
 
-String.prototype.toHyphenCase = function(string) {
-    string = string || this;
-
+function toHyphenCase(string) {
     return string.replace(/(?:[A-Z])/g, (ltr, offset) => {
         return (offset > 0) ? '-' + ltr.toLowerCase() : ltr.toLowerCase();
     }).replace(/[\s_]+/g, '');
-};
+}
 
-
-String.prototype.toUnderscoreCase = function(string) {
-    string = string || this;
-
+function toUnderscoreCase(string) {
     return string.replace(/(?:^\w|[A-Z]|_|\b\w)/g, (ltr, offset) => {
         if (ltr === '_') return '';
         return (offset > 0) ? '_' + ltr.toLowerCase() : ltr.toLowerCase();
     }).replace(/[\s-]+/g, '');
-};
+}
 
 
 /**
@@ -211,10 +200,10 @@ var Interface = GObject.registerClass({
 
         if (this[memberName]) {
             nativeName = memberName;
-        } else if (this[memberName.toUnderscoreCase()]) {
-            nativeName = memberName.toUnderscoreCase();
-        } else if (this[memberName.toCamelCase()]) {
-            nativeName = memberName.toCamelCase();
+        } else if (this[toUnderscoreCase(memberName)]) {
+            nativeName = toUnderscoreCase(memberName);
+        } else if (this[toCamelCase(memberName)]) {
+            nativeName = toCamelCase(memberName);
         }
 
         let retval;
@@ -301,7 +290,7 @@ var Interface = GObject.registerClass({
         if (this[propertyName] !== undefined) {
             value = this[propertyName];
         } else {
-            value = this[propertyName.toUnderscoreCase()];
+            value = this[toUnderscoreCase(propertyName)];
         }
 
         if (value !== undefined) {
@@ -321,9 +310,9 @@ var Interface = GObject.registerClass({
         }
 
         if (!this._propertyCase) {
-            if (this[name.toUnderscoreCase()] !== undefined) {
+            if (this[toUnderscoreCase(name)] !== undefined) {
                 this._propertyCase = 'toUnderScoreCase';
-            } else if (this[name.toCamelCase()] !== undefined) {
+            } else if (this[toCamelCase(name)] !== undefined) {
                 this._propertyCase = 'toCamelCase';
             }
         }
@@ -345,7 +334,7 @@ var Interface = GObject.registerClass({
         });
 
         this._exportee.connect('notify', (obj, paramSpec) => {
-            let name = paramSpec.name.toDBusCase();
+            let name = toDBusCase(paramSpec.name);
             let propertyInfo = this.g_interface_info.lookup_property(name);
 
             if (propertyInfo) {
