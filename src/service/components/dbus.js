@@ -690,7 +690,7 @@ function getConnection(busType = Gio.BusType.SESSION, cancellable = null) {
 function newConnection(busType = Gio.BusType.SESSION, cancellable = null) {
     return new Promise((resolve, reject) => {
         Gio.DBusConnection.new_for_address(
-            Gio.dbus_address_get_for_bus_sync(Gio.BusType.SESSION, cancellable),
+            Gio.dbus_address_get_for_bus_sync(busType, cancellable),
             Gio.DBusConnectionFlags.AUTHENTICATION_CLIENT |
             Gio.DBusConnectionFlags.MESSAGE_BUS_CONNECTION,
             null,
