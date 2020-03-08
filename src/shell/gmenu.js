@@ -282,7 +282,8 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
             // Prepend an "<= Go Back" item, bold with a unicode arrow
             let prev = new PopupMenu.PopupMenuItem(this.submenu_for.label.text);
             prev.label.style = 'font-weight: bold;';
-            prev._ornamentLabel.text = '\u25C2';
+            let prevArrow = PopupMenu.arrowIcon(St.Side.LEFT);
+            prev.replace_child(prev._ornamentLabel, prevArrow);
             this.addMenuItem(prev, 0);
 
             // Modify the ::activate callback to close the submenu
