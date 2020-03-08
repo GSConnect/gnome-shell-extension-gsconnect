@@ -328,7 +328,7 @@ GLib.Variant.full_pack = _full_pack;
 
 
 /**
- * Extend GLib.Variant with a method to recursively deep_unpack() a variant
+ * Extend GLib.Variant with a method to recursively deepUnpack() a variant
  *
  * TODO: this is duplicated in components/dbus.js and it probably shouldn't be,
  *       but dbus.js can stand on it's own if it is...
@@ -344,7 +344,7 @@ function _full_unpack(obj) {
             return obj;
 
         case (obj instanceof GLib.Variant):
-            return _full_unpack(obj.deep_unpack());
+            return _full_unpack(obj.deepUnpack());
 
         case (obj instanceof Uint8Array):
             return obj;

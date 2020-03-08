@@ -61,7 +61,7 @@ function full_unpack(obj) {
             return obj;
 
         case (obj instanceof GLib.Variant):
-            return full_unpack(obj.deep_unpack());
+            return full_unpack(obj.deepUnpack());
 
         case (obj instanceof imports.byteArray.ByteArray):
             return obj;
@@ -224,7 +224,7 @@ var Interface = GObject.registerClass({
                 if (parameter.get_type_string() === 'h') {
                     let message = invocation.get_message();
                     let fds = message.get_unix_fd_list();
-                    let idx = parameter.deep_unpack();
+                    let idx = parameter.deepUnpack();
                     return fds.get(idx);
                 } else {
                     return full_unpack(parameter);
@@ -401,7 +401,7 @@ function _proxyGetter(name) {
                 Gio.DBusCallFlags.NONE,
                 -1,
                 null
-            ).deep_unpack()[0];
+            ).deepUnpack()[0];
         }
     } catch (e) {
         logError(e);
@@ -474,11 +474,11 @@ function _proxyInvoker(method, ...argv) {
 
                 // If return has single arg, only return that or null
                 if (method.out_args.length === 1) {
-                    resolve((res) ? res.deep_unpack()[0] : null);
+                    resolve((res) ? res.deepUnpack()[0] : null);
 
                 // Otherwise return an array (possibly empty)
                 } else {
-                    resolve((res) ? res.deep_unpack() : []);
+                    resolve((res) ? res.deepUnpack() : []);
                 }
             } catch (e) {
                 e.stack = `${method.name}@${this.g_object_path}\n${e.stack}`;
@@ -653,7 +653,7 @@ function makeInterfaceProxy(info) {
 
         vfunc_g_signal(sender_name, signal_name, parameters) {
             try {
-                parameters = parameters.deep_unpack();
+                parameters = parameters.deepUnpack();
                 this.emit(signal_name, ...parameters);
             } catch (e) {
                 logError(e, signal_name);

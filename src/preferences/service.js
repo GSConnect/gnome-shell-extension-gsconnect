@@ -341,7 +341,7 @@ var Window = GObject.registerClass({
         });
 
         // Size
-        let [width, height] = this._windowState.get_value('window-size').deep_unpack();
+        let [width, height] = this._windowState.get_value('window-size').deepUnpack();
 
         if (width && height) {
             this.set_default_size(width, height);

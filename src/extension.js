@@ -281,7 +281,7 @@ const ServiceIndicator = GObject.registerClass({
 
     _onDeviceChanged(device, changed, invalidated) {
         try {
-            changed = changed.deep_unpack();
+            changed = changed.deepUnpack();
 
             if (changed.hasOwnProperty('Connected') ||
                 changed.hasOwnProperty('Paired')) {
@@ -363,7 +363,7 @@ const ServiceIndicator = GObject.registerClass({
             device._keybindings = [];
 
             // Get the keybindings
-            let keybindings = device.settings.get_value('keybindings').deep_unpack();
+            let keybindings = device.settings.get_value('keybindings').deepUnpack();
 
             // Apply the keybindings
             for (let [action, accelerator] of Object.entries(keybindings)) {

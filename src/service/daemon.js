@@ -326,7 +326,7 @@ const Service = GObject.registerClass({
 
     _error(action, parameter) {
         try {
-            let error = parameter.deep_unpack();
+            let error = parameter.deepUnpack();
             let dialog = new Gtk.MessageDialog({
                 text: error.message,
                 secondary_text: error.stack,
@@ -979,8 +979,8 @@ const Service = GObject.registerClass({
             throw new TypeError('missing --message-body option');
         }
 
-        let address = options.lookup_value('message', null).deep_unpack();
-        let body = options.lookup_value('message-body', null).deep_unpack();
+        let address = options.lookup_value('message', null).deepUnpack();
+        let body = options.lookup_value('message-body', null).deepUnpack();
 
         this._cliAction(id, 'sendSms', GLib.Variant.new('(ss)', [address, body]));
     }
@@ -1027,7 +1027,7 @@ const Service = GObject.registerClass({
     _cliShareFile(device, options) {
         let files = options.lookup_value('share-file', null);
 
-        files = files.deep_unpack();
+        files = files.deepUnpack();
 
         files.map(file => {
             file = imports.byteArray.toString(file);
@@ -1037,7 +1037,7 @@ const Service = GObject.registerClass({
     }
 
     _cliShareLink(device, options) {
-        let uris = options.lookup_value('share-link', null).deep_unpack();
+        let uris = options.lookup_value('share-link', null).deepUnpack();
 
         uris.map(uri => {
             uri = imports.byteArray.toString(uri);

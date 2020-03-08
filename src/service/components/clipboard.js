@@ -31,7 +31,7 @@ const ClipboardProxy = GObject.registerClass({
     }
 
     vfunc_g_properties_changed(changed, invalidated) {
-        let properties = changed.deep_unpack();
+        let properties = changed.deepUnpack();
 
         if (properties.hasOwnProperty('Text')) {
             let content = this.get_cached_property('Text').unpack();

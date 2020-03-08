@@ -373,7 +373,7 @@ const Controller = class Controller {
                 (connection, res) => {
                     try {
                         res = connection.call_finish(res);
-                        resolve(res.deep_unpack()[0]);
+                        resolve(res.deepUnpack()[0]);
                     } catch (e) {
                         reject(e);
                     }

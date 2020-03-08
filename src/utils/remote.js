@@ -120,7 +120,7 @@ var Device = GObject.registerClass({
             if (this.__disposed !== undefined)
                 return;
 
-            for (let name in changed.deep_unpack()) {
+            for (let name in changed.deepUnpack()) {
                 this.notify(toHyphenCase(name));
             }
         } catch (e) {
@@ -301,7 +301,7 @@ var Service = GObject.registerClass({
             // Don't emit signals until the ObjectManager has started
             if (!this.active) return;
 
-            parameters = parameters.deep_unpack();
+            parameters = parameters.deepUnpack();
 
             switch (true) {
                 case (signal_name === 'InterfacesAdded'):
@@ -380,7 +380,7 @@ var Service = GObject.registerClass({
                 (proxy, res) => {
                     try {
                         let variant = proxy.call_finish(res);
-                        resolve(variant.deep_unpack()[0]);
+                        resolve(variant.deepUnpack()[0]);
                     } catch (e) {
                         Gio.DBusError.strip_remote_error(e);
                         reject(e);

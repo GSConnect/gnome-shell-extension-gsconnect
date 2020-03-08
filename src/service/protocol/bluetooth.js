@@ -200,7 +200,7 @@ var ChannelService = GObject.registerClass({
             // Wait until the name is properly owned
             if (!this.g_name_owner === null) return;
 
-            parameters = parameters.deep_unpack();
+            parameters = parameters.deepUnpack();
 
             switch (true) {
                 case (signal_name === 'InterfacesAdded'):
@@ -396,7 +396,7 @@ var ChannelService = GObject.registerClass({
                 (proxy, res) => {
                     try {
                         let variant = proxy.call_finish(res);
-                        let objects = variant.deep_unpack()[0];
+                        let objects = variant.deepUnpack()[0];
                         resolve(objects);
                     } catch (e) {
                         reject(e);
