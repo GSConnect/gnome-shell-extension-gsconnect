@@ -638,7 +638,7 @@ var Manager = GObject.registerClass({
     vfunc_g_signal(sender_name, signal_name, parameters) {
         try {
             if (signal_name === 'NameOwnerChanged') {
-                let [name, old_owner, new_owner] = parameters.deep_unpack();
+                let [name, old_owner, new_owner] = parameters.deepUnpack();
 
                 if (name.startsWith('org.mpris.MediaPlayer2') &&
                     !name.includes('GSConnect')) {
@@ -664,8 +664,8 @@ var Manager = GObject.registerClass({
                 null,
                 (proxy, res) => {
                     try {
-                        res = proxy.call_finish(res);
-                        resolve(res.deep_unpack()[0]);
+                        let reply = proxy.call_finish(res);
+                        resolve(reply.deepUnpack()[0]);
                     } catch (e) {
                         reject(e);
                     }
@@ -676,21 +676,23 @@ var Manager = GObject.registerClass({
 
     async _addPlayer(name) {
         try {
-            let player = new Player(name);
-            await player.initPromise();
+            if (!this.players.has(name)) {
+                let player = new Player(name);
+                await player.initPromise();
 
-            player.__propertiesId = player.connect(
-                'g-properties-changed',
-                (player) => this.emit('player-changed', player)
-            );
+                player.__propertiesId = player.connect(
+                    'g-properties-changed',
+                    (player) => this.emit('player-changed', player)
+                );
 
-            player.__seekedId = player.connect(
-                'Seeked',
-                (player) => this.emit('player-seeked', player)
-            );
+                player.__seekedId = player.connect(
+                    'Seeked',
+                    (player) => this.emit('player-seeked', player)
+                );
 
-            this.players.set(name, player);
-            this.notify('players');
+                this.players.set(name, player);
+                this.notify('players');
+            }
         } catch (e) {
             debug(e);
         }
@@ -703,8 +705,8 @@ var Manager = GObject.registerClass({
             if (player !== undefined) {
                 debug(`Removing MPRIS Player ${name}`);
 
-                player.disconnect(player._propertiesId);
-                player.disconnect(player._seekedId);
+                player.disconnect(player.__propertiesId);
+                player.disconnect(player.__seekedId);
                 player.destroy();
 
                 this.paused.delete(name);
