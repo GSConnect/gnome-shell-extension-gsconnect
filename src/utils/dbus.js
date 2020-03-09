@@ -439,27 +439,6 @@ function proxyMethods(iface, info) {
 
 
 /**
- * A convenience Promise wrapper for Gio.AsyncInitable.init_async(). Unlike the
- * generic function, this will return the proxy on success instead of a boolean.
- *
- * @param {Gio.Cancellable} cancellable - A cancellable or %null
- * @return {Gio.DBusProxy} - The initted proxy object
- */
-Gio.DBusProxy.prototype.init_promise = function(cancellable = null) {
-    return new Promise((resolve, reject) => {
-        this.init_async(GLib.PRIORITY_DEFAULT, cancellable, (proxy, res) => {
-            try {
-                proxy.init_finish(res);
-                resolve(proxy);
-            } catch (e) {
-                reject(e);
-            }
-        });
-    });
-};
-
-
-/**
  * Return a "heavy" Gio.DBusProxy subclass prepped with methods, properties and
  * signals described by @info. Methods will be wrapped as async functions,
  * properties as GProperties with notify/bind support and signals as GSignals.

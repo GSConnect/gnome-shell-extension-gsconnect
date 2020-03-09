@@ -577,12 +577,21 @@ var Manager = GObject.registerClass({
         });
 
         // Asynchronous setup
+        this._cancellable = new Gio.Cancellable();
         this._init_async();
     }
 
     async _init_async() {
         try {
-            await this.init_promise();
+            await new Promise((resolve, reject) => {
+                this.init_async(0, this._cancellable, (proxy, res) => {
+                    try {
+                        resolve(proxy.init_finish(res));
+                    } catch (e) {
+                        reject(e);
+                    }
+                });
+            });
 
             // Add the current players
             let names = await this._listNames();
@@ -755,6 +764,8 @@ var Manager = GObject.registerClass({
     destroy() {
         if (this.__disposed == undefined) {
             this.__disposed = true;
+
+            this._cancellable.cancel();
 
             for (let player of this.players.values()) {
                 player.disconnect(player._propertiesId);
