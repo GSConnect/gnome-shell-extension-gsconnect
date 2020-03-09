@@ -768,8 +768,8 @@ var Manager = GObject.registerClass({
             this._cancellable.cancel();
 
             for (let player of this.players.values()) {
-                player.disconnect(player._propertiesId);
-                player.disconnect(player._seekedId);
+                player.disconnect(player.__propertiesId);
+                player.disconnect(player.__seekedId);
                 player.destroy();
             }
 
