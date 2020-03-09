@@ -592,8 +592,22 @@ var Manager = GObject.registerClass({
                 });
             });
 
-            // Add the current players
-            let names = await this._listNames();
+            let names = await new Promise((resolve, reject) => {
+                this.call(
+                    'org.freedesktop.DBus.ListNames',
+                    null,
+                    Gio.DBusCallFlags.NO_AUTO_START,
+                    -1,
+                    this._cancellable,
+                    (proxy, res) => {
+                        try {
+                            resolve(proxy.call_finish(res).deepUnpack()[0]);
+                        } catch (e) {
+                            reject(e);
+                        }
+                    }
+                );
+            });
             
             for (let i = 0, len = names.length; i < len; i++) {
                 let name = names[i];
@@ -656,26 +670,6 @@ var Manager = GObject.registerClass({
         } catch (e) {
             debug(e);
         }
-    }
-
-    _listNames() {
-        return new Promise((resolve, reject) => {
-            this.call(
-                'org.freedesktop.DBus.ListNames',
-                null,
-                Gio.DBusCallFlags.NONE,
-                -1,
-                null,
-                (proxy, res) => {
-                    try {
-                        let reply = proxy.call_finish(res);
-                        resolve(reply.deepUnpack()[0]);
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
-            );
-        });
     }
 
     async _addPlayer(name) {
