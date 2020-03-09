@@ -446,7 +446,6 @@ var Player = GObject.registerClass({
 
             return reply.recursiveUnpack()[0];
         } catch (e) {
-            logError(e, this.g_name);
             return 0;
         }
     }
