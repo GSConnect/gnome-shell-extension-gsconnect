@@ -6,7 +6,7 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 const Core = imports.service.protocol.core;
-const DBus = imports.service.components.dbus;
+const DBus = imports.utils.dbus;
 
 const UUID = 'org.gnome.Shell.Extensions.GSConnect.Device';
 const INTERFACE_INFO = gsconnect.dbusinfo.lookup_interface(UUID);

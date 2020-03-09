@@ -5,7 +5,7 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
 const PluginsBase = imports.service.plugins.base;
-const DBus = imports.service.components.dbus;
+const DBus = imports.utils.dbus;
 
 
 var Metadata = {
