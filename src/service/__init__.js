@@ -154,61 +154,6 @@ Promise.timeout = function(priority = GLib.PRIORITY_DEFAULT, interval = 100) {
 
 
 /**
- * The same regular expression used in GNOME Shell
- *
- * http://daringfireball.net/2010/07/improved_regex_for_matching_urls
- */
-const _balancedParens = '\\((?:[^\\s()<>]+|(?:\\(?:[^\\s()<>]+\\)))*\\)';
-const _leadingJunk = '[\\s`(\\[{\'\\"<\u00AB\u201C\u2018]';
-const _notTrailingJunk = '[^\\s`!()\\[\\]{};:\'\\".,<>?\u00AB\u00BB\u201C\u201D\u2018\u2019]';
-
-const _urlRegexp = new RegExp(
-    '(^|' + _leadingJunk + ')' +
-    '(' +
-        '(?:' +
-            '(?:http|https|ftp)://' +             // scheme://
-            '|' +
-            'www\\d{0,3}[.]' +                    // www.
-            '|' +
-            '[a-z0-9.\\-]+[.][a-z]{2,4}/' +       // foo.xx/
-        ')' +
-        '(?:' +                                   // one or more:
-            '[^\\s()<>]+' +                       // run of non-space non-()
-            '|' +                                 // or
-            _balancedParens +                     // balanced parens
-        ')+' +
-        '(?:' +                                   // end with:
-            _balancedParens +                     // balanced parens
-            '|' +                                 // or
-            _notTrailingJunk +                    // last non-junk char
-        ')' +
-    ')', 'gi');
-
-
-/**
- * Return a string with URLs couched in <a> tags, parseable by Pango and
- * using the same RegExp as GNOME Shell.
- *
- * @param {string} text - The string to be modified
- * @return {string} - the modified text
- */
-String.prototype.linkify = function(title = null) {
-    let text = GLib.markup_escape_text(this, -1);
-
-    _urlRegexp.lastIndex = 0;
-
-    if (title) {
-        return text.replace(
-            _urlRegexp,
-            `$1<a href="$2" title="${title}">$2</a>`
-        );
-    } else {
-        return text.replace(_urlRegexp, '$1<a href="$2">$2</a>');
-    }
-};
-
-
-/**
  * A simple (for now) pre-comparison sanitizer for phone numbers
  * See: https://github.com/KDE/kdeconnect-kde/blob/master/smsapp/conversationlistmodel.cpp#L200-L210
  *

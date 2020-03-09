@@ -7,6 +7,7 @@ const GObject = imports.gi.GObject;
 const PluginsBase = imports.service.plugins.base;
 const Messaging = imports.service.ui.messaging;
 const TelephonyUI = imports.service.ui.telephony;
+const URI = imports.utils.uri;
 
 
 var Metadata = {
@@ -72,91 +73,6 @@ var Metadata = {
         }
     }
 };
-
-
-/**
- * sms/tel URI RegExp (https://tools.ietf.org/html/rfc5724)
- *
- * A fairly lenient regexp for sms: URIs that allows tel: numbers with chars
- * from global-number, local-number (without phone-context) and single spaces.
- * This allows passing numbers directly from libfolks or GData without
- * pre-processing. It also makes an allowance for URIs passed from Gio.File
- * that always come in the form "sms:///".
- */
-let _smsParam = "[\\w.!~*'()-]+=(?:[\\w.!~*'()-]|%[0-9A-F]{2})*";
-let _telParam = ";[a-zA-Z0-9-]+=(?:[\\w\\[\\]/:&+$.!~*'()-]|%[0-9A-F]{2})+";
-let _lenientDigits = '[+]?(?:[0-9A-F*#().-]| (?! )|%20(?!%20))+';
-let _lenientNumber = _lenientDigits + '(?:' + _telParam + ')*';
-
-var _smsRegex = new RegExp(
-    '^' +
-    'sms:' +                                // scheme
-    '(?:[/]{2,3})?' +                       // Gio.File returns ":///"
-    '(' +                                   // one or more...
-        _lenientNumber +                    // phone numbers
-        '(?:,' + _lenientNumber + ')*' +    // separated by commas
-    ')' +
-    '(?:\\?(' +                             // followed by optional...
-        _smsParam +                         // parameters...
-        '(?:&' + _smsParam + ')*' +         // separated by "&" (unescaped)
-    '))?' +
-    '$', 'g');                              // fragments (#foo) not allowed
-
-
-var _numberRegex = new RegExp(
-    '^' +
-    '(' + _lenientDigits + ')' +            // phone number digits
-    '((?:' + _telParam + ')*)' +            // followed by optional parameters
-    '$', 'g');
-
-
-/**
- * A simple parsing class for sms: URI's (https://tools.ietf.org/html/rfc5724)
- */
-class URI {
-    constructor(uri) {
-        _smsRegex.lastIndex = 0;
-        let [, recipients, query] = _smsRegex.exec(uri);
-
-        this.recipients = recipients.split(',').map(recipient => {
-            _numberRegex.lastIndex = 0;
-            let [, number, params] = _numberRegex.exec(recipient);
-
-            if (params) {
-                for (let param of params.substr(1).split(';')) {
-                    let [key, value] = param.split('=');
-
-                    // add phone-context to beginning of
-                    if (key === 'phone-context' && value.startsWith('+')) {
-                        return value + unescape(number);
-                    }
-                }
-            }
-
-            return unescape(number);
-        });
-
-        if (query) {
-            for (let field of query.split('&')) {
-                let [key, value] = field.split('=');
-
-                if (key === 'body') {
-                    if (this.body) {
-                        throw URIError('duplicate "body" field');
-                    }
-
-                    this.body = (value) ? decodeURIComponent(value) : undefined;
-                }
-            }
-        }
-    }
-
-    toString() {
-        let uri = 'sms:' + this.recipients.join(',');
-
-        return (this.body) ? uri + '?body=' + escape(this.body) : uri;
-    }
-}
 
 
 /**
@@ -534,7 +450,7 @@ var Plugin = GObject.registerClass({
      */
     uriSms(uri) {
         try {
-            uri = new URI(uri);
+            uri = new URI.SmsURI(uri);
 
             // Lookup contacts
             let addresses = uri.recipients.map(number => {

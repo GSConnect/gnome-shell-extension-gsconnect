@@ -9,6 +9,7 @@ const Pango = imports.gi.Pango;
 
 const Contacts = imports.service.ui.contacts;
 const Sms = imports.service.plugins.sms;
+const URI = imports.utils.uri;
 
 
 /**
@@ -128,7 +129,7 @@ var MessageLabel = GObject.registerClass({
         let incoming = (message.type === Sms.MessageBox.INBOX);
 
         super._init({
-            label: message.body.linkify(message.date),
+            label: URI.linkify(message.body, message.date),
             halign: incoming ? Gtk.Align.START : Gtk.Align.END,
             selectable: true,
             tooltip_text: getTime(message.date),

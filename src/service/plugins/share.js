@@ -7,6 +7,7 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 const PluginsBase = imports.service.plugins.base;
+const URI = imports.utils.uri;
 
 
 var Metadata = {
@@ -230,7 +231,7 @@ var Plugin = GObject.registerClass({
     _handleText(packet) {
         let dialog = new Gtk.MessageDialog({
             text: _('Text Shared By %s').format(this.device.name),
-            secondary_text: packet.body.text.linkify(),
+            secondary_text: URI.linkify(packet.body.text),
             secondary_use_markup: true,
             buttons: Gtk.ButtonsType.CLOSE
         });

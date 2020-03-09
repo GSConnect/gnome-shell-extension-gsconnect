@@ -4,6 +4,8 @@ const Gio = imports.gi.Gio;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
+const URI = imports.utils.uri;
+
 
 var ReplyDialog = GObject.registerClass({
     GTypeName: 'GSConnectNotificationReplyDialog',
@@ -53,7 +55,7 @@ var ReplyDialog = GObject.registerClass({
         headerbar.subtitle = this.device.name;
 
         this.notification_title.label = params.notification.title;
-        this.notification_body.label = params.notification.text.linkify();
+        this.notification_body.label = URI.linkify(params.notification.text);
 
         // Message Entry/Send Button
         this.device.bind_property(
