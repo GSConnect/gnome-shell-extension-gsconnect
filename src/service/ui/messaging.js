@@ -358,6 +358,13 @@ const ConversationWidget = GObject.registerClass({
             GObject.BindingFlags.DEFAULT | GObject.BindingFlags.SYNC_CREATE
         );
 
+        // Auto-scrolling
+        this._vadj = this.scrolled.get_vadjustment();
+        this._scrolledId = this._vadj.connect(
+            'value-changed',
+            this._holdPosition.bind(this)
+        );
+
         // Message List
         this.list.set_header_func(this._headerMessages);
         this.list.set_sort_func(this._sortMessages);
@@ -449,6 +456,7 @@ const ConversationWidget = GObject.registerClass({
 
     _onDestroy(conversation) {
         conversation.device.disconnect(conversation._connectedId);
+        conversation._vadj.disconnect(conversation._scrolledId);
 
         conversation.list.foreach(message => {
             // HACK: temporary mitigator for mysterious GtkListBox leak
@@ -458,12 +466,11 @@ const ConversationWidget = GObject.registerClass({
     }
 
     _onEdgeReached(scrolled_window, pos) {
-        // If we're at the top, hold the position and load more messages
+        // Try to load more messages
         if (pos === Gtk.PositionType.TOP) {
-            this._holdPosition();
             this.logPrevious();
 
-        // If we're at the bottom, release any hold
+        // Release any hold to resume auto-scrolling
         } else if (pos === Gtk.PositionType.BOTTOM) {
             this._releasePosition();
         }
@@ -507,9 +514,8 @@ const ConversationWidget = GObject.registerClass({
     }
 
     _onSizeAllocate(listbox, allocation) {
-        let vadj = this.scrolled.get_vadjustment();
-        let upper = vadj.get_upper();
-        let pageSize = vadj.get_page_size();
+        let upper = this._vadj.get_upper();
+        let pageSize = this._vadj.get_page_size();
 
         // If the scrolled window hasn't been filled yet, load another message
         if (upper <= pageSize) {
@@ -519,8 +525,7 @@ const ConversationWidget = GObject.registerClass({
         // We've been asked to hold the position, so we'll reset the adjustment
         // value and update the hold position
         } else if (this.__pos) {
-            vadj.set_value(upper - this.__pos);
-            this._holdPosition();
+            this._vadj.set_value(upper - this.__pos);
 
         // Otherwise we probably appended a message and should scroll to it
         } else {
@@ -636,8 +641,7 @@ const ConversationWidget = GObject.registerClass({
     }
 
     _holdPosition() {
-        let vadj = this.scrolled.vadjustment;
-        this.__pos = vadj.get_upper() - vadj.get_value();
+        this.__pos = this._vadj.get_upper() - this._vadj.get_value();
     }
 
     _releasePosition() {
@@ -645,28 +649,25 @@ const ConversationWidget = GObject.registerClass({
     }
 
     _scrollPosition(pos = Gtk.PositionType.BOTTOM, animate = true) {
-        if (this._scrolling)
-            return;
-
-        this._scrolling = true;
-        let vadj = this.scrolled.vadjustment;
         let vpos = pos;
+        this._vadj.freeze_notify();
 
         if (pos === Gtk.PositionType.BOTTOM) {
-            vpos = vadj.get_upper() - vadj.get_page_size();
+            vpos = this._vadj.get_upper() - this._vadj.get_page_size();
         }
 
+
         if (animate) {
-            Tweener.addTween(vadj, {
+            Tweener.addTween(this._vadj, {
                 value: vpos,
                 time: 0.5,
                 transition: 'easeInOutCubic',
-                onComplete: () => this._scrolling = false
+                onComplete: () => this._vadj.thaw_notify()
             });
         } else {
             GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
-                vadj.set_value(vpos);
-                this._scrolling = false;
+                this._vadj.set_value(vpos);
+                this._vadj.thaw_notify();
             });
         }
     }
