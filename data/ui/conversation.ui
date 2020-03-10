@@ -12,7 +12,7 @@
         <property name="hexpand">True</property>
         <property name="vexpand">True</property>
         <property name="hscrollbar_policy">never</property>
-        <signal name="edge-reached" handler="_onMessageRequested" swapped="no"/>
+        <signal name="edge-reached" handler="_onEdgeReached" swapped="no"/>
         <child>
           <object class="GtkViewport">
             <property name="visible">True</property>
@@ -24,7 +24,7 @@
                 <property name="valign">end</property>
                 <property name="selection_mode">none</property>
                 <property name="activate_on_single_click">False</property>
-                <signal name="size-allocate" handler="_onMessageLogged" swapped="no"/>
+                <signal name="size-allocate" handler="_onSizeAllocate" swapped="no"/>
                 <child>
                   <object class="GtkListBoxRow" id="pending">
                     <property name="can_focus">False</property>
@@ -84,9 +84,9 @@
         <property name="secondary_icon_sensitive">False</property>
         <property name="secondary_icon_tooltip_text" translatable="yes">Send Message</property>
         <property name="placeholder_text" translatable="yes">Type a message</property>
-        <signal name="activate" handler="sendMessage" swapped="no"/>
+        <signal name="activate" handler="_onSendMessage" swapped="no"/>
         <signal name="changed" handler="_onEntryChanged" swapped="no"/>
-        <signal name="icon-release" handler="sendMessage" swapped="no"/>
+        <signal name="icon-release" handler="_onSendMessage" swapped="no"/>
         <signal name="key-release-event" handler="_onKeyPressEvent" swapped="no"/>
       </object>
       <packing>

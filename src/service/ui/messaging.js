@@ -1,5 +1,7 @@
 'use strict';
 
+const Tweener = imports.tweener.tweener;
+
 const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
@@ -455,6 +457,22 @@ const ConversationWidget = GObject.registerClass({
         });
     }
 
+    _onEdgeReached(scrolled_window, pos) {
+        // If we're at the top, hold the position and load more messages
+        if (pos === Gtk.PositionType.TOP) {
+            this._holdPosition();
+            this.logPrevious();
+
+        // If we're at the bottom, release any hold
+        } else if (pos === Gtk.PositionType.BOTTOM) {
+            this._releasePosition();
+        }
+    }
+
+    _onEntryChanged(entry) {
+        entry.secondary_icon_sensitive = (entry.text.length);
+    }
+
     _onKeyPressEvent(entry, event) {
         let keyval = event.get_keyval()[1];
         let state = event.get_state()[1];
@@ -466,6 +484,48 @@ const ConversationWidget = GObject.registerClass({
         }
 
         return false;
+    }
+
+    _onSendMessage(entry, signal_id, event) {
+        // Don't send empty texts
+        if (!this.entry.text.trim()) return;
+
+        // Send the message
+        this.plugin.sendMessage(this.addresses, entry.text);
+
+        // Log the message as pending
+        let message = new MessageLabel({
+            body: this.entry.text,
+            date: Date.now(),
+            type: Sms.MessageBox.SENT
+        });
+        this.pending_box.add(message);
+        this.notify('has-pending');
+
+        // Clear the entry
+        this.entry.text = '';
+    }
+
+    _onSizeAllocate(listbox, allocation) {
+        let vadj = this.scrolled.get_vadjustment();
+        let upper = vadj.get_upper();
+        let pageSize = vadj.get_page_size();
+
+        // If the scrolled window hasn't been filled yet, load another message
+        if (upper <= pageSize) {
+            this.logPrevious();
+            this.scrolled.get_child().check_resize();
+
+        // We've been asked to hold the position, so we'll reset the adjustment
+        // value and update the hold position
+        } else if (this.__pos) {
+            vadj.set_value(upper - this.__pos);
+            this._holdPosition();
+
+        // Otherwise we probably appended a message and should scroll to it
+        } else {
+            this._scrollPosition(Gtk.PositionType.BOTTOM);
+        }
     }
 
     /**
@@ -575,44 +635,50 @@ const ConversationWidget = GObject.registerClass({
         }
     }
 
+    _holdPosition() {
+        let vadj = this.scrolled.vadjustment;
+        this.__pos = vadj.get_upper() - vadj.get_value();
+    }
+
+    _releasePosition() {
+        this.__pos = 0;
+    }
+
+    _scrollPosition(pos = Gtk.PositionType.BOTTOM, animate = true) {
+        if (this._scrolling)
+            return;
+
+        this._scrolling = true;
+        let vadj = this.scrolled.vadjustment;
+        let vpos = pos;
+
+        if (pos === Gtk.PositionType.BOTTOM) {
+            vpos = vadj.get_upper() - vadj.get_page_size();
+        }
+
+        if (animate) {
+            Tweener.addTween(vadj, {
+                value: vpos,
+                time: 0.5,
+                transition: 'easeInOutCubic',
+                onComplete: () => this._scrolling = false
+            });
+        } else {
+            GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
+                vadj.set_value(vpos);
+                this._scrolling = false;
+            });
+        }
+    }
+
     _sortMessages(row1, row2) {
         return (row1.date > row2.date) ? 1 : -1;
-    }
-
-    // GtkListBox::size-allocate
-    _onMessageLogged(listbox, allocation) {
-        let vadj = this.scrolled.get_vadjustment();
-        let upper = vadj.get_upper();
-        let pageSize = vadj.get_page_size();
-
-        // Try loading more messages if there's room
-        if (upper <= pageSize) {
-            this.logPrevious();
-            this.scrolled.get_child().check_resize();
-
-        // We've been asked to hold the position
-        } else if (this.__pos) {
-            vadj.set_value(upper - this.__pos);
-            this.__pos = 0;
-
-        // Otherwise scroll to the bottom
-        } else {
-            vadj.set_value(upper - pageSize);
-        }
-    }
-
-    // GtkScrolledWindow::edge-reached
-    _onMessageRequested(scrolled_window, pos) {
-        if (pos === Gtk.PositionType.TOP) {
-            this.__pos = this.scrolled.vadjustment.get_upper();
-            this.logPrevious();
-        }
     }
 
     /**
      * Log the next message in the conversation.
      *
-     * @param {Object} message - A sms message object
+     * @param {object} message - A message object
      */
     logNext(message) {
         try {
@@ -648,7 +714,7 @@ const ConversationWidget = GObject.registerClass({
             // TODO: Unsupported MessageBox
             if (message.type !== Sms.MessageBox.INBOX &&
                 message.type !== Sms.MessageBox.SENT) {
-                return;
+                throw TypeError(`invalid message box "${message.type}"`);
             }
 
             // Prepend the message
@@ -661,40 +727,9 @@ const ConversationWidget = GObject.registerClass({
     }
 
     /**
-     * Message Entry
-     */
-    // GtkEditable::changed
-    _onEntryChanged(entry) {
-        entry.secondary_icon_sensitive = (entry.text.length);
-    }
-
-    /**
-     * Send the contents of the message entry to the address
-     */
-    sendMessage(entry, signal_id, event) {
-        // Don't send empty texts
-        if (!this.entry.text.trim()) return;
-
-        // Send the message
-        this.plugin.sendMessage(this.addresses, entry.text);
-
-        // Log the message as pending
-        let message = new MessageLabel({
-            body: entry.text,
-            date: Date.now(),
-            type: Sms.MessageBox.SENT
-        });
-        this.pending_box.add(message);
-        this.notify('has-pending');
-
-        // Clear the entry
-        this.entry.text = '';
-    }
-
-    /**
      * Set the contents of the message entry
      *
-     * @param {String} text - The message to place in the entry
+     * @param {string} text - The message to place in the entry
      */
     setMessage(text) {
         this.entry.text = text;
