@@ -230,14 +230,6 @@ const Service = GObject.registerClass({
             settings_schema: gsconnect.gschema.lookup(gsconnect.app_id, true)
         });
 
-        // TODO: added v25, remove after a few releases
-        let publicName = this.settings.get_string('public-name');
-
-        if (publicName.length > 0) {
-            this.settings.set_string('name', publicName);
-            this.settings.reset('public-name');
-        }
-
         // Bound Properties
         this.settings.bind('discoverable', this, 'discoverable', 0);
         this.settings.bind('id', this, 'id', 0);
