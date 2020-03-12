@@ -10,9 +10,6 @@
     </key>
 
     <!-- Service Settings -->
-    <key name="public-name" type="s">
-      <default>""</default>
-    </key>
     <key name="id" type="s">
       <default>""</default>
     </key>
