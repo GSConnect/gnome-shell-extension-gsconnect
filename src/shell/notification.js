@@ -147,7 +147,7 @@ const NotificationBanner = GObject.registerClass({
  * into existing sources.
  */
 const Source = GObject.registerClass({
-    GTypeName: 'GSConnnectNotificationSource'
+    GTypeName: 'GSConnectNotificationSource'
 }, class Source extends NotificationDaemon.GtkNotificationDaemonAppSource {
 
     _closeGSConnectNotification(notification, reason) {
