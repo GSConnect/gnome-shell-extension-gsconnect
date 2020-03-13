@@ -954,7 +954,7 @@ const Service = GObject.registerClass({
         let device;
 
         for (let object of Object.values(variant)) {
-            object = object.full_unpack();
+            object = object.recursiveUnpack();
             device = object['org.gnome.Shell.Extensions.GSConnect.Device'];
             
             if (full) {

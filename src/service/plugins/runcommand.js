@@ -129,7 +129,7 @@ var Plugin = GObject.registerClass({
      */
     _handleCommand(key) {
         try {
-            let commandList = this.settings.get_value('command-list').full_unpack();
+            let commandList = this.settings.get_value('command-list').resursiveUnpack();
 
             if (!commandList.hasOwnProperty(key)) {
                 throw new Error(`Unknown command: ${key}`);
@@ -232,7 +232,7 @@ var Plugin = GObject.registerClass({
      * Send the local command list
      */
     sendCommandList() {
-        let commands = this.settings.get_value('command-list').full_unpack();
+        let commands = this.settings.get_value('command-list').recursiveUnpack();
 
         this.device.sendPacket({
             type: 'kdeconnect.runcommand',

@@ -598,7 +598,7 @@ var DevicePreferences = GObject.registerClass({
 
         // Local Command List
         let settings = this.pluginSettings('runcommand');
-        this._commands = settings.get_value('command-list').full_unpack();
+        this._commands = settings.get_value('command-list').recursiveUnpack();
         this._commands = (typeof this._commands === 'string') ? {} : this._commands;
 
         this.command_list.set_sort_func(this._sortCommands);
