@@ -263,6 +263,10 @@ var Plugin = GObject.registerClass({
                     response.body.title = metadata['xesam:title'];
                 }
 
+                if (metadata.hasOwnProperty('xesam:album')) {
+                    response.body.album = metadata['xesam:album'];
+                }
+
                 response.body.nowPlaying = [
                     response.body.artist,
                     response.body.title
