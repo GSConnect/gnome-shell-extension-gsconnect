@@ -230,7 +230,7 @@ var Plugin = GObject.registerClass({
             if (packet.body.hasOwnProperty('requestNowPlaying')) {
                 hasResponse = true;
 
-                response.body = {
+                Object.assign(response.body, {
                     pos: Math.floor(player.Position / 1000),
                     isPlaying: (player.PlaybackStatus === 'Playing'),
                     canPause: player.CanPause,
@@ -240,7 +240,7 @@ var Plugin = GObject.registerClass({
                     canSeek: player.CanSeek,
                     artist: _('Unknown'),
                     title: _('Unknown')
-                };
+                });
 
                 let metadata = player.Metadata;
 
@@ -255,7 +255,8 @@ var Plugin = GObject.registerClass({
                 }
 
                 if (metadata.hasOwnProperty('xesam:artist')) {
-                    response.body.artist = metadata['xesam:artist'];
+                    let artists = metadata['xesam:artist'];
+                    response.body.artist = artists.join(', ');
                 }
 
                 if (metadata.hasOwnProperty('xesam:title')) {
