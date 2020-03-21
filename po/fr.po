@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2020-02-20 00:34\n"
+"PO-Revision-Date: 2020-03-18 19:29\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -106,7 +106,7 @@ msgstr "Fichiers"
 
 #: data/ui/device-preferences.ui:418
 msgid "Receive Files"
-msgstr ""
+msgstr "Recevoir les fichiers"
 
 #: data/ui/device-preferences.ui:503 data/ui/device-preferences.ui:2164
 msgid "Sharing"
@@ -213,10 +213,10 @@ msgid "Experimental"
 msgstr "Expérimental"
 
 msgid "Device Cache"
-msgstr ""
+msgstr "Cache de l'appareil"
 
 msgid "Clear Cache…"
-msgstr ""
+msgstr "Vider le cache…"
 
 #: data/ui/device-preferences.ui:1771
 msgid "Legacy SMS Support"
@@ -240,7 +240,7 @@ msgstr "Notification entièrement chargée"
 
 #: data/ui/device-preferences.ui:2014
 msgid "System Battery"
-msgstr ""
+msgstr "Batterie système"
 
 #: data/ui/device-preferences.ui:2065
 msgid "Share Statistics"
@@ -404,7 +404,7 @@ msgstr "Appareils mobiles"
 #. TRANSLATORS: A menu option to activate the extension
 #: src/extension.js:143 src/extension.js:384
 msgid "Turn On"
-msgstr ""
+msgstr "Activer"
 
 #: src/extension.js:245
 #, javascript-format
@@ -416,7 +416,7 @@ msgstr[1] "%d Connectés"
 #. TRANSLATORS: A menu option to deactivate the extension
 #: src/extension.js:381
 msgid "Turn Off"
-msgstr ""
+msgstr "Désactiver"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:164 webextension/gettext.js:31
@@ -515,7 +515,7 @@ msgstr "Connecté"
 
 #: src/preferences/service.js:671
 msgid "Waiting for service…"
-msgstr ""
+msgstr "En attente du service…"
 
 #: src/service/daemon.js:333
 msgid "Report"
@@ -552,19 +552,19 @@ msgstr "Partager un fichier"
 
 #: src/service/daemon.js:770
 msgid "List available devices"
-msgstr ""
+msgstr "Liste des appareils disponibles"
 
 #: src/service/daemon.js:779
 msgid "List all devices"
-msgstr ""
+msgstr "Liste de tous les appareils"
 
 #: src/service/daemon.js:788
 msgid "Target Device"
-msgstr ""
+msgstr "Appareil cible"
 
 #: src/service/daemon.js:830
 msgid "Message Body"
-msgstr ""
+msgstr "Corps du message"
 
 #: src/service/daemon.js:842 src/service/plugins/notification.js:51
 msgid "Send Notification"
@@ -572,24 +572,24 @@ msgstr "Envoyer la notification"
 
 #: src/service/daemon.js:851
 msgid "Notification App Name"
-msgstr ""
+msgstr "Nom de l'application de la notification"
 
 #: src/service/daemon.js:860
 msgid "Notification Body"
-msgstr ""
+msgstr "Corps de la notification"
 
 #: src/service/daemon.js:869
 msgid "Notification Icon"
-msgstr ""
+msgstr "Icône de la notification"
 
 #: src/service/daemon.js:878
 msgid "Notification ID"
-msgstr ""
+msgstr "ID de la notification"
 
 #: src/service/daemon.js:887 src/service/plugins/photo.js:11
 #: src/service/plugins/photo.js:17
 msgid "Photo"
-msgstr ""
+msgstr "Photo"
 
 #: src/service/daemon.js:896 src/service/plugins/ping.js:11
 #: src/service/plugins/ping.js:17 src/service/plugins/ping.js:44
@@ -608,7 +608,7 @@ msgstr "Partager un lien"
 
 #: src/service/daemon.js:938
 msgid "Show release version"
-msgstr ""
+msgstr "Montrer la sortie de version"
 
 #: src/service/device.js:174
 msgid "Not available"
@@ -661,7 +661,7 @@ msgstr "%d %% restant"
 #: src/service/plugins/battery.js:199
 #, javascript-format
 msgid "%s: Battery is full"
-msgstr ""
+msgstr "%s: la batterie est pleine"
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
@@ -709,7 +709,7 @@ msgstr "Clavier"
 #: src/service/plugins/mousepad.js:413
 #, javascript-format
 msgid "The remote keyboard on %s is not active"
-msgstr ""
+msgstr "Le clavier à distance sur %s n'est pas actif"
 
 #: src/service/plugins/mpris.js:12
 msgid "MPRIS"
@@ -729,7 +729,7 @@ msgstr "Répondre à la notification"
 
 #: src/service/plugins/notification.js:59
 msgid "Activate Notification"
-msgstr ""
+msgstr "Active la notification"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -740,7 +740,7 @@ msgstr "Ping : %s"
 
 #: src/service/plugins/presenter.js:9
 msgid "Presentation"
-msgstr ""
+msgstr "Présentation"
 
 #: src/service/plugins/runcommand.js:12
 msgid "Run Commands"
@@ -783,11 +783,11 @@ msgstr "Échec du transfert"
 #: src/service/plugins/share.js:118
 #, javascript-format
 msgid "%s is not allowed to upload files"
-msgstr ""
+msgstr "%s n'est pas autorisé à télécharger des fichiers"
 
 #: src/service/plugins/share.js:154 src/service/plugins/share.js:302
 msgid "Transferring File"
-msgstr ""
+msgstr "Transfert du fichier"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:156
@@ -950,7 +950,7 @@ msgstr "Hier・%s"
 
 #: src/service/ui/messaging.js:255
 msgid "Group Message"
-msgstr ""
+msgstr "Message de groupe"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:265
@@ -962,8 +962,8 @@ msgstr "Vous: %s"
 #, javascript-format
 msgid "And %d other contact"
 msgid_plural "And %d others"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Et %d autre contact"
+msgstr[1] "Et %d autres"
 
 #: src/service/ui/service.js:31
 msgid "Select a Device"
