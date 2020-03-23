@@ -97,7 +97,7 @@ var ConnectDialog = GObject.registerClass({
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/connect.ui',
     Children: [
         'cancel-button', 'connect-button',
-        'lan-radio', 'lan-grid', 'lan-ip', 'lan-port'
+        'lan-grid', 'lan-ip', 'lan-port'
     ]
 }, class ConnectDialog extends Gtk.Dialog {
 
