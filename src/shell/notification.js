@@ -155,12 +155,6 @@ const Source = GObject.registerClass({
             return;
         }
 
-        // TODO: Sometimes @notification is the object, sometimes it's the id?
-        if (typeof notification === 'string') {
-            notification = this.notifications[notification];
-            if (!notification) return;
-        }
-
         // Avoid sending the request multiple times
         if (notification._remoteClosed) {
             return;
@@ -306,7 +300,7 @@ function patchGSConnectNotificationSource() {
         for (let [id, notification] of Object.entries(source._notifications)) {
 
             let _id = notification.connect('destroy', (notification, reason) => {
-                source._closeGSConnectNotification(id, reason);
+                source._closeGSConnectNotification(notification, reason);
                 notification.disconnect(_id);
             });
         }
