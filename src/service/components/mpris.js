@@ -229,7 +229,7 @@ var Player = GObject.registerClass({
                 this.notify(name);
             }
         } catch (e) {
-            logError(e, this.g_name);
+            debug(e, this.g_name);
         }
     }
 
@@ -239,7 +239,7 @@ var Player = GObject.registerClass({
                 this.emit('Seeked', parameters.deepUnpack()[0]);
             }
         } catch (e) {
-            logError(e, this.g_name);
+            debug(e, this.g_name);
         }
     }
 
