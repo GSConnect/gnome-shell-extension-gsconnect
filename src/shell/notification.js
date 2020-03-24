@@ -297,7 +297,7 @@ function patchGSConnectNotificationSource() {
         source.createBanner = Source.prototype.createBanner;
 
         // Connect to existing notifications
-        for (let [id, notification] of Object.entries(source._notifications)) {
+        for (let notification of Object.values(source._notifications)) {
 
             let _id = notification.connect('destroy', (notification, reason) => {
                 source._closeGSConnectNotification(notification, reason);
