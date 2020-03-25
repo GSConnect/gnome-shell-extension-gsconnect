@@ -129,7 +129,7 @@ var Plugin = GObject.registerClass({
      */
     _handleCommand(key) {
         try {
-            let commandList = this.settings.get_value('command-list').resursiveUnpack();
+            let commandList = this.settings.get_value('command-list').recursiveUnpack();
 
             if (!commandList.hasOwnProperty(key)) {
                 throw new Error(`Unknown command: ${key}`);
