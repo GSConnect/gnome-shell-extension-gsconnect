@@ -280,14 +280,19 @@ msgstr ""
 msgid "Nothing"
 msgstr ""
 
-#. TRANSLATORS: Lower the system volume
+#. TRANSLATORS: Restore the system volume
 #: data/ui/device-preferences.ui:2610 data/ui/device-preferences.ui:2636
+msgid "Restore"
+msgstr ""
+
+#. TRANSLATORS: Lower the system volume
+#: data/ui/device-preferences.ui:2617 data/ui/device-preferences.ui:2643
 msgid "Lower"
 msgstr ""
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the phone ringer
-#: data/ui/device-preferences.ui:2617 data/ui/device-preferences.ui:2643
+#: data/ui/device-preferences.ui:2624 data/ui/device-preferences.ui:2650
 #: src/service/plugins/telephony.js:191
 msgid "Mute"
 msgstr ""
