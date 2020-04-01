@@ -2476,6 +2476,13 @@
         <attribute name="target">nothing</attribute>
       </item>
       <item>
+        <!-- TRANSLATORS: Restore the system volume -->
+        <attribute name="label" translatable="yes">Restore</attribute>
+        <attribute name="icon">audio-volume-medium-symbolic</attribute>
+        <attribute name="action">settings.ringing-volume</attribute>
+        <attribute name="target">restore</attribute>
+      </item>
+      <item>
         <!-- TRANSLATORS: Lower the system volume -->
         <attribute name="label" translatable="yes">Lower</attribute>
         <attribute name="icon">audio-volume-low-symbolic</attribute>
@@ -2500,6 +2507,13 @@
         <attribute name="icon">audio-volume-medium-symbolic</attribute>
         <attribute name="action">settings.talking-volume</attribute>
         <attribute name="target">nothing</attribute>
+      </item>
+      <item>
+        <!-- TRANSLATORS: Restore the system volume -->
+        <attribute name="label" translatable="yes">Restore</attribute>
+        <attribute name="icon">audio-volume-medium-symbolic</attribute>
+        <attribute name="action">settings.talking-volume</attribute>
+        <attribute name="target">restore</attribute>
       </item>
       <item>
         <!-- TRANSLATORS: Lower the system volume -->
