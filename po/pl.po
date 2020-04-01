@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2020-04-01 19:11\n"
+"PO-Revision-Date: 2020-04-01 19:40\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Polish\n"
 "Language: pl_PL\n"
@@ -280,7 +280,7 @@ msgstr "Nic"
 #. TRANSLATORS: Restore the system volume
 #: data/ui/device-preferences.ui:2610 data/ui/device-preferences.ui:2636
 msgid "Restore"
-msgstr ""
+msgstr "Przywróć"
 
 #. TRANSLATORS: Lower the system volume
 #: data/ui/device-preferences.ui:2617 data/ui/device-preferences.ui:2643
