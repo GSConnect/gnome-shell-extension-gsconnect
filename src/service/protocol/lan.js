@@ -79,9 +79,6 @@ var ChannelService = GObject.registerClass({
         this._networkMonitor = Gio.NetworkMonitor.get_default();
         this._networkAvailable = false;
         this._networkChangedId = 0;
-
-        // Ensure a certificate exists
-        this._initCertificate();
     }
 
     get certificate() {
@@ -133,11 +130,16 @@ var ChannelService = GObject.registerClass({
         ]);
 
         // Ensure a certificate exists with our id as the common name
-        this._certificate = Gio.TlsCertificate.new_for_paths(
-            certPath,
-            keyPath,
-            this.service.id
-        );
+        try {
+            this._certificate = Gio.TlsCertificate.new_for_paths(
+                certPath,
+                keyPath,
+                this.service.id
+            );
+        } catch (e) {
+            e.name = 'CertificateError';
+            throw e;
+        }
 
         // If the service id doesn't match the common name, this is probably a
         // certificate from an earlier version and we need to set it now
@@ -404,6 +406,9 @@ var ChannelService = GObject.registerClass({
     }
 
     start() {
+        // Ensure a certificate exists
+        this._initCertificate();
+
         // Start TCP/UDP listeners
         if (this._udp4 === null && this._udp6 === null) {
             this._initUdpListener();
