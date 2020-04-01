@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2019-05-26 12:20+0200\n"
+"PO-Revision-Date: 2020-04-01 19:21+0200\n"
 "Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
 "Language-Team: Dutch <vistausss@outlook.com>\n"
 "Language: nl_NL\n"
@@ -109,7 +109,7 @@ msgstr "Bestanden"
 
 #: data/ui/device-preferences.ui:418
 msgid "Receive Files"
-msgstr ""
+msgstr "Bestanden ontvangen"
 
 #: data/ui/device-preferences.ui:503 data/ui/device-preferences.ui:2164
 msgid "Sharing"
@@ -155,7 +155,7 @@ msgstr "Deelmeldingen"
 
 #: data/ui/device-preferences.ui:947
 msgid "Share When Active"
-msgstr ""
+msgstr "Delen wanneer actief"
 
 #: data/ui/device-preferences.ui:998
 msgid "Applications"
@@ -214,6 +214,12 @@ msgstr "Plug-ins"
 #: data/ui/device-preferences.ui:1723
 msgid "Experimental"
 msgstr "Experimenteel"
+
+msgid "Device Cache"
+msgstr "Apparaat Cache"
+
+msgid "Clear Cache…"
+msgstr "Cache opschonen"
 
 #: data/ui/device-preferences.ui:1771
 msgid "Legacy SMS Support"
@@ -280,14 +286,19 @@ msgstr "Van apparaat"
 msgid "Nothing"
 msgstr "Niets"
 
-#. TRANSLATORS: Lower the system volume
+#. TRANSLATORS: Restore the system volume
 #: data/ui/device-preferences.ui:2610 data/ui/device-preferences.ui:2636
+msgid "Restore"
+msgstr "Herstellen"
+
+#. TRANSLATORS: Lower the system volume
+#: data/ui/device-preferences.ui:2617 data/ui/device-preferences.ui:2643
 msgid "Lower"
 msgstr "Verlagen"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the phone ringer
-#: data/ui/device-preferences.ui:2617 data/ui/device-preferences.ui:2643
+#: data/ui/device-preferences.ui:2624 data/ui/device-preferences.ui:2650
 #: src/service/plugins/telephony.js:191
 msgid "Mute"
 msgstr "Dempen"
@@ -330,7 +341,7 @@ msgstr "Apparaatnaam bewerken"
 
 #: data/ui/preferences-window.ui:49
 msgid "_Rename"
-msgstr ""
+msgstr "Hernoemen"
 
 #: data/ui/preferences-window.ui:86 data/ui/preferences-window.ui:100
 msgid "Refresh"
@@ -407,7 +418,7 @@ msgstr "Mobiele apparaten"
 #. TRANSLATORS: A menu option to activate the extension
 #: src/extension.js:143 src/extension.js:384
 msgid "Turn On"
-msgstr ""
+msgstr "Inschakelen"
 
 #: src/extension.js:245
 #, javascript-format
@@ -419,7 +430,7 @@ msgstr[1] "%d verbonden"
 #. TRANSLATORS: A menu option to deactivate the extension
 #: src/extension.js:381
 msgid "Turn Off"
-msgstr ""
+msgstr "Uitschakelen"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:164 webextension/gettext.js:31
@@ -725,7 +736,10 @@ msgstr "Touchpad"
 msgid "Keyboard"
 msgstr "Toetsenbord"
 
+#. TRANSLATORS: Displayed when the remote keyboard is not ready to accept input
+#. eg. The remote keyboard on Pixel 3 is not active
 #: src/service/plugins/mousepad.js:413
+#, javascript-format
 msgid "Keyboard not ready"
 msgstr "Toetsenbord niet gereed"
 
@@ -803,7 +817,7 @@ msgstr "Overdracht mislukt"
 #: src/service/plugins/share.js:118
 #, javascript-format
 msgid "%s is not allowed to upload files"
-msgstr ""
+msgstr "%s mag geen bestanden sturen"
 
 #: src/service/plugins/share.js:154 src/service/plugins/share.js:302
 #, fuzzy
@@ -984,8 +998,8 @@ msgstr "Jij: %s"
 #, javascript-format
 msgid "And %d other contact"
 msgid_plural "And %d others"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "En %d ander contact"
+msgstr[1] "En %d anderen"
 
 #: src/service/ui/service.js:31
 msgid "Select a Device"
