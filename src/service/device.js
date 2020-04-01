@@ -356,6 +356,16 @@ var Device = GObject.registerClass({
         }
     }
 
+    _processExit(proc, result) {
+        try {
+            proc.wait_check_finish(result);
+        } catch (e) {
+            debug(e);
+        }
+
+        this.delete(proc);
+    }
+
     /**
      * Request a connection from the device
      */
@@ -366,6 +376,41 @@ var Device = GObject.registerClass({
         } catch (e) {
             logError(e, this.name);
         }
+    }
+
+    /**
+     * Launch a subprocess for the device. If the device becomes unpaired, it is
+     * assumed the device is no longer trusted and all subprocesses will be
+     * killed.
+     *
+     * @param {string[]} args - process arguments
+     * @param {Gio.Cancellable} [cancellable] - optional cancellable
+     * @returns {Gio.Subprocess} - The subprocess
+     */
+    launchProcess(args, cancellable = null) {
+        if (this._launcher === undefined) {
+            let application = GLib.build_filenamev([
+                gsconnect.extdatadir,
+                'service',
+                'daemon.js'
+            ]);
+
+            this._launcher = new Gio.SubprocessLauncher();
+            this._launcher.setenv('GSCONNECT', application, false);
+            this._launcher.setenv('GSCONNECT_DEVICE_ID', this.id, false);
+            this._launcher.setenv('GSCONNECT_DEVICE_NAME', this.name, false);
+            this._launcher.setenv('GSCONNECT_DEVICE_ICON', this.icon_name, false);
+            this._launcher.setenv('GSCONNECT_DEVICE_DBUS', this.g_object_path, false);
+
+            this._procs = new Set();
+        }
+
+        // Create and track the process
+        let proc = this._launcher.spawnv(args);
+        proc.wait_check_async(cancellable, this._processExit.bind(this._procs));
+        this._procs.add(proc);
+
+        return proc;
     }
 
     /**
@@ -815,6 +860,13 @@ var Device = GObject.registerClass({
                 );
             } else {
                 this.settings.reset('certificate-pem');
+            }
+        }
+
+        // If we've become unpaired, we'll kill any tracked subprocesses
+        if (!bool && this._procs !== undefined) {
+            for (let proc of this._procs) {
+                proc.force_exit();
             }
         }
 
