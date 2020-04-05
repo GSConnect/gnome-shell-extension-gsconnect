@@ -262,11 +262,14 @@ const Source = GObject.registerClass({
     }
 
     /**
-     * Override to lift the usual notification limit (3)
+     * Override to raise the usual notification limit (3)
      */
     pushNotification(notification) {
         if (this.notifications.includes(notification))
             return;
+
+        while (this.notifications.length >= 10)
+            this.notifications.shift().destroy(MessageTray.NotificationDestroyedReason.EXPIRED);
 
         notification.connect('destroy', this._onNotificationDestroy.bind(this));
         notification.connect('notify::acknowledged', this.countUpdated.bind(this));
