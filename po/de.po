@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2020-03-23 05:07\n"
+"PO-Revision-Date: 2020-04-01 20:35\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -277,14 +277,19 @@ msgstr "Vom Gerät"
 msgid "Nothing"
 msgstr "Nichts"
 
-#. TRANSLATORS: Lower the system volume
+#. TRANSLATORS: Restore the system volume
 #: data/ui/device-preferences.ui:2610 data/ui/device-preferences.ui:2636
+msgid "Restore"
+msgstr "Wiederherstellen"
+
+#. TRANSLATORS: Lower the system volume
+#: data/ui/device-preferences.ui:2617 data/ui/device-preferences.ui:2643
 msgid "Lower"
 msgstr "Leiser"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the phone ringer
-#: data/ui/device-preferences.ui:2617 data/ui/device-preferences.ui:2643
+#: data/ui/device-preferences.ui:2624 data/ui/device-preferences.ui:2650
 #: src/service/plugins/telephony.js:191
 msgid "Mute"
 msgstr "Stumm schalten"
