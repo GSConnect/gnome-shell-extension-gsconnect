@@ -970,10 +970,15 @@ const Service = GObject.registerClass({
             throw new TypeError('missing --message-body option');
         }
 
-        let address = options.lookup_value('message', null).deepUnpack();
+        // TODO: currently we only support single-recipient messaging
+        let addresses = options.lookup_value('message', null).deepUnpack();
         let body = options.lookup_value('message-body', null).deepUnpack();
 
-        this._cliAction(id, 'sendSms', GLib.Variant.new('(ss)', [address, body]));
+        this._cliAction(
+            id,
+            'sendSms',
+            GLib.Variant.new('(ss)', [addresses[0], body])
+        );
     }
 
     _cliNotify(id, options) {
