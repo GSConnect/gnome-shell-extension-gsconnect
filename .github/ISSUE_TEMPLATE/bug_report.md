@@ -7,6 +7,8 @@ assignees: ''
 
 ---
 
+> ***ATTENTION**: GSConnect only supports the latest, stable version of GNOME. We are no longer accepting bug reports for previous versions.*
+
 **Describe the bug**
 
 A clear and concise description of what the bug is.
@@ -36,9 +38,9 @@ Please generate a support log ([Instructions](../wiki/Help#generate-support-log)
 
 **System Details (please complete the following information):**
 
- - **GSConnect version:** [e.g. 20, 24, ... (displayed in the GSConnect "About" window)]
+ - **GSConnect version:** [e.g. 35, 36, ... (displayed in the GSConnect "About" window)]
    - **Installed from:** [e.g. GNOME Extensions Website, GitHub, Package Manager, ...]
- - **GNOME/Shell version:** [e.g. 3.30, 3.28, ...]
+ - **GNOME/Shell version:** [e.g. 3.36, ...]
  - **Distro/Release:** [e.g. Ubuntu 18.04, Fedora 29, Arch, ...]
 
 **GSConnect environment (if applicable):**
