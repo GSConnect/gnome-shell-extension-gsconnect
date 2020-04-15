@@ -152,7 +152,7 @@ var Plugin = GObject.registerClass({
             this._mounting = true;
 
             // Parse the connection info
-            await this._parseInfo(info);
+            this._parseInfo(info);
 
             // Ensure the private key is in the keyring
             await this._addPrivateKey();
