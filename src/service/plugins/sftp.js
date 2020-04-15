@@ -218,10 +218,11 @@ var Plugin = GObject.registerClass({
 
             // Populate the menu
             this._addSubmenu();
-            this._mounting = false;
         } catch (e) {
             logError(e, this.device.name);
             this.unmount();
+        } finally {
+            this._mounting = false;
         }
     }
 
