@@ -111,8 +111,14 @@ var Plugin = GObject.registerClass({
      * @param {object} info - The body of a kdeconnect.sftp packet
      */
     _parseInfo(info) {
-        this._info = info;
+        if (!this.device.connected) {
+            throw new Gio.IOErrorEnum({
+                message: _('Device is disconnected'),
+                code: Gio.IOErrorEnum.CONNECTION_CLOSED
+            });
+        }
 
+        this._info = info;
         this.info.ip = this.device.channel.host;
         this.info.directories = {};
         this.info.mount = null;
