@@ -281,10 +281,17 @@ const Controller = class Controller {
             HAVE_REMOTEINPUT = false;
             let service = Gio.Application.get_default();
 
-            // First we're going to disabled the mousepad plugin on all devices
+            // First we're going to disabled the affected plugins on all devices
             for (let device of service.devices) {
                 let supported = device.settings.get_strv('supported-plugins');
-                supported = supported.splice(supported.indexOf('mousepad'), 1);
+                let index;
+
+                if ((index = supported.indexOf('mousepad')) > -1)
+                    supported.splice(index, 1);
+
+                if ((index = supported.indexOf('presenter')) > -1)
+                    supported.splice(index, 1);
+
                 device.settings.set_strv('supported-plugins', supported);
             }
 
