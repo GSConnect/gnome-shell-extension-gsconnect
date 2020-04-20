@@ -8,10 +8,12 @@ const GLib = imports.gi.GLib;
 
 
 // Bootstrap the global object
-if (!window.gsconnect) {
-    window.gsconnect = {};
+if (!globalThis.gsconnect) {
     let m = /@(.+):\d+/.exec((new Error()).stack.split('\n')[1]);
-    gsconnect.extdatadir = Gio.File.new_for_path(m[1]).get_parent().get_path();
+
+    globalThis.gsconnect = {
+        extdatadir: Gio.File.new_for_path(m[1]).get_parent().get_path()
+    };
 }
 
 
@@ -106,8 +108,8 @@ imports.gettext.bindtextdomain(gsconnect.app_id, gsconnect.localedir);
 const Gettext = imports.gettext.domain(gsconnect.app_id);
 
 if (typeof _ !== 'function') {
-    window._ = Gettext.gettext;
-    window.ngettext = Gettext.ngettext;
+    globalThis._ = Gettext.gettext;
+    globalThis.ngettext = Gettext.ngettext;
 } else {
     gsconnect._ = Gettext.gettext;
     gsconnect.ngettext = Gettext.ngettext;

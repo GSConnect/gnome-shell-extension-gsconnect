@@ -12,8 +12,8 @@ const ByteArray = imports.byteArray;
  * Check if we're in a Wayland session (mostly for input synthesis)
  * https://wiki.gnome.org/Accessibility/Wayland#Bugs.2FIssues_We_Must_Address
  */
-window.HAVE_REMOTEINPUT = GLib.getenv('GDMSESSION') !== 'ubuntu-wayland';
-window.HAVE_WAYLAND = GLib.getenv('XDG_SESSION_TYPE') === 'wayland';
+globalThis.HAVE_REMOTEINPUT = GLib.getenv('GDMSESSION') !== 'ubuntu-wayland';
+globalThis.HAVE_WAYLAND = GLib.getenv('XDG_SESSION_TYPE') === 'wayland';
 
 
 /**
@@ -51,10 +51,14 @@ const _debugFunc = function(message, prefix = null) {
 };
 
 // Swap the function out for a no-op anonymous function for speed
-window.debug = gsconnect.settings.get_boolean('debug') ? _debugFunc : () => {};
+if (gsconnect.settings.get_boolean('debug')) {
+    globalThis.debug = _debugFunc;
+} else {
+    globalThis.debug = () => {};
+}
 
-gsconnect.settings.connect('changed::debug', (settings) => {
-    window.debug = settings.get_boolean('debug') ? _debugFunc : () => {};
+gsconnect.settings.connect('changed::debug', (settings, key) => {
+    globalThis.debug = settings.get_boolean(key) ? _debugFunc : () => {};
 });
 
 

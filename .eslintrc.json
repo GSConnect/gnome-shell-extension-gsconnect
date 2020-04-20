@@ -115,9 +115,9 @@
         "logError": false,
         "print": false,
         "printerr": false,
-        "window": false,
 
         "global": false,
+        "globalThis": false,
         "gsconnect": false,
         "debug": false,
         "open_uri": false,

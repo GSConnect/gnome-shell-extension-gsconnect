@@ -25,7 +25,7 @@ function get_datadir() {
     return Gio.File.new_for_path(m[1]).get_parent().get_path();
 }
 
-window.gsconnect = {extdatadir: get_datadir()};
+globalThis.gsconnect = {extdatadir: get_datadir()};
 imports.searchPath.unshift(gsconnect.extdatadir);
 imports._gsconnect;
 
