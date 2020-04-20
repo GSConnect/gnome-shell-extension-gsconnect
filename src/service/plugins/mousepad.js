@@ -1,6 +1,5 @@
 'use strict';
 
-const Atspi = imports.gi.Atspi;
 const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
@@ -137,10 +136,6 @@ var Plugin = GObject.registerClass({
         }
 
         return this._state;
-    }
-
-    get virtual_keyboard() {
-        return this._virtual_keyboard;
     }
 
     handlePacket(packet) {
