@@ -104,7 +104,7 @@ var Clipboard = GObject.registerClass({
             this._clipboard = null;
 
             // On Wayland we use a small DBus server exported from the Shell
-            if (_WAYLAND) {
+            if (HAVE_WAYLAND) {
                 this._nameWatcherId = Gio.bus_watch_name(
                     Gio.BusType.SESSION,
                     'org.gnome.Shell.Extensions.GSConnect.Clipboard',
@@ -142,7 +142,7 @@ var Clipboard = GObject.registerClass({
             this._text = content;
             this.notify('text');
 
-            if (!_WAYLAND && content !== null) {
+            if (!HAVE_WAYLAND && content !== null) {
                 this._clipboard.set_text(content, -1);
             }
         }

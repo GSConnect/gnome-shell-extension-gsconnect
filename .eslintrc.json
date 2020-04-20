@@ -126,7 +126,7 @@
         "_N": false,
         "ngettext": false,
 
-        "_WAYLAND": false,
+        "HAVE_WAYLAND": false,
         "HAVE_REMOTEINPUT": false
     },
     "parserOptions": {

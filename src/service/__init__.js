@@ -12,8 +12,8 @@ const ByteArray = imports.byteArray;
  * Check if we're in a Wayland session (mostly for input synthesis)
  * https://wiki.gnome.org/Accessibility/Wayland#Bugs.2FIssues_We_Must_Address
  */
-window._WAYLAND = GLib.getenv('XDG_SESSION_TYPE') === 'wayland';
 window.HAVE_REMOTEINPUT = GLib.getenv('GDMSESSION') !== 'ubuntu-wayland';
+window.HAVE_WAYLAND = GLib.getenv('XDG_SESSION_TYPE') === 'wayland';
 
 
 /**
