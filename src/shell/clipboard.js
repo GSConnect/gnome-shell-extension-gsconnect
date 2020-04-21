@@ -27,7 +27,7 @@ const DBUS_INFO = DBUS_NODE.lookup_interface(DBUS_NAME);
 /* GSConnectShellClipboard:
  *
  * A simple clipboard portal, especially useful on Wayland where GtkClipboard
- * doesn't work correctly.
+ * doesn't work in background processes.
  */
 var Clipboard = GObject.registerClass({
     GTypeName: 'GSConnectShellClipboard',
@@ -143,7 +143,7 @@ var Clipboard = GObject.registerClass({
          * Mutter's internal calls have finished resolving in the loop, or else
          * we'll end up with the previous selection's content.
          */
-        GLib.idle_add(GLib.PRIORITY_DEFAULT, () => {
+        GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
             this.clipboard.get_text(
                 St.ClipboardType.CLIPBOARD,
                 this._onTextReceived.bind(this)
