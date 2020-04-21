@@ -115,6 +115,7 @@
         "logError": false,
         "print": false,
         "printerr": false,
+        "window": false,
 
         "global": false,
         "globalThis": false,
