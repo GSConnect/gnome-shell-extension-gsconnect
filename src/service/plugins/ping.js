@@ -42,7 +42,7 @@ var Plugin = GObject.registerClass({
         let notif = {
             title: this.device.name,
             body: _('Ping'),
-            icon: new Gio.ThemedIcon({name: `${this.device.icon_name}-symbolic`})
+            icon: new Gio.ThemedIcon({name: `${this.device.icon_name}`})
         };
 
         if (packet.body.message) {
