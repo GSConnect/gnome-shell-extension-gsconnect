@@ -156,7 +156,7 @@ const Source = GObject.registerClass({
         }
 
         // Avoid sending the request multiple times
-        if (notification._remoteClosed) {
+        if (notification._remoteClosed || notification.remoteId === undefined) {
             return;
         }
 
