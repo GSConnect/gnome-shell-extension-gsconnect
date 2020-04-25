@@ -212,6 +212,16 @@ const Source = GObject.registerClass({
             localId = notificationId;
         }
 
+        // Fix themed icons
+        if (notificationParams.icon) {
+            let gicon = Gio.Icon.deserialize(notificationParams.icon);
+
+            if (gicon instanceof Gio.ThemedIcon) {
+                gicon = gsconnect.getIcon(gicon.names[0]);
+                notificationParams.icon = gicon.serialize();
+            }
+        }
+
         //
         this._notificationPending = true;
         let notification = this._notifications[localId];
