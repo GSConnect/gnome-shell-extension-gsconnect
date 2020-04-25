@@ -100,11 +100,6 @@ var Plugin = GObject.registerClass({
         }
     }
 
-    disconnected() {
-        super.disconnected();
-        this.unmount();
-    }
-
     /**
      * Parse the connection info
      *
