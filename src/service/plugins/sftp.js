@@ -95,7 +95,7 @@ var Plugin = GObject.registerClass({
             this.device.lookup_action('unmount').enabled = false;
 
         // Request a mount
-        } else {
+        } else if (this.info.mount === null) {
             this.mount();
         }
     }
