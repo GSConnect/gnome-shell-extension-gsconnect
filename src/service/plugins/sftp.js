@@ -34,6 +34,9 @@ var Metadata = {
 };
 
 
+const MAX_MOUNT_DIRS = 12;
+
+
 /**
  * SFTP Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/sftp
@@ -46,26 +49,51 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'sftp');
 
+        this._gmount = null;
+        this._mounting = false;
+
         // A reusable launcher for ssh processes
         this._launcher = new Gio.SubprocessLauncher({
             flags: (Gio.SubprocessFlags.STDOUT_PIPE |
                     Gio.SubprocessFlags.STDERR_MERGE),
         });
 
-        this._mounting = false;
+        // Watch the volume monitor
+        this._volumeMonitor = Gio.VolumeMonitor.get();
+
+        this._mountAddedId = this._volumeMonitor.connect(
+            'mount-added',
+            this._onMountAdded.bind(this)
+        );
+
+        this._mountRemovedId = this._volumeMonitor.connect(
+            'mount-removed',
+            this._onMountRemoved.bind(this)
+        );
     }
 
-    get info() {
-        if (this._info === undefined) {
-            this._info = {
-                directories: {},
-                mount: null,
-                regex: null,
-                uri: null,
-            };
+    get gmount() {
+        if (this._gmount === null && this.device.connected) {
+            let host = this.device.channel.host;
+
+            let regex = new RegExp(
+                `sftp://(${host}):(1739|17[4-5][0-9]|176[0-4])`
+            );
+
+            for (let mount of this._volumeMonitor.get_mounts()) {
+                let uri = mount.get_root().get_uri();
+
+                if (regex.test(uri)) {
+                    this._gmount = mount;
+                    this._addSubmenu(mount);
+                    this._addSymlink(mount);
+
+                    break;
+                }
+            }
         }
 
-        return this._info;
+        return this._gmount;
     }
 
     handlePacket(packet) {
@@ -81,8 +109,8 @@ var Plugin = GObject.registerClass({
                 });
 
             // Ensure we don't mount on top of an existing mount
-            } else if (!this.info.mount) {
-                this._mount(packet.body);
+            } else if (this.gmount === null) {
+                this._mount(packet);
             }
         }
     }
@@ -96,46 +124,82 @@ var Plugin = GObject.registerClass({
             this.device.lookup_action('unmount').enabled = false;
 
         // Request a mount
-        } else if (!this.info.mount) {
+        } else if (this.gmount === null) {
             this.mount();
         }
     }
 
-    /**
-     * Parse the connection info
-     *
-     * @param {Object} info - The body of a kdeconnect.sftp packet
-     */
-    _parseInfo(info) {
-        if (!this.device.connected) {
-            throw new Gio.IOErrorEnum({
-                message: _('Device is disconnected'),
-                code: Gio.IOErrorEnum.CONNECTION_CLOSED,
+    _onMountAdded(monitor, mount) {
+        if (this._gmount !== null || !this.device.connected)
+            return;
+
+        let host = this.device.channel.host;
+        let regex = new RegExp(`sftp://(${host}):(1739|17[4-5][0-9]|176[0-4])`);
+        let uri = mount.get_root().get_uri();
+
+        if (!regex.test(uri))
+            return;
+
+        this._gmount = mount;
+        this._addSubmenu(mount);
+        this._addSymlink(mount);
+    }
+
+    _onMountRemoved(monitor, mount) {
+        if (this.gmount !== mount)
+            return;
+
+        this._gmount = null;
+        this._removeSubmenu();
+    }
+
+    async _listDirectories(mount) {
+        try {
+            let file = mount.get_root();
+
+            let iter = await new Promise((resolve, reject) => {
+                file.enumerate_children_async(
+                    Gio.FILE_ATTRIBUTE_STANDARD_NAME,
+                    Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
+                    GLib.PRIORITY_DEFAULT,
+                    null, // TODO: cancellable
+                    (file, res) => {
+                        try {
+                            resolve(file.enumerate_children_finish(res));
+                        } catch (e) {
+                            reject(e);
+                        }
+                    }
+                );
             });
-        }
 
-        this._info = info;
-        this.info.ip = this.device.channel.host;
-        this.info.directories = {};
-        this.info.mount = null;
-        this.info.regex = new RegExp(
-            `sftp://(${this.info.ip}):(1739|17[4-5][0-9]|176[0-4])`
-        );
-        this.info.uri = `sftp://${this.info.ip}:${this.info.port}/`;
+            let infos = await new Promise((resolve, reject) => {
+                iter.next_files_async(
+                    MAX_MOUNT_DIRS,
+                    GLib.PRIORITY_DEFAULT,
+                    null, // TODO: cancellable
+                    (iter, res) => {
+                        try {
+                            resolve(iter.next_files_finish(res));
+                        } catch (e) {
+                            reject(e);
+                        }
+                    }
+                );
+            });
 
-        // If 'multiPaths' is present setup a local URI for each
-        if (info.hasOwnProperty('multiPaths')) {
-            for (let i = 0; i < info.multiPaths.length; i++) {
-                let name = info.pathNames[i];
-                let path = info.multiPaths[i];
-                this.info.directories[name] = this.info.uri + path;
+            iter.close_async(GLib.PRIORITY_DEFAULT, null, null);
+
+            let directories = {};
+
+            for (let info of infos) {
+                let name = info.get_name();
+                directories[name] = `${file.get_uri()}${name}/`;
             }
 
-        // If 'multiPaths' is missing use 'path' and assume a Camera folder
-        } else {
-            let uri = this.info.uri + this.info.path;
-            this.info.directories[_('All files')] = uri;
-            this.info.directories[_('Camera pictures')] = `${uri}DCIM/Camera`;
+            return directories;
+        } catch (e) {
+            debug(e, this.device.name);
         }
     }
 
@@ -147,7 +211,12 @@ var Plugin = GObject.registerClass({
         op.reply(Gio.MountOperationResult.HANDLED);
     }
 
-    async _mount(info) {
+    /**
+     * Handle an SFTP info packet.
+     *
+     * @param {Core.Packet} packet - a `kdeconnect.sftp`
+     */
+    async _mount(packet) {
         try {
             // If mounting is already in progress, let that fail before retrying
             if (this._mounting)
@@ -155,16 +224,13 @@ var Plugin = GObject.registerClass({
 
             this._mounting = true;
 
-            // Parse the connection info
-            this._parseInfo(info);
-
             // Ensure the private key is in the keyring
             await this._addPrivateKey();
 
             // Create a new mount operation
             let op = new Gio.MountOperation({
-                username: info.user,
-                password: info.password,
+                username: packet.body.user || null,
+                password: packet.body.password || null,
                 password_save: Gio.PasswordSave.NEVER,
             });
 
@@ -172,9 +238,11 @@ var Plugin = GObject.registerClass({
             op.connect('ask-password', this._onAskPassword);
 
             // This is the actual call to mount the device
-            await new Promise((resolve, reject) => {
-                let file = Gio.File.new_for_uri(this.info.uri);
+            let host = this.device.channel.host;
+            let uri = `sftp://${host}:${packet.body.port}/`;
+            let file = Gio.File.new_for_uri(uri);
 
+            await new Promise((resolve, reject) => {
                 file.mount_enclosing_volume(0, op, null, (file, res) => {
                     try {
                         resolve(file.mount_enclosing_volume_finish(res));
@@ -187,63 +255,17 @@ var Plugin = GObject.registerClass({
                         // There's a good chance this is a host key verification
                         // error; regardless we'll remove the key for security.
                         } else {
-                            this._removeHostKey(this.info.ip);
+                            this._removeHostKey(host);
                             reject(e);
                         }
                     }
                 });
             });
-
-            // Get the GMount from GVolumeMonitor
-            let monitor = Gio.VolumeMonitor.get();
-
-            for (let mount of monitor.get_mounts()) {
-                let uri = mount.get_root().get_uri();
-
-                // This is our GMount
-                if (this.info.uri === uri) {
-                    this.info.mount = mount;
-                    this.info.mount.connect(
-                        'unmounted',
-                        this.unmount.bind(this)
-                    );
-
-                    this._addSymlink(mount);
-
-                // This is one of our old mounts
-                } else if (this.info.regex.test(uri)) {
-                    debug(`Remove stale mount at ${uri}`);
-                    await this._unmount(mount);
-                }
-            }
-
-            // Populate the menu
-            this._addSubmenu();
         } catch (e) {
             logError(e, this.device.name);
-            this.unmount();
         } finally {
             this._mounting = false;
         }
-    }
-
-    _unmount(mount = null) {
-        if (!mount)
-            return Promise.resolve();
-
-        return new Promise((resolve, reject) => {
-            let op = new Gio.MountOperation();
-
-            mount.unmount_with_operation(1, op, null, (mount, res) => {
-                try {
-                    mount.unmount_with_operation_finish(res);
-                    resolve();
-                } catch (e) {
-                    debug(e);
-                    resolve();
-                }
-            });
-        });
     }
 
     /**
@@ -340,12 +362,14 @@ var Plugin = GObject.registerClass({
         return this._mountedIcon;
     }
 
-    _addSubmenu() {
+    async _addSubmenu(mount) {
         try {
+            let directories = await this._listDirectories(mount);
+
             // Directories Section
             let dirSection = new Gio.Menu();
 
-            for (let [name, uri] of Object.entries(this.info.directories))
+            for (let [name, uri] of Object.entries(directories))
                 dirSection.append(name, `device.openPath::${uri}`);
 
             // Unmount Section
@@ -468,6 +492,9 @@ var Plugin = GObject.registerClass({
      * Send a request to mount the remote device
      */
     mount() {
+        if (this.gmount !== null)
+            return;
+
         this.device.sendPacket({
             type: 'kdeconnect.sftp.request',
             body: {
@@ -481,23 +508,38 @@ var Plugin = GObject.registerClass({
      */
     async unmount() {
         try {
-            if (!this.info.mount)
+            if (this.gmount === null)
                 return;
 
-            let mount = this.info.mount;
-
             this._removeSubmenu();
-            this._info = undefined;
             this._mounting = false;
 
-            await this._unmount(mount);
+            await new Promise((resolve, reject) => {
+                this.gmount.unmount_with_operation(
+                    Gio.MountUnmountFlags.FORCE,
+                    new Gio.MountOperation(),
+                    null,
+                    (mount, res) => {
+                        try {
+                            resolve(mount.unmount_with_operation_finish(res));
+                        } catch (e) {
+                            reject(e);
+                        }
+                    }
+                );
+            });
         } catch (e) {
             debug(e);
         }
     }
 
     destroy() {
-        this.unmount();
+        if (this._volumeMonitor) {
+            this._volumeMonitor.disconnect(this._mountAddedId);
+            this._volumeMonitor.disconnect(this._mountRemovedId);
+            this._volumeMonitor = null;
+        }
+
         super.destroy();
     }
 });
