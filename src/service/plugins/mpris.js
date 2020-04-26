@@ -618,7 +618,8 @@ var RemotePlayer = GObject.registerClass({
             this._Position = state.pos * 1000;
         }
 
-        if (metadataChanged) this.notify('Metadata');
+        if (metadataChanged)
+            this.notify('Metadata');
 
         // Playback Status
         if (state.hasOwnProperty('isPlaying')) {
