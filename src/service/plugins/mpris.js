@@ -102,6 +102,7 @@ var Plugin = GObject.registerClass({
      * @param {array} playerList - A list of remote player names
      */
     _handlePlayerList(playerList) {
+        // First destroy removed players
         for (let player of this._players.values()) {
             if (!playerList.includes(player.Identity)) {
                 this._players.delete(player.Identity);
@@ -109,8 +110,16 @@ var Plugin = GObject.registerClass({
             }
         }
 
+        // Then add new players before requesting their state
         for (let identity of playerList) {
-            this._device.sendPacket({
+            if (!this._players.has(identity)) {
+                this._players.set(
+                    identity,
+                    new RemotePlayer(this.device, identity)
+                );
+            }
+
+            this.device.sendPacket({
                 type: 'kdeconnect.mpris.request',
                 body: {
                     player: identity,
@@ -129,10 +138,7 @@ var Plugin = GObject.registerClass({
     _handlePlayerState(state) {
         let player = this._players.get(state.player);
 
-        if (player === undefined) {
-            player = new RemotePlayer(this.device, state);
-            this._players.set(state.player, player);
-        } else {
+        if (player !== undefined) {
             player.parseState(state);
         }
     }
@@ -513,18 +519,17 @@ var RemotePlayer = GObject.registerClass({
     }
 }, class RemotePlayer extends GObject.Object {
 
-    _init(device, initialState) {
+    _init(device, identity) {
         super._init();
 
         this._device = device;
+        this._Identity = identity;
         this._isPlaying = false;
 
         this._ownerId = 0;
         this._connection = null;
         this._applicationIface = null;
         this._playerIface = null;
-
-        this.parseState(initialState);
     }
 
     async export() {
