@@ -139,9 +139,15 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'sms');
 
-        this.threads = {};
-        this.cacheProperties(['threads']);
+        this.cacheProperties(['_threads']);
         this._version = 1;
+    }
+
+    get threads() {
+        if (this._threads === undefined)
+            this._threads = {};
+
+        return this._threads;
     }
 
     get window() {
@@ -171,7 +177,7 @@ var Plugin = GObject.registerClass({
     }
 
     clearCache() {
-        this.threads = {};
+        this._threads = {};
         this.__cache_write();
         this.notify('threads');
     }
