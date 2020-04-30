@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2020-04-01 19:11\n"
+"PO-Revision-Date: 2020-04-30 23:43\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Catalan\n"
 "Language: ca_ES\n"
@@ -105,7 +105,7 @@ msgstr "Fitxers"
 
 #: data/ui/device-preferences.ui:418
 msgid "Receive Files"
-msgstr "Rep arxius"
+msgstr ""
 
 #: data/ui/device-preferences.ui:503 data/ui/device-preferences.ui:2164
 msgid "Sharing"
@@ -280,7 +280,7 @@ msgstr "Res"
 #. TRANSLATORS: Restore the system volume
 #: data/ui/device-preferences.ui:2610 data/ui/device-preferences.ui:2636
 msgid "Restore"
-msgstr ""
+msgstr "Restaura"
 
 #. TRANSLATORS: Lower the system volume
 #: data/ui/device-preferences.ui:2617 data/ui/device-preferences.ui:2643
@@ -966,8 +966,8 @@ msgstr "Vós: %s"
 #, javascript-format
 msgid "And %d other contact"
 msgid_plural "And %d others"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "I %d altre contacte"
+msgstr[1] "I %d d’altres"
 
 #: src/service/ui/service.js:31
 msgid "Select a Device"
