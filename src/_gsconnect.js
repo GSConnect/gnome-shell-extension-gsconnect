@@ -64,7 +64,8 @@ if (gsconnect.is_local) {
         'locale'
     ]);
 
-    // schemadir will be a subdirectory of the extension root
+    // locale and schemas will be a subdirectories of the extension root
+    gsconnect.localedir = GLib.build_filenamev([gsconnect.extdatadir, 'locale']);
     gsconnect.gschema = Gio.SettingsSchemaSource.new_from_directory(
         GLib.build_filenamev([gsconnect.extdatadir, 'schemas']),
         Gio.SettingsSchemaSource.get_default(),
@@ -253,8 +254,7 @@ gsconnect.installService = function() {
             GLib.unlink(GLib.build_filenamev([dir, name]));
         }
 
-        // eslint-disable-next-line no-unused-vars
-        for (let [dir, manifest] of manifests) {
+        for (let dir of Object.keys(manifests)) {
             GLib.unlink(GLib.build_filenamev([dir, manifestFile]));
         }
     }
