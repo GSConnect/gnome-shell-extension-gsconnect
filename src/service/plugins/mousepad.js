@@ -252,7 +252,9 @@ var Plugin = GObject.registerClass({
         }
 
         if (input.key) {
+            this._dialog._isAck = true;
             this._dialog.text.buffer.text += input.key;
+            this._dialog._isAck = false;
         } else if (KeyMap.get(input.specialKey) === Gdk.KEY_BackSpace) {
             this._dialog.text.emit('backspace');
         }
@@ -472,6 +474,11 @@ var KeyboardInputDialog = GObject.registerClass({
         });
         scroll.add(this.text);
 
+        this.text.buffer.connect(
+            'insert-text',
+            this._onInsertText.bind(this)
+        );
+
         this.infobar.connect('notify::reveal-child', this._onState.bind(this));
         this.plugin.bind_property('state', this.infobar, 'reveal-child', 6);
 
@@ -580,6 +587,30 @@ var KeyboardInputDialog = GObject.registerClass({
         }
 
         return super.vfunc_window_state_event(event);
+    }
+
+    _onInsertText(buffer, location, text, len) {
+        if (this._isAck)
+            return;
+
+        debug(`insert-text: ${text} (chars ${[...text].length})`);
+
+        for (let char of [...text]) {
+            if (!char)
+                continue;
+
+            this.device.sendPacket({
+                type: 'kdeconnect.mousepad.request',
+                body: {
+                    alt: false,
+                    ctrl: false,
+                    shift: false,
+                    super: false,
+                    sendAck: false,
+                    key: char
+                }
+            });
+        }
     }
 
     _onState(widget) {
