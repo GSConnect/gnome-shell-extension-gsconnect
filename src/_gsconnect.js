@@ -52,17 +52,28 @@ for (let path of [gsconnect.cachedir, gsconnect.configdir, gsconnect.runtimedir]
 /**
  * Setup global object for user or system install
  */
-if (gsconnect.is_local) {
+function _findLibdir() {
     // Infer libdir by assuming gnome-shell shares a common prefix with gjs
-    gsconnect.libdir = GIRepository.Repository.get_search_path().find(path => {
+    let searchPath = GIRepository.Repository.get_search_path();
+
+    let libdir = searchPath.find(path => {
         return path.endsWith('/gjs/girepository-1.0');
     }).replace('/gjs/girepository-1.0', '');
 
-    // localedir will be a subdirectory of the extension root
-    gsconnect.localedir = GLib.build_filenamev([
-        gsconnect.extdatadir,
-        'locale'
-    ]);
+    // Assume the parent directory if it's not there
+    let path = GLib.build_filenamev([libdir, 'gnome-shell']);
+
+    if (!GLib.file_test(path, GLib.FileTest.IS_DIR)) {
+        let currentDir = `/${GLib.path_get_basename(libdir)}`;
+        libdir = libdir.replace(currentDir, '');
+    }
+
+    return libdir;
+}
+
+if (gsconnect.is_local) {
+    // Infer libdir by assuming gnome-shell shares a common prefix with gjs
+    gsconnect.libdir = _findLibdir();
 
     // locale and schemas will be a subdirectories of the extension root
     gsconnect.localedir = GLib.build_filenamev([gsconnect.extdatadir, 'locale']);
