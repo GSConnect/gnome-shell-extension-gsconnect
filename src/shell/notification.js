@@ -195,19 +195,20 @@ const Source = GObject.registerClass({
      * Override to control notification spawning
      */
     addNotification(notificationId, notificationParams, showBanner) {
+        this._notificationPending = true;
+
+        // Parse the id to determine if it's a repliable notification, device
+        // notification or a regular local notification
         let idMatch, deviceId, requestReplyId, remoteId, localId;
 
-        // Check if it's a repliable device notification
         if ((idMatch = notificationId.match(REPLY_REGEX))) {
             [idMatch, deviceId, remoteId, requestReplyId] = idMatch;
             localId = `${deviceId}|${remoteId}`;
 
-        // Check if it's a device notification
         } else if ((idMatch = notificationId.match(DEVICE_REGEX))) {
             [idMatch, deviceId, remoteId] = idMatch;
             localId = `${deviceId}|${remoteId}`;
 
-        // Must be a service notification
         } else {
             localId = notificationId;
         }
@@ -222,8 +223,6 @@ const Source = GObject.registerClass({
             }
         }
 
-        //
-        this._notificationPending = true;
         let notification = this._notifications[localId];
 
         // Check if @notificationParams represents an exact repeat
