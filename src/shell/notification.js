@@ -16,10 +16,10 @@ const APP_PATH = '/org/gnome/Shell/Extensions/GSConnect';
 
 
 // deviceId Pattern (<device-id>|<remote-id>)
-const DEVICE_REGEX = /^([^|]+)\|(.+)$/;
+const DEVICE_REGEX = /^([^|]+)\|([\s\S]+)$/;
 
 // requestReplyId Pattern (<device-id>|<remote-id>)|<reply-id>)
-const REPLY_REGEX = /^([^|]+)\|(.+)\|([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})$/i;
+const REPLY_REGEX = /^([^|]+)\|([\s\S]+)\|([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})$/i;
 
 
 /**
