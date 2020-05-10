@@ -217,29 +217,26 @@ const Source = GObject.registerClass({
             }
         }
 
-        // Check if this is a repeat
-        let exactRepeat = false;
         let notification = this._notifications[localId];
 
+        // Check if this is a repeat
         if (notification) {
             notification.requestReplyId = requestReplyId;
 
-            // Check if @notificationParams represents an exact repeat
+            // Bail early If @notificationParams represents an exact repeat
             let title = notificationParams.title.unpack();
             let body = notificationParams.body ?
-                       notificationParams.body.unpack() :
-                       null;
+                notificationParams.body.unpack() :
+                null;
 
-            exactRepeat = (
-                notification.title === title &&
-                notification.bannerBodyText === body
-            );
-
-            if (!exactRepeat) {
-                notification.title = title;
-                notification.bannerBodyText = body;
-                notification.emit('updated', false);
+            if (notification.title === title &&
+                notification.bannerBodyText === body) {
+                this._notificationPending = false;
+                return;
             }
+
+            notification.title = title;
+            notification.bannerBodyText = body;
 
         // Device Notification
         } else if (idMatch) {
@@ -265,7 +262,7 @@ const Source = GObject.registerClass({
             this._notifications[localId] = notification;
         }
 
-        if (showBanner && !exactRepeat)
+        if (showBanner)
             this.showNotification(notification);
         else
             this.pushNotification(notification);
