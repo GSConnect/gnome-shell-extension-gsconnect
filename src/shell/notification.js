@@ -232,7 +232,9 @@ const Source = GObject.registerClass({
 
             // Check if @notificationParams represents an exact repeat
             let title = notificationParams.title.unpack();
-            let body = notificationParams.body.unpack();
+            let body = notificationParams.body ?
+                       notificationParams.body.unpack() :
+                       null;
 
             exactRepeat = (
                 notification.title === title &&
