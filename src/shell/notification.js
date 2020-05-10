@@ -127,13 +127,7 @@ const NotificationBanner = GObject.registerClass({
             Gio.DBusCallFlags.NO_AUTO_START,
             -1,
             null,
-            (connection, res) => {
-                try {
-                    connection.call_finish(res);
-                } catch (e) {
-                    // Silence errors
-                }
-            }
+            null
         );
 
         this.close();
