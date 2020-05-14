@@ -1081,6 +1081,7 @@ const Service = GObject.registerClass({
             // Pairing
             if (options.contains('pair')) {
                 this._cliAction(id, 'pair');
+                return 0;
             }
 
             if (options.contains('unpair')) {
