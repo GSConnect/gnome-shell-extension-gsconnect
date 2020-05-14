@@ -127,10 +127,6 @@ var ConnectDialog = GObject.registerClass({
             }
         }
 
-        if (this._devicesId) {
-            this.application.bluetooth.disconnect(this._devicesId);
-        }
-
         this.destroy();
         return false;
     }
