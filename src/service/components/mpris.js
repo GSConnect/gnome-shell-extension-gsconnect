@@ -558,11 +558,9 @@ var Manager = GObject.registerClass({
     },
     Signals: {
         'player-changed': {
-            flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [GObject.TYPE_OBJECT]
         },
         'player-seeked': {
-            flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [GObject.TYPE_OBJECT]
         }
     }
@@ -696,7 +694,7 @@ var Manager = GObject.registerClass({
         }
     }
 
-    async _removePlayer(name) {
+    _removePlayer(name) {
         try {
             let player = this.players.get(name);
 
@@ -718,6 +716,9 @@ var Manager = GObject.registerClass({
 
     /**
      * Get a player by its Identity.
+     *
+     * @param {string} identity - A player name
+     * @param {GSConnectMPRISPlayer|null} - A player or %null
      */
     getPlayer(identity) {
         for (let player of this.players.values()) {
