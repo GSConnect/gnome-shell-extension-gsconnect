@@ -1006,6 +1006,10 @@ const Service = GObject.registerClass({
         if (options.contains('notification-icon')) {
             icon = options.lookup_value('notification-icon', null).unpack();
             icon = Gio.Icon.new_for_string(icon);
+        } else {
+            icon = new Gio.ThemedIcon({
+                name: 'org.gnome.Shell.Extensions.GSConnect'
+            });
         }
 
         let notif = {
