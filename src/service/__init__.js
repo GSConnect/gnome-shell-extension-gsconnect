@@ -23,6 +23,7 @@ globalThis.HAVE_WAYLAND = GLib.getenv('XDG_SESSION_TYPE') === 'wayland';
  * @param {Error|string} message - A string or Error to log
  * @param {string} [prefix] - An optional prefix for the warning
  */
+const _debugCallerMatch = new RegExp(/([^@]*)@([^:]*):([^:]*)/);
 const _debugFunc = function(message, prefix = null) {
     let caller;
 
@@ -30,15 +31,16 @@ const _debugFunc = function(message, prefix = null) {
         caller = message.stack.split('\n')[0];
         message = `${message.message}\n${message.stack}`;
     } else {
-        message = JSON.stringify(message, null, 2);
         caller = (new Error()).stack.split('\n')[1];
+        message = JSON.stringify(message, null, 2);
     }
 
     // Prepend prefix
-    message = (prefix) ? `${prefix}: ${message}` : message;
+    if (prefix)
+        message = `${prefix}: ${message}`;
 
     // Cleanup the stack
-    let [, func, file, line] = caller.match(/([^@]*)@([^:]*):([^:]*)/);
+    let [, func, file, line] = _debugCallerMatch.exec(caller);
     let script = file.replace(gsconnect.extdatadir, '');
 
     GLib.log_structured('GSConnect', GLib.LogLevelFlags.LEVEL_MESSAGE, {
