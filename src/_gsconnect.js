@@ -1,6 +1,7 @@
 'use strict';
 
 const ByteArray = imports.byteArray;
+const Gettext = imports.gettext;
 
 const Gio = imports.gi.Gio;
 const GIRepository = imports.gi.GIRepository;
@@ -98,17 +99,17 @@ if (gsconnect.is_local) {
  * Init Gettext
  *
  * If we aren't inside the GNOME Shell process we'll set gettext functions on
- * the global object, otherwise we'll set them on the global 'gsconnect' object
+ * the global object, otherwise we'll set them on the extension object
  */
-imports.gettext.bindtextdomain(gsconnect.app_id, gsconnect.localedir);
-const Gettext = imports.gettext.domain(gsconnect.app_id);
+Gettext.bindtextdomain(gsconnect.app_id, gsconnect.localedir);
 
 if (typeof _ !== 'function') {
-    globalThis._ = Gettext.gettext;
-    globalThis.ngettext = Gettext.ngettext;
+    globalThis._ = GLib.dgettext.bind(null, gsconnect.app_id);
+    globalThis.ngettext = GLib.dngettext.bind(null, gsconnect.app_id);
 } else {
-    gsconnect._ = Gettext.gettext;
-    gsconnect.ngettext = Gettext.ngettext;
+    let Extension = imports.misc.extensionUtils.getCurrentExtension();
+    Extension._ = GLib.dgettext.bind(null, gsconnect.app_id);
+    Extension.ngettext = GLib.dngettext.bind(null, gsconnect.app_id);
 }
 
 

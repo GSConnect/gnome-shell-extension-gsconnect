@@ -12,7 +12,7 @@ const NotificationDaemon = imports.ui.notificationDaemon;
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
 
 // eslint-disable-next-line no-redeclare
-const _ = gsconnect._;
+const _ = Extension._;
 const APP_ID = 'org.gnome.Shell.Extensions.GSConnect';
 const APP_PATH = '/org/gnome/Shell/Extensions/GSConnect';
 

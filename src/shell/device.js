@@ -11,7 +11,7 @@ const PopupMenu = imports.ui.popupMenu;
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
 
 // eslint-disable-next-line no-redeclare
-const _ = gsconnect._;
+const _ = Extension._;
 const GMenu = Extension.imports.shell.gmenu;
 const Tooltip = Extension.imports.shell.tooltip;
 

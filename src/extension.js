@@ -15,7 +15,7 @@ const Extension = imports.misc.extensionUtils.getCurrentExtension();
 Extension.imports._gsconnect;
 
 // eslint-disable-next-line no-redeclare
-const _ = gsconnect._;
+const _ = Extension._;
 const Clipboard = Extension.imports.shell.clipboard;
 const Device = Extension.imports.shell.device;
 const Keybindings = Extension.imports.shell.keybindings;
@@ -262,7 +262,7 @@ const ServiceIndicator = GObject.registerClass({
         } else {
             if (available.length > 1) {
                 // TRANSLATORS: %d is the number of devices connected
-                this._item.label.text = gsconnect.ngettext(
+                this._item.label.text = Extension.ngettext(
                     '%d Connected',
                     '%d Connected',
                     available.length
