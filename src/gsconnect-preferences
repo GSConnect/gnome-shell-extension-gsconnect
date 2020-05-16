@@ -2,10 +2,6 @@
 
 'use strict';
 
-const Gettext = imports.gettext.domain('org.gnome.Shell.Extensions.GSConnect');
-const _ = Gettext.gettext;
-const System = imports.system;
-
 imports.gi.versions.Gdk = '3.0';
 imports.gi.versions.GdkPixbuf = '2.0';
 imports.gi.versions.Gio = '2.0';
@@ -109,4 +105,4 @@ const Preferences = GObject.registerClass({
     }
 });
 
-(new Preferences()).run([System.programInvocationName].concat(ARGV));
+(new Preferences()).run([imports.system.programInvocationName].concat(ARGV));
