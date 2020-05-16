@@ -27,14 +27,14 @@ const Remote = Extension.imports.utils.remote;
  * A function to fetch a GIcon with fallback support for getting unthemed icons
  * from our GResource
  */
-gsconnect.getIcon = function(name) {
-    if (gsconnect.getIcon._extension === undefined) {
+Extension.getIcon = function(name) {
+    if (Extension.getIcon._extension === undefined) {
         // Setup the desktop icons
         let settings = imports.gi.St.Settings.get();
-        gsconnect.getIcon._desktop = new Gtk.IconTheme();
-        gsconnect.getIcon._desktop.set_custom_theme(settings.gtk_icon_theme);
+        Extension.getIcon._desktop = new Gtk.IconTheme();
+        Extension.getIcon._desktop.set_custom_theme(settings.gtk_icon_theme);
         settings.connect('notify::gtk-icon-theme', (settings) => {
-            gsconnect.getIcon._desktop.set_custom_theme(settings.gtk_icon_theme);
+            Extension.getIcon._desktop.set_custom_theme(settings.gtk_icon_theme);
         });
 
         // Preload our fallbacks
@@ -51,23 +51,23 @@ gsconnect.getIcon = function(name) {
             'sms-symbolic'
         ];
 
-        gsconnect.getIcon._extension = {};
+        Extension.getIcon._extension = {};
 
         for (let iconName of iconNames) {
-            gsconnect.getIcon._extension[iconName] = new Gio.FileIcon({
+            Extension.getIcon._extension[iconName] = new Gio.FileIcon({
                 file: Gio.File.new_for_uri(`${basePath}${iconName}.svg`)
             });
         }
     }
 
     // Check the desktop icon theme
-    if (gsconnect.getIcon._desktop.has_icon(name)) {
+    if (Extension.getIcon._desktop.has_icon(name)) {
         return new Gio.ThemedIcon({name: name});
     }
 
     // Check our GResource
-    if (gsconnect.getIcon._extension[name] !== undefined) {
-        return gsconnect.getIcon._extension[name];
+    if (Extension.getIcon._extension[name] !== undefined) {
+        return Extension.getIcon._extension[name];
     }
 
     // Fallback to hoping it's in the theme somewhere
@@ -129,7 +129,7 @@ const ServiceIndicator = GObject.registerClass({
 
         // Service Indicator
         this._indicator = this._addIndicator();
-        this._indicator.gicon = gsconnect.getIcon(
+        this._indicator.gicon = Extension.getIcon(
             'org.gnome.Shell.Extensions.GSConnect-symbolic'
         );
         this._indicator.visible = false;

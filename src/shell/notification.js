@@ -9,6 +9,8 @@ const Main = imports.ui.main;
 const MessageTray = imports.ui.messageTray;
 const NotificationDaemon = imports.ui.notificationDaemon;
 
+const Extension = imports.misc.extensionUtils.getCurrentExtension();
+
 // eslint-disable-next-line no-redeclare
 const _ = gsconnect._;
 const APP_ID = 'org.gnome.Shell.Extensions.GSConnect';
@@ -212,7 +214,7 @@ const Source = GObject.registerClass({
             let gicon = Gio.Icon.deserialize(notificationParams.icon);
 
             if (gicon instanceof Gio.ThemedIcon) {
-                gicon = gsconnect.getIcon(gicon.names[0]);
+                gicon = Extension.getIcon(gicon.names[0]);
                 notificationParams.icon = gicon.serialize();
             }
         }

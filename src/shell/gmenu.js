@@ -38,7 +38,7 @@ function getItemInfo(model, index) {
                 value = Gio.Icon.deserialize(value);
 
                 if (value instanceof Gio.ThemedIcon)
-                    value = gsconnect.getIcon(value.names[0]);
+                    value = Extension.getIcon(value.names[0]);
 
                 info[name] = value;
                 break;
