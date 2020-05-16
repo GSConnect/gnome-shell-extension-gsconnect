@@ -205,11 +205,7 @@ const ServiceIndicator = GObject.registerClass({
     }
 
     _preferences() {
-        let proc = new Gio.Subprocess({
-            argv: [gsconnect.extdatadir + '/gsconnect-preferences']
-        });
-        proc.init(null);
-        proc.wait_async(null, null);
+        Gio.Subprocess.new([Extension.path + '/gsconnect-preferences'], 0);
     }
 
     _sync() {

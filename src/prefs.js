@@ -15,20 +15,15 @@ function init() {
 
 function buildPrefsWidget() {
     // Destroy the window once the mainloop starts
-    let label = new Gtk.Label();
+    let widget = new Gtk.Box();
 
-    GLib.timeout_add(GLib.PRIORITY_DEFAULT, 0, () => {
-        label.get_toplevel().destroy();
+    GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
+        widget.get_toplevel().destroy();
         return false;
     });
 
-    // Exec `gsconnect-preferences
-    let proc = new Gio.Subprocess({
-        argv: [Extension.path + '/gsconnect-preferences']
-    });
-    proc.init(null);
-    proc.wait_async(null, null);
+    Gio.Subprocess.new([Extension.path + '/gsconnect-preferences'], 0);
 
-    return label;
+    return widget;
 }
 
