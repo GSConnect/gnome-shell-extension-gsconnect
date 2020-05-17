@@ -254,9 +254,13 @@ var Interface = GObject.registerClass({
     }
 
     destroy() {
-        this.flush();
-        this.unexport();
-        GObject.signal_handlers_destroy(this);
+        if (this.__disposed === undefined) {
+            this.__disposed = true;
+
+            this.flush();
+            this.unexport();
+            this.run_dispose();
+        }
     }
 });
 
