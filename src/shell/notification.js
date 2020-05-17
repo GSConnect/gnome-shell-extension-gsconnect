@@ -18,10 +18,10 @@ const APP_PATH = '/org/gnome/Shell/Extensions/GSConnect';
 
 
 // deviceId Pattern (<device-id>|<remote-id>)
-const DEVICE_REGEX = /^([^|]+)\|([\s\S]+)$/;
+const DEVICE_REGEX = new RegExp(/^([^|]+)\|([\s\S]+)$/);
 
 // requestReplyId Pattern (<device-id>|<remote-id>)|<reply-id>)
-const REPLY_REGEX = /^([^|]+)\|([\s\S]+)\|([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})$/i;
+const REPLY_REGEX = new RegExp(/^([^|]+)\|([\s\S]+)\|([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})$/, 'i');
 
 
 /**
@@ -197,12 +197,12 @@ const Source = GObject.registerClass({
         // notification or a regular local notification
         let idMatch, deviceId, requestReplyId, remoteId, localId;
 
-        if ((idMatch = notificationId.match(REPLY_REGEX))) {
-            [idMatch, deviceId, remoteId, requestReplyId] = idMatch;
+        if ((idMatch = REPLY_REGEX.exec(notificationId))) {
+            [, deviceId, remoteId, requestReplyId] = idMatch;
             localId = `${deviceId}|${remoteId}`;
 
-        } else if ((idMatch = notificationId.match(DEVICE_REGEX))) {
-            [idMatch, deviceId, remoteId] = idMatch;
+        } else if ((idMatch = DEVICE_REGEX.exec(notificationId))) {
+            [, deviceId, remoteId] = idMatch;
             localId = `${deviceId}|${remoteId}`;
 
         } else {
