@@ -31,7 +31,6 @@ imports._gsconnect;
 // Local Imports
 const Core = imports.service.protocol.core;
 const Device = imports.service.device;
-
 const ServiceUI = imports.service.ui.service;
 
 const _GITHUB = 'https://github.com/andyholmes/gnome-shell-extension-gsconnect';
