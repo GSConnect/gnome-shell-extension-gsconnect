@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2020-05-18 09:01\n"
+"PO-Revision-Date: 2020-05-18 09:17\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -341,7 +341,7 @@ msgstr "刷新"
 #: data/ui/preferences-window.ui:111 data/ui/preferences-window.ui:128
 #: src/extension.js:148
 msgid "Mobile Settings"
-msgstr "移动设置"
+msgstr "设置"
 
 #: data/ui/preferences-window.ui:182 data/ui/preferences-window.ui:197
 msgid "Edit Device Name"
@@ -621,7 +621,7 @@ msgstr "无法使用的"
 #: src/service/device.js:179
 #, javascript-format
 msgid "Bluetooth device at %s"
-msgstr "蓝牙设备位于 %s"
+msgstr "位于 %s 的蓝牙设备"
 
 #. TRANSLATORS: Label for TLS Certificate fingerprint
 #.
@@ -632,7 +632,7 @@ msgstr "蓝牙设备位于 %s"
 #: src/service/device.js:199 src/service/device.js:201
 #, javascript-format
 msgid "%s Fingerprint:"
-msgstr "%s 指纹:"
+msgstr "%s 的指纹:"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:748
@@ -825,7 +825,7 @@ msgstr "无法从 %2$s 接收 “%1$s”"
 #: src/service/plugins/share.js:232
 #, javascript-format
 msgid "Text Shared By %s"
-msgstr "共享的文本 %s"
+msgstr "%s 共享的文本"
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
 #: src/service/plugins/share.js:304
@@ -837,7 +837,7 @@ msgstr "正在将 “%s” 发送到 %s"
 #: src/service/plugins/share.js:327
 #, javascript-format
 msgid "Sent “%s” to %s"
-msgstr "已发送 “%s” 到 %s"
+msgstr "已将发送 “%s” 到 %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:335
