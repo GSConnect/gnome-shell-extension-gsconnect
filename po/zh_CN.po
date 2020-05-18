@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2020-04-01 19:11\n"
+"PO-Revision-Date: 2020-05-18 09:01\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -712,7 +712,7 @@ msgstr "键盘"
 #: src/service/plugins/mousepad.js:413
 #, javascript-format
 msgid "The remote keyboard on %s is not active"
-msgstr ""
+msgstr "%s 上的远程键盘未激活"
 
 #: src/service/plugins/mpris.js:12
 msgid "MPRIS"
@@ -796,7 +796,7 @@ msgstr "文件传输中"
 #: src/service/plugins/share.js:156
 #, javascript-format
 msgid "Receiving “%s” from %s"
-msgstr "从 %s 接收 “%s”"
+msgstr "正在从 %2$s 接收 “%1$s”"
 
 #: src/service/plugins/share.js:181 src/service/plugins/share.js:325
 msgid "Transfer Successful"
@@ -806,7 +806,7 @@ msgstr "传输成功"
 #: src/service/plugins/share.js:183
 #, javascript-format
 msgid "Received “%s” from %s"
-msgstr "从 %s 接收 “%s”"
+msgstr "已从 %2$s 接收 “%1$s”"
 
 #: src/service/plugins/share.js:189
 msgid "Open Folder"
@@ -820,7 +820,7 @@ msgstr "打开文件"
 #: src/service/plugins/share.js:203
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
-msgstr "无法从 %s 接收 “%s”"
+msgstr "无法从 %2$s 接收 “%1$s”"
 
 #: src/service/plugins/share.js:232
 #, javascript-format
@@ -837,7 +837,7 @@ msgstr "正在将 “%s” 发送到 %s"
 #: src/service/plugins/share.js:327
 #, javascript-format
 msgid "Sent “%s” to %s"
-msgstr "发送 “%s” 到 %s"
+msgstr "已发送 “%s” 到 %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:335
