@@ -25,7 +25,7 @@ const RemoteSession = GObject.registerClass({
             g_name: 'org.gnome.Mutter.RemoteDesktop',
             g_object_path: objectPath,
             g_interface_name: 'org.gnome.Mutter.RemoteDesktop.Session',
-            g_flags: Gio.DBusProxyFlags.DO_NOT_LOAD_PROPERTIES
+            g_flags: Gio.DBusProxyFlags.NONE
         });
 
         this._started = false;
@@ -41,6 +41,14 @@ const RemoteSession = GObject.registerClass({
         if (!this._started) return;
 
         this.call(name, parameters, Gio.DBusCallFlags.NONE, -1, null, null);
+    }
+
+    get session_id() {
+        try {
+            return this.get_cached_property('SessionId').unpack();
+        } catch (e) {
+            return null;
+        }
     }
 
     async start() {
@@ -360,19 +368,49 @@ const Controller = class Controller {
         return GLib.SOURCE_REMOVE;
     }
 
-    _createSession() {
-        return new Promise((resolve, reject) => {
-            if (this.connection === null) {
-                reject(new Error('No DBus connection'));
-                return;
-            }
+    _createRemoteDesktopSession() {
+        if (this.connection === null)
+            return Promise.reject(new Error('No DBus connection'));
 
+        return new Promise((resolve, reject) => {
             this.connection.call(
                 'org.gnome.Mutter.RemoteDesktop',
                 '/org/gnome/Mutter/RemoteDesktop',
                 'org.gnome.Mutter.RemoteDesktop',
                 'CreateSession',
                 null,
+                null,
+                Gio.DBusCallFlags.NONE,
+                -1,
+                null,
+                (connection, res) => {
+                    try {
+                        res = connection.call_finish(res);
+                        resolve(res.deepUnpack()[0]);
+                    } catch (e) {
+                        reject(e);
+                    }
+                }
+            );
+        });
+    }
+
+    _createScreenCastSession(sessionId) {
+        if (this.connection === null)
+            return Promise.reject(new Error('No DBus connection'));
+
+        return new Promise((resolve, reject) => {
+            let options = new GLib.Variant('(a{sv})', [{
+                'disable-animations': GLib.Variant.new_boolean(false),
+                'remote-desktop-session-id': GLib.Variant.new_string(sessionId)
+            }]);
+
+            this.connection.call(
+                'org.gnome.Mutter.ScreenCast',
+                '/org/gnome/Mutter/ScreenCast',
+                'org.gnome.Mutter.ScreenCast',
+                'CreateSession',
+                options,
                 null,
                 Gio.DBusCallFlags.NONE,
                 -1,
@@ -413,10 +451,17 @@ const Controller = class Controller {
 
                 debug('Creating Mutter RemoteDesktop session');
 
-                let objectPath = await this._createSession();
+                // This takes three steps: creating the remote desktop session,
+                // starting the session, and creating a screencast session for
+                // the remote desktop session.
+                let objectPath = await this._createRemoteDesktopSession();
+
                 this._session = new RemoteSession(objectPath);
                 await this._session.start();
 
+                await this._createScreenCastSession(this._session.session_id);
+
+                // Watch for the session ending
                 this._sessionClosedId = this._session.connect(
                     'closed',
                     this._onSessionClosed.bind(this)
