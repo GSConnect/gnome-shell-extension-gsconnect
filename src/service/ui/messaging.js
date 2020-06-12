@@ -53,8 +53,13 @@ function getTime(time) {
         case (diff < (GLib.TIME_SPAN_DAY * 7)):
             return date.format('%A・%l:%M %p');
 
-        default:
+        // Sometime this year
+        case (date.get_year() === now.get_year()):
             return date.format('%b %e');
+
+        // Earlier than that
+        default:
+            return date.format('%b %e %Y');
     }
 }
 
@@ -80,12 +85,25 @@ function getShortTime(time) {
         case (diff < GLib.TIME_SPAN_DAY):
             return date.format('%l:%M %p');
 
+        // Less than a week ago
         case (diff < (GLib.TIME_SPAN_DAY * 7)):
             return date.format('%a');
 
-        default:
+        // Sometime this year
+        case (date.get_year() === GLib.DateTime.new_now_local().get_year()):
             return date.format('%b %e');
+
+        // Earlier than that
+        default:
+            return date.format('%b %e %Y');
     }
+}
+
+// Used for tooltips to display time and date of message.
+function getDetailedTime(time) {
+    let date = GLib.DateTime.new_from_unix_local(time / 1000);
+
+    return date.format('%c');
 }
 
 function getContactsForAddresses(device, addresses) {
@@ -134,7 +152,7 @@ var MessageLabel = GObject.registerClass({
             label: URI.linkify(message.body, message.date),
             halign: incoming ? Gtk.Align.START : Gtk.Align.END,
             selectable: true,
-            tooltip_text: getTime(message.date),
+            tooltip_text: getDetailedTime(message.date),
             use_markup: true,
             visible: true,
             wrap: true,
@@ -161,7 +179,7 @@ var MessageLabel = GObject.registerClass({
 
     vfunc_query_tooltip(x, y, keyboard_tooltip, tooltip) {
         if (super.vfunc_query_tooltip(x, y, keyboard_tooltip, tooltip)) {
-            tooltip.set_text(getTime(this.message.date));
+            tooltip.set_text(getDetailedTime(this.message.date));
             return true;
         }
 
