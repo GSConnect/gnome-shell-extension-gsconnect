@@ -136,7 +136,6 @@ const setAvatarVisible = function(row, visible) {
     }
 };
 
-
 /**
  * A simple GtkLabel subclass with a chat bubble appearance
  */
@@ -266,7 +265,6 @@ const ThreadRow = GObject.registerClass({
 
         // Contact Name
         let nameLabel = _('Unknown Contact');
-
         // Update avatar for single-recipient messages
         if (message.addresses.length === 1) {
             this._avatar.contact = this.contacts[this._sender];
@@ -274,6 +272,11 @@ const ThreadRow = GObject.registerClass({
         } else {
             this._avatar.contact = null;
             nameLabel = _('Group Message');
+            let participants = [];
+            message.addresses.forEach((address) => {
+                participants.push(this.contacts[address.address].name);
+            });
+            this._name.tooltip_text = participants.join(', ');
         }
 
         // Contact Name & Message body
@@ -593,13 +596,23 @@ const ConversationWidget = GObject.registerClass({
 
             row.avatar = new Contacts.Avatar(this.contacts[row.sender]);
             row.avatar.valign = Gtk.Align.END;
-            row.grid.attach(row.avatar, 0, 0, 1, 1);
+            row.grid.attach(row.avatar, 0, 1, 1, 1);
         }
 
+        row.senderLabel = new Gtk.Label({
+            label: '<span size="small" style="italic">' + this.contacts[row.sender].name + '</span>',
+            halign: Gtk.Align.START,
+            valign: Gtk.Align.START,
+            use_markup: true,
+            margin_bottom: 0,
+        });
+        row.grid.attach(row.senderLabel, 1, 0, 1, 1);
+
         let widget = new MessageLabel(message);
-        row.grid.attach(widget, 1, 0, 1, 1);
+        row.grid.attach(widget, 1, 1, 1, 1);
 
         row.show_all();
+        row.senderLabel.visible = message.addresses.length > 1;
 
         return row;
     }
@@ -651,6 +664,7 @@ const ConversationWidget = GObject.registerClass({
                    row.sender.equalsPhoneNumber(before.sender)) {
             setAvatarVisible(before, false);
             setAvatarVisible(row, true);
+            row.senderLabel.visible = false;
 
         // otherwise show the avatar
         } else {
