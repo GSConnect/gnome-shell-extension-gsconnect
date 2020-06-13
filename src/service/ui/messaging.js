@@ -119,7 +119,7 @@ function getContactsForAddresses(device, addresses) {
 }
 
 const setAvatarVisible = function(row, visible) {
-    let incoming = (row.type === Sms.MessageBox.INBOX);
+    let incoming = (row.message.type === Sms.MessageBox.INBOX);
 
     // Adjust the margins
     if (visible) {
@@ -135,7 +135,6 @@ const setAvatarVisible = function(row, visible) {
         row.avatar.visible = visible;
     }
 };
-
 
 /**
  * A simple GtkLabel subclass with a chat bubble appearance
@@ -266,7 +265,6 @@ const ThreadRow = GObject.registerClass({
 
         // Contact Name
         let nameLabel = _('Unknown Contact');
-
         // Update avatar for single-recipient messages
         if (message.addresses.length === 1) {
             this._avatar.contact = this.contacts[this._sender];
@@ -274,6 +272,11 @@ const ThreadRow = GObject.registerClass({
         } else {
             this._avatar.contact = null;
             nameLabel = _('Group Message');
+            let participants = [];
+            message.addresses.forEach((address) => {
+                participants.push(this.contacts[address.address].name);
+            });
+            this._name.tooltip_text = participants.join(', ');
         }
 
         // Contact Name & Message body
@@ -565,10 +568,8 @@ const ConversationWidget = GObject.registerClass({
         });
 
         // Sort properties
-        row.date = message.date;
-        row.type = message.type;
         row.sender = message.addresses[0].address || 'unknown';
-
+        row.message = message;
         row.grid = new Gtk.Grid({
             can_focus: false,
             hexpand: true,
@@ -593,11 +594,21 @@ const ConversationWidget = GObject.registerClass({
 
             row.avatar = new Contacts.Avatar(this.contacts[row.sender]);
             row.avatar.valign = Gtk.Align.END;
-            row.grid.attach(row.avatar, 0, 0, 1, 1);
+            row.grid.attach(row.avatar, 0, 1, 1, 1);
+
+            row.senderLabel = new Gtk.Label({
+                label: '<span size="small" weight="bold">' + this.contacts[row.sender].name + '</span>',
+                halign: Gtk.Align.START,
+                valign: Gtk.Align.START,
+                use_markup: true,
+                margin_bottom: 0,
+                margin_start: 6,
+            });
+            row.grid.attach(row.senderLabel, 1, 0, 1, 1);
         }
 
         let widget = new MessageLabel(message);
-        row.grid.attach(widget, 1, 0, 1, 1);
+        row.grid.attach(widget, 1, 1, 1, 1);
 
         row.show_all();
 
@@ -634,23 +645,30 @@ const ConversationWidget = GObject.registerClass({
         // Add date header if the last message was more than an hour ago
         let header = row.get_header();
 
-        if ((row.date - before.date) > GLib.TIME_SPAN_HOUR / 1000) {
+        if ((row.message.date - before.message.date) > GLib.TIME_SPAN_HOUR / 1000) {
             if (!header) {
                 header = new Gtk.Label({visible: true});
                 header.get_style_context().add_class('dim-label');
                 row.set_header(header);
             }
 
-            header.label = getTime(row.date);
+            header.label = getTime(row.message.date);
 
             // Also show the avatar
             setAvatarVisible(row, true);
 
+            if (row.senderLabel) {
+                row.senderLabel.visible = row.message.addresses.length > 1;
+            }
+
         // Or if the previous sender was the same, hide its avatar
-        } else if (row.type === before.type &&
+        } else if (row.message.type === before.message.type &&
                    row.sender.equalsPhoneNumber(before.sender)) {
             setAvatarVisible(before, false);
             setAvatarVisible(row, true);
+            if (row.senderLabel) {
+                row.senderLabel.visible = false;
+            }
 
         // otherwise show the avatar
         } else {
