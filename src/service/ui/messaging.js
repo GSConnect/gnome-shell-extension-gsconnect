@@ -709,7 +709,7 @@ const ConversationWidget = GObject.registerClass({
     }
 
     _sortMessages(row1, row2) {
-        return (row1.date > row2.date) ? 1 : -1;
+        return (row1.message.date > row2.message.date) ? 1 : -1;
     }
 
     /**
