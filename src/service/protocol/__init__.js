@@ -67,8 +67,6 @@ Object.defineProperties(Gio.TlsCertificate.prototype, {
 
                 let stdout = proc.communicate_utf8(this.certificate_pem, null)[1];
                 this.__fingerprint = /[a-zA-Z0-9:]{59}/.exec(stdout)[0];
-
-                proc.wait_check(null);
             }
 
             return this.__fingerprint;
@@ -90,8 +88,6 @@ Object.defineProperties(Gio.TlsCertificate.prototype, {
 
                 let stdout = proc.communicate_utf8(this.certificate_pem, null)[1];
                 this.__common_name = /(?:cn|CN) ?= ?([^,\n]*)/.exec(stdout)[1];
-
-                proc.wait_check(null);
             }
 
             return this.__common_name;
