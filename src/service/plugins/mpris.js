@@ -663,7 +663,7 @@ var RemotePlayer = GObject.registerClass({
         }
 
         if (state.hasOwnProperty('volume')) {
-            this.volume = state.volume / 100;
+            this.Volume = state.volume / 100;
         }
 
         if (!this._isPlaying && !this.CanControl) {
