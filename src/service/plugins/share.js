@@ -368,24 +368,11 @@ var Plugin = GObject.registerClass({
     /**
      * Share a URI. Generally the remote device opens it with the scheme default
      *
-     * @param {string} uri - Currently http(s) and tel: URIs are supported
+     * @param {string} uri - A URI to share
      */
     shareUri(uri) {
-        switch (true) {
-            // Currently only pass http(s)/tel URIs
-            case uri.startsWith('http://'):
-            case uri.startsWith('https://'):
-            case uri.startsWith('tel:'):
-                break;
-
-            // Redirect local file URIs
-            case uri.startsWith('file://'):
-                return this.sendFile(uri);
-
-            // Assume HTTPS
-            default:
-                uri = `https://${uri}`;
-        }
+        if (GLib.uri_parse_scheme(uri) === 'file')
+            return this.sendFile(uri);
 
         this.device.sendPacket({
             type: 'kdeconnect.share.request',
