@@ -218,7 +218,7 @@ var Plugin = GObject.registerClass({
 
             // If we don't have a thread for this message or it's newer
             // than the last message in the cache, request the thread
-            if (!cache || cache[cache.length - 1].date < message.date) {
+            if (!cache || !cache.length || cache[cache.length - 1].date < message.date) {
                 this.requestConversation(message.thread_id);
             }
         }
