@@ -372,7 +372,8 @@ const ConversationWidget = GObject.registerClass({
 
         // Pending messages
         this.pending.message = {
-            date: Number.MAX_SAFE_INTEGER
+            date: Number.MAX_SAFE_INTEGER,
+            type: Sms.MessageBox.OUTBOX,
         };
         this.bind_property(
             'has-pending',
