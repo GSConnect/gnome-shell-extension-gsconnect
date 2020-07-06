@@ -113,7 +113,8 @@ var MessageBox = {
     SENT: 2,
     DRAFT: 3,
     OUTBOX: 4,
-    FAILED: 5
+    FAILED: 5,
+    QUEUED: 6,
 };
 
 
@@ -263,8 +264,11 @@ var Plugin = GObject.registerClass({
             for (let i = 0, len = thread.length; i < len; i++) {
                 let message = thread[i];
 
-                // TODO: invalid MessageBox
-                if (message.type < 0 || message.type > 5) continue;
+                // TODO: We only cache messages of a known MessageBox since we
+                // have no reliable way to determine its direction, let alone
+                // what to do with it.
+                if (message.type < 0 || message.type > 6)
+                    continue;
 
                 // If the message exists, just update it
                 let cacheMessage = cache.find(m => m.date === message.date);
