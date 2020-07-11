@@ -492,7 +492,7 @@ var KeyboardInputDialog = GObject.registerClass({
 
     vfunc_key_release_event(event) {
         if (!this.plugin.state) {
-            return true;
+            debug('ignoring remote keyboard state');
         }
 
         let keyvalLower = Gdk.keyval_to_lower(event.keyval);
@@ -508,7 +508,7 @@ var KeyboardInputDialog = GObject.registerClass({
 
     vfunc_key_press_event(event) {
         if (!this.plugin.state) {
-            return true;
+            debug('ignoring remote keyboard state');
         }
 
         let keyvalLower = Gdk.keyval_to_lower(event.keyval);
@@ -580,7 +580,11 @@ var KeyboardInputDialog = GObject.registerClass({
     }
 
     vfunc_window_state_event(event) {
-        if (this.plugin.state && !!(event.new_window_state & Gdk.WindowState.FOCUSED)) {
+        if (!this.plugin.state) {
+            debug('ignoring remote keyboard state');
+        }
+
+        if (event.new_window_state & Gdk.WindowState.FOCUSED) {
             this._grab();
         } else {
             this._ungrab();
@@ -614,7 +618,11 @@ var KeyboardInputDialog = GObject.registerClass({
     }
 
     _onState(widget) {
-        if (this.plugin.state && this.is_active) {
+        if (!this.plugin.state) {
+            debug('ignoring remote keyboard state');
+        }
+
+        if (this.is_active) {
             this._grab();
         } else {
             this._ungrab();
