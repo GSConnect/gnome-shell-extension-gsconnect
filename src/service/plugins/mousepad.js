@@ -28,7 +28,10 @@ var Metadata = {
             icon_name: 'input-keyboard-symbolic',
 
             parameter_type: null,
-            incoming: ['kdeconnect.mousepad.echo', 'kdeconnect.mousepad.keyboardstate'],
+            incoming: [
+                'kdeconnect.mousepad.echo',
+                'kdeconnect.mousepad.keyboardstate'
+            ],
             outgoing: ['kdeconnect.mousepad.request']
         }
     }
