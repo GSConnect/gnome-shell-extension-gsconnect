@@ -210,7 +210,7 @@ const Service = GObject.registerClass({
      * Return a device for @packet, creating it and adding it to the list of
      * of known devices if it doesn't exist.
      *
-     * @param {kdeconnect.identity} packet - An identity packet for the device
+     * @param {Core.Packet} packet - An identity packet for the device
      * @return {Device.Device} - A device object
      */
     _ensureDevice(packet) {
@@ -254,11 +254,11 @@ const Service = GObject.registerClass({
      * Removes the device from the list of known devices, deletes all GSettings
      * and files.
      *
-     * @param {String} id - The id of the device to delete
+     * @param {string} id - The id of the device to delete
      */
     _removeDevice(id) {
         // Delete all GSettings
-        let settings_path = '/org/gnome/shell/extensions/gsconnect/' + id + '/';
+        let settings_path = `/org/gnome/shell/extensions/gsconnect/${id}/`;
         GLib.spawn_command_line_async(`dconf reset -f ${settings_path}`);
 
         // Delete the cache

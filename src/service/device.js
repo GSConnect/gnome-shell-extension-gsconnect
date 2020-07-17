@@ -849,7 +849,7 @@ var Device = GObject.registerClass({
     /**
      * Set the internal paired state of the device and emit ::notify
      *
-     * @param {Boolean} bool - The paired state to set
+     * @param {boolean} bool - The paired state to set
      */
     _setPaired(bool) {
         this._resetPairRequest();

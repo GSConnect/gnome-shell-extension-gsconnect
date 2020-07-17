@@ -86,7 +86,7 @@ var Plugin = GObject.registerClass({
      * Change volume, microphone and media player state in response to an
      * incoming or answered call.
      *
-     * @param {String} eventType - 'ringing' or 'talking'
+     * @param {string} eventType - 'ringing' or 'talking'
      */
     _setMediaState(eventType) {
         // Mixer Volume

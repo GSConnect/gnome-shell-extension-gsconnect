@@ -191,7 +191,7 @@ var LegacyMessagingDialog = GObject.registerClass({
     /**
      * Set the contents of the message entry
      *
-     * @param {String} text - The message to place in the entry
+     * @param {string} text - The message to place in the entry
      */
     setMessage(text) {
         this.entry.buffer.text = text;

@@ -17,8 +17,8 @@ const URI = imports.utils.uri;
 /**
  * Return a human-readable timestamp.
  *
- * @param {Number} time - Milliseconds since the epoch (local time)
- * @return {String} - A timestamp similar to what Android Messages uses
+ * @param {number} time - Milliseconds since the epoch (local time)
+ * @return {string} - A timestamp similar to what Android Messages uses
  */
 function getTime(time) {
     let date = GLib.DateTime.new_from_unix_local(time / 1000);

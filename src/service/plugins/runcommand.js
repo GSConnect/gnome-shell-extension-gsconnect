@@ -112,7 +112,7 @@ var Plugin = GObject.registerClass({
 
     /**
      * Handle a request to execute the local command with the UUID @key
-     * @param {String} key - The UUID of the local command
+     * @param {string} key - The UUID of the local command
      */
     _handleCommand(key) {
         try {
@@ -187,7 +187,7 @@ var Plugin = GObject.registerClass({
 
     /**
      * Send a request to execute the remote command with the UUID @key
-     * @param {String} key - The UUID of the remote command
+     * @param {string} key - The UUID of the remote command
      */
     executeCommand(key) {
         this.device.sendPacket({

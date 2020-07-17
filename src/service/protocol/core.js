@@ -395,7 +395,7 @@ var Channel = GObject.registerClass({
     /**
      * Transfer using g_output_stream_splice()
      *
-     * @return {Boolean} - %true on success, %false on failure.
+     * @return {boolean} - %true on success, %false on failure.
      */
     async transfer() {
         let result = false;

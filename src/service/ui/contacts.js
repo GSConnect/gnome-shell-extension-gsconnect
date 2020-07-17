@@ -12,7 +12,7 @@ const Gtk = imports.gi.Gtk;
  * Return a random color
  *
  * @param {*} [salt] - If not %null, will be used as salt for generating a color
- * @param {Number} alpha - A value in the [0...1] range for the alpha channel
+ * @param {number} alpha - A value in the [0...1] range for the alpha channel
  * @return {Gdk.RGBA} - A new Gdk.RGBA object generated from the input
  */
 function randomRGBA(salt = null, alpha = 1.0) {
@@ -37,10 +37,10 @@ function randomRGBA(salt = null, alpha = 1.0) {
  * Get the relative luminance of a RGB set
  * See: https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
  *
- * @param {Number} r - A number in the [0.0, 1.0] range for the red value
- * @param {Number} g - A number in the [0.0, 1.0] range for the green value
- * @param {Number} b - A number in the [0.0, 1.0] range for the blue value
- * @return {Number} - ...
+ * @param {number} r - A number in the [0.0, 1.0] range for the red value
+ * @param {number} g - A number in the [0.0, 1.0] range for the green value
+ * @param {number} b - A number in the [0.0, 1.0] range for the blue value
+ * @return {number} - ...
  */
 function relativeLuminance(rgba) {
     let {red, green, blue} = rgba;

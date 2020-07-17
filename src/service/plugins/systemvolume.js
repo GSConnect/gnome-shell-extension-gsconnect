@@ -134,7 +134,7 @@ var Plugin = GObject.registerClass({
      * Send the state of a local sink
      *
      * @param {Gvc.MixerControl} mixer - The mixer that owns the stream
-     * @param {Number} id - The Id of the stream that changed
+     * @param {number} id - The Id of the stream that changed
      */
     _sendSink(mixer, id) {
         // Avoid starving the packet channel when fading

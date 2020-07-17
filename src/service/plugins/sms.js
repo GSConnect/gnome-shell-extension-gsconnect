@@ -339,7 +339,7 @@ var Plugin = GObject.registerClass({
     /**
      * Request a list of messages from a single thread.
      *
-     * @param {Number} thread_id - The id of the thread to request
+     * @param {number} thread_id - The id of the thread to request
      */
     requestConversation(thread_id) {
         this.device.sendPacket({
