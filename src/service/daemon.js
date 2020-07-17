@@ -99,6 +99,36 @@ const Service = GObject.registerClass({
         return Array.from(this._devices.values());
     }
 
+    get discoverable() {
+        if (this._discoverable === undefined)
+            this._discoverable = this.settings.get_boolean('discoverable');
+
+        return this._discoverable;
+    }
+
+    set discoverable(value) {
+        if (this.discoverable === value)
+            return;
+
+        this._discoverable = value;
+        this.notify('discoverable');
+    }
+
+    get id() {
+        if (this._id === undefined)
+            this._id = this.settings.get_string('id');
+
+        return this._id;
+    }
+
+    set id(value) {
+        if (this.id === value)
+            return;
+
+        this._id = value;
+        this.notify('id');
+    }
+
     get identity() {
         if (this._identity === undefined) {
             this._identity = new Core.Packet({
@@ -136,6 +166,25 @@ const Service = GObject.registerClass({
         }
 
         return this._identity;
+    }
+
+    get name() {
+        if (this._name === undefined)
+            this._name = this.settings.get_string('name');
+
+        return this._name;
+    }
+
+    set name(value) {
+        if (this.name === value)
+            return;
+
+        this._name = value;
+        this.notify('name');
+
+        // Broadcast changes to the network
+        this.identity.body.deviceName = this.name;
+        this._identify();
     }
 
     /**
@@ -241,12 +290,6 @@ const Service = GObject.registerClass({
         if (this.name.length === 0) {
             this.settings.set_string('name', GLib.get_host_name());
         }
-
-        // Keep identity updated and broadcast any name changes
-        this._nameChangedId = this.settings.connect(
-            'changed::name',
-            this._onNameChanged.bind(this)
-        );
     }
 
     _onNameChanged(settings, key) {
@@ -695,7 +738,6 @@ const Service = GObject.registerClass({
 
     vfunc_shutdown() {
         // Dispose GSettings
-        this.settings.disconnect(this._nameChangedId);
         this.settings.run_dispose();
 
         // Destroy the backends first to avoid any further connections
