@@ -118,9 +118,9 @@ var Plugin = GObject.registerClass({
         this.info.directories = {};
         this.info.mount = null;
         this.info.regex = new RegExp(
-            'sftp://(' + this.info.ip + '):(1739|17[4-5][0-9]|176[0-4])'
+            `sftp://(${this.info.ip}):(1739|17[4-5][0-9]|176[0-4])`
         );
-        this.info.uri = 'sftp://' + this.info.ip + ':' + this.info.port + '/';
+        this.info.uri = `sftp://${this.info.ip}:${this.info.port}/`;
 
         // If 'multiPaths' is present setup a local URI for each
         if (info.hasOwnProperty('multiPaths')) {
@@ -411,7 +411,7 @@ var Plugin = GObject.registerClass({
 
             let link_target = mount.get_root().get_path();
             let link = Gio.File.new_for_path(
-                by_name_dir.get_path() + '/' + safe_device_name
+                `${by_name_dir.get_path()}/${safe_device_name}`
             );
 
             // Check for and remove any existing stale link

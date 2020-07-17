@@ -290,21 +290,21 @@ const ThreadRow = GObject.registerClass({
 
         // Otherwise make it bold if it's unread
         } else if (message.read === Sms.MessageStatus.UNREAD) {
-            nameLabel = '<b>' + nameLabel + '</b>';
-            bodyLabel = '<b>' + bodyLabel + '</b>';
+            nameLabel = `<b>${nameLabel}</b>`;
+            bodyLabel = `<b>${bodyLabel}</b>`;
         }
 
         // Set the labels, body always smaller
         this._name.label = nameLabel;
-        this._body.label = '<small>' + bodyLabel + '</small>';
+        this._body.label = `<small>${bodyLabel}</small>`;
 
         // Time
-        let timeLabel = '<small>' + getShortTime(message.date) + '</small>';
+        let timeLabel = `<small>${getShortTime(message.date)}</small>`;
         this._time.label = timeLabel;
     }
 
     update() {
-        let timeLabel = '<small>' + getShortTime(this.message.date) + '</small>';
+        let timeLabel = `<small>${getShortTime(this.message.date)}</small>`;
         this._time.label = timeLabel;
     }
 });
@@ -600,7 +600,7 @@ const ConversationWidget = GObject.registerClass({
             row.grid.attach(row.avatar, 0, 1, 1, 1);
 
             row.senderLabel = new Gtk.Label({
-                label: '<span size="small" weight="bold">' + this.contacts[row.sender].name + '</span>',
+                label: `<span size="small" weight="bold">${this.contacts[row.sender].name}</span>`,
                 halign: Gtk.Align.START,
                 valign: Gtk.Align.START,
                 use_markup: true,

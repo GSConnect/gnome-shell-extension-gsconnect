@@ -259,7 +259,7 @@ var DevicePreferences = GObject.registerClass({
                 'org.gnome.Shell.Extensions.GSConnect.Device',
                 true
             ),
-            path: '/org/gnome/shell/extensions/gsconnect/device/' + device.id + '/'
+            path: `/org/gnome/shell/extensions/gsconnect/device/${device.id}/`
         });
 
         // Infobar
@@ -395,7 +395,7 @@ var DevicePreferences = GObject.registerClass({
 
             this._pluginSettings[name] = new Gio.Settings({
                 settings_schema: gsconnect.gschema.lookup(meta.id, -1),
-                path: this.settings.path + 'plugin/' + name + '/'
+                path: `${this.settings.path}plugin/${name}/`
             });
         }
 

@@ -116,7 +116,7 @@ var ConnectDialog = GObject.registerClass({
                 if (this.lan_ip.text) {
                     let host = this.lan_ip.text;
                     let port = this.lan_port.value;
-                    address = GLib.Variant.new_string('lan://' + host + ':' + port);
+                    address = GLib.Variant.new_string(`lan://${host}:${port}`);
                 } else {
                     return false;
                 }

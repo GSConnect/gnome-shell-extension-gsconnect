@@ -100,7 +100,7 @@ var Device = GObject.registerClass({
         // GSettings
         this.settings = new Gio.Settings({
             settings_schema: gsconnect.gschema.lookup(UUID, true),
-            path: '/org/gnome/shell/extensions/gsconnect/device/' + this.id + '/'
+            path: `/org/gnome/shell/extensions/gsconnect/device/${this.id}/`
         });
 
         // Watch for changes to supported and disabled plugins
