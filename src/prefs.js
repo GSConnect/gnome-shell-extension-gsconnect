@@ -22,7 +22,7 @@ function buildPrefsWidget() {
         return false;
     });
 
-    Gio.Subprocess.new([Extension.path + '/gsconnect-preferences'], 0);
+    Gio.Subprocess.new([`${Extension.path}/gsconnect-preferences`], 0);
 
     return widget;
 }

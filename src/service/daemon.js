@@ -417,11 +417,7 @@ const Service = GObject.registerClass({
     }
 
     _preferences() {
-        let proc = new Gio.Subprocess({
-            argv: [gsconnect.extdatadir + '/gsconnect-preferences']
-        });
-        proc.init(null);
-        proc.wait_async(null, null);
+        Gio.Subprocess.new([`${gsconnect.extdatadir}/gsconnect-preferences`], 0);
     }
 
     /**
@@ -639,13 +635,13 @@ const Service = GObject.registerClass({
 
         // Watch *this* file and stop the service if it's updated/uninstalled
         this._serviceMonitor = Gio.File.new_for_path(
-            gsconnect.extdatadir + '/service/daemon.js'
+            `${gsconnect.extdatadir}/service/daemon.js`
         ).monitor(Gio.FileMonitorFlags.WATCH_MOVES, null);
         this._serviceMonitor.connect('changed', () => this.quit());
 
         // Init some resources
         let provider = new Gtk.CssProvider();
-        provider.load_from_resource(gsconnect.app_path + '/application.css');
+        provider.load_from_resource(`${gsconnect.app_path}/application.css`);
         Gtk.StyleContext.add_provider_for_screen(
             Gdk.Screen.get_default(),
             provider,
