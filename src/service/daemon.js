@@ -292,11 +292,6 @@ const Service = GObject.registerClass({
         }
     }
 
-    _onNameChanged(settings, key) {
-        this.identity.body.deviceName = this.name;
-        this._identify();
-    }
-
     /**
      * GActions
      */
