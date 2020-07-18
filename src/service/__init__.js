@@ -24,22 +24,20 @@ globalThis.HAVE_WAYLAND = GLib.getenv('XDG_SESSION_TYPE') === 'wayland';
  * @param {string} [prefix] - An optional prefix for the warning
  */
 const _debugCallerMatch = new RegExp(/([^@]*)@([^:]*):([^:]*)/);
-const _debugFunc = function(message, prefix = null) {
-    let caller;
+const _debugFunc = function(error, prefix = null) {
+    let caller, message;
 
-    if (message.stack) {
-        caller = message.stack.split('\n')[0];
-        message = `${message.message}\n${message.stack}`;
+    if (error.stack) {
+        caller = error.stack.split('\n')[0];
+        message = `${error.message}\n${error.stack}`;
     } else {
         caller = (new Error()).stack.split('\n')[1];
-        message = JSON.stringify(message, null, 2);
+        message = JSON.stringify(error, null, 2);
     }
 
-    // Prepend prefix
     if (prefix)
         message = `${prefix}: ${message}`;
 
-    // Cleanup the stack
     let [, func, file, line] = _debugCallerMatch.exec(caller);
     let script = file.replace(gsconnect.extdatadir, '');
 
