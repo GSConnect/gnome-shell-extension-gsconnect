@@ -178,7 +178,7 @@ var Plugin = GObject.registerClass({
                     } catch (e) {
                         // Special case when the GMount didn't unmount properly
                         // but is still on the same port and can be reused.
-                        if (e.code && e.code === Gio.IOErrorEnum.ALREADY_MOUNTED) {
+                        if (e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.ALREADY_MOUNTED)) {
                             resolve(true);
 
                         // There's a good chance this is a host key verification

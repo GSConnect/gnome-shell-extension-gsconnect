@@ -149,9 +149,8 @@ var Sound = class Sound {
                     await this._gdkPlaySound(name, cancellable);
             }
         } catch (e) {
-            if (!e.code || e.code !== Gio.IOErrorEnum.CANCELLED) {
+            if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
                 logError(e);
-            }
         } finally {
             this.playing.delete(cancellable);
         }
@@ -178,9 +177,8 @@ var Sound = class Sound {
                     await this._gdkLoopSound(name, cancellable);
             }
         } catch (e) {
-            if (!e.code || e.code !== Gio.IOErrorEnum.CANCELLED) {
+            if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
                 logError(e);
-            }
         } finally {
             this.playing.delete(cancellable);
         }
