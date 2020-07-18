@@ -97,7 +97,7 @@ var Packet = class Packet {
     /**
      * Check if the packet has a payload.
      *
-     * @returns (boolean} - %true if @packet has a payload
+     * @return {boolean} - %true if @packet has a payload
      */
     hasPayload() {
         if (!this.hasOwnProperty('payloadSize'))
@@ -292,18 +292,13 @@ var Channel = GObject.registerClass({
                     // Queue another receive() before handling the packet
                     this.receive(device);
 
-                    // Malformed packets aren't fatal
-                    try {
-                        let packet = new Packet(data);
-                        debug(packet, device.name);
-                        device.receivePacket(packet);
-                    } catch (e) {
-                        debug(e, device.name);
-                    }
+                    let packet = new Packet(data);
+                    device.receivePacket(packet);
+
+                    debug(packet, device.name);
                 } catch (e) {
-                    if (!e.code || e.code !== Gio.IOErrorEnum.CANCELLED) {
+                    if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
                         debug(e, device.name);
-                    }
 
                     this.close();
                 }
@@ -347,7 +342,9 @@ var Channel = GObject.registerClass({
                 this.__lock = false;
             }
         } catch (e) {
-            debug(e, this.identity.body.deviceName);
+            if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
+                debug(e, this.identity.body.deviceName);
+
             this.close();
         }
     }
