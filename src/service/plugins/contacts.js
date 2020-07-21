@@ -142,7 +142,7 @@ var Plugin = GObject.registerClass({
      * See: https://github.com/mathiasbynens/quoted-printable/blob/master/src/quoted-printable.js
      *
      * @param {string} input - The QUOTED-PRINTABLE string
-     * @return {string} - The decoded string
+     * @return {string} The decoded string
      */
     decode_quoted_printable(input) {
         return input
@@ -163,7 +163,7 @@ var Plugin = GObject.registerClass({
      * See: https://github.com/kvz/locutus/blob/master/src/php/xml/utf8_decode.js
      * 
      * @param {string} input - The UTF-8 string
-     * @return {string} - The decoded string
+     * @return {string} The decoded string
      */
     decode_utf8(input) {
         try {

@@ -54,7 +54,7 @@ Object.defineProperties(Gio.TlsCertificate.prototype, {
      * Compute a SHA1 fingerprint of the certificate.
      * See: https://gitlab.gnome.org/GNOME/glib/issues/1290
      *
-     * @return {string} - A SHA1 fingerprint of the certificate.
+     * @return {string} A SHA1 fingerprint of the certificate.
      */
     'fingerprint': {
         value: function() {

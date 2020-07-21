@@ -327,7 +327,7 @@ async function check_accelerator(accelerator, modeFlags = 0, grabFlags = 0) {
  *
  * @param {string} summary - A description of the keybinding's function
  * @param {string} accelerator - An accelerator as taken by Gtk.ShortcutLabel
- * @return {string} - An accelerator or %null if it should be unset.
+ * @return {string} An accelerator or %null if it should be unset.
  */
 async function get_accelerator(summary, accelerator = null) {
     try {

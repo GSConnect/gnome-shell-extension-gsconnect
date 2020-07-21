@@ -103,7 +103,7 @@ var Plugin = GObject.registerClass({
     /**
      * Parse the connection info
      *
-     * @param {object} info - The body of a kdeconnect.sftp packet
+     * @param {Object} info - The body of a kdeconnect.sftp packet
      */
     _parseInfo(info) {
         if (!this.device.connected) {

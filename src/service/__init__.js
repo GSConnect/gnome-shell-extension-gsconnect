@@ -67,7 +67,7 @@ gsconnect.settings.connect('changed::debug', (settings, key) => {
  *
  * @param {Gio.File|string} file - A Gio.File or path to a JSON file
  * @param {boolean} sync - Default is %false, if %true load synchronously
- * @return {object} - The parsed object
+ * @return {Object} The parsed object
  */
 JSON.load = function (file, sync = false) {
     if (typeof file === 'string') {
@@ -98,7 +98,7 @@ JSON.load = function (file, sync = false) {
  * Convenience function for dumping JSON to a file
  *
  * @param {Gio.File|string} file - A Gio.File or file path
- * @param {object} obj - The object to write to disk
+ * @param {Object} obj - The object to write to disk
  * @param {boolean} sync - Default is %false, if %true load synchronously
  */
 JSON.dump = function (obj, file, sync = false) {
@@ -161,7 +161,7 @@ Promise.timeout = function(priority = GLib.PRIORITY_DEFAULT, interval = 100) {
  * A simple (for now) pre-comparison sanitizer for phone numbers
  * See: https://github.com/KDE/kdeconnect-kde/blob/master/smsapp/conversationlistmodel.cpp#L200-L210
  *
- * @return {string} - Return the string stripped of leading 0, and ' ()-+'
+ * @return {string} Return the string stripped of leading 0, and ' ()-+'
  */
 String.prototype.toPhoneNumber = function() {
     let strippedNumber = this.replace(/^0*|[ ()+-]/g, '');
@@ -176,7 +176,7 @@ String.prototype.toPhoneNumber = function() {
  * A simple equality check for phone numbers based on `toPhoneNumber()`
  *
  * @param {string} number - A phone number string to compare
- * @return {boolean} - If `this` and @number are equivalent phone numbers
+ * @return {boolean} If `this` and @number are equivalent phone numbers
  */
 String.prototype.equalsPhoneNumber = function(number) {
     let a = this.toPhoneNumber();

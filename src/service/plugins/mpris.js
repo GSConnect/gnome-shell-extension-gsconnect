@@ -133,7 +133,7 @@ var Plugin = GObject.registerClass({
     /**
      * Handle a player state update
      *
-     * @param {object} state - The body of a kdeconnect.mpris packet
+     * @param {Object} state - The body of a kdeconnect.mpris packet
      */
     _handlePlayerState(state) {
         let player = this._players.get(state.player);

@@ -13,7 +13,7 @@ const Gtk = imports.gi.Gtk;
  *
  * @param {*} [salt] - If not %null, will be used as salt for generating a color
  * @param {number} alpha - A value in the [0...1] range for the alpha channel
- * @return {Gdk.RGBA} - A new Gdk.RGBA object generated from the input
+ * @return {Gdk.RGBA} A new Gdk.RGBA object generated from the input
  */
 function randomRGBA(salt = null, alpha = 1.0) {
     let red, green, blue;
@@ -40,7 +40,7 @@ function randomRGBA(salt = null, alpha = 1.0) {
  * @param {number} r - A number in the [0.0, 1.0] range for the red value
  * @param {number} g - A number in the [0.0, 1.0] range for the green value
  * @param {number} b - A number in the [0.0, 1.0] range for the blue value
- * @return {number} - ...
+ * @return {number} ...
  */
 function relativeLuminance(rgba) {
     let {red, green, blue} = rgba;
@@ -58,7 +58,7 @@ function relativeLuminance(rgba) {
  * See: https://www.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef
  *
  * @param {Gdk.RGBA} - A Gdk.RGBA object for the background color
- * @return {Gdk.RGBA} - A Gdk.RGBA object for the foreground color
+ * @return {Gdk.RGBA} A Gdk.RGBA object for the foreground color
  */
 function getFgRGBA(rgba) {
     let bgLuminance = relativeLuminance(rgba);
@@ -122,7 +122,7 @@ function getPixbufForIcon(name, size, scale, bgColor) {
  * See: http://www.ietf.org/rfc/rfc2426.txt
  *
  * @param {string} number - A phone number and RFC2426 phone number type
- * @return {string} - A string like '555-5555・Mobile'
+ * @return {string} A string like '555-5555・Mobile'
  */
 function getNumberLabel(number) {
     if (!number.type) return _('%s・Other').format(number.value);
@@ -153,7 +153,7 @@ function getNumberLabel(number) {
 /**
  * Get a display number from @contact for @address.
  *
- * @param {object} contact - A contact object
+ * @param {Object} contact - A contact object
  * @param {string} address - A phone number
  */
 function getDisplayNumber(contact, address) {

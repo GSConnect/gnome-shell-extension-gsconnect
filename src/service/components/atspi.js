@@ -209,7 +209,7 @@ var Controller = class {
      * Simulate the composition of a unicode character with:
      *     Control+Shift+u, [hex], Return
      *
-     * @param {object} input - 'body' of a 'kdeconnect.mousepad.request' packet
+     * @param {Object} input - 'body' of a 'kdeconnect.mousepad.request' packet
      */
     _pressUnicode(key, modifiers) {
         try {

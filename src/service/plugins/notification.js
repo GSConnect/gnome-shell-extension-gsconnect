@@ -190,7 +190,7 @@ var Plugin = GObject.registerClass({
      * Check an internal id for evidence that it's from an SMS app
      *
      * @param {string} - Internal notification id
-     * @return {boolean} - Whether the id has evidence it's from an SMS app
+     * @return {boolean} Whether the id has evidence it's from an SMS app
      */
     _isSms(id) {
         if (id.includes('sms')) return true;
@@ -576,7 +576,7 @@ var Plugin = GObject.registerClass({
      *
      * @param {string} uuid - The requestReplyId for the repliable notification
      * @param {string} message - The message to reply with
-     * @param {object} notification - The original notification packet
+     * @param {Object} notification - The original notification packet
      */
     replyNotification(uuid, message, notification) {
         // If the message has no content, open a dialog for the user to add one

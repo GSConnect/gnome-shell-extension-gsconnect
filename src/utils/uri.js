@@ -77,7 +77,7 @@ var _numberRegex = new RegExp(
  * the position within @str where the URL was found.
  *
  * @param {string} str - the string to search
- * @returns {object[]} - the list of match objects, as described above
+ * @return {object[]} the list of match objects, as described above
  */
 function findUrls(str) {
     _urlRegexp.lastIndex = 0;
@@ -100,7 +100,7 @@ function findUrls(str) {
  *
  * @param {string} str - The string to be modified
  * @param {string} [title] - An optional title (eg. alt text, tooltip)
- * @return {string} - the modified text
+ * @return {string} the modified text
  */
 function linkify(str, title = null) {
     let text = GLib.markup_escape_text(str, -1);

@@ -383,7 +383,7 @@ var Plugin = GObject.registerClass({
     /**
      * Send a message
      *
-     * @param {Array of Address} addresses - A list of address objects
+     * @param {Object[]} addresses - A list of address objects
      * @param {string} messageBody - The message text
      * @param {number} [event] - An event bitmask
      * @param {boolean} [forceSms] - Whether to force SMS
@@ -513,9 +513,10 @@ var Plugin = GObject.registerClass({
     /**
      * Try to find a thread_id in @smsPlugin for @addresses.
      *
-     * @param {Array of Object} - a list of address objects
+     * @param {Object[]} - a list of address objects
+     * @return {string|null} a thread ID
      */
-    getThreadIdForAddresses(addresses) {
+    getThreadIdForAddresses(addresses = []) {
         let threads = Object.values(this.threads);
 
         for (let thread of threads) {

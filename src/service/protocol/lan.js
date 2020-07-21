@@ -634,7 +634,7 @@ var Channel = GObject.registerClass({
      * Wrap the connection in Gio.TlsClientConnection and initiate handshake
      *
      * @param {Gio.TcpConnection} connection - The unauthenticated connection
-     * @return {Gio.TlsServerConnection} - The authenticated connection
+     * @return {Gio.TlsServerConnection} The authenticated connection
      */
     _clientEncryption(connection) {
         connection = Gio.TlsClientConnection.new(
@@ -650,7 +650,7 @@ var Channel = GObject.registerClass({
      * Wrap the connection in Gio.TlsServerConnection and initiate handshake
      *
      * @param {Gio.TcpConnection} connection - The unauthenticated connection
-     * @return {Gio.TlsServerConnection} - The authenticated connection
+     * @return {Gio.TlsServerConnection} The authenticated connection
      */
     _serverEncryption(connection) {
         connection = Gio.TlsServerConnection.new(connection, this.certificate);
@@ -668,7 +668,7 @@ var Channel = GObject.registerClass({
      * Read the identity packet from the new connection
      *
      * @param {Gio.SocketConnection} connection - An unencrypted socket
-     * @return {Gio.SocketConnection} - The connection after success
+     * @return {Gio.SocketConnection} The connection after success
      */
     _receiveIdent(connection) {
         return new Promise((resolve, reject) => {
@@ -706,7 +706,7 @@ var Channel = GObject.registerClass({
      * Write our identity packet to the new connection
      *
      * @param {Gio.SocketConnection} connection - An unencrypted socket
-     * @return {Gio.SocketConnection} - The connection after success
+     * @return {Gio.SocketConnection} The connection after success
      */
     _sendIdent(connection) {
         return new Promise((resolve, reject) => {
@@ -856,7 +856,7 @@ var Transfer = GObject.registerClass({
 }, class Transfer extends Channel {
 
     /**
-     * @param {object} params - Transfer parameters
+     * @param {Object} params - Transfer parameters
      * @param {Device.Device} params.device - The device that owns this transfer
      * @param {Gio.InputStream} params.input_stream - The input stream (read)
      * @param {Gio.OutputStream} params.output_stream - The output stream (write)
@@ -885,7 +885,7 @@ var Transfer = GObject.registerClass({
      * When finished the channel and local input stream will be closed whether
      * or not the transfer succeeds.
      *
-     * @return {boolean} - %true on success or %false on fail
+     * @return {boolean} %true on success or %false on fail
      */
     async download() {
         let result = false;
@@ -933,7 +933,7 @@ var Transfer = GObject.registerClass({
      * or not the transfer succeeds.
      *
      * @param {Core.Packet} packet - The packet describing the transfer
-     * @return {boolean} - %true on success or %false on fail
+     * @return {boolean} %true on success or %false on fail
      */
     async upload(packet) {
         let port = TRANSFER_MIN;

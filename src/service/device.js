@@ -388,7 +388,7 @@ var Device = GObject.registerClass({
      *
      * @param {string[]} args - process arguments
      * @param {Gio.Cancellable} [cancellable] - optional cancellable
-     * @returns {Gio.Subprocess} - The subprocess
+     * @return {Gio.Subprocess} The subprocess
      */
     launchProcess(args, cancellable = null) {
         if (this._launcher === undefined) {
@@ -507,7 +507,7 @@ var Device = GObject.registerClass({
      * device menu.
      *
      * @param {string} actionName - An action name with scope (eg. device.foo)
-     * @return {number} - An 0-based index or -1 if not found
+     * @return {number} An 0-based index or -1 if not found
      */
     getMenuAction(actionName) {
         for (let i = 0, len = this.menu.get_n_items(); i < len; i++) {
@@ -530,7 +530,7 @@ var Device = GObject.registerClass({
      *
      * @param {Gio.MenuItem} menuItem - A GMenuItem
      * @param {number} [index] - The position to place the item
-     * @return {number} - The position the item was placed
+     * @return {number} The position the item was placed
      */
     addMenuItem(menuItem, index = -1) {
         try {
@@ -554,7 +554,7 @@ var Device = GObject.registerClass({
      * @param {number} [index] - The position to place the item
      * @param {string} label - A label for the item
      * @param {string} icon_name - A themed icon name for the item
-     * @return {number} - The position the item was placed
+     * @return {number} The position the item was placed
      */
     addMenuAction(action, index = -1, label, icon_name) {
         try {
@@ -585,7 +585,7 @@ var Device = GObject.registerClass({
      * Remove a GAction from the top level of the device menu by action name
      *
      * @param {string} actionName - A GAction name, including scope
-     * @return {number} - The position the item was removed from or -1
+     * @return {number} The position the item was removed from or -1
      */
     removeMenuAction(actionName) {
         try {
@@ -609,7 +609,7 @@ var Device = GObject.registerClass({
      *
      * @param {string} actionName - A GAction name, including scope
      * @param (Gio.MenuItem} menuItem - A GMenuItem
-     * @return {number} - The position the item was placed
+     * @return {number} The position the item was placed
      */
     replaceMenuAction(actionName, menuItem) {
         try {

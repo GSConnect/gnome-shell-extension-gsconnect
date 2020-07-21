@@ -18,7 +18,7 @@ const URI = imports.utils.uri;
  * Return a human-readable timestamp.
  *
  * @param {number} time - Milliseconds since the epoch (local time)
- * @return {string} - A timestamp similar to what Android Messages uses
+ * @return {string} A timestamp similar to what Android Messages uses
  */
 function getTime(time) {
     let date = GLib.DateTime.new_from_unix_local(time / 1000);
@@ -718,7 +718,7 @@ const ConversationWidget = GObject.registerClass({
     /**
      * Log the next message in the conversation.
      *
-     * @param {object} message - A message object
+     * @param {Object} message - A message object
      */
     logNext(message) {
         try {
@@ -1061,8 +1061,8 @@ var Window = GObject.registerClass({
     /**
      * Find the thread row for @contacts
      *
-     * @param {Array of Object} contacts - A contact group
-     * @return {ThreadRow|null} - The thread row or %null
+     * @param {Object[]} contacts - A contact group
+     * @return {ThreadRow|null} The thread row or %null
      */
     _getRowForContacts(contacts) {
         let addresses = Object.keys(contacts).map(address => {
@@ -1147,8 +1147,8 @@ var Window = GObject.registerClass({
     /**
      * Try and find an existing conversation widget for @message.
      *
-     * @param {object} message - A message object
-     * @return {ConversationWidget|null} - A conversation widget or %null
+     * @param {Object} message - A message object
+     * @return {ConversationWidget|null} A conversation widget or %null
      */
     getConversationForMessage(message) {
         // This shouldn't happen

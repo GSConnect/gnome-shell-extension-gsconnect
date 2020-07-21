@@ -163,7 +163,7 @@ var Plugin = GObject.registerClass({
     /**
      * Show a local notification, possibly with actions
      *
-     * @param {object} packet - A telephony packet for this event
+     * @param {Object} packet - A telephony packet for this event
      */
     _handleEvent(packet) {
         let body;

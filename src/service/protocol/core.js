@@ -6,12 +6,8 @@ const GObject = imports.gi.GObject;
 
 
 /**
- * Packet
- *
- * The packet class is a simple Object-derived class. It only exists to offer
- * conveniences for coercing to a string writable to a channel and constructing
- * from Strings and Objects. In future, it could probably be optimized to avoid
- * excessive shape-trees since it's the most common object in the protocol.
+ * The packet class is a simple Object-derived class, offering some conveniences
+ * for working with KDE Connect packets.
  */
 var Packet = class Packet {
 
@@ -73,7 +69,7 @@ var Packet = class Packet {
      * Make a deep copy of the packet, using and intermediate call to
      * JSON.stringify() to avoid reference entanglement.
      *
-     * @return {Core.Packet} - A new packet
+     * @return {Core.Packet} A new packet
      */
     toObject() {
         try {
@@ -88,7 +84,7 @@ var Packet = class Packet {
      * Serialize the packet as a single line with a terminating new-line (\n)
      * character, ready to be written to a channel.
      *
-     * @return {string} - A serialized packet
+     * @return {string} A serialized packet
      */
     toString() {
         return `${this}`;
@@ -97,7 +93,7 @@ var Packet = class Packet {
     /**
      * Check if the packet has a payload.
      *
-     * @return {boolean} - %true if @packet has a payload
+     * @return {boolean} %true if @packet has a payload
      */
     hasPayload() {
         if (!this.hasOwnProperty('payloadSize'))
@@ -309,7 +305,7 @@ var Channel = GObject.registerClass({
     /**
      * Send a packet to a device
      *
-     * @param {object} packet - An dictionary of packet data
+     * @param {Object} packet - An dictionary of packet data
      */
     async send(packet) {
         let next;
@@ -392,7 +388,7 @@ var Channel = GObject.registerClass({
     /**
      * Transfer using g_output_stream_splice()
      *
-     * @return {boolean} - %true on success, %false on failure.
+     * @return {boolean} %true on success, %false on failure.
      */
     async transfer() {
         let result = false;

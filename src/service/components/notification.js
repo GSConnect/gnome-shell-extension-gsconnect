@@ -155,7 +155,7 @@ var Listener = class Listener {
      *
      * @param {string} sender - A DBus unique name (eg. :1.2282)
      * @param {string} appName - @appName passed to Notify() (Optional)
-     * @return {string} - A well-known name or %null
+     * @return {string} A well-known name or %null
      */
     async _getAppId(sender, appName) {
         try {
@@ -202,7 +202,7 @@ var Listener = class Listener {
      *
      * @param {string} sender - A DBus unique name
      * @param {string} appName - (Optional) appName supplied by Notify()
-     * @return {string} - A well-known name or %null
+     * @return {string} A well-known name or %null
      */
     async _getAppName(sender, appName) {
         // Check the cache first

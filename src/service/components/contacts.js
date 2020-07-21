@@ -64,7 +64,7 @@ var Store = GObject.registerClass({
      *
      * @param {EBookContacts.Contact} econtact - an EContact to parse
      * @param {string} [origin] - an optional origin string
-     * @returns {Object} - a small JSON serializable object
+     * @return {Object} a small JSON serializable object
      */
     async _parseEContact(econtact, origin = 'desktop') {
         try {
@@ -394,7 +394,7 @@ var Store = GObject.registerClass({
      * Save a ByteArray to file and return the path
      *
      * @param {ByteArray} contents - An image ByteArray
-     * @return {string|undefined} - File path or %undefined on failure
+     * @return {string|undefined} File path or %undefined on failure
      */
     storeAvatar(contents) {
         return new Promise((resolve, reject) => {
@@ -430,10 +430,10 @@ var Store = GObject.registerClass({
     /**
      * Query the Store for a contact by name and/or number.
      *
-     * @param {object} query - A query object
+     * @param {Object} query - A query object
      * @param {string} [query.name] - The contact's name
      * @param {string} query.number - The contact's number
-     * @return {object} - A contact object
+     * @return {Object} A contact object
      */
     query(query) {
         // First look for an existing contact by number
@@ -488,7 +488,7 @@ var Store = GObject.registerClass({
     /**
      * Add a contact, checking for validity
      *
-     * @param {object} contact - A contact object
+     * @param {Object} contact - A contact object
      * @param {boolean} write - Write to disk
      */
     add(contact, write = true) {
@@ -550,8 +550,8 @@ var Store = GObject.registerClass({
      *
      * { "555-5555": { "name": "...", "numbers": [], ... } }
      *
-     * @param {Array of object} addresses - A list of address objects
-     * @return {object} - A dictionary of phone numbers and contacts
+     * @param {Object[]} addresses - A list of address objects
+     * @return {Object} A dictionary of phone numbers and contacts
      */
     lookupAddresses(addresses) {
         let contacts = {};

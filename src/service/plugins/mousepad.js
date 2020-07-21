@@ -231,7 +231,7 @@ var Plugin = GObject.registerClass({
     /**
      * Send an echo/ACK of @input, if requested
      *
-     * @param {object} input - 'body' of a 'kdeconnect.mousepad.request' packet
+     * @param {Object} input - 'body' of a 'kdeconnect.mousepad.request' packet
      */
     sendEcho(input) {
         if (input.sendAck) {
