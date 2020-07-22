@@ -2,7 +2,6 @@
 
 const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
@@ -30,8 +29,6 @@ var Metadata = {
 /**
  * FindMyPhone Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/findmyphone
- *
- * TODO: cancel incoming requests on disconnect?
  */
 var Plugin = GObject.registerClass({
     GTypeName: 'GSConnectFindMyPhonePlugin',
@@ -42,8 +39,10 @@ var Plugin = GObject.registerClass({
     }
 
     handlePacket(packet) {
-        if (packet.type === 'kdeconnect.findmyphone.request') {
-            this._handleRequest();
+        switch (packet.type) {
+            case 'kdeconnect.findmyphone.request':
+                this._handleRequest();
+                break;
         }
     }
 
@@ -66,14 +65,16 @@ var Plugin = GObject.registerClass({
         }
     }
 
+    /**
+     * Cancel any ongoing ringing and destroy the dialog.
+     */
     _cancelRequest() {
-        if (this._dialog) {
+        if (this._dialog)
             this._dialog.response(Gtk.ResponseType.DELETE_EVENT);
-        }
     }
 
     /**
-     * Request the remote device announce it's location
+     * Request that the remote device announce it's location
      */
     ring() {
         this.device.sendPacket({
@@ -89,10 +90,10 @@ var Plugin = GObject.registerClass({
 });
 
 
-/**
+/*
  * Used to ensure 'audible-bell' is enabled for fallback
  */
-const WM_SETTINGS = new Gio.Settings({
+const _WM_SETTINGS = new Gio.Settings({
     schema_id: 'org.gnome.desktop.wm.preferences',
     path: '/org/gnome/desktop/wm/preferences/'
 });
@@ -138,16 +139,15 @@ const Dialog = GObject.registerClass({
 
         // Otherwise ensure audible-bell is enabled
         } else {
-            this._previousBell = WM_SETTINGS.get_boolean('audible-bell');
-            WM_SETTINGS.set_boolean('audible-bell', true);
+            this._previousBell = _WM_SETTINGS.get_boolean('audible-bell');
+            _WM_SETTINGS.set_boolean('audible-bell', true);
         }
 
         // Start the alarm
         let sound = service.components.get('sound');
 
-        if (sound !== undefined) {
+        if (sound !== undefined)
             sound.loopSound('phone-incoming-call', this.cancellable);
-        }
 
         // Show the dialog
         this.show_all();
@@ -176,16 +176,15 @@ const Dialog = GObject.registerClass({
 
         // Restore the audible-bell
         } else {
-            WM_SETTINGS.set_boolean('audible-bell', this._previousBell);
+            _WM_SETTINGS.set_boolean('audible-bell', this._previousBell);
         }
 
         this.destroy();
     }
 
     get cancellable() {
-        if (this._cancellable === undefined) {
+        if (this._cancellable === undefined)
             this._cancellable = new Gio.Cancellable();
-        }
 
         return this._cancellable;
     }
