@@ -1,6 +1,5 @@
 'use strict';
 
-const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
@@ -34,7 +33,7 @@ var Metadata = {
 };
 
 
-/**
+/*
  * vCard 2.1 Patterns
  */
 const VCARD_FOLDING = /\r\n |\r |\n |=\n/g;
@@ -55,8 +54,9 @@ var Plugin = GObject.registerClass({
 
     _init(device) {
         super._init(device, 'contacts');
+
         this._store = new Contacts.Store(device.id);
-        this._store.fetch = this.requestUids.bind(this);
+        this._store.fetch = this._requestUids.bind(this);
 
         // Notify when the store is ready
         this._contactsStoreReadyId = this._store.connect(
@@ -74,20 +74,24 @@ var Plugin = GObject.registerClass({
         this._store.load();
     }
 
-    connected() {
-        super.connected();
-        this.requestUids();
-    }
-
     clearCache() {
         this._store.clear();
     }
 
+    connected() {
+        super.connected();
+        this._requestUids();
+    }
+
     handlePacket(packet) {
-        if (packet.type === 'kdeconnect.contacts.response_uids_timestamps') {
-            this._handleUids(packet);
-        } else if (packet.type === 'kdeconnect.contacts.response_vcards') {
-            this._handleVCards(packet);
+        switch (packet.type) {
+            case 'kdeconnect.contacts.response_uids_timestamps':
+                this._handleUids(packet);
+                break;
+
+            case 'kdeconnect.contacts.response_vcards':
+                this._handleVCards(packet);
+                break;
         }
     }
 
@@ -99,7 +103,8 @@ var Plugin = GObject.registerClass({
             delete packet.body.uids;
 
             // Usually a failed request, so avoid wiping the cache
-            if (remote_uids.length === 0) return;
+            if (remote_uids.length === 0)
+                return;
 
             // Delete any contacts that were removed on the device
             for (let i = 0, len = contacts.length; i < len; i++) {
@@ -117,20 +122,17 @@ var Plugin = GObject.registerClass({
             for (let [uid, timestamp] of Object.entries(packet.body)) {
                 let contact = this._store.get_contact(uid);
 
-                if (!contact || contact.timestamp !== timestamp) {
+                if (!contact || contact.timestamp !== timestamp)
                     uids.push(uid);
-                }
             }
 
             // Send a request for any new or updated contacts
-            if (uids.length) {
-                this.requestVCards(uids);
-            }
+            if (uids.length)
+                this._requestVCards(uids);
 
             // If we removed any contacts, save the cache
-            if (removed) {
+            if (removed)
                 this._store.save();
-            }
         } catch (e) {
             logError(e);
         }
@@ -144,7 +146,7 @@ var Plugin = GObject.registerClass({
      * @param {string} input - The QUOTED-PRINTABLE string
      * @return {string} The decoded string
      */
-    decode_quoted_printable(input) {
+    _decodeQuotedPrintable(input) {
         return input
             // https://tools.ietf.org/html/rfc2045#section-6.7, rule 3
             .replace(/[\t\x20]$/gm, '')
@@ -165,7 +167,7 @@ var Plugin = GObject.registerClass({
      * @param {string} input - The UTF-8 string
      * @return {string} The decoded string
      */
-    decode_utf8(input) {
+    _decodeUTF8(input) {
         try {
             let output = [];
             let i = 0;
@@ -221,13 +223,14 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * Parse a VCard v2.1 and return a dictionary of data
+     * Parse a vCard (v2.1 only) and return a dictionary of the fields
      *
      * See: http://jsfiddle.net/ARTsinn/P2t2P/
      *
      * @param {string} vcard_data - The raw VCard data
+     * @return {Object} dictionary of vCard data
      */
-    parseVCard21(vcard_data) {
+    _parseVCard21(vcard_data) {
         // vcard skeleton
         let vcard = {
             fn: _('Unknown Contact'),
@@ -242,7 +245,8 @@ var Plugin = GObject.registerClass({
             let results, key, type, value;
 
             // Empty line or a property we aren't interested in
-            if (!line || !line.match(VCARD_SUPPORTED)) continue;
+            if (!line || !line.match(VCARD_SUPPORTED))
+                continue;
 
             // Basic Fields (fn, x-kdeconnect-timestamp, etc)
             if ((results = line.match(VCARD_BASIC))) {
@@ -272,18 +276,19 @@ var Plugin = GObject.registerClass({
                 }
 
                 // Value(s)
-                if (vcard[key] === undefined) vcard[key] = [];
+                if (vcard[key] === undefined)
+                    vcard[key] = [];
 
                 // Decode QUOTABLE-PRINTABLE
                 if (meta.ENCODING && meta.ENCODING === 'QUOTED-PRINTABLE') {
                     delete meta.ENCODING;
-                    value = value.map(v => this.decode_quoted_printable(v));
+                    value = value.map(v => this._decodeQuotedPrintable(v));
                 }
 
                 // Decode UTF-8
                 if (meta.CHARSET && meta.CHARSET === 'UTF-8') {
                     delete meta.CHARSET;
-                    value = value.map(v => this.decode_utf8(v));
+                    value = value.map(v => this._decodeUTF8(v));
                 }
 
                 // Special case for FN (full name)
@@ -298,9 +303,16 @@ var Plugin = GObject.registerClass({
         return vcard;
     }
 
-    async parseVCardNative(uid, vcard_data) {
+    /**
+     * Parse a vCard (v2.1 only) using native JavaScript and add it to the
+     * contact store.
+     *
+     * @param {string} uid - The contact UID
+     * @param {string} vcard_data - The raw vCard data
+     */
+    async _parseVCardNative(uid, vcard_data) {
         try {
-            let vcard = this.parseVCard21(vcard_data);
+            let vcard = this._parseVCard21(vcard_data);
 
             let contact = {
                 id: uid,
@@ -327,14 +339,19 @@ var Plugin = GObject.registerClass({
                 contact.avatar = await this._store.storeAvatar(data);
             }
 
-            return contact;
+            this._store.add(contact);
         } catch (e) {
             debug(e, `Failed to parse VCard contact ${uid}`);
-            return undefined;
         }
     }
-    
-    async parseVCard(uid, vcard_data) {
+
+    /**
+     * Parse a vCard using libebook and add it to the contact store.
+     *
+     * @param {string} uid - The contact UID
+     * @param {string} vcard_data - The raw vCard data
+     */
+    async _parseVCard(uid, vcard_data) {
         try {
             let contact = {
                 id: uid,
@@ -345,10 +362,10 @@ var Plugin = GObject.registerClass({
             };
             
             let evcard = EBookContacts.VCard.new_from_string(vcard_data);
-            let evattrs = evcard.get_attributes();
+            let attrs = evcard.get_attributes();
             
-            for (let i = 0, len = evattrs.length; i < len; i++) {
-                let attr = evattrs[i];
+            for (let i = 0, len = attrs.length; i < len; i++) {
+                let attr = attrs[i];
                 let data, number;
                 
                 switch (attr.get_name().toLowerCase()) {
@@ -380,44 +397,48 @@ var Plugin = GObject.registerClass({
                 }
             }
 
-            return contact;
+            this._store.add(contact);
         } catch (e) {
             debug(e, `Failed to parse VCard contact ${uid}`);
-            return undefined;
         }
     }
 
-    async _handleVCards(packet) {
+    /**
+     * Handle an incoming list of contact vCards and pass them to the best
+     * available parser.
+     */
+    _handleVCards(packet) {
         try {
             // We don't use this
             delete packet.body.uids;
 
             // Parse each vCard and add the contact
             for (let [uid, vcard] of Object.entries(packet.body)) {
-                let contact;
-                
-                if (EBookContacts) {
-                    contact = await this.parseVCard(uid, vcard);
-                } else {
-                    contact = await this.parseVCardNative(uid, vcard);
-                }
-
-                if (contact) {
-                    this._store.add(contact);
-                }
+                if (EBookContacts)
+                    this._parseVCard(uid, vcard);
+                else
+                    this._parseVCardNative(uid, vcard);
             }
         } catch (e) {
-            logError(e);
+            logError(e, this.device.name);
         }
     }
 
-    requestUids() {
+    /**
+     * Request a list of contact UIDs with timestamps.
+     */
+    _requestUids() {
         this.device.sendPacket({
             type: 'kdeconnect.contacts.request_all_uids_timestamps'
         });
     }
 
-    requestVCards(uids) {
+    /**
+     * Request the vCards for @uids.
+     *
+     * @param {string[]} uids - A list of contact UIDs
+     */
+    _requestVCards(uids) {
         this.device.sendPacket({
             type: 'kdeconnect.contacts.request_vcards_by_uid',
             body: {
@@ -429,6 +450,7 @@ var Plugin = GObject.registerClass({
     destroy() {
         this.settings.disconnect(this._contactsStoreReadyId);
         this.settings.disconnect(this._contactsSourceChangedId);
+
         super.destroy();
     }
 });
