@@ -75,26 +75,33 @@ var Plugin = GObject.registerClass({
         // TODO: if we're not auto-syncing local->remote, but we are doing the
         //       reverse, it's possible older remote content will end up
         //       overwriting newer local content.
-        if (!this.settings.get_boolean('send-content')) return;
+        if (!this.settings.get_boolean('send-content'))
+            return;
 
-        if (this._localBuffer !== null && this._localTimestamp) {
-            this.device.sendPacket({
-                type: 'kdeconnect.clipboard.connect',
-                body: {
-                    content: this._localBuffer,
-                    timestamp: this._localTimestamp
-                }
-            });
-        }
+        if (this._localBuffer === null && this._localTimestamp == 0)
+            return;
+
+        this.device.sendPacket({
+            type: 'kdeconnect.clipboard.connect',
+            body: {
+                content: this._localBuffer,
+                timestamp: this._localTimestamp
+            }
+        });
     }
 
     handlePacket(packet) {
-        if (!packet.body.hasOwnProperty('content')) return;
+        if (!packet.body.hasOwnProperty('content'))
+            return;
 
-        if (packet.type === 'kdeconnect.clipboard') {
-            this._handleContent(packet);
-        } else if (packet.type === 'kdeconnect.clipboard.connect') {
-            this._handleConnectContent(packet);
+        switch (packet.type) {
+            case 'kdeconnect.clipboard':
+                this._handleContent(packet);
+                break;
+
+            case 'kdeconnect.clipboard.connect':
+                this._handleConnectContent(packet);
+                break;
         }
     }
 
@@ -110,26 +117,24 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * Store the updated clipboard content and forward it if enabled
+     * Store the local clipboard content and forward it if enabled
      */
     _onLocalClipboardChanged(clipboard, pspec) {
         this._localBuffer = clipboard.text;
         this._localTimestamp = Date.now();
 
-        if (this.settings.get_boolean('send-content')) {
+        if (this.settings.get_boolean('send-content'))
             this.clipboardPush();
-        }
     }
 
     /**
-     * Store the updated clipboard content and apply it if enabled
+     * Store the remote clipboard content and apply it if enabled
      */
     _onRemoteClipboardChanged(text) {
         this._remoteBuffer = text;
 
-        if (this.settings.get_boolean('receive-content')) {
+        if (this.settings.get_boolean('receive-content'))
             this.clipboardPull();
-        }
     }
 
     /**
@@ -137,7 +142,8 @@ var Plugin = GObject.registerClass({
      */
     clipboardPush() {
         // Don't sync if the clipboard is empty or not text
-        if (!this._localTimestamp) return;
+        if (this._localTimestamp === 0)
+            return;
 
         if (this._remoteBuffer !== this._localBuffer) {
             this._remoteBuffer = this._localBuffer;
@@ -168,9 +174,8 @@ var Plugin = GObject.registerClass({
     }
 
     destroy() {
-        if (this._clipboard && this._textChangedId) {
+        if (this._clipboard && this._textChangedId)
             this._clipboard.disconnect(this._textChangedId);
-        }
 
         super.destroy();
     }
