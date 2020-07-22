@@ -113,10 +113,9 @@ var Store = GObject.registerClass({
                 }
             }
 
-            return contact;
+            this.add(contact, false);
         } catch (e) {
             logError(e, `Failed to parse VCard contact ${econtact.id}`);
-            return undefined;
         }
     }
 
@@ -175,7 +174,7 @@ var Store = GObject.registerClass({
     /*
      * AddressBook DBus callbacks
      */
-    async _onObjectsAdded(connection, sender, path, iface, signal, params) {
+    _onObjectsAdded(connection, sender, path, iface, signal, params) {
         try {
             let adds = params.get_child_value(0).get_strv();
 
@@ -184,11 +183,7 @@ var Store = GObject.registerClass({
                 try {
                     let vcard = adds[i];
                     let econtact = EBookContacts.Contact.new_from_vcard(vcard);
-                    let contact = await this._parseEContact(econtact);
-
-                    if (contact !== undefined) {
-                        this.add(contact, false);
-                    }
+                    this._parseEContact(econtact);
                 } catch (e) {
                     debug(e);
                 }
@@ -214,7 +209,7 @@ var Store = GObject.registerClass({
         }
     }
 
-    async _onObjectsModified(connection, sender, path, iface, signal, params) {
+    _onObjectsModified(connection, sender, path, iface, signal, params) {
         try {
             let changes = params.get_child_value(0).get_strv();
 
@@ -223,11 +218,7 @@ var Store = GObject.registerClass({
                 try {
                     let vcard = changes[i];
                     let econtact = EBookContacts.Contact.new_from_vcard(vcard);
-                    let contact = await this._parseEContact(econtact);
-
-                    if (contact !== undefined) {
-                        this.add(contact, false);
-                    }
+                    this._parseEContact(econtact);
                 } catch (e) {
                     debug(e);
                 }
