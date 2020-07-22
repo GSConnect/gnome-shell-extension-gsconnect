@@ -92,13 +92,6 @@ var Plugin = GObject.registerClass({
             'Remote keyboard state',
             GObject.ParamFlags.READABLE,
             false
-        ),
-        'share-control': GObject.ParamSpec.boolean(
-            'share-control',
-            'Share Control',
-            'Share control of mouse & keyboard',
-            GObject.ParamFlags.READWRITE,
-            false
         )
     }
 }, class Plugin extends PluginsBase.Plugin {
@@ -108,45 +101,36 @@ var Plugin = GObject.registerClass({
 
         this._input = this.service.components.get('input');
 
-        this.settings.bind(
-            'share-control',
-            this,
-            'share-control',
-            Gio.SettingsBindFlags.GET
+        this._shareControlChangedId = this.settings.connect(
+            'changed::share-control',
+            this._sendState.bind(this)
         );
+    }
 
-        this._stateId = 0;
+    get state() {
+        if (this._state === undefined)
+            this._state = false;
+
+        return this._state;
     }
 
     connected() {
         super.connected();
 
-        this.sendState();
+        this._sendState();
     }
 
     disconnected() {
         super.disconnected();
 
-        // Set the keyboard state to inactive
         this._state = false;
-        this._stateId = 0;
         this.notify('state');
-    }
-
-    get state() {
-        if (this._state === undefined) {
-            this._state = false;
-        }
-
-        return this._state;
     }
 
     handlePacket(packet) {
         switch (packet.type) {
             case 'kdeconnect.mousepad.request':
-                if (this.share_control) {
-                    this._handleInput(packet.body);
-                }
+                this._handleInput(packet.body);
                 break;
 
             case 'kdeconnect.mousepad.echo':
@@ -159,7 +143,15 @@ var Plugin = GObject.registerClass({
         }
     }
 
+    /**
+     * Handle a input event.
+     *
+     * @param {Object} input - The body of a `kdeconnect.mousepad.request`
+     */
     _handleInput(input) {
+        if (!this.settings.get_boolean('share-control'))
+            return;
+
         let keysym;
         let modifiers = 0;
 
@@ -189,13 +181,13 @@ var Plugin = GObject.registerClass({
                 // Regular key (printable ASCII or Unicode)
                 if (input.key) {
                     this._input.pressKey(input.key, modifiers);
-                    this.sendEcho(input);
+                    this._sendEcho(input);
 
                 // Special key (eg. non-printable ASCII)
                 } else if (input.specialKey && KeyMap.has(input.specialKey)) {
                     keysym = KeyMap.get(input.specialKey);
                     this._input.pressKey(keysym, modifiers);
-                    this.sendEcho(input);
+                    this._sendEcho(input);
                 }
                 break;
 
@@ -229,30 +221,17 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * Send an echo/ACK of @input, if requested
+     * Handle an echo/ACK of a event we sent, displaying it the dialog entry.
      *
-     * @param {Object} input - 'body' of a 'kdeconnect.mousepad.request' packet
+     * @param {Object} input - The body of a `kdeconnect.mousepad.echo`
      */
-    sendEcho(input) {
-        if (input.sendAck) {
-            delete input.sendAck;
-            input.isAck = true;
-
-            this.device.sendPacket({
-                type: 'kdeconnect.mousepad.echo',
-                body: input
-            });
-        }
-    }
-
     _handleEcho(input) {
-        if (!this._dialog || !this._dialog.visible) {
+        if (!this._dialog || !this._dialog.visible)
             return;
-        }
 
-        if (input.alt || input.ctrl || input.super) {
+        // Skip modifiers
+        if (input.alt || input.ctrl || input.super)
             return;
-        }
 
         if (input.key) {
             this._dialog._isAck = true;
@@ -263,13 +242,33 @@ var Plugin = GObject.registerClass({
         }
     }
 
+    /**
+     * Handle a state change from the remote keyboard. This is an indication
+     * that the remote keyboard is ready to accept input.
+     *
+     * @param {Object} packet - A `kdeconnect.mousepad.keyboardstate` packet
+     */
     _handleState(packet) {
-        // FIXME: ensure we don't get packets out of order
-        if (packet.id > this._stateId) {
-            this._state = packet.body.state;
-            this._stateId = packet.id;
-            this.notify('state');
-        }
+        this._state = !!packet.body.state;
+        this.notify('state');
+    }
+
+    /**
+     * Send an echo/ACK of @input, if requested
+     *
+     * @param {Object} input - The body of a 'kdeconnect.mousepad.request'
+     */
+    _sendEcho(input) {
+        if (!input.sendAck)
+            return;
+
+        delete input.sendAck;
+        input.isAck = true;
+
+        this.device.sendPacket({
+            type: 'kdeconnect.mousepad.echo',
+            body: input
+        });
     }
 
     /**
@@ -277,11 +276,11 @@ var Plugin = GObject.registerClass({
      *
      * @param {boolean} state - Whether we're ready to accept input
      */
-    sendState() {
+    _sendState() {
         this.device.sendPacket({
             type: 'kdeconnect.mousepad.keyboardstate',
             body: {
-                state: this.share_control
+                state: this.settings.get_boolean('share-control')
             }
         });
     }
@@ -298,6 +297,10 @@ var Plugin = GObject.registerClass({
         }
 
         this._dialog.present();
+    }
+
+    destroy() {
+        this.settings.disconnect(this._shareControlChangedId);
     }
 });
 
@@ -337,7 +340,7 @@ const ReverseKeyMap = new Map([
 ]);
 
 
-/**
+/*
  * A list of keyvals we consider modifiers
  */
 const MOD_KEYS = [
@@ -356,7 +359,7 @@ const MOD_KEYS = [
 ];
 
 
-/**
+/*
  * Some convenience functions for checking keyvals for modifiers
  */
 const isAlt = (key) => [Gdk.KEY_Alt_L, Gdk.KEY_Alt_R].includes(key);
@@ -493,10 +496,16 @@ var KeyboardInputDialog = GObject.registerClass({
         return this.hide_on_delete();
     }
 
+    vfunc_grab_broken_event(event) {
+        if (event.keyboard)
+            this._ungrab();
+
+        return false;
+    }
+
     vfunc_key_release_event(event) {
-        if (!this.plugin.state) {
+        if (!this.plugin.state)
             debug('ignoring remote keyboard state');
-        }
 
         let keyvalLower = Gdk.keyval_to_lower(event.keyval);
         let realMask = event.state & Gtk.accelerator_get_default_mod_mask();
@@ -510,9 +519,8 @@ var KeyboardInputDialog = GObject.registerClass({
     }
 
     vfunc_key_press_event(event) {
-        if (!this.plugin.state) {
+        if (!this.plugin.state)
             debug('ignoring remote keyboard state');
-        }
 
         let keyvalLower = Gdk.keyval_to_lower(event.keyval);
         let realMask = event.state & Gtk.accelerator_get_default_mod_mask();
@@ -523,69 +531,64 @@ var KeyboardInputDialog = GObject.registerClass({
         this.super_label.sensitive = isSuper(keyvalLower) || (realMask & Gdk.ModifierType.SUPER_MASK);
 
         // Wait for a real key before sending
-        if (MOD_KEYS.includes(keyvalLower)) {
+        if (MOD_KEYS.includes(keyvalLower))
             return false;
-        }
 
         // Normalize Tab
-        if (keyvalLower === Gdk.KEY_ISO_Left_Tab) {
+        if (keyvalLower === Gdk.KEY_ISO_Left_Tab)
             keyvalLower = Gdk.KEY_Tab;
-        }
 
         // Put shift back if it changed the case of the key, not otherwise.
-        if (keyvalLower !== event.keyval) {
+        if (keyvalLower !== event.keyval)
             realMask |= Gdk.ModifierType.SHIFT_MASK;
-        }
 
         // HACK: we don't want to use SysRq as a keybinding (but we do want
         // Alt+Print), so we avoid translation from Alt+Print to SysRq
-        if (keyvalLower === Gdk.KEY_Sys_Req && (realMask & Gdk.ModifierType.MOD1_MASK) !== 0) {
+        if (keyvalLower === Gdk.KEY_Sys_Req && (realMask & Gdk.ModifierType.MOD1_MASK) !== 0)
             keyvalLower = Gdk.KEY_Print;
-        }
 
         // CapsLock isn't supported as a keybinding modifier, so keep it from
         // confusing us
         realMask &= ~Gdk.ModifierType.LOCK_MASK;
 
-        if (keyvalLower !== 0) {
-            debug(`keyval: ${event.keyval}, mask: ${realMask}`);
+        if (keyvalLower === 0)
+            return false;
 
-            let request = {
-                alt: !!(realMask & Gdk.ModifierType.MOD1_MASK),
-                ctrl: !!(realMask & Gdk.ModifierType.CONTROL_MASK),
-                shift: !!(realMask & Gdk.ModifierType.SHIFT_MASK),
-                super: !!(realMask & Gdk.ModifierType.SUPER_MASK),
-                sendAck: true
-            };
+        debug(`keyval: ${event.keyval}, mask: ${realMask}`);
 
-            // specialKey
-            if (ReverseKeyMap.has(event.keyval)) {
-                request.specialKey = ReverseKeyMap.get(event.keyval);
+        let request = {
+            alt: !!(realMask & Gdk.ModifierType.MOD1_MASK),
+            ctrl: !!(realMask & Gdk.ModifierType.CONTROL_MASK),
+            shift: !!(realMask & Gdk.ModifierType.SHIFT_MASK),
+            super: !!(realMask & Gdk.ModifierType.SUPER_MASK),
+            sendAck: true
+        };
 
-            // key
-            } else {
-                let codePoint = Gdk.keyval_to_unicode(event.keyval);
-                request.key = String.fromCodePoint(codePoint);
-            }
+        // specialKey
+        if (ReverseKeyMap.has(event.keyval)) {
+            request.specialKey = ReverseKeyMap.get(event.keyval);
 
-            this.device.sendPacket({
-                type: 'kdeconnect.mousepad.request',
-                body: request
-            });
-
-            // Pass these key combinations rather than using the echo reply
-            if (request.alt || request.ctrl || request.super) {
-                return super.vfunc_key_press_event(event);
-            }
+        // key
+        } else {
+            let codePoint = Gdk.keyval_to_unicode(event.keyval);
+            request.key = String.fromCodePoint(codePoint);
         }
+
+        this.device.sendPacket({
+            type: 'kdeconnect.mousepad.request',
+            body: request
+        });
+
+        // Pass these key combinations rather than using the echo reply
+        if (request.alt || request.ctrl || request.super)
+            return super.vfunc_key_press_event(event);
 
         return false;
     }
 
     vfunc_window_state_event(event) {
-        if (!this.plugin.state) {
+        if (!this.plugin.state)
             debug('ignoring remote keyboard state');
-        }
 
         if (event.new_window_state & Gdk.WindowState.FOCUSED) {
             this._grab();
@@ -621,9 +624,8 @@ var KeyboardInputDialog = GObject.registerClass({
     }
 
     _onState(widget) {
-        if (!this.plugin.state) {
+        if (!this.plugin.state)
             debug('ignoring remote keyboard state');
-        }
 
         if (this.is_active) {
             this._grab();
@@ -633,7 +635,8 @@ var KeyboardInputDialog = GObject.registerClass({
     }
 
     _grab() {
-        if (!this.visible || this._device) return;
+        if (!this.visible || this._keyboard)
+            return;
 
         let seat = Gdk.Display.get_default().get_default_seat();
         let status = seat.grab(
@@ -650,15 +653,15 @@ var KeyboardInputDialog = GObject.registerClass({
             return;
         }
 
-        this._device = seat.get_keyboard();
+        this._keyboard = seat.get_keyboard();
         this.grab_add();
         this.text.has_focus = true;
     }
 
     _ungrab() {
-        if (this._device) {
-            this._device.get_seat().ungrab();
-            this._device = null;
+        if (this._keyboard) {
+            this._keyboard.get_seat().ungrab();
+            this._keyboard = null;
             this.grab_remove();
         }
 
