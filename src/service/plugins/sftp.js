@@ -428,7 +428,7 @@ var Plugin = GObject.registerClass({
                             } catch (e) {
                                 reject(e);
                             }
-                        },
+                        }
                     );
                 });
 
