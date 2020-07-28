@@ -6,15 +6,9 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
 
-/**
+/*
  * Some utility methods
  */
-function toCamelCase(string) {
-    return string.replace(/(?:^\w|[A-Z]|\b\w)/g, (ltr, offset) => {
-        return (offset === 0) ? ltr.toLowerCase() : ltr.toUpperCase();
-    }).replace(/[\s_-]+/g, '');
-}
-
 function toDBusCase(string) {
     return string.replace(/(?:^\w|[A-Z]|\b\w)/g, (ltr, offset) => {
         return ltr.toUpperCase();
@@ -52,56 +46,80 @@ function _makeOutSignature(args) {
  * to be exported over DBus.
  */
 var Interface = GObject.registerClass({
-    GTypeName: 'GSConnectDBusInterface'
+    GTypeName: 'GSConnectDBusInterface',
+    Implements: [Gio.DBusInterface],
+    Properties: {
+        'g-instance': GObject.ParamSpec.object(
+            'g-instance',
+            'Instance',
+            'The delegate GObject',
+            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            GObject.Object.$gtype
+        )
+    }
 }, class Interface extends GjsPrivate.DBusImplementation {
 
     _init(params) {
         super._init({
+            g_instance: params.g_instance,
             g_interface_info: params.g_interface_info
         });
 
-        this._exportee = params.g_instance;
+        // Cache member lookups
+        this._instanceHandlers = [];
+        this._instanceMethods = {};
+        this._instanceProperties = {};
 
-        if (params.g_object_path) {
-            this.g_object_path = params.g_object_path;
-        }
-
-        // Bind Object
         let info = this.get_info();
-        this._exportMethods(info);
-        this._exportProperties(info);
-        this._exportSignals(info);
+        this.connect('handle-method-call', this._call.bind(this._instance, info));
+        this.connect('handle-property-get', this._get.bind(this._instance, info));
+        this.connect('handle-property-set', this._set.bind(this._instance, info));
+
+        // Automatically forward known signals
+        let id = this._instance.connect('notify', this._notify.bind(this));
+        this._instanceHandlers.push(id);
+
+        for (let signal of info.signals) {
+            let type = `(${signal.args.map(arg => arg.signature).join('')})`;
+            let id = this._instance.connect(
+                signal.name,
+                this._emit.bind(this, signal.name, type)
+            );
+
+            this._instanceHandlers.push(id);
+        }
 
         // Export if connection and object path were given
-        if (params.g_connection && params.g_object_path) {
+        if (params.g_connection && params.g_object_path)
             this.export(params.g_connection, params.g_object_path);
-        }
     }
 
-    // HACK: for some reason the getter doesn't work properly on the parent
-    get g_interface_info() {
-        return this.get_info();
+    get g_instance() {
+        if (this._instance === undefined)
+            this._instance = null;
+
+        return this._instance;
+    }
+
+    set g_instance(instance) {
+        this._instance = instance;
     }
 
     /**
-     * Invoke an instance's method for a DBus method call. Supports promises.
+     * Invoke an instance's method for a DBus method call.
+     *
+     * @param {Gio.DBusInterfaceInfo} info - The DBus interface
+     * @param {DBus.Interface} iface - The DBus interface
+     * @param {string} name - The DBus method name
+     * @param {GLib.Variant} parameters - The method parameters
+     * @param {Gio.DBusMethodInvocation} - The method invocation info
      */
-    async _call(info, memberName, parameters, invocation) {
-        // Convert member casing to native casing
-        let nativeName;
+    async _call(info, iface, name, parameters, invocation) {
+        let retval = undefined;
 
-        if (this[memberName] !== undefined) {
-            nativeName = memberName;
-        } else if (this[toUnderscoreCase(memberName)] !== undefined) {
-            nativeName = toUnderscoreCase(memberName);
-        } else if (this[toCamelCase(memberName)] !== undefined) {
-            nativeName = toCamelCase(memberName);
-        }
-
-        let retval;
-
+        // Invoke the instance method
         try {
-            parameters = parameters.unpack().map(parameter => {
+            let args = parameters.unpack().map(parameter => {
                 if (parameter.get_type_string() === 'h') {
                     let message = invocation.get_message();
                     let fds = message.get_unix_fd_list();
@@ -112,35 +130,30 @@ var Interface = GObject.registerClass({
                 }
             });
 
-            // await all method invocations to support Promise returns
-            retval = await this[nativeName].apply(this, parameters);
+            retval = await this[name].apply(this, args);
         } catch (e) {
             if (e instanceof GLib.Error) {
                 invocation.return_gerror(e);
             } else {
-                let name = e.name;
+                // likely to be a normal JS error
+                if (!e.name.includes('.'))
+                    e.name = `org.gnome.gjs.JSError.${e.name}`;
 
-                if (name.includes('.')) {
-                    // likely to be a normal JS error
-                    name = `org.gnome.gjs.JSError.${name}`;
-                }
-
-                invocation.return_dbus_error(name, e.message);
-                logError(e, `${this}: ${memberName}`);
+                invocation.return_dbus_error(e.name, e.message);
             }
 
+            logError(e, `${this}: ${name}`);
             return;
         }
 
-        // undefined (no return value) is the empty tuple
-        if (retval === undefined) {
+        // `undefined` is an empty tuple on DBus
+        if (retval === undefined)
             retval = new GLib.Variant('()', []);
-        }
 
-        // Try manually packing a variant
+        // Return the instance result or error
         try {
             if (!(retval instanceof GLib.Variant)) {
-                let outArgs = info.lookup_method(memberName).out_args;
+                let outArgs = info.lookup_method(name).out_args;
                 retval = new GLib.Variant(
                     _makeOutSignature(outArgs),
                     (outArgs.length == 1) ? [retval] : retval
@@ -148,118 +161,81 @@ var Interface = GObject.registerClass({
             }
 
             invocation.return_value(retval);
-
-        // Without a response, the client will wait for timeout
         } catch (e) {
             invocation.return_dbus_error(
                 'org.gnome.gjs.JSError.ValueError',
                 'Service implementation returned an incorrect value type'
             );
 
-            logError(e);
+            logError(e, `${this}: ${name}`);
         }
     }
 
-    _exportMethods(info) {
-        if (info.methods.length === 0) return;
+    _nativeProp(obj, name) {
+        if (this._instanceProperties[name] === undefined) {
+            let propName = name;
 
-        this.connect('handle-method-call', (impl, name, parameters, invocation) => {
-            return this._call.call(
-                this._exportee,
-                this.g_interface_info,
-                name,
-                parameters,
-                invocation
-            );
-        });
-    }
+            if (propName in obj)
+                this._instanceProperties[name] = propName;
 
-    _get(info, propertyName) {
-        let propertyInfo = info.lookup_property(propertyName);
-        let value;
+            if (this._instanceProperties[name] === undefined) {
+                propName = toUnderscoreCase(name);
 
-        // Check before assuming native DBus case
-        if (this[propertyName] !== undefined) {
-            value = this[propertyName];
-        } else {
-            value = this[toUnderscoreCase(propertyName)];
+                if (propName in obj)
+                    this._instanceProperties[name] = propName;
+            }
         }
 
-        if (value !== undefined) {
-            return new GLib.Variant(propertyInfo.signature, value);
-        } else {
+        return this._instanceProperties[name];
+    }
+
+    _emit(name, type, obj, ...args) {
+        this.emit_signal(name, new GLib.Variant(type, args));
+    }
+
+    _get(info, iface, name) {
+        let nativeValue = this[iface._nativeProp(this, name)];
+        let propertyInfo = info.lookup_property(name);
+
+        if (nativeValue === undefined || propertyInfo === null)
             return null;
-        }
+
+        return new GLib.Variant(propertyInfo.signature, nativeValue);
     }
 
-    _set(info, name, value) {
+    _set(info, iface, name, value) {
         let nativeValue = value.recursiveUnpack();
 
-        if (this[name] !== undefined) {
-            this[name] = nativeValue;
+        this[iface._nativeProp(this, name)] = nativeValue;
+    }
+
+    _notify(obj, pspec) {
+        let name = toDBusCase(pspec.name);
+        let propertyInfo = this.get_info().lookup_property(name);
+
+        if (propertyInfo === null)
             return;
-        }
 
-        if (!this._nativeCase) {
-            if (this[toUnderscoreCase(name)] !== undefined) {
-                this._nativeCase = toUnderscoreCase;
-            } else if (this[toCamelCase(name)] !== undefined) {
-                this._nativeCase = toCamelCase;
-            }
-        }
-
-        this[this._nativeCase(name)] = nativeValue;
-    }
-
-    _exportProperties(info) {
-        if (info.properties.length === 0) return;
-
-        this.connect('handle-property-get', (impl, name) => {
-            return this._get.call(this._exportee, info, name);
-        });
-
-        this.connect('handle-property-set', (impl, name, value) => {
-            return this._set.call(this._exportee, info, name, value);
-        });
-
-        this._exportee.connect('notify', (obj, paramSpec) => {
-            let name = toDBusCase(paramSpec.name);
-            let propertyInfo = this.g_interface_info.lookup_property(name);
-
-            if (propertyInfo) {
-                this.emit_property_changed(
-                    name,
-                    new GLib.Variant(
-                        propertyInfo.signature,
-                        // Adjust for GJS's '-'/'_' conversion
-                        this._exportee[paramSpec.name.replace(/-/gi, '_')]
-                    )
-                );
-            }
-        });
-    }
-
-    _exportSignals(info) {
-        for (let signal of info.signals) {
-            this._exportee.connect(signal.name, (obj, ...args) => {
-                this.emit_signal(
-                    signal.name,
-                    new GLib.Variant(
-                        `(${signal.args.map(arg => arg.signature).join('')})`,
-                        args
-                    )
-                );
-            });
-        }
+        this.emit_property_changed(
+            name,
+            new GLib.Variant(
+                propertyInfo.signature,
+                // Adjust for GJS's '-'/'_' conversion
+                this._instance[pspec.name.replace(/-/gi, '_')]
+            )
+        );
     }
 
     destroy() {
-        if (this.__disposed === undefined) {
-            this.__disposed = true;
+        try {
+            for (let id of this._instanceHandlers)
+                this._instance.disconnect(id);
+            this._instanceHandlers = [];
 
             this.flush();
             this.unexport();
-            this.run_dispose();
+        } catch (e) {
+            logError(e);
         }
     }
 });
@@ -270,6 +246,7 @@ var Interface = GObject.registerClass({
  *
  * @param {Gio.BusType} [busType] - a Gio.BusType constant
  * @param (Gio.Cancellable} [cancellable] - an optional Gio.Cancellable
+ * @return {Promise<Gio.DBusConnection>} A DBus connection
  */
 function getConnection(busType = Gio.BusType.SESSION, cancellable = null) {
     return new Promise((resolve, reject) => {
@@ -284,10 +261,11 @@ function getConnection(busType = Gio.BusType.SESSION, cancellable = null) {
 }
 
 /**
- * Get a new dedicated DBus connection on @busType
+ * Get a new, dedicated DBus connection on @busType
  *
  * @param {Gio.BusType} [busType] - a Gio.BusType constant
  * @param (Gio.Cancellable} [cancellable] - an optional Gio.Cancellable
+ * @return {Promise<Gio.DBusConnection>} A new DBus connection
  */
 function newConnection(busType = Gio.BusType.SESSION, cancellable = null) {
     return new Promise((resolve, reject) => {
