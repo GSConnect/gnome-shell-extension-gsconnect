@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2020-07-28 11:45\n"
+"PO-Revision-Date: 2020-07-28 18:14\n"
 "Last-Translator: \n"
 "Language-Team: Czech\n"
 "Language: cs_CZ\n"
@@ -121,7 +121,7 @@ msgstr "Příkazy"
 
 #: data/ui/device-preferences.ui:596 data/ui/device-preferences.ui:599
 msgid "Name"
-msgstr "Jméno"
+msgstr "Název"
 
 #: data/ui/device-preferences.ui:612 data/ui/device-preferences.ui:618
 msgid "Command Line"
