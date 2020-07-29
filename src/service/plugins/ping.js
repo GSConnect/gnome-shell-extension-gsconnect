@@ -55,16 +55,13 @@ var Plugin = GObject.registerClass({
     }
 
     ping(message = '') {
-        debug(message);
-
         let packet = {
             type: 'kdeconnect.ping',
             body: {}
         };
 
-        if (message.length) {
+        if (message.length)
             packet.body.message = message;
-        }
 
         this.device.sendPacket(packet);
     }
