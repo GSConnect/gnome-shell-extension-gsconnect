@@ -11,8 +11,14 @@ const PluginsBase = imports.service.plugins.base;
 var Metadata = {
     label: _('Run Commands'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.RunCommand',
-    incomingCapabilities: ['kdeconnect.runcommand', 'kdeconnect.runcommand.request'],
-    outgoingCapabilities: ['kdeconnect.runcommand', 'kdeconnect.runcommand.request'],
+    incomingCapabilities: [
+        'kdeconnect.runcommand',
+        'kdeconnect.runcommand.request'
+    ],
+    outgoingCapabilities: [
+        'kdeconnect.runcommand',
+        'kdeconnect.runcommand.request'
+    ],
     actions: {
         commands: {
             label: _('Commands'),
@@ -59,7 +65,7 @@ var Plugin = GObject.registerClass({
         // Local Commands
         this._commandListChangedId = this.settings.connect(
             'changed::command-list',
-            this.sendCommandList.bind(this)
+            this._sendCommandList.bind(this)
         );
 
         // We cache remote commands so they can be used in the settings even
@@ -72,29 +78,11 @@ var Plugin = GObject.registerClass({
         return this._remote_commands;
     }
 
-    handlePacket(packet) {
-        // A request...
-        if (packet.type === 'kdeconnect.runcommand.request') {
-            // ...for the local command list
-            if (packet.body.hasOwnProperty('requestCommandList')) {
-                this.sendCommandList();
-            // ...to execute a command
-            } else if (packet.body.hasOwnProperty('key')) {
-                this._handleCommand(packet.body.key);
-            }
-        // A response to a request for the remote command list
-        } else if (packet.type === 'kdeconnect.runcommand') {
-            this._handleCommandList(packet.body.commandList);
-        }
-    }
-
     connected() {
         super.connected();
 
-        // Disable the commands action until we know better
-        this.sendCommandList();
-        this.requestCommandList();
-
+        this._sendCommandList();
+        this._requestCommandList();
         this._handleCommandList(this.remote_commands);
     }
 
@@ -105,21 +93,46 @@ var Plugin = GObject.registerClass({
     }
 
     cacheLoaded() {
-        if (this.device.connected) {
-            this.connected();
+        if (!this.device.connected)
+            return;
+
+        this._sendCommandList();
+        this._requestCommandList();
+        this._handleCommandList(this.remote_commands);
+    }
+
+    handlePacket(packet) {
+        switch (packet.type) {
+            case 'kdeconnect.runcommand':
+                this._handleCommandList(packet.body.commandList);
+                break;
+
+            case 'kdeconnect.runcommand.request':
+                if (packet.body.hasOwnProperty('key'))
+                    this._handleCommand(packet.body.key);
+
+                else if (packet.body.hasOwnProperty('requestCommandList'))
+                    this._sendCommandList();
+
+                break;
         }
     }
 
     /**
      * Handle a request to execute the local command with the UUID @key
+     *
      * @param {string} key - The UUID of the local command
      */
     _handleCommand(key) {
         try {
-            let commandList = this.settings.get_value('command-list').recursiveUnpack();
+            let commands = this.settings.get_value('command-list');
+            let commandList = commands.recursiveUnpack();
 
             if (!commandList.hasOwnProperty(key)) {
-                throw new Error(`Unknown command: ${key}`);
+                throw new Gio.IOErrorEnum({
+                    code: Gio.IOErrorEnum.PERMISSION_DENIED,
+                    message: `Unknown command: ${key}`
+                });
             }
             
             this.device.launchProcess([
@@ -135,6 +148,8 @@ var Plugin = GObject.registerClass({
     /**
      * Parse the response to a request for the remote command list. Remove the
      * command menu if there are no commands, otherwise amend the menu.
+     *
+     * @param {Object[]} commandList - A list of remote commands
      */
     _handleCommandList(commandList) {
         this._remote_commands = commandList;
@@ -165,14 +180,13 @@ var Plugin = GObject.registerClass({
             'hidden-when',
             new GLib.Variant('s', 'action-disabled')
         );
-        item.set_icon(
-            new Gio.ThemedIcon({name: 'system-run-symbolic'})
-        );
+        item.set_icon(new Gio.ThemedIcon({name: 'system-run-symbolic'}));
         item.set_label(_('Commands'));
         item.set_submenu(submenu);
 
         // If the submenu item is already present it will be replaced
-        let index = this.device.settings.get_strv('menu-actions').indexOf('commands');
+        let menuActions = this.device.settings.get_strv('menu-actions');
+        let index = menuActions.indexOf('commands');
 
         if (index > -1) {
             this.device.removeMenuAction('commands');
@@ -181,25 +195,9 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * Placeholder function for command action
-     */
-    commands() {}
-
-    /**
-     * Send a request to execute the remote command with the UUID @key
-     * @param {string} key - The UUID of the remote command
-     */
-    executeCommand(key) {
-        this.device.sendPacket({
-            type: 'kdeconnect.runcommand.request',
-            body: {key: key}
-        });
-    }
-
-    /**
      * Send a request for the remote command list
      */
-    requestCommandList() {
+    _requestCommandList() {
         this.device.sendPacket({
             type: 'kdeconnect.runcommand.request',
             body: {requestCommandList: true}
@@ -209,7 +207,7 @@ var Plugin = GObject.registerClass({
     /**
      * Send the local command list
      */
-    sendCommandList() {
+    _sendCommandList() {
         let commands = this.settings.get_value('command-list').recursiveUnpack();
 
         this.device.sendPacket({
@@ -218,10 +216,25 @@ var Plugin = GObject.registerClass({
         });
     }
 
+    /**
+     * Placeholder function for command action
+     */
+    commands() {}
+
+    /**
+     * Send a request to execute the remote command with the UUID @key
+     *
+     * @param {string} key - The UUID of the remote command
+     */
+    executeCommand(key) {
+        this.device.sendPacket({
+            type: 'kdeconnect.runcommand.request',
+            body: {key: key}
+        });
+    }
+
     destroy() {
-        if (this._commandListChangedId) {
-            this.settings.disconnect(this._commandListChangedId);
-        }
+        this.settings.disconnect(this._commandListChangedId);
 
         super.destroy();
     }
