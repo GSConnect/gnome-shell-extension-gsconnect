@@ -525,29 +525,30 @@ const RemotePlayer = GObject.registerClass({
 
     async export() {
         try {
-            if (this._ownerId !== 0)
-                return;
-
-            if (this._connection === null)
+            if (this._connection === null) {
                 this._connection = await DBus.newConnection();
 
-            if (this._applicationIface === null) {
-                this._applicationIface = new DBus.Interface({
-                    g_instance: this,
-                    g_connection: this._connection,
-                    g_object_path: '/org/mpris/MediaPlayer2',
-                    g_interface_info: MPRISIface
-                });
+                if (this._applicationIface === null) {
+                    this._applicationIface = new DBus.Interface({
+                        g_instance: this,
+                        g_connection: this._connection,
+                        g_object_path: '/org/mpris/MediaPlayer2',
+                        g_interface_info: MPRISIface
+                    });
+                }
+
+                if (this._playerIface === null) {
+                    this._playerIface = new DBus.Interface({
+                        g_instance: this,
+                        g_connection: this._connection,
+                        g_object_path: '/org/mpris/MediaPlayer2',
+                        g_interface_info: MPRISPlayerIface
+                    });
+                }
             }
 
-            if (this._playerIface === null) {
-                this._playerIface = new DBus.Interface({
-                    g_instance: this,
-                    g_connection: this._connection,
-                    g_object_path: '/org/mpris/MediaPlayer2',
-                    g_interface_info: MPRISPlayerIface
-                });
-            }
+            if (this._ownerId !== 0)
+                return;
 
             let name = [
                 this.device.name,
@@ -567,20 +568,11 @@ const RemotePlayer = GObject.registerClass({
     }
 
     unexport() {
-        if (this._ownerId !== 0) {
-            Gio.bus_unown_name(this._ownerId);
-            this._ownerId = 0;
-        }
+        if (this._ownerId === 0)
+            return;
 
-        if (this._applicationIface) {
-            this._applicationIface.destroy();
-            this._applicationIface = null;
-        }
-
-        if (this._playerIface) {
-            this._playerIface.destroy();
-            this._playerIface = null;
-        }
+        Gio.bus_unown_name(this._ownerId);
+        this._ownerId = 0;
     }
 
     parseState(state) {
@@ -969,6 +961,16 @@ const RemotePlayer = GObject.registerClass({
         if (this._connection) {
             this._connection.close(null, null);
             this._connection = null;
+
+            if (this._applicationIface) {
+                this._applicationIface.destroy();
+                this._applicationIface = null;
+            }
+
+            if (this._playerIface) {
+                this._playerIface.destroy();
+                this._playerIface = null;
+            }
         }
     }
 });
