@@ -1,5 +1,6 @@
-[GSConnect][ego] is a complete implementation of [KDE Connect][kdeconnect] for
-GNOME Shell with Nautilus, [Chrome][chrome] and [Firefox][firefox] integration.
+[GSConnect][ego] is a complete implementation **replacing** desktop [KDE
+Connect][kdeconnect]. It includes GNOME Shell, Nautilus, [Chrome][chrome] and
+[Firefox][firefox] integrations.
 
 Pair your PC and your Android device with the KDE Connect app installed to:
 Transfer files, send and receive SMS texts, mirror clipboard and notifications,
