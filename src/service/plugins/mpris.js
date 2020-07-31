@@ -39,8 +39,13 @@ var Plugin = GObject.registerClass({
         try {
             this._mpris = this.service.components.get('mpris');
 
-            this._notifyPlayersId = this._mpris.connect(
-                'notify::players',
+            this._playerAddedId = this._mpris.connect(
+                'player-added',
+                this._sendPlayerList.bind(this)
+            );
+
+            this._playerRemovedId = this._mpris.connect(
+                'player-removed',
                 this._sendPlayerList.bind(this)
             );
 
@@ -69,9 +74,9 @@ var Plugin = GObject.registerClass({
     disconnected() {
         super.disconnected();
 
-        for (let [identity, player] of this._players.entries()) {
-            player.destroy();
+        for (let [identity, player] of this._players) {
             this._players.delete(identity);
+            player.destroy();
         }
     }
 
@@ -87,6 +92,11 @@ var Plugin = GObject.registerClass({
         }
     }
 
+    /**
+     * Handle a remote player update.
+     *
+     * @param {Core.Packet} packet - A `kdeconnect.mpris`
+     */
     _handleStatus(packet) {
         try {
             if (packet.body.hasOwnProperty('playerList')) {
@@ -95,14 +105,14 @@ var Plugin = GObject.registerClass({
                 this._handlePlayerState(packet.body);
             }
         } catch (e) {
-            debug(e, `${this.device.name}: MPRIS`);
+            debug(e, this.device.name);
         }
     }
 
     /**
-     * Handle a player list update
+     * Handle an updated list of remote players.
      *
-     * @param {array} playerList - A list of remote player names
+     * @param {string[]} playerList - A list of remote player names
      */
     _handlePlayerList(playerList) {
         // Destroy removed players before adding new ones
@@ -115,10 +125,8 @@ var Plugin = GObject.registerClass({
 
         for (let identity of playerList) {
             if (!this._players.has(identity)) {
-                this._players.set(
-                    identity,
-                    new RemotePlayer(this.device, identity)
-                );
+                let player = new RemotePlayer(this.device, identity);
+                this._players.set(identity, player);
             }
 
             // Always request player updates; packets are cheap
@@ -134,19 +142,19 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * Handle a player state update
+     * Handle an update for a remote player.
      *
-     * @param {Object} state - The body of a kdeconnect.mpris packet
+     * @param {Object} state - The body of a `kdeconnect.mpris` packet
      */
     _handlePlayerState(state) {
         let player = this._players.get(state.player);
 
         if (player !== undefined)
-            player.parseState(state);
+            player.update(state);
     }
 
     /**
-     * Request the list of player identities
+     * Request a list of remote players.
      */
     _requestPlayerList() {
         this.device.sendPacket({
@@ -157,29 +165,32 @@ var Plugin = GObject.registerClass({
         });
     }
 
+    /**
+     * Handle a request for player information or action.
+     *
+     * @param {Core.Packet} packet - a `kdeconnect.mpris.request`
+     */
     _handleRequest(packet) {
         // A request for the list of players
-        if (packet.body.requestPlayerList) {
-            this._sendPlayerList();
+        if (packet.body.hasOwnProperty('requestPlayerList'))
+            return this._sendPlayerList();
 
         // A request for an unknown player; send the list of players
-        } else if (!this._mpris.identities.includes(packet.body.player)) {
-            this._sendPlayerList();
+        if (!this._mpris.hasPlayer(packet.body.player))
+            return this._sendPlayerList();
 
         // An album art request
-        } else if (packet.body.hasOwnProperty('albumArtUrl')) {
-            this._sendAlbumArt(packet);
+        if (packet.body.hasOwnProperty('albumArtUrl'))
+            return this._sendAlbumArt(packet);
 
         // A player command
-        } else {
-            this._handleCommand(packet);
-        }
+        this._handleCommand(packet);
     }
 
     /**
      * Handle an incoming player command or information request
      *
-     * @param {kdeconnect.mpris.request} - A command for a specific player
+     * @param {Core.Packet} packet - A `kdeconnect.mpris.request`
      */
     async _handleCommand(packet) {
         if (!this.settings.get_boolean('share-players'))
@@ -192,6 +203,8 @@ var Plugin = GObject.registerClass({
 
             if (player === undefined || this._updating.has(player))
                 return;
+
+            this._updating.add(player);
 
             // Player Actions
             if (packet.body.hasOwnProperty('action')) {
@@ -338,9 +351,37 @@ var Plugin = GObject.registerClass({
             // Start the transfer process
             this._transferring.add(player);
 
+            let read = new Promise((resolve, reject) => {
+                file.read_async(GLib.PRIORITY_DEFAULT, null, (file, res) => {
+                    try {
+                        resolve(file.read_finish(res));
+                    } catch (e) {
+                        reject(e);
+                    }
+                });
+            });
+
+            let query = new Promise((resolve, reject) => {
+                file.query_info_async(
+                    'standard::size',
+                    Gio.FileQueryInfoFlags.NONE,
+                    GLib.PRIORITY_DEFAULT,
+                    null,
+                    (file, res) => {
+                        try {
+                            resolve(file.query_info_finish(res));
+                        } catch (e) {
+                            reject(e);
+                        }
+                    }
+                );
+            });
+
+            let [stream, info] = await Promise.all([read, query]);
+
             let transfer = this.device.createTransfer({
-                input_stream: file.read(null),
-                size: file.query_info('standard::size', 0, null).get_size()
+                input_stream: stream,
+                size: info.get_size()
             });
 
             await transfer.upload({
@@ -352,7 +393,7 @@ var Plugin = GObject.registerClass({
                 }
             });
         } catch (e) {
-            debug(e, 'transferring album art');
+            debug(e, this.device.name);
         } finally {
             this._transferring.delete(player);
         }
@@ -366,7 +407,7 @@ var Plugin = GObject.registerClass({
         let playerList = [];
 
         if (this.settings.get_boolean('share-players'))
-            playerList = this._mpris.identities;
+            playerList = this._mpris.getIdentities();
 
         this.device.sendPacket({
             type: 'kdeconnect.mpris',
@@ -378,17 +419,15 @@ var Plugin = GObject.registerClass({
     }
 
     destroy() {
-        try {
+        if (this._mpris !== undefined) {
             this._mpris.disconnect(this._notifyPlayersId);
             this._mpris.disconnect(this._playerChangedId);
             this._mpris.disconnect(this._playerSeekedId);
-        } catch (e) {
-            // Silence errors
         }
 
-        for (let [identity, player] of this._players.entries()) {
-            player.destroy();
+        for (let [identity, player] of this._players) {
             this._players.delete(identity);
+            player.destroy();
         }
 
         super.destroy();
@@ -575,11 +614,8 @@ const RemotePlayer = GObject.registerClass({
         this._ownerId = 0;
     }
 
-    parseState(state) {
+    update(state) {
         this.freeze_notify();
-
-        // Probably doesn't change?
-        this._Identity = state.player;
 
         // Metadata
         let metadataChanged = false;

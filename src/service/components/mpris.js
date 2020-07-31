@@ -222,12 +222,8 @@ var Player = GObject.registerClass({
 
     vfunc_g_properties_changed(changed, invalidated) {
         try {
-            if (this.__disposed !== undefined)
-                return;
-
-            for (let name in changed.deepUnpack()) {
+            for (let name in changed.deepUnpack())
                 this.notify(name);
-            }
         } catch (e) {
             debug(e, this.g_name);
         }
@@ -235,9 +231,10 @@ var Player = GObject.registerClass({
 
     vfunc_g_signal(sender_name, signal_name, parameters) {
         try {
-            if (signal_name === 'Seeked') {
-                this.emit('Seeked', parameters.deepUnpack()[0]);
-            }
+            if (signal_name !== 'Seeked')
+                return;
+
+            this.emit('Seeked', parameters.deepUnpack()[0]);
         } catch (e) {
             debug(e, this.g_name);
         }
@@ -294,12 +291,8 @@ var Player = GObject.registerClass({
 
     _onPropertiesChanged(proxy, changed, invalidated) {
         try {
-            if (this.__disposed !== undefined)
-                return;
-
-            for (let name in changed.deepUnpack()) {
+            for (let name in changed.deepUnpack())
                 this.notify(name);
-            }
         } catch (e) {
             logError(e, this.g_name);
         }
@@ -519,16 +512,13 @@ var Player = GObject.registerClass({
     }
 
     destroy() {
-        if (this.__disposed === undefined) {
-            this.__disposed = true;
+        if (this._cancellable.is_cancelled())
+            return;
 
-            this._cancellable.cancel();
-
-            this._application.disconnect(this._propertiesChangedId);
-            this._application.run_dispose();
-
-            this.run_dispose();
-        }
+        this._cancellable.cancel();
+        this._application.disconnect(this._propertiesChangedId);
+        GObject.signal_handlers_destroy(this._application);
+        GObject.signal_handlers_destroy(this);
     }
 });
 
@@ -536,27 +526,13 @@ var Player = GObject.registerClass({
 var Manager = GObject.registerClass({
     GTypeName: 'GSConnectMPRISManager',
     Implements: [Gio.DBusInterface],
-    Properties: {
-        'identities': GObject.param_spec_variant(
-            'identities',
-            'IdentityList',
-            'A list of MediaPlayer2.Identity for each player',
-            new GLib.VariantType('as'),
-            null,
-            GObject.ParamFlags.READABLE
-        ),
-        // Actually returns an Object of MediaPlayer2Proxy objects,
-        // Player.Identity as key
-        'players': GObject.param_spec_variant(
-            'players',
-            'PlayerList',
-            'A list of known devices',
-            new GLib.VariantType('a{sv}'),
-            null,
-            GObject.ParamFlags.READABLE
-        )
-    },
     Signals: {
+        'player-added': {
+            param_types: [GObject.TYPE_OBJECT]
+        },
+        'player-removed': {
+            param_types: [GObject.TYPE_OBJECT]
+        },
         'player-changed': {
             param_types: [GObject.TYPE_OBJECT]
         },
@@ -575,6 +551,8 @@ var Manager = GObject.registerClass({
 
         // Asynchronous setup
         this._cancellable = new Gio.Cancellable();
+        this._players = new Map();
+        this._paused = new Map();
         this._init_async();
     }
 
@@ -622,47 +600,19 @@ var Manager = GObject.registerClass({
         }
     }
 
-    get identities() {
-        let identities = [];
-
-        for (let player of this.players.values()) {
-            let identity = player.Identity;
-
-            if (identity)
-                identities.push(identity);
-        }
-
-        return identities;
-    }
-
-    get players() {
-        if (this._players === undefined) {
-            this._players = new Map();
-        }
-
-        return this._players;
-    }
-
-    get paused() {
-        if (this._paused === undefined) {
-            this._paused = new Map();
-        }
-
-        return this._paused;
-    }
-
     vfunc_g_signal(sender_name, signal_name, parameters) {
         try {
-            if (signal_name === 'NameOwnerChanged') {
-                let [name, old_owner, new_owner] = parameters.deepUnpack();
+            if (signal_name !== 'NameOwnerChanged')
+                return;
 
-                if (name.startsWith('org.mpris.MediaPlayer2') &&
-                    !name.includes('GSConnect')) {
-                    if (new_owner.length) {
-                        this._addPlayer(name);
-                    } else if (old_owner.length) {
-                        this._removePlayer(name);
-                    }
+            let [name, old_owner, new_owner] = parameters.deepUnpack();
+
+            if (name.startsWith('org.mpris.MediaPlayer2') &&
+                !name.includes('GSConnect')) {
+                if (new_owner.length) {
+                    this._addPlayer(name);
+                } else if (old_owner.length) {
+                    this._removePlayer(name);
                 }
             }
         } catch (e) {
@@ -672,7 +622,7 @@ var Manager = GObject.registerClass({
 
     async _addPlayer(name) {
         try {
-            if (!this.players.has(name)) {
+            if (!this._players.has(name)) {
                 let player = new Player(name);
                 await player.initPromise();
 
@@ -686,58 +636,90 @@ var Manager = GObject.registerClass({
                     (player) => this.emit('player-seeked', player)
                 );
 
-                this.players.set(name, player);
-                this.notify('players');
+                this._players.set(name, player);
+                this.emit('player-added', player);
             }
         } catch (e) {
-            debug(e);
+            debug(e, name);
         }
     }
 
     _removePlayer(name) {
         try {
-            let player = this.players.get(name);
+            let player = this._players.get(name);
 
             if (player !== undefined) {
                 debug(`Removing MPRIS Player ${name}`);
 
+                this._paused.delete(name);
+                this._players.delete(name);
+                this.emit('player-removed', player);
+
                 player.disconnect(player.__propertiesId);
                 player.disconnect(player.__seekedId);
                 player.destroy();
-
-                this.paused.delete(name);
-                this.players.delete(name);
-                this.notify('players');
             }
         } catch (e) {
-            debug(e);
+            debug(e, name);
         }
+    }
+
+    /**
+     * Check for a player by its Identity.
+     *
+     * @param {string} identity - A player name
+     * @return {boolean} %true if the player was found
+     */
+    hasPlayer(identity) {
+        for (let player of this._players.values()) {
+            if (player.Identity === identity)
+                return true;
+        }
+
+        return false;
     }
 
     /**
      * Get a player by its Identity.
      *
      * @param {string} identity - A player name
-     * @param {GSConnectMPRISPlayer|null} - A player or %null
+     * @return {GSConnectMPRISPlayer|null} A player or %null
      */
     getPlayer(identity) {
-        for (let player of this.players.values()) {
-            if (player.Identity === identity) {
+        for (let player of this._players.values()) {
+            if (player.Identity === identity)
                 return player;
-            }
         }
 
         return null;
     }
 
     /**
+     * Get a list of player identities.
+     *
+     * @return {string[]} A list of player identities
+     */
+    getIdentities() {
+        let identities = [];
+
+        for (let player of this._players.values()) {
+            let identity = player.Identity;
+
+            if (identity)
+                identities.push(identity);
+        }
+
+        return identities;
+    }
+
+    /**
      * A convenience function for pausing all players currently playing.
      */
     pauseAll() {
-        for (let [name, player] of this.players.entries()) {
+        for (let [name, player] of this._players) {
             if (player.PlaybackStatus === 'Playing' && player.CanPause) {
                 player.Pause();
-                this.paused.set(name, player);
+                this._paused.set(name, player);
             }
         }
     }
@@ -746,31 +728,27 @@ var Manager = GObject.registerClass({
      * A convenience function for restarting all players paused with pauseAll().
      */
     unpauseAll() {
-        for (let player of this.paused.values()) {
-            if (player.PlaybackStatus === 'Paused' && player.CanPlay) {
+        for (let player of this._paused.values()) {
+            if (player.PlaybackStatus === 'Paused' && player.CanPlay)
                 player.Play();
-            }
         }
 
-        this.paused.clear();
+        this._paused.clear();
     }
 
     destroy() {
-        if (this.__disposed == undefined) {
-            this.__disposed = true;
+        if (this._cancellable.is_cancelled())
+            return;
 
-            this._cancellable.cancel();
+        this._cancellable.cancel();
 
-            for (let player of this.players.values()) {
-                player.disconnect(player.__propertiesId);
-                player.disconnect(player.__seekedId);
-                player.destroy();
-            }
-
-            this.players.clear();
-
-            this.run_dispose();
+        for (let player of this._players.values()) {
+            player.disconnect(player.__propertiesId);
+            player.disconnect(player.__seekedId);
+            player.destroy();
         }
+
+        this._players.clear();
     }
 });
 
