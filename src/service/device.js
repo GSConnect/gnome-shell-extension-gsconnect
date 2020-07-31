@@ -53,14 +53,14 @@ var Device = GObject.registerClass({
         ),
         'id': GObject.ParamSpec.string(
             'id',
-            'deviceId',
-            'The device hostname or other unique id',
+            'Id',
+            'The device hostname or other networkd unique id',
             GObject.ParamFlags.READABLE,
             ''
         ),
         'name': GObject.ParamSpec.string(
             'name',
-            'deviceName',
+            'Name',
             'The device name',
             GObject.ParamFlags.READABLE,
             null
@@ -74,7 +74,7 @@ var Device = GObject.registerClass({
         ),
         'type': GObject.ParamSpec.string(
             'type',
-            'deviceType',
+            'Type',
             'The device type',
             GObject.ParamFlags.READABLE,
             null
@@ -114,9 +114,8 @@ var Device = GObject.registerClass({
         );
 
         // Parse identity if initialized with a proper packet
-        if (identity.id !== undefined) {
+        if (identity.id !== undefined)
             this._handleIdentity(identity);
-        }
 
         // Export an object path for the device
         this._dbus_object = new Gio.DBusObjectSkeleton({
@@ -150,17 +149,15 @@ var Device = GObject.registerClass({
     }
 
     get channel() {
-        if (this._channel === undefined) {
+        if (this._channel === undefined)
             this._channel = null;
-        }
 
         return this._channel;
     }
 
     get connected () {
-        if (this._connected === undefined) {
+        if (this._connected === undefined)
             this._connected = false;
-        }
 
         return this._connected;
     }
@@ -174,11 +171,10 @@ var Device = GObject.registerClass({
     get contacts() {
         let contacts = this._plugins.get('contacts');
 
-        if (contacts && contacts.settings.get_boolean('contacts-source')) {
+        if (contacts && contacts.settings.get_boolean('contacts-source'))
             return contacts._store;
-        } else {
-            return this.service.components.get('contacts');
-        }
+
+        return this.service.components.get('contacts');
     }
 
     // FIXME: backend should do this stuff
@@ -576,7 +572,6 @@ var Device = GObject.registerClass({
 
             return this.addMenuItem(item, index);
         } catch (e) {
-            logError(e, this.name);
             return -1;
         }
     }
@@ -634,9 +629,8 @@ var Device = GObject.registerClass({
         if (params.action) {
             let hasParameter = (params.action.parameter !== null);
 
-            if (!hasParameter) {
+            if (!hasParameter)
                 params.action.parameter = new GLib.Variant('s', '');
-            }
 
             notif.set_default_action_and_target(
                 'app.device',
@@ -653,9 +647,8 @@ var Device = GObject.registerClass({
         for (let button of params.buttons) {
             let hasParameter = (button.parameter !== null);
 
-            if (!hasParameter) {
+            if (!hasParameter)
                 button.parameter = new GLib.Variant('s', '');
-            }
 
             notif.add_button_with_target(
                 button.label,
@@ -713,7 +706,8 @@ var Device = GObject.registerClass({
      * @param {Core.Packet} packet - A packet
      */
     async rejectTransfer(packet) {
-        if (!packet || !packet.hasPayload()) return;
+        if (!packet || !packet.hasPayload())
+            return;
 
         try {
             let transfer = this.createTransfer(Object.assign({
@@ -922,20 +916,17 @@ var Device = GObject.registerClass({
 
         // Unload any plugins that are disabled or unsupported
         this._plugins.forEach(plugin => {
-            if (!allowed.includes(plugin.name)) {
+            if (!allowed.includes(plugin.name))
                 this._unloadPlugin(plugin.name);
-            }
         });
 
         // Make sure we change the contacts store if the plugin was disabled
-        if (!allowed.includes('contacts')) {
+        if (!allowed.includes('contacts'))
             this.notify('contacts');
-        }
 
         // Load allowed plugins
-        for (let name of allowed) {
+        for (let name of allowed)
             this._loadPlugin(name);
-        }
     }
 
     _loadPlugin(name) {
@@ -948,9 +939,8 @@ var Device = GObject.registerClass({
                 plugin = new handler.Plugin(this);
 
                 // Register packet handlers
-                for (let packetType of handler.Metadata.incomingCapabilities) {
+                for (let packetType of handler.Metadata.incomingCapabilities)
                     this._handlers.set(packetType, plugin);
-                }
 
                 // Register plugin
                 this._plugins.set(name, plugin);
@@ -967,9 +957,8 @@ var Device = GObject.registerClass({
         let disabled = this.settings.get_strv('disabled-plugins');
 
         for (let name of this.settings.get_strv('supported-plugins')) {
-            if (!disabled.includes(name)) {
+            if (!disabled.includes(name))
                 await this._loadPlugin(name);
-            }
         }
     }
 
@@ -980,13 +969,12 @@ var Device = GObject.registerClass({
             if (this._plugins.has(name)) {
                 // Unregister packet handlers
                 handler = imports.service.plugins[name];
-                plugin = this._plugins.get(name);
 
-                for (let type of handler.Metadata.incomingCapabilities) {
+                for (let type of handler.Metadata.incomingCapabilities)
                     this._handlers.delete(type);
-                }
 
                 // Unregister plugin
+                plugin = this._plugins.get(name);
                 this._plugins.delete(name);
                 plugin.destroy();
             }
@@ -996,16 +984,14 @@ var Device = GObject.registerClass({
     }
 
     async _unloadPlugins() {
-        for (let name of this._plugins.keys()) {
+        for (let name of this._plugins.keys())
             await this._unloadPlugin(name);
-        }
     }
 
     destroy() {
         // Close the channel if still connected
-        if (this._channel !== null) {
-            this._channel.close();
-        }
+        if (this.channel !== null)
+            this.channel.close();
 
         // Synchronously destroy plugins
         this._plugins.forEach(plugin => plugin.destroy());
