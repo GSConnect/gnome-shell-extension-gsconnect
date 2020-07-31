@@ -359,7 +359,8 @@ var Plugin = GObject.registerClass({
             filesItem.set_label(_('Files'));
             filesItem.set_submenu(filesSubmenu);
 
-            this.device.replaceMenuAction('device.mount', filesItem);
+            let index = this.device.removeMenuAction('device.mount');
+            this.device.addMenuItem(filesItem, index);
         } catch (e) {
             logError(e);
         }

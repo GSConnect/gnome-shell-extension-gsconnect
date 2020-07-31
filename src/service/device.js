@@ -591,33 +591,12 @@ var Device = GObject.registerClass({
         try {
             let index = this.getMenuAction(actionName);
 
-            if (index > -1) {
+            if (index > -1)
                 this.menu.remove(index);
-            }
 
             return index;
         } catch (e) {
-            logError(e, this.name);
-            return -1;
-        }
-    }
-
-    /**
-     * Replace a GAction in the top level of the device menu with the name
-     * @actionName and insert @item in its place. If @actionName is not found
-     * @item will appended to the device menu.
-     *
-     * @param {string} actionName - A GAction name, including scope
-     * @param (Gio.MenuItem} menuItem - A GMenuItem
-     * @return {number} The position the item was placed
-     */
-    replaceMenuAction(actionName, menuItem) {
-        try {
-            let index = this.removeMenuAction(actionName);
-
-            return this.addMenuItem(menuItem, index);
-        } catch (e) {
-            logError(e, this.name);
+            debug(e, this.name);
             return -1;
         }
     }
