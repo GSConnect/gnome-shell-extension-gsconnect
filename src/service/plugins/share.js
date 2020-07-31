@@ -273,17 +273,16 @@ var Plugin = GObject.registerClass({
      * @param {boolean} open - Whether the file should be opened after transfer
      */
     async shareFile(path, open = false) {
-        let file, stream, success, transfer;
-        let title, body, iconName;
-
         try {
+            let file = null;
+
             if (path.includes('://')) {
                 file = Gio.File.new_for_uri(path);
             } else {
                 file = Gio.File.new_for_path(path);
             }
 
-            stream = await new Promise((resolve, reject) => {
+            let read = new Promise((resolve, reject) => {
                 file.read_async(GLib.PRIORITY_DEFAULT, null, (file, res) => {
                     try {
                         resolve(file.read_finish(res));
@@ -293,9 +292,27 @@ var Plugin = GObject.registerClass({
                 });
             });
 
-            transfer = this.device.createTransfer({
+            let query = new Promise((resolve, reject) => {
+                file.query_info_async(
+                    'standard::size',
+                    Gio.FileQueryInfoFlags.NONE,
+                    GLib.PRIORITY_DEFAULT,
+                    null,
+                    (file, res) => {
+                        try {
+                            resolve(file.query_info_finish(res));
+                        } catch (e) {
+                            reject(e);
+                        }
+                    }
+                );
+            });
+
+            let [stream, info] = await Promise.all([read, query]);
+
+            let transfer = this.device.createTransfer({
                 input_stream: stream,
-                size: file.query_info('standard::size', 0, null).get_size()
+                size: info.get_size()
             });
 
             // Notify that we're about to start the transfer
@@ -315,13 +332,16 @@ var Plugin = GObject.registerClass({
                 icon: new Gio.ThemedIcon({name: 'document-send-symbolic'})
             });
 
-            success = await transfer.upload({
+            let success = await transfer.upload({
                 type: 'kdeconnect.share.request',
                 body: {
                     filename: file.get_basename(),
                     open: open
                 }
             });
+
+            // We'll show a notification (success or failure)
+            let title, body, iconName;
 
             if (success) {
                 title = _('Transfer Successful');

@@ -260,7 +260,7 @@ var Plugin = GObject.registerClass({
      * @param {Gio.File} file - A file object for the icon
      */
     async _uploadFileIcon(packet, file) {
-        let stream = new Promise((resolve, reject) => {
+        let read = new Promise((resolve, reject) => {
             file.read_async(GLib.PRIORITY_DEFAULT, null, (file, res) => {
                 try {
                     resolve(file.read_finish(res));
@@ -270,7 +270,7 @@ var Plugin = GObject.registerClass({
             });
         });
 
-        let info = new Promise((resolve, reject) => {
+        let query = new Promise((resolve, reject) => {
             file.query_info_async(
                 'standard::size',
                 Gio.FileQueryInfoFlags.NONE,
@@ -286,7 +286,8 @@ var Plugin = GObject.registerClass({
             );
         });
 
-        await Promise.all([stream, info]);
+        let [stream, info] = await Promise.all([read, query]);
+
         this._uploadIconStream(packet, stream, info.get_size());
     }
 

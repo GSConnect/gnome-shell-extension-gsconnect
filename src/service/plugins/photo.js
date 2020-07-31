@@ -207,7 +207,7 @@ var Plugin = GObject.registerClass({
                 file = Gio.File.new_for_path(path);
 
             // Prepare the file for upload
-            let stream = new Promise((resolve, reject) => {
+            let read = new Promise((resolve, reject) => {
                 file.read_async(GLib.PRIORITY_DEFAULT, null, (file, res) => {
                     try {
                         resolve(file.read_finish(res));
@@ -217,7 +217,7 @@ var Plugin = GObject.registerClass({
                 });
             });
 
-            let info = new Promise((resolve, reject) => {
+            let query = new Promise((resolve, reject) => {
                 file.query_info_async(
                     'standard::size',
                     Gio.FileQueryInfoFlags.NONE,
@@ -233,7 +233,7 @@ var Plugin = GObject.registerClass({
                 );
             });
 
-            await Promise.all([stream, info]);
+            let [stream, info] = await Promise.all([read, query]);
 
             // Transfer
             let transfer = this.device.createTransfer({
