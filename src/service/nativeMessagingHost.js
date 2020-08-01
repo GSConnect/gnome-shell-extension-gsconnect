@@ -12,7 +12,7 @@ const GObject = imports.gi.GObject;
 const System = imports.system;
 
 
-var NativeMessagingHost = GObject.registerClass({
+const NativeMessagingHost = GObject.registerClass({
     GTypeName: 'GSConnectNativeMessagingHost'
 }, class NativeMessagingHost extends Gio.Application {
 
@@ -24,9 +24,8 @@ var NativeMessagingHost = GObject.registerClass({
     }
 
     get devices() {
-        if (this._devices === undefined) {
+        if (this._devices === undefined)
             this._devices = {};
-        }
 
         return this._devices;
     }
@@ -40,83 +39,75 @@ var NativeMessagingHost = GObject.registerClass({
         this.hold();
 
         // IO Channels
-        this.stdin = new Gio.DataInputStream({
+        this._stdin = new Gio.DataInputStream({
             base_stream: new Gio.UnixInputStream({fd: 0}),
             byte_order: Gio.DataStreamByteOrder.HOST_ENDIAN
         });
 
-        this.stdout = new Gio.DataOutputStream({
+        this._stdout = new Gio.DataOutputStream({
             base_stream: new Gio.UnixOutputStream({fd: 1}),
             byte_order: Gio.DataStreamByteOrder.HOST_ENDIAN
         });
 
-        let source = this.stdin.base_stream.create_source(null);
+        let source = this._stdin.base_stream.create_source(null);
         source.set_callback(this.receive.bind(this));
         source.attach(null);
 
-        this._init_async();
-    }
-
-    async _init_async(obj, res) {
+        // Device Manager
         try {
-            this.manager = await new Promise((resolve, reject) => {
-                Gio.DBusObjectManagerClient.new_for_bus(
-                    Gio.BusType.SESSION,
-                    Gio.DBusObjectManagerClientFlags.DO_NOT_AUTO_START,
-                    'org.gnome.Shell.Extensions.GSConnect',
-                    '/org/gnome/Shell/Extensions/GSConnect',
-                    null,
-                    null,
-                    (manager, res) => {
-                        try {
-                            resolve(Gio.DBusObjectManagerClient.new_for_bus_finish(res));
-                        } catch (e) {
-                            reject(e);
-                        }
-                    }
-                );
-            });
-
-            // Add currently managed devices
-            for (let object of this.manager.get_objects()) {
-                for (let iface of object.get_interfaces()) {
-                    this._onInterfaceAdded(this.manager, object, iface);
-                }
-            }
-
-            // Watch for new and removed devices
-            this.manager.connect(
-                'interface-added',
-                this._onInterfaceAdded.bind(this)
+            this._manager = Gio.DBusObjectManagerClient.new_for_bus_sync(
+                Gio.BusType.SESSION,
+                Gio.DBusObjectManagerClientFlags.DO_NOT_AUTO_START,
+                'org.gnome.Shell.Extensions.GSConnect',
+                '/org/gnome/Shell/Extensions/GSConnect',
+                null,
+                null
             );
-            this.manager.connect(
-                'object-removed',
-                this._onObjectRemoved.bind(this)
-            );
-
-            // Watch for device property changes
-            this.manager.connect(
-                'interface-proxy-properties-changed',
-                this.sendDeviceList.bind(this)
-            );
-
-            // Watch for service restarts
-            this.manager.connect(
-                'notify::name-owner',
-                this.sendDeviceList.bind(this)
-            );
-
-            this.send({type: 'connected', data: true});
         } catch (e) {
+            logError(e);
             this.quit();
         }
+
+        // Add currently managed devices
+        for (let object of this._manager.get_objects()) {
+            for (let iface of object.get_interfaces()) {
+                this._onInterfaceAdded(this._manager, object, iface);
+            }
+        }
+
+        // Watch for new and removed devices
+        this._manager.connect(
+            'interface-added',
+            this._onInterfaceAdded.bind(this)
+        );
+        this._manager.connect(
+            'object-removed',
+            this._onObjectRemoved.bind(this)
+        );
+
+        // Watch for device property changes
+        this._manager.connect(
+            'interface-proxy-properties-changed',
+            this.sendDeviceList.bind(this)
+        );
+
+        // Watch for service restarts
+        this._manager.connect(
+            'notify::name-owner',
+            this.sendDeviceList.bind(this)
+        );
+
+        this.send({
+            type: 'connected',
+            data: (this._manager.name_owner !== null)
+        });
     }
 
     receive() {
         try {
             // Read the message
-            let length = this.stdin.read_int32(null);
-            let bytes = this.stdin.read_bytes(length, null).toArray();
+            let length = this._stdin.read_int32(null);
+            let bytes = this._stdin.read_bytes(length, null).toArray();
             let message = JSON.parse(imports.byteArray.toString(bytes));
 
             // A request for a list of devices
@@ -142,7 +133,7 @@ var NativeMessagingHost = GObject.registerClass({
                 }
             }
 
-            return true;
+            return GLib.SOURCE_CONTINUE;
         } catch (e) {
             this.quit();
         }
@@ -151,8 +142,8 @@ var NativeMessagingHost = GObject.registerClass({
     send(message) {
         try {
             let data = JSON.stringify(message);
-            this.stdout.put_int32(data.length, null);
-            this.stdout.put_string(data, null);
+            this._stdout.put_int32(data.length, null);
+            this._stdout.put_string(data, null);
         } catch (e) {
             this.quit();
         }
@@ -160,11 +151,10 @@ var NativeMessagingHost = GObject.registerClass({
 
     sendDeviceList() {
         // Inform the WebExtension we're disconnected from the service
-        if (this.manager && this.manager.name_owner === null) {
-            this.send({type: 'connected', data: false});
-            return;
-        }
+        if (this._manager && this._manager.name_owner === null)
+            return this.send({type: 'connected', data: false});
 
+        // Collect all the devices with supported actions
         let available = [];
 
         for (let device of Object.values(this.devices)) {
