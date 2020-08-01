@@ -183,14 +183,6 @@ var Channel = GObject.registerClass({
         this._input_stream = stream;
     }
 
-    get output_queue() {
-        if (this._output_queue === undefined) {
-            this._output_queue = [];
-        }
-
-        return this._output_queue;
-    }
-
     get output_stream() {
         if (this._output_stream === undefined) {
             if (this._connection instanceof Gio.IOStream)
@@ -247,18 +239,6 @@ var Channel = GObject.registerClass({
     }
 
     /**
-     * Attach to @device as the default channel used for packet exchange. This
-     * should connect the channel's Gio.Cancellable to mark the device as
-     * disconnected, setup the IO streams, start the receive() loop and set the
-     * device as connected.
-     *
-     * @param {Device.Device} device - The device to attach to
-     */
-    attach(device) {
-        throw new GObject.NotImplementedError();
-    }
-
-    /**
      * Close all streams associated with this channel, silencing any errors
      */
     close() {
@@ -266,83 +246,69 @@ var Channel = GObject.registerClass({
     }
 
     /**
-     * Receive a packet from the channel and call receivePacket() on the device
+     * Read a packet.
      *
-     * @param {Device.Device} device - The device which will handle the packet
+     * @param {Gio.Cancellable} [cancellable] - A cancellable
+     * @return {Promise<Core.Packet>} The packet
      */
-    receive(device) {
-        this.input_stream.read_line_async(
-            GLib.PRIORITY_DEFAULT,
-            this.cancellable,
-            (stream, res) => {
-                try {
-                    let data = stream.read_line_finish_utf8(res)[0];
+    readPacket(cancellable = null) {
+        if (cancellable === null)
+            cancellable = this.cancellable;
 
-                    if (data === null) {
-                        throw new Gio.IOErrorEnum({
-                            message: 'End of stream',
-                            code: Gio.IOErrorEnum.CONNECTION_CLOSED
-                        });
+        if (!(this.input_stream instanceof Gio.DataInputStream))
+            this.input_stream = new Gio.DataInputStream({
+                base_stream: this.input_stream
+            });
+
+        return new Promise((resolve, reject) => {
+            this.input_stream.read_line_async(
+                GLib.PRIORITY_DEFAULT,
+                cancellable,
+                (stream, res) => {
+                    try {
+                        let data = stream.read_line_finish_utf8(res)[0];
+
+                        if (data === null) {
+                            throw new Gio.IOErrorEnum({
+                                message: 'End of stream',
+                                code: Gio.IOErrorEnum.CONNECTION_CLOSED
+                            });
+                        }
+
+                        resolve(new Packet(data));
+                    } catch (e) {
+                        reject(e);
                     }
-
-                    // Queue another receive() before handling the packet
-                    this.receive(device);
-
-                    let packet = new Packet(data);
-                    device.receivePacket(packet);
-
-                    debug(packet, device.name);
-                } catch (e) {
-                    if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
-                        debug(e, device.name);
-
-                    this.close();
                 }
-            }
-        );
+            );
+        });
     }
 
     /**
-     * Send a packet to a device
+     * Send a packet.
      *
-     * @param {Object} packet - An dictionary of packet data
+     * @param {Core.Packet} packet - The packet to send
+     * @param {Gio.Cancellable} [cancellable] - A cancellable
+     * @return {Promise<boolean>} %true if successful
      */
-    async send(packet) {
-        let next;
+    sendPacket(packet, cancellable = null) {
+        if (cancellable === null)
+            cancellable = this.cancellable;
 
-        try {
-            this.output_queue.push(new Packet(packet));
-
-            if (!this.__lock) {
-                this.__lock = true;
-
-                while ((next = this.output_queue.shift())) {
-                    await new Promise((resolve, reject) => {
-                        this.output_stream.write_all_async(
-                            next.toString(),
-                            GLib.PRIORITY_DEFAULT,
-                            this.cancellable,
-                            (stream, res) => {
-                                try {
-                                    resolve(stream.write_all_finish(res));
-                                } catch (e) {
-                                    reject(e);
-                                }
-                            }
-                        );
-                    });
-
-                    debug(next, this.identity.body.deviceName);
+        return new Promise((resolve, reject) => {
+            this.output_stream.write_all_async(
+                packet.toString(),
+                GLib.PRIORITY_DEFAULT,
+                cancellable,
+                (stream, res) => {
+                    try {
+                        resolve(stream.write_all_finish(res));
+                    } catch (e) {
+                        reject(e);
+                    }
                 }
-
-                this.__lock = false;
-            }
-        } catch (e) {
-            if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
-                debug(e, this.identity.body.deviceName);
-
-            this.close();
-        }
+            );
+        });
     }
 
     /**
@@ -473,13 +439,8 @@ var ChannelService = GObject.registerClass({
      * @param {Core.Channel} channel - The new channel
      */
     channel(channel) {
-        try {
-            if (!this.emit('channel', channel)) {
-                channel.close();
-            }
-        } catch (e) {
-            logError(e);
-        }
+        if (!this.emit('channel', channel))
+            channel.close();
     }
 
     /**

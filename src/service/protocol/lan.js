@@ -792,44 +792,6 @@ var Channel = GObject.registerClass({
         }
     }
 
-    /**
-     * Attach to @device as the default channel used for packet exchange.
-     *
-     * @param {Device.Device} device - The device to attach to
-     */
-    attach(device) {
-        try {
-            // Detach any existing channel and avoid an unnecessary disconnect
-            if (device._channel && device._channel !== this) {
-                debug(`${device._channel.address} (${device._channel.uuid}) => ${this.address} (${this.uuid})`);
-
-                let channel = device._channel;
-                channel.cancellable.disconnect(channel._id);
-                channel.close();
-
-                this._output_queue = channel._output_queue;
-            }
-
-            // Attach the new channel and parse it's identity
-            device._channel = this;
-            this._id = this.cancellable.connect(device._setDisconnected.bind(device));
-            device._handleIdentity(this.identity);
-
-            // Setup streams for packet exchange
-            this.input_stream = new Gio.DataInputStream({
-                base_stream: this._connection.input_stream
-            });
-            this.output_stream = this._connection.output_stream;
-
-            // Start listening for packets
-            this.receive(device);
-            device._setConnected();
-        } catch (e) {
-            logError(e);
-            this.close();
-        }
-    }
-
     createTransfer(params) {
         params = Object.assign(params, {
             backend: this.backend,

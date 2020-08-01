@@ -85,7 +85,6 @@ var Device = GObject.registerClass({
     _init(identity) {
         super._init();
 
-        this._channel = null;
         this._id = identity.body.deviceId;
 
         // GLib.Source timeout id's for pairing requests
@@ -96,6 +95,9 @@ var Device = GObject.registerClass({
         this._plugins = new Map();
         this._handlers = new Map();
         this._transfers = new Map();
+
+        this._outputLock = false;
+        this._outputQueue = [];
 
         // GSettings
         this.settings = new Gio.Settings({
@@ -188,7 +190,7 @@ var Device = GObject.registerClass({
 
         // If the device is connected use the certificate from the connection
         } else if (this.connected) {
-            fingerprint = this._channel.peer_certificate.fingerprint();
+            fingerprint = this.channel.peer_certificate.fingerprint();
 
         // Otherwise pull it out of the settings
         } else if (this.paired) {
@@ -264,9 +266,8 @@ var Device = GObject.registerClass({
         }
 
         // Connection
-        if (this._channel) {
-            this.settings.set_string('last-connection', this._channel.address);
-        }
+        if (this.connected)
+            this.settings.set_string('last-connection', this.channel.address);
 
         // Packets
         let incoming = packet.body.incomingCapabilities.sort();
@@ -313,45 +314,58 @@ var Device = GObject.registerClass({
     }
 
     /**
-     * This is invoked by Core.Channel.attach() which also sets this._channel
+     * Set the channel and start sending/receiving packets.
+     *
+     * @param {Core.Channel} [channel] - The new channel
      */
-    _setConnected() {
-        debug(`Connected to ${this.name} (${this.id})`);
+    _setChannel(channel = null) {
+        if (this.channel === channel)
+            return;
 
-        if (!this.connected) {
-            this._connected = true;
-            this.notify('connected');
+        if (this.channel !== null)
+            this.channel.close();
 
-            // Run the connected hook for each plugin
-            this._plugins.forEach(async (plugin) => {
-                try {
-                    plugin.connected();
-                } catch (e) {
-                    logError(e, `${this.name}: ${plugin.name}`);
-                }
-            });
-        }
+        this._channel = channel;
+
+        if (this.channel !== null)
+            this._readLoop(channel);
+        else
+            this._outputQueue.length = 0;
+
+        // The connected state didn't change
+        if (this.connected === !!this.channel)
+            return;
+
+        this._connected = !!this.channel;
+        this.notify('connected');
+
+        // Run the connected hook for each plugin
+        this._plugins.forEach((plugin) => {
+            try {
+                this.connected ? plugin.connected() : plugin.disconnected();
+            } catch (e) {
+                logError(e, `${this.name}: ${plugin.name}`);
+            }
+        });
     }
 
     /**
-     * This is the callback for the Core.Channel's cancellable object
+     * This is invoked by Core.Channel.attach() which also sets the channel
      */
-    _setDisconnected() {
-        debug(`Disconnected from ${this.name} (${this.id})`);
+    async _readLoop(channel) {
+        try {
+            let packet = null;
 
-        if (this.connected) {
-            this._channel = null;
-            this._connected = false;
-            this.notify('connected');
+            while ((packet = await this.channel.readPacket())) {
+                this.handlePacket(packet);
+                debug(packet, this.name);
+            }
+        } catch (e) {
+            if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
+                debug(e, this.name);
 
-            // Run the disconnected hook for each plugin
-            this._plugins.forEach(async (plugin) => {
-                try {
-                    plugin.disconnected();
-                } catch (e) {
-                    logError(e, `${this.name}: ${plugin.name}`);
-                }
-            });
+            if (this.channel === channel)
+                this._setChannel(null);
         }
     }
 
@@ -413,34 +427,25 @@ var Device = GObject.registerClass({
     }
 
     /**
-     * Receive a packet from the attached channel and route it to its handler
+     * Handle a packet and pass it to the appropriate plugin.
      *
      * @param {Core.Packet} packet - The incoming packet object
      */
-    receivePacket(packet) {
+    handlePacket(packet) {
         try {
+            if (packet.type === 'kdeconnect.pair')
+                return this._handlePair(packet);
+
+            // The device must think we're paired; inform it we are not
+            if (!this.paired)
+                return this.unpair();
+
             let handler = this._handlers.get(packet.type);
 
-            switch (true) {
-                // We handle pair requests
-                case (packet.type === 'kdeconnect.pair'):
-                    this._handlePair(packet);
-                    break;
-
-                // The device must think we're paired; inform it we are not
-                case !this.paired:
-                    this.unpair();
-                    break;
-
-                // This is a supported packet
-                case (handler !== undefined):
-                    handler.handlePacket(packet);
-                    break;
-
-                // This is an unsupported packet or disabled plugin
-                default:
-                    throw new Error(`Unsupported packet type (${packet.type})`);
-            }
+            if (handler !== undefined)
+                handler.handlePacket(packet);
+            else
+                debug(`Unsupported packet type (${packet.type})`, this.name);
         } catch (e) {
             debug(e, this.name);
         }
@@ -449,15 +454,34 @@ var Device = GObject.registerClass({
     /**
      * Send a packet to the device
      * @param {Object} packet - An object of packet data...
-     * @param {Gio.Stream} payload - A payload stream // TODO
      */
-    sendPacket(packet, payload = null) {
+    async sendPacket(packet) {
         try {
-            if (this.connected && (this.paired || packet.type === 'kdeconnect.pair')) {
-                this._channel.send(packet);
+            if (!this.connected)
+                return;
+
+            if (!this.paired && packet.type !== 'kdeconnect.pair')
+                return;
+
+            this._outputQueue.push(new Core.Packet(packet));
+
+            if (this._outputLock)
+                return;
+
+            this._outputLock = true;
+            let next;
+
+            while ((next = this._outputQueue.shift())) {
+                await this.channel.sendPacket(next);
+                debug(next, this.name);
             }
+
+            this._outputLock = false;
         } catch (e) {
-            logError(e, this.name);
+            if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
+                debug(e, this.name);
+
+            this._outputLock = false;
         }
     }
 
@@ -682,11 +706,17 @@ var Device = GObject.registerClass({
         }
     }
 
+    /**
+     * Create a transfer object.
+     *
+     * @param {Object} params - Transfer parameters
+     * @param {Device.Device} params.
+     */
     createTransfer(params) {
         try {
             params.device = this;
 
-            return this._channel.createTransfer(params);
+            return this.channel.createTransfer(params);
         } catch (e) {
             logError(e, this.name);
 
@@ -832,7 +862,7 @@ var Device = GObject.registerClass({
             if (bool) {
                 this.settings.set_string(
                     'certificate-pem',
-                    this._channel.peer_certificate.certificate_pem
+                    this.channel.peer_certificate.certificate_pem
                 );
             } else {
                 this.settings.reset('certificate-pem');
