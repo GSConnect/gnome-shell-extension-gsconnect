@@ -127,8 +127,6 @@ var Plugin = GObject.registerClass({
         this._dischargeState = [864, 0, -1];
         this._thresholdLevel = 25;
         this._initEstimate();
-
-        this.__cache_write();
     }
 
     connected() {

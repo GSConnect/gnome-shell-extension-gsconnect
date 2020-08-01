@@ -88,7 +88,6 @@ var Plugin = GObject.registerClass({
 
     clearCache() {
         this._remote_commands = {};
-        this.__cache_write();
         this.notify('remote-commands');
     }
 

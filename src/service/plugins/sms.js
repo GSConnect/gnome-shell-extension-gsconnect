@@ -179,7 +179,6 @@ var Plugin = GObject.registerClass({
 
     clearCache() {
         this._threads = {};
-        this.__cache_write();
         this.notify('threads');
     }
 
@@ -224,7 +223,6 @@ var Plugin = GObject.registerClass({
             }
         }
 
-        this.__cache_write();
         this.notify('threads');
     }
 
@@ -286,7 +284,6 @@ var Plugin = GObject.registerClass({
                 return (a.date < b.date) ? -1 : 1;
             });
 
-            this.__cache_write();
             this.notify('threads');
         } catch (e) {
             logError(e);
