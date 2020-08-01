@@ -420,7 +420,8 @@ var Plugin = GObject.registerClass({
 
     destroy() {
         if (this._mpris !== undefined) {
-            this._mpris.disconnect(this._notifyPlayersId);
+            this._mpris.disconnect(this._playerAddedId);
+            this._mpris.disconnect(this._playerRemovedId);
             this._mpris.disconnect(this._playerChangedId);
             this._mpris.disconnect(this._playerSeekedId);
         }
