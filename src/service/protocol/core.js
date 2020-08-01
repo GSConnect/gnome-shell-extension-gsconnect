@@ -151,7 +151,10 @@ var Channel = GObject.registerClass({
     }
 
     get backend() {
-        return this._backend || null;
+        if (this._backend === undefined)
+            this._backend = null;
+
+        return this._backend;
     }
 
     set backend(backend) {
@@ -159,18 +162,16 @@ var Channel = GObject.registerClass({
     }
 
     get cancellable() {
-        if (this._cancellable === undefined) {
+        if (this._cancellable === undefined)
             this._cancellable = new Gio.Cancellable();
-        }
 
         return this._cancellable;
     }
 
     get input_stream() {
         if (this._input_stream === undefined) {
-            if (this._connection instanceof Gio.IOStream) {
+            if (this._connection instanceof Gio.IOStream)
                 return this._connection.get_input_stream();
-            }
 
             return null;
         }
@@ -192,9 +193,8 @@ var Channel = GObject.registerClass({
 
     get output_stream() {
         if (this._output_stream === undefined) {
-            if (this._connection instanceof Gio.IOStream) {
+            if (this._connection instanceof Gio.IOStream)
                 return this._connection.get_output_stream();
-            }
 
             return null;
         }
@@ -402,9 +402,8 @@ var Channel = GObject.registerClass({
                     this.cancellable,
                     (source, res) => {
                         try {
-                            if (source.splice_finish(res) < this.size) {
+                            if (source.splice_finish(res) < this.size)
                                 throw new Error('incomplete data');
-                            }
 
                             resolve(true);
                         } catch (e) {
@@ -453,9 +452,8 @@ var ChannelService = GObject.registerClass({
     }
 
     get service() {
-        if (this._service === undefined) {
+        if (this._service === undefined)
             this._service = Gio.Application.get_default();
-        }
 
         return this._service;
     }

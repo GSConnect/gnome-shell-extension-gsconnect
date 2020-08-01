@@ -82,6 +82,9 @@ var ChannelService = GObject.registerClass({
     }
 
     get certificate() {
+        if (this._certificate === undefined)
+            this._certificate = null;
+
         return this._certificate;
     }
 
@@ -98,25 +101,26 @@ var ChannelService = GObject.registerClass({
     }
 
     get port() {
-        if (this._port === undefined) {
+        if (this._port === undefined)
             this._port = DEFAULT_PORT;
-        }
 
         return this._port;
     }
 
     set port(port) {
-        if (this.port !== port) {
-            this._port = port;
-            this.notify('port');
-        }
+        if (this.port === port)
+            return;
+
+        this._port = port;
+        this.notify('port');
     }
 
     _onNetworkChanged(monitor, network_available) {
-        if (this._networkAvailable !== network_available) {
-            this._networkAvailable = network_available;
-            this.broadcast();
-        }
+        if (this._networkAvailable === network_available)
+            return;
+
+        this._networkAvailable = network_available;
+        this.broadcast();
     }
 
     _initCertificate() {
@@ -161,7 +165,7 @@ var ChannelService = GObject.registerClass({
 
             // Decide whether we should try to accept this connection
             if (!this._allowed.has(host) && !this.service.discoverable) {
-                connection.close_async(0, null, null);
+                connection.close_async(GLib.PRIORITY_DEFAULT, null, null);
                 return;
             }
 
@@ -302,15 +306,12 @@ var ChannelService = GObject.registerClass({
     async _onIdentity(packet) {
         try {
             // Bail if the deviceId is missing
-            if (!packet.body.hasOwnProperty('deviceId')) {
-                debug(`${packet.body.deviceName}: missing deviceId`);
+            if (!packet.body.hasOwnProperty('deviceId'))
                 return;
-            }
 
             // Silently ignore our own broadcasts
-            if (packet.body.deviceId === this.service.identity.body.deviceId) {
+            if (packet.body.deviceId === this.service.identity.body.deviceId)
                 return;
-            }
 
             debug(packet);
 
@@ -324,11 +325,10 @@ var ChannelService = GObject.registerClass({
             });
 
             // Check if channel is already open with this address
-            if (this.channels.has(channel.address)) {
+            if (this.channels.has(channel.address))
                 return;
-            } else {
-                this.channels.set(channel.address, channel);
-            }
+
+            this._channels.set(channel.address, channel);
 
             // Open a TCP connection
             let connection = await new Promise((resolve, reject) => {
@@ -367,9 +367,8 @@ var ChannelService = GObject.registerClass({
      */
     broadcast(address = null) {
         try {
-            if (!this._networkAvailable) {
+            if (!this._networkAvailable)
                 return;
-            }
 
             // Try to parse strings as <host>:<port>
             if (typeof address === 'string') {
@@ -391,13 +390,11 @@ var ChannelService = GObject.registerClass({
             // Set the tcpPort before broadcasting
             this.service.identity.body.tcpPort = this.port;
 
-            if (this._udp6 !== null) {
+            if (this._udp6 !== null)
                 this._udp6.send_to(address, `${this.service.identity}`, null);
-            }
 
-            if (this._udp4 !== null) {
+            if (this._udp4 !== null)
                 this._udp4.send_to(address, `${this.service.identity}`, null);
-            }
         } catch (e) {
             debug(e, address);
         } finally {
@@ -407,16 +404,15 @@ var ChannelService = GObject.registerClass({
 
     start() {
         // Ensure a certificate exists
-        this._initCertificate();
+        if (this.certificate === null)
+            this._initCertificate();
 
         // Start TCP/UDP listeners
-        if (this._udp4 === null && this._udp6 === null) {
+        if (this._udp4 === null && this._udp6 === null)
             this._initUdpListener();
-        }
 
-        if (this._tcp === null) {
+        if (this._tcp === null)
             this._initTcpListener();
-        }
 
         // Monitor network changes
         if (this._networkChangedId === 0) {
@@ -495,17 +491,15 @@ var Channel = GObject.registerClass({
     }
 
     get peer_certificate() {
-        if (this._connection instanceof Gio.TlsConnection) {
+        if (this._connection instanceof Gio.TlsConnection)
             return this._connection.get_peer_certificate();
-        }
 
         return null;
     }
 
     get host() {
-        if (this._host === undefined) {
+        if (this._host === undefined)
             this._host = null;
-        }
 
         return this._host;
     }
@@ -892,10 +886,8 @@ var Transfer = GObject.registerClass({
 
         try {
             this._connection = await new Promise((resolve, reject) => {
-                // Connect
                 let client = new Gio.SocketClient({enable_proxy: false});
 
-                // Use the address from GSettings with @port
                 let address = Gio.InetSocketAddress.new_from_string(
                     this.host,
                     this.port
@@ -909,7 +901,7 @@ var Transfer = GObject.registerClass({
                     }
                 });
             });
-            this._connection = await this._initSocket(this._connection);
+            this._connection = this._initSocket(this._connection);
             this._connection = await this._clientEncryption(this._connection);
             this.input_stream = this._connection.get_input_stream();
 
@@ -958,7 +950,7 @@ var Transfer = GObject.registerClass({
                 }
             }
 
-            // Await the incoming connection
+            // Listen for the incoming connection
             let connection = new Promise((resolve, reject) => {
                 listener.accept_async(
                     this.cancellable,
@@ -980,7 +972,7 @@ var Transfer = GObject.registerClass({
 
             // Accept the connection and configure the channel
             this._connection = await connection;
-            this._connection = await this._initSocket(this._connection);
+            this._connection = this._initSocket(this._connection);
             this._connection = await this._serverEncryption(this._connection);
             this.output_stream = this._connection.get_output_stream();
 
