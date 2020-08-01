@@ -482,20 +482,6 @@ var Plugin = GObject.registerClass({
         }
     }
 
-    addressesIncludesAddress(addresses, addressObj) {
-        let number = addressObj.address.toPhoneNumber();
-
-        for (let taddressObj of addresses) {
-            let tnumber = taddressObj.address.toPhoneNumber();
-
-            if (number.endsWith(tnumber) || tnumber.endsWith(number)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     _threadHasAddress(thread, addressObj) {
         let number = addressObj.address.toPhoneNumber();
 
