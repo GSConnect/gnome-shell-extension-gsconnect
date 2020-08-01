@@ -8,19 +8,15 @@ const DBUS_NAME = 'org.gnome.Shell.Extensions.GSConnect';
 const DBUS_PATH = '/org/gnome/Shell/Extensions/GSConnect';
 
 
-function toHyphenCase(string) {
-    if (toHyphenCase.__cache === undefined) {
-        toHyphenCase.__cache = {};
-    }
-
-    if (!toHyphenCase.__cache[string]) {
-        toHyphenCase.__cache[string] = string.replace(/(?:[A-Z])/g, (c, i) => {
-            return (i > 0) ? '-' + c.toLowerCase() : c.toLowerCase();
-        }).replace(/[\s_]+/g, '');
-    }
-
-    return toHyphenCase.__cache[string];
-}
+const _PROPERTIES = {
+    'Connected': 'connected',
+    'EncryptionInfo': 'encryption-info',
+    'IconName': 'icon-name',
+    'Id': 'id',
+    'Name': 'name',
+    'Paired': 'paired',
+    'Type': 'type'
+};
 
 
 function _proxyInit(proxy, cancellable = null) {
@@ -114,15 +110,13 @@ var Device = GObject.registerClass({
         });
     }
 
-    // Proxy GObject::notify signals
     vfunc_g_properties_changed(changed, invalidated) {
         try {
             if (this.__disposed !== undefined)
                 return;
 
-            for (let name in changed.deepUnpack()) {
-                this.notify(toHyphenCase(name));
-            }
+            for (let name in changed.deepUnpack())
+                this.notify(_PROPERTIES[name]);
         } catch (e) {
             logError(e);
         }
