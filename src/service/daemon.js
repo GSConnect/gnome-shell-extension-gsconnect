@@ -795,7 +795,7 @@ const Service = GObject.registerClass({
          */
         this.add_main_option(
             'pair',
-            null,
+            0,
             GLib.OptionFlags.NONE,
             GLib.OptionArg.NONE,
             _('Pair'),
@@ -804,7 +804,7 @@ const Service = GObject.registerClass({
 
         this.add_main_option(
             'unpair',
-            null,
+            0,
             GLib.OptionFlags.NONE,
             GLib.OptionArg.NONE,
             _('Unpair'),
@@ -816,7 +816,7 @@ const Service = GObject.registerClass({
          */
         this.add_main_option(
             'message',
-            null,
+            0,
             GLib.OptionFlags.NONE,
             GLib.OptionArg.STRING_ARRAY,
             _('Send SMS'),
@@ -825,7 +825,7 @@ const Service = GObject.registerClass({
         
         this.add_main_option(
             'message-body',
-            null,
+            0,
             GLib.OptionFlags.NONE,
             GLib.OptionArg.STRING,
             _('Message Body'),
@@ -837,7 +837,7 @@ const Service = GObject.registerClass({
          */
         this.add_main_option(
             'notification',
-            null,
+            0,
             GLib.OptionFlags.NONE,
             GLib.OptionArg.STRING,
             _('Send Notification'),
@@ -846,7 +846,7 @@ const Service = GObject.registerClass({
         
         this.add_main_option(
             'notification-appname',
-            null,
+            0,
             GLib.OptionFlags.NONE,
             GLib.OptionArg.STRING,
             _('Notification App Name'),
@@ -855,7 +855,7 @@ const Service = GObject.registerClass({
 
         this.add_main_option(
             'notification-body',
-            null,
+            0,
             GLib.OptionFlags.NONE,
             GLib.OptionArg.STRING,
             _('Notification Body'),
@@ -864,7 +864,7 @@ const Service = GObject.registerClass({
 
         this.add_main_option(
             'notification-icon',
-            null,
+            0,
             GLib.OptionFlags.NONE,
             GLib.OptionArg.STRING,
             _('Notification Icon'),
@@ -873,7 +873,7 @@ const Service = GObject.registerClass({
 
         this.add_main_option(
             'notification-id',
-            null,
+            0,
             GLib.OptionFlags.NONE,
             GLib.OptionArg.STRING,
             _('Notification ID'),
@@ -882,7 +882,7 @@ const Service = GObject.registerClass({
 
         this.add_main_option(
             'photo',
-            null,
+            0,
             GLib.OptionFlags.NONE,
             GLib.OptionArg.NONE,
             _('Photo'),
@@ -891,7 +891,7 @@ const Service = GObject.registerClass({
         
         this.add_main_option(
             'ping',
-            null,
+            0,
             GLib.OptionFlags.NONE,
             GLib.OptionArg.NONE,
             _('Ping'),
@@ -900,7 +900,7 @@ const Service = GObject.registerClass({
         
         this.add_main_option(
             'ring',
-            null,
+            0,
             GLib.OptionFlags.NONE,
             GLib.OptionArg.NONE,
             _('Ring'),
@@ -912,7 +912,7 @@ const Service = GObject.registerClass({
          */
         this.add_main_option(
             'share-file',
-            null,
+            0,
             GLib.OptionFlags.NONE,
             GLib.OptionArg.FILENAME_ARRAY,
             _('Share File'),
@@ -921,7 +921,7 @@ const Service = GObject.registerClass({
 
         this.add_main_option(
             'share-link',
-            null,
+            0,
             GLib.OptionFlags.NONE,
             GLib.OptionArg.STRING_ARRAY,
             _('Share Link'),
@@ -930,7 +930,7 @@ const Service = GObject.registerClass({
 
         this.add_main_option(
             'share-text',
-            null,
+            0,
             GLib.OptionFlags.NONE,
             GLib.OptionArg.STRING,
             _('Share Text'),
