@@ -1041,7 +1041,7 @@ var Device = GObject.registerClass({
         this.settings.disconnect(this._supportedPluginsChangedId);
         this.settings.run_dispose();
 
-        this.run_dispose();
+        GObject.signal_handlers_destroy(this);
     }
 });
 
