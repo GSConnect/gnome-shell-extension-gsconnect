@@ -15,6 +15,7 @@ try {
     HAVE_EDS = false;
 }
 
+
 /**
  * A store for contacts
  */
@@ -60,11 +61,10 @@ var Store = GObject.registerClass({
     }
 
     /**
-     * Parse an EContact and return a small Object
+     * Parse an EContact and add it to the store.
      *
      * @param {EBookContacts.Contact} econtact - an EContact to parse
      * @param {string} [origin] - an optional origin string
-     * @return {Object} a small JSON serializable object
      */
     async _parseEContact(econtact, origin = 'desktop') {
         try {
@@ -293,25 +293,16 @@ var Store = GObject.registerClass({
             if (ebook === undefined)
                 return;
 
-            // Disconnect and dispose the EBookView
+            // Disconnect the EBookView
             if (ebook.view) {
                 let connection = ebook.view.get_connection();
                 connection.signal_unsubscribe(ebook.view._objectsAddedId);
                 connection.signal_unsubscribe(ebook.view._objectsRemovedId);
                 connection.signal_unsubscribe(ebook.view._objectsModifiedId);
+
                 ebook.view.stop();
-
-                ebook.view.run_dispose();
-                ebook.view = null;
             }
 
-            // Dispose the EBookClient
-            if (ebook.client) {
-                ebook.client.run_dispose();
-                ebook.client = null;
-            }
-
-            // Drop the EBook
             this._ebooks.delete(uid);
         } catch (e) {
             debug(e);
@@ -359,9 +350,8 @@ var Store = GObject.registerClass({
     }
 
     get context() {
-        if (this._context === undefined) {
+        if (this._context === undefined)
             this._context = null;
-        }
 
         return this._context;
     }
@@ -440,9 +430,8 @@ var Store = GObject.registerClass({
 
                 if (qnumber.endsWith(cnumber) || cnumber.endsWith(qnumber)) {
                     // If no query name or exact match, return immediately
-                    if (!query.name || query.name === contact.name) {
+                    if (!query.name || query.name === contact.name)
                         return contact;
-                    }
 
                     // Otherwise we might find an exact name match that shares
                     // the number with another contact
@@ -452,13 +441,14 @@ var Store = GObject.registerClass({
         }
 
         // Return the first match (pretty much what Android does)
-        if (matches.length > 0) return matches[0];
+        if (matches.length > 0)
+            return matches[0];
 
         // No match; return a mock contact with a unique ID
         let id = GLib.uuid_string_random();
-        while (this.__cache_data.hasOwnProperty(id)) {
+
+        while (this.__cache_data.hasOwnProperty(id))
             id = GLib.uuid_string_random();
-        }
 
         return {
             id: id,
@@ -487,17 +477,15 @@ var Store = GObject.registerClass({
         if (!contact.id) {
             let id = GLib.uuid_string_random();
 
-            while (this.__cache_data[id]) {
+            while (this.__cache_data[id])
                 id = GLib.uuid_string_random();
-            }
 
             contact.id = id;
         }
 
         // Ensure the contact has an origin
-        if (!contact.origin) {
+        if (!contact.origin)
             contact.origin = 'gsconnect';
-        }
 
         // This is an updated contact
         if (this.__cache_data[contact.id]) {
@@ -511,9 +499,8 @@ var Store = GObject.registerClass({
         }
 
         // Write if requested
-        if (write) {
+        if (write)
             this.save();
-        }
     }
 
     /**
@@ -529,9 +516,8 @@ var Store = GObject.registerClass({
             this.emit('contact-removed', id);
 
             // Write if requested
-            if (write) {
+            if (write)
                 this.save();
-            }
         }
     }
 
@@ -569,7 +555,7 @@ var Store = GObject.registerClass({
 
             await this.save();
         } catch (e) {
-            debug(e, 'Clearing contacts');
+            debug(e);
         }
     }
 
@@ -640,9 +626,9 @@ var Store = GObject.registerClass({
      * Save the contacts to disk.
      */
     async save() {
-        if (this.context === null && HAVE_EDS) {
+        // EDS is handling storage
+        if (this.context === null && HAVE_EDS)
             return;
-        }
 
         if (this.__cache_lock) {
             this.__cache_queue = true;
@@ -665,20 +651,13 @@ var Store = GObject.registerClass({
     }
 
     destroy() {
-        if (this.__disposed === undefined) {
-            this.__disposed = true;
+        if (this._watcher !== undefined) {
+            this._watcher.disconnect(this._appearedId);
+            this._watcher.disconnect(this._disappearedId);
+            this._watcher = undefined;
 
-            if (HAVE_EDS) {
-                this._watcher.disconnect(this._appearedId);
-                this._watcher.disconnect(this._disappearedId);
-                this._watcher.run_dispose();
-
-                for (let ebook of this._ebooks.values()) {
-                    this._onDisappeared(null, ebook.source);
-                }
-            }
-
-            this.run_dispose();
+            for (let ebook of this._ebooks.values())
+                this._onDisappeared(null, ebook.source);
         }
     }
 });

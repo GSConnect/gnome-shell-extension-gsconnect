@@ -34,17 +34,15 @@ const Session = class {
     }
 
     get idle() {
-        if (this._session === null) {
+        if (this._session === null)
             return false;
-        }
 
         return this._session.get_cached_property('IdleHint').unpack();
     }
 
     get locked() {
-        if (this._session === null) {
+        if (this._session === null)
             return false;
-        }
 
         return this._session.get_cached_property('LockedHint').unpack();
     }

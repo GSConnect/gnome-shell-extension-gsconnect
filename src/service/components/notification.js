@@ -47,7 +47,7 @@ const GTK_MATCH = "interface='org.gtk.Notifications',member='AddNotification',ty
  * A class for snooping Freedesktop (libnotify) and Gtk (GNotification)
  * notifications and forwarding them to supporting devices.
  */
-var Listener = class Listener {
+class Listener {
     constructor() {
         // Respect desktop notification settings
         this._settings = new Gio.Settings({
@@ -59,7 +59,6 @@ var Listener = class Listener {
             'changed::application-children',
             this._onSettingsChanged.bind(this)
         );
-        this._onSettingsChanged();
 
         // Cache for appName->desktop-id lookups
         this._names = {};
@@ -73,9 +72,8 @@ var Listener = class Listener {
     }
 
     get applications() {
-        if (this._applications === undefined) {
-            this._applications = {};
-        }
+        if (this._applications === undefined)
+            this._onSettingsChanged();
 
         return this._applications;
     }
@@ -96,9 +94,8 @@ var Listener = class Listener {
                 appSettings.get_string('application-id')
             );
 
-            if (appInfo !== null) {
+            if (appInfo !== null)
                 this._applications[appInfo.get_name()] = appSettings;
-            }
         }
     }
 
@@ -174,9 +171,8 @@ var Listener = class Listener {
             for (let name of shortList) {
                 let nameOwner = await this._getNameOwner(name);
 
-                if (nameOwner === sender) {
+                if (nameOwner === sender)
                     return name;
-                }
 
                 names.splice(names.indexOf(name), 1);
             }
@@ -185,9 +181,8 @@ var Listener = class Listener {
             for (let name of names) {
                 let nameOwner = await this._getNameOwner(name);
 
-                if (nameOwner === sender) {
+                if (nameOwner === sender)
                     return name;
-                }
             }
 
             return null;
@@ -201,20 +196,17 @@ var Listener = class Listener {
      * Try and find the application name for @sender
      *
      * @param {string} sender - A DBus unique name
-     * @param {string} appName - (Optional) appName supplied by Notify()
+     * @param {string} [appName] - `appName` supplied by Notify()
      * @return {string} A well-known name or %null
      */
-    async _getAppName(sender, appName) {
+    async _getAppName(sender, appName = null) {
         // Check the cache first
-        if (appName && this._names.hasOwnProperty(appName)) {
+        if (appName && this._names.hasOwnProperty(appName))
             return this._names[appName];
-        }
-
-        let appId, appInfo;
 
         try {
-            appId = await this._getAppId(sender, appName);
-            appInfo = Gio.DesktopAppInfo.new(`${appId}.desktop`);
+            let appId = await this._getAppId(sender, appName);
+            let appInfo = Gio.DesktopAppInfo.new(`${appId}.desktop`);
             this._names[appName] = appInfo.get_name();
             appName = appInfo.get_name();
         } catch (e) {
@@ -230,9 +222,8 @@ var Listener = class Listener {
     async _onHandleMethodCall(impl, name, parameters, invocation) {
         try {
             // Check if notifications are disabled in desktop settings
-            if (!this._settings.get_boolean('show-banners')) {
+            if (!this._settings.get_boolean('show-banners'))
                 return;
-            }
 
             parameters = parameters.full_unpack();
 
@@ -324,65 +315,53 @@ var Listener = class Listener {
         // Check if this application is disabled in desktop settings
         let appSettings = this.applications[notif.appName];
 
-        if (appSettings && !appSettings.get_boolean('enable')) {
+        if (appSettings && !appSettings.get_boolean('enable'))
             return;
-        }
 
         // Send the notification to each supporting device
+        // TODO: avoid the overhead of the GAction framework with a signal?
         let variant = GLib.Variant.full_pack(notif);
 
-        for (let device of this.application._devices.values()) {
+        for (let device of this.application._devices.values())
             device.activate_action('sendNotification', variant);
-        }
     }
 
     Notify(appName, replacesId, iconName, summary, body, actions, hints, timeout) {
-        try {
-            // Ignore notifications without an appName
-            if (!appName) {
-                return;
-            }
+        // Ignore notifications without an appName
+        if (!appName)
+            return;
 
-            this._sendNotification({
-                appName: appName,
-                id: `fdo|null|${replacesId}`,
-                title: summary,
-                text: body,
-                ticker: `${summary}: ${body}`,
-                isClearable: (replacesId !== 0),
-                icon: iconName
-            });
-        } catch (e) {
-            debug(e);
-        }
+        this._sendNotification({
+            appName: appName,
+            id: `fdo|null|${replacesId}`,
+            title: summary,
+            text: body,
+            ticker: `${summary}: ${body}`,
+            isClearable: (replacesId !== 0),
+            icon: iconName
+        });
     }
 
     AddNotification(application, id, notification) {
-        try {
-            // Ignore our own GNotifications
-            if (application === 'org.gnome.Shell.Extensions.GSConnect') {
-                return;
-            }
+        // Ignore our own notifications or we'll cause a notification loop
+        if (application === 'org.gnome.Shell.Extensions.GSConnect')
+            return;
 
-            let appInfo = Gio.DesktopAppInfo.new(`${application}.desktop`);
+        let appInfo = Gio.DesktopAppInfo.new(`${application}.desktop`);
 
-            // Try to get an icon for the notification
-            if (!notification.hasOwnProperty('icon')) {
-                notification.icon = appInfo.get_icon() || undefined;
-            }
+        // Try to get an icon for the notification
+        if (!notification.hasOwnProperty('icon'))
+            notification.icon = appInfo.get_icon() || undefined;
 
-            this._sendNotification({
-                appName: appInfo.get_name(),
-                id: `gtk|${application}|${id}`,
-                title: notification.title,
-                text: notification.body,
-                ticker: `${notification.title}: ${notification.body}`,
-                isClearable: true,
-                icon: notification.icon
-            });
-        } catch (e) {
-            debug(e);
-        }
+        this._sendNotification({
+            appName: appInfo.get_name(),
+            id: `gtk|${application}|${id}`,
+            title: notification.title,
+            text: notification.body,
+            ticker: `${notification.title}: ${notification.body}`,
+            isClearable: true,
+            icon: notification.icon
+        });
     }
 
     destroy() {
@@ -410,7 +389,7 @@ var Listener = class Listener {
             debug(e);
         }
     }
-};
+}
 
 
 /**

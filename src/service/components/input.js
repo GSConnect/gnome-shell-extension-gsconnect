@@ -32,13 +32,13 @@ const RemoteSession = GObject.registerClass({
     }
 
     vfunc_g_signal(sender_name, signal_name, parameters) {
-        if (signal_name === 'Closed') {
+        if (signal_name === 'Closed')
             this.emit('closed');
-        }
     }
 
     _call(name, parameters = null) {
-        if (!this._started) return;
+        if (!this._started)
+            return;
 
         this.call(name, parameters, Gio.DBusCallFlags.NONE, -1, null, null);
     }
@@ -53,7 +53,8 @@ const RemoteSession = GObject.registerClass({
 
     async start() {
         try {
-            if (this._started) return;
+            if (this._started)
+                return;
 
             // Initialize the proxy
             await new Promise((resolve, reject) => {
@@ -256,7 +257,7 @@ const RemoteSession = GObject.registerClass({
 });
 
 
-const Controller = class Controller {
+class Controller {
     constructor() {
         this._nameAppearedId = 0;
         this._session = null;
@@ -276,9 +277,8 @@ const Controller = class Controller {
     }
 
     get connection() {
-        if (this._connection === undefined) {
+        if (this._connection === undefined)
             this._connection = null;
-        }
 
         return this._connection;
     }
@@ -323,9 +323,8 @@ const Controller = class Controller {
 
     _onNameVanished(connection, name) {
         try {
-            if (this._session !== null) {
+            if (this._session !== null)
                 this._onSessionClosed(this._session);
-            }
         } catch (e) {
             logError(e);
         }
@@ -609,7 +608,7 @@ const Controller = class Controller {
             this._nameWatcherId = 0;
         }
     }
-};
+}
 
 
 /**

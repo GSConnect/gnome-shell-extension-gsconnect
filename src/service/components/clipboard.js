@@ -130,22 +130,21 @@ var Clipboard = GObject.registerClass({
     }
     
     get text() {
-        if (this._text === undefined) {
+        if (this._text === undefined)
             this._text = '';
-        }
 
         return this._text;
     }
 
     set text(content) {
-        if (this.text !== content) {
-            this._text = content;
-            this.notify('text');
+        if (this.text === content)
+            return;
 
-            if (!HAVE_WAYLAND && content !== null) {
-                this._clipboard.set_text(content, -1);
-            }
-        }
+        this._text = content;
+        this.notify('text');
+
+        if (!HAVE_WAYLAND && content !== null)
+            this._clipboard.set_text(content, -1);
     }
 
     async _onNameAppeared(connection, name, name_owner) {
@@ -200,15 +199,12 @@ var Clipboard = GObject.registerClass({
 
     _onTargetsReceived(clipboard, atoms) {
         // Empty clipboard
-        if (atoms.length === 0) {
-            this._onTextReceived(clipboard, '');
-            return;
-        }
+        if (atoms.length === 0)
+            return this._onTextReceived(clipboard, '');
 
         // As a special case we need to ignore copied files (eg. in Nautilus)
-        if (atoms.includes('text/uri-list')) {
+        if (atoms.includes('text/uri-list'))
             return;
-        }
 
         // Let GtkClipboard filter for supported types
         clipboard.request_text(this._onTextReceived.bind(this));
