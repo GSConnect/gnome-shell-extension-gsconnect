@@ -141,15 +141,6 @@ gsconnect.get_resource = function(rel_path) {
 
 
 /**
- * DBus Interface Introspection
- */
-gsconnect.dbusinfo = Gio.DBusNodeInfo.new_for_xml(
-    gsconnect.get_resource(`${gsconnect.app_id}.xml`)
-);
-gsconnect.dbusinfo.nodes.forEach(info => info.cache_build());
-
-
-/**
  * Install desktop files for user installs
  */
 function installFile(dirname, basename, contents) {

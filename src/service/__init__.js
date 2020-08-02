@@ -16,6 +16,15 @@ globalThis.HAVE_REMOTEINPUT = GLib.getenv('GDMSESSION') !== 'ubuntu-wayland';
 globalThis.HAVE_WAYLAND = GLib.getenv('XDG_SESSION_TYPE') === 'wayland';
 
 
+/*
+ * DBus Interface Introspection
+ */
+gsconnect.dbusinfo = Gio.DBusNodeInfo.new_for_xml(
+    gsconnect.get_resource(`${gsconnect.app_id}.xml`)
+);
+gsconnect.dbusinfo.nodes.forEach(info => info.cache_build());
+
+
 /**
  * A custom debug function that logs at LEVEL_MESSAGE to avoid the need for env
  * variables to be set.
