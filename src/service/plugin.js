@@ -3,14 +3,13 @@
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
 
 
 /**
- * Base class for plugins
+ * Base class for device plugins.
  */
 var Plugin = GObject.registerClass({
-    GTypeName: 'GSConnectDevicePlugin'
+    GTypeName: 'GSConnectPlugin'
 }, class Plugin extends GObject.Object {
 
     _init(device, name) {
@@ -18,23 +17,23 @@ var Plugin = GObject.registerClass({
 
         this._device = device;
         this._name = name;
-        this._meta = imports.service.plugins[name].Metadata;
+        this._info = imports.service.plugins[name].Metadata;
 
         // GSettings
         this.settings = new Gio.Settings({
-            settings_schema: gsconnect.gschema.lookup(this._meta.id, false),
+            settings_schema: gsconnect.gschema.lookup(this._info.id, false),
             path: `${device.settings.path}plugin/${name}/`
         });
 
         // GActions
         this._gactions = [];
 
-        if (this._meta.actions) {
+        if (this._info.actions) {
             let menu = this.device.settings.get_strv('menu-actions');
 
-            for (let name in this._meta.actions) {
-                let meta = this._meta.actions[name];
-                this._registerAction(name, menu.indexOf(name), meta);
+            for (let name in this._info.actions) {
+                let info = this._info.actions[name];
+                this._registerAction(name, menu.indexOf(name), info);
             }
         }
     }
@@ -48,31 +47,34 @@ var Plugin = GObject.registerClass({
     }
 
     get service() {
-        return Gio.Application.get_default();
+        if (this._service === undefined)
+            this._service = Gio.Application.get_default();
+
+        return this._service;
     }
 
-    _activateAction(action, parameter = null) {
+    _activateAction(action, parameter) {
         try {
-            if (parameter instanceof GLib.Variant) {
-                parameter = parameter.full_unpack();
-            }
+            let args = null;
 
-            if (Array.isArray(parameter)) {
-                this[action.name].apply(this, parameter);
-            } else {
-                this[action.name].call(this, parameter);
-            }
+            if (parameter instanceof GLib.Variant)
+                args = parameter.full_unpack();
+
+            if (Array.isArray(args))
+                this[action.name].apply(this, args);
+            else
+                this[action.name].call(this, args);
         } catch (e) {
             logError(e, action.name);
         }
     }
 
-    _registerAction(name, menuIndex, meta) {
+    _registerAction(name, menuIndex, info) {
         try {
             // Device Action
             let action = new Gio.SimpleAction({
                 name: name,
-                parameter_type: meta.parameter_type,
+                parameter_type: info.parameter_type,
                 enabled: false
             });
             action.connect('activate', this._activateAction.bind(this));
@@ -84,8 +86,8 @@ var Plugin = GObject.registerClass({
                 this.device.addMenuAction(
                     action,
                     menuIndex,
-                    meta.label,
-                    meta.icon_name
+                    info.label,
+                    info.icon_name
                 );
             }
 
@@ -96,17 +98,7 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * This is called when a packet is received the plugin is a handler for
-     *
-     * @param {object} packet - A KDE Connect packet
-     */
-    handlePacket(packet) {
-        throw new GObject.NotImplementedError();
-    }
-
-    /**
-     * These two methods are called by the device in response to the connection
-     * state changing.
+     * Called when the device connects.
      */
     connected() {
         // Enabled based on device capabilities, which might change
@@ -114,19 +106,30 @@ var Plugin = GObject.registerClass({
         let outgoing = this.device.settings.get_strv('outgoing-capabilities');
 
         for (let action of this._gactions) {
-            let meta = this._meta.actions[action.name];
+            let info = this._info.actions[action.name];
 
-            if (meta.incoming.every(type => outgoing.includes(type)) &&
-                meta.outgoing.every(type => incoming.includes(type))) {
+            if (info.incoming.every(type => outgoing.includes(type)) &&
+                info.outgoing.every(type => incoming.includes(type))) {
                 action.set_enabled(true);
             }
         }
     }
 
+    /**
+     * Called when the device disconnects.
+     */
     disconnected() {
-        for (let action of this._gactions) {
+        for (let action of this._gactions)
             action.set_enabled(false);
-        }
+    }
+
+    /**
+     * Called when a packet is received that the plugin is a handler for.
+     *
+     * @param {Core.Packet} packet - A KDE Connect packet
+     */
+    handlePacket(packet) {
+        throw new GObject.NotImplementedError();
     }
 
     /**
@@ -151,12 +154,12 @@ var Plugin = GObject.registerClass({
             ]);
             GLib.mkdir_with_parents(cachedir, 448);
 
-            this.__cache_file = Gio.File.new_for_path(
+            this._cacheFile = Gio.File.new_for_path(
                 GLib.build_filenamev([cachedir, `${this.name}.json`])
             );
 
             // Read the cache from disk
-            let cache = await JSON.load(this.__cache_file);
+            let cache = await JSON.load(this._cacheFile);
             Object.assign(this, cache);
         } catch (e) {
             debug(e.message, `${this.device.name}: ${this.name}`);
@@ -178,38 +181,6 @@ var Plugin = GObject.registerClass({
     cacheLoaded() {}
 
     /**
-     * Write the plugin's cache to disk
-     */
-    async __cache_write() {
-        if (this.__cache_lock) {
-            this.__cache_queue = true;
-            return;
-        }
-
-        try {
-            this.__cache_lock = true;
-
-            // Build the cache
-            let cache = {};
-
-            for (let name of this.__cache_properties) {
-                cache[name] = this[name];
-            }
-
-            await JSON.dump(cache, this.__cache_file);
-        } catch (e) {
-            debug(e.message, `${this.device.name}: ${this.name}`);
-        } finally {
-            this.__cache_lock = false;
-
-            if (this.__cache_queue) {
-                this.__cache_queue = false;
-                this.__cache_write();
-            }
-        }
-    }
-
-    /**
      * Unregister plugin actions, write the cache (if applicable) and destroy
      * any dangling signal handlers.
      */
@@ -217,28 +188,32 @@ var Plugin = GObject.registerClass({
         for (let action of this._gactions) {
             this.device.removeMenuAction(`device.${action.name}`);
             this.device.remove_action(action.name);
-            action.run_dispose();
         }
 
         // Write the cache to disk synchronously
-        if (this.__cache_file && !this.__cache_lock) {
+        if (this._cacheFile !== undefined) {
             try {
                 // Build the cache
                 let cache = {};
 
-                for (let name of this.__cache_properties) {
+                for (let name of this.__cache_properties)
                     cache[name] = this[name];
-                }
 
-                JSON.dump(cache, this.__cache_file, true);
+                this._cacheFile.replace_contents(
+                    JSON.stringify(cache, null, 2),
+                    null,
+                    false,
+                    Gio.FileCreateFlags.REPLACE_DESTINATION,
+                    null
+                );
             } catch (e) {
                 debug(e.message, `${this.device.name}: ${this.name}`);
             }
         }
 
         // Try to avoid any cyclic references from signal handlers
-        this.settings.run_dispose();
-        this.run_dispose();
+        GObject.signal_handlers_destroy(this.settings);
+        GObject.signal_handlers_destroy(this);
     }
 });
 

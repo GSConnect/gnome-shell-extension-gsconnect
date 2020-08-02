@@ -4,7 +4,7 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
-const PluginsBase = imports.service.plugins.base;
+const PluginBase = imports.service.plugin;
 const DBus = imports.utils.dbus;
 
 
@@ -27,7 +27,7 @@ var Metadata = {
  */
 var Plugin = GObject.registerClass({
     GTypeName: 'GSConnectMPRISPlugin',
-}, class Plugin extends PluginsBase.Plugin {
+}, class Plugin extends PluginBase.Plugin {
 
     _init(device) {
         super._init(device, 'mpris');

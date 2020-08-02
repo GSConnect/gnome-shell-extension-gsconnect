@@ -153,8 +153,6 @@ const Service = GObject.registerClass({
 
                 let meta = imports.service.plugins[name].Metadata;
 
-                if (!meta) continue;
-
                 meta.incomingCapabilities.map(type => {
                     this._identity.body.incomingCapabilities.push(type);
                 });

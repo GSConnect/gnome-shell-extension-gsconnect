@@ -3,7 +3,7 @@
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
-const PluginsBase = imports.service.plugins.base;
+const PluginBase = imports.service.plugin;
 const Messaging = imports.service.ui.messaging;
 const TelephonyUI = imports.service.ui.telephony;
 const URI = imports.utils.uri;
@@ -134,7 +134,7 @@ var Plugin = GObject.registerClass({
             GObject.ParamFlags.READABLE
         )
     }
-}, class Plugin extends PluginsBase.Plugin {
+}, class Plugin extends PluginBase.Plugin {
 
     _init(device) {
         super._init(device, 'sms');

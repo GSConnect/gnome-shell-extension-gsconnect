@@ -4,7 +4,7 @@ const Gdk = imports.gi.Gdk;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
-const PluginsBase = imports.service.plugins.base;
+const PluginBase = imports.service.plugin;
 
 
 var Metadata = {
@@ -92,7 +92,7 @@ var Plugin = GObject.registerClass({
             false
         )
     }
-}, class Plugin extends PluginsBase.Plugin {
+}, class Plugin extends PluginBase.Plugin {
 
     _init(device) {
         super._init(device, 'mousepad');

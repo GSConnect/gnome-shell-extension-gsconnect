@@ -3,7 +3,7 @@
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
-const PluginsBase = imports.service.plugins.base;
+const PluginBase = imports.service.plugin;
 
 
 var Metadata = {
@@ -22,7 +22,7 @@ var Metadata = {
  */
 var Plugin = GObject.registerClass({
     GTypeName: 'GSConnectSystemVolumePlugin'
-}, class Plugin extends PluginsBase.Plugin {
+}, class Plugin extends PluginBase.Plugin {
 
     _init(device) {
         super._init(device, 'systemvolume');

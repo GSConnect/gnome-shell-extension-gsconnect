@@ -5,7 +5,7 @@ const Gio = imports.gi.Gio;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
-const PluginsBase = imports.service.plugins.base;
+const PluginBase = imports.service.plugin;
 
 
 var Metadata = {
@@ -32,7 +32,7 @@ var Metadata = {
  */
 var Plugin = GObject.registerClass({
     GTypeName: 'GSConnectFindMyPhonePlugin',
-}, class Plugin extends PluginsBase.Plugin {
+}, class Plugin extends PluginBase.Plugin {
 
     _init(device) {
         super._init(device, 'findmyphone');

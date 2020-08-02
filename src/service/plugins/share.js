@@ -6,7 +6,7 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
-const PluginsBase = imports.service.plugins.base;
+const PluginBase = imports.service.plugin;
 const URI = imports.utils.uri;
 
 
@@ -61,7 +61,7 @@ var Metadata = {
  */
 var Plugin = GObject.registerClass({
     GTypeName: 'GSConnectSharePlugin',
-}, class Plugin extends PluginsBase.Plugin {
+}, class Plugin extends PluginBase.Plugin {
 
     _init(device) {
         super._init(device, 'share');

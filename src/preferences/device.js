@@ -16,16 +16,13 @@ const DEVICE_SHORTCUTS = {};
 for (let name in imports.service.plugins) {
     let module = imports.service.plugins[name];
 
-    if (module.Metadata !== undefined) {
-        // Plugins
-        DEVICE_PLUGINS.push(name);
+    // Plugins
+    DEVICE_PLUGINS.push(name);
 
-        // Shortcuts (GActions without parameters
-        for (let [name, action] of Object.entries(module.Metadata.actions)) {
-            if (action.parameter_type === null) {
-                DEVICE_SHORTCUTS[name] = [action.icon_name, action.label];
-            }
-        }
+    // Shortcuts (GActions without parameters)
+    for (let [name, action] of Object.entries(module.Metadata.actions)) {
+        if (action.parameter_type === null)
+            DEVICE_SHORTCUTS[name] = [action.icon_name, action.label];
     }
 }
 

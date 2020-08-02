@@ -3,7 +3,7 @@
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
-const PluginsBase = imports.service.plugins.base;
+const PluginBase = imports.service.plugin;
 const Contacts = imports.service.components.contacts;
 
 /*
@@ -50,7 +50,7 @@ const VCARD_TYPED_META = /([a-z]+)=(.*)/i;
  */
 var Plugin = GObject.registerClass({
     GTypeName: 'GSConnectContactsPlugin'
-}, class Plugin extends PluginsBase.Plugin {
+}, class Plugin extends PluginBase.Plugin {
 
     _init(device) {
         super._init(device, 'contacts');
