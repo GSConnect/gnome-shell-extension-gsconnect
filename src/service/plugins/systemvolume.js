@@ -137,9 +137,8 @@ var Plugin = GObject.registerClass({
      */
     _sendSink(mixer, id) {
         // Avoid starving the packet channel when fading
-        if (this._pulseaudio.fading) {
+        if (this._pulseaudio.fading)
             return;
-        }
 
         // Check the cache
         let stream = this._pulseaudio.lookup_stream_id(id);
@@ -147,10 +146,8 @@ var Plugin = GObject.registerClass({
 
         // If the port has changed we have to send the whole list to update the
         // display name
-        if (!cache.display_name || cache.display_name !== stream.display_name) {
-            this._sendSinkList();
-            return;
-        }
+        if (!cache.display_name || cache.display_name !== stream.display_name)
+            return this._sendSinkList();
 
         // If only volume and/or mute are set, send a single update
         if (cache.volume !== stream.volume || cache.muted !== stream.is_muted) {
@@ -183,12 +180,10 @@ var Plugin = GObject.registerClass({
     }
 
     destroy() {
-        try {
+        if (this._pulseaudio !== undefined) {
             this._pulseaudio.disconnect(this._streamChangedId);
             this._pulseaudio.disconnect(this._outputAddedId);
             this._pulseaudio.disconnect(this._outputRemovedId);
-        } catch (e) {
-            debug(e, this.device.name);
         }
 
         super.destroy();

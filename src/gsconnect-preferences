@@ -35,7 +35,7 @@ const Preferences = GObject.registerClass({
 
     _init() {
         super._init({
-            application_id: `${gsconnect.app_id}.Preferences`
+            application_id: 'org.gnome.Shell.Extensions.GSConnect.Preferences'
         });
 
         GLib.set_prgname(_('GSConnect Preferences'));
@@ -83,9 +83,8 @@ const Preferences = GObject.registerClass({
         try {
             let paramArray = [];
 
-            if (parameter instanceof GLib.Variant) {
+            if (parameter instanceof GLib.Variant)
                 paramArray[0] = parameter;
-            }
 
             this.get_dbus_connection().call(
                 'org.gnome.Shell.Extensions.GSConnect',

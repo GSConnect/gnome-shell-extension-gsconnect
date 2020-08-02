@@ -70,9 +70,8 @@ gsconnect.settings.connect('changed::debug', (settings, key) => {
  * @return {Object} The parsed object
  */
 JSON.load = function (file, sync = false) {
-    if (typeof file === 'string') {
+    if (typeof file === 'string')
         file = Gio.File.new_for_path(file);
-    }
 
     if (sync) {
         let contents = file.load_contents(null)[1];
@@ -102,9 +101,8 @@ JSON.load = function (file, sync = false) {
  * @param {boolean} sync - Default is %false, if %true load synchronously
  */
 JSON.dump = function (obj, file, sync = false) {
-    if (typeof file === 'string') {
+    if (typeof file === 'string')
         file = Gio.File.new_for_path(file);
-    }
 
     if (sync) {
         file.replace_contents(
@@ -191,9 +189,8 @@ String.prototype.equalsPhoneNumber = function(number) {
  */
 Gio.File.rm_rf = function(file) {
     try {
-        if (typeof file === 'string') {
+        if (typeof file === 'string')
             file = Gio.File.new_for_path(file);
-        }
 
         try {
             let iter = file.enumerate_children(
@@ -204,9 +201,8 @@ Gio.File.rm_rf = function(file) {
 
             let info;
 
-            while ((info = iter.next_file(null))) {
+            while ((info = iter.next_file(null)))
                 Gio.File.rm_rf(iter.get_child(info));
-            }
 
             iter.close(null);
         } catch (e) {
@@ -278,9 +274,6 @@ GLib.Variant.full_pack = _full_pack;
 
 /**
  * Extend GLib.Variant with a method to recursively deepUnpack() a variant
- *
- * TODO: this is duplicated in components/dbus.js and it probably shouldn't be,
- *       but dbus.js can stand on it's own if it is...
  *
  * @param {*} [obj] - May be a GLib.Variant, Array, standard Object or literal.
  */

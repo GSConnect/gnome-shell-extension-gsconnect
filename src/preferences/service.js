@@ -246,11 +246,10 @@ var Window = GObject.registerClass({
     }
 
     get display_mode() {
-        if (this.settings.get_boolean('show-indicators')) {
+        if (this.settings.get_boolean('show-indicators'))
             return 'panel';
-        } else {
-            return 'user-menu';
-        }
+
+        return 'user-menu';
     }
 
     set display_mode(mode) {
@@ -324,7 +323,7 @@ var Window = GObject.registerClass({
         return GLib.SOURCE_CONTINUE;
     }
 
-    /**
+    /*
      * Window State
      */
     _restoreGeometry() {
@@ -413,7 +412,7 @@ var Window = GObject.registerClass({
         });
     }
 
-    /**
+    /*
      * "Generate Support Log" GAction
      */
     _generateSupportLog() {
@@ -442,7 +441,7 @@ var Window = GObject.registerClass({
         dialog.show_all();
     }
 
-    /**
+    /*
      * "Help" GAction
      */
     _help(action, parameter) {
@@ -451,7 +450,7 @@ var Window = GObject.registerClass({
         Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
     }
 
-    /**
+    /*
      * HeaderBar Callbacks
      */
     _onPrevious(button, event) {
@@ -485,7 +484,7 @@ var Window = GObject.registerClass({
         this.service_edit.active = false;
     }
 
-    /**
+    /*
      * Context Switcher
      */
     _getTypeLabel(device) {
@@ -508,11 +507,12 @@ var Window = GObject.registerClass({
         this.device_menu.insert_action_group('settings', null);
         this.device_menu.set_menu_model(null);
 
-        if (panel) {
-            this.device_menu.insert_action_group('device', panel.device.action_group);
-            this.device_menu.insert_action_group('settings', panel.actions);
-            this.device_menu.set_menu_model(panel.menu);
-        }
+        if (panel === null)
+            return;
+
+        this.device_menu.insert_action_group('device', panel.device.action_group);
+        this.device_menu.insert_action_group('settings', panel.actions);
+        this.device_menu.set_menu_model(panel.menu);
     }
 
     _onDeviceChanged(statusLabel, device, pspec) {

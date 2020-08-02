@@ -211,7 +211,7 @@ const Service = GObject.registerClass({
      * of known devices if it doesn't exist.
      *
      * @param {Core.Packet} packet - An identity packet for the device
-     * @return {Device.Device} - A device object
+     * @return {Device.Device} A device object
      */
     _ensureDevice(packet) {
         let device = this._devices.get(packet.body.deviceId);
@@ -425,7 +425,7 @@ const Service = GObject.registerClass({
      * pruning unpaired devices that have disconnected.
      */
     _reconnect() {
-        for (let [id, device] of this._devices.entries()) {
+        for (let [id, device] of this._devices) {
             switch (true) {
                 case device.connected:
                     break;

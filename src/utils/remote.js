@@ -20,9 +20,8 @@ const _PROPERTIES = {
 
 
 function _proxyInit(proxy, cancellable = null) {
-    if (proxy.__initialized !== undefined) {
+    if (proxy.__initialized !== undefined)
         return Promise.resolve();
-    }
 
     return new Promise((resolve, reject) => {
         proxy.init_async(
@@ -315,15 +314,17 @@ var Service = GObject.registerClass({
      * org.freedesktop.DBus.ObjectManager.InterfacesAdded
      *
      * @param {string} object_path - Path interfaces have been added to
-     * @param {object[]} - list of interface objects
+     * @param {Object} - A dictionary of interface objects
      */
     async _onInterfacesAdded(object_path, interfaces) {
         try {
             // An empty list means only the object has been added
-            if (Object.values(interfaces).length === 0) return;
+            if (Object.values(interfaces).length === 0)
+                return;
 
             // Skip existing proxies
-            if (this._devices.has(object_path)) return;
+            if (this._devices.has(object_path))
+                return;
 
             // Create a proxy
             let device = new Device(this, object_path);
@@ -346,11 +347,14 @@ var Service = GObject.registerClass({
     _onInterfacesRemoved(object_path, interfaces) {
         try {
             // An empty interface list means the object is being removed
-            if (interfaces.length === 0) return;
+            if (interfaces.length === 0)
+                return;
 
             // Get the proxy
             let device = this._devices.get(object_path);
-            if (device === undefined) return;
+
+            if (device === undefined)
+                return;
 
             // Release the proxy and emit ::device-removed
             this._devices.delete(object_path);
@@ -383,9 +387,8 @@ var Service = GObject.registerClass({
             );
         });
 
-        for (let [object_path, object] of Object.entries(objects)) {
+        for (let [object_path, object] of Object.entries(objects))
             await this._onInterfacesAdded(object_path, object);
-        }
     }
 
     _clearDevices() {

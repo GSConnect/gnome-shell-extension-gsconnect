@@ -71,7 +71,8 @@ while ((info = iter.next_file(null))) {
     let [lang, ext] = info.get_name().split('.');
 
     // Only process PO files
-    if (ext !== 'po') continue;
+    if (ext !== 'po')
+        continue;
 
     /**
      * Convert glibc language codes
@@ -92,21 +93,19 @@ while ((info = iter.next_file(null))) {
     // If the translation exists, update the template with its messages
     let json = JSON.parse(JSON.stringify(template));
 
-    if (jsonfile.query_exists(null)) {
+    if (jsonfile.query_exists(null))
         json = Object.assign(json, JSON.load(jsonfile));
-    }
 
     // Read the PO file and search the msgid's for our strings
     let msgid = false;
     let po = iter.get_child(info).load_contents(null)[1];
-    po = (po instanceof Uint8Array) ? ByteArray.toString(po) : po.toString();
+    po = ByteArray.toString(po);
 
     for (let line of po.split('\n')) {
         // If we have a msgid, we're expecting a msgstr
         if (msgid) {
-            if (MSGSTR_REGEX.test(line)) {
+            if (MSGSTR_REGEX.test(line))
                 json[msgid]['message'] = line.match(MSGSTR_REGEX)[1];
-            }
 
             msgid = false;
 

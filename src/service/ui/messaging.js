@@ -484,7 +484,7 @@ const ConversationWidget = GObject.registerClass({
 
         conversation.list.foreach(message => {
             // HACK: temporary mitigator for mysterious GtkListBox leak
-            message.run_dispose();
+            message.destroy();
             imports.system.gc();
         });
     }
@@ -638,12 +638,11 @@ const ConversationWidget = GObject.registerClass({
 
     _headerMessages(row, before) {
         // Skip pending
-        if (row.get_name() === 'pending') return;
-
-        if (before === null) {
-            setAvatarVisible(row, true);
+        if (row.get_name() === 'pending')
             return;
-        }
+
+        if (before === null)
+            return setAvatarVisible(row, true);
 
         // Add date header if the last message was more than an hour ago
         let header = row.get_header();
@@ -660,18 +659,17 @@ const ConversationWidget = GObject.registerClass({
             // Also show the avatar
             setAvatarVisible(row, true);
 
-            if (row.senderLabel) {
+            if (row.senderLabel)
                 row.senderLabel.visible = row.message.addresses.length > 1;
-            }
 
         // Or if the previous sender was the same, hide its avatar
         } else if (row.message.type === before.message.type &&
                    row.sender.equalsPhoneNumber(before.sender)) {
             setAvatarVisible(before, false);
             setAvatarVisible(row, true);
-            if (row.senderLabel) {
+
+            if (row.senderLabel)
                 row.senderLabel.visible = false;
-            }
 
         // otherwise show the avatar
         } else {
@@ -749,12 +747,13 @@ const ConversationWidget = GObject.registerClass({
         try {
             let message = this.__messages.pop();
 
-            if (!message) return;
+            if (!message)
+                return;
 
             // TODO: Unsupported MessageBox
             if (message.type !== Sms.MessageBox.INBOX &&
                 message.type !== Sms.MessageBox.SENT) {
-                throw TypeError(`invalid message box "${message.type}"`);
+                throw TypeError(`invalid message box ${message.type}`);
             }
 
             // Prepend the message

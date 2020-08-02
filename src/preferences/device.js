@@ -35,9 +35,8 @@ function rowSeparators(row, before) {
     let header = row.get_header();
 
     if (before === null) {
-        if (header !== null) {
+        if (header !== null)
             header.destroy();
-        }
 
         return;
     }
@@ -51,7 +50,8 @@ function rowSeparators(row, before) {
 
 // A GtkListBoxSortFunc for SectionRow rows
 function title_sort(row1, row2) {
-    if (!row1.title || !row2.title) return 0;
+    if (!row1.title || !row2.title)
+        return 0;
 
     return row1.title.localeCompare(row2.title);
 }
@@ -114,7 +114,7 @@ const SectionRow = GObject.registerClass({
     }
 
     set icon_name(icon_name) {
-        this._icon.visible = (icon_name);
+        this._icon.visible = !!icon_name;
         this._icon.gicon = new Gio.ThemedIcon({name: icon_name});
     }
 
@@ -123,7 +123,7 @@ const SectionRow = GObject.registerClass({
     }
 
     set title(text) {
-        this._title.visible = (text);
+        this._title.visible = !!text;
         this._title.label = text;
     }
 
@@ -178,9 +178,8 @@ const CommandEditor = GObject.registerClass({
         dialog.set_default_response(Gtk.ResponseType.OK);
 
         dialog.connect('response', (dialog, response_id) => {
-            if (response_id === Gtk.ResponseType.OK) {
+            if (response_id === Gtk.ResponseType.OK)
                 this.command_entry.text = dialog.get_filename();
-            }
 
             dialog.destroy();
         });
@@ -324,11 +323,11 @@ var DevicePreferences = GObject.registerClass({
     }
 
     _onKeynavFailed(widget, direction) {
-        if (direction === Gtk.DirectionType.UP && widget.prev) {
+        if (direction === Gtk.DirectionType.UP && widget.prev)
             widget.prev.child_focus(direction);
-        } else if (direction === Gtk.DirectionType.DOWN && widget.next) {
+
+        else if (direction === Gtk.DirectionType.DOWN && widget.next)
             widget.next.child_focus(direction);
-        }
 
         return true;
     }
@@ -362,9 +361,8 @@ var DevicePreferences = GObject.registerClass({
         if (this.__disposed === undefined) {
             this.__disposed = true;
 
-            if (this._commandEditor !== undefined) {
+            if (this._commandEditor !== undefined)
                 this._commandEditor.destroy();
-            }
 
             // Device signals
             this.device.action_group.disconnect(this._actionAddedId);
@@ -386,9 +384,8 @@ var DevicePreferences = GObject.registerClass({
     }
 
     pluginSettings(name) {
-        if (this._pluginSettings === undefined) {
+        if (this._pluginSettings === undefined)
             this._pluginSettings = {};
-        }
 
         if (!this._pluginSettings.hasOwnProperty(name)) {
             let meta = imports.service.plugins[name].Metadata;
@@ -511,19 +508,16 @@ var DevicePreferences = GObject.registerClass({
             );
 
             // Account for some corner cases with a fallback
-            if (!receiveDir || receiveDir === GLib.get_home_dir()) {
-                receiveDir = GLib.build_filenamev([
-                    GLib.get_home_dir(),
-                    'Downloads'
-                ]);
-            }
+            let homeDir = GLib.get_home_dir();
+
+            if (!receiveDir || receiveDir === homeDir)
+                receiveDir = GLib.build_filenamev([homeDir, 'Downloads']);
 
             settings.set_string(key, receiveDir);
         }
 
-        if (this.receive_directory.get_filename() !== receiveDir) {
+        if (this.receive_directory.get_filename() !== receiveDir)
             this.receive_directory.set_filename(receiveDir);
-        }
     }
 
     _onReceiveDirectorySet(button) {
@@ -531,9 +525,8 @@ var DevicePreferences = GObject.registerClass({
         let receiveDir = settings.get_string('receive-directory');
         let filename = button.get_filename();
 
-        if (filename !== receiveDir) {
+        if (filename !== receiveDir)
             settings.set_string('receive-directory', filename);
-        }
     }
 
     /**
@@ -607,7 +600,8 @@ var DevicePreferences = GObject.registerClass({
     }
 
     _sortCommands(row1, row2) {
-        if (!row1.title || !row2.title) return 1;
+        if (!row1.title || !row2.title)
+            return 1;
 
         return row1.title.localeCompare(row2.title);
     }
@@ -865,9 +859,8 @@ var DevicePreferences = GObject.registerClass({
         this.shortcuts_actions_list.set_sort_func(title_sort);
 
         // Init
-        for (let name in DEVICE_SHORTCUTS) {
+        for (let name in DEVICE_SHORTCUTS)
             this._addPluginKeybinding(name);
-        }
 
         this._setPluginKeybindings();
 
@@ -927,9 +920,8 @@ var DevicePreferences = GObject.registerClass({
         let keybindings = this.settings.get_value('keybindings').deepUnpack();
 
         for (let action in keybindings) {
-            if (!action.includes('::')) {
+            if (!action.includes('::'))
                 delete keybindings[action];
-            }
         }
 
         this.settings.set_value(
@@ -1024,9 +1016,8 @@ var DevicePreferences = GObject.registerClass({
             this._togglePlugin.bind(this)
         );
 
-        if (this.hasOwnProperty(name)) {
+        if (this.hasOwnProperty(name))
             this[name].visible = widget.active;
-        }
     }
 
     _populatePlugins() {
@@ -1042,17 +1033,15 @@ var DevicePreferences = GObject.registerClass({
             } else {
                 row.visible = false;
 
-                if (this.hasOwnProperty(name)) {
+                if (this.hasOwnProperty(name))
                     this[name].visible = false;
-                }
             }
 
             supported.splice(supported.indexOf(name), 1);
         }
 
-        for (let name of supported) {
+        for (let name of supported)
             this._addPlugin(name);
-        }
     }
 
     _togglePlugin(widget) {
@@ -1068,9 +1057,8 @@ var DevicePreferences = GObject.registerClass({
 
             this.settings.set_strv('disabled-plugins', disabled);
 
-            if (this.hasOwnProperty(name)) {
+            if (this.hasOwnProperty(name))
                 this[name].visible = !disabled.includes(name);
-            }
         } catch (e) {
             logError(e);
         }

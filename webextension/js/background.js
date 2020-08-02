@@ -34,8 +34,8 @@ var reconnectResetTimer = null;
 
 // Simple error logging function
 function logError(error) {
-    if (_MUTE.includes(error.message)) return;
-    console.error(error.message);
+    if (!_MUTE.includes(error.message))
+        console.error(error.message);
 }
 
 
@@ -77,9 +77,8 @@ async function postMessage(message) {
  */
 async function onPopupMessage(message, sender, sendResponse) {
     try {
-        if (sender.url.includes('/popup.html')) {
+        if (sender.url.includes('/popup.html'))
             await postMessage(message);
-        }
     } catch (e) {
         logError(e);
     }
