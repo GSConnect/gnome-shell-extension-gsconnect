@@ -71,7 +71,7 @@ var Plugin = GObject.registerClass({
         let receiveDir = this.settings.get_string('receive-directory');
 
         // Ensure a directory is set
-        if (!receiveDir) {
+        if (receiveDir.length === 0) {
             receiveDir = GLib.get_user_special_dir(
                 GLib.UserDirectory.DIRECTORY_DOWNLOAD
             );
@@ -79,17 +79,15 @@ var Plugin = GObject.registerClass({
             // Fallback to ~/Downloads
             let homeDir = GLib.get_home_dir();
 
-            if (!receiveDir || receiveDir === homeDir) {
+            if (!receiveDir || receiveDir === homeDir)
                 receiveDir = GLib.build_filenamev([homeDir, 'Downloads']);
-            }
 
             this.settings.set_string('receive-directory', receiveDir);
         }
 
         // Ensure the directory exists
-        if (!GLib.file_test(receiveDir, GLib.FileTest.IS_DIR)) {
+        if (!GLib.file_test(receiveDir, GLib.FileTest.IS_DIR))
             GLib.mkdir_with_parents(receiveDir, 448);
-        }
 
         return receiveDir;
     }
@@ -100,17 +98,15 @@ var Plugin = GObject.registerClass({
         let filepath = basepath;
         let copyNum = 0;
 
-        while (GLib.file_test(filepath, GLib.FileTest.EXISTS)) {
-            copyNum += 1;
-            filepath = `${basepath} (${copyNum})`;
-        }
+        while (GLib.file_test(filepath, GLib.FileTest.EXISTS))
+            filepath = `${basepath} (${++copyNum})`;
 
         return Gio.File.new_for_path(filepath);
     }
 
     async _refuseFile(packet) {
         try {
-            await this.device.rejectTransfer(packet);
+            this.device.rejectTransfer(packet);
 
             this.device.showNotification({
                 id: `${Date.now()}`,
@@ -122,19 +118,15 @@ var Plugin = GObject.registerClass({
                 icon: new Gio.ThemedIcon({name: 'dialog-error-symbolic'})
             });
         } catch (e) {
-            logError(e, this.device.name);
+            debug(e, this.device.name);
         }
     }
 
     async _handleFile(packet) {
-        let file, stream, success, transfer;
-        let title, body, iconName;
-        let buttons = [];
-
         try {
-            file = this._getFile(packet.body.filename);
+            let file = this._getFile(packet.body.filename);
 
-            stream = await new Promise((resolve, reject) => {
+            let stream = await new Promise((resolve, reject) => {
                 file.replace_async(null, false, 0, 0, null, (file, res) => {
                     try {
                         resolve(file.replace_finish(res));
@@ -144,7 +136,7 @@ var Plugin = GObject.registerClass({
                 });
             });
 
-            transfer = this.device.createTransfer(Object.assign({
+            let transfer = this.device.createTransfer(Object.assign({
                 output_stream: stream,
                 size: packet.payloadSize
             }, packet.payloadTransferInfo));
@@ -167,8 +159,7 @@ var Plugin = GObject.registerClass({
             });
 
             // Start transfer
-            success = await transfer.download();
-            this.device.hideNotification(transfer.uuid);
+            let success = await transfer.download();
 
             // We've been asked to open this directly
             if (success && packet.body.open) {
@@ -178,6 +169,9 @@ var Plugin = GObject.registerClass({
             }
 
             // We'll show a notification (success or failure)
+            let title, body, iconName;
+            let buttons = [];
+
             if (success) {
                 title = _('Transfer Successful');
                 // TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
@@ -208,9 +202,10 @@ var Plugin = GObject.registerClass({
                 iconName = 'dialog-warning-symbolic';
 
                 // Clean up the downloaded file on failure
-                file.delete(null);
+                file.delete_async(GLib.PRIORITY_DEAFAULT, null, null);
             }
 
+            this.device.hideNotification(transfer.uuid);
             this.device.showNotification({
                 id: transfer.uuid,
                 title: title,
