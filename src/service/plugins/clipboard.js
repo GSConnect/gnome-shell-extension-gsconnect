@@ -1,8 +1,6 @@
 'use strict';
 
-const Gdk = imports.gi.Gdk;
 const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
 
 const PluginsBase = imports.service.plugins.base;
 
