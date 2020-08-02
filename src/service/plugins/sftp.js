@@ -39,7 +39,7 @@ var Metadata = {
  * https://github.com/KDE/kdeconnect-android/tree/master/src/org/kde/kdeconnect/Plugins/SftpPlugin
  */
 var Plugin = GObject.registerClass({
-    Name: 'GSConnectSFTPPlugin'
+    GTypeName: 'GSConnectSFTPPlugin'
 }, class Plugin extends PluginBase.Plugin {
 
     _init(device) {
