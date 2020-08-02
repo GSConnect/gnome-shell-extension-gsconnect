@@ -18,7 +18,6 @@ const INTERFACE_INFO = gsconnect.dbusinfo.lookup_interface(UUID);
  * Device class is subclassed from Gio.SimpleActionGroup so it implements the
  * GActionGroup and GActionMap interfaces, like Gio.Application.
  *
- * TODO...
  */
 var Device = GObject.registerClass({
     GTypeName: 'GSConnectDevice',
@@ -308,9 +307,8 @@ var Device = GObject.registerClass({
         let currentSupported = this.settings.get_strv('supported-plugins');
         supported.sort();
 
-        if (currentSupported.join('') !== supported.join('')) {
+        if (currentSupported.join('') !== supported.join(''))
             this.settings.set_strv('supported-plugins', supported);
-        }
     }
 
     /**
@@ -621,7 +619,7 @@ var Device = GObject.registerClass({
     }
 
     /**
-     * Hide a notification, device analog for GApplication.withdraw_notification()
+     * Withdraw a device notification.
      *
      * @param {string} id - Id for the notification to withdraw
      */
@@ -630,7 +628,16 @@ var Device = GObject.registerClass({
     }
 
     /**
-     * Show a notification, device analog for GApplication.send_notification()
+     * Show a device notification.
+     *
+     * @param {Object} params - A dictionary of notification parameters
+     * @param {number} [params.id] - A UNIX epoch timestamp (ms)
+     * @param {string} [params.title] - A title
+     * @param {string} [params.body] - A body
+     * @param {Gio.Icon} [params.icon] - An icon
+     * @param {Gio.NotificationPriority} [params.priority] - The priority
+     * @param {Array} [params.actions] - A dictionary of action parameters
+     * @param {Array} [params.buttons] - An Array of buttons
      */
     showNotification(params) {
         params = Object.assign({
@@ -759,12 +766,12 @@ var Device = GObject.registerClass({
     }
 
     _clearCache(action, parameter) {
-        try {
-            for (let plugin of this._plugins.values()) {
+        for (let plugin of this._plugins.values()) {
+            try {
                 plugin.clearCache();
+            } catch (e) {
+                debug(e, this.name);
             }
-        } catch (e) {
-            logError(e, this.name);
         }
     }
 
