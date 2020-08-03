@@ -53,7 +53,7 @@ var Device = GObject.registerClass({
         'id': GObject.ParamSpec.string(
             'id',
             'Id',
-            'The device hostname or other networkd unique id',
+            'The device hostname or other network unique id',
             GObject.ParamFlags.READABLE,
             ''
         ),
@@ -247,7 +247,10 @@ var Device = GObject.registerClass({
     }
 
     get g_object_path() {
-        return `${gsconnect.app_path}/Device/${this.id.replace(/\W+/g, '_')}`;
+        if (this._g_object_path === undefined)
+            this._g_object_path = `${gsconnect.app_path}/Device/${this.id.replace(/\W+/g, '_')}`;
+
+        return this._g_object_path;
     }
 
     _handleIdentity(packet) {
@@ -285,18 +288,14 @@ var Device = GObject.registerClass({
 
         for (let name in imports.service.plugins) {
             // Exclude mousepad/presenter plugins in unsupported sessions
-            if (!HAVE_REMOTEINPUT &&
-                (name === 'mousepad' || name === 'presenter')) {
+            if (!HAVE_REMOTEINPUT && ['mousepad', 'presenter'].includes(name))
                 continue;
-            }
 
             let meta = imports.service.plugins[name].Metadata;
 
-            // If we can handle packets it sends...
-            if (meta.incomingCapabilities.some(t => outgoing.includes(t))) {
-                supported.push(name);
-            // ...or we send packets it can handle
-            } else if (meta.outgoingCapabilities.some(t => incoming.includes(t))) {
+            // If we can handle packets it sends or send packets it can handle
+            if (meta.incomingCapabilities.some(t => outgoing.includes(t)) ||
+                meta.outgoingCapabilities.some(t => incoming.includes(t))) {
                 supported.push(name);
             }
         }
@@ -340,7 +339,7 @@ var Device = GObject.registerClass({
             try {
                 this.connected ? plugin.connected() : plugin.disconnected();
             } catch (e) {
-                logError(e, `${this.name}: ${plugin.name}`);
+                debug(e, `${this.name}: ${plugin.name}`);
             }
         });
     }
@@ -448,7 +447,8 @@ var Device = GObject.registerClass({
     }
 
     /**
-     * Send a packet to the device
+     * Send a packet to the device.
+     *
      * @param {Object} packet - An object of packet data...
      */
     async sendPacket(packet) {
@@ -530,9 +530,8 @@ var Device = GObject.registerClass({
             try {
                 let val = this.menu.get_item_attribute_value(i, 'action', null);
 
-                if (val.unpack() === actionName) {
+                if (val.unpack() === actionName)
                     return i;
-                }
             } catch (e) {
                 continue;
             }
@@ -558,7 +557,7 @@ var Device = GObject.registerClass({
             this.menu.append_item(menuItem);
             return this.menu.get_n_items();
         } catch (e) {
-            logError(e, this.name);
+            debug(e, this.name);
             return -1;
         }
     }
@@ -574,7 +573,6 @@ var Device = GObject.registerClass({
      */
     addMenuAction(action, index = -1, label, icon_name) {
         try {
-            // Create a GMenuItem for @action
             let item = new Gio.MenuItem();
 
             if (label)
@@ -592,6 +590,7 @@ var Device = GObject.registerClass({
 
             return this.addMenuItem(item, index);
         } catch (e) {
+            debug(e, this.name);
             return -1;
         }
     }
@@ -703,8 +702,8 @@ var Device = GObject.registerClass({
             let transfer = this._transfers.get(uuid);
 
             if (transfer !== undefined) {
-                transfer.close();
                 this._transfers.delete(uuid);
+                transfer.close();
             }
         } catch (e) {
             logError(e, this.name);
