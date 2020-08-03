@@ -64,7 +64,7 @@
                         <property name="can_focus">False</property>
                         <property name="width_request">200</property>
                         <property name="vexpand">True</property>
-                        <signal name="row-selected" handler="_onThreadSelected" swapped="no"/>
+                        <signal name="row-activated" handler="_onThreadSelected" swapped="no"/>
                         <child type="placeholder">
                           <object class="GtkGrid" id="thread-list-placeholder">
                             <property name="visible">True</property>
