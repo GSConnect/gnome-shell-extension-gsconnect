@@ -240,7 +240,9 @@ var DevicePreferences = GObject.registerClass({
 
         // Advanced
         'advanced-page',
-        'plugin-list', 'experimental-list'
+        'plugin-list', 'experimental-list',
+
+        'device-menu'
     ]
 }, class DevicePreferences extends Gtk.Grid {
 
@@ -296,12 +298,7 @@ var DevicePreferences = GObject.registerClass({
 
     get menu() {
         if (this._menu === undefined) {
-            let menus = Gtk.Builder.new_from_resource(
-                '/org/gnome/Shell/Extensions/GSConnect/gtk/menus.ui'
-            );
-            menus.translation_domain = 'org.gnome.Shell.Extensions.GSConnect';
-
-            this._menu = menus.get_object('device-menu');
+            this._menu = this.device_menu;
             this._menu.prepend_section(null, this.device.menu);
             this.insert_action_group('device', this.device.action_group);
         }
@@ -366,7 +363,6 @@ var DevicePreferences = GObject.registerClass({
             this.device.action_group.disconnect(this._actionRemovedId);
 
             // GActions/GMenu
-            this.menu.run_dispose();
             this.actions.run_dispose();
 
             // GSettings
