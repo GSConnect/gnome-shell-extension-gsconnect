@@ -290,7 +290,7 @@ class Controller {
             let service = Gio.Application.get_default();
 
             // First we're going to disabled the affected plugins on all devices
-            for (let device of service.devices) {
+            for (let device of service.devices.values()) {
                 let supported = device.settings.get_strv('supported-plugins');
                 let index;
 

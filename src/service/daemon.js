@@ -71,9 +71,6 @@ const Service = GObject.registerClass({
 
         GLib.set_prgname('GSConnect');
         GLib.set_application_name('GSConnect');
-
-        // Track devices with id as key
-        this._devices = new Map();
         
         // Command-line
         this._initOptions();
@@ -96,7 +93,10 @@ const Service = GObject.registerClass({
     }
 
     get devices() {
-        return Array.from(this._devices.values());
+        if (this._devices === undefined)
+            this._devices = new Map();
+
+        return this._devices;
     }
 
     get discoverable() {
@@ -212,7 +212,7 @@ const Service = GObject.registerClass({
      * @return {Device.Device} A device object
      */
     _ensureDevice(packet) {
-        let device = this._devices.get(packet.body.deviceId);
+        let device = this.devices.get(packet.body.deviceId);
 
         if (device === undefined) {
             debug(`Adding ${packet.body.deviceName}`);
@@ -221,7 +221,7 @@ const Service = GObject.registerClass({
             //
             // If this is the third unpaired device to connect, we disable
             // discovery to avoid choking on networks with many devices
-            let unpaired = Array.from(this._devices.values()).filter(dev => {
+            let unpaired = Array.from(this.devices.values()).filter(dev => {
                 return !dev.paired;
             });
 
@@ -234,13 +234,10 @@ const Service = GObject.registerClass({
             }
 
             device = new Device.Device(packet);
-            this._devices.set(device.id, device);
+            this.devices.set(device.id, device);
 
             // Notify
-            this.settings.set_strv(
-                'devices',
-                Array.from(this._devices.keys())
-            );
+            this.settings.set_strv('devices', Array.from(this.devices.keys()));
         }
 
         return device;
@@ -264,11 +261,8 @@ const Service = GObject.registerClass({
         Gio.File.rm_rf(cache);
 
         // Forget the device
-        this._devices.delete(id);
-        this.settings.set_strv(
-            'devices',
-            Array.from(this._devices.keys())
-        );
+        this.devices.delete(id);
+        this.settings.set_strv('devices', Array.from(this.devices.keys()));
     }
 
     /**
@@ -334,9 +328,9 @@ const Service = GObject.registerClass({
             let id = parameter[0].unpack();
 
             if (id === '*') {
-                devices = this._devices.values();
+                devices = this.devices.values();
             } else {
-                devices = [this._devices.get(id)];
+                devices = [this.devices.get(id)];
             }
 
             // Unpack the action data
@@ -423,7 +417,7 @@ const Service = GObject.registerClass({
      * pruning unpaired devices that have disconnected.
      */
     _reconnect() {
-        for (let [id, device] of this._devices) {
+        for (let [id, device] of this.devices) {
             switch (true) {
                 case device.connected:
                     break;
@@ -476,7 +470,7 @@ const Service = GObject.registerClass({
      */
     _onChannel(backend, channel) {
         try {
-            let device = this._devices.get(channel.identity.body.deviceId);
+            let device = this.devices.get(channel.identity.body.deviceId);
 
             switch (true) {
                 // Proceed if this is an existing device...
@@ -664,7 +658,7 @@ const Service = GObject.registerClass({
         // Load cached devices
         for (let id of this.settings.get_strv('devices')) {
             let device = new Device.Device({body: {deviceId: id}});
-            this._devices.set(id, device);
+            this.devices.set(id, device);
         }
 
         // Reconnect to paired devices every 5 seconds
@@ -735,8 +729,8 @@ const Service = GObject.registerClass({
 
         // We must unexport the devices before ::dbus-unregister is emitted and
         // exhaust the main loop to ensure connections are properly closed.
-        this._devices.forEach(device => device.destroy());
-        this._devices.clear();
+        this.devices.forEach(device => device.destroy());
+        this.devices.clear();
 
         let context = GLib.MainContext.default();
 
