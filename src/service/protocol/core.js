@@ -199,43 +199,21 @@ var Channel = GObject.registerClass({
     }
 
     get service() {
-        if (this._service === undefined) {
+        if (this._service === undefined)
             this._service = Gio.Application.get_default();
-        }
 
         return this._service;
     }
 
     get uuid() {
-        if (this._uuid === undefined) {
+        if (this._uuid === undefined)
             this._uuid = GLib.uuid_string_random();
-        }
 
         return this._uuid;
     }
 
     set uuid(uuid) {
         this._uuid = uuid;
-    }
-
-    /**
-     * Override these to send and receive the identity packet during initial
-     * connection negotiation.
-     */
-    _receiveIdent(connection) {
-        throw new GObject.NotImplementedError();
-    }
-
-    _sendIdent(connection) {
-        throw new GObject.NotImplementedError();
-    }
-
-    accept(connection) {
-        throw new GObject.NotImplementedError();
-    }
-
-    open(connection) {
-        throw new GObject.NotImplementedError();
     }
 
     /**
