@@ -49,13 +49,13 @@ const Service = GObject.registerClass({
         'id': GObject.ParamSpec.string(
             'id',
             'Id',
-            'The service id',
+            'The hostname or other network unique id',
             GObject.ParamFlags.READWRITE,
             null
         ),
         'name': GObject.ParamSpec.string(
             'name',
-            'deviceName',
+            'Name',
             'The name announced to the network',
             GObject.ParamFlags.READWRITE,
             'GSConnect'
@@ -77,17 +77,15 @@ const Service = GObject.registerClass({
     }
 
     get backends() {
-        if (this._backends === undefined) {
+        if (this._backends === undefined)
             this._backends = new Map();
-        }
 
         return this._backends;
     }
 
     get components() {
-        if (this._components === undefined) {
+        if (this._components === undefined)
             this._components = new Map();
-        }
 
         return this._components;
     }
@@ -146,10 +144,8 @@ const Service = GObject.registerClass({
 
             for (let name in imports.service.plugins) {
                 // Exclude mousepad/presenter capability in unsupported sessions
-                if (!HAVE_REMOTEINPUT &&
-                    (name === 'mousepad' || name === 'presenter')) {
+                if (!HAVE_REMOTEINPUT && ['mousepad', 'presenter'].includes(name))
                     continue;
-                }
 
                 let meta = imports.service.plugins[name].Metadata;
 
@@ -265,7 +261,7 @@ const Service = GObject.registerClass({
         this.settings.set_strv('devices', Array.from(this.devices.keys()));
     }
 
-    /**
+    /*
      * GSettings
      */
     _initSettings() {
@@ -279,12 +275,11 @@ const Service = GObject.registerClass({
         this.settings.bind('name', this, 'name', 0);
 
         // Set the default name to the computer's hostname
-        if (this.name.length === 0) {
+        if (this.name.length === 0)
             this.settings.set_string('name', GLib.get_host_name());
-        }
     }
 
-    /**
+    /*
      * GActions
      */
     _initActions() {
@@ -389,9 +384,8 @@ const Service = GObject.registerClass({
 
                 let backend = this.backends.get(scheme);
 
-                if (backend) {
+                if (backend !== undefined)
                     backend.broadcast(address);
-                }
 
             // If we're not discoverable, only try to reconnect known devices
             } else if (!this.discoverable) {
@@ -399,9 +393,7 @@ const Service = GObject.registerClass({
 
             // Otherwise have each backend broadcast to it's network
             } else {
-                for (let backend of this.backends.values()) {
-                    backend.broadcast();
-                }
+                this.backends.forEach((backend) => backend.broadcast());
             }
         } catch (e) {
             logError(e);
@@ -444,7 +436,7 @@ const Service = GObject.registerClass({
         Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
     }
 
-    /**
+    /*
      * Components
      */
     _initComponents() {
@@ -462,11 +454,8 @@ const Service = GObject.registerClass({
         }
     }
 
-    /**
+    /*
      * Backends
-     *
-     * These are the implementations of Core.ChannelService that emit
-     * Core.ChannelService::channel with objects implementing Core.Channel.
      */
     _onChannel(backend, channel) {
         try {
@@ -943,9 +932,8 @@ const Service = GObject.registerClass({
     _cliAction(id, name, parameter = null) {
         let parameters = [];
 
-        if (parameter instanceof GLib.Variant) {
+        if (parameter instanceof GLib.Variant)
             parameters[0] = parameter;
-        }
 
         id = id.replace(/\W+/g, '_');
 
@@ -991,9 +979,8 @@ const Service = GObject.registerClass({
     }
 
     _cliMessage(id, options) {
-        if (!options.contains('message-body')) {
+        if (!options.contains('message-body'))
             throw new TypeError('missing --message-body option');
-        }
 
         // TODO: currently we only support single-recipient messaging
         let addresses = options.lookup_value('message', null).deepUnpack();
@@ -1013,17 +1000,14 @@ const Service = GObject.registerClass({
         let nid = `${Date.now()}`;
         let appName = gsconnect.settings.get_string('name');
 
-        if (options.contains('notification-id')) {
+        if (options.contains('notification-id'))
             nid = options.lookup_value('notification-id', null).unpack();
-        }
 
-        if (options.contains('notification-body')) {
+        if (options.contains('notification-body'))
             body = options.lookup_value('notification-body', null).unpack();
-        }
 
-        if (options.contains('notification-appname')) {
+        if (options.contains('notification-appname'))
             appName = options.lookup_value('notification-appname', null).unpack();
-        }
 
         if (options.contains('notification-icon')) {
             icon = options.lookup_value('notification-icon', null).unpack();
@@ -1050,9 +1034,7 @@ const Service = GObject.registerClass({
     }
     
     _cliShareFile(device, options) {
-        let files = options.lookup_value('share-file', null);
-
-        files = files.deepUnpack();
+        let files = options.lookup_value('share-file', null).deepUnpack();
 
         files.map(file => {
             file = imports.byteArray.toString(file);
@@ -1098,9 +1080,8 @@ const Service = GObject.registerClass({
 
             // We need a device for anything else; exit since this is probably
             // the daemon being started.
-            if (!options.contains('device')) {
+            if (!options.contains('device'))
                 return -1;
-            }
 
             let id = options.lookup_value('device', null).unpack();
 
@@ -1116,33 +1097,26 @@ const Service = GObject.registerClass({
             }
 
             // Plugins
-            if (options.contains('message')) {
+            if (options.contains('message'))
                 this._cliMessage(id, options);
-            }
 
-            if (options.contains('notification')) {
+            if (options.contains('notification'))
                 this._cliNotify(id, options);
-            }
 
-            if (options.contains('photo')) {
+            if (options.contains('photo'))
                 this._cliAction(id, 'photo');
-            }
 
-            if (options.contains('ping')) {
+            if (options.contains('ping'))
                 this._cliAction(id, 'ping', GLib.Variant.new_string(''));
-            }
 
-            if (options.contains('ring')) {
+            if (options.contains('ring'))
                 this._cliAction(id, 'ring');
-            }
 
-            if (options.contains('share-file')) {
+            if (options.contains('share-file'))
                 this._cliShareFile(id, options);
-            }
 
-            if (options.contains('share-link')) {
+            if (options.contains('share-link'))
                 this._cliShareLink(id, options);
-            }
 
             return 0;
         } catch (e) {
