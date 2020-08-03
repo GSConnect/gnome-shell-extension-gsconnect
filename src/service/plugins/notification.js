@@ -116,6 +116,41 @@ function _isSmsNotification(packet) {
 
 
 /**
+ * Remove a local libnotify or Gtk notification.
+ *
+ * @param {String|Number} id - Gtk (string) or libnotify id (uint32)
+ * @param {String|null} application - Application Id if Gtk or null
+ */
+function _removeNotification(id, application = null) {
+    let name, path, method, variant;
+
+    if (application !== null) {
+        name = 'org.gtk.Notifications';
+        method = 'RemoveNotification';
+        path = '/org/gtk/Notifications';
+        variant = new GLib.Variant('(ss)', [application, id]);
+    } else {
+        name = 'org.freedesktop.Notifications';
+        path = '/org/freedesktop/Notifications';
+        method = 'CloseNotification';
+        variant = new GLib.Variant('(u)', [id]);
+    }
+
+    Gio.DBus.session.call(
+        name, path, name, method, variant, null,
+        Gio.DBusCallFlags.NONE, -1, null,
+        (connection, res) => {
+            try {
+                connection.call_finish(res);
+            } catch (e) {
+                logError(e);
+            }
+        }
+    );
+}
+
+
+/**
  * Notification Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/notifications
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/sendnotifications
@@ -236,9 +271,9 @@ var Plugin = GObject.registerClass({
             let [, type, application, id] = ID_REGEX.exec(packet.body.cancel);
 
             if (type === 'fdo')
-                this.service.remove_notification(parseInt(id));
+                _removeNotification(parseInt(id));
             else if (type === 'gtk')
-                this.service.remove_notification(id, application);
+                _removeNotification(id, application);
         }
     }
 
