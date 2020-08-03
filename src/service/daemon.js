@@ -730,27 +730,25 @@ const Service = GObject.registerClass({
         this.settings.run_dispose();
 
         // Destroy the backends first to avoid any further connections
-        for (let [name, backend] of this.backends) {
-            try {
-                backend.destroy();
-            } catch (e) {
-                logError(e, `'${name}' Backend`);
-            }
-        }
+        this.backends.forEach((backend) => backend.destroy());
+        this.backends.clear();
 
-        // We must unexport the devices before ::dbus-unregister is emitted
+        // We must unexport the devices before ::dbus-unregister is emitted and
+        // exhaust the main loop to ensure connections are properly closed.
         this._devices.forEach(device => device.destroy());
+        this._devices.clear();
 
-        // Destroy the components last
-        for (let [name, component] of this.components) {
-            try {
-                component.destroy();
-            } catch (e) {
-                logError(e, `'${name}' Component`);
-            }
-        }
+        let context = GLib.MainContext.default();
 
-        // Chain up last (application->priv->did_shutdown)
+        while (context.iteration(false))
+            continue;
+
+        // Destroy the components now that device plugins aren't using them
+        this.components.forEach((component) => component.destroy());
+        this.components.clear();
+
+        // Force a GC to prevent any more calls back into JS, then chain-up
+        imports.system.gc();
         super.vfunc_shutdown();
     }
     
