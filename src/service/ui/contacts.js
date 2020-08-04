@@ -125,29 +125,27 @@ function getPixbufForIcon(name, size, scale, bgColor) {
  * @return {string} A string like '555-5555・Mobile'
  */
 function getNumberLabel(number) {
-    if (!number.type) return _('%s・Other').format(number.value);
+    if (!number.type)
+        return _('%s・Other').format(number.value);
 
-    switch (true) {
-        case number.type.includes('fax'):
-            // TRANSLATORS: A fax number
-            return _('%s・Fax').format(number.value);
+    if (number.type.includes('fax'))
+        // TRANSLATORS: A fax number
+        return _('%s・Fax').format(number.value);
 
-        case number.type.includes('work'):
-            // TRANSLATORS: A work phone number
-            return _('%s・Work'.format(number.value));
+    if (number.type.includes('work'))
+        // TRANSLATORS: A work or office phone number
+        return _('%s・Work'.format(number.value));
 
-        case number.type.includes('cell'):
-            // TRANSLATORS: A mobile or cellular phone number
-            return _('%s・Mobile').format(number.value);
+    if (number.type.includes('cell'))
+        // TRANSLATORS: A mobile or cellular phone number
+        return _('%s・Mobile').format(number.value);
 
-        case number.type.includes('home'):
-            // TRANSLATORS: A home phone number
-            return _('%s・Home').format(number.value);
+    if (number.type.includes('home'))
+        // TRANSLATORS: A home phone number
+        return _('%s・Home').format(number.value);
 
-        default:
-            // TRANSLATORS: All other phone number types
-            return _('%s・Other').format(number.value);
-    }
+    // TRANSLATORS: All other phone number types
+    return _('%s・Other').format(number.value);
 }
 
 /**
@@ -162,9 +160,8 @@ function getDisplayNumber(contact, address) {
     for (let contactNumber of contact.numbers) {
         let cnumber = contactNumber.value.toPhoneNumber();
 
-        if (number.endsWith(cnumber) || cnumber.endsWith(number)) {
+        if (number.endsWith(cnumber) || cnumber.endsWith(number))
             return GLib.markup_escape_text(contactNumber.value, -1);
-        }
     }
 
     return GLib.markup_escape_text(address, -1);
@@ -178,7 +175,7 @@ const AvatarCache = new WeakMap();
 
 var Avatar = GObject.registerClass({
     GTypeName: 'GSConnectContactAvatar'
-}, class Avatar extends Gtk.DrawingArea {
+}, class ContactAvatar extends Gtk.DrawingArea {
 
     _init(contact = null) {
         super._init({
@@ -204,21 +201,20 @@ var Avatar = GObject.registerClass({
     }
 
     get contact() {
-        if (this._contact === undefined) {
+        if (this._contact === undefined)
             this._contact = null;
-        }
 
         return this._contact;
     }
 
     set contact(contact) {
-        if (this.contact !== contact) {
-            this._contact = contact;
+        if (this.contact === contact)
+            return;
 
-            this._surface = undefined;
-            this._rgba = undefined;
-            this._offset = 0;
-        }
+        this._contact = contact;
+        this._surface = undefined;
+        this._rgba = undefined;
+        this._offset = 0;
     }
 
     _loadSurface() {
@@ -255,14 +251,13 @@ var Avatar = GObject.registerClass({
         if (!this._surface) {
             let iconName;
 
-            // If we were given a contact, it's direct message
-            if (this.contact) {
+            // If we were given a contact, it's direct message otherwise group
+            if (this.contact)
                 iconName = 'avatar-default-symbolic';
-            // Otherwise it's a group message
-            } else {
+            else
                 iconName = 'group-avatar-symbolic';
-            }
 
+            // Center the icon
             this._offset = (this.width_request - 24) / 2;
 
             // Load the fallback
@@ -277,9 +272,8 @@ var Avatar = GObject.registerClass({
     }
 
     vfunc_draw(cr) {
-        if (!this._surface) {
+        if (!this._surface)
             this._loadSurface();
-        }
 
         // Clip to a circle
         let rad = this.width_request / 2;
@@ -474,7 +468,7 @@ var ContactChooser = GObject.registerClass({
         this.list.invalidate_sort();
     }
 
-    // GtkListBox::row-selected
+    // GtkListBox::row-activated
     _onNumberSelected(box, row) {
         if (row === null) return;
 
@@ -490,22 +484,24 @@ var ContactChooser = GObject.registerClass({
 
     _filter(row) {
         // Dynamic contact always shown
-        if (row.__tmp) return true;
+        if (row.__tmp)
+            return true;
 
         let query = row.get_parent()._entry;
-        let queryName = query.toLocaleLowerCase();
-        let queryNumber = query.toPhoneNumber();
 
         // Show contact if text is substring of name
-        if (row.contact.name.toLocaleLowerCase().includes(queryName)) {
+        let queryName = query.toLocaleLowerCase();
+
+        if (row.contact.name.toLocaleLowerCase().includes(queryName))
             return true;
 
         // Show contact if text is substring of number
-        } else if (queryNumber.length) {
+        let queryNumber = query.toPhoneNumber();
+
+        if (queryNumber.length) {
             for (let number of row.contact.numbers) {
-                if (number.value.toPhoneNumber().includes(queryNumber)) {
+                if (number.value.toPhoneNumber().includes(queryNumber))
                     return true;
-                }
             }
 
         // Query is effectively empty
@@ -517,11 +513,11 @@ var ContactChooser = GObject.registerClass({
     }
 
     _sort(row1, row2) {
-        if (row1.__tmp) {
+        if (row1.__tmp)
             return -1;
-        } else if (row2.__tmp) {
+
+        if (row2.__tmp)
             return 1;
-        }
 
         return row1.contact.name.localeCompare(row2.contact.name);
     }
@@ -530,9 +526,8 @@ var ContactChooser = GObject.registerClass({
         // Add each contact
         let contacts = this.store.contacts;
 
-        for (let i = 0, len = contacts.length; i < len; i++) {
+        for (let i = 0, len = contacts.length; i < len; i++)
             this._addContact(contacts[i]);
-        }
     }
 
     _addContactNumber(contact, index) {
