@@ -25,42 +25,39 @@ function getTime(time) {
     let now = GLib.DateTime.new_now_local();
     let diff = now.difference(date);
 
-    switch (true) {
-        // Super recent
-        case (diff < GLib.TIME_SPAN_MINUTE):
-            // TRANSLATORS: Less than a minute ago
-            return _('Just now');
+    // Super recent
+    if (diff < GLib.TIME_SPAN_MINUTE)
+        // TRANSLATORS: Less than a minute ago
+        return _('Just now');
 
-        // Under an hour
-        case (diff < GLib.TIME_SPAN_HOUR):
-            // TRANSLATORS: Time duration in minutes (eg. 15 minutes)
-            return ngettext(
-                '%d minute',
-                '%d minutes',
-                (diff / GLib.TIME_SPAN_MINUTE)
-            ).format(diff / GLib.TIME_SPAN_MINUTE);
+    // Under an hour
+    if (diff < GLib.TIME_SPAN_HOUR)
+        // TRANSLATORS: Time duration in minutes (eg. 15 minutes)
+        return ngettext(
+            '%d minute',
+            '%d minutes',
+            (diff / GLib.TIME_SPAN_MINUTE)
+        ).format(diff / GLib.TIME_SPAN_MINUTE);
 
-        // Yesterday, but less than 24 hours ago
-        case (diff < GLib.TIME_SPAN_DAY && (now.get_day_of_month() !== date.get_day_of_month())):
-            // TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
-            return _('Yesterday・%s').format(date.format('%l:%M %p'));
+    // Yesterday, but less than 24 hours ago
+    if (diff < GLib.TIME_SPAN_DAY && (now.get_day_of_month() !== date.get_day_of_month()))
+        // TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
+        return _('Yesterday・%s').format(date.format('%l:%M %p'));
 
-        // Less than a day ago
-        case (diff < GLib.TIME_SPAN_DAY):
-            return date.format('%l:%M %p');
+    // Less than a day ago
+    if (diff < GLib.TIME_SPAN_DAY)
+        return date.format('%l:%M %p');
 
-        // Less than a week ago
-        case (diff < (GLib.TIME_SPAN_DAY * 7)):
-            return date.format('%A・%l:%M %p');
+    // Less than a week ago
+    if (diff < (GLib.TIME_SPAN_DAY * 7))
+        return date.format('%A・%l:%M %p');
 
-        // Sometime this year
-        case (date.get_year() === now.get_year()):
-            return date.format('%b %e');
+    // Sometime this year
+    if (date.get_year() === now.get_year())
+        return date.format('%b %e');
 
-        // Earlier than that
-        default:
-            return date.format('%b %e %Y');
-    }
+    // Earlier than that
+    return date.format('%b %e %Y');
 }
 
 
@@ -68,35 +65,32 @@ function getShortTime(time) {
     let date = GLib.DateTime.new_from_unix_local(time / 1000);
     let diff = GLib.DateTime.new_now_local().difference(date);
 
-    switch (true) {
-        case (diff < GLib.TIME_SPAN_MINUTE):
-            // TRANSLATORS: Less than a minute ago
-            return _('Just now');
+    if (diff < GLib.TIME_SPAN_MINUTE)
+        // TRANSLATORS: Less than a minute ago
+        return _('Just now');
 
-        case (diff < GLib.TIME_SPAN_HOUR):
-            // TRANSLATORS: Time duration in minutes (eg. 15 minutes)
-            return ngettext(
-                '%d minute',
-                '%d minutes',
-                (diff / GLib.TIME_SPAN_MINUTE)
-            ).format(diff / GLib.TIME_SPAN_MINUTE);
+    if (diff < GLib.TIME_SPAN_HOUR)
+        // TRANSLATORS: Time duration in minutes (eg. 15 minutes)
+        return ngettext(
+            '%d minute',
+            '%d minutes',
+            (diff / GLib.TIME_SPAN_MINUTE)
+        ).format(diff / GLib.TIME_SPAN_MINUTE);
 
-        // Less than a day ago
-        case (diff < GLib.TIME_SPAN_DAY):
-            return date.format('%l:%M %p');
+    // Less than a day ago
+    if (diff < GLib.TIME_SPAN_DAY)
+        return date.format('%l:%M %p');
 
-        // Less than a week ago
-        case (diff < (GLib.TIME_SPAN_DAY * 7)):
-            return date.format('%a');
+    // Less than a week ago
+    if (diff < (GLib.TIME_SPAN_DAY * 7))
+        return date.format('%a');
 
-        // Sometime this year
-        case (date.get_year() === GLib.DateTime.new_now_local().get_year()):
-            return date.format('%b %e');
+    // Sometime this year
+    if (date.get_year() === GLib.DateTime.new_now_local().get_year())
+        return date.format('%b %e');
 
-        // Earlier than that
-        default:
-            return date.format('%b %e %Y');
-    }
+    // Earlier than that
+    return date.format('%b %e %Y');
 }
 
 // Used for tooltips to display time and date of message.
@@ -136,6 +130,7 @@ const setAvatarVisible = function(row, visible) {
     }
 };
 
+
 /**
  * A simple GtkLabel subclass with a chat bubble appearance
  */
@@ -159,11 +154,10 @@ var MessageLabel = GObject.registerClass({
             xalign: 0
         });
 
-        if (incoming) {
+        if (incoming)
             this.get_style_context().add_class('message-in');
-        } else {
+        else
             this.get_style_context().add_class('message-out');
-        }
     }
 
     vfunc_activate_link(uri) {
@@ -259,6 +253,9 @@ const ConversationRow = GObject.registerClass({
         this.time_label.label = timeLabel;
     }
 
+    /**
+     * Update the relative time label.
+     */
     update() {
         let timeLabel = `<small>${getShortTime(this.message.date)}</small>`;
         this.time_label.label = timeLabel;
@@ -266,6 +263,9 @@ const ConversationRow = GObject.registerClass({
 });
 
 
+/**
+ * A widget for displaying a conversation thread, with an entry for responding.
+ */
 const Conversation = GObject.registerClass({
     GTypeName: 'GSConnectMessagingConversation',
     Properties: {
@@ -349,9 +349,8 @@ const Conversation = GObject.registerClass({
     }
 
     get addresses() {
-        if (this._addresses === undefined) {
+        if (this._addresses === undefined)
             this._addresses = [];
-        }
 
         return this._addresses;
     }
@@ -385,9 +384,8 @@ const Conversation = GObject.registerClass({
     }
 
     get contacts() {
-        if (this._contacts === undefined) {
+        if (this._contacts === undefined)
             this._contacts = {};
-        }
 
         return this._contacts;
     }
@@ -408,9 +406,8 @@ const Conversation = GObject.registerClass({
     }
 
     get thread_id() {
-        if (this._thread_id === undefined) {
+        if (this._thread_id === undefined)
             this._thread_id = null;
-        }
 
         return this._thread_id;
     }
@@ -426,9 +423,8 @@ const Conversation = GObject.registerClass({
     }
 
     _onConnected(device) {
-        if (device.connected) {
+        if (device.connected)
             this.pending_box.foreach(msg => msg.destroy());
-        }
     }
 
     _onDestroy(conversation) {
@@ -444,13 +440,12 @@ const Conversation = GObject.registerClass({
 
     _onEdgeReached(scrolled_window, pos) {
         // Try to load more messages
-        if (pos === Gtk.PositionType.TOP) {
+        if (pos === Gtk.PositionType.TOP)
             this.logPrevious();
 
         // Release any hold to resume auto-scrolling
-        } else if (pos === Gtk.PositionType.BOTTOM) {
+        else if (pos === Gtk.PositionType.BOTTOM)
             this._releasePosition();
-        }
     }
 
     _onEntryChanged(entry) {
@@ -472,7 +467,8 @@ const Conversation = GObject.registerClass({
 
     _onSendMessage(entry, signal_id, event) {
         // Don't send empty texts
-        if (!this.entry.text.trim()) return;
+        if (!this.entry.text.trim())
+            return;
 
         // Send the message
         this.plugin.sendMessage(this.addresses, entry.text);
@@ -578,9 +574,8 @@ const Conversation = GObject.registerClass({
         this.__messages = [];
 
         // Try and find a thread_id for this number
-        if (this.thread_id === null && this.addresses.length) {
+        if (this.thread_id === null && this.addresses.length)
             this._thread_id = this.plugin.getThreadIdForAddresses(this.addresses);
-        }
 
         // Make a copy of the thread and fill the window with messages
         if (this.plugin.threads[this.thread_id]) {
@@ -642,9 +637,8 @@ const Conversation = GObject.registerClass({
         let vpos = pos;
         this._vadj.freeze_notify();
 
-        if (pos === Gtk.PositionType.BOTTOM) {
+        if (pos === Gtk.PositionType.BOTTOM)
             vpos = this._vadj.get_upper() - this._vadj.get_page_size();
-        }
 
 
         if (animate) {
