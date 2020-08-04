@@ -331,12 +331,6 @@ const Conversation = GObject.registerClass({
             date: Number.MAX_SAFE_INTEGER,
             type: Sms.MessageBox.OUTBOX,
         };
-        this.bind_property(
-            'has-pending',
-            this.pending,
-            'visible',
-            GObject.BindingFlags.DEFAULT | GObject.BindingFlags.SYNC_CREATE
-        );
 
         // Auto-scrolling
         this._vadj = this.scrolled.get_vadjustment();
@@ -399,7 +393,10 @@ const Conversation = GObject.registerClass({
     }
 
     get has_pending() {
-        return (this.pending_box.get_children().length);
+        if (this.pending_box === undefined)
+            return false;
+
+        return (this.pending_box.get_children().length > 0);
     }
 
     get plugin() {

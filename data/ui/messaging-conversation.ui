@@ -31,6 +31,7 @@
                     <property name="hexpand">True</property>
                     <property name="activatable">False</property>
                     <property name="selectable">False</property>
+                    <property name="visible" bind-source="GSConnectMessagingConversation" bind-property="has-pending" bind-flags="sync-create"/>
                     <child>
                       <object class="GtkBox" id="pending-box">
                         <property name="visible">True</property>
