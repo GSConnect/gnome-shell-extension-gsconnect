@@ -963,11 +963,10 @@ var Window = GObject.registerClass({
         let contacts = chooser.getSelected();
         let row = this._getRowForContacts(contacts);
 
-        if (row) {
-            this.thread_list.select_row(row);
-        } else {
+        if (row)
+            row.emit('activate');
+        else
             this.setContacts(contacts);
-        }
     }
 
     /**

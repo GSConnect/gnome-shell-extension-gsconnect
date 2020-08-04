@@ -21,7 +21,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="selection_mode">multiple</property>
-                <signal name="row-selected" handler="_onNumberSelected" swapped="no"/>
+                <signal name="row-activated" handler="_onNumberSelected" swapped="no"/>
                 <child type="placeholder">
                   <object class="GtkGrid" id="placeholder">
                     <property name="visible">True</property>
