@@ -190,58 +190,13 @@ var MessageLabel = GObject.registerClass({
 /**
  * A ListBoxRow for a preview of a conversation
  */
-const ThreadRow = GObject.registerClass({
-    GTypeName: 'GSConnectThreadRow'
-}, class ThreadRow extends Gtk.ListBoxRow {
+const ConversationRow = GObject.registerClass({
+    GTypeName: 'GSConnectMessagingConversationRow',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/messaging-conversation-row.ui',
+    Children: ['avatar', 'name-label', 'time-label', 'body-label']
+}, class ConversationRow extends Gtk.ListBoxRow {
     _init(contacts, message) {
-        super._init({visible: true});
-
-        // Row layout
-        let grid = new Gtk.Grid({
-            margin_top: 6,
-            margin_bottom: 6,
-            margin_start: 8,
-            margin_end: 8,
-            column_spacing: 8,
-            visible: true
-        });
-        this.add(grid);
-
-        // Contact Avatar
-        this._avatar = new Contacts.Avatar(null);
-        grid.attach(this._avatar, 0, 0, 1, 3);
-
-        // Contact Name
-        this._name = new Gtk.Label({
-            halign: Gtk.Align.START,
-            hexpand: true,
-            ellipsize: Pango.EllipsizeMode.END,
-            use_markup: true,
-            xalign: 0,
-            visible: true
-        });
-        grid.attach(this._name, 1, 0, 1, 1);
-
-        // Message Time
-        this._time = new Gtk.Label({
-            halign: Gtk.Align.END,
-            ellipsize: Pango.EllipsizeMode.END,
-            use_markup: true,
-            xalign: 0,
-            visible: true
-        });
-        this._time.get_style_context().add_class('dim-label');
-        grid.attach(this._time, 2, 0, 1, 1);
-
-        // Message Body
-        this._body = new Gtk.Label({
-            halign: Gtk.Align.START,
-            ellipsize: Pango.EllipsizeMode.END,
-            use_markup: true,
-            xalign: 0,
-            visible: true
-        });
-        grid.attach(this._body, 1, 1, 2, 1);
+        super._init();
 
         this.contacts = contacts;
         this.message = message;
@@ -265,18 +220,19 @@ const ThreadRow = GObject.registerClass({
 
         // Contact Name
         let nameLabel = _('Unknown Contact');
+
         // Update avatar for single-recipient messages
         if (message.addresses.length === 1) {
-            this._avatar.contact = this.contacts[this._sender];
-            nameLabel = GLib.markup_escape_text(this._avatar.contact.name, -1);
+            this.avatar.contact = this.contacts[this._sender];
+            nameLabel = GLib.markup_escape_text(this.avatar.contact.name, -1);
         } else {
-            this._avatar.contact = null;
+            this.avatar.contact = null;
             nameLabel = _('Group Message');
             let participants = [];
             message.addresses.forEach((address) => {
                 participants.push(this.contacts[address.address].name);
             });
-            this._name.tooltip_text = participants.join(', ');
+            this.name_label.tooltip_text = participants.join(', ');
         }
 
         // Contact Name & Message body
@@ -295,17 +251,17 @@ const ThreadRow = GObject.registerClass({
         }
 
         // Set the labels, body always smaller
-        this._name.label = nameLabel;
-        this._body.label = `<small>${bodyLabel}</small>`;
+        this.name_label.label = nameLabel;
+        this.body_label.label = `<small>${bodyLabel}</small>`;
 
         // Time
         let timeLabel = `<small>${getShortTime(message.date)}</small>`;
-        this._time.label = timeLabel;
+        this.time_label.label = timeLabel;
     }
 
     update() {
         let timeLabel = `<small>${getShortTime(this.message.date)}</small>`;
-        this._time.label = timeLabel;
+        this.time_label.label = timeLabel;
     }
 });
 
@@ -1019,7 +975,7 @@ var Window = GObject.registerClass({
         // What's left in the dictionary is new summaries
         for (let message of Object.values(messages)) {
             let contacts = this.device.contacts.lookupAddresses(message.addresses);
-            let conversation = new ThreadRow(contacts, message);
+            let conversation = new ConversationRow(contacts, message);
             this.thread_list.add(conversation);
         }
 
@@ -1056,7 +1012,7 @@ var Window = GObject.registerClass({
      * Find the thread row for @contacts
      *
      * @param {Object[]} contacts - A contact group
-     * @return {ThreadRow|null} The thread row or %null
+     * @return {ConversationRow|null} The thread row or %null
      */
     _getRowForContacts(contacts) {
         let addresses = Object.keys(contacts).map(address => {
