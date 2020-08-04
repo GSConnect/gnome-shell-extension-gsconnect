@@ -7,7 +7,6 @@ const Pango = imports.gi.Pango;
 const St = imports.gi.St;
 
 const Main = imports.ui.main;
-const Tweener = imports.ui.tweener;
 
 
 /**
@@ -196,18 +195,18 @@ var Tooltip = class Tooltip {
 
         // Show tooltip
         if (this._showing) {
-            Tweener.addTween(this.bin, {
+            this.bin.ease({
                 x: x,
                 y: y,
                 time: 0.15,
-                transition: 'easeOutQuad'
+                transition: Clutter.AnimationMode.EASE_OUT_QUAD
             });
         } else {
             this.bin.set_position(x, y);
-            Tweener.addTween(this.bin, {
+            this.bin.ease({
                 opacity: 232,
                 time: 0.15,
-                transition: 'easeOutQuad'
+                transition: Clutter.AnimationMode.EASE_OUT_QUAD
             });
 
             this._showing = true;
@@ -229,19 +228,18 @@ var Tooltip = class Tooltip {
 
     _hide() {
         if (this.bin) {
-            Tweener.addTween(this.bin, {
+            this.bin.ease({
                 opacity: 0,
                 time: 0.10,
-                transition: 'easeOutQuad',
+                transition: Clutter.AnimationMode.EASE_OUT_QUAD,
                 onComplete: () => {
                     Main.layoutManager.uiGroup.remove_actor(this.bin);
 
-                    if (this.custom) {
+                    if (this.custom)
                         this.bin.remove_child(this.custom);
-                    }
 
                     this.bin.destroy();
-                    delete this.bin;
+                    this.bin = null;
                 }
             });
         }
