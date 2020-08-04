@@ -10,6 +10,7 @@ const Gtk = imports.gi.Gtk;
 const Device = imports.preferences.device;
 const Remote = imports.utils.remote;
 
+
 /*
  * Header for support logs
  */
@@ -94,7 +95,7 @@ async function generateSupportLog(time) {
  */
 var ConnectDialog = GObject.registerClass({
     GTypeName: 'GSConnectConnectDialog',
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/connect.ui',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/connect-dialog.ui',
     Children: [
         'cancel-button', 'connect-button',
         'lan-grid', 'lan-ip', 'lan-port'
