@@ -163,6 +163,10 @@ var Plugin = GObject.registerClass({
                 device: this.device,
                 plugin: this
             });
+
+            this._window.connect('destroy', () => {
+                this._window = undefined;
+            });
         }
 
         return this._window;
@@ -506,7 +510,7 @@ var Plugin = GObject.registerClass({
     }
 
     destroy() {
-        if (this._window)
+        if (this._window !== undefined)
             this._window.destroy();
 
         super.destroy();

@@ -851,9 +851,6 @@ var Window = GObject.registerClass({
             this._timestampThreads.bind(this)
         );
 
-        // Cleanup on ::destroy
-        this.connect('destroy', this._onDestroy);
-
         this._sync();
         this._onThreadsChanged();
         this.restoreGeometry('messaging');
@@ -861,7 +858,12 @@ var Window = GObject.registerClass({
 
     vfunc_delete_event(event) {
         this.saveGeometry();
-        return this.hide_on_delete();
+
+        GLib.source_remove(this._timestampThreadsId);
+        this.contact_chooser.disconnect(this._numberSelectedId);
+        this.plugin.disconnect(this._threadsChangedId);
+
+        return false;
     }
 
     get plugin() {
@@ -944,12 +946,6 @@ var Window = GObject.registerClass({
     _sync() {
         this.device.contacts.fetch();
         this.plugin.connected();
-    }
-
-    _onDestroy(window) {
-        GLib.source_remove(window._timestampThreadsId);
-        window.contact_chooser.disconnect(window._numberSelectedId);
-        window.plugin.disconnect(window._threadsChangedId);
     }
 
     _onNewConversation() {
