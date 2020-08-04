@@ -6,6 +6,7 @@ data/ui/messaging-conversation.ui
 data/ui/messaging-conversation-row.ui
 data/ui/messaging-window.ui
 data/ui/notification-reply-dialog.ui
+data/ui/preferences-section-row.ui
 data/ui/preferences-window.ui
 data/ui/telephony.ui
 src/extension.js

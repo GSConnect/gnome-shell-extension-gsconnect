@@ -11,6 +11,7 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/messaging-conversation-row.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/messaging-window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/notification-reply-dialog.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/preferences-section-row.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/preferences-window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/telephony.ui</file>
 

@@ -58,90 +58,54 @@ function title_sort(row1, row2) {
  * A row for a section of settings
  */
 const SectionRow = GObject.registerClass({
-    GTypeName: 'GSConnectSectionRow'
+    GTypeName: 'GSConnectPreferencesSectionRow',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/preferences-section-row.ui',
+    Children: ['icon-image', 'title-label', 'subtitle-label']
 }, class SectionRow extends Gtk.ListBoxRow {
 
-    _init(params) {
-        super._init({
-            height_request: 56,
-            selectable: false,
-            visible: true
-        });
-
-        let grid = new Gtk.Grid({
-            column_spacing: 12,
-            margin_top: 8,
-            margin_right: 12,
-            margin_bottom: 8,
-            margin_left: 12,
-            visible: true
-        });
-        this.add(grid);
-
-        // Row Icon
-        this._icon = new Gtk.Image({
-            pixel_size: 32
-        });
-        grid.attach(this._icon, 0, 0, 1, 2);
-
-        // Row Title
-        this._title = new Gtk.Label({
-            halign: Gtk.Align.START,
-            hexpand: true,
-            valign: Gtk.Align.CENTER,
-            vexpand: true
-        });
-        grid.attach(this._title, 1, 0, 1, 1);
-
-        // Row Subtitle
-        this._subtitle = new Gtk.Label({
-            halign: Gtk.Align.START,
-            hexpand: true,
-            valign: Gtk.Align.CENTER,
-            vexpand: true
-        });
-        this._subtitle.get_style_context().add_class('dim-label');
-        grid.attach(this._subtitle, 1, 1, 1, 1);
+    _init(params = {}) {
+        super._init();
 
         Object.assign(this, params);
     }
 
     get icon_name() {
-        return this._icon.gicon.names[0];
+        return this.icon_image.gicon.names[0];
     }
 
     set icon_name(icon_name) {
-        this._icon.visible = !!icon_name;
-        this._icon.gicon = new Gio.ThemedIcon({name: icon_name});
+        this.icon_image.visible = !!icon_name;
+        this.icon_image.gicon = new Gio.ThemedIcon({name: icon_name});
     }
 
     get title() {
-        return this._title.label;
+        return this.title_label.label;
     }
 
     set title(text) {
-        this._title.visible = !!text;
-        this._title.label = text;
+        this.title_label.visible = !!text;
+        this.title_label.label = text;
     }
 
     get subtitle() {
-        return this._subtitle.label;
+        return this.subtitle_label.label;
     }
 
     set subtitle(text) {
-        this._subtitle.visible = (text);
-        this._subtitle.label = text;
+        this.subtitle_label.visible = (text);
+        this.subtitle_label.label = text;
     }
 
     get widget() {
+        if (this._widget === undefined)
+            this._widget = null;
+
         return this._widget;
     }
 
     set widget(widget) {
-        if (this._widget && this._widget instanceof Gtk.Widget) {
-            this._widget.destroy();
-            this._widget = null;
-        }
+        if (this.widget instanceof Gtk.Widget)
+            this.widget.destroy();
 
         this._widget = widget;
         this.get_child().attach(this.widget, 2, 0, 1, 2);
@@ -606,7 +570,7 @@ var DevicePreferences = GObject.registerClass({
             activatable: false
         });
         row.set_name(uuid);
-        row._subtitle.ellipsize = Pango.EllipsizeMode.MIDDLE;
+        row.subtitle_label.ellipsize = Pango.EllipsizeMode.MIDDLE;
 
         let editButton = new Gtk.Button({
             image: new Gtk.Image({
@@ -887,7 +851,7 @@ var DevicePreferences = GObject.registerClass({
             widget: widget
         });
         row.height_request = 48;
-        row._icon.pixel_size = 16;
+        row.icon_image.pixel_size = 16;
         row.action = name;
         this.shortcuts_actions_list.add(row);
     }
