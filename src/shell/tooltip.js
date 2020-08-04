@@ -23,6 +23,7 @@ var Tooltip = class Tooltip {
     constructor(params) {
         Object.assign(this, params);
 
+        this._bin = null;
         this._hoverTimeoutId = 0;
         this._showing = false;
 
@@ -43,9 +44,8 @@ var Tooltip = class Tooltip {
     }
 
     get custom() {
-        if (this._custom === undefined) {
+        if (this._custom === undefined)
             this._custom = null;
-        }
 
         return this._custom;
     }
@@ -54,20 +54,23 @@ var Tooltip = class Tooltip {
         this._custom = actor;
         this._markup = null;
         this._text = null;
-        this._update();
+
+        if (this._showing)
+            this._show();
     }
 
     get gicon() {
-        if (this._gicon === undefined) {
+        if (this._gicon === undefined)
             this._gicon = null;
-        }
 
         return this._gicon;
     }
 
     set gicon(gicon) {
         this._gicon = gicon;
-        this._update();
+
+        if (this._showing)
+            this._show();
     }
 
     get icon() {
@@ -75,19 +78,15 @@ var Tooltip = class Tooltip {
     }
 
     set icon(icon_name) {
-        if (!icon_name) {
+        if (!icon_name)
             this.gicon = null;
-        } else {
-            this.gicon = new Gio.ThemedIcon({
-                name: icon_name
-            });
-        }
+        else
+            this.gicon = new Gio.ThemedIcon({name: icon_name});
     }
 
     get markup() {
-        if (this._markup === undefined) {
+        if (this._markup === undefined)
             this._markup = null;
-        }
 
         return this._markup;
     }
@@ -95,13 +94,14 @@ var Tooltip = class Tooltip {
     set markup(text) {
         this._markup = text;
         this._text = null;
-        this._update();
+
+        if (this._showing)
+            this._show();
     }
 
     get text() {
-        if (this._text === undefined) {
+        if (this._text === undefined)
             this._text = null;
-        }
 
         return this._text;
     }
@@ -109,11 +109,16 @@ var Tooltip = class Tooltip {
     set text(text) {
         this._markup = null;
         this._text = text;
-        this._update();
+
+        if (this._showing)
+            this._show();
     }
 
     get x_offset() {
-        return (this._x_offset === undefined) ? 0 : this._x_offset;
+        if (this._x_offset === undefined)
+            this._x_offset = 0;
+
+        return this._x_offset;
     }
 
     set x_offset(offset) {
@@ -121,43 +126,38 @@ var Tooltip = class Tooltip {
     }
 
     get y_offset() {
-        return (this._y_offset === undefined) ? 0 : this._y_offset;
+        if (this._y_offset === undefined)
+            this._y_offset = 0;
+
+        return this._y_offset;
     }
 
     set y_offset(offset) {
         this._y_offset = (Number.isInteger(offset)) ? offset : 0;
     }
 
-    _update() {
-        if (this._showing) {
-            this._show();
-        }
-    }
-
     _show() {
-        if (!this.text && !this.markup) {
-            this._hide();
-            return;
-        }
+        if (this.text === null && this.markup === null)
+            return this._hide();
 
-        if (!this.bin) {
-            this.bin = new St.Bin({
+        if (this._bin === null) {
+            this._bin = new St.Bin({
                 style_class: 'osd-window gsconnect-tooltip',
                 opacity: 232
             });
 
             if (this.custom) {
-                this.bin.child = this.custom;
+                this._bin.child = this.custom;
             } else {
-                this.bin.child = new St.BoxLayout({vertical: false});
+                this._bin.child = new St.BoxLayout({vertical: false});
 
                 if (this.gicon) {
-                    this.bin.child.icon = new St.Icon({
+                    this._bin.child.icon = new St.Icon({
                         gicon: this.gicon,
                         y_align: St.Align.START
                     });
-                    this.bin.child.icon.set_y_align(Clutter.ActorAlign.START);
-                    this.bin.child.add_child(this.bin.child.icon);
+                    this._bin.child.icon.set_y_align(Clutter.ActorAlign.START);
+                    this._bin.child.add_child(this._bin.child.icon);
                 }
 
                 this.label = new St.Label({text: this.markup || this.text});
@@ -165,21 +165,20 @@ var Tooltip = class Tooltip {
                 this.label.clutter_text.line_wrap_mode = Pango.WrapMode.WORD;
                 this.label.clutter_text.ellipsize = Pango.EllipsizeMode.NONE;
                 this.label.clutter_text.use_markup = (this.markup);
-                this.bin.child.add_child(this.label);
+                this._bin.child.add_child(this.label);
             }
 
-            Main.layoutManager.uiGroup.add_child(this.bin);
-            Main.layoutManager.uiGroup.set_child_above_sibling(this.bin, null);
+            Main.layoutManager.uiGroup.add_child(this._bin);
+            Main.layoutManager.uiGroup.set_child_above_sibling(this._bin, null);
         } else if (this.custom) {
-            this.bin.child = this.custom;
+            this._bin.child = this.custom;
         } else {
-            if (this.bin.child.icon) {
-                this.bin.child.icon.destroy();
-            }
+            if (this._bin.child.icon)
+                this._bin.child.icon.destroy();
 
             if (this.gicon) {
-                this.bin.child.icon = new St.Icon({gicon: this.gicon});
-                this.bin.child.insert_child_at_index(this.bin.child.icon, 0);
+                this._bin.child.icon = new St.Icon({gicon: this.gicon});
+                this._bin.child.insert_child_at_index(this._bin.child.icon, 0);
             }
 
             this.label.clutter_text.text = this.markup || this.text;
@@ -188,22 +187,22 @@ var Tooltip = class Tooltip {
 
         // Position tooltip
         let [x, y] = this.parent.get_transformed_position();
-        x = (x + (this.parent.width / 2)) - Math.round(this.bin.width / 2);
+        x = (x + (this.parent.width / 2)) - Math.round(this._bin.width / 2);
 
         x += this.x_offset;
         y += this.y_offset;
 
         // Show tooltip
         if (this._showing) {
-            this.bin.ease({
+            this._bin.ease({
                 x: x,
                 y: y,
                 time: 0.15,
                 transition: Clutter.AnimationMode.EASE_OUT_QUAD
             });
         } else {
-            this.bin.set_position(x, y);
-            this.bin.ease({
+            this._bin.set_position(x, y);
+            this._bin.ease({
                 opacity: 232,
                 time: 0.15,
                 transition: Clutter.AnimationMode.EASE_OUT_QUAD
@@ -227,19 +226,19 @@ var Tooltip = class Tooltip {
     }
 
     _hide() {
-        if (this.bin) {
-            this.bin.ease({
+        if (this._bin) {
+            this._bin.ease({
                 opacity: 0,
                 time: 0.10,
                 transition: Clutter.AnimationMode.EASE_OUT_QUAD,
                 onComplete: () => {
-                    Main.layoutManager.uiGroup.remove_actor(this.bin);
+                    Main.layoutManager.uiGroup.remove_actor(this._bin);
 
                     if (this.custom)
-                        this.bin.remove_child(this.custom);
+                        this._bin.remove_child(this.custom);
 
-                    this.bin.destroy();
-                    this.bin = null;
+                    this._bin.destroy();
+                    this._bin = null;
                 }
             });
         }
@@ -286,13 +285,12 @@ var Tooltip = class Tooltip {
         this.parent.disconnect(this._hoverId);
         this.parent.disconnect(this._buttonPressEventId);
 
-        if (this.custom) {
+        if (this.custom)
             this.custom.destroy();
-        }
 
-        if (this.bin) {
-            Main.layoutManager.uiGroup.remove_actor(this.bin);
-            this.bin.destroy();
+        if (this._bin) {
+            Main.layoutManager.uiGroup.remove_actor(this._bin);
+            this._bin.destroy();
         }
 
         if (this._hoverTimeoutId) {
