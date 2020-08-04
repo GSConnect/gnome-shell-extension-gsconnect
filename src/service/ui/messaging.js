@@ -310,8 +310,8 @@ const ThreadRow = GObject.registerClass({
 });
 
 
-const ConversationWidget = GObject.registerClass({
-    GTypeName: 'GSConnectConversationWidget',
+const Conversation = GObject.registerClass({
+    GTypeName: 'GSConnectMessagingConversation',
     Properties: {
         'device': GObject.ParamSpec.object(
             'device',
@@ -342,12 +342,12 @@ const ConversationWidget = GObject.registerClass({
             ''
         )
     },
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/conversation.ui',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/messaging-conversation.ui',
     Children: [
         'entry', 'list', 'scrolled',
         'pending', 'pending-box'
     ]
-}, class ConversationWidget extends Gtk.Grid {
+}, class MessagingConversation extends Gtk.Grid {
 
     _init(params) {
         super._init({
@@ -810,7 +810,7 @@ var Window = GObject.registerClass({
         'headerbar', 'infobar',
         'thread-list', 'stack'
     ]
-}, class Window extends Gtk.ApplicationWindow {
+}, class MessagingWindow extends Gtk.ApplicationWindow {
 
     _init(params) {
         super._init(params);
@@ -896,7 +896,7 @@ var Window = GObject.registerClass({
                 return;
             }
 
-            conversation = new ConversationWidget({
+            conversation = new Conversation({
                 device: this.device,
                 plugin: this.plugin,
                 thread_id: thread_id
@@ -1031,7 +1031,7 @@ var Window = GObject.registerClass({
         this.thread_list.invalidate_sort();
     }
 
-    // GtkListBox::row-selected
+    // GtkListBox::row-activated
     _onThreadSelected(box, row) {
         // Show the conversation for this number (if applicable)
         if (row) {
@@ -1104,7 +1104,7 @@ var Window = GObject.registerClass({
         }
 
         // We're creating a new conversation
-        let conversation = new ConversationWidget({
+        let conversation = new Conversation({
             device: this.device,
             plugin: this.plugin,
             addresses: addresses
@@ -1146,7 +1146,7 @@ var Window = GObject.registerClass({
      * Try and find an existing conversation widget for @message.
      *
      * @param {Object} message - A message object
-     * @return {ConversationWidget|null} A conversation widget or %null
+     * @return {Conversation|null} A conversation widget or %null
      */
     getConversationForMessage(message) {
         // This shouldn't happen

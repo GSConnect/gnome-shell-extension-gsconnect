@@ -2,7 +2,7 @@
 <!-- Generated with glade 3.22.1 -->
 <interface domain="org.gnome.Shell.Extensions.GSConnect">
   <requires lib="gtk+" version="3.24"/>
-  <template class="GSConnectConversationWidget" parent="GtkGrid">
+  <template class="GSConnectMessagingConversation" parent="GtkGrid">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <child>
@@ -74,7 +74,6 @@
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="enable_emoji_completion">True</property>
-        <property name="tooltip_text" translatable="yes">Type a message</property>
         <property name="margin_left">6</property>
         <property name="margin_right">6</property>
         <property name="margin_top">6</property>
@@ -88,6 +87,12 @@
         <signal name="changed" handler="_onEntryChanged" swapped="no"/>
         <signal name="icon-release" handler="_onSendMessage" swapped="no"/>
         <signal name="key-release-event" handler="_onKeyPressEvent" swapped="no"/>
+        <child internal-child="accessible">
+          <object class="AtkObject">
+            <property name="AtkObject::accessible-name" translatable="yes">Message Entry</property>
+            <property name="AtkObject::accessible-description" translatable="yes">Type a message and press Enter to send</property>
+          </object>
+        </child>
       </object>
       <packing>
         <property name="left_attach">0</property>
