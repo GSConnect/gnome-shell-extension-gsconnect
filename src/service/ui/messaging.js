@@ -281,7 +281,7 @@ const ConversationMessage = GObject.registerClass({
             this.avatar.contact = this.contact;
             this.avatar.visible = true;
 
-            this.sender_label.label = `<span size="small" weight="bold">${this.contact.name}</span>`;
+            this.sender_label.label = contact.name;
             this.sender_label.visible = true;
 
             this.message_label.get_style_context().add_class('message-in');
