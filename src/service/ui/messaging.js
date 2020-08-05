@@ -184,16 +184,43 @@ var MessageLabel = GObject.registerClass({
 /**
  * A ListBoxRow for a preview of a conversation
  */
-const ConversationRow = GObject.registerClass({
-    GTypeName: 'GSConnectMessagingConversationRow',
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/messaging-conversation-row.ui',
-    Children: ['avatar', 'name-label', 'time-label', 'body-label']
-}, class ConversationRow extends Gtk.ListBoxRow {
-    _init(contacts, message) {
-        super._init();
+const ConversationMessage = GObject.registerClass({
+    GTypeName: 'GSConnectMessagingConversationMessage',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/messaging-conversation-message.ui',
+    Children: ['grid', 'avatar', 'sender-label', 'message-label']
+}, class ConversationMessage extends Gtk.ListBoxRow {
+    _init(params = {}) {
+        if (params.contact)
+            this.contact = params.contact;
+        delete params.contact;
 
-        this.contacts = contacts;
-        this.message = message;
+        if (params.message)
+            this.message = params.message;
+        delete params.message;
+
+        super._init(params);
+
+        // Sort properties
+        this.sender = this.message.addresses[0].address || 'unknown';
+        this.message_label.label = URI.linkify(this.message.body, this.message.date);
+        this.message_label.tooltip_text = getDetailedTime(this.message.date);
+
+        // Add avatar for incoming messages
+        if (this.message.type === Sms.MessageBox.INBOX) {
+            this.grid.margin_end = 18;
+            this.grid.halign = Gtk.Align.START;
+
+            this.avatar.contact = this.contact;
+            this.avatar.visible = true;
+
+            this.sender_label.label = `<span size="small" weight="bold">${this.contact.name}</span>`;
+            this.sender_label.visible = true;
+
+            this.message_label.get_style_context().add_class('message-in');
+            this.message_label.halign = Gtk.Align.START;
+        } else {
+            this.message_label.get_style_context().add_class('message-out');
+        }
     }
 
     get date() {
@@ -205,60 +232,14 @@ const ConversationRow = GObject.registerClass({
     }
 
     get message() {
+        if (this._message === undefined)
+            this._message = null;
+
         return this._message;
     }
 
     set message(message) {
         this._message = message;
-        this._sender = message.addresses[0].address || 'unknown';
-
-        // Contact Name
-        let nameLabel = _('Unknown Contact');
-
-        // Update avatar for single-recipient messages
-        if (message.addresses.length === 1) {
-            this.avatar.contact = this.contacts[this._sender];
-            nameLabel = GLib.markup_escape_text(this.avatar.contact.name, -1);
-        } else {
-            this.avatar.contact = null;
-            nameLabel = _('Group Message');
-            let participants = [];
-            message.addresses.forEach((address) => {
-                participants.push(this.contacts[address.address].name);
-            });
-            this.name_label.tooltip_text = participants.join(', ');
-        }
-
-        // Contact Name & Message body
-        let bodyLabel = message.body.split(/\r|\n/)[0];
-        bodyLabel = GLib.markup_escape_text(bodyLabel, -1);
-
-        // Ignore the 'read' flag if it's an outgoing message
-        if (message.type === Sms.MessageBox.SENT) {
-            // TRANSLATORS: An outgoing message body in a conversation summary
-            bodyLabel = _('You: %s').format(bodyLabel);
-
-        // Otherwise make it bold if it's unread
-        } else if (message.read === Sms.MessageStatus.UNREAD) {
-            nameLabel = `<b>${nameLabel}</b>`;
-            bodyLabel = `<b>${bodyLabel}</b>`;
-        }
-
-        // Set the labels, body always smaller
-        this.name_label.label = nameLabel;
-        this.body_label.label = `<small>${bodyLabel}</small>`;
-
-        // Time
-        let timeLabel = `<small>${getShortTime(message.date)}</small>`;
-        this.time_label.label = timeLabel;
-    }
-
-    /**
-     * Update the relative time label.
-     */
-    update() {
-        let timeLabel = `<small>${getShortTime(this.message.date)}</small>`;
-        this.time_label.label = timeLabel;
     }
 });
 
@@ -507,64 +488,26 @@ const Conversation = GObject.registerClass({
     }
 
     /**
-     * Messages
+     * Create a message row, ensuring a contact object has been retrieved or
+     * generated for the message.
+     *
+     * @param {Object} message - A dictionary of message data
+     * @return {ConversationMessage} A message row
      */
     _createMessageRow(message) {
-        let incoming = (message.type === Sms.MessageBox.INBOX);
+        // Ensure we have a contact
+        let sender = message.addresses[0].address || 'unknown';
 
-        let row = new Gtk.ListBoxRow({
-            activatable: false,
-            selectable: false,
-            hexpand: true,
-            visible: true
-        });
-
-        // Sort properties
-        row.sender = message.addresses[0].address || 'unknown';
-        row.message = message;
-        row.grid = new Gtk.Grid({
-            can_focus: false,
-            hexpand: true,
-            margin_top: 6,
-            margin_bottom: 6,
-            margin_start: 6,
-            margin_end: incoming ? 18 : 6,
-            //margin: 6,
-            column_spacing: 6,
-            halign: incoming ? Gtk.Align.START : Gtk.Align.END
-        });
-        row.add(row.grid);
-
-        // Add avatar for incoming messages
-        if (incoming) {
-            // Ensure we have a contact
-            if (this.contacts[row.sender] === undefined) {
-                this.contacts[row.sender] = this.device.contacts.query({
-                    number: row.sender
-                });
-            }
-
-            row.avatar = new Contacts.Avatar(this.contacts[row.sender]);
-            row.avatar.valign = Gtk.Align.END;
-            row.grid.attach(row.avatar, 0, 1, 1, 1);
-
-            row.senderLabel = new Gtk.Label({
-                label: `<span size="small" weight="bold">${this.contacts[row.sender].name}</span>`,
-                halign: Gtk.Align.START,
-                valign: Gtk.Align.START,
-                use_markup: true,
-                margin_bottom: 0,
-                margin_start: 6,
+        if (this.contacts[sender] === undefined) {
+            this.contacts[sender] = this.device.contacts.query({
+                number: sender
             });
-            row.grid.attach(row.senderLabel, 1, 0, 1, 1);
         }
 
-        let widget = new MessageLabel(message);
-        row.grid.attach(widget, 1, 1, 1, 1);
-
-        row.show_all();
-
-        return row;
+        return new ConversationMessage({
+            contact: this.contacts[sender],
+            message: message
+        });
     }
 
     _populateMessages() {
@@ -720,6 +663,88 @@ const Conversation = GObject.registerClass({
     setMessage(text) {
         this.entry.text = text;
         this.entry.emit('move-cursor', 0, text.length, false);
+    }
+});
+
+
+/**
+ * A ListBoxRow for a preview of a conversation
+ */
+const ConversationSummary = GObject.registerClass({
+    GTypeName: 'GSConnectMessagingConversationSummary',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/messaging-conversation-summary.ui',
+    Children: ['avatar', 'name-label', 'time-label', 'body-label']
+}, class ConversationSummary extends Gtk.ListBoxRow {
+    _init(contacts, message) {
+        super._init();
+
+        this.contacts = contacts;
+        this.message = message;
+    }
+
+    get date() {
+        return this._message.date;
+    }
+
+    get thread_id() {
+        return this._message.thread_id;
+    }
+
+    get message() {
+        return this._message;
+    }
+
+    set message(message) {
+        this._message = message;
+        this._sender = message.addresses[0].address || 'unknown';
+
+        // Contact Name
+        let nameLabel = _('Unknown Contact');
+
+        // Update avatar for single-recipient messages
+        if (message.addresses.length === 1) {
+            this.avatar.contact = this.contacts[this._sender];
+            nameLabel = GLib.markup_escape_text(this.avatar.contact.name, -1);
+        } else {
+            this.avatar.contact = null;
+            nameLabel = _('Group Message');
+            let participants = [];
+            message.addresses.forEach((address) => {
+                participants.push(this.contacts[address.address].name);
+            });
+            this.name_label.tooltip_text = participants.join(', ');
+        }
+
+        // Contact Name & Message body
+        let bodyLabel = message.body.split(/\r|\n/)[0];
+        bodyLabel = GLib.markup_escape_text(bodyLabel, -1);
+
+        // Ignore the 'read' flag if it's an outgoing message
+        if (message.type === Sms.MessageBox.SENT) {
+            // TRANSLATORS: An outgoing message body in a conversation summary
+            bodyLabel = _('You: %s').format(bodyLabel);
+
+        // Otherwise make it bold if it's unread
+        } else if (message.read === Sms.MessageStatus.UNREAD) {
+            nameLabel = `<b>${nameLabel}</b>`;
+            bodyLabel = `<b>${bodyLabel}</b>`;
+        }
+
+        // Set the labels, body always smaller
+        this.name_label.label = nameLabel;
+        this.body_label.label = `<small>${bodyLabel}</small>`;
+
+        // Time
+        let timeLabel = `<small>${getShortTime(message.date)}</small>`;
+        this.time_label.label = timeLabel;
+    }
+
+    /**
+     * Update the relative time label.
+     */
+    update() {
+        let timeLabel = `<small>${getShortTime(this.message.date)}</small>`;
+        this.time_label.label = timeLabel;
     }
 });
 
@@ -966,7 +991,7 @@ var Window = GObject.registerClass({
         // What's left in the dictionary is new summaries
         for (let message of Object.values(messages)) {
             let contacts = this.device.contacts.lookupAddresses(message.addresses);
-            let conversation = new ConversationRow(contacts, message);
+            let conversation = new ConversationSummary(contacts, message);
             this.thread_list.add(conversation);
         }
 
@@ -1003,7 +1028,7 @@ var Window = GObject.registerClass({
      * Find the thread row for @contacts
      *
      * @param {Object[]} contacts - A contact group
-     * @return {ConversationRow|null} The thread row or %null
+     * @return {ConversationSummary|null} The thread row or %null
      */
     _getRowForContacts(contacts) {
         let addresses = Object.keys(contacts).map(address => {

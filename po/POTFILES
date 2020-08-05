@@ -2,7 +2,8 @@ data/ui/command-editor.ui
 data/ui/connect-dialog.ui
 data/ui/contact-chooser.ui
 data/ui/device-preferences.ui
-data/ui/messaging-conversation-row.ui
+data/ui/messaging-conversation-message.ui
+data/ui/messaging-conversation-summary.ui
 data/ui/messaging-conversation.ui
 data/ui/messaging-window.ui
 data/ui/notification-reply-dialog.ui
