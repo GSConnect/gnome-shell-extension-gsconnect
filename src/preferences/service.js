@@ -53,7 +53,8 @@ async function generateSupportLog(time) {
 
         // FIXME: BSD???
         let proc = new Gio.Subprocess({
-            flags: Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_MERGE,
+            flags: (Gio.SubprocessFlags.STDOUT_PIPE |
+                    Gio.SubprocessFlags.STDERR_MERGE),
             argv: ['journalctl', '--no-host', '--since', time]
         });
         proc.init(null);
@@ -138,9 +139,8 @@ function rowSeparators(row, before) {
     let header = row.get_header();
 
     if (before === null) {
-        if (header !== null) {
+        if (header !== null)
             header.destroy();
-        }
 
         return;
     }
@@ -616,17 +616,17 @@ var Window = GObject.registerClass({
         try {
             let prefs = this.stack.get_child_by_name(device.id);
 
-            if (prefs !== null) {
-                if (prefs === this.stack.get_visible_child()) {
-                    this._onPrevious();
-                }
+            if (prefs === null)
+                return;
 
-                prefs.row.destroy();
-                prefs.row = null;
+            if (prefs === this.stack.get_visible_child())
+                this._onPrevious();
 
-                prefs.dispose();
-                prefs.destroy();
-            }
+            prefs.row.destroy();
+            prefs.row = null;
+
+            prefs.dispose();
+            prefs.destroy();
         } catch (e) {
             logError (e);
         }
@@ -634,10 +634,8 @@ var Window = GObject.registerClass({
 
     _onDeviceSelected(box, row) {
         try {
-            if (row === null) {
-                this._onPrevious();
-                return;
-            }
+            if (row === null)
+                return this._onPrevious();
 
             // Transition the panel
             let name = row.get_name();

@@ -314,9 +314,8 @@ var Store = GObject.registerClass({
             // Get the current EBooks
             let registry = await this._getESourceRegistry();
 
-            for (let source of registry.list_sources('Address Book')) {
+            for (let source of registry.list_sources('Address Book'))
                 await this._onAppeared(null, source);
-            }
 
             // Watch for new and removed sources
             this._watcher = new EDataServer.SourceRegistryWatcher({
@@ -340,9 +339,8 @@ var Store = GObject.registerClass({
     *[Symbol.iterator]() {
         let contacts = this.contacts;
 
-        for (let i = 0, len = contacts.length; i < len; i++) {
+        for (let i = 0, len = contacts.length; i < len; i++)
             yield contacts[i];
-        }
     }
 
     get contacts() {

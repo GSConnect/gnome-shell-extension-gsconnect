@@ -628,7 +628,7 @@ var Channel = GObject.registerClass({
      * Wrap the connection in Gio.TlsClientConnection and initiate handshake
      *
      * @param {Gio.TcpConnection} connection - The unauthenticated connection
-     * @return {Gio.TlsServerConnection} The authenticated connection
+     * @return {Gio.TlsClientConnection} The authenticated connection
      */
     _clientEncryption(connection) {
         connection = Gio.TlsClientConnection.new(
@@ -683,9 +683,8 @@ var Channel = GObject.registerClass({
                         this.identity = new Core.Packet(data);
 
                         // Reject connections without a deviceId
-                        if (!this.identity.body.deviceId) {
+                        if (!this.identity.body.deviceId)
                             throw new Error('missing deviceId');
-                        }
 
                         resolve(connection);
                     } catch (e) {

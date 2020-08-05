@@ -202,9 +202,8 @@ const setAvatarVisible = function(row, visible) {
     }
 
     // Show hide the avatar
-    if (incoming) {
+    if (incoming)
         row.avatar.visible = visible;
-    }
 };
 
 
@@ -240,7 +239,7 @@ var MessageLabel = GObject.registerClass({
     vfunc_activate_link(uri) {
         Gtk.show_uri_on_window(
             this.get_toplevel(),
-            uri.includes('://') ? uri : `http://${uri}`,
+            uri.includes('://') ? uri : `https://${uri}`,
             Gtk.get_current_event_time()
         );
 
@@ -1027,9 +1026,8 @@ var Window = GObject.registerClass({
             let message = thread[thread.length - 1];
 
             // Skip messages without a body (eg. MMS messages without text)
-            if (message.body) {
+            if (message.body)
                 messages[thread_id] = thread[thread.length - 1];
-            }
         }
 
         // Update existing summaries and destroy old ones

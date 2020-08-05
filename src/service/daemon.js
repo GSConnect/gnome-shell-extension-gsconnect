@@ -190,9 +190,8 @@ const Service = GObject.registerClass({
 
             type = Number(imports.byteArray.toString(type));
 
-            if ([8, 9, 10, 14].includes(type)) {
+            if ([8, 9, 10, 14].includes(type))
                 return 'laptop';
-            }
 
             return 'desktop';
         } catch (e) {
@@ -322,22 +321,17 @@ const Service = GObject.registerClass({
             let devices;
             let id = parameter[0].unpack();
 
-            if (id === '*') {
+            if (id === '*')
                 devices = this.devices.values();
-            } else {
+            else
                 devices = [this.devices.get(id)];
-            }
 
-            // Unpack the action data
+            // Unpack the action data and activate the action
             let name = parameter[1].unpack();
             let target = parameter[2].unpack() ? parameter[3].unpack() : null;
 
-            // Activate the action on each available device
-            for (let device of devices) {
-                if (device) {
-                    device.activate_action(name, target);
-                }
-            }
+            for (let device of devices)
+                device.activate_action(name, target);
         } catch (e) {
             logError(e);
         }

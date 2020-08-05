@@ -240,9 +240,8 @@ gsconnect.installService = function() {
         }
 
         // WebExtension Manifests
-        for (let [dirname, contents] of manifests) {
+        for (let [dirname, contents] of manifests)
             installFile(dirname, manifestFile, contents);
-        }
 
     // Otherwise, if running as a system extension, ensure anything previously
     // installed when running as a user extension is removed.
@@ -253,12 +252,10 @@ gsconnect.installService = function() {
         GLib.unlink(GLib.build_filenamev([iconDir, iconFull]));
         GLib.unlink(GLib.build_filenamev([iconDir, iconSym]));
 
-        for (let [dir, name] of fileManagers) {
+        for (let [dir, name] of fileManagers)
             GLib.unlink(GLib.build_filenamev([dir, name]));
-        }
 
-        for (let dir of Object.keys(manifests)) {
+        for (let dir of Object.keys(manifests))
             GLib.unlink(GLib.build_filenamev([dir, manifestFile]));
-        }
     }
 };

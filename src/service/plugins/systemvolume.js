@@ -87,10 +87,8 @@ var Plugin = GObject.registerClass({
         }
 
         // No sink with the given name
-        if (stream === undefined) {
-            this._sendSinkList();
-            return;
-        }
+        if (stream === undefined)
+            return this._sendSinkList();
 
         // Get a cache and store volume and mute states if changed
         let cache = this._cache.get(stream) || {};

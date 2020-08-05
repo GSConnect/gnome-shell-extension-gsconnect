@@ -254,9 +254,8 @@ var DevicePreferences = GObject.registerClass({
 
         // Hide elements for any disabled plugins
         for (let name of DEVICE_PLUGINS) {
-            if (this.hasOwnProperty(name)) {
+            if (this.hasOwnProperty(name))
                 this[name].visible = this.get_plugin_allowed(name);
-            }
         }
     }
 

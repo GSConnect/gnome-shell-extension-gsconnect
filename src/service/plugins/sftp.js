@@ -396,9 +396,8 @@ var Plugin = GObject.registerClass({
             try {
                 by_name_dir.make_directory_with_parents(null);
             } catch (e) {
-                if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.EXISTS)) {
+                if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.EXISTS))
                     throw e;
-                }
             }
 
             // Replace path separator with a Unicode lookalike:
@@ -433,9 +432,8 @@ var Plugin = GObject.registerClass({
                     );
                 });
 
-                if (link_stat.get_symlink_target() === link_target) {
+                if (link_stat.get_symlink_target() === link_target)
                     return;
-                }
 
                 await new Promise((resolve, reject) => {
                     link.delete_async(
@@ -451,9 +449,8 @@ var Plugin = GObject.registerClass({
                     );
                 });
             } catch (e) {
-                if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.NOT_FOUND)) {
+                if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.NOT_FOUND))
                     throw e;
-                }
             }
 
             link.make_symbolic_link(link_target, null);

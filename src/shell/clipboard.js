@@ -85,9 +85,8 @@ var Clipboard = GObject.registerClass({
     }
 
     get clipboard() {
-        if (this._clipboard === undefined) {
+        if (this._clipboard === undefined)
             this._clipboard = St.Clipboard.get_default();
-        }
 
         return this._clipboard;
     }
