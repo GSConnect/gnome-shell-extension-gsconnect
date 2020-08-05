@@ -16,6 +16,17 @@ globalThis.HAVE_REMOTEINPUT = GLib.getenv('GDMSESSION') !== 'ubuntu-wayland';
 globalThis.HAVE_WAYLAND = GLib.getenv('XDG_SESSION_TYPE') === 'wayland';
 
 
+/**
+ * User Directories
+ */
+gsconnect.cachedir = GLib.build_filenamev([GLib.get_user_cache_dir(), 'gsconnect']);
+gsconnect.configdir = GLib.build_filenamev([GLib.get_user_config_dir(), 'gsconnect']);
+gsconnect.runtimedir = GLib.build_filenamev([GLib.get_user_runtime_dir(), 'gsconnect']);
+
+for (let path of [gsconnect.cachedir, gsconnect.configdir, gsconnect.runtimedir])
+    GLib.mkdir_with_parents(path, 0o755);
+
+
 /*
  * DBus Interface Introspection
  */
