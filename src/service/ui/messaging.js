@@ -291,6 +291,16 @@ const ConversationMessage = GObject.registerClass({
         }
     }
 
+    _onActivateLink(label, uri) {
+        Gtk.show_uri_on_window(
+            this.get_toplevel(),
+            uri.includes('://') ? uri : `https://${uri}`,
+            Gtk.get_current_event_time()
+        );
+
+        return true;
+    }
+
     get date() {
         return this._message.date;
     }

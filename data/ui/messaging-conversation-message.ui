@@ -53,6 +53,7 @@
             <property name="wrap">True</property>
             <property name="wrap_mode">word-char</property>
             <property name="xalign">0</property>
+            <signal name="activate-link" handler="_onActivateLink" swapped="no"/>
           </object>
           <packing>
             <property name="left_attach">1</property>
