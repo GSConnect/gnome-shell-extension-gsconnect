@@ -6,7 +6,7 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
 const PluginBase = imports.service.plugin;
-const TelephonyUI = imports.service.ui.telephony;
+const LegacyMessaging = imports.service.ui.legacyMessaging;
 
 
 var Metadata = {
@@ -275,7 +275,7 @@ var Plugin = GObject.registerClass({
             });
         }
 
-        let dialog = new TelephonyUI.LegacyMessagingDialog({
+        let dialog = new LegacyMessaging.Dialog({
             device: this.device,
             message: {
                 date: packet.id,

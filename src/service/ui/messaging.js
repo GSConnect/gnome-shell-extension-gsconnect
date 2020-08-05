@@ -208,47 +208,6 @@ const setAvatarVisible = function(row, visible) {
 
 
 /**
- * A simple GtkLabel subclass with a chat bubble appearance
- */
-var MessageLabel = GObject.registerClass({
-    GTypeName: 'GSConnectMessageLabel'
-}, class MessageLabel extends Gtk.Label {
-
-    _init(message) {
-        this.message = message;
-        let incoming = (message.type === Sms.MessageBox.INBOX);
-
-        super._init({
-            label: URI.linkify(message.body, message.date),
-            halign: incoming ? Gtk.Align.START : Gtk.Align.END,
-            selectable: true,
-            tooltip_text: getDetailedTime(message.date),
-            use_markup: true,
-            visible: true,
-            wrap: true,
-            wrap_mode: Pango.WrapMode.WORD_CHAR,
-            xalign: 0
-        });
-
-        if (incoming)
-            this.get_style_context().add_class('message-in');
-        else
-            this.get_style_context().add_class('message-out');
-    }
-
-    vfunc_activate_link(uri) {
-        Gtk.show_uri_on_window(
-            this.get_toplevel(),
-            uri.includes('://') ? uri : `https://${uri}`,
-            Gtk.get_current_event_time()
-        );
-
-        return true;
-    }
-});
-
-
-/**
  * A ListBoxRow for a preview of a conversation
  */
 const ConversationMessage = GObject.registerClass({

@@ -6,9 +6,10 @@ const Gtk = imports.gi.Gtk;
 
 const Contacts = imports.service.ui.contacts;
 const Messaging = imports.service.ui.messaging;
+const URI = imports.utils.uri;
 
 
-var LegacyMessagingDialog = GObject.registerClass({
+var Dialog = GObject.registerClass({
     GTypeName: 'GSConnectLegacyMessagingDialog',
     Properties: {
         'device': GObject.ParamSpec.object(
@@ -26,10 +27,10 @@ var LegacyMessagingDialog = GObject.registerClass({
             GObject.Object
         )
     },
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/telephony.ui',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/legacy-messaging-dialog.ui',
     Children: [
         'infobar', 'stack',
-        'message-box', 'entry'
+        'message-box', 'message-avatar', 'message-label', 'entry'
     ]
 }, class Dialog extends Gtk.Dialog {
 
@@ -78,9 +79,11 @@ var LegacyMessagingDialog = GObject.registerClass({
             this.message = params.message;
             this.addresses = params.message.addresses;
 
-            let label = new Messaging.MessageLabel(this.message);
-            label.margin_bottom = 12;
-            this.message_box.add(label);
+            this.message_avatar.contact = this.device.contacts.query({
+                number: this.addresses[0].address
+            });
+            this.message_label.label = URI.linkify(this.message.body);
+            this.message_box.visible = true;
 
         // Otherwise set the address(es) if we were passed those
         } else if (params.addresses) {
@@ -141,9 +144,8 @@ var LegacyMessagingDialog = GObject.registerClass({
     }
 
     get addresses() {
-        if (this._addresses === undefined) {
+        if (this._addresses === undefined)
             this._addresses = [];
-        }
 
         return this._addresses;
     }
@@ -160,11 +162,24 @@ var LegacyMessagingDialog = GObject.registerClass({
     }
 
     get plugin() {
-        return this._plugin || null;
+        if (this._plugin === undefined)
+            this._plugin = null;
+
+        return this._plugin;
     }
 
     set plugin(plugin) {
         this._plugin = plugin;
+    }
+
+    _onActivateLink(label, uri) {
+        Gtk.show_uri_on_window(
+            this.get_toplevel(),
+            uri.includes('://') ? uri : `https://${uri}`,
+            Gtk.get_current_event_time()
+        );
+
+        return true;
     }
 
     _onNumberSelected(chooser, number) {
@@ -176,16 +191,12 @@ var LegacyMessagingDialog = GObject.registerClass({
     }
 
     _onStateChanged() {
-        switch (false) {
-            case this.device.connected:
-            case (this.entry.buffer.text.trim().length):
-            case (this.stack.visible_child_name === 'message-editor'):
-                this.set_response_sensitive(Gtk.ResponseType.OK, false);
-                break;
-
-            default:
-                this.set_response_sensitive(Gtk.ResponseType.OK, true);
-        }
+        if (this.device.connected &&
+            this.entry.buffer.text.trim() &&
+            this.stack.visible_child_name === 'message-editor')
+            this.set_response_sensitive(Gtk.ResponseType.OK, true);
+        else
+            this.set_response_sensitive(Gtk.ResponseType.OK, false);
     }
 
     /**

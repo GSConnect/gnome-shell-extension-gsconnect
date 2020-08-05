@@ -4,8 +4,8 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
 const PluginBase = imports.service.plugin;
+const LegacyMessaging = imports.service.ui.legacyMessaging;
 const Messaging = imports.service.ui.messaging;
-const TelephonyUI = imports.service.ui.telephony;
 const URI = imports.utils.uri;
 
 
@@ -151,7 +151,7 @@ var Plugin = GObject.registerClass({
 
     get window() {
         if (this.settings.get_boolean('legacy-sms')) {
-            return new TelephonyUI.LegacyMessagingDialog({
+            return new LegacyMessaging.Dialog({
                 device: this.device,
                 plugin: this
             });

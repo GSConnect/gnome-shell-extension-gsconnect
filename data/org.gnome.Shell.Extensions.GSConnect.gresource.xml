@@ -7,6 +7,7 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/connect-dialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/contact-chooser.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/device-preferences.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/legacy-messaging-dialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/messaging-conversation-message.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/messaging-conversation-summary.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/messaging-conversation.ui</file>
@@ -14,7 +15,6 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/notification-reply-dialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/preferences-section-row.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/preferences-window.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/telephony.ui</file>
 
     <!-- DBus Service Files -->
     <file compressed="true">org.gnome.Shell.Extensions.GSConnect.desktop</file>

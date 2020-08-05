@@ -2,6 +2,7 @@ data/ui/command-editor.ui
 data/ui/connect-dialog.ui
 data/ui/contact-chooser.ui
 data/ui/device-preferences.ui
+data/ui/legacy-messaging-dialog.ui
 data/ui/messaging-conversation-message.ui
 data/ui/messaging-conversation-summary.ui
 data/ui/messaging-conversation.ui
@@ -9,7 +10,6 @@ data/ui/messaging-window.ui
 data/ui/notification-reply-dialog.ui
 data/ui/preferences-section-row.ui
 data/ui/preferences-window.ui
-data/ui/telephony.ui
 src/extension.js
 src/nautilus-gsconnect.py
 src/preferences/device.js
