@@ -169,15 +169,6 @@ var MessageLabel = GObject.registerClass({
 
         return true;
     }
-
-    vfunc_query_tooltip(x, y, keyboard_tooltip, tooltip) {
-        if (super.vfunc_query_tooltip(x, y, keyboard_tooltip, tooltip)) {
-            tooltip.set_text(getDetailedTime(this.message.date));
-            return true;
-        }
-
-        return false;
-    }
 });
 
 
