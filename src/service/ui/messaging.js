@@ -483,14 +483,24 @@ const Conversation = GObject.registerClass({
             return;
 
         // Send the message
-        this.plugin.sendMessage(this.addresses, entry.text);
+        this.plugin.sendMessage(this.addresses, this.entry.text);
 
-        // Log the message as pending
-        let message = new MessageLabel({
-            body: this.entry.text,
-            date: Date.now(),
-            type: Sms.MessageBox.SENT
+        // Add a phony message in the pending box
+        let message = new Gtk.Label({
+            label: URI.linkify(this.entry.text),
+            halign: Gtk.Align.END,
+            selectable: true,
+            use_markup: true,
+            visible: true,
+            wrap: true,
+            wrap_mode: Pango.WrapMode.WORD_CHAR,
+            xalign: 0
         });
+        message.get_style_context().add_class('message-out');
+        message.date = Date.now();
+        message.type = Sms.MessageBox.SENT;
+
+        // Notify to reveal the pending box
         this.pending_box.add(message);
         this.notify('has-pending');
 
