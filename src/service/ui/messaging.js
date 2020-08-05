@@ -256,24 +256,19 @@ const ConversationMessage = GObject.registerClass({
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/messaging-conversation-message.ui',
     Children: ['grid', 'avatar', 'sender-label', 'message-label']
 }, class ConversationMessage extends Gtk.ListBoxRow {
-    _init(params = {}) {
-        if (params.contact)
-            this.contact = params.contact;
-        delete params.contact;
+    _init(contact, message) {
+        super._init();
 
-        if (params.message)
-            this.message = params.message;
-        delete params.message;
-
-        super._init(params);
+        this.contact = contact;
+        this.message = message;
 
         // Sort properties
-        this.sender = this.message.addresses[0].address || 'unknown';
-        this.message_label.label = URI.linkify(this.message.body, this.message.date);
-        this.message_label.tooltip_text = getDetailedTime(this.message.date);
+        this.sender = message.addresses[0].address || 'unknown';
+        this.message_label.label = URI.linkify(message.body);
+        this.message_label.tooltip_text = getDetailedTime(message.date);
 
         // Add avatar for incoming messages
-        if (this.message.type === Sms.MessageBox.INBOX) {
+        if (message.type === Sms.MessageBox.INBOX) {
             this.grid.margin_end = 18;
             this.grid.halign = Gtk.Align.START;
 
@@ -581,10 +576,7 @@ const Conversation = GObject.registerClass({
             });
         }
 
-        return new ConversationMessage({
-            contact: this.contacts[sender],
-            message: message
-        });
+        return new ConversationMessage(this.contacts[sender], message);
     }
 
     _populateMessages() {
