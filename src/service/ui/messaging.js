@@ -14,90 +14,167 @@ const Sms = imports.service.plugins.sms;
 const URI = imports.utils.uri;
 
 
+/*
+ * Useful time constants
+ */
+const TIME_SPAN_MINUTE = 60000;
+const TIME_SPAN_HOUR = 3600000;
+const TIME_SPAN_DAY = 86400000;
+const TIME_SPAN_WEEK = 604800000;
+
+
+// Less than an hour (eg. 42 minutes ago)
+const _lthLong = new Intl.RelativeTimeFormat('default', {
+    numeric: 'auto',
+    style: 'long'
+});
+
+// Less than a day ago (eg. 11:42 PM)
+const _ltdFormat = new Intl.DateTimeFormat('default', {
+    hour: 'numeric',
+    minute: 'numeric'
+});
+
+// Less than a week ago (eg. Monday)
+const _ltwLong = new Intl.DateTimeFormat('default', {
+    weekday: 'long'
+});
+
+// Less than a week ago (eg. Mon)
+const _ltwShort = new Intl.DateTimeFormat('default', {
+    weekday: 'short'
+});
+
+// Less than a year (eg. Oct 31)
+const _ltyShort = new Intl.DateTimeFormat('default', {
+    day: 'numeric',
+    month: 'short'
+});
+
+// Less than a year (eg. October 31)
+const _ltyLong = new Intl.DateTimeFormat('default', {
+    day: 'numeric',
+    month: 'long'
+});
+
+// Greater than a year (eg. October 31, 2019)
+const _gtyLong = new Intl.DateTimeFormat('default', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+});
+
+// Greater than a year (eg. 10/31/2019)
+const _gtyShort = new Intl.DateTimeFormat('default', {
+    day: 'numeric',
+    month: 'numeric',
+    year: 'numeric'
+});
+
+// Pretty close to strftime's %c
+const _cFormat = new Intl.DateTimeFormat('default', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    weekday: 'short',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+    timeZoneName: 'short'
+});
+
+
 /**
- * Return a human-readable timestamp.
+ * Return a human-readable timestamp, formatted for longer contexts.
  *
  * @param {number} time - Milliseconds since the epoch (local time)
- * @return {string} A timestamp similar to what Android Messages uses
+ * @return {string} A localized timestamp similar to what Android Messages uses
  */
 function getTime(time) {
-    let date = GLib.DateTime.new_from_unix_local(time / 1000);
-    let now = GLib.DateTime.new_now_local();
-    let diff = now.difference(date);
+    let date = new Date(time);
+    let now = new Date();
+    let diff = now - time;
 
     // Super recent
-    if (diff < GLib.TIME_SPAN_MINUTE)
+    if (diff < TIME_SPAN_MINUTE)
         // TRANSLATORS: Less than a minute ago
         return _('Just now');
 
-    // Under an hour
-    if (diff < GLib.TIME_SPAN_HOUR)
-        // TRANSLATORS: Time duration in minutes (eg. 15 minutes)
-        return ngettext(
-            '%d minute',
-            '%d minutes',
-            (diff / GLib.TIME_SPAN_MINUTE)
-        ).format(diff / GLib.TIME_SPAN_MINUTE);
+    // Under an hour (TODO: these labels aren't updated)
+    if (diff < TIME_SPAN_HOUR)
+        return _lthLong.format(-Math.floor(diff / TIME_SPAN_MINUTE), 'minute');
 
     // Yesterday, but less than 24 hours ago
-    if (diff < GLib.TIME_SPAN_DAY && (now.get_day_of_month() !== date.get_day_of_month()))
+    if (diff < TIME_SPAN_DAY && now.getDay() !== date.getDay())
         // TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
-        return _('Yesterday・%s').format(date.format('%l:%M %p'));
+        return _('Yesterday・%s').format(_ltdFormat.format(time));
 
     // Less than a day ago
-    if (diff < GLib.TIME_SPAN_DAY)
-        return date.format('%l:%M %p');
+    if (diff < TIME_SPAN_DAY)
+        return _ltdFormat.format(time);
 
     // Less than a week ago
-    if (diff < (GLib.TIME_SPAN_DAY * 7))
-        return date.format('%A・%l:%M %p');
+    if (diff < TIME_SPAN_WEEK)
+        return _ltwLong.format(time);
+        //return date.format('%A・%l:%M %p');
 
     // Sometime this year
-    if (date.get_year() === now.get_year())
-        return date.format('%b %e');
+    if (date.getFullYear() === now.getFullYear())
+        return _ltyLong.format(time);
 
     // Earlier than that
-    return date.format('%b %e %Y');
+    return _gtyLong.format(time);
 }
 
 
+/**
+ * Return a human-readable timestamp, formatted for shorter contexts.
+ *
+ * @param {number} time - Milliseconds since the epoch (local time)
+ * @return {string} A localized timestamp similar to what Android Messages uses
+ */
 function getShortTime(time) {
-    let date = GLib.DateTime.new_from_unix_local(time / 1000);
-    let diff = GLib.DateTime.new_now_local().difference(date);
+    let date = new Date(time);
+    let now = new Date();
+    let diff = now - time;
 
-    if (diff < GLib.TIME_SPAN_MINUTE)
+    if (diff < TIME_SPAN_MINUTE)
         // TRANSLATORS: Less than a minute ago
         return _('Just now');
 
-    if (diff < GLib.TIME_SPAN_HOUR)
+    if (diff < TIME_SPAN_HOUR)
         // TRANSLATORS: Time duration in minutes (eg. 15 minutes)
         return ngettext(
             '%d minute',
             '%d minutes',
-            (diff / GLib.TIME_SPAN_MINUTE)
-        ).format(diff / GLib.TIME_SPAN_MINUTE);
+            (diff / TIME_SPAN_MINUTE)
+        ).format(diff / TIME_SPAN_MINUTE);
 
     // Less than a day ago
-    if (diff < GLib.TIME_SPAN_DAY)
-        return date.format('%l:%M %p');
+    if (diff < TIME_SPAN_DAY)
+        return _ltdFormat.format(time);
 
     // Less than a week ago
-    if (diff < (GLib.TIME_SPAN_DAY * 7))
-        return date.format('%a');
+    if (diff < TIME_SPAN_WEEK)
+        return _ltwShort.format(time);
 
     // Sometime this year
-    if (date.get_year() === GLib.DateTime.new_now_local().get_year())
-        return date.format('%b %e');
+    if (date.getFullYear() === now.getFullYear())
+        return _ltyShort.format(time);
 
     // Earlier than that
-    return date.format('%b %e %Y');
+    return _gtyShort.format(time);
 }
 
-// Used for tooltips to display time and date of message.
-function getDetailedTime(time) {
-    let date = GLib.DateTime.new_from_unix_local(time / 1000);
 
-    return date.format('%c');
+/**
+ * Return a human-readable timestamp, similar to `strftime()` with `%c`.
+ *
+ * @param {number} time - Milliseconds since the epoch (local time)
+ * @return {string} A localized timestamp
+ */
+function getDetailedTime(time) {
+    return _cFormat.format(time);
 }
 
 function getContactsForAddresses(device, addresses) {
