@@ -612,8 +612,9 @@ const Conversation = GObject.registerClass({
         try {
             // TODO: Unsupported MessageBox
             if (message.type !== Sms.MessageBox.INBOX &&
-                message.type !== Sms.MessageBox.SENT)
-                return;
+                message.type !== Sms.MessageBox.SENT) {
+                throw TypeError(`invalid message box ${message.type}`);
+            }
 
             // Append the message
             let row = this._createMessageRow(message);
