@@ -391,13 +391,11 @@ var IconButton = GObject.registerClass({
         Object.assign(this, params);
 
         // Item attributes
-        if (params.info.hasOwnProperty('action')) {
+        if (params.info.hasOwnProperty('action'))
             this.action_name = params.info.action.split('.')[1];
-        }
 
-        if (params.info.hasOwnProperty('target')) {
+        if (params.info.hasOwnProperty('target'))
             this.action_target = params.info.target;
-        }
 
         if (params.info.hasOwnProperty('label')) {
             this.tooltip = new Tooltip.Tooltip({
@@ -408,9 +406,8 @@ var IconButton = GObject.registerClass({
             this.accessible_name = params.info.label;
         }
 
-        if (params.info.hasOwnProperty('icon')) {
+        if (params.info.hasOwnProperty('icon'))
             this.child = new St.Icon({gicon: params.info.icon});
-        }
 
         // Submenu
         for (let link of params.info.links) {
@@ -429,8 +426,6 @@ var IconButton = GObject.registerClass({
                 this.submenu.actor.visible = false;
             }
         }
-
-        this.connect('clicked', this._onClicked);
     }
 
     // This is (reliably?) emitted before ::clicked
@@ -445,23 +440,23 @@ var IconButton = GObject.registerClass({
     }
 
     // This is (reliably?) emitted after notify::checked
-    _onClicked(button, clicked_button) {
-        // Unless this has submenu activate the action and close
-        if (!button.toggle_mode) {
-            button._parent._getTopMenu().close();
+    vfunc_clicked(clicked_button) {
+        // Unless this has a submenu, activate the action and close the menu
+        if (!this.toggle_mode) {
+            this._parent._getTopMenu().close();
 
-            button.action_group.activate_action(
-                button.action_name,
-                button.action_target
+            this.action_group.activate_action(
+                this.action_name,
+                this.action_target
             );
 
         // StButton.checked has already been toggled so we're opening
-        } else if (button.checked) {
-            button._parent.submenu = button.submenu;
+        } else if (this.checked) {
+            this._parent.submenu = this.submenu;
 
         // If this is the active submenu being closed, animate-close it
-        } else if (button._parent.submenu === button.submenu) {
-            button._parent.submenu = null;
+        } else if (this._parent.submenu === this.submenu) {
+            this._parent.submenu = null;
         }
     }
 });
