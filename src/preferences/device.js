@@ -919,99 +919,97 @@ var DevicePreferences = GObject.registerClass({
 
         //
         this.plugin_list.set_header_func(rowSeparators);
+        this.experimental_list.set_header_func(rowSeparators);
 
         // Continue focus chain between lists
         this.plugin_list.next = this.experimental_list;
         this.experimental_list.prev = this.plugin_list;
 
-        this.experimental_list.set_header_func(rowSeparators);
+        for (let name of DEVICE_PLUGINS)
+            this._addPlugin(name);
 
         this._pluginsId = this.settings.connect(
             'changed::supported-plugins',
-            this._populatePlugins.bind(this)
+            this._onPluginsChanged.bind(this)
         );
-        this._populatePlugins();
+        this._onPluginsChanged(this.settings, null);
+    }
+
+    _onPluginsChanged(settings, key) {
+        if (key === 'disabled-plugins' || this._disabledPlugins === undefined)
+            this._disabledPlugins = settings.get_strv('disabled-plugins');
+
+        if (key === 'supported-plugins' || this._supportedPlugins === undefined)
+            this._supportedPlugins = settings.get_strv('supported-plugins');
+
+        this._allowedPlugins = this._supportedPlugins.filter(name => {
+            return !this._disabledPlugins.includes(name);
+        });
+
+        this._updatePlugins();
     }
 
     get_plugin_allowed(name) {
-        let disabled = this.settings.get_strv('disabled-plugins');
-        let supported = this.settings.get_strv('supported-plugins');
+        if (this._allowedPlugins === undefined)
+            this._onPluginsChanged(this.settings);
 
-        return supported.filter(name => !disabled.includes(name)).includes(name);
+        return this._allowedPlugins.includes(name);
     }
 
     _addPlugin(name) {
+        if (this._supportedPlugins === undefined)
+            this._supportedPlugins = this.settings.get_strv('supported-plugins');
+
         let plugin = imports.service.plugins[name];
 
-        let row = new Gtk.ListBoxRow({
-            border_width: 0,
-            visible: true
+        let row = new SectionRow({
+            height_request: 48,
+            title: plugin.Metadata.label,
+            visible: this._supportedPlugins.includes(name),
+            widget: new Gtk.Switch({
+                active: this.get_plugin_allowed(name),
+                valign: Gtk.Align.CENTER,
+                vexpand: true,
+                visible: true
+            })
         });
-
-        let grid = new Gtk.Grid({
-            height_request: 32,
-            visible: true
-        });
-        row.add(grid);
-
-        let widget = new Gtk.CheckButton({
-            label: plugin.Metadata.label,
-            active: this.get_plugin_allowed(name),
-            hexpand: true,
-            tooltip_text: name,
-            valign: Gtk.Align.CENTER,
-            vexpand: true,
-            visible: true
-        });
-        grid.add(widget);
-
-        this.plugin_list.add(row);
-
-        widget._togglePluginId = widget.connect(
-            'notify::active',
-            this._togglePlugin.bind(this)
-        );
+        row.widget.connect('notify::active', this._togglePlugin.bind(this));
+        row.set_name(name);
 
         if (this.hasOwnProperty(name))
-            this[name].visible = widget.active;
+            this[name].visible = row.widget.active;
+
+        this.plugin_list.add(row);
     }
 
-    _populatePlugins() {
-        let supported = this.settings.get_strv('supported-plugins');
-
+    _updatePlugins(settings, key) {
         for (let row of this.plugin_list.get_children()) {
-            let checkbutton = row.get_child().get_child_at(0, 0);
-            let name = checkbutton.tooltip_text;
+            let name = row.get_name();
 
-            if (supported.includes(name)) {
+            if (this._supportedPlugins.includes(name)) {
                 row.visible = true;
-                checkbutton.active = this.get_plugin_allowed(name);
+                row.widget.active = this.get_plugin_allowed(name);
             } else {
                 row.visible = false;
 
                 if (this.hasOwnProperty(name))
                     this[name].visible = false;
             }
-
-            supported.splice(supported.indexOf(name), 1);
         }
-
-        for (let name of supported)
-            this._addPlugin(name);
     }
 
     _togglePlugin(widget) {
         try {
-            let name = widget.tooltip_text;
+            let name = widget.get_ancestor(Gtk.ListBoxRow.$gtype).get_name();
             let disabled = this.settings.get_strv('disabled-plugins');
 
-            if (disabled.includes(name)) {
-                disabled.splice(disabled.indexOf(name), 1);
-            } else {
-                disabled.push(name);
-            }
+            // Either add or remove the plugin from the disabled list
+            if (this._disabledPlugins.includes(name))
+                this._disabledPlugins.splice(this._disabledPlugins.indexOf(name), 1);
+            else
+                this._disabledPlugins.push(name);
 
-            this.settings.set_strv('disabled-plugins', disabled);
+            this.settings.set_strv('disabled-plugins', this._disabledPlugins);
 
             if (this.hasOwnProperty(name))
                 this[name].visible = !disabled.includes(name);
