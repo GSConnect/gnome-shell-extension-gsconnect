@@ -27,7 +27,12 @@ for (let name in imports.service.plugins) {
 }
 
 
-// A GtkListBoxUpdateHeaderFunc for sections
+/**
+ * A Gtk.ListBoxHeaderFunc for sections that adds separators between each row.
+ *
+ * @param {Gtk.ListBoxRow} row - The current row
+ * @param {Gtk.ListBoxRow} before - The previous row
+ */
 function rowSeparators(row, before) {
     let header = row.get_header();
 
@@ -38,15 +43,19 @@ function rowSeparators(row, before) {
         return;
     }
 
-    if (header === null) {
-        header = new Gtk.Separator({visible: true});
-        row.set_header(header);
-    }
+    if (header === null)
+        row.set_header(new Gtk.Separator({visible: true}));
 }
 
 
-// A GtkListBoxSortFunc for SectionRow rows
-function title_sort(row1, row2) {
+/**
+ * A Gtk.ListBoxSortFunc for SectionRow rows
+ *
+ * @param {Gtk.ListBoxRow} row1 - The first row
+ * @param {Gtk.ListBoxRow} row2 - The second row
+ * @return {number} -1, 0 or 1
+ */
+function titleSortFunc(row1, row2) {
     if (!row1.title || !row2.title)
         return 0;
 
@@ -172,6 +181,15 @@ const CommandEditor = GObject.registerClass({
 
 var DevicePreferences = GObject.registerClass({
     GTypeName: 'GSConnectDevicePreferences',
+    Properties: {
+        'device': GObject.ParamSpec.object(
+            'device',
+            'Device',
+            'The device being configured',
+            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            GObject.Object.$gtype
+        )
+    },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/device-preferences.ui',
     Children: [
         'sidebar', 'stack', 'infobar',
@@ -211,9 +229,9 @@ var DevicePreferences = GObject.registerClass({
 }, class DevicePreferences extends Gtk.Grid {
 
     _init(device) {
-        super._init();
-
-        this.device = device;
+        super._init({
+            device: device
+        });
 
         // GSettings
         this.settings = new Gio.Settings({
@@ -247,9 +265,8 @@ var DevicePreferences = GObject.registerClass({
 
         // Separate plugins and other settings
         this.sidebar.set_header_func((row, before) => {
-            if (row.get_name() === 'shortcuts') {
+            if (row.get_name() === 'shortcuts')
                 row.set_header(new Gtk.Separator({visible: true}));
-            }
         });
 
         // Hide elements for any disabled plugins
@@ -552,7 +569,8 @@ var DevicePreferences = GObject.registerClass({
         this.command_list.set_sort_func(this._sortCommands);
         this.command_list.set_header_func(rowSeparators);
 
-        Object.keys(this._commands).map(uuid => this._insertCommand(uuid));
+        for (let uuid of Object.keys(this._commands))
+            this._insertCommand(uuid);
     }
 
     _sortCommands(row1, row2) {
@@ -600,8 +618,6 @@ var DevicePreferences = GObject.registerClass({
         row.get_child().attach(deleteButton, 3, 0, 1, 2);
 
         this.command_list.add(row);
-
-        return row;
     }
 
     _onEditCommand(widget) {
@@ -637,8 +653,8 @@ var DevicePreferences = GObject.registerClass({
     }
 
     _onDeleteCommand(button) {
-        let row = button.get_parent().get_parent();
-        delete this._commands[row.get_name()];
+        let row = button.get_ancestor(Gtk.ListBoxRow.$gtype);
+        delete this._commands[row.name];
         row.destroy();
 
         this.pluginSettings('runcommand').set_value(
@@ -705,7 +721,7 @@ var DevicePreferences = GObject.registerClass({
         this.notification_list.next = this.notification_apps;
         this.notification_apps.prev = this.notification_list;
 
-        this.notification_apps.set_sort_func(title_sort);
+        this.notification_apps.set_sort_func(titleSortFunc);
         this.notification_apps.set_header_func(rowSeparators);
 
         this._populateApplications(settings);
@@ -759,29 +775,27 @@ var DevicePreferences = GObject.registerClass({
         }
 
         // Scan applications that statically declare to show notifications
-        let appInfos = [];
         let ignoreId = 'org.gnome.Shell.Extensions.GSConnect.desktop';
 
         for (let appInfo of Gio.AppInfo.get_all()) {
-            if (appInfo.get_id() !== ignoreId &&
-                appInfo.get_boolean('X-GNOME-UsesNotifications')) {
-                appInfos.push(appInfo);
-            }
-        }
+            if (appInfo.get_id() === ignoreId)
+                continue;
 
-        // Update GSettings
-        for (let appInfo of appInfos) {
+            if (!appInfo.get_boolean('X-GNOME-UsesNotifications'))
+                continue;
+
             let appName = appInfo.get_name();
 
-            if (appName && !applications[appName]) {
-                let icon = appInfo.get_icon();
-                icon = (icon) ? icon.to_string() : 'application-x-executable';
+            if (appName === null || applications.hasOwnProperty(appName))
+                continue;
 
-                applications[appName] = {
-                    iconName: icon,
-                    enabled: true
-                };
-            }
+            let icon = appInfo.get_icon();
+            icon = (icon) ? icon.to_string() : 'application-x-executable';
+
+            applications[appName] = {
+                iconName: icon,
+                enabled: true
+            };
         }
 
         settings.set_string('applications', JSON.stringify(applications));
@@ -812,7 +826,7 @@ var DevicePreferences = GObject.registerClass({
         // Filter & Sort
         this.shortcuts_actions_list.set_filter_func(this._filterPluginKeybindings.bind(this));
         this.shortcuts_actions_list.set_header_func(rowSeparators);
-        this.shortcuts_actions_list.set_sort_func(title_sort);
+        this.shortcuts_actions_list.set_sort_func(titleSortFunc);
 
         // Init
         for (let name in DEVICE_SHORTCUTS)
@@ -845,11 +859,11 @@ var DevicePreferences = GObject.registerClass({
         widget.get_style_context().add_class('dim-label');
 
         let row = new SectionRow({
+            height_request: 48,
             icon_name: icon_name,
             title: label,
             widget: widget
         });
-        row.height_request = 48;
         row.icon_image.pixel_size = 16;
         row.action = name;
         this.shortcuts_actions_list.add(row);
@@ -917,8 +931,9 @@ var DevicePreferences = GObject.registerClass({
         let advanced_box = this.advanced_page.get_child().get_child();
         advanced_box.set_focus_vadjustment(this.advanced_page.vadjustment);
 
-        //
+        // Sort & Separate
         this.plugin_list.set_header_func(rowSeparators);
+        this.plugin_list.set_sort_func(titleSortFunc);
         this.experimental_list.set_header_func(rowSeparators);
 
         // Continue focus chain between lists
