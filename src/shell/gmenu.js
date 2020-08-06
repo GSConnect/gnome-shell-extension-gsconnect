@@ -404,6 +404,8 @@ var IconButton = GObject.registerClass({
                 parent: this,
                 markup: params.info.label
             });
+
+            this.accessible_name = params.info.label;
         }
 
         if (params.info.hasOwnProperty('icon')) {
