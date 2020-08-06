@@ -978,19 +978,18 @@ const Service = GObject.registerClass({
             });
         }
 
-        let notif = {
-            appName: appName,
-            id: nid,
-            title: title,
-            text: body,
-            ticker: `${title}: ${body}`,
-            time: `${Date.now()}`,
-            isClearable: true,
-            icon: icon
-        };
+        let notification = new GLib.Variant('a{sv}', {
+            appName: GLib.Variant.new_string(appName),
+            id: GLib.Variant.new_string(nid),
+            title: GLib.Variant.new_string(title),
+            text: GLib.Variant.new_string(body),
+            ticker: GLib.Variant.new_string(`${title}: ${body}`),
+            time: GLib.Variant.new_string(`${Date.now()}`),
+            isClearable: GLib.Variant.new_boolean(true),
+            icon: icon.serialize()
+        });
 
-        let parameter = GLib.Variant.full_pack(notif);
-        this._cliAction(id, 'sendNotification', parameter);
+        this._cliAction(id, 'sendNotification', notification);
     }
     
     _cliShareFile(device, options) {

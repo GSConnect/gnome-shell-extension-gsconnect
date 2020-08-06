@@ -640,7 +640,19 @@ var DevicePreferences = GObject.registerClass({
             this._commandEditor.command_line = '';
         }
 
-        this._commandEditor.show();
+        this._commandEditor.present();
+    }
+
+    _storeCommands() {
+        let variant = {};
+
+        for (let [uuid, command] of Object.entries(this._commands))
+            variant[uuid] = new GLib.Variant('a{ss}', command);
+
+        this.pluginSettings('runcommand').set_value(
+            'command-list',
+            new GLib.Variant('a{sv}', variant)
+        );
     }
 
     _onDeleteCommand(button) {
@@ -648,10 +660,7 @@ var DevicePreferences = GObject.registerClass({
         delete this._commands[row.name];
         row.destroy();
 
-        this.pluginSettings('runcommand').set_value(
-            'command-list',
-            GLib.Variant.full_pack(this._commands)
-        );
+        this._storeCommands();
     }
 
     _onSaveCommand(dialog, response_id) {
@@ -661,10 +670,7 @@ var DevicePreferences = GObject.registerClass({
                 command: dialog.command_line
             };
 
-            this.pluginSettings('runcommand').set_value(
-                'command-list',
-                GLib.Variant.full_pack(this._commands)
-            );
+            this._storeCommands();
 
             //
             let row = null;
