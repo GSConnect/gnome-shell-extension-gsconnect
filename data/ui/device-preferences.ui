@@ -41,7 +41,7 @@
                           <attribute name="weight" value="bold"/>
                         </attributes>
                         <accessibility>
-                          <relation type="label-for" target="command-list"/>
+                          <relation type="label-for" target="desktop-list"/>
                         </accessibility>
                       </object>
                       <packing>
@@ -104,6 +104,7 @@
                                         <property name="valign">center</property>
                                         <property name="action_name">settings.share-camera</property>
                                         <accessibility>
+                                          <relation type="controlled-by" target="photo"/>
                                           <relation type="labelled-by" target="share-photo-label"/>
                                         </accessibility>
                                       </object>
@@ -169,6 +170,7 @@
                                           </object>
                                         </child>
                                         <accessibility>
+                                          <relation type="controlled-by" target="clipboard"/>
                                           <relation type="labelled-by" target="clipboard-sync-label"/>
                                         </accessibility>
                                       </object>
@@ -180,6 +182,7 @@
                                   </object>
                                 </child>
                                 <accessibility>
+                                  <relation type="controller-for" target="clipboard-sync"/>
                                   <relation type="labelled-by" target="clipboard-sync-label"/>
                                 </accessibility>
                               </object>
@@ -224,6 +227,7 @@
                                         <property name="valign">center</property>
                                         <property name="action_name">settings.share-players</property>
                                         <accessibility>
+                                          <relation type="controlled-by" target="mpris"/>
                                           <relation type="labelled-by" target="share-mpris-label"/>
                                         </accessibility>
                                       </object>
@@ -235,6 +239,7 @@
                                   </object>
                                 </child>
                                 <accessibility>
+                                  <relation type="controller-for" target="share-mpris"/>
                                   <relation type="labelled-by" target="share-mpris-label"/>
                                 </accessibility>
                               </object>
@@ -279,6 +284,7 @@
                                         <property name="valign">center</property>
                                         <property name="action_name">settings.share-control</property>
                                         <accessibility>
+                                          <relation type="controlled-by" target="mousepad"/>
                                           <relation type="labelled-by" target="share-mousepad-label"/>
                                         </accessibility>
                                       </object>
@@ -290,6 +296,7 @@
                                   </object>
                                 </child>
                                 <accessibility>
+                                  <relation type="controller-for" target="share-mousepad"/>
                                   <relation type="labelled-by" target="share-mousepad-label"/>
                                 </accessibility>
                               </object>
@@ -334,6 +341,7 @@
                                         <property name="valign">center</property>
                                         <property name="action_name">settings.share-sinks</property>
                                         <accessibility>
+                                          <relation type="controlled-by" target="systemvolume"/>
                                           <relation type="labelled-by" target="share-systemvolume-label"/>
                                         </accessibility>
                                       </object>
@@ -345,10 +353,14 @@
                                   </object>
                                 </child>
                                 <accessibility>
+                                  <relation type="controller-for" target="share-systemvolume"/>
                                   <relation type="labelled-by" target="share-systemvolume-label"/>
                                 </accessibility>
                               </object>
                             </child>
+                            <accessibility>
+                              <relation type="labelled-by" target="desktop-list-label"/>
+                            </accessibility>
                           </object>
                         </child>
                       </object>
@@ -435,6 +447,7 @@
                                             <property name="valign">center</property>
                                             <property name="action_name">settings.receive-files</property>
                                             <accessibility>
+                                              <relation type="controlled-by" target="share-receive-row"/>
                                               <relation type="labelled-by" target="share-receive-label"/>
                                             </accessibility>
                                           </object>
@@ -446,6 +459,7 @@
                                       </object>
                                     </child>
                                     <accessibility>
+                                      <relation type="controller-for" target="receive-files"/>
                                       <relation type="labelled-by" target="share-receive-label"/>
                                     </accessibility>
                                   </object>
@@ -493,6 +507,9 @@
                                             <property name="valign">center</property>
                                             <property name="action">select-folder</property>
                                             <signal name="file-set" handler="_onReceiveDirectorySet" swapped="no"/>
+                                            <accessibility>
+                                              <relation type="labelled-by" target="receive-directory-label"/>
+                                            </accessibility>
                                           </object>
                                           <packing>
                                             <property name="left_attach">1</property>
@@ -506,6 +523,9 @@
                                     </accessibility>
                                   </object>
                                 </child>
+                                <accessibility>
+                                  <relation type="labelled-by" target="share-list-label"/>
+                                </accessibility>
                               </object>
                             </child>
                           </object>
@@ -612,6 +632,12 @@
                                     <property name="pixel_size">16</property>
                                     <property name="margin">6</property>
                                     <property name="icon_name">list-add-symbolic</property>
+                                  </object>
+                                </child>
+                                <child internal-child="accessible">
+                                  <object class="AtkObject" id="command-add-atkobject">
+                                    <property name="AtkObject::accessible-name" translatable="yes">Add Command</property>
+                                    <property name="AtkObject::accessible-role">push-button</property>
                                   </object>
                                 </child>
                               </object>
@@ -1656,6 +1682,7 @@
                                         <property name="valign">center</property>
                                         <property name="action_name">settings.legacy-sms</property>
                                         <accessibility>
+                                          <relation type="controlled-by" target="legacy-sms-row"/>
                                           <relation type="labelled-by" target="legacy-sms-label"/>
                                         </accessibility>
                                       </object>
@@ -1667,6 +1694,7 @@
                                   </object>
                                 </child>
                                 <accessibility>
+                                  <relation type="controller-for" target="legacy-sms"/>
                                   <relation type="labelled-by" target="legacy-sms-label"/>
                                 </accessibility>
                               </object>
@@ -1818,8 +1846,6 @@
                                   <object class="GtkGrid">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="margin_left">12</property>
-                                    <property name="margin_right">12</property>
                                     <property name="margin_start">12</property>
                                     <property name="margin_end">12</property>
                                     <property name="hexpand">True</property>
@@ -1862,8 +1888,15 @@
                                     </child>
                                   </object>
                                 </child>
+                                <accessibility>
+                                  <relation type="controller-for" target="battery-full-notification"/>
+                                  <relation type="labelled-by" target="battery-full-notification-label"/>
+                                </accessibility>
                               </object>
                             </child>
+                            <accessibility>
+                              <relation type="labelled-by" target="battery-device-label"/>
+                            </accessibility>
                           </object>
                         </child>
                       </object>
@@ -1885,7 +1918,7 @@
                           <attribute name="weight" value="bold"/>
                         </attributes>
                         <accessibility>
-                          <relation type="label-for" target="plugin-list"/>
+                          <relation type="label-for" target="battery-system-list"/>
                         </accessibility>
                       </object>
                       <packing>
@@ -1916,8 +1949,6 @@
                                   <object class="GtkGrid">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="margin_left">12</property>
-                                    <property name="margin_right">12</property>
                                     <property name="margin_start">12</property>
                                     <property name="margin_end">12</property>
                                     <property name="hexpand">True</property>
@@ -1949,6 +1980,7 @@
                                         <property name="valign">center</property>
                                         <property name="action_name">settings.send-statistics</property>
                                         <accessibility>
+                                          <relation type="controlled-by" target="share-battery-row"/>
                                           <relation type="labelled-by" target="share-battery-label"/>
                                         </accessibility>
                                       </object>
@@ -1960,10 +1992,14 @@
                                   </object>
                                 </child>
                                 <accessibility>
+                                  <relation type="controller-for" target="share-battery"/>
                                   <relation type="labelled-by" target="share-battery-label"/>
                                 </accessibility>
                               </object>
                             </child>
+                            <accessibility>
+                              <relation type="labelled-by" target="battery-system-label"/>
+                            </accessibility>
                           </object>
                         </child>
                       </object>

@@ -31,6 +31,9 @@
             <property name="hexpand">True</property>
             <property name="valign">center</property>
             <property name="vexpand">True</property>
+            <accessibility>
+              <relation type="label-for" target="GSConnectPreferencesSectionRow"/>
+            </accessibility>
           </object>
           <packing>
             <property name="left_attach">1</property>

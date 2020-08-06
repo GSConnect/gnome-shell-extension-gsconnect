@@ -107,7 +107,6 @@
             <property name="visible">False</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Mobile Settings</property>
             <property name="valign">center</property>
             <signal name="clicked" handler="_onPrevious" swapped="no"/>
             <child>
@@ -149,6 +148,11 @@
                 <property name="icon_name">open-menu-symbolic</property>
               </object>
             </child>
+            <child internal-child="accessible">
+              <object class="AtkObject" id="service-menu-atkobject">
+                <property name="AtkObject::accessible-name" translatable="yes">Service Menu</property>
+              </object>
+            </child>
           </object>
           <packing>
             <property name="pack_type">end</property>
@@ -165,6 +169,11 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="icon_name">view-more-symbolic</property>
+              </object>
+            </child>
+            <child internal-child="accessible">
+              <object class="AtkObject" id="device-menu-atkobject">
+                <property name="AtkObject::accessible-name" translatable="yes">Device Menu</property>
               </object>
             </child>
           </object>
