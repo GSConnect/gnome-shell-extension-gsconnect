@@ -550,6 +550,305 @@
             <property name="name">sharing</property>
             <property name="title" translatable="yes">Sharing</property>
             <property name="icon_name">emblem-shared-symbolic</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow" id="battery-page">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="hscrollbar_policy">never</property>
+            <child>
+              <object class="GtkViewport">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="shadow_type">none</property>
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="margin_start">48</property>
+                    <property name="margin_end">48</property>
+                    <property name="margin_top">32</property>
+                    <property name="margin_bottom">32</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkLabel" id="battery-device-label">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="margin_bottom">12</property>
+                        <property name="hexpand">True</property>
+                        <property name="label" translatable="yes">Device Battery</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                        </attributes>
+                        <accessibility>
+                          <relation type="label-for" target="battery-device-list"/>
+                        </accessibility>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkFrame" id="battery-device">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="margin_bottom">32</property>
+                        <property name="label_xalign">0</property>
+                        <child>
+                          <object class="GtkListBox" id="battery-device-list">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="hexpand">True</property>
+                            <property name="selection_mode">none</property>
+                            <signal name="keynav-failed" handler="_onKeynavFailed" swapped="no"/>
+                            <child>
+                              <object class="GtkListBoxRow" id="battery-low-notification-row">
+                                <property name="height_request">56</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="action_name">settings.low-battery-notification</property>
+                                <property name="selectable">False</property>
+                                <child>
+                                  <object class="GtkGrid">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="margin_start">12</property>
+                                    <property name="margin_end">12</property>
+                                    <property name="hexpand">True</property>
+                                    <property name="vexpand">True</property>
+                                    <property name="column_spacing">12</property>
+                                    <child>
+                                      <object class="GtkLabel" id="battery-low-notification-label">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                        <property name="halign">start</property>
+                                        <property name="valign">center</property>
+                                        <property name="hexpand">True</property>
+                                        <property name="vexpand">True</property>
+                                        <property name="label" translatable="yes">Low Battery Notification</property>
+                                        <accessibility>
+                                          <relation type="label-for" target="battery-low-notification-row"/>
+                                          <relation type="label-for" target="battery-low-notification"/>
+                                        </accessibility>
+                                      </object>
+                                      <packing>
+                                        <property name="left_attach">0</property>
+                                        <property name="top_attach">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkSwitch" id="battery-low-notification">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="valign">center</property>
+                                        <property name="action_name">settings.low-battery-notification</property>
+                                        <accessibility>
+                                          <relation type="controlled-by" target="battery-low-notification-row"/>
+                                          <relation type="labelled-by" target="battery-low-notification-label"/>
+                                        </accessibility>
+                                      </object>
+                                      <packing>
+                                        <property name="left_attach">1</property>
+                                        <property name="top_attach">0</property>
+                                      </packing>
+                                    </child>
+                                  </object>
+                                </child>
+                                <accessibility>
+                                  <relation type="controller-for" target="battery-low-notification"/>
+                                  <relation type="labelled-by" target="battery-low-notification-label"/>
+                                </accessibility>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkListBoxRow" id="battery-full-notification-row">
+                                <property name="height_request">56</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="action_name">settings.full-battery-notification</property>
+                                <property name="selectable">False</property>
+                                <child>
+                                  <object class="GtkGrid">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="margin_start">12</property>
+                                    <property name="margin_end">12</property>
+                                    <property name="hexpand">True</property>
+                                    <property name="vexpand">True</property>
+                                    <property name="column_spacing">12</property>
+                                    <child>
+                                      <object class="GtkLabel" id="battery-full-notification-label">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                        <property name="halign">start</property>
+                                        <property name="valign">center</property>
+                                        <property name="hexpand">True</property>
+                                        <property name="vexpand">True</property>
+                                        <property name="label" translatable="yes">Fully Charged Notification</property>
+                                        <accessibility>
+                                          <relation type="label-for" target="battery-full-notification-row"/>
+                                          <relation type="label-for" target="battery-full-notification"/>
+                                        </accessibility>
+                                      </object>
+                                      <packing>
+                                        <property name="left_attach">0</property>
+                                        <property name="top_attach">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkSwitch" id="battery-full-notification">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="valign">center</property>
+                                        <property name="action_name">settings.full-battery-notification</property>
+                                        <accessibility>
+                                          <relation type="controlled-by" target="battery-full-notification-row"/>
+                                          <relation type="labelled-by" target="battery-full-notification-label"/>
+                                        </accessibility>
+                                      </object>
+                                      <packing>
+                                        <property name="left_attach">1</property>
+                                        <property name="top_attach">0</property>
+                                      </packing>
+                                    </child>
+                                  </object>
+                                </child>
+                                <accessibility>
+                                  <relation type="controller-for" target="battery-full-notification"/>
+                                  <relation type="labelled-by" target="battery-full-notification-label"/>
+                                </accessibility>
+                              </object>
+                            </child>
+                            <accessibility>
+                              <relation type="labelled-by" target="battery-device-label"/>
+                            </accessibility>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="battery-system-label">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="margin_bottom">12</property>
+                        <property name="hexpand">True</property>
+                        <property name="label" translatable="yes">System Battery</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                        </attributes>
+                        <accessibility>
+                          <relation type="label-for" target="battery-system-list"/>
+                        </accessibility>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkFrame" id="battery-system">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="margin_bottom">32</property>
+                        <property name="label_xalign">0</property>
+                        <child>
+                          <object class="GtkListBox" id="battery-system-list">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="hexpand">True</property>
+                            <property name="selection_mode">none</property>
+                            <child>
+                              <object class="GtkListBoxRow" id="share-battery-row">
+                                <property name="height_request">56</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="action_name">settings.send-statistics</property>
+                                <child>
+                                  <object class="GtkGrid">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="margin_start">12</property>
+                                    <property name="margin_end">12</property>
+                                    <property name="hexpand">True</property>
+                                    <property name="vexpand">True</property>
+                                    <property name="column_spacing">12</property>
+                                    <child>
+                                      <object class="GtkLabel" id="share-battery-label">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                        <property name="halign">start</property>
+                                        <property name="valign">center</property>
+                                        <property name="hexpand">True</property>
+                                        <property name="vexpand">True</property>
+                                        <property name="label" translatable="yes">Share Statistics</property>
+                                        <accessibility>
+                                          <relation type="label-for" target="share-battery"/>
+                                        </accessibility>
+                                      </object>
+                                      <packing>
+                                        <property name="left_attach">0</property>
+                                        <property name="top_attach">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkSwitch" id="share-battery">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="halign">end</property>
+                                        <property name="valign">center</property>
+                                        <property name="action_name">settings.send-statistics</property>
+                                        <accessibility>
+                                          <relation type="controlled-by" target="share-battery-row"/>
+                                          <relation type="labelled-by" target="share-battery-label"/>
+                                        </accessibility>
+                                      </object>
+                                      <packing>
+                                        <property name="left_attach">1</property>
+                                        <property name="top_attach">0</property>
+                                      </packing>
+                                    </child>
+                                  </object>
+                                </child>
+                                <accessibility>
+                                  <relation type="controller-for" target="share-battery"/>
+                                  <relation type="labelled-by" target="share-battery-label"/>
+                                </accessibility>
+                              </object>
+                            </child>
+                            <accessibility>
+                              <relation type="labelled-by" target="battery-system-label"/>
+                            </accessibility>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">3</property>
+                      </packing>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="name">battery</property>
+            <property name="title" translatable="yes">Battery</property>
+            <property name="icon_name">battery-symbolic</property>
+            <property name="position">2</property>
           </packing>
         </child>
         <child>
@@ -664,7 +963,7 @@
             <property name="name">runcommand</property>
             <property name="title" translatable="yes">Commands</property>
             <property name="icon_name">system-run-symbolic</property>
-            <property name="position">1</property>
+            <property name="position">3</property>
           </packing>
         </child>
         <child>
@@ -882,7 +1181,7 @@
             <property name="name">notification</property>
             <property name="title" translatable="yes">Notifications</property>
             <property name="icon_name">preferences-system-notifications-symbolic</property>
-            <property name="position">2</property>
+            <property name="position">4</property>
           </packing>
         </child>
         <child>
@@ -1385,7 +1684,7 @@
             <property name="name">telephony</property>
             <property name="title" translatable="yes">Telephony</property>
             <property name="icon_name">call-start-symbolic</property>
-            <property name="position">3</property>
+            <property name="position">5</property>
           </packing>
         </child>
         <child>
@@ -1484,7 +1783,7 @@
             <property name="name">shortcuts</property>
             <property name="title" translatable="yes">Shortcuts</property>
             <property name="icon_name">preferences-desktop-keyboard-shortcuts-symbolic</property>
-            <property name="position">4</property>
+            <property name="position">6</property>
           </packing>
         </child>
         <child>
@@ -1720,305 +2019,7 @@
             <property name="name">advanced</property>
             <property name="title" translatable="yes">Advanced</property>
             <property name="icon_name">preferences-system-symbolic</property>
-            <property name="position">5</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkScrolledWindow" id="battery-page">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="hscrollbar_policy">never</property>
-            <child>
-              <object class="GtkViewport">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="shadow_type">none</property>
-                <child>
-                  <object class="GtkBox">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="margin_start">48</property>
-                    <property name="margin_end">48</property>
-                    <property name="margin_top">32</property>
-                    <property name="margin_bottom">32</property>
-                    <property name="orientation">vertical</property>
-                    <child>
-                      <object class="GtkLabel" id="battery-device-label">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">start</property>
-                        <property name="margin_bottom">12</property>
-                        <property name="hexpand">True</property>
-                        <property name="label" translatable="yes">Device Battery</property>
-                        <attributes>
-                          <attribute name="weight" value="bold"/>
-                        </attributes>
-                        <accessibility>
-                          <relation type="label-for" target="battery-device-list"/>
-                        </accessibility>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkFrame" id="battery-device">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="margin_bottom">32</property>
-                        <property name="label_xalign">0</property>
-                        <child>
-                          <object class="GtkListBox" id="battery-device-list">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="hexpand">True</property>
-                            <property name="selection_mode">none</property>
-                            <signal name="keynav-failed" handler="_onKeynavFailed" swapped="no"/>
-                            <child>
-                              <object class="GtkListBoxRow" id="battery-low-notification-row">
-                                <property name="height_request">56</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="action_name">settings.low-battery-notification</property>
-                                <property name="selectable">False</property>
-                                <child>
-                                  <object class="GtkGrid">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="margin_start">12</property>
-                                    <property name="margin_end">12</property>
-                                    <property name="hexpand">True</property>
-                                    <property name="vexpand">True</property>
-                                    <property name="column_spacing">12</property>
-                                    <child>
-                                      <object class="GtkLabel" id="battery-low-notification-label">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="halign">start</property>
-                                        <property name="valign">center</property>
-                                        <property name="hexpand">True</property>
-                                        <property name="vexpand">True</property>
-                                        <property name="label" translatable="yes">Low Battery Notification</property>
-                                        <accessibility>
-                                          <relation type="label-for" target="battery-low-notification-row"/>
-                                          <relation type="label-for" target="battery-low-notification"/>
-                                        </accessibility>
-                                      </object>
-                                      <packing>
-                                        <property name="left_attach">0</property>
-                                        <property name="top_attach">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkSwitch" id="battery-low-notification">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">True</property>
-                                        <property name="valign">center</property>
-                                        <property name="action_name">settings.low-battery-notification</property>
-                                        <accessibility>
-                                          <relation type="controlled-by" target="battery-low-notification-row"/>
-                                          <relation type="labelled-by" target="battery-low-notification-label"/>
-                                        </accessibility>
-                                      </object>
-                                      <packing>
-                                        <property name="left_attach">1</property>
-                                        <property name="top_attach">0</property>
-                                      </packing>
-                                    </child>
-                                  </object>
-                                </child>
-                                <accessibility>
-                                  <relation type="controller-for" target="battery-low-notification"/>
-                                  <relation type="labelled-by" target="battery-low-notification-label"/>
-                                </accessibility>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkListBoxRow" id="battery-full-notification-row">
-                                <property name="height_request">56</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="action_name">settings.full-battery-notification</property>
-                                <property name="selectable">False</property>
-                                <child>
-                                  <object class="GtkGrid">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="margin_start">12</property>
-                                    <property name="margin_end">12</property>
-                                    <property name="hexpand">True</property>
-                                    <property name="vexpand">True</property>
-                                    <property name="column_spacing">12</property>
-                                    <child>
-                                      <object class="GtkLabel" id="battery-full-notification-label">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="halign">start</property>
-                                        <property name="valign">center</property>
-                                        <property name="hexpand">True</property>
-                                        <property name="vexpand">True</property>
-                                        <property name="label" translatable="yes">Fully Charged Notification</property>
-                                        <accessibility>
-                                          <relation type="label-for" target="battery-full-notification-row"/>
-                                          <relation type="label-for" target="battery-full-notification"/>
-                                        </accessibility>
-                                      </object>
-                                      <packing>
-                                        <property name="left_attach">0</property>
-                                        <property name="top_attach">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkSwitch" id="battery-full-notification">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">True</property>
-                                        <property name="valign">center</property>
-                                        <property name="action_name">settings.full-battery-notification</property>
-                                        <accessibility>
-                                          <relation type="controlled-by" target="battery-full-notification-row"/>
-                                          <relation type="labelled-by" target="battery-full-notification-label"/>
-                                        </accessibility>
-                                      </object>
-                                      <packing>
-                                        <property name="left_attach">1</property>
-                                        <property name="top_attach">0</property>
-                                      </packing>
-                                    </child>
-                                  </object>
-                                </child>
-                                <accessibility>
-                                  <relation type="controller-for" target="battery-full-notification"/>
-                                  <relation type="labelled-by" target="battery-full-notification-label"/>
-                                </accessibility>
-                              </object>
-                            </child>
-                            <accessibility>
-                              <relation type="labelled-by" target="battery-device-label"/>
-                            </accessibility>
-                          </object>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="battery-system-label">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">start</property>
-                        <property name="margin_bottom">12</property>
-                        <property name="hexpand">True</property>
-                        <property name="label" translatable="yes">System Battery</property>
-                        <attributes>
-                          <attribute name="weight" value="bold"/>
-                        </attributes>
-                        <accessibility>
-                          <relation type="label-for" target="battery-system-list"/>
-                        </accessibility>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkFrame" id="battery-system">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="margin_bottom">32</property>
-                        <property name="label_xalign">0</property>
-                        <child>
-                          <object class="GtkListBox" id="battery-system-list">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="hexpand">True</property>
-                            <property name="selection_mode">none</property>
-                            <child>
-                              <object class="GtkListBoxRow" id="share-battery-row">
-                                <property name="height_request">56</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="action_name">settings.send-statistics</property>
-                                <child>
-                                  <object class="GtkGrid">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="margin_start">12</property>
-                                    <property name="margin_end">12</property>
-                                    <property name="hexpand">True</property>
-                                    <property name="vexpand">True</property>
-                                    <property name="column_spacing">12</property>
-                                    <child>
-                                      <object class="GtkLabel" id="share-battery-label">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="halign">start</property>
-                                        <property name="valign">center</property>
-                                        <property name="hexpand">True</property>
-                                        <property name="vexpand">True</property>
-                                        <property name="label" translatable="yes">Share Statistics</property>
-                                        <accessibility>
-                                          <relation type="label-for" target="share-battery"/>
-                                        </accessibility>
-                                      </object>
-                                      <packing>
-                                        <property name="left_attach">0</property>
-                                        <property name="top_attach">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkSwitch" id="share-battery">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">True</property>
-                                        <property name="halign">end</property>
-                                        <property name="valign">center</property>
-                                        <property name="action_name">settings.send-statistics</property>
-                                        <accessibility>
-                                          <relation type="controlled-by" target="share-battery-row"/>
-                                          <relation type="labelled-by" target="share-battery-label"/>
-                                        </accessibility>
-                                      </object>
-                                      <packing>
-                                        <property name="left_attach">1</property>
-                                        <property name="top_attach">0</property>
-                                      </packing>
-                                    </child>
-                                  </object>
-                                </child>
-                                <accessibility>
-                                  <relation type="controller-for" target="share-battery"/>
-                                  <relation type="labelled-by" target="share-battery-label"/>
-                                </accessibility>
-                              </object>
-                            </child>
-                            <accessibility>
-                              <relation type="labelled-by" target="battery-system-label"/>
-                            </accessibility>
-                          </object>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">3</property>
-                      </packing>
-                    </child>
-                  </object>
-                </child>
-              </object>
-            </child>
-          </object>
-          <packing>
-            <property name="name">battery</property>
-            <property name="title" translatable="yes">Battery</property>
-            <property name="icon_name">battery-symbolic</property>
-            <property name="position">6</property>
+            <property name="position">7</property>
           </packing>
         </child>
         <accessibility>
