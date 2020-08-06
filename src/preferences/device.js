@@ -130,31 +130,19 @@ const CommandEditor = GObject.registerClass({
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/command-editor.ui',
     Children: [
         'cancel-button', 'save-button',
-        'command-entry', 'name-entry'
+        'command-entry', 'name-entry', 'command-chooser'
     ]
 }, class CommandEditor extends Gtk.Dialog {
 
     _onBrowseCommand(entry, icon_pos, event) {
-        let filter = new Gtk.FileFilter();
-        filter.add_mime_type('application/x-executable');
+        this.command_chooser.present();
+    }
 
-        let dialog = new Gtk.FileChooserDialog({
-            filter: filter,
-            modal: true,
-            transient_for: this
-        });
-        dialog.add_button(_('Cancel'), Gtk.ResponseType.CANCEL);
-        dialog.add_button(_('Open'), Gtk.ResponseType.OK);
-        dialog.set_default_response(Gtk.ResponseType.OK);
+    _onCommandChosen(dialog, response_id) {
+        if (response_id === Gtk.ResponseType.OK)
+            this.command_entry.text = dialog.get_filename();
 
-        dialog.connect('response', (dialog, response_id) => {
-            if (response_id === Gtk.ResponseType.OK)
-                this.command_entry.text = dialog.get_filename();
-
-            dialog.destroy();
-        });
-
-        dialog.show_all();
+        dialog.hide();
     }
 
     _onEntryChanged(entry, pspec) {

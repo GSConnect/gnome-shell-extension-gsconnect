@@ -4,7 +4,7 @@
   <template class="GSConnectCommandEditor" parent="GtkDialog">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="title" translatable="yes">Edit</property>
+    <property name="title" translatable="yes">Edit Command</property>
     <property name="type_hint">dialog</property>
     <property name="visible">True</property>
     <signal name="delete-event" handler="hide_on_delete" swapped="no"/>
@@ -103,7 +103,6 @@
                 <property name="hexpand">True</property>
                 <property name="secondary_icon_stock">gtk-open</property>
                 <property name="secondary_icon_tooltip_text" translatable="yes">Choose an executable</property>
-                <property name="secondary_icon_tooltip_markup" translatable="yes">Choose an executable</property>
                 <signal name="icon-release" handler="_onBrowseCommand" swapped="no"/>
                 <signal name="notify::text" handler="_onEntryChanged" swapped="no"/>
               </object>
@@ -118,5 +117,40 @@
       </object>
     </child>
   </template>
+  <object class="GtkFileFilter" id="command-filter">
+    <mime-types>
+      <mime-type>application/x-executable</mime-type>
+    </mime-types>
+  </object>
+  <object class="GtkFileChooserDialog" id="command-chooser">
+    <property name="can_focus">False</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="type_hint">dialog</property>
+    <property name="filter">command-filter</property>
+    <property name="modal">True</property>
+    <property name="title" translatable="yes">Choose an executable</property>
+    <property name="transient_for">GSConnectCommandEditor</property>
+    <signal name="delete-event" handler="hide_on_delete" swapped="no"/>
+    <signal name="response" handler="_onCommandChosen" swapped="no"/>
+    <child type="action">
+      <object class="GtkButton" id="chooser-cancel-button">
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">Cancel</property>
+        <property name="visible">True</property>
+      </object>
+    </child>
+    <child type="action">
+      <object class="GtkButton" id="chooser-open-button">
+        <property name="can-default">True</property>
+        <property name="label" translatable="yes">Open</property>
+        <property name="sensitive">False</property>
+        <property name="visible">True</property>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="cancel">chooser-cancel-button</action-widget>
+      <action-widget response="ok" default="true">chooser-open-button</action-widget>
+    </action-widgets>
+  </object>
 </interface>
 
