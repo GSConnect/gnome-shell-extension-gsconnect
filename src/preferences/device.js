@@ -75,16 +75,18 @@ const SectionRow = GObject.registerClass({
     _init(params = {}) {
         super._init();
 
+        // NOTE: we can't pass construct properties to _init() because the
+        //       template children are not assigned until after it runs.
         Object.assign(this, params);
     }
 
     get icon_name() {
-        return this.icon_image.gicon.names[0];
+        return this.icon_image.icon_name;
     }
 
     set icon_name(icon_name) {
         this.icon_image.visible = !!icon_name;
-        this.icon_image.gicon = new Gio.ThemedIcon({name: icon_name});
+        this.icon_image.icon_name = icon_name;
     }
 
     get title() {
@@ -101,7 +103,7 @@ const SectionRow = GObject.registerClass({
     }
 
     set subtitle(text) {
-        this.subtitle_label.visible = (text);
+        this.subtitle_label.visible = !!text;
         this.subtitle_label.label = text;
     }
 
@@ -116,8 +118,9 @@ const SectionRow = GObject.registerClass({
         if (this.widget instanceof Gtk.Widget)
             this.widget.destroy();
 
+        // Add the widget
         this._widget = widget;
-        this.get_child().attach(this.widget, 2, 0, 1, 2);
+        this.get_child().attach(widget, 2, 0, 1, 2);
     }
 });
 
