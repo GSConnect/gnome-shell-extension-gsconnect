@@ -715,7 +715,7 @@ var Channel = GObject.registerClass({
             this.service.identity.body.tcpPort = this.backend.port;
 
             connection.output_stream.write_all_async(
-                `${this.service.identity}`,
+                this.service.identity.serialize(),
                 GLib.PRIORITY_DEFAULT,
                 this.cancellable,
                 (stream, res) => {

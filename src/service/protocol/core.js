@@ -41,7 +41,7 @@ var Packet = class Packet {
     /**
      * Deserialize and return a new Packet from an Object or string.
      *
-     * @return {string} A serialized packet
+     * @return {Core.Packet} A new packet object
      */
     static deserialize(data) {
         return new Packet(data);
@@ -259,7 +259,7 @@ var Channel = GObject.registerClass({
 
         return new Promise((resolve, reject) => {
             this.output_stream.write_all_async(
-                packet.toString(),
+                packet.serialize(),
                 GLib.PRIORITY_DEFAULT,
                 cancellable,
                 (stream, res) => {
