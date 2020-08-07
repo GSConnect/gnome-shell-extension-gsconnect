@@ -1839,6 +1839,7 @@
                             <property name="hexpand">True</property>
                             <property name="selection_mode">none</property>
                             <signal name="keynav-failed" handler="_onKeynavFailed" swapped="no"/>
+                            <signal name="row-activated" handler="_onSectionRowActivated" swapped="no"/>
                             <accessibility>
                               <relation type="labelled-by" target="plugins-label"/>
                             </accessibility>

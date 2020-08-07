@@ -301,6 +301,11 @@ var DevicePreferences = GObject.registerClass({
         this.stack.set_visible_child_name(row.get_name());
     }
 
+    _onSectionRowActivated(box, row) {
+        if (row.widget !== undefined)
+            row.widget.active = !row.widget.active;
+    }
+
     _onToggleRowActivated(box, row) {
         let widget = row.get_child().get_child_at(1, 0);
         widget.active = !widget.active;
