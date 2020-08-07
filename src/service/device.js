@@ -302,18 +302,18 @@ var Device = GObject.registerClass({
 
         // Only write GSettings if something has changed
         let currentSupported = this.settings.get_strv('supported-plugins');
-        supported.sort();
 
-        if (currentSupported.join('') !== supported.join(''))
+        if (currentSupported.join('') !== supported.sort().join(''))
             this.settings.set_strv('supported-plugins', supported);
     }
 
     /**
-     * Set the channel and start sending/receiving packets.
+     * Set the channel and start sending/receiving packets. If %null is passed
+     * the device becomes disconnected.
      *
      * @param {Core.Channel} [channel] - The new channel
      */
-    _setChannel(channel = null) {
+    setChannel(channel = null) {
         if (this.channel === channel)
             return;
 
@@ -322,10 +322,12 @@ var Device = GObject.registerClass({
 
         this._channel = channel;
 
-        if (this.channel !== null)
-            this._readLoop(channel);
-        else
+        // If the channel is null we've disconnected and should empty the queue,
+        // otherwise we need to restart the read loop
+        if (this.channel === null)
             this._outputQueue.length = 0;
+        else
+            this._readLoop(channel);
 
         // The connected state didn't change
         if (this.connected === !!this.channel)
@@ -344,9 +346,6 @@ var Device = GObject.registerClass({
         });
     }
 
-    /**
-     * This is invoked by Core.Channel.attach() which also sets the channel
-     */
     async _readLoop(channel) {
         try {
             let packet = null;

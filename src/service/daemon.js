@@ -471,7 +471,7 @@ const Service = GObject.registerClass({
                     return false;
             }
 
-            device._setChannel(channel);
+            device.setChannel(channel);
             return true;
         } catch (e) {
             logError(e, backend.name);
