@@ -14,6 +14,7 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/messaging-window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/notification-reply-dialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/preferences-section-row.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/preferences-shortcut-editor.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/preferences-window.ui</file>
 
     <!-- DBus Service Files -->

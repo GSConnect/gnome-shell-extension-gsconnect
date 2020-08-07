@@ -900,16 +900,14 @@ var DevicePreferences = GObject.registerClass({
     async _onShortcutRowActivated(box, row) {
         try {
             let keybindings = this.settings.get_value('keybindings').deepUnpack();
-            let accelerator = await Keybindings.get_accelerator(
-                row.title,
-                keybindings[row.action]
-            );
+            let accel = keybindings[row.action] || null;
 
-            if (accelerator) {
-                keybindings[row.action] = accelerator;
-            } else {
+            accel = await Keybindings.getAccelerator(row.title, accel);
+
+            if (accel)
+                keybindings[row.action] = accel;
+            else
                 delete keybindings[row.action];
-            }
 
             this.settings.set_value(
                 'keybindings',

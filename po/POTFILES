@@ -9,6 +9,7 @@ data/ui/messaging-conversation.ui
 data/ui/messaging-window.ui
 data/ui/notification-reply-dialog.ui
 data/ui/preferences-section-row.ui
+data/ui/preferences-shortcut-editor.ui
 data/ui/preferences-window.ui
 src/extension.js
 src/nautilus-gsconnect.py
