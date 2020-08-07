@@ -483,6 +483,7 @@ var Window = GObject.registerClass({
         }
 
         this.service_edit.active = false;
+        this.service_edit.grab_focus();
     }
 
     /*

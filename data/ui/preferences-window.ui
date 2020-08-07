@@ -16,6 +16,9 @@
             <property name="halign">start</property>
             <property name="label" translatable="yes">Device Name</property>
             <property name="mnemonic_widget">rename-entry</property>
+            <accessibility>
+              <relation type="label-for" target="rename-entry"/>
+            </accessibility>
             <attributes>
               <attribute name="weight" value="bold"/>
             </attributes>
@@ -37,6 +40,9 @@
             <property name="input_purpose">name</property>
             <property name="width_chars">20</property>
             <signal name="activate" handler="_onSetServiceName" swapped="no"/>
+            <accessibility>
+              <relation type="labelled-by" target="rename-label"/>
+            </accessibility>
           </object>
           <packing>
             <property name="left_attach">0</property>
