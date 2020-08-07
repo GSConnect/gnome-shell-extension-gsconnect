@@ -170,8 +170,11 @@ const CommandEditor = GObject.registerClass({
 });
 
 
-var DevicePreferences = GObject.registerClass({
-    GTypeName: 'GSConnectDevicePreferences',
+/**
+ * A widget for configuring a remote device.
+ */
+var Panel = GObject.registerClass({
+    GTypeName: 'GSConnectPreferencesDevicePanel',
     Properties: {
         'device': GObject.ParamSpec.object(
             'device',
@@ -181,7 +184,7 @@ var DevicePreferences = GObject.registerClass({
             GObject.Object.$gtype
         )
     },
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/device-preferences.ui',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/preferences-device-panel.ui',
     Children: [
         'sidebar', 'stack', 'infobar',
 
@@ -217,7 +220,7 @@ var DevicePreferences = GObject.registerClass({
 
         'device-menu'
     ]
-}, class DevicePreferences extends Gtk.Grid {
+}, class Panel extends Gtk.Grid {
 
     _init(device) {
         super._init({

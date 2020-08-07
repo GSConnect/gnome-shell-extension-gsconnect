@@ -600,7 +600,7 @@ var Window = GObject.registerClass({
         try {
             if (!this.stack.get_child_by_name(device.id)) {
                 // Add the device preferences
-                let prefs = new Device.DevicePreferences(device);
+                let prefs = new Device.Panel(device);
                 this.stack.add_titled(prefs, device.id, device.name);
 
                 // Add a row to the device list
