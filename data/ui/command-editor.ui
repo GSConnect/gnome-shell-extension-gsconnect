@@ -46,12 +46,15 @@
             <property name="row_spacing">6</property>
             <property name="column_spacing">12</property>
             <child>
-              <object class="GtkLabel">
+              <object class="GtkLabel" id="name-label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">end</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Name</property>
+                <accessibility>
+                  <relation type="label-for" target="name-entry"/>
+                </accessibility>
                 <style>
                   <class name="dim-label"/>
                 </style>
@@ -70,6 +73,9 @@
                 <property name="valign">center</property>
                 <property name="hexpand">True</property>
                 <signal name="notify::text" handler="_onEntryChanged" swapped="no"/>
+                <accessibility>
+                  <relation type="labelled-by" target="name-label"/>
+                </accessibility>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -78,12 +84,15 @@
               </packing>
             </child>
             <child>
-              <object class="GtkLabel">
+              <object class="GtkLabel" id="command-label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">end</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Command Line</property>
+                <accessibility>
+                  <relation type="label-for" target="command-entry"/>
+                </accessibility>
                 <style>
                   <class name="dim-label"/>
                 </style>
@@ -105,6 +114,9 @@
                 <property name="secondary_icon_tooltip_text" translatable="yes">Choose an executable</property>
                 <signal name="icon-release" handler="_onBrowseCommand" swapped="no"/>
                 <signal name="notify::text" handler="_onEntryChanged" swapped="no"/>
+                <accessibility>
+                  <relation type="labelled-by" target="command-label"/>
+                </accessibility>
               </object>
               <packing>
                 <property name="left_attach">1</property>
