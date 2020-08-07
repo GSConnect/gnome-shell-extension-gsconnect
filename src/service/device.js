@@ -359,7 +359,7 @@ var Device = GObject.registerClass({
                 debug(e, this.name);
 
             if (this.channel === channel)
-                this._setChannel(null);
+                this.setChannel(null);
         }
     }
 
