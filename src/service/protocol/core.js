@@ -16,78 +16,62 @@ var Packet = class Packet {
         this.type = undefined;
         this.body = {};
 
-        if (typeof data === 'string') {
-            this.fromString(data);
-        } else {
-            this.fromObject(data);
-        }
+        if (typeof data === 'string')
+            Object.assign(this, JSON.parse(data));
+        else if (data !== null)
+            Object.assign(this, data);
     }
 
     [Symbol.toPrimitive](hint) {
         this.id = Date.now();
 
-        switch (hint) {
-            case 'string':
-                return `${JSON.stringify(this)}\n`;
-            case 'number':
-                return `${JSON.stringify(this)}\n`.length;
-            default:
-                return true;
-        }
+        if (hint === 'string')
+            return `${JSON.stringify(this)}\n`;
+
+        if (hint === 'number')
+            return `${JSON.stringify(this)}\n`.length;
+
+        return true;
+    }
+
+    get [Symbol.toStringTag]() {
+        return `Packet:${this.type}`;
     }
 
     /**
-     * Update the packet from an Object, using and intermediate call to
-     * JSON.stringify() to deep-copy the object, avoiding reference entanglement
+     * Deserialize and return a new Packet from an Object or string.
      *
-     * @param {string} data - An object
+     * @return {string} A serialized packet
      */
-    fromObject(data) {
-        try {
-            let json = JSON.parse(JSON.stringify(data));
-            Object.assign(this, json);
-        } catch (e) {
-            throw Error(`Malformed packet: ${e.message}`);
-        }
+    static deserialize(data) {
+        return new Packet(data);
     }
 
     /**
-     * Update the packet from a string of JSON
-     *
-     * @param {string} data - A string of text
-     */
-    fromString(data) {
-        try {
-            let json = JSON.parse(data);
-            Object.assign(this, json);
-        } catch (e) {
-            throw Error(`Malformed packet: ${e.message}`);
-        }
-    }
-
-    /**
-     * Make a deep copy of the packet, using and intermediate call to
-     * JSON.stringify() to avoid reference entanglement.
-     *
-     * @return {Core.Packet} A new packet
-     */
-    toObject() {
-        try {
-            let data = JSON.stringify(this);
-            return new Packet(data);
-        } catch (e) {
-            throw Error(`Malformed packet: ${e.message}`);
-        }
-    }
-
-    /**
-     * Serialize the packet as a single line with a terminating new-line (\n)
+     * Serialize the packet as a single line with a terminating new-line (`\n`)
      * character, ready to be written to a channel.
      *
      * @return {string} A serialized packet
      */
-    toString() {
-        return `${this}`;
+    serialize() {
+        this.id = Date.now();
+        return `${JSON.stringify(this)}\n`;
+    }
+
+    /**
+     * Update the packet from a dictionary or string of JSON
+     *
+     * @param {Object|string} source - Source data
+     */
+    update(source) {
+        try {
+            if (typeof data === 'string')
+                Object.assign(this, JSON.parse(source));
+            else
+                Object.assign(this, source);
+        } catch (e) {
+            throw Error(`Malformed data: ${e.message}`);
+        }
     }
 
     /**
