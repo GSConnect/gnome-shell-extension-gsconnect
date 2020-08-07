@@ -15,24 +15,49 @@ const TRANSFER_MIN = 1739;
 const TRANSFER_MAX = 1764;
 
 
-/**
+/*
  * One-time check for Linux/FreeBSD socket options
  */
-var _LINUX_SOCKETS = false;
+var _LINUX_SOCKETS = true;
 
 try {
     // This should throw on FreeBSD
-    // https://github.com/freebsd/freebsd/blob/master/sys/netinet/tcp.h#L159
     new Gio.Socket({
         family: Gio.SocketFamily.IPV4,
         protocol: Gio.SocketProtocol.TCP,
         type: Gio.SocketType.STREAM
     }).get_option(6, 5);
-
-    // Otherwise we can use Linux socket options
-    _LINUX_SOCKETS = true;
 } catch (e) {
     _LINUX_SOCKETS = false;
+}
+
+
+/**
+ * Configure a socket connection for the KDE Connect protocol.
+ *
+ * @param {Gio.SocketConnection} connection - The connection to configure
+ */
+function _configureSocket(connection) {
+    try {
+        if (_LINUX_SOCKETS) {
+            connection.socket.set_option(6, 4, 10); // TCP_KEEPIDLE
+            connection.socket.set_option(6, 5, 5);  // TCP_KEEPINTVL
+            connection.socket.set_option(6, 6, 3);  // TCP_KEEPCNT
+
+        // FreeBSD constants
+        // https://github.com/freebsd/freebsd/blob/master/sys/netinet/tcp.h#L159
+        } else {
+            connection.socket.set_option(6, 256, 10); // TCP_KEEPIDLE
+            connection.socket.set_option(6, 512, 5);  // TCP_KEEPINTVL
+            connection.socket.set_option(6, 1024, 3); // TCP_KEEPCNT
+        }
+
+        // Do this last because an error setting the keepalive options would
+        // result in a socket that never times out
+        connection.socket.set_keepalive(true);
+    } catch (e) {
+        debug(e, 'Configuring Socket');
+    }
 }
 
 
@@ -524,22 +549,6 @@ var Channel = GObject.registerClass({
         this._port = port;
     }
 
-    _initSocket(connection) {
-        connection.socket.set_keepalive(true);
-
-        if (_LINUX_SOCKETS) {
-            connection.socket.set_option(6, 4, 10); // TCP_KEEPIDLE
-            connection.socket.set_option(6, 5, 5);  // TCP_KEEPINTVL
-            connection.socket.set_option(6, 6, 3);  // TCP_KEEPCNT
-        } else {
-            connection.socket.set_option(6, 256, 10); // TCP_KEEPIDLE
-            connection.socket.set_option(6, 512, 5);  // TCP_KEEPINTVL
-            connection.socket.set_option(6, 1024, 3); // TCP_KEEPCNT
-        }
-
-        return connection;
-    }
-
     /**
      * Handshake Gio.TlsConnection
      */
@@ -733,7 +742,7 @@ var Channel = GObject.registerClass({
             debug(`${this.address} (${this.uuid})`);
             this.backend.channels.set(this.address, this);
 
-            this._connection = this._initSocket(connection);
+            _configureSocket(connection);
             this._connection = await this._receiveIdent(this._connection);
             this._connection = await this._clientEncryption(this._connection);
         } catch (e) {
@@ -752,7 +761,7 @@ var Channel = GObject.registerClass({
             debug(`${this.address} (${this.uuid})`);
             this.backend.channels.set(this.address, this);
 
-            this._connection = this._initSocket(connection);
+            _configureSocket(connection);
             this._connection = await this._sendIdent(this._connection);
             this._connection = await this._serverEncryption(this._connection);
         } catch (e) {
@@ -862,7 +871,8 @@ var Transfer = GObject.registerClass({
                     }
                 });
             });
-            this._connection = this._initSocket(this._connection);
+
+            _configureSocket(this._connection);
             this._connection = await this._clientEncryption(this._connection);
             this.input_stream = this._connection.get_input_stream();
 
@@ -933,7 +943,7 @@ var Transfer = GObject.registerClass({
 
             // Accept the connection and configure the channel
             this._connection = await connection;
-            this._connection = this._initSocket(this._connection);
+            _configureSocket(this._connection);
             this._connection = await this._serverEncryption(this._connection);
             this.output_stream = this._connection.get_output_stream();
 
