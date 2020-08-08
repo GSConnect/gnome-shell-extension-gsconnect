@@ -331,28 +331,20 @@ var Panel = GObject.registerClass({
     }
 
     dispose() {
-        if (this.__disposed === undefined) {
-            this.__disposed = true;
+        if (this._commandEditor !== undefined)
+            this._commandEditor.destroy();
 
-            if (this._commandEditor !== undefined)
-                this._commandEditor.destroy();
+        // Device signals
+        this.device.action_group.disconnect(this._actionAddedId);
+        this.device.action_group.disconnect(this._actionRemovedId);
 
-            // Device signals
-            this.device.action_group.disconnect(this._actionAddedId);
-            this.device.action_group.disconnect(this._actionRemovedId);
+        // GSettings
+        for (let settings of Object.values(this._pluginSettings))
+            settings.run_dispose();
 
-            // GActions/GMenu
-            this.actions.run_dispose();
-
-            // GSettings
-            for (let settings of Object.values(this._pluginSettings)) {
-                settings.run_dispose();
-            }
-
-            this.settings.disconnect(this._keybindingsId);
-            this.settings.disconnect(this._pluginsId);
-            this.settings.run_dispose();
-        }
+        this.settings.disconnect(this._keybindingsId);
+        this.settings.disconnect(this._pluginsId);
+        this.settings.run_dispose();
     }
 
     pluginSettings(name) {
