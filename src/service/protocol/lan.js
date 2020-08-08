@@ -113,9 +113,8 @@ var ChannelService = GObject.registerClass({
     }
 
     get channels() {
-        if (this._channels === undefined) {
+        if (this._channels === undefined)
             this._channels = new Map();
-        }
 
         return this._channels;
     }
@@ -308,18 +307,18 @@ var ChannelService = GObject.registerClass({
 
         // Whether or not we peeked the address, we need to read the packet
         try {
-            if (socket === this._udp6) {
+            if (socket === this._udp6)
                 data = this._udp6_stream.read_line_utf8(null)[0];
-            } else {
+            else
                 data = this._udp4_stream.read_line_utf8(null)[0];
-            }
 
-            // Only process the packet if we succeeded in peeking the address
-            if (host !== undefined) {
-                packet = new Core.Packet(data);
-                packet.body.tcpHost = host;
-                this._onIdentity(packet);
-            }
+            // Discard the packet if we failed to peek the address
+            if (host === undefined)
+                return;
+
+            packet = new Core.Packet(data);
+            packet.body.tcpHost = host;
+            this._onIdentity(packet);
         } catch (e) {
             logError(e);
         }
