@@ -240,6 +240,7 @@ var Plugin = GObject.registerClass({
      * Packet dispatch
      */
     handlePacket(packet) {
+        // TODO: composite jobs (lastModified, numberOfFiles, totalPayloadSize)
         if (packet.body.hasOwnProperty('filename')) {
             if (this.settings.get_boolean('receive-files'))
                 this._handleFile(packet);

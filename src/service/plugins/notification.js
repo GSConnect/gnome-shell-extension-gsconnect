@@ -468,12 +468,14 @@ var Plugin = GObject.registerClass({
             ]);
 
             // Check if we've already downloaded this icon
+            // TODO: if we reject the transfer kdeconnect-android will resend
+            //       the notification packet, which may cause problems wrt #789
             let file = Gio.File.new_for_path(path);
 
             if (file.query_exists(null))
                 return new Gio.FileIcon({file: file});
 
-            // Open the file
+            // Open the target path and create a transfer
             let stream = await new Promise((resolve, reject) => {
                 file.replace_async(null, false, 2, 0, null, (file, res) => {
                     try {
@@ -484,7 +486,6 @@ var Plugin = GObject.registerClass({
                 });
             });
 
-            // Download the icon
             let transfer = this.device.createTransfer(Object.assign({
                 output_stream: stream,
                 size: packet.payloadSize
