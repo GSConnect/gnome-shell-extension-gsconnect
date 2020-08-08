@@ -414,10 +414,10 @@ var ChannelService = GObject.registerClass({
             this.service.identity.body.tcpPort = this.port;
 
             if (this._udp6 !== null)
-                this._udp6.send_to(address, `${this.service.identity}`, null);
+                this._udp6.send_to(address, this.service.identity.serialize(), null);
 
             if (this._udp4 !== null)
-                this._udp4.send_to(address, `${this.service.identity}`, null);
+                this._udp4.send_to(address, this.service.identity.serialize(), null);
         } catch (e) {
             debug(e, address);
         } finally {
