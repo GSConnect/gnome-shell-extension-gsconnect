@@ -77,7 +77,7 @@ var _numberRegex = new RegExp(
  * the position within @str where the URL was found.
  *
  * @param {string} str - the string to search
- * @return {object[]} the list of match objects, as described above
+ * @return {Object[]} the list of match objects, as described above
  */
 function findUrls(str) {
     _urlRegexp.lastIndex = 0;

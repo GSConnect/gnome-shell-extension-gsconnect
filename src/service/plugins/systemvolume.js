@@ -75,6 +75,8 @@ var Plugin = GObject.registerClass({
 
     /**
      * Handle a request to change an output
+     *
+     * @param {Core.Packet} packet - a `kdeconnect.systemvolume.request`
      */
     _changeSink(packet) {
         let stream;

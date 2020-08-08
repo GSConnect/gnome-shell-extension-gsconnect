@@ -62,15 +62,14 @@ function _configureSocket(connection) {
 
 
 /**
- * Lan.ChannelService consists of two parts.
+ * Lan.ChannelService consists of two parts:
  *
  * The TCP Listener listens on a port and constructs a Channel object from the
  * incoming Gio.TcpConnection.
  *
  * The UDP Listener listens on a port for incoming JSON identity packets which
- * include the TCP port for connections, while the IP address is taken from the
- * UDP packet itself. We respond to incoming packets by opening a TCP connection
- * and broadcast outgoing packets to 255.255.255.255.
+ * include the TCP port, while the IP address is taken from the UDP packet
+ * itself. We respond by opening a TCP connection to that address.
  */
 var ChannelService = GObject.registerClass({
     GTypeName: 'GSConnectLanChannelService',
@@ -551,6 +550,9 @@ var Channel = GObject.registerClass({
 
     /**
      * Handshake Gio.TlsConnection
+     *
+     * @param {Gio.TlsConnection} connection - A TLS connection
+     * @return {Promise} A promise for the operation
      */
     _handshake(connection) {
         return new Promise((resolve, reject) => {
@@ -571,6 +573,12 @@ var Channel = GObject.registerClass({
         });
     }
 
+    /**
+     * Authenticate a TLS connection.
+     *
+     * @param {Gio.TlsConnection} connection - A TLS connection
+     * @return {Promise} A promise for the operation
+     */
     async _authenticate(connection) {
         // Standard TLS Handshake
         await this._handshake(connection);

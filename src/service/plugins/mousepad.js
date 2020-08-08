@@ -607,6 +607,7 @@ var KeyboardInputDialog = GObject.registerClass({
             if (!char)
                 continue;
 
+            // TODO: modifiers?
             this.device.sendPacket({
                 type: 'kdeconnect.mousepad.request',
                 body: {

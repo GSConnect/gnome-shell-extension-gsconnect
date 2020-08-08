@@ -31,6 +31,11 @@
                 <property name="icon_name">list-add-symbolic</property>
               </object>
             </child>
+            <child internal-child="accessible">
+              <object class="AtkObject">
+                <property name="AtkObject::accessible-name" translatable="yes">New Conversation</property>
+              </object>
+            </child>
             <accelerator key="n" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
           </object>
         </child>

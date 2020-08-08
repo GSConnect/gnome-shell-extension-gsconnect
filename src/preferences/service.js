@@ -145,10 +145,8 @@ function rowSeparators(row, before) {
         return;
     }
 
-    if (header === null) {
-        header = new Gtk.Separator({visible: true});
-        row.set_header(header);
-    }
+    if (header === null)
+        row.set_header(new Gtk.Separator({visible: true}));
 }
 
 
@@ -167,7 +165,7 @@ var Window = GObject.registerClass({
     Children: [
         // HeaderBar
         'headerbar', 'infobar', 'stack',
-        'service-menu', 'service-edit', 'service-refresh',
+        'service-menu', 'service-edit', 'refresh-button',
         'device-menu', 'prev-button',
 
         // Popover
@@ -181,7 +179,7 @@ var Window = GObject.registerClass({
     ]
 }, class PreferencesWindow extends Gtk.ApplicationWindow {
 
-    _init(params) {
+    _init(params = {}) {
         super._init(params);
 
         // Service Settings
@@ -339,14 +337,12 @@ var Window = GObject.registerClass({
         // Size
         let [width, height] = this._windowState.get_value('window-size').deepUnpack();
 
-        if (width && height) {
+        if (width && height)
             this.set_default_size(width, height);
-        }
 
         // Maximized State
-        if (this._windowState.get_boolean('window-maximized')) {
+        if (this._windowState.get_boolean('window-maximized'))
             this.maximize();
-        }
     }
 
     _saveGeometry() {
@@ -459,7 +455,7 @@ var Window = GObject.registerClass({
         this.prev_button.visible = false;
         this.device_menu.visible = false;
 
-        this.service_refresh.visible = true;
+        this.refresh_button.visible = true;
         this.service_edit.visible = true;
         this.service_menu.visible = true;
 
@@ -646,7 +642,7 @@ var Window = GObject.registerClass({
             this._setDeviceMenu(prefs);
 
             // HeaderBar (Device)
-            this.service_refresh.visible = false;
+            this.refresh_button.visible = false;
             this.service_edit.visible = false;
             this.service_menu.visible = false;
 

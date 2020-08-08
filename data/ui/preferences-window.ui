@@ -84,7 +84,7 @@
         <property name="has_subtitle">False</property>
         <property name="show_close_button">True</property>
         <child>
-          <object class="GtkButton" id="service-refresh">
+          <object class="GtkButton" id="refresh-button">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
@@ -101,7 +101,7 @@
               </object>
             </child>
             <child internal-child="accessible">
-              <object class="AtkObject" id="service-refresh-atkobject">
+              <object class="AtkObject" id="refresh-button-atkobject">
                 <property name="AtkObject::accessible-name" translatable="yes">Refresh</property>
               </object>
             </child>
