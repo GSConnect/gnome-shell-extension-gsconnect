@@ -241,11 +241,10 @@ var Plugin = GObject.registerClass({
      */
     handlePacket(packet) {
         if (packet.body.hasOwnProperty('filename')) {
-            if (this.settings.get_boolean('receive-files')) {
+            if (this.settings.get_boolean('receive-files'))
                 this._handleFile(packet);
-            } else {
+            else
                 this._refuseFile(packet);
-            }
         } else if (packet.body.hasOwnProperty('text')) {
             this._handleText(packet);
         } else if (packet.body.hasOwnProperty('url')) {

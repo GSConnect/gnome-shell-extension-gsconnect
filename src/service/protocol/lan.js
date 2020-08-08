@@ -810,6 +810,38 @@ var Channel = GObject.registerClass({
 
         return new Transfer(params);
     }
+
+    async rejectTransfer(packet) {
+        try {
+            if (!packet || !packet.hasPayload())
+                return;
+
+            if (packet.payloadTransferInfo.port === undefined)
+                return;
+
+            let connection = await new Promise((resolve, reject) => {
+                let client = new Gio.SocketClient({enable_proxy: false});
+
+                let address = Gio.InetSocketAddress.new_from_string(
+                    this.host,
+                    packet.payloadTransferInfo.port
+                );
+
+                client.connect_async(address, null, (client, res) => {
+                    try {
+                        resolve(client.connect_finish(res));
+                    } catch (e) {
+                        resolve();
+                    }
+                });
+            });
+
+            connection = await this._clientEncryption(connection);
+            connection.close_async(GLib.PRIORITY_DEFAULT, null, null);
+        } catch (e) {
+            debug(e, this.device.name);
+        }
+    }
 });
 
 

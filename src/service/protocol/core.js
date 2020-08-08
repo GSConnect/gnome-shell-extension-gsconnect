@@ -285,6 +285,16 @@ var Channel = GObject.registerClass({
         throw new GObject.NotImplementedError();
     }
 
+    /**
+     * Reject a transfer.
+     *
+     * @param {Core.Packet} packet - A packet with payload info
+     * @return {Promise} A promise for the operation
+     */
+    rejectTransfer(packet) {
+        throw new GObject.NotImplementedError();
+    }
+
     async download() {
         let result = false;
 
