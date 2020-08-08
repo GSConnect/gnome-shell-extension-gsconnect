@@ -31,7 +31,7 @@ for (let path of [gsconnect.cachedir, gsconnect.configdir, gsconnect.runtimedir]
  * DBus Interface Introspection
  */
 gsconnect.dbusinfo = Gio.DBusNodeInfo.new_for_xml(
-    gsconnect.get_resource(`${gsconnect.app_id}.xml`)
+    gsconnect.get_resource('org.gnome.Shell.Extensions.GSConnect.xml')
 );
 gsconnect.dbusinfo.nodes.forEach(info => info.cache_build());
 

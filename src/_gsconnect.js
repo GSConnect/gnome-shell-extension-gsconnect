@@ -7,6 +7,9 @@ const Gio = imports.gi.Gio;
 const GIRepository = imports.gi.GIRepository;
 const GLib = imports.gi.GLib;
 
+const APP_ID = 'org.gnome.Shell.Extensions.GSConnect';
+const APP_PATH = '/org/gnome/Shell/Extensions/GSConnect';
+
 
 // Bootstrap the global object
 if (!globalThis.gsconnect) {
@@ -28,8 +31,6 @@ String.prototype.format = imports.format.format;
 /**
  * Application Variables
  */
-gsconnect.app_id = 'org.gnome.Shell.Extensions.GSConnect';
-gsconnect.app_path = '/org/gnome/Shell/Extensions/GSConnect';
 gsconnect.is_local = gsconnect.extdatadir.startsWith(GLib.get_user_data_dir());
 gsconnect.metadata = (() => {
     let data = GLib.file_get_contents(gsconnect.extdatadir + '/metadata.json')[1];
@@ -89,15 +90,15 @@ if (gsconnect.is_local) {
  * If we aren't inside the GNOME Shell process we'll set gettext functions on
  * the global object, otherwise we'll set them on the extension object
  */
-Gettext.bindtextdomain(gsconnect.app_id, gsconnect.localedir);
+Gettext.bindtextdomain(APP_ID, gsconnect.localedir);
 
 if (typeof _ !== 'function') {
-    globalThis._ = GLib.dgettext.bind(null, gsconnect.app_id);
-    globalThis.ngettext = GLib.dngettext.bind(null, gsconnect.app_id);
+    globalThis._ = GLib.dgettext.bind(null, APP_ID);
+    globalThis.ngettext = GLib.dngettext.bind(null, APP_ID);
 } else {
     let Extension = imports.misc.extensionUtils.getCurrentExtension();
-    Extension._ = GLib.dgettext.bind(null, gsconnect.app_id);
-    Extension.ngettext = GLib.dngettext.bind(null, gsconnect.app_id);
+    Extension._ = GLib.dgettext.bind(null, APP_ID);
+    Extension.ngettext = GLib.dngettext.bind(null, APP_ID);
 }
 
 
@@ -105,7 +106,7 @@ if (typeof _ !== 'function') {
  * Init GSettings
  */
 gsconnect.settings = new Gio.Settings({
-    settings_schema: gsconnect.gschema.lookup(gsconnect.app_id, true)
+    settings_schema: gsconnect.gschema.lookup(APP_ID, true)
 });
 
 
@@ -113,12 +114,12 @@ gsconnect.settings = new Gio.Settings({
  * Register resources
  */
 Gio.Resource.load(
-    GLib.build_filenamev([gsconnect.extdatadir, `${gsconnect.app_id}.gresource`])
+    GLib.build_filenamev([gsconnect.extdatadir, `${APP_ID}.gresource`])
 )._register();
 
 gsconnect.get_resource = function(rel_path) {
     let array = Gio.resources_lookup_data(
-        GLib.build_filenamev([gsconnect.app_path, rel_path]),
+        GLib.build_filenamev([APP_PATH, rel_path]),
         Gio.ResourceLookupFlags.NONE
     ).toArray();
 
@@ -147,7 +148,7 @@ function installFile(dirname, basename, contents) {
 function installResource(dirname, basename, rel_path) {
     try {
         let bytes = Gio.resources_lookup_data(
-            GLib.build_filenamev([gsconnect.app_path, rel_path]),
+            GLib.build_filenamev([APP_PATH, rel_path]),
             Gio.ResourceLookupFlags.NONE
         );
 
@@ -169,17 +170,17 @@ gsconnect.installService = function() {
 
     // DBus Service
     let dbusDir = GLib.build_filenamev([dataDir, 'dbus-1', 'services']);
-    let dbusFile = `${gsconnect.app_id}.service`;
+    let dbusFile = `${APP_ID}.service`;
 
     // Desktop Entry
     let appDir = GLib.build_filenamev([dataDir, 'applications']);
-    let appFile = `${gsconnect.app_id}.desktop`;
-    let appPrefsFile = `${gsconnect.app_id}.Preferences.desktop`;
+    let appFile = `${APP_ID}.desktop`;
+    let appPrefsFile = `${APP_ID}.Preferences.desktop`;
 
     // Application Icon
     let iconDir = GLib.build_filenamev([dataDir, 'icons', 'hicolor', 'scalable', 'apps']);
-    let iconFull = `${gsconnect.app_id}.svg`;
-    let iconSym = `${gsconnect.app_id}-symbolic.svg`;
+    let iconFull = `${APP_ID}.svg`;
+    let iconSym = `${APP_ID}-symbolic.svg`;
 
     // File Manager Extensions
     let fileManagers = [

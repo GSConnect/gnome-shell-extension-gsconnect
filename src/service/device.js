@@ -8,8 +8,9 @@ const Gtk = imports.gi.Gtk;
 const Core = imports.service.protocol.core;
 const DBus = imports.utils.dbus;
 
-const UUID = 'org.gnome.Shell.Extensions.GSConnect.Device';
-const INTERFACE_INFO = gsconnect.dbusinfo.lookup_interface(UUID);
+const DBUS_NAME = 'org.gnome.Shell.Extensions.GSConnect.Device';
+const DBUS_PATH = '/org/gnome/Shell/Extensions/GSConnect/Device';
+const DBUS_IFACE = gsconnect.dbusinfo.lookup_interface(DBUS_NAME);
 
 
 /**
@@ -101,7 +102,7 @@ var Device = GObject.registerClass({
 
         // GSettings
         this.settings = new Gio.Settings({
-            settings_schema: gsconnect.gschema.lookup(UUID, true),
+            settings_schema: gsconnect.gschema.lookup(DBUS_NAME, true),
             path: `/org/gnome/shell/extensions/gsconnect/device/${this.id}/`
         });
 
@@ -142,7 +143,7 @@ var Device = GObject.registerClass({
         // Export the Device interface
         this._dbus = new DBus.Interface({
             g_instance: this,
-            g_interface_info: INTERFACE_INFO
+            g_interface_info: DBUS_IFACE
         });
         this._dbus_object.add_interface(this._dbus);
 
@@ -249,7 +250,7 @@ var Device = GObject.registerClass({
 
     get g_object_path() {
         if (this._g_object_path === undefined)
-            this._g_object_path = `${gsconnect.app_path}/Device/${this.id.replace(/\W+/g, '_')}`;
+            this._g_object_path = `${DBUS_PATH}/${this.id.replace(/\W+/g, '_')}`;
 
         return this._g_object_path;
     }

@@ -35,12 +35,12 @@ const Preferences = GObject.registerClass({
 
     _init() {
         super._init({
-            application_id: 'org.gnome.Shell.Extensions.GSConnect.Preferences'
+            application_id: 'org.gnome.Shell.Extensions.GSConnect.Preferences',
+            resource_base_path: '/org/gnome/Shell/Extensions/GSConnect'
         });
 
         GLib.set_prgname(_('GSConnect Preferences'));
         GLib.set_application_name(_('GSConnect Preferences'));
-        this.set_resource_base_path(gsconnect.app_path);
     }
 
     vfunc_activate() {
@@ -58,7 +58,7 @@ const Preferences = GObject.registerClass({
 
         // Init some resources
         let provider = new Gtk.CssProvider();
-        provider.load_from_resource(gsconnect.app_path + '/application.css');
+        provider.load_from_resource(`${this.resource_base_path}/application.css`);
         Gtk.StyleContext.add_provider_for_screen(
             Gdk.Screen.get_default(),
             provider,

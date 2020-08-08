@@ -65,8 +65,9 @@ const Service = GObject.registerClass({
 
     _init() {
         super._init({
-            application_id: gsconnect.app_id,
-            flags: Gio.ApplicationFlags.HANDLES_OPEN
+            application_id: 'org.gnome.Shell.Extensions.GSConnect',
+            flags: Gio.ApplicationFlags.HANDLES_OPEN,
+            resource_base_path: '/org/gnome/Shell/Extensions/GSConnect'
         });
 
         GLib.set_prgname('GSConnect');
@@ -265,7 +266,7 @@ const Service = GObject.registerClass({
      */
     _initSettings() {
         this.settings = new Gio.Settings({
-            settings_schema: gsconnect.gschema.lookup(gsconnect.app_id, true)
+            settings_schema: gsconnect.gschema.lookup(this.application_id, true)
         });
 
         // Bound Properties
@@ -582,7 +583,7 @@ const Service = GObject.registerClass({
 
         // Init some resources
         let provider = new Gtk.CssProvider();
-        provider.load_from_resource(`${gsconnect.app_path}/application.css`);
+        provider.load_from_resource(`${this.resource_base_path}/application.css`);
         Gtk.StyleContext.add_provider_for_screen(
             Gdk.Screen.get_default(),
             provider,
@@ -591,7 +592,7 @@ const Service = GObject.registerClass({
 
         // Ensure our handlers are registered
         try {
-            let appInfo = Gio.DesktopAppInfo.new(`${gsconnect.app_id}.desktop`);
+            let appInfo = Gio.DesktopAppInfo.new(`${this.application_id}.desktop`);
             appInfo.add_supports_type('x-scheme-handler/sms');
             appInfo.add_supports_type('x-scheme-handler/tel');
         } catch (e) {
