@@ -647,7 +647,9 @@ var Channel = GObject.registerClass({
      * @param {Gio.TcpConnection} connection - The unauthenticated connection
      * @return {Gio.TlsClientConnection} The authenticated connection
      */
-    _clientEncryption(connection) {
+    _encryptClient(connection) {
+        _configureSocket(connection);
+
         connection = Gio.TlsClientConnection.new(
             connection,
             connection.socket.remote_address
@@ -663,7 +665,9 @@ var Channel = GObject.registerClass({
      * @param {Gio.TcpConnection} connection - The unauthenticated connection
      * @return {Gio.TlsServerConnection} The authenticated connection
      */
-    _serverEncryption(connection) {
+    _encryptServer(connection) {
+        _configureSocket(connection);
+
         connection = Gio.TlsServerConnection.new(connection, this.certificate);
 
         // We're the server so we trust-on-first-use and verify after
@@ -679,10 +683,13 @@ var Channel = GObject.registerClass({
      * Read the identity packet from the new connection
      *
      * @param {Gio.SocketConnection} connection - An unencrypted socket
-     * @return {Gio.SocketConnection} The connection after success
+     * @return {Promise} A promise for the operation
      */
     _receiveIdent(connection) {
         return new Promise((resolve, reject) => {
+            // In principle this disposable wrapper could buffer more than the
+            // identity packet, but in practice the remote device shouldn't send
+            // any more data until the TLS connection is negotiated.
             let stream = new Gio.DataInputStream({
                 base_stream: connection.input_stream,
                 close_base_stream: false
@@ -703,7 +710,7 @@ var Channel = GObject.registerClass({
                         if (!this.identity.body.deviceId)
                             throw new Error('missing deviceId');
 
-                        resolve(connection);
+                        resolve();
                     } catch (e) {
                         reject(e);
                     }
@@ -716,7 +723,7 @@ var Channel = GObject.registerClass({
      * Write our identity packet to the new connection
      *
      * @param {Gio.SocketConnection} connection - An unencrypted socket
-     * @return {Gio.SocketConnection} The connection after success
+     * @return {Promise} A promise for the operation
      */
     _sendIdent(connection) {
         return new Promise((resolve, reject) => {
@@ -730,8 +737,7 @@ var Channel = GObject.registerClass({
                     try {
                         this.service.identity.body.tcpPort = undefined;
 
-                        stream.write_all_finish(res);
-                        resolve(connection);
+                        resolve(stream.write_all_finish(res));
                     } catch (e) {
                         reject(e);
                     }
@@ -746,13 +752,14 @@ var Channel = GObject.registerClass({
      * @param {Gio.TcpConnection} connection - The incoming connection
      */
     async accept(connection) {
+        debug(`${this.address} (${this.uuid})`);
+
         try {
-            debug(`${this.address} (${this.uuid})`);
+            this._connection = connection;
             this.backend.channels.set(this.address, this);
 
-            _configureSocket(connection);
-            this._connection = await this._receiveIdent(this._connection);
-            this._connection = await this._clientEncryption(this._connection);
+            await this._receiveIdent(this._connection);
+            this._connection = await this._encryptClient(connection);
         } catch (e) {
             this.close();
             return Promise.reject(e);
@@ -765,13 +772,14 @@ var Channel = GObject.registerClass({
      * @param {Gio.SocketConnection} connection - The remote connection
      */
     async open(connection) {
+        debug(`${this.address} (${this.uuid})`);
+
         try {
-            debug(`${this.address} (${this.uuid})`);
+            this._connection = connection;
             this.backend.channels.set(this.address, this);
 
-            _configureSocket(connection);
-            this._connection = await this._sendIdent(this._connection);
-            this._connection = await this._serverEncryption(this._connection);
+            await this._sendIdent(this._connection);
+            this._connection = await this._encryptServer(connection);
         } catch (e) {
             this.close();
             return Promise.reject(e);
@@ -836,7 +844,7 @@ var Channel = GObject.registerClass({
                 });
             });
 
-            connection = await this._clientEncryption(connection);
+            connection = await this._encryptClient(connection);
             connection.close_async(GLib.PRIORITY_DEFAULT, null, null);
         } catch (e) {
             debug(e, this.device.name);
@@ -888,7 +896,7 @@ var Transfer = GObject.registerClass({
         let result = false;
 
         try {
-            this._connection = await new Promise((resolve, reject) => {
+            let openConnection = new Promise((resolve, reject) => {
                 let client = new Gio.SocketClient({enable_proxy: false});
 
                 let address = Gio.InetSocketAddress.new_from_string(
@@ -905,8 +913,8 @@ var Transfer = GObject.registerClass({
                 });
             });
 
-            _configureSocket(this._connection);
-            this._connection = await this._clientEncryption(this._connection);
+            this._connection = await openConnection;
+            this._connection = await this._encryptClient(this._connection);
             this.input_stream = this._connection.get_input_stream();
 
             // Start the transfer
@@ -955,7 +963,7 @@ var Transfer = GObject.registerClass({
             }
 
             // Listen for the incoming connection
-            let connection = new Promise((resolve, reject) => {
+            let acceptConnection = new Promise((resolve, reject) => {
                 listener.accept_async(
                     this.cancellable,
                     (listener, res, source_object) => {
@@ -975,9 +983,8 @@ var Transfer = GObject.registerClass({
             this.device.sendPacket(packet);
 
             // Accept the connection and configure the channel
-            this._connection = await connection;
-            _configureSocket(this._connection);
-            this._connection = await this._serverEncryption(this._connection);
+            this._connection = await acceptConnection;
+            this._connection = await this._encryptServer(this._connection);
             this.output_stream = this._connection.get_output_stream();
 
             // Start the transfer
