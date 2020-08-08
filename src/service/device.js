@@ -93,6 +93,7 @@ var Device = GObject.registerClass({
         // Maps of name->Plugin, packet->Plugin, uuid->Transfer
         this._plugins = new Map();
         this._handlers = new Map();
+        this._procs = new Set();
         this._transfers = new Map();
 
         this._outputLock = false;
@@ -408,8 +409,6 @@ var Device = GObject.registerClass({
             this._launcher.setenv('GSCONNECT_DEVICE_NAME', this.name, false);
             this._launcher.setenv('GSCONNECT_DEVICE_ICON', this.icon_name, false);
             this._launcher.setenv('GSCONNECT_DEVICE_DBUS', this.g_object_path, false);
-
-            this._procs = new Set();
         }
 
         // Create and track the process
@@ -872,11 +871,17 @@ var Device = GObject.registerClass({
             }
         }
 
-        // If we've become unpaired, we'll kill any tracked subprocesses
-        if (!bool && this._procs !== undefined) {
-            for (let proc of this._procs) {
+        // If we've become unpaired, stop all subprocesses and transfers
+        if (!bool) {
+            for (let proc of this._procs)
                 proc.force_exit();
-            }
+
+            this._procs.clear();
+
+            for (let transfer of this._transfers.values())
+                transfer.close();
+
+            this._transfers.clear();
         }
 
         this.settings.set_boolean('paired', bool);
