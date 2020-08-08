@@ -6,6 +6,10 @@
     <property name="selectable">False</property>
     <property name="visible">True</property>
     <property name="can_focus">True</property>
+    <accessibility>
+      <relation type="labelled-by" target="title-label"/>
+      <relation type="described-by" target="subtitle-label"/>
+    </accessibility>
     <child>
       <object class="GtkGrid">
         <property name="margin_top">8</property>
@@ -48,6 +52,9 @@
             <property name="hexpand">True</property>
             <property name="valign">center</property>
             <property name="vexpand">True</property>
+            <accessibility>
+              <relation type="description-for" target="GSConnectPreferencesSectionRow"/>
+            </accessibility>
             <style>
               <class name="dim-label"/>
             </style>
