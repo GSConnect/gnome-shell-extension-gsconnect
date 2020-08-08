@@ -782,30 +782,23 @@ var Channel = GObject.registerClass({
      * Close all streams associated with this channel, silencing any errors
      */
     close() {
-        if (this._closed === undefined) {
-            debug(`${this.address} (${this.uuid})`);
+        if (this._closed !== undefined)
+            return;
 
-            this._closed = true;
-            this.backend.channels.delete(this.address);
+        debug(`${this.address} (${this.uuid})`);
+        this._closed = true;
 
-            // Cancel any queued operations
-            this.cancellable.cancel();
+        this.backend.channels.delete(this.address);
+        this.cancellable.cancel();
 
-            // Close any streams
-            let streams = [
-                this.input_stream,
-                this.output_stream,
-                this._connection
-            ];
+        if (this._connection)
+            this._connection.close_async(GLib.PRIORITY_DEFAULT, null, null);
 
-            for (let stream of streams) {
-                try {
-                    stream.close_async(0, null, null);
-                } catch (e) {
-                    // Silence errors
-                }
-            }
-        }
+        if (this.input_stream)
+            this.input_stream.close_async(GLib.PRIORITY_DEFAULT, null, null);
+
+        if (this.output_stream)
+            this.output_stream.close_async(GLib.PRIORITY_DEFAULT, null, null);
     }
 
     createTransfer(params) {
