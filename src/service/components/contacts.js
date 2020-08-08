@@ -356,14 +356,10 @@ var Store = GObject.registerClass({
 
     set context(context) {
         this._context = context;
+        this.__cache_dir = Gio.File.new_for_path(gsconnect.cachedir);
 
-        if (context === null) {
-            this.__cache_dir = Gio.File.new_for_path(gsconnect.cachedir);
-        } else {
-            this.__cache_dir = Gio.File.new_for_path(
-                GLib.build_filenamev([gsconnect.cachedir, context])
-            );
-        }
+        if (context !== null)
+            this.__cache_dir = this.__cache_dir.get_child(context);
 
         GLib.mkdir_with_parents(this.__cache_dir.get_path(), 448);
         this.__cache_file = this.__cache_dir.get_child('contacts.json');
