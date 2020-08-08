@@ -33,31 +33,33 @@ const ClipboardProxy = GObject.registerClass({
     vfunc_g_properties_changed(changed, invalidated) {
         let properties = changed.deepUnpack();
 
-        if (properties.hasOwnProperty('Text')) {
-            let content = this.get_cached_property('Text').unpack();
+        if (!properties.hasOwnProperty('Text'))
+            return;
 
-            if (this.text !== content) {
-                this._text = content;
-                this.notify('text');
-            }
-        }
+        let content = this.get_cached_property('Text').unpack();
+
+        if (this.text === content)
+            return;
+
+        this._text = content;
+        this.notify('text');
     }
 
     get text() {
-        if (this._text === undefined) {
+        if (this._text === undefined)
             this._text = this.get_cached_property('Text').unpack();
-        }
 
         return this._text;
     }
 
     set text(content) {
-        if (this.text !== content) {
-            this._text = content;
-            this.notify('text');
+        if (this.text === content)
+            return;
 
-            this._setProperty('Text', 's', content);
-        }
+        this._text = content;
+        this.notify('text');
+
+        this._setProperty('Text', 's', content);
     }
 
     _setProperty(name, signature, value) {
