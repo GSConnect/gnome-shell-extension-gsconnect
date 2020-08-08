@@ -104,9 +104,7 @@ const Session = class {
     }
 
     destroy() {
-        if (this._session !== null) {
-            this._session.run_dispose();
-        }
+        this._session = null;
     }
 };
 

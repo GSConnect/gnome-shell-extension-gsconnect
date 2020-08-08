@@ -74,13 +74,6 @@ const ClipboardProxy = GObject.registerClass({
             null
         );
     }
-
-    destroy() {
-        if (this.__disposed === undefined) {
-            this.__disposed = true;
-            this.run_dispose();
-        }
-    }
 });
 
 
@@ -180,14 +173,7 @@ var Clipboard = GObject.registerClass({
     }
 
     _onNameVanished(connection, name) {
-        try {
-            if (this._clipboard !== null) {
-                this._clipboard.destroy();
-                this._clipboard = null;
-            }
-        } catch (e) {
-            logError(e);
-        }
+        this._clipboard = null;
     }
 
     _onTextReceived(clipboard, text) {
@@ -217,10 +203,8 @@ var Clipboard = GObject.registerClass({
     destroy() {
         if (this._nameWatcherId) {
             Gio.bus_unwatch_name(this._nameWatcherId);
-
-            if (this._clipboard !== null) {
-                this._clipboard.destroy();
-            }
+            this._nameWatcherId = 0;
+            this._clipboard = null;
         }
         
         if (this._ownerChangeId) {

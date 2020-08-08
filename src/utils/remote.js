@@ -111,9 +111,6 @@ var Device = GObject.registerClass({
 
     vfunc_g_properties_changed(changed, invalidated) {
         try {
-            if (this.__disposed !== undefined)
-                return;
-
             for (let name in changed.deepUnpack())
                 this.notify(_PROPERTIES[name]);
         } catch (e) {
@@ -223,16 +220,12 @@ var Device = GObject.registerClass({
     }
 
     destroy() {
-        if (this.__disposed === undefined) {
-            this.__disposed = true;
-
-            if (this._settings) {
-                this._settings.run_dispose();
-                this._settings = null;
-            }
-
-            this.run_dispose();
+        if (this._settings) {
+            this._settings.run_dispose();
+            this._settings = null;
         }
+
+        GObject.signal_handlers_destroy(this);
     }
 });
 
@@ -529,7 +522,7 @@ var Service = GObject.registerClass({
             this._clearDevices();
             this._active = false;
 
-            this.run_dispose();
+            GObject.signal_handlers_destroy(this);
         }
     }
 });

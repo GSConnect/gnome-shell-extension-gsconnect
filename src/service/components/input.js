@@ -251,7 +251,7 @@ const RemoteSession = GObject.registerClass({
     destroy() {
         if (this.__disposed === undefined) {
             this.__disposed = true;
-            this.run_dispose();
+            GObject.signal_handlers_destroy(this);
         }
     }
 });

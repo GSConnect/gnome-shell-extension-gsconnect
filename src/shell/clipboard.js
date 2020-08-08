@@ -213,7 +213,7 @@ var Clipboard = GObject.registerClass({
             this.disconnect(this._handlePropertyGetId);
             this.disconnect(this._handlePropertySetId);
 
-            this.run_dispose();
+            GObject.signal_handlers_destroy(this);
         }
     }
 });
