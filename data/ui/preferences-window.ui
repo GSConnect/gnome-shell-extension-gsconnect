@@ -708,11 +708,6 @@
           <relation type="controlled-by" target="prev-button"/>
           <relation type="controlled-by" target="device-list"/>
         </accessibility>
-        <child internal-child="accessible">
-          <object class="AtkObject" id="stack-atkobject">
-            <property name="AtkObject::accessible-role">layered-pane</property>
-          </object>
-        </child>
       </object>
     </child>
   </template>
