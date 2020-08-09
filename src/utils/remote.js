@@ -242,11 +242,11 @@ var Service = GObject.registerClass({
     Signals: {
         'device-added': {
             flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [GObject.TYPE_OBJECT]
+            param_types: [Device.$gtype]
         },
         'device-removed': {
             flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [GObject.TYPE_OBJECT]
+            param_types: [Device.$gtype]
         }
     }
 }, class Service extends Gio.DBusProxy {
