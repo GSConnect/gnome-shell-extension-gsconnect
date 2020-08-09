@@ -4,8 +4,10 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
-const DBUS_NAME = 'org.gnome.Shell.Extensions.GSConnect';
-const DBUS_PATH = '/org/gnome/Shell/Extensions/GSConnect';
+const SERVICE_NAME = 'org.gnome.Shell.Extensions.GSConnect';
+const SERVICE_PATH = '/org/gnome/Shell/Extensions/GSConnect';
+const DEVICE_NAME = 'org.gnome.Shell.Extensions.GSConnect.Device';
+const DEVICE_PATH = '/org/gnome/Shell/Extensions/GSConnect/Device';
 
 
 const _PROPERTIES = {
@@ -42,6 +44,9 @@ function _proxyInit(proxy, cancellable = null) {
 }
 
 
+/**
+ * A simple proxy wrapper for devices exported over DBus.
+ */
 var Device = GObject.registerClass({
     GTypeName: 'GSConnectRemoteDevice',
     Implements: [Gio.DBusInterface],
@@ -103,9 +108,9 @@ var Device = GObject.registerClass({
 
         super._init({
             g_connection: service.g_connection,
-            g_name: DBUS_NAME,
+            g_name: SERVICE_NAME,
             g_object_path: object_path,
-            g_interface_name: 'org.gnome.Shell.Extensions.GSConnect.Device'
+            g_interface_name: DEVICE_NAME
         });
     }
 
@@ -151,9 +156,10 @@ var Device = GObject.registerClass({
     }
 
     get settings() {
+        // We create this on-demand to ensure we have the device ID
         if (this._settings === undefined) {
             this._settings = new Gio.Settings({
-                settings_schema: gsconnect.gschema.lookup(DBUS_NAME, true),
+                settings_schema: gsconnect.gschema.lookup(DEVICE_NAME, true),
                 path: `/org/gnome/shell/extensions/gsconnect/device/${this.id}/`
             });
         }
@@ -171,27 +177,26 @@ var Device = GObject.registerClass({
 
     async start() {
         try {
-            // Initialize the proxy
             await _proxyInit(this);
 
-            // GActions
+            // For GActions & GMenu we pass the service's name owner to avoid
+            // any mixup with instances.
             this.action_group = Gio.DBusActionGroup.get(
                 this.g_connection,
                 this.service.g_name_owner,
                 this.g_object_path
             );
 
-            // GMenu
             this.menu = Gio.DBusMenuModel.get(
                 this.g_connection,
                 this.service.g_name_owner,
                 this.g_object_path
             );
 
-            // Subscribe to the GMenu
+            // Poke the GMenu to ensure it's ready for us
             await new Promise((resolve, reject) => {
                 this.g_connection.call(
-                    DBUS_NAME,
+                    SERVICE_NAME,
                     this.g_object_path,
                     'org.gtk.Menus',
                     'Start',
@@ -227,6 +232,9 @@ var Device = GObject.registerClass({
 });
 
 
+/**
+ * A simple proxy wrapper for the GSConnect service.
+ */
 var Service = GObject.registerClass({
     GTypeName: 'GSConnectRemoteService',
     Implements: [Gio.DBusInterface],
@@ -254,8 +262,8 @@ var Service = GObject.registerClass({
     _init() {
         super._init({
             g_bus_type: Gio.BusType.SESSION,
-            g_name: DBUS_NAME,
-            g_object_path: DBUS_PATH,
+            g_name: SERVICE_NAME,
+            g_object_path: SERVICE_PATH,
             g_interface_name: 'org.freedesktop.DBus.ObjectManager',
             g_flags: Gio.DBusProxyFlags.DO_NOT_AUTO_START_AT_CONSTRUCTION
         });
@@ -446,8 +454,8 @@ var Service = GObject.registerClass({
                 if (!this.active) {
                     await new Promise((resolve, reject) => {
                         this.g_connection.call(
-                            DBUS_NAME,
-                            DBUS_PATH,
+                            SERVICE_NAME,
+                            SERVICE_PATH,
                             'org.freedesktop.Application',
                             'Activate',
                             GLib.Variant.new('(a{sv})', [{}]),
@@ -479,24 +487,22 @@ var Service = GObject.registerClass({
      * Stop the service
      */
     stop() {
-        if (this.active) {
+        if (this.active)
             this.activate_action('quit');
-        }
     }
 
     activate_action(name, parameter = null) {
         try {
             let paramArray = [];
 
-            if (parameter instanceof GLib.Variant) {
+            if (parameter instanceof GLib.Variant)
                 paramArray[0] = parameter;
-            }
 
             let connection = this.g_connection || Gio.DBus.session;
 
             connection.call(
-                DBUS_NAME,
-                DBUS_PATH,
+                SERVICE_NAME,
+                SERVICE_PATH,
                 'org.freedesktop.Application',
                 'ActivateAction',
                 GLib.Variant.new('(sava{sv})', [name, paramArray, {}]),
