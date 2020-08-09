@@ -22,13 +22,6 @@ if (!globalThis.gsconnect) {
 
 
 /**
- * String.format API supporting %s, %d, %x and %f. Used exclusively for gettext.
- * See: https://github.com/GNOME/gjs/blob/master/modules/format.js
- */
-String.prototype.format = imports.format.format;
-
-
-/**
  * Application Variables
  */
 gsconnect.is_local = gsconnect.extdatadir.startsWith(GLib.get_user_data_dir());
@@ -93,6 +86,7 @@ if (gsconnect.is_local) {
 Gettext.bindtextdomain(APP_ID, gsconnect.localedir);
 
 if (typeof _ !== 'function') {
+    String.prototype.format = imports.format.format;
     globalThis._ = GLib.dgettext.bind(null, APP_ID);
     globalThis.ngettext = GLib.dngettext.bind(null, APP_ID);
 } else {
