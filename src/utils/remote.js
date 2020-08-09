@@ -153,11 +153,8 @@ var Device = GObject.registerClass({
     get settings() {
         if (this._settings === undefined) {
             this._settings = new Gio.Settings({
-                settings_schema: gsconnect.gschema.lookup(
-                    this.g_interface_name,
-                    true
-                ),
-                path: `${this.g_object_path.toLowerCase()}/`
+                settings_schema: gsconnect.gschema.lookup(DBUS_NAME, true),
+                path: `/org/gnome/shell/extensions/gsconnect/device/${this.id}/`
             });
         }
 
