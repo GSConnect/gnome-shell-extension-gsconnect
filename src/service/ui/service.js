@@ -1,5 +1,6 @@
 'use strict';
 
+const GLib = imports.gi.GLib;
 const Gio = imports.gi.Gio;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
@@ -8,103 +9,86 @@ const Gtk = imports.gi.Gtk;
 /**
  * A dialog for selecting a device
  */
-var DeviceChooserDialog = GObject.registerClass({
-    GTypeName: 'GSConnectDeviceChooserDialog'
-}, class DeviceChooserDialog extends Gtk.Dialog {
+var DeviceChooser = GObject.registerClass({
+    GTypeName: 'GSConnectServiceDeviceChooser',
+    Properties: {
+        'action-name': GObject.ParamSpec.string(
+            'action-name',
+            'Action Name',
+            'The name of the associated action, like "sendFile"',
+            GObject.ParamFlags.READWRITE,
+            null
+        ),
+        'action-target': GObject.param_spec_variant(
+            'action-target',
+            'Action Target',
+            'The parameter for action invocations',
+            new GLib.VariantType('*'),
+            null,
+            GObject.ParamFlags.READWRITE
+        )
+    },
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/service-device-chooser.ui',
+    Children: ['device-list', 'cancel-button', 'select-button']
+}, class DeviceChooser extends Gtk.Dialog {
 
-    _init(params) {
+    _init(params = {}) {
         super._init({
             use_header_bar: true,
-            application: Gio.Application.get_default(),
-            default_width: 300,
-            default_height: 200,
-            visible: true
+            application: Gio.Application.get_default()
         });
         this.set_keep_above(true);
 
-        //
-        this._action = params.action;
-        this._parameter = params.parameter;
-
         // HeaderBar
-        let headerBar = this.get_header_bar();
-        headerBar.title = _('Select a Device');
-        headerBar.subtitle = params.title;
-        headerBar.show_close_button = false;
+        this.get_header_bar().subtitle = params.title;
 
-        let selectButton = this.add_button(_('Select'), Gtk.ResponseType.OK);
-        selectButton.sensitive = false;
-        this.add_button(_('Cancel'), Gtk.ResponseType.CANCEL);
-        this.set_default_response(Gtk.ResponseType.OK);
+        // Dialog Action
+        this.action_name = params.action_name;
+        this.action_target = params.action_target;
 
         // Device List
-        let contentArea = this.get_content_area();
-        contentArea.border_width = 0;
+        this.device_list.set_sort_func(this._sortDevices);
 
-        let scrolledWindow = new Gtk.ScrolledWindow({
-            border_width: 0,
-            hexpand: true,
-            vexpand: true,
-            hscrollbar_policy: Gtk.PolicyType.NEVER,
-            visible: true
-        });
-        contentArea.add(scrolledWindow);
-
-        this.list = new Gtk.ListBox({
-            activate_on_single_click: false,
-            visible: true
-        });
-        scrolledWindow.add(this.list);
-
-        // Placeholder
-        let placeholder = new Gtk.Grid({
-            halign: Gtk.Align.CENTER,
-            valign: Gtk.Align.CENTER,
-            visible: true
-        });
-        placeholder.get_style_context().add_class('placeholder');
-        this.list.set_placeholder(placeholder);
-
-        let placeholderImage = new Gtk.Image({
-            icon_name: 'org.gnome.Shell.Extensions.GSConnect-symbolic',
-            pixel_size: 64,
-            visible: true
-        });
-        placeholderImage.get_style_context().add_class('placeholder-image');
-        placeholder.attach(placeholderImage, 0, 0, 1, 1);
-
-        let placeholderLabel = new Gtk.Label({
-            label: _('No Device Found'),
-            margin_top: 12,
-            visible: true
-        });
-        placeholderLabel.get_style_context().add_class('placeholder-title');
-        placeholder.attach(placeholderLabel, 0, 1, 1, 1);
-
-        this.list.connect(
-            'row-activated',
-            this._onDeviceActivated.bind(this)
+        this._devicesChangedId = this.application.settings.connect(
+            'changed::devices',
+            this._onDevicesChanged.bind(this)
         );
-
-        this.list.connect(
-            'selected-rows-changed',
-            this._onDeviceSelected.bind(this)
-        );
-
-        this._populate();
+        this._onDevicesChanged();
     }
 
     vfunc_response(response_id) {
         if (response_id === Gtk.ResponseType.OK) {
             try {
-                let device = this.list.get_selected_row().device;
-                device.activate_action(this._action, this._parameter);
+                let device = this.device_list.get_selected_row().device;
+                device.activate_action(this.action_name, this.action_target);
             } catch (e) {
                 logError(e);
             }
         }
 
         this.destroy();
+    }
+
+    get action_name() {
+        if (this._action_name === undefined)
+            this._action_name = null;
+
+        return this._action_name;
+    }
+
+    set action_name(name) {
+        this._action_name = name;
+    }
+
+    get action_target() {
+        if (this._action_target === undefined)
+            this._action_target = null;
+
+        return this._action_target;
+    }
+
+    set action_target(variant) {
+        this._action_target = variant;
     }
 
     _onDeviceActivated(box, row) {
@@ -118,16 +102,40 @@ var DeviceChooserDialog = GObject.registerClass({
         );
     }
 
-    _populate() {
-        for (let device of this.application._devices.values()) {
-            let action = device.lookup_action(this._action);
+    _onDevicesChanged() {
+        // Collect known devices
+        let devices = {};
+
+        for (let [id, device] of this.application.devices.entries())
+            devices[id] = device;
+
+        // Prune device rows
+        this.device_list.foreach(row => {
+            if (!devices.hasOwnProperty(row.name))
+                row.destroy();
+            else
+                delete devices[row.name];
+        });
+
+        // Add new devices
+        for (let device of Object.values(devices)) {
+            let action = device.lookup_action(this.action_name);
+
+            if (action === null)
+                continue;
 
             let row = new Gtk.ListBoxRow({
                 visible: action.enabled
             });
-
-            action.bind_property('enabled', row, 'visible', 0);
+            row.set_name(device.id);
             row.device = device;
+
+            action.bind_property(
+                'enabled',
+                row,
+                'visible',
+                Gio.SettingsBindFlags.DEFAULT
+            );
 
             let grid = new Gtk.Grid({
                 column_spacing: 12,
@@ -150,10 +158,16 @@ var DeviceChooserDialog = GObject.registerClass({
                 visible: true
             });
             grid.attach(name, 1, 0, 1, 1);
-            this.list.add(row);
+
+            this.device_list.add(row);
         }
 
-        this.list.select_row(this.list.get_row_at_index(0));
+        if (this.device_list.get_selected_row() === null)
+            this.device_list.select_row(this.device_list.get_row_at_index(0));
+    }
+
+    _sortDevices(row1, row2) {
+        return row1.device.name.localeCompare(row2.device.name);
     }
 });
 

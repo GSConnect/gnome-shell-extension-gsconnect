@@ -658,10 +658,10 @@ const Service = GObject.registerClass({
                 }
 
                 // Show chooser dialog
-                new ServiceUI.DeviceChooserDialog({
+                new ServiceUI.DeviceChooser({
                     title: title,
-                    action: action,
-                    parameter: parameter
+                    action_name: action,
+                    action_target: parameter
                 });
             } catch (e) {
                 logError(e, `GSConnect: Opening ${file.get_uri()}`);

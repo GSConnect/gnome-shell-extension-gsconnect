@@ -16,6 +16,7 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/preferences-section-row.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/preferences-shortcut-editor.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/preferences-window.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/service-device-chooser.ui</file>
 
     <!-- DBus Service Files -->
     <file compressed="true">org.gnome.Shell.Extensions.GSConnect.desktop</file>
