@@ -111,6 +111,19 @@ const Service = GObject.registerClass({
 
         this._discoverable = value;
         this.notify('discoverable');
+
+        if (this.discoverable) {
+            super.withdraw_notification('discovery-warning');
+        } else {
+            let notif = new Gio.Notification();
+            notif.set_title(_('Discovery Disabled'));
+            notif.set_body(_('Discovery has been disabled due to the number of devices on this network.'));
+            notif.set_icon(new Gio.ThemedIcon({name: 'dialog-warning'}));
+            notif.set_priority(Gio.NotificationPriority.HIGH);
+            notif.set_default_action('app.preferences');
+
+            super.send_notification('discovery-warning', notif);
+        }
     }
 
     get id() {
@@ -221,13 +234,8 @@ const Service = GObject.registerClass({
                 return !dev.paired;
             });
 
-            if (unpaired.length === 3 && this.discoverable) {
+            if (unpaired.length === 3)
                 this.discoverable = false;
-
-                let error = new Error();
-                error.name = 'DiscoveryWarning';
-                this.notify_error(error);
-            }
 
             device = new Device.Device(packet);
             this.devices.set(device.id, device);
@@ -528,15 +536,6 @@ const Service = GObject.registerClass({
                     icon = new Gio.ThemedIcon({name: 'network-error'});
                     priority = Gio.NotificationPriority.URGENT;
                     notif.set_default_action(`app.wiki('Help#${error.name}')`);
-                    break;
-
-                case 'DiscoveryWarning':
-                    id = 'discovery-warning';
-                    title = _('Discovery Disabled');
-                    body = _('Discovery has been disabled due to the number of devices on this network.');
-                    icon = new Gio.ThemedIcon({name: 'dialog-warning'});
-                    priority = Gio.NotificationPriority.NORMAL;
-                    notif.set_default_action('app.preferences');
                     break;
 
                 default:
