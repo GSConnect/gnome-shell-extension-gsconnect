@@ -70,9 +70,10 @@ class Stream {
      */
     fade(value, duration = 1) {
         Tweener.removeTweens(this);
-        this._mixer.fading = true;
 
         if (this._stream.volume > value) {
+            this._mixer.fading = true;
+
             Tweener.addTween(this, {
                 volume: value,
                 time: duration,
@@ -80,6 +81,8 @@ class Stream {
                 onComplete: () => this._mixer.fading = false
             });
         } else if (this._stream.volume < value) {
+            this._mixer.fading = true;
+
             Tweener.addTween(this, {
                 volume: value,
                 time: duration,
