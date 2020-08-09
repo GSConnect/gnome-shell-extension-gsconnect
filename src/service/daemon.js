@@ -606,10 +606,8 @@ const Service = GObject.registerClass({
         this._initBackends();
 
         // Load cached devices
-        for (let id of this.settings.get_strv('devices')) {
-            let device = new Device.Device({body: {deviceId: id}});
-            this.devices.set(id, device);
-        }
+        for (let id of this.settings.get_strv('devices'))
+            this.devices.set(id, new Device.Device({body: {deviceId: id}}));
 
         // Reconnect to paired devices every 5 seconds
         GLib.timeout_add_seconds(300, 5, this._reconnect.bind(this));
@@ -931,11 +929,10 @@ const Service = GObject.registerClass({
             object = object.recursiveUnpack();
             device = object['org.gnome.Shell.Extensions.GSConnect.Device'];
             
-            if (full) {
+            if (full)
                 print(`${device.Id}\t${device.Name}\t${device.Connected}\t${device.Paired}`);
-            } else if (device.Connected && device.Paired) {
+            else if (device.Connected && device.Paired)
                 print(device.Id);
-            }
         }
     }
 
@@ -1076,6 +1073,9 @@ const Service = GObject.registerClass({
                 this._cliShareFile(id, options);
 
             if (options.contains('share-link'))
+                this._cliShareLink(id, options);
+
+            if (options.contains('share-text'))
                 this._cliShareLink(id, options);
 
             return 0;
