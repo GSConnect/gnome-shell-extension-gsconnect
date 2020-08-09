@@ -256,6 +256,9 @@ var Device = GObject.registerClass({
     }
 
     _handleIdentity(packet) {
+        this.freeze_notify();
+        this.settings.delay();
+
         // The type won't change, but it might not be properly set yet
         if (this.type !== packet.body.deviceType) {
             this.settings.set_string('type', packet.body.deviceType);
@@ -307,6 +310,9 @@ var Device = GObject.registerClass({
 
         if (currentSupported.join('') !== supported.sort().join(''))
             this.settings.set_strv('supported-plugins', supported);
+
+        this.settings.apply();
+        this.thaw_notify();
     }
 
     /**
