@@ -219,7 +219,6 @@ const ServiceIndicator = GObject.registerClass({
             let indicator = Main.panel.statusArea[device.g_object_path];
 
             indicator.visible = panelMode && isAvailable;
-            indicator.update_icon(device.icon_name);
 
             let menu = this._menus[device.g_object_path];
             menu.actor.visible = !panelMode && isAvailable;

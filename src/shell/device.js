@@ -241,9 +241,5 @@ var Indicator = GObject.registerClass({
         });
         this.menu.addMenuItem(menu);
     }
-
-    update_icon(icon_name) {
-        this._icon.gicon = Extension.getIcon(icon_name);
-    }
 });
 
