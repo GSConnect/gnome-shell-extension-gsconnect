@@ -29,17 +29,8 @@ GDMSESSION: ${GLib.getenv('GDMSESSION')}
  */
 async function generateSupportLog(time) {
     try {
-        let file = Gio.File.new_tmp('gsconnect.XXXXXX')[0];
-
-        let logFile = await new Promise((resolve, reject) => {
-            file.replace_async(null, false, 2, 0, null, (file, res) => {
-                try {
-                    resolve(file.replace_finish(res));
-                } catch (e) {
-                    reject(e);
-                }
-            });
-        });
+        let [file, stream] = Gio.File.new_tmp('gsconnect.XXXXXX');
+        let logFile = stream.get_output_stream();
 
         await new Promise((resolve, reject) => {
             logFile.write_bytes_async(LOG_HEADER, 0, null, (file, res) => {
