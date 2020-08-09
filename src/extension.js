@@ -428,6 +428,7 @@ const ServiceIndicator = GObject.registerClass({
         this.keybindingManager.destroy();
 
         // Disconnect from any GSettings changes
+        this.settings.disconnect(this._enabledId);
         this.settings.disconnect(this._panelModeId);
         this.settings.run_dispose();
 
