@@ -61,14 +61,12 @@ Extension.getIcon = function(name) {
     }
 
     // Check the desktop icon theme
-    if (Extension.getIcon._desktop.has_icon(name)) {
+    if (Extension.getIcon._desktop.has_icon(name))
         return new Gio.ThemedIcon({name: name});
-    }
 
     // Check our GResource
-    if (Extension.getIcon._extension[name] !== undefined) {
+    if (Extension.getIcon._extension[name] !== undefined)
         return Extension.getIcon._extension[name];
-    }
 
     // Fallback to hoping it's in the theme somewhere
     return new Gio.ThemedIcon({name: name});
@@ -88,7 +86,7 @@ const ServiceIndicator = GObject.registerClass({
 
         this._menus = {};
 
-        this.keybindingManager = new Keybindings.Manager();
+        this._keybindings = new Keybindings.Manager();
 
         // GSettings
         this.settings = new Gio.Settings({
@@ -174,11 +172,10 @@ const ServiceIndicator = GObject.registerClass({
 
     async _initService() {
         try {
-            if (this.settings.get_boolean('enabled')) {
+            if (this.settings.get_boolean('enabled'))
                 await this.service.start();
-            } else {
+            else
                 await this.service.reload();
-            }
         } catch (e) {
             logError(e, 'GSConnect');
         }
@@ -186,19 +183,18 @@ const ServiceIndicator = GObject.registerClass({
 
     _enable() {
         try {
-            // If the service state matches the enabled setting, we should
-            // toggle the service by toggling the setting
             let enabled = this.settings.get_boolean('enabled');
 
-            if (this.service.active === enabled) {
+            // If the service state matches the enabled setting, we should
+            // toggle the service by toggling the setting
+            if (this.service.active === enabled)
                 this.settings.set_boolean('enabled', !enabled);
 
             // Otherwise, we should change the service to match the setting
-            } else if (this.service.active) {
+            else if (this.service.active)
                 this.service.stop();
-            } else {
+            else
                 this.service.start();
-            }
         } catch (e) {
             logError(e, 'GSConnect');
         }
@@ -277,10 +273,10 @@ const ServiceIndicator = GObject.registerClass({
 
     _onDeviceChanged(device, changed, invalidated) {
         try {
-            changed = changed.deepUnpack();
+            let properties = changed.deepUnpack();
 
-            if (changed.hasOwnProperty('Connected') ||
-                changed.hasOwnProperty('Paired')) {
+            if (properties.hasOwnProperty('Connected') ||
+                properties.hasOwnProperty('Paired')) {
                 this._sync();
             }
         } catch (e) {
@@ -324,14 +320,13 @@ const ServiceIndicator = GObject.registerClass({
     _onDeviceRemoved(service, device, sync = true) {
         try {
             // Stop watching for status changes
-            if (device.__deviceChangedId) {
+            if (device.__deviceChangedId)
                 device.disconnect(device.__deviceChangedId);
-            }
 
             // Release keybindings
             if (device.__keybindingsChangedId) {
                 device.settings.disconnect(device.__keybindingsChangedId);
-                device._keybindings.map(id => this.keybindingManager.remove(id));
+                device._keybindings.map(id => this._keybindings.remove(id));
             }
 
             // Destroy the indicator
@@ -341,9 +336,8 @@ const ServiceIndicator = GObject.registerClass({
             this._menus[device.g_object_path].destroy();
             delete this._menus[device.g_object_path];
 
-            if (sync) {
+            if (sync)
                 this._sync();
-            }
         } catch (e) {
             logError(e, 'GSConnect');
         }
@@ -352,9 +346,8 @@ const ServiceIndicator = GObject.registerClass({
     _onDeviceKeybindingsChanged(device) {
         try {
             // Reset any existing keybindings
-            if (device.hasOwnProperty('_keybindings')) {
-                device._keybindings.map(id => this.keybindingManager.remove(id));
-            }
+            if (device.hasOwnProperty('_keybindings'))
+                device._keybindings.map(id => this._keybindings.remove(id));
 
             device._keybindings = [];
 
@@ -365,14 +358,13 @@ const ServiceIndicator = GObject.registerClass({
             for (let [action, accelerator] of Object.entries(keybindings)) {
                 let [, name, parameter] = Gio.Action.parse_detailed_name(action);
 
-                let actionId = this.keybindingManager.add(
+                let actionId = this._keybindings.add(
                     accelerator,
                     () => device.action_group.activate_action(name, parameter)
                 );
 
-                if (actionId !== 0) {
+                if (actionId !== 0)
                     device._keybindings.push(actionId);
-                }
             }
         } catch (e) {
             logError(e, 'GSConnect');
@@ -381,11 +373,10 @@ const ServiceIndicator = GObject.registerClass({
 
     async _onEnabledChanged(settings, key) {
         try {
-            if (this.settings.get_boolean('enabled')) {
+            if (this.settings.get_boolean('enabled'))
                 await this.service.start();
-            } else {
+            else
                 await this.service.stop();
-            }
         } catch (e) {
             logError(e, 'GSConnect');
         }
@@ -401,9 +392,8 @@ const ServiceIndicator = GObject.registerClass({
                 this._enableItem.label.text = _('Turn On');
 
                 // If it's enabled, we should try to restart now
-                if (this.settings.get_boolean('enabled')) {
+                if (this.settings.get_boolean('enabled'))
                     await this.service.start();
-                }
             }
         } catch (e) {
             logError(e, 'GSConnect');
@@ -417,15 +407,14 @@ const ServiceIndicator = GObject.registerClass({
             this.service.disconnect(this._deviceAddedId);
             this.service.disconnect(this._deviceRemovedId);
 
-            for (let device of this.service.devices) {
+            for (let device of this.service.devices)
                 this._onDeviceRemoved(this.service, device, false);
-            }
 
             this.service.destroy();
         }
 
         // Disconnect any keybindings
-        this.keybindingManager.destroy();
+        this._keybindings.destroy();
 
         // Disconnect from any GSettings changes
         this.settings.disconnect(this._enabledId);
