@@ -246,6 +246,7 @@ const Mixer = GObject.registerClass({
     }
 
     destroy() {
+        this.close();
     }
 });
 
