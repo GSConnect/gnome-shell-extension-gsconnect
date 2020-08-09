@@ -448,7 +448,7 @@ var Plugin = GObject.registerClass({
     }
 
     destroy() {
-        this.settings.disconnect(this._contactsStoreReadyId);
+        this._store.disconnect(this._contactsStoreReadyId);
         this.settings.disconnect(this._contactsSourceChangedId);
 
         super.destroy();
