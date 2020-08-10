@@ -1723,6 +1723,7 @@
                             </attributes>
                             <accessibility>
                               <relation type="label-for" target="shortcuts-actions-list"/>
+                              <relation type="label-for" target="action-shortcuts-reset"/>
                             </accessibility>
                           </object>
                           <packing>
@@ -1731,12 +1732,15 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkButton">
+                          <object class="GtkButton" id="action-shortcuts-reset">
                             <property name="label" translatable="yes">Reset All…</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <signal name="clicked" handler="_onResetActionShortcuts" swapped="no"/>
+                            <accessibility>
+                              <relation type="labelled-by" target="action-shortcuts-label"/>
+                            </accessibility>
                           </object>
                           <packing>
                             <property name="left_attach">1</property>
