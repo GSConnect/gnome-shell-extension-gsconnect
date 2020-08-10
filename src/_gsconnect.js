@@ -238,7 +238,7 @@ gsconnect.installService = function() {
         for (let [dir, name] of fileManagers)
             GLib.unlink(GLib.build_filenamev([dir, name]));
 
-        for (let dir of Object.keys(manifests))
-            GLib.unlink(GLib.build_filenamev([dir, manifestFile]));
+        for (let manifest of manifests)
+            GLib.unlink(GLib.build_filenamev([manifest[0], manifestFile]));
     }
 };
