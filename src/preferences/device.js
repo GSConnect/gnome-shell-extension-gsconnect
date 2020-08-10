@@ -634,6 +634,7 @@ var Panel = GObject.registerClass({
             visible: true
         });
         editButton.connect('clicked', this._onEditCommand.bind(this));
+        editButton.get_accessible().set_name(_('Edit'));
         row.get_child().attach(editButton, 2, 0, 1, 2);
 
         let deleteButton = new Gtk.Button({
@@ -648,6 +649,7 @@ var Panel = GObject.registerClass({
             visible: true
         });
         deleteButton.connect('clicked', this._onDeleteCommand.bind(this));
+        deleteButton.get_accessible().set_name(_('Remove'));
         row.get_child().attach(deleteButton, 3, 0, 1, 2);
 
         this.command_list.add(row);
