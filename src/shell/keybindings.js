@@ -36,9 +36,8 @@ var Manager = class Manager {
         try {
             let binding = this._keybindings.get(action);
 
-            if (binding !== undefined) {
+            if (binding !== undefined)
                 binding.callback();
-            }
         } catch (e) {
             logError(e);
         }
@@ -57,13 +56,12 @@ var Manager = class Manager {
 
             action = global.display.grab_accelerator(accelerator, 0);
 
-            if (action !== Meta.KeyBindingAction.NONE) {
-                let name = Meta.external_binding_name_for_action(action);
-                Main.wm.allowKeybinding(name, Shell.ActionMode.ALL);
-                this._keybindings.set(action, {name: name, callback: callback});
-            } else {
+            if (action === Meta.KeyBindingAction.NONE)
                 throw new Error(`Failed to add keybinding: '${accelerator}'`);
-            }
+
+            let name = Meta.external_binding_name_for_action(action);
+            Main.wm.allowKeybinding(name, Shell.ActionMode.ALL);
+            this._keybindings.set(action, {name: name, callback: callback});
 
             return action;
         } catch (e) {
@@ -74,7 +72,7 @@ var Manager = class Manager {
     /**
      * Remove a keybinding
      *
-     * @param {number} accelerator - A non-zero action id returned by add()
+     * @param {number} action - A non-zero action id returned by add()
      */
     remove(action) {
         try {
@@ -91,9 +89,8 @@ var Manager = class Manager {
      * Remove all keybindings
      */
     removeAll() {
-        for (let action of this._keybindings.keys()) {
+        for (let action of this._keybindings.keys())
             this.remove(action);
-        }
     }
 
     /**
