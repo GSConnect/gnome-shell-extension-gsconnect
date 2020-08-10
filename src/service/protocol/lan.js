@@ -170,9 +170,8 @@ var ChannelService = GObject.registerClass({
 
         // If the service id doesn't match the common name, this is probably a
         // certificate from an earlier version and we need to set it now
-        if (this.service.settings.get_string('id') !== this._certificate.common_name) {
+        if (this.service.settings.get_string('id') !== this._certificate.common_name)
             this.service.settings.set_string('id', this._certificate.common_name);
-        }
     }
 
     _initTcpListener() {

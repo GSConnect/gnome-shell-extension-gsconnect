@@ -673,7 +673,7 @@ var Panel = GObject.registerClass({
         }
 
         if (widget instanceof Gtk.Button) {
-            let row = widget.get_parent().get_parent();
+            let row = widget.get_ancestor(Gtk.ListBoxRow.$gtype);
             let uuid = row.get_name();
 
             this._commandEditor.uuid = uuid;
@@ -932,6 +932,7 @@ var Panel = GObject.registerClass({
         let keybindings = this.settings.get_value('keybindings').deepUnpack();
 
         for (let action in keybindings) {
+            // Don't reset remote command shortcuts
             if (!action.includes('::'))
                 delete keybindings[action];
         }
@@ -994,7 +995,7 @@ var Panel = GObject.registerClass({
             this._addPlugin(name);
     }
 
-    _onPluginsChanged(settings, key = null) {
+    _onPluginsChanged(settings, key) {
         if (key === 'disabled-plugins' || this._disabledPlugins === undefined)
             this._disabledPlugins = settings.get_strv('disabled-plugins');
 
