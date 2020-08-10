@@ -211,14 +211,14 @@ gsconnect.installService = function() {
         installResource(iconDir, iconSym, `icons/${iconSym}`);
 
         // File Manager Extensions
+        let target = `${gsconnect.extdatadir}/nautilus-gsconnect.py`;
+
         for (let [dir, name] of fileManagers) {
             let script = Gio.File.new_for_path(GLib.build_filenamev([dir, name]));
+
             if (!script.query_exists(null)) {
                 GLib.mkdir_with_parents(dir, 0o755);
-                script.make_symbolic_link(
-                    gsconnect.extdatadir + '/nautilus-gsconnect.py',
-                    null
-                );
+                script.make_symbolic_link(target, null);
             }
         }
 
