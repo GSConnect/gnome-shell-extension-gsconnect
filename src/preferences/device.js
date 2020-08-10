@@ -69,7 +69,37 @@ function titleSortFunc(row1, row2) {
 const SectionRow = GObject.registerClass({
     GTypeName: 'GSConnectPreferencesSectionRow',
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/preferences-section-row.ui',
-    Children: ['icon-image', 'title-label', 'subtitle-label']
+    Children: ['icon-image', 'title-label', 'subtitle-label'],
+    Properties: {
+        'icon-name': GObject.ParamSpec.string(
+            'icon-name',
+            'Icon Name',
+            'An icon name for the row',
+            GObject.ParamFlags.READWRITE,
+            null
+        ),
+        'subtitle': GObject.ParamSpec.string(
+            'subtitle',
+            'Subtitle',
+            'A subtitle for the row',
+            GObject.ParamFlags.READWRITE,
+            null
+        ),
+        'title': GObject.ParamSpec.string(
+            'title',
+            'Title',
+            'A title for the row',
+            GObject.ParamFlags.READWRITE,
+            null
+        ),
+        'widget': GObject.ParamSpec.object(
+            'widget',
+            'Widget',
+            'An action widget for the row',
+            GObject.ParamFlags.READWRITE,
+            Gtk.Widget.$gtype
+        )
+    }
 }, class SectionRow extends Gtk.ListBoxRow {
 
     _init(params = {}) {
@@ -77,7 +107,9 @@ const SectionRow = GObject.registerClass({
 
         // NOTE: we can't pass construct properties to _init() because the
         //       template children are not assigned until after it runs.
+        this.freeze_notify();
         Object.assign(this, params);
+        this.thaw_notify();
     }
 
     get icon_name() {
@@ -85,8 +117,12 @@ const SectionRow = GObject.registerClass({
     }
 
     set icon_name(icon_name) {
+        if (this.icon_name === icon_name)
+            return;
+
         this.icon_image.visible = !!icon_name;
         this.icon_image.icon_name = icon_name;
+        this.notify('icon-name');
     }
 
     get title() {
@@ -94,8 +130,12 @@ const SectionRow = GObject.registerClass({
     }
 
     set title(text) {
+        if (this.title === text)
+            return;
+
         this.title_label.visible = !!text;
         this.title_label.label = text;
+        this.notify('title');
     }
 
     get subtitle() {
@@ -103,8 +143,12 @@ const SectionRow = GObject.registerClass({
     }
 
     set subtitle(text) {
+        if (this.subtitle === text)
+            return;
+
         this.subtitle_label.visible = !!text;
         this.subtitle_label.label = text;
+        this.notify('subtitle');
     }
 
     get widget() {
@@ -115,12 +159,16 @@ const SectionRow = GObject.registerClass({
     }
 
     set widget(widget) {
+        if (this.widget === widget)
+            return;
+
         if (this.widget instanceof Gtk.Widget)
             this.widget.destroy();
 
         // Add the widget
         this._widget = widget;
         this.get_child().attach(widget, 2, 0, 1, 2);
+        this.notify('widget');
     }
 });
 
