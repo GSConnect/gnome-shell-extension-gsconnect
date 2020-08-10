@@ -1,3 +1,4 @@
+subdir('firewalld')
 subdir('metainfo')
 
 

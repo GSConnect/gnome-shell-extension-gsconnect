@@ -32,6 +32,14 @@ option(
   description: 'DBus session services directory'
 )
 
+# firewalld service file
+option(
+  'firewalld',
+  type: 'boolean',
+  value: false,
+  description: 'Install firewalld service file'
+)
+
 # External program paths
 option(
   'ffmpeg_path',
