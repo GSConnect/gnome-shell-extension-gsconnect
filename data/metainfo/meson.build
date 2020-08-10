@@ -1,9 +1,10 @@
 # AppStream MetaInfo
-metainfo_file = configure_file(
+metainfo_file = i18n.merge_file(
   input: app_id + '.metainfo.xml.in',
   output: app_id + '.metainfo.xml',
-  configuration: extconfig,
-  install_dir: join_paths(datadir, 'metainfo')
+  po_dir: '../../po',
+  install: true,
+  install_dir: join_paths(datadir, 'metainfo'),
 )
 
 appstream = find_program('appstreamcli', required: false)
