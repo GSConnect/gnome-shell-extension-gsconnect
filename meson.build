@@ -8,10 +8,10 @@ extuuid = 'gsconnect@andyholmes.github.io'
 
 prefix = get_option('prefix')
 datadir = join_paths(prefix, get_option('datadir'))
+extdatadir = join_paths(datadir, 'gnome-shell', 'extensions', extuuid)
 libdir = join_paths(prefix, get_option('libdir'))
 localedir = join_paths(prefix, get_option('localedir'))
 sysconfdir = get_option('sysconfdir')
-extdatadir = join_paths(datadir, 'gnome-shell', 'extensions', extuuid)
 
 # GSettings schema dir
 if get_option('gsettings_schemadir') != ''
@@ -40,28 +40,29 @@ extconfig.set('SSHADD_PATH', get_option('sshadd_path'))
 extconfig.set('SSHKEYGEN_PATH', get_option('sshkeygen_path'))
 
 # ZIP targets for user extension builds
+env_util = find_program('env')
 run_target(
-    'make-zip',
-    command: [
-        find_program('env'),
-        'UUID=' + extuuid,
-        'DATADIR=' + datadir,
-        'LOCALEDIR=' + localedir,
-        'GSCHEMADIR=' + gschemadir,
-        'meson/mkzip.sh'
-    ]
+  'make-zip',
+  command: [
+    env_util,
+    'UUID=' + extuuid,
+    'DATADIR=' + datadir,
+    'LOCALEDIR=' + localedir,
+    'GSCHEMADIR=' + gschemadir,
+    'meson/mkzip.sh'
+  ]
 )
 run_target(
-    'install-zip',
-    command: [
-        find_program('env'),
-        'UUID=' + extuuid,
-        'DATADIR=' + datadir,
-        'LOCALEDIR=' + localedir,
-        'GSCHEMADIR=' + gschemadir,
-        'INSTALL=true',
-        'meson/mkzip.sh'
-    ]
+  'install-zip',
+  command: [
+    env_util,
+    'UUID=' + extuuid,
+    'DATADIR=' + datadir,
+    'LOCALEDIR=' + localedir,
+    'GSCHEMADIR=' + gschemadir,
+    'INSTALL=true',
+    'meson/mkzip.sh'
+  ]
 )
 
 

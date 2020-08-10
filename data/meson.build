@@ -13,15 +13,15 @@ configure_file(
 
 # Desktop Entry
 desktop_file = configure_file(
-  input: 'org.gnome.Shell.Extensions.GSConnect.desktop',
-  output: 'org.gnome.Shell.Extensions.GSConnect.desktop',
+  input: app_id + '.desktop.in',
+  output: app_id + '.desktop',
   configuration: extconfig,
   install_dir: join_paths(datadir, 'applications')
 )
 
 desktop_prefs_file = configure_file(
-  input: 'org.gnome.Shell.Extensions.GSConnect.Preferences.desktop',
-  output: 'org.gnome.Shell.Extensions.GSConnect.Preferences.desktop',
+  input: app_id + '.Preferences.desktop.in',
+  output: app_id + '.Preferences.desktop',
   configuration: extconfig,
   install_dir: join_paths(datadir, 'applications')
 )
@@ -57,9 +57,9 @@ else
   dbus_dir = join_paths(datadir, 'dbus-1', 'services')
 endif
 
-configure_file(
-  input: 'org.gnome.Shell.Extensions.GSConnect.service',
-  output: 'org.gnome.Shell.Extensions.GSConnect.service',
+dbus_service_file = configure_file(
+  input: app_id + '.service.in',
+  output: app_id + '.service',
   configuration: extconfig,
   install_dir: dbus_dir
 )
@@ -123,16 +123,22 @@ endif
 
 # GSettings
 install_data(
-    'org.gnome.Shell.Extensions.GSConnect.gschema.xml',
-    install_dir: gschemadir
+  app_id + '.gschema.xml',
+  install_dir: gschemadir
 )
 
 
 # GResource
 gnome.compile_resources(
-  'org.gnome.Shell.Extensions.GSConnect',
-  'org.gnome.Shell.Extensions.GSConnect.gresource.xml',
+  app_id,
+  app_id + '.gresource.xml',
   gresource_bundle: true,
   install: true,
-  install_dir: extdatadir
+  install_dir: extdatadir,
+  dependencies: [
+    desktop_file,
+    desktop_prefs_file,
+    dbus_service_file
+  ]
 )
+
