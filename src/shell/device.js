@@ -48,7 +48,7 @@ var Battery = GObject.registerClass({
         // Battery Estimate
         this.tooltip = new Tooltip.Tooltip({
             parent: this,
-            text: this.battery_label
+            text: null
         });
 
         // Battery GAction
@@ -67,69 +67,71 @@ var Battery = GObject.registerClass({
 
         this._onActionChanged(this.device.action_group, 'battery');
 
-        // Refresh when mapped
-        this._mappedId = this.connect('notify::mapped', this._sync.bind(this));
-
-        // Cleanup
+        // Cleanup on destroy
         this.connect('destroy', this._onDestroy);
     }
 
     _onActionChanged(action_group, action_name) {
-        if (action_name === 'battery') {
-            if (action_group.has_action('battery')) {
-                let value = action_group.get_action_state('battery');
-                let [charging, icon_name, level, time] = value.deepUnpack();
+        if (action_name !== 'battery')
+            return;
 
-                this.battery = {
-                    Charging: charging,
-                    IconName: icon_name,
-                    Level: level,
-                    Time: time
-                };
-            } else {
-                this.battery = null;
-            }
+        if (action_group.has_action('battery')) {
+            let value = action_group.get_action_state('battery');
+            let [charging, icon_name, level, time] = value.deepUnpack();
 
-            this._sync();
+            this._state = {
+                charging: charging,
+                icon_name: icon_name,
+                level: level,
+                time: time
+            };
+        } else {
+            this._state = null;
         }
+
+        this._sync();
     }
 
     _onStateChanged(action_group, action_name, value) {
-        if (action_name === 'battery') {
-            let [charging, icon_name, level, time] = value.deepUnpack();
+        if (action_name !== 'battery')
+            return;
 
-            this.battery = {
-                Charging: charging,
-                IconName: icon_name,
-                Level: level,
-                Time: time
-            };
-        }
+        let [charging, icon_name, level, time] = value.deepUnpack();
+
+        this._state = {
+            charging: charging,
+            icon_name: icon_name,
+            level: level,
+            time: time
+        };
+
+        this._sync();
     }
 
-    get battery_label() {
-        if (!this.battery) return null;
+    _getBatteryLabel() {
+        if (!this._state)
+            return null;
 
-        let {Charging, Level, Time} = this.battery;
+        let {charging, level, time} = this._state;
 
-        if (Level === 100) {
+        if (level === 100)
             // TRANSLATORS: When the battery level is 100%
             return _('Fully Charged');
-        } else if (Time === 0) {
+
+        if (time === 0)
             // TRANSLATORS: When no time estimate for the battery is available
             // EXAMPLE: 42% (Estimating…)
-            return _('%d%% (Estimating…)').format(Level);
-        }
+            return _('%d%% (Estimating…)').format(level);
 
-        Time = Time / 60;
-        let minutes = Math.floor(Time % 60);
-        let hours = Math.floor(Time / 60);
+        let total = time / 60;
+        let minutes = Math.floor(total % 60);
+        let hours = Math.floor(total / 60);
 
-        if (Charging) {
+        if (charging) {
             // TRANSLATORS: Estimated time until battery is charged
             // EXAMPLE: 42% (1:15 Until Full)
             return _('%d%% (%d\u2236%02d Until Full)').format(
-                Level,
+                level,
                 hours,
                 minutes
             );
@@ -137,7 +139,7 @@ var Battery = GObject.registerClass({
             // TRANSLATORS: Estimated time until battery is empty
             // EXAMPLE: 42% (12:15 Remaining)
             return _('%d%% (%d\u2236%02d Remaining)').format(
-                Level,
+                level,
                 hours,
                 minutes
             );
@@ -148,17 +150,17 @@ var Battery = GObject.registerClass({
         actor.device.action_group.disconnect(actor._actionAddedId);
         actor.device.action_group.disconnect(actor._actionRemovedId);
         actor.device.action_group.disconnect(actor._actionStateChangedId);
-        actor.disconnect(actor._mappedId);
     }
 
     _sync() {
-        this.visible = (this.battery);
+        this.visible = !!this._state;
 
-        if (this.visible && this.mapped) {
-            this.icon.icon_name = this.battery.IconName;
-            this.label.text = (this.battery.Level > -1) ? `${this.battery.Level}%` : '';
-            this.tooltip.text = this.battery_label;
-        }
+        if (!this.visible)
+            return;
+
+        this.icon.icon_name = this._state.icon_name;
+        this.label.text = (this._state.level > -1) ? `${this._state.level}%` : '';
+        this.tooltip.text = this._getBatteryLabel();
     }
 });
 
