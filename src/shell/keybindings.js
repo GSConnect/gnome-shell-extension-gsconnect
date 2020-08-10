@@ -52,9 +52,7 @@ var Manager = class Manager {
      */
     add(accelerator, callback) {
         try {
-            let action = Meta.KeyBindingAction.NONE;
-
-            action = global.display.grab_accelerator(accelerator, 0);
+            let action = global.display.grab_accelerator(accelerator, 0);
 
             if (action === Meta.KeyBindingAction.NONE)
                 throw new Error(`Failed to add keybinding: '${accelerator}'`);
