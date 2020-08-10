@@ -57,8 +57,8 @@
     <file compressed="true" preprocess="xml-stripblanks">images/enter-keyboard-shortcut.svg</file>
 
     <!-- WebExtension Manifests & Badges -->
-    <file compressed="true">org.gnome.shell.extensions.gsconnect.json-chrome</file>
-    <file compressed="true">org.gnome.shell.extensions.gsconnect.json-mozilla</file>
+    <file compressed="true">webextension/org.gnome.shell.extensions.gsconnect.json.google.in</file>
+    <file compressed="true">webextension/org.gnome.shell.extensions.gsconnect.json.mozilla.in</file>
     <file compressed="true">images/chrome-badge.png</file>
     <file compressed="true">images/firefox-badge.png</file>
   </gresource>

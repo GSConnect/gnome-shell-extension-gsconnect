@@ -184,15 +184,15 @@ gsconnect.installService = function() {
 
     // WebExtension Manifests
     let manifestFile = 'org.gnome.shell.extensions.gsconnect.json';
-    let chrome = gsconnect.get_resource(`${manifestFile}-chrome`);
-    let mozilla = gsconnect.get_resource(`${manifestFile}-mozilla`);
+    let google = gsconnect.get_resource(`webextension/${manifestFile}.google.in`);
+    let mozilla = gsconnect.get_resource(`webextension/${manifestFile}.mozilla.in`);
     let manifests = [
-        [confDir + '/chromium/NativeMessagingHosts/', chrome],
-        [confDir + '/google-chrome/NativeMessagingHosts/', chrome],
-        [confDir + '/google-chrome-beta/NativeMessagingHosts/', chrome],
-        [confDir + '/google-chrome-unstable/NativeMessagingHosts/', chrome],
-        [confDir + '/BraveSoftware/Brave-Browser/NativeMessagingHosts/', chrome],
-        [homeDir + '/.mozilla/native-messaging-hosts/', mozilla]
+        [`${confDir}/chromium/NativeMessagingHosts/`, google],
+        [`${confDir}/google-chrome/NativeMessagingHosts/`, google],
+        [`${confDir}/google-chrome-beta/NativeMessagingHosts/`, google],
+        [`${confDir}/google-chrome-unstable/NativeMessagingHosts/`, google],
+        [`${confDir}/BraveSoftware/Brave-Browser/NativeMessagingHosts/`, google],
+        [`${homeDir}/.mozilla/native-messaging-hosts/`, mozilla]
     ];
 
     // If running as a user extension, ensure the DBus service, desktop entry,

@@ -1,5 +1,6 @@
 subdir('firewalld')
 subdir('metainfo')
+subdir('webextension')
 
 
 # metadata.json
@@ -63,62 +64,6 @@ dbus_service_file = configure_file(
   configuration: extconfig,
   install_dir: dbus_dir
 )
-
-
-# WebExtension Manifests
-if get_option('webextension')
-  nmh_manifest = 'org.gnome.shell.extensions.gsconnect.json'
-
-  # Chrome
-  if get_option('chrome_nmhdir') != ''
-    chrome_nmhdir = get_option('chrome_nmhdir')
-  else
-    chrome_nmhdir = join_paths(sysconfdir, 'opt', 'chrome', 'native-messaging-hosts')
-  endif
-
-  chrome_nmh = configure_file(
-    input: 'org.gnome.shell.extensions.gsconnect.json-chrome',
-    output: 'org.gnome.shell.extensions.gsconnect.json-chrome',
-    configuration: extconfig
-  )
-
-  install_data(
-    chrome_nmh,
-    rename: join_paths(chrome_nmhdir, nmh_manifest)
-  )
-
-  # Chromium
-  if get_option('chromium_nmhdir') != ''
-    chromium_nmhdir = get_option('chromium_nmhdir')
-  else
-    chromium_nmhdir = join_paths(sysconfdir, 'chromium', 'native-messaging-hosts')
-  endif
-
-  chromium_nmh = configure_file(
-    input: 'org.gnome.shell.extensions.gsconnect.json-chrome',
-    output: 'org.gnome.shell.extensions.gsconnect.json-chromium',
-    configuration: extconfig
-  )
-
-  install_data(
-    chromium_nmh,
-    rename: join_paths(chromium_nmhdir, nmh_manifest)
-  )
-
-  # Mozilla
-  if get_option('mozilla_nmhdir') != ''
-    mozilla_nmhdir = get_option('mozilla_nmhdir')
-  else
-    mozilla_nmhdir = join_paths(libdir, 'mozilla', 'native-messaging-hosts')
-  endif
-
-  configure_file(
-    input: 'org.gnome.shell.extensions.gsconnect.json-mozilla',
-    output: nmh_manifest,
-    configuration: extconfig,
-    install_dir: mozilla_nmhdir
-  )
-endif
 
 
 # GSettings
