@@ -385,7 +385,8 @@ var Panel = GObject.registerClass({
             settings.run_dispose();
 
         this.settings.disconnect(this._keybindingsId);
-        this.settings.disconnect(this._pluginsId);
+        this.settings.disconnect(this._disabledPluginsId);
+        this.settings.disconnect(this._supportedPluginsId);
         this.settings.run_dispose();
     }
 
@@ -979,41 +980,36 @@ var Panel = GObject.registerClass({
         this.plugin_list.next = this.experimental_list;
         this.experimental_list.prev = this.plugin_list;
 
-        for (let name of DEVICE_PLUGINS)
-            this._addPlugin(name);
-
-        this._pluginsId = this.settings.connect(
+        this._disabledPluginsId = this.settings.connect(
+            'changed::disabled-plugins',
+            this._onPluginsChanged.bind(this)
+        );
+        this._supportedPluginsId = this.settings.connect(
             'changed::supported-plugins',
             this._onPluginsChanged.bind(this)
         );
         this._onPluginsChanged(this.settings, null);
+
+        for (let name of DEVICE_PLUGINS)
+            this._addPlugin(name);
     }
 
-    _onPluginsChanged(settings, key) {
+    _onPluginsChanged(settings, key = null) {
         if (key === 'disabled-plugins' || this._disabledPlugins === undefined)
             this._disabledPlugins = settings.get_strv('disabled-plugins');
 
         if (key === 'supported-plugins' || this._supportedPlugins === undefined)
             this._supportedPlugins = settings.get_strv('supported-plugins');
 
-        this._allowedPlugins = this._supportedPlugins.filter(name => {
+        this._enabledPlugins = this._supportedPlugins.filter(name => {
             return !this._disabledPlugins.includes(name);
         });
 
-        this._updatePlugins();
-    }
-
-    get_plugin_allowed(name) {
-        if (this._allowedPlugins === undefined)
-            this._onPluginsChanged(this.settings);
-
-        return this._allowedPlugins.includes(name);
+        if (key !== null)
+            this._updatePlugins();
     }
 
     _addPlugin(name) {
-        if (this._supportedPlugins === undefined)
-            this._supportedPlugins = this.settings.get_strv('supported-plugins');
-
         let plugin = imports.service.plugins[name];
 
         let row = new SectionRow({
@@ -1021,7 +1017,7 @@ var Panel = GObject.registerClass({
             title: plugin.Metadata.label,
             visible: this._supportedPlugins.includes(name),
             widget: new Gtk.Switch({
-                active: this.get_plugin_allowed(name),
+                active: this._enabledPlugins.includes(name),
                 valign: Gtk.Align.CENTER,
                 vexpand: true,
                 visible: true
@@ -1040,32 +1036,26 @@ var Panel = GObject.registerClass({
         for (let row of this.plugin_list.get_children()) {
             let name = row.get_name();
 
-            if (this._supportedPlugins.includes(name)) {
-                row.visible = true;
-                row.widget.active = this.get_plugin_allowed(name);
-            } else {
-                row.visible = false;
+            row.visible = this._supportedPlugins.includes(name);
+            row.widget.active = this._enabledPlugins.includes(name);
 
-                if (this.hasOwnProperty(name))
-                    this[name].visible = false;
-            }
+            if (this.hasOwnProperty(name))
+                this[name].visible = row.widget.active;
         }
     }
 
     _togglePlugin(widget) {
         try {
             let name = widget.get_ancestor(Gtk.ListBoxRow.$gtype).get_name();
+            let index = this._disabledPlugins.indexOf(name);
 
             // Either add or remove the plugin from the disabled list
-            if (this._disabledPlugins.includes(name))
-                this._disabledPlugins.splice(this._disabledPlugins.indexOf(name), 1);
+            if (index > -1)
+                this._disabledPlugins.splice(index, 1);
             else
                 this._disabledPlugins.push(name);
 
             this.settings.set_strv('disabled-plugins', this._disabledPlugins);
-
-            if (this.hasOwnProperty(name))
-                this[name].visible = !this._disabledPlugins.includes(name);
         } catch (e) {
             logError(e);
         }
