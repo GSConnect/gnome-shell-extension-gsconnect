@@ -1,3 +1,6 @@
+subdir('metainfo')
+
+
 # metadata.json
 configure_file(
   input: 'metadata.json.in',

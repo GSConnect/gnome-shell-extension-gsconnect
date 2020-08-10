@@ -3,13 +3,14 @@ project('gsconnect', 'c', version: '39', meson_version: '>= 0.49.0')
 gnome = import('gnome')
 i18n = import('i18n')
 
+app_id = 'org.gnome.Shell.Extensions.GSConnect'
+extuuid = 'gsconnect@andyholmes.github.io'
+
 prefix = get_option('prefix')
 datadir = join_paths(prefix, get_option('datadir'))
 libdir = join_paths(prefix, get_option('libdir'))
 localedir = join_paths(prefix, get_option('localedir'))
 sysconfdir = get_option('sysconfdir')
-
-extuuid = 'gsconnect@andyholmes.github.io'
 extdatadir = join_paths(datadir, 'gnome-shell', 'extensions', extuuid)
 
 # GSettings schema dir

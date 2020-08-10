@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>org.gnome.Shell.Extensions.GSConnect</id>
+
+  <name>GSConnect</name>
+  <summary>KDE Connect implementation for GNOME</summary>
+
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-2.0-or-later</project_license>
+
+  <url type="homepage">https://github.com/andyholmes/gnome-shell-extension-gsconnect/</url>
+  <url type="bugtracker">https://github.com/andyholmes/gnome-shell-extension-gsconnect/issues/new</url>
+  <url type="faq">https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Help</url>
+  <url type="translate">https://crwd.in/gsconnect</url>
+
+  <developer_name>GSConnect Team</developer_name>
+
+  <launchable type="desktop-id">org.gnome.Shell.Extensions.GSConnect.desktop</launchable>
+  <launchable type="desktop-id">org.gnome.Shell.Extensions.GSConnect.Preferences.desktop</launchable>
+
+  <provides>
+    <dbus type="session">org.gnome.Shell.Extensions.GSConnect</dbus>
+  </provides>
+
+  <requires>
+    <id>org.gnome.Shell</id>
+  </requires>
+
+  <content_rating type="oars-1.0"/>
+
+  <description>
+    <p>
+      GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. It does not rely on the KDE Connect desktop application and will not work with it installed.
+    </p>
+    <p>
+      KDE Connect allows devices to securely share content like notifications or files and other features like SMS messaging and remote control. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, MacOS and Windows.
+    </p>
+  </description>
+
+  <releases>
+    <release version="39" date="2020-06-22"/>
+    <release version="38" date="2020-05-14"/>
+    <release version="37" date="2020-04-16"/>
+    <release version="36" date="2020-03-27"/>
+    <release version="35" date="2020-03-22"/>
+    <release version="34" date="2020-03-09"/>
+    <release version="33" date="2020-03-04"/>
+    <release version="32" date="2020-03-03"/>
+    <release version="31" date="2020-01-22"/>
+  </releases>
+
+  <screenshots>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/andyholmes/gnome-shell-extension-gsconnect/master/data/metainfo/image-01.png</image>
+      <caption>Full Example</caption>
+    </screenshot>
+  </screenshots>
+</component>
