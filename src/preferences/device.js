@@ -310,12 +310,6 @@ var Panel = GObject.registerClass({
             if (row.get_name() === 'shortcuts')
                 row.set_header(new Gtk.Separator({visible: true}));
         });
-
-        // Hide elements for any disabled plugins
-        for (let name of DEVICE_PLUGINS) {
-            if (this.hasOwnProperty(name))
-                this[name].visible = this.get_plugin_allowed(name);
-        }
     }
 
     get menu() {
