@@ -78,9 +78,8 @@ const NotificationBanner = GObject.registerClass({
     _onEntryRequested(button) {
         this.focused = true;
 
-        for (let child of this._buttonBox.get_children()) {
+        for (let child of this._buttonBox.get_children())
             child.visible = (child === this._replyEntry);
-        }
 
         // Release the notification focus with the entry focus
         this._replyEntry.connect(
@@ -103,7 +102,8 @@ const NotificationBanner = GObject.registerClass({
 
     _onEntryActivated(clutter_text) {
         // Refuse to send empty replies
-        if (clutter_text.text === '') return;
+        if (clutter_text.text === '')
+            return;
 
         // Copy the text, then clear the entry
         let text = clutter_text.text;
@@ -129,7 +129,13 @@ const NotificationBanner = GObject.registerClass({
             Gio.DBusCallFlags.NO_AUTO_START,
             -1,
             null,
-            null
+            (connection, res) => {
+                try {
+                    connection.call_finish(res);
+                } catch (e) {
+                    // Silence errors
+                }
+            }
         );
 
         this.close();
@@ -147,14 +153,12 @@ const Source = GObject.registerClass({
 }, class Source extends NotificationDaemon.GtkNotificationDaemonAppSource {
 
     _closeGSConnectNotification(notification, reason) {
-        if (reason !== MessageTray.NotificationDestroyedReason.DISMISSED) {
+        if (reason !== MessageTray.NotificationDestroyedReason.DISMISSED)
             return;
-        }
 
         // Avoid sending the request multiple times
-        if (notification._remoteClosed || notification.remoteId === undefined) {
+        if (notification._remoteClosed || notification.remoteId === undefined)
             return;
-        }
 
         notification._remoteClosed = true;
 
@@ -381,14 +385,12 @@ function patchGtkNotificationSources() {
     };
 
     let _withdrawGSConnectNotification = function(id, notification, reason) {
-        if (reason !== MessageTray.NotificationDestroyedReason.DISMISSED) {
+        if (reason !== MessageTray.NotificationDestroyedReason.DISMISSED)
             return;
-        }
 
         // Avoid sending the request multiple times
-        if (notification._remoteWithdrawn) {
+        if (notification._remoteWithdrawn)
             return;
-        }
 
         notification._remoteWithdrawn = true;
 
