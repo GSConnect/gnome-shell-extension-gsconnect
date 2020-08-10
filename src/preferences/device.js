@@ -129,8 +129,8 @@ const SectionRow = GObject.registerClass({
  * Command Editor Dialog
  */
 const CommandEditor = GObject.registerClass({
-    GTypeName: 'GSConnectCommandEditor',
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/command-editor.ui',
+    GTypeName: 'GSConnectPreferencesCommandEditor',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/preferences-command-editor.ui',
     Children: [
         'cancel-button', 'save-button',
         'command-entry', 'name-entry', 'command-chooser'

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk+" version="3.24"/>
-  <template class="GSConnectCommandEditor" parent="GtkDialog">
+  <template class="GSConnectPreferencesCommandEditor" parent="GtkDialog">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Edit Command</property>
@@ -10,7 +10,7 @@
     <signal name="delete-event" handler="hide_on_delete" swapped="no"/>
     <child type="action">
       <object class="GtkButton" id="cancel-button">
-        <property name="can_focus">False</property>
+        <property name="can_focus">True</property>
         <property name="label" translatable="yes">Cancel</property>
         <property name="visible">True</property>
       </object>
