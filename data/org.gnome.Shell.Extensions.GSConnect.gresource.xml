@@ -21,7 +21,7 @@
     <!-- DBus Service Files -->
     <file compressed="true">org.gnome.Shell.Extensions.GSConnect.desktop</file>
     <file compressed="true">org.gnome.Shell.Extensions.GSConnect.Preferences.desktop</file>
-    <file compressed="true">org.gnome.Shell.Extensions.GSConnect.service</file>
+    <file compressed="true">org.gnome.Shell.Extensions.GSConnect.service.in</file>
     <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.GSConnect.xml</file>
     <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.GSConnect.sdp.xml</file>
 

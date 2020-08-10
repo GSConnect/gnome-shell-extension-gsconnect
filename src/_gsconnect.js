@@ -199,7 +199,7 @@ gsconnect.installService = function() {
     // file manager scripts, and WebExtension manifests are installed.
     if (gsconnect.is_local) {
         // DBus Service
-        if (!installResource(dbusDir, dbusFile, dbusFile))
+        if (!installResource(dbusDir, dbusFile, `${dbusFile}.in`))
             throw Error('GSConnect: Failed to install DBus Service');
 
         // Desktop Entries
