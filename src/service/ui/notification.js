@@ -7,6 +7,9 @@ const Gtk = imports.gi.Gtk;
 const URI = imports.utils.uri;
 
 
+/**
+ * A dialog for repliable notifications.
+ */
 var ReplyDialog = GObject.registerClass({
     GTypeName: 'GSConnectNotificationReplyDialog',
     Properties: {
@@ -23,21 +26,27 @@ var ReplyDialog = GObject.registerClass({
             'The plugin that owns this notification',
             GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
             GObject.Object
+        ),
+        'uuid': GObject.ParamSpec.string(
+            'uuid',
+            'UUID',
+            'The notification reply UUID',
+            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            null
         )
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/notification-reply-dialog.ui',
     Children: ['infobar', 'notification-title', 'notification-body', 'entry']
-}, class Dialog extends Gtk.Dialog {
+}, class ReplyDialog extends Gtk.Dialog {
 
     _init(params) {
         super._init({
             application: Gio.Application.get_default(),
             device: params.device,
             plugin: params.plugin,
+            uuid: params.uuid,
             use_header_bar: true
         });
-
-        this.uuid = params.uuid;
 
         this.set_response_sensitive(Gtk.ResponseType.OK, false);
 
@@ -94,7 +103,8 @@ var ReplyDialog = GObject.registerClass({
     vfunc_response(response_id) {
         if (response_id === Gtk.ResponseType.OK) {
             // Refuse to send empty or whitespace only messages
-            if (!this.entry.buffer.text.trim()) return;
+            if (!this.entry.buffer.text.trim())
+                return;
 
             this.plugin.replyNotification(
                 this.uuid,
@@ -105,37 +115,60 @@ var ReplyDialog = GObject.registerClass({
         this.destroy();
     }
 
-    get uuid() {
-        return this._uuid;
+    get device() {
+        if (this._device === undefined)
+            this._device = null;
+
+        return this._device;
     }
 
-    set uuid(uuid) {
-        // We must have a UUID
-        if (uuid) {
-            this._uuid = uuid;
-        } else {
-            this.destroy();
-            debug('no uuid for repliable notification');
-        }
+    set device(device) {
+        this._device = device;
     }
 
     get plugin() {
-        return this._plugin || null;
+        if (this._plugin === undefined)
+            this._plugin = null;
+
+        return this._plugin;
     }
 
     set plugin(plugin) {
         this._plugin = plugin;
     }
 
-    _onStateChanged() {
-        switch (false) {
-            case this.device.connected:
-            case (this.entry.buffer.text.trim().length):
-                break;
+    get uuid() {
+        if (this._uuid === undefined)
+            this._uuid = null;
 
-            default:
-                this.set_response_sensitive(Gtk.ResponseType.OK, true);
+        return this._uuid;
+    }
+
+    set uuid(uuid) {
+        this._uuid = uuid;
+
+        // We must have a UUID
+        if (!uuid) {
+            this.destroy();
+            debug('no uuid for repliable notification');
         }
+    }
+
+    _onActivateLink(label, uri) {
+        Gtk.show_uri_on_window(
+            this.get_toplevel(),
+            uri.includes('://') ? uri : `https://${uri}`,
+            Gtk.get_current_event_time()
+        );
+
+        return true;
+    }
+
+    _onStateChanged() {
+        if (this.device.connected && this.entry.buffer.text.trim())
+            this.set_response_sensitive(Gtk.ResponseType.OK, true);
+        else
+            this.set_response_sensitive(Gtk.ResponseType.OK, false);
     }
 });
 

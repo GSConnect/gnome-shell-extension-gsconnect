@@ -639,6 +639,10 @@ var Plugin = GObject.registerClass({
      * @param {Object} notification - The original notification packet
      */
     replyNotification(uuid, message, notification) {
+        // If this happens for some reason, things will explode
+        if (!uuid)
+            throw Error('Missing UUID');
+
         // If the message has no content, open a dialog for the user to add one
         if (!message) {
             let dialog = new NotificationUI.ReplyDialog({
