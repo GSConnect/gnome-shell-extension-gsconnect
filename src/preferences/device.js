@@ -1059,7 +1059,6 @@ var Panel = GObject.registerClass({
     _togglePlugin(widget) {
         try {
             let name = widget.get_ancestor(Gtk.ListBoxRow.$gtype).get_name();
-            let disabled = this.settings.get_strv('disabled-plugins');
 
             // Either add or remove the plugin from the disabled list
             if (this._disabledPlugins.includes(name))
@@ -1070,7 +1069,7 @@ var Panel = GObject.registerClass({
             this.settings.set_strv('disabled-plugins', this._disabledPlugins);
 
             if (this.hasOwnProperty(name))
-                this[name].visible = !disabled.includes(name);
+                this[name].visible = !this._disabledPlugins.includes(name);
         } catch (e) {
             logError(e);
         }
