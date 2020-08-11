@@ -14,8 +14,8 @@ data/ui/preferences-section-row.ui
 data/ui/preferences-shortcut-editor.ui
 data/ui/preferences-window.ui
 data/ui/service-device-chooser.ui
+nautilus-extension/nautilus-gsconnect.py
 src/extension.js
-src/nautilus-gsconnect.py
 src/preferences/device.js
 src/preferences/keybindings.js
 src/preferences/service.js
