@@ -296,6 +296,64 @@ var Avatar = GObject.registerClass({
 });
 
 
+/**
+ * A row for a contact address (usually a phone number).
+ */
+const AddressRow = GObject.registerClass({
+    GTypeName: 'GSConnectContactsAddressRow',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/contacts-address-row.ui',
+    Children: ['avatar', 'name-label', 'address-label', 'type-label'],
+    Properties: {
+        'avatar': GObject.ParamSpec.string(
+            'avatar',
+            'Avatar',
+            'Contact avatar',
+            GObject.ParamFlags.READABLE,
+            null
+        )
+    }
+}, class AddressRow extends Gtk.ListBoxRow {
+
+    _init(contact, index = 0) {
+        super._init();
+
+        this._index = index;
+        this._number = contact.numbers[index];
+        this.contact = contact;
+    }
+
+    get contact() {
+        if (this._contact === undefined)
+            this._contact = null;
+
+        return this._contact;
+    }
+
+    set contact(contact) {
+        if (this.contact === contact)
+            return;
+
+        this._contact = contact;
+
+        if (this._index === 0) {
+            this.avatar.contact = contact;
+            this.avatar.visible = !!contact;
+
+            this.name_label.label = GLib.markup_escape_text(contact.name, -1);
+            this.name_label.visible = !!contact;
+        }
+
+        // TODO: rtl inverts margin-start so the number don't align
+        this.address_label.label = getNumberLabel(this.number);
+        this.address_label.margin_start = (this._index > 0) ? 38 : 0;
+        this.address_label.margin_end = (this._index > 0) ? 38 : 0;
+    }
+});
+
+
+/**
+ * A widget for selecting contact addresses (usually phone numbers)
+ */
 var ContactChooser = GObject.registerClass({
     GTypeName: 'GSConnectContactChooser',
     Properties: {
@@ -438,12 +496,13 @@ var ContactChooser = GObject.registerClass({
         if (entry.text.replace(/\D/g, '').length >= 2) {
             // ...ensure we have a dynamic contact for it
             if (!dynamic || !dynamic.__tmp) {
-                dynamic = this._addContact({
+                dynamic = new AddressRow({
                     // TRANSLATORS: A phone number (eg. "Send to 555-5555")
                     name: _('Send to %s').format(entry.text),
                     numbers: [{type: 'unknown', value: entry.text}]
                 });
                 dynamic.__tmp = true;
+                this.list.add(dynamic);
 
             // ...or if we already do, then update it
             } else {
@@ -452,11 +511,8 @@ var ContactChooser = GObject.registerClass({
                 dynamic.contact.numbers[0].value = entry.text;
 
                 // Update UI
-                let grid = dynamic.get_child();
-                let nameLabel = grid.get_child_at(1, 0);
-                nameLabel.label = _('Send to %s').format(entry.text);
-                let numLabel = grid.get_child_at(1, 1);
-                numLabel.label = getNumberLabel(dynamic.contact.numbers[0]);
+                dynamic.name_label.label = _('Send to %s').format(entry.text);
+                dynamic.address_label.label = getNumberLabel(dynamic.contact.numbers[0]);
             }
 
         // ...otherwise remove any dynamic contact that's been created
@@ -531,47 +587,8 @@ var ContactChooser = GObject.registerClass({
     }
 
     _addContactNumber(contact, index) {
-        let row = new Gtk.ListBoxRow({
-            activatable: true,
-            selectable: true,
-            visible: true
-        });
-        row.contact = contact;
-        row.number = contact.numbers[index];
+        let row = new AddressRow(contact, index);
         this.list.add(row);
-
-        let grid = new Gtk.Grid({
-            margin: 6,
-            column_spacing: 6,
-            visible: true
-        });
-        row.add(grid);
-
-        if (index === 0) {
-            let avatar = new Avatar(contact);
-            avatar.valign = Gtk.Align.CENTER;
-            grid.attach(avatar, 0, 0, 1, 2);
-
-            let nameLabel = new Gtk.Label({
-                label: GLib.markup_escape_text(contact.name, -1),
-                halign: Gtk.Align.START,
-                hexpand: true,
-                visible: true
-            });
-            grid.attach(nameLabel, 1, 0, 1, 1);
-        }
-
-        let numLabel = new Gtk.Label({
-            label: getNumberLabel(row.number),
-            halign: Gtk.Align.START,
-            hexpand: true,
-            // TODO: rtl inverts margin-start so the number don't align
-            margin_start: (index > 0) ? 38 : 0,
-            margin_end: (index > 0) ? 38 : 0,
-            visible: true
-        });
-        numLabel.get_style_context().add_class('dim-label');
-        grid.attach(numLabel, 1, 1, 1, 1);
 
         return row;
     }
@@ -579,15 +596,14 @@ var ContactChooser = GObject.registerClass({
     _addContact(contact) {
         try {
             // HACK: fix missing contact names
-            contact.name = contact.name || _('Unknown Contact');
+            if (contact.name === undefined)
+                contact.name = _('Unknown Contact');
 
-            if (contact.numbers.length === 1) {
+            if (contact.numbers.length === 1)
                 return this._addContactNumber(contact, 0);
-            }
 
-            for (let i = 0, len = contact.numbers.length; i < len; i++) {
+            for (let i = 0, len = contact.numbers.length; i < len; i++)
                 this._addContactNumber(contact, i);
-            }
         } catch (e) {
             logError(e);
         }

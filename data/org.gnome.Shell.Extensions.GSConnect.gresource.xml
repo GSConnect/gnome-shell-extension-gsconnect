@@ -4,6 +4,7 @@
     <!-- UI -->
     <file compressed="true">application.css</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/connect-dialog.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/contacts-address-row.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/contact-chooser.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/legacy-messaging-dialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/messaging-conversation-message.ui</file>
