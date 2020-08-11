@@ -265,6 +265,8 @@ var Window = GObject.registerClass({
 
     async _initService() {
         try {
+            this.refresh_button.grab_focus();
+
             this._onServiceChanged(this.service, null);
             await this.service.reload();
         } catch (e) {
