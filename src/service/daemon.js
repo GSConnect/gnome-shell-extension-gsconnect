@@ -297,8 +297,7 @@ const Service = GObject.registerClass({
             ['error', this._error.bind(this), 'a{ss}'],
             ['preferences', this._preferences],
             ['quit', () => this.quit()],
-            ['refresh', this._identify.bind(this)],
-            ['wiki', this._wiki.bind(this), 's']
+            ['refresh', this._identify.bind(this)]
         ];
 
         for (let [name, callback, type] of actions) {
@@ -428,10 +427,6 @@ const Service = GObject.registerClass({
         }
 
         return GLib.SOURCE_CONTINUE;
-    }
-
-    _wiki(action, parameter) {
-        this._github(`wiki/${parameter.unpack()}`);
     }
 
     _github(path = []) {
