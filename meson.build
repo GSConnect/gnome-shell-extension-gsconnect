@@ -70,22 +70,6 @@ run_target(
 )
 
 
-# Nautilus/Nemo Extension
-if get_option('nautilus')
-  install_data(
-    'src/nautilus-gsconnect.py',
-    install_dir: join_paths(datadir, 'nautilus-python', 'extensions')
-  )
-endif
-
-if get_option('nemo')
-  install_data(
-    'src/nautilus-gsconnect.py',
-    install_dir: join_paths(datadir, 'nemo-python', 'extensions')
-  )
-endif
-
-
 # Extension Source
 install_subdir(
   'src',
@@ -101,8 +85,10 @@ if eslint.found()
   )
 endif
 
+
 # Gettext Translations
 subdir('data')
+subdir('nautilus-extension')
 subdir('po')
 
 # Post-Install Script for distributions without the hooks

@@ -19,6 +19,7 @@ mkdir -p ${ZIP_DIR}
 cp -pr ${ZIP_DESTDIR}/${DATADIR}/gnome-shell/extensions/${UUID}/* ${ZIP_DIR}
 
 cp -pr ${GSCHEMA_DIR} ${ZIP_DIR}
+cp -pr ${ZIP_DESTDIR}/${DATADIR}/nautilus-python/extensions/* ${ZIP_DIR}
 glib-compile-schemas ${ZIP_DIR}/schemas
 
 if [ -d ${LOCALE_DIR} ]; then

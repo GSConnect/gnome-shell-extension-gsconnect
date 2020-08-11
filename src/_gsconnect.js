@@ -178,8 +178,8 @@ gsconnect.installService = function() {
 
     // File Manager Extensions
     let fileManagers = [
-        [dataDir + '/nautilus-python/extensions', 'nautilus-gsconnect.py'],
-        [dataDir + '/nemo-python/extensions', 'nemo-gsconnect.py']
+        [`${dataDir}/nautilus-python/extensions`, 'nautilus-gsconnect.py'],
+        [`${dataDir}/nemo-python/extensions`, 'nemo-gsconnect.py']
     ];
 
     // WebExtension Manifests
