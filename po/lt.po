@@ -902,32 +902,32 @@ msgstr "Vykstantis skambutis"
 #. TRANSLATORS: All other phone number types
 #: src/service/ui/contacts.js:126 src/service/ui/contacts.js:147
 #, javascript-format
-msgid "%s・Other"
-msgstr "%s・Kiti"
+msgid "Other"
+msgstr "Kiti"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:131
 #, javascript-format
-msgid "%s・Fax"
-msgstr "%s・Faksas"
+msgid "Fax"
+msgstr "Faksas"
 
 #. TRANSLATORS: A work phone number
 #: src/service/ui/contacts.js:135
 #, javascript-format
-msgid "%s・Work"
-msgstr "%s・Darbo"
+msgid "Work"
+msgstr "Darbo"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:139
 #, javascript-format
-msgid "%s・Mobile"
-msgstr "%s・Mobilusis"
+msgid "Mobile"
+msgstr "Mobilusis"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:143
 #, javascript-format
-msgid "%s・Home"
-msgstr "%s・Namų"
+msgid "Home"
+msgstr "Namų"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #: src/service/ui/contacts.js:431 src/service/ui/contacts.js:445

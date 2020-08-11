@@ -906,32 +906,32 @@ msgstr "Текући позив"
 #. TRANSLATORS: All other phone number types
 #: src/service/ui/contacts.js:126 src/service/ui/contacts.js:147
 #, fuzzy, javascript-format
-msgid "%s・Other"
-msgstr "%s・Друго"
+msgid "Other"
+msgstr "Друго"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:131
 #, javascript-format
-msgid "%s・Fax"
-msgstr "%s・Факс"
+msgid "Fax"
+msgstr "Факс"
 
 #. TRANSLATORS: A work phone number
 #: src/service/ui/contacts.js:135
 #, fuzzy, javascript-format
-msgid "%s・Work"
-msgstr "%s・Посао"
+msgid "Work"
+msgstr "Посао"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:139
 #, fuzzy, javascript-format
-msgid "%s・Mobile"
-msgstr "%s・Мобилни"
+msgid "Mobile"
+msgstr "Мобилни"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:143
 #, fuzzy, javascript-format
-msgid "%s・Home"
-msgstr "%s・Кућни"
+msgid "Home"
+msgstr "Кућни"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #: src/service/ui/contacts.js:431 src/service/ui/contacts.js:445
@@ -1123,9 +1123,6 @@ msgstr "Отвори у прегледачу"
 # Leaving the name in original form for About dialog.
 #~ msgid "KDE Connect"
 #~ msgstr "KDE Connect"
-
-#~ msgid "Other"
-#~ msgstr "Друго"
 
 #~ msgid "PulseAudio Error"
 #~ msgstr "Грешка Пулсаудија"

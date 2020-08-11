@@ -899,32 +899,32 @@ msgstr "Odchádzajúci hovor"
 #. TRANSLATORS: All other phone number types
 #: src/service/ui/contacts.js:126 src/service/ui/contacts.js:147
 #, javascript-format
-msgid "%s・Other"
-msgstr "%s・Iné"
+msgid "Other"
+msgstr "Iné"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:131
 #, javascript-format
-msgid "%s・Fax"
-msgstr "%s・Fax"
+msgid "Fax"
+msgstr "Fax"
 
 #. TRANSLATORS: A work phone number
 #: src/service/ui/contacts.js:135
 #, javascript-format
-msgid "%s・Work"
-msgstr "%s・Práca"
+msgid "Work"
+msgstr "Práca"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:139
 #, javascript-format
-msgid "%s・Mobile"
-msgstr "%s・Mobil"
+msgid "Mobile"
+msgstr "Mobil"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:143
 #, javascript-format
-msgid "%s・Home"
-msgstr "%s・Domov"
+msgid "Home"
+msgstr "Domov"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #: src/service/ui/contacts.js:431 src/service/ui/contacts.js:445
@@ -1111,9 +1111,6 @@ msgstr "Otvoriť v prehliadači"
 
 #~ msgid "KDE Connect"
 #~ msgstr "KDE Connect"
-
-#~ msgid "Other"
-#~ msgstr "Ostatné"
 
 #~ msgid "PulseAudio Error"
 #~ msgstr "Chyba systému PulseAudio"

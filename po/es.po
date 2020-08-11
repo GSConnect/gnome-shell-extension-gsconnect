@@ -900,32 +900,32 @@ msgstr "Llamada en curso"
 #. TRANSLATORS: All other phone number types
 #: src/service/ui/contacts.js:126 src/service/ui/contacts.js:147
 #, javascript-format
-msgid "%s・Other"
-msgstr "%s・Otro"
+msgid "Other"
+msgstr "Otro"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:131
 #, javascript-format
-msgid "%s・Fax"
-msgstr "%s・Fax"
+msgid "Fax"
+msgstr "Fax"
 
 #. TRANSLATORS: A work phone number
 #: src/service/ui/contacts.js:135
 #, javascript-format
-msgid "%s・Work"
-msgstr "%s・Trabajo"
+msgid "Work"
+msgstr "Trabajo"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:139
 #, javascript-format
-msgid "%s・Mobile"
-msgstr "%s・Móvil"
+msgid "Mobile"
+msgstr "Móvil"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:143
 #, javascript-format
-msgid "%s・Home"
-msgstr "%s・Residencial"
+msgid "Home"
+msgstr "Residencial"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #: src/service/ui/contacts.js:431 src/service/ui/contacts.js:445

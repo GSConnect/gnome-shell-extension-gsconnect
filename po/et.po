@@ -900,32 +900,32 @@ msgstr "Väljuv kõne"
 #. TRANSLATORS: All other phone number types
 #: src/service/ui/contacts.js:126 src/service/ui/contacts.js:147
 #, javascript-format
-msgid "%s・Other"
-msgstr "%s・Muu"
+msgid "Other"
+msgstr "Muu"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:131
 #, javascript-format
-msgid "%s・Fax"
-msgstr "%s・Faks"
+msgid "Fax"
+msgstr "Faks"
 
 #. TRANSLATORS: A work phone number
 #: src/service/ui/contacts.js:135
 #, javascript-format
-msgid "%s・Work"
-msgstr "%s・Töö"
+msgid "Work"
+msgstr "Töö"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:139
 #, javascript-format
-msgid "%s・Mobile"
-msgstr "%s・Mobiil"
+msgid "Mobile"
+msgstr "Mobiil"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:143
 #, javascript-format
-msgid "%s・Home"
-msgstr "%s・Kodu"
+msgid "Home"
+msgstr "Kodu"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #: src/service/ui/contacts.js:431 src/service/ui/contacts.js:445

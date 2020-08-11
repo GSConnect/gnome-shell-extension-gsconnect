@@ -901,32 +901,32 @@ msgstr "Trucada en curs"
 #. TRANSLATORS: All other phone number types
 #: src/service/ui/contacts.js:126 src/service/ui/contacts.js:147
 #, javascript-format
-msgid "%s・Other"
-msgstr "%s・Altre"
+msgid "Other"
+msgstr "Altre"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:131
 #, javascript-format
-msgid "%s・Fax"
-msgstr "%s・Fax"
+msgid "Fax"
+msgstr "Fax"
 
 #. TRANSLATORS: A work phone number
 #: src/service/ui/contacts.js:135
 #, javascript-format
-msgid "%s・Work"
-msgstr "%s・Feina"
+msgid "Work"
+msgstr "Feina"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:139
 #, javascript-format
-msgid "%s・Mobile"
-msgstr "%s・Mòbil"
+msgid "Mobile"
+msgstr "Mòbil"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:143
 #, javascript-format
-msgid "%s・Home"
-msgstr "%s・Particular"
+msgid "Home"
+msgstr "Particular"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #: src/service/ui/contacts.js:431 src/service/ui/contacts.js:445

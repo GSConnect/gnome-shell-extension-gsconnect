@@ -904,31 +904,31 @@ msgstr ""
 #. TRANSLATORS: All other phone number types
 #: src/service/ui/contacts.js:126 src/service/ui/contacts.js:147
 #, javascript-format
-msgid "%s・Other"
+msgid "Other"
 msgstr ""
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:131
 #, javascript-format
-msgid "%s・Fax"
+msgid "Fax"
 msgstr ""
 
 #. TRANSLATORS: A work phone number
 #: src/service/ui/contacts.js:135
 #, javascript-format
-msgid "%s・Work"
+msgid "Work"
 msgstr ""
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:139
 #, javascript-format
-msgid "%s・Mobile"
+msgid "Mobile"
 msgstr ""
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:143
 #, javascript-format
-msgid "%s・Home"
+msgid "Home"
 msgstr ""
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")

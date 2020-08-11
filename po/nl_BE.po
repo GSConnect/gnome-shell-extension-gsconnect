@@ -928,32 +928,32 @@ msgstr "In gesprek"
 #. TRANSLATORS: All other phone number types
 #: src/service/ui/contacts.js:126 src/service/ui/contacts.js:147
 #, javascript-format
-msgid "%s・Other"
-msgstr "%s・Ander"
+msgid "Other"
+msgstr "Ander"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:131
 #, javascript-format
-msgid "%s・Fax"
-msgstr "%s・Fax"
+msgid "Fax"
+msgstr "Fax"
 
 #. TRANSLATORS: A work phone number
 #: src/service/ui/contacts.js:135
 #, javascript-format
-msgid "%s・Work"
-msgstr "%s・Job"
+msgid "Work"
+msgstr "Job"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:139
 #, javascript-format
-msgid "%s・Mobile"
-msgstr "%s・GSM"
+msgid "Mobile"
+msgstr "GSM"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:143
 #, javascript-format
-msgid "%s・Home"
-msgstr "%s・Thuis"
+msgid "Home"
+msgstr "Thuis"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #: src/service/ui/contacts.js:431 src/service/ui/contacts.js:445
@@ -1143,9 +1143,6 @@ msgstr "Open in browser"
 
 #~ msgid "KDE Connect"
 #~ msgstr "KDE Connect"
-
-#~ msgid "Other"
-#~ msgstr "Ander"
 
 #~ msgid "PulseAudio Error"
 #~ msgstr "PulseAudio-fout"

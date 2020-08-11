@@ -914,32 +914,32 @@ msgstr "Kimenő hívás"
 #. TRANSLATORS: All other phone number types
 #: src/service/ui/contacts.js:128 src/service/ui/contacts.js:149
 #, javascript-format
-msgid "%s・Other"
-msgstr "%s・Egyéb"
+msgid "Other"
+msgstr "Egyéb"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:133
 #, javascript-format
-msgid "%s・Fax"
-msgstr "%s・Fax"
+msgid "Fax"
+msgstr "Fax"
 
 #. TRANSLATORS: A work phone number
 #: src/service/ui/contacts.js:137
 #, javascript-format
-msgid "%s・Work"
-msgstr "%s・Munkahelyi"
+msgid "Work"
+msgstr "Munkahelyi"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:141
 #, javascript-format
-msgid "%s・Mobile"
-msgstr "%s・Mobil"
+msgid "Mobile"
+msgstr "Mobil"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:145
 #, javascript-format
-msgid "%s・Home"
-msgstr "%s・Otthoni"
+msgid "Home"
+msgstr "Otthoni"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #: src/service/ui/contacts.js:449 src/service/ui/contacts.js:463
@@ -1150,9 +1150,6 @@ msgstr "Megnyitás böngészőben"
 
 #~ msgid "KDE Connect"
 #~ msgstr "KDE Connect"
-
-#~ msgid "Other"
-#~ msgstr "Egyéb"
 
 #~ msgid "Click to open preferences"
 #~ msgstr "Kattintson ide a beállítások megnyitásához"

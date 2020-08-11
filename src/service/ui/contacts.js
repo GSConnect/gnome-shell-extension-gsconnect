@@ -118,34 +118,31 @@ function getPixbufForIcon(name, size, scale, bgColor) {
 
 
 /**
- * Return a localized string for a phone number and type
+ * Return a localized string for a phone number type
  * See: http://www.ietf.org/rfc/rfc2426.txt
  *
- * @param {string} number - A phone number and RFC2426 phone number type
- * @return {string} A string like '555-5555・Mobile'
+ * @param {string} number - An RFC2426 phone number type
+ * @return {string} A string like 'Mobile'
  */
-function getNumberLabel(number) {
-    if (!number.type)
-        return _('%s・Other').format(number.value);
-
-    if (number.type.includes('fax'))
+function getNumberTypeLabel(type) {
+    if (type.includes('fax'))
         // TRANSLATORS: A fax number
-        return _('%s・Fax').format(number.value);
+        return _('Fax');
 
-    if (number.type.includes('work'))
+    if (type.includes('work'))
         // TRANSLATORS: A work or office phone number
-        return _('%s・Work'.format(number.value));
+        return _('Work');
 
-    if (number.type.includes('cell'))
+    if (type.includes('cell'))
         // TRANSLATORS: A mobile or cellular phone number
-        return _('%s・Mobile').format(number.value);
+        return _('Mobile');
 
-    if (number.type.includes('home'))
+    if (type.includes('home'))
         // TRANSLATORS: A home phone number
-        return _('%s・Home').format(number.value);
+        return _('Home');
 
     // TRANSLATORS: All other phone number types
-    return _('%s・Other').format(number.value);
+    return _('Other');
 }
 
 /**
@@ -344,9 +341,12 @@ const AddressRow = GObject.registerClass({
         }
 
         // TODO: rtl inverts margin-start so the number don't align
-        this.address_label.label = getNumberLabel(this.number);
+        this.address_label.label = this.number.value;
         this.address_label.margin_start = (this._index > 0) ? 38 : 0;
         this.address_label.margin_end = (this._index > 0) ? 38 : 0;
+
+        if (this.number.type !== undefined)
+            this.type_label = getNumberTypeLabel(this.number.type);
     }
 });
 
@@ -506,13 +506,15 @@ var ContactChooser = GObject.registerClass({
 
             // ...or if we already do, then update it
             } else {
+                let address = entry.text;
+
                 // Update contact object
-                dynamic.contact.name = entry.text;
-                dynamic.contact.numbers[0].value = entry.text;
+                dynamic.contact.name = address;
+                dynamic.contact.numbers[0].value = address;
 
                 // Update UI
-                dynamic.name_label.label = _('Send to %s').format(entry.text);
-                dynamic.address_label.label = getNumberLabel(dynamic.contact.numbers[0]);
+                dynamic.name_label.label = _('Send to %s').format(address);
+                dynamic.address_label.label = address;
             }
 
         // ...otherwise remove any dynamic contact that's been created
