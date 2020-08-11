@@ -41,8 +41,8 @@ endif
 
 # Application Icon
 install_data([
-  'icons/org.gnome.Shell.Extensions.GSConnect.svg',
-  'icons/org.gnome.Shell.Extensions.GSConnect-symbolic.svg'],
+  join_paths('icons', app_id + '.svg'),
+  join_paths('icons', app_id + '-symbolic.svg')],
   install_dir: join_paths(datadir, 'icons', 'hicolor', 'scalable', 'apps')
 )
 

@@ -45,6 +45,7 @@ extconfig.set('SSHKEYGEN_PATH', get_option('sshkeygen_path'))
 
 # ZIP targets for user extension builds
 env_util = find_program('env')
+
 run_target(
   'make-zip',
   command: [
@@ -56,6 +57,7 @@ run_target(
     'meson/mkzip.sh'
   ]
 )
+
 run_target(
   'install-zip',
   command: [
@@ -68,6 +70,16 @@ run_target(
     'meson/mkzip.sh'
   ]
 )
+
+
+# Post-Install script for distributions without the hooks
+if get_option('post_install')
+    meson.add_install_script(
+      env_util.path(),
+      'GSCHEMADIR=' + gschemadir,
+      join_paths(meson.source_root(), 'meson/post-install.sh')
+    )
+endif
 
 
 # Extension Source
@@ -86,16 +98,7 @@ if eslint.found()
 endif
 
 
-# Gettext Translations
 subdir('data')
 subdir('nautilus-extension')
 subdir('po')
 
-# Post-Install Script for distributions without the hooks
-if get_option('post_install')
-    meson.add_install_script(
-      find_program('env').path(),
-      'GSCHEMADIR=' + gschemadir,
-      join_paths(meson.source_root(), 'meson/post-install.sh')
-    )
-endif

@@ -5,7 +5,7 @@ option(
   'post_install',
   type: 'boolean',
   value: false,
-  description: 'Run meson/post-install.sh'
+  description: 'Run meson/post-install.sh (eg. glib-compile-schemas)'
 )
 
 # GNOME Shell LIBDIR
@@ -13,7 +13,7 @@ option(
   'gnome_shell_libdir',
   type: 'string',
   value: '',
-  description: 'LIBDIR for GNOME Shell'
+  description: 'LIBDIR for GNOME Shell (eg. $LIBDIR/gnome-shell/Gvc-1.0.typelib)'
 )
 
 # GSettings schema directory
@@ -41,43 +41,43 @@ option(
 )
 
 # External program paths
+# NOTE: these are only useful for distributions like NixOS that don't use PATH
 option(
   'ffmpeg_path',
   type: 'string',
   value: 'ffmpeg',
-  description: 'Path to ffmpeg binary'
+  description: 'Absolute path to ffmpeg binary'
 )
 
 option(
   'openssl_path',
   type: 'string',
   value: 'openssl',
-  description: 'Path to openssl binary'
+  description: 'Absolute path to openssl binary'
 )
 
 option(
   'sshadd_path',
   type: 'string',
   value: 'ssh-add',
-  description: 'Path to ssh-add binary'
+  description: 'Absolute path to ssh-add binary'
 )
 
 option(
   'sshkeygen_path',
   type: 'string',
   value: 'ssh-keygen',
-  description: 'Path to ssh-keygen binary'
+  description: 'Absolute path to ssh-keygen binary'
 )
 
-# Enable/Disable Nautilus Python extension installation
+# Nautilus/Nemo Python extension installation
 option(
   'nautilus',
   type: 'boolean',
   value: true,
-  description: 'Install file browser extension for Nautilus'
+  description: 'Install file browser extension for Nautilus (Files)'
 )
 
-# Enable/Disable Nemo Python extension installation
 option(
   'nemo',
   type: 'boolean',
@@ -85,12 +85,13 @@ option(
   description: 'Install file browser extension for Nemo'
 )
 
-# Enable/Disable WebExtension manifest installation
+# WebExtension manifest installation
+# NOTE: this is NOT the WebExtension, but is REQUIRED for it to work.
 option(
   'webextension',
   type: 'boolean',
   value: true,
-  description: 'Install WebExtension manifest for Chrome/Chromium/Firefox'
+  description: 'Install WebExtension manifest for Chrome, Chromium & Firefox'
 )
 
 # Override manifest install so that BROWSER_NMHDIR/foo.json
@@ -114,3 +115,4 @@ option(
   value: '',
   description: 'Native Messaging Host directory for Mozilla'
 )
+
