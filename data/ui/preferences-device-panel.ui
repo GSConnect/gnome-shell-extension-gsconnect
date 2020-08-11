@@ -2364,6 +2364,11 @@
             </accessibility>
           </object>
         </child>
+        <child internal-child="accessible">
+          <object class="AtkObject" id="sidebar-atkobject">
+            <property name="AtkObject::accessible-name" translatable="yes">Device Settings</property>
+          </object>
+        </child>
         <accessibility>
           <relation type="controller-for" target="stack"/>
         </accessibility>
