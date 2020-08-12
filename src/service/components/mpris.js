@@ -406,7 +406,7 @@ var Player = GObject.registerClass({
     }
 
     get Metadata() {
-        if (this._metadata == undefined) {
+        if (this._metadata === undefined) {
             this._metadata = {
                 'xesam:artist': [_('Unknown')],
                 'xesam:album': _('Unknown'),

@@ -395,7 +395,7 @@ var Plugin = GObject.registerClass({
                 messageBody: messageBody
             }
         });
-        // } else if (this._version == 2) {
+        // } else if (this._version === 2) {
         //     this.device.sendPacket({
         //         type: 'kdeconnect.sms.request',
         //         body: {

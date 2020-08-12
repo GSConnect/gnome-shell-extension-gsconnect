@@ -76,7 +76,7 @@ var Plugin = GObject.registerClass({
         if (!this.settings.get_boolean('send-content'))
             return;
 
-        if (this._localBuffer === null && this._localTimestamp == 0)
+        if (this._localBuffer === null && this._localTimestamp === 0)
             return;
 
         this.device.sendPacket({
