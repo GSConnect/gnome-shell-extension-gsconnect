@@ -4,6 +4,8 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
+const Config = imports.utils.config;
+
 
 /**
  * Base class for device plugins.
@@ -149,7 +151,7 @@ var Plugin = GObject.registerClass({
 
             // Ensure the device's cache directory exists
             let cachedir = GLib.build_filenamev([
-                gsconnect.cachedir,
+                Config.CACHEDIR,
                 this.device.id
             ]);
             GLib.mkdir_with_parents(cachedir, 448);

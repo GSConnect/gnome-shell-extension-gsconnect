@@ -4,6 +4,7 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
+const Config = imports.utils.config;
 const Core = imports.service.protocol.core;
 
 
@@ -148,11 +149,11 @@ var ChannelService = GObject.registerClass({
 
     _initCertificate() {
         let certPath = GLib.build_filenamev([
-            gsconnect.configdir,
+            Config.CONFIGDIR,
             'certificate.pem'
         ]);
         let keyPath = GLib.build_filenamev([
-            gsconnect.configdir,
+            Config.CONFIGDIR,
             'private.pem'
         ]);
 

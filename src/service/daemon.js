@@ -262,7 +262,7 @@ const Service = GObject.registerClass({
         GLib.spawn_command_line_async(`dconf reset -f ${settings_path}`);
 
         // Delete the cache
-        let cache = GLib.build_filenamev([gsconnect.cachedir, id]);
+        let cache = GLib.build_filenamev([Config.CACHEDIR, id]);
         Gio.File.rm_rf(cache);
 
         // Forget the device

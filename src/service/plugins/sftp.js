@@ -250,7 +250,7 @@ var Plugin = GObject.registerClass({
     _addPrivateKey() {
         let ssh_add = this._launcher.spawnv([
             Config.SSHADD_PATH,
-            GLib.build_filenamev([gsconnect.configdir, 'private.pem'])
+            GLib.build_filenamev([Config.CONFIGDIR, 'private.pem'])
         ]);
 
         return new Promise((resolve, reject) => {
@@ -391,7 +391,7 @@ var Plugin = GObject.registerClass({
     async _addSymlink(mount) {
         try {
             let by_name_dir = Gio.File.new_for_path(
-                gsconnect.runtimedir + '/by-name/'
+                Config.RUNTIMEDIR + '/by-name/'
             );
 
             try {

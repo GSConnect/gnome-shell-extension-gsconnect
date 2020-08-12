@@ -6,6 +6,7 @@ const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
 
 const ByteArray = imports.byteArray;
+const Config = imports.utils.config;
 
 
 /**
@@ -16,14 +17,12 @@ globalThis.HAVE_REMOTEINPUT = GLib.getenv('GDMSESSION') !== 'ubuntu-wayland';
 globalThis.HAVE_WAYLAND = GLib.getenv('XDG_SESSION_TYPE') === 'wayland';
 
 
-/**
- * User Directories
- */
-gsconnect.cachedir = GLib.build_filenamev([GLib.get_user_cache_dir(), 'gsconnect']);
-gsconnect.configdir = GLib.build_filenamev([GLib.get_user_config_dir(), 'gsconnect']);
-gsconnect.runtimedir = GLib.build_filenamev([GLib.get_user_runtime_dir(), 'gsconnect']);
+// User Directories
+Config.CACHEDIR = GLib.build_filenamev([GLib.get_user_cache_dir(), 'gsconnect']);
+Config.CONFIGDIR = GLib.build_filenamev([GLib.get_user_config_dir(), 'gsconnect']);
+Config.RUNTIMEDIR = GLib.build_filenamev([GLib.get_user_runtime_dir(), 'gsconnect']);
 
-for (let path of [gsconnect.cachedir, gsconnect.configdir, gsconnect.runtimedir])
+for (let path of [Config.CACHEDIR, Config.CONFIGDIR, Config.RUNTIMEDIR])
     GLib.mkdir_with_parents(path, 0o755);
 
 

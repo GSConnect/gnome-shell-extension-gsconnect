@@ -5,6 +5,8 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
+const Config = imports.utils.config;
+
 var HAVE_EDS = true;
 
 try {
@@ -25,7 +27,7 @@ var Store = GObject.registerClass({
         'context': GObject.ParamSpec.string(
             'context',
             'Context',
-            'Used as the cache directory, relative to gsconnect.cachedir',
+            'Used as the cache directory, relative to Config.CACHEDIR',
             GObject.ParamFlags.CONSTRUCT_ONLY | GObject.ParamFlags.READWRITE,
             null
         )
@@ -356,7 +358,7 @@ var Store = GObject.registerClass({
 
     set context(context) {
         this._context = context;
-        this.__cache_dir = Gio.File.new_for_path(gsconnect.cachedir);
+        this.__cache_dir = Gio.File.new_for_path(Config.CACHEDIR);
 
         if (context !== null)
             this.__cache_dir = this.__cache_dir.get_child(context);

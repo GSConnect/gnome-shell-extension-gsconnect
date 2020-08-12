@@ -463,7 +463,7 @@ var Plugin = GObject.registerClass({
 
             // Save the file in the global cache
             let path = GLib.build_filenamev([
-                gsconnect.cachedir,
+                Config.CACHEDIR,
                 packet.body.payloadHash || `${Date.now()}`
             ]);
 
