@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2020-04-01 19:21+0200\n"
+"PO-Revision-Date: 2020-08-12 12:57+0200\n"
 "Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
 "Language-Team: Dutch <vistausss@outlook.com>\n"
 "Language: nl_NL\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 2.4\n"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
 #: data/gtk/menus.ui:7 src/preferences/device.js:292
@@ -45,7 +45,6 @@ msgstr "Verbinden met…"
 #: src/preferences/keybindings.js:44 src/preferences/service.js:428
 #: src/service/plugins/share.js:161 src/service/plugins/share.js:309
 #: src/service/plugins/share.js:452 src/service/ui/service.js:37
-#: src/shell/donotdisturb.js:301
 msgid "Cancel"
 msgstr "Annuleren"
 
@@ -230,34 +229,29 @@ msgid "Advanced"
 msgstr "Geavanceerd"
 
 #: data/ui/device-preferences.ui:1855
-#, fuzzy
 msgid "Device Battery"
-msgstr "Batterij"
+msgstr "Apparaataccu"
 
 #: data/ui/device-preferences.ui:1906
-#, fuzzy
 msgid "Low Battery Notification"
-msgstr "Antwoordmelding"
+msgstr "Melding bij laag accuniveau"
 
 #: data/ui/device-preferences.ui:1967
-#, fuzzy
 msgid "Fully Charged Notification"
-msgstr "Deelmeldingen"
+msgstr "Melding bij 100% accuniveau"
 
 #: data/ui/device-preferences.ui:2014
-#, fuzzy
 msgid "System Battery"
-msgstr "Batterij"
+msgstr "Systeemaccu"
 
 #: data/ui/device-preferences.ui:2065
-#, fuzzy
 msgid "Share Statistics"
-msgstr "Deelmeldingen"
+msgstr "Statistieken delen"
 
 #: data/ui/device-preferences.ui:2114 data/ui/device-preferences.ui:2210
 #: src/service/plugins/battery.js:11
 msgid "Battery"
-msgstr "Batterij"
+msgstr "Accu"
 
 #: data/ui/device-preferences.ui:2394
 msgid "Keyboard Shortcuts"
@@ -335,9 +329,8 @@ msgid "Send"
 msgstr "Versturen"
 
 #: data/ui/preferences-window.ui:18
-#, fuzzy
 msgid "Device Name"
-msgstr "Apparaatnaam bewerken"
+msgstr "Apparaatnaam"
 
 #: data/ui/preferences-window.ui:49
 msgid "_Rename"
@@ -518,9 +511,8 @@ msgid "Tablet"
 msgstr "Tablet"
 
 #: src/preferences/service.js:504
-#, fuzzy
 msgid "Television"
-msgstr "Telefoon"
+msgstr "Televisie"
 
 #: src/preferences/service.js:525
 msgid "Unpaired"
@@ -535,9 +527,8 @@ msgid "Connected"
 msgstr "Verbonden"
 
 #: src/preferences/service.js:671
-#, fuzzy
 msgid "Waiting for service…"
-msgstr "Bezig met zoeken naar apparaten…"
+msgstr "Bezig met wachten op dienst…"
 
 #: src/service/daemon.js:333
 msgid "Report"
@@ -575,48 +566,40 @@ msgid "Share File"
 msgstr "Bestand delen"
 
 #: src/service/daemon.js:770
-#, fuzzy
 msgid "List available devices"
-msgstr "Niet beschikbaar"
+msgstr "Beschikbare apparaten tonen"
 
 #: src/service/daemon.js:779
-#, fuzzy
 msgid "List all devices"
-msgstr "Mobiele apparaten"
+msgstr "Alle apparaten tonen"
 
 #: src/service/daemon.js:788
-#, fuzzy
 msgid "Target Device"
-msgstr "Naar apparaat"
+msgstr "Doelapparaat"
 
 #: src/service/daemon.js:830
-#, fuzzy
 msgid "Message Body"
-msgstr "Nieuw bericht"
+msgstr "Berichtinhoud"
 
 #: src/service/daemon.js:842 src/service/plugins/notification.js:51
 msgid "Send Notification"
 msgstr "Melding versturen"
 
 #: src/service/daemon.js:851
-#, fuzzy
 msgid "Notification App Name"
-msgstr "Meldingen"
+msgstr "Appnaam op melding"
 
 #: src/service/daemon.js:860
-#, fuzzy
 msgid "Notification Body"
-msgstr "Meldingen"
+msgstr "Meldingsinhoud"
 
 #: src/service/daemon.js:869
-#, fuzzy
 msgid "Notification Icon"
-msgstr "Meldingen"
+msgstr "Meldingspictogram"
 
 #: src/service/daemon.js:878
-#, fuzzy
 msgid "Notification ID"
-msgstr "Meldingen"
+msgstr "Meldingsid"
 
 #: src/service/daemon.js:887 src/service/plugins/photo.js:11
 #: src/service/plugins/photo.js:17
@@ -640,7 +623,7 @@ msgstr "Link delen"
 
 #: src/service/daemon.js:938
 msgid "Show release version"
-msgstr ""
+msgstr "Uitgave-versie tonen"
 
 #: src/service/device.js:174
 msgid "Not available"
@@ -691,9 +674,9 @@ msgstr "%d%% resterend"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:199
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s: Battery is full"
-msgstr "%s: accuniveau is laag"
+msgstr "%s: accu is opgeladen"
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
@@ -740,8 +723,8 @@ msgstr "Toetsenbord"
 #. eg. The remote keyboard on Pixel 3 is not active
 #: src/service/plugins/mousepad.js:413
 #, javascript-format
-msgid "Keyboard not ready"
-msgstr "Toetsenbord niet gereed"
+msgid "The remote keyboard on %s is not active"
+msgstr "Het externe toetsenbord op '%s' is inactief"
 
 #: src/service/plugins/mpris.js:12
 msgid "MPRIS"
@@ -760,9 +743,8 @@ msgid "Reply Notification"
 msgstr "Antwoordmelding"
 
 #: src/service/plugins/notification.js:59
-#, fuzzy
 msgid "Activate Notification"
-msgstr "Deelmeldingen"
+msgstr "Melding inschakelen"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -772,9 +754,8 @@ msgid "Ping: %s"
 msgstr "Ping: %s"
 
 #: src/service/plugins/presenter.js:9
-#, fuzzy
 msgid "Presentation"
-msgstr "Bestanden-integratie"
+msgstr "Presentatie"
 
 #: src/service/plugins/runcommand.js:12
 msgid "Run Commands"
@@ -820,9 +801,8 @@ msgid "%s is not allowed to upload files"
 msgstr "%s mag geen bestanden sturen"
 
 #: src/service/plugins/share.js:154 src/service/plugins/share.js:302
-#, fuzzy
 msgid "Transferring File"
-msgstr "Overdracht mislukt"
+msgstr "Bestandsoverdracht"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:156
@@ -970,7 +950,6 @@ msgid "Just now"
 msgstr "Zojuist"
 
 #: src/service/ui/messaging.js:35 src/service/ui/messaging.js:71
-#: src/shell/donotdisturb.js:142
 #, javascript-format
 msgid "%d minute"
 msgid_plural "%d minutes"
@@ -984,9 +963,8 @@ msgid "Yesterday・%s"
 msgstr "Gisteren - %s"
 
 #: src/service/ui/messaging.js:255
-#, fuzzy
 msgid "Group Message"
-msgstr "Nieuw bericht"
+msgstr "Groepsbericht"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:265
@@ -1035,36 +1013,6 @@ msgstr "%d%% (%d:%02d tot volledig opgeladen)"
 msgid "%d%% (%d∶%02d Remaining)"
 msgstr "%d%% (%d:%02d resterend)"
 
-#: src/shell/donotdisturb.js:135
-#, javascript-format
-msgid "%d hour"
-msgid_plural "%d hours"
-msgstr[0] "%d uur"
-msgstr[1] "%d uur"
-
-#. TRANSLATORS: Time until change with time duration
-#. EXAMPLE: Until 10:00 (2 hours)
-#: src/shell/donotdisturb.js:150
-#, javascript-format
-msgid "Until %s (%s)"
-msgstr "Tot %s (%s)"
-
-#: src/shell/donotdisturb.js:243 src/shell/donotdisturb.js:342
-msgid "Do Not Disturb"
-msgstr "Niet storen"
-
-#: src/shell/donotdisturb.js:249
-msgid "Silence Notifications from Mobile Devices"
-msgstr "Geen geluid bij mobiele meldingen"
-
-#: src/shell/donotdisturb.js:261
-msgid "Until you turn off Do Not Disturb"
-msgstr "Totdat je Niet storen uitschakelt"
-
-#: src/shell/donotdisturb.js:302
-msgid "Done"
-msgstr "Klaar"
-
 #: src/shell/notification.js:43
 msgid "Reply"
 msgstr "Beantwoorden"
@@ -1088,6 +1036,29 @@ msgstr "Dienst niet beschikbaar"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Openen in browser"
+
+#~ msgid "Keyboard not ready"
+#~ msgstr "Toetsenbord niet gereed"
+
+#~ msgid "%d hour"
+#~ msgid_plural "%d hours"
+#~ msgstr[0] "%d uur"
+#~ msgstr[1] "%d uur"
+
+#~ msgid "Until %s (%s)"
+#~ msgstr "Tot %s (%s)"
+
+#~ msgid "Do Not Disturb"
+#~ msgstr "Niet storen"
+
+#~ msgid "Silence Notifications from Mobile Devices"
+#~ msgstr "Geen geluid bij mobiele meldingen"
+
+#~ msgid "Until you turn off Do Not Disturb"
+#~ msgstr "Totdat je Niet storen uitschakelt"
+
+#~ msgid "Done"
+#~ msgstr "Klaar"
 
 #~ msgid "Bluetooth Device"
 #~ msgstr "Bluetooth-apparaat"
