@@ -124,6 +124,7 @@
         "_C": false,
         "_N": false,
         "ngettext": false,
+        "window": false,
 
         "HAVE_WAYLAND": false,
         "HAVE_REMOTEINPUT": false
