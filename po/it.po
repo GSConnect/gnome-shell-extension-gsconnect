@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2020-08-12 08:36\n"
+"PO-Revision-Date: 2020-08-12 08:45\n"
 "Last-Translator: \n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
@@ -343,7 +343,7 @@ msgstr "Aggiorna"
 #: data/ui/preferences-window.ui:111 data/ui/preferences-window.ui:128
 #: src/extension.js:148
 msgid "Mobile Settings"
-msgstr "Impostazioni dispositivi mobili"
+msgstr "Impostazioni dispositivi"
 
 #: data/ui/preferences-window.ui:182 data/ui/preferences-window.ui:197
 msgid "Edit Device Name"
