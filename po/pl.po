@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2020-08-12 14:41\n"
+"PO-Revision-Date: 2020-08-12 14:43\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "Language: pl_PL\n"
@@ -913,7 +913,7 @@ msgstr "Inny"
 #: src/service/ui/contacts.js:131
 #, javascript-format
 msgid "Fax"
-msgstr "Telefaks"
+msgstr "Faks"
 
 #. TRANSLATORS: A work phone number
 #: src/service/ui/contacts.js:135
