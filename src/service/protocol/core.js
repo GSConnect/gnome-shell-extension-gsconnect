@@ -217,10 +217,11 @@ var Channel = GObject.registerClass({
         if (cancellable === null)
             cancellable = this.cancellable;
 
-        if (!(this.input_stream instanceof Gio.DataInputStream))
+        if (!(this.input_stream instanceof Gio.DataInputStream)) {
             this.input_stream = new Gio.DataInputStream({
                 base_stream: this.input_stream
             });
+        }
 
         return new Promise((resolve, reject) => {
             this.input_stream.read_line_async(

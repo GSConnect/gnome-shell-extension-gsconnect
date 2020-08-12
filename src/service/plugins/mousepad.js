@@ -588,11 +588,11 @@ var KeyboardInputDialog = GObject.registerClass({
         if (!this.plugin.state)
             debug('ignoring remote keyboard state');
 
-        if (event.new_window_state & Gdk.WindowState.FOCUSED) {
+        if (event.new_window_state & Gdk.WindowState.FOCUSED) 
             this._grab();
-        } else {
+        else 
             this._ungrab();
-        }
+        
 
         return super.vfunc_window_state_event(event);
     }
@@ -626,11 +626,11 @@ var KeyboardInputDialog = GObject.registerClass({
         if (!this.plugin.state)
             debug('ignoring remote keyboard state');
 
-        if (this.is_active) {
+        if (this.is_active) 
             this._grab();
-        } else {
+        else 
             this._ungrab();
-        }
+        
     }
 
     _grab() {

@@ -115,7 +115,6 @@ function getTime(time) {
     // Less than a week ago
     if (diff < TIME_SPAN_WEEK)
         return _ltwLong.format(time);
-        //return date.format('%A・%l:%M %p');
 
     // Sometime this year
     if (date.getFullYear() === now.getFullYear())
@@ -141,13 +140,14 @@ function getShortTime(time) {
         // TRANSLATORS: Less than a minute ago
         return _('Just now');
 
-    if (diff < TIME_SPAN_HOUR)
-        // TRANSLATORS: Time duration in minutes (eg. 15 minutes)
+    if (diff < TIME_SPAN_HOUR) {
+    // TRANSLATORS: Time duration in minutes (eg. 15 minutes)
         return ngettext(
             '%d minute',
             '%d minutes',
             (diff / TIME_SPAN_MINUTE)
         ).format(diff / TIME_SPAN_MINUTE);
+    }
 
     // Less than a day ago
     if (diff < TIME_SPAN_DAY)
@@ -188,8 +188,8 @@ function getContactsForAddresses(device, addresses) {
     }
 }
 
-const setAvatarVisible = function(row, visible) {
-    let incoming = (row.message.type === Sms.MessageBox.INBOX);
+function setAvatarVisible(row, visible) {
+    let incoming = row.message.type === Sms.MessageBox.INBOX;
 
     // Adjust the margins
     if (visible) {
@@ -203,7 +203,7 @@ const setAvatarVisible = function(row, visible) {
     // Show hide the avatar
     if (incoming)
         row.avatar.visible = visible;
-};
+}
 
 
 /**
@@ -649,9 +649,8 @@ const Conversation = GObject.registerClass({
         try {
             // TODO: Unsupported MessageBox
             if (message.type !== Sms.MessageBox.INBOX &&
-                message.type !== Sms.MessageBox.SENT) {
+                message.type !== Sms.MessageBox.SENT)
                 throw TypeError(`invalid message box ${message.type}`);
-            }
 
             // Append the message
             let row = this._createMessageRow(message);
@@ -680,9 +679,8 @@ const Conversation = GObject.registerClass({
 
             // TODO: Unsupported MessageBox
             if (message.type !== Sms.MessageBox.INBOX &&
-                message.type !== Sms.MessageBox.SENT) {
+                message.type !== Sms.MessageBox.SENT)
                 throw TypeError(`invalid message box ${message.type}`);
-            }
 
             // Prepend the message
             let row = this._createMessageRow(message);
@@ -1054,9 +1052,9 @@ var Window = GObject.registerClass({
     }
 
     _timestampThreads() {
-        if (this.visible) {
+        if (this.visible)
             this.thread_list.foreach(row => row.update());
-        }
+
 
         return GLib.SOURCE_CONTINUE;
     }
@@ -1087,18 +1085,18 @@ var Window = GObject.registerClass({
         // Group the addresses
         let addresses = [];
 
-        for (let address of Object.keys(contacts)) {
+        for (let address of Object.keys(contacts))
             addresses.push({address: address});
-        }
+
 
         // Try to find a thread ID for this address group
         let thread_id = this.plugin.getThreadIdForAddresses(addresses);
 
-        if (thread_id === null) {
+        if (thread_id === null)
             thread_id = GLib.uuid_string_random();
-        } else {
+        else
             thread_id = thread_id.toString();
-        }
+
 
         // Try to find a thread row for the ID
         let row = this._getRowForContacts(contacts);
@@ -1139,9 +1137,9 @@ var Window = GObject.registerClass({
         for (let haystackObj of addresses) {
             let tnumber = haystackObj.address.toPhoneNumber();
 
-            if (number.endsWith(tnumber) || tnumber.endsWith(number)) {
+            if (number.endsWith(tnumber) || tnumber.endsWith(number))
                 return true;
-            }
+
         }
 
         return false;
@@ -1161,9 +1159,9 @@ var Window = GObject.registerClass({
         let thread_id = `${message.thread_id}`;
         let conversation = this.stack.get_child_by_name(thread_id);
 
-        if (conversation !== null) {
+        if (conversation !== null)
             return conversation;
-        }
+
 
         // Try and find one by matching addresses, which is necessary if we've
         // started a thread locally and haven't set the thread_id
@@ -1171,9 +1169,9 @@ var Window = GObject.registerClass({
 
         for (let conversation of this.stack.get_children()) {
             if (conversation.addresses === undefined ||
-                conversation.addresses.length !== addresses.length) {
+                conversation.addresses.length !== addresses.length)
                 continue;
-            }
+
 
             let caddrs = conversation.addresses;
 
@@ -1200,11 +1198,11 @@ var Window = GObject.registerClass({
      */
     setMessage(message, pending = false) {
         try {
-            if (pending) {
+            if (pending)
                 this._pendingShare = message;
-            } else {
+            else
                 this.stack.visible_child.setMessage(message);
-            }
+
         } catch (e) {
             debug(e);
         }

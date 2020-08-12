@@ -109,9 +109,9 @@ var Plugin = GObject.registerClass({
 
     _handleConnectContent(packet) {
         if (packet.body.hasOwnProperty('timestamp') &&
-            packet.body.timestamp > this._localTimestamp) {
+            packet.body.timestamp > this._localTimestamp) 
             this._onRemoteClipboardChanged(packet.body.content);
-        }
+        
     }
 
     /**

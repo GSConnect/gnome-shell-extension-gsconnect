@@ -589,9 +589,9 @@ var Manager = GObject.registerClass({
                 let name = names[i];
 
                 if (name.startsWith('org.mpris.MediaPlayer2') &&
-                    !name.includes('GSConnect')) {
+                    !name.includes('GSConnect')) 
                     this._addPlayer(name);
-                }
+                
             }
         } catch (e) {
             // FIXME: if something goes wrong the component will appear active
@@ -609,11 +609,11 @@ var Manager = GObject.registerClass({
 
             if (name.startsWith('org.mpris.MediaPlayer2') &&
                 !name.includes('GSConnect')) {
-                if (new_owner.length) {
+                if (new_owner.length) 
                     this._addPlayer(name);
-                } else if (old_owner.length) {
+                else if (old_owner.length) 
                     this._removePlayer(name);
-                }
+                
             }
         } catch (e) {
             debug(e);

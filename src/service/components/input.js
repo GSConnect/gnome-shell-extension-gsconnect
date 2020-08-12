@@ -357,9 +357,9 @@ class Controller {
         }
 
         // Otherwise if there's an active session, close it
-        if (this._session !== null) {
+        if (this._session !== null) 
             this._session.stop();
-        }
+        
 
         // Reset the GSource Id
         this._sessionExpiryId = 0;

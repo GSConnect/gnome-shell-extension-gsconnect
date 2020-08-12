@@ -99,11 +99,11 @@ var Plugin = GObject.registerClass({
      */
     _handleStatus(packet) {
         try {
-            if (packet.body.hasOwnProperty('playerList')) {
+            if (packet.body.hasOwnProperty('playerList')) 
                 this._handlePlayerList(packet.body.playerList);
-            } else if (packet.body.hasOwnProperty('player')) {
+            else if (packet.body.hasOwnProperty('player')) 
                 this._handlePlayerState(packet.body);
-            }
+            
         } catch (e) {
             debug(e, this.device.name);
         }
@@ -692,11 +692,11 @@ const RemotePlayer = GObject.registerClass({
 
         this.thaw_notify();
 
-        if (!this._isPlaying && !this.CanControl) {
+        if (!this._isPlaying && !this.CanControl) 
             this.unexport();
-        } else {
+        else 
             this.export();
-        }
+        
     }
 
     /*

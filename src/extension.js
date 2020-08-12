@@ -274,9 +274,9 @@ const ServiceIndicator = GObject.registerClass({
             let properties = changed.deepUnpack();
 
             if (properties.hasOwnProperty('Connected') ||
-                properties.hasOwnProperty('Paired')) {
+                properties.hasOwnProperty('Paired')) 
                 this._sync();
-            }
+            
         } catch (e) {
             logError(e, 'GSConnect' );
         }

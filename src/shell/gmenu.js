@@ -256,9 +256,9 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
             let item;
 
             // A regular item
-            if (info.hasOwnProperty('label')) {
+            if (info.hasOwnProperty('label')) 
                 item = this._addGMenuItem(info);
-            }
+            
 
             for (let link of info.links) {
                 // Submenu
@@ -270,9 +270,9 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
                     this._addGMenuSection(link.value);
 
                     // len is length starting at 1
-                    if (i + 1 < len) {
+                    if (i + 1 < len) 
                         this.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
-                    }
+                    
                 }
             }
         }
@@ -569,9 +569,9 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
     _onActionChanged(group, name, enabled) {
         let menuItem = this._menu_items.get(name);
 
-        if (menuItem !== undefined) {
+        if (menuItem !== undefined) 
             menuItem.visible = group.get_action_enabled(name);
-        }
+        
     }
 
     _onItemsChanged(model, position, removed, added) {
@@ -609,14 +609,14 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
             }
 
             // If it has a submenu, add it as a sibling
-            if (button.submenu) {
+            if (button.submenu) 
                 this.sub.add_child(button.submenu.actor);
-            }
+            
 
             // Track the item if it has an action
-            if (button.action_name !== undefined) {
+            if (button.action_name !== undefined) 
                 this._menu_items.set(button.action_name, button);
-            }
+            
 
             // Insert it in the box at the defined position
             this.box.insert_child_at_index(button, index);

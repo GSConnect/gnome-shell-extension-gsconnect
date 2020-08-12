@@ -14,14 +14,13 @@ const St = imports.gi.St;
  */
 const DBUS_NAME = 'org.gnome.Shell.Extensions.GSConnect.Clipboard';
 const DBUS_PATH = '/org/gnome/Shell/Extensions/GSConnect/Clipboard';
-const DBUS_NODE = Gio.DBusNodeInfo.new_for_xml(`
+const DBUS_INFO = Gio.DBusInterfaceInfo.new_for_xml(`
 <node>
   <interface name="org.gnome.Shell.Extensions.GSConnect.Clipboard">
     <property name="Text" type="s" access="readwrite"/>
   </interface>
 </node>
 `);
-const DBUS_INFO = DBUS_NODE.lookup_interface(DBUS_NAME);
 
 
 /* GSConnectShellClipboard:
@@ -92,9 +91,8 @@ var Clipboard = GObject.registerClass({
     }
 
     get text() {
-        if (this._text === undefined) {
+        if (this._text === undefined)
             this._text = '';
-        }
 
         return this._text;
     }
@@ -103,15 +101,16 @@ var Clipboard = GObject.registerClass({
         if (typeof content !== 'string')
             return;
 
-        if (this._text !== content) {
-            this._text = content;
-            this.notify('text');
+        if (this._text === content)
+            return;
 
-            this.emit_property_changed(
-                'Text',
-                GLib.Variant.new('s', content)
-            );
-        }
+        this._text = content;
+        this.notify('text');
+
+        this.emit_property_changed(
+            'Text',
+            GLib.Variant.new('s', content)
+        );
     }
 
     _onTextReceived(clipboard, text) {
@@ -169,7 +168,8 @@ var Clipboard = GObject.registerClass({
     }
 
     _onHandlePropertyGet(iface, name) {
-        if (name !== 'Text') return;
+        if (name !== 'Text')
+            return;
 
         try {
             return new GLib.Variant('s', this.text);
@@ -179,7 +179,8 @@ var Clipboard = GObject.registerClass({
     }
 
     _onHandlePropertySet(iface, name, value) {
-        if (name !== 'Text') return;
+        if (name !== 'Text')
+            return;
 
         try {
             let content = value.unpack();
@@ -187,15 +188,16 @@ var Clipboard = GObject.registerClass({
             if (typeof content !== 'string')
                 return;
 
-            if (this._text !== content) {
-                this._text = content;
-                this.notify('text');
+            if (this._text === content)
+                return;
 
-                this.clipboard.set_text(
-                    St.ClipboardType.CLIPBOARD,
-                    content
-                );
-            }
+            this._text = content;
+            this.notify('text');
+
+            this.clipboard.set_text(
+                St.ClipboardType.CLIPBOARD,
+                content
+            );
         } catch (e) {
             logError(e);
         }
@@ -237,9 +239,9 @@ function watchService() {
         'org.gnome.Shell.Extensions.GSConnect',
         Gio.BusNameWatcherFlags.NONE,
         () => {
-            if (_portal === null) {
+            if (_portal === null) 
                 _portal = new Clipboard();
-            }
+            
         },
         () => {
             if (_portal !== null) {

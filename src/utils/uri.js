@@ -135,9 +135,8 @@ var SmsURI = class URI {
                     let [key, value] = param.split('=');
 
                     // add phone-context to beginning of
-                    if (key === 'phone-context' && value.startsWith('+')) {
+                    if (key === 'phone-context' && value.startsWith('+'))
                         return value + unescape(number);
-                    }
                 }
             }
 
@@ -149,11 +148,10 @@ var SmsURI = class URI {
                 let [key, value] = field.split('=');
 
                 if (key === 'body') {
-                    if (this.body) {
+                    if (this.body)
                         throw URIError('duplicate "body" field');
-                    }
 
-                    this.body = (value) ? decodeURIComponent(value) : undefined;
+                    this.body = value ? decodeURIComponent(value) : undefined;
                 }
             }
         }

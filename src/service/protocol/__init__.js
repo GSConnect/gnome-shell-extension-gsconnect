@@ -27,9 +27,8 @@ Gio.TlsCertificate.new_for_paths = function (certPath, keyPath, commonName = nul
     // Create a new certificate and private key if necessary
     if (!certExists || !keyExists) {
         // If we weren't passed a common name, generate a random one
-        if (!commonName) {
+        if (!commonName)
             commonName = GLib.uuid_string_random();
-        }
 
         let proc = new Gio.Subprocess({
             argv: [

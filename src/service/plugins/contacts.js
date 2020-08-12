@@ -192,9 +192,9 @@ var Plugin = GObject.registerClass({
                     seqlen = 4;
                 }
 
-                for (let ai = 1; ai < seqlen; ++ai) {
+                for (let ai = 1; ai < seqlen; ++ai) 
                     c1 = ((c1 << 0x06) | (input.charCodeAt(ai + i) & 0x3F));
-                }
+                
 
                 if (seqlen === 4) {
                     c1 -= 0x10000;
@@ -268,11 +268,11 @@ var Plugin = GObject.registerClass({
                 for (let i = 0, len = type.length; i < len; i++) {
                     let res = type[i].match(VCARD_TYPED_META);
 
-                    if (res) {
+                    if (res) 
                         meta[res[1]] = res[2];
-                    } else {
+                    else 
                         meta['type' + (i === 0 ? '' : i)] = type[i].toLowerCase();
-                    }
+                    
                 }
 
                 // Value(s)
@@ -292,11 +292,11 @@ var Plugin = GObject.registerClass({
                 }
 
                 // Special case for FN (full name)
-                if (key === 'fn') {
+                if (key === 'fn') 
                     vcard[key] = value[0];
-                } else {
+                else 
                     vcard[key].push({meta: meta, value: value});
-                }
+                
             }
         }
 
@@ -326,9 +326,9 @@ var Plugin = GObject.registerClass({
             contact.numbers = vcard.tel.map(entry => {
                 let type = 'unknown';
 
-                if (entry.meta && entry.meta.type) {
+                if (entry.meta && entry.meta.type) 
                     type = entry.meta.type;
-                }
+                
 
                 return {type: type, value: entry.value[0]};
             });

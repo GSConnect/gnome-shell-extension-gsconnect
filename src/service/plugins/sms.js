@@ -319,13 +319,13 @@ var Plugin = GObject.registerClass({
             }
 
             // If there's multiple thread_id's it's a summary of threads
-            if (thread_ids.some(id => id !== thread_ids[0])) {
+            if (thread_ids.some(id => id !== thread_ids[0])) 
                 this._handleDigest(messages, thread_ids);
 
             // Otherwise this is single thread or new message
-            } else {
+            else 
                 this._handleThread(messages);
-            }
+            
         } catch (e) {
             debug(e, this.device.name);
         }

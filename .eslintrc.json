@@ -13,6 +13,11 @@
             "never"
         ],
         "brace-style": "error",
+        "curly": [
+            "error",
+            "multi-or-nest",
+            "consistent"
+        ],
         "comma-spacing": [
             "error",
             {

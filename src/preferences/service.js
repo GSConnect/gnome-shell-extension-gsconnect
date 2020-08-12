@@ -424,9 +424,8 @@ var Window = GObject.registerClass({
             dialog.destroy();
 
             // Only generate a log if instructed
-            if (response_id === Gtk.ResponseType.OK) {
+            if (response_id === Gtk.ResponseType.OK)
                 generateSupportLog(now);
-            }
         });
 
         dialog.show_all();
@@ -650,11 +649,11 @@ var Window = GObject.registerClass({
     }
 
     _onServiceChanged(service, pspec) {
-        if (this.service.active) {
+        if (this.service.active) 
             this.device_list_placeholder.label = _('Searching for devices…');
-        } else {
+        else 
             this.device_list_placeholder.label = _('Waiting for service…');
-        }
+        
     }
 });
 

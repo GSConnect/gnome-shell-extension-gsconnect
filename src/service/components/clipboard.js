@@ -211,6 +211,7 @@ var Clipboard = GObject.registerClass({
         
         if (this._ownerChangeId) {
             this._clipboard.disconnect(this._ownerChangeId);
+            this._ownerChangedId = 0;
         }
     }
 });

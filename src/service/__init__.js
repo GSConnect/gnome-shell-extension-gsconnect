@@ -69,11 +69,11 @@ const _debugFunc = function(error, prefix = null) {
 };
 
 // Swap the function out for a no-op anonymous function for speed
-if (gsconnect.settings.get_boolean('debug')) {
+if (gsconnect.settings.get_boolean('debug')) 
     globalThis.debug = _debugFunc;
-} else {
+else 
     globalThis.debug = () => {};
-}
+
 
 gsconnect.settings.connect('changed::debug', (settings, key) => {
     globalThis.debug = settings.get_boolean(key) ? _debugFunc : () => {};
@@ -275,9 +275,9 @@ function _full_pack(obj) {
             packed = {};
 
             for (let [key, val] of Object.entries(obj)) {
-                if (val !== undefined) {
+                if (val !== undefined) 
                     packed[key] = _full_pack(val);
-                }
+                
             }
 
             return GLib.Variant.new('a{sv}', packed);
@@ -318,11 +318,11 @@ function _full_unpack(obj) {
             for (let [key, value] of Object.entries(obj)) {
                 // Try to detect and deserialize GIcons
                 try {
-                    if (key === 'icon' && value.get_type_string() === '(sv)') {
+                    if (key === 'icon' && value.get_type_string() === '(sv)') 
                         unpacked[key] = Gio.Icon.deserialize(value);
-                    } else {
+                    else 
                         unpacked[key] = _full_unpack(value);
-                    }
+                    
                 } catch (e) {
                     unpacked[key] = _full_unpack(value);
                 }
