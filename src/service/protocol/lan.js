@@ -148,6 +148,13 @@ var ChannelService = GObject.registerClass({
     }
 
     _initCertificate() {
+        if (GLib.find_program_in_path(Config.OPENSSL_PATH) === null) {
+            let error = new Error();
+            error.name = _('OpenSSL not found');
+            error.url = `${Config.PACKAGE_URL}/wiki/Help#openssl-error`;
+            throw error;
+        }
+
         let certPath = GLib.build_filenamev([
             Config.CONFIGDIR,
             'certificate.pem'
@@ -158,16 +165,11 @@ var ChannelService = GObject.registerClass({
         ]);
 
         // Ensure a certificate exists with our id as the common name
-        try {
-            this._certificate = Gio.TlsCertificate.new_for_paths(
-                certPath,
-                keyPath,
-                this.service.id
-            );
-        } catch (e) {
-            e.name = 'CertificateError';
-            throw e;
-        }
+        this._certificate = Gio.TlsCertificate.new_for_paths(
+            certPath,
+            keyPath,
+            this.service.id
+        );
 
         // If the service id doesn't match the common name, this is probably a
         // certificate from an earlier version and we need to set it now
