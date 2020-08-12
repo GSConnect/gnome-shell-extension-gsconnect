@@ -35,6 +35,9 @@ const Device = imports.service.device;
 const ServiceUI = imports.service.ui.service;
 
 
+/**
+ * Class representing the GSConnect service daemon.
+ */
 const Service = GObject.registerClass({
     GTypeName: 'GSConnectService',
     Properties: {
@@ -936,7 +939,7 @@ const Service = GObject.registerClass({
         let body = '';
         let icon = null;
         let nid = `${Date.now()}`;
-        let appName = gsconnect.settings.get_string('name');
+        let appName = 'GSConnect CLI';
 
         if (options.contains('notification-id'))
             nid = options.lookup_value('notification-id', null).unpack();
