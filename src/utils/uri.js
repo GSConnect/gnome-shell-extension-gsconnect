@@ -44,12 +44,12 @@ const _urlRegexp = new RegExp(
  * pre-processing. It also makes an allowance for URIs passed from Gio.File
  * that always come in the form "sms:///".
  */
-let _smsParam = "[\\w.!~*'()-]+=(?:[\\w.!~*'()-]|%[0-9A-F]{2})*";
-let _telParam = ";[a-zA-Z0-9-]+=(?:[\\w\\[\\]/:&+$.!~*'()-]|%[0-9A-F]{2})+";
-let _lenientDigits = '[+]?(?:[0-9A-F*#().-]| (?! )|%20(?!%20))+';
-let _lenientNumber = _lenientDigits + '(?:' + _telParam + ')*';
+const _smsParam = "[\\w.!~*'()-]+=(?:[\\w.!~*'()-]|%[0-9A-F]{2})*";
+const _telParam = ";[a-zA-Z0-9-]+=(?:[\\w\\[\\]/:&+$.!~*'()-]|%[0-9A-F]{2})+";
+const _lenientDigits = '[+]?(?:[0-9A-F*#().-]| (?! )|%20(?!%20))+';
+const _lenientNumber = `${_lenientDigits}(?:${_telParam})*`;
 
-var _smsRegex = new RegExp(
+const _smsRegex = new RegExp(
     '^' +
     'sms:' +                                // scheme
     '(?:[/]{2,3})?' +                       // Gio.File returns ":///"
@@ -64,7 +64,7 @@ var _smsRegex = new RegExp(
     '$', 'g');                              // fragments (#foo) not allowed
 
 
-var _numberRegex = new RegExp(
+const _numberRegex = new RegExp(
     '^' +
     '(' + _lenientDigits + ')' +            // phone number digits
     '((?:' + _telParam + ')*)' +            // followed by optional parameters
@@ -158,9 +158,9 @@ var SmsURI = class URI {
     }
 
     toString() {
-        let uri = 'sms:' + this.recipients.join(',');
+        let uri = `sms:${this.recipients.join(',')}`;
 
-        return (this.body) ? uri + '?body=' + escape(this.body) : uri;
+        return this.body ? `${uri}?body=${escape(this.body)}` : uri;
     }
 };
 
