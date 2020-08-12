@@ -25,11 +25,6 @@ if (!globalThis.gsconnect) {
  * Application Variables
  */
 gsconnect.is_local = gsconnect.extdatadir.startsWith(GLib.get_user_data_dir());
-gsconnect.metadata = (() => {
-    let data = GLib.file_get_contents(gsconnect.extdatadir + '/metadata.json')[1];
-
-    return JSON.parse(imports.byteArray.toString(data));
-})();
 
 
 /**
@@ -66,11 +61,13 @@ if (gsconnect.is_local) {
         false
     );
 } else {
+    const Config = imports.utils.config;
+
     // These should be populated by meson for this system at build time
-    gsconnect.libdir = gsconnect.metadata.libdir;
-    gsconnect.localedir = gsconnect.metadata.localedir;
+    gsconnect.libdir = Config.GNOME_SHELL_LIBDIR;
+    gsconnect.localedir = Config.PACKAGE_LOCALEDIR;
     gsconnect.gschema = Gio.SettingsSchemaSource.new_from_directory(
-        gsconnect.metadata.gschemadir,
+        Config.GSETTINGS_SCHEMA_DIR,
         Gio.SettingsSchemaSource.get_default(),
         false
     );
@@ -119,7 +116,7 @@ gsconnect.get_resource = function(rel_path) {
 
     array = imports.byteArray.toString(array);
 
-    return array.replace('@EXTDATADIR@', gsconnect.extdatadir);
+    return array.replace('@PACKAGE_DATADIR@', gsconnect.extdatadir);
 };
 
 
@@ -147,7 +144,7 @@ function installResource(dirname, basename, rel_path) {
         );
 
         let source = ByteArray.toString(bytes.toArray());
-        let contents = source.replace('@EXTDATADIR@', gsconnect.extdatadir);
+        let contents = source.replace('@PACKAGE_DATADIR@', gsconnect.extdatadir);
 
         return installFile(dirname, basename, contents);
     } catch (e) {

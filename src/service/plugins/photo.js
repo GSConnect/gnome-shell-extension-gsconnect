@@ -4,6 +4,7 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
+const Config = imports.utils.config;
 const PluginBase = imports.service.plugin;
 
 
@@ -169,7 +170,7 @@ var Plugin = GObject.registerClass({
             let time = GLib.DateTime.new_now_local().format('%T');
             let path = GLib.build_filenamev([GLib.get_tmp_dir(), `${time}.jpg`]);
             let proc = this._launcher.spawnv([
-                gsconnect.metadata.bin.ffmpeg,
+                Config.FFMPEG_PATH,
                 '-f', 'video4linux2',
                 '-ss', '0:0:2',
                 '-i', '/dev/video0',

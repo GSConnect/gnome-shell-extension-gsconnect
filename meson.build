@@ -33,11 +33,14 @@ endif
 
 # Configuration
 extconfig = configuration_data()
-extconfig.set('VERSION', meson.project_version())
+extconfig.set('PACKAGE_VERSION', meson.project_version())
+extconfig.set('PACKAGE_URL', 'https://github.com/andyholmes/gnome-shell-extension-gsconnect')
+extconfig.set('PACKAGE_BUGREPORT', 'https://github.com/andyholmes/gnome-shell-extension-gsconnect/issues/new')
+extconfig.set('PACKAGE_DATADIR', extdatadir)
+extconfig.set('PACKAGE_LOCALEDIR', localedir)
+extconfig.set('GSETTINGS_SCHEMA_DIR', gschemadir)
+
 extconfig.set('GNOME_SHELL_LIBDIR', gnome_shell_libdir)
-extconfig.set('LOCALEDIR', localedir)
-extconfig.set('EXTDATADIR', extdatadir)
-extconfig.set('GSCHEMADIR', gschemadir)
 extconfig.set('FFMPEG_PATH', get_option('ffmpeg_path'))
 extconfig.set('OPENSSL_PATH', get_option('openssl_path'))
 extconfig.set('SSHADD_PATH', get_option('sshadd_path'))

@@ -4,6 +4,7 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
+const Config = imports.utils.config;
 const PluginBase = imports.service.plugin;
 
 
@@ -248,7 +249,7 @@ var Plugin = GObject.registerClass({
      */
     _addPrivateKey() {
         let ssh_add = this._launcher.spawnv([
-            gsconnect.metadata.bin.ssh_add,
+            Config.SSHADD_PATH,
             GLib.build_filenamev([gsconnect.configdir, 'private.pem'])
         ]);
 
@@ -279,7 +280,7 @@ var Plugin = GObject.registerClass({
         for (let port = 1739; port <= 1764; port++) {
             try {
                 let ssh_keygen = this._launcher.spawnv([
-                    gsconnect.metadata.bin.ssh_keygen,
+                    Config.SSHKEYGEN_PATH,
                     '-R',
                     `[${host}]:${port}`
                 ]);

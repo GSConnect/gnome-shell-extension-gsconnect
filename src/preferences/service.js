@@ -7,6 +7,7 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
+const Config = imports.utils.config;
 const Device = imports.preferences.device;
 const Remote = imports.utils.remote;
 
@@ -15,7 +16,7 @@ const Remote = imports.utils.remote;
  * Header for support logs
  */
 const LOG_HEADER = new GLib.Bytes(`
-GSConnect Version: ${gsconnect.metadata.version}
+GSConnect Version: ${Config.PACKAGE_VERSION}
 GSConnect Install: ${(gsconnect.is_local) ? 'user' : 'system'}
 GJS: ${imports.system.version}
 XDG_SESSION_TYPE: ${GLib.getenv('XDG_SESSION_TYPE')}
@@ -376,8 +377,8 @@ var Window = GObject.registerClass({
                 program_name: 'GSConnect',
                 // TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
                 translator_credits: _('translator-credits'),
-                version: gsconnect.metadata.version.toString(),
-                website: gsconnect.metadata.url,
+                version: Config.PACKAGE_VERSION.toString(),
+                website: Config.PACKAGE_URL,
                 license_type: Gtk.License.GPL_2_0,
                 modal: true,
                 transient_for: this
@@ -435,8 +436,7 @@ var Window = GObject.registerClass({
      * "Help" GAction
      */
     _help(action, parameter) {
-        let uri = 'https://github.com/andyholmes/gnome-shell-extension-gsconnect';
-        uri += '/wiki/Help';
+        let uri = `${Config.PACKAGE_URL}/wiki/Help`;
         Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
     }
 

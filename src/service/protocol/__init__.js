@@ -3,6 +3,8 @@
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 
+const Config = imports.utils.config;
+
 
 /**
  * Creates a GTlsCertificate from the PEM-encoded data in @cert_path and
@@ -31,7 +33,7 @@ Gio.TlsCertificate.new_for_paths = function (certPath, keyPath, commonName = nul
 
         let proc = new Gio.Subprocess({
             argv: [
-                gsconnect.metadata.bin.openssl, 'req',
+                Config.OPENSSL_PATH, 'req',
                 '-new', '-x509', '-sha256',
                 '-out', certPath,
                 '-newkey', 'rsa:4096', '-nodes',
@@ -60,7 +62,7 @@ Object.defineProperties(Gio.TlsCertificate.prototype, {
         value: function() {
             if (!this.__fingerprint) {
                 let proc = new Gio.Subprocess({
-                    argv: [gsconnect.metadata.bin.openssl, 'x509', '-noout', '-fingerprint', '-sha1', '-inform', 'pem'],
+                    argv: [Config.OPENSSL_PATH, 'x509', '-noout', '-fingerprint', '-sha1', '-inform', 'pem'],
                     flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE
                 });
                 proc.init(null);
@@ -81,7 +83,7 @@ Object.defineProperties(Gio.TlsCertificate.prototype, {
         get: function() {
             if (!this.__common_name) {
                 let proc = new Gio.Subprocess({
-                    argv: [gsconnect.metadata.bin.openssl, 'x509', '-noout', '-subject', '-inform', 'pem'],
+                    argv: [Config.OPENSSL_PATH, 'x509', '-noout', '-subject', '-inform', 'pem'],
                     flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE
                 });
                 proc.init(null);
@@ -102,7 +104,7 @@ Object.defineProperties(Gio.TlsCertificate.prototype, {
         get: function() {
             if (!this.__certificate_der) {
                 let proc = new Gio.Subprocess({
-                    argv: [gsconnect.metadata.bin.openssl, 'x509', '-outform', 'der', '-inform', 'pem'],
+                    argv: [Config.OPENSSL_PATH, 'x509', '-outform', 'der', '-inform', 'pem'],
                     flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE
                 });
                 proc.init(null);

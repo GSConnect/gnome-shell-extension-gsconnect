@@ -29,6 +29,7 @@ imports.searchPath.unshift(gsconnect.extdatadir);
 imports._gsconnect;
 
 // Local Imports
+const Config = imports.utils.config;
 const Core = imports.service.protocol.core;
 const Device = imports.service.device;
 const ServiceUI = imports.service.ui.service;
@@ -1013,7 +1014,7 @@ const Service = GObject.registerClass({
     vfunc_handle_local_options(options) {
         try {
             if (options.contains('version')) {
-                print(`GSConnect ${gsconnect.metadata.version}`);
+                print(`GSConnect ${Config.PACKAGE_VERSION}`);
                 return 0;
             }
 
