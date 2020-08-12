@@ -347,6 +347,13 @@ const AddressRow = GObject.registerClass({
         if (this.number.type !== undefined)
             this.type_label = getNumberTypeLabel(this.number.type);
     }
+
+    get number() {
+        if (this._number === undefined)
+            return {value: 'unknown', type: 'unknown'};
+
+        return this._number;
+    }
 });
 
 
