@@ -141,7 +141,7 @@ function getShortTime(time) {
         return _('Just now');
 
     if (diff < TIME_SPAN_HOUR) {
-    // TRANSLATORS: Time duration in minutes (eg. 15 minutes)
+        // TRANSLATORS: Time duration in minutes (eg. 15 minutes)
         return ngettext(
             '%d minute',
             '%d minutes',
