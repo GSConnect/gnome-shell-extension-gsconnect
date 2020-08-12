@@ -5,6 +5,7 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
+const Config = imports.utils.config;
 const PluginBase = imports.service.plugin;
 const NotificationUI = imports.service.ui.notification;
 
