@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2020-08-12 03:34\n"
+"PO-Revision-Date: 2020-08-12 14:41\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "Language: pl_PL\n"
@@ -907,31 +907,31 @@ msgstr "Trwające połączenie"
 #: src/service/ui/contacts.js:126 src/service/ui/contacts.js:147
 #, javascript-format
 msgid "Other"
-msgstr ""
+msgstr "Inny"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:131
 #, javascript-format
 msgid "Fax"
-msgstr ""
+msgstr "Telefaks"
 
 #. TRANSLATORS: A work phone number
 #: src/service/ui/contacts.js:135
 #, javascript-format
 msgid "Work"
-msgstr ""
+msgstr "Służbowy"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:139
 #, javascript-format
 msgid "Mobile"
-msgstr ""
+msgstr "Komórkowy"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:143
 #, javascript-format
 msgid "Home"
-msgstr ""
+msgstr "Domowy"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #: src/service/ui/contacts.js:431 src/service/ui/contacts.js:445
