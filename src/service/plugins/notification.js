@@ -417,8 +417,7 @@ var Plugin = GObject.registerClass({
                 return;
 
             // An unconfigured application
-            // TODO: revisit application notification settings
-            if (!this._applications.hasOwnProperty(notif.appName)) {
+            if (notif.appName && !this._applications[notif.appName]) {
                 this._applications[notif.appName] = {
                     iconName: 'system-run-symbolic',
                     enabled: true
@@ -427,6 +426,7 @@ var Plugin = GObject.registerClass({
                 // Store the themed icons for the device preferences window
                 if (typeof notif.icon === 'string') {
                     this._applications[notif.appName].iconName = notif.icon;
+
                 } else if (notif.icon instanceof Gio.ThemedIcon) {
                     let iconName = notif.icon.get_names()[0];
                     this._applications[notif.appName].iconName = iconName;
@@ -440,18 +440,17 @@ var Plugin = GObject.registerClass({
                 this._applicationsChangedSkip = false;
             }
 
-            // An enabled application
-            if (this._applications[notif.appName].enabled) {
-                let icon = notif.icon || null;
-                delete notif.icon;
+            // Notifications disabled for this application
+            if (notif.appName && !this._applications[notif.appName].enabled)
+                return;
 
-                let packet = {
-                    type: 'kdeconnect.notification',
-                    body: notif
-                };
+            let icon = notif.icon || null;
+            delete notif.icon;
 
-                await this._uploadIcon(packet, icon);
-            }
+            await this._uploadIcon({
+                type: 'kdeconnect.notification',
+                body: notif
+            }, icon);
         } catch (e) {
             logError(e);
         }
