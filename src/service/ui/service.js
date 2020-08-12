@@ -5,6 +5,19 @@ const Gio = imports.gi.Gio;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
+const Config = imports.utils.config;
+
+
+/*
+ * Issue Header
+ */
+const ISSUE_HEADER = `
+GSConnect Version: ${Config.PACKAGE_VERSION}
+GSConnect Install: ${(gsconnect.is_local) ? 'user' : 'system'}
+GJS: ${imports.system.version}
+XDG_SESSION_TYPE: ${GLib.getenv('XDG_SESSION_TYPE')}
+`;
+
 
 /**
  * A dialog for selecting a device
@@ -168,6 +181,56 @@ var DeviceChooser = GObject.registerClass({
 
     _sortDevices(row1, row2) {
         return row1.device.name.localeCompare(row2.device.name);
+    }
+});
+
+
+/*
+ * A dialog for reporting an error.
+ */
+var ErrorDialog = GObject.registerClass({
+    GTypeName: 'GSConnectServiceErrorDialog',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/service-error-dialog.ui',
+    Children: ['cancel-button', 'report-button', 'error-message', 'error-stack']
+}, class ErrorDialog extends Gtk.Dialog {
+
+    _init(error) {
+        super._init({
+            application: Gio.Application.get_default(),
+            title: `GSConnect: ${error.name}`,
+            use_header_bar: true
+        });
+        this.set_keep_above(true);
+
+        this.error = error;
+        this.error_message.label = error.message;
+        this.error_stack.label = error.stack;
+    }
+
+    vfunc_response(response_id) {
+        if (response_id === Gtk.ResponseType.OK) {
+            Gio.AppInfo.launch_default_for_uri_async(
+                this._buildUri(this.error.message, this.error.stack),
+                null,
+                null,
+                null
+            );
+        }
+
+        this.destroy();
+    }
+
+    _buildUri(message, stack) {
+        let body = `\`\`\`${ISSUE_HEADER}\n${stack}\n\`\`\``;
+        let titleQuery = encodeURIComponent(message).replace('%20', '+');
+        let bodyQuery = encodeURIComponent(body).replace('%20', '+');
+        let uri = `${Config.PACKAGE_BUGREPORT}?title=${titleQuery}&body=${bodyQuery}`;
+
+        // Reasonable URI length limit
+        if (uri.length > 2000)
+            return uri.substr(0, 2000);
+
+        return uri;
     }
 });
 

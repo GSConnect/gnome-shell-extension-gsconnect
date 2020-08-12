@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="3.24"/>
+  <template class="GSConnectServiceErrorDialog" parent="GtkDialog">
+    <property name="can_focus">False</property>
+    <property name="default_width">480</property>
+    <property name="default_height">360</property>
+    <property name="type_hint">dialog</property>
+    <child type="action">
+      <object class="GtkButton" id="cancel-button">
+        <property name="can_focus">True</property>
+        <property name="label" translatable="yes">Cancel</property>
+        <property name="visible">True</property>
+        <child internal-child="accessible">
+          <object class="AtkObject" id="cancel-button-atkobject">
+            <property name="AtkObject::accessible-name" translatable="yes">Cancel</property>
+          </object>
+        </child>
+     </object>
+    </child>
+    <child type="action">
+      <object class="GtkButton" id="report-button">
+        <property name="can-default">True</property>
+        <property name="label" translatable="yes">Report</property>
+        <property name="visible">True</property>
+        <child internal-child="accessible">
+          <object class="AtkObject" id="report-button-atkobject">
+            <property name="AtkObject::accessible-name" translatable="yes">Report</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="cancel">cancel-button</action-widget>
+      <action-widget response="ok" default="true">report-button</action-widget>
+    </action-widgets>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="border_width">0</property>
+        <property name="can_focus">False</property>
+        <property name="margin_left">6</property>
+        <property name="margin_right">6</property>
+        <property name="margin_top">6</property>
+        <property name="margin_bottom">6</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">12</property>
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkLabel" id="error-message">
+            <property name="can_focus">False</property>
+            <property name="halign">start</property>
+            <property name="visible">True</property>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow">
+            <property name="can_focus">True</property>
+            <property name="shadow_type">in</property>
+            <property name="visible">True</property>
+            <child>
+              <object class="GtkViewport">
+                <property name="can_focus">False</property>
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkLabel" id="error-stack">
+                    <property name="can_focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="hexpand">True</property>
+                    <property name="margin_top">6</property>
+                    <property name="margin_bottom">6</property>
+                    <property name="margin_start">6</property>
+                    <property name="margin_end">6</property>
+                    <property name="valign">start</property>
+                    <property name="vexpand">True</property>
+                    <property name="visible">True</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>
+

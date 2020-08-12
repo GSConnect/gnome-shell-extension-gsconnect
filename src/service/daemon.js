@@ -34,8 +34,6 @@ const Core = imports.service.protocol.core;
 const Device = imports.service.device;
 const ServiceUI = imports.service.ui.service;
 
-const _GITHUB = 'https://github.com/andyholmes/gnome-shell-extension-gsconnect';
-
 
 const Service = GObject.registerClass({
     GTypeName: 'GSConnectService',
@@ -349,30 +347,20 @@ const Service = GObject.registerClass({
     _error(action, parameter) {
         try {
             let error = parameter.deepUnpack();
-            let dialog = new Gtk.MessageDialog({
-                text: error.message,
-                secondary_text: error.stack,
-                buttons: Gtk.ButtonsType.CLOSE,
-                message_type: Gtk.MessageType.ERROR,
-            });
-            dialog.add_button(_('Report'), Gtk.ResponseType.OK);
-            dialog.set_keep_above(true);
 
-            let [message, stack] = dialog.get_message_area().get_children();
-            message.halign = Gtk.Align.START;
-            message.selectable = true;
-            stack.selectable = true;
+            // If there's a URL, we have better information in the Wiki
+            if (error.url !== undefined) {
+                Gio.AppInfo.launch_default_for_uri_async(
+                    error.url,
+                    null,
+                    null,
+                    null
+                );
+                return;
+            }
 
-            dialog.connect('response', (dialog, response_id) => {
-                if (response_id === Gtk.ResponseType.OK) {
-                    let query = encodeURIComponent(dialog.text).replace('%20', '+');
-                    this._github(`issues?q=is%3Aissue+"${query}"`);
-                } else {
-                    dialog.destroy();
-                }
-            });
-
-            dialog.show();
+            let dialog = new ServiceUI.ErrorDialog(error);
+            dialog.present();
         } catch (e) {
             logError(e);
         }
@@ -428,11 +416,6 @@ const Service = GObject.registerClass({
         }
 
         return GLib.SOURCE_CONTINUE;
-    }
-
-    _github(path = []) {
-        let uri = [_GITHUB].concat(path.split('/')).join('/');
-        Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
     }
 
     /*
@@ -521,38 +504,40 @@ const Service = GObject.registerClass({
             logError(error);
 
             // Create an new notification
-            let id, title, body, icon, priority;
+            let id, body, priority;
             let notif = new Gio.Notification();
+            let icon = new Gio.ThemedIcon({name: 'dialog-error'});
+            let target = null;
 
-            switch (error.name) {
-                case 'LanError':
-                    id = error.name;
-                    title = _('Network Error');
-                    body = _('Click for help troubleshooting');
-                    icon = new Gio.ThemedIcon({name: 'network-error'});
-                    priority = Gio.NotificationPriority.URGENT;
-                    notif.set_default_action(`app.wiki('Help#${error.name}')`);
-                    break;
+            if (error.url !== undefined) {
+                id = error.url;
+                body = _('Click for help troubleshooting');
+                priority = Gio.NotificationPriority.URGENT;
 
-                default:
-                    id = `${Date.now()}`;
-                    title = error.name.trim();
-                    body = _('Click for more information');
-                    icon = new Gio.ThemedIcon({name: 'dialog-error'});
-                    error = new GLib.Variant('a{ss}', {
-                        name: error.name.trim(),
-                        message: error.message.trim(),
-                        stack: error.stack.trim()
-                    });
-                    notif.set_default_action_and_target('app.error', error);
-                    priority = Gio.NotificationPriority.HIGH;
+                target = new GLib.Variant('a{ss}', {
+                    name: error.name.trim(),
+                    message: error.message.trim(),
+                    stack: error.stack.trim(),
+                    url: error.url
+                });
+            } else {
+                id = error.name.trim();
+                body = _('Click for more information');
+                priority = Gio.NotificationPriority.HIGH;
+
+                target = new GLib.Variant('a{ss}', {
+                    name: error.name.trim(),
+                    message: error.message.trim(),
+                    stack: error.stack.trim()
+                });
             }
 
             // Create an urgent notification
-            notif.set_title(`GSConnect: ${title}`);
+            notif.set_title(`GSConnect: ${error.name.trim()}`);
             notif.set_body(body);
             notif.set_icon(icon);
             notif.set_priority(priority);
+            notif.set_default_action_and_target('app.error', target);
 
             // Bypass override
             super.send_notification(id, notif);

@@ -285,7 +285,8 @@ var ChannelService = GObject.registerClass({
 
             // We failed to get either an IPv4 or IPv6 socket to bind
             if (this._udp6 === null) {
-                e.name = 'LanError';
+                e.name = _('Network Error');
+                e.url = 'https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Help#network-error';
                 throw e;
             }
         }
