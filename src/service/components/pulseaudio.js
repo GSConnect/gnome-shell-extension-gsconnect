@@ -2,7 +2,6 @@
 
 const Tweener = imports.tweener.tweener;
 
-const Gio = imports.gi.Gio;
 const GIRepository = imports.gi.GIRepository;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;

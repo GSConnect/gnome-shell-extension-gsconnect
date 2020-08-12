@@ -4,10 +4,6 @@ imports.gi.versions.Atspi = '2.0';
 
 const Atspi = imports.gi.Atspi;
 const Gdk = imports.gi.Gdk;
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
 
 
 /**

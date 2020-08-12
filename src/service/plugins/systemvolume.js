@@ -1,6 +1,5 @@
 'use strict';
 
-const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
 const PluginBase = imports.service.plugin;

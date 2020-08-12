@@ -1,7 +1,6 @@
 'use strict';
 
 const Clutter = imports.gi.Clutter;
-const Gio = imports.gi.Gio;
 const GObject = imports.gi.GObject;
 const St = imports.gi.St;
 

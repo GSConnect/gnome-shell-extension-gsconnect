@@ -1,11 +1,10 @@
 'use strict';
 
-const Gdk = imports.gi.Gdk;
+const ByteArray = imports.byteArray;
+
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
-const Gtk = imports.gi.Gtk;
 
-const ByteArray = imports.byteArray;
 const Config = imports.utils.config;
 
 
