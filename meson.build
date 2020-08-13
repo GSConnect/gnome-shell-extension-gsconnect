@@ -8,6 +8,7 @@ gnome = import('gnome')
 i18n = import('i18n')
 
 app_id = 'org.gnome.Shell.Extensions.GSConnect'
+app_path = '/org/gnome/Shell/Extensions/GSConnect'
 extuuid = 'gsconnect@andyholmes.github.io'
 
 prefix = get_option('prefix')
@@ -39,6 +40,9 @@ extconfig.set('PACKAGE_BUGREPORT', 'https://github.com/andyholmes/gnome-shell-ex
 extconfig.set('PACKAGE_DATADIR', extdatadir)
 extconfig.set('PACKAGE_LOCALEDIR', localedir)
 extconfig.set('GSETTINGS_SCHEMA_DIR', gschemadir)
+
+extconfig.set('APPLICATION_ID', app_id)
+extconfig.set('APPLICATION_PATH', app_path)
 
 extconfig.set('GNOME_SHELL_LIBDIR', gnome_shell_libdir)
 extconfig.set('FFMPEG_PATH', get_option('ffmpeg_path'))
