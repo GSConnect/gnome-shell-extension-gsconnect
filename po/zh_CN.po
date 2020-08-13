@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-08-12 20:58-0700\n"
-"PO-Revision-Date: 2020-08-13 06:45\n"
+"PO-Revision-Date: 2020-08-13 06:57\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -148,7 +148,7 @@ msgstr "发送消息"
 
 #: data/ui/messaging-conversation.ui:85 src/shell/notification.js:69
 msgid "Type a message"
-msgstr "键入消息"
+msgstr "输入消息"
 
 #: data/ui/messaging-conversation.ui:92
 msgid "Message Entry"
@@ -1022,7 +1022,7 @@ msgstr "呼叫中"
 
 #: src/service/protocol/lan.js:153
 msgid "OpenSSL not found"
-msgstr ""
+msgstr "无法找到 OpenSSL（OpenSSL not found）"
 
 #: src/service/protocol/lan.js:290
 msgid "Network Error"
