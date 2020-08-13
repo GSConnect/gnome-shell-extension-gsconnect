@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-08-12 20:58-0700\n"
-"PO-Revision-Date: 2020-08-13 06:57\n"
+"PO-Revision-Date: 2020-08-13 09:45\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -45,7 +45,7 @@ msgstr "发送文件、链接和文本"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:40
 msgid "Send and receive messages"
-msgstr "发送、接受消息"
+msgstr "发送、接收消息"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
 msgid "Sync clipboard content"
@@ -654,7 +654,7 @@ msgstr "等待服务响应..."
 
 #: src/service/daemon.js:122
 msgid "Discovery has been disabled due to the number of devices on this network."
-msgstr "由于此网络上的设备数量，已禁用发现。"
+msgstr "由于这个网络上的设备数量过多，发现已被禁用。"
 
 #: src/service/daemon.js:528
 msgid "Click for help troubleshooting"
