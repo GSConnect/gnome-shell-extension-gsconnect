@@ -198,6 +198,16 @@ const Service = GObject.registerClass({
         this._identify();
     }
 
+    get settings() {
+        if (this._settings === undefined) {
+            this._settings = new Gio.Settings({
+                settings_schema: Config.GSCHEMA.lookup(this.application_id, true)
+            });
+        }
+
+        return this._settings;
+    }
+
     /**
      * Helpers
      */
@@ -276,10 +286,6 @@ const Service = GObject.registerClass({
      * GSettings
      */
     _initSettings() {
-        this.settings = new Gio.Settings({
-            settings_schema: Config.GSCHEMA.lookup(this.application_id, true)
-        });
-
         // Bound Properties
         this.settings.bind('discoverable', this, 'discoverable', 0);
         this.settings.bind('id', this, 'id', 0);
