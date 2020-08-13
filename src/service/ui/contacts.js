@@ -345,7 +345,7 @@ const AddressRow = GObject.registerClass({
         this.address_label.margin_end = (this._index > 0) ? 38 : 0;
 
         if (this.number.type !== undefined)
-            this.type_label = getNumberTypeLabel(this.number.type);
+            this.type_label.label = getNumberTypeLabel(this.number.type);
     }
 
     get number() {
