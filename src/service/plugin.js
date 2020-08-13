@@ -4,7 +4,7 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
-const Config = imports.utils.config;
+const Config = imports.config;
 
 
 /**

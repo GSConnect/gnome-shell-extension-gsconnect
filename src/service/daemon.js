@@ -29,7 +29,7 @@ imports.searchPath.unshift(gsconnect.extdatadir);
 imports._gsconnect;
 
 // Local Imports
-const Config = imports.utils.config;
+const Config = imports.config;
 const Core = imports.service.protocol.core;
 const Device = imports.service.device;
 const ServiceUI = imports.service.ui.service;

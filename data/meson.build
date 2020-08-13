@@ -16,7 +16,7 @@ configure_file(
   input: 'config.js.in',
   output: 'config.js',
   configuration: extconfig,
-  install_dir: join_paths(extdatadir, 'utils')
+  install_dir: extdatadir
 )
 
 

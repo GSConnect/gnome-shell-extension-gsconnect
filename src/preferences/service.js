@@ -7,7 +7,7 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
-const Config = imports.utils.config;
+const Config = imports.config;
 const Device = imports.preferences.device;
 const Remote = imports.utils.remote;
 
