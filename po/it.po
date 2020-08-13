@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2020-04-01 19:24\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2020-08-12 08:45\n"
+"Last-Translator: \n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
 "MIME-Version: 1.0\n"
@@ -12,8 +12,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Crowdin-Project: gsconnect\n"
+"X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: it\n"
 "X-Crowdin-File: /master/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File-ID: 6\n"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
 #: data/gtk/menus.ui:7 src/preferences/device.js:292
@@ -292,7 +294,7 @@ msgstr "Riduci"
 #: data/ui/device-preferences.ui:2624 data/ui/device-preferences.ui:2650
 #: src/service/plugins/telephony.js:191
 msgid "Mute"
-msgstr "Disattiva"
+msgstr "Silenzia"
 
 #: data/ui/messaging-window.ui:14 src/service/plugins/sms.js:26
 #: src/service/ui/messaging.js:967
@@ -341,7 +343,7 @@ msgstr "Aggiorna"
 #: data/ui/preferences-window.ui:111 data/ui/preferences-window.ui:128
 #: src/extension.js:148
 msgid "Mobile Settings"
-msgstr "Impostazioni dispositivi mobili"
+msgstr "Impostazioni dispositivi"
 
 #: data/ui/preferences-window.ui:182 data/ui/preferences-window.ui:197
 msgid "Edit Device Name"
