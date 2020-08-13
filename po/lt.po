@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-08-12 20:58-0700\n"
-"PO-Revision-Date: 2020-08-13 04:05\n"
+"PO-Revision-Date: 2020-08-13 13:26\n"
 "Last-Translator: \n"
 "Language-Team: Lithuanian\n"
 "Language: lt_LT\n"
@@ -25,7 +25,7 @@ msgstr "GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:6
 msgid "KDE Connect implementation for GNOME"
-msgstr ""
+msgstr "KDE Connect įgyvendinimas, skirtas GNOME"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:16
 msgid "GSConnect Team"
