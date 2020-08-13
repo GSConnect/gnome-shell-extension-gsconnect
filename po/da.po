@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-08-12 20:58-0700\n"
-"PO-Revision-Date: 2020-08-13 17:45\n"
+"PO-Revision-Date: 2020-08-13 17:55\n"
 "Last-Translator: \n"
 "Language-Team: Danish\n"
 "Language: da_DK\n"
@@ -57,7 +57,7 @@ msgstr "Synkroniser kontakter"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:43
 msgid "Sync notifications"
-msgstr "Synkroniser notificationer"
+msgstr "Synkroniser notifikationer"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
 msgid "Control media players"
@@ -96,7 +96,7 @@ msgstr "Forbind til…"
 #: src/preferences/service.js:416 src/service/plugins/share.js:154
 #: src/service/plugins/share.js:323 src/service/plugins/share.js:456
 msgid "Cancel"
-msgstr "Anuller"
+msgstr "Annuller"
 
 #: data/ui/connect-dialog.ui:26
 msgid "Connect"
@@ -354,11 +354,11 @@ msgstr "Eksperimentel"
 
 #: data/ui/preferences-device-panel.ui:1913
 msgid "Device Cache"
-msgstr ""
+msgstr "Enhed Cache"
 
 #: data/ui/preferences-device-panel.ui:1931
 msgid "Clear Cache…"
-msgstr ""
+msgstr "Ryd Cache…"
 
 #: data/ui/preferences-device-panel.ui:1970
 msgid "Legacy SMS Support"
@@ -375,7 +375,7 @@ msgstr "Tastaturgenveje"
 
 #: data/ui/preferences-device-panel.ui:2369
 msgid "Device Settings"
-msgstr ""
+msgstr "Enhed Indstillinger"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/ui/preferences-device-panel.ui:2413
@@ -421,7 +421,7 @@ msgstr "Intet"
 #: data/ui/preferences-device-panel.ui:2548
 #: data/ui/preferences-device-panel.ui:2581
 msgid "Restore"
-msgstr ""
+msgstr "Gendan"
 
 #. TRANSLATORS: Lower the system volume
 #: data/ui/preferences-device-panel.ui:2555
@@ -469,7 +469,7 @@ msgstr ""
 
 #: data/ui/preferences-window.ui:182
 msgid "Device Menu"
-msgstr ""
+msgstr "Enhedsmenu"
 
 #: data/ui/preferences-window.ui:196 data/ui/preferences-window.ui:211
 msgid "Edit Device Name"
@@ -537,7 +537,7 @@ msgstr "Ingen Enhed Fundet"
 
 #: data/ui/service-device-chooser.ui:111
 msgid "Device List"
-msgstr ""
+msgstr "Enhedsliste"
 
 #: data/ui/service-error-dialog.ui:24 data/ui/service-error-dialog.ui:28
 msgid "Report"
@@ -704,11 +704,11 @@ msgstr ""
 
 #: src/service/daemon.js:802
 msgid "Notification Icon"
-msgstr ""
+msgstr "Notifikation Ikon"
 
 #: src/service/daemon.js:811
 msgid "Notification ID"
-msgstr ""
+msgstr "Notifikation ID"
 
 #: src/service/daemon.js:820 src/service/plugins/photo.js:12
 #: src/service/plugins/photo.js:24
