@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-08-12 20:58-0700\n"
-"PO-Revision-Date: 2020-08-13 08:30\n"
+"PO-Revision-Date: 2020-08-13 09:45\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -465,11 +465,11 @@ msgstr "Paramètres"
 
 #: data/ui/preferences-window.ui:159
 msgid "Service Menu"
-msgstr ""
+msgstr "Menu du service"
 
 #: data/ui/preferences-window.ui:182
 msgid "Device Menu"
-msgstr ""
+msgstr "Menu de l'appareil"
 
 #: data/ui/preferences-window.ui:196 data/ui/preferences-window.ui:211
 msgid "Edit Device Name"
@@ -537,7 +537,7 @@ msgstr "Aucun appareil trouvé"
 
 #: data/ui/service-device-chooser.ui:111
 msgid "Device List"
-msgstr ""
+msgstr "Liste des appareils"
 
 #: data/ui/service-error-dialog.ui:24 data/ui/service-error-dialog.ui:28
 msgid "Report"
@@ -825,7 +825,7 @@ msgstr "Clavier"
 #: src/service/plugins/mousepad.js:416
 #, javascript-format
 msgid "Remote keyboard on %s is not active"
-msgstr ""
+msgstr "Le clavier distant sur %s n'est pas actif"
 
 #: src/service/plugins/mpris.js:13
 msgid "MPRIS"
@@ -833,7 +833,7 @@ msgstr "MPRIS"
 
 #: src/service/plugins/mpris.js:260 src/service/plugins/mpris.js:261
 msgid "Unknown"
-msgstr ""
+msgstr "Inconnu"
 
 #: src/service/plugins/notification.js:28
 msgid "Cancel Notification"
@@ -1023,7 +1023,7 @@ msgstr "Appel sortant"
 
 #: src/service/protocol/lan.js:153
 msgid "OpenSSL not found"
-msgstr ""
+msgstr "OpenSSL introuvable"
 
 #: src/service/protocol/lan.js:290
 msgid "Network Error"
@@ -1032,22 +1032,22 @@ msgstr "Erreur réseau"
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:129
 msgid "Fax"
-msgstr ""
+msgstr "Fax"
 
 #. TRANSLATORS: A work or office phone number
 #: src/service/ui/contacts.js:133
 msgid "Work"
-msgstr ""
+msgstr "Professionnel"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:137
 msgid "Mobile"
-msgstr ""
+msgstr "Mobile"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:141
 msgid "Home"
-msgstr ""
+msgstr "Domicile"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #. Update UI
