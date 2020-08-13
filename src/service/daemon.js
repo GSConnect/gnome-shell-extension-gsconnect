@@ -295,18 +295,18 @@ const Service = GObject.registerClass({
      */
     _initActions() {
         let actions = [
-            ['connect', this._identify.bind(this), 's'],
-            ['device', this._device.bind(this), '(ssbv)'],
-            ['error', this._error.bind(this), 'a{ss}'],
-            ['preferences', this._preferences],
-            ['quit', () => this.quit()],
-            ['refresh', this._identify.bind(this)]
+            ['connect', this._identify.bind(this), new GLib.VariantType('s')],
+            ['device', this._device.bind(this), new GLib.VariantType('(ssbv)')],
+            ['error', this._error.bind(this), new GLib.VariantType('a{ss}')],
+            ['preferences', this._preferences, null],
+            ['quit', () => this.quit(), null],
+            ['refresh', this._identify.bind(this), null]
         ];
 
         for (let [name, callback, type] of actions) {
             let action = new Gio.SimpleAction({
                 name: name,
-                parameter_type: (type) ? new GLib.VariantType(type) : null
+                parameter_type: type
             });
             action.connect('activate', callback);
             this.add_action(action);
