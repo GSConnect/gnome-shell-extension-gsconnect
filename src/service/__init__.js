@@ -168,47 +168,6 @@ JSON.load = function (file, sync = false) {
 
 
 /**
- * Convenience function for dumping JSON to a file
- *
- * @param {Gio.File|string} file - A Gio.File or file path
- * @param {Object} obj - The object to write to disk
- * @param {boolean} sync - Default is %false, if %true load synchronously
- */
-JSON.dump = function (obj, file, sync = false) {
-    if (typeof file === 'string')
-        file = Gio.File.new_for_path(file);
-
-    if (sync) {
-        file.replace_contents(
-            JSON.stringify(obj, null, 2),
-            null,
-            false,
-            Gio.FileCreateFlags.REPLACE_DESTINATION,
-            null
-        );
-    } else {
-        return new Promise((resolve, reject) => {
-            file.replace_contents_bytes_async(
-                new GLib.Bytes(JSON.stringify(obj, null, 2)),
-                null,
-                false,
-                Gio.FileCreateFlags.REPLACE_DESTINATION,
-                null,
-                (file, res) => {
-                    try {
-                        file.replace_contents_finish(res);
-                        resolve();
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
-            );
-        });
-    }
-};
-
-
-/**
  * A simple (for now) pre-comparison sanitizer for phone numbers
  * See: https://github.com/KDE/kdeconnect-kde/blob/master/smsapp/conversationlistmodel.cpp#L200-L210
  *
@@ -222,6 +181,7 @@ String.prototype.toPhoneNumber = function() {
 
     return this;
 };
+
 
 /**
  * A simple equality check for phone numbers based on `toPhoneNumber()`

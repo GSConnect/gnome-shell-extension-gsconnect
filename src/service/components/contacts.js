@@ -1,5 +1,7 @@
 'use strict';
 
+const ByteArray = imports.byteArray;
+
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
@@ -52,7 +54,7 @@ var Store = GObject.registerClass({
             context: context
         });
 
-        this.__cache_data = {};
+        this._cacheData = {};
 
         // If Evolution Data Server is available, load it now
         if (context === null && HAVE_EDS) {
@@ -345,7 +347,7 @@ var Store = GObject.registerClass({
     }
 
     get contacts() {
-        return Object.values(this.__cache_data);
+        return Object.values(this._cacheData);
     }
 
     get context() {
@@ -357,13 +359,13 @@ var Store = GObject.registerClass({
 
     set context(context) {
         this._context = context;
-        this.__cache_dir = Gio.File.new_for_path(Config.CACHEDIR);
+        this._cacheDir = Gio.File.new_for_path(Config.CACHEDIR);
 
         if (context !== null)
-            this.__cache_dir = this.__cache_dir.get_child(context);
+            this._cacheDir = this._cacheDir.get_child(context);
 
-        GLib.mkdir_with_parents(this.__cache_dir.get_path(), 448);
-        this.__cache_file = this.__cache_dir.get_child('contacts.json');
+        GLib.mkdir_with_parents(this._cacheDir.get_path(), 448);
+        this._cacheFile = this._cacheDir.get_child('contacts.json');
     }
 
     /**
@@ -378,7 +380,7 @@ var Store = GObject.registerClass({
                 GLib.ChecksumType.MD5,
                 contents
             );
-            let file = this.__cache_dir.get_child(`${md5}`);
+            let file = this._cacheDir.get_child(`${md5}`);
 
             if (file.query_exists(null)) {
                 resolve(file.get_path());
@@ -442,7 +444,7 @@ var Store = GObject.registerClass({
         // No match; return a mock contact with a unique ID
         let id = GLib.uuid_string_random();
 
-        while (this.__cache_data.hasOwnProperty(id))
+        while (this._cacheData.hasOwnProperty(id))
             id = GLib.uuid_string_random();
 
         return {
@@ -454,11 +456,10 @@ var Store = GObject.registerClass({
     }
 
     get_contact(position) {
-        try {
-            return (this.__cache_data[position]) ? this.__cache_data[position] : null;
-        } catch (e) {
-            return null;
-        }
+        if (this._cacheData[position] !== undefined)
+            return this._cacheData[position];
+
+        return null;
     }
 
     /**
@@ -472,7 +473,7 @@ var Store = GObject.registerClass({
         if (!contact.id) {
             let id = GLib.uuid_string_random();
 
-            while (this.__cache_data[id])
+            while (this._cacheData[id])
                 id = GLib.uuid_string_random();
 
             contact.id = id;
@@ -483,13 +484,13 @@ var Store = GObject.registerClass({
             contact.origin = 'gsconnect';
 
         // This is an updated contact
-        if (this.__cache_data[contact.id]) {
-            this.__cache_data[contact.id] = contact;
+        if (this._cacheData[contact.id]) {
+            this._cacheData[contact.id] = contact;
             this.emit('contact-changed', contact.id);
 
         // This is a new contact
         } else {
-            this.__cache_data[contact.id] = contact;
+            this._cacheData[contact.id] = contact;
             this.emit('contact-added', contact.id);
         }
 
@@ -506,8 +507,8 @@ var Store = GObject.registerClass({
      */
     remove(id, write = true) {
         // Only remove if the contact actually exists
-        if (this.__cache_data[id]) {
-            delete this.__cache_data[id];
+        if (this._cacheData[id]) {
+            delete this._cacheData[id];
             this.emit('contact-removed', id);
 
             // Write if requested
@@ -565,7 +566,7 @@ var Store = GObject.registerClass({
 
             for (let i = 0, len = contacts.length; i < len; i++) {
                 let new_contact = contacts[i];
-                let contact = this.__cache_data[new_contact.id];
+                let contact = this._cacheData[new_contact.id];
 
                 if (!contact || new_contact.timestamp !== contact.timestamp) 
                     await this.add(new_contact, false);
@@ -598,7 +599,6 @@ var Store = GObject.registerClass({
         try {
             if (HAVE_EDS === false) 
                 throw new Error('Evolution Data Server not available');
-            
         } catch (e) {
             debug(e);
         }
@@ -609,7 +609,17 @@ var Store = GObject.registerClass({
      */
     async load() {
         try {
-            this.__cache_data = await JSON.load(this.__cache_file);
+            this._cacheData = await new Promise((resolve, reject) => {
+                this._cacheFile.load_contents_async(null, (file, res) => {
+                    try {
+                        let contents = file.load_contents_finish(res)[1];
+
+                        resolve(JSON.parse(ByteArray.toString(contents)));
+                    } catch (e) {
+                        reject(e);
+                    }
+                });
+            });
         } catch (e) {
             debug(e);
         } finally {
@@ -632,7 +642,23 @@ var Store = GObject.registerClass({
 
         try {
             this.__cache_lock = true;
-            await JSON.dump(this.__cache_data, this.__cache_file);
+
+            await new Promise((resolve, reject) => {
+                this._cacheFile.replace_contents_bytes_async(
+                    new GLib.Bytes(JSON.stringify(this._cacheData, null, 2)),
+                    null,
+                    false,
+                    Gio.FileCreateFlags.REPLACE_DESTINATION,
+                    null,
+                    (file, res) => {
+                        try {
+                            resolve(file.replace_contents_finish(res));
+                        } catch (e) {
+                            reject(e);
+                        }
+                    }
+                );
+            });
         } catch (e) {
             debug(e);
         } finally {
