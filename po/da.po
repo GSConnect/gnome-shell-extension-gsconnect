@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-08-12 20:58-0700\n"
-"PO-Revision-Date: 2020-08-13 17:35\n"
+"PO-Revision-Date: 2020-08-13 17:45\n"
 "Last-Translator: \n"
 "Language-Team: Danish\n"
 "Language: da_DK\n"
@@ -37,7 +37,7 @@ msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:35
 msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
-msgstr ""
+msgstr "Med GSConnect du kan tilslut sikkert til mobil enheder og andre stationær computer til:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
 msgid "Share files, links and text"
@@ -49,7 +49,7 @@ msgstr "Send og modtag beskeder"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
 msgid "Sync clipboard content"
-msgstr ""
+msgstr "Synkroniser udklipsholder indhold"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:42
 msgid "Sync contacts"
@@ -57,7 +57,7 @@ msgstr "Synkroniser kontakter"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:43
 msgid "Sync notifications"
-msgstr ""
+msgstr "Synkroniser notificationer"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
 msgid "Control media players"
@@ -73,11 +73,11 @@ msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:47
 msgid "And more…"
-msgstr ""
+msgstr "Og mere…"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:64
 msgid "GSConnect in GNOME Shell"
-msgstr ""
+msgstr "GSConnect i GNOME Shell"
 
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/connect-dialog.ui:13 data/ui/preferences-window.ui:719
@@ -122,7 +122,7 @@ msgstr "Indtast et telefonnummer eller navn"
 #. TRANSLATORS: All other phone number types
 #: data/ui/contacts-address-row.ui:64 src/service/ui/contacts.js:144
 msgid "Other"
-msgstr ""
+msgstr "Andre"
 
 #. TRANSLATORS: Share URL by SMS
 #: data/ui/legacy-messaging-dialog.ui:8 src/service/daemon.js:631
@@ -182,7 +182,7 @@ msgstr "Vælg eller start en samtale"
 
 #: data/ui/preferences-command-editor.ui:7
 msgid "Edit Command"
-msgstr ""
+msgstr "Rediger Kommando"
 
 #: data/ui/preferences-command-editor.ui:21
 msgid "Save"
@@ -239,7 +239,7 @@ msgstr "Modtag Filer"
 
 #: data/ui/preferences-device-panel.ui:490
 msgid "Save files to"
-msgstr ""
+msgstr "Gem filer til"
 
 #: data/ui/preferences-device-panel.ui:551
 #: data/ui/preferences-device-panel.ui:2075
@@ -281,7 +281,7 @@ msgstr "Kommandoer"
 
 #: data/ui/preferences-device-panel.ui:938
 msgid "Add Command"
-msgstr ""
+msgstr "Tilføj Kommando"
 
 #: data/ui/preferences-device-panel.ui:1025
 msgid "Share Notifications"
