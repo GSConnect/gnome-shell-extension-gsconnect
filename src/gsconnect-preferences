@@ -45,7 +45,7 @@ const Preferences = GObject.registerClass({
             resource_base_path: '/org/gnome/Shell/Extensions/GSConnect'
         });
 
-        GLib.set_prgname(_('GSConnect Preferences'));
+        GLib.set_prgname('gsconnect-preferences');
         GLib.set_application_name(_('GSConnect Preferences'));
     }
 
