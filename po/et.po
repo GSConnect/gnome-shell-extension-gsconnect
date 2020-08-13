@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-08-12 20:58-0700\n"
-"PO-Revision-Date: 2020-08-13 04:05\n"
+"PO-Revision-Date: 2020-08-13 16:08\n"
 "Last-Translator: \n"
 "Language-Team: Estonian\n"
 "Language: et_EE\n"
@@ -25,11 +25,11 @@ msgstr "GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:6
 msgid "KDE Connect implementation for GNOME"
-msgstr ""
+msgstr "KDE Connect'i teostus GNOMEle"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:16
 msgid "GSConnect Team"
-msgstr ""
+msgstr "GSConnecti meeskond"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:32
 msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, macOS and Windows."
@@ -77,7 +77,7 @@ msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:64
 msgid "GSConnect in GNOME Shell"
-msgstr ""
+msgstr "GSConnect GNOME Shellis"
 
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/connect-dialog.ui:13 data/ui/preferences-window.ui:719
@@ -239,7 +239,7 @@ msgstr "Võta faile vastu"
 
 #: data/ui/preferences-device-panel.ui:490
 msgid "Save files to"
-msgstr ""
+msgstr "Salvesta failid asukohta"
 
 #: data/ui/preferences-device-panel.ui:551
 #: data/ui/preferences-device-panel.ui:2075
@@ -281,7 +281,7 @@ msgstr "Käsklused"
 
 #: data/ui/preferences-device-panel.ui:938
 msgid "Add Command"
-msgstr ""
+msgstr "Lisa käsklus"
 
 #: data/ui/preferences-device-panel.ui:1025
 msgid "Share Notifications"
@@ -375,7 +375,7 @@ msgstr "Klaviatuuriotseteed"
 
 #: data/ui/preferences-device-panel.ui:2369
 msgid "Device Settings"
-msgstr ""
+msgstr "Seadme seaded"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/ui/preferences-device-panel.ui:2413
@@ -465,11 +465,11 @@ msgstr "Mobiiliseaded"
 
 #: data/ui/preferences-window.ui:159
 msgid "Service Menu"
-msgstr ""
+msgstr "Teenusemenüü"
 
 #: data/ui/preferences-window.ui:182
 msgid "Device Menu"
-msgstr ""
+msgstr "Seadmemenüü"
 
 #: data/ui/preferences-window.ui:196 data/ui/preferences-window.ui:211
 msgid "Edit Device Name"
@@ -537,7 +537,7 @@ msgstr "Seadet ei leitud"
 
 #: data/ui/service-device-chooser.ui:111
 msgid "Device List"
-msgstr ""
+msgstr "Seadmete loend"
 
 #: data/ui/service-error-dialog.ui:24 data/ui/service-error-dialog.ui:28
 msgid "Report"
@@ -833,7 +833,7 @@ msgstr "MPRIS"
 
 #: src/service/plugins/mpris.js:260 src/service/plugins/mpris.js:261
 msgid "Unknown"
-msgstr ""
+msgstr "Teadmata"
 
 #: src/service/plugins/notification.js:28
 msgid "Cancel Notification"
@@ -1023,7 +1023,7 @@ msgstr "Väljuv kõne"
 
 #: src/service/protocol/lan.js:153
 msgid "OpenSSL not found"
-msgstr ""
+msgstr "OpenSSLi ei leitud"
 
 #: src/service/protocol/lan.js:290
 msgid "Network Error"
