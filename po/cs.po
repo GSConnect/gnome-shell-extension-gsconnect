@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-08-12 20:58-0700\n"
-"PO-Revision-Date: 2020-08-13 04:05\n"
+"PO-Revision-Date: 2020-08-13 04:35\n"
 "Last-Translator: \n"
 "Language-Team: Czech\n"
 "Language: cs_CZ\n"
@@ -25,15 +25,15 @@ msgstr "GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:6
 msgid "KDE Connect implementation for GNOME"
-msgstr ""
+msgstr "Implementace KDE Connect pro GNOME"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:16
 msgid "GSConnect Team"
-msgstr ""
+msgstr "Kolektiv GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:32
 msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, macOS and Windows."
-msgstr ""
+msgstr "GSConnect je kompletní implementace nástroje KDE Connect, určená zejména pro prostředí GNOME Shell s napojením pro správce souborů Nautilus a dále pro webové prohlížeče Chrome a Firefox. Tým KDE Connect má aplikace pro systémy Linux, BSD, Android, Sailfish, macOS a Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:35
 msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
@@ -53,11 +53,11 @@ msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:42
 msgid "Sync contacts"
-msgstr ""
+msgstr "Synchronizovat kontakty"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:43
 msgid "Sync notifications"
-msgstr ""
+msgstr "Synchronizovat oznámení"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
 msgid "Control media players"
@@ -69,15 +69,15 @@ msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:46
 msgid "Execute predefined commands"
-msgstr ""
+msgstr "Spustit předpřipravené příkazy"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:47
 msgid "And more…"
-msgstr ""
+msgstr "A další…"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:64
 msgid "GSConnect in GNOME Shell"
-msgstr ""
+msgstr "GSConnect v GNOME Shell"
 
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/connect-dialog.ui:13 data/ui/preferences-window.ui:719
@@ -152,11 +152,11 @@ msgstr "Napsat zprávu"
 
 #: data/ui/messaging-conversation.ui:92
 msgid "Message Entry"
-msgstr ""
+msgstr "Zadání zprávy"
 
 #: data/ui/messaging-conversation.ui:93
 msgid "Type a message and press Enter to send"
-msgstr ""
+msgstr "Napište zprávu a stisknutím klávesy Enter ji odešlete"
 
 #: data/ui/messaging-window.ui:14 src/service/plugins/sms.js:26
 #: src/service/ui/messaging.js:1045
@@ -182,7 +182,7 @@ msgstr "Vybrat nebo zahájit konverzaci"
 
 #: data/ui/preferences-command-editor.ui:7
 msgid "Edit Command"
-msgstr ""
+msgstr "Upravit příkaz"
 
 #: data/ui/preferences-command-editor.ui:21
 msgid "Save"
@@ -239,7 +239,7 @@ msgstr "Přijmout soubory"
 
 #: data/ui/preferences-device-panel.ui:490
 msgid "Save files to"
-msgstr ""
+msgstr "Uložit soubory do"
 
 #: data/ui/preferences-device-panel.ui:551
 #: data/ui/preferences-device-panel.ui:2075
@@ -281,7 +281,7 @@ msgstr "Příkazy"
 
 #: data/ui/preferences-device-panel.ui:938
 msgid "Add Command"
-msgstr ""
+msgstr "Přidat příkaz"
 
 #: data/ui/preferences-device-panel.ui:1025
 msgid "Share Notifications"
@@ -375,7 +375,7 @@ msgstr "Klávesové zkratky"
 
 #: data/ui/preferences-device-panel.ui:2369
 msgid "Device Settings"
-msgstr ""
+msgstr "Nastavení zařízení"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/ui/preferences-device-panel.ui:2413
@@ -465,11 +465,11 @@ msgstr "Nastavení telefonu"
 
 #: data/ui/preferences-window.ui:159
 msgid "Service Menu"
-msgstr ""
+msgstr "Nabídka služeb"
 
 #: data/ui/preferences-window.ui:182
 msgid "Device Menu"
-msgstr ""
+msgstr "Nabídka zařízení"
 
 #: data/ui/preferences-window.ui:196 data/ui/preferences-window.ui:211
 msgid "Edit Device Name"
@@ -537,7 +537,7 @@ msgstr "Nenalezeno žádné zařízení"
 
 #: data/ui/service-device-chooser.ui:111
 msgid "Device List"
-msgstr ""
+msgstr "Seznam zařízení"
 
 #: data/ui/service-error-dialog.ui:24 data/ui/service-error-dialog.ui:28
 msgid "Report"
@@ -827,7 +827,7 @@ msgstr "Klávesnice"
 #: src/service/plugins/mousepad.js:416
 #, javascript-format
 msgid "Remote keyboard on %s is not active"
-msgstr ""
+msgstr "Vzdálená klávesnice není na %s aktivní"
 
 #: src/service/plugins/mpris.js:13
 msgid "MPRIS"
@@ -835,7 +835,7 @@ msgstr "MPRIS"
 
 #: src/service/plugins/mpris.js:260 src/service/plugins/mpris.js:261
 msgid "Unknown"
-msgstr ""
+msgstr "Neznámé"
 
 #: src/service/plugins/notification.js:28
 msgid "Cancel Notification"
@@ -1025,7 +1025,7 @@ msgstr "Probíhající hovor"
 
 #: src/service/protocol/lan.js:153
 msgid "OpenSSL not found"
-msgstr ""
+msgstr "OpenSSL nebylo nalezeno"
 
 #: src/service/protocol/lan.js:290
 msgid "Network Error"
