@@ -342,7 +342,7 @@ var Store = GObject.registerClass({
     }
 
     *[Symbol.iterator]() {
-        let contacts = this.contacts;
+        let contacts = Object.values(this._cacheData);
 
         for (let i = 0, len = contacts.length; i < len; i++)
             yield contacts[i];
@@ -549,7 +549,6 @@ var Store = GObject.registerClass({
 
             for (let i = 0, len = contacts.length; i < len; i++) 
                 await this.remove(contacts[i].id, false);
-            
 
             await this.save();
         } catch (e) {
@@ -572,7 +571,6 @@ var Store = GObject.registerClass({
 
                 if (!contact || new_contact.timestamp !== contact.timestamp) 
                     await this.add(new_contact, false);
-                
             }
 
             // Prune contacts
@@ -583,7 +581,6 @@ var Store = GObject.registerClass({
 
                 if (!json[contact.id]) 
                     await this.remove(contact.id, false);
-                
             }
 
             await this.save();
