@@ -435,7 +435,8 @@ const Service = GObject.registerClass({
                     this.components.set(name, component);
                 }
             } catch (e) {
-                logError(e, `'${name}' Component`);
+                e.name = `'${name}' Component`;
+                this.notify_error(e);
             }
         }
     }
