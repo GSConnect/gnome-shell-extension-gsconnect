@@ -25,7 +25,6 @@ Gtk.Window.prototype.restoreGeometry = function(context = 'default') {
 
     if (width && height) 
         this.set_default_size(width, height);
-    
 
     // Maximized State
     if (this._windowState.get_boolean('window-maximized')) 

@@ -620,7 +620,6 @@ const Conversation = GObject.registerClass({
         if (pos === Gtk.PositionType.BOTTOM)
             vpos = this._vadj.get_upper() - this._vadj.get_page_size();
 
-
         if (animate) {
             Tweener.addTween(this._vadj, {
                 value: vpos,
@@ -1055,7 +1054,6 @@ var Window = GObject.registerClass({
         if (this.visible)
             this.thread_list.foreach(row => row.update());
 
-
         return GLib.SOURCE_CONTINUE;
     }
 
@@ -1088,7 +1086,6 @@ var Window = GObject.registerClass({
         for (let address of Object.keys(contacts))
             addresses.push({address: address});
 
-
         // Try to find a thread ID for this address group
         let thread_id = this.plugin.getThreadIdForAddresses(addresses);
 
@@ -1096,7 +1093,6 @@ var Window = GObject.registerClass({
             thread_id = GLib.uuid_string_random();
         else
             thread_id = thread_id.toString();
-
 
         // Try to find a thread row for the ID
         let row = this._getRowForContacts(contacts);
@@ -1162,7 +1158,6 @@ var Window = GObject.registerClass({
         if (conversation !== null)
             return conversation;
 
-
         // Try and find one by matching addresses, which is necessary if we've
         // started a thread locally and haven't set the thread_id
         let addresses = message.addresses;
@@ -1171,7 +1166,6 @@ var Window = GObject.registerClass({
             if (conversation.addresses === undefined ||
                 conversation.addresses.length !== addresses.length)
                 continue;
-
 
             let caddrs = conversation.addresses;
 

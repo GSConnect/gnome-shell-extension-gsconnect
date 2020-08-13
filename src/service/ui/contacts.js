@@ -411,7 +411,6 @@ var ContactChooser = GObject.registerClass({
     get store() {
         if (this._store === undefined) 
             this._store = null;
-        
 
         return this._store;
     }
@@ -626,7 +625,6 @@ var ContactChooser = GObject.registerClass({
 
             for (let row of this.list.get_selected_rows()) 
                 selected[row.number.value] = row.contact;
-            
 
             return selected;
         } catch (e) {

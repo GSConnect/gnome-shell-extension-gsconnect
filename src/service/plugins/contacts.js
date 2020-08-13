@@ -194,7 +194,6 @@ var Plugin = GObject.registerClass({
 
                 for (let ai = 1; ai < seqlen; ++ai) 
                     c1 = ((c1 << 0x06) | (input.charCodeAt(ai + i) & 0x3F));
-                
 
                 if (seqlen === 4) {
                     c1 -= 0x10000;
@@ -328,7 +327,6 @@ var Plugin = GObject.registerClass({
 
                 if (entry.meta && entry.meta.type) 
                     type = entry.meta.type;
-                
 
                 return {type: type, value: entry.value[0]};
             });

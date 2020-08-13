@@ -64,7 +64,6 @@ var Plugin = GObject.registerClass({
     get charging() {
         if (this._charging === undefined) 
             this._charging = false;
-        
 
         return this._charging;
     }
@@ -86,7 +85,6 @@ var Plugin = GObject.registerClass({
             icon = 'battery-good';
         else if (this.level >= 60) 
             icon = 'battery-full';
-        
 
         if (this.charging)
             return `${icon}-charging-symbolic`;

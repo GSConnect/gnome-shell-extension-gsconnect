@@ -258,7 +258,6 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
             // A regular item
             if (info.hasOwnProperty('label')) 
                 item = this._addGMenuItem(info);
-            
 
             for (let link of info.links) {
                 // Submenu
@@ -611,12 +610,10 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
             // If it has a submenu, add it as a sibling
             if (button.submenu) 
                 this.sub.add_child(button.submenu.actor);
-            
 
             // Track the item if it has an action
             if (button.action_name !== undefined) 
                 this._menu_items.set(button.action_name, button);
-            
 
             // Insert it in the box at the defined position
             this.box.insert_child_at_index(button, index);

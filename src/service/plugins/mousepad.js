@@ -593,7 +593,6 @@ var KeyboardInputDialog = GObject.registerClass({
             this._grab();
         else 
             this._ungrab();
-        
 
         return super.vfunc_window_state_event(event);
     }

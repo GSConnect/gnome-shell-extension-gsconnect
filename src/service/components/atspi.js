@@ -211,7 +211,6 @@ var Controller = class {
         try {
             if (modifiers > 0) 
                 log('GSConnect: ignoring modifiers for unicode keyboard event');
-            
 
             // TODO: Using Control and Shift keysym is not working (it triggers
             // key release). Probably using LOCKMODIFIERS will not work either

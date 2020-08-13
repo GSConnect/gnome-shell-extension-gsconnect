@@ -47,7 +47,6 @@ var Sound = class Sound {
     get playing() {
         if (this._playing === undefined) 
             this._playing = new Set();
-        
 
         return this._playing;
     }
@@ -97,7 +96,6 @@ var Sound = class Sound {
     _gdkPlaySound(name, cancellable) {
         if (this._display === undefined) 
             this._display = Gdk.Display.get_default();
-        
 
         let count = 0;
 
@@ -131,7 +129,6 @@ var Sound = class Sound {
         try {
             if (!(cancellable instanceof Gio.Cancellable)) 
                 cancellable = new Gio.Cancellable();
-            
 
             this.playing.add(cancellable);
 
@@ -159,7 +156,6 @@ var Sound = class Sound {
         try {
             if (!(cancellable instanceof Gio.Cancellable)) 
                 cancellable = new Gio.Cancellable();
-            
 
             this.playing.add(cancellable);
 

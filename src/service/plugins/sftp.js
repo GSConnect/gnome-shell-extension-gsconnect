@@ -342,7 +342,6 @@ var Plugin = GObject.registerClass({
 
             for (let [name, uri] of Object.entries(this.info.directories)) 
                 dirSection.append(name, `device.openPath::${uri}`);
-            
 
             // Unmount Section
             let unmountSection = this._getUnmountSection();
@@ -407,7 +406,6 @@ var Plugin = GObject.registerClass({
                 safe_device_name = '·';
             else if (safe_device_name === '..') 
                 safe_device_name = '··';
-            
 
             let link_target = mount.get_root().get_path();
             let link = Gio.File.new_for_path(
@@ -478,7 +476,6 @@ var Plugin = GObject.registerClass({
         try {
             if (this.info.mount === null) 
                 return;
-            
 
             let mount = this.info.mount;
 

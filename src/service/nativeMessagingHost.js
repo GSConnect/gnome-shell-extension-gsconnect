@@ -124,7 +124,6 @@ const NativeMessagingHost = GObject.registerClass({
                         actionName = 'shareUri';
                     else if (message.data.action === 'telephony') 
                         actionName = 'shareSms';
-                    
 
                     device.actions.activate_action(
                         actionName,
