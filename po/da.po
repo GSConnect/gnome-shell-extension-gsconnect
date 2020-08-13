@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-08-12 20:58-0700\n"
-"PO-Revision-Date: 2020-08-13 04:05\n"
+"PO-Revision-Date: 2020-08-13 17:35\n"
 "Last-Translator: \n"
 "Language-Team: Danish\n"
 "Language: da_DK\n"
@@ -29,7 +29,7 @@ msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:16
 msgid "GSConnect Team"
-msgstr ""
+msgstr "GSConnect hold"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:32
 msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, macOS and Windows."
@@ -45,7 +45,7 @@ msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:40
 msgid "Send and receive messages"
-msgstr ""
+msgstr "Send og modtag beskeder"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
 msgid "Sync clipboard content"
@@ -53,7 +53,7 @@ msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:42
 msgid "Sync contacts"
-msgstr ""
+msgstr "Synkroniser kontakter"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:43
 msgid "Sync notifications"
@@ -833,7 +833,7 @@ msgstr "MPRIS"
 
 #: src/service/plugins/mpris.js:260 src/service/plugins/mpris.js:261
 msgid "Unknown"
-msgstr ""
+msgstr "Ukendt"
 
 #: src/service/plugins/notification.js:28
 msgid "Cancel Notification"
@@ -1023,7 +1023,7 @@ msgstr "Igangværende Opkald"
 
 #: src/service/protocol/lan.js:153
 msgid "OpenSSL not found"
-msgstr ""
+msgstr "OpenSSL ikke fundet"
 
 #: src/service/protocol/lan.js:290
 msgid "Network Error"
@@ -1032,22 +1032,22 @@ msgstr "Netværks Fejl"
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:129
 msgid "Fax"
-msgstr ""
+msgstr "Fax"
 
 #. TRANSLATORS: A work or office phone number
 #: src/service/ui/contacts.js:133
 msgid "Work"
-msgstr ""
+msgstr "Arbejde"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:137
 msgid "Mobile"
-msgstr ""
+msgstr "Mobil"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:141
 msgid "Home"
-msgstr ""
+msgstr "Hjem"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #. Update UI
