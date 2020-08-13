@@ -332,16 +332,23 @@ const AddressRow = GObject.registerClass({
 
         if (this._index === 0) {
             this.avatar.contact = contact;
-            this.avatar.visible = !!contact;
+            this.avatar.visible = true;
 
             this.name_label.label = GLib.markup_escape_text(contact.name, -1);
-            this.name_label.visible = !!contact;
+            this.name_label.visible = true;
+
+            this.address_label.margin_start = 0;
+            this.address_label.margin_end = 0;
+        } else {
+            this.avatar.visible = false;
+            this.name_label.visible = false;
+
+            // TODO: rtl inverts margin-start so the number don't align
+            this.address_label.margin_start = 38;
+            this.address_label.margin_end = 38;
         }
 
-        // TODO: rtl inverts margin-start so the number don't align
-        this.address_label.label = this.number.value;
-        this.address_label.margin_start = (this._index > 0) ? 38 : 0;
-        this.address_label.margin_end = (this._index > 0) ? 38 : 0;
+        this.address_label.label = GLib.markup_escape_text(this.number.value, -1);
 
         if (this.number.type !== undefined)
             this.type_label.label = getNumberTypeLabel(this.number.type);
