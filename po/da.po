@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-08-12 20:58-0700\n"
-"PO-Revision-Date: 2020-08-13 17:55\n"
+"PO-Revision-Date: 2020-08-13 18:05\n"
 "Last-Translator: \n"
 "Language-Team: Danish\n"
 "Language: da_DK\n"
@@ -655,7 +655,7 @@ msgstr "Venter på service…"
 
 #: src/service/daemon.js:122
 msgid "Discovery has been disabled due to the number of devices on this network."
-msgstr "Discovery er deaktiveret på grund af antallet af enheder på dette netværk."
+msgstr "Opdagelse er deaktiveret på grund af antallet af enheder på dette netværk."
 
 #: src/service/daemon.js:528
 msgid "Click for help troubleshooting"
