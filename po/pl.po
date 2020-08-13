@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-08-12 20:58-0700\n"
-"PO-Revision-Date: 2020-08-13 15:03\n"
+"PO-Revision-Date: 2020-08-13 15:11\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "Language: pl_PL\n"
@@ -152,11 +152,11 @@ msgstr "Napisz wiadomość"
 
 #: data/ui/messaging-conversation.ui:92
 msgid "Message Entry"
-msgstr ""
+msgstr "Pole wpisywania wiadomości"
 
 #: data/ui/messaging-conversation.ui:93
 msgid "Type a message and press Enter to send"
-msgstr ""
+msgstr "Proszę wpisać wiadomość i nacisnąć klawisz Enter, aby ją wysłać"
 
 #: data/ui/messaging-window.ui:14 src/service/plugins/sms.js:26
 #: src/service/ui/messaging.js:1045
@@ -182,7 +182,7 @@ msgstr "Wybierz lub rozpocznij rozmowę"
 
 #: data/ui/preferences-command-editor.ui:7
 msgid "Edit Command"
-msgstr ""
+msgstr "Modyfikacja polecenia"
 
 #: data/ui/preferences-command-editor.ui:21
 msgid "Save"
@@ -239,7 +239,7 @@ msgstr "Odbieranie plików"
 
 #: data/ui/preferences-device-panel.ui:490
 msgid "Save files to"
-msgstr ""
+msgstr "Zapisywanie plików w"
 
 #: data/ui/preferences-device-panel.ui:551
 #: data/ui/preferences-device-panel.ui:2075
@@ -281,7 +281,7 @@ msgstr "Polecenia"
 
 #: data/ui/preferences-device-panel.ui:938
 msgid "Add Command"
-msgstr ""
+msgstr "Dodaj polecenie"
 
 #: data/ui/preferences-device-panel.ui:1025
 msgid "Share Notifications"
@@ -375,7 +375,7 @@ msgstr "Skróty klawiszowe"
 
 #: data/ui/preferences-device-panel.ui:2369
 msgid "Device Settings"
-msgstr ""
+msgstr "Ustawienia urządzenia"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/ui/preferences-device-panel.ui:2413
@@ -465,11 +465,11 @@ msgstr "Ustawienia urządzeń mobilnych"
 
 #: data/ui/preferences-window.ui:159
 msgid "Service Menu"
-msgstr ""
+msgstr "Menu usługi"
 
 #: data/ui/preferences-window.ui:182
 msgid "Device Menu"
-msgstr ""
+msgstr "Menu urządzenia"
 
 #: data/ui/preferences-window.ui:196 data/ui/preferences-window.ui:211
 msgid "Edit Device Name"
@@ -537,7 +537,7 @@ msgstr "Nie odnaleziono żadnego urządzenia"
 
 #: data/ui/service-device-chooser.ui:111
 msgid "Device List"
-msgstr ""
+msgstr "Lista urządzeń"
 
 #: data/ui/service-error-dialog.ui:24 data/ui/service-error-dialog.ui:28
 msgid "Report"
@@ -829,7 +829,7 @@ msgstr "Klawiatura"
 #: src/service/plugins/mousepad.js:416
 #, javascript-format
 msgid "Remote keyboard on %s is not active"
-msgstr ""
+msgstr "Zdalna klawiatura na urządzeniu %s nie jest aktywna"
 
 #: src/service/plugins/mpris.js:13
 msgid "MPRIS"
@@ -837,7 +837,7 @@ msgstr "MPRIS"
 
 #: src/service/plugins/mpris.js:260 src/service/plugins/mpris.js:261
 msgid "Unknown"
-msgstr ""
+msgstr "Nieznany"
 
 #: src/service/plugins/notification.js:28
 msgid "Cancel Notification"
@@ -1027,7 +1027,7 @@ msgstr "Trwające połączenie"
 
 #: src/service/protocol/lan.js:153
 msgid "OpenSSL not found"
-msgstr ""
+msgstr "Nie odnaleziono biblioteki OpenSSL"
 
 #: src/service/protocol/lan.js:290
 msgid "Network Error"
