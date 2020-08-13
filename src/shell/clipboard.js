@@ -239,9 +239,8 @@ function watchService() {
         'org.gnome.Shell.Extensions.GSConnect',
         Gio.BusNameWatcherFlags.NONE,
         () => {
-            if (_portal === null) 
+            if (_portal === null)
                 _portal = new Clipboard();
-            
         },
         () => {
             if (_portal !== null) {

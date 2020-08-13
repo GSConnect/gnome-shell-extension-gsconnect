@@ -1135,7 +1135,6 @@ var Window = GObject.registerClass({
 
             if (number.endsWith(tnumber) || tnumber.endsWith(number))
                 return true;
-
         }
 
         return false;
@@ -1196,7 +1195,6 @@ var Window = GObject.registerClass({
                 this._pendingShare = message;
             else
                 this.stack.visible_child.setMessage(message);
-
         } catch (e) {
             debug(e);
         }

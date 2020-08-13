@@ -186,11 +186,10 @@ var Avatar = GObject.registerClass({
 
     get rgba() {
         if (this._rgba === undefined) {
-            if (this.contact) 
+            if (this.contact)
                 this._rgba = randomRGBA(this.contact.name);
-            else 
+            else
                 this._rgba = randomRGBA(GLib.uuid_string_random());
-            
         }
 
         return this._rgba;
@@ -409,7 +408,7 @@ var ContactChooser = GObject.registerClass({
     }
 
     get store() {
-        if (this._store === undefined) 
+        if (this._store === undefined)
             this._store = null;
 
         return this._store;
@@ -623,7 +622,7 @@ var ContactChooser = GObject.registerClass({
         try {
             let selected = {};
 
-            for (let row of this.list.get_selected_rows()) 
+            for (let row of this.list.get_selected_rows())
                 selected[row.number.value] = row.contact;
 
             return selected;

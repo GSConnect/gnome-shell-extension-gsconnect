@@ -75,7 +75,7 @@ const Service = GObject.registerClass({
 
         GLib.set_prgname('GSConnect');
         GLib.set_application_name('GSConnect');
-        
+
         // Command-line
         this._initOptions();
     }
@@ -612,7 +612,7 @@ const Service = GObject.registerClass({
             connection: connection,
             object_path: object_path
         });
-        
+
         return true;
     }
 
@@ -684,7 +684,7 @@ const Service = GObject.registerClass({
         imports.system.gc();
         super.vfunc_shutdown();
     }
-    
+
     /*
      * CLI
      */
@@ -700,7 +700,7 @@ const Service = GObject.registerClass({
             _('List available devices'),
             null
         );
-        
+
         this.add_main_option(
             'list-all',
             'a'.charCodeAt(0),
@@ -709,7 +709,7 @@ const Service = GObject.registerClass({
             _('List all devices'),
             null
         );
-        
+
         this.add_main_option(
             'device',
             'd'.charCodeAt(0),
@@ -751,7 +751,7 @@ const Service = GObject.registerClass({
             _('Send SMS'),
             '<phone-number>'
         );
-        
+
         this.add_main_option(
             'message-body',
             0,
@@ -772,7 +772,7 @@ const Service = GObject.registerClass({
             _('Send Notification'),
             '<title>'
         );
-        
+
         this.add_main_option(
             'notification-appname',
             0,
@@ -817,7 +817,7 @@ const Service = GObject.registerClass({
             _('Photo'),
             null
         );
-        
+
         this.add_main_option(
             'ping',
             0,
@@ -826,7 +826,7 @@ const Service = GObject.registerClass({
             _('Ping'),
             null
         );
-        
+
         this.add_main_option(
             'ring',
             0,
@@ -865,7 +865,7 @@ const Service = GObject.registerClass({
             _('Share Text'),
             '<text>'
         );
-        
+
         /*
          * Misc
          */
@@ -899,7 +899,7 @@ const Service = GObject.registerClass({
             null
         );
     }
-    
+
     _cliListDevices(full = true) {
         let result = Gio.DBus.session.call_sync(
             'org.gnome.Shell.Extensions.GSConnect',
@@ -919,7 +919,7 @@ const Service = GObject.registerClass({
         for (let object of Object.values(variant)) {
             object = object.recursiveUnpack();
             device = object['org.gnome.Shell.Extensions.GSConnect.Device'];
-            
+
             if (full)
                 print(`${device.Id}\t${device.Name}\t${device.Connected}\t${device.Paired}`);
             else if (device.Connected && device.Paired)
@@ -980,7 +980,7 @@ const Service = GObject.registerClass({
 
         this._cliAction(id, 'sendNotification', notification);
     }
-    
+
     _cliShareFile(device, options) {
         let files = options.lookup_value('share-file', null).deepUnpack();
 
@@ -996,7 +996,7 @@ const Service = GObject.registerClass({
 
         uris.map(uri => {
             uri = imports.byteArray.toString(uri);
-            
+
             this._cliAction(device, 'shareUri', GLib.Variant.new_string(uri));
         });
     }

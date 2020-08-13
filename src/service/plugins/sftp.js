@@ -340,7 +340,7 @@ var Plugin = GObject.registerClass({
             // Directories Section
             let dirSection = new Gio.Menu();
 
-            for (let [name, uri] of Object.entries(this.info.directories)) 
+            for (let [name, uri] of Object.entries(this.info.directories))
                 dirSection.append(name, `device.openPath::${uri}`);
 
             // Unmount Section
@@ -402,9 +402,9 @@ var Plugin = GObject.registerClass({
             // Replace path separator with a Unicode lookalike:
             let safe_device_name = this.device.name.replace('/', '∕');
 
-            if (safe_device_name === '.') 
+            if (safe_device_name === '.')
                 safe_device_name = '·';
-            else if (safe_device_name === '..') 
+            else if (safe_device_name === '..')
                 safe_device_name = '··';
 
             let link_target = mount.get_root().get_path();
@@ -474,7 +474,7 @@ var Plugin = GObject.registerClass({
      */
     async unmount() {
         try {
-            if (this.info.mount === null) 
+            if (this.info.mount === null)
                 return;
 
             let mount = this.info.mount;

@@ -536,11 +536,10 @@ var Channel = GObject.registerClass({
 
     get port() {
         if (this._port === undefined) {
-            if (this.identity && this.identity.body.tcpPort) 
+            if (this.identity && this.identity.body.tcpPort)
                 this._port = this.identity.body.tcpPort;
-            else 
+            else
                 return DEFAULT_PORT;
-            
         }
 
         return this._port;

@@ -163,7 +163,7 @@ var Plugin = GObject.registerClass({
      * Decode a string encoded as "UTF-8" and return a regular string
      *
      * See: https://github.com/kvz/locutus/blob/master/src/php/xml/utf8_decode.js
-     * 
+     *
      * @param {string} input - The UTF-8 string
      * @return {string} The decoded string
      */
@@ -192,7 +192,7 @@ var Plugin = GObject.registerClass({
                     seqlen = 4;
                 }
 
-                for (let ai = 1; ai < seqlen; ++ai) 
+                for (let ai = 1; ai < seqlen; ++ai)
                     c1 = ((c1 << 0x06) | (input.charCodeAt(ai + i) & 0x3F));
 
                 if (seqlen === 4) {
@@ -267,11 +267,10 @@ var Plugin = GObject.registerClass({
                 for (let i = 0, len = type.length; i < len; i++) {
                     let res = type[i].match(VCARD_TYPED_META);
 
-                    if (res) 
+                    if (res)
                         meta[res[1]] = res[2];
-                    else 
+                    else
                         meta['type' + (i === 0 ? '' : i)] = type[i].toLowerCase();
-                    
                 }
 
                 // Value(s)
@@ -291,11 +290,10 @@ var Plugin = GObject.registerClass({
                 }
 
                 // Special case for FN (full name)
-                if (key === 'fn') 
+                if (key === 'fn')
                     vcard[key] = value[0];
-                else 
+                else
                     vcard[key].push({meta: meta, value: value});
-                
             }
         }
 
@@ -325,7 +323,7 @@ var Plugin = GObject.registerClass({
             contact.numbers = vcard.tel.map(entry => {
                 let type = 'unknown';
 
-                if (entry.meta && entry.meta.type) 
+                if (entry.meta && entry.meta.type)
                     type = entry.meta.type;
 
                 return {type: type, value: entry.value[0]};
@@ -358,36 +356,36 @@ var Plugin = GObject.registerClass({
                 origin: 'device',
                 timestamp: 0
             };
-            
+
             let evcard = EBookContacts.VCard.new_from_string(vcard_data);
             let attrs = evcard.get_attributes();
-            
+
             for (let i = 0, len = attrs.length; i < len; i++) {
                 let attr = attrs[i];
                 let data, number;
-                
+
                 switch (attr.get_name().toLowerCase()) {
                     case 'fn':
                         contact.name = attr.get_value();
                         break;
-                        
+
                     case 'tel':
                         number = {value: attr.get_value(), type: 'unknown'};
-                        
+
                         if (attr.has_type('CELL'))
                             number.type = 'cell';
                         else if (attr.has_type('HOME'))
                             number.type = 'home';
                         else if (attr.has_type('WORK'))
                             number.type = 'work';
-                        
+
                         contact.numbers.push (number);
                         break;
-                        
+
                     case 'x-kdeconnect-timestamp':
                         contact.timestamp = parseInt(attr.get_value());
                         break;
-                        
+
                     case 'photo':
                         data = GLib.base64_decode(attr.get_value());
                         contact.avatar = await this._store.storeAvatar(data);

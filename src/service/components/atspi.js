@@ -123,11 +123,10 @@ var Controller = class {
     }
 
     scrollPointer(dx, dy) {
-        if (dy > 0) 
+        if (dy > 0)
             this.clickPointer(4);
-        else if (dy < 0) 
+        else if (dy < 0)
             this.clickPointer(5);
-        
     }
 
     /**
@@ -209,7 +208,7 @@ var Controller = class {
      */
     _pressUnicode(key, modifiers) {
         try {
-            if (modifiers > 0) 
+            if (modifiers > 0)
                 log('GSConnect: ignoring modifiers for unicode keyboard event');
 
             // TODO: Using Control and Shift keysym is not working (it triggers
@@ -270,17 +269,16 @@ var Controller = class {
 
     pressKey(input, modifiers) {
         // We were passed a keysym
-        if (typeof input === 'number') 
+        if (typeof input === 'number')
             this._pressKeysym(input, modifiers);
 
         // Regular ASCII
-        else if (_ASCII.test(input)) 
+        else if (_ASCII.test(input))
             this._pressASCII(input, modifiers);
 
         // Unicode
-        else 
+        else
             this._pressUnicode(input, modifiers);
-        
     }
 
     destroy() {

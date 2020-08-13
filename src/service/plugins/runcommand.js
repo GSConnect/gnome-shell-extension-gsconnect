@@ -60,7 +60,7 @@ var Plugin = GObject.registerClass({
 
     _init(device) {
         super._init(device, 'runcommand');
-        
+
         // Local Commands
         this._commandListChangedId = this.settings.connect(
             'changed::command-list',
@@ -132,7 +132,7 @@ var Plugin = GObject.registerClass({
                     message: `Unknown command: ${key}`
                 });
             }
-            
+
             this.device.launchProcess([
                 '/bin/sh',
                 '-c',

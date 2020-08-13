@@ -62,7 +62,7 @@ var Plugin = GObject.registerClass({
     }
 
     get charging() {
-        if (this._charging === undefined) 
+        if (this._charging === undefined)
             this._charging = false;
 
         return this._charging;
@@ -71,19 +71,19 @@ var Plugin = GObject.registerClass({
     get icon_name() {
         let icon;
 
-        if (this.level === -1) 
+        if (this.level === -1)
             return 'battery-missing-symbolic';
-        else if (this.level === 100) 
+        else if (this.level === 100)
             return 'battery-full-charged-symbolic';
-        else if (this.level < 3) 
+        else if (this.level < 3)
             icon = 'battery-empty';
-        else if (this.level < 10) 
+        else if (this.level < 10)
             icon = 'battery-caution';
-        else if (this.level < 30) 
+        else if (this.level < 30)
             icon = 'battery-low';
-        else if (this.level < 60) 
+        else if (this.level < 60)
             icon = 'battery-good';
-        else if (this.level >= 60) 
+        else if (this.level >= 60)
             icon = 'battery-full';
 
         if (this.charging)

@@ -94,7 +94,7 @@ var Clipboard = GObject.registerClass({
 
     _init() {
         super._init();
-        
+
         try {
             this._clipboard = null;
 
@@ -107,12 +107,12 @@ var Clipboard = GObject.registerClass({
                     this._onNameAppeared.bind(this),
                     this._onNameVanished.bind(this)
                 );
-                
+
             // If we're in X11/Xorg we're just a wrapper around GtkClipboard
             } else {
                 let display = Gdk.Display.get_default();
                 this._clipboard = Gtk.Clipboard.get_default(display);
-                
+
                 this._ownerChangeId = this._clipboard.connect(
                     'owner-change',
                     this._onOwnerChange.bind(this)
@@ -123,7 +123,7 @@ var Clipboard = GObject.registerClass({
             throw e;
         }
     }
-    
+
     get text() {
         if (this._text === undefined)
             this._text = '';
@@ -208,7 +208,7 @@ var Clipboard = GObject.registerClass({
             this._nameWatcherId = 0;
             this._clipboard = null;
         }
-        
+
         if (this._ownerChangeId) {
             this._clipboard.disconnect(this._ownerChangeId);
             this._ownerChangedId = 0;

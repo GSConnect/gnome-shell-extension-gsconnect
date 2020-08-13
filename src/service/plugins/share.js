@@ -271,11 +271,10 @@ var Plugin = GObject.registerClass({
         try {
             let file = null;
 
-            if (path.includes('://')) 
+            if (path.includes('://'))
                 file = Gio.File.new_for_uri(path);
-            else 
+            else
                 file = Gio.File.new_for_path(path);
-            
 
             let read = new Promise((resolve, reject) => {
                 file.read_async(GLib.PRIORITY_DEFAULT, null, (file, res) => {
@@ -498,9 +497,8 @@ var FileChooserDialog = GObject.registerClass({
     }
 
     _sendLink(widget) {
-        if (this._uriButton.active && this._uriEntry.text.length) 
+        if (this._uriButton.active && this._uriEntry.text.length)
             this.response(1);
-        
     }
 
     vfunc_response(response_id) {

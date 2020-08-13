@@ -113,9 +113,8 @@ var Plugin = GObject.registerClass({
             let info = this._info.actions[action.name];
 
             if (info.incoming.every(type => outgoing.includes(type)) &&
-                info.outgoing.every(type => incoming.includes(type))) 
+                info.outgoing.every(type => incoming.includes(type)))
                 action.set_enabled(true);
-            
         }
     }
 

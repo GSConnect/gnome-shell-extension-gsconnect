@@ -70,9 +70,8 @@ const NativeMessagingHost = GObject.registerClass({
 
         // Add currently managed devices
         for (let object of this._manager.get_objects()) {
-            for (let iface of object.get_interfaces()) 
+            for (let iface of object.get_interfaces())
                 this._onInterfaceAdded(this._manager, object, iface);
-            
         }
 
         // Watch for new and removed devices
@@ -120,9 +119,9 @@ const NativeMessagingHost = GObject.registerClass({
                 let device = this.devices[message.data.device];
 
                 if (device) {
-                    if (message.data.action === 'share') 
+                    if (message.data.action === 'share')
                         actionName = 'shareUri';
-                    else if (message.data.action === 'telephony') 
+                    else if (message.data.action === 'telephony')
                         actionName = 'shareSms';
 
                     device.actions.activate_action(

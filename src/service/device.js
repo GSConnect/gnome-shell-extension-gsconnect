@@ -300,9 +300,8 @@ var Device = GObject.registerClass({
 
             // If we can handle packets it sends or send packets it can handle
             if (meta.incomingCapabilities.some(t => outgoing.includes(t)) ||
-                meta.outgoingCapabilities.some(t => incoming.includes(t))) 
+                meta.outgoingCapabilities.some(t => incoming.includes(t)))
                 supported.push(name);
-            
         }
 
         // Only write GSettings if something has changed

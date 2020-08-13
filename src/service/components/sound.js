@@ -45,7 +45,7 @@ var Sound = class Sound {
     }
 
     get playing() {
-        if (this._playing === undefined) 
+        if (this._playing === undefined)
             this._playing = new Set();
 
         return this._playing;
@@ -66,9 +66,8 @@ var Sound = class Sound {
     }
 
     async _canberraLoopSound(name, cancellable) {
-        while (!cancellable.is_cancelled()) 
+        while (!cancellable.is_cancelled())
             await this._canberraPlaySound(name, cancellable);
-        
     }
 
     _gsoundPlaySound(name, cancellable) {
@@ -88,13 +87,12 @@ var Sound = class Sound {
     }
 
     async _gsoundLoopSound(name, cancellable) {
-        while (!cancellable.is_cancelled()) 
+        while (!cancellable.is_cancelled())
             await this._gsoundPlaySound(name, cancellable);
-        
     }
 
     _gdkPlaySound(name, cancellable) {
-        if (this._display === undefined) 
+        if (this._display === undefined)
             this._display = Gdk.Display.get_default();
 
         let count = 0;
@@ -127,7 +125,7 @@ var Sound = class Sound {
 
     async playSound(name, cancellable) {
         try {
-            if (!(cancellable instanceof Gio.Cancellable)) 
+            if (!(cancellable instanceof Gio.Cancellable))
                 cancellable = new Gio.Cancellable();
 
             this.playing.add(cancellable);
@@ -154,7 +152,7 @@ var Sound = class Sound {
 
     async loopSound(name, cancellable) {
         try {
-            if (!(cancellable instanceof Gio.Cancellable)) 
+            if (!(cancellable instanceof Gio.Cancellable))
                 cancellable = new Gio.Cancellable();
 
             this.playing.add(cancellable);
@@ -180,9 +178,8 @@ var Sound = class Sound {
     }
 
     destroy() {
-        for (let cancellable of this.playing) 
+        for (let cancellable of this.playing)
             cancellable.cancel();
-        
     }
 };
 

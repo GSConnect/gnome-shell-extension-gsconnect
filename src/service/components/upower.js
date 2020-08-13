@@ -43,11 +43,10 @@ var Battery = GObject.registerClass({
 
     // TODO: reset on charging
     get threshold() {
-        if (!this.charging && this.warning_level >= UPower.DeviceLevel.LOW) 
+        if (!this.charging && this.warning_level >= UPower.DeviceLevel.LOW)
             return 1;
-        else 
+        else
             return 0;
-        
     }
 
     destroy() {

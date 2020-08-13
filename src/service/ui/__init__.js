@@ -23,13 +23,12 @@ Gtk.Window.prototype.restoreGeometry = function(context = 'default') {
     // Size
     let [width, height] = this._windowState.get_value('window-size').deepUnpack();
 
-    if (width && height) 
+    if (width && height)
         this.set_default_size(width, height);
 
     // Maximized State
-    if (this._windowState.get_boolean('window-maximized')) 
+    if (this._windowState.get_boolean('window-maximized'))
         this.maximize();
-    
 };
 
 Gtk.Window.prototype.saveGeometry = function() {
