@@ -4,12 +4,13 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
+const Config = imports.config;
 const Core = imports.service.protocol.core;
 const DBus = imports.utils.dbus;
 
 const DBUS_NAME = 'org.gnome.Shell.Extensions.GSConnect.Device';
 const DBUS_PATH = '/org/gnome/Shell/Extensions/GSConnect/Device';
-const DBUS_IFACE = gsconnect.dbusinfo.lookup_interface(DBUS_NAME);
+const DBUS_IFACE = Config.DBUS.lookup_interface(DBUS_NAME);
 
 
 /**
@@ -101,7 +102,7 @@ var Device = GObject.registerClass({
 
         // GSettings
         this.settings = new Gio.Settings({
-            settings_schema: gsconnect.gschema.lookup(DBUS_NAME, true),
+            settings_schema: Config.GSCHEMA.lookup(DBUS_NAME, true),
             path: `/org/gnome/shell/extensions/gsconnect/device/${this.id}/`
         });
 
@@ -404,7 +405,7 @@ var Device = GObject.registerClass({
     launchProcess(args, cancellable = null) {
         if (this._launcher === undefined) {
             let application = GLib.build_filenamev([
-                gsconnect.extdatadir,
+                Config.PACKAGE_DATADIR,
                 'service',
                 'daemon.js'
             ]);

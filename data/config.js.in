@@ -9,6 +9,8 @@ var GNOME_SHELL_LIBDIR = '@GNOME_SHELL_LIBDIR@';
 var APP_ID = '@APPLICATION_ID@';
 var APP_PATH = '@APPLICATION_PATH@';
 
+var IS_USER = false;
+
 // External binary paths
 var OPENSSL_PATH = '@OPENSSL_PATH@';
 var SSHADD_PATH = '@SSHADD_PATH@';

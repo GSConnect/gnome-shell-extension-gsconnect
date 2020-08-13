@@ -23,7 +23,7 @@ var Plugin = GObject.registerClass({
 
         // GSettings
         this.settings = new Gio.Settings({
-            settings_schema: gsconnect.gschema.lookup(this._info.id, false),
+            settings_schema: Config.GSCHEMA.lookup(this._info.id, false),
             path: `${device.settings.path}plugin/${name}/`
         });
 

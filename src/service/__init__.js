@@ -1,11 +1,73 @@
 'use strict';
 
 const ByteArray = imports.byteArray;
+const Gettext = imports.gettext;
 
 const Gio = imports.gi.Gio;
+const GIRepository = imports.gi.GIRepository;
 const GLib = imports.gi.GLib;
 
 const Config = imports.config;
+
+
+// Ensure config.js is setup properly
+if (Config.PACKAGE_DATADIR.startsWith(GLib.get_home_dir())) {
+    Config.IS_USER = true;
+
+    Config.GSETTINGS_SCHEMA_DIR = `${Config.PACKAGE_DATADIR}/schemas`;
+    Config.PACKAGE_LOCALEDIR = `${Config.PACKAGE_DATADIR}/locale`;
+
+    // Infer libdir by assuming gnome-shell shares a common prefix with gjs;
+    // assume the parent directory if it's not there
+    let libdir = GIRepository.Repository.get_search_path().find(path => {
+        return path.endsWith('/gjs/girepository-1.0');
+    }).replace('/gjs/girepository-1.0', '');
+
+    let gsdir = GLib.build_filenamev([libdir, 'gnome-shell']);
+
+    if (!GLib.file_test(gsdir, GLib.FileTest.IS_DIR)) {
+        let currentDir = `/${GLib.path_get_basename(libdir)}`;
+        libdir = libdir.replace(currentDir, '');
+    }
+
+    Config.GNOME_SHELL_LIBDIR = libdir;
+}
+
+
+// Init Gettext
+String.prototype.format = imports.format.format;
+Gettext.bindtextdomain(Config.APP_ID, Config.PACKAGE_LOCALEDIR);
+globalThis._ = GLib.dgettext.bind(null, Config.APP_ID);
+globalThis.ngettext = GLib.dngettext.bind(null, Config.APP_ID);
+
+
+// Init GResources
+Gio.Resource.load(
+    GLib.build_filenamev([Config.PACKAGE_DATADIR, `${Config.APP_ID}.gresource`])
+)._register();
+
+
+// Init GSchema
+Config.GSCHEMA = Gio.SettingsSchemaSource.new_from_directory(
+    Config.GSETTINGS_SCHEMA_DIR,
+    Gio.SettingsSchemaSource.get_default(),
+    false
+);
+
+
+// Load DBus interfaces
+Config.DBUS = (() => {
+    let bytes = Gio.resources_lookup_data(
+        GLib.build_filenamev([Config.APP_PATH, `${Config.APP_ID}.xml`]),
+        Gio.ResourceLookupFlags.NONE
+    );
+
+    let xml = ByteArray.toString(bytes.toArray());
+    let dbus = Gio.DBusNodeInfo.new_for_xml(xml);
+    dbus.nodes.forEach(info => info.cache_build());
+
+    return dbus;
+})();
 
 
 /**
@@ -23,15 +85,6 @@ Config.RUNTIMEDIR = GLib.build_filenamev([GLib.get_user_runtime_dir(), 'gsconnec
 
 for (let path of [Config.CACHEDIR, Config.CONFIGDIR, Config.RUNTIMEDIR])
     GLib.mkdir_with_parents(path, 0o755);
-
-
-/*
- * DBus Interface Introspection
- */
-gsconnect.dbusinfo = Gio.DBusNodeInfo.new_for_xml(
-    gsconnect.get_resource('org.gnome.Shell.Extensions.GSConnect.xml')
-);
-gsconnect.dbusinfo.nodes.forEach(info => info.cache_build());
 
 
 /**
@@ -57,7 +110,7 @@ const _debugFunc = function(error, prefix = null) {
         message = `${prefix}: ${message}`;
 
     let [, func, file, line] = _debugCallerMatch.exec(caller);
-    let script = file.replace(gsconnect.extdatadir, '');
+    let script = file.replace(Config.PACKAGE_DATADIR, '');
 
     GLib.log_structured('GSConnect', GLib.LogLevelFlags.LEVEL_MESSAGE, {
         'MESSAGE': `[${script}:${func}:${line}]: ${message}`,
@@ -69,15 +122,18 @@ const _debugFunc = function(error, prefix = null) {
 };
 
 // Swap the function out for a no-op anonymous function for speed
-if (gsconnect.settings.get_boolean('debug')) 
-    globalThis.debug = _debugFunc;
-else 
-    globalThis.debug = () => {};
+const settings = new Gio.Settings({
+    settings_schema: Config.GSCHEMA.lookup(Config.APP_ID, true)
+});
 
-
-gsconnect.settings.connect('changed::debug', (settings, key) => {
+settings.connect('changed::debug', (settings, key) => {
     globalThis.debug = settings.get_boolean(key) ? _debugFunc : () => {};
 });
+
+if (settings.get_boolean('debug'))
+    globalThis.debug = _debugFunc;
+else
+    globalThis.debug = () => {};
 
 
 /**

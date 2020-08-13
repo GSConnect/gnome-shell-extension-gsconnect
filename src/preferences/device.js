@@ -6,6 +6,7 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 const Pango = imports.gi.Pango;
 
+const Config = imports.config;
 const Keybindings = imports.preferences.keybindings;
 
 
@@ -277,7 +278,7 @@ var Panel = GObject.registerClass({
 
         // GSettings
         this.settings = new Gio.Settings({
-            settings_schema: gsconnect.gschema.lookup(
+            settings_schema: Config.GSCHEMA.lookup(
                 'org.gnome.Shell.Extensions.GSConnect.Device',
                 true
             ),
@@ -398,7 +399,7 @@ var Panel = GObject.registerClass({
             let meta = imports.service.plugins[name].Metadata;
 
             this._pluginSettings[name] = new Gio.Settings({
-                settings_schema: gsconnect.gschema.lookup(meta.id, -1),
+                settings_schema: Config.GSCHEMA.lookup(meta.id, -1),
                 path: `${this.settings.path}plugin/${name}/`
             });
         }

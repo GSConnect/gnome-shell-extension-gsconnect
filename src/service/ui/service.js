@@ -13,7 +13,7 @@ const Config = imports.config;
  */
 const ISSUE_HEADER = `
 GSConnect Version: ${Config.PACKAGE_VERSION}
-GSConnect Install: ${(gsconnect.is_local) ? 'user' : 'system'}
+GSConnect Install: ${Config.IS_USER ? 'user' : 'system'}
 GJS: ${imports.system.version}
 XDG_SESSION_TYPE: ${GLib.getenv('XDG_SESSION_TYPE')}
 `;

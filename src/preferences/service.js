@@ -17,7 +17,7 @@ const Remote = imports.utils.remote;
  */
 const LOG_HEADER = new GLib.Bytes(`
 GSConnect Version: ${Config.PACKAGE_VERSION}
-GSConnect Install: ${(gsconnect.is_local) ? 'user' : 'system'}
+GSConnect Install: ${Config.IS_USER ? 'user' : 'system'}
 GJS: ${imports.system.version}
 XDG_SESSION_TYPE: ${GLib.getenv('XDG_SESSION_TYPE')}
 GDMSESSION: ${GLib.getenv('GDMSESSION')}
@@ -176,7 +176,7 @@ var Window = GObject.registerClass({
 
         // Service Settings
         this.settings = new Gio.Settings({
-            settings_schema: gsconnect.gschema.lookup(
+            settings_schema: Config.GSCHEMA.lookup(
                 'org.gnome.Shell.Extensions.GSConnect',
                 true
             )
@@ -321,7 +321,7 @@ var Window = GObject.registerClass({
      */
     _restoreGeometry() {
         this._windowState = new Gio.Settings({
-            settings_schema: gsconnect.gschema.lookup(
+            settings_schema: Config.GSCHEMA.lookup(
                 'org.gnome.Shell.Extensions.GSConnect.WindowState',
                 true
             ),

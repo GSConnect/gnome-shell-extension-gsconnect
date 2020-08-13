@@ -593,7 +593,7 @@ var Channel = GObject.registerClass({
         } else {
             let id = this.identity.body.deviceId;
             settings = new Gio.Settings({
-                settings_schema: gsconnect.gschema.lookup(
+                settings_schema: Config.GSCHEMA.lookup(
                     'org.gnome.Shell.Extensions.GSConnect.Device',
                     true
                 ),

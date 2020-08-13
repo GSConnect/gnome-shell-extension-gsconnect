@@ -4,8 +4,9 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
-const PluginBase = imports.service.plugin;
+const Config = imports.config;
 const DBus = imports.utils.dbus;
+const PluginBase = imports.service.plugin;
 
 
 var Metadata = {
@@ -439,8 +440,8 @@ var Plugin = GObject.registerClass({
 /*
  * A class for mirroring a remote Media Player on DBus
  */
-const MPRISIface = gsconnect.dbusinfo.lookup_interface('org.mpris.MediaPlayer2');
-const MPRISPlayerIface = gsconnect.dbusinfo.lookup_interface('org.mpris.MediaPlayer2.Player');
+const MPRISIface = Config.DBUS.lookup_interface('org.mpris.MediaPlayer2');
+const MPRISPlayerIface = Config.DBUS.lookup_interface('org.mpris.MediaPlayer2.Player');
 
 
 const RemotePlayer = GObject.registerClass({

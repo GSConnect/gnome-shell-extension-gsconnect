@@ -5,13 +5,15 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
 
+const Config = imports.config;
+
 
 /**
  * Window State
  */
 Gtk.Window.prototype.restoreGeometry = function(context = 'default') {
     this._windowState = new Gio.Settings({
-        settings_schema: gsconnect.gschema.lookup(
+        settings_schema: Config.GSCHEMA.lookup(
             'org.gnome.Shell.Extensions.GSConnect.WindowState',
             true
         ),

@@ -11,11 +11,12 @@ const AggregateMenu = Main.panel.statusArea.aggregateMenu;
 
 // Bootstrap
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
-Extension.imports._gsconnect;
+const Utils = Extension.imports.shell.utils;
 
 // eslint-disable-next-line no-redeclare
 const _ = Extension._;
 const Clipboard = Extension.imports.shell.clipboard;
+const Config = Extension.imports.config;
 const Device = Extension.imports.shell.device;
 const Keybindings = Extension.imports.shell.keybindings;
 const Notification = Extension.imports.shell.notification;
@@ -89,7 +90,7 @@ const ServiceIndicator = GObject.registerClass({
 
         // GSettings
         this.settings = new Gio.Settings({
-            settings_schema: gsconnect.gschema.lookup(
+            settings_schema: Config.GSCHEMA.lookup(
                 'org.gnome.Shell.Extensions.GSConnect',
                 null
             ),
@@ -298,7 +299,7 @@ const ServiceIndicator = GObject.registerClass({
 
             // Device Settings
             device.settings = new Gio.Settings({
-                settings_schema: gsconnect.gschema.lookup(
+                settings_schema: Config.GSCHEMA.lookup(
                     'org.gnome.Shell.Extensions.GSConnect.Device',
                     true
                 ),
@@ -446,7 +447,7 @@ function init() {
     // DBus and systemd service files necessary for DBus activation and
     // GNotifications. Since there's no uninit()/uninstall() hook for extensions
     // and they're only used *by* GSConnect, they should be okay to leave.
-    gsconnect.installService();
+    Utils.installService();
 
     // These modify the notification source for GSConnect's GNotifications and
     // need to be active even when the extension is disabled (eg. lock screen).

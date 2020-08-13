@@ -18,15 +18,16 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
-// Find the root datadir of the extension
+
+// Bootstrap
 function get_datadir() {
     let m = /@(.+):\d+/.exec((new Error()).stack.split('\n')[1]);
     return Gio.File.new_for_path(m[1]).get_parent().get_parent().get_path();
 }
 
-globalThis.gsconnect = {extdatadir: get_datadir()};
-imports.searchPath.unshift(gsconnect.extdatadir);
-imports._gsconnect;
+imports.searchPath.unshift(get_datadir());
+imports.config.PACKAGE_DATADIR = imports.searchPath[0];
+
 
 // Local Imports
 const Config = imports.config;
@@ -276,7 +277,7 @@ const Service = GObject.registerClass({
      */
     _initSettings() {
         this.settings = new Gio.Settings({
-            settings_schema: gsconnect.gschema.lookup(this.application_id, true)
+            settings_schema: Config.GSCHEMA.lookup(this.application_id, true)
         });
 
         // Bound Properties
@@ -395,7 +396,7 @@ const Service = GObject.registerClass({
     }
 
     _preferences() {
-        Gio.Subprocess.new([`${gsconnect.extdatadir}/gsconnect-preferences`], 0);
+        Gio.Subprocess.new([`${Config.PACKAGE_DATADIR}/gsconnect-preferences`], 0);
     }
 
     /**
@@ -560,7 +561,7 @@ const Service = GObject.registerClass({
 
         // Watch *this* file and stop the service if it's updated/uninstalled
         this._serviceMonitor = Gio.File.new_for_path(
-            `${gsconnect.extdatadir}/service/daemon.js`
+            `${Config.PACKAGE_DATADIR}/service/daemon.js`
         ).monitor(Gio.FileMonitorFlags.WATCH_MOVES, null);
         this._serviceMonitor.connect('changed', () => this.quit());
 

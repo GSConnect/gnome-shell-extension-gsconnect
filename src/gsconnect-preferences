@@ -15,20 +15,26 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
-// Find the root datadir of the extension
+
+// Bootstrap
 function get_datadir() {
     let m = /@(.+):\d+/.exec((new Error()).stack.split('\n')[1]);
     return Gio.File.new_for_path(m[1]).get_parent().get_path();
 }
 
-globalThis.gsconnect = {extdatadir: get_datadir()};
-imports.searchPath.unshift(gsconnect.extdatadir);
-imports._gsconnect;
+imports.searchPath.unshift(get_datadir());
+imports.config.PACKAGE_DATADIR = imports.searchPath[0];
 
+
+// Local Imports
+const Config = imports.config;
 const Remote = imports.utils.remote;
 const Settings = imports.preferences.service;
 
 
+/**
+ * Class representing the GSConnect service daemon.
+ */
 const Preferences = GObject.registerClass({
     GTypeName: 'GSConnectPreferences'
 }, class Preferences extends Gtk.Application {

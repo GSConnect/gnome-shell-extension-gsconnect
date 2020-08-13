@@ -6,9 +6,11 @@ const GIRepository = imports.gi.GIRepository;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
+const Config = imports.config;
+
 
 // Add gnome-shell's typelib dir to the search path
-let typelibDir = GLib.build_filenamev([gsconnect.libdir, 'gnome-shell']);
+let typelibDir = GLib.build_filenamev([Config.GNOME_SHELL_LIBDIR, 'gnome-shell']);
 GIRepository.Repository.prepend_search_path(typelibDir);
 GIRepository.Repository.prepend_library_path(typelibDir);
 
