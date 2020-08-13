@@ -153,27 +153,6 @@ JSON.dump = function (obj, file, sync = false) {
 
 
 /**
- * Idle Promise
- *
- * @param {number} priority - The priority of the idle source
- */
-Promise.idle = function(priority) {
-    return new Promise(resolve => GLib.idle_add(priority, resolve));
-};
-
-
-/**
- * Timeout Promise
- *
- * @param {number} priority - The priority of the timeout source
- * @param {number} interval - Delay in milliseconds before resolving
- */
-Promise.timeout = function(priority = GLib.PRIORITY_DEFAULT, interval = 100) {
-    return new Promise(resolve => GLib.timeout_add(priority, interval, resolve));
-};
-
-
-/**
  * A simple (for now) pre-comparison sanitizer for phone numbers
  * See: https://github.com/KDE/kdeconnect-kde/blob/master/smsapp/conversationlistmodel.cpp#L200-L210
  *
