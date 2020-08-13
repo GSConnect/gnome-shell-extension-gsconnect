@@ -703,7 +703,7 @@ var Panel = GObject.registerClass({
 
     _onDeleteCommand(button) {
         let row = button.get_ancestor(Gtk.ListBoxRow.$gtype);
-        delete this._commands[row.name];
+        delete this._commands[row.get_name()];
         row.destroy();
 
         this._storeCommands();
