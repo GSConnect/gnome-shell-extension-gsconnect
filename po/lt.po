@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-08-12 20:58-0700\n"
-"PO-Revision-Date: 2020-08-13 13:26\n"
+"PO-Revision-Date: 2020-08-13 13:36\n"
 "Last-Translator: \n"
 "Language-Team: Lithuanian\n"
 "Language: lt_LT\n"
@@ -29,7 +29,7 @@ msgstr "KDE Connect įgyvendinimas, skirtas GNOME"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:16
 msgid "GSConnect Team"
-msgstr ""
+msgstr "GSConnect komanda"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:32
 msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, macOS and Windows."
@@ -45,35 +45,35 @@ msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:40
 msgid "Send and receive messages"
-msgstr ""
+msgstr "Siųsti ir gauti žinutes"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
 msgid "Sync clipboard content"
-msgstr ""
+msgstr "Sinchronizuoti iškarpinės turinį"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:42
 msgid "Sync contacts"
-msgstr ""
+msgstr "Sinchronizuoti adresatus"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:43
 msgid "Sync notifications"
-msgstr ""
+msgstr "Sinchronizuoti pranešimus"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
 msgid "Control media players"
-msgstr ""
+msgstr "Valdyti medijos leistuves"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:45
 msgid "Control system volume"
-msgstr ""
+msgstr "Valdyti sistemos garsį"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:46
 msgid "Execute predefined commands"
-msgstr ""
+msgstr "Vykdyti iš anksto nustatytas komandas"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:47
 msgid "And more…"
-msgstr ""
+msgstr "Ir daugiau…"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:64
 msgid "GSConnect in GNOME Shell"
@@ -122,7 +122,7 @@ msgstr "Įrašykite telefono numerį ar vardą"
 #. TRANSLATORS: All other phone number types
 #: data/ui/contacts-address-row.ui:64 src/service/ui/contacts.js:144
 msgid "Other"
-msgstr ""
+msgstr "Kitas"
 
 #. TRANSLATORS: Share URL by SMS
 #: data/ui/legacy-messaging-dialog.ui:8 src/service/daemon.js:631
@@ -182,7 +182,7 @@ msgstr "Pasirinkite arba pradėkite pokalbį"
 
 #: data/ui/preferences-command-editor.ui:7
 msgid "Edit Command"
-msgstr ""
+msgstr "Taisyti komandą"
 
 #: data/ui/preferences-command-editor.ui:21
 msgid "Save"
@@ -239,7 +239,7 @@ msgstr "Gauti failus"
 
 #: data/ui/preferences-device-panel.ui:490
 msgid "Save files to"
-msgstr ""
+msgstr "Įrašyti failus į"
 
 #: data/ui/preferences-device-panel.ui:551
 #: data/ui/preferences-device-panel.ui:2075
@@ -281,7 +281,7 @@ msgstr "Komandos"
 
 #: data/ui/preferences-device-panel.ui:938
 msgid "Add Command"
-msgstr ""
+msgstr "Pridėti komandą"
 
 #: data/ui/preferences-device-panel.ui:1025
 msgid "Share Notifications"
@@ -354,11 +354,11 @@ msgstr "Eksperimentinis"
 
 #: data/ui/preferences-device-panel.ui:1913
 msgid "Device Cache"
-msgstr ""
+msgstr "Įrenginio podėlis"
 
 #: data/ui/preferences-device-panel.ui:1931
 msgid "Clear Cache…"
-msgstr ""
+msgstr "Išvalyti podėlį…"
 
 #: data/ui/preferences-device-panel.ui:1970
 msgid "Legacy SMS Support"
@@ -375,7 +375,7 @@ msgstr "Klaviatūros trumpiniai"
 
 #: data/ui/preferences-device-panel.ui:2369
 msgid "Device Settings"
-msgstr ""
+msgstr "Įrenginio nustatymai"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/ui/preferences-device-panel.ui:2413
@@ -421,7 +421,7 @@ msgstr "Nieko"
 #: data/ui/preferences-device-panel.ui:2548
 #: data/ui/preferences-device-panel.ui:2581
 msgid "Restore"
-msgstr ""
+msgstr "Atkurti"
 
 #. TRANSLATORS: Lower the system volume
 #: data/ui/preferences-device-panel.ui:2555
@@ -537,7 +537,7 @@ msgstr "Nerasta jokių įrenginių"
 
 #: data/ui/service-device-chooser.ui:111
 msgid "Device List"
-msgstr ""
+msgstr "Įrenginių sąrašas"
 
 #: data/ui/service-error-dialog.ui:24 data/ui/service-error-dialog.ui:28
 msgid "Report"
@@ -835,7 +835,7 @@ msgstr "MPRIS"
 
 #: src/service/plugins/mpris.js:260 src/service/plugins/mpris.js:261
 msgid "Unknown"
-msgstr ""
+msgstr "Nežinoma"
 
 #: src/service/plugins/notification.js:28
 msgid "Cancel Notification"
@@ -1025,7 +1025,7 @@ msgstr "Vykstantis skambutis"
 
 #: src/service/protocol/lan.js:153
 msgid "OpenSSL not found"
-msgstr ""
+msgstr "OpenSSL nerasta"
 
 #: src/service/protocol/lan.js:290
 msgid "Network Error"
@@ -1034,22 +1034,22 @@ msgstr "Tinklo klaida"
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:129
 msgid "Fax"
-msgstr ""
+msgstr "Faksas"
 
 #. TRANSLATORS: A work or office phone number
 #: src/service/ui/contacts.js:133
 msgid "Work"
-msgstr ""
+msgstr "Darbo"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:137
 msgid "Mobile"
-msgstr ""
+msgstr "Mobilusis"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:141
 msgid "Home"
-msgstr ""
+msgstr "Namų"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #. Update UI
