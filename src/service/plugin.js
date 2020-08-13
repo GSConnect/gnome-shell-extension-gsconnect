@@ -1,5 +1,7 @@
 'use strict';
 
+const ByteArray = imports.byteArray;
+
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
@@ -161,7 +163,17 @@ var Plugin = GObject.registerClass({
             );
 
             // Read the cache from disk
-            let cache = await JSON.load(this._cacheFile);
+            let cache = await new Promise((resolve, reject) => {
+                this._cacheFile.load_contents_async(null, (file, res) => {
+                    try {
+                        let contents = file.load_contents_finish(res)[1];
+
+                        resolve(JSON.parse(ByteArray.toString(contents)));
+                    } catch (e) {
+                        reject(e);
+                    }
+                });
+            });
             Object.assign(this, cache);
         } catch (e) {
             debug(e.message, `${this.device.name}: ${this.name}`);

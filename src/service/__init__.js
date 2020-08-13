@@ -137,37 +137,6 @@ else
 
 
 /**
- * Convenience function for loading JSON from a file
- *
- * @param {Gio.File|string} file - A Gio.File or path to a JSON file
- * @param {boolean} sync - Default is %false, if %true load synchronously
- * @return {Object} The parsed object
- */
-JSON.load = function (file, sync = false) {
-    if (typeof file === 'string')
-        file = Gio.File.new_for_path(file);
-
-    if (sync) {
-        let contents = file.load_contents(null)[1];
-
-        return JSON.parse(ByteArray.toString(contents));
-    } else {
-        return new Promise((resolve, reject) => {
-            file.load_contents_async(null, (file, res) => {
-                try {
-                    let contents = file.load_contents_finish(res)[1];
-
-                    resolve(JSON.parse(ByteArray.toString(contents)));
-                } catch (e) {
-                    reject(e);
-                }
-            });
-        });
-    }
-};
-
-
-/**
  * A simple (for now) pre-comparison sanitizer for phone numbers
  * See: https://github.com/KDE/kdeconnect-kde/blob/master/smsapp/conversationlistmodel.cpp#L200-L210
  *
