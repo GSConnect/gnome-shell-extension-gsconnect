@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-02 21:17-0400\n"
-"PO-Revision-Date: 2020-08-12 03:34\n"
+"PO-Revision-Date: 2020-08-13 00:21\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -214,10 +214,10 @@ msgid "Experimental"
 msgstr "实验功能"
 
 msgid "Device Cache"
-msgstr ""
+msgstr "设备缓存"
 
 msgid "Clear Cache…"
-msgstr ""
+msgstr "清除缓存..."
 
 #: data/ui/device-preferences.ui:1771
 msgid "Legacy SMS Support"
@@ -282,7 +282,7 @@ msgstr "无"
 #. TRANSLATORS: Restore the system volume
 #: data/ui/device-preferences.ui:2610 data/ui/device-preferences.ui:2636
 msgid "Restore"
-msgstr ""
+msgstr "恢复"
 
 #. TRANSLATORS: Lower the system volume
 #: data/ui/device-preferences.ui:2617 data/ui/device-preferences.ui:2643
@@ -902,31 +902,31 @@ msgstr "呼叫中"
 #: src/service/ui/contacts.js:126 src/service/ui/contacts.js:147
 #, javascript-format
 msgid "Other"
-msgstr ""
+msgstr "其他"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:131
 #, javascript-format
 msgid "Fax"
-msgstr ""
+msgstr "传真"
 
 #. TRANSLATORS: A work phone number
 #: src/service/ui/contacts.js:135
 #, javascript-format
 msgid "Work"
-msgstr ""
+msgstr "单位"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:139
 #, javascript-format
 msgid "Mobile"
-msgstr ""
+msgstr "手机"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:143
 #, javascript-format
 msgid "Home"
-msgstr ""
+msgstr "住宅"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #: src/service/ui/contacts.js:431 src/service/ui/contacts.js:445
