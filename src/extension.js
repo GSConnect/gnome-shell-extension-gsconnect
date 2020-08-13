@@ -296,6 +296,15 @@ const ServiceIndicator = GObject.registerClass({
             this._menus[device.g_object_path] = menu;
             this.deviceSection.addMenuItem(menu);
 
+            // Device Settings
+            device.settings = new Gio.Settings({
+                settings_schema: gsconnect.gschema.lookup(
+                    'org.gnome.Shell.Extensions.GSConnect.Device',
+                    true
+                ),
+                path: `/org/gnome/shell/extensions/gsconnect/device/${device.id}/`
+            });
+
             // Keyboard Shortcuts
             device.__keybindingsChangedId = device.settings.connect(
                 'changed::keybindings',

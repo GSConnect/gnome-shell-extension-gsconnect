@@ -155,18 +155,6 @@ var Device = GObject.registerClass({
         return this._get('Paired', false);
     }
 
-    get settings() {
-        // We create this on-demand to ensure we have the device ID
-        if (this._settings === undefined) {
-            this._settings = new Gio.Settings({
-                settings_schema: gsconnect.gschema.lookup(DEVICE_NAME, true),
-                path: `/org/gnome/shell/extensions/gsconnect/device/${this.id}/`
-            });
-        }
-
-        return this._settings;
-    }
-
     get service() {
         return this._service;
     }
@@ -222,11 +210,6 @@ var Device = GObject.registerClass({
     }
 
     destroy() {
-        if (this._settings) {
-            this._settings.run_dispose();
-            this._settings = null;
-        }
-
         GObject.signal_handlers_destroy(this);
     }
 });
