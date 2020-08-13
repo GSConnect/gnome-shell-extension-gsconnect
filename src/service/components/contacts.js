@@ -55,12 +55,7 @@ var Store = GObject.registerClass({
         });
 
         this._cacheData = {};
-
-        // If Evolution Data Server is available, load it now
-        if (context === null && HAVE_EDS) {
-            this._ebooks = new Map();
-            this._initEvolutionDataServer();
-        }
+        this._edsPrepared = false;
     }
 
     /**
@@ -314,6 +309,12 @@ var Store = GObject.registerClass({
 
     async _initEvolutionDataServer() {
         try {
+            if (this._edsPrepared)
+                return;
+
+            this._edsPrepared = true;
+            this._ebooks = new Map();
+
             // Get the current EBooks
             let registry = await this._getESourceRegistry();
 
@@ -336,6 +337,7 @@ var Store = GObject.registerClass({
             );
         } catch (e) {
             logError(e);
+            this.destroy();
         }
     }
 
@@ -591,13 +593,17 @@ var Store = GObject.registerClass({
     }
 
     /**
-     * Fetch and update the contact store from its source. The default function
-     * simply logs a debug message if EDS is unavailable, while derived classes
-     * should request an update from the remote source.
+     * Fetch and update the contact store from its source.
+     *
+     * The default function initializes the EDS server, or logs a debug message
+     * if EDS is unavailable. Derived classes should request an update from the
+     * remote source.
      */
     async fetch() {
         try {
-            if (HAVE_EDS === false) 
+            if (this.context === null && HAVE_EDS)
+                await this._initEvolutionDataServer();
+            else
                 throw new Error('Evolution Data Server not available');
         } catch (e) {
             debug(e);
@@ -679,6 +685,8 @@ var Store = GObject.registerClass({
 
             for (let ebook of this._ebooks.values())
                 this._onDisappeared(null, ebook.source);
+
+            this._edsPrepared = false;
         }
     }
 });
