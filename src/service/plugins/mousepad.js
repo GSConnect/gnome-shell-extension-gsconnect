@@ -474,7 +474,8 @@ var KeyboardInputDialog = GObject.registerClass({
             border_width: 6,
             hexpand: true,
             vexpand: true,
-            visible: true
+            visible: true,
+            wrap_mode: Gtk.WrapMode.WORD_CHAR
         });
         scroll.add(this.text);
 
