@@ -168,7 +168,7 @@ function installService() {
 
     // If running as a user extension, ensure the DBus service, desktop entry,
     // file manager scripts, and WebExtension manifests are installed.
-    if (Config.IS_LOCAL) {
+    if (Config.IS_USER) {
         // DBus Service
         if (!_installResource(dbusDir, dbusFile, `${dbusFile}.in`))
             throw Error('GSConnect: Failed to install DBus Service');
