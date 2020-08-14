@@ -18,6 +18,7 @@ libdir = join_paths(prefix, get_option('libdir'))
 localedir = join_paths(prefix, get_option('localedir'))
 sysconfdir = get_option('sysconfdir')
 
+
 # GSettings schema dir
 if get_option('gsettings_schemadir') != ''
   gschemadir = get_option('gsettings_schemadir')
@@ -25,12 +26,14 @@ else
   gschemadir = join_paths(datadir, 'glib-2.0', 'schemas')
 endif
 
+
 # GNOME Shell LIBDIR
 if get_option('gnome_shell_libdir') != ''
   gnome_shell_libdir = get_option('gnome_shell_libdir')
 else
   gnome_shell_libdir = libdir
 endif
+
 
 # Configuration
 extconfig = configuration_data()
@@ -49,6 +52,7 @@ extconfig.set('FFMPEG_PATH', get_option('ffmpeg_path'))
 extconfig.set('OPENSSL_PATH', get_option('openssl_path'))
 extconfig.set('SSHADD_PATH', get_option('sshadd_path'))
 extconfig.set('SSHKEYGEN_PATH', get_option('sshkeygen_path'))
+
 
 # ZIP targets for user extension builds
 env_util = find_program('env')
