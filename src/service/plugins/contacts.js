@@ -23,13 +23,13 @@ var Metadata = {
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Contacts',
     incomingCapabilities: [
         'kdeconnect.contacts.response_uids_timestamps',
-        'kdeconnect.contacts.response_vcards'
+        'kdeconnect.contacts.response_vcards',
     ],
     outgoingCapabilities: [
         'kdeconnect.contacts.request_all_uids_timestamps',
-        'kdeconnect.contacts.request_vcards_by_uid'
+        'kdeconnect.contacts.request_vcards_by_uid',
     ],
-    actions: {}
+    actions: {},
 };
 
 
@@ -49,7 +49,7 @@ const VCARD_TYPED_META = /([a-z]+)=(.*)/i;
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/contacts
  */
 var Plugin = GObject.registerClass({
-    GTypeName: 'GSConnectContactsPlugin'
+    GTypeName: 'GSConnectContactsPlugin',
 }, class Plugin extends PluginBase.Plugin {
 
     _init(device) {
@@ -179,16 +179,16 @@ var Plugin = GObject.registerClass({
                 seqlen = 0;
 
                 if (c1 <= 0xBF) {
-                    c1 = (c1 & 0x7F);
+                    c1 &= 0x7F;
                     seqlen = 1;
                 } else if (c1 <= 0xDF) {
-                    c1 = (c1 & 0x1F);
+                    c1 &= 0x1F;
                     seqlen = 2;
                 } else if (c1 <= 0xEF) {
-                    c1 = (c1 & 0x0F);
+                    c1 &= 0x0F;
                     seqlen = 3;
                 } else {
-                    c1 = (c1 & 0x07);
+                    c1 &= 0x07;
                     seqlen = 4;
                 }
 
@@ -233,7 +233,7 @@ var Plugin = GObject.registerClass({
         // vcard skeleton
         let vcard = {
             fn: _('Unknown Contact'),
-            tel: []
+            tel: [],
         };
 
         // Remove line folding and split
@@ -316,7 +316,7 @@ var Plugin = GObject.registerClass({
                 name: vcard.fn,
                 numbers: [],
                 origin: 'device',
-                timestamp: parseInt(vcard['x-kdeconnect-timestamp'])
+                timestamp: parseInt(vcard['x-kdeconnect-timestamp']),
             };
 
             // Phone Numbers
@@ -354,7 +354,7 @@ var Plugin = GObject.registerClass({
                 name: _('Unknown Contact'),
                 numbers: [],
                 origin: 'device',
-                timestamp: 0
+                timestamp: 0,
             };
 
             let evcard = EBookContacts.VCard.new_from_string(vcard_data);
@@ -379,7 +379,7 @@ var Plugin = GObject.registerClass({
                         else if (attr.has_type('WORK'))
                             number.type = 'work';
 
-                        contact.numbers.push (number);
+                        contact.numbers.push(number);
                         break;
 
                     case 'x-kdeconnect-timestamp':
@@ -402,6 +402,8 @@ var Plugin = GObject.registerClass({
     /**
      * Handle an incoming list of contact vCards and pass them to the best
      * available parser.
+     *
+     * @param {Core.Packet} packet - A `kdeconnect.contacts.response_vcards`
      */
     _handleVCards(packet) {
         try {
@@ -425,7 +427,7 @@ var Plugin = GObject.registerClass({
      */
     _requestUids() {
         this.device.sendPacket({
-            type: 'kdeconnect.contacts.request_all_uids_timestamps'
+            type: 'kdeconnect.contacts.request_all_uids_timestamps',
         });
     }
 
@@ -438,8 +440,8 @@ var Plugin = GObject.registerClass({
         this.device.sendPacket({
             type: 'kdeconnect.contacts.request_vcards_by_uid',
             body: {
-                uids: uids
-            }
+                uids: uids,
+            },
         });
     }
 

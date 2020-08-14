@@ -13,12 +13,12 @@ var Metadata = {
     label: _('SMS'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.SMS',
     incomingCapabilities: [
-        'kdeconnect.sms.messages'
+        'kdeconnect.sms.messages',
     ],
     outgoingCapabilities: [
         'kdeconnect.sms.request',
         'kdeconnect.sms.request_conversation',
-        'kdeconnect.sms.request_conversations'
+        'kdeconnect.sms.request_conversations',
     ],
     actions: {
         // SMS Actions
@@ -28,7 +28,7 @@ var Metadata = {
 
             parameter_type: null,
             incoming: [],
-            outgoing: ['kdeconnect.sms.request']
+            outgoing: ['kdeconnect.sms.request'],
         },
         uriSms: {
             label: _('New SMS (URI)'),
@@ -36,7 +36,7 @@ var Metadata = {
 
             parameter_type: new GLib.VariantType('s'),
             incoming: [],
-            outgoing: ['kdeconnect.sms.request']
+            outgoing: ['kdeconnect.sms.request'],
         },
         replySms: {
             label: _('Reply SMS'),
@@ -44,7 +44,7 @@ var Metadata = {
 
             parameter_type: new GLib.VariantType('s'),
             incoming: [],
-            outgoing: ['kdeconnect.sms.request']
+            outgoing: ['kdeconnect.sms.request'],
         },
         sendMessage: {
             label: _('Send Message'),
@@ -52,7 +52,7 @@ var Metadata = {
 
             parameter_type: new GLib.VariantType('(aa{sv})'),
             incoming: [],
-            outgoing: ['kdeconnect.sms.request']
+            outgoing: ['kdeconnect.sms.request'],
         },
         sendSms: {
             label: _('Send SMS'),
@@ -60,7 +60,7 @@ var Metadata = {
 
             parameter_type: new GLib.VariantType('(ss)'),
             incoming: [],
-            outgoing: ['kdeconnect.sms.request']
+            outgoing: ['kdeconnect.sms.request'],
         },
         shareSms: {
             label: _('Share SMS'),
@@ -68,9 +68,9 @@ var Metadata = {
 
             parameter_type: new GLib.VariantType('s'),
             incoming: [],
-            outgoing: ['kdeconnect.sms.request']
-        }
-    }
+            outgoing: ['kdeconnect.sms.request'],
+        },
+    },
 };
 
 
@@ -80,7 +80,7 @@ var Metadata = {
  * TEXT_MESSAGE: Has a "body" field which contains pure, human-readable text
  */
 var MessageEvent = {
-    TEXT_MESSAGE: 0x1
+    TEXT_MESSAGE: 0x1,
 };
 
 
@@ -93,7 +93,7 @@ var MessageEvent = {
  */
 var MessageStatus = {
     UNREAD: 0,
-    READ: 1
+    READ: 1,
 };
 
 
@@ -132,8 +132,8 @@ var Plugin = GObject.registerClass({
             new GLib.VariantType('aa{sv}'),
             null,
             GObject.ParamFlags.READABLE
-        )
-    }
+        ),
+    },
 }, class Plugin extends PluginBase.Plugin {
 
     _init(device) {
@@ -153,7 +153,7 @@ var Plugin = GObject.registerClass({
         if (this.settings.get_boolean('legacy-sms')) {
             return new LegacyMessaging.Dialog({
                 device: this.device,
-                plugin: this
+                plugin: this,
             });
         }
 
@@ -161,7 +161,7 @@ var Plugin = GObject.registerClass({
             this._window = new Messaging.Window({
                 application: this.service,
                 device: this.device,
-                plugin: this
+                plugin: this,
             });
 
             this._window.connect('destroy', () => {
@@ -306,7 +306,7 @@ var Plugin = GObject.registerClass({
 
                 // COERCION: thread_id's to strings
                 message.thread_id = `${message.thread_id}`;
-                thread_ids.push (message.thread_id);
+                thread_ids.push(message.thread_id);
 
                 // TODO: Remove bogus `insert-address-token` entries
                 let a = message.addresses.length;
@@ -339,8 +339,8 @@ var Plugin = GObject.registerClass({
         this.device.sendPacket({
             type: 'kdeconnect.sms.request_conversation',
             body: {
-                threadID: thread_id
-            }
+                threadID: thread_id,
+            },
         });
     }
 
@@ -349,7 +349,7 @@ var Plugin = GObject.registerClass({
      */
     _requestConversations() {
         this.device.sendPacket({
-            type: 'kdeconnect.sms.request_conversations'
+            type: 'kdeconnect.sms.request_conversations',
         });
     }
 
@@ -391,8 +391,8 @@ var Plugin = GObject.registerClass({
             body: {
                 sendSms: true,
                 phoneNumber: addresses[0].address,
-                messageBody: messageBody
-            }
+                messageBody: messageBody,
+            },
         });
         // } else if (this._version === 2) {
         //     this.device.sendPacket({
@@ -428,7 +428,7 @@ var Plugin = GObject.registerClass({
                 application: this.service,
                 device: this.device,
                 message: url,
-                plugin: this
+                plugin: this,
             });
 
             window.present();
@@ -491,7 +491,7 @@ var Plugin = GObject.registerClass({
     /**
      * Try to find a thread_id in @smsPlugin for @addresses.
      *
-     * @param {Object[]} - a list of address objects
+     * @param {Object[]} addresses - a list of address objects
      * @return {string|null} a thread ID
      */
     getThreadIdForAddresses(addresses = []) {

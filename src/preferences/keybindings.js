@@ -22,7 +22,7 @@ const _MODIFIERS = [
     Gdk.KEY_Shift_L,
     Gdk.KEY_Shift_R,
     Gdk.KEY_Super_L,
-    Gdk.KEY_Super_R
+    Gdk.KEY_Super_R,
 ];
 
 /**
@@ -31,7 +31,7 @@ const _MODIFIERS = [
 var ResponseType = {
     CANCEL: Gtk.ResponseType.CANCEL,
     SET: Gtk.ResponseType.APPLY,
-    UNSET: 2
+    UNSET: 2,
 };
 
 
@@ -44,14 +44,14 @@ var ShortcutChooserDialog = GObject.registerClass({
     Children: [
         'cancel-button', 'set-button',
         'stack', 'summary-label',
-        'shortcut-label', 'conflict-label'
-    ]
+        'shortcut-label', 'conflict-label',
+    ],
 }, class ShortcutChooserDialog extends Gtk.Dialog {
 
     _init(params) {
         super._init({
             transient_for: Gio.Application.get_default().get_active_window(),
-            use_header_bar: true
+            use_header_bar: true,
         });
 
         this._seat = Gdk.Display.get_default().get_default_seat();
@@ -200,10 +200,10 @@ var ShortcutChooserDialog = GObject.registerClass({
 /**
  * Check the availability of an accelerator using GNOME Shell's DBus interface.
  *
- * @param {string} - An accelerator
- * @param {number} - Mode Flags
- * @param {number} - Grab Flags
- * @param {boolean} - %true if available, %false on error or unavailable
+ * @param {string} accelerator - An accelerator
+ * @param {number} [modeFlags] - Mode Flags
+ * @param {number} [grabFlags] - Grab Flags
+ * @param {boolean} %true if available, %false on error or unavailable
  */
 async function checkAccelerator(accelerator, modeFlags = 0, grabFlags = 0) {
     try {
@@ -276,7 +276,7 @@ async function getAccelerator(summary, accelerator = null) {
     try {
         let dialog = new ShortcutChooserDialog({
             summary: summary,
-            accelerator: accelerator
+            accelerator: accelerator,
         });
 
         accelerator = await new Promise((resolve, reject) => {

@@ -7,8 +7,8 @@ const UPower = imports.gi.UPowerGlib;
 var Battery = GObject.registerClass({
     GTypeName: 'GSConnectSystemBattery',
     Signals: {
-        'changed': {flags: GObject.SignalFlags.RUN_FIRST}
-    }
+        'changed': {flags: GObject.SignalFlags.RUN_FIRST},
+    },
 }, class Battery extends UPower.Device {
 
     _init() {

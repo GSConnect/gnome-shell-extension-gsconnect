@@ -36,10 +36,8 @@ function randomRGBA(salt = null, alpha = 1.0) {
  * Get the relative luminance of a RGB set
  * See: https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
  *
- * @param {number} r - A number in the [0.0, 1.0] range for the red value
- * @param {number} g - A number in the [0.0, 1.0] range for the green value
- * @param {number} b - A number in the [0.0, 1.0] range for the blue value
- * @return {number} ...
+ * @param {Gdk.RGBA} rgba - A GdkRGBA object
+ * @return {number} The relative luminance of the color
  */
 function relativeLuminance(rgba) {
     let {red, green, blue} = rgba;
@@ -53,11 +51,11 @@ function relativeLuminance(rgba) {
 
 
 /**
- * Get a Gdk.RGBA contrasted for the input
+ * Get a GdkRGBA contrasted for the input
  * See: https://www.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef
  *
- * @param {Gdk.RGBA} - A Gdk.RGBA object for the background color
- * @return {Gdk.RGBA} A Gdk.RGBA object for the foreground color
+ * @param {Gdk.RGBA} rgba - A GdkRGBA object for the background color
+ * @return {Gdk.RGBA} A GdkRGBA object for the foreground color
  */
 function getFgRGBA(rgba) {
     let bgLuminance = relativeLuminance(rgba);
@@ -70,12 +68,15 @@ function getFgRGBA(rgba) {
 
 
 /**
- * Get Gdk.Pixbuf for @path, allowing the corrupt JPEG's KDE Connect sometimes
+ * Get a GdkPixbuf for @path, allowing the corrupt JPEG's KDE Connect sometimes
  * sends. This function is synchronous.
  *
  * @param {string} path - A local file path
+ * @param {number} size - Size in pixels
+ * @param {scale} [scale] - Scale factor for the size
+ * @return {Gdk.Pixbuf} A pixbuf
  */
-function getPixbufForPath(path, size = null, scale) {
+function getPixbufForPath(path, size, scale = 1.0) {
     let data, loader, pixbuf;
 
     // Catch missing avatar files
@@ -98,7 +99,7 @@ function getPixbufForPath(path, size = null, scale) {
     pixbuf = loader.get_pixbuf();
 
     // Scale to monitor
-    size = size * scale;
+    size = Math.floor(size * scale);
     return pixbuf.scale_simple(size, size, GdkPixbuf.InterpType.HYPER);
 }
 
@@ -120,8 +121,8 @@ function getPixbufForIcon(name, size, scale, bgColor) {
  * Return a localized string for a phone number type
  * See: http://www.ietf.org/rfc/rfc2426.txt
  *
- * @param {string} number - An RFC2426 phone number type
- * @return {string} A string like 'Mobile'
+ * @param {string} type - An RFC2426 phone number type
+ * @return {string} A localized string like 'Mobile'
  */
 function getNumberTypeLabel(type) {
     if (type.includes('fax'))
@@ -149,6 +150,7 @@ function getNumberTypeLabel(type) {
  *
  * @param {Object} contact - A contact object
  * @param {string} address - A phone number
+ * @return {string} A (possibly) better display number for the address
  */
 function getDisplayNumber(contact, address) {
     let number = address.toPhoneNumber();
@@ -170,7 +172,7 @@ function getDisplayNumber(contact, address) {
 const AvatarCache = new WeakMap();
 
 var Avatar = GObject.registerClass({
-    GTypeName: 'GSConnectContactAvatar'
+    GTypeName: 'GSConnectContactAvatar',
 }, class ContactAvatar extends Gtk.DrawingArea {
 
     _init(contact = null) {
@@ -178,7 +180,7 @@ var Avatar = GObject.registerClass({
             height_request: 32,
             width_request: 32,
             valign: Gtk.Align.CENTER,
-            visible: true
+            visible: true,
         });
 
         this.contact = contact;
@@ -305,8 +307,8 @@ const AddressRow = GObject.registerClass({
             'Contact avatar',
             GObject.ParamFlags.READABLE,
             null
-        )
-    }
+        ),
+    },
 }, class AddressRow extends Gtk.ListBoxRow {
 
     _init(contact, index = 0) {
@@ -382,16 +384,16 @@ var ContactChooser = GObject.registerClass({
             'The contacts store',
             GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT,
             GObject.Object
-        )
+        ),
     },
     Signals: {
         'number-selected': {
             flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [GObject.TYPE_STRING]
-        }
+            param_types: [GObject.TYPE_STRING],
+        },
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/contact-chooser.ui',
-    Children: ['entry', 'list', 'scrolled']
+    Children: ['entry', 'list', 'scrolled'],
 }, class ContactChooser extends Gtk.Grid {
 
     _init(params) {
@@ -422,8 +424,8 @@ var ContactChooser = GObject.registerClass({
     }
 
     set store(store) {
-        // Do nothing if the store hasn't changed
-        if (this.store === store) return;
+        if (this.store === store)
+            return;
 
         // Unbind the old store
         if (this._store) {
@@ -468,7 +470,7 @@ var ContactChooser = GObject.registerClass({
         }
     }
 
-    /**
+    /*
      * ContactStore Callbacks
      */
     _onContactAdded(store, id) {
@@ -510,7 +512,7 @@ var ContactChooser = GObject.registerClass({
                 dynamic = new AddressRow({
                     // TRANSLATORS: A phone number (eg. "Send to 555-5555")
                     name: _('Send to %s').format(entry.text),
-                    numbers: [{type: 'unknown', value: entry.text}]
+                    numbers: [{type: 'unknown', value: entry.text}],
                 });
                 dynamic.__tmp = true;
                 this.list.add(dynamic);
@@ -539,7 +541,8 @@ var ContactChooser = GObject.registerClass({
 
     // GtkListBox::row-activated
     _onNumberSelected(box, row) {
-        if (row === null) return;
+        if (row === null)
+            return;
 
         // Emit the number
         let address = row.number.value;
@@ -624,6 +627,8 @@ var ContactChooser = GObject.registerClass({
 
     /**
      * Get a dictionary of number-contact pairs for each selected phone number.
+     *
+     * @return {Object[]} A dictionary of contacts
      */
     getSelected() {
         try {

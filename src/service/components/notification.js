@@ -51,7 +51,7 @@ class Listener {
     constructor() {
         // Respect desktop notification settings
         this._settings = new Gio.Settings({
-            schema_id: 'org.gnome.desktop.notifications'
+            schema_id: 'org.gnome.desktop.notifications',
         });
 
         // Watch for new application policies
@@ -87,7 +87,7 @@ class Listener {
         for (let app of this._settings.get_strv('application-children')) {
             let appSettings = new Gio.Settings({
                 schema_id: 'org.gnome.desktop.notifications.application',
-                path: `/org/gnome/desktop/notifications/application/${app}/`
+                path: `/org/gnome/desktop/notifications/application/${app}/`,
             });
 
             let appInfo = Gio.DesktopAppInfo.new(
@@ -218,8 +218,13 @@ class Listener {
 
     /**
      * Callback for AddNotification()/Notify()
+     *
+     * @param {DBus.Interface} iface - The DBus interface
+     * @param {string} name - The DBus method name
+     * @param {GLib.Variant} parameters - The method parameters
+     * @param {Gio.DBusMethodInvocation} invocation - The method invocation info
      */
-    async _onHandleMethodCall(impl, name, parameters, invocation) {
+    async _onHandleMethodCall(iface, name, parameters, invocation) {
         try {
             // Check if notifications are disabled in desktop settings
             if (!this._settings.get_boolean('show-banners'))
@@ -248,12 +253,14 @@ class Listener {
 
     /**
      * Export interfaces for proxying notifications and become a monitor
+     *
+     * @return {Promise} A promise for the operation
      */
     _monitorConnection() {
         return new Promise((resolve, reject) => {
             // libnotify Interface
             this._fdoNotifications = new GjsPrivate.DBusImplementation({
-                g_interface_info: FDO_IFACE
+                g_interface_info: FDO_IFACE,
             });
             this._fdoMethodCallId = this._fdoNotifications.connect(
                 'handle-method-call',
@@ -266,7 +273,7 @@ class Listener {
 
             // GNotification Interface
             this._gtkNotifications = new GjsPrivate.DBusImplementation({
-                g_interface_info: GTK_IFACE
+                g_interface_info: GTK_IFACE,
             });
             this._gtkMethodCallId = this._gtkNotifications.connect(
                 'handle-method-call',
@@ -338,7 +345,7 @@ class Listener {
             text: body,
             ticker: `${summary}: ${body}`,
             isClearable: (replacesId !== 0),
-            icon: iconName
+            icon: iconName,
         });
     }
 
@@ -360,7 +367,7 @@ class Listener {
             text: notification.body,
             ticker: `${notification.title}: ${notification.body}`,
             isClearable: true,
-            icon: notification.icon
+            icon: notification.icon,
         });
     }
 

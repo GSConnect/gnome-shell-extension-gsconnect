@@ -143,7 +143,7 @@ var Tooltip = class Tooltip {
         if (this._bin === null) {
             this._bin = new St.Bin({
                 style_class: 'osd-window gsconnect-tooltip',
-                opacity: 232
+                opacity: 232,
             });
 
             if (this.custom) {
@@ -154,7 +154,7 @@ var Tooltip = class Tooltip {
                 if (this.gicon) {
                     this._bin.child.icon = new St.Icon({
                         gicon: this.gicon,
-                        y_align: St.Align.START
+                        y_align: St.Align.START,
                     });
                     this._bin.child.icon.set_y_align(Clutter.ActorAlign.START);
                     this._bin.child.add_child(this._bin.child.icon);
@@ -198,14 +198,14 @@ var Tooltip = class Tooltip {
                 x: x,
                 y: y,
                 time: 0.15,
-                transition: Clutter.AnimationMode.EASE_OUT_QUAD
+                transition: Clutter.AnimationMode.EASE_OUT_QUAD,
             });
         } else {
             this._bin.set_position(x, y);
             this._bin.ease({
                 opacity: 232,
                 time: 0.15,
-                transition: Clutter.AnimationMode.EASE_OUT_QUAD
+                transition: Clutter.AnimationMode.EASE_OUT_QUAD,
             });
 
             this._showing = true;
@@ -239,7 +239,7 @@ var Tooltip = class Tooltip {
 
                     this._bin.destroy();
                     this._bin = null;
-                }
+                },
             });
         }
 

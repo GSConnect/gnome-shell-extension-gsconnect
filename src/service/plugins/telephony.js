@@ -15,7 +15,7 @@ var Metadata = {
     incomingCapabilities: ['kdeconnect.telephony'],
     outgoingCapabilities: [
         'kdeconnect.telephony.request',
-        'kdeconnect.telephony.request_mute'
+        'kdeconnect.telephony.request_mute',
     ],
     actions: {
         legacyReply: {
@@ -25,7 +25,7 @@ var Metadata = {
 
             parameter_type: new GLib.VariantType('a{sv}'),
             incoming: ['kdeconnect.telephony'],
-            outgoing: ['kdeconnect.sms.request']
+            outgoing: ['kdeconnect.sms.request'],
         },
         muteCall: {
             // TRANSLATORS: Silence the actively ringing call
@@ -34,9 +34,9 @@ var Metadata = {
 
             parameter_type: null,
             incoming: ['kdeconnect.telephony'],
-            outgoing: ['kdeconnect.telephony.request_mute']
-        }
-    }
+            outgoing: ['kdeconnect.telephony.request_mute'],
+        },
+    },
 };
 
 
@@ -46,7 +46,7 @@ var Metadata = {
  * https://github.com/KDE/kdeconnect-android/tree/master/src/org/kde/kdeconnect/Plugins/TelephonyPlugin
  */
 var Plugin = GObject.registerClass({
-    GTypeName: 'GSConnectTelephonyPlugin'
+    GTypeName: 'GSConnectTelephonyPlugin',
 }, class Plugin extends PluginBase.Plugin {
 
     _init(device) {
@@ -193,7 +193,7 @@ var Plugin = GObject.registerClass({
                 action: 'muteCall',
                 // TRANSLATORS: Silence the actively ringing call
                 label: _('Mute'),
-                parameter: null
+                parameter: null,
             }];
             priority = Gio.NotificationPriority.URGENT;
         }
@@ -212,7 +212,7 @@ var Plugin = GObject.registerClass({
             body: body,
             icon: icon,
             priority: priority,
-            buttons: buttons
+            buttons: buttons,
         });
     }
 
@@ -245,7 +245,7 @@ var Plugin = GObject.registerClass({
         if (packet.body.phoneNumber) {
             action = {
                 name: 'legacyReply',
-                parameter: GLib.Variant.full_pack(packet)
+                parameter: GLib.Variant.full_pack(packet),
             };
         }
 
@@ -256,7 +256,7 @@ var Plugin = GObject.registerClass({
             body: packet.body.messageBody,
             icon: icon,
             priority: Gio.NotificationPriority.NORMAL,
-            action: action
+            action: action,
         });
     }
 
@@ -271,7 +271,7 @@ var Plugin = GObject.registerClass({
         if (plugin === undefined) {
             throw new Gio.IOErrorEnum({
                 code: Gio.IOErrorEnum.NOT_SUPPORTED,
-                message: 'SMS Plugin is disabled'
+                message: 'SMS Plugin is disabled',
             });
         }
 
@@ -282,9 +282,9 @@ var Plugin = GObject.registerClass({
                 addresses: [{address: packet.body.phoneNumber}],
                 body: packet.body.messageBody,
                 sender: packet.body.contactName || _('Unknown Contact'),
-                type: 1 // MessageBox.INBOX
+                type: 1, // MessageBox.INBOX
             },
-            plugin: plugin
+            plugin: plugin,
         });
         dialog.present();
     }
@@ -296,7 +296,7 @@ var Plugin = GObject.registerClass({
     muteCall() {
         this.device.sendPacket({
             type: 'kdeconnect.telephony.request_mute',
-            body: {}
+            body: {},
         });
 
         this._restoreMediaState();

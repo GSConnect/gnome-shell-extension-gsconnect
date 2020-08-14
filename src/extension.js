@@ -22,55 +22,7 @@ const Keybindings = Extension.imports.shell.keybindings;
 const Notification = Extension.imports.shell.notification;
 const Remote = Extension.imports.utils.remote;
 
-
-/**
- * A function to fetch a GIcon with fallback support for getting unthemed icons
- * from our GResource
- */
-Extension.getIcon = function(name) {
-    if (Extension.getIcon._extension === undefined) {
-        // Setup the desktop icons
-        let settings = imports.gi.St.Settings.get();
-        Extension.getIcon._desktop = new Gtk.IconTheme();
-        Extension.getIcon._desktop.set_custom_theme(settings.gtk_icon_theme);
-        settings.connect('notify::gtk-icon-theme', (settings) => {
-            Extension.getIcon._desktop.set_custom_theme(settings.gtk_icon_theme);
-        });
-
-        // Preload our fallbacks
-        let basePath = 'resource://org/gnome/Shell/Extensions/GSConnect/icons/';
-        let iconNames = [
-            'org.gnome.Shell.Extensions.GSConnect',
-            'org.gnome.Shell.Extensions.GSConnect-symbolic',
-            'computer-symbolic',
-            'laptop-symbolic',
-            'smartphone-symbolic',
-            'tablet-symbolic',
-            'tv-symbolic',
-            'phonelink-ring-symbolic',
-            'sms-symbolic'
-        ];
-
-        Extension.getIcon._extension = {};
-
-        for (let iconName of iconNames) {
-            Extension.getIcon._extension[iconName] = new Gio.FileIcon({
-                file: Gio.File.new_for_uri(`${basePath}${iconName}.svg`)
-            });
-        }
-    }
-
-    // Check the desktop icon theme
-    if (Extension.getIcon._desktop.has_icon(name))
-        return new Gio.ThemedIcon({name: name});
-
-    // Check our GResource
-    if (Extension.getIcon._extension[name] !== undefined)
-        return Extension.getIcon._extension[name];
-
-    // Fallback to hoping it's in the theme somewhere
-    return new Gio.ThemedIcon({name: name});
-};
+Extension.getIcon = Utils.getIcon;
 
 
 /**
@@ -78,7 +30,7 @@ Extension.getIcon = function(name) {
  * indicating that the extension is active when there are none.
  */
 const ServiceIndicator = GObject.registerClass({
-    GTypeName: 'GSConnectServiceIndicator'
+    GTypeName: 'GSConnectServiceIndicator',
 }, class ServiceIndicator extends PanelMenu.SystemIndicator {
 
     _init() {
@@ -94,7 +46,7 @@ const ServiceIndicator = GObject.registerClass({
                 'org.gnome.Shell.Extensions.GSConnect',
                 null
             ),
-            path: '/org/gnome/shell/extensions/gsconnect/'
+            path: '/org/gnome/shell/extensions/gsconnect/',
         });
 
         this._enabledId = this.settings.connect(
@@ -243,7 +195,7 @@ const ServiceIndicator = GObject.registerClass({
             if (!this._item._battery) {
                 this._item._battery = new Device.Battery({
                     device: device,
-                    opacity: 128
+                    opacity: 128,
                 });
                 this._item.actor.insert_child_below(
                     this._item._battery,
@@ -278,7 +230,7 @@ const ServiceIndicator = GObject.registerClass({
                 properties.hasOwnProperty('Paired'))
                 this._sync();
         } catch (e) {
-            logError(e, 'GSConnect' );
+            logError(e, 'GSConnect');
         }
     }
 
@@ -291,7 +243,7 @@ const ServiceIndicator = GObject.registerClass({
             // Device Menu
             let menu = new Device.Menu({
                 device: device,
-                menu_type: 'list'
+                menu_type: 'list',
             });
             this._menus[device.g_object_path] = menu;
             this.deviceSection.addMenuItem(menu);
@@ -302,7 +254,7 @@ const ServiceIndicator = GObject.registerClass({
                     'org.gnome.Shell.Extensions.GSConnect.Device',
                     true
                 ),
-                path: `/org/gnome/shell/extensions/gsconnect/device/${device.id}/`
+                path: `/org/gnome/shell/extensions/gsconnect/device/${device.id}/`,
             });
 
             // Keyboard Shortcuts

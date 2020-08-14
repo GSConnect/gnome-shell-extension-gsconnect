@@ -23,7 +23,9 @@ function toHyphenCase(string) {
 
 function toUnderscoreCase(string) {
     return string.replace(/(?:^\w|[A-Z]|_|\b\w)/g, (ltr, offset) => {
-        if (ltr === '_') return '';
+        if (ltr === '_')
+            return '';
+
         return (offset > 0) ? '_' + ltr.toLowerCase() : ltr.toLowerCase();
     }).replace(/[\s-]+/g, '');
 }
@@ -31,13 +33,17 @@ function toUnderscoreCase(string) {
 
 /**
  * Build a GVariant type string from an method argument list.
+ *
+ * @param {Gio.DBusArgInfo[]} args - A list of out argument infos
+ * @return {string} A GVariant type string
  */
 function _makeOutSignature(args) {
-    var ret = '(';
+    let ret = '';
+
     for (var i = 0; i < args.length; i++)
         ret += args[i].signature;
 
-    return ret + ')';
+    return `(${ret})`;
 }
 
 
@@ -55,14 +61,14 @@ var Interface = GObject.registerClass({
             'The delegate GObject',
             GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
             GObject.Object.$gtype
-        )
-    }
+        ),
+    },
 }, class Interface extends GjsPrivate.DBusImplementation {
 
     _init(params) {
         super._init({
             g_instance: params.g_instance,
-            g_interface_info: params.g_interface_info
+            g_interface_info: params.g_interface_info,
         });
 
         // Cache member lookups
@@ -112,10 +118,10 @@ var Interface = GObject.registerClass({
      * @param {DBus.Interface} iface - The DBus interface
      * @param {string} name - The DBus method name
      * @param {GLib.Variant} parameters - The method parameters
-     * @param {Gio.DBusMethodInvocation} - The method invocation info
+     * @param {Gio.DBusMethodInvocation} invocation - The method invocation info
      */
     async _call(info, iface, name, parameters, invocation) {
-        let retval = undefined;
+        let retval;
 
         // Invoke the instance method
         try {
@@ -130,7 +136,7 @@ var Interface = GObject.registerClass({
                 }
             });
 
-            retval = await this[name].apply(this, args);
+            retval = await this[name](...args);
         } catch (e) {
             if (e instanceof GLib.Error) {
                 invocation.return_gerror(e);
@@ -245,7 +251,7 @@ var Interface = GObject.registerClass({
  * Get the DBus connection on @busType
  *
  * @param {Gio.BusType} [busType] - a Gio.BusType constant
- * @param (Gio.Cancellable} [cancellable] - an optional Gio.Cancellable
+ * @param {Gio.Cancellable} [cancellable] - an optional Gio.Cancellable
  * @return {Promise<Gio.DBusConnection>} A DBus connection
  */
 function getConnection(busType = Gio.BusType.SESSION, cancellable = null) {
@@ -264,7 +270,7 @@ function getConnection(busType = Gio.BusType.SESSION, cancellable = null) {
  * Get a new, dedicated DBus connection on @busType
  *
  * @param {Gio.BusType} [busType] - a Gio.BusType constant
- * @param (Gio.Cancellable} [cancellable] - an optional Gio.Cancellable
+ * @param {Gio.Cancellable} [cancellable] - an optional Gio.Cancellable
  * @return {Promise<Gio.DBusConnection>} A new DBus connection
  */
 function newConnection(busType = Gio.BusType.SESSION, cancellable = null) {

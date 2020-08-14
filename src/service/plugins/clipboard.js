@@ -10,11 +10,11 @@ var Metadata = {
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Clipboard',
     incomingCapabilities: [
         'kdeconnect.clipboard',
-        'kdeconnect.clipboard.connect'
+        'kdeconnect.clipboard.connect',
     ],
     outgoingCapabilities: [
         'kdeconnect.clipboard',
-        'kdeconnect.clipboard.connect'
+        'kdeconnect.clipboard.connect',
     ],
     actions: {
         clipboardPush: {
@@ -23,7 +23,7 @@ var Metadata = {
 
             parameter_type: null,
             incoming: [],
-            outgoing: ['kdeconnect.clipboard']
+            outgoing: ['kdeconnect.clipboard'],
         },
         clipboardPull: {
             label: _('Clipboard Pull'),
@@ -31,9 +31,9 @@ var Metadata = {
 
             parameter_type: null,
             incoming: ['kdeconnect.clipboard'],
-            outgoing: []
-        }
-    }
+            outgoing: [],
+        },
+    },
 };
 
 
@@ -83,8 +83,8 @@ var Plugin = GObject.registerClass({
             type: 'kdeconnect.clipboard.connect',
             body: {
                 content: this._localBuffer,
-                timestamp: this._localTimestamp
-            }
+                timestamp: this._localTimestamp,
+            },
         });
     }
 
@@ -113,7 +113,7 @@ var Plugin = GObject.registerClass({
             this._onRemoteClipboardChanged(packet.body.content);
     }
 
-    /**
+    /*
      * Store the local clipboard content and forward it if enabled
      */
     _onLocalClipboardChanged(clipboard, pspec) {
@@ -124,7 +124,7 @@ var Plugin = GObject.registerClass({
             this.clipboardPush();
     }
 
-    /**
+    /*
      * Store the remote clipboard content and apply it if enabled
      */
     _onRemoteClipboardChanged(text) {
@@ -151,8 +151,8 @@ var Plugin = GObject.registerClass({
                 this.device.sendPacket({
                     type: 'kdeconnect.clipboard',
                     body: {
-                        content: this._localBuffer
-                    }
+                        content: this._localBuffer,
+                    },
                 });
             }
         }

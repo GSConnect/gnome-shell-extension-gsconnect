@@ -78,8 +78,8 @@ var Device = GObject.registerClass({
             'The device type',
             GObject.ParamFlags.READABLE,
             null
-        )
-    }
+        ),
+    },
 }, class Device extends Gio.SimpleActionGroup {
 
     _init(identity) {
@@ -103,7 +103,7 @@ var Device = GObject.registerClass({
         // GSettings
         this.settings = new Gio.Settings({
             settings_schema: Config.GSCHEMA.lookup(DBUS_NAME, true),
-            path: `/org/gnome/shell/extensions/gsconnect/device/${this.id}/`
+            path: `/org/gnome/shell/extensions/gsconnect/device/${this.id}/`,
         });
 
         // Watch for changes to supported and disabled plugins
@@ -122,7 +122,7 @@ var Device = GObject.registerClass({
 
         // Export an object path for the device
         this._dbus_object = new Gio.DBusObjectSkeleton({
-            g_object_path: this.g_object_path
+            g_object_path: this.g_object_path,
         });
         this.service.objectManager.export(this._dbus_object);
 
@@ -143,7 +143,7 @@ var Device = GObject.registerClass({
         // Export the Device interface
         this._dbus = new DBus.Interface({
             g_instance: this,
-            g_interface_info: DBUS_IFACE
+            g_interface_info: DBUS_IFACE,
         });
         this._dbus_object.add_interface(this._dbus);
 
@@ -158,7 +158,7 @@ var Device = GObject.registerClass({
         return this._channel;
     }
 
-    get connected () {
+    get connected() {
         if (this._connected === undefined)
             this._connected = false;
 
@@ -346,7 +346,10 @@ var Device = GObject.registerClass({
         // Run the connected hook for each plugin
         this._plugins.forEach((plugin) => {
             try {
-                this.connected ? plugin.connected() : plugin.disconnected();
+                if (this.connected)
+                    plugin.connected();
+                else
+                    plugin.disconnected();
             } catch (e) {
                 debug(e, `${this.name}: ${plugin.name}`);
             }
@@ -406,7 +409,7 @@ var Device = GObject.registerClass({
             let application = GLib.build_filenamev([
                 Config.PACKAGE_DATADIR,
                 'service',
-                'daemon.js'
+                'daemon.js',
             ]);
 
             this._launcher = new Gio.SubprocessLauncher();
@@ -429,6 +432,7 @@ var Device = GObject.registerClass({
      * Handle a packet and pass it to the appropriate plugin.
      *
      * @param {Core.Packet} packet - The incoming packet object
+     * @return {undefined} no return value
      */
     handlePacket(packet) {
         try {
@@ -501,14 +505,14 @@ var Device = GObject.registerClass({
         // Transfer notification actions
         let cancelTransfer = new Gio.SimpleAction({
             name: 'cancelTransfer',
-            parameter_type: new GLib.VariantType('s')
+            parameter_type: new GLib.VariantType('s'),
         });
         cancelTransfer.connect('activate', this.cancelTransfer.bind(this));
         this.add_action(cancelTransfer);
 
         let openPath = new Gio.SimpleAction({
             name: 'openPath',
-            parameter_type: new GLib.VariantType('s')
+            parameter_type: new GLib.VariantType('s'),
         });
         openPath.connect('activate', this.openPath);
         this.add_action(openPath);
@@ -516,7 +520,7 @@ var Device = GObject.registerClass({
         // Preference helpers
         let clearCache = new Gio.SimpleAction({
             name: 'clearCache',
-            parameter_type: null
+            parameter_type: null,
         });
         clearCache.connect('activate', this._clearCache.bind(this));
         this.add_action(clearCache);
@@ -648,7 +652,7 @@ var Device = GObject.registerClass({
             icon: new Gio.ThemedIcon({name: this.icon_name}),
             priority: Gio.NotificationPriority.NORMAL,
             action: null,
-            buttons: []
+            buttons: [],
         }, params);
 
         let notif = new Gio.Notification();
@@ -670,7 +674,7 @@ var Device = GObject.registerClass({
                     this.id,
                     params.action.name,
                     hasParameter,
-                    params.action.parameter
+                    params.action.parameter,
                 ])
             );
         }
@@ -689,7 +693,7 @@ var Device = GObject.registerClass({
                     this.id,
                     button.action,
                     hasParameter,
-                    button.parameter
+                    button.parameter,
                 ])
             );
         }
@@ -698,7 +702,10 @@ var Device = GObject.registerClass({
     }
 
     /**
-     * File Transfers
+     * Cancel an ongoing file transfer.
+     *
+     * @param {Gio.Action} action - The GAction
+     * @param {GLib.Variant} parameter - The activation parameter
      */
     cancelTransfer(action, parameter) {
         try {
@@ -718,7 +725,7 @@ var Device = GObject.registerClass({
      * Create a transfer object.
      *
      * @param {Object} params - Transfer parameters
-     * @param {Device.Device} params.
+     * @return {Core.Channel} A transfer channel
      */
     createTransfer(params) {
         try {
@@ -732,7 +739,7 @@ var Device = GObject.registerClass({
             return {
                 uuid: 'mock-transfer',
                 download: () => false,
-                upload: () => false
+                upload: () => false,
             };
         }
     }
@@ -813,14 +820,14 @@ var Device = GObject.registerClass({
                 {
                     action: 'unpair',
                     label: _('Reject'),
-                    parameter: null
+                    parameter: null,
                 },
                 {
                     action: 'pair',
                     label: _('Accept'),
-                    parameter: null
-                }
-            ]
+                    parameter: null,
+                },
+            ],
         });
 
         // Start a 30s countdown
@@ -905,7 +912,7 @@ var Device = GObject.registerClass({
             // Send a pair packet
             this.sendPacket({
                 type: 'kdeconnect.pair',
-                body: {pair: true}
+                body: {pair: true},
             });
 
             // We're initiating an outgoing pair request
@@ -931,7 +938,7 @@ var Device = GObject.registerClass({
             if (this.connected) {
                 this.sendPacket({
                     type: 'kdeconnect.pair',
-                    body: {pair: false}
+                    body: {pair: false},
                 });
             }
 
@@ -942,7 +949,7 @@ var Device = GObject.registerClass({
         }
     }
 
-    /**
+    /*
      * Plugin Functions
      */
     _onAllowedPluginsChanged(settings) {
@@ -982,7 +989,10 @@ var Device = GObject.registerClass({
                 this._plugins.set(name, plugin);
 
                 // Run the connected()/disconnected() handler
-                this.connected ? plugin.connected() : plugin.disconnected();
+                if (this.connected)
+                    plugin.connected();
+                else
+                    plugin.disconnected();
             }
         } catch (e) {
             this.service.notify_error(e);

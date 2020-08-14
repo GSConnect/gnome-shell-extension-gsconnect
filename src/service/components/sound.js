@@ -10,14 +10,11 @@ const GLib = imports.gi.GLib;
  */
 const WM_SETTINGS = new Gio.Settings({
     schema_id: 'org.gnome.desktop.wm.preferences',
-    path: '/org/gnome/desktop/wm/preferences/'
+    path: '/org/gnome/desktop/wm/preferences/',
 });
 
 
-var Sound = class Sound {
-
-    constructor() {
-    }
+const Sound = class Sound {
 
     get backend() {
         if (this._backend === undefined) {
@@ -32,7 +29,7 @@ var Sound = class Sound {
             } catch (e) {
                 if (GLib.find_program_in_path('canberra-gtk-play') !== null) {
                     this._canberra = new Gio.SubprocessLauncher({
-                        flags: Gio.SubprocessFlags.NONE
+                        flags: Gio.SubprocessFlags.NONE,
                     });
                     this._backend = 'libcanberra';
                 } else {

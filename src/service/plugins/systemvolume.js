@@ -10,7 +10,7 @@ var Metadata = {
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.SystemVolume',
     incomingCapabilities: ['kdeconnect.systemvolume.request'],
     outgoingCapabilities: ['kdeconnect.systemvolume'],
-    actions: {}
+    actions: {},
 };
 
 
@@ -20,7 +20,7 @@ var Metadata = {
  * https://github.com/KDE/kdeconnect-android/tree/master/src/org/kde/kdeconnect/Plugins/SystemvolumePlugin/
  */
 var Plugin = GObject.registerClass({
-    GTypeName: 'GSConnectSystemVolumePlugin'
+    GTypeName: 'GSConnectSystemVolumePlugin',
 }, class Plugin extends PluginBase.Plugin {
 
     _init(device) {
@@ -88,8 +88,10 @@ var Plugin = GObject.registerClass({
         }
 
         // No sink with the given name
-        if (stream === undefined)
-            return this._sendSinkList();
+        if (stream === undefined) {
+            this._sendSinkList();
+            return;
+        }
 
         // Get a cache and store volume and mute states if changed
         let cache = this._cache.get(stream) || {};
@@ -120,7 +122,7 @@ var Plugin = GObject.registerClass({
             description: stream.display_name,
             muted: stream.is_muted,
             volume: stream.volume,
-            maxVolume: this._pulseaudio.get_vol_max_norm()
+            maxVolume: this._pulseaudio.get_vol_max_norm(),
         };
 
         this._cache.set(stream, state);
@@ -145,8 +147,10 @@ var Plugin = GObject.registerClass({
 
         // If the port has changed we have to send the whole list to update the
         // display name
-        if (!cache.display_name || cache.display_name !== stream.display_name)
-            return this._sendSinkList();
+        if (!cache.display_name || cache.display_name !== stream.display_name) {
+            this._sendSinkList();
+            return;
+        }
 
         // If only volume and/or mute are set, send a single update
         if (cache.volume !== stream.volume || cache.muted !== stream.is_muted) {
@@ -156,7 +160,7 @@ var Plugin = GObject.registerClass({
             // Send the stream update
             this.device.sendPacket({
                 type: 'kdeconnect.systemvolume',
-                body: state
+                body: state,
             });
         }
     }
@@ -173,8 +177,8 @@ var Plugin = GObject.registerClass({
         this.device.sendPacket({
             type: 'kdeconnect.systemvolume',
             body: {
-                sinkList: sinkList
-            }
+                sinkList: sinkList,
+            },
         });
     }
 

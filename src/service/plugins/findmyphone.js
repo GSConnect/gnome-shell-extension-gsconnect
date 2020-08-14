@@ -20,9 +20,9 @@ var Metadata = {
 
             parameter_type: null,
             incoming: [],
-            outgoing: ['kdeconnect.findmyphone.request']
-        }
-    }
+            outgoing: ['kdeconnect.findmyphone.request'],
+        },
+    },
 };
 
 
@@ -79,7 +79,7 @@ var Plugin = GObject.registerClass({
     ring() {
         this.device.sendPacket({
             type: 'kdeconnect.findmyphone.request',
-            body: {}
+            body: {},
         });
     }
 
@@ -95,7 +95,7 @@ var Plugin = GObject.registerClass({
  */
 const _WM_SETTINGS = new Gio.Settings({
     schema_id: 'org.gnome.desktop.wm.preferences',
-    path: '/org/gnome/desktop/wm/preferences/'
+    path: '/org/gnome/desktop/wm/preferences/',
 });
 
 
@@ -103,7 +103,7 @@ const _WM_SETTINGS = new Gio.Settings({
  * A custom GtkMessageDialog for alerting of incoming requests
  */
 const Dialog = GObject.registerClass({
-    GTypeName: 'GSConnectFindMyPhoneDialog'
+    GTypeName: 'GSConnectFindMyPhoneDialog',
 }, class Dialog extends Gtk.MessageDialog {
     _init(name) {
         super._init({
@@ -115,9 +115,9 @@ const Dialog = GObject.registerClass({
                 hexpand: true,
                 valign: Gtk.Align.CENTER,
                 vexpand: true,
-                visible: true
+                visible: true,
             }),
-            urgency_hint: true
+            urgency_hint: true,
         });
 
         this.set_keep_above(true);

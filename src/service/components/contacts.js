@@ -9,11 +9,14 @@ const GObject = imports.gi.GObject;
 const Config = imports.config;
 
 var HAVE_EDS = true;
+var EBook = null;
+var EBookContacts = null;
+var EDataServer = null;
 
 try {
-    var EBook = imports.gi.EBook;
-    var EBookContacts = imports.gi.EBookContacts;
-    var EDataServer = imports.gi.EDataServer;
+    EBook = imports.gi.EBook;
+    EBookContacts = imports.gi.EBookContacts;
+    EDataServer = imports.gi.EDataServer;
 } catch (e) {
     HAVE_EDS = false;
 }
@@ -31,27 +34,27 @@ var Store = GObject.registerClass({
             'Used as the cache directory, relative to Config.CACHEDIR',
             GObject.ParamFlags.CONSTRUCT_ONLY | GObject.ParamFlags.READWRITE,
             null
-        )
+        ),
     },
     Signals: {
         'contact-added': {
             flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [GObject.TYPE_STRING]
+            param_types: [GObject.TYPE_STRING],
         },
         'contact-removed': {
             flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [GObject.TYPE_STRING]
+            param_types: [GObject.TYPE_STRING],
         },
         'contact-changed': {
             flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [GObject.TYPE_STRING]
-        }
-    }
+            param_types: [GObject.TYPE_STRING],
+        },
+    },
 }, class Store extends GObject.Object {
 
     _init(context = null) {
         super._init({
-            context: context
+            context: context,
         });
 
         this._cacheData = {};
@@ -71,7 +74,7 @@ var Store = GObject.registerClass({
                 name: _('Unknown Contact'),
                 numbers: [],
                 origin: origin,
-                timestamp: 0
+                timestamp: 0,
             };
 
             // Try to get a contact name
@@ -84,7 +87,7 @@ var Store = GObject.registerClass({
             for (let attr of nums) {
                 let number = {
                     value: attr.get_value(),
-                    type: 'unknown'
+                    type: 'unknown',
                 };
 
                 if (attr.has_type('CELL'))
@@ -151,14 +154,14 @@ var Store = GObject.registerClass({
                     resolve(client.get_contacts_finish(res)[1]);
                 } catch (e) {
                     debug(e);
-                    reject([]);
+                    resolve([]);
                 }
             });
         });
     }
 
     _getESourceRegistry(cancellable = null) {
-        return new Promise ((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             EDataServer.SourceRegistry.new(cancellable, (registry, res) => {
                 try {
                     resolve(EDataServer.SourceRegistry.new_finish(res));
@@ -276,7 +279,7 @@ var Store = GObject.registerClass({
             this._ebooks.set(uid, {
                 source: source,
                 client: client,
-                view: view
+                view: view,
             });
         } catch (e) {
             debug(e);
@@ -324,7 +327,7 @@ var Store = GObject.registerClass({
             // Watch for new and removed sources
             this._watcher = new EDataServer.SourceRegistryWatcher({
                 registry: registry,
-                extension_name: 'Address Book'
+                extension_name: 'Address Book',
             });
 
             this._appearedId = this._watcher.connect(
@@ -453,7 +456,7 @@ var Store = GObject.registerClass({
             id: id,
             name: query.name || query.number,
             numbers: [{value: query.number, type: 'unknown'}],
-            origin: 'gsconnect'
+            origin: 'gsconnect',
         };
     }
 
@@ -536,7 +539,7 @@ var Store = GObject.registerClass({
             let address = addresses[i].address;
 
             contacts[address] = this.query({
-                number: address
+                number: address,
             });
         }
 

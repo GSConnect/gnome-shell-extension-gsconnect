@@ -17,8 +17,8 @@ const ClipboardProxy = GObject.registerClass({
             'The current text content of the clipboard',
             GObject.ParamFlags.READWRITE,
             ''
-        )
-    }
+        ),
+    },
 }, class ClipboardProxy extends Gio.DBusProxy {
 
     _init() {
@@ -26,7 +26,7 @@ const ClipboardProxy = GObject.registerClass({
             g_bus_type: Gio.BusType.SESSION,
             g_name: 'org.gnome.Shell.Extensions.GSConnect.Clipboard',
             g_object_path: '/org/gnome/Shell/Extensions/GSConnect/Clipboard',
-            g_interface_name: 'org.gnome.Shell.Extensions.GSConnect.Clipboard'
+            g_interface_name: 'org.gnome.Shell.Extensions.GSConnect.Clipboard',
         });
     }
 
@@ -88,8 +88,8 @@ var Clipboard = GObject.registerClass({
             'The current text content of the clipboard',
             GObject.ParamFlags.READWRITE,
             ''
-        )
-    }
+        ),
+    },
 }, class Clipboard extends GObject.Object {
 
     _init() {

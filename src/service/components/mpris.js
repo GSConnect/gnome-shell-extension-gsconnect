@@ -187,14 +187,14 @@ var Player = GObject.registerClass({
             'Whether the media player may be controlled over this interface.',
             GObject.ParamFlags.READABLE,
             false
-        )
+        ),
     },
     Signals: {
         'Seeked': {
             flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [GObject.TYPE_INT64]
-        }
-    }
+            param_types: [GObject.TYPE_INT64],
+        },
+    },
 }, class Player extends Gio.DBusProxy {
 
     _init(name) {
@@ -202,14 +202,14 @@ var Player = GObject.registerClass({
             g_bus_type: Gio.BusType.SESSION,
             g_name: name,
             g_object_path: '/org/mpris/MediaPlayer2',
-            g_interface_name: 'org.mpris.MediaPlayer2.Player'
+            g_interface_name: 'org.mpris.MediaPlayer2.Player',
         });
 
         this._application = new Gio.DBusProxy({
             g_bus_type: Gio.BusType.SESSION,
             g_name: name,
             g_object_path: '/org/mpris/MediaPlayer2',
-            g_interface_name: 'org.mpris.MediaPlayer2'
+            g_interface_name: 'org.mpris.MediaPlayer2',
         });
 
         this._propertiesChangedId = this._application.connect(
@@ -411,7 +411,7 @@ var Player = GObject.registerClass({
                 'xesam:artist': [_('Unknown')],
                 'xesam:album': _('Unknown'),
                 'xesam:title': _('Unknown'),
-                'mpris:length': 0
+                'mpris:length': 0,
             };
         }
 
@@ -528,25 +528,25 @@ var Manager = GObject.registerClass({
     Implements: [Gio.DBusInterface],
     Signals: {
         'player-added': {
-            param_types: [GObject.TYPE_OBJECT]
+            param_types: [GObject.TYPE_OBJECT],
         },
         'player-removed': {
-            param_types: [GObject.TYPE_OBJECT]
+            param_types: [GObject.TYPE_OBJECT],
         },
         'player-changed': {
-            param_types: [GObject.TYPE_OBJECT]
+            param_types: [GObject.TYPE_OBJECT],
         },
         'player-seeked': {
-            param_types: [GObject.TYPE_OBJECT]
-        }
-    }
+            param_types: [GObject.TYPE_OBJECT],
+        },
+    },
 }, class Manager extends Gio.DBusProxy {
 
     _init() {
         super._init({
             g_bus_type: Gio.BusType.SESSION,
             g_name: 'org.freedesktop.DBus',
-            g_object_path: '/org/freedesktop/DBus'
+            g_object_path: '/org/freedesktop/DBus',
         });
 
         // Asynchronous setup

@@ -10,7 +10,7 @@ var Metadata = {
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Presenter',
     incomingCapabilities: ['kdeconnect.presenter'],
     outgoingCapabilities: [],
-    actions: {}
+    actions: {},
 };
 
 
@@ -20,7 +20,7 @@ var Metadata = {
  * https://github.com/KDE/kdeconnect-android/tree/master/src/org/kde/kdeconnect/Plugins/PresenterPlugin/
  */
 var Plugin = GObject.registerClass({
-    GTypeName: 'GSConnectPresenterPlugin'
+    GTypeName: 'GSConnectPresenterPlugin',
 }, class Plugin extends PluginBase.Plugin {
 
     _init(device) {

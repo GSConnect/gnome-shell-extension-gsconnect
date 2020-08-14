@@ -15,13 +15,13 @@ var Metadata = {
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Notification',
     incomingCapabilities: [
         'kdeconnect.notification',
-        'kdeconnect.notification.request'
+        'kdeconnect.notification.request',
     ],
     outgoingCapabilities: [
         'kdeconnect.notification',
         'kdeconnect.notification.action',
         'kdeconnect.notification.reply',
-        'kdeconnect.notification.request'
+        'kdeconnect.notification.request',
     ],
     actions: {
         withdrawNotification: {
@@ -30,7 +30,7 @@ var Metadata = {
 
             parameter_type: new GLib.VariantType('s'),
             incoming: [],
-            outgoing: ['kdeconnect.notification']
+            outgoing: ['kdeconnect.notification'],
         },
         closeNotification: {
             label: _('Close Notification'),
@@ -38,7 +38,7 @@ var Metadata = {
 
             parameter_type: new GLib.VariantType('s'),
             incoming: [],
-            outgoing: ['kdeconnect.notification.request']
+            outgoing: ['kdeconnect.notification.request'],
         },
         replyNotification: {
             label: _('Reply Notification'),
@@ -46,7 +46,7 @@ var Metadata = {
 
             parameter_type: new GLib.VariantType('(ssa{ss})'),
             incoming: ['kdeconnect.notification'],
-            outgoing: ['kdeconnect.notification.reply']
+            outgoing: ['kdeconnect.notification.reply'],
         },
         sendNotification: {
             label: _('Send Notification'),
@@ -54,7 +54,7 @@ var Metadata = {
 
             parameter_type: new GLib.VariantType('a{sv}'),
             incoming: [],
-            outgoing: ['kdeconnect.notification']
+            outgoing: ['kdeconnect.notification'],
         },
         activateNotification: {
             label: _('Activate Notification'),
@@ -62,9 +62,9 @@ var Metadata = {
 
             parameter_type: new GLib.VariantType('(ss)'),
             incoming: [],
-            outgoing: ['kdeconnect.notification.action']
-        }
-    }
+            outgoing: ['kdeconnect.notification.action'],
+        },
+    },
 };
 
 
@@ -91,14 +91,14 @@ const SMS_APPS = [
 
     // Known not to work with sms plugin
     'org.thoughtcrime.securesms',               // Signal Private Messenger
-    'com.samsung.android.messaging'             // Samsung Messages
+    'com.samsung.android.messaging',             // Samsung Messages
 ];
 
 
 /**
  * Try to determine if an notification is from an SMS app
  *
- * @param {Core.Packet} - A `kdeconnect.notification`
+ * @param {Core.Packet} packet - A `kdeconnect.notification`
  * @return {boolean} Whether the notification is from an SMS app
  */
 function _isSmsNotification(packet) {
@@ -157,7 +157,7 @@ function _removeNotification(id, application = null) {
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/sendnotifications
  */
 var Plugin = GObject.registerClass({
-    GTypeName: 'GSConnectNotificationPlugin'
+    GTypeName: 'GSConnectNotificationPlugin',
 }, class Plugin extends PluginBase.Plugin {
 
     _init(device) {
@@ -257,7 +257,7 @@ var Plugin = GObject.registerClass({
     _handleNotificationRequest(packet) {
         // A request for our notifications. This isn't implemented and would be
         // pretty hard to without communicating with GNOME Shell.
-        if (packet.body.hasOwnProperty('request')) {
+        if (packet.body.hasOwnProperty('request'))
             return;
 
         // A request to close a local notification
@@ -268,7 +268,7 @@ var Plugin = GObject.registerClass({
         // For clients that do support it, we report notification ids in the
         // form "type|application-id|notification-id" so we can close it with
         // the appropriate service.
-        } else if (packet.body.hasOwnProperty('cancel')) {
+        if (packet.body.hasOwnProperty('cancel')) {
             let [, type, application, id] = ID_REGEX.exec(packet.body.cancel);
 
             if (type === 'fdo')
@@ -331,7 +331,7 @@ var Plugin = GObject.registerClass({
      * A function for uploading GThemedIcons
      *
      * @param {Core.Packet} packet - The packet for the notification
-     * @param {Gio.ThemedIcon} file - The GIcon to upload
+     * @param {Gio.ThemedIcon} icon - The GIcon to upload
      */
     _uploadThemedIcon(packet, icon) {
         let theme = Gtk.IconTheme.get_default();
@@ -366,7 +366,7 @@ var Plugin = GObject.registerClass({
         try {
             let transfer = this.device.createTransfer({
                 input_stream: stream,
-                size: size
+                size: size,
             });
 
             let success = await transfer.upload(packet);
@@ -383,6 +383,7 @@ var Plugin = GObject.registerClass({
      *
      * @param {Core.Packet} packet - A `kdeconnect.notification`
      * @param {Gio.Icon|string|null} icon - An icon or %null
+     * @return {Promise} A promise for the operation
      */
     _uploadIcon(packet, icon = null) {
         // Normalize strings into GIcons
@@ -406,6 +407,8 @@ var Plugin = GObject.registerClass({
      * See Notification.Listener._sendNotification()
      *
      * TODO: component signal - NotificationListener::notification-added
+     *
+     * @param {Object} notif - A dictionary of notification parameters
      */
     async sendNotification(notif) {
         try {
@@ -420,7 +423,7 @@ var Plugin = GObject.registerClass({
             if (notif.appName && !this._applications[notif.appName]) {
                 this._applications[notif.appName] = {
                     iconName: 'system-run-symbolic',
-                    enabled: true
+                    enabled: true,
                 };
 
                 // Store the themed icons for the device preferences window
@@ -449,7 +452,7 @@ var Plugin = GObject.registerClass({
 
             await this._uploadIcon({
                 type: 'kdeconnect.notification',
-                body: notif
+                body: notif,
             }, icon);
         } catch (e) {
             logError(e);
@@ -464,7 +467,7 @@ var Plugin = GObject.registerClass({
             // Save the file in the global cache
             let path = GLib.build_filenamev([
                 Config.CACHEDIR,
-                packet.body.payloadHash || `${Date.now()}`
+                packet.body.payloadHash || `${Date.now()}`,
             ]);
 
             // Check if we've already downloaded this icon
@@ -488,7 +491,7 @@ var Plugin = GObject.registerClass({
 
             let transfer = this.device.createTransfer(Object.assign({
                 output_stream: stream,
-                size: packet.payloadSize
+                size: packet.payloadSize,
             }, packet.payloadTransferInfo));
 
             // Return the icon if successful, delete on failure
@@ -532,9 +535,9 @@ var Plugin = GObject.registerClass({
                         {
                             appName: packet.body.appName,
                             title: packet.body.title,
-                            text: packet.body.text
-                        }
-                    ])
+                            text: packet.body.text,
+                        },
+                    ]),
                 };
             }
 
@@ -544,7 +547,7 @@ var Plugin = GObject.registerClass({
                     return {
                         label: action,
                         action: 'activateNotification',
-                        parameter: new GLib.Variant('(ss)', [id, action])
+                        parameter: new GLib.Variant('(ss)', [id, action]),
                     };
                 });
             }
@@ -563,7 +566,7 @@ var Plugin = GObject.registerClass({
                 body = packet.body.text;
                 action = {
                     name: 'replySms',
-                    parameter: new GLib.Variant('s', packet.body.title)
+                    parameter: new GLib.Variant('s', packet.body.title),
                 };
 
                 if (icon === null)
@@ -585,7 +588,7 @@ var Plugin = GObject.registerClass({
                 body: body,
                 icon: icon,
                 action: action,
-                buttons: buttons
+                buttons: buttons,
             });
         } catch (e) {
             logError(e);
@@ -598,7 +601,7 @@ var Plugin = GObject.registerClass({
     _requestNotifications() {
         this.device.sendPacket({
             type: 'kdeconnect.notification.request',
-            body: {request: true}
+            body: {request: true},
         });
     }
 
@@ -613,8 +616,8 @@ var Plugin = GObject.registerClass({
             type: 'kdeconnect.notification',
             body: {
                 isCancel: true,
-                id: id
-            }
+                id: id,
+            },
         });
     }
 
@@ -627,7 +630,7 @@ var Plugin = GObject.registerClass({
     closeNotification(id) {
         this.device.sendPacket({
             type: 'kdeconnect.notification.request',
-            body: {cancel: id}
+            body: {cancel: id},
         });
     }
 
@@ -649,7 +652,7 @@ var Plugin = GObject.registerClass({
                 device: this.device,
                 uuid: uuid,
                 notification: notification,
-                plugin: this
+                plugin: this,
             });
             dialog.present();
 
@@ -659,8 +662,8 @@ var Plugin = GObject.registerClass({
                 type: 'kdeconnect.notification.reply',
                 body: {
                     requestReplyId: uuid,
-                    message: message
-                }
+                    message: message,
+                },
             });
         }
     }
@@ -676,8 +679,8 @@ var Plugin = GObject.registerClass({
             type: 'kdeconnect.notification.action',
             body: {
                 action: action,
-                key: id
-            }
+                key: id,
+            },
         });
     }
 

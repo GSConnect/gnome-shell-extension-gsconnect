@@ -21,8 +21,8 @@ function getIcon(name) {
         let settings = imports.gi.St.Settings.get();
         getIcon._desktop = new imports.gi.Gtk.IconTheme();
         getIcon._desktop.set_custom_theme(settings.gtk_icon_theme);
-        settings.connect('notify::gtk-icon-theme', (settings) => {
-            getIcon._desktop.set_custom_theme(settings.gtk_icon_theme);
+        settings.connect('notify::gtk-icon-theme', (settings_, key_) => {
+            getIcon._desktop.set_custom_theme(settings_.gtk_icon_theme);
         });
 
         // Preload our fallbacks
@@ -36,14 +36,14 @@ function getIcon(name) {
             'tablet-symbolic',
             'tv-symbolic',
             'phonelink-ring-symbolic',
-            'sms-symbolic'
+            'sms-symbolic',
         ];
 
         getIcon._resource = {};
 
         for (let iconName of iconNames) {
             getIcon._resource[iconName] = new Gio.FileIcon({
-                file: Gio.File.new_for_uri(`${iconPath}/${iconName}.svg`)
+                file: Gio.File.new_for_uri(`${iconPath}/${iconName}.svg`),
             });
         }
     }
@@ -150,7 +150,7 @@ function installService() {
     // File Manager Extensions
     let fileManagers = [
         [`${dataDir}/nautilus-python/extensions`, 'nautilus-gsconnect.py'],
-        [`${dataDir}/nemo-python/extensions`, 'nemo-gsconnect.py']
+        [`${dataDir}/nemo-python/extensions`, 'nemo-gsconnect.py'],
     ];
 
     // WebExtension Manifests
@@ -163,7 +163,7 @@ function installService() {
         [`${confDir}/google-chrome-beta/NativeMessagingHosts/`, google],
         [`${confDir}/google-chrome-unstable/NativeMessagingHosts/`, google],
         [`${confDir}/BraveSoftware/Brave-Browser/NativeMessagingHosts/`, google],
-        [`${homeDir}/.mozilla/native-messaging-hosts/`, mozilla]
+        [`${homeDir}/.mozilla/native-messaging-hosts/`, mozilla],
     ];
 
     // If running as a user extension, ensure the DBus service, desktop entry,

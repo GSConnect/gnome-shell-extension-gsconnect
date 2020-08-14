@@ -12,11 +12,11 @@ var Metadata = {
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.RunCommand',
     incomingCapabilities: [
         'kdeconnect.runcommand',
-        'kdeconnect.runcommand.request'
+        'kdeconnect.runcommand.request',
     ],
     outgoingCapabilities: [
         'kdeconnect.runcommand',
-        'kdeconnect.runcommand.request'
+        'kdeconnect.runcommand.request',
     ],
     actions: {
         commands: {
@@ -25,7 +25,7 @@ var Metadata = {
 
             parameter_type: new GLib.VariantType('s'),
             incoming: ['kdeconnect.runcommand'],
-            outgoing: ['kdeconnect.runcommand.request']
+            outgoing: ['kdeconnect.runcommand.request'],
         },
         executeCommand: {
             label: _('Commands'),
@@ -33,9 +33,9 @@ var Metadata = {
 
             parameter_type: new GLib.VariantType('s'),
             incoming: ['kdeconnect.runcommand'],
-            outgoing: ['kdeconnect.runcommand.request']
-        }
-    }
+            outgoing: ['kdeconnect.runcommand.request'],
+        },
+    },
 };
 
 
@@ -54,8 +54,8 @@ var Plugin = GObject.registerClass({
             new GLib.VariantType('a{sv}'),
             null,
             GObject.ParamFlags.READABLE
-        )
-    }
+        ),
+    },
 }, class Plugin extends PluginBase.Plugin {
 
     _init(device) {
@@ -129,14 +129,14 @@ var Plugin = GObject.registerClass({
             if (!commandList.hasOwnProperty(key)) {
                 throw new Gio.IOErrorEnum({
                     code: Gio.IOErrorEnum.PERMISSION_DENIED,
-                    message: `Unknown command: ${key}`
+                    message: `Unknown command: ${key}`,
                 });
             }
 
             this.device.launchProcess([
                 '/bin/sh',
                 '-c',
-                commandList[key].command
+                commandList[key].command,
             ]);
         } catch (e) {
             logError(e, this.device.name);
@@ -198,7 +198,7 @@ var Plugin = GObject.registerClass({
     _requestCommandList() {
         this.device.sendPacket({
             type: 'kdeconnect.runcommand.request',
-            body: {requestCommandList: true}
+            body: {requestCommandList: true},
         });
     }
 
@@ -210,7 +210,7 @@ var Plugin = GObject.registerClass({
 
         this.device.sendPacket({
             type: 'kdeconnect.runcommand',
-            body: {commandList: commands}
+            body: {commandList: commands},
         });
     }
 
@@ -227,7 +227,7 @@ var Plugin = GObject.registerClass({
     executeCommand(key) {
         this.device.sendPacket({
             type: 'kdeconnect.runcommand.request',
-            body: {key: key}
+            body: {key: key},
         });
     }
 

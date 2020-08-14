@@ -25,49 +25,49 @@ const TIME_SPAN_WEEK = 604800000;
 // Less than an hour (eg. 42 minutes ago)
 const _lthLong = new Intl.RelativeTimeFormat('default', {
     numeric: 'auto',
-    style: 'long'
+    style: 'long',
 });
 
 // Less than a day ago (eg. 11:42 PM)
 const _ltdFormat = new Intl.DateTimeFormat('default', {
     hour: 'numeric',
-    minute: 'numeric'
+    minute: 'numeric',
 });
 
 // Less than a week ago (eg. Monday)
 const _ltwLong = new Intl.DateTimeFormat('default', {
-    weekday: 'long'
+    weekday: 'long',
 });
 
 // Less than a week ago (eg. Mon)
 const _ltwShort = new Intl.DateTimeFormat('default', {
-    weekday: 'short'
+    weekday: 'short',
 });
 
 // Less than a year (eg. Oct 31)
 const _ltyShort = new Intl.DateTimeFormat('default', {
     day: 'numeric',
-    month: 'short'
+    month: 'short',
 });
 
 // Less than a year (eg. October 31)
 const _ltyLong = new Intl.DateTimeFormat('default', {
     day: 'numeric',
-    month: 'long'
+    month: 'long',
 });
 
 // Greater than a year (eg. October 31, 2019)
 const _gtyLong = new Intl.DateTimeFormat('default', {
     day: 'numeric',
     month: 'long',
-    year: 'numeric'
+    year: 'numeric',
 });
 
 // Greater than a year (eg. 10/31/2019)
 const _gtyShort = new Intl.DateTimeFormat('default', {
     day: 'numeric',
     month: 'numeric',
-    year: 'numeric'
+    year: 'numeric',
 });
 
 // Pretty close to strftime's %c
@@ -79,7 +79,7 @@ const _cFormat = new Intl.DateTimeFormat('default', {
     hour: 'numeric',
     minute: 'numeric',
     second: 'numeric',
-    timeZoneName: 'short'
+    timeZoneName: 'short',
 });
 
 
@@ -183,7 +183,7 @@ function getContactsForAddresses(device, addresses) {
         let address = addresses[i].address;
 
         contacts[address] = device.contacts.query({
-            number: address
+            number: address,
         });
     }
 }
@@ -212,7 +212,7 @@ function setAvatarVisible(row, visible) {
 const ConversationMessage = GObject.registerClass({
     GTypeName: 'GSConnectMessagingConversationMessage',
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/messaging-conversation-message.ui',
-    Children: ['grid', 'avatar', 'sender-label', 'message-label']
+    Children: ['grid', 'avatar', 'sender-label', 'message-label'],
 }, class ConversationMessage extends Gtk.ListBoxRow {
     _init(contact, message) {
         super._init();
@@ -307,19 +307,19 @@ const Conversation = GObject.registerClass({
             'The current thread',
             GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
             ''
-        )
+        ),
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/messaging-conversation.ui',
     Children: [
         'entry', 'list', 'scrolled',
-        'pending', 'pending-box'
-    ]
+        'pending', 'pending-box',
+    ],
 }, class MessagingConversation extends Gtk.Grid {
 
     _init(params) {
         super._init({
             device: params.device,
-            plugin: params.plugin
+            plugin: params.plugin,
         });
         Object.assign(this, params);
 
@@ -380,7 +380,7 @@ const Conversation = GObject.registerClass({
             let address = this.addresses[i].address;
 
             this.contacts[address] = this.device.contacts.query({
-                number: address
+                number: address,
             });
         }
 
@@ -493,7 +493,7 @@ const Conversation = GObject.registerClass({
             visible: true,
             wrap: true,
             wrap_mode: Pango.WrapMode.WORD_CHAR,
-            xalign: 0
+            xalign: 0,
         });
         message.get_style_context().add_class('message-out');
         message.date = Date.now();
@@ -540,7 +540,7 @@ const Conversation = GObject.registerClass({
 
         if (this.contacts[sender] === undefined) {
             this.contacts[sender] = this.device.contacts.query({
-                number: sender
+                number: sender,
             });
         }
 
@@ -625,7 +625,7 @@ const Conversation = GObject.registerClass({
                 value: vpos,
                 time: 0.5,
                 transition: 'easeInOutCubic',
-                onComplete: () => this._vadj.thaw_notify()
+                onComplete: () => this._vadj.thaw_notify(),
             });
         } else {
             GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
@@ -708,7 +708,7 @@ const Conversation = GObject.registerClass({
 const ConversationSummary = GObject.registerClass({
     GTypeName: 'GSConnectMessagingConversationSummary',
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/messaging-conversation-summary.ui',
-    Children: ['avatar', 'name-label', 'time-label', 'body-label']
+    Children: ['avatar', 'name-label', 'time-label', 'body-label'],
 }, class ConversationSummary extends Gtk.ListBoxRow {
     _init(contacts, message) {
         super._init();
@@ -810,13 +810,13 @@ var Window = GObject.registerClass({
             'The current thread',
             GObject.ParamFlags.READWRITE,
             ''
-        )
+        ),
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/messaging-window.ui',
     Children: [
         'headerbar', 'infobar',
-        'thread-list', 'stack'
-    ]
+        'thread-list', 'stack',
+    ],
 }, class MessagingWindow extends Gtk.ApplicationWindow {
 
     _init(params) {
@@ -835,7 +835,7 @@ var Window = GObject.registerClass({
 
         // Contacts
         this.contact_chooser = new Contacts.ContactChooser({
-            device: this.device
+            device: this.device,
         });
         this.stack.add_named(this.contact_chooser, 'contact-chooser');
 
@@ -908,7 +908,7 @@ var Window = GObject.registerClass({
             conversation = new Conversation({
                 device: this.device,
                 plugin: this.plugin,
-                thread_id: thread_id
+                thread_id: thread_id,
             });
 
             this.stack.add_named(conversation, thread_id);
@@ -998,7 +998,7 @@ var Window = GObject.registerClass({
 
                 if (row.contacts[sender] === undefined) {
                     row.contacts[sender] = this.device.contacts.query({
-                        number: sender
+                        number: sender,
                     });
                 }
 
@@ -1106,7 +1106,7 @@ var Window = GObject.registerClass({
         let conversation = new Conversation({
             device: this.device,
             plugin: this.plugin,
-            addresses: addresses
+            addresses: addresses,
         });
 
         // Set the headerbar
@@ -1147,8 +1147,9 @@ var Window = GObject.registerClass({
      * @return {Conversation|null} A conversation widget or %null
      */
     getConversationForMessage(message) {
-        // This shouldn't happen
-        if (message === null) return null;
+        // TODO: This shouldn't happen?
+        if (message === null)
+            return null;
 
         // First try to find a conversation by thread_id
         let thread_id = `${message.thread_id}`;
@@ -1186,7 +1187,7 @@ var Window = GObject.registerClass({
      * message of the currently selected conversation, otherwise mark the
      * message to be set for the next selected conversation.
      *
-     * @param {string} text - The message to place in the entry
+     * @param {string} message - The message to place in the entry
      * @param {boolean} pending - Wait for a conversation to be selected
      */
     setMessage(message, pending = false) {
@@ -1228,15 +1229,15 @@ var ConversationChooser = GObject.registerClass({
             'The plugin providing messages',
             GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
             GObject.Object
-        )
-    }
+        ),
+    },
 }, class ConversationChooser extends Gtk.ApplicationWindow {
 
     _init(params) {
         super._init(Object.assign({
             title: _('Share Link'),
             default_width: 300,
-            default_height: 200
+            default_height: 200,
         }, params));
         this.set_keep_above(true);
 
@@ -1245,14 +1246,14 @@ var ConversationChooser = GObject.registerClass({
             title: _('Share Link'),
             subtitle: this.message,
             show_close_button: true,
-            tooltip_text: this.message
+            tooltip_text: this.message,
         });
         this.set_titlebar(this.headerbar);
 
         let newButton = new Gtk.Button({
             image: new Gtk.Image({icon_name: 'list-add-symbolic'}),
             tooltip_text: _('New Conversation'),
-            always_show_image: true
+            always_show_image: true,
         });
         newButton.connect('clicked', this._new.bind(this));
         this.headerbar.pack_start(newButton);
@@ -1262,12 +1263,12 @@ var ConversationChooser = GObject.registerClass({
             can_focus: false,
             hexpand: true,
             vexpand: true,
-            hscrollbar_policy: Gtk.PolicyType.NEVER
+            hscrollbar_policy: Gtk.PolicyType.NEVER,
         });
         this.add(scrolledWindow);
 
         this.thread_list = new Gtk.ListBox({
-            activate_on_single_click: false
+            activate_on_single_click: false,
         });
         this.thread_list.set_sort_func(Window.prototype._sortThreads);
         this.thread_list.connect('row-activated', this._select.bind(this));

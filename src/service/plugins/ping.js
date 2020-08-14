@@ -19,9 +19,9 @@ var Metadata = {
 
             parameter_type: new GLib.VariantType('s'),
             incoming: [],
-            outgoing: ['kdeconnect.ping']
-        }
-    }
+            outgoing: ['kdeconnect.ping'],
+        },
+    },
 };
 
 
@@ -30,7 +30,7 @@ var Metadata = {
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/ping
  */
 var Plugin = GObject.registerClass({
-    GTypeName: 'GSConnectPingPlugin'
+    GTypeName: 'GSConnectPingPlugin',
 }, class Plugin extends PluginBase.Plugin {
 
     _init(device) {
@@ -42,7 +42,7 @@ var Plugin = GObject.registerClass({
         let notif = {
             title: this.device.name,
             body: _('Ping'),
-            icon: new Gio.ThemedIcon({name: `${this.device.icon_name}`})
+            icon: new Gio.ThemedIcon({name: `${this.device.icon_name}`}),
         };
 
         if (packet.body.message) {
@@ -57,7 +57,7 @@ var Plugin = GObject.registerClass({
     ping(message = '') {
         let packet = {
             type: 'kdeconnect.ping',
-            body: {}
+            body: {},
         };
 
         if (message.length)

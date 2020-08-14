@@ -8,16 +8,16 @@ const Gtk = imports.gi.Gtk;
 const Config = imports.config;
 
 
-/**
+/*
  * Window State
  */
-Gtk.Window.prototype.restoreGeometry = function(context = 'default') {
+Gtk.Window.prototype.restoreGeometry = function (context = 'default') {
     this._windowState = new Gio.Settings({
         settings_schema: Config.GSCHEMA.lookup(
             'org.gnome.Shell.Extensions.GSConnect.WindowState',
             true
         ),
-        path: `/org/gnome/shell/extensions/gsconnect/${context}/`
+        path: `/org/gnome/shell/extensions/gsconnect/${context}/`,
     });
 
     // Size
@@ -31,7 +31,7 @@ Gtk.Window.prototype.restoreGeometry = function(context = 'default') {
         this.maximize();
 };
 
-Gtk.Window.prototype.saveGeometry = function() {
+Gtk.Window.prototype.saveGeometry = function () {
     let state = this.get_window().get_state();
 
     // Maximized State

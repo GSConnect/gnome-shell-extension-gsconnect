@@ -37,13 +37,13 @@ var Clipboard = GObject.registerClass({
             'The current text content of the clipboard',
             GObject.ParamFlags.READWRITE,
             ''
-        )
-    }
+        ),
+    },
 }, class GSConnectShellClipboard extends GjsPrivate.DBusImplementation {
 
     _init(params = {}) {
         super._init({
-            g_interface_info: DBUS_INFO
+            g_interface_info: DBUS_INFO,
         });
 
         this._text = '';

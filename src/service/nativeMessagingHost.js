@@ -13,13 +13,13 @@ const System = imports.system;
 
 
 const NativeMessagingHost = GObject.registerClass({
-    GTypeName: 'GSConnectNativeMessagingHost'
+    GTypeName: 'GSConnectNativeMessagingHost',
 }, class NativeMessagingHost extends Gio.Application {
 
     _init() {
         super._init({
             application_id: 'org.gnome.Shell.Extensions.GSConnect.NativeMessagingHost',
-            flags: Gio.ApplicationFlags.NON_UNIQUE
+            flags: Gio.ApplicationFlags.NON_UNIQUE,
         });
     }
 
@@ -41,12 +41,12 @@ const NativeMessagingHost = GObject.registerClass({
         // IO Channels
         this._stdin = new Gio.DataInputStream({
             base_stream: new Gio.UnixInputStream({fd: 0}),
-            byte_order: Gio.DataStreamByteOrder.HOST_ENDIAN
+            byte_order: Gio.DataStreamByteOrder.HOST_ENDIAN,
         });
 
         this._stdout = new Gio.DataOutputStream({
             base_stream: new Gio.UnixOutputStream({fd: 1}),
-            byte_order: Gio.DataStreamByteOrder.HOST_ENDIAN
+            byte_order: Gio.DataStreamByteOrder.HOST_ENDIAN,
         });
 
         let source = this._stdin.base_stream.create_source(null);
@@ -98,7 +98,7 @@ const NativeMessagingHost = GObject.registerClass({
 
         this.send({
             type: 'connected',
-            data: (this._manager.name_owner !== null)
+            data: (this._manager.name_owner !== null),
         });
     }
 
@@ -165,7 +165,7 @@ const NativeMessagingHost = GObject.registerClass({
                     name: device.name,
                     type: device.type,
                     share: share,
-                    telephony: telephony
+                    telephony: telephony,
                 });
             }
         }
@@ -185,13 +185,13 @@ const NativeMessagingHost = GObject.registerClass({
         Object.defineProperties(iface, {
             'name': {
                 get: this._proxyGetter.bind(iface, 'Name'),
-                enumerable: true
+                enumerable: true,
             },
             // TODO: phase this out for icon-name
             'type': {
                 get: this._proxyGetter.bind(iface, 'Type'),
-                enumerable: true
-            }
+                enumerable: true,
+            },
         });
 
         iface.actions = Gio.DBusActionGroup.get(

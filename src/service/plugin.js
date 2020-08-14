@@ -13,7 +13,7 @@ const Config = imports.config;
  * Base class for device plugins.
  */
 var Plugin = GObject.registerClass({
-    GTypeName: 'GSConnectPlugin'
+    GTypeName: 'GSConnectPlugin',
 }, class Plugin extends GObject.Object {
 
     _init(device, name) {
@@ -26,7 +26,7 @@ var Plugin = GObject.registerClass({
         // GSettings
         this.settings = new Gio.Settings({
             settings_schema: Config.GSCHEMA.lookup(this._info.id, false),
-            path: `${device.settings.path}plugin/${name}/`
+            path: `${device.settings.path}plugin/${name}/`,
         });
 
         // GActions
@@ -65,9 +65,9 @@ var Plugin = GObject.registerClass({
                 args = parameter.full_unpack();
 
             if (Array.isArray(args))
-                this[action.name].apply(this, args);
+                this[action.name](...args);
             else
-                this[action.name].call(this, args);
+                this[action.name](args);
         } catch (e) {
             logError(e, action.name);
         }
@@ -79,7 +79,7 @@ var Plugin = GObject.registerClass({
             let action = new Gio.SimpleAction({
                 name: name,
                 parameter_type: info.parameter_type,
-                enabled: false
+                enabled: false,
             });
             action.connect('activate', this._activateAction.bind(this));
 
@@ -153,7 +153,7 @@ var Plugin = GObject.registerClass({
             // Ensure the device's cache directory exists
             let cachedir = GLib.build_filenamev([
                 Config.CACHEDIR,
-                this.device.id
+                this.device.id,
             ]);
             GLib.mkdir_with_parents(cachedir, 448);
 

@@ -23,7 +23,7 @@ const Tooltip = Extension.imports.shell.tooltip;
 function getItemInfo(model, index) {
     let info = {
         target: null,
-        links: []
+        links: [],
     };
 
     //
@@ -58,7 +58,7 @@ function getItemInfo(model, index) {
     while (iter.next()) {
         info.links.push({
             name: iter.get_name(),
-            value: iter.get_value()
+            value: iter.get_value(),
         });
     }
 
@@ -78,7 +78,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         // Main Actor
         this.actor = new St.BoxLayout({
             x_expand: true,
-            clip_to_allocation: true
+            clip_to_allocation: true,
         });
         this.actor._delegate = this;
 
@@ -94,7 +94,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
             clip_to_allocation: true,
             vertical: false,
             visible: false,
-            x_expand: true
+            x_expand: true,
         });
         this.sub.set_pivot_point(1, 1);
         this.sub._delegate = this;
@@ -213,7 +213,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
     _addGMenuSection(model) {
         let section = new ListBox({
             model: model,
-            action_group: this.action_group
+            action_group: this.action_group,
         });
         this.addMenuItem(section);
     }
@@ -238,7 +238,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
             model: model,
             action_group: this.action_group,
             submenu_for: item,
-            _parent: this
+            _parent: this,
         });
         item.submenu.actor.hide();
 
@@ -378,13 +378,13 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
  * A St.Button subclass for iconic GMenu items
  */
 var IconButton = GObject.registerClass({
-    GTypeName: 'GSConnectShellIconButton'
+    GTypeName: 'GSConnectShellIconButton',
 }, class Button extends St.Button {
 
     _init(params) {
         super._init({
             style_class: 'gsconnect-icon-button',
-            can_focus: true
+            can_focus: true,
         });
         Object.assign(this, params);
 
@@ -398,7 +398,7 @@ var IconButton = GObject.registerClass({
         if (params.info.hasOwnProperty('label')) {
             this.tooltip = new Tooltip.Tooltip({
                 parent: this,
-                markup: params.info.label
+                markup: params.info.label,
             });
 
             this.accessible_name = params.info.label;
@@ -417,7 +417,7 @@ var IconButton = GObject.registerClass({
                 this.submenu = new ListBox({
                     model: link.value,
                     action_group: this.action_group,
-                    _parent: this._parent
+                    _parent: this._parent,
                 });
 
                 this.submenu.actor.style_class = 'popup-sub-menu';
@@ -469,7 +469,7 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
         // Main Actor
         this.actor = new St.BoxLayout({
             vertical: true,
-            x_expand: true
+            x_expand: true,
         });
         this.actor._delegate = this;
 
@@ -483,7 +483,7 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
         this.sub = new St.BoxLayout({
             clip_to_allocation: true,
             vertical: true,
-            x_expand: true
+            x_expand: true,
         });
         this.sub.connect('transitions-completed', this._onTransitionsCompleted);
         this.sub._delegate = this;
@@ -577,7 +577,9 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
             let button = this.box.get_child_at_index(position);
             let action_name = button.action_name;
 
-            (button.submenu) ? button.submenu.destroy() : null;
+            if (button.submenu)
+                button.submenu.destroy();
+
             button.destroy();
 
             this._menu_items.delete(action_name);
@@ -595,7 +597,7 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
                 // TODO: Because this doesn't derive from a PopupMenu class
                 //       it lacks some things its parent will expect from it
                 _parent: this,
-                _delegate: null
+                _delegate: null,
             });
 
             // Set the visibility based on the enabled state
@@ -621,12 +623,12 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
     _onTransitionsCompleted(actor) {
         let menu = actor._delegate;
 
-        menu.box.get_children().map(button => {
+        for (let button of menu.box.get_children()) {
             if (button.submenu && button.submenu !== menu.submenu) {
                 button.checked = false;
                 button.submenu.actor.hide();
             }
-        });
+        }
 
         menu.sub.set_height(-1);
     }

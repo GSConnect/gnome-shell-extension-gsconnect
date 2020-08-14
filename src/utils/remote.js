@@ -17,7 +17,7 @@ const _PROPERTIES = {
     'Id': 'id',
     'Name': 'name',
     'Paired': 'paired',
-    'Type': 'type'
+    'Type': 'type',
 };
 
 
@@ -99,8 +99,8 @@ var Device = GObject.registerClass({
             'The device type',
             GObject.ParamFlags.READABLE,
             null
-        )
-    }
+        ),
+    },
 }, class Device extends Gio.DBusProxy {
 
     _init(service, object_path) {
@@ -110,7 +110,7 @@ var Device = GObject.registerClass({
             g_connection: service.g_connection,
             g_name: SERVICE_NAME,
             g_object_path: object_path,
-            g_interface_name: DEVICE_NAME
+            g_interface_name: DEVICE_NAME,
         });
     }
 
@@ -228,18 +228,18 @@ var Service = GObject.registerClass({
             'Whether the service is active',
             GObject.ParamFlags.READABLE,
             false
-        )
+        ),
     },
     Signals: {
         'device-added': {
             flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [Device.$gtype]
+            param_types: [Device.$gtype],
         },
         'device-removed': {
             flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [Device.$gtype]
-        }
-    }
+            param_types: [Device.$gtype],
+        },
+    },
 }, class Service extends Gio.DBusProxy {
 
     _init() {
@@ -248,7 +248,7 @@ var Service = GObject.registerClass({
             g_name: SERVICE_NAME,
             g_object_path: SERVICE_PATH,
             g_interface_name: 'org.freedesktop.DBus.ObjectManager',
-            g_flags: Gio.DBusProxyFlags.DO_NOT_AUTO_START_AT_CONSTRUCTION
+            g_flags: Gio.DBusProxyFlags.DO_NOT_AUTO_START_AT_CONSTRUCTION,
         });
 
         this._active = false;
@@ -273,7 +273,8 @@ var Service = GObject.registerClass({
     vfunc_g_signal(sender_name, signal_name, parameters) {
         try {
             // Don't emit signals until the ObjectManager has started
-            if (!this.active) return;
+            if (!this.active)
+                return;
 
             parameters = parameters.deepUnpack();
 
@@ -295,7 +296,7 @@ var Service = GObject.registerClass({
      * org.freedesktop.DBus.ObjectManager.InterfacesAdded
      *
      * @param {string} object_path - Path interfaces have been added to
-     * @param {Object} - A dictionary of interface objects
+     * @param {Object} interfaces - A dictionary of interface objects
      */
     async _onInterfacesAdded(object_path, interfaces) {
         try {
@@ -323,7 +324,7 @@ var Service = GObject.registerClass({
      * org.freedesktop.DBus.ObjectManager.InterfacesRemoved
      *
      * @param {string} object_path - Path interfaces have been removed from
-     * @param {string[]} - List of interface names removed
+     * @param {string[]} interfaces - List of interface names removed
      */
     _onInterfacesRemoved(object_path, interfaces) {
         try {

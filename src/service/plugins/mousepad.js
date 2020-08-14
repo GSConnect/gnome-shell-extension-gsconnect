@@ -13,12 +13,12 @@ var Metadata = {
     incomingCapabilities: [
         'kdeconnect.mousepad.echo',
         'kdeconnect.mousepad.request',
-        'kdeconnect.mousepad.keyboardstate'
+        'kdeconnect.mousepad.keyboardstate',
     ],
     outgoingCapabilities: [
         'kdeconnect.mousepad.echo',
         'kdeconnect.mousepad.request',
-        'kdeconnect.mousepad.keyboardstate'
+        'kdeconnect.mousepad.keyboardstate',
     ],
     actions: {
         keyboard: {
@@ -28,11 +28,11 @@ var Metadata = {
             parameter_type: null,
             incoming: [
                 'kdeconnect.mousepad.echo',
-                'kdeconnect.mousepad.keyboardstate'
+                'kdeconnect.mousepad.keyboardstate',
             ],
-            outgoing: ['kdeconnect.mousepad.request']
-        }
-    }
+            outgoing: ['kdeconnect.mousepad.request'],
+        },
+    },
 };
 
 
@@ -71,7 +71,7 @@ const KeyMap = new Map([
     [29, Gdk.KEY_F9],
     [30, Gdk.KEY_F10],
     [31, Gdk.KEY_F11],
-    [32, Gdk.KEY_F12]
+    [32, Gdk.KEY_F12],
 ]);
 
 
@@ -90,8 +90,8 @@ var Plugin = GObject.registerClass({
             'Remote keyboard state',
             GObject.ParamFlags.READABLE,
             false
-        )
-    }
+        ),
+    },
 }, class Plugin extends PluginBase.Plugin {
 
     _init(device) {
@@ -166,15 +166,21 @@ var Plugin = GObject.registerClass({
 
             case (input.hasOwnProperty('key') || input.hasOwnProperty('specialKey')):
                 // NOTE: \u0000 sometimes sent in advance of a specialKey packet
-                if (input.key && input.key === '\u0000') return;
+                if (input.key && input.key === '\u0000')
+                    return;
 
                 // Modifiers
-                if (input.alt || input.ctrl || input.shift || input.super) {
-                    if (input.alt) modifiers |= Gdk.ModifierType.MOD1_MASK;
-                    if (input.ctrl) modifiers |= Gdk.ModifierType.CONTROL_MASK;
-                    if (input.shift) modifiers |= Gdk.ModifierType.SHIFT_MASK;
-                    if (input.super) modifiers |= Gdk.ModifierType.SUPER_MASK;
-                }
+                if (input.alt)
+                    modifiers |= Gdk.ModifierType.MOD1_MASK;
+
+                if (input.ctrl)
+                    modifiers |= Gdk.ModifierType.CONTROL_MASK;
+
+                if (input.shift)
+                    modifiers |= Gdk.ModifierType.SHIFT_MASK;
+
+                if (input.super)
+                    modifiers |= Gdk.ModifierType.SUPER_MASK;
 
                 // Regular key (printable ASCII or Unicode)
                 if (input.key) {
@@ -265,7 +271,7 @@ var Plugin = GObject.registerClass({
 
         this.device.sendPacket({
             type: 'kdeconnect.mousepad.echo',
-            body: input
+            body: input,
         });
     }
 
@@ -278,8 +284,8 @@ var Plugin = GObject.registerClass({
         this.device.sendPacket({
             type: 'kdeconnect.mousepad.keyboardstate',
             body: {
-                state: this.settings.get_boolean('share-control')
-            }
+                state: this.settings.get_boolean('share-control'),
+            },
         });
     }
 
@@ -290,7 +296,7 @@ var Plugin = GObject.registerClass({
         if (!this._dialog) {
             this._dialog = new KeyboardInputDialog({
                 device: this.device,
-                plugin: this
+                plugin: this,
             });
         }
 
@@ -334,7 +340,7 @@ const ReverseKeyMap = new Map([
     [Gdk.KEY_F9, 29],
     [Gdk.KEY_F10, 30],
     [Gdk.KEY_F11, 31],
-    [Gdk.KEY_F12, 32]
+    [Gdk.KEY_F12, 32],
 ]);
 
 
@@ -353,7 +359,7 @@ const MOD_KEYS = [
     Gdk.KEY_Shift_L,
     Gdk.KEY_Shift_R,
     Gdk.KEY_Super_L,
-    Gdk.KEY_Super_R
+    Gdk.KEY_Super_R,
 ];
 
 
@@ -382,15 +388,15 @@ var KeyboardInputDialog = GObject.registerClass({
             'The mousepad plugin associated with this window',
             GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
             GObject.Object
-        )
-    }
+        ),
+    },
 }, class KeyboardInputDialog extends Gtk.Dialog {
 
     _init(params) {
         super._init(Object.assign({
             use_header_bar: true,
             default_width: 480,
-            window_position: Gtk.WindowPosition.CENTER
+            window_position: Gtk.WindowPosition.CENTER,
         }, params));
 
         let headerbar = this.get_titlebar();
@@ -413,20 +419,20 @@ var KeyboardInputDialog = GObject.registerClass({
 
         let infolabel = new Gtk.Label({
             // TRANSLATORS: Displayed when the remote keyboard is not ready to accept input
-            label: _('Remote keyboard on %s is not active').format(this.device.name)
+            label: _('Remote keyboard on %s is not active').format(this.device.name),
         });
         bar.get_content_area().add(infolabel);
 
         let infolink = new Gtk.LinkButton({
             label: _('Help'),
-            uri: 'https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Help#remote-keyboard-not-active'
+            uri: 'https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Help#remote-keyboard-not-active',
         });
         bar.get_action_area().add(infolink);
 
         // Content
         let layout = new Gtk.Grid({
             column_spacing: 6,
-            margin: 6
+            margin: 6,
         });
         content.add(layout);
 
@@ -435,7 +441,7 @@ var KeyboardInputDialog = GObject.registerClass({
             accelerator: Gtk.accelerator_name(0, Gdk.ModifierType.SHIFT_MASK),
             halign: Gtk.Align.END,
             valign: Gtk.Align.START,
-            sensitive: false
+            sensitive: false,
         });
         layout.attach(this.shift_label, 0, 0, 1, 1);
 
@@ -443,7 +449,7 @@ var KeyboardInputDialog = GObject.registerClass({
             accelerator: Gtk.accelerator_name(0, Gdk.ModifierType.CONTROL_MASK),
             halign: Gtk.Align.END,
             valign: Gtk.Align.START,
-            sensitive: false
+            sensitive: false,
         });
         layout.attach(this.ctrl_label, 0, 1, 1, 1);
 
@@ -451,7 +457,7 @@ var KeyboardInputDialog = GObject.registerClass({
             accelerator: Gtk.accelerator_name(0, Gdk.ModifierType.MOD1_MASK),
             halign: Gtk.Align.END,
             valign: Gtk.Align.START,
-            sensitive: false
+            sensitive: false,
         });
         layout.attach(this.alt_label, 0, 2, 1, 1);
 
@@ -459,14 +465,14 @@ var KeyboardInputDialog = GObject.registerClass({
             accelerator: Gtk.accelerator_name(0, Gdk.ModifierType.SUPER_MASK),
             halign: Gtk.Align.END,
             valign: Gtk.Align.START,
-            sensitive: false
+            sensitive: false,
         });
         layout.attach(this.super_label, 0, 3, 1, 1);
 
         // Text Input
         let scroll = new Gtk.ScrolledWindow({
             hscrollbar_policy: Gtk.PolicyType.NEVER,
-            shadow_type: Gtk.ShadowType.IN
+            shadow_type: Gtk.ShadowType.IN,
         });
         layout.attach(scroll, 1, 0, 1, 4);
 
@@ -475,7 +481,7 @@ var KeyboardInputDialog = GObject.registerClass({
             hexpand: true,
             vexpand: true,
             visible: true,
-            wrap_mode: Gtk.WrapMode.WORD_CHAR
+            wrap_mode: Gtk.WrapMode.WORD_CHAR,
         });
         scroll.add(this.text);
 
@@ -560,7 +566,7 @@ var KeyboardInputDialog = GObject.registerClass({
             ctrl: !!(realMask & Gdk.ModifierType.CONTROL_MASK),
             shift: !!(realMask & Gdk.ModifierType.SHIFT_MASK),
             super: !!(realMask & Gdk.ModifierType.SUPER_MASK),
-            sendAck: true
+            sendAck: true,
         };
 
         // specialKey
@@ -575,7 +581,7 @@ var KeyboardInputDialog = GObject.registerClass({
 
         this.device.sendPacket({
             type: 'kdeconnect.mousepad.request',
-            body: request
+            body: request,
         });
 
         // Pass these key combinations rather than using the echo reply
@@ -616,8 +622,8 @@ var KeyboardInputDialog = GObject.registerClass({
                     shift: false,
                     super: false,
                     sendAck: false,
-                    key: char
-                }
+                    key: char,
+                },
             });
         }
     }

@@ -19,20 +19,20 @@ const Tooltip = Extension.imports.shell.tooltip;
  * A battery widget with an icon, text percentage and time estimate tooltip
  */
 var Battery = GObject.registerClass({
-    GTypeName: 'GSConnectShellDeviceBattery'
+    GTypeName: 'GSConnectShellDeviceBattery',
 }, class Battery extends St.BoxLayout {
 
     _init(params) {
         super._init({
             reactive: true,
             style_class: 'gsconnect-device-battery',
-            track_hover: true
+            track_hover: true,
         });
         Object.assign(this, params);
 
         // Percent Label
         this.label = new St.Label({
-            y_align: Clutter.ActorAlign.CENTER
+            y_align: Clutter.ActorAlign.CENTER,
         });
         this.label.clutter_text.ellipsize = 0;
         this.add_child(this.label);
@@ -40,14 +40,14 @@ var Battery = GObject.registerClass({
         // Battery Icon
         this.icon = new St.Icon({
             fallback_icon_name: 'battery-missing-symbolic',
-            icon_size: 16
+            icon_size: 16,
         });
         this.add_child(this.icon);
 
         // Battery Estimate
         this.tooltip = new Tooltip.Tooltip({
             parent: this,
-            text: null
+            text: null,
         });
 
         // Battery GAction
@@ -82,7 +82,7 @@ var Battery = GObject.registerClass({
                 charging: charging,
                 icon_name: icon_name,
                 level: level,
-                time: time
+                time: time,
             };
         } else {
             this._state = null;
@@ -101,7 +101,7 @@ var Battery = GObject.registerClass({
             charging: charging,
             icon_name: icon_name,
             level: level,
-            time: time
+            time: time,
         };
 
         this._sync();
@@ -199,12 +199,12 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
         if (this.menu_type === 'icon') {
             actions = new GMenu.IconBox({
                 action_group: this.device.action_group,
-                model: this.device.menu
+                model: this.device.menu,
             });
         } else if (this.menu_type === 'list') {
             actions = new GMenu.ListBox({
                 action_group: this.device.action_group,
-                model: this.device.menu
+                model: this.device.menu,
             });
         }
 
@@ -221,7 +221,7 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
  * An indicator representing a Device in the Status Area
  */
 var Indicator = GObject.registerClass({
-    GTypeName: 'GSConnectDeviceIndicator'
+    GTypeName: 'GSConnectDeviceIndicator',
 }, class Indicator extends PanelMenu.Button {
 
     _init(params) {
@@ -231,14 +231,14 @@ var Indicator = GObject.registerClass({
         // Device Icon
         this._icon = new St.Icon({
             gicon: Extension.getIcon(this.device.icon_name),
-            style_class: 'system-status-icon gsconnect-device-indicator'
+            style_class: 'system-status-icon gsconnect-device-indicator',
         });
         this.add_child(this._icon);
 
         // Menu
         let menu = new Menu({
             device: this.device,
-            menu_type: 'icon'
+            menu_type: 'icon',
         });
         this.menu.addMenuItem(menu);
     }
