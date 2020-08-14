@@ -13,11 +13,11 @@ var Metadata = {
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Photo',
     incomingCapabilities: [
         'kdeconnect.photo',
-        'kdeconnect.photo.request'
+        'kdeconnect.photo.request',
     ],
     outgoingCapabilities: [
         'kdeconnect.photo',
-        'kdeconnect.photo.request'
+        'kdeconnect.photo.request',
     ],
     actions: {
         photo: {
@@ -26,9 +26,9 @@ var Metadata = {
 
             parameter_type: null,
             incoming: ['kdeconnect.photo'],
-            outgoing: ['kdeconnect.photo.request']
-        }
-    }
+            outgoing: ['kdeconnect.photo.request'],
+        },
+    },
 };
 
 
@@ -40,7 +40,7 @@ var Metadata = {
  *       check for /dev/video*
  */
 var Plugin = GObject.registerClass({
-    GTypeName: 'GSConnectPhotoPlugin'
+    GTypeName: 'GSConnectPhotoPlugin',
 }, class Plugin extends PluginBase.Plugin {
 
     _init(device) {
@@ -49,7 +49,7 @@ var Plugin = GObject.registerClass({
         // A reusable launcher for silence procs
         this._launcher = new Gio.SubprocessLauncher({
             flags: (Gio.SubprocessFlags.STDOUT_SILENCE |
-                    Gio.SubprocessFlags.STDERR_SILENCE)
+                    Gio.SubprocessFlags.STDERR_SILENCE),
         });
     }
 
@@ -67,6 +67,8 @@ var Plugin = GObject.registerClass({
 
     /**
      * Ensure we have a directory set for storing files that exists.
+     *
+     * @return {string} An absolute directory path
      */
     _ensureReceiveDirectory() {
         if (this._receiveDir !== undefined)
@@ -141,7 +143,7 @@ var Plugin = GObject.registerClass({
 
             let transfer = this.device.createTransfer(Object.assign({
                 output_stream: stream,
-                size: packet.payloadSize
+                size: packet.payloadSize,
             }, packet.payloadTransferInfo));
 
             // Open the photo if successful, delete on failure
@@ -175,7 +177,7 @@ var Plugin = GObject.registerClass({
                 '-ss', '0:0:2',
                 '-i', '/dev/video0',
                 '-frames', '1',
-                path
+                path,
             ]);
 
             proc.wait_check_async(null, (proc, res) => {
@@ -239,14 +241,14 @@ var Plugin = GObject.registerClass({
             // Transfer
             let transfer = this.device.createTransfer({
                 input_stream: stream,
-                size: info.get_size()
+                size: info.get_size(),
             });
 
             let success = await transfer.upload({
                 type: 'kdeconnect.photo',
                 body: {
-                    filename: file.get_basename()
-                }
+                    filename: file.get_basename(),
+                },
             });
 
             if (!success) {
@@ -258,7 +260,7 @@ var Plugin = GObject.registerClass({
                         file.get_basename(),
                         this.device.name
                     ),
-                    icon: new Gio.ThemedIcon({name: 'dialog-warning-symbolic'})
+                    icon: new Gio.ThemedIcon({name: 'dialog-warning-symbolic'}),
                 });
             }
         } catch (e) {
@@ -272,7 +274,7 @@ var Plugin = GObject.registerClass({
     photo() {
         this.device.sendPacket({
             type: 'kdeconnect.photo.request',
-            body: {}
+            body: {},
         });
     }
 });

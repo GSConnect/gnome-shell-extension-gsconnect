@@ -99,8 +99,8 @@ const SectionRow = GObject.registerClass({
             'An action widget for the row',
             GObject.ParamFlags.READWRITE,
             Gtk.Widget.$gtype
-        )
-    }
+        ),
+    },
 }, class SectionRow extends Gtk.ListBoxRow {
 
     _init(params = {}) {
@@ -182,8 +182,8 @@ const CommandEditor = GObject.registerClass({
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/preferences-command-editor.ui',
     Children: [
         'cancel-button', 'save-button',
-        'command-entry', 'name-entry', 'command-chooser'
-    ]
+        'command-entry', 'name-entry', 'command-chooser',
+    ],
 }, class CommandEditor extends Gtk.Dialog {
 
     _onBrowseCommand(entry, icon_pos, event) {
@@ -231,7 +231,7 @@ var Panel = GObject.registerClass({
             'The device being configured',
             GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
             GObject.Object.$gtype
-        )
+        ),
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/preferences-device-panel.ui',
     Children: [
@@ -267,13 +267,13 @@ var Panel = GObject.registerClass({
         'advanced-page',
         'plugin-list', 'experimental-list',
 
-        'device-menu'
-    ]
+        'device-menu',
+    ],
 }, class Panel extends Gtk.Grid {
 
     _init(device) {
         super._init({
-            device: device
+            device: device,
         });
 
         // GSettings
@@ -282,7 +282,7 @@ var Panel = GObject.registerClass({
                 'org.gnome.Shell.Extensions.GSConnect.Device',
                 true
             ),
-            path: `/org/gnome/shell/extensions/gsconnect/device/${device.id}/`
+            path: `/org/gnome/shell/extensions/gsconnect/device/${device.id}/`,
         });
 
         // Infobar
@@ -363,7 +363,7 @@ var Panel = GObject.registerClass({
             text: _('Encryption Info'),
             secondary_text: this.device.encryption_info,
             modal: true,
-            transient_for: this.get_toplevel()
+            transient_for: this.get_toplevel(),
         });
         dialog.connect('response', (dialog) => dialog.destroy());
         dialog.present();
@@ -400,7 +400,7 @@ var Panel = GObject.registerClass({
 
             this._pluginSettings[name] = new Gio.Settings({
                 settings_schema: Config.GSCHEMA.lookup(meta.id, -1),
-                path: `${this.settings.path}plugin/${name}/`
+                path: `${this.settings.path}plugin/${name}/`,
             });
         }
 
@@ -561,7 +561,7 @@ var Panel = GObject.registerClass({
                     'Get',
                     new GLib.Variant('(ss)', [
                         'org.freedesktop.UPower.Device',
-                        'IsPresent'
+                        'IsPresent',
                     ]),
                     null,
                     Gio.DBusCallFlags.NONE,
@@ -619,7 +619,7 @@ var Panel = GObject.registerClass({
         let row = new SectionRow({
             title: this._commands[uuid].name,
             subtitle: this._commands[uuid].command,
-            activatable: false
+            activatable: false,
         });
         row.set_name(uuid);
         row.subtitle_label.ellipsize = Pango.EllipsizeMode.MIDDLE;
@@ -628,12 +628,12 @@ var Panel = GObject.registerClass({
             image: new Gtk.Image({
                 icon_name: 'document-edit-symbolic',
                 pixel_size: 16,
-                visible: true
+                visible: true,
             }),
             tooltip_text: _('Edit'),
             valign: Gtk.Align.CENTER,
             vexpand: true,
-            visible: true
+            visible: true,
         });
         editButton.connect('clicked', this._onEditCommand.bind(this));
         editButton.get_accessible().set_name(_('Edit'));
@@ -643,12 +643,12 @@ var Panel = GObject.registerClass({
             image: new Gtk.Image({
                 icon_name: 'edit-delete-symbolic',
                 pixel_size: 16,
-                visible: true
+                visible: true,
             }),
             tooltip_text: _('Remove'),
             valign: Gtk.Align.CENTER,
             vexpand: true,
-            visible: true
+            visible: true,
         });
         deleteButton.connect('clicked', this._onDeleteCommand.bind(this));
         deleteButton.get_accessible().set_name(_('Remove'));
@@ -662,7 +662,7 @@ var Panel = GObject.registerClass({
             this._commandEditor = new CommandEditor({
                 modal: true,
                 transient_for: this.get_toplevel(),
-                use_header_bar: true
+                use_header_bar: true,
             });
 
             this._commandEditor.connect(
@@ -713,7 +713,7 @@ var Panel = GObject.registerClass({
         if (response_id === Gtk.ResponseType.ACCEPT) {
             this._commands[dialog.uuid] = {
                 name: dialog.command_name,
-                command: dialog.command_line
+                command: dialog.command_line,
             };
 
             this._storeCommands();
@@ -800,8 +800,8 @@ var Panel = GObject.registerClass({
                     halign: Gtk.Align.END,
                     valign: Gtk.Align.CENTER,
                     vexpand: true,
-                    visible: true
-                })
+                    visible: true,
+                }),
             });
 
             this.notification_apps.add(row);
@@ -837,7 +837,7 @@ var Panel = GObject.registerClass({
 
             applications[appName] = {
                 iconName: icon,
-                enabled: true
+                enabled: true,
             };
         }
 
@@ -897,7 +897,7 @@ var Panel = GObject.registerClass({
 
         let widget = new Gtk.Label({
             label: _('Disabled'),
-            visible: true
+            visible: true,
         });
         widget.get_style_context().add_class('dim-label');
 
@@ -905,7 +905,7 @@ var Panel = GObject.registerClass({
             height_request: 48,
             icon_name: icon_name,
             title: label,
-            widget: widget
+            widget: widget,
         });
         row.icon_image.pixel_size = 16;
         row.action = name;
@@ -1022,8 +1022,8 @@ var Panel = GObject.registerClass({
                 active: this._enabledPlugins.includes(name),
                 valign: Gtk.Align.CENTER,
                 vexpand: true,
-                visible: true
-            })
+                visible: true,
+            }),
         });
         row.widget.connect('notify::active', this._togglePlugin.bind(this));
         row.set_name(name);

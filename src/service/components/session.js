@@ -81,7 +81,7 @@ const Session = class {
             g_connection: this._connection,
             g_name: 'org.freedesktop.login1',
             g_object_path: objectPath,
-            g_interface_name: 'org.freedesktop.login1.Session'
+            g_interface_name: 'org.freedesktop.login1.Session',
         });
 
         // Initialize the proxy

@@ -21,7 +21,7 @@ const Gvc = imports.gi.Gvc;
  * Extend Gvc.MixerStream with a property for returning a user-visible name
  */
 Object.defineProperty(Gvc.MixerStream.prototype, 'display_name', {
-    get: function() {
+    get: function () {
         try {
             if (!this.get_ports().length)
                 return this.description;
@@ -30,7 +30,7 @@ Object.defineProperty(Gvc.MixerStream.prototype, 'display_name', {
         } catch (e) {
             return this.description;
         }
-    }
+    },
 });
 
 
@@ -79,7 +79,7 @@ class Stream {
                 volume: value,
                 time: duration,
                 transition: 'easeOutCubic',
-                onComplete: () => this._mixer.fading = false
+                onComplete: () => this._mixer.fading = false,
             });
         } else if (this._stream.volume < value) {
             this._mixer.fading = true;
@@ -88,7 +88,7 @@ class Stream {
                 volume: value,
                 time: duration,
                 transition: 'easeInCubic',
-                onComplete: () => this._mixer.fading = false
+                onComplete: () => this._mixer.fading = false,
             });
         }
     }
@@ -103,7 +103,7 @@ class Stream {
  * and offers a few convenience functions.
  */
 const Mixer = GObject.registerClass({
-    GTypeName: 'GSConnectAudioMixer'
+    GTypeName: 'GSConnectAudioMixer',
 }, class Mixer extends Gvc.MixerControl {
     _init(params) {
         super._init({name: 'GSConnect'});
@@ -177,6 +177,8 @@ const Mixer = GObject.registerClass({
 
     /**
      * Store the current output volume then lower it to %15
+     *
+     * @param {number} duration - Duration in seconds to fade
      */
     lowerVolume(duration = 1) {
         try {

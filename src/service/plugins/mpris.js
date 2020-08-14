@@ -14,7 +14,7 @@ var Metadata = {
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.MPRIS',
     incomingCapabilities: ['kdeconnect.mpris', 'kdeconnect.mpris.request'],
     outgoingCapabilities: ['kdeconnect.mpris', 'kdeconnect.mpris.request'],
-    actions: {}
+    actions: {},
 };
 
 
@@ -135,8 +135,8 @@ var Plugin = GObject.registerClass({
                 body: {
                     player: identity,
                     requestNowPlaying: true,
-                    requestVolume: true
-                }
+                    requestVolume: true,
+                },
             });
         }
     }
@@ -160,8 +160,8 @@ var Plugin = GObject.registerClass({
         this.device.sendPacket({
             type: 'kdeconnect.mpris.request',
             body: {
-                requestPlayerList: true
-            }
+                requestPlayerList: true,
+            },
         });
     }
 
@@ -169,6 +169,7 @@ var Plugin = GObject.registerClass({
      * Handle a request for player information or action.
      *
      * @param {Core.Packet} packet - a `kdeconnect.mpris.request`
+     * @return {undefined} no return value
      */
     _handleRequest(packet) {
         // A request for the list of players
@@ -241,8 +242,8 @@ var Plugin = GObject.registerClass({
             let response = {
                 type: 'kdeconnect.mpris',
                 body: {
-                    player: packet.body.player
-                }
+                    player: packet.body.player,
+                },
             };
 
             if (packet.body.hasOwnProperty('requestNowPlaying')) {
@@ -257,7 +258,7 @@ var Plugin = GObject.registerClass({
                     canGoPrevious: player.CanGoPrevious,
                     canSeek: player.CanSeek,
                     artist: _('Unknown'),
-                    title: _('Unknown')
+                    title: _('Unknown'),
                 });
 
                 let metadata = player.Metadata;
@@ -285,7 +286,7 @@ var Plugin = GObject.registerClass({
 
                 response.body.nowPlaying = [
                     response.body.artist,
-                    response.body.title
+                    response.body.title,
                 ].join(' - ');
             }
 
@@ -311,8 +312,8 @@ var Plugin = GObject.registerClass({
             body: {
                 player: player.Identity,
                 requestNowPlaying: true,
-                requestVolume: true
-            }
+                requestVolume: true,
+            },
         });
     }
 
@@ -321,8 +322,8 @@ var Plugin = GObject.registerClass({
             type: 'kdeconnect.mpris',
             body: {
                 player: player.Identity,
-                pos: Math.floor(player.Position / 1000)
-            }
+                pos: Math.floor(player.Position / 1000),
+            },
         });
     }
 
@@ -381,7 +382,7 @@ var Plugin = GObject.registerClass({
 
             let transfer = this.device.createTransfer({
                 input_stream: stream,
-                size: info.get_size()
+                size: info.get_size(),
             });
 
             await transfer.upload({
@@ -389,8 +390,8 @@ var Plugin = GObject.registerClass({
                 body: {
                     transferringAlbumArt: true,
                     player: packet.body.player,
-                    albumArtUrl: packet.body.albumArtUrl
-                }
+                    albumArtUrl: packet.body.albumArtUrl,
+                },
             });
         } catch (e) {
             debug(e, this.device.name);
@@ -413,8 +414,8 @@ var Plugin = GObject.registerClass({
             type: 'kdeconnect.mpris',
             body: {
                 playerList: playerList,
-                supportAlbumArtPayload: true
-            }
+                supportAlbumArtPayload: true,
+            },
         });
     }
 
@@ -540,14 +541,14 @@ const RemotePlayer = GObject.registerClass({
             'Whether the media player may be controlled over this interface.',
             GObject.ParamFlags.READABLE,
             false
-        )
+        ),
     },
     Signals: {
         'Seeked': {
             flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [GObject.TYPE_INT64]
-        }
-    }
+            param_types: [GObject.TYPE_INT64],
+        },
+    },
 }, class RemotePlayer extends GObject.Object {
 
     _init(device, identity) {
@@ -573,7 +574,7 @@ const RemotePlayer = GObject.registerClass({
                         g_instance: this,
                         g_connection: this._connection,
                         g_object_path: '/org/mpris/MediaPlayer2',
-                        g_interface_info: MPRISIface
+                        g_interface_info: MPRISIface,
                     });
                 }
 
@@ -582,7 +583,7 @@ const RemotePlayer = GObject.registerClass({
                         g_instance: this,
                         g_connection: this._connection,
                         g_object_path: '/org/mpris/MediaPlayer2',
-                        g_interface_info: MPRISPlayerIface
+                        g_interface_info: MPRISPlayerIface,
                     });
                 }
             }
@@ -592,7 +593,7 @@ const RemotePlayer = GObject.registerClass({
 
             let name = [
                 this.device.name,
-                this.Identity
+                this.Identity,
             ].join('').replace(/[\W]*/g, '');
 
             this._ownerId = Gio.bus_own_name_on_connection(
@@ -795,7 +796,7 @@ const RemotePlayer = GObject.registerClass({
             'xesam:artist': new GLib.Variant('as', [this._artist || '']),
             'xesam:album': new GLib.Variant('s', this._album || ''),
             'xesam:title': new GLib.Variant('s', this._title || ''),
-            'mpris:length': new GLib.Variant('x', this._length || 0)
+            'mpris:length': new GLib.Variant('x', this._length || 0),
         });
 
         return this._metadata;
@@ -819,8 +820,8 @@ const RemotePlayer = GObject.registerClass({
             type: 'kdeconnect.mpris.request',
             body: {
                 player: this.Identity,
-                setVolume: this.Volume * 100
-            }
+                setVolume: this.Volume * 100,
+            },
         });
     }
 
@@ -889,8 +890,8 @@ const RemotePlayer = GObject.registerClass({
             type: 'kdeconnect.mpris.request',
             body: {
                 player: this.Identity,
-                action: 'Next'
-            }
+                action: 'Next',
+            },
         });
     }
 
@@ -902,8 +903,8 @@ const RemotePlayer = GObject.registerClass({
             type: 'kdeconnect.mpris.request',
             body: {
                 player: this.Identity,
-                action: 'Previous'
-            }
+                action: 'Previous',
+            },
         });
     }
 
@@ -915,8 +916,8 @@ const RemotePlayer = GObject.registerClass({
             type: 'kdeconnect.mpris.request',
             body: {
                 player: this.Identity,
-                action: 'Pause'
-            }
+                action: 'Pause',
+            },
         });
     }
 
@@ -928,8 +929,8 @@ const RemotePlayer = GObject.registerClass({
             type: 'kdeconnect.mpris.request',
             body: {
                 player: this.Identity,
-                action: 'PlayPause'
-            }
+                action: 'PlayPause',
+            },
         });
     }
 
@@ -941,8 +942,8 @@ const RemotePlayer = GObject.registerClass({
             type: 'kdeconnect.mpris.request',
             body: {
                 player: this.Identity,
-                action: 'Stop'
-            }
+                action: 'Stop',
+            },
         });
     }
 
@@ -954,8 +955,8 @@ const RemotePlayer = GObject.registerClass({
             type: 'kdeconnect.mpris.request',
             body: {
                 player: this.Identity,
-                action: 'Next'
-            }
+                action: 'Next',
+            },
         });
     }
 
@@ -967,8 +968,8 @@ const RemotePlayer = GObject.registerClass({
             type: 'kdeconnect.mpris.request',
             body: {
                 player: this.Identity,
-                Seek: offset
-            }
+                Seek: offset,
+            },
         });
     }
 
@@ -982,8 +983,8 @@ const RemotePlayer = GObject.registerClass({
             type: 'kdeconnect.mpris.request',
             body: {
                 player: this.Identity,
-                SetPosition: position / 1000
-            }
+                SetPosition: position / 1000,
+            },
         });
     }
 

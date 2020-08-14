@@ -20,7 +20,7 @@ var Metadata = {
 
             parameter_type: null,
             incoming: ['kdeconnect.sftp'],
-            outgoing: ['kdeconnect.sftp.request']
+            outgoing: ['kdeconnect.sftp.request'],
         },
         unmount: {
             label: _('Unmount'),
@@ -28,9 +28,9 @@ var Metadata = {
 
             parameter_type: null,
             incoming: ['kdeconnect.sftp'],
-            outgoing: ['kdeconnect.sftp.request']
-        }
-    }
+            outgoing: ['kdeconnect.sftp.request'],
+        },
+    },
 };
 
 
@@ -40,7 +40,7 @@ var Metadata = {
  * https://github.com/KDE/kdeconnect-android/tree/master/src/org/kde/kdeconnect/Plugins/SftpPlugin
  */
 var Plugin = GObject.registerClass({
-    GTypeName: 'GSConnectSFTPPlugin'
+    GTypeName: 'GSConnectSFTPPlugin',
 }, class Plugin extends PluginBase.Plugin {
 
     _init(device) {
@@ -49,7 +49,7 @@ var Plugin = GObject.registerClass({
         // A reusable launcher for ssh processes
         this._launcher = new Gio.SubprocessLauncher({
             flags: (Gio.SubprocessFlags.STDOUT_PIPE |
-                    Gio.SubprocessFlags.STDERR_MERGE)
+                    Gio.SubprocessFlags.STDERR_MERGE),
         });
 
         this._mounting = false;
@@ -61,7 +61,7 @@ var Plugin = GObject.registerClass({
                 directories: {},
                 mount: null,
                 regex: null,
-                uri: null
+                uri: null,
             };
         }
 
@@ -77,7 +77,7 @@ var Plugin = GObject.registerClass({
                     title: `${this.device.name}: ${Metadata.label}`,
                     body: packet.body.errorMessage,
                     icon: new Gio.ThemedIcon({name: 'dialog-error-symbolic'}),
-                    priority: Gio.NotificationPriority.URGENT
+                    priority: Gio.NotificationPriority.URGENT,
                 });
 
             // Ensure we don't mount on top of an existing mount
@@ -110,7 +110,7 @@ var Plugin = GObject.registerClass({
         if (!this.device.connected) {
             throw new Gio.IOErrorEnum({
                 message: _('Device is disconnected'),
-                code: Gio.IOErrorEnum.CONNECTION_CLOSED
+                code: Gio.IOErrorEnum.CONNECTION_CLOSED,
             });
         }
 
@@ -150,7 +150,9 @@ var Plugin = GObject.registerClass({
     async _mount(info) {
         try {
             // If mounting is already in progress, let that fail before retrying
-            if (this._mounting) return;
+            if (this._mounting)
+                return;
+
             this._mounting = true;
 
             // Parse the connection info
@@ -163,7 +165,7 @@ var Plugin = GObject.registerClass({
             let op = new Gio.MountOperation({
                 username: info.user,
                 password: info.password,
-                password_save: Gio.PasswordSave.NEVER
+                password_save: Gio.PasswordSave.NEVER,
             });
 
             op.connect('ask-question', this._onAskQuestion);
@@ -226,7 +228,8 @@ var Plugin = GObject.registerClass({
     }
 
     _unmount(mount = null) {
-        if (!mount) return Promise.resolve();
+        if (!mount)
+            return Promise.resolve();
 
         return new Promise((resolve, reject) => {
             let op = new Gio.MountOperation();
@@ -246,11 +249,13 @@ var Plugin = GObject.registerClass({
     /**
      * Add GSConnect's private key identity to the authentication agent so our
      * identity can be verified by Android during private key authentication.
+     *
+     * @return {Promise} A promise for the operation
      */
     _addPrivateKey() {
         let ssh_add = this._launcher.spawnv([
             Config.SSHADD_PATH,
-            GLib.build_filenamev([Config.CONFIGDIR, 'private.pem'])
+            GLib.build_filenamev([Config.CONFIGDIR, 'private.pem']),
         ]);
 
         return new Promise((resolve, reject) => {
@@ -281,7 +286,7 @@ var Plugin = GObject.registerClass({
                 let ssh_keygen = this._launcher.spawnv([
                     Config.SSHKEYGEN_PATH,
                     '-R',
-                    `[${host}]:${port}`
+                    `[${host}]:${port}`,
                 ]);
 
                 await new Promise((resolve, reject) => {
@@ -299,7 +304,7 @@ var Plugin = GObject.registerClass({
         }
     }
 
-    /**
+    /*
      * Mount menu helpers
      */
     _getUnmountSection() {
@@ -309,7 +314,7 @@ var Plugin = GObject.registerClass({
             let unmountItem = new Gio.MenuItem();
             unmountItem.set_label(Metadata.actions.unmount.label);
             unmountItem.set_icon(new Gio.ThemedIcon({
-                name: Metadata.actions.unmount.icon_name
+                name: Metadata.actions.unmount.icon_name,
             }));
             unmountItem.set_detailed_action('device.unmount');
             this._unmountSection.append_item(unmountItem);
@@ -321,12 +326,12 @@ var Plugin = GObject.registerClass({
     _getMountedIcon() {
         if (this._mountedIcon === undefined) {
             this._mountedIcon = new Gio.EmblemedIcon({
-                gicon: new Gio.ThemedIcon({name: 'folder-remote-symbolic'})
+                gicon: new Gio.ThemedIcon({name: 'folder-remote-symbolic'}),
             });
 
             // TODO: this emblem often isn't very visible
             let emblem = new Gio.Emblem({
-                icon: new Gio.ThemedIcon({name: 'emblem-default'})
+                icon: new Gio.ThemedIcon({name: 'emblem-default'}),
             });
 
             this._mountedIcon.add_emblem(emblem);
@@ -385,6 +390,8 @@ var Plugin = GObject.registerClass({
 
     /**
      * Create a symbolic link referring to the device by name
+     *
+     * @param {Gio.Mount} mount - A GMount to link to
      */
     async _addSymlink(mount) {
         try {
@@ -443,7 +450,7 @@ var Plugin = GObject.registerClass({
                             } catch (e) {
                                 reject(e);
                             }
-                        },
+                        }
                     );
                 });
             } catch (e) {
@@ -464,8 +471,8 @@ var Plugin = GObject.registerClass({
         this.device.sendPacket({
             type: 'kdeconnect.sftp.request',
             body: {
-                startBrowsing: true
-            }
+                startBrowsing: true,
+            },
         });
     }
 

@@ -26,7 +26,9 @@ GDMSESSION: ${GLib.getenv('GDMSESSION')}
 
 
 /**
- * Generate a support log
+ * Generate a support log.
+ *
+ * @param {string} time - Start time as a string (24-hour notation)
  */
 async function generateSupportLog(time) {
     try {
@@ -47,7 +49,7 @@ async function generateSupportLog(time) {
         let proc = new Gio.Subprocess({
             flags: (Gio.SubprocessFlags.STDOUT_PIPE |
                     Gio.SubprocessFlags.STDERR_MERGE),
-            argv: ['journalctl', '--no-host', '--since', time]
+            argv: ['journalctl', '--no-host', '--since', time],
         });
         proc.init(null);
 
@@ -91,13 +93,13 @@ var ConnectDialog = GObject.registerClass({
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/connect-dialog.ui',
     Children: [
         'cancel-button', 'connect-button',
-        'lan-grid', 'lan-ip', 'lan-port'
-    ]
+        'lan-grid', 'lan-ip', 'lan-port',
+    ],
 }, class ConnectDialog extends Gtk.Dialog {
 
     _init(params = {}) {
         super._init(Object.assign({
-            use_header_bar: true
+            use_header_bar: true,
         }, params));
     }
 
@@ -151,7 +153,7 @@ var Window = GObject.registerClass({
             'Display devices in either the Panel or User Menu',
             GObject.ParamFlags.READWRITE,
             null
-        )
+        ),
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/preferences-window.ui',
     Children: [
@@ -167,8 +169,8 @@ var Window = GObject.registerClass({
         'service-window', 'service-box',
 
         // Device List
-        'device-list', 'device-list-spinner', 'device-list-placeholder'
-    ]
+        'device-list', 'device-list-spinner', 'device-list-placeholder',
+    ],
 }, class PreferencesWindow extends Gtk.ApplicationWindow {
 
     _init(params = {}) {
@@ -179,7 +181,7 @@ var Window = GObject.registerClass({
             settings_schema: Config.GSCHEMA.lookup(
                 'org.gnome.Shell.Extensions.GSConnect',
                 true
-            )
+            ),
         });
 
         // Service Proxy
@@ -280,7 +282,7 @@ var Window = GObject.registerClass({
         let displayMode = new Gio.PropertyAction({
             name: 'display-mode',
             property_name: 'display-mode',
-            object: this
+            object: this,
         });
         this.add_action(displayMode);
 
@@ -325,7 +327,7 @@ var Window = GObject.registerClass({
                 'org.gnome.Shell.Extensions.GSConnect.WindowState',
                 true
             ),
-            path: '/org/gnome/shell/extensions/gsconnect/preferences/'
+            path: '/org/gnome/shell/extensions/gsconnect/preferences/',
         });
 
         // Size
@@ -365,7 +367,7 @@ var Window = GObject.registerClass({
                 authors: [
                     'Andy Holmes <andrew.g.r.holmes@gmail.com>',
                     'Bertrand Lacoste <getzze@gmail.com>',
-                    'Frank Dana <ferdnyc@gmail.com>'
+                    'Frank Dana <ferdnyc@gmail.com>',
                 ],
                 comments: _('A complete KDE Connect implementation for GNOME'),
                 logo: GdkPixbuf.Pixbuf.new_from_resource_at_scale(
@@ -381,7 +383,7 @@ var Window = GObject.registerClass({
                 website: Config.PACKAGE_URL,
                 license_type: Gtk.License.GPL_2_0,
                 modal: true,
-                transient_for: this
+                transient_for: this,
             });
 
             // Persist
@@ -399,7 +401,7 @@ var Window = GObject.registerClass({
         new ConnectDialog({
             application: Gio.Application.get_default(),
             modal: true,
-            transient_for: this
+            transient_for: this,
         });
     }
 
@@ -409,7 +411,7 @@ var Window = GObject.registerClass({
     _generateSupportLog() {
         let dialog = new Gtk.MessageDialog({
             text: _('Generate Support Log'),
-            secondary_text: _('Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log.')
+            secondary_text: _('Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log.'),
         });
         dialog.add_button(_('Cancel'), Gtk.ResponseType.CANCEL);
         dialog.add_button(_('Review Log'), Gtk.ResponseType.OK);
@@ -524,7 +526,7 @@ var Window = GObject.registerClass({
         let row = new Gtk.ListBoxRow({
             height_request: 52,
             selectable: false,
-            visible: true
+            visible: true,
         });
         row.set_name(device.id);
 
@@ -534,14 +536,14 @@ var Window = GObject.registerClass({
             margin_right: 20,
             margin_bottom: 8,
             margin_top: 8,
-            visible: true
+            visible: true,
         });
         row.add(grid);
 
         let icon = new Gtk.Image({
             gicon: new Gio.ThemedIcon({name: device.icon_name}),
             icon_size: Gtk.IconSize.BUTTON,
-            visible: true
+            visible: true,
         });
         grid.attach(icon, 0, 0, 1, 1);
 
@@ -550,7 +552,7 @@ var Window = GObject.registerClass({
             hexpand: true,
             valign: Gtk.Align.CENTER,
             vexpand: true,
-            visible: true
+            visible: true,
         });
         grid.attach(title, 1, 0, 1, 1);
 
@@ -559,7 +561,7 @@ var Window = GObject.registerClass({
             hexpand: true,
             valign: Gtk.Align.CENTER,
             vexpand: true,
-            visible: true
+            visible: true,
         });
         grid.attach(status, 2, 0, 1, 1);
 
@@ -597,7 +599,7 @@ var Window = GObject.registerClass({
                 this.device_list.add(prefs.row);
             }
         } catch (e) {
-            logError (e);
+            logError(e);
         }
     }
 
@@ -617,7 +619,7 @@ var Window = GObject.registerClass({
             prefs.dispose();
             prefs.destroy();
         } catch (e) {
-            logError (e);
+            logError(e);
         }
     }
 

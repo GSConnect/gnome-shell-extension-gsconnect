@@ -95,7 +95,8 @@ for (let path of [Config.CACHEDIR, Config.CONFIGDIR, Config.RUNTIMEDIR])
  * @param {string} [prefix] - An optional prefix for the warning
  */
 const _debugCallerMatch = new RegExp(/([^@]*)@([^:]*):([^:]*)/);
-const _debugFunc = function(error, prefix = null) {
+// eslint-disable-next-line func-style
+const _debugFunc = function (error, prefix = null) {
     let caller, message;
 
     if (error.stack) {
@@ -117,13 +118,13 @@ const _debugFunc = function(error, prefix = null) {
         'SYSLOG_IDENTIFIER': 'org.gnome.Shell.Extensions.GSConnect',
         'CODE_FILE': file,
         'CODE_FUNC': func,
-        'CODE_LINE': line
+        'CODE_LINE': line,
     });
 };
 
 // Swap the function out for a no-op anonymous function for speed
 const settings = new Gio.Settings({
-    settings_schema: Config.GSCHEMA.lookup(Config.APP_ID, true)
+    settings_schema: Config.GSCHEMA.lookup(Config.APP_ID, true),
 });
 
 settings.connect('changed::debug', (settings, key) => {
@@ -142,7 +143,7 @@ else
  *
  * @return {string} Return the string stripped of leading 0, and ' ()-+'
  */
-String.prototype.toPhoneNumber = function() {
+String.prototype.toPhoneNumber = function () {
     let strippedNumber = this.replace(/^0*|[ ()+-]/g, '');
 
     if (strippedNumber.length)
@@ -158,7 +159,7 @@ String.prototype.toPhoneNumber = function() {
  * @param {string} number - A phone number string to compare
  * @return {boolean} If `this` and @number are equivalent phone numbers
  */
-String.prototype.equalsPhoneNumber = function(number) {
+String.prototype.equalsPhoneNumber = function (number) {
     let a = this.toPhoneNumber();
     let b = number.toPhoneNumber();
 
@@ -168,8 +169,10 @@ String.prototype.equalsPhoneNumber = function(number) {
 
 /**
  * An implementation of `rm -rf` in Gio
+ *
+ * @param {Gio.File|string} file - a GFile or filepath
  */
-Gio.File.rm_rf = function(file) {
+Gio.File.rm_rf = function (file) {
     try {
         if (typeof file === 'string')
             file = Gio.File.new_for_path(file);
@@ -202,6 +205,7 @@ Gio.File.rm_rf = function(file) {
  * Extend GLib.Variant with a static method to recursively pack a variant
  *
  * @param {*} [obj] - May be a GLib.Variant, Array, standard Object or literal.
+ * @return {GLib.Variant} The resulting GVariant
  */
 function _full_pack(obj) {
     let packed;
@@ -257,10 +261,11 @@ GLib.Variant.full_pack = _full_pack;
  * Extend GLib.Variant with a method to recursively deepUnpack() a variant
  *
  * @param {*} [obj] - May be a GLib.Variant, Array, standard Object or literal.
+ * @return {*} The resulting object
  */
 function _full_unpack(obj) {
     obj = (obj === undefined) ? this : obj;
-    let unpacked;
+    let unpacked = {};
 
     switch (true) {
         case (obj === null):
@@ -276,8 +281,6 @@ function _full_unpack(obj) {
             return obj.map(e => _full_unpack(e));
 
         case (typeof obj === 'object'):
-            unpacked = {};
-
             for (let [key, value] of Object.entries(obj)) {
                 // Try to detect and deserialize GIcons
                 try {

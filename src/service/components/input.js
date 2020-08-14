@@ -14,9 +14,9 @@ const RemoteSession = GObject.registerClass({
     Implements: [Gio.DBusInterface],
     Signals: {
         'closed': {
-            flags: GObject.SignalFlags.RUN_FIRST
-        }
-    }
+            flags: GObject.SignalFlags.RUN_FIRST,
+        },
+    },
 }, class RemoteSession extends Gio.DBusProxy {
 
     _init(objectPath) {
@@ -25,7 +25,7 @@ const RemoteSession = GObject.registerClass({
             g_name: 'org.gnome.Mutter.RemoteDesktop',
             g_object_path: objectPath,
             g_interface_name: 'org.gnome.Mutter.RemoteDesktop.Session',
-            g_flags: Gio.DBusProxyFlags.NONE
+            g_flags: Gio.DBusProxyFlags.NONE,
         });
 
         this._started = false;
@@ -181,22 +181,20 @@ const RemoteSession = GObject.registerClass({
                 'NotifyPointerAxis',
                 GLib.Variant.new('(ddu)', [0, 0, 1])
             );
-        } else {
-            if (dy > 0) {
-                this._call(
-                    'NotifyPointerAxisDiscrete',
-                    GLib.Variant.new('(ui)', [Gdk.ScrollDirection.UP, 1])
-                );
-            } else if (dy < 0) {
-                this._call(
-                    'NotifyPointerAxisDiscrete',
-                    GLib.Variant.new('(ui)', [Gdk.ScrollDirection.UP, -1])
-                );
-            }
+        } else if (dy > 0) {
+            this._call(
+                'NotifyPointerAxisDiscrete',
+                GLib.Variant.new('(ui)', [Gdk.ScrollDirection.UP, 1])
+            );
+        } else if (dy < 0) {
+            this._call(
+                'NotifyPointerAxisDiscrete',
+                GLib.Variant.new('(ui)', [Gdk.ScrollDirection.UP, -1])
+            );
         }
     }
 
-    /**
+    /*
      * Keyboard Events
      */
     pressKeysym(keysym) {
@@ -224,15 +222,19 @@ const RemoteSession = GObject.registerClass({
         );
     }
 
-    /**
+    /*
      * High-level keyboard input
      */
     pressKey(input, modifiers) {
         // Press Modifiers
-        if (modifiers & Gdk.ModifierType.MOD1_MASK) this.pressKeysym(Gdk.KEY_Alt_L);
-        if (modifiers & Gdk.ModifierType.CONTROL_MASK) this.pressKeysym(Gdk.KEY_Control_L);
-        if (modifiers & Gdk.ModifierType.SHIFT_MASK) this.pressKeysym(Gdk.KEY_Shift_L);
-        if (modifiers & Gdk.ModifierType.SUPER_MASK) this.pressKeysym(Gdk.KEY_Super_L);
+        if (modifiers & Gdk.ModifierType.MOD1_MASK)
+            this.pressKeysym(Gdk.KEY_Alt_L);
+        if (modifiers & Gdk.ModifierType.CONTROL_MASK)
+            this.pressKeysym(Gdk.KEY_Control_L);
+        if (modifiers & Gdk.ModifierType.SHIFT_MASK)
+            this.pressKeysym(Gdk.KEY_Shift_L);
+        if (modifiers & Gdk.ModifierType.SUPER_MASK)
+            this.pressKeysym(Gdk.KEY_Super_L);
 
         if (typeof input === 'string') {
             let keysym = Gdk.unicode_to_keyval(input.codePointAt(0));
@@ -242,10 +244,14 @@ const RemoteSession = GObject.registerClass({
         }
 
         // Release Modifiers
-        if (modifiers & Gdk.ModifierType.MOD1_MASK) this.releaseKeysym(Gdk.KEY_Alt_L);
-        if (modifiers & Gdk.ModifierType.CONTROL_MASK) this.releaseKeysym(Gdk.KEY_Control_L);
-        if (modifiers & Gdk.ModifierType.SHIFT_MASK) this.releaseKeysym(Gdk.KEY_Shift_L);
-        if (modifiers & Gdk.ModifierType.SUPER_MASK) this.releaseKeysym(Gdk.KEY_Super_L);
+        if (modifiers & Gdk.ModifierType.MOD1_MASK)
+            this.releaseKeysym(Gdk.KEY_Alt_L);
+        if (modifiers & Gdk.ModifierType.CONTROL_MASK)
+            this.releaseKeysym(Gdk.KEY_Control_L);
+        if (modifiers & Gdk.ModifierType.SHIFT_MASK)
+            this.releaseKeysym(Gdk.KEY_Shift_L);
+        if (modifiers & Gdk.ModifierType.SUPER_MASK)
+            this.releaseKeysym(Gdk.KEY_Super_L);
     }
 
     destroy() {
@@ -400,7 +406,7 @@ class Controller {
         return new Promise((resolve, reject) => {
             let options = new GLib.Variant('(a{sv})', [{
                 'disable-animations': GLib.Variant.new_boolean(false),
-                'remote-desktop-session-id': GLib.Variant.new_string(sessionId)
+                'remote-desktop-session-id': GLib.Variant.new_string(sessionId),
             }]);
 
             this.connection.call(
@@ -431,14 +437,16 @@ class Controller {
             this._sessionExpiry = Math.floor((Date.now() / 1000) + SESSION_TIMEOUT);
 
             // Session is active
-            if (this._session !== null) return;
+            if (this._session !== null)
+                return;
 
             // Mutter's RemoteDesktop is not available, fall back to Atspi
             if (this.connection === null) {
                 debug('Falling back to Atspi');
 
                 // If we got here in Wayland, we need to re-adjust and bail
-                if (this._checkWayland()) return;
+                if (this._checkWayland())
+                    return;
 
                 let fallback = imports.service.components.atspi;
                 this._session = new fallback.Controller();
@@ -487,12 +495,13 @@ class Controller {
         }
     }
 
-    /**
+    /*
      * Pointer Events
      */
     movePointer(dx, dy) {
         try {
-            if (dx === 0 && dy === 0) return;
+            if (dx === 0 && dy === 0)
+                return;
 
             this._ensureAdapter();
             this._session.movePointer(dx, dy);
@@ -538,7 +547,8 @@ class Controller {
     }
 
     scrollPointer(dx, dy) {
-        if (dx === 0 && dy === 0) return;
+        if (dx === 0 && dy === 0)
+            return;
 
         try {
             this._ensureAdapter();
@@ -548,7 +558,7 @@ class Controller {
         }
     }
 
-    /**
+    /*
      * Keyboard Events
      */
     pressKeysym(keysym) {
@@ -578,7 +588,7 @@ class Controller {
         }
     }
 
-    /**
+    /*
      * High-level keyboard input
      */
     pressKey(input, modifiers) {

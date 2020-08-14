@@ -39,16 +39,16 @@ var DeviceChooser = GObject.registerClass({
             new GLib.VariantType('*'),
             null,
             GObject.ParamFlags.READWRITE
-        )
+        ),
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/service-device-chooser.ui',
-    Children: ['device-list', 'cancel-button', 'select-button']
+    Children: ['device-list', 'cancel-button', 'select-button'],
 }, class DeviceChooser extends Gtk.Dialog {
 
     _init(params = {}) {
         super._init({
             use_header_bar: true,
-            application: Gio.Application.get_default()
+            application: Gio.Application.get_default(),
         });
         this.set_keep_above(true);
 
@@ -138,7 +138,7 @@ var DeviceChooser = GObject.registerClass({
                 continue;
 
             let row = new Gtk.ListBoxRow({
-                visible: action.enabled
+                visible: action.enabled,
             });
             row.set_name(device.id);
             row.device = device;
@@ -153,14 +153,14 @@ var DeviceChooser = GObject.registerClass({
             let grid = new Gtk.Grid({
                 column_spacing: 12,
                 margin: 6,
-                visible: true
+                visible: true,
             });
             row.add(grid);
 
             let icon = new Gtk.Image({
                 icon_name: device.icon_name,
                 pixel_size: 32,
-                visible: true
+                visible: true,
             });
             grid.attach(icon, 0, 0, 1, 1);
 
@@ -168,7 +168,7 @@ var DeviceChooser = GObject.registerClass({
                 label: device.name,
                 halign: Gtk.Align.START,
                 hexpand: true,
-                visible: true
+                visible: true,
             });
             grid.attach(name, 1, 0, 1, 1);
 
@@ -191,14 +191,14 @@ var DeviceChooser = GObject.registerClass({
 var ErrorDialog = GObject.registerClass({
     GTypeName: 'GSConnectServiceErrorDialog',
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/service-error-dialog.ui',
-    Children: ['cancel-button', 'report-button', 'error-message', 'error-stack']
+    Children: ['cancel-button', 'report-button', 'error-message', 'error-stack'],
 }, class ErrorDialog extends Gtk.Dialog {
 
     _init(error) {
         super._init({
             application: Gio.Application.get_default(),
             title: `GSConnect: ${error.name}`,
-            use_header_bar: true
+            use_header_bar: true,
         });
         this.set_keep_above(true);
 

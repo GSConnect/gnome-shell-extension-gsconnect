@@ -26,7 +26,7 @@ try {
     new Gio.Socket({
         family: Gio.SocketFamily.IPV4,
         protocol: Gio.SocketProtocol.TCP,
-        type: Gio.SocketType.STREAM
+        type: Gio.SocketType.STREAM,
     }).get_option(6, 5);
 } catch (e) {
     _LINUX_SOCKETS = false;
@@ -84,8 +84,8 @@ var ChannelService = GObject.registerClass({
             GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
             0,  GLib.MAXUINT16,
             DEFAULT_PORT
-        )
-    }
+        ),
+    },
 }, class LanChannelService extends GObject.Object {
 
     _init(params) {
@@ -157,11 +157,11 @@ var ChannelService = GObject.registerClass({
 
         let certPath = GLib.build_filenamev([
             Config.CONFIGDIR,
-            'certificate.pem'
+            'certificate.pem',
         ]);
         let keyPath = GLib.build_filenamev([
             Config.CONFIGDIR,
-            'private.pem'
+            'private.pem',
         ]);
 
         // Ensure a certificate exists with our id as the common name
@@ -199,7 +199,7 @@ var ChannelService = GObject.registerClass({
                 backend: this,
                 certificate: this.certificate,
                 host: host,
-                port: DEFAULT_PORT
+                port: DEFAULT_PORT,
             });
 
             // Accept the connection
@@ -225,7 +225,7 @@ var ChannelService = GObject.registerClass({
                 family: Gio.SocketFamily.IPV6,
                 type: Gio.SocketType.DATAGRAM,
                 protocol: Gio.SocketProtocol.UDP,
-                broadcast: true
+                broadcast: true,
             });
             this._udp6.init(null);
 
@@ -238,8 +238,8 @@ var ChannelService = GObject.registerClass({
             this._udp6_stream = new Gio.DataInputStream({
                 base_stream: new Gio.UnixInputStream({
                     fd: this._udp6.fd,
-                    close_fd: false
-                })
+                    close_fd: false,
+                }),
             });
 
             // Watch socket for incoming packets
@@ -261,7 +261,7 @@ var ChannelService = GObject.registerClass({
                 family: Gio.SocketFamily.IPV4,
                 type: Gio.SocketType.DATAGRAM,
                 protocol: Gio.SocketProtocol.UDP,
-                broadcast: true
+                broadcast: true,
             });
             this._udp4.init(null);
 
@@ -274,8 +274,8 @@ var ChannelService = GObject.registerClass({
             this._udp4_stream = new Gio.DataInputStream({
                 base_stream: new Gio.UnixInputStream({
                     fd: this._udp4.fd,
-                    close_fd: false
-                })
+                    close_fd: false,
+                }),
             });
 
             // Watch input socket for incoming packets
@@ -347,7 +347,7 @@ var ChannelService = GObject.registerClass({
                 certificate: this.certificate,
                 host: packet.body.tcpHost,
                 port: packet.body.tcpPort,
-                identity: packet
+                identity: packet,
             });
 
             // Check if channel is already open with this address
@@ -496,7 +496,7 @@ var ChannelService = GObject.registerClass({
  */
 var Channel = GObject.registerClass({
     GTypeName: 'GSConnectLanChannel',
-    Implements: [Core.Channel]
+    Implements: [Core.Channel],
 }, class LanChannel extends GObject.Object {
 
     _init(params) {
@@ -596,7 +596,7 @@ var Channel = GObject.registerClass({
                     'org.gnome.Shell.Extensions.GSConnect.Device',
                     true
                 ),
-                path: `/org/gnome/shell/extensions/gsconnect/device/${id}/`
+                path: `/org/gnome/shell/extensions/gsconnect/device/${id}/`,
             });
         }
 
@@ -693,7 +693,7 @@ var Channel = GObject.registerClass({
             // any more data until the TLS connection is negotiated.
             let stream = new Gio.DataInputStream({
                 base_stream: connection.input_stream,
-                close_base_stream: false
+                close_base_stream: false,
             });
 
             stream.read_line_async(
@@ -814,7 +814,7 @@ var Channel = GObject.registerClass({
         params = Object.assign(params, {
             backend: this.backend,
             certificate: this.certificate,
-            host: this.host
+            host: this.host,
         });
 
         return new Transfer(params);
@@ -858,7 +858,7 @@ var Channel = GObject.registerClass({
  * Lan Transfer
  */
 var Transfer = GObject.registerClass({
-    GTypeName: 'GSConnectLanTransfer'
+    GTypeName: 'GSConnectLanTransfer',
 }, class Transfer extends Channel {
 
     /**

@@ -62,15 +62,15 @@ const Service = GObject.registerClass({
             'The name announced to the network',
             GObject.ParamFlags.READWRITE,
             'GSConnect'
-        )
-    }
+        ),
+    },
 }, class Service extends Gtk.Application {
 
     _init() {
         super._init({
             application_id: 'org.gnome.Shell.Extensions.GSConnect',
             flags: Gio.ApplicationFlags.HANDLES_OPEN,
-            resource_base_path: '/org/gnome/Shell/Extensions/GSConnect'
+            resource_base_path: '/org/gnome/Shell/Extensions/GSConnect',
         });
 
         GLib.set_prgname('GSConnect');
@@ -155,8 +155,8 @@ const Service = GObject.registerClass({
                     deviceType: this._getDeviceType(),
                     protocolVersion: 7,
                     incomingCapabilities: [],
-                    outgoingCapabilities: []
-                }
+                    outgoingCapabilities: [],
+                },
             });
 
             for (let name in imports.service.plugins) {
@@ -166,13 +166,11 @@ const Service = GObject.registerClass({
 
                 let meta = imports.service.plugins[name].Metadata;
 
-                meta.incomingCapabilities.map(type => {
+                for (let type of meta.incomingCapabilities)
                     this._identity.body.incomingCapabilities.push(type);
-                });
 
-                meta.outgoingCapabilities.map(type => {
+                for (let type of meta.outgoingCapabilities)
                     this._identity.body.outgoingCapabilities.push(type);
-                });
             }
         }
 
@@ -201,14 +199,14 @@ const Service = GObject.registerClass({
     get settings() {
         if (this._settings === undefined) {
             this._settings = new Gio.Settings({
-                settings_schema: Config.GSCHEMA.lookup(this.application_id, true)
+                settings_schema: Config.GSCHEMA.lookup(this.application_id, true),
             });
         }
 
         return this._settings;
     }
 
-    /**
+    /*
      * Helpers
      */
     _getDeviceType() {
@@ -306,13 +304,13 @@ const Service = GObject.registerClass({
             ['error', this._error.bind(this), new GLib.VariantType('a{ss}')],
             ['preferences', this._preferences, null],
             ['quit', () => this.quit(), null],
-            ['refresh', this._identify.bind(this), null]
+            ['refresh', this._identify.bind(this), null],
         ];
 
         for (let [name, callback, type] of actions) {
             let action = new Gio.SimpleAction({
                 name: name,
-                parameter_type: type
+                parameter_type: type,
             });
             action.connect('activate', callback);
             this.add_action(action);
@@ -323,12 +321,8 @@ const Service = GObject.registerClass({
      * A wrapper for Device GActions. This is used to route device notification
      * actions to their device, since GNotifications need an 'app' level action.
      *
-     * @param {Gio.Action} action - ...
-     * @param {GLib.Variant(av)} parameter - ...
-     * @param {GLib.Variant(s)} parameter[0] - Device Id or '*' for all
-     * @param {GLib.Variant(s)} parameter[1] - GAction name
-     * @param {GLib.Variant(b)} parameter[2] - %false if the parameter is null
-     * @param {GLib.Variant(v)} parameter[3] - GAction parameter
+     * @param {Gio.Action} action - The GAction
+     * @param {GLib.Variant} parameter - The activation parameter
      */
     _device(action, parameter) {
         try {
@@ -408,6 +402,8 @@ const Service = GObject.registerClass({
     /**
      * A GSourceFunc that tries to reconnect to each paired device, while
      * pruning unpaired devices that have disconnected.
+     *
+     * @return {boolean} Always %true
      */
     _reconnect() {
         for (let [id, device] of this.devices) {
@@ -480,7 +476,7 @@ const Service = GObject.registerClass({
 
     _initBackends() {
         let backends = [
-            'lan'
+            'lan',
         ];
 
         for (let name of backends) {
@@ -529,7 +525,7 @@ const Service = GObject.registerClass({
                     name: error.name.trim(),
                     message: error.message.trim(),
                     stack: error.stack.trim(),
-                    url: error.url
+                    url: error.url,
                 });
             } else {
                 id = error.name.trim();
@@ -539,7 +535,7 @@ const Service = GObject.registerClass({
                 target = new GLib.Variant('a{ss}', {
                     name: error.name.trim(),
                     message: error.message.trim(),
-                    stack: error.stack.trim()
+                    stack: error.stack.trim(),
                 });
             }
 
@@ -610,7 +606,7 @@ const Service = GObject.registerClass({
 
         this.objectManager = new Gio.DBusObjectManagerServer({
             connection: connection,
-            object_path: object_path
+            object_path: object_path,
         });
 
         return true;
@@ -650,7 +646,7 @@ const Service = GObject.registerClass({
                 new ServiceUI.DeviceChooser({
                     title: title,
                     action_name: action,
-                    action_target: parameter
+                    action_target: parameter,
                 });
             } catch (e) {
                 logError(e, `GSConnect: Opening ${file.get_uri()}`);
@@ -963,7 +959,7 @@ const Service = GObject.registerClass({
             icon = Gio.Icon.new_for_string(icon);
         } else {
             icon = new Gio.ThemedIcon({
-                name: 'org.gnome.Shell.Extensions.GSConnect'
+                name: 'org.gnome.Shell.Extensions.GSConnect',
             });
         }
 
@@ -975,7 +971,7 @@ const Service = GObject.registerClass({
             ticker: GLib.Variant.new_string(`${title}: ${body}`),
             time: GLib.Variant.new_string(`${Date.now()}`),
             isClearable: GLib.Variant.new_boolean(true),
-            icon: icon.serialize()
+            icon: icon.serialize(),
         });
 
         this._cliAction(id, 'sendNotification', notification);
@@ -984,21 +980,19 @@ const Service = GObject.registerClass({
     _cliShareFile(device, options) {
         let files = options.lookup_value('share-file', null).deepUnpack();
 
-        files.map(file => {
+        for (let file of files) {
             file = imports.byteArray.toString(file);
-
             this._cliAction(device, 'shareFile', GLib.Variant.new('(sb)', [file, false]));
-        });
+        }
     }
 
     _cliShareLink(device, options) {
         let uris = options.lookup_value('share-link', null).deepUnpack();
 
-        uris.map(uri => {
+        for (let uri of uris) {
             uri = imports.byteArray.toString(uri);
-
             this._cliAction(device, 'shareUri', GLib.Variant.new_string(uri));
-        });
+        }
     }
 
     _cliShareText(device, options) {

@@ -41,6 +41,7 @@ var Packet = class Packet {
     /**
      * Deserialize and return a new Packet from an Object or string.
      *
+     * @param {Object|string} data - A string or dictionary to deserialize
      * @return {Core.Packet} A new packet object
      */
     static deserialize(data) {
@@ -127,7 +128,7 @@ var Packet = class Packet {
  */
 var Channel = GObject.registerClass({
     GTypeName: 'GSConnectChannel',
-    Requires: [GObject.Object]
+    Requires: [GObject.Object],
 }, class Channel extends GObject.Interface {
 
     get address() {
@@ -219,7 +220,7 @@ var Channel = GObject.registerClass({
 
         if (!(this.input_stream instanceof Gio.DataInputStream)) {
             this.input_stream = new Gio.DataInputStream({
-                base_stream: this.input_stream
+                base_stream: this.input_stream,
             });
         }
 
@@ -234,7 +235,7 @@ var Channel = GObject.registerClass({
                         if (data === null) {
                             throw new Gio.IOErrorEnum({
                                 message: 'End of stream',
-                                code: Gio.IOErrorEnum.CONNECTION_CLOSED
+                                code: Gio.IOErrorEnum.CONNECTION_CLOSED,
                             });
                         }
 
@@ -281,6 +282,8 @@ var Channel = GObject.registerClass({
      *
      * The default implementation will always report failure, for protocols that
      * won't or don't yet support payload transfers.
+     *
+     * @param {Object} params - A dictionary of transfer parameters
      */
     createTransfer(params) {
         throw new GObject.NotImplementedError();
@@ -290,7 +293,6 @@ var Channel = GObject.registerClass({
      * Reject a transfer.
      *
      * @param {Core.Packet} packet - A packet with payload info
-     * @return {Promise} A promise for the operation
      */
     rejectTransfer(packet) {
         throw new GObject.NotImplementedError();
@@ -375,15 +377,15 @@ var ChannelService = GObject.registerClass({
             'The name of the backend',
             GObject.ParamFlags.READABLE,
             null
-        )
+        ),
     },
     Signals: {
         'channel': {
             flags: GObject.SignalFlags.RUN_LAST,
             param_types: [Channel.$gtype],
-            return_type: GObject.TYPE_BOOLEAN
+            return_type: GObject.TYPE_BOOLEAN,
         },
-    }
+    },
 }, class ChannelService extends GObject.Interface {
 
     get name() {

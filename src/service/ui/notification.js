@@ -33,10 +33,10 @@ var ReplyDialog = GObject.registerClass({
             'The notification reply UUID',
             GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
             null
-        )
+        ),
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/notification-reply-dialog.ui',
-    Children: ['infobar', 'notification-title', 'notification-body', 'entry']
+    Children: ['infobar', 'notification-title', 'notification-body', 'entry'],
 }, class ReplyDialog extends Gtk.Dialog {
 
     _init(params) {
@@ -45,7 +45,7 @@ var ReplyDialog = GObject.registerClass({
             device: params.device,
             plugin: params.plugin,
             uuid: params.uuid,
-            use_header_bar: true
+            use_header_bar: true,
         });
 
         this.set_response_sensitive(Gtk.ResponseType.OK, false);

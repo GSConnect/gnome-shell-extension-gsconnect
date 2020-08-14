@@ -12,13 +12,13 @@ var Metadata = {
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Battery',
     incomingCapabilities: [
         'kdeconnect.battery',
-        'kdeconnect.battery.request'
+        'kdeconnect.battery.request',
     ],
     outgoingCapabilities: [
         'kdeconnect.battery',
-        'kdeconnect.battery.request'
+        'kdeconnect.battery.request',
     ],
-    actions: {}
+    actions: {},
 };
 
 
@@ -27,7 +27,7 @@ var Metadata = {
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/battery
  */
 var Plugin = GObject.registerClass({
-    GTypeName: 'GSConnectBatteryPlugin'
+    GTypeName: 'GSConnectBatteryPlugin',
 }, class Plugin extends PluginBase.Plugin {
 
     _init(device) {
@@ -41,14 +41,14 @@ var Plugin = GObject.registerClass({
         this.cacheProperties([
             '_chargeState',
             '_dischargeState',
-            '_thresholdLevel'
+            '_thresholdLevel',
         ]);
 
         // Export battery state as GAction
         this.__state = new Gio.SimpleAction({
             name: 'battery',
             parameter_type: new GLib.VariantType('(bsii)'),
-            state: this.state
+            state: this.state,
         });
         this.device.add_action(this.__state);
 
@@ -241,7 +241,7 @@ var Plugin = GObject.registerClass({
             buttons = [{
                 label: _('Ring'),
                 action: 'ring',
-                parameter: null
+                parameter: null,
             }];
         }
 
@@ -252,7 +252,7 @@ var Plugin = GObject.registerClass({
             // TRANSLATORS: when the battery is fully charged
             body: _('Fully Charged'),
             icon: Gio.ThemedIcon.new('battery-full-charged-symbolic'),
-            buttons: buttons
+            buttons: buttons,
         });
     }
 
@@ -270,7 +270,7 @@ var Plugin = GObject.registerClass({
             buttons = [{
                 label: _('Ring'),
                 action: 'ring',
-                parameter: null
+                parameter: null,
             }];
         }
 
@@ -281,7 +281,7 @@ var Plugin = GObject.registerClass({
             // TRANSLATORS: eg. 15% remaining
             body: _('%d%% remaining').format(this.level),
             icon: Gio.ThemedIcon.new('battery-caution-symbolic'),
-            buttons: buttons
+            buttons: buttons,
         });
     }
 
@@ -324,7 +324,7 @@ var Plugin = GObject.registerClass({
     _requestState() {
         this.device.sendPacket({
             type: 'kdeconnect.battery.request',
-            body: {request: true}
+            body: {request: true},
         });
     }
 
@@ -345,8 +345,8 @@ var Plugin = GObject.registerClass({
             body: {
                 currentCharge: upower.level,
                 isCharging: upower.charging,
-                thresholdEvent: upower.threshold
-            }
+                thresholdEvent: upower.threshold,
+            },
         });
     }
 

@@ -13,11 +13,12 @@ const Config = imports.config;
  * Additionally, the private key will be added using ssh-add to allow sftp
  * connections using Gio.
  *
+ * See: https://github.com/KDE/kdeconnect-kde/blob/master/core/kdeconnectconfig.cpp#L119
+ *
  * @param {string} certPath - Absolute path to a x509 certificate in PEM format
  * @param {string} keyPath - Absolute path to a private key in PEM format
  * @param {string} commonName - A unique common name for the certificate
- *
- * See: https://github.com/KDE/kdeconnect-kde/blob/master/core/kdeconnectconfig.cpp#L119
+ * @return {Gio.TlsCertificate} A TLS certificate
  */
 Gio.TlsCertificate.new_for_paths = function (certPath, keyPath, commonName = null) {
     // Check if the certificate/key pair already exists
@@ -38,10 +39,10 @@ Gio.TlsCertificate.new_for_paths = function (certPath, keyPath, commonName = nul
                 '-newkey', 'rsa:4096', '-nodes',
                 '-keyout', keyPath,
                 '-days', '3650',
-                '-subj', `/O=andyholmes.github.io/OU=GSConnect/CN=${commonName}`
+                '-subj', `/O=andyholmes.github.io/OU=GSConnect/CN=${commonName}`,
             ],
             flags: (Gio.SubprocessFlags.STDOUT_SILENCE |
-                    Gio.SubprocessFlags.STDERR_SILENCE)
+                    Gio.SubprocessFlags.STDERR_SILENCE),
         });
         proc.init(null);
         proc.wait_check(null);
@@ -58,11 +59,11 @@ Object.defineProperties(Gio.TlsCertificate.prototype, {
      * @return {string} A SHA1 fingerprint of the certificate.
      */
     'fingerprint': {
-        value: function() {
+        value: function () {
             if (!this.__fingerprint) {
                 let proc = new Gio.Subprocess({
                     argv: [Config.OPENSSL_PATH, 'x509', '-noout', '-fingerprint', '-sha1', '-inform', 'pem'],
-                    flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE
+                    flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE,
                 });
                 proc.init(null);
 
@@ -72,18 +73,18 @@ Object.defineProperties(Gio.TlsCertificate.prototype, {
 
             return this.__fingerprint;
         },
-        enumerable: false
+        enumerable: false,
     },
 
     /**
      * The common name of the certificate.
      */
     'common_name': {
-        get: function() {
+        get: function () {
             if (!this.__common_name) {
                 let proc = new Gio.Subprocess({
                     argv: [Config.OPENSSL_PATH, 'x509', '-noout', '-subject', '-inform', 'pem'],
-                    flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE
+                    flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE,
                 });
                 proc.init(null);
 
@@ -93,18 +94,18 @@ Object.defineProperties(Gio.TlsCertificate.prototype, {
 
             return this.__common_name;
         },
-        enumerable: true
+        enumerable: true,
     },
 
     /**
      * The common name of the certificate.
      */
     'certificate_der': {
-        get: function() {
+        get: function () {
             if (!this.__certificate_der) {
                 let proc = new Gio.Subprocess({
                     argv: [Config.OPENSSL_PATH, 'x509', '-outform', 'der', '-inform', 'pem'],
-                    flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE
+                    flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE,
                 });
                 proc.init(null);
 
@@ -116,7 +117,7 @@ Object.defineProperties(Gio.TlsCertificate.prototype, {
 
             return this.__certificate_der;
         },
-        enumerable: true
-    }
+        enumerable: true,
+    },
 });
 
