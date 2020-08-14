@@ -118,7 +118,7 @@ var Plugin = GObject.registerClass({
         return Gio.File.new_for_path(filepath);
     }
 
-    async _refuseFile(packet) {
+    _refuseFile(packet) {
         try {
             this.device.rejectTransfer(packet);
 

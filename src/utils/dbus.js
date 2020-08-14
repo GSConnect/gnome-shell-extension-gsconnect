@@ -17,7 +17,7 @@ function toDBusCase(string) {
 
 function toHyphenCase(string) {
     return string.replace(/(?:[A-Z])/g, (ltr, offset) => {
-        return (offset > 0) ? '-' + ltr.toLowerCase() : ltr.toLowerCase();
+        return (offset > 0) ? `-${ltr.toLowerCase()}` : ltr.toLowerCase();
     }).replace(/[\s_]+/g, '');
 }
 
@@ -26,7 +26,7 @@ function toUnderscoreCase(string) {
         if (ltr === '_')
             return '';
 
-        return (offset > 0) ? '_' + ltr.toLowerCase() : ltr.toLowerCase();
+        return (offset > 0) ? `_${ltr.toLowerCase()}` : ltr.toLowerCase();
     }).replace(/[\s-]+/g, '');
 }
 
@@ -162,7 +162,7 @@ var Interface = GObject.registerClass({
                 let outArgs = info.lookup_method(name).out_args;
                 retval = new GLib.Variant(
                     _makeOutSignature(outArgs),
-                    (outArgs.length == 1) ? [retval] : retval
+                    (outArgs.length === 1) ? [retval] : retval
                 );
             }
 

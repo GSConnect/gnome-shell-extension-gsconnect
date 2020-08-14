@@ -302,7 +302,7 @@ var Channel = GObject.registerClass({
         let result = false;
 
         try {
-            throw new GObject.NotImplementedError();
+            await Promise.reject(new GObject.NotImplementedError());
         } catch (e) {
             debug(e, this.identity.body.deviceName);
         } finally {
@@ -316,7 +316,7 @@ var Channel = GObject.registerClass({
         let result = false;
 
         try {
-            throw new GObject.NotImplementedError();
+            await Promise.reject(new GObject.NotImplementedError());
         } catch (e) {
             debug(e, this.identity.body.deviceName);
         } finally {

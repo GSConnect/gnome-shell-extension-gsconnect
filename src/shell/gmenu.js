@@ -152,7 +152,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
     }
 
     _onSubmenuCloseKey(actor, event) {
-        if (this.submenu && event.get_key_symbol() == Clutter.KEY_Left) {
+        if (this.submenu && event.get_key_symbol() === Clutter.KEY_Left) {
             this.submenu.submenu_for.setActive(true);
             this.submenu = null;
             return Clutter.EVENT_STOP;
@@ -164,7 +164,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
     _onSubmenuOpenKey(actor, event) {
         let item = actor._delegate;
 
-        if (item.submenu && event.get_key_symbol() == Clutter.KEY_Right) {
+        if (item.submenu && event.get_key_symbol() === Clutter.KEY_Right) {
             this.submenu = item.submenu;
             item.submenu.firstMenuItem.setActive(true);
         }
@@ -559,8 +559,12 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
     _onMapped(actor) {
         if (!actor.mapped) {
             this._submenu = null;
-            this.box.get_children().map(button => button.checked = false);
-            this.sub.get_children().map(submenu => submenu.hide());
+
+            for (let button of this.box.get_children)
+                button.checked = false;
+
+            for (let submenu of this.sub.get_children())
+                submenu.hide();
         }
     }
 

@@ -283,7 +283,7 @@ var Device = GObject.registerClass({
         let out = this.settings.get_strv('outgoing-capabilities');
 
         // Only write GSettings if something has changed
-        if (incoming.join('') != inc.join('') || outgoing.join('') != out.join('')) {
+        if (incoming.join('') !== inc.join('') || outgoing.join('') !== out.join('')) {
             this.settings.set_strv('incoming-capabilities', incoming);
             this.settings.set_strv('outgoing-capabilities', outgoing);
         }

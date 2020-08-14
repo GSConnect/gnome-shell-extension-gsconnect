@@ -79,7 +79,9 @@ class Stream {
                 volume: value,
                 time: duration,
                 transition: 'easeOutCubic',
-                onComplete: () => this._mixer.fading = false,
+                onComplete: () => {
+                    this._mixer.fading = false;
+                },
             });
         } else if (this._stream.volume < value) {
             this._mixer.fading = true;
@@ -88,7 +90,9 @@ class Stream {
                 volume: value,
                 time: duration,
                 transition: 'easeInCubic',
-                onComplete: () => this._mixer.fading = false,
+                onComplete: () => {
+                    this._mixer.fading = false;
+                },
             });
         }
     }

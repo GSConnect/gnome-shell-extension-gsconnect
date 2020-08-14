@@ -58,7 +58,9 @@ var Plugin = GObject.registerClass({
             }
 
             this._dialog = new Dialog(this.device.name);
-            this._dialog.connect('response', () => this._dialog = null);
+            this._dialog.connect('response', () => {
+                this._dialog = null;
+            });
         } catch (e) {
             this._cancelRequest();
             logError(e, this.device.name);

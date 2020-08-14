@@ -391,7 +391,7 @@ class Listener {
             }
 
             // TODO: Gio.IOErrorEnum: The connection is closed
-            //this._monitor.close_sync(null);
+            // this._monitor.close_sync(null);
         } catch (e) {
             debug(e);
         }

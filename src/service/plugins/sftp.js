@@ -135,7 +135,7 @@ var Plugin = GObject.registerClass({
         } else {
             let uri = this.info.uri + this.info.path;
             this.info.directories[_('All files')] = uri;
-            this.info.directories[_('Camera pictures')] = uri + 'DCIM/Camera';
+            this.info.directories[_('Camera pictures')] = `${uri}DCIM/Camera`;
         }
     }
 
@@ -396,7 +396,7 @@ var Plugin = GObject.registerClass({
     async _addSymlink(mount) {
         try {
             let by_name_dir = Gio.File.new_for_path(
-                Config.RUNTIMEDIR + '/by-name/'
+                `${Config.RUNTIMEDIR}/by-name/`
             );
 
             try {

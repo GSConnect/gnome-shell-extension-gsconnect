@@ -47,6 +47,7 @@
             "property"
         ],
         "eol-last": "error",
+        "eqeqeq": "error",
         "func-call-spacing": "error",
         "func-name-matching": "error",
         "func-style": [
@@ -151,6 +152,7 @@
                 "message": "_init() that only calls super._init() is unnecessary"
             }
         ],
+        "no-return-assign": "error",
         "no-return-await": "error",
         "no-self-compare": "error",
         "no-shadow-restricted-names": "error",
@@ -201,6 +203,7 @@
                 "avoidEscape": true
             }
         ],
+        "require-await": "error",
         "rest-spread-spacing": "error",
         "semi": [
             "error",
@@ -231,6 +234,7 @@
             }
         ],
         "space-unary-ops": "error",
+        "spaced-comment": "error",
         "switch-colon-spacing": "error",
         "symbol-description": "error",
         "template-curly-spacing": "error",

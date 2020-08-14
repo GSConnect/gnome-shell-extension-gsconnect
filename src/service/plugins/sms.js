@@ -217,10 +217,11 @@ var Plugin = GObject.registerClass({
                 continue;
             }
 
-            // If this message is marked read and it's for an existing
-            // thread, we should mark the rest in this thread as read
-            if (message.read === MessageStatus.READ)
-                cache.forEach(msg => msg.read = MessageStatus.READ);
+            // If this message is marked read, mark the rest as read
+            if (message.read === MessageStatus.READ) {
+                for (let msg of cache)
+                    msg.read = MessageStatus.READ;
+            }
 
             // If we don't have a thread for this message or it's newer
             // than the last message in the cache, request the thread
@@ -361,7 +362,7 @@ var Plugin = GObject.registerClass({
     replySms(hint) {
         this.window.present();
         // FIXME: causes problems now that non-numeric addresses are allowed
-        //this.window.address = hint.toPhoneNumber();
+        // this.window.address = hint.toPhoneNumber();
     }
 
     /**

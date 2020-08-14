@@ -270,7 +270,7 @@ var Plugin = GObject.registerClass({
                     if (res)
                         meta[res[1]] = res[2];
                     else
-                        meta['type' + (i === 0 ? '' : i)] = type[i].toLowerCase();
+                        meta[`type${i === 0 ? '' : i}`] = type[i].toLowerCase();
                 }
 
                 // Value(s)
