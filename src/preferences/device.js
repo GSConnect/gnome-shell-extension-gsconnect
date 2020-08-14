@@ -72,6 +72,13 @@ const SectionRow = GObject.registerClass({
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/preferences-section-row.ui',
     Children: ['icon-image', 'title-label', 'subtitle-label'],
     Properties: {
+        'gicon': GObject.ParamSpec.object(
+            'gicon',
+            'GIcon',
+            'A GIcon for the row',
+            GObject.ParamFlags.READWRITE,
+            Gio.Icon.$gtype
+        ),
         'icon-name': GObject.ParamSpec.string(
             'icon-name',
             'Icon Name',
@@ -124,6 +131,19 @@ const SectionRow = GObject.registerClass({
         this.icon_image.visible = !!icon_name;
         this.icon_image.icon_name = icon_name;
         this.notify('icon-name');
+    }
+
+    get gicon() {
+        return this.icon_image.gicon;
+    }
+
+    set gicon(gicon) {
+        if (this.gicon === gicon)
+            return;
+
+        this.icon_image.visible = !!gicon;
+        this.icon_image.gicon = gicon;
+        this.notify('gicon');
     }
 
     get title() {
@@ -448,7 +468,6 @@ var Panel = GObject.registerClass({
         settings = this.pluginSettings('telephony');
         this.actions.add_action(settings.create_action('ringing-volume'));
         this.actions.add_action(settings.create_action('ringing-pause'));
-
         this.actions.add_action(settings.create_action('talking-volume'));
         this.actions.add_action(settings.create_action('talking-pause'));
         this.actions.add_action(settings.create_action('talking-microphone'));
@@ -790,7 +809,7 @@ var Panel = GObject.registerClass({
 
         for (let name in applications) {
             let row = new SectionRow({
-                icon_name: applications[name].iconName,
+                gicon: Gio.Icon.new_for_string(applications[name].iconName),
                 title: name,
                 height_request: 48,
                 widget: new Gtk.Label({
