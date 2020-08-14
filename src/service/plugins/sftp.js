@@ -481,7 +481,7 @@ var Plugin = GObject.registerClass({
      */
     async unmount() {
         try {
-            if (this.info.mount === null)
+            if (!this.info.mount)
                 return;
 
             let mount = this.info.mount;
