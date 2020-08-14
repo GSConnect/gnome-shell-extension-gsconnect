@@ -4,7 +4,7 @@
         "description": "The extension name"
     },
     "extensionDescription": {
-        "message": "Deel links met GSConnect, direct naar de browser of via SMS.",
+        "message": "Deel links met GSConnect, direct naar de browser of via sms.",
         "description": "The extension description"
     },
     "contextMenuMultipleDevices": {

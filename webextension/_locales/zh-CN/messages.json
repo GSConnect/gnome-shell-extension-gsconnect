@@ -4,7 +4,7 @@
         "description": "The extension name"
     },
     "extensionDescription": {
-        "message": "与 GSConnect 共享链接，直接发送到浏览器或短信。",
+        "message": "通过 GSConnect 直接将链接发送到浏览器或短信。",
         "description": "The extension description"
     },
     "contextMenuMultipleDevices": {
