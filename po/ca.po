@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-08-12 20:58-0700\n"
-"PO-Revision-Date: 2020-08-15 17:54\n"
+"PO-Revision-Date: 2020-08-15 18:04\n"
 "Last-Translator: \n"
 "Language-Team: Catalan\n"
 "Language: ca_ES\n"
@@ -49,31 +49,31 @@ msgstr "Enviar i rebre missatges"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
 msgid "Sync clipboard content"
-msgstr ""
+msgstr "Sincronitzar el contingut del porta-retalls"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:42
 msgid "Sync contacts"
-msgstr ""
+msgstr "Sincronitzar els contactes"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:43
 msgid "Sync notifications"
-msgstr ""
+msgstr "Sincronitzar les notificacions"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
 msgid "Control media players"
-msgstr ""
+msgstr "Controlar reproductors multimèdia"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:45
 msgid "Control system volume"
-msgstr ""
+msgstr "Controlar el volum del sistema"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:46
 msgid "Execute predefined commands"
-msgstr ""
+msgstr "Executar ordres predefinides"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:47
 msgid "And more…"
-msgstr ""
+msgstr "I més…"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:64
 msgid "GSConnect in GNOME Shell"
@@ -239,7 +239,7 @@ msgstr ""
 
 #: data/ui/preferences-device-panel.ui:490
 msgid "Save files to"
-msgstr ""
+msgstr "Desa els fitxers a"
 
 #: data/ui/preferences-device-panel.ui:551
 #: data/ui/preferences-device-panel.ui:2075
@@ -537,7 +537,7 @@ msgstr "No s’ha trobat cap dispositiu"
 
 #: data/ui/service-device-chooser.ui:111
 msgid "Device List"
-msgstr ""
+msgstr "Llista de dispositius"
 
 #: data/ui/service-error-dialog.ui:24 data/ui/service-error-dialog.ui:28
 msgid "Report"
@@ -1024,7 +1024,7 @@ msgstr "Trucada en curs"
 
 #: src/service/protocol/lan.js:153
 msgid "OpenSSL not found"
-msgstr ""
+msgstr "No s’ha trobat l’OpenSSL"
 
 #: src/service/protocol/lan.js:290
 msgid "Network Error"
