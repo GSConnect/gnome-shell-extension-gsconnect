@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-08-12 20:58-0700\n"
-"PO-Revision-Date: 2020-08-13 14:36\n"
+"PO-Revision-Date: 2020-08-15 17:54\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Language: es_ES\n"
@@ -122,7 +122,7 @@ msgstr "Escriba un número telefónico o un nombre"
 #. TRANSLATORS: All other phone number types
 #: data/ui/contacts-address-row.ui:64 src/service/ui/contacts.js:144
 msgid "Other"
-msgstr ""
+msgstr "Otro"
 
 #. TRANSLATORS: Share URL by SMS
 #: data/ui/legacy-messaging-dialog.ui:8 src/service/daemon.js:631
@@ -1037,17 +1037,17 @@ msgstr "Fax"
 #. TRANSLATORS: A work or office phone number
 #: src/service/ui/contacts.js:133
 msgid "Work"
-msgstr ""
+msgstr "Trabajo"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:137
 msgid "Mobile"
-msgstr ""
+msgstr "Móvil"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:141
 msgid "Home"
-msgstr ""
+msgstr "Residencial"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #. Update UI
