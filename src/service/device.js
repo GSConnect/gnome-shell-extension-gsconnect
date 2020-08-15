@@ -271,10 +271,6 @@ var Device = GObject.registerClass({
             this.notify('name');
         }
 
-        // Connection
-        if (this.connected)
-            this.settings.set_string('last-connection', this.channel.address);
-
         // Packets
         let incoming = packet.body.incomingCapabilities.sort();
         let outgoing = packet.body.outgoingCapabilities.sort();
@@ -327,12 +323,14 @@ var Device = GObject.registerClass({
 
         this._channel = channel;
 
-        // If the channel is null we've disconnected and should empty the queue,
-        // otherwise we need to restart the read loop
-        if (this.channel === null)
+        // If we've disconnected empty the queue, otherwise restart the read
+        // loop and record the reconnect address
+        if (this.channel === null) {
             this._outputQueue.length = 0;
-        else
+        } else {
+            this.settings.set_string('last-connection', this.channel.address);
             this._readLoop(channel);
+        }
 
         // The connected state didn't change
         if (this.connected === !!this.channel)
