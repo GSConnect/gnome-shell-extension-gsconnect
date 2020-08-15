@@ -81,7 +81,7 @@ var Plugin = GObject.registerClass({
                 });
 
             // Ensure we don't mount on top of an existing mount
-            } else if (this.info.mount === null) {
+            } else if (!this.info.mount) {
                 this._mount(packet.body);
             }
         }
@@ -96,7 +96,7 @@ var Plugin = GObject.registerClass({
             this.device.lookup_action('unmount').enabled = false;
 
         // Request a mount
-        } else if (this.info.mount === null) {
+        } else if (!this.info.mount) {
             this.mount();
         }
     }
