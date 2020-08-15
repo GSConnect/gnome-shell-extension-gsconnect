@@ -49,13 +49,30 @@
   </description>
 
   <releases>
-    <release version="39" date="2020-06-22"/>
-    <release version="38" date="2020-05-14"/>
-    <release version="37" date="2020-04-16"/>
-    <release version="36" date="2020-03-27"/>
-    <release version="35" date="2020-03-22"/>
-    <release version="34" date="2020-03-09"/>
-    <release version="33" date="2020-03-04"/>
+    <release version="40" date="2020-08-14">
+      <url>https://github.com/andyholmes/gnome-shell-extension-gsconnect/releases/tag/v40</url>
+    </release>
+    <release version="39" date="2020-06-22">
+      <url>https://github.com/andyholmes/gnome-shell-extension-gsconnect/releases/tag/v39</url>
+    </release>
+    <release version="38" date="2020-05-14">
+      <url>https://github.com/andyholmes/gnome-shell-extension-gsconnect/releases/tag/v38</url>
+    </release>
+    <release version="37" date="2020-04-16">
+      <url>https://github.com/andyholmes/gnome-shell-extension-gsconnect/releases/tag/v37</url>
+    </release>
+    <release version="36" date="2020-03-27">
+      <url>https://github.com/andyholmes/gnome-shell-extension-gsconnect/releases/tag/v36</url>
+    </release>
+    <release version="35" date="2020-03-22">
+      <url>https://github.com/andyholmes/gnome-shell-extension-gsconnect/releases/tag/v35</url>
+    </release>
+    <release version="34" date="2020-03-09">
+      <url>https://github.com/andyholmes/gnome-shell-extension-gsconnect/releases/tag/v34</url>
+    </release>
+    <release version="33" date="2020-03-04">
+      <url>https://github.com/andyholmes/gnome-shell-extension-gsconnect/releases/tag/v33</url>
+    </release>
   </releases>
 
   <screenshots>
