@@ -560,7 +560,7 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
         if (!actor.mapped) {
             this._submenu = null;
 
-            for (let button of this.box.get_children)
+            for (let button of this.box.get_children())
                 button.checked = false;
 
             for (let submenu of this.sub.get_children())
