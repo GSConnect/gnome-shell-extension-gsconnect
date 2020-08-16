@@ -156,6 +156,16 @@ var Manager = GObject.registerClass({
         return this._settings;
     }
 
+    vfunc_notify(pspec) {
+        if (pspec.name !== 'connection')
+            return;
+
+        if (this.connection !== null)
+            this._exportDevices();
+        else
+            this._unexportDevices();
+    }
+
     /*
      * GSettings
      */
