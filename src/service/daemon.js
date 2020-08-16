@@ -50,7 +50,7 @@ const Service = GObject.registerClass({
             resource_base_path: '/org/gnome/Shell/Extensions/GSConnect',
         });
 
-        GLib.set_prgname('GSConnect');
+        GLib.set_prgname('gsconnect');
         GLib.set_application_name('GSConnect');
 
         // Command-line
@@ -164,7 +164,10 @@ const Service = GObject.registerClass({
     }
 
     _preferences() {
-        Gio.Subprocess.new([`${Config.PACKAGE_DATADIR}/gsconnect-preferences`], 0);
+        Gio.Subprocess.new(
+            [`${Config.PACKAGE_DATADIR}/gsconnect-preferences`],
+            Gio.SubprocessFlags.NONE
+        );
     }
 
     /*
