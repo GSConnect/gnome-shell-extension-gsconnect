@@ -297,18 +297,16 @@ var Manager = GObject.registerClass({
      */
     _reconnect() {
         for (let [id, device] of this.devices) {
-            switch (true) {
-                case device.connected:
-                    break;
+            if (device.connected)
+                continue;
 
-                case device.paired:
-                    device.activate();
-                    break;
-
-                default:
-                    this._removeDevice(id);
-                    device.destroy();
+            if (device.paired) {
+                this.identify(device.settings.get_string('last-connection'));
+                continue;
             }
+
+            this._removeDevice(id);
+            device.destroy();
         }
 
         return GLib.SOURCE_CONTINUE;

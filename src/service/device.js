@@ -380,18 +380,6 @@ var Device = GObject.registerClass({
     }
 
     /**
-     * Request a connection from the device
-     */
-    activate() {
-        try {
-            let lastConnection = this.settings.get_value('last-connection');
-            this.service.activate_action('connect', lastConnection);
-        } catch (e) {
-            logError(e, this.name);
-        }
-    }
-
-    /**
      * Launch a subprocess for the device. If the device becomes unpaired, it is
      * assumed the device is no longer trusted and all subprocesses will be
      * killed.
