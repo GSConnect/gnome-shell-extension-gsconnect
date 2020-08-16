@@ -151,6 +151,9 @@ var Device = GObject.registerClass({
         if (contacts && contacts.settings.get_boolean('contacts-source'))
             return contacts._store;
 
+        if (this.service === null)
+            return null;
+
         return this.service.components.get('contacts');
     }
 
@@ -176,7 +179,11 @@ var Device = GObject.registerClass({
             ).fingerprint();
         }
 
-        let lanBackend = this.service.manager.backends.get('lan');
+        // FIXME: another ugly reach-around
+        let lanBackend;
+
+        if (this.service !== null)
+            lanBackend = this.service.manager.backends.get('lan');
 
         if (lanBackend && lanBackend.certificate)
             localFingerprint = lanBackend.certificate.fingerprint();
@@ -189,7 +196,7 @@ var Device = GObject.registerClass({
         // 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
         return _('%s Fingerprint:').format(this.name) + '\n' +
             remoteFingerprint + '\n\n' +
-            _('%s Fingerprint:').format(this.service.manager.name) + '\n' +
+            _('%s Fingerprint:').format('GSConnect') + '\n' +
             localFingerprint;
     }
 
@@ -221,7 +228,10 @@ var Device = GObject.registerClass({
     }
 
     get service() {
-        return Gio.Application.get_default();
+        if (this._service === undefined)
+            this._service = Gio.Application.get_default();
+
+        return this._service;
     }
 
     get type() {
@@ -590,6 +600,9 @@ var Device = GObject.registerClass({
      * @param {string} id - Id for the notification to withdraw
      */
     hideNotification(id) {
+        if (this.service === null)
+            return;
+
         this.service.withdraw_notification(`${this.id}|${id}`);
     }
 
@@ -606,6 +619,9 @@ var Device = GObject.registerClass({
      * @param {Array} [params.buttons] - An Array of buttons
      */
     showNotification(params) {
+        if (this.service === null)
+            return;
+
         params = Object.assign({
             id: Date.now(),
             title: this.name,
@@ -956,7 +972,8 @@ var Device = GObject.registerClass({
                     plugin.disconnected();
             }
         } catch (e) {
-            this.service.notify_error(e);
+            if (this.service !== null)
+                this.service.notify_error(e);
         }
     }
 
