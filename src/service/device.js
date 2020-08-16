@@ -156,7 +156,8 @@ var Device = GObject.registerClass({
 
     // FIXME: backend should do this stuff
     get encryption_info() {
-        let fingerprint = _('Not available');
+        let remoteFingerprint = _('Not available');
+        let localFingerprint = _('Not available');
 
         // Bluetooth connections have no certificate so we use the host address
         if (this.connection_type === 'bluetooth') {
@@ -165,15 +166,20 @@ var Device = GObject.registerClass({
 
         // If the device is connected use the certificate from the connection
         } else if (this.connected) {
-            fingerprint = this.channel.peer_certificate.fingerprint();
+            remoteFingerprint = this.channel.peer_certificate.fingerprint();
 
         // Otherwise pull it out of the settings
         } else if (this.paired) {
-            fingerprint = Gio.TlsCertificate.new_from_pem(
+            remoteFingerprint = Gio.TlsCertificate.new_from_pem(
                 this.settings.get_string('certificate-pem'),
                 -1
             ).fingerprint();
         }
+
+        let lanBackend = this.service.manager.backends.get('lan');
+
+        if (lanBackend && lanBackend.certificate)
+            localFingerprint = lanBackend.certificate.fingerprint();
 
         // TRANSLATORS: Label for TLS Certificate fingerprint
         //
@@ -182,9 +188,9 @@ var Device = GObject.registerClass({
         // Google Pixel Fingerprint:
         // 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
         return _('%s Fingerprint:').format(this.name) + '\n' +
-            fingerprint + '\n\n' +
+            remoteFingerprint + '\n\n' +
             _('%s Fingerprint:').format(this.service.manager.name) + '\n' +
-            this.service.manager.backends.get('lan').certificate.fingerprint();
+            localFingerprint;
     }
 
     get id() {
