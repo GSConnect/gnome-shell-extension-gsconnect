@@ -195,7 +195,7 @@ var Manager = GObject.registerClass({
         }
     }
 
-    _initBackends() {
+    _loadBackends() {
         let backends = [
             'lan',
         ];
@@ -227,7 +227,7 @@ var Manager = GObject.registerClass({
     /*
      * Devices
      */
-    _initDevices() {
+    _loadDevices() {
         // Load cached devices
         for (let id of this.settings.get_strv('devices'))
             this.devices.set(id, new Device.Device({body: {deviceId: id}}));
@@ -345,6 +345,9 @@ var Manager = GObject.registerClass({
      * Start managing devices.
      */
     start() {
+        this._loadDevices();
+        this._loadBackends();
+
         if (this._reconnectId === 0) {
             this._reconnectId = GLib.timeout_add_seconds(
                 GLib.PRIORITY_LOW,
@@ -352,9 +355,6 @@ var Manager = GObject.registerClass({
                 this._reconnect.bind(this)
             );
         }
-
-        this._initBackends();
-        this._initDevices();
     }
 
     /**
