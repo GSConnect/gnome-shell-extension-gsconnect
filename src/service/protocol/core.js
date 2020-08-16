@@ -4,6 +4,8 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
+const Manager = imports.service.manager;
+
 
 /**
  * Get the local device type.
@@ -392,6 +394,13 @@ var ChannelService = GObject.registerClass({
     GTypeName: 'GSConnectChannelService',
     Requires: [GObject.Object],
     Properties: {
+        'manager': GObject.ParamSpec.object(
+            'manager',
+            'Manager',
+            'The device manager',
+            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            Manager.Manager.$gtype
+        ),
         'name': GObject.ParamSpec.string(
             'name',
             'Name',
@@ -420,6 +429,17 @@ var ChannelService = GObject.registerClass({
         return this._identity;
     }
 
+    get manager() {
+        if (this._manager === undefined)
+            this._manager = null;
+
+        return this._manager;
+    }
+
+    set manager(manager) {
+        this._manager = manager;
+    }
+
     get service() {
         if (this._service === undefined)
             this._service = Gio.Application.get_default();
@@ -446,8 +466,8 @@ var ChannelService = GObject.registerClass({
             id: 0,
             type: 'kdeconnect.identity',
             body: {
-                deviceId: this.service.id,
-                deviceName: this.service.name,
+                deviceId: this.manager.id,
+                deviceName: this.manager.name,
                 deviceType: _getDeviceType(),
                 protocolVersion: 7,
                 incomingCapabilities: [],

@@ -124,7 +124,7 @@ var Device = GObject.registerClass({
         this._dbus_object = new Gio.DBusObjectSkeleton({
             g_object_path: this.g_object_path,
         });
-        this.service.objectManager.export(this._dbus_object);
+        this.service.manager.export(this._dbus_object);
 
         // Export GActions
         this._actionsId = Gio.DBus.session.export_action_group(
@@ -209,8 +209,8 @@ var Device = GObject.registerClass({
         // 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
         return _('%s Fingerprint:').format(this.name) + '\n' +
             fingerprint + '\n\n' +
-            _('%s Fingerprint:').format(this.service.name) + '\n' +
-            this.service.backends.get('lan').certificate.fingerprint();
+            _('%s Fingerprint:').format(this.service.manager.name) + '\n' +
+            this.service.manager.backends.get('lan').certificate.fingerprint();
     }
 
     get id() {
@@ -1046,7 +1046,7 @@ var Device = GObject.registerClass({
         this._dbus.flush();
         this._dbus_object.remove_interface(this._dbus);
         this._dbus_object.flush();
-        this.service.objectManager.unexport(this._dbus_object.g_object_path);
+        this.service.manager.unexport(this._dbus_object.g_object_path);
 
         // Dispose GSettings
         this.settings.disconnect(this._disabledPluginsChangedId);

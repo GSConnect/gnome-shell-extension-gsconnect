@@ -76,7 +76,14 @@ var ChannelService = GObject.registerClass({
     GTypeName: 'GSConnectLanChannelService',
     Implements: [Core.ChannelService],
     Properties: {
-        'name': GObject.ParamSpec.override('name', Core.ChannelService),
+        'manager': GObject.ParamSpec.override(
+            'manager',
+            Core.ChannelService
+        ),
+        'name': GObject.ParamSpec.override(
+            'name',
+            Core.ChannelService
+        ),
         'port': GObject.ParamSpec.uint(
             'port',
             'Port',
@@ -168,13 +175,13 @@ var ChannelService = GObject.registerClass({
         this._certificate = Gio.TlsCertificate.new_for_paths(
             certPath,
             keyPath,
-            this.service.id
+            this.manager.id
         );
 
-        // If the service id doesn't match the common name, this is probably a
+        // If the manager id doesn't match the common name, this is probably a
         // certificate from an earlier version and we need to set it now
-        if (this.service.settings.get_string('id') !== this._certificate.common_name)
-            this.service.settings.set_string('id', this._certificate.common_name);
+        if (this.manager.id !== this._certificate.common_name)
+            this.manager.id = this._certificate.common_name;
     }
 
     _initTcpListener() {
@@ -189,7 +196,7 @@ var ChannelService = GObject.registerClass({
             let host = connection.get_remote_address().address.to_string();
 
             // Decide whether we should try to accept this connection
-            if (!this._allowed.has(host) && !this.service.discoverable) {
+            if (!this._allowed.has(host) && !this.manager.discoverable) {
                 connection.close_async(GLib.PRIORITY_DEFAULT, null, null);
                 return;
             }

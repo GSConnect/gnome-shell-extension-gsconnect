@@ -289,6 +289,14 @@ class Controller {
         return this._connection;
     }
 
+    /**
+     * Check if this is a Wayland session, specifically for distributions that
+     * don't ship pipewire support (eg. Debian/Ubuntu).
+     *
+     * FIXME: this is a super ugly hack that should go away
+     *
+     * @return {boolean} %true if wayland is not supported
+     */
     _checkWayland() {
         if (HAVE_WAYLAND) {
             // eslint-disable-next-line no-global-assign
@@ -296,7 +304,7 @@ class Controller {
             let service = Gio.Application.get_default();
 
             // First we're going to disabled the affected plugins on all devices
-            for (let device of service.devices.values()) {
+            for (let device of service.manager.devices.values()) {
                 let supported = device.settings.get_strv('supported-plugins');
                 let index;
 
@@ -311,10 +319,10 @@ class Controller {
 
             // Second we need each backend to rebuild its identity packet and
             // broadcast the amended capabilities to the network
-            for (let backend of service.backends.values())
+            for (let backend of service.manager.backends.values())
                 backend.buildIdentity();
 
-            service._identify();
+            service.manager.identify();
 
             return true;
         }

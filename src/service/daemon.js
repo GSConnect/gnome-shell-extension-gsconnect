@@ -32,6 +32,7 @@ imports.config.PACKAGE_DATADIR = imports.searchPath[0];
 // Local Imports
 const Config = imports.config;
 const Device = imports.service.device;
+const Manager = imports.service.manager;
 const ServiceUI = imports.service.ui.service;
 
 
@@ -40,29 +41,6 @@ const ServiceUI = imports.service.ui.service;
  */
 const Service = GObject.registerClass({
     GTypeName: 'GSConnectService',
-    Properties: {
-        'discoverable': GObject.ParamSpec.boolean(
-            'discoverable',
-            'Discoverable',
-            'Whether the service responds to discovery requests',
-            GObject.ParamFlags.READWRITE,
-            false
-        ),
-        'id': GObject.ParamSpec.string(
-            'id',
-            'Id',
-            'The hostname or other network unique id',
-            GObject.ParamFlags.READWRITE,
-            null
-        ),
-        'name': GObject.ParamSpec.string(
-            'name',
-            'Name',
-            'The name announced to the network',
-            GObject.ParamFlags.READWRITE,
-            'GSConnect'
-        ),
-    },
 }, class Service extends Gtk.Application {
 
     _init() {
@@ -79,13 +57,6 @@ const Service = GObject.registerClass({
         this._initOptions();
     }
 
-    get backends() {
-        if (this._backends === undefined)
-            this._backends = new Map();
-
-        return this._backends;
-    }
-
     get components() {
         if (this._components === undefined)
             this._components = new Map();
@@ -93,155 +64,14 @@ const Service = GObject.registerClass({
         return this._components;
     }
 
-    get devices() {
-        if (this._devices === undefined)
-            this._devices = new Map();
-
-        return this._devices;
-    }
-
-    get discoverable() {
-        if (this._discoverable === undefined)
-            this._discoverable = this.settings.get_boolean('discoverable');
-
-        return this._discoverable;
-    }
-
-    set discoverable(value) {
-        if (this.discoverable === value)
-            return;
-
-        this._discoverable = value;
-        this.notify('discoverable');
-
-        if (this.discoverable) {
-            super.withdraw_notification('discovery-warning');
-        } else {
-            let notif = new Gio.Notification();
-            notif.set_title(_('Discovery Disabled'));
-            notif.set_body(_('Discovery has been disabled due to the number of devices on this network.'));
-            notif.set_icon(new Gio.ThemedIcon({name: 'dialog-warning'}));
-            notif.set_priority(Gio.NotificationPriority.HIGH);
-            notif.set_default_action('app.preferences');
-
-            super.send_notification('discovery-warning', notif);
-        }
-    }
-
-    get id() {
-        if (this._id === undefined)
-            this._id = this.settings.get_string('id');
-
-        return this._id;
-    }
-
-    set id(value) {
-        if (this.id === value)
-            return;
-
-        this._id = value;
-        this.notify('id');
-    }
-
-    get name() {
-        if (this._name === undefined)
-            this._name = this.settings.get_string('name');
-
-        return this._name;
-    }
-
-    set name(value) {
-        if (this.name === value)
-            return;
-
-        this._name = value;
-        this.notify('name');
-
-        // Broadcast changes to the network
-        for (let backend of this.backends.values())
-            backend.buildIdentity();
-
-        this._identify();
-    }
-
     get settings() {
         if (this._settings === undefined) {
             this._settings = new Gio.Settings({
-                settings_schema: Config.GSCHEMA.lookup(this.application_id, true),
+                settings_schema: Config.GSCHEMA.lookup(Config.APP_ID, true),
             });
         }
 
         return this._settings;
-    }
-
-    /**
-     * Return a device for @packet, creating it and adding it to the list of
-     * of known devices if it doesn't exist.
-     *
-     * @param {Core.Packet} packet - An identity packet for the device
-     * @return {Device.Device} A device object
-     */
-    _ensureDevice(packet) {
-        let device = this.devices.get(packet.body.deviceId);
-
-        if (device === undefined) {
-            debug(`Adding ${packet.body.deviceName}`);
-
-            // TODO: Remove when all clients support bluetooth-like discovery
-            //
-            // If this is the third unpaired device to connect, we disable
-            // discovery to avoid choking on networks with many devices
-            let unpaired = Array.from(this.devices.values()).filter(dev => {
-                return !dev.paired;
-            });
-
-            if (unpaired.length === 3)
-                this.discoverable = false;
-
-            device = new Device.Device(packet);
-            this.devices.set(device.id, device);
-
-            // Notify
-            this.settings.set_strv('devices', Array.from(this.devices.keys()));
-        }
-
-        return device;
-    }
-
-    /**
-     * Permanently remove a device.
-     *
-     * Removes the device from the list of known devices, deletes all GSettings
-     * and files.
-     *
-     * @param {string} id - The id of the device to delete
-     */
-    _removeDevice(id) {
-        // Delete all GSettings
-        let settings_path = `/org/gnome/shell/extensions/gsconnect/${id}/`;
-        GLib.spawn_command_line_async(`dconf reset -f ${settings_path}`);
-
-        // Delete the cache
-        let cache = GLib.build_filenamev([Config.CACHEDIR, id]);
-        Gio.File.rm_rf(cache);
-
-        // Forget the device
-        this.devices.delete(id);
-        this.settings.set_strv('devices', Array.from(this.devices.keys()));
-    }
-
-    /*
-     * GSettings
-     */
-    _initSettings() {
-        // Bound Properties
-        this.settings.bind('discoverable', this, 'discoverable', 0);
-        this.settings.bind('id', this, 'id', 0);
-        this.settings.bind('name', this, 'name', 0);
-
-        // Set the default name to the computer's hostname
-        if (this.name.length === 0)
-            this.settings.set_string('name', GLib.get_host_name());
     }
 
     /*
@@ -283,9 +113,9 @@ const Service = GObject.registerClass({
             let id = parameter[0].unpack();
 
             if (id === '*')
-                devices = this.devices.values();
+                devices = this.manager.devices.values();
             else
-                devices = [this.devices.get(id)];
+                devices = [this.manager.devices.get(id)];
 
             // Unpack the action data and activate the action
             let name = parameter[1].unpack();
@@ -322,24 +152,12 @@ const Service = GObject.registerClass({
 
     _identify(action, parameter) {
         try {
-            // If we're passed a parameter, try and find a backend for it
-            if (parameter instanceof GLib.Variant) {
-                let uri = parameter.unpack();
-                let [scheme, address] = uri.split('://');
+            let uri = null;
 
-                let backend = this.backends.get(scheme);
+            if (parameter instanceof GLib.Variant)
+                uri = parameter.unpack();
 
-                if (backend !== undefined)
-                    backend.broadcast(address);
-
-            // If we're not discoverable, only try to reconnect known devices
-            } else if (!this.discoverable) {
-                this._reconnect();
-
-            // Otherwise have each backend broadcast to it's network
-            } else {
-                this.backends.forEach(backend => backend.broadcast());
-            }
+            this.manager.identify(uri);
         } catch (e) {
             logError(e);
         }
@@ -347,31 +165,6 @@ const Service = GObject.registerClass({
 
     _preferences() {
         Gio.Subprocess.new([`${Config.PACKAGE_DATADIR}/gsconnect-preferences`], 0);
-    }
-
-    /**
-     * A GSourceFunc that tries to reconnect to each paired device, while
-     * pruning unpaired devices that have disconnected.
-     *
-     * @return {boolean} Always %true
-     */
-    _reconnect() {
-        for (let [id, device] of this.devices) {
-            switch (true) {
-                case device.connected:
-                    break;
-
-                case device.paired:
-                    device.activate();
-                    break;
-
-                default:
-                    this._removeDevice(id);
-                    device.destroy();
-            }
-        }
-
-        return GLib.SOURCE_CONTINUE;
     }
 
     /*
@@ -388,63 +181,6 @@ const Service = GObject.registerClass({
                 }
             } catch (e) {
                 e.name = `'${name}' Component`;
-                this.notify_error(e);
-            }
-        }
-    }
-
-    /*
-     * Backends
-     */
-    _onChannel(backend, channel) {
-        try {
-            let device = this.devices.get(channel.identity.body.deviceId);
-
-            switch (true) {
-                // Proceed if this is an existing device...
-                case (device !== undefined):
-                    break;
-
-                // Or the service is discoverable...
-                case this.discoverable:
-                    device = this._ensureDevice(channel.identity);
-                    break;
-
-                // ...otherwise bail
-                default:
-                    debug(`${channel.identity.body.deviceName}: not allowed`);
-                    return false;
-            }
-
-            device.setChannel(channel);
-            return true;
-        } catch (e) {
-            logError(e, backend.name);
-            return false;
-        }
-    }
-
-    _initBackends() {
-        let backends = [
-            'lan',
-        ];
-
-        for (let name of backends) {
-            try {
-                // Try to create the backend and track it if successful
-                let module = imports.service.protocol[name];
-                let backend = new module.ChannelService();
-                this.backends.set(name, backend);
-
-                // Connect to the backend
-                backend.__channelId = backend.connect(
-                    'channel',
-                    this._onChannel.bind(this)
-                );
-
-                // Now try to start the backend, allowing us to retry if we fail
-                backend.start();
-            } catch (e) {
                 this.notify_error(e);
             }
         }
@@ -537,24 +273,17 @@ const Service = GObject.registerClass({
         }
 
         // GActions & GSettings
-        this._initSettings();
         this._initActions();
         this._initComponents();
-        this._initBackends();
 
-        // Load cached devices
-        for (let id of this.settings.get_strv('devices'))
-            this.devices.set(id, new Device.Device({body: {deviceId: id}}));
-
-        // Reconnect to paired devices every 5 seconds
-        GLib.timeout_add_seconds(300, 5, this._reconnect.bind(this));
+        this.manager.start();
     }
 
     vfunc_dbus_register(connection, object_path) {
         if (!super.vfunc_dbus_register(connection, object_path))
             return false;
 
-        this.objectManager = new Gio.DBusObjectManagerServer({
+        this.manager = new Manager.Manager({
             connection: connection,
             object_path: object_path,
         });
@@ -608,14 +337,7 @@ const Service = GObject.registerClass({
         // Dispose GSettings
         this.settings.run_dispose();
 
-        // Destroy the backends first to avoid any further connections
-        this.backends.forEach((backend) => backend.destroy());
-        this.backends.clear();
-
-        // We must unexport the devices before ::dbus-unregister is emitted and
-        // exhaust the main loop to ensure connections are properly closed.
-        this.devices.forEach(device => device.destroy());
-        this.devices.clear();
+        this.manager.stop();
 
         let context = GLib.MainContext.default();
 

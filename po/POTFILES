@@ -22,6 +22,7 @@ src/preferences/keybindings.js
 src/preferences/service.js
 src/service/daemon.js
 src/service/device.js
+src/service/manager.js
 src/service/plugins/battery.js
 src/service/plugins/clipboard.js
 src/service/plugins/contacts.js
