@@ -6,6 +6,27 @@ const GObject = imports.gi.GObject;
 
 
 /**
+ * Get the local device type.
+ *
+ * @return {string} A device type string
+ */
+function _getDeviceType() {
+    try {
+        let type = GLib.file_get_contents('/sys/class/dmi/id/chassis_type')[1];
+
+        type = Number(imports.byteArray.toString(type));
+
+        if ([8, 9, 10, 14].includes(type))
+            return 'laptop';
+
+        return 'desktop';
+    } catch (e) {
+        return 'desktop';
+    }
+}
+
+
+/**
  * The packet class is a simple Object-derived class, offering some conveniences
  * for working with KDE Connect packets.
  */
@@ -392,6 +413,13 @@ var ChannelService = GObject.registerClass({
         throw new GObject.NotImplementedError();
     }
 
+    get identity() {
+        if (this._identity === undefined)
+            this.buildIdentity();
+
+        return this._identity;
+    }
+
     get service() {
         if (this._service === undefined)
             this._service = Gio.Application.get_default();
@@ -406,6 +434,40 @@ var ChannelService = GObject.registerClass({
      */
     broadcast(address = null) {
         throw new GObject.NotImplementedError();
+    }
+
+    /**
+     * Rebuild the identity packet used to identify the local device. An
+     * implementation may override this to make modifications to the default
+     * capabilities if necessary (eg. bluez without SFTP support).
+     */
+    buildIdentity() {
+        this._identity = new Packet({
+            id: 0,
+            type: 'kdeconnect.identity',
+            body: {
+                deviceId: this.service.id,
+                deviceName: this.service.name,
+                deviceType: _getDeviceType(),
+                protocolVersion: 7,
+                incomingCapabilities: [],
+                outgoingCapabilities: [],
+            },
+        });
+
+        for (let name in imports.service.plugins) {
+            // Exclude mousepad/presenter capability in unsupported sessions
+            if (!HAVE_REMOTEINPUT && ['mousepad', 'presenter'].includes(name))
+                continue;
+
+            let meta = imports.service.plugins[name].Metadata;
+
+            for (let type of meta.incomingCapabilities)
+                this._identity.body.incomingCapabilities.push(type);
+
+            for (let type of meta.outgoingCapabilities)
+                this._identity.body.outgoingCapabilities.push(type);
+        }
     }
 
     /**

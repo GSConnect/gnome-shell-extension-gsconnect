@@ -309,8 +309,11 @@ class Controller {
                 device.settings.set_strv('supported-plugins', supported);
             }
 
-            // Second we need to amend the service identity and broadcast
-            service._identity = undefined;
+            // Second we need each backend to rebuild its identity packet and
+            // broadcast the amended capabilities to the network
+            for (let backend of service.backends.values())
+                backend.buildIdentity();
+
             service._identify();
 
             return true;

@@ -336,7 +336,7 @@ var ChannelService = GObject.registerClass({
                 return;
 
             // Silently ignore our own broadcasts
-            if (packet.body.deviceId === this.service.identity.body.deviceId)
+            if (packet.body.deviceId === this.identity.body.deviceId)
                 return;
 
             debug(packet);
@@ -413,19 +413,21 @@ var ChannelService = GObject.registerClass({
                 address = this._udp_address;
             }
 
-            // Set the tcpPort before broadcasting
-            this.service.identity.body.tcpPort = this.port;
-
+            // Broadcast on each open socket
             if (this._udp6 !== null)
-                this._udp6.send_to(address, this.service.identity.serialize(), null);
+                this._udp6.send_to(address, this.identity.serialize(), null);
 
             if (this._udp4 !== null)
-                this._udp4.send_to(address, this.service.identity.serialize(), null);
+                this._udp4.send_to(address, this.identity.serialize(), null);
         } catch (e) {
             debug(e, address);
-        } finally {
-            this.service.identity.body.tcpPort = undefined;
         }
+    }
+
+    buildIdentity() {
+        // Chain-up, then add the TCP port
+        Core.ChannelService.buildIdentity(this);
+        this.identity.body.tcpPort = this.port;
     }
 
     start() {
@@ -728,16 +730,12 @@ var Channel = GObject.registerClass({
      */
     _sendIdent(connection) {
         return new Promise((resolve, reject) => {
-            this.service.identity.body.tcpPort = this.backend.port;
-
             connection.output_stream.write_all_async(
-                this.service.identity.serialize(),
+                this.backend.identity.serialize(),
                 GLib.PRIORITY_DEFAULT,
                 this.cancellable,
                 (stream, res) => {
                     try {
-                        this.service.identity.body.tcpPort = undefined;
-
                         resolve(stream.write_all_finish(res));
                     } catch (e) {
                         reject(e);

@@ -31,7 +31,6 @@ imports.config.PACKAGE_DATADIR = imports.searchPath[0];
 
 // Local Imports
 const Config = imports.config;
-const Core = imports.service.protocol.core;
 const Device = imports.service.device;
 const ServiceUI = imports.service.ui.service;
 
@@ -144,39 +143,6 @@ const Service = GObject.registerClass({
         this.notify('id');
     }
 
-    get identity() {
-        if (this._identity === undefined) {
-            this._identity = new Core.Packet({
-                id: 0,
-                type: 'kdeconnect.identity',
-                body: {
-                    deviceId: this.id,
-                    deviceName: this.name,
-                    deviceType: this._getDeviceType(),
-                    protocolVersion: 7,
-                    incomingCapabilities: [],
-                    outgoingCapabilities: [],
-                },
-            });
-
-            for (let name in imports.service.plugins) {
-                // Exclude mousepad/presenter capability in unsupported sessions
-                if (!HAVE_REMOTEINPUT && ['mousepad', 'presenter'].includes(name))
-                    continue;
-
-                let meta = imports.service.plugins[name].Metadata;
-
-                for (let type of meta.incomingCapabilities)
-                    this._identity.body.incomingCapabilities.push(type);
-
-                for (let type of meta.outgoingCapabilities)
-                    this._identity.body.outgoingCapabilities.push(type);
-            }
-        }
-
-        return this._identity;
-    }
-
     get name() {
         if (this._name === undefined)
             this._name = this.settings.get_string('name');
@@ -192,7 +158,9 @@ const Service = GObject.registerClass({
         this.notify('name');
 
         // Broadcast changes to the network
-        this.identity.body.deviceName = this.name;
+        for (let backend of this.backends.values())
+            backend.buildIdentity();
+
         this._identify();
     }
 
@@ -204,24 +172,6 @@ const Service = GObject.registerClass({
         }
 
         return this._settings;
-    }
-
-    /*
-     * Helpers
-     */
-    _getDeviceType() {
-        try {
-            let type = GLib.file_get_contents('/sys/class/dmi/id/chassis_type')[1];
-
-            type = Number(imports.byteArray.toString(type));
-
-            if ([8, 9, 10, 14].includes(type))
-                return 'laptop';
-
-            return 'desktop';
-        } catch (e) {
-            return 'desktop';
-        }
     }
 
     /**
@@ -388,7 +338,7 @@ const Service = GObject.registerClass({
 
             // Otherwise have each backend broadcast to it's network
             } else {
-                this.backends.forEach((backend) => backend.broadcast());
+                this.backends.forEach(backend => backend.broadcast());
             }
         } catch (e) {
             logError(e);
