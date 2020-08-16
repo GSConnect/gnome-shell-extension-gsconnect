@@ -268,11 +268,11 @@ const Service = GObject.registerClass({
 
         // Ensure our handlers are registered
         try {
-            let appInfo = Gio.DesktopAppInfo.new(`${this.application_id}.desktop`);
+            let appInfo = Gio.DesktopAppInfo.new(`${Config.APP_ID}.desktop`);
             appInfo.add_supports_type('x-scheme-handler/sms');
             appInfo.add_supports_type('x-scheme-handler/tel');
         } catch (e) {
-            logError(e);
+            debug(e);
         }
 
         // GActions & GSettings
@@ -344,17 +344,19 @@ const Service = GObject.registerClass({
 
     vfunc_shutdown() {
         // Dispose GSettings
-        this.settings.run_dispose();
+        if (this._settings !== undefined)
+            this.settings.run_dispose();
 
         this.manager.stop();
 
-        let context = GLib.MainContext.default();
+        // Exhaust the event loop to ensure any pending operations complete
+        const context = GLib.MainContext.default();
 
         while (context.iteration(false))
             continue;
 
         // Destroy the components now that device plugins aren't using them
-        this.components.forEach((component) => component.destroy());
+        this.components.forEach(component => component.destroy());
         this.components.clear();
 
         // Force a GC to prevent any more calls back into JS, then chain-up
