@@ -36,13 +36,13 @@ const Settings = imports.preferences.service;
  * Class representing the GSConnect service daemon.
  */
 const Preferences = GObject.registerClass({
-    GTypeName: 'GSConnectPreferences'
+    GTypeName: 'GSConnectPreferences',
 }, class Preferences extends Gtk.Application {
 
     _init() {
         super._init({
             application_id: 'org.gnome.Shell.Extensions.GSConnect.Preferences',
-            resource_base_path: '/org/gnome/Shell/Extensions/GSConnect'
+            resource_base_path: '/org/gnome/Shell/Extensions/GSConnect',
         });
 
         GLib.set_prgname('gsconnect-preferences');
@@ -52,7 +52,7 @@ const Preferences = GObject.registerClass({
     vfunc_activate() {
         if (this._window === undefined) {
             this._window = new Settings.Window({
-                application: this
+                application: this,
             });
         }
 
@@ -73,13 +73,13 @@ const Preferences = GObject.registerClass({
 
         let actions = [
             ['refresh', null],
-            ['connect', GLib.VariantType.new('s')]
+            ['connect', GLib.VariantType.new('s')],
         ];
 
         for (let [name, type] of actions) {
             let action = new Gio.SimpleAction({
                 name: name,
-                parameter_type: type
+                parameter_type: type,
             });
             this.add_action(action);
         }
