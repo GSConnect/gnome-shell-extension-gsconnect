@@ -6,11 +6,6 @@ const GObject = imports.gi.GObject;
 
 const Config = imports.config;
 const Core = imports.service.protocol.core;
-const DBus = imports.utils.dbus;
-
-const DBUS_NAME = 'org.gnome.Shell.Extensions.GSConnect.Device';
-const DBUS_PATH = '/org/gnome/Shell/Extensions/GSConnect/Device';
-const DBUS_IFACE = Config.DBUS.lookup_interface(DBUS_NAME);
 
 
 /**
@@ -102,7 +97,10 @@ var Device = GObject.registerClass({
 
         // GSettings
         this.settings = new Gio.Settings({
-            settings_schema: Config.GSCHEMA.lookup(DBUS_NAME, true),
+            settings_schema: Config.GSCHEMA.lookup(
+                'org.gnome.Shell.Extensions.GSConnect.Device',
+                true
+            ),
             path: `/org/gnome/shell/extensions/gsconnect/device/${this.id}/`,
         });
 
@@ -120,32 +118,8 @@ var Device = GObject.registerClass({
         if (identity.id !== undefined)
             this._handleIdentity(identity);
 
-        // Export an object path for the device
-        this._dbus_object = new Gio.DBusObjectSkeleton({
-            g_object_path: this.g_object_path,
-        });
-        this.service.manager.export(this._dbus_object);
-
-        // Export GActions
-        this._actionsId = Gio.DBus.session.export_action_group(
-            this.g_object_path,
-            this
-        );
         this._registerActions();
-
-        // Export GMenu
         this.menu = new Gio.Menu();
-        this._menuId = Gio.DBus.session.export_menu_model(
-            this.g_object_path,
-            this.menu
-        );
-
-        // Export the Device interface
-        this._dbus = new DBus.Interface({
-            g_instance: this,
-            g_interface_info: DBUS_IFACE,
-        });
-        this._dbus_object.add_interface(this._dbus);
 
         // Load plugins
         this._loadPlugins();
@@ -246,13 +220,6 @@ var Device = GObject.registerClass({
 
     get type() {
         return this.settings.get_string('type');
-    }
-
-    get g_object_path() {
-        if (this._g_object_path === undefined)
-            this._g_object_path = `${DBUS_PATH}/${this.id.replace(/\W+/g, '_')}`;
-
-        return this._g_object_path;
     }
 
     _handleIdentity(packet) {
@@ -401,7 +368,11 @@ var Device = GObject.registerClass({
             this._launcher.setenv('GSCONNECT_DEVICE_ID', this.id, false);
             this._launcher.setenv('GSCONNECT_DEVICE_NAME', this.name, false);
             this._launcher.setenv('GSCONNECT_DEVICE_ICON', this.icon_name, false);
-            this._launcher.setenv('GSCONNECT_DEVICE_DBUS', this.g_object_path, false);
+            this._launcher.setenv(
+                'GSCONNECT_DEVICE_DBUS',
+                `${Config.APP_PATH}/Device/${this.id.replace(/\W+/g, '_')}`,
+                false
+            );
         }
 
         // Create and track the process
@@ -1025,16 +996,6 @@ var Device = GObject.registerClass({
 
         // Synchronously destroy plugins
         this._plugins.forEach(plugin => plugin.destroy());
-
-        // Unexport GActions and GMenu
-        Gio.DBus.session.unexport_action_group(this._actionsId);
-        Gio.DBus.session.unexport_menu_model(this._menuId);
-
-        // Unexport the Device interface and object
-        this._dbus.flush();
-        this._dbus_object.remove_interface(this._dbus);
-        this._dbus_object.flush();
-        this.service.manager.unexport(this._dbus_object.g_object_path);
 
         // Dispose GSettings
         this.settings.disconnect(this._disabledPluginsChangedId);

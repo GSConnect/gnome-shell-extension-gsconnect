@@ -5,7 +5,12 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
 const Config = imports.config;
+const DBus = imports.utils.dbus;
 const Device = imports.service.device;
+
+const DEVICE_NAME = 'org.gnome.Shell.Extensions.GSConnect.Device';
+const DEVICE_PATH = '/org/gnome/Shell/Extensions/GSConnect/Device';
+const DEVICE_IFACE = Config.DBUS.lookup_interface(DEVICE_NAME);
 
 
 /**
@@ -41,6 +46,7 @@ var Manager = GObject.registerClass({
     _init(params = {}) {
         super._init(params);
 
+        this._exported = new WeakMap();
         this._reconnectId = 0;
 
         this._settings = new Gio.Settings({
@@ -229,8 +235,76 @@ var Manager = GObject.registerClass({
      */
     _loadDevices() {
         // Load cached devices
-        for (let id of this.settings.get_strv('devices'))
-            this.devices.set(id, new Device.Device({body: {deviceId: id}}));
+        for (let id of this.settings.get_strv('devices')) {
+            let device = new Device.Device({body: {deviceId: id}});
+            this._exportDevice(device);
+            this.devices.set(id, device);
+        }
+    }
+
+    _exportDevice(device) {
+        if (this.connection === null)
+            return;
+
+        let info = {
+            object: null,
+            interface: null,
+            actions: 0,
+            menu: 0,
+        };
+
+        let objectPath = `${DEVICE_PATH}/${device.id.replace(/\W+/g, '_')}`;
+
+        // Export an object path for the device
+        info.object = new Gio.DBusObjectSkeleton({
+            g_object_path: objectPath,
+        });
+        this.export(info.object);
+
+        // Export GActions & GMenu
+        info.actions = Gio.DBus.session.export_action_group(objectPath, device);
+        info.menu = Gio.DBus.session.export_menu_model(objectPath, device.menu);
+
+        // Export the Device interface
+        info.interface = new DBus.Interface({
+            g_instance: device,
+            g_interface_info: DEVICE_IFACE,
+        });
+        info.object.add_interface(info.interface);
+
+        this._exported.set(device, info);
+    }
+
+    _exportDevices() {
+        if (this.connection === null)
+            return;
+
+        for (let device of this.devices.values())
+            this._exportDevice(device);
+    }
+
+    _unexportDevice(device) {
+        let info = this._exported.get(device);
+
+        if (info === undefined)
+            return;
+
+        // Unexport GActions and GMenu
+        Gio.DBus.session.unexport_action_group(info.actions);
+        Gio.DBus.session.unexport_menu_model(info.menu);
+
+        // Unexport the Device interface and object
+        info.interface.flush();
+        info.object.remove_interface(info.interface);
+        info.object.flush();
+        this.unexport(info.object.g_object_path);
+
+        this._exported.delete(device);
+    }
+
+    _unexportDevices() {
+        for (let device of this.devices.values())
+            this._unexportDevice(device);
     }
 
     /**
@@ -258,6 +332,7 @@ var Manager = GObject.registerClass({
                 this.discoverable = false;
 
             device = new Device.Device(packet);
+            this._exportDevice(device);
             this.devices.set(device.id, device);
 
             // Notify
@@ -305,6 +380,7 @@ var Manager = GObject.registerClass({
                 continue;
             }
 
+            this._unexportDevice(device);
             this._removeDevice(id);
             device.destroy();
         }
@@ -365,6 +441,8 @@ var Manager = GObject.registerClass({
             GLib.Source.remove(this._reconnectId);
             this._reconnectId = 0;
         }
+
+        this._unexportDevices();
 
         this.backends.forEach(backend => backend.destroy());
         this.backends.clear();
