@@ -137,7 +137,7 @@ var Manager = GObject.registerClass({
         for (let backend of this.backends.values())
             backend.buildIdentity();
 
-        this._identify();
+        this.identify();
     }
 
     get settings() {
