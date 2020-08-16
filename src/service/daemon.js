@@ -291,6 +291,12 @@ const Service = GObject.registerClass({
         return true;
     }
 
+    vfunc_dbus_unregister(connection, object_path) {
+        this.manager.destroy();
+
+        super.vfunc_dbus_unregister(connection, object_path);
+    }
+
     vfunc_open(files, hint) {
         super.vfunc_open(files, hint);
 
