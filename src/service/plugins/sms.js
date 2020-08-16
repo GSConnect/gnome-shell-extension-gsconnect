@@ -1,5 +1,6 @@
 'use strict';
 
+const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
@@ -159,7 +160,7 @@ var Plugin = GObject.registerClass({
 
         if (this._window === undefined) {
             this._window = new Messaging.Window({
-                application: this.service,
+                application: Gio.Application.get_default(),
                 device: this.device,
                 plugin: this,
             });
@@ -426,7 +427,7 @@ var Plugin = GObject.registerClass({
         // If there are active threads, show the chooser dialog
         } else if (Object.values(this.threads).length > 0) {
             let window = new Messaging.ConversationChooser({
-                application: this.service,
+                application: Gio.Application.get_default(),
                 device: this.device,
                 message: url,
                 plugin: this,
