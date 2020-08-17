@@ -67,15 +67,18 @@ class Listener {
         this._init_async();
     }
 
-    get application() {
-        return Gio.Application.get_default();
-    }
-
     get applications() {
         if (this._applications === undefined)
             this._onSettingsChanged();
 
         return this._applications;
+    }
+
+    get service() {
+        if (this._service === undefined)
+            this._service = Gio.Application.get_default();
+
+        return this._service;
     }
 
     /**
@@ -329,7 +332,10 @@ class Listener {
         // TODO: avoid the overhead of the GAction framework with a signal?
         let variant = GLib.Variant.full_pack(notif);
 
-        for (let device of this.application._devices.values())
+        if (this.service === null)
+            return;
+
+        for (let device of this.service.manager.devices.values())
             device.activate_action('sendNotification', variant);
     }
 
