@@ -2,7 +2,7 @@
   "name": "gsconnect",
   "description": "GSConnect checks",
   "devDependencies": {
-    "eslint": "^5.8.0"
+    "eslint": ">=6.7.0"
   },
   "scripts": {
     "lint": "eslint src/",
