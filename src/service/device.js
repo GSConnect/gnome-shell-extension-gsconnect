@@ -114,15 +114,14 @@ var Device = GObject.registerClass({
             this._onAllowedPluginsChanged.bind(this)
         );
 
-        // Parse identity if initialized with a proper packet
-        if (identity.id !== undefined)
-            this._handleIdentity(identity);
-
         this._registerActions();
         this.menu = new Gio.Menu();
 
-        // Load plugins
-        this._loadPlugins();
+        // Parse identity if initialized with a proper packet, otherwise load
+        if (identity.id !== undefined)
+            this._handleIdentity(identity);
+        else
+            this._loadPlugins();
     }
 
     get channel() {
