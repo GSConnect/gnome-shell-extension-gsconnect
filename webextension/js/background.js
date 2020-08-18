@@ -1,5 +1,3 @@
-/*eslint no-console: ["error", { allow: ["warn", "error"] }] */
-
 'use strict';
 
 const _ABOUT = /^chrome:|^about:/;
@@ -12,20 +10,25 @@ const _CONTEXTS = [
     'image',
     // FIREFOX-ONLY: mkwebext.sh will automatically remove this
     'tab',
-    'video'
+    'video',
 ];
 
 // Suppress errors caused by Mozilla polyfill
 // TODO: not sure if these are relevant anymore
 const _MUTE = [
     'Could not establish connection. Receiving end does not exist.',
-    'The message port closed before a response was received.'
+    'The message port closed before a response was received.',
 ];
 
 
-var CONNECTED = false;
-var DEVICES = [];
-var PORT = null;
+/**
+ * State of the extension.
+ */
+const State = {
+    connected: false,
+    devices: [],
+    port: null,
+};
 
 var reconnectDelay = 100;
 var reconnectTimer = null;
@@ -33,6 +36,7 @@ var reconnectResetTimer = null;
 
 
 // Simple error logging function
+// eslint-disable-next-line no-redeclare
 function logError(error) {
     if (!_MUTE.includes(error.message))
         console.error(error.message);
@@ -42,11 +46,10 @@ function logError(error) {
 function toggleAction(tab = null) {
     try {
         // Disable on "about:" pages
-        if (_ABOUT.test(tab.url)) {
+        if (_ABOUT.test(tab.url))
             browser.browserAction.disable(tab.id);
-        } else {
+        else
             browser.browserAction.enable(tab.id);
-        }
     } catch (e) {
         browser.browserAction.disable();
     }
@@ -55,17 +58,20 @@ function toggleAction(tab = null) {
 
 /**
  * Send a message to the native-messaging-host
+ *
+ * @param {Object} message - The message to forward
  */
+// eslint-disable-next-line no-redeclare
 async function postMessage(message) {
     try {
         // console.log(`WebExtension SEND: ${JSON.stringify(message)}`);
 
-        if (!PORT || !message || !message.type) {
+        if (!State.port || !message || !message.type) {
             console.warn('Missing message parameters');
             return;
         }
 
-        await PORT.postMessage(message);
+        await State.port.postMessage(message);
     } catch (e) {
         logError(e);
     }
@@ -74,6 +80,10 @@ async function postMessage(message) {
 
 /**
  * Forward a message from the browserAction popup to the NMH
+ *
+ * @param {Object} message - A message from the NMH to forward
+ * @param {*} sender - A message from the NMH to forward
+ * @param {*} sendResponse - A message from the NMH to forward
  */
 async function onPopupMessage(message, sender, sendResponse) {
     try {
@@ -87,6 +97,8 @@ async function onPopupMessage(message, sender, sendResponse) {
 
 /**
  * Forward a message from the NMH to the browserAction popup
+ *
+ * @param {Object} message - A message from the NMH to forward
  */
 async function forwardPortMessage(message) {
     try {
@@ -112,8 +124,8 @@ async function onContextItem(info, tab) {
             data: {
                 device: id,
                 url: info.linkUrl || info.srcUrl || info.frameUrl || info.pageUrl,
-                action: action
-            }
+                action: action,
+            },
         });
     } catch (e) {
         logError(e);
@@ -132,22 +144,23 @@ async function createContextMenu(tab) {
         await browser.contextMenus.removeAll();
 
         // Bail on "about:" page or no devices
-        if (_ABOUT.test(tab.url) || DEVICES.length === 0) return;
+        if (_ABOUT.test(tab.url) || State.devices.length === 0)
+            return;
 
         // Multiple devices; we'll have at least one submenu level
-        if (DEVICES.length > 1) {
+        if (State.devices.length > 1) {
             await browser.contextMenus.create({
                 id: 'contextMenuMultipleDevices',
                 title: browser.i18n.getMessage('contextMenuMultipleDevices'),
-                contexts: _CONTEXTS
+                contexts: _CONTEXTS,
             });
 
-            for (let device of DEVICES) {
+            for (let device of State.devices) {
                 if (device.share && device.telephony) {
                     await browser.contextMenus.create({
                         id: device.id,
                         title: device.name,
-                        parentId: 'contextMenuMultipleDevices'
+                        parentId: 'contextMenuMultipleDevices',
                     });
 
                     await browser.contextMenus.create({
@@ -191,13 +204,13 @@ async function createContextMenu(tab) {
 
         // One device; we'll create a top level menu
         } else {
-            let device = DEVICES[0];
+            let device = State.devices[0];
 
             if (device.share && device.telephony) {
                 await browser.contextMenus.create({
                     id: device.id,
                     title: device.name,
-                    contexts: _CONTEXTS
+                    contexts: _CONTEXTS,
                 });
 
                 await browser.contextMenus.create({
@@ -245,6 +258,8 @@ async function createContextMenu(tab) {
 
 /**
  * Message Handling
+ *
+ * @param {Object} message - A message received from the NMH
  */
 async function onPortMessage(message) {
     try {
@@ -252,18 +267,17 @@ async function onPortMessage(message) {
 
         // The native-messaging-host's connection to the service has changed
         if (message.type === 'connected') {
-            CONNECTED = message.data;
+            State.connected = message.data;
 
-            if (CONNECTED) {
+            if (State.connected)
                 postMessage({type: 'devices'});
-            } else {
-                DEVICES = [];
-            }
+            else
+                State.devices = [];
 
         // We're being sent a list of devices (so the NMH must be connected)
         } else if (message.type === 'devices') {
-            CONNECTED = true;
-            DEVICES = message.data;
+            State.connected = true;
+            State.devices = message.data;
         }
 
         // Forward the message to popup.html
@@ -272,7 +286,7 @@ async function onPortMessage(message) {
         //
         let tabs = await browser.tabs.query({
             active: true,
-            currentWindow: true
+            currentWindow: true,
         });
 
         createContextMenu(tabs[0]);
@@ -289,8 +303,8 @@ async function onPortMessage(message) {
  */
 async function onDisconnect(port) {
     try {
-        CONNECTED = false;
-        PORT = null;
+        State.connected = false;
+        State.port = null;
         browser.browserAction.setBadgeText({text: '\u26D4'});
         browser.browserAction.setBadgeBackgroundColor({color: [198, 40, 40, 255]});
         forwardPortMessage({type: 'connected', data: false});
@@ -318,7 +332,7 @@ async function onDisconnect(port) {
 
         // Exponential back-off on reconnect
         reconnectTimer = window.setTimeout(connect, reconnectDelay);
-        reconnectDelay = reconnectDelay * 2;
+        reconnectDelay *= 2;
     } catch (e) {
         logError(e);
     }
@@ -330,7 +344,7 @@ async function onDisconnect(port) {
  */
 async function connect() {
     try {
-        PORT = browser.runtime.connectNative('org.gnome.shell.extensions.gsconnect');
+        State.port = browser.runtime.connectNative('org.gnome.shell.extensions.gsconnect');
 
         // Clear the badge and tell the popup we're disconnected
         browser.browserAction.setBadgeText({text: ''});
@@ -342,9 +356,9 @@ async function connect() {
         }, reconnectDelay * 0.9);
 
         // Start listening and request a list of available devices
-        PORT.onDisconnect.addListener(onDisconnect);
-        PORT.onMessage.addListener(onPortMessage);
-        await PORT.postMessage({type: 'devices'});
+        State.port.onDisconnect.addListener(onDisconnect);
+        State.port.onMessage.addListener(onPortMessage);
+        await State.port.postMessage({type: 'devices'});
     } catch (e) {
         logError(e);
     }
@@ -360,7 +374,8 @@ browser.tabs.onActivated.addListener((info) => {
 });
 
 browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    if (changeInfo.url) toggleAction(tab);
+    if (changeInfo.url)
+        toggleAction(tab);
 });
 
 // Keep contextMenu up to date
@@ -369,7 +384,8 @@ browser.tabs.onActivated.addListener((info) => {
 });
 
 browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    if (changeInfo.url) createContextMenu(tab);
+    if (changeInfo.url)
+        createContextMenu(tab);
 });
 
 

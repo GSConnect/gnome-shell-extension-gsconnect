@@ -1,25 +1,24 @@
-/*eslint no-console: ["error", { allow: ["warn", "error"] }] */
-
 'use strict';
 
 
 var CONNECTED = false;
 var DEVICES = [];
-var URL = null;
+var TARGET_URL = null;
 
 
 // Suppress errors caused by Mozilla polyfill
 // TODO: not sure if these are relevant anymore
 const _MUTE = [
     'Could not establish connection. Receiving end does not exist.',
-    'The message port closed before a response was received.'
+    'The message port closed before a response was received.',
 ];
 
 
 // Simple error logging function
+// eslint-disable-next-line no-redeclare
 function logError(error) {
-    if (_MUTE.includes(error.message)) return;
-    console.error(error.message);
+    if (!_MUTE.includes(error.message))
+        console.error(error.message);
 }
 
 
@@ -39,8 +38,8 @@ async function sendUrl(device, action, url) {
             data: {
                 device: device,
                 url: url,
-                action: action
-            }
+                action: action,
+            },
         });
     } catch (e) {
         logError(e);
@@ -57,17 +56,17 @@ async function sendUrl(device, action, url) {
 function getDeviceElement(device) {
     let deviceElement = document.createElement('div');
     deviceElement.className = 'device';
-    
+
     let deviceIcon = document.createElement('img');
     deviceIcon.className = 'device-icon';
     deviceIcon.src = `images/${device.type}.svg`;
     deviceElement.appendChild(deviceIcon);
-    
+
     let deviceName = document.createElement('span');
     deviceName.className = 'device-name';
     deviceName.textContent = device.name;
     deviceElement.appendChild(deviceName);
-    
+
     if (device.share) {
         let shareButton = document.createElement('img');
         shareButton.className = 'plugin-button';
@@ -79,7 +78,7 @@ function getDeviceElement(device) {
         );
         deviceElement.appendChild(shareButton);
     }
-    
+
     if (device.telephony) {
         let telephonyButton = document.createElement('img');
         telephonyButton.className = 'plugin-button';
@@ -91,7 +90,7 @@ function getDeviceElement(device) {
         );
         deviceElement.appendChild(telephonyButton);
     }
-    
+
     return deviceElement;
 }
 
@@ -101,11 +100,10 @@ function getDeviceElement(device) {
  */
 function setPopup() {
     let devNode = document.getElementById('popup');
-    
-    while (devNode.hasChildNodes()) {
+
+    while (devNode.hasChildNodes())
         devNode.removeChild(devNode.lastChild);
-    }
-    
+
     if (CONNECTED && DEVICES.length) {
         for (let device of DEVICES) {
             let deviceElement = getDeviceElement(device);
@@ -121,26 +119,25 @@ function setPopup() {
     devNode.appendChild(message);
 
     // The native-messaging-host or service is disconnected
-    if (!CONNECTED) {
+    if (!CONNECTED)
         message.textContent = browser.i18n.getMessage('popupMenuDisconnected');
 
     // There are no devices
-    } else {
+    else
         message.textContent = browser.i18n.getMessage('popupMenuNoDevices');
-    }
 }
 
 
 /**
  * Callback for receiving a message forwarded by background.js
  *
- * @param {object] message - A JSON message object
- * @param {runtime.MessageSender} sender - Tthe sender of the message.
+ * @param {Object} message - A JSON message object
+ * @param {runtime.MessageSender} sender - The sender of the message.
  */
-async function onPortMessage(message, sender) {
+function onPortMessage(message, sender) {
     try {
         // console.log(`WebExtension-popup RECV: ${JSON.stringify(message)}`);
-        
+
         if (sender.url.includes('/background.html')) {
             if (message.type === 'connected') {
                 CONNECTED = message.data;
@@ -164,12 +161,11 @@ async function onPopup() {
     try {
         let tabs = await browser.tabs.query({
             active: true,
-            currentWindow: true
+            currentWindow: true,
         });
 
-        if (tabs.length) {
-            URL = tabs[0].url;
-        }
+        if (tabs.length)
+            TARGET_URL = tabs[0].url;
 
         setPopup();
         await browser.runtime.sendMessage({type: 'devices'});

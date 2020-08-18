@@ -5,6 +5,8 @@
 const ByteArray = imports.byteArray;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
+
+// eslint-disable-next-line no-redeclare
 const _ = (msgid) => GLib.dgettext('org.gnome.Shell.Extensions.GSConnect', msgid);
 
 // POT Patterns
@@ -19,7 +21,7 @@ const MSGID = {
     'Service Unavailable': 'popupMenuDisconnected',
     'No Device Found': 'popupMenuNoDevices',
     'Open in Browser': 'shareMessage',
-    'Send SMS': 'smsMessage'
+    'Send SMS': 'smsMessage',
 };
 
 
@@ -43,11 +45,10 @@ JSON.load = function (gfile) {
     try {
         let data = gfile.load_contents(null)[1];
 
-        if (data instanceof Uint8Array) {
+        if (data instanceof Uint8Array)
             return JSON.parse(ByteArray.toString(data));
-        } else {
+        else
             return JSON.parse(data.toString());
-        }
     } catch (e) {
         logError(e);
         return {};

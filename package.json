@@ -6,6 +6,6 @@
   },
   "scripts": {
     "lint": "eslint src/",
-    "lint-webext": "eslint --global 'browser,document,console' webextension/js/background.js webextension/js/popup.js"
+    "lint-webext": "eslint webextension/"
   }
 }

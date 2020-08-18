@@ -1,0 +1,19 @@
+{
+    "env": {
+        "browser": true,
+        "webextensions": true
+    },
+    "ignorePatterns": ["browser-polyfill.*"],
+    "rules": {
+        "no-console": [
+            "error",
+            {
+                "allow": [
+                    "warn",
+                    "error"
+                ]
+            }
+        ]
+    }
+}
+
