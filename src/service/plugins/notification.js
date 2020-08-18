@@ -163,7 +163,13 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'notification');
 
+        this._listener = this.service.components.get('notification');
         this._session = this.service.components.get('session');
+
+        this._notificationAddedId = this._listener.connect(
+            'notification-added',
+            this._onNotificationAdded.bind(this)
+        );
 
         // Load application notification settings
         this._applicationsChangedId = this.settings.connect(
@@ -218,6 +224,44 @@ var Plugin = GObject.registerClass({
             this._applicationsChangedSkip = true;
             settings.set_string(key, '{}');
             this._applicationsChangedSkip = false;
+        }
+    }
+
+    _onNotificationAdded(listener, notification) {
+        try {
+            let notif = notification.full_unpack();
+
+            // An unconfigured application
+            if (notif.appName && !this._applications[notif.appName]) {
+                this._applications[notif.appName] = {
+                    iconName: 'system-run-symbolic',
+                    enabled: true,
+                };
+
+                // Store the themed icons for the device preferences window
+                if (typeof notif.icon === 'string') {
+                    this._applications[notif.appName].iconName = notif.icon;
+
+                } else if (notif.icon instanceof Gio.ThemedIcon) {
+                    let iconName = notif.icon.get_names()[0];
+                    this._applications[notif.appName].iconName = iconName;
+                }
+
+                this._applicationsChangedSkip = true;
+                this.settings.set_string(
+                    'applications',
+                    JSON.stringify(this._applications)
+                );
+                this._applicationsChangedSkip = false;
+            }
+
+            // Notifications disabled for this application
+            if (notif.appName && !this._applications[notif.appName].enabled)
+                return;
+
+            this.sendNotification(notif);
+        } catch (e) {
+            debug(e, this.device.name);
         }
     }
 
@@ -403,12 +447,16 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * This is called by the notification listener.
-     * See Notification.Listener._sendNotification()
-     *
-     * TODO: component signal - NotificationListener::notification-added
+     * Send a local notification to the remote device.
      *
      * @param {Object} notif - A dictionary of notification parameters
+     * @param {string} notif.appName - The notifying application
+     * @param {string} notif.id - The notification ID
+     * @param {string} notif.title - The notification title
+     * @param {string} notif.body - The notification body
+     * @param {string} notif.ticker - The notification title & body
+     * @param {boolean} notif.isClearable - If the notification can be closed
+     * @param {string|Gio.Icon} notif.icon - An icon name or GIcon
      */
     async sendNotification(notif) {
         try {
@@ -417,34 +465,6 @@ var Plugin = GObject.registerClass({
 
             // Sending when the session is active is forbidden
             if (!this.settings.get_boolean('send-active') && this._session.active)
-                return;
-
-            // An unconfigured application
-            if (notif.appName && !this._applications[notif.appName]) {
-                this._applications[notif.appName] = {
-                    iconName: 'system-run-symbolic',
-                    enabled: true,
-                };
-
-                // Store the themed icons for the device preferences window
-                if (typeof notif.icon === 'string') {
-                    this._applications[notif.appName].iconName = notif.icon;
-
-                } else if (notif.icon instanceof Gio.ThemedIcon) {
-                    let iconName = notif.icon.get_names()[0];
-                    this._applications[notif.appName].iconName = iconName;
-                }
-
-                this._applicationsChangedSkip = true;
-                this.settings.set_string(
-                    'applications',
-                    JSON.stringify(this._applications)
-                );
-                this._applicationsChangedSkip = false;
-            }
-
-            // Notifications disabled for this application
-            if (notif.appName && !this._applications[notif.appName].enabled)
                 return;
 
             let icon = notif.icon || null;
@@ -686,6 +706,9 @@ var Plugin = GObject.registerClass({
 
     destroy() {
         this.settings.disconnect(this._applicationsChangedId);
+
+        if (this._notificationAddedId)
+            this._listener.disconnect(this._notificationAddedId);
 
         super.destroy();
     }

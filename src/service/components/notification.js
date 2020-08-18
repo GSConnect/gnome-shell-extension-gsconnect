@@ -3,6 +3,7 @@
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GjsPrivate = imports.gi.GjsPrivate;
+const GObject = imports.gi.GObject;
 
 const DBus = imports.utils.dbus;
 
@@ -47,8 +48,19 @@ const GTK_MATCH = "interface='org.gtk.Notifications',member='AddNotification',ty
  * A class for snooping Freedesktop (libnotify) and Gtk (GNotification)
  * notifications and forwarding them to supporting devices.
  */
-class Listener {
-    constructor() {
+const Listener = GObject.registerClass({
+    GTypeName: 'GSConnectNotificationListener',
+    Signals: {
+        'notification-added': {
+            flags: GObject.SignalFlags.RUN_LAST,
+            param_types: [GLib.Variant.$gtype],
+        },
+    },
+}, class Listener extends GObject.Object {
+
+    _init() {
+        super._init();
+
         // Respect desktop notification settings
         this._settings = new Gio.Settings({
             schema_id: 'org.gnome.desktop.notifications',
@@ -72,13 +84,6 @@ class Listener {
             this._onSettingsChanged();
 
         return this._applications;
-    }
-
-    get service() {
-        if (this._service === undefined)
-            this._service = Gio.Application.get_default();
-
-        return this._service;
     }
 
     /**
@@ -331,12 +336,7 @@ class Listener {
         // Send the notification to each supporting device
         // TODO: avoid the overhead of the GAction framework with a signal?
         let variant = GLib.Variant.full_pack(notif);
-
-        if (this.service === null)
-            return;
-
-        for (let device of this.service.manager.devices.values())
-            device.activate_action('sendNotification', variant);
+        this.emit('notification-added', variant);
     }
 
     Notify(appName, replacesId, iconName, summary, body, actions, hints, timeout) {
@@ -398,11 +398,13 @@ class Listener {
 
             // TODO: Gio.IOErrorEnum: The connection is closed
             // this._monitor.close_sync(null);
+
+            GObject.signal_handlers_destroy(this);
         } catch (e) {
             debug(e);
         }
     }
-}
+});
 
 
 /**
