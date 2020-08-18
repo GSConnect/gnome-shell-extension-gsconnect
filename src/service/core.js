@@ -4,7 +4,7 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
-const Manager = imports.service.manager;
+// const Manager = imports.service.manager;
 
 
 /**
@@ -399,7 +399,7 @@ var ChannelService = GObject.registerClass({
             'Manager',
             'The device manager',
             GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
-            Manager.Manager.$gtype
+            GObject.Object.$gtype
         ),
         'name': GObject.ParamSpec.string(
             'name',

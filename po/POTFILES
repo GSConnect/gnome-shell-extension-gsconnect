@@ -23,6 +23,7 @@ src/preferences/service.js
 src/service/daemon.js
 src/service/device.js
 src/service/manager.js
+src/service/backends/lan.js
 src/service/plugins/battery.js
 src/service/plugins/clipboard.js
 src/service/plugins/contacts.js
@@ -39,7 +40,6 @@ src/service/plugins/share.js
 src/service/plugins/sms.js
 src/service/plugins/systemvolume.js
 src/service/plugins/telephony.js
-src/service/protocol/lan.js
 src/service/ui/contacts.js
 src/service/ui/legacyMessaging.js
 src/service/ui/messaging.js

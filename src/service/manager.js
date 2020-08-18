@@ -212,14 +212,10 @@ var Manager = GObject.registerClass({
     }
 
     _loadBackends() {
-        let backends = [
-            'lan',
-        ];
-
-        for (let name of backends) {
+        for (let name in imports.service.backends) {
             try {
                 // Try to create the backend and track it if successful
-                let module = imports.service.protocol[name];
+                let module = imports.service.backends[name];
                 let backend = new module.ChannelService({
                     manager: this,
                 });
