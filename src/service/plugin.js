@@ -21,22 +21,22 @@ var Plugin = GObject.registerClass({
 
         this._device = device;
         this._name = name;
-        this._info = imports.service.plugins[name].Metadata;
+        this._meta = imports.service.plugins[name].Metadata;
 
         // GSettings
         this.settings = new Gio.Settings({
-            settings_schema: Config.GSCHEMA.lookup(this._info.id, false),
+            settings_schema: Config.GSCHEMA.lookup(this._meta.id, false),
             path: `${device.settings.path}plugin/${name}/`,
         });
 
         // GActions
         this._gactions = [];
 
-        if (this._info.actions) {
+        if (this._meta.actions) {
             let menu = this.device.settings.get_strv('menu-actions');
 
-            for (let name in this._info.actions) {
-                let info = this._info.actions[name];
+            for (let name in this._meta.actions) {
+                let info = this._meta.actions[name];
                 this._registerAction(name, menu.indexOf(name), info);
             }
         }
@@ -110,7 +110,7 @@ var Plugin = GObject.registerClass({
         let outgoing = this.device.settings.get_strv('outgoing-capabilities');
 
         for (let action of this._gactions) {
-            let info = this._info.actions[action.name];
+            let info = this._meta.actions[action.name];
 
             if (info.incoming.every(type => outgoing.includes(type)) &&
                 info.outgoing.every(type => incoming.includes(type)))
