@@ -293,7 +293,7 @@ var Plugin = GObject.registerClass({
      * Open the Keyboard Input dialog
      */
     keyboard() {
-        if (!this._dialog) {
+        if (this._dialog !== undefined) {
             this._dialog = new KeyboardInputDialog({
                 device: this.device,
                 plugin: this,
@@ -304,7 +304,12 @@ var Plugin = GObject.registerClass({
     }
 
     destroy() {
+        if (this._dialog !== undefined)
+            this._dialog.destroy();
+
         this.settings.disconnect(this._shareControlChangedId);
+
+        super.destroy();
     }
 });
 
