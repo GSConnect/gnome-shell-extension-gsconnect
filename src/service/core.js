@@ -4,8 +4,6 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
-// const Manager = imports.service.manager;
-
 
 /**
  * Get the local device type.
@@ -204,13 +202,6 @@ var Channel = GObject.registerClass({
 
     set output_stream(stream) {
         this._output_stream = stream;
-    }
-
-    get service() {
-        if (this._service === undefined)
-            this._service = Gio.Application.get_default();
-
-        return this._service;
     }
 
     get uuid() {
@@ -438,13 +429,6 @@ var ChannelService = GObject.registerClass({
 
     set manager(manager) {
         this._manager = manager;
-    }
-
-    get service() {
-        if (this._service === undefined)
-            this._service = Gio.Application.get_default();
-
-        return this._service;
     }
 
     /**
