@@ -34,7 +34,7 @@ function acquire(name) {
         info.refcount++;
         component = info.instance;
     } catch (e) {
-        logError(e, name);
+        debug(e, name);
     }
 
     return component;
@@ -59,7 +59,7 @@ function release(name) {
 
         info.refcount--;
     } catch (e) {
-        logError(e, name);
+        debug(e, name);
     }
 
     return null;
