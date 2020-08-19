@@ -176,17 +176,6 @@ function getDetailedTime(time) {
     return _cFormat.format(time);
 }
 
-function getContactsForAddresses(device, addresses) {
-    let contacts = {};
-
-    for (let i = 0, len = addresses.length; i < len; i++) {
-        let address = addresses[i].address;
-
-        contacts[address] = device.contacts.query({
-            number: address,
-        });
-    }
-}
 
 function setAvatarVisible(row, visible) {
     let incoming = row.message.type === Sms.MessageBox.INBOX;
