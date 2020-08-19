@@ -38,32 +38,27 @@ var Plugin = GObject.registerClass({
         this._transferring = new WeakSet();
         this._updating = new WeakSet();
 
-        try {
-            this._mpris = Components.acquire('mpris');
+        this._mpris = Components.acquire('mpris');
 
-            this._playerAddedId = this._mpris.connect(
-                'player-added',
-                this._sendPlayerList.bind(this)
-            );
+        this._playerAddedId = this._mpris.connect(
+            'player-added',
+            this._sendPlayerList.bind(this)
+        );
 
-            this._playerRemovedId = this._mpris.connect(
-                'player-removed',
-                this._sendPlayerList.bind(this)
-            );
+        this._playerRemovedId = this._mpris.connect(
+            'player-removed',
+            this._sendPlayerList.bind(this)
+        );
 
-            this._playerChangedId = this._mpris.connect(
-                'player-changed',
-                this._onPlayerChanged.bind(this)
-            );
+        this._playerChangedId = this._mpris.connect(
+            'player-changed',
+            this._onPlayerChanged.bind(this)
+        );
 
-            this._playerSeekedId = this._mpris.connect(
-                'player-seeked',
-                this._onPlayerSeeked.bind(this)
-            );
-        } catch (e) {
-            this.destroy();
-            throw e;
-        }
+        this._playerSeekedId = this._mpris.connect(
+            'player-seeked',
+            this._onPlayerSeeked.bind(this)
+        );
     }
 
     connected() {

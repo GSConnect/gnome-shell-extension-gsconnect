@@ -27,8 +27,11 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'systemvolume');
 
+        // Cache stream properties
+        this._cache = new WeakMap();
+
+        // Connect to the mixer
         try {
-            // Connect to the mixer
             this._mixer = Components.acquire('pulseaudio');
 
             this._streamChangedId = this._mixer.connect(
@@ -46,10 +49,8 @@ var Plugin = GObject.registerClass({
                 this._sendSinkList.bind(this)
             );
 
-            // Cache stream properties
-            this._cache = new WeakMap();
+        // Modify the error to redirect to the wiki
         } catch (e) {
-            this.destroy();
             e.name = 'GvcError';
             throw e;
         }

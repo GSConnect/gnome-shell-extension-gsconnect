@@ -972,8 +972,13 @@ var Device = GObject.registerClass({
                     plugin.disconnected();
             }
         } catch (e) {
+            if (plugin !== undefined)
+                plugin.destroy();
+
             if (this.service !== null)
                 this.service.notify_error(e);
+            else
+                logError(e, this.name);
         }
     }
 

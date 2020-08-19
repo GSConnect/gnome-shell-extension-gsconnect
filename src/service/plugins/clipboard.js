@@ -49,18 +49,13 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'clipboard');
 
-        try {
-            this._clipboard = Components.acquire('clipboard');
+        this._clipboard = Components.acquire('clipboard');
 
-            // Watch local clipboard for changes
-            this._textChangedId = this._clipboard.connect(
-                'notify::text',
-                this._onLocalClipboardChanged.bind(this)
-            );
-        } catch (e) {
-            this.destroy();
-            throw e;
-        }
+        // Watch local clipboard for changes
+        this._textChangedId = this._clipboard.connect(
+            'notify::text',
+            this._onLocalClipboardChanged.bind(this)
+        );
 
         // Buffer content to allow selective sync
         this._localBuffer = null;
