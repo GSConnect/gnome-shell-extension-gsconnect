@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-08-19 00:07-0700\n"
-"PO-Revision-Date: 2020-08-19 07:45\n"
+"PO-Revision-Date: 2020-08-19 11:56\n"
 "Last-Translator: \n"
 "Language-Team: Estonian\n"
 "Language: et_EE\n"
@@ -25,7 +25,7 @@ msgstr "GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:6
 msgid "KDE Connect implementation for GNOME"
-msgstr "KDE Connect'i teostus GNOMEle"
+msgstr "KDE Connecti teostus GNOMEle"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:16
 msgid "GSConnect Team"
@@ -33,47 +33,47 @@ msgstr "GSConnecti meeskond"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:32
 msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, macOS and Windows."
-msgstr ""
+msgstr "GSConnect on täielik KDE Connecti teostus eelkõige GNOME Shellile koos Nautiluse, Chrome'i ja Firefoxi integratsiooniga. KDE Connecti meeskonnal on rakendused Linuxi, BSD, Androidi, Sailfishi, macOSi ja Windowsi jaoks."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:35
 msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
-msgstr ""
+msgstr "GSConnecti abil saad sa turvaliselt ühenduda mobiilseadmete ja teiste töölaudadega, et:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
 msgid "Share files, links and text"
-msgstr ""
+msgstr "Jagada faile, linke ja teksti"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:40
 msgid "Send and receive messages"
-msgstr ""
+msgstr "Saata ja vastu võtta sõnumeid"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
 msgid "Sync clipboard content"
-msgstr ""
+msgstr "Sünkroonida lõikelaua sisu"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:42
 msgid "Sync contacts"
-msgstr ""
+msgstr "Sünkroonida kontakte"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:43
 msgid "Sync notifications"
-msgstr ""
+msgstr "Sünkroonida teatisi"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
 msgid "Control media players"
-msgstr ""
+msgstr "Juhtida meediamängijaid"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:45
 msgid "Control system volume"
-msgstr ""
+msgstr "Juhtida süsteemi helitugevust"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:46
 msgid "Execute predefined commands"
-msgstr ""
+msgstr "Käivitada eelmääratud käsklusi"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:47
 msgid "And more…"
-msgstr ""
+msgstr "Ja muud…"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:84
 msgid "GSConnect in GNOME Shell"
@@ -152,11 +152,11 @@ msgstr "Kirjuta sõnum"
 
 #: data/ui/messaging-conversation.ui:92
 msgid "Message Entry"
-msgstr ""
+msgstr "Sõnumi sisestamine"
 
 #: data/ui/messaging-conversation.ui:93
 msgid "Type a message and press Enter to send"
-msgstr ""
+msgstr "Kirjuta sõnum ja vajuta saatmiseks Enter"
 
 #: data/ui/messaging-window.ui:14 src/service/plugins/sms.js:27
 #: src/service/ui/messaging.js:1044
@@ -182,7 +182,7 @@ msgstr "Vali või alusta vestlus"
 
 #: data/ui/preferences-command-editor.ui:7
 msgid "Edit Command"
-msgstr ""
+msgstr "Muuda käsklust"
 
 #: data/ui/preferences-command-editor.ui:21
 msgid "Save"
@@ -834,7 +834,7 @@ msgstr "Klaviatuur"
 #: src/service/plugins/mousepad.js:431
 #, javascript-format
 msgid "Remote keyboard on %s is not active"
-msgstr ""
+msgstr "Kaugklaviatuur ei ole seadmes %s aktiivne"
 
 #: src/service/plugins/mpris.js:14
 msgid "MPRIS"
