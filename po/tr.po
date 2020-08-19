@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-12 20:58-0700\n"
-"PO-Revision-Date: 2020-08-13 11:26\n"
+"POT-Creation-Date: 2020-08-19 00:07-0700\n"
+"PO-Revision-Date: 2020-08-19 07:24\n"
 "Last-Translator: \n"
 "Language-Team: Turkish\n"
 "Language: tr_TR\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #. TRANSLATORS: Extension name
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:5
-#: webextension/gettext.js:27
+#: webextension/gettext.js:29
 msgid "GSConnect"
 msgstr "GSConnect"
 
@@ -75,7 +75,7 @@ msgstr "Ön tanımlı komutları yürüt"
 msgid "And more…"
 msgstr "Ve daha fazlası…"
 
-#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:64
+#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:84
 msgid "GSConnect in GNOME Shell"
 msgstr "GNOME Kabuğunda GSConnect"
 
@@ -93,8 +93,8 @@ msgstr "Bağlan…"
 #: data/ui/preferences-shortcut-editor.ui:12
 #: data/ui/service-device-chooser.ui:14 data/ui/service-device-chooser.ui:18
 #: data/ui/service-error-dialog.ui:12 data/ui/service-error-dialog.ui:16
-#: src/preferences/service.js:416 src/service/plugins/share.js:154
-#: src/service/plugins/share.js:323 src/service/plugins/share.js:456
+#: src/preferences/service.js:416 src/service/plugins/share.js:168
+#: src/service/plugins/share.js:319 src/service/plugins/share.js:454
 msgid "Cancel"
 msgstr "İptal"
 
@@ -111,7 +111,7 @@ msgid "No contacts"
 msgstr "Kişi yok"
 
 #: data/ui/contact-chooser.ui:61 data/ui/messaging-window.ui:96
-#: data/ui/preferences-window.ui:745 src/service/plugins/mousepad.js:421
+#: data/ui/preferences-window.ui:745 src/service/plugins/mousepad.js:436
 msgid "Help"
 msgstr "Yardım"
 
@@ -120,20 +120,20 @@ msgid "Type a phone number or name"
 msgstr "Telefon numarası veya isim yaz"
 
 #. TRANSLATORS: All other phone number types
-#: data/ui/contacts-address-row.ui:64 src/service/ui/contacts.js:144
+#: data/ui/contacts-address-row.ui:64 src/service/ui/contacts.js:145
 msgid "Other"
 msgstr "Diğer"
 
 #. TRANSLATORS: Share URL by SMS
-#: data/ui/legacy-messaging-dialog.ui:8 src/service/daemon.js:631
-#: src/service/daemon.js:754 src/service/plugins/sms.js:58
-#: webextension/gettext.js:39
+#: data/ui/legacy-messaging-dialog.ui:8 src/service/daemon.js:285
+#: src/service/daemon.js:399 src/service/plugins/sms.js:59
+#: webextension/gettext.js:41
 msgid "Send SMS"
 msgstr "SMS Gönder"
 
 #: data/ui/legacy-messaging-dialog.ui:25 data/ui/legacy-messaging-dialog.ui:29
 #: data/ui/notification-reply-dialog.ui:24
-#: data/ui/notification-reply-dialog.ui:28 src/service/plugins/share.js:457
+#: data/ui/notification-reply-dialog.ui:28 src/service/plugins/share.js:455
 msgid "Send"
 msgstr "Gönder"
 
@@ -142,7 +142,7 @@ msgstr "Gönder"
 msgid "Device is disconnected"
 msgstr "Cihaz çevrim dışı"
 
-#: data/ui/messaging-conversation.ui:84 src/service/plugins/sms.js:50
+#: data/ui/messaging-conversation.ui:84 src/service/plugins/sms.js:51
 msgid "Send Message"
 msgstr "Mesaj Gönder"
 
@@ -158,13 +158,13 @@ msgstr "Mesaj Girdisi"
 msgid "Type a message and press Enter to send"
 msgstr "Bir mesaj yazın ve göndermek için Enter tuşuna basın"
 
-#: data/ui/messaging-window.ui:14 src/service/plugins/sms.js:26
-#: src/service/ui/messaging.js:1045
+#: data/ui/messaging-window.ui:14 src/service/plugins/sms.js:27
+#: src/service/ui/messaging.js:1044
 msgid "Messaging"
 msgstr "Mesajlaşma"
 
 #: data/ui/messaging-window.ui:23 data/ui/messaging-window.ui:36
-#: src/service/ui/messaging.js:1262
+#: src/service/ui/messaging.js:1255
 msgid "New Conversation"
 msgstr "Yeni Sohbet"
 
@@ -229,7 +229,7 @@ msgstr "Fare & Klavye"
 msgid "Volume Control"
 msgstr "Ses Kontrolü"
 
-#: data/ui/preferences-device-panel.ui:379 src/service/plugins/sftp.js:359
+#: data/ui/preferences-device-panel.ui:379 src/service/plugins/sftp.js:363
 msgid "Files"
 msgstr "Dosyalar"
 
@@ -267,7 +267,7 @@ msgid "Share Statistics"
 msgstr "İstatistikleri Paylaş"
 
 #: data/ui/preferences-device-panel.ui:849
-#: data/ui/preferences-device-panel.ui:2121 src/service/plugins/battery.js:11
+#: data/ui/preferences-device-panel.ui:2121 src/service/plugins/battery.js:12
 msgid "Battery"
 msgstr "Batarya"
 
@@ -297,7 +297,7 @@ msgstr "Uygulamalar"
 
 #: data/ui/preferences-device-panel.ui:1182
 #: data/ui/preferences-device-panel.ui:2213
-#: src/service/plugins/notification.js:14
+#: src/service/plugins/notification.js:15
 msgid "Notifications"
 msgstr "Bildirimler"
 
@@ -328,7 +328,7 @@ msgid "Mute Microphone"
 msgstr "Mikrofonu Sustur"
 
 #: data/ui/preferences-device-panel.ui:1685
-#: data/ui/preferences-device-panel.ui:2259 src/service/plugins/telephony.js:13
+#: data/ui/preferences-device-panel.ui:2259 src/service/plugins/telephony.js:14
 msgid "Telephony"
 msgstr "Telefon"
 
@@ -379,7 +379,7 @@ msgstr "Cihaz Ayarları"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/ui/preferences-device-panel.ui:2413
-#: data/ui/preferences-device-panel.ui:2505 src/service/daemon.js:733
+#: data/ui/preferences-device-panel.ui:2505 src/service/daemon.js:378
 msgid "Pair"
 msgstr "Eşleştir"
 
@@ -392,12 +392,12 @@ msgid "You may configure this device before pairing"
 msgstr "Eşleşmeden önce cihazı yapılandır"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
-#: data/ui/preferences-device-panel.ui:2500 src/preferences/device.js:363
+#: data/ui/preferences-device-panel.ui:2500 src/preferences/device.js:383
 msgid "Encryption Info"
 msgstr "Şifreleme Bilgisi"
 
 #. TRANSLATORS: Unpair the device and notify it
-#: data/ui/preferences-device-panel.ui:2511 src/service/daemon.js:742
+#: data/ui/preferences-device-panel.ui:2511 src/service/daemon.js:387
 msgid "Unpair"
 msgstr "Eşleştirmeyi Bitir"
 
@@ -433,7 +433,7 @@ msgstr "Düşük"
 #. TRANSLATORS: Silence the actively ringing call
 #: data/ui/preferences-device-panel.ui:2562
 #: data/ui/preferences-device-panel.ui:2595
-#: src/service/plugins/telephony.js:195
+#: src/service/plugins/telephony.js:201
 msgid "Mute"
 msgstr "Sessiz"
 
@@ -459,7 +459,7 @@ msgid "Refresh"
 msgstr "Yenile"
 
 #. Service Menu -> "Mobile Settings"
-#: data/ui/preferences-window.ui:132 src/extension.js:167
+#: data/ui/preferences-window.ui:132 src/extension.js:119
 msgid "Mobile Settings"
 msgstr "Mobil Ayarları"
 
@@ -495,7 +495,7 @@ msgstr "Etkin"
 msgid "This device is invisible to unpaired devices"
 msgstr "Bu cihaz eşleştirme yapılmayan cihazlara görünmez"
 
-#: data/ui/preferences-window.ui:670 src/service/daemon.js:121
+#: data/ui/preferences-window.ui:670 src/service/manager.js:99
 msgid "Discovery Disabled"
 msgstr "Keşif Devre Dışı"
 
@@ -531,7 +531,7 @@ msgid "Select"
 msgstr "Seç"
 
 #. TRANSLATORS: No devices are known or available
-#: data/ui/service-device-chooser.ui:94 webextension/gettext.js:35
+#: data/ui/service-device-chooser.ui:94 webextension/gettext.js:37
 msgid "No Device Found"
 msgstr "Cihaz Bulunamadı"
 
@@ -544,21 +544,21 @@ msgid "Report"
 msgstr "Rapor"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
-#: nautilus-extension/nautilus-gsconnect.py:164 webextension/gettext.js:31
+#: nautilus-extension/nautilus-gsconnect.py:164 webextension/gettext.js:33
 msgid "Send To Mobile Device"
 msgstr "Mobil Cihaza Gönder"
 
 #. Service Menu
-#: src/extension.js:139 src/extension.js:262
+#: src/extension.js:91 src/extension.js:214
 msgid "Mobile Devices"
 msgstr "Mobil Cihazlar"
 
 #. TRANSLATORS: A menu option to activate the extension
-#: src/extension.js:162 src/extension.js:391
+#: src/extension.js:114 src/extension.js:351
 msgid "Turn On"
 msgstr "Aç"
 
-#: src/extension.js:257
+#: src/extension.js:209
 #, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
@@ -566,27 +566,27 @@ msgstr[0] "%d Bağlı"
 msgstr[1] "%d Bağlı"
 
 #. TRANSLATORS: A menu option to deactivate the extension
-#: src/extension.js:388
+#: src/extension.js:348
 msgid "Turn Off"
 msgstr "Kapat"
 
-#: src/preferences/device.js:633 src/preferences/device.js:639
+#: src/preferences/device.js:652 src/preferences/device.js:658
 msgid "Edit"
 msgstr "Düzenle"
 
-#: src/preferences/device.js:648 src/preferences/device.js:654
+#: src/preferences/device.js:667 src/preferences/device.js:673
 msgid "Remove"
 msgstr "Kaldır"
 
-#: src/preferences/device.js:784 src/preferences/device.js:797
+#: src/preferences/device.js:803 src/preferences/device.js:816
 msgid "On"
 msgstr "Açık"
 
-#: src/preferences/device.js:784 src/preferences/device.js:797
+#: src/preferences/device.js:803 src/preferences/device.js:816
 msgid "Off"
 msgstr "Kapalı"
 
-#: src/preferences/device.js:899 src/preferences/device.js:927
+#: src/preferences/device.js:918 src/preferences/device.js:946
 msgid "Disabled"
 msgstr "Devre dışı"
 
@@ -655,97 +655,94 @@ msgstr "Bağlı"
 msgid "Waiting for service…"
 msgstr "Hizmet bekleniyor…"
 
-#: src/service/daemon.js:122
-msgid "Discovery has been disabled due to the number of devices on this network."
-msgstr "Bu ağdaki cihazların sayısı nedeniyle keşif devre dışı bırakıldı."
-
-#: src/service/daemon.js:528
+#: src/service/daemon.js:184
 msgid "Click for help troubleshooting"
 msgstr "Sorun giderme konusunda yardım için tıkla"
 
-#: src/service/daemon.js:539
+#: src/service/daemon.js:195
 msgid "Click for more information"
 msgstr "Daha fazla bilgi için tıkla"
 
-#: src/service/daemon.js:637
+#: src/service/daemon.js:291
 msgid "Dial Number"
 msgstr "Numarayı Çevir"
 
-#: src/service/daemon.js:643 src/service/daemon.js:850
+#: src/service/daemon.js:297 src/service/daemon.js:495
 #: src/service/plugins/share.js:28
 msgid "Share File"
 msgstr "Dosya Paylaşımı"
 
-#: src/service/daemon.js:703
+#: src/service/daemon.js:348
 msgid "List available devices"
 msgstr "Kullanılabilir cihazları listele"
 
-#: src/service/daemon.js:712
+#: src/service/daemon.js:357
 msgid "List all devices"
 msgstr "Tüm cihazları listele"
 
-#: src/service/daemon.js:721
+#: src/service/daemon.js:366
 msgid "Target Device"
 msgstr "Hedef Cihaz"
 
-#: src/service/daemon.js:763
+#: src/service/daemon.js:408
 msgid "Message Body"
 msgstr "Mesaj Metni"
 
-#: src/service/daemon.js:775 src/service/plugins/notification.js:52
+#: src/service/daemon.js:420 src/service/plugins/notification.js:53
 msgid "Send Notification"
 msgstr "Bildirim Gönder"
 
-#: src/service/daemon.js:784
+#: src/service/daemon.js:429
 msgid "Notification App Name"
 msgstr "Bildirim Uygulama Adı"
 
-#: src/service/daemon.js:793
+#: src/service/daemon.js:438
 msgid "Notification Body"
 msgstr "Bildirim Metni"
 
-#: src/service/daemon.js:802
+#: src/service/daemon.js:447
 msgid "Notification Icon"
 msgstr "Bildirim Simgesi"
 
-#: src/service/daemon.js:811
+#: src/service/daemon.js:456
 msgid "Notification ID"
 msgstr "Bildirim Kimliği"
 
-#: src/service/daemon.js:820 src/service/plugins/photo.js:12
+#: src/service/daemon.js:465 src/service/plugins/photo.js:12
 #: src/service/plugins/photo.js:24
 msgid "Photo"
 msgstr "Fotoğraf"
 
-#: src/service/daemon.js:829 src/service/plugins/ping.js:11
+#: src/service/daemon.js:474 src/service/plugins/ping.js:11
 #: src/service/plugins/ping.js:17 src/service/plugins/ping.js:44
 msgid "Ping"
 msgstr "Yokla"
 
-#: src/service/daemon.js:838 src/service/plugins/battery.js:244
-#: src/service/plugins/battery.js:273 src/service/plugins/findmyphone.js:18
+#: src/service/daemon.js:483 src/service/plugins/battery.js:243
+#: src/service/plugins/battery.js:272 src/service/plugins/findmyphone.js:19
 msgid "Ring"
 msgstr "Çaldır"
 
-#: src/service/daemon.js:859 src/service/plugins/share.js:44
-#: src/service/ui/messaging.js:1245 src/service/ui/messaging.js:1253
+#: src/service/daemon.js:504 src/service/plugins/share.js:44
+#: src/service/ui/messaging.js:1238 src/service/ui/messaging.js:1246
 msgid "Share Link"
 msgstr "Bağlantıyı Paylaş"
 
-#: src/service/daemon.js:868 src/service/plugins/share.js:36
+#: src/service/daemon.js:513 src/service/plugins/share.js:36
 msgid "Share Text"
 msgstr "Metni Paylaş"
 
-#: src/service/daemon.js:880
+#: src/service/daemon.js:525
 msgid "Show release version"
 msgstr "Sürüm versiyonunu göster"
 
-#: src/service/device.js:185 src/service/ui/messaging.js:389
+#: src/service/device.js:162 src/service/device.js:163
+#: src/service/ui/messaging.js:389
 msgid "Not available"
 msgstr "Müsait Değil"
 
 #. TRANSLATORS: Bluetooth address for remote device
-#: src/service/device.js:190
+#: src/service/device.js:168
 #, javascript-format
 msgid "Bluetooth device at %s"
 msgstr "Bluetooth cihazı %s"
@@ -756,111 +753,123 @@ msgstr "Bluetooth cihazı %s"
 #.
 #. Google Pixel Fingerprint:
 #. 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-#: src/service/device.js:210 src/service/device.js:212
+#: src/service/device.js:197 src/service/device.js:199
 #, javascript-format
 msgid "%s Fingerprint:"
 msgstr "%s Parmak İzi:"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
-#: src/service/device.js:809
+#: src/service/device.js:792
 #, javascript-format
 msgid "Pair Request from %s"
 msgstr "%s tarafından Gelen Eşleşme İsteği"
 
-#: src/service/device.js:816
+#: src/service/device.js:799
 msgid "Reject"
 msgstr "Reddet"
 
-#: src/service/device.js:821
+#: src/service/device.js:804
 msgid "Accept"
 msgstr "Kabul et"
 
+#: src/service/manager.js:100
+msgid "Discovery has been disabled due to the number of devices on this network."
+msgstr "Bu ağdaki cihazların sayısı nedeniyle keşif devre dışı bırakıldı."
+
+#: src/service/backends/lan.js:160
+msgid "OpenSSL not found"
+msgstr "OpenSSL bulunamadı"
+
+#: src/service/backends/lan.js:297
+msgid "Network Error"
+msgstr "Ağ Hatası"
+
 #. TRANSLATORS: eg. Google Pixel: Battery is full
-#: src/service/plugins/battery.js:253
+#: src/service/plugins/battery.js:252
 #, javascript-format
 msgid "%s: Battery is full"
 msgstr "%s: Batarya dolu"
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
-#: src/service/plugins/battery.js:255 src/shell/device.js:118
+#: src/service/plugins/battery.js:254 src/shell/device.js:118
 msgid "Fully Charged"
 msgstr "Şarj Oldu"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
-#: src/service/plugins/battery.js:282
+#: src/service/plugins/battery.js:281
 #, javascript-format
 msgid "%s: Battery is low"
 msgstr "%s: Düşük batarya"
 
 #. TRANSLATORS: eg. 15% remaining
-#: src/service/plugins/battery.js:284
+#: src/service/plugins/battery.js:283
 #, javascript-format
 msgid "%d%% remaining"
 msgstr "%d%% kaldı"
 
-#: src/service/plugins/clipboard.js:9
+#: src/service/plugins/clipboard.js:10
 msgid "Clipboard"
 msgstr "Pano"
 
-#: src/service/plugins/clipboard.js:21
+#: src/service/plugins/clipboard.js:22
 msgid "Clipboard Push"
 msgstr "Panoya Gönder"
 
-#: src/service/plugins/clipboard.js:29
+#: src/service/plugins/clipboard.js:30
 msgid "Clipboard Pull"
 msgstr "Panodan Al"
 
-#: src/service/plugins/findmyphone.js:12
+#: src/service/plugins/findmyphone.js:13
 msgid "Find My Phone"
 msgstr "Telefonumu Bul"
 
-#: src/service/plugins/mousepad.js:11
+#: src/service/plugins/mousepad.js:12
 msgid "Mousepad"
 msgstr "Fare Desteği"
 
-#: src/service/plugins/mousepad.js:25 src/service/plugins/mousepad.js:397
+#: src/service/plugins/mousepad.js:26 src/service/plugins/mousepad.js:412
 msgid "Keyboard"
 msgstr "Klavye"
 
 #. TRANSLATORS: Displayed when the remote keyboard is not ready to accept input
-#: src/service/plugins/mousepad.js:416
+#: src/service/plugins/mousepad.js:431
 #, javascript-format
 msgid "Remote keyboard on %s is not active"
 msgstr "%s üzerindeki uzak klavye etkin değil"
 
-#: src/service/plugins/mpris.js:13
+#: src/service/plugins/mpris.js:14
 msgid "MPRIS"
 msgstr "MPRIS"
 
-#: src/service/plugins/mpris.js:260 src/service/plugins/mpris.js:261
+#: src/service/plugins/mpris.js:256 src/service/plugins/mpris.js:257
 msgid "Unknown"
 msgstr "Bilinmeyen"
 
-#: src/service/plugins/notification.js:28
+#: src/service/plugins/notification.js:29
 msgid "Cancel Notification"
 msgstr "Bildirimi İptal Et"
 
-#: src/service/plugins/notification.js:36
+#: src/service/plugins/notification.js:37
 msgid "Close Notification"
 msgstr "Bildirimi Kapat"
 
-#: src/service/plugins/notification.js:44
+#: src/service/plugins/notification.js:45
 msgid "Reply Notification"
 msgstr "Bildirimi Yanıtla"
 
-#: src/service/plugins/notification.js:60
+#: src/service/plugins/notification.js:61
 msgid "Activate Notification"
 msgstr "Bildirimi Etkinleştir"
 
-#: src/service/plugins/photo.js:255 src/service/plugins/share.js:113
-#: src/service/plugins/share.js:196 src/service/plugins/share.js:350
+#: src/service/plugins/photo.js:257 src/service/plugins/share.js:127
+#: src/service/plugins/share.js:210 src/service/plugins/share.js:346
 msgid "Transfer Failed"
 msgstr "Aktarım Başarısız"
 
 #. TRANSLATORS: eg. Failed to send "photo.jpg" to Google Pixel
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
-#: src/service/plugins/photo.js:257 src/service/plugins/share.js:352
+#: src/service/plugins/photo.js:259 src/service/plugins/share.js:348
 #, javascript-format
 msgid "Failed to send “%s” to %s"
 msgstr "Gönderilemedi “%s” hedef %s"
@@ -872,7 +881,7 @@ msgstr "Gönderilemedi “%s” hedef %s"
 msgid "Ping: %s"
 msgstr "Yokla: %s"
 
-#: src/service/plugins/presenter.js:9
+#: src/service/plugins/presenter.js:10
 msgid "Presentation"
 msgstr "Sunum"
 
@@ -905,155 +914,151 @@ msgid "Share"
 msgstr "Paylaş"
 
 #. TRANSLATORS: eg. Google Pixel is not allowed to upload files
-#: src/service/plugins/share.js:115
+#: src/service/plugins/share.js:129
 #, javascript-format
 msgid "%s is not allowed to upload files"
 msgstr "%s dosya yükleme iznine sahip değil"
 
-#: src/service/plugins/share.js:147 src/service/plugins/share.js:316
+#: src/service/plugins/share.js:161 src/service/plugins/share.js:312
 msgid "Transferring File"
 msgstr "Dosya Aktarımı"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:149
+#: src/service/plugins/share.js:163
 #, javascript-format
 msgid "Receiving “%s” from %s"
 msgstr "Alınıyor “%s” kaynak %s"
 
-#: src/service/plugins/share.js:176 src/service/plugins/share.js:342
+#: src/service/plugins/share.js:190 src/service/plugins/share.js:338
 msgid "Transfer Successful"
 msgstr "Aktarım Başarılı"
 
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:178
+#: src/service/plugins/share.js:192
 #, javascript-format
 msgid "Received “%s” from %s"
 msgstr "Alınan “%s” kaynak %s"
 
-#: src/service/plugins/share.js:184
+#: src/service/plugins/share.js:198
 msgid "Open Folder"
 msgstr "Klasörü Aç"
 
-#: src/service/plugins/share.js:189
+#: src/service/plugins/share.js:203
 msgid "Open File"
 msgstr "Dosyayı Aç"
 
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:198
+#: src/service/plugins/share.js:212
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
 msgstr "Alım başarısız “%s” kaynak %s"
 
-#: src/service/plugins/share.js:228
+#: src/service/plugins/share.js:242
 #, javascript-format
 msgid "Text Shared By %s"
 msgstr "Paylaşılan Metin %s"
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
-#: src/service/plugins/share.js:318
+#: src/service/plugins/share.js:314
 #, javascript-format
 msgid "Sending “%s” to %s"
 msgstr "Gönderiliyor “%s” hedef %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:344
+#: src/service/plugins/share.js:340
 #, javascript-format
 msgid "Sent “%s” to %s"
 msgstr "Gönderildi “%s” hedef %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
-#: src/service/plugins/share.js:408
+#: src/service/plugins/share.js:406
 #, javascript-format
 msgid "Send files to %s"
 msgstr "Dosyaları gönder %s"
 
 #. TRANSLATORS: Mark the file to be opened once completed
-#: src/service/plugins/share.js:412
+#: src/service/plugins/share.js:410
 msgid "Open when done"
 msgstr "Tamamlandığında aç"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
-#: src/service/plugins/share.js:451
+#: src/service/plugins/share.js:449
 #, javascript-format
 msgid "Send a link to %s"
 msgstr "Bağlantı gönder %s"
 
-#: src/service/plugins/sms.js:13
+#: src/service/plugins/sms.js:14
 msgid "SMS"
 msgstr "SMS"
 
-#: src/service/plugins/sms.js:34
+#: src/service/plugins/sms.js:35
 msgid "New SMS (URI)"
 msgstr "Yeni SMS (URI)"
 
 #. TRANSLATORS: Respond to an incoming call via SMS
-#: src/service/plugins/sms.js:42 src/service/plugins/telephony.js:23
+#: src/service/plugins/sms.js:43 src/service/plugins/telephony.js:24
 msgid "Reply SMS"
 msgstr "SMS Yanıtla"
 
-#: src/service/plugins/sms.js:66
+#: src/service/plugins/sms.js:67
 msgid "Share SMS"
 msgstr "SMS Paylaş"
 
-#: src/service/plugins/systemvolume.js:9
+#: src/service/plugins/systemvolume.js:11
 msgid "System Volume"
 msgstr "Sistem Sesi"
 
+#: src/service/plugins/systemvolume.js:55
+msgid "PulseAudio not found"
+msgstr ""
+
 #. TRANSLATORS: Silence the actively ringing call
-#: src/service/plugins/telephony.js:32
+#: src/service/plugins/telephony.js:33
 msgid "Mute Call"
 msgstr "Sesi Kapat"
 
 #. Ensure we have a sender
 #. TRANSLATORS: No name or phone number
 #. Contact Name
-#: src/service/plugins/telephony.js:172 src/service/plugins/telephony.js:230
-#: src/service/plugins/telephony.js:284 src/service/ui/contacts.js:608
-#: src/service/ui/messaging.js:738
+#: src/service/plugins/telephony.js:178 src/service/plugins/telephony.js:236
+#: src/service/plugins/telephony.js:290 src/service/ui/contacts.js:616
+#: src/service/ui/messaging.js:737
 msgid "Unknown Contact"
 msgstr "Bilinmeyen Kişi"
 
 #. TRANSLATORS: The phone is ringing
-#: src/service/plugins/telephony.js:191
+#: src/service/plugins/telephony.js:197
 msgid "Incoming call"
 msgstr "Gelen çağrı"
 
 #. TRANSLATORS: A phone call is active
-#: src/service/plugins/telephony.js:206
+#: src/service/plugins/telephony.js:212
 msgid "Ongoing call"
 msgstr "Devam eden çağrı"
 
-#: src/service/protocol/lan.js:153
-msgid "OpenSSL not found"
-msgstr "OpenSSL bulunamadı"
-
-#: src/service/protocol/lan.js:290
-msgid "Network Error"
-msgstr "Ağ Hatası"
-
 #. TRANSLATORS: A fax number
-#: src/service/ui/contacts.js:129
+#: src/service/ui/contacts.js:130
 msgid "Fax"
 msgstr "Faks"
 
 #. TRANSLATORS: A work or office phone number
-#: src/service/ui/contacts.js:133
+#: src/service/ui/contacts.js:134
 msgid "Work"
 msgstr "İş"
 
 #. TRANSLATORS: A mobile or cellular phone number
-#: src/service/ui/contacts.js:137
+#: src/service/ui/contacts.js:138
 msgid "Mobile"
 msgstr "Mobil"
 
 #. TRANSLATORS: A home phone number
-#: src/service/ui/contacts.js:141
+#: src/service/ui/contacts.js:142
 msgid "Home"
 msgstr "Ev"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #. Update UI
-#: src/service/ui/contacts.js:507 src/service/ui/contacts.js:522
+#: src/service/ui/contacts.js:514 src/service/ui/contacts.js:529
 #, javascript-format
 msgid "Send to %s"
 msgstr "Gönder %s"
@@ -1076,17 +1081,17 @@ msgid_plural "%d minutes"
 msgstr[0] "%d dakika"
 msgstr[1] "%d dakika"
 
-#: src/service/ui/messaging.js:746
+#: src/service/ui/messaging.js:745
 msgid "Group Message"
 msgstr "Grup Mesajı"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
-#: src/service/ui/messaging.js:761
+#: src/service/ui/messaging.js:760
 #, javascript-format
 msgid "You: %s"
 msgstr "Sen: %s"
 
-#: src/service/ui/messaging.js:947
+#: src/service/ui/messaging.js:946
 #, javascript-format
 msgid "And %d other contact"
 msgid_plural "And %d others"
@@ -1119,17 +1124,17 @@ msgid "Reply"
 msgstr "Yanıtla"
 
 #. TRANSLATORS: Chrome/Firefox WebExtension description
-#: webextension/gettext.js:29
+#: webextension/gettext.js:31
 msgid "Share links with GSConnect, direct to the browser or by SMS."
 msgstr "GSConnect ile bağlantıları doğrudan tarayıcı veya SMS ile paylaş."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
-#: webextension/gettext.js:33
+#: webextension/gettext.js:35
 msgid "Service Unavailable"
 msgstr "Servis Mevcut Değil"
 
 #. TRANSLATORS: Open URL with the device's browser
-#: webextension/gettext.js:37
+#: webextension/gettext.js:39
 msgid "Open in Browser"
 msgstr "Tarayıcıda Aç"
 
