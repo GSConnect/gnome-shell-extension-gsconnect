@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-08-19 00:07-0700\n"
-"PO-Revision-Date: 2020-08-19 07:24\n"
+"PO-Revision-Date: 2020-08-19 11:18\n"
 "Last-Translator: \n"
 "Language-Team: Czech\n"
 "Language: cs_CZ\n"
@@ -1010,7 +1010,7 @@ msgstr "Hlasitost systému"
 
 #: src/service/plugins/systemvolume.js:55
 msgid "PulseAudio not found"
-msgstr ""
+msgstr "PulseAudio nenalezeno"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:33
