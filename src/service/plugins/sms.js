@@ -373,7 +373,14 @@ var Plugin = GObject.registerClass({
      * @param {string} messageBody - The message to send
      */
     sendSms(phoneNumber, messageBody) {
-        this.sendMessage([{address: phoneNumber}], messageBody, 1, true);
+        this.device.sendPacket({
+            type: 'kdeconnect.sms.request',
+            body: {
+                sendSms: true,
+                phoneNumber: phoneNumber,
+                messageBody: messageBody,
+            },
+        });
     }
 
     /**
