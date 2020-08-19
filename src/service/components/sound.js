@@ -5,7 +5,7 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 
 
-/**
+/*
  * Used to ensure 'audible-bell' is enabled for fallback
  */
 const WM_SETTINGS = new Gio.Settings({
@@ -15,6 +15,10 @@ const WM_SETTINGS = new Gio.Settings({
 
 
 const Sound = class Sound {
+
+    constructor() {
+        this._playing = new Set();
+    }
 
     get backend() {
         if (this._backend === undefined) {
@@ -39,13 +43,6 @@ const Sound = class Sound {
         }
 
         return this._backend;
-    }
-
-    get playing() {
-        if (this._playing === undefined)
-            this._playing = new Set();
-
-        return this._playing;
     }
 
     _canberraPlaySound(name, cancellable) {
@@ -125,7 +122,7 @@ const Sound = class Sound {
             if (!(cancellable instanceof Gio.Cancellable))
                 cancellable = new Gio.Cancellable();
 
-            this.playing.add(cancellable);
+            this._playing.add(cancellable);
 
             switch (this.backend) {
                 case 'gsound':
@@ -143,7 +140,7 @@ const Sound = class Sound {
             if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
                 logError(e);
         } finally {
-            this.playing.delete(cancellable);
+            this._playing.delete(cancellable);
         }
     }
 
@@ -152,7 +149,7 @@ const Sound = class Sound {
             if (!(cancellable instanceof Gio.Cancellable))
                 cancellable = new Gio.Cancellable();
 
-            this.playing.add(cancellable);
+            this._playing.add(cancellable);
 
             switch (this.backend) {
                 case 'gsound':
@@ -170,12 +167,12 @@ const Sound = class Sound {
             if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
                 logError(e);
         } finally {
-            this.playing.delete(cancellable);
+            this._playing.delete(cancellable);
         }
     }
 
     destroy() {
-        for (let cancellable of this.playing)
+        for (let cancellable of this._playing)
             cancellable.cancel();
     }
 };
