@@ -53,7 +53,7 @@ var Plugin = GObject.registerClass({
         // Modify the error to redirect to the wiki
         } catch (e) {
             e.name = _('PulseAudio not found');
-            e.url = `${Config.PACKAGE_URL}/wiki/Help#pulseaudio-error`;
+            e.url = `${Config.PACKAGE_URL}/wiki/Error#pulseaudio-not-found`;
             throw e;
         }
     }

@@ -158,7 +158,7 @@ var ChannelService = GObject.registerClass({
         if (GLib.find_program_in_path(Config.OPENSSL_PATH) === null) {
             let error = new Error();
             error.name = _('OpenSSL not found');
-            error.url = `${Config.PACKAGE_URL}/wiki/Help#openssl-error`;
+            error.url = `${Config.PACKAGE_URL}/wiki/Error#openssl-not-found`;
             throw error;
         }
 
@@ -295,7 +295,7 @@ var ChannelService = GObject.registerClass({
             // We failed to get either an IPv4 or IPv6 socket to bind
             if (this._udp6 === null) {
                 e.name = _('Network Error');
-                e.url = 'https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Help#network-error';
+                e.url = `${Config.PACKAGE_URL}/wiki/Error#network-error`;
                 throw e;
             }
         }
