@@ -40,12 +40,8 @@ var Plugin = GObject.registerClass({
 
         // The component which could (un)reasonably fail to load is PulseAudio,
         // which itself it not necessarily a fatal error here.
-        try {
-            this._player = Components.acquire('sound');
-            this._mixer = Components.acquire('pulseaudio');
-        } catch (e) {
-            debug(e, this.device.name);
-        }
+        this._player = Components.acquire('sound');
+        this._mixer = Components.acquire('pulseaudio');
     }
 
     handlePacket(packet) {
@@ -165,7 +161,7 @@ const Dialog = GObject.registerClass({
         this.message_area.destroy();
 
         // If the mixer is available start fading the volume up
-        if (this.plugin._mixer) {
+        if (this.plugin._mixer !== undefined) {
             this._stream = this.plugin._mixer.output;
 
             this._previousMuted = this._stream.muted;

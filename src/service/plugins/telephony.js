@@ -54,12 +54,8 @@ var Plugin = GObject.registerClass({
         super._init(device, 'telephony');
 
         // Neither of these are crucial for the plugin to work
-        try {
-            this._mixer = Components.acquire('pulseaudio');
-            this._mpris = Components.acquire('mpris');
-        } catch (e) {
-            debug(e, this.device.name);
-        }
+        this._mixer = Components.acquire('pulseaudio');
+        this._mpris = Components.acquire('mpris');
     }
 
     get legacy_sms() {
