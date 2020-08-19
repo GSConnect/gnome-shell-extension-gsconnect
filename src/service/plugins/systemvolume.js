@@ -3,6 +3,7 @@
 const GObject = imports.gi.GObject;
 
 const Components = imports.service.components;
+const Config = imports.config;
 const PluginBase = imports.service.plugin;
 
 
@@ -51,7 +52,8 @@ var Plugin = GObject.registerClass({
 
         // Modify the error to redirect to the wiki
         } catch (e) {
-            e.name = 'GvcError';
+            e.name = _('PulseAudio not found');
+            e.url = `${Config.PACKAGE_URL}/wiki/Help#pulseaudio-error`;
             throw e;
         }
     }
