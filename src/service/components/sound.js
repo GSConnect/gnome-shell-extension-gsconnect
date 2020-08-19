@@ -14,7 +14,7 @@ const WM_SETTINGS = new Gio.Settings({
 });
 
 
-const Sound = class Sound {
+var Player = class Player {
 
     constructor() {
         this._playing = new Set();
@@ -181,5 +181,5 @@ const Sound = class Sound {
 /**
  * The service class for this component
  */
-var Component = Sound;
+var Component = Player;
 
