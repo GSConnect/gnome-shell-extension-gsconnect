@@ -564,7 +564,7 @@ const Conversation = GObject.registerClass({
         // Add date header if the last message was more than an hour ago
         let header = row.get_header();
 
-        if ((row.message.date - before.message.date) > GLib.TIME_SPAN_HOUR / 1000) {
+        if ((row.message.date - before.message.date) > TIME_SPAN_HOUR) {
             if (!header) {
                 header = new Gtk.Label({visible: true});
                 header.get_style_context().add_class('dim-label');
