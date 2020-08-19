@@ -576,8 +576,7 @@ const Conversation = GObject.registerClass({
             // Also show the avatar
             setAvatarVisible(row, true);
 
-            if (row.senderLabel)
-                row.senderLabel.visible = row.message.addresses.length > 1;
+            row.sender_label.visible = row.message.addresses.length > 1;
 
         // Or if the previous sender was the same, hide its avatar
         } else if (row.message.type === before.message.type &&
@@ -585,8 +584,7 @@ const Conversation = GObject.registerClass({
             setAvatarVisible(before, false);
             setAvatarVisible(row, true);
 
-            if (row.senderLabel)
-                row.senderLabel.visible = false;
+            row.sender_label.visible = false;
 
         // otherwise show the avatar
         } else {
