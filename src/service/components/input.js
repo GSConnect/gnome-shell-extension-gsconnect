@@ -303,6 +303,9 @@ class Controller {
             HAVE_REMOTEINPUT = false;
             let service = Gio.Application.get_default();
 
+            if (service === null)
+                return true;
+
             // First we're going to disabled the affected plugins on all devices
             for (let device of service.manager.devices.values()) {
                 let supported = device.settings.get_strv('supported-plugins');
