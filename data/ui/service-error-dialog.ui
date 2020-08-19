@@ -50,6 +50,8 @@
             <property name="can_focus">False</property>
             <property name="halign">start</property>
             <property name="visible">True</property>
+            <property name="wrap">True</property>
+            <property name="xalign">0.0</property>
             <attributes>
               <attribute name="weight" value="bold"/>
             </attributes>
