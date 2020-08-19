@@ -103,8 +103,11 @@ install_subdir(
 eslint = find_program('eslint', required: false)
 
 if eslint.found()
-  test('ESLint', eslint,
-    args: join_paths(meson.build_root(), extuuid)
+  test('ESLint (Source)', eslint,
+    args: join_paths(meson.source_root(), 'src')
+  )
+  test('ESLint (WebExtension)', eslint,
+    args: join_paths(meson.source_root(), 'webextension')
   )
 endif
 

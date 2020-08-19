@@ -12,13 +12,6 @@ if [ "${1}" == "i18n" ]; then
     echo "done"
     exit
 
-# Run eslinst on source
-elif [ "${1}" == "lint" ]; then
-    echo "Running eslint..."
-
-    eslint --global 'browser,document,console' js/background.js js/popup.js
-    exit
-
 # Common preparation for chrome & firefox
 elif [ "${1}" == "chrome" ] || [ "${1}" == "firefox" ]; then
     # Clean-up old files
@@ -79,13 +72,12 @@ fi
 
 
 # Usage
-echo "Usage: mkwebext [firefox|chrome|i18n|lint]"
+echo "Usage: mkwebext [firefox|chrome|i18n]"
 echo "Build an unsigned ZIP of the WebExtension for Chrome or Firefox."
 echo
 echo "  chrome        Build Google Chrome/Chromium Extension (unsigned zip)"
 echo "  firefox       Build Mozilla Firefox Add-on zip (unsigned zip)"
 echo "  i18n          Update translations"
-echo "  lint          Run eslint on the WebExtension source"
 echo ""
 echo "Building the Mozilla Firefox extension requires the 'web-ext' node module."
 
