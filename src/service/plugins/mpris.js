@@ -4,6 +4,7 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
+const Components = imports.service.components;
 const Config = imports.config;
 const DBus = imports.utils.dbus;
 const PluginBase = imports.service.plugin;
@@ -38,7 +39,7 @@ var Plugin = GObject.registerClass({
         this._updating = new WeakSet();
 
         try {
-            this._mpris = this.service.components.get('mpris');
+            this._mpris = Components.acquire('mpris');
 
             this._playerAddedId = this._mpris.connect(
                 'player-added',
@@ -425,6 +426,7 @@ var Plugin = GObject.registerClass({
             this._mpris.disconnect(this._playerRemovedId);
             this._mpris.disconnect(this._playerChangedId);
             this._mpris.disconnect(this._playerSeekedId);
+            this._mpris = Components.release('mpris');
         }
 
         for (let [identity, player] of this._players) {

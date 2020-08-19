@@ -4,6 +4,7 @@ const Gdk = imports.gi.Gdk;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
+const Components = imports.service.components;
 const PluginBase = imports.service.plugin;
 
 
@@ -97,7 +98,7 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'mousepad');
 
-        this._input = this.service.components.get('input');
+        this._input = Components.acquire('input');
 
         this._shareControlChangedId = this.settings.connect(
             'changed::share-control',
@@ -304,6 +305,9 @@ var Plugin = GObject.registerClass({
     }
 
     destroy() {
+        if (this._input !== undefined)
+            this._input = Components.release('input');
+
         if (this._dialog !== undefined)
             this._dialog.destroy();
 

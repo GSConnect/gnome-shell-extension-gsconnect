@@ -4,6 +4,7 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
+const Components = imports.service.components;
 const PluginBase = imports.service.plugin;
 
 
@@ -53,7 +54,7 @@ var Plugin = GObject.registerClass({
         this.device.add_action(this.__state);
 
         // Local Battery (UPower)
-        this._upowerId = 0;
+        this._upower = null;
         this._sendStatisticsId = this.settings.connect(
             'changed::send-statistics',
             this._onSendStatisticsChanged.bind(this)
@@ -332,20 +333,15 @@ var Plugin = GObject.registerClass({
      * Report the local battery's current state
      */
     _sendState() {
-        if (this._upowerId === 0)
-            return;
-
-        let upower = this.service.components.get('upower');
-
-        if (upower === undefined)
+        if (this._upower === null || !this._upower.is_present)
             return;
 
         this.device.sendPacket({
             type: 'kdeconnect.battery',
             body: {
-                currentCharge: upower.level,
-                isCharging: upower.charging,
-                thresholdEvent: upower.threshold,
+                currentCharge: this._upower.level,
+                isCharging: this._upower.charging,
+                thresholdEvent: this._upower.threshold,
             },
         });
     }
@@ -361,12 +357,9 @@ var Plugin = GObject.registerClass({
             if (!incoming.includes('kdeconnect.battery'))
                 return;
 
-            let upower = this.service.components.get('upower');
+            this._upower = Components.acquire('upower');
 
-            if (upower === undefined || !upower.is_present || this._upowerId)
-                return;
-
-            this._upowerId = upower.connect(
+            this._upowerId = this._upower.connect(
                 'changed',
                 this._sendState.bind(this)
             );
@@ -380,15 +373,11 @@ var Plugin = GObject.registerClass({
 
     _unmonitorState() {
         try {
-            if (this._upowerId === 0)
+            if (this._upower === null)
                 return;
 
-            let upower = this.service.components.get('upower');
-
-            if (upower !== undefined)
-                upower.disconnect(this._upowerId);
-
-            this._upowerId = 0;
+            this._upower.disconnect(this._upowerId);
+            this._upower = Components.release('upower');
         } catch (e) {
             logError(e, this.device.name);
         }

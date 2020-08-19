@@ -2,6 +2,7 @@
 
 const GObject = imports.gi.GObject;
 
+const Components = imports.service.components;
 const PluginBase = imports.service.plugin;
 
 
@@ -28,19 +29,19 @@ var Plugin = GObject.registerClass({
 
         try {
             // Connect to the mixer
-            this._pulseaudio = this.service.components.get('pulseaudio');
+            this._mixer = Components.acquire('pulseaudio');
 
-            this._streamChangedId = this._pulseaudio.connect(
+            this._streamChangedId = this._mixer.connect(
                 'stream-changed',
                 this._sendSink.bind(this)
             );
 
-            this._outputAddedId = this._pulseaudio.connect(
+            this._outputAddedId = this._mixer.connect(
                 'output-added',
                 this._sendSinkList.bind(this)
             );
 
-            this._outputRemovedId = this._pulseaudio.connect(
+            this._outputRemovedId = this._mixer.connect(
                 'output-removed',
                 this._sendSinkList.bind(this)
             );
@@ -80,7 +81,7 @@ var Plugin = GObject.registerClass({
     _changeSink(packet) {
         let stream;
 
-        for (let sink of this._pulseaudio.get_sinks()) {
+        for (let sink of this._mixer.get_sinks()) {
             if (sink.name === packet.body.name) {
                 stream = sink;
                 break;
@@ -122,7 +123,7 @@ var Plugin = GObject.registerClass({
             description: stream.display_name,
             muted: stream.is_muted,
             volume: stream.volume,
-            maxVolume: this._pulseaudio.get_vol_max_norm(),
+            maxVolume: this._mixer.get_vol_max_norm(),
         };
 
         this._cache.set(stream, state);
@@ -138,11 +139,11 @@ var Plugin = GObject.registerClass({
      */
     _sendSink(mixer, id) {
         // Avoid starving the packet channel when fading
-        if (this._pulseaudio.fading)
+        if (this._mixer.fading)
             return;
 
         // Check the cache
-        let stream = this._pulseaudio.lookup_stream_id(id);
+        let stream = this._mixer.lookup_stream_id(id);
         let cache = this._cache.get(stream) || {};
 
         // If the port has changed we have to send the whole list to update the
@@ -169,7 +170,7 @@ var Plugin = GObject.registerClass({
      * Send a list of local sinks
      */
     _sendSinkList() {
-        let sinkList = this._pulseaudio.get_sinks().map(sink => {
+        let sinkList = this._mixer.get_sinks().map(sink => {
             return this._updateCache(sink);
         });
 
@@ -183,10 +184,11 @@ var Plugin = GObject.registerClass({
     }
 
     destroy() {
-        if (this._pulseaudio !== undefined) {
-            this._pulseaudio.disconnect(this._streamChangedId);
-            this._pulseaudio.disconnect(this._outputAddedId);
-            this._pulseaudio.disconnect(this._outputRemovedId);
+        if (this._mixer !== undefined) {
+            this._mixer.disconnect(this._streamChangedId);
+            this._mixer.disconnect(this._outputAddedId);
+            this._mixer.disconnect(this._outputRemovedId);
+            this._mixer = Components.release('pulseaudio');
         }
 
         super.destroy();

@@ -2,6 +2,7 @@
 
 const GObject = imports.gi.GObject;
 
+const Components = imports.service.components;
 const PluginBase = imports.service.plugin;
 
 
@@ -49,7 +50,7 @@ var Plugin = GObject.registerClass({
         super._init(device, 'clipboard');
 
         try {
-            this._clipboard = this.service.components.get('clipboard');
+            this._clipboard = Components.acquire('clipboard');
 
             // Watch local clipboard for changes
             this._textChangedId = this._clipboard.connect(
@@ -171,8 +172,10 @@ var Plugin = GObject.registerClass({
     }
 
     destroy() {
-        if (this._clipboard && this._textChangedId)
+        if (this._clipboard && this._textChangedId) {
             this._clipboard.disconnect(this._textChangedId);
+            this._clipbaord = Components.release('clipboard');
+        }
 
         super.destroy();
     }

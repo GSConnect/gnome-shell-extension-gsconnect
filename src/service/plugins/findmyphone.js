@@ -5,6 +5,7 @@ const Gio = imports.gi.Gio;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
+const Components = imports.service.components;
 const PluginBase = imports.service.plugin;
 
 
@@ -36,6 +37,15 @@ var Plugin = GObject.registerClass({
 
     _init(device) {
         super._init(device, 'findmyphone');
+
+        // The component which could (un)reasonably fail to load is PulseAudio,
+        // which itself it not necessarily a fatal error here.
+        try {
+            this._player = Components.acquire('sound');
+            this._mixer = Components.acquire('pulseaudio');
+        } catch (e) {
+            debug(e, this.device.name);
+        }
     }
 
     handlePacket(packet) {
@@ -57,7 +67,10 @@ var Plugin = GObject.registerClass({
                 return;
             }
 
-            this._dialog = new Dialog(this.device.name);
+            this._dialog = new Dialog({
+                device: this.device,
+                plugin: this,
+            });
             this._dialog.connect('response', () => {
                 this._dialog = null;
             });
@@ -87,6 +100,13 @@ var Plugin = GObject.registerClass({
 
     destroy() {
         this._cancelRequest();
+
+        if (this._mixer !== undefined)
+            this._mixer = Components.release('pulseaudio');
+
+        if (this._player !== undefined)
+            this._player = Components.release('sound');
+
         super.destroy();
     }
 });
@@ -106,10 +126,27 @@ const _WM_SETTINGS = new Gio.Settings({
  */
 const Dialog = GObject.registerClass({
     GTypeName: 'GSConnectFindMyPhoneDialog',
+    Properties: {
+        'device': GObject.ParamSpec.object(
+            'device',
+            'Device',
+            'The device associated with this window',
+            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            GObject.Object
+        ),
+        'plugin': GObject.ParamSpec.object(
+            'plugin',
+            'Plugin',
+            'The plugin providing messages',
+            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            GObject.Object
+        ),
+    },
 }, class Dialog extends Gtk.MessageDialog {
-    _init(name) {
+    _init(params) {
         super._init({
             buttons: Gtk.ButtonsType.CLOSE,
+            device: params.device,
             image: new Gtk.Image({
                 icon_name: 'phonelink-ring-symbolic',
                 pixel_size: 512,
@@ -119,6 +156,7 @@ const Dialog = GObject.registerClass({
                 vexpand: true,
                 visible: true,
             }),
+            plugin: params.plugin,
             urgency_hint: true,
         });
 
@@ -127,11 +165,8 @@ const Dialog = GObject.registerClass({
         this.message_area.destroy();
 
         // If the mixer is available start fading the volume up
-        let service = Gio.Application.get_default();
-        let mixer = service.components.get('pulseaudio');
-
-        if (mixer) {
-            this._stream = mixer.output;
+        if (this.plugin._mixer) {
+            this._stream = this.plugin._mixer.output;
 
             this._previousMuted = this._stream.muted;
             this._previousVolume = this._stream.volume;
@@ -146,10 +181,8 @@ const Dialog = GObject.registerClass({
         }
 
         // Start the alarm
-        let sound = service.components.get('sound');
-
-        if (sound !== undefined)
-            sound.loopSound('phone-incoming-call', this.cancellable);
+        if (this.plugin._player !== undefined)
+            this.plugin._player.loopSound('phone-incoming-call', this.cancellable);
 
         // Show the dialog
         this.show_all();
@@ -189,6 +222,28 @@ const Dialog = GObject.registerClass({
             this._cancellable = new Gio.Cancellable();
 
         return this._cancellable;
+    }
+
+    get device() {
+        if (this._device === undefined)
+            this._device = null;
+
+        return this._device;
+    }
+
+    set device(device) {
+        this._device = device;
+    }
+
+    get plugin() {
+        if (this._plugin === undefined)
+            this._plugin = null;
+
+        return this._plugin;
+    }
+
+    set plugin(plugin) {
+        this._plugin = plugin;
     }
 });
 

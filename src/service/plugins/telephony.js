@@ -5,6 +5,7 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
+const Components = imports.service.components;
 const PluginBase = imports.service.plugin;
 const LegacyMessaging = imports.service.ui.legacyMessaging;
 
@@ -52,8 +53,13 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'telephony');
 
-        this._mpris = this.service.components.get('mpris');
-        this._pulseaudio = this.service.components.get('pulseaudio');
+        // Neither of these are crucial for the plugin to work
+        try {
+            this._mixer = Components.acquire('pulseaudio');
+            this._mpris = Components.acquire('mpris');
+        } catch (e) {
+            debug(e, this.device.name);
+        }
     }
 
     get legacy_sms() {
@@ -94,23 +100,23 @@ var Plugin = GObject.registerClass({
      */
     _setMediaState(eventType) {
         // Mixer Volume
-        if (this._pulseaudio !== undefined) {
+        if (this._mixer !== undefined) {
             switch (this.settings.get_string(`${eventType}-volume`)) {
                 case 'restore':
-                    this._pulseaudio.restore();
+                    this._mixer.restore();
                     break;
 
                 case 'lower':
-                    this._pulseaudio.lowerVolume();
+                    this._mixer.lowerVolume();
                     break;
 
                 case 'mute':
-                    this._pulseaudio.muteVolume();
+                    this._mixer.muteVolume();
                     break;
             }
 
             if (eventType === 'talking' && this.settings.get_boolean('talking-microphone'))
-                this._pulseaudio.muteMicrophone();
+                this._mixer.muteMicrophone();
         }
 
         // Media Playback
@@ -131,8 +137,8 @@ var Plugin = GObject.registerClass({
             this._mpris.unpauseAll();
 
         // Mixer Volume
-        if (this._pulseaudio)
-            this._pulseaudio.restore();
+        if (this._mixer)
+            this._mixer.restore();
     }
 
     /**
@@ -300,6 +306,16 @@ var Plugin = GObject.registerClass({
         });
 
         this._restoreMediaState();
+    }
+
+    destroy() {
+        if (this._mixer !== undefined)
+            this._mixer = Components.release('pulseaudio');
+
+        if (this._mpris !== undefined)
+            this._mpris = Components.release('mpris');
+
+        super.destroy();
     }
 });
 

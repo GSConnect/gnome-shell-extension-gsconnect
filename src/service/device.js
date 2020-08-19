@@ -5,6 +5,7 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
 const Config = imports.config;
+const Components = imports.service.components;
 const Core = imports.service.core;
 
 
@@ -150,10 +151,10 @@ var Device = GObject.registerClass({
         if (contacts && contacts.settings.get_boolean('contacts-source'))
             return contacts._store;
 
-        if (this.service === null)
-            return null;
+        if (this._contacts === undefined)
+            this._contacts = Components.acquire('contacts');
 
-        return this.service.components.get('contacts');
+        return this._contacts;
     }
 
     // FIXME: backend should do this stuff
@@ -1012,6 +1013,10 @@ var Device = GObject.registerClass({
     }
 
     destroy() {
+        // Drop the default contacts store if we were using it
+        if (this._contacts !== undefined)
+            this._contacts = Components.release('contacts');
+
         // Close the channel if still connected
         if (this.channel !== null)
             this.channel.close();

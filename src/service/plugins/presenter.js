@@ -2,6 +2,7 @@
 
 const GObject = imports.gi.GObject;
 
+const Components = imports.service.components;
 const PluginBase = imports.service.plugin;
 
 
@@ -26,7 +27,7 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'presenter');
 
-        this._input = this.service.components.get('input');
+        this._input = Components.acquire('input');
     }
 
     handlePacket(packet) {
@@ -39,6 +40,13 @@ var Plugin = GObject.registerClass({
             // Currently unsupported and unnecessary as we just re-use the mouse
             // pointer instead of showing an arbitrary window.
         }
+    }
+
+    destroy() {
+        if (this._input !== undefined)
+            this._input = Components.release('input');
+
+        super.destroy();
     }
 });
 

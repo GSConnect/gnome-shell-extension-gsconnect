@@ -5,6 +5,7 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
+const Components = imports.service.components;
 const Config = imports.config;
 const PluginBase = imports.service.plugin;
 const NotificationUI = imports.service.ui.notification;
@@ -163,8 +164,8 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'notification');
 
-        this._listener = this.service.components.get('notification');
-        this._session = this.service.components.get('session');
+        this._listener = Components.acquire('notification');
+        this._session = Components.acquire('session');
 
         this._notificationAddedId = this._listener.connect(
             'notification-added',
@@ -707,8 +708,13 @@ var Plugin = GObject.registerClass({
     destroy() {
         this.settings.disconnect(this._applicationsChangedId);
 
-        if (this._notificationAddedId)
+        if (this._listener !== undefined) {
             this._listener.disconnect(this._notificationAddedId);
+            this._listener = Components.release('notification');
+        }
+
+        if (this._session !== undefined)
+            this._session = Components.release('session');
 
         super.destroy();
     }

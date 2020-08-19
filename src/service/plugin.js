@@ -50,13 +50,6 @@ var Plugin = GObject.registerClass({
         return this._name;
     }
 
-    get service() {
-        if (this._service === undefined)
-            this._service = Gio.Application.get_default();
-
-        return this._service;
-    }
-
     _activateAction(action, parameter) {
         try {
             let args = null;

@@ -57,13 +57,6 @@ const Service = GObject.registerClass({
         this._initOptions();
     }
 
-    get components() {
-        if (this._components === undefined)
-            this._components = new Map();
-
-        return this._components;
-    }
-
     get settings() {
         if (this._settings === undefined) {
             this._settings = new Gio.Settings({
@@ -170,25 +163,6 @@ const Service = GObject.registerClass({
         );
     }
 
-    /*
-     * Components
-     */
-    _initComponents() {
-        for (let name in imports.service.components) {
-            try {
-                let module = imports.service.components[name];
-
-                if (module.hasOwnProperty('Component')) {
-                    let component = new module.Component();
-                    this.components.set(name, component);
-                }
-            } catch (e) {
-                e.name = `'${name}' Component`;
-                this.notify_error(e);
-            }
-        }
-    }
-
     /**
      * Report a service-level error
      *
@@ -277,7 +251,6 @@ const Service = GObject.registerClass({
 
         // GActions & GSettings
         this._initActions();
-        this._initComponents();
 
         this.manager.start();
     }
@@ -354,10 +327,6 @@ const Service = GObject.registerClass({
 
         while (context.iteration(false))
             continue;
-
-        // Destroy the components now that device plugins aren't using them
-        this.components.forEach(component => component.destroy());
-        this.components.clear();
 
         // Force a GC to prevent any more calls back into JS, then chain-up
         imports.system.gc();
