@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-08-19 00:07-0700\n"
-"PO-Revision-Date: 2020-08-19 07:24\n"
+"PO-Revision-Date: 2020-08-20 15:28\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -73,7 +73,7 @@ msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:47
 msgid "And more…"
-msgstr ""
+msgstr "Und mehr …"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:84
 msgid "GSConnect in GNOME Shell"
@@ -354,11 +354,11 @@ msgstr "Experimentell"
 
 #: data/ui/preferences-device-panel.ui:1913
 msgid "Device Cache"
-msgstr "Geräte-Cache"
+msgstr "Gerätepuffer"
 
 #: data/ui/preferences-device-panel.ui:1931
 msgid "Clear Cache…"
-msgstr "Cache leeren…"
+msgstr "Puffer leeren …"
 
 #: data/ui/preferences-device-panel.ui:1970
 msgid "Legacy SMS Support"
@@ -456,7 +456,7 @@ msgstr "_Umbenennen"
 
 #: data/ui/preferences-window.ui:91 data/ui/preferences-window.ui:105
 msgid "Refresh"
-msgstr "Aktualisieren"
+msgstr "Auffrischen"
 
 #. Service Menu -> "Mobile Settings"
 #: data/ui/preferences-window.ui:132 src/extension.js:119
@@ -481,7 +481,7 @@ msgstr "Geräte"
 
 #: data/ui/preferences-window.ui:321 src/preferences/service.js:655
 msgid "Searching for devices…"
-msgstr "Geräte werden gesucht…"
+msgstr "Geräte werden gesucht …"
 
 #: data/ui/preferences-window.ui:346
 msgid "Browser Add-Ons"
@@ -653,7 +653,7 @@ msgstr "Verbunden"
 
 #: src/preferences/service.js:657
 msgid "Waiting for service…"
-msgstr "Warte auf Dienst…"
+msgstr "Auf Dienst wird gewartet …"
 
 #: src/service/daemon.js:184
 msgid "Click for help troubleshooting"
