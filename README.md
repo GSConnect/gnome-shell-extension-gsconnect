@@ -1,12 +1,19 @@
 [GSConnect][ego] is a complete implementation of [KDE Connect][kdeconnect]
 especially for GNOME Shell with Nautilus, [Chrome][chrome] and
-[Firefox][firefox] integrations. It does not rely on the KDE Connect
-desktop application and will not work with it installed.
+[Firefox][firefox] integration. The KDE Connect team has applications for Linux,
+BSD, Android, Sailfish, macOS and Windows.
 
-Pair your PC and your Android device with the KDE Connect app installed to:
-Transfer files, send and receive SMS texts, mirror clipboard and notifications,
-send mouse and keyboard input, remote-control media players, locate your device,
-monitor battery levels, launch commands on your PC, and more.
+With GSConnect you can securely connect to mobile devices and other desktops to:
+
+* Share files, links and text
+* Send and receive messages
+* Sync clipboard content
+* Sync contacts
+* Sync notifications
+* Control media players
+* Control system volume
+* Execute predefined commands
+* And more…
 
 Please see the **[Wiki][wiki]** for more information about
 **[Features][features]** and **[Help][help]**.
@@ -16,7 +23,7 @@ Please see the **[Wiki][wiki]** for more information about
 [ego]: https://extensions.gnome.org/extension/1319/gsconnect/
 [chrome]: https://chrome.google.com/webstore/detail/gsconnect/jfnifeihccihocjbfcfhicmmgpjicaec
 [firefox]: https://addons.mozilla.org/firefox/addon/gsconnect/
-[kdeconnect]: https://community.kde.org/KDEConnect
+[kdeconnect]: https://userbase.kde.org/KDEConnect
 [wiki]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/
 [features]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Features
 [help]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Help
