@@ -162,6 +162,17 @@ var Dialog = GObject.registerClass({
         this._onStateChanged();
     }
 
+    get device() {
+        if (this._device === undefined)
+            this._device = null;
+
+        return this._device;
+    }
+
+    set device(device) {
+        this._device = device;
+    }
+
     get plugin() {
         if (this._plugin === undefined)
             this._plugin = null;

@@ -398,7 +398,10 @@ const Conversation = GObject.registerClass({
     }
 
     get plugin() {
-        return this._plugin || null;
+        if (this._plugin === undefined)
+            this._plugin = null;
+
+        return this._plugin;
     }
 
     set plugin(plugin) {

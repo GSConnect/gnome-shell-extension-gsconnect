@@ -14,6 +14,22 @@ const Config = imports.config;
  */
 var Plugin = GObject.registerClass({
     GTypeName: 'GSConnectPlugin',
+    Properties: {
+        'device': GObject.ParamSpec.object(
+            'device',
+            'Device',
+            'The device that owns this plugin',
+            GObject.ParamFlags.READABLE,
+            GObject.Object
+        ),
+        'name': GObject.ParamSpec.string(
+            'name',
+            'Name',
+            'The device name',
+            GObject.ParamFlags.READABLE,
+            null
+        ),
+    },
 }, class Plugin extends GObject.Object {
 
     _init(device, name) {
