@@ -294,7 +294,7 @@ var Plugin = GObject.registerClass({
      * Open the Keyboard Input dialog
      */
     keyboard() {
-        if (this._dialog !== undefined) {
+        if (this._dialog === undefined) {
             this._dialog = new KeyboardInputDialog({
                 device: this.device,
                 plugin: this,
