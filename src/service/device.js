@@ -242,6 +242,10 @@ var Device = GObject.registerClass({
     _handleIdentity(packet) {
         this.freeze_notify();
 
+        // If we're connected, record the reconnect URI
+        if (this.channel !== null)
+            this.settings.set_string('last-connection', this.channel.address);
+
         // The type won't change, but it might not be properly set yet
         if (this.type !== packet.body.deviceType) {
             this.settings.set_string('type', packet.body.deviceType);
@@ -308,11 +312,11 @@ var Device = GObject.registerClass({
         this._channel = channel;
 
         // If we've disconnected empty the queue, otherwise restart the read
-        // loop and record the reconnect address
+        // loop and update the device metadata
         if (this.channel === null) {
             this._outputQueue.length = 0;
         } else {
-            this.settings.set_string('last-connection', this.channel.address);
+            this._handleIdentity(this.channel.identity);
             this._readLoop(channel);
         }
 
