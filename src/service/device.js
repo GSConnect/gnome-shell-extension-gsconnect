@@ -222,6 +222,7 @@ var Device = GObject.registerClass({
                 return 'tablet-symbolic';
             case 'tv':
                 return 'tv-symbolic';
+            case 'desktop':
             default:
                 return 'computer-symbolic';
         }
