@@ -1,8 +1,15 @@
-language: node_js
-node_js:
-  - "node"
+language: minimal
+
+# Our docker image does the cloning
+git:
+  clone: false
+
+services:
+  - docker
+
+before_install:
+  - docker pull andyholmes/gsconnect-tests
 
 script:
-  - npm run lint
-  - npm run lint-webext
-
+  - docker run -it andyholmes/gsconnect-tests /gsconnect-tests.sh
+  
