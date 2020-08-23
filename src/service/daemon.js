@@ -1,4 +1,4 @@
-#!/usr/bin/env gjs
+#!/usr/bin/env -S G_TLS_GNUTLS_PRIORITY="NORMAL:%COMPAT:+VERS-TLS1.0" gjs
 
 'use strict';
 
