@@ -362,15 +362,30 @@ const Conversation = GObject.registerClass({
             return;
         }
 
+        // Lookup a contact for each address object, then loop back to correct
+        // each address carried by the message.
         this._addresses = addresses;
 
-        // Lookup a contact for each address object
         for (let i = 0, len = this.addresses.length; i < len; i++) {
+            // Lookup the contact
             let address = this.addresses[i].address;
+            let contact = this.device.contacts.query({number: address});
 
-            this.contacts[address] = this.device.contacts.query({
-                number: address,
-            });
+            // Get corrected address
+            let number = address.toPhoneNumber();
+
+            for (let contactNumber of contact.numbers) {
+                let cnumber = contactNumber.value.toPhoneNumber();
+
+                if (number.endsWith(cnumber) || cnumber.endsWith(number)) {
+                    number = contactNumber.value;
+                    break;
+                }
+            }
+
+            // Store the final result
+            this.addresses[i].address = number;
+            this.contacts[address] = contact;
         }
 
         // TODO: Mark the entry as insensitive for group messages
