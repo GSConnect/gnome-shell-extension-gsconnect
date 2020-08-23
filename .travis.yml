@@ -1,5 +1,10 @@
 language: minimal
 
+# Ignore crowdin
+branches:
+  except:
+    - l10n_master
+
 # Our docker image does the cloning
 git:
   clone: false
