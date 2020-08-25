@@ -324,20 +324,10 @@ var Device = GObject.registerClass({
         if (this.connected === !!this.channel)
             return;
 
+        // Notify and trigger plugins
         this._connected = !!this.channel;
         this.notify('connected');
-
-        // Run the connected hook for each plugin
-        this._plugins.forEach((plugin) => {
-            try {
-                if (this.connected)
-                    plugin.connected();
-                else
-                    plugin.disconnected();
-            } catch (e) {
-                debug(e, `${this.name}: ${plugin.name}`);
-            }
-        });
+        this._triggerPlugins();
     }
 
     async _readLoop(channel) {
@@ -773,8 +763,11 @@ var Device = GObject.registerClass({
             // The device thinks we're unpaired
             } else if (this.paired) {
                 this._setPaired(true);
-                this.pair();
-                this._loadPlugins();
+                this.sendPacket({
+                    type: 'kdeconnect.pair',
+                    body: {pair: true},
+                });
+                this._triggerPlugins();
 
             // The device is requesting pairing
             } else {
@@ -826,8 +819,9 @@ var Device = GObject.registerClass({
      * Reset pair request timeouts and withdraw any notifications
      */
     _resetPairRequest() {
+        this.hideNotification('pair-request');
+
         if (this._incomingPairRequest) {
-            this.hideNotification('pair-request');
             GLib.source_remove(this._incomingPairRequest);
             this._incomingPairRequest = 0;
         }
@@ -841,14 +835,14 @@ var Device = GObject.registerClass({
     /**
      * Set the internal paired state of the device and emit ::notify
      *
-     * @param {boolean} bool - The paired state to set
+     * @param {boolean} paired - The paired state to set
      */
-    _setPaired(bool) {
+    _setPaired(paired) {
         this._resetPairRequest();
 
         // For TCP connections we store or reset the TLS Certificate
         if (this.connection_type === 'lan') {
-            if (bool) {
+            if (paired) {
                 this.settings.set_string(
                     'certificate-pem',
                     this.channel.peer_certificate.certificate_pem
@@ -859,7 +853,7 @@ var Device = GObject.registerClass({
         }
 
         // If we've become unpaired, stop all subprocesses and transfers
-        if (!bool) {
+        if (!paired) {
             for (let proc of this._procs)
                 proc.force_exit();
 
@@ -871,7 +865,7 @@ var Device = GObject.registerClass({
             this._transfers.clear();
         }
 
-        this.settings.set_boolean('paired', bool);
+        this.settings.set_boolean('paired', paired);
         this.notify('paired');
     }
 
@@ -880,26 +874,27 @@ var Device = GObject.registerClass({
      */
     pair() {
         try {
-            // We're accepting an incoming pair request...
+            // If we're accepting an incoming pair request, set the internal
+            // paired state and send the confirmation before loading plugins.
             if (this._incomingPairRequest) {
-                // so set the paired state to true...
                 this._setPaired(true);
-                // then loop back around to send confirmation...
-                this.pair();
-                // ...before loading plugins
+
+                this.sendPacket({
+                    type: 'kdeconnect.pair',
+                    body: {pair: true},
+                });
+
                 this._loadPlugins();
-                return;
-            }
 
-            // Send a pair packet
-            this.sendPacket({
-                type: 'kdeconnect.pair',
-                body: {pair: true},
-            });
-
-            // We're initiating an outgoing pair request
-            if (!this.paired) {
+            // If we're initiating an outgoing pair request, be sure the timer
+            // is reset before sending the request and setting a 30s timeout.
+            } else if (!this.paired) {
                 this._resetPairRequest();
+
+                this.sendPacket({
+                    type: 'kdeconnect.pair',
+                    body: {pair: true},
+                });
 
                 this._outgoingPairRequest = GLib.timeout_add_seconds(
                     GLib.PRIORITY_DEFAULT,
@@ -1020,6 +1015,15 @@ var Device = GObject.registerClass({
     async _unloadPlugins() {
         for (let name of this._plugins.keys())
             await this._unloadPlugin(name);
+    }
+
+    _triggerPlugins() {
+        for (let plugin of this._plugins.values()) {
+            if (this.connected)
+                plugin.connected();
+            else
+                plugin.disconnected();
+        }
     }
 
     destroy() {
