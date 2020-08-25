@@ -192,8 +192,8 @@ var Manager = GObject.registerClass({
                 case (device !== undefined):
                     break;
 
-                // Or the service is discoverable...
-                case this.discoverable:
+                // Or the connection is allowed...
+                case this.discoverable || channel.allowed:
                     device = this._ensureDevice(channel.identity);
                     break;
 

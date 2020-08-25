@@ -195,12 +195,6 @@ var ChannelService = GObject.registerClass({
         try {
             let host = connection.get_remote_address().address.to_string();
 
-            // Decide whether we should try to accept this connection
-            if (!this._allowed.has(host) && !this.manager.discoverable) {
-                connection.close_async(GLib.PRIORITY_DEFAULT, null, null);
-                return;
-            }
-
             // Create a channel
             let channel = new Channel({
                 backend: this,
@@ -213,6 +207,7 @@ var ChannelService = GObject.registerClass({
             await channel.accept(connection);
             channel.identity.body.tcpHost = channel.host;
             channel.identity.body.tcpPort = DEFAULT_PORT;
+            channel.allowed = this._allowed.has(host);
 
             this.channel(channel);
         } catch (e) {
