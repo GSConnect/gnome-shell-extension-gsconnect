@@ -40,10 +40,14 @@ var Plugin = GObject.registerClass({
         this._meta = imports.service.plugins[name].Metadata;
 
         // GSettings
-        this.settings = new Gio.Settings({
-            settings_schema: Config.GSCHEMA.lookup(this._meta.id, false),
-            path: `${device.settings.path}plugin/${name}/`,
-        });
+        let schema = Config.GSCHEMA.lookup(this._meta.id, false);
+
+        if (schema !== null) {
+            this.settings = new Gio.Settings({
+                settings_schema: schema,
+                path: `${device.settings.path}plugin/${name}/`,
+            });
+        }
 
         // GActions
         this._gactions = [];
@@ -233,8 +237,6 @@ var Plugin = GObject.registerClass({
             }
         }
 
-        // Try to avoid any cyclic references from signal handlers
-        GObject.signal_handlers_destroy(this.settings);
         GObject.signal_handlers_destroy(this);
     }
 });
