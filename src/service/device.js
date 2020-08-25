@@ -1008,7 +1008,7 @@ var Device = GObject.registerClass({
                 plugin.destroy();
             }
         } catch (e) {
-            logError(e, `${this.name}: unloading ${name}`);
+            logError(e, this.name);
         }
     }
 
