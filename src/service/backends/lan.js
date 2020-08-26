@@ -208,13 +208,13 @@ var ChannelService = GObject.registerClass({
                 backend: this,
                 certificate: this.certificate,
                 host: host,
-                port: DEFAULT_PORT,
+                port: this.port,
             });
 
             // Accept the connection
             await channel.accept(connection);
             channel.identity.body.tcpHost = channel.host;
-            channel.identity.body.tcpPort = DEFAULT_PORT;
+            channel.identity.body.tcpPort = this.port;
             channel.allowed = this._allowed.has(host);
 
             this.channel(channel);
