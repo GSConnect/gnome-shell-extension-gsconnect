@@ -1037,6 +1037,7 @@ var Device = GObject.registerClass({
 
         // Synchronously destroy plugins
         this._plugins.forEach(plugin => plugin.destroy());
+        this._plugins.clear();
 
         // Dispose GSettings
         this.settings.disconnect(this._disabledPluginsChangedId);
