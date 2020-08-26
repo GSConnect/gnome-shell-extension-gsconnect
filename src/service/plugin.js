@@ -32,12 +32,15 @@ var Plugin = GObject.registerClass({
     },
 }, class Plugin extends GObject.Object {
 
-    _init(device, name) {
+    _init(device, name, meta = null) {
         super._init();
 
         this._device = device;
         this._name = name;
-        this._meta = imports.service.plugins[name].Metadata;
+        this._meta = meta;
+
+        if (this._meta === null)
+            this._meta = imports.service.plugins[name].Metadata;
 
         // GSettings
         let schema = Config.GSCHEMA.lookup(this._meta.id, false);
