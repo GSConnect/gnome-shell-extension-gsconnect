@@ -76,6 +76,10 @@ var ChannelService = GObject.registerClass({
     GTypeName: 'GSConnectLanChannelService',
     Implements: [Core.ChannelService],
     Properties: {
+        'active': GObject.ParamSpec.override(
+            'active',
+            Core.ChannelService
+        ),
         'id': GObject.ParamSpec.override(
             'id',
             Core.ChannelService
@@ -437,6 +441,9 @@ var ChannelService = GObject.registerClass({
     }
 
     start() {
+        if (this.active)
+            return;
+
         // Ensure a certificate exists
         if (this.certificate === null)
             this._initCertificate();
@@ -456,6 +463,9 @@ var ChannelService = GObject.registerClass({
                 this._onNetworkChanged.bind(this)
             );
         }
+
+        this._active = true;
+        this.notify('active');
     }
 
     stop() {
@@ -484,6 +494,9 @@ var ChannelService = GObject.registerClass({
             this._udp4.close();
             this._udp4 = null;
         }
+
+        this._active = false;
+        this.notify('active');
     }
 
     destroy() {

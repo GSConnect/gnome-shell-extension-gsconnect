@@ -385,6 +385,13 @@ var ChannelService = GObject.registerClass({
     GTypeName: 'GSConnectChannelService',
     Requires: [GObject.Object],
     Properties: {
+        'active': GObject.ParamSpec.boolean(
+            'active',
+            'Active',
+            'Whether the manager is active',
+            GObject.ParamFlags.READABLE,
+            false
+        ),
         'id': GObject.ParamSpec.string(
             'id',
             'ID',
@@ -415,6 +422,13 @@ var ChannelService = GObject.registerClass({
         },
     },
 }, class ChannelService extends GObject.Interface {
+
+    get active() {
+        if (this._active === undefined)
+            this._active = false;
+
+        return this._active;
+    }
 
     get name() {
         throw new GObject.NotImplementedError();
