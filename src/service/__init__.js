@@ -10,6 +10,12 @@ const GLib = imports.gi.GLib;
 const Config = imports.config;
 
 
+// User Directories
+Config.CACHEDIR = GLib.build_filenamev([GLib.get_user_cache_dir(), 'gsconnect']);
+Config.CONFIGDIR = GLib.build_filenamev([GLib.get_user_config_dir(), 'gsconnect']);
+Config.RUNTIMEDIR = GLib.build_filenamev([GLib.get_user_runtime_dir(), 'gsconnect']);
+
+
 // Ensure config.js is setup properly
 if (Config.PACKAGE_DATADIR.startsWith(GLib.get_home_dir())) {
     Config.IS_USER = true;
@@ -70,21 +76,17 @@ Config.DBUS = (() => {
 })();
 
 
+// Init User Directories
+for (let path of [Config.CACHEDIR, Config.CONFIGDIR, Config.RUNTIMEDIR])
+    GLib.mkdir_with_parents(path, 0o755);
+
+
 /**
  * Check if we're in a Wayland session (mostly for input synthesis)
  * https://wiki.gnome.org/Accessibility/Wayland#Bugs.2FIssues_We_Must_Address
  */
 globalThis.HAVE_REMOTEINPUT = GLib.getenv('GDMSESSION') !== 'ubuntu-wayland';
 globalThis.HAVE_WAYLAND = GLib.getenv('XDG_SESSION_TYPE') === 'wayland';
-
-
-// User Directories
-Config.CACHEDIR = GLib.build_filenamev([GLib.get_user_cache_dir(), 'gsconnect']);
-Config.CONFIGDIR = GLib.build_filenamev([GLib.get_user_config_dir(), 'gsconnect']);
-Config.RUNTIMEDIR = GLib.build_filenamev([GLib.get_user_runtime_dir(), 'gsconnect']);
-
-for (let path of [Config.CACHEDIR, Config.CONFIGDIR, Config.RUNTIMEDIR])
-    GLib.mkdir_with_parents(path, 0o755);
 
 
 /**
