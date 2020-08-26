@@ -80,6 +80,13 @@ var ChannelService = GObject.registerClass({
             'active',
             Core.ChannelService
         ),
+        'certificate': GObject.ParamSpec.object(
+            'certificate',
+            'Certificate',
+            'The TLS certificate',
+            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            Gio.TlsCertificate.$gtype
+        ),
         'id': GObject.ParamSpec.override(
             'id',
             Core.ChannelService
@@ -126,6 +133,14 @@ var ChannelService = GObject.registerClass({
             this._certificate = null;
 
         return this._certificate;
+    }
+
+    set certificate(certificate) {
+        if (this.certificate === certificate)
+            return;
+
+        this._certificate = certificate;
+        this.notify('certificate');
     }
 
     get channels() {
