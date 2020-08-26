@@ -217,6 +217,7 @@ var Manager = GObject.registerClass({
                 // Try to create the backend and track it if successful
                 let module = imports.service.backends[name];
                 let backend = new module.ChannelService({
+                    id: this.id,
                     manager: this,
                 });
                 this.backends.set(name, backend);

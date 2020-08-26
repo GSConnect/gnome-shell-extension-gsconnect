@@ -76,6 +76,10 @@ var ChannelService = GObject.registerClass({
     GTypeName: 'GSConnectLanChannelService',
     Implements: [Core.ChannelService],
     Properties: {
+        'id': GObject.ParamSpec.override(
+            'id',
+            Core.ChannelService
+        ),
         'manager': GObject.ParamSpec.override(
             'manager',
             Core.ChannelService

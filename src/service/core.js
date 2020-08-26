@@ -385,6 +385,13 @@ var ChannelService = GObject.registerClass({
     GTypeName: 'GSConnectChannelService',
     Requires: [GObject.Object],
     Properties: {
+        'id': GObject.ParamSpec.string(
+            'id',
+            'ID',
+            'The hostname or other network unique id',
+            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            null
+        ),
         'manager': GObject.ParamSpec.object(
             'manager',
             'Manager',
@@ -411,6 +418,20 @@ var ChannelService = GObject.registerClass({
 
     get name() {
         throw new GObject.NotImplementedError();
+    }
+
+    get id() {
+        if (this._id === undefined)
+            this._id = GLib.uuid_string_random();
+
+        return this._id;
+    }
+
+    set id(id) {
+        if (this.id === id)
+            return;
+
+        this._id = id;
     }
 
     get identity() {
@@ -450,7 +471,7 @@ var ChannelService = GObject.registerClass({
             id: 0,
             type: 'kdeconnect.identity',
             body: {
-                deviceId: this.manager.id,
+                deviceId: this.id,
                 deviceName: this.manager.name,
                 deviceType: _getDeviceType(),
                 protocolVersion: 7,
