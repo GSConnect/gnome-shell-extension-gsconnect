@@ -110,7 +110,7 @@ var ChannelService = GObject.registerClass({
     },
 }, class LanChannelService extends GObject.Object {
 
-    _init(params) {
+    _init(params = {}) {
         super._init(params);
 
         // Track hosts we identify to directly, allowing them to ignore the
@@ -545,7 +545,10 @@ var Channel = GObject.registerClass({
     }
 
     get certificate() {
-        return this._certificate || null;
+        if (this._certificate === undefined)
+            this._certificate = null;
+
+        return this._certificate;
     }
 
     set certificate(certificate) {
