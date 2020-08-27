@@ -65,7 +65,7 @@ run_target(
     'DATADIR=' + datadir,
     'LOCALEDIR=' + localedir,
     'GSCHEMADIR=' + gschemadir,
-    'meson/mkzip.sh'
+    'build-aux/ego/mkzip.sh'
   ]
 )
 
@@ -78,7 +78,7 @@ run_target(
     'LOCALEDIR=' + localedir,
     'GSCHEMADIR=' + gschemadir,
     'INSTALL=true',
-    'meson/mkzip.sh'
+    'build-aux/ego/mkzip.sh'
   ]
 )
 
