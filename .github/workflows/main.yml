@@ -1,0 +1,22 @@
+# GSConect Tests
+
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Pull andyholmes/gsconnect-test
+        run: docker pull andyhomes/gsconnect-tests
+
+      # Runs a set of commands using the runners shell
+      - name: Run tests
+        run: docker run andyholmes/gsconnect-tests
