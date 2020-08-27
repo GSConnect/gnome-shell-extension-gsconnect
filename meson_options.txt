@@ -81,7 +81,7 @@ option(
 option(
   'nemo',
   type: 'boolean',
-  value: true,
+  value: false,
   description: 'Install file browser extension for Nemo'
 )
 
