@@ -164,7 +164,7 @@ var Plugin = GObject.registerClass({
      */
     async cacheProperties(names) {
         try {
-            this.__cache_properties = names;
+            this._cacheProperties = names;
 
             // Ensure the device's cache directory exists
             let cachedir = GLib.build_filenamev([
@@ -225,7 +225,7 @@ var Plugin = GObject.registerClass({
                 // Build the cache
                 let cache = {};
 
-                for (let name of this.__cache_properties)
+                for (let name of this._cacheProperties)
                     cache[name] = this[name];
 
                 this._cacheFile.replace_contents(
