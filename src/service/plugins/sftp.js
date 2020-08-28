@@ -5,6 +5,7 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
 const Config = imports.config;
+const Lan = imports.service.backends.lan;
 const PluginBase = imports.service.plugin;
 
 
@@ -118,14 +119,13 @@ var Plugin = GObject.registerClass({
     connected() {
         super.connected();
 
-        // Disable for all bluetooth connections
-        if (this.device.connection_type !== 'lan') {
+        // Only enable for Lan connections
+        if (this.device.channel instanceof Lan.Channel) {
+            if (this.gmount === null)
+                this.mount();
+        } else {
             this.device.lookup_action('mount').enabled = false;
             this.device.lookup_action('unmount').enabled = false;
-
-        // Request a mount
-        } else if (this.gmount === null) {
-            this.mount();
         }
     }
 
