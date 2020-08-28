@@ -510,6 +510,9 @@ var ChannelService = GObject.registerClass({
             this._udp4 = null;
         }
 
+        for (let channel of this.channels.values())
+            channel.close();
+
         this._active = false;
         this.notify('active');
     }
