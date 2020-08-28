@@ -19,6 +19,13 @@ const DEVICE_IFACE = Config.DBUS.lookup_interface(DEVICE_NAME);
 var Manager = GObject.registerClass({
     GTypeName: 'GSConnectManager',
     Properties: {
+        'active': GObject.ParamSpec.boolean(
+            'active',
+            'Active',
+            'Whether the manager is active',
+            GObject.ParamFlags.READABLE,
+            false
+        ),
         'discoverable': GObject.ParamSpec.boolean(
             'discoverable',
             'Discoverable',
@@ -53,6 +60,13 @@ var Manager = GObject.registerClass({
             settings_schema: Config.GSCHEMA.lookup(Config.APP_ID, true),
         });
         this._initSettings();
+    }
+
+    get active() {
+        if (this._active === undefined)
+            this._active = false;
+
+        return this._active;
     }
 
     get backends() {
@@ -417,6 +431,7 @@ var Manager = GObject.registerClass({
 
             // Otherwise have each backend broadcast to it's network
             } else {
+                this._loadBackends();
                 this.backends.forEach(backend => backend.broadcast());
             }
         } catch (e) {
@@ -428,6 +443,9 @@ var Manager = GObject.registerClass({
      * Start managing devices.
      */
     start() {
+        if (this.active)
+            return;
+
         this._loadDevices();
         this._loadBackends();
 
@@ -438,12 +456,18 @@ var Manager = GObject.registerClass({
                 this._reconnect.bind(this)
             );
         }
+
+        this._active = true;
+        this.notify('active');
     }
 
     /**
      * Stop managing devices.
      */
     stop() {
+        if (!this.active)
+            return;
+
         if (this._reconnectId > 0) {
             GLib.Source.remove(this._reconnectId);
             this._reconnectId = 0;
@@ -459,6 +483,9 @@ var Manager = GObject.registerClass({
 
         // TODO: Force a GC
         imports.system.gc();
+
+        this._active = false;
+        this.notify('active');
     }
 
     /**
