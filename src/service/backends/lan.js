@@ -208,10 +208,18 @@ var ChannelService = GObject.registerClass({
     }
 
     _initTcpListener() {
-        this._tcp = new Gio.SocketService();
-        this._tcp.add_inet_port(this.port, null);
+        try {
+            this._tcp = new Gio.SocketService();
+            this._tcp.add_inet_port(this.port, null);
+            this._tcp.connect('incoming', this._onIncomingChannel.bind(this));
+        } catch (e) {
+            this._tcp.stop();
+            this._tcp = null;
 
-        this._tcp.connect('incoming', this._onIncomingChannel.bind(this));
+            e.name = _('Network Error');
+            e.url = `${Config.PACKAGE_URL}/wiki/Error#network-error`;
+            throw e;
+        }
     }
 
     async _onIncomingChannel(listener, connection) {
@@ -311,11 +319,8 @@ var ChannelService = GObject.registerClass({
             this._udp4 = null;
 
             // We failed to get either an IPv4 or IPv6 socket to bind
-            if (this._udp6 === null) {
-                e.name = _('Network Error');
-                e.url = `${Config.PACKAGE_URL}/wiki/Error#network-error`;
+            if (this._udp6 === null)
                 throw e;
-            }
         }
     }
 
@@ -464,11 +469,11 @@ var ChannelService = GObject.registerClass({
             this._initCertificate();
 
         // Start TCP/UDP listeners
-        if (this._udp4 === null && this._udp6 === null)
-            this._initUdpListener();
-
         if (this._tcp === null)
             this._initTcpListener();
+
+        if (this._udp4 === null && this._udp6 === null)
+            this._initUdpListener();
 
         // Monitor network changes
         if (this._networkChangedId === 0) {
