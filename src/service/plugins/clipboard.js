@@ -169,7 +169,7 @@ var Plugin = GObject.registerClass({
     destroy() {
         if (this._clipboard && this._textChangedId) {
             this._clipboard.disconnect(this._textChangedId);
-            this._clipbaord = Components.release('clipboard');
+            this._clipboard = Components.release('clipboard');
         }
 
         super.destroy();
