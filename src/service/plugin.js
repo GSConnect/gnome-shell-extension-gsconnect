@@ -178,18 +178,19 @@ var Plugin = GObject.registerClass({
             );
 
             // Read the cache from disk
-            let cache = await new Promise((resolve, reject) => {
+            await new Promise((resolve, reject) => {
                 this._cacheFile.load_contents_async(null, (file, res) => {
                     try {
                         let contents = file.load_contents_finish(res)[1];
+                        let cache = JSON.parse(ByteArray.toString(contents));
+                        Object.assign(this, cache);
 
-                        resolve(JSON.parse(ByteArray.toString(contents)));
+                        resolve();
                     } catch (e) {
                         reject(e);
                     }
                 });
             });
-            Object.assign(this, cache);
         } catch (e) {
             debug(e.message, `${this.device.name}: ${this.name}`);
         } finally {
