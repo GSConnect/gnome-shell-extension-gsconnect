@@ -806,7 +806,7 @@ var Channel = GObject.registerClass({
             this._connection = await this._encryptClient(connection);
         } catch (e) {
             this.close();
-            return Promise.reject(e);
+            throw e;
         }
     }
 
@@ -826,7 +826,7 @@ var Channel = GObject.registerClass({
             this._connection = await this._encryptServer(connection);
         } catch (e) {
             this.close();
-            return Promise.reject(e);
+            throw e;
         }
     }
 
