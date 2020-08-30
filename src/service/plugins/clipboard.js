@@ -58,7 +58,7 @@ var Plugin = GObject.registerClass({
         );
 
         // Buffer content to allow selective sync
-        this._localBuffer = null;
+        this._localBuffer = this._clipboard.text;
         this._localTimestamp = 0;
         this._remoteBuffer = null;
     }
