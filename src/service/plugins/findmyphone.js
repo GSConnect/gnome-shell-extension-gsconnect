@@ -38,8 +38,7 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'findmyphone');
 
-        // The component which could (un)reasonably fail to load is PulseAudio,
-        // which itself it not necessarily a fatal error here.
+        this._dialog = null;
         this._player = Components.acquire('sound');
         this._mixer = Components.acquire('pulseaudio');
     }
@@ -58,7 +57,7 @@ var Plugin = GObject.registerClass({
     _handleRequest() {
         try {
             // If this is a second request, stop announcing and return
-            if (this._dialog) {
+            if (this._dialog !== null) {
                 this._dialog.response(Gtk.ResponseType.DELETE_EVENT);
                 return;
             }
@@ -67,6 +66,7 @@ var Plugin = GObject.registerClass({
                 device: this.device,
                 plugin: this,
             });
+
             this._dialog.connect('response', () => {
                 this._dialog = null;
             });
@@ -80,7 +80,7 @@ var Plugin = GObject.registerClass({
      * Cancel any ongoing ringing and destroy the dialog.
      */
     _cancelRequest() {
-        if (this._dialog)
+        if (this._dialog !== null)
             this._dialog.response(Gtk.ResponseType.DELETE_EVENT);
     }
 
