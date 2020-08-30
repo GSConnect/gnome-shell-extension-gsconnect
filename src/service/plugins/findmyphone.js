@@ -160,8 +160,8 @@ const Dialog = GObject.registerClass({
         this.maximize();
         this.message_area.destroy();
 
-        // If the mixer is available start fading the volume up
-        if (this.plugin._mixer !== undefined) {
+        // If an output stream is available start fading the volume up
+        if (this.plugin._mixer && this.plugin._mixer.output) {
             this._stream = this.plugin._mixer.output;
 
             this._previousMuted = this._stream.muted;
