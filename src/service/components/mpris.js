@@ -547,6 +547,7 @@ var Manager = GObject.registerClass({
             g_bus_type: Gio.BusType.SESSION,
             g_name: 'org.freedesktop.DBus',
             g_object_path: '/org/freedesktop/DBus',
+            g_interface_name: 'org.freedesktop.DBus',
         });
 
         // Asynchronous setup
