@@ -594,8 +594,10 @@ var Manager = GObject.registerClass({
                     this._addPlayer(name);
             }
         } catch (e) {
+            if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
+                logError(e);
+
             // FIXME: if something goes wrong the component will appear active
-            logError(e);
             this.destroy();
         }
     }
