@@ -237,7 +237,8 @@ var Plugin = GObject.registerClass({
         };
 
         // Remove line folding and split
-        let lines = vcard_data.replace(VCARD_FOLDING, '').split(/\r\n|\r|\n/);
+        const unfolded = vcard_data.replace(VCARD_FOLDING, '');
+        const lines = unfolded.split(/\r\n|\r|\n/);
 
         for (let i = 0, len = lines.length; i < len; i++) {
             let line = lines[i];
@@ -249,14 +250,14 @@ var Plugin = GObject.registerClass({
 
             // Basic Fields (fn, x-kdeconnect-timestamp, etc)
             if ((results = line.match(VCARD_BASIC))) {
-                [results, key, value] = results;
+                [, key, value] = results;
                 vcard[key.toLowerCase()] = value;
                 continue;
             }
 
             // Typed Fields (tel, adr, etc)
             if ((results = line.match(VCARD_TYPED))) {
-                [results, key, type, value] = results;
+                [, key, type, value] = results;
                 key = key.replace(VCARD_TYPED_KEY, '').toLowerCase();
                 value = value.split(';');
                 type = type.split(';');
