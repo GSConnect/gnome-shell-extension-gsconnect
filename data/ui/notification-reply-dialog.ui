@@ -126,7 +126,7 @@
                 <property name="xalign">0</property>
                 <signal name="activate-link" handler="_onActivateLink" swapped="no"/>
                 <style>
-                  <class name="message-in"/>
+                  <class name="message-out"/>
                 </style>
               </object>
               <packing>
