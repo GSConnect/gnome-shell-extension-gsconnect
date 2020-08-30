@@ -7,6 +7,7 @@ data/ui/messaging-conversation-message.ui
 data/ui/messaging-conversation-summary.ui
 data/ui/messaging-conversation.ui
 data/ui/messaging-window.ui
+data/ui/mousepad-input-dialog.ui
 data/ui/notification-reply-dialog.ui
 data/ui/preferences-command-editor.ui
 data/ui/preferences-device-panel.ui
@@ -43,6 +44,7 @@ src/service/plugins/telephony.js
 src/service/ui/contacts.js
 src/service/ui/legacyMessaging.js
 src/service/ui/messaging.js
+src/service/ui/mousepad.js
 src/service/ui/service.js
 src/shell/device.js
 src/shell/notification.js
