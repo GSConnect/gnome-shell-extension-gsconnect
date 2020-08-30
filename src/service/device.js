@@ -335,8 +335,8 @@ var Device = GObject.registerClass({
             let packet = null;
 
             while ((packet = await this.channel.readPacket())) {
-                this.handlePacket(packet);
                 debug(packet, this.name);
+                this.handlePacket(packet);
             }
         } catch (e) {
             if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
