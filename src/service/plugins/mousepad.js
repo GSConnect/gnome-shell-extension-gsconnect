@@ -2,7 +2,6 @@
 
 const Gdk = imports.gi.Gdk;
 const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
 
 const Components = imports.service.components;
 const {InputDialog} = imports.service.ui.mousepad;
