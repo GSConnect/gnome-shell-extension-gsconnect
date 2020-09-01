@@ -908,7 +908,7 @@ var Manager = GObject.registerClass({
             param_types: [GObject.TYPE_OBJECT],
         },
         'player-seeked': {
-            param_types: [GObject.TYPE_OBJECT],
+            param_types: [GObject.TYPE_OBJECT, GObject.TYPE_INT64],
         },
     },
 }, class Manager extends Gio.DBusProxy {
@@ -1005,7 +1005,7 @@ var Manager = GObject.registerClass({
 
                 player.__seekedId = player.connect(
                     'Seeked',
-                    (player) => this.emit('player-seeked', player)
+                    this.emit.bind(this, 'player-seeked')
                 );
 
                 this._players.set(name, player);

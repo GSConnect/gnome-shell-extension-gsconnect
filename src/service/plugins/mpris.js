@@ -321,12 +321,15 @@ var Plugin = GObject.registerClass({
         });
     }
 
-    _onPlayerSeeked(mpris, player) {
+    _onPlayerSeeked(mpris, player, offset) {
+        // TODO: although we can handle full seeked signals, kdeconnect-android
+        //       does not, and expects a position update instead
         this.device.sendPacket({
             type: 'kdeconnect.mpris',
             body: {
                 player: player.Identity,
                 pos: Math.floor(player.Position / 1000),
+                // Seek: Math.floor(offset / 1000),
             },
         });
     }
