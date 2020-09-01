@@ -174,6 +174,13 @@ var Channel = GObject.registerClass({
         return this._cancellable;
     }
 
+    get closed() {
+        if (this._closed === undefined)
+            this._closed = false;
+
+        return this._closed;
+    }
+
     get input_stream() {
         if (this._input_stream === undefined) {
             if (this._connection instanceof Gio.IOStream)
@@ -290,20 +297,6 @@ var Channel = GObject.registerClass({
     }
 
     /**
-     * Override these in subclasses to negotiate payload transfers. `download()`
-     * and `upload()` should cleanup after themselves and return a success
-     * boolean.
-     *
-     * The default implementation will always report failure, for protocols that
-     * won't or don't yet support payload transfers.
-     *
-     * @param {Object} params - A dictionary of transfer parameters
-     */
-    createTransfer(params) {
-        throw new GObject.NotImplementedError();
-    }
-
-    /**
      * Reject a transfer.
      *
      * @param {Core.Packet} packet - A packet with payload info
@@ -312,68 +305,30 @@ var Channel = GObject.registerClass({
         throw new GObject.NotImplementedError();
     }
 
-    async download() {
-        let result = false;
-
-        try {
-            await Promise.reject(new GObject.NotImplementedError());
-        } catch (e) {
-            debug(e, this.identity.body.deviceName);
-        } finally {
-            this.close();
-        }
-
-        return result;
+    /**
+     * Download a payload from a device. Typically implementations will override
+     * this with an async function.
+     *
+     * @param {Core.Packet} packet - A packet
+     * @param {Gio.OutputStream} target - The target stream
+     * @param {Gio.Cancellable} [cancellable] - A cancellable for the upload
+     */
+    download(packet, target, cancellable = null) {
+        throw new GObject.NotImplementedError();
     }
 
-    async upload() {
-        let result = false;
-
-        try {
-            await Promise.reject(new GObject.NotImplementedError());
-        } catch (e) {
-            debug(e, this.identity.body.deviceName);
-        } finally {
-            this.close();
-        }
-
-        return result;
-    }
 
     /**
-     * Transfer using g_output_stream_splice()
+     * Upload a payload to a device. Typically implementations will override
+     * this with an async function.
      *
-     * @return {boolean} %true on success, %false on failure.
+     * @param {Core.Packet} packet - The packet describing the transfer
+     * @param {Gio.InputStream} source - The source stream
+     * @param {number} size - The payload size
+     * @param {Gio.Cancellable} [cancellable] - A cancellable for the upload
      */
-    async transfer() {
-        let result = false;
-
-        try {
-            result = await new Promise((resolve, reject) => {
-                this.output_stream.splice_async(
-                    this.input_stream,
-                    Gio.OutputStreamSpliceFlags.NONE,
-                    GLib.PRIORITY_DEFAULT,
-                    this.cancellable,
-                    (source, res) => {
-                        try {
-                            if (source.splice_finish(res) < this.size)
-                                throw new Error('incomplete data');
-
-                            resolve(true);
-                        } catch (e) {
-                            reject(e);
-                        }
-                    }
-                );
-            });
-        } catch (e) {
-            debug(e, this.device.name);
-        } finally {
-            this.close();
-        }
-
-        return result;
+    upload(packet, source, size, cancellable = null) {
+        throw new GObject.NotImplementedError();
     }
 });
 
@@ -539,6 +494,273 @@ var ChannelService = GObject.registerClass({
      * Destroy the channel service.
      */
     destroy() {
+    }
+});
+
+
+/**
+ * A class representing a file transfer.
+ */
+var Transfer = GObject.registerClass({
+    GTypeName: 'GSConnectTransfer',
+    Properties: {
+        'channel': GObject.ParamSpec.object(
+            'channel',
+            'Channel',
+            'The channel that owns this transfer',
+            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            Channel.$gtype
+        ),
+        'completed': GObject.ParamSpec.boolean(
+            'completed',
+            'Completed',
+            'Whether the transfer has completed',
+            GObject.ParamFlags.READABLE,
+            false
+        ),
+        'device': GObject.ParamSpec.object(
+            'device',
+            'Device',
+            'The device that created this transfer',
+            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            GObject.Object.$gtype
+        ),
+    },
+}, class Transfer extends GObject.Object {
+
+    _init(params = {}) {
+        super._init(params);
+
+        this._cancellable = new Gio.Cancellable();
+        this._items = [];
+    }
+
+    get channel() {
+        if (this._channel === undefined)
+            this._channel = null;
+
+        return this._channel;
+    }
+
+    set channel(channel) {
+        if (this.channel === channel)
+            return;
+
+        this._channel = channel;
+    }
+
+    get completed() {
+        if (this._completed === undefined)
+            this._completed = false;
+
+        return this._completed;
+    }
+
+    get device() {
+        if (this._device === undefined)
+            this._device = null;
+
+        return this._device;
+    }
+
+    set device(device) {
+        if (this.device === device)
+            return;
+
+        this._device = device;
+    }
+
+    get uuid() {
+        if (this._uuid === undefined)
+            this._uuid = GLib.uuid_string_random();
+
+        return this._uuid;
+    }
+
+    /**
+     * Ensure there is a stream for the transfer item.
+     *
+     * @param {Object} item - A transfer item
+     * @param {Gio.Cancellable} [cancellable] - A cancellable
+     */
+    async _ensureStream(item, cancellable = null) {
+        // This is an upload from a remote device
+        if (item.packet.hasPayload()) {
+            if (item.target instanceof Gio.OutputStream)
+                return;
+
+            if (item.file instanceof Gio.File) {
+                item.target = await new Promise((resolve, reject) => {
+                    item.file.replace_async(
+                        null,
+                        false,
+                        Gio.FileCreateFlags.REPLACE_DESTINATION,
+                        GLib.PRIORITY_DEFAULT,
+                        this._cancellable,
+                        (file, res) => {
+                            try {
+                                resolve(file.replace_finish(res));
+                            } catch (e) {
+                                reject(e);
+                            }
+                        }
+                    );
+                });
+            }
+        } else {
+            if (item.source instanceof Gio.InputStream)
+                return;
+
+            if (item.file instanceof Gio.File) {
+                let read = new Promise((resolve, reject) => {
+                    item.file.read_async(
+                        GLib.PRIORITY_DEFAULT,
+                        cancellable,
+                        (file, res) => {
+                            try {
+                                resolve(file.read_finish(res));
+                            } catch (e) {
+                                reject(e);
+                            }
+                        }
+                    );
+                });
+
+                let query = new Promise((resolve, reject) => {
+                    item.file.query_info_async(
+                        Gio.FILE_ATTRIBUTE_STANDARD_SIZE,
+                        Gio.FileQueryInfoFlags.NONE,
+                        GLib.PRIORITY_DEFAULT,
+                        cancellable,
+                        (file, res) => {
+                            try {
+                                resolve(file.query_info_finish(res));
+                            } catch (e) {
+                                reject(e);
+                            }
+                        }
+                    );
+                });
+
+                let [stream, info] = await Promise.all([read, query]);
+                item.source = stream;
+                item.size = info.get_size();
+            }
+        }
+    }
+
+    /**
+     * Add a file to the transfer.
+     *
+     * @param {Core.Packet} packet - A packet
+     * @param {Gio.File} file - A file to transfer
+     */
+    addFile(packet, file) {
+        let item = {
+            packet: new Packet(packet),
+            file: file,
+            source: null,
+            target: null,
+        };
+
+        this._items.push(item);
+    }
+
+    /**
+     * Add a filepath to the transfer.
+     *
+     * @param {Core.Packet} packet - A packet
+     * @param {string} path - A filepath to transfer
+     */
+    addPath(packet, path) {
+        let item = {
+            packet: new Packet(packet),
+            file: Gio.File.new_for_path(path),
+            source: null,
+            target: null,
+        };
+
+        this._items.push(item);
+    }
+
+    /**
+     * Add a stream to the transfer.
+     *
+     * @param {Core.Packet} packet - A packet
+     * @param {Gio.InputStream|Gio.OutputStream} stream - A stream to transfer
+     * @param {number} [size] - Payload size
+     */
+    addStream(packet, stream, size = 0) {
+        let item = {
+            packet: new Packet(packet),
+            file: null,
+            source: null,
+            target: null,
+            size: size,
+        };
+
+        if (stream instanceof Gio.InputStream)
+            item.source = stream;
+        else if (stream instanceof Gio.OutputStream)
+            item.target = stream;
+
+        this._items.push(item);
+    }
+
+    /**
+     * Execute a transfer operation. Implementations may override this, while
+     * the default uses g_output_stream_splice().
+
+     * @param {Gio.Cancellable} [cancellable] - A cancellable
+     */
+    async start(cancellable = null) {
+        let error = null;
+
+        try {
+            let item;
+
+            // If a cancellable is passed in, chain to its signal
+            if (cancellable instanceof Gio.Cancellable)
+                cancellable.connect(() => this._cancellable.cancel());
+
+            while ((item = this._items.shift())) {
+                // If created for a device, ignore connection changes by
+                // ensuring we have the most recent channel
+                if (this.device !== null)
+                    this._channel = this.device.channel;
+
+                // TODO: transfer queueing?
+                if (this.channel === null || this.channel.closed) {
+                    throw new Gio.IOErrorEnum({
+                        code: Gio.IOErrorEnum.CONNECTION_CLOSED,
+                        message: 'Channel is closed',
+                    });
+                }
+
+                await this._ensureStream(item, this._cancellable);
+
+                if (item.packet.hasPayload()) {
+                    await this.channel.download(item.packet, item.target,
+                        this._cancellable);
+                } else {
+                    await this.channel.upload(item.packet, item.source,
+                        item.size, this._cancellable);
+                }
+            }
+        } catch (e) {
+            error = e;
+        } finally {
+            this._completed = true;
+            this.notify('completed');
+        }
+
+        if (error !== null)
+            throw error;
+    }
+
+    cancel() {
+        if (this._cancellable.is_cancelled() === false)
+            this._cancellable.cancel();
     }
 });
 

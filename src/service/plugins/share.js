@@ -140,20 +140,10 @@ var Plugin = GObject.registerClass({
         try {
             let file = this._getFile(packet.body.filename);
 
-            let stream = await new Promise((resolve, reject) => {
-                file.replace_async(null, false, 0, 0, null, (file, res) => {
-                    try {
-                        resolve(file.replace_finish(res));
-                    } catch (e) {
-                        reject(e);
-                    }
-                });
-            });
+            // Create the transfer
+            let transfer = this.device.createTransfer();
 
-            let transfer = this.device.createTransfer(Object.assign({
-                output_stream: stream,
-                size: packet.payloadSize,
-            }, packet.payloadTransferInfo));
+            transfer.addFile(packet, file);
 
             // Notify that we're about to start the transfer
             this.device.showNotification({
@@ -172,21 +162,13 @@ var Plugin = GObject.registerClass({
                 icon: new Gio.ThemedIcon({name: 'document-save-symbolic'}),
             });
 
-            // Start transfer
-            let success = await transfer.download();
-
-            // We've been asked to open this directly
-            if (success && packet.body.open) {
-                let uri = file.get_uri();
-                Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
-                return;
-            }
-
             // We'll show a notification (success or failure)
             let title, body, iconName;
             let buttons = [];
 
-            if (success) {
+            try {
+                await transfer.start();
+
                 title = _('Transfer Successful');
                 // TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
                 body = _('Received “%s” from %s').format(
@@ -206,7 +188,12 @@ var Plugin = GObject.registerClass({
                     },
                 ];
                 iconName = 'document-save-symbolic';
-            } else {
+
+                if (packet.body.open) {
+                    let uri = file.get_uri();
+                    Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
+                }
+            } catch (e) {
                 title = _('Transfer Failed');
                 // TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
                 body = _('Failed to receive “%s” from %s').format(
@@ -273,38 +260,16 @@ var Plugin = GObject.registerClass({
             else
                 file = Gio.File.new_for_path(path);
 
-            let read = new Promise((resolve, reject) => {
-                file.read_async(GLib.PRIORITY_DEFAULT, null, (file, res) => {
-                    try {
-                        resolve(file.read_finish(res));
-                    } catch (e) {
-                        reject(e);
-                    }
-                });
-            });
+            // Create the transfer
+            let transfer = this.device.createTransfer();
 
-            let query = new Promise((resolve, reject) => {
-                file.query_info_async(
-                    'standard::size',
-                    Gio.FileQueryInfoFlags.NONE,
-                    GLib.PRIORITY_DEFAULT,
-                    null,
-                    (file, res) => {
-                        try {
-                            resolve(file.query_info_finish(res));
-                        } catch (e) {
-                            reject(e);
-                        }
-                    }
-                );
-            });
-
-            let [stream, info] = await Promise.all([read, query]);
-
-            let transfer = this.device.createTransfer({
-                input_stream: stream,
-                size: info.get_size(),
-            });
+            transfer.addFile({
+                type: 'kdeconnect.share.request',
+                body: {
+                    filename: file.get_basename(),
+                    open: open,
+                },
+            }, file);
 
             // Notify that we're about to start the transfer
             this.device.showNotification({
@@ -323,18 +288,12 @@ var Plugin = GObject.registerClass({
                 icon: new Gio.ThemedIcon({name: 'document-send-symbolic'}),
             });
 
-            let success = await transfer.upload({
-                type: 'kdeconnect.share.request',
-                body: {
-                    filename: file.get_basename(),
-                    open: open,
-                },
-            });
-
             // We'll show a notification (success or failure)
             let title, body, iconName;
 
-            if (success) {
+            try {
+                await transfer.start();
+
                 title = _('Transfer Successful');
                 // TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
                 body = _('Sent “%s” to %s').format(
@@ -342,7 +301,9 @@ var Plugin = GObject.registerClass({
                     this.device.name
                 );
                 iconName = 'document-send-symbolic';
-            } else {
+            } catch (e) {
+                debug(e, this.device.name);
+
                 title = _('Transfer Failed');
                 // TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
                 body = _('Failed to send “%s” to %s').format(

@@ -409,17 +409,14 @@ var Plugin = GObject.registerClass({
      */
     async _uploadIconStream(packet, stream, size) {
         try {
-            let transfer = this.device.createTransfer({
-                input_stream: stream,
-                size: size,
-            });
+            let transfer = this.device.createTransfer();
+            transfer.addStream(packet, stream, size);
 
-            let success = await transfer.upload(packet);
-
-            if (!success)
-                this.device.sendPacket(packet);
+            await transfer.start();
         } catch (e) {
             debug(e);
+
+            this.device.sendPacket(packet);
         }
     }
 
@@ -500,30 +497,20 @@ var Plugin = GObject.registerClass({
                 return new Gio.FileIcon({file: file});
 
             // Open the target path and create a transfer
-            let stream = await new Promise((resolve, reject) => {
-                file.replace_async(null, false, 2, 0, null, (file, res) => {
-                    try {
-                        resolve(file.replace_finish(res));
-                    } catch (e) {
-                        reject(e);
-                    }
-                });
-            });
+            let transfer = this.device.createTransfer();
 
-            let transfer = this.device.createTransfer(Object.assign({
-                output_stream: stream,
-                size: packet.payloadSize,
-            }, packet.payloadTransferInfo));
+            transfer.addFile(packet, file);
 
-            // Return the icon if successful, delete on failure
-            let success = await transfer.download();
+            try {
+                await transfer.start();
 
-            if (success)
                 return new Gio.FileIcon({file: file});
+            } catch (e) {
+                debug(e, this.device.name);
 
-            file.delete_async(GLib.PRIORITY_DEFAULT, null, null);
-
-            return null;
+                file.delete_async(GLib.PRIORITY_DEFAULT, null, null);
+                return null;
+            }
         } catch (e) {
             debug(e, this.device.name);
             return null;

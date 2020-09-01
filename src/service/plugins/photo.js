@@ -123,41 +123,29 @@ var Plugin = GObject.registerClass({
      * @param {Core.Packet} packet - a `kdeconnect.photo`
      */
     async _receivePhoto(packet) {
+        let file, transfer;
+
         try {
             // Remote device cancelled the photo operation
             if (packet.body.hasOwnProperty('cancel'))
                 return;
 
             // Open the target path and create a transfer
-            let file = this._getFile(packet.body.filename);
+            file = this._getFile(packet.body.filename);
 
-            let stream = await new Promise((resolve, reject) => {
-                file.replace_async(null, false, 0, 0, null, (file, res) => {
-                    try {
-                        resolve(file.replace_finish(res));
-                    } catch (e) {
-                        reject(e);
-                    }
-                });
-            });
-
-            let transfer = this.device.createTransfer(Object.assign({
-                output_stream: stream,
-                size: packet.payloadSize,
-            }, packet.payloadTransferInfo));
+            transfer = this.device.createTransfer();
+            transfer.addFile(packet, file);
 
             // Open the photo if successful, delete on failure
-            let success = await transfer.download();
-
-            if (!success) {
-                file.delete_async(GLib.PRIORITY_DEFAULT, null, null);
-                return;
-            }
+            await transfer.start();
 
             let uri = file.get_uri();
             Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
         } catch (e) {
             debug(e, this.device.name);
+
+            if (file)
+                file.delete_async(GLib.PRIORITY_DEFAULT, null, null);
         }
     }
 
@@ -200,8 +188,10 @@ var Plugin = GObject.registerClass({
         if (this.settings.get_boolean('share-camera'))
             return;
 
+        let file, transfer;
+
         try {
-            let file = null;
+            // Take a photo
             let path = await this._takePhoto();
 
             if (path.startsWith('file://'))
@@ -209,49 +199,21 @@ var Plugin = GObject.registerClass({
             else
                 file = Gio.File.new_for_path(path);
 
-            // Prepare the file for upload
-            let read = new Promise((resolve, reject) => {
-                file.read_async(GLib.PRIORITY_DEFAULT, null, (file, res) => {
-                    try {
-                        resolve(file.read_finish(res));
-                    } catch (e) {
-                        reject(e);
-                    }
-                });
-            });
+            // Create the transfer
+            transfer = this.device.createTransfer();
 
-            let query = new Promise((resolve, reject) => {
-                file.query_info_async(
-                    'standard::size',
-                    Gio.FileQueryInfoFlags.NONE,
-                    GLib.PRIORITY_DEFAULT,
-                    null,
-                    (file, res) => {
-                        try {
-                            resolve(file.query_info_finish(res));
-                        } catch (e) {
-                            reject(e);
-                        }
-                    }
-                );
-            });
-
-            let [stream, info] = await Promise.all([read, query]);
-
-            // Transfer
-            let transfer = this.device.createTransfer({
-                input_stream: stream,
-                size: info.get_size(),
-            });
-
-            let success = await transfer.upload({
+            transfer.addFile({
                 type: 'kdeconnect.photo',
                 body: {
                     filename: file.get_basename(),
                 },
-            });
+            }, file);
 
-            if (!success) {
+            await transfer.start();
+        } catch (e) {
+            debug(e, this.device.name);
+
+            if (transfer) {
                 this.device.showNotification({
                     id: transfer.uuid,
                     title: _('Transfer Failed'),
@@ -263,8 +225,6 @@ var Plugin = GObject.registerClass({
                     icon: new Gio.ThemedIcon({name: 'dialog-warning-symbolic'}),
                 });
             }
-        } catch (e) {
-            debug(e, this.device.name);
         }
     }
 

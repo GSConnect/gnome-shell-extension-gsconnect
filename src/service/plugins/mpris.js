@@ -345,50 +345,21 @@ var Plugin = GObject.registerClass({
             if (file.get_uri() !== request.get_uri())
                 throw RangeError(`invalid URI "${packet.body.albumArtUrl}"`);
 
-            // Start the transfer process
+            // Transfer the album art
             this._transferring.add(player);
 
-            let read = new Promise((resolve, reject) => {
-                file.read_async(GLib.PRIORITY_DEFAULT, null, (file, res) => {
-                    try {
-                        resolve(file.read_finish(res));
-                    } catch (e) {
-                        reject(e);
-                    }
-                });
-            });
+            let transfer = this.device.createTransfer();
 
-            let query = new Promise((resolve, reject) => {
-                file.query_info_async(
-                    'standard::size',
-                    Gio.FileQueryInfoFlags.NONE,
-                    GLib.PRIORITY_DEFAULT,
-                    null,
-                    (file, res) => {
-                        try {
-                            resolve(file.query_info_finish(res));
-                        } catch (e) {
-                            reject(e);
-                        }
-                    }
-                );
-            });
-
-            let [stream, info] = await Promise.all([read, query]);
-
-            let transfer = this.device.createTransfer({
-                input_stream: stream,
-                size: info.get_size(),
-            });
-
-            await transfer.upload({
+            transfer.addFile({
                 type: 'kdeconnect.mpris',
                 body: {
                     transferringAlbumArt: true,
                     player: packet.body.player,
                     albumArtUrl: packet.body.albumArtUrl,
                 },
-            });
+            }, file);
+
+            await transfer.start();
         } catch (e) {
             debug(e, this.device.name);
         } finally {

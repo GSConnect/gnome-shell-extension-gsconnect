@@ -684,10 +684,11 @@ var Device = GObject.registerClass({
             let uuid = parameter.unpack();
             let transfer = this._transfers.get(uuid);
 
-            if (transfer !== undefined) {
-                this._transfers.delete(uuid);
-                transfer.close();
-            }
+            if (transfer === undefined)
+                return;
+
+            this._transfers.delete(uuid);
+            transfer.cancel();
         } catch (e) {
             logError(e, this.name);
         }
@@ -696,24 +697,19 @@ var Device = GObject.registerClass({
     /**
      * Create a transfer object.
      *
-     * @param {Object} params - Transfer parameters
-     * @return {Core.Channel} A transfer channel
+     * @return {Core.Transfer} A new transfer
      */
-    createTransfer(params) {
-        try {
-            params.device = this;
+    createTransfer() {
+        let transfer = new Core.Transfer({device: this});
 
-            return this.channel.createTransfer(params);
-        } catch (e) {
-            logError(e, this.name);
+        // Track the transfer
+        this._transfers.set(transfer.uuid, transfer);
 
-            // Return a mock transfer that always appears to fail
-            return {
-                uuid: 'mock-transfer',
-                download: () => false,
-                upload: () => false,
-            };
-        }
+        transfer.connect('notify::completed', (transfer) => {
+            this._transfers.delete(transfer.uuid);
+        });
+
+        return transfer;
     }
 
     /**
