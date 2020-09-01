@@ -24,7 +24,7 @@ var Device = GObject.registerClass({
             'Connected',
             'Whether the device is connected',
             GObject.ParamFlags.READABLE,
-            null
+            false
         ),
         'contacts': GObject.ParamSpec.object(
             'contacts',
@@ -66,7 +66,7 @@ var Device = GObject.registerClass({
             'Paired',
             'Whether the device is paired',
             GObject.ParamFlags.READABLE,
-            null
+            false
         ),
         'type': GObject.ParamSpec.string(
             'type',
