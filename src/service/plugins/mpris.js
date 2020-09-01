@@ -694,13 +694,6 @@ const RemotePlayer = GObject.registerClass({
         return (this.CanPlay || this.CanPause);
     }
 
-    get PlaybackStatus() {
-        if (this._isPlaying)
-            return 'Playing';
-
-        return 'Stopped';
-    }
-
     get Metadata() {
         if (this._metadata === undefined)
             this._metadata = {};
@@ -713,6 +706,13 @@ const RemotePlayer = GObject.registerClass({
         });
 
         return this._metadata;
+    }
+
+    get PlaybackStatus() {
+        if (this._isPlaying)
+            return 'Playing';
+
+        return 'Stopped';
     }
 
     set Volume(level) {
