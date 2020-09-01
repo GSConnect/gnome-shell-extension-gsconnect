@@ -776,7 +776,7 @@ const RemotePlayer = GObject.registerClass({
             type: 'kdeconnect.mpris.request',
             body: {
                 player: this.Identity,
-                action: 'Next',
+                action: 'Play',
             },
         });
     }
