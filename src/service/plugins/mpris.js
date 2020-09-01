@@ -254,8 +254,6 @@ var Plugin = GObject.registerClass({
                     canGoNext: player.CanGoNext,
                     canGoPrevious: player.CanGoPrevious,
                     canSeek: player.CanSeek,
-                    artist: _('Unknown'),
-                    title: _('Unknown'),
                 });
 
                 let metadata = player.Metadata;
@@ -281,10 +279,19 @@ var Plugin = GObject.registerClass({
                 if (metadata.hasOwnProperty('xesam:album'))
                     response.body.album = metadata['xesam:album'];
 
-                response.body.nowPlaying = [
-                    response.body.artist,
-                    response.body.title,
-                ].join(' - ');
+                // Now Playing
+                if (response.body.artist && response.body.title) {
+                    response.body.nowPlaying = [
+                        response.body.artist,
+                        response.body.title,
+                    ].join(' - ');
+                } else if (response.body.artist) {
+                    response.body.nowPlaying = response.body.artist;
+                } else if (response.body.title) {
+                    response.body.nowPlaying = response.body.title;
+                } else {
+                    response.body.nowPlaying = _('Unknown');
+                }
             }
 
             if (packet.body.hasOwnProperty('requestVolume')) {
