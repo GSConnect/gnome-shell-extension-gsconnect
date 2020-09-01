@@ -7,6 +7,7 @@ const GObject = imports.gi.GObject;
 const Components = imports.service.components;
 const Config = imports.config;
 const DBus = imports.utils.dbus;
+const {MediaPlayerInterface} = imports.service.components.mpris;
 const PluginBase = imports.service.plugin;
 
 
@@ -414,108 +415,107 @@ const MPRISPlayerIface = Config.DBUS.lookup_interface('org.mpris.MediaPlayer2.Pl
 
 const RemotePlayer = GObject.registerClass({
     GTypeName: 'GSConnectMPRISRemotePlayer',
+    Implements: [MediaPlayerInterface],
     Properties: {
-        'PlaybackStatus': GObject.ParamSpec.string(
-            'PlaybackStatus',
-            'Playback Status',
-            'The current playback status.',
-            GObject.ParamFlags.READABLE,
-            null
+        // Application Properties
+        'CanQuit': GObject.ParamSpec.override(
+            'CanQuit',
+            MediaPlayerInterface
         ),
-        'LoopStatus': GObject.ParamSpec.string(
-            'LoopStatus',
-            'Loop Status',
-            'The current loop status.',
-            GObject.ParamFlags.READWRITE,
-            null
+        'CanRaise': GObject.ParamSpec.override(
+            'CanRaise',
+            MediaPlayerInterface
         ),
-        'Rate': GObject.ParamSpec.double(
-            'Rate',
-            'Rate',
-            'The current playback rate.',
-            GObject.ParamFlags.READWRITE,
-            0.0, 1.0,
-            1.0
+        'CanSetFullscreen': GObject.ParamSpec.override(
+            'CanSetFullscreen',
+            MediaPlayerInterface
         ),
-        'Shuffle': GObject.ParamSpec.boolean(
-            'Shuffle',
-            'Shuffle',
-            'Whether track changes are linear.',
-            GObject.ParamFlags.READWRITE,
-            null
+        'DesktopEntry': GObject.ParamSpec.override(
+            'DesktopEntry',
+            MediaPlayerInterface
         ),
-        'Metadata': GObject.param_spec_variant(
-            'Metadata',
-            'Metadata',
-            'The metadata of the current element.',
-            new GLib.VariantType('a{sv}'),
-            null,
-            GObject.ParamFlags.READABLE
+        'Fullscreen': GObject.ParamSpec.override(
+            'Fullscreen',
+            MediaPlayerInterface
         ),
-        'Volume': GObject.ParamSpec.double(
-            'Volume',
-            'Volume',
-            'The volume level.',
-            GObject.ParamFlags.READWRITE,
-            0.0, 1.0,
-            1.0
+        'HasTrackList': GObject.ParamSpec.override(
+            'HasTrackList',
+            MediaPlayerInterface
         ),
-        'Position': GObject.ParamSpec.int64(
-            'Position',
-            'Position',
-            'The current track position in microseconds.',
-            GObject.ParamFlags.READABLE,
-            0, Number.MAX_SAFE_INTEGER,
-            0
+        'Identity': GObject.ParamSpec.override(
+            'Identity',
+            MediaPlayerInterface
         ),
-        'CanGoNext': GObject.ParamSpec.boolean(
-            'CanGoNext',
-            'Can Go Next',
-            'Whether the client can call the Next method.',
-            GObject.ParamFlags.READABLE,
-            false
+        'SupportedMimeTypes': GObject.ParamSpec.override(
+            'SupportedMimeTypes',
+            MediaPlayerInterface
         ),
-        'CanGoPrevious': GObject.ParamSpec.boolean(
-            'CanGoPrevious',
-            'Can Go Previous',
-            'Whether the client can call the Previous method.',
-            GObject.ParamFlags.READABLE,
-            false
+        'SupportedUriSchemes': GObject.ParamSpec.override(
+            'SupportedUriSchemes',
+            MediaPlayerInterface
         ),
-        'CanPlay': GObject.ParamSpec.boolean(
-            'CanPlay',
-            'Can Play',
-            'Whether playback can be started using Play or PlayPause.',
-            GObject.ParamFlags.READABLE,
-            false
-        ),
-        'CanPause': GObject.ParamSpec.boolean(
-            'CanPause',
-            'Can Pause',
-            'Whether playback can be paused using Play or PlayPause.',
-            GObject.ParamFlags.READABLE,
-            false
-        ),
-        'CanSeek': GObject.ParamSpec.boolean(
-            'CanSeek',
-            'Can Seek',
-            'Whether the client can control the playback position using Seek and SetPosition.',
-            GObject.ParamFlags.READABLE,
-            false
-        ),
-        'CanControl': GObject.ParamSpec.boolean(
+
+        // Player Properties
+        'CanControl': GObject.ParamSpec.override(
             'CanControl',
-            'Can Control',
-            'Whether the media player may be controlled over this interface.',
-            GObject.ParamFlags.READABLE,
-            false
+            MediaPlayerInterface
         ),
-    },
-    Signals: {
-        'Seeked': {
-            flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [GObject.TYPE_INT64],
-        },
+        'CanGoNext': GObject.ParamSpec.override(
+            'CanGoNext',
+            MediaPlayerInterface
+        ),
+        'CanGoPrevious': GObject.ParamSpec.override(
+            'CanGoPrevious',
+            MediaPlayerInterface
+        ),
+        'CanPause': GObject.ParamSpec.override(
+            'CanPause',
+            MediaPlayerInterface
+        ),
+        'CanPlay': GObject.ParamSpec.override(
+            'CanPlay',
+            MediaPlayerInterface
+        ),
+        'CanSeek': GObject.ParamSpec.override(
+            'CanSeek',
+            MediaPlayerInterface
+        ),
+        'LoopStatus': GObject.ParamSpec.override(
+            'LoopStatus',
+            MediaPlayerInterface
+        ),
+        'MaximumRate': GObject.ParamSpec.override(
+            'MaximumRate',
+            MediaPlayerInterface
+        ),
+        'Metadata': GObject.ParamSpec.override(
+            'Metadata',
+            MediaPlayerInterface
+        ),
+        'MinimumRate': GObject.ParamSpec.override(
+            'MinimumRate',
+            MediaPlayerInterface
+        ),
+        'PlaybackStatus': GObject.ParamSpec.override(
+            'PlaybackStatus',
+            MediaPlayerInterface
+        ),
+        'Position': GObject.ParamSpec.override(
+            'Position',
+            MediaPlayerInterface
+        ),
+        'Rate': GObject.ParamSpec.override(
+            'Rate',
+            MediaPlayerInterface
+        ),
+        'Shuffle': GObject.ParamSpec.override(
+            'Shuffle',
+            MediaPlayerInterface
+        ),
+        'Volume': GObject.ParamSpec.override(
+            'Volume',
+            MediaPlayerInterface
+        ),
     },
 }, class RemotePlayer extends GObject.Object {
 
@@ -677,83 +677,28 @@ const RemotePlayer = GObject.registerClass({
     /*
      * The org.mpris.MediaPlayer2 Interface
      */
-    get CanQuit() {
-        return false;
-    }
-
-    get Fullscreen() {
-        return false;
-    }
-
-    get CanSetFullscreen() {
-        return false;
-    }
-
-    get CanRaise() {
-        return false;
-    }
-
-    get HasTrackList() {
-        return false;
-    }
-
-    get Identity() {
-        return this._Identity;
-    }
-
     get DesktopEntry() {
         return 'org.gnome.Shell.Extensions.GSConnect';
-    }
-
-    get SupportedUriSchemes() {
-        return [];
-    }
-
-    get SupportedMimeTypes() {
-        return [];
-    }
-
-    Raise() {
     }
 
     Quit() {
     }
 
+    Raise() {
+    }
+
     /*
      * The org.mpris.MediaPlayer2.Player Interface
      */
+    get CanControl() {
+        return (this.CanPlay || this.CanPause);
+    }
 
-    // 'Playing', 'Paused', 'Stopped'
     get PlaybackStatus() {
         if (this._isPlaying)
             return 'Playing';
 
         return 'Stopped';
-    }
-
-    // 'None', 'Track', 'Playlist'
-    get LoopStatus() {
-        return 'None';
-    }
-
-    set LoopStatus(status) {
-        this.notify('LoopStatus');
-    }
-
-    get Rate() {
-        return 1.0;
-    }
-
-    set Rate(rate) {
-        this.notify('Rate');
-    }
-
-    get Shuffle() {
-        return false;
-    }
-
-    set Shuffle(mode) {
-        this.notify('Shuffle');
     }
 
     get Metadata() {
@@ -768,13 +713,6 @@ const RemotePlayer = GObject.registerClass({
         });
 
         return this._metadata;
-    }
-
-    get Volume() {
-        if (this._Volume === undefined)
-            this._Volume = 1.0;
-
-        return this._Volume;
     }
 
     set Volume(level) {
@@ -793,65 +731,8 @@ const RemotePlayer = GObject.registerClass({
         });
     }
 
-    get Position() {
-        if (this._Position === undefined)
-            this._Position = 0;
-
-        return this._Position;
-    }
-
-    get MinimumRate() {
-        return 1.0;
-    }
-
-    get MaximumRate() {
-        return 1.0;
-    }
-
-    get CanGoNext() {
-        if (this._CanGoNext === undefined)
-            this._CanGoNext = false;
-
-        return this._CanGoNext;
-    }
-
-    get CanGoPrevious() {
-        if (this._CanGoPrevious === undefined)
-            this._CanGoPrevious = false;
-
-        return this._CanGoPrevious;
-    }
-
-    get CanPlay() {
-        if (this._CanPlay === undefined)
-            this._CanPlay = false;
-
-        return this._CanPlay;
-    }
-
-    get CanPause() {
-        if (this._CanPause === undefined)
-            this._CanPause = false;
-
-        return this._CanPause;
-    }
-
-    get CanSeek() {
-        if (this._CanSeek === undefined)
-            this._CanSeek = false;
-
-        return this._CanSeek;
-    }
-
-    get CanControl() {
-        if (this._CanControl === undefined)
-            this._CanControl = false;
-
-        return (this.CanPlay || this.CanPause);
-    }
-
     Next() {
-        if (!this.CanControl || !this.CanGoNext)
+        if (!this.CanGoNext)
             return;
 
         this.device.sendPacket({
@@ -863,21 +744,12 @@ const RemotePlayer = GObject.registerClass({
         });
     }
 
-    Previous() {
-        if (!this.CanControl || !this.CanGoPrevious)
-            return;
-
-        this.device.sendPacket({
-            type: 'kdeconnect.mpris.request',
-            body: {
-                player: this.Identity,
-                action: 'Previous',
-            },
-        });
+    OpenUri(uri) {
+        debug(`OpenUri(${uri}): Not Supported`);
     }
 
     Pause() {
-        if (!this.CanControl || !this.CanPause)
+        if (!this.CanPause)
             return;
 
         this.device.sendPacket({
@@ -885,6 +757,19 @@ const RemotePlayer = GObject.registerClass({
             body: {
                 player: this.Identity,
                 action: 'Pause',
+            },
+        });
+    }
+
+    Play() {
+        if (!this.CanPlay)
+            return;
+
+        this.device.sendPacket({
+            type: 'kdeconnect.mpris.request',
+            body: {
+                player: this.Identity,
+                action: 'Next',
             },
         });
     }
@@ -902,34 +787,21 @@ const RemotePlayer = GObject.registerClass({
         });
     }
 
-    Stop() {
-        if (!this.CanControl)
+    Previous() {
+        if (!this.CanGoPrevious)
             return;
 
         this.device.sendPacket({
             type: 'kdeconnect.mpris.request',
             body: {
                 player: this.Identity,
-                action: 'Stop',
-            },
-        });
-    }
-
-    Play() {
-        if (!this.CanControl || !this.CanPlay)
-            return;
-
-        this.device.sendPacket({
-            type: 'kdeconnect.mpris.request',
-            body: {
-                player: this.Identity,
-                action: 'Next',
+                action: 'Previous',
             },
         });
     }
 
     Seek(offset) {
-        if (!this.CanControl || !this.CanSeek)
+        if (!this.CanSeek)
             return;
 
         this.device.sendPacket({
@@ -956,8 +828,17 @@ const RemotePlayer = GObject.registerClass({
         });
     }
 
-    OpenUri(uri) {
-        debug(`OpenUri(${uri}): Not Supported`);
+    Stop() {
+        if (!this.CanControl)
+            return;
+
+        this.device.sendPacket({
+            type: 'kdeconnect.mpris.request',
+            body: {
+                player: this.Identity,
+                action: 'Stop',
+            },
+        });
     }
 
     destroy() {
