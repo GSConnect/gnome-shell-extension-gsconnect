@@ -788,7 +788,7 @@ const RemotePlayer = GObject.registerClass({
             type: 'kdeconnect.mpris.request',
             body: {
                 player: this.Identity,
-                setVolume: this.Volume * 100,
+                setVolume: Math.floor(this.Volume * 100),
             },
         });
     }
