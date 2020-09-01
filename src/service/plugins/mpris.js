@@ -877,7 +877,7 @@ const RemotePlayer = GObject.registerClass({
     }
 
     Pause() {
-        if (!this.CanControl || !this.CanGoPause)
+        if (!this.CanControl || !this.CanPause)
             return;
 
         this.device.sendPacket({
@@ -890,7 +890,7 @@ const RemotePlayer = GObject.registerClass({
     }
 
     PlayPause() {
-        if (!this.CanControl || !this.CanPause)
+        if (!this.CanPlay && !this.CanPause)
             return;
 
         this.device.sendPacket({
