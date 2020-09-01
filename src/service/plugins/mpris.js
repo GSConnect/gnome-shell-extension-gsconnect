@@ -226,7 +226,7 @@ var Plugin = GObject.registerClass({
                 player.Volume = packet.body.setVolume / 100;
 
             if (packet.body.hasOwnProperty('Seek'))
-                await player.Seek(packet.body.Seek);
+                await player.Seek(packet.body.Seek * 1000);
 
             if (packet.body.hasOwnProperty('SetPosition')) {
                 let offset = (packet.body.SetPosition * 1000) - player.Position;
