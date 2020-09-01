@@ -296,7 +296,7 @@ var Plugin = GObject.registerClass({
 
             if (packet.body.hasOwnProperty('requestVolume')) {
                 hasResponse = true;
-                response.body.volume = player.Volume * 100;
+                response.body.volume = Math.floor(player.Volume * 100);
             }
 
             if (hasResponse)
