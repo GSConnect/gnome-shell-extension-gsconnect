@@ -81,7 +81,7 @@ var Plugin = GObject.registerClass({
     handlePacket(packet) {
         switch (packet.type) {
             case 'kdeconnect.mpris':
-                this._handleStatus(packet);
+                this._handleUpdate(packet);
                 break;
 
             case 'kdeconnect.mpris.request':
@@ -95,12 +95,12 @@ var Plugin = GObject.registerClass({
      *
      * @param {Core.Packet} packet - A `kdeconnect.mpris`
      */
-    _handleStatus(packet) {
+    _handleUpdate(packet) {
         try {
             if (packet.body.hasOwnProperty('playerList'))
                 this._handlePlayerList(packet.body.playerList);
             else if (packet.body.hasOwnProperty('player'))
-                this._handlePlayerState(packet.body);
+                this._handlePlayerUpdate(packet);
         } catch (e) {
             debug(e, this.device.name);
         }
@@ -141,13 +141,18 @@ var Plugin = GObject.registerClass({
     /**
      * Handle an update for a remote player.
      *
-     * @param {Object} state - The body of a `kdeconnect.mpris` packet
+     * @param {Object} packet - A `kdeconnect.mpris` packet
      */
-    _handlePlayerState(state) {
-        let player = this._players.get(state.player);
+    _handlePlayerUpdate(packet) {
+        let player = this._players.get(packet.body.player);
 
-        if (player !== undefined)
-            player.update(state);
+        if (player === undefined)
+            return;
+
+        if (packet.body.hasOwnProperty('transferringAlbumArt'))
+            player.handleAlbumArt(packet);
+        else
+            player.update(packet.body);
     }
 
     /**
@@ -536,10 +541,101 @@ const RemotePlayer = GObject.registerClass({
         this._Identity = identity;
         this._isPlaying = false;
 
+        this._artist = null;
+        this._title = null;
+        this._album = null;
+        this._length = 0;
+        this._artUrl = null;
+
         this._ownerId = 0;
         this._connection = null;
         this._applicationIface = null;
         this._playerIface = null;
+    }
+
+    _getFile(albumArtUrl) {
+        const hash = GLib.compute_checksum_for_string(GLib.ChecksumType.MD5,
+            albumArtUrl, -1);
+        const path = GLib.build_filenamev([Config.CACHEDIR, hash]);
+
+        return Gio.File.new_for_uri(`file://${path}`);
+    }
+
+    _requestAlbumArt(state) {
+        if (this._artUrl === state.albumArtUrl)
+            return;
+
+        let file = this._getFile(state.albumArtUrl);
+
+        if (file.query_exists(null)) {
+            this._artUrl = file.get_uri();
+            this._Metadata = undefined;
+            this.notify('Metadata');
+        } else {
+            this.device.sendPacket({
+                type: 'kdeconnect.mpris.request',
+                body: {
+                    player: this.Identity,
+                    albumArtUrl: state.albumArtUrl,
+                },
+            });
+        }
+    }
+
+    _updateMetadata(state) {
+        let metadataChanged = false;
+
+        if (state.hasOwnProperty('artist')) {
+            if (this._artist !== state.artist) {
+                this._artist = state.artist;
+                metadataChanged = true;
+            }
+        } else if (this._artist) {
+            this._artist = null;
+            metadataChanged = true;
+        }
+
+        if (state.hasOwnProperty('title')) {
+            if (this._title !== state.title) {
+                this._title = state.title;
+                metadataChanged = true;
+            }
+        } else if (this._title) {
+            this._title = null;
+            metadataChanged = true;
+        }
+
+        if (state.hasOwnProperty('album')) {
+            if (this._album !== state.album) {
+                this._album = state.album;
+                metadataChanged = true;
+            }
+        } else if (this._album) {
+            this._album = null;
+            metadataChanged = true;
+        }
+
+        if (state.hasOwnProperty('length')) {
+            if (this._length !== state.length * 1000) {
+                this._length = state.length * 1000;
+                metadataChanged = true;
+            }
+        } else if (this._length) {
+            this._length = 0;
+            metadataChanged = true;
+        }
+
+        if (state.hasOwnProperty('albumArtUrl')) {
+            this._requestAlbumArt(state);
+        } else if (this._artUrl) {
+            this._artUrl = null;
+            metadataChanged = true;
+        }
+
+        if (metadataChanged) {
+            this._Metadata = undefined;
+            this.notify('Metadata');
+        }
     }
 
     async export() {
@@ -594,34 +690,45 @@ const RemotePlayer = GObject.registerClass({
         this._ownerId = 0;
     }
 
+    /**
+     * Download album art for the current track of the remote player.
+     *
+     * @param {Core.Packet} packet - A `kdeconnect.mpris` packet
+     */
+    async handleAlbumArt(packet) {
+        let file;
+
+        try {
+            file = this._getFile(packet.body.albumArtUrl);
+
+            // Transfer the album art
+            let transfer = this.device.createTransfer();
+            transfer.addFile(packet, file);
+
+            await transfer.start();
+
+            this._artUrl = file.get_uri();
+            this._Metadata = undefined;
+            this.notify('Metadata');
+        } catch (e) {
+            debug(e, this.device.name);
+
+            if (file)
+                file.delete_async(GLib.PRIORITY_DEFAULT, null, null);
+        }
+    }
+
+    /**
+     * Update the internal state of the media player.
+     *
+     * @param {Core.Packet} state - The body of a `kdeconnect.mpris` packet
+     */
     update(state) {
         this.freeze_notify();
 
         // Metadata
-        let metadataChanged = false;
-
-        if (state.hasOwnProperty('title')) {
-            metadataChanged = true;
-            this._title = state.title;
-        }
-
-        if (state.hasOwnProperty('artist')) {
-            metadataChanged = true;
-            this._artist = state.artist;
-        }
-
-        if (state.hasOwnProperty('album')) {
-            metadataChanged = true;
-            this._album = state.album;
-        }
-
-        if (state.hasOwnProperty('length')) {
-            metadataChanged = true;
-            this._length = state.length * 1000;
-        }
-
-        if (metadataChanged)
-            this.notify('Metadata');
+        if (state.hasOwnProperty('nowPlaying'))
+            this._updateMetadata(state);
 
         // Playback Status
         if (state.hasOwnProperty('isPlaying')) {
@@ -705,17 +812,34 @@ const RemotePlayer = GObject.registerClass({
     }
 
     get Metadata() {
-        if (this._metadata === undefined)
-            this._metadata = {};
+        if (this._Metadata === undefined) {
+            this._Metadata = {};
 
-        Object.assign(this._metadata, {
-            'xesam:artist': new GLib.Variant('as', [this._artist || '']),
-            'xesam:album': new GLib.Variant('s', this._album || ''),
-            'xesam:title': new GLib.Variant('s', this._title || ''),
-            'mpris:length': new GLib.Variant('x', this._length || 0),
-        });
+            if (this._artist) {
+                this._Metadata['xesam:artist'] = new GLib.Variant('as',
+                    [this._artist]);
+            }
 
-        return this._metadata;
+            if (this._title) {
+                this._Metadata['xesam:title'] = new GLib.Variant('s',
+                    this._title);
+            }
+
+            if (this._album) {
+                this._Metadata['xesam:album'] = new GLib.Variant('s',
+                    this._album);
+            }
+
+            if (this._artUrl) {
+                this._Metadata['mpris:artUrl'] = new GLib.Variant('s',
+                    this._artUrl);
+            }
+
+            this._Metadata['mpris:length'] = new GLib.Variant('x',
+                this._length);
+        }
+
+        return this._Metadata;
     }
 
     get PlaybackStatus() {
