@@ -186,14 +186,17 @@ var Manager = GObject.registerClass({
      * GSettings
      */
     _initSettings() {
+        // Initialize the ID and name of the service
+        if (this.settings.get_string('id').length === 0)
+            this.settings.set_string('id', GLib.uuid_string_random());
+
+        if (this.settings.get_string('name').length === 0)
+            this.settings.set_string('name', GLib.get_host_name());
+
         // Bound Properties
         this.settings.bind('discoverable', this, 'discoverable', 0);
         this.settings.bind('id', this, 'id', 0);
         this.settings.bind('name', this, 'name', 0);
-
-        // Set the default name to the computer's hostname
-        if (this.name.length === 0)
-            this.name = GLib.get_host_name();
     }
 
     /*
