@@ -31,7 +31,6 @@ imports.config.PACKAGE_DATADIR = imports.searchPath[0];
 
 // Local Imports
 const Config = imports.config;
-const Device = imports.service.device;
 const Manager = imports.service.manager;
 const ServiceUI = imports.service.ui.service;
 
