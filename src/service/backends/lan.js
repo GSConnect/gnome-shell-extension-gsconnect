@@ -150,10 +150,6 @@ var ChannelService = GObject.registerClass({
         return this._channels;
     }
 
-    get name() {
-        return 'lan';
-    }
-
     get port() {
         if (this._port === undefined)
             this._port = DEFAULT_PORT;

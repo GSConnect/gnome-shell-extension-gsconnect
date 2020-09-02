@@ -365,7 +365,7 @@ var ChannelService = GObject.registerClass({
             'name',
             'Name',
             'The name of the backend',
-            GObject.ParamFlags.READABLE,
+            GObject.ParamFlags.READWRITE,
             null
         ),
     },
@@ -386,7 +386,18 @@ var ChannelService = GObject.registerClass({
     }
 
     get name() {
-        throw new GObject.NotImplementedError();
+        if (this._name === undefined)
+            this._name = GLib.get_host_name();
+
+        return this._name;
+    }
+
+    set name(name) {
+        if (this.name === name)
+            return;
+
+        this._name = name;
+        this.notify('name');
     }
 
     get id() {
@@ -441,7 +452,7 @@ var ChannelService = GObject.registerClass({
             type: 'kdeconnect.identity',
             body: {
                 deviceId: this.id,
-                deviceName: this.manager.name,
+                deviceName: this.name,
                 deviceType: _getDeviceType(),
                 protocolVersion: 7,
                 incomingCapabilities: [],

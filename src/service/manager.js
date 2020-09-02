@@ -154,8 +154,10 @@ var Manager = GObject.registerClass({
         this.notify('name');
 
         // Broadcast changes to the network
-        for (let backend of this.backends.values())
+        for (let backend of this.backends.values()) {
+            backend.name = this.name;
             backend.buildIdentity();
+        }
 
         this.identify();
     }
@@ -232,6 +234,7 @@ var Manager = GObject.registerClass({
                 let module = imports.service.backends[name];
                 let backend = new module.ChannelService({
                     id: this.id,
+                    name: this.name,
                     manager: this,
                 });
                 this.backends.set(name, backend);
@@ -431,7 +434,6 @@ var Manager = GObject.registerClass({
 
             // Otherwise have each backend broadcast to it's network
             } else {
-                this._loadBackends();
                 this.backends.forEach(backend => backend.broadcast());
             }
         } catch (e) {
