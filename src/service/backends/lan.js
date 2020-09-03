@@ -537,6 +537,12 @@ var ChannelService = GObject.registerClass({
 var Channel = GObject.registerClass({
     GTypeName: 'GSConnectLanChannel',
     Implements: [Core.Channel],
+    Properties: {
+        'closed': GObject.ParamSpec.override(
+            'closed',
+            Core.Channel
+        ),
+    },
 }, class LanChannel extends GObject.Object {
 
     _init(params) {
@@ -835,6 +841,7 @@ var Channel = GObject.registerClass({
 
         debug(`${this.address} (${this.uuid})`);
         this._closed = true;
+        this.notify('closed');
 
         this.backend.channels.delete(this.address);
         this.cancellable.cancel();

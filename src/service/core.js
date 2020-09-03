@@ -150,6 +150,15 @@ var Packet = class Packet {
 var Channel = GObject.registerClass({
     GTypeName: 'GSConnectChannel',
     Requires: [GObject.Object],
+    Properties: {
+        'closed': GObject.ParamSpec.boolean(
+            'closed',
+            'Closed',
+            'Whether the channel has been closed',
+            GObject.ParamFlags.READABLE,
+            false
+        ),
+    },
 }, class Channel extends GObject.Interface {
 
     get address() {
