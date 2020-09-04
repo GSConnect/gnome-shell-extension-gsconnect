@@ -344,7 +344,7 @@ var Plugin = GObject.registerClass({
      */
     shareUri(uri) {
         if (GLib.uri_parse_scheme(uri) === 'file') {
-            this.sendFile(uri);
+            this.shareFile(uri);
             return;
         }
 
