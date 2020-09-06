@@ -91,10 +91,6 @@ var ChannelService = GObject.registerClass({
             'id',
             Core.ChannelService
         ),
-        'manager': GObject.ParamSpec.override(
-            'manager',
-            Core.ChannelService
-        ),
         'name': GObject.ParamSpec.override(
             'name',
             Core.ChannelService
@@ -191,16 +187,13 @@ var ChannelService = GObject.registerClass({
         ]);
 
         // Ensure a certificate exists with our id as the common name
-        this._certificate = Gio.TlsCertificate.new_for_paths(
-            certPath,
-            keyPath,
-            this.manager.id
-        );
+        this._certificate = Gio.TlsCertificate.new_for_paths(certPath, keyPath,
+            this.id);
 
-        // If the manager id doesn't match the common name, this is probably a
-        // certificate from an earlier version and we need to set it now
-        if (this.manager.id !== this._certificate.common_name)
-            this.manager.id = this._certificate.common_name;
+        // If the service ID doesn't match the common name, this is probably a
+        // certificate from an older version and we should amend ours to match
+        if (this.id !== this._certificate.common_name)
+            this._id = this._certificate.common_name;
     }
 
     _initTcpListener() {

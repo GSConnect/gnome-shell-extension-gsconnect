@@ -238,7 +238,6 @@ var Manager = GObject.registerClass({
                 let backend = new module.ChannelService({
                     id: this.id,
                     name: this.name,
-                    manager: this,
                 });
                 this.backends.set(name, backend);
 

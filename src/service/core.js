@@ -352,7 +352,7 @@ var ChannelService = GObject.registerClass({
         'active': GObject.ParamSpec.boolean(
             'active',
             'Active',
-            'Whether the manager is active',
+            'Whether the service is active',
             GObject.ParamFlags.READABLE,
             false
         ),
@@ -362,13 +362,6 @@ var ChannelService = GObject.registerClass({
             'The hostname or other network unique id',
             GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
             null
-        ),
-        'manager': GObject.ParamSpec.object(
-            'manager',
-            'Manager',
-            'The device manager',
-            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
-            GObject.Object.$gtype
         ),
         'name': GObject.ParamSpec.string(
             'name',
@@ -428,17 +421,6 @@ var ChannelService = GObject.registerClass({
             this.buildIdentity();
 
         return this._identity;
-    }
-
-    get manager() {
-        if (this._manager === undefined)
-            this._manager = null;
-
-        return this._manager;
-    }
-
-    set manager(manager) {
-        this._manager = manager;
     }
 
     /**
@@ -730,7 +712,7 @@ var Transfer = GObject.registerClass({
     /**
      * Execute a transfer operation. Implementations may override this, while
      * the default uses g_output_stream_splice().
-
+     *
      * @param {Gio.Cancellable} [cancellable] - A cancellable
      */
     async start(cancellable = null) {
