@@ -7,27 +7,19 @@ const GObject = imports.gi.GObject;
 
 const Components = imports.service.components;
 const PluginBase = imports.service.plugin;
-const LegacyMessaging = imports.service.ui.legacyMessaging;
 
 
 var Metadata = {
     label: _('Telephony'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony',
-    incomingCapabilities: ['kdeconnect.telephony'],
+    incomingCapabilities: [
+        'kdeconnect.telephony',
+    ],
     outgoingCapabilities: [
         'kdeconnect.telephony.request',
         'kdeconnect.telephony.request_mute',
     ],
     actions: {
-        legacyReply: {
-            // TRANSLATORS: Respond to an incoming call via SMS
-            label: _('Reply SMS'),
-            icon_name: 'sms-symbolic',
-
-            parameter_type: new GLib.VariantType('a{sv}'),
-            incoming: ['kdeconnect.telephony'],
-            outgoing: ['kdeconnect.sms.request'],
-        },
         muteCall: {
             // TRANSLATORS: Silence the actively ringing call
             label: _('Mute Call'),
@@ -54,37 +46,15 @@ var Plugin = GObject.registerClass({
         super._init(device, 'telephony');
 
         // Neither of these are crucial for the plugin to work
-        this._mixer = Components.acquire('pulseaudio');
         this._mpris = Components.acquire('mpris');
-    }
-
-    get legacy_sms() {
-        // We have to do this lookup each time, because if we hold a reference
-        // to the plugin we don't know if it's disabled
-        let sms = this.device._plugins.get('sms');
-
-        return (sms && sms.settings.get_boolean('legacy-sms'));
+        this._mixer = Components.acquire('pulseaudio');
     }
 
     handlePacket(packet) {
-        try {
-            // This is the end of a 'ringing' or 'talking' event
-            if (packet.body.isCancel) {
-                let sender = packet.body.contactName || packet.body.phoneNumber;
-                this.device.hideNotification(`${packet.body.event}|${sender}`);
-                this._restoreMediaState();
-
-            // Only handle 'ringing' or 'talking' events, leave the notification
-            // plugin to handle 'missedCall' and 'sms' since they're repliable
-            } else if (['ringing', 'talking'].includes(packet.body.event)) {
+        switch (packet.type) {
+            case 'kdeconnect.telephony':
                 this._handleEvent(packet);
-
-            // Legacy messaging support
-            } else if (packet.body.event === 'sms' && this.legacy_sms) {
-                this._handleLegacyMessage(packet);
-            }
-        } catch (e) {
-            logError(e);
+                break;
         }
     }
 
@@ -158,12 +128,39 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * Handle a telephony event (ringing, answered), showing a notification and
-     * possibly adjusting the media/mixer state.
+     * Handle a telephony event (ringing, talking), showing or hiding a
+     * notification and possibly adjusting the media/mixer state.
      *
      * @param {Core.Packet} packet - A `kdeconnect.telephony`
      */
     _handleEvent(packet) {
+        // Only handle 'ringing' or 'talking' events; leave the notification
+        // plugin to handle 'missedCall' since they're often repliable
+        if (!['ringing', 'talking'].includes(packet.body.event))
+            return;
+
+        // This is the end of a telephony event
+        if (packet.body.isCancel)
+            this._cancelEvent(packet);
+        else
+            this._notifyEvent(packet);
+    }
+
+    _cancelEvent(packet) {
+        // Ensure we have a sender
+        // TRANSLATORS: No name or phone number
+        let sender = _('Unknown Contact');
+
+        if (packet.body.contactName)
+            sender = packet.body.contactName;
+        else if (packet.body.phoneNumber)
+            sender = packet.body.phoneNumber;
+
+        this.device.hideNotification(`${packet.body.event}|${sender}`);
+        this._restoreMediaState();
+    }
+
+    _notifyEvent(packet) {
         let body;
         let buttons = [];
         let icon = null;
@@ -216,79 +213,6 @@ var Plugin = GObject.registerClass({
             priority: priority,
             buttons: buttons,
         });
-    }
-
-    /**
-     * Handle an incoming SMS message using the legacy SMS method.
-     *
-     * @param {Core.Packet} packet - A `kdeconnect.telephony`
-     */
-    _handleLegacyMessage(packet) {
-        let action = null;
-        let icon = null;
-
-        // Ensure we have a sender
-        // TRANSLATORS: No name or phone number
-        let sender = _('Unknown Contact');
-
-        if (packet.body.contactName)
-            sender = packet.body.contactName;
-        else if (packet.body.phoneNumber)
-            sender = packet.body.phoneNumber;
-
-        // If there's a photo, use it as the notification icon
-        if (packet.body.phoneThumbnail)
-            icon = this._getThumbnailPixbuf(packet.body.phoneThumbnail);
-
-        if (icon === null)
-            icon = new Gio.ThemedIcon({name: 'sms-symbolic'});
-
-        // If there's a phone number we can make this repliable
-        if (packet.body.phoneNumber) {
-            action = {
-                name: 'legacyReply',
-                parameter: GLib.Variant.full_pack(packet),
-            };
-        }
-
-        // Notify with an option to reply in a dialog
-        this.device.showNotification({
-            id: `${packet.body.event}|${sender}`,
-            title: sender,
-            body: packet.body.messageBody,
-            icon: icon,
-            priority: Gio.NotificationPriority.NORMAL,
-            action: action,
-        });
-    }
-
-    /**
-     * Show a dialog to allow legacy devices to reply to SMS messages.
-     *
-     * @param {Core.Packet} packet - A `kdeconnect.telephony`
-     */
-    legacyReply(packet) {
-        let plugin = this.device._plugins.get('sms');
-
-        if (plugin === undefined) {
-            throw new Gio.IOErrorEnum({
-                code: Gio.IOErrorEnum.NOT_SUPPORTED,
-                message: 'SMS Plugin is disabled',
-            });
-        }
-
-        let dialog = new LegacyMessaging.Dialog({
-            device: this.device,
-            message: {
-                date: packet.id,
-                addresses: [{address: packet.body.phoneNumber}],
-                body: packet.body.messageBody,
-                sender: packet.body.contactName || _('Unknown Contact'),
-                type: 1, // MessageBox.INBOX
-            },
-            plugin: plugin,
-        });
-        dialog.present();
     }
 
     /**
