@@ -12,7 +12,9 @@ Config.PACKAGE_DATADIR = Extension.path;
 
 
 // Ensure config.js is setup properly
-if (Config.PACKAGE_DATADIR.startsWith(GLib.get_home_dir())) {
+const userDir = GLib.build_filenamev([GLib.get_user_data_dir(), 'gnome-shell']);
+
+if (Config.PACKAGE_DATADIR.startsWith(userDir)) {
     Config.IS_USER = true;
 
     Config.GSETTINGS_SCHEMA_DIR = `${Extension.path}/schemas`;
