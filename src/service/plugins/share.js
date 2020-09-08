@@ -7,7 +7,7 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 const PluginBase = imports.service.plugin;
-const URI = imports.utils.uri;
+const URI = imports.service.utils.uri;
 
 
 var Metadata = {

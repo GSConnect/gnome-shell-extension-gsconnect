@@ -6,7 +6,7 @@ const GObject = imports.gi.GObject;
 
 const Components = imports.service.components;
 const Config = imports.config;
-const DBus = imports.utils.dbus;
+const DBus = imports.service.utils.dbus;
 const {MediaPlayerInterface} = imports.service.components.mpris;
 const PluginBase = imports.service.plugin;
 

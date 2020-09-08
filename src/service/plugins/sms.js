@@ -7,7 +7,7 @@ const GObject = imports.gi.GObject;
 const PluginBase = imports.service.plugin;
 const LegacyMessaging = imports.service.ui.legacyMessaging;
 const Messaging = imports.service.ui.messaging;
-const URI = imports.utils.uri;
+const URI = imports.service.utils.uri;
 
 
 var Metadata = {

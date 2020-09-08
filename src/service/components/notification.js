@@ -5,7 +5,7 @@ const GLib = imports.gi.GLib;
 const GjsPrivate = imports.gi.GjsPrivate;
 const GObject = imports.gi.GObject;
 
-const DBus = imports.utils.dbus;
+const DBus = imports.service.utils.dbus;
 
 
 let _nodeInfo = Gio.DBusNodeInfo.new_for_xml(`

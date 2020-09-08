@@ -5,7 +5,7 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
 const Config = imports.config;
-const DBus = imports.utils.dbus;
+const DBus = imports.service.utils.dbus;
 const Device = imports.service.device;
 
 const DEVICE_NAME = 'org.gnome.Shell.Extensions.GSConnect.Device';
