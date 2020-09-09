@@ -178,6 +178,9 @@ const Service = GObject.registerClass({
             let icon = new Gio.ThemedIcon({name: 'dialog-error'});
             let target = null;
 
+            if (error.name === undefined)
+                error.name = 'Error';
+
             if (error.url !== undefined) {
                 id = error.url;
                 body = _('Click for help troubleshooting');
@@ -190,7 +193,7 @@ const Service = GObject.registerClass({
                     url: error.url,
                 });
             } else {
-                id = error.name.trim();
+                id = error.message.trim();
                 body = _('Click for more information');
                 priority = Gio.NotificationPriority.HIGH;
 
@@ -201,15 +204,13 @@ const Service = GObject.registerClass({
                 });
             }
 
-            // Create an urgent notification
             notif.set_title(`GSConnect: ${error.name.trim()}`);
             notif.set_body(body);
             notif.set_icon(icon);
             notif.set_priority(priority);
             notif.set_default_action_and_target('app.error', target);
 
-            // Bypass override
-            super.send_notification(id, notif);
+            this.send_notification(id, notif);
         } catch (e) {
             logError(e);
         }
