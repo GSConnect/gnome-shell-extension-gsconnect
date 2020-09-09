@@ -97,35 +97,27 @@ var Plugin = GObject.registerClass({
         return this._gmount;
     }
 
-    handlePacket(packet) {
-        if (packet.type === 'kdeconnect.sftp') {
-            // There was an error mounting the filesystem
-            if (packet.body.errorMessage) {
-                this.device.showNotification({
-                    id: 'sftp-error',
-                    title: `${this.device.name}: ${Metadata.label}`,
-                    body: packet.body.errorMessage,
-                    icon: new Gio.ThemedIcon({name: 'dialog-error-symbolic'}),
-                    priority: Gio.NotificationPriority.URGENT,
-                });
-
-            // Ensure we don't mount on top of an existing mount
-            } else if (this.gmount === null) {
-                this._mount(packet);
-            }
-        }
-    }
-
     connected() {
         super.connected();
 
         // Only enable for Lan connections
         if (this.device.channel instanceof Lan.Channel) {
-            if (this.gmount === null)
-                this.mount();
+            this.mount();
         } else {
             this.device.lookup_action('mount').enabled = false;
             this.device.lookup_action('unmount').enabled = false;
+        }
+    }
+
+    handlePacket(packet) {
+        switch (packet.type) {
+            case 'kdeconnect.sftp':
+                if (packet.body.hasOwnProperty('errorMessage'))
+                    this._handleError(packet);
+                else
+                    this._handleMount(packet);
+
+                break;
         }
     }
 
@@ -212,14 +204,29 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * Handle an SFTP info packet.
+     * Handle an error returned by the remote device.
      *
      * @param {Core.Packet} packet - a `kdeconnect.sftp`
      */
-    async _mount(packet) {
+    _handleError(packet) {
+        this.device.showNotification({
+            id: 'sftp-error',
+            title: `${this.device.name}: ${Metadata.label}`,
+            body: packet.body.errorMessage,
+            icon: new Gio.ThemedIcon({name: 'dialog-error-symbolic'}),
+            priority: Gio.NotificationPriority.URGENT,
+        });
+    }
+
+    /**
+     * Mount the remote device using the provided information.
+     *
+     * @param {Core.Packet} packet - a `kdeconnect.sftp`
+     */
+    async _handleMount(packet) {
         try {
-            // If mounting is already in progress, let that fail before retrying
-            if (this._mounting)
+            // Already mounted or mounting
+            if (this.gmount !== null || this._mounting)
                 return;
 
             this._mounting = true;
@@ -321,7 +328,7 @@ var Plugin = GObject.registerClass({
                     });
                 });
             } catch (e) {
-                debug(e);
+                debug(e, this.device.name);
             }
         }
     }
@@ -390,7 +397,7 @@ var Plugin = GObject.registerClass({
             let index = this.device.removeMenuAction('device.mount');
             this.device.addMenuItem(filesItem, index);
         } catch (e) {
-            logError(e);
+            logError(e, this.device.name);
         }
     }
 
@@ -408,7 +415,7 @@ var Plugin = GObject.registerClass({
                 );
             }
         } catch (e) {
-            logError(e);
+            logError(e, this.device.name);
         }
     }
 
@@ -529,7 +536,7 @@ var Plugin = GObject.registerClass({
                 );
             });
         } catch (e) {
-            debug(e);
+            debug(e, this.device.name);
         }
     }
 
