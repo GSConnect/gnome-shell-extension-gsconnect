@@ -202,11 +202,8 @@ var ChannelService = GObject.registerClass({
             this._tcp.add_inet_port(this.port, null);
             this._tcp.connect('incoming', this._onIncomingChannel.bind(this));
         } catch (e) {
-            this._tcp.stop();
             this._tcp = null;
 
-            e.name = _('Network Error');
-            e.url = `${Config.PACKAGE_URL}/wiki/Error#network-error`;
             throw e;
         }
     }
@@ -458,11 +455,21 @@ var ChannelService = GObject.registerClass({
             this._initCertificate();
 
         // Start TCP/UDP listeners
-        if (this._tcp === null)
-            this._initTcpListener();
+        try {
+            if (this._tcp === null)
+                this._initTcpListener();
 
-        if (this._udp4 === null && this._udp6 === null)
-            this._initUdpListener();
+            if (this._udp4 === null && this._udp6 === null)
+                this._initUdpListener();
+        } catch (e) {
+            // Known case of another application using the protocol defined port
+            if (e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.ADDRESS_IN_USE)) {
+                e.name = _('Port already in use');
+                e.url = `${Config.PACKAGE_URL}/wiki/Error#port-already-in-use`;
+            }
+
+            throw e;
+        }
 
         // Monitor network changes
         if (this._networkChangedId === 0) {
