@@ -352,50 +352,51 @@ var Plugin = GObject.registerClass({
         return this._unmountSection;
     }
 
-    _getMountedIcon() {
-        if (this._mountedIcon === undefined) {
-            this._mountedIcon = new Gio.EmblemedIcon({
-                gicon: new Gio.ThemedIcon({name: 'folder-remote-symbolic'}),
-            });
-
-            // TODO: this emblem often isn't very visible
-            let emblem = new Gio.Emblem({
+    _getFilesMenuItem() {
+        if (this._filesMenuItem === undefined) {
+            // Files menu icon
+            const emblem = new Gio.Emblem({
                 icon: new Gio.ThemedIcon({name: 'emblem-default'}),
             });
 
-            this._mountedIcon.add_emblem(emblem);
+            const mountedIcon = new Gio.EmblemedIcon({
+                gicon: new Gio.ThemedIcon({name: 'folder-remote-symbolic'}),
+            });
+            mountedIcon.add_emblem(emblem);
+
+            // Files menu item
+            this._filesMenuItem = new Gio.MenuItem();
+            this._filesMenuItem.set_detailed_action('device.mount');
+            this._filesMenuItem.set_icon(mountedIcon);
+            this._filesMenuItem.set_label(_('Files'));
         }
 
-        return this._mountedIcon;
+        return this._filesMenuItem;
     }
 
     async _addSubmenu(mount) {
         try {
-            let directories = await this._listDirectories(mount);
+            const directories = await this._listDirectories(mount);
 
-            // Directories Section
-            let dirSection = new Gio.Menu();
+            // Submenu sections
+            const dirSection = new Gio.Menu();
+            const unmountSection = this._getUnmountSection();
 
             for (let [name, uri] of Object.entries(directories))
                 dirSection.append(name, `device.openPath::${uri}`);
 
-            // Unmount Section
-            let unmountSection = this._getUnmountSection();
-
-            // Files Submenu
-            let filesSubmenu = new Gio.Menu();
+            // Files submenu
+            const filesSubmenu = new Gio.Menu();
             filesSubmenu.append_section(null, dirSection);
             filesSubmenu.append_section(null, unmountSection);
 
-            // Files Item
-            let filesItem = new Gio.MenuItem();
-            filesItem.set_detailed_action('device.mount');
-            filesItem.set_icon(this._getMountedIcon());
-            filesItem.set_label(_('Files'));
-            filesItem.set_submenu(filesSubmenu);
+            // Files menu item
+            const filesMenuItem = this._getFilesMenuItem();
+            filesMenuItem.set_submenu(filesSubmenu);
 
-            let index = this.device.removeMenuAction('device.mount');
-            this.device.addMenuItem(filesItem, index);
+            // Replace the existing menu item
+            const index = this.device.removeMenuAction('device.mount');
+            this.device.addMenuItem(filesMenuItem, index);
         } catch (e) {
             logError(e, this.device.name);
         }
