@@ -896,7 +896,6 @@ var Player = GObject.registerClass({
 
 var Manager = GObject.registerClass({
     GTypeName: 'GSConnectMPRISManager',
-    Implements: [Gio.DBusInterface],
     Signals: {
         'player-added': {
             param_types: [GObject.TYPE_OBJECT],
@@ -911,45 +910,47 @@ var Manager = GObject.registerClass({
             param_types: [GObject.TYPE_OBJECT, GObject.TYPE_INT64],
         },
     },
-}, class Manager extends Gio.DBusProxy {
+}, class Manager extends GObject.Object {
 
     _init() {
-        super._init({
-            g_bus_type: Gio.BusType.SESSION,
-            g_name: 'org.freedesktop.DBus',
-            g_object_path: '/org/freedesktop/DBus',
-            g_interface_name: 'org.freedesktop.DBus',
-        });
+        super._init();
 
         // Asynchronous setup
         this._cancellable = new Gio.Cancellable();
+        this._connection = Gio.DBus.session;
         this._players = new Map();
         this._paused = new Map();
-        this._init_async();
+
+        this._nameOwnerChangedId = Gio.DBus.session.signal_subscribe(
+            'org.freedesktop.DBus',
+            'org.freedesktop.DBus',
+            'NameOwnerChanged',
+            '/org/freedesktop/DBus',
+            'org.mpris.MediaPlayer2',
+            Gio.DBusSignalFlags.MATCH_ARG0_NAMESPACE,
+            this._onNameOwnerChanged.bind(this)
+        );
+
+        this._loadPlayers();
     }
 
-    async _init_async() {
+    async _loadPlayers() {
         try {
-            await new Promise((resolve, reject) => {
-                this.init_async(0, this._cancellable, (proxy, res) => {
-                    try {
-                        resolve(proxy.init_finish(res));
-                    } catch (e) {
-                        reject(e);
-                    }
-                });
-            });
-
             let names = await new Promise((resolve, reject) => {
-                this.call(
-                    'org.freedesktop.DBus.ListNames',
+                this._connection.call(
+                    'org.freedesktop.DBus',
+                    '/org/freedesktop/DBus',
+                    'org.freedesktop.DBus',
+                    'ListNames',
                     null,
-                    Gio.DBusCallFlags.NO_AUTO_START,
+                    null,
+                    Gio.DBusCallFlags.NONE,
                     -1,
                     this._cancellable,
-                    (proxy, res) => {
+                    (connection, res) => {
                         try {
-                            resolve(proxy.call_finish(res).deepUnpack()[0]);
+                            res = connection.call_finish(res);
+                            resolve(res.deepUnpack()[0]);
                         } catch (e) {
                             reject(e);
                         }
@@ -967,29 +968,19 @@ var Manager = GObject.registerClass({
         } catch (e) {
             if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
                 logError(e);
-
-            // FIXME: if something goes wrong the component will appear active
-            this.destroy();
         }
     }
 
-    vfunc_g_signal(sender_name, signal_name, parameters) {
-        try {
-            if (signal_name !== 'NameOwnerChanged')
-                return;
+    _onNameOwnerChanged(connection, sender, object, iface, signal, parameters) {
+        const [name, oldOwner, newOwner] = parameters.deepUnpack();
 
-            let [name, old_owner, new_owner] = parameters.deepUnpack();
+        if (name.includes('GSConnect'))
+            return;
 
-            if (name.startsWith('org.mpris.MediaPlayer2') &&
-                !name.includes('GSConnect')) {
-                if (new_owner.length)
-                    this._addPlayer(name);
-                else if (old_owner.length)
-                    this._removePlayer(name);
-            }
-        } catch (e) {
-            debug(e);
-        }
+        if (newOwner.length)
+            this._addPlayer(name);
+        else if (oldOwner.length)
+            this._removePlayer(name);
     }
 
     async _addPlayer(name) {
@@ -1113,6 +1104,7 @@ var Manager = GObject.registerClass({
             return;
 
         this._cancellable.cancel();
+        this._connection.signal_unsubscribe(this._nameOwnerChangedId);
 
         for (let player of this._players.values()) {
             player.disconnect(player.__propertiesId);
