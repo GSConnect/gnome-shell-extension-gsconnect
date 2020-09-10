@@ -118,3 +118,10 @@
   opacity: 0.5;
 }
 
+/**
+ * Error Dialog
+ */
+.error-stack-frame > * {
+  border-top-width: 0;
+}
+

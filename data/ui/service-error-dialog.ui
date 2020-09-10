@@ -1,101 +1,170 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk+" version="3.24"/>
-  <template class="GSConnectServiceErrorDialog" parent="GtkDialog">
-    <property name="can_focus">False</property>
-    <property name="default_width">480</property>
-    <property name="default_height">360</property>
+  <template class="GSConnectServiceErrorDialog" parent="GtkWindow">
+    <property name="default_width">600</property>
+    <property name="default_height">400</property>
     <property name="type_hint">dialog</property>
-    <child type="action">
-      <object class="GtkButton" id="cancel-button">
-        <property name="can_focus">True</property>
-        <property name="label" translatable="yes">Cancel</property>
-        <property name="visible">True</property>
-        <child internal-child="accessible">
-          <object class="AtkObject" id="cancel-button-atkobject">
-            <property name="AtkObject::accessible-name" translatable="yes">Cancel</property>
-          </object>
-        </child>
-     </object>
-    </child>
-    <child type="action">
-      <object class="GtkButton" id="report-button">
-        <property name="can-default">True</property>
-        <property name="label" translatable="yes">Report</property>
-        <property name="visible">True</property>
-        <child internal-child="accessible">
-          <object class="AtkObject" id="report-button-atkobject">
-            <property name="AtkObject::accessible-name" translatable="yes">Report</property>
-          </object>
-        </child>
-      </object>
-    </child>
-    <action-widgets>
-      <action-widget response="cancel">cancel-button</action-widget>
-      <action-widget response="ok" default="true">report-button</action-widget>
-    </action-widgets>
-    <child internal-child="vbox">
-      <object class="GtkBox">
-        <property name="border_width">0</property>
-        <property name="can_focus">False</property>
-        <property name="margin_left">6</property>
-        <property name="margin_right">6</property>
-        <property name="margin_top">6</property>
-        <property name="margin_bottom">6</property>
-        <property name="orientation">vertical</property>
-        <property name="spacing">12</property>
+    <child type="titlebar">
+      <object class="GtkHeaderBar">
         <property name="visible">True</property>
         <child>
-          <object class="GtkLabel" id="error-message">
-            <property name="can_focus">False</property>
-            <property name="halign">start</property>
+          <object class="GtkButton" id="cancel-button">
+            <property name="label" translatable="yes">Cancel</property>
             <property name="visible">True</property>
-            <property name="wrap">True</property>
-            <property name="xalign">0.0</property>
-            <attributes>
-              <attribute name="weight" value="bold"/>
-            </attributes>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <signal name="clicked" handler="_onClicked" swapped="no"/>
+            <accelerator key="Escape" signal="activate"/>
+            <child internal-child="accessible">
+              <object class="AtkObject" id="cancel-button-atkobject">
+                <property name="AtkObject::accessible-name" translatable="yes">Cancel</property>
+              </object>
+            </child>
           </object>
           <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
+            <property name="pack_type">start</property>
             <property name="position">0</property>
           </packing>
         </child>
         <child>
-          <object class="GtkScrolledWindow">
+          <object class="GtkButton" id="report-button">
+            <property name="label" translatable="yes">Report</property>
+            <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="shadow_type">in</property>
+            <property name="receives_default">True</property>
+            <accelerator key="Return" signal="activate"/>
+            <signal name="clicked" handler="_onClicked" swapped="no"/>
+            <child internal-child="accessible">
+              <object class="AtkObject" id="report-button-atkobject">
+                <property name="AtkObject::accessible-name" translatable="yes">Report</property>
+              </object>
+            </child>
+            <style>
+              <class name="suggested-action"/>
+            </style>
+          </object>
+          <packing>
+            <property name="pack_type">end</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="GtkScrolledWindow">
+        <property name="visible">True</property>
+        <property name="hscrollbar_policy">never</property>
+        <property name="propagate_natural_height">True</property>
+        <child>
+          <object class="GtkViewport">
             <property name="visible">True</property>
             <child>
-              <object class="GtkViewport">
-                <property name="can_focus">False</property>
+              <object class="GtkBox">
                 <property name="visible">True</property>
+                <property name="orientation">vertical</property>
+                <property name="margin">100</property>
+                <property name="margin_bottom">60</property>
+                <property name="spacing">12</property>
                 <child>
-                  <object class="GtkLabel" id="error-stack">
-                    <property name="can_focus">False</property>
-                    <property name="halign">start</property>
-                    <property name="hexpand">True</property>
-                    <property name="margin_top">6</property>
-                    <property name="margin_bottom">6</property>
-                    <property name="margin_start">6</property>
-                    <property name="margin_end">6</property>
-                    <property name="valign">start</property>
-                    <property name="vexpand">True</property>
+                  <object class="GtkLabel">
                     <property name="visible">True</property>
+                    <property name="label" translatable="yes">Something’s gone wrong</property>
+                    <attributes>
+                      <attribute name="scale" value="1.44"/> <!-- x-large -->
+                    </attributes>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">GSConnect encountered an unexpected error. Please report the problem and include any information that may help.</property>
+                    <property name="justify">center</property>
+                    <property name="wrap">True</property>
+                    <property name="xalign">0.5</property>
+                    <property name="yalign">0.5</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="orientation">vertical</property>
+                    <property name="margin_top">12</property>
+                    <child>
+                      <object class="GtkFrame" id="expander">
+                        <property name="visible">True</property>
+                        <property name="hexpand">True</property>
+                        <property name="shadow_type">in</property>
+                        <child>
+                          <object class="GtkEventBox">
+                            <property name="visible">True</property>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="visible">True</property>
+                                <property name="margin">12</property>
+                                <property name="spacing">6</property>
+                                <child>
+                                  <object class="GtkImage" id="expander-arrow">
+                                    <property name="visible">True</property>
+                                    <property name="icon_name">pan-end-symbolic</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="visible">True</property>
+                                    <property name="label" translatable="yes">Technical Details</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkRevealer" id="revealer">
+                        <property name="visible">True</property>
+                        <signal name="notify::reveal-child" handler="_onRevealChild" swapped="no"/>
+                        <child>
+                          <object class="GtkFrame">
+                            <property name="visible">True</property>
+                            <property name="shadow_type">in</property>
+                            <style>
+                              <class name="error-stack-frame"/>
+                            </style>
+                            <child>
+                              <object class="GtkTextView" id="error-stack">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="monospace">True</property>
+                                <property name="editable">False</property>
+                                <property name="wrap_mode">word</property>
+                                <property name="left_margin">12</property>
+                                <property name="right_margin">12</property>
+                                <property name="top_margin">12</property>
+                                <property name="bottom_margin">12</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>
             </child>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">2</property>
-          </packing>
         </child>
       </object>
     </child>
   </template>
+  <object class="GtkGestureMultiPress" id="gesture">
+    <property name="widget">expander</property>
+    <property name="button">0</property>
+    <property name="exclusive">True</property>
+  </object>
 </interface>
 
