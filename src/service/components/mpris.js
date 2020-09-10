@@ -624,7 +624,7 @@ var Player = GObject.registerClass({
                     proxy.call_finish(result);
                 } catch (e) {
                     Gio.DBusError.strip_remote_error(e);
-                    logError(e, this.g_name);
+                    debug(e, this.g_name);
                 }
             }
         );
@@ -652,12 +652,13 @@ var Player = GObject.registerClass({
                     try {
                         proxy.call_finish(result);
                     } catch (e) {
-                        logError(e);
+                        Gio.DBusError.strip_remote_error(e);
+                        debug(e, this.g_name);
                     }
                 }
             );
         } catch (e) {
-            logError(e, this.g_name);
+            debug(e, this.g_name);
         }
     }
 
@@ -666,7 +667,7 @@ var Player = GObject.registerClass({
             for (let name in changed.deepUnpack())
                 this.notify(name);
         } catch (e) {
-            logError(e, this.g_name);
+            debug(e, this.g_name);
         }
     }
 
@@ -961,8 +962,10 @@ var Manager = GObject.registerClass({
             for (let i = 0, len = names.length; i < len; i++) {
                 let name = names[i];
 
-                if (name.startsWith('org.mpris.MediaPlayer2') &&
-                    !name.includes('GSConnect'))
+                if (!name.startsWith('org.mpris.MediaPlayer2'))
+                    continue;
+
+                if (!name.includes('GSConnect'))
                     this._addPlayer(name);
             }
         } catch (e) {
@@ -989,15 +992,10 @@ var Manager = GObject.registerClass({
                 let player = new Player(name);
                 await player.initPromise();
 
-                player.__propertiesId = player.connect(
-                    'g-properties-changed',
-                    (player) => this.emit('player-changed', player)
-                );
+                player.connect('g-properties-changed',
+                    (player) => this.emit('player-changed', player));
 
-                player.__seekedId = player.connect(
-                    'Seeked',
-                    this.emit.bind(this, 'player-seeked')
-                );
+                player.connect('Seeked', this.emit.bind(this, 'player-seeked'));
 
                 this._players.set(name, player);
                 this.emit('player-added', player);
@@ -1012,14 +1010,10 @@ var Manager = GObject.registerClass({
             let player = this._players.get(name);
 
             if (player !== undefined) {
-                debug(`Removing MPRIS Player ${name}`);
-
                 this._paused.delete(name);
                 this._players.delete(name);
                 this.emit('player-removed', player);
 
-                player.disconnect(player.__propertiesId);
-                player.disconnect(player.__seekedId);
                 player.destroy();
             }
         } catch (e) {
@@ -1106,12 +1100,8 @@ var Manager = GObject.registerClass({
         this._cancellable.cancel();
         this._connection.signal_unsubscribe(this._nameOwnerChangedId);
 
-        for (let player of this._players.values()) {
-            player.disconnect(player.__propertiesId);
-            player.disconnect(player.__seekedId);
-            player.destroy();
-        }
-
+        this._paused.clear();
+        this._players.forEach(player => player.destroy());
         this._players.clear();
     }
 });
