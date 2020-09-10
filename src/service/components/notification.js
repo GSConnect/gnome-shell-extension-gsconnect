@@ -246,9 +246,19 @@ const Listener = GObject.registerClass({
 
             // libnotify
             } else if (name === 'Notify') {
+                const message = invocation.get_message();
+
+                if (this._fdoNameOwner === undefined) {
+                    this._fdoNameOwner = await this._getNameOwner(
+                        'org.freedesktop.Notifications');
+                }
+
+                if (this._fdoNameOwner !== message.get_destination())
+                    return;
+
                 // Try to brute-force an application name using DBus
                 if (!this.applications.hasOwnProperty(parameters[0])) {
-                    let sender = invocation.get_sender();
+                    let sender = message.get_sender();
                     parameters[0] = await this._getAppName(sender, parameters[0]);
                 }
 
@@ -277,6 +287,16 @@ const Listener = GObject.registerClass({
             this._fdoNotifications.export(
                 this._monitor,
                 '/org/freedesktop/Notifications'
+            );
+
+            this._fdoNameOwnerChangedId = this._session.signal_subscribe(
+                'org.freedesktop.DBus',
+                'org.freedesktop.DBus',
+                'NameOwnerChanged',
+                '/org/freedesktop/DBus',
+                'org.freedesktop.Notifications',
+                Gio.DBusSignalFlags.MATCH_ARG0_NAMESPACE,
+                this._onFdoNameOwnerChanged.bind(this)
             );
 
             // GNotification Interface
@@ -324,6 +344,10 @@ const Listener = GObject.registerClass({
             logError(e);
             this.destroy();
         }
+    }
+
+    _onFdoNameOwnerChanged(connection, sender, object, iface, signal, parameters) {
+        this._fdoNameOwner = parameters.deepUnpack()[2];
     }
 
     _sendNotification(notif) {
@@ -382,6 +406,7 @@ const Listener = GObject.registerClass({
             if (this._fdoNotifications) {
                 this._fdoNotifications.disconnect(this._fdoMethodCallId);
                 this._fdoNotifications.unexport();
+                this._session.signal_unsubscribe(this._fdoNameOwnerChangedId);
             }
 
             if (this._gtkNotifications) {
