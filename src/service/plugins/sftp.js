@@ -214,7 +214,7 @@ var Plugin = GObject.registerClass({
             title: `${this.device.name}: ${Metadata.label}`,
             body: packet.body.errorMessage,
             icon: new Gio.ThemedIcon({name: 'dialog-error-symbolic'}),
-            priority: Gio.NotificationPriority.URGENT,
+            priority: Gio.NotificationPriority.HIGH,
         });
     }
 
