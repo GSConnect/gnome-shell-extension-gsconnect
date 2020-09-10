@@ -381,13 +381,11 @@ const Listener = GObject.registerClass({
         try {
             if (this._fdoNotifications) {
                 this._fdoNotifications.disconnect(this._fdoMethodCallId);
-                this._fdoNotifications.flush();
                 this._fdoNotifications.unexport();
             }
 
             if (this._gtkNotifications) {
                 this._gtkNotifications.disconnect(this._gtkMethodCallId);
-                this._gtkNotifications.flush();
                 this._gtkNotifications.unexport();
             }
 
