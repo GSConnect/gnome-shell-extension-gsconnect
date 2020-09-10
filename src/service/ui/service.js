@@ -185,39 +185,51 @@ var DeviceChooser = GObject.registerClass({
 });
 
 
-/*
+/**
  * A dialog for reporting an error.
  */
 var ErrorDialog = GObject.registerClass({
     GTypeName: 'GSConnectServiceErrorDialog',
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/service-error-dialog.ui',
-    Children: ['cancel-button', 'report-button', 'error-message', 'error-stack'],
-}, class ErrorDialog extends Gtk.Dialog {
+    Children: [
+        'error-stack',
+        'expander-arrow',
+        'gesture',
+        'report-button',
+        'revealer',
+    ],
+}, class ErrorDialog extends Gtk.Window {
 
     _init(error) {
         super._init({
             application: Gio.Application.get_default(),
             title: `GSConnect: ${error.name}`,
-            use_header_bar: true,
         });
         this.set_keep_above(true);
 
         this.error = error;
-        this.error_message.label = error.message;
-        this.error_stack.label = error.stack;
+        this.error_stack.buffer.text = `${error.message}\n\n${error.stack}`;
+        this.gesture.connect('released', this._onReleased.bind(this));
     }
 
-    vfunc_response(response_id) {
-        if (response_id === Gtk.ResponseType.OK) {
-            Gio.AppInfo.launch_default_for_uri_async(
-                this._buildUri(this.error.message, this.error.stack),
-                null,
-                null,
-                null
-            );
+    _onClicked(button) {
+        if (this.report_button === button) {
+            const uri = this._buildUri(this.error.message, this.error.stack);
+            Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
         }
 
         this.destroy();
+    }
+
+    _onReleased(gesture, n_press) {
+        if (n_press === 1)
+            this.revealer.reveal_child = !this.revealer.reveal_child;
+    }
+
+    _onRevealChild(revealer, pspec) {
+        this.expander_arrow.icon_name = this.revealer.reveal_child
+            ? 'pan-down-symbolic'
+            : 'pan-end-symbolic';
     }
 
     _buildUri(message, stack) {
