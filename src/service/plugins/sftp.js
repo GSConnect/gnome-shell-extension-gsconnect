@@ -102,7 +102,8 @@ var Plugin = GObject.registerClass({
 
         // Only enable for Lan connections
         if (this.device.channel instanceof Lan.Channel) {
-            this.mount();
+            if (this.settings.get_boolean('automount'))
+                this.mount();
         } else {
             this.device.lookup_action('mount').enabled = false;
             this.device.lookup_action('unmount').enabled = false;
@@ -398,7 +399,14 @@ var Plugin = GObject.registerClass({
             const index = this.device.removeMenuAction('device.mount');
             this.device.addMenuItem(filesMenuItem, index);
         } catch (e) {
-            logError(e, this.device.name);
+            if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED)) {
+                const service = Gio.Application.get_default();
+
+                if (service !== null)
+                    service.notify_error(e);
+                else
+                    logError(e, this.device.name);
+            }
         }
     }
 

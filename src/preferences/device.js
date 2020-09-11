@@ -456,6 +456,9 @@ var Panel = GObject.registerClass({
         settings = this.pluginSettings('photo');
         this.actions.add_action(settings.create_action('share-camera'));
 
+        settings = this.pluginSettings('sftp');
+        this.actions.add_action(settings.create_action('automount'));
+
         settings = this.pluginSettings('share');
         this.actions.add_action(settings.create_action('receive-files'));
 

@@ -135,7 +135,11 @@
       <default>{}</default>
     </key>
   </schema>
-  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.SFTP"/>
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.SFTP">
+    <key name="automount" type="b">
+      <default>true</default>
+    </key>
+  </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Share">
     <key name="receive-files" type="b">
       <default>true</default>
