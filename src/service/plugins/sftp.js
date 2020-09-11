@@ -204,14 +204,14 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * Handle an error returned by the remote device.
+     * Handle an error reported by the remote device.
      *
      * @param {Core.Packet} packet - a `kdeconnect.sftp`
      */
     _handleError(packet) {
         this.device.showNotification({
             id: 'sftp-error',
-            title: `${this.device.name}: ${Metadata.label}`,
+            title: _('%s reported an error').format(this.device.name),
             body: packet.body.errorMessage,
             icon: new Gio.ThemedIcon({name: 'dialog-error-symbolic'}),
             priority: Gio.NotificationPriority.HIGH,
