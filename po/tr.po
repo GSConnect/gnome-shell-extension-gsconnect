@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-09-10 22:31-0700\n"
-"PO-Revision-Date: 2020-09-11 05:36\n"
+"PO-Revision-Date: 2020-09-11 13:40\n"
 "Last-Translator: \n"
 "Language-Team: Turkish\n"
 "Language: tr_TR\n"
@@ -366,7 +366,7 @@ msgstr "Eski SMS Desteği"
 
 #: data/ui/preferences-device-panel.ui:2027
 msgid "SFTP Automount"
-msgstr ""
+msgstr "SFTP Otomatik Bağla"
 
 #: data/ui/preferences-device-panel.ui:2082
 #: data/ui/preferences-device-panel.ui:2408
@@ -549,15 +549,15 @@ msgstr "Rapor"
 
 #: data/ui/service-error-dialog.ui:72
 msgid "Something’s gone wrong"
-msgstr ""
+msgstr "Bir şeyler ters gitti"
 
 #: data/ui/service-error-dialog.ui:84
 msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
-msgstr ""
+msgstr "GSConnect beklenmedik bir hatayla karşılaştı. Lütfen sorunu bildirin ve yardımcı olabilecek tüm bilgileri ekleyin."
 
 #: data/ui/service-error-dialog.ui:118
 msgid "Technical Details"
-msgstr ""
+msgstr "Teknik Ayrıntılar"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: nautilus-extension/nautilus-gsconnect.py:164 webextension/gettext.js:33
@@ -798,7 +798,7 @@ msgstr "OpenSSL bulunamadı"
 
 #: src/service/backends/lan.js:467
 msgid "Port already in use"
-msgstr ""
+msgstr "Bağlantı noktası zaten kullanılıyor"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:252
@@ -914,7 +914,7 @@ msgstr "Ayır"
 #: src/service/plugins/sftp.js:215
 #, javascript-format
 msgid "%s reported an error"
-msgstr ""
+msgstr "%s bir hata bildirdi"
 
 #: src/service/plugins/share.js:14 src/service/plugins/share.js:20
 msgid "Share"
