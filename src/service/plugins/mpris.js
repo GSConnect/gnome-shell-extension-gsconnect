@@ -7,7 +7,7 @@ const GObject = imports.gi.GObject;
 const Components = imports.service.components;
 const Config = imports.config;
 const DBus = imports.service.utils.dbus;
-const {MediaPlayerInterface} = imports.service.components.mpris;
+const MPRIS = imports.service.components.mpris;
 const PluginBase = imports.service.plugin;
 
 
@@ -122,7 +122,7 @@ var Plugin = GObject.registerClass({
 
         for (let identity of playerList) {
             if (!this._players.has(identity)) {
-                let player = new RemotePlayer(this.device, identity);
+                let player = new PlayerRemote(this.device, identity);
                 this._players.set(identity, player);
             }
 
@@ -428,111 +428,9 @@ const MPRISIface = Config.DBUS.lookup_interface('org.mpris.MediaPlayer2');
 const MPRISPlayerIface = Config.DBUS.lookup_interface('org.mpris.MediaPlayer2.Player');
 
 
-const RemotePlayer = GObject.registerClass({
-    GTypeName: 'GSConnectMPRISRemotePlayer',
-    Implements: [MediaPlayerInterface],
-    Properties: {
-        // Application Properties
-        'CanQuit': GObject.ParamSpec.override(
-            'CanQuit',
-            MediaPlayerInterface
-        ),
-        'CanRaise': GObject.ParamSpec.override(
-            'CanRaise',
-            MediaPlayerInterface
-        ),
-        'CanSetFullscreen': GObject.ParamSpec.override(
-            'CanSetFullscreen',
-            MediaPlayerInterface
-        ),
-        'DesktopEntry': GObject.ParamSpec.override(
-            'DesktopEntry',
-            MediaPlayerInterface
-        ),
-        'Fullscreen': GObject.ParamSpec.override(
-            'Fullscreen',
-            MediaPlayerInterface
-        ),
-        'HasTrackList': GObject.ParamSpec.override(
-            'HasTrackList',
-            MediaPlayerInterface
-        ),
-        'Identity': GObject.ParamSpec.override(
-            'Identity',
-            MediaPlayerInterface
-        ),
-        'SupportedMimeTypes': GObject.ParamSpec.override(
-            'SupportedMimeTypes',
-            MediaPlayerInterface
-        ),
-        'SupportedUriSchemes': GObject.ParamSpec.override(
-            'SupportedUriSchemes',
-            MediaPlayerInterface
-        ),
-
-        // Player Properties
-        'CanControl': GObject.ParamSpec.override(
-            'CanControl',
-            MediaPlayerInterface
-        ),
-        'CanGoNext': GObject.ParamSpec.override(
-            'CanGoNext',
-            MediaPlayerInterface
-        ),
-        'CanGoPrevious': GObject.ParamSpec.override(
-            'CanGoPrevious',
-            MediaPlayerInterface
-        ),
-        'CanPause': GObject.ParamSpec.override(
-            'CanPause',
-            MediaPlayerInterface
-        ),
-        'CanPlay': GObject.ParamSpec.override(
-            'CanPlay',
-            MediaPlayerInterface
-        ),
-        'CanSeek': GObject.ParamSpec.override(
-            'CanSeek',
-            MediaPlayerInterface
-        ),
-        'LoopStatus': GObject.ParamSpec.override(
-            'LoopStatus',
-            MediaPlayerInterface
-        ),
-        'MaximumRate': GObject.ParamSpec.override(
-            'MaximumRate',
-            MediaPlayerInterface
-        ),
-        'Metadata': GObject.ParamSpec.override(
-            'Metadata',
-            MediaPlayerInterface
-        ),
-        'MinimumRate': GObject.ParamSpec.override(
-            'MinimumRate',
-            MediaPlayerInterface
-        ),
-        'PlaybackStatus': GObject.ParamSpec.override(
-            'PlaybackStatus',
-            MediaPlayerInterface
-        ),
-        'Position': GObject.ParamSpec.override(
-            'Position',
-            MediaPlayerInterface
-        ),
-        'Rate': GObject.ParamSpec.override(
-            'Rate',
-            MediaPlayerInterface
-        ),
-        'Shuffle': GObject.ParamSpec.override(
-            'Shuffle',
-            MediaPlayerInterface
-        ),
-        'Volume': GObject.ParamSpec.override(
-            'Volume',
-            MediaPlayerInterface
-        ),
-    },
-}, class RemotePlayer extends GObject.Object {
+const PlayerRemote = GObject.registerClass({
+    GTypeName: 'GSConnectMPRISPlayerRemote',
+}, class PlayerRemote extends MPRIS.Player {
 
     _init(device, identity) {
         super._init();
@@ -792,19 +690,6 @@ const RemotePlayer = GObject.registerClass({
     }
 
     /*
-     * The org.mpris.MediaPlayer2 Interface
-     */
-    get DesktopEntry() {
-        return 'org.gnome.Shell.Extensions.GSConnect';
-    }
-
-    Quit() {
-    }
-
-    Raise() {
-    }
-
-    /*
      * The org.mpris.MediaPlayer2.Player Interface
      */
     get CanControl() {
@@ -876,10 +761,6 @@ const RemotePlayer = GObject.registerClass({
                 action: 'Next',
             },
         });
-    }
-
-    OpenUri(uri) {
-        debug(`OpenUri(${uri}): Not Supported`);
     }
 
     Pause() {

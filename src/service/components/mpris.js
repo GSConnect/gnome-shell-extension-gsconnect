@@ -5,9 +5,8 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
 
-var MediaPlayerInterface = GObject.registerClass({
+var Player = GObject.registerClass({
     GTypeName: 'GSConnectMediaPlayerInterface',
-    Requires: [GObject.Object],
     Properties: {
         // Application Properties
         'CanQuit': GObject.ParamSpec.boolean(
@@ -195,7 +194,7 @@ var MediaPlayerInterface = GObject.registerClass({
             param_types: [GObject.TYPE_INT64],
         },
     },
-}, class MediaPlayerInterface extends GObject.Interface {
+}, class Player extends GObject.Object {
 
     /*
      * The org.mpris.MediaPlayer2 Interface
@@ -223,7 +222,7 @@ var MediaPlayerInterface = GObject.registerClass({
 
     get DesktopEntry() {
         if (this._DesktopEntry === undefined)
-            return this.Identity;
+            return 'org.gnome.Shell.Extensions.GSConnect';
 
         return this._DesktopEntry;
     }
@@ -463,119 +462,16 @@ var MediaPlayerInterface = GObject.registerClass({
 });
 
 
-var Player = GObject.registerClass({
+/**
+ * An aggregate of the org.mpris.MediaPlayer2 and org.mpris.MediaPlayer2.Player
+ * interfaces.
+ */
+const PlayerProxy = GObject.registerClass({
     GTypeName: 'GSConnectMPRISPlayer',
-    Implements: [Gio.DBusInterface, MediaPlayerInterface],
-    Properties: {
-        // Application Properties
-        'CanQuit': GObject.ParamSpec.override(
-            'CanQuit',
-            MediaPlayerInterface
-        ),
-        'CanRaise': GObject.ParamSpec.override(
-            'CanRaise',
-            MediaPlayerInterface
-        ),
-        'CanSetFullscreen': GObject.ParamSpec.override(
-            'CanSetFullscreen',
-            MediaPlayerInterface
-        ),
-        'DesktopEntry': GObject.ParamSpec.override(
-            'DesktopEntry',
-            MediaPlayerInterface
-        ),
-        'Fullscreen': GObject.ParamSpec.override(
-            'Fullscreen',
-            MediaPlayerInterface
-        ),
-        'HasTrackList': GObject.ParamSpec.override(
-            'HasTrackList',
-            MediaPlayerInterface
-        ),
-        'Identity': GObject.ParamSpec.override(
-            'Identity',
-            MediaPlayerInterface
-        ),
-        'SupportedMimeTypes': GObject.ParamSpec.override(
-            'SupportedMimeTypes',
-            MediaPlayerInterface
-        ),
-        'SupportedUriSchemes': GObject.ParamSpec.override(
-            'SupportedUriSchemes',
-            MediaPlayerInterface
-        ),
-
-        // Player Properties
-        'CanControl': GObject.ParamSpec.override(
-            'CanControl',
-            MediaPlayerInterface
-        ),
-        'CanGoNext': GObject.ParamSpec.override(
-            'CanGoNext',
-            MediaPlayerInterface
-        ),
-        'CanGoPrevious': GObject.ParamSpec.override(
-            'CanGoPrevious',
-            MediaPlayerInterface
-        ),
-        'CanPause': GObject.ParamSpec.override(
-            'CanPause',
-            MediaPlayerInterface
-        ),
-        'CanPlay': GObject.ParamSpec.override(
-            'CanPlay',
-            MediaPlayerInterface
-        ),
-        'CanSeek': GObject.ParamSpec.override(
-            'CanSeek',
-            MediaPlayerInterface
-        ),
-        'LoopStatus': GObject.ParamSpec.override(
-            'LoopStatus',
-            MediaPlayerInterface
-        ),
-        'MaximumRate': GObject.ParamSpec.override(
-            'MaximumRate',
-            MediaPlayerInterface
-        ),
-        'Metadata': GObject.ParamSpec.override(
-            'Metadata',
-            MediaPlayerInterface
-        ),
-        'MinimumRate': GObject.ParamSpec.override(
-            'MinimumRate',
-            MediaPlayerInterface
-        ),
-        'PlaybackStatus': GObject.ParamSpec.override(
-            'PlaybackStatus',
-            MediaPlayerInterface
-        ),
-        'Position': GObject.ParamSpec.override(
-            'Position',
-            MediaPlayerInterface
-        ),
-        'Rate': GObject.ParamSpec.override(
-            'Rate',
-            MediaPlayerInterface
-        ),
-        'Shuffle': GObject.ParamSpec.override(
-            'Shuffle',
-            MediaPlayerInterface
-        ),
-        'Volume': GObject.ParamSpec.override(
-            'Volume',
-            MediaPlayerInterface
-        ),
-    },
-}, class Player extends Gio.DBusProxy {
+}, class PlayerProxy extends Player {
 
     _init(name) {
-        super._init({
-            g_bus_type: Gio.BusType.SESSION,
-            g_name: name,
-            g_object_path: '/org/mpris/MediaPlayer2',
-            g_interface_name: 'org.mpris.MediaPlayer2.Player',
-        });
+        super._init();
 
         this._application = new Gio.DBusProxy({
             g_bus_type: Gio.BusType.SESSION,
@@ -584,36 +480,44 @@ var Player = GObject.registerClass({
             g_interface_name: 'org.mpris.MediaPlayer2',
         });
 
-        this._propertiesChangedId = this._application.connect(
+        this._applicationChangedId = this._application.connect(
             'g-properties-changed',
             this._onPropertiesChanged.bind(this)
+        );
+
+        this._player = new Gio.DBusProxy({
+            g_bus_type: Gio.BusType.SESSION,
+            g_name: name,
+            g_object_path: '/org/mpris/MediaPlayer2',
+            g_interface_name: 'org.mpris.MediaPlayer2.Player',
+        });
+
+        this._playerChangedId = this._player.connect(
+            'g-properties-changed',
+            this._onPropertiesChanged.bind(this)
+        );
+
+        this._playerSignalId = this._player.connect(
+            'g-signal',
+            this._onSignal.bind(this)
         );
 
         this._cancellable = new Gio.Cancellable();
     }
 
-    vfunc_g_properties_changed(changed, invalidated) {
-        try {
-            for (let name in changed.deepUnpack())
-                this.notify(name);
-        } catch (e) {
-            debug(e, this.g_name);
-        }
-    }
-
-    vfunc_g_signal(sender_name, signal_name, parameters) {
+    _onSignal(proxy, sender_name, signal_name, parameters) {
         try {
             if (signal_name !== 'Seeked')
                 return;
 
             this.emit('Seeked', parameters.deepUnpack()[0]);
         } catch (e) {
-            debug(e, this.g_name);
+            debug(e, proxy.g_name);
         }
     }
 
-    _call(name, parameters = null) {
-        this.call(
+    _call(proxy, name, parameters = null) {
+        proxy.call(
             name,
             parameters,
             Gio.DBusCallFlags.NO_AUTO_START,
@@ -624,27 +528,27 @@ var Player = GObject.registerClass({
                     proxy.call_finish(result);
                 } catch (e) {
                     Gio.DBusError.strip_remote_error(e);
-                    debug(e, this.g_name);
+                    debug(e, proxy.g_name);
                 }
             }
         );
     }
 
-    _get(name, fallback = null) {
+    _get(proxy, name, fallback = null) {
         try {
-            return this.get_cached_property(name).recursiveUnpack();
+            return proxy.get_cached_property(name).recursiveUnpack();
         } catch (e) {
             return fallback;
         }
     }
 
-    _set(name, value) {
+    _set(proxy, name, value) {
         try {
-            this.set_cached_property(name, value);
+            proxy.set_cached_property(name, value);
 
-            this.call(
+            proxy.call(
                 'org.freedesktop.DBus.Properties.Set',
-                new GLib.Variant('(ssv)', [this.g_interface_name, name, value]),
+                new GLib.Variant('(ssv)', [proxy.g_interface_name, name, value]),
                 Gio.DBusCallFlags.NO_AUTO_START,
                 -1,
                 this._cancellable,
@@ -653,35 +557,29 @@ var Player = GObject.registerClass({
                         proxy.call_finish(result);
                     } catch (e) {
                         Gio.DBusError.strip_remote_error(e);
-                        debug(e, this.g_name);
+                        debug(e, proxy.g_name);
                     }
                 }
             );
         } catch (e) {
-            debug(e, this.g_name);
+            debug(e, proxy.g_name);
         }
     }
 
     _onPropertiesChanged(proxy, changed, invalidated) {
         try {
+            this.freeze_notify();
+
             for (let name in changed.deepUnpack())
                 this.notify(name);
+
+            this.thaw_notify();
         } catch (e) {
-            debug(e, this.g_name);
+            debug(e, proxy.g_name);
         }
     }
 
     initPromise() {
-        let player = new Promise((resolve, reject) => {
-            this.init_async(0, this._cancellable, (proxy, res) => {
-                try {
-                    resolve(proxy.init_finish(res));
-                } catch (e) {
-                    reject(e);
-                }
-            });
-        });
-
         let application = new Promise((resolve, reject) => {
             this._application.init_async(0, this._cancellable, (proxy, res) => {
                 try {
@@ -692,97 +590,107 @@ var Player = GObject.registerClass({
             });
         });
 
-        return Promise.all([player, application]);
+        let player = new Promise((resolve, reject) => {
+            this._player.init_async(0, this._cancellable, (proxy, res) => {
+                try {
+                    resolve(proxy.init_finish(res));
+                } catch (e) {
+                    reject(e);
+                }
+            });
+        });
+
+        return Promise.all([application, player]);
     }
 
     /*
      * The org.mpris.MediaPlayer2 Interface
      */
     get CanQuit() {
-        return this._get.call(this._application, 'CanQuit', false);
+        return this._get(this._application, 'CanQuit', false);
     }
 
     get CanRaise() {
-        return this._get.call(this._application, 'CanRaise', false);
+        return this._get(this._application, 'CanRaise', false);
     }
 
     get CanSetFullscreen() {
-        return this._get.call(this._application, 'CanSetFullscreen', false);
+        return this._get(this._application, 'CanSetFullscreen', false);
     }
 
     get DesktopEntry() {
-        return this._get.call(this._application, 'DesktopEntry', null);
+        return this._get(this._application, 'DesktopEntry', null);
     }
 
     get Fullscreen() {
-        return this._get.call(this._application, 'Fullscreen', false);
+        return this._get(this._application, 'Fullscreen', false);
     }
 
     set Fullscreen(mode) {
-        this._set.call(this._application, 'Fullscreen', new GLib.Variant('b', mode));
+        this._set(this._application, 'Fullscreen', new GLib.Variant('b', mode));
     }
 
     get HasTrackList() {
-        return this._get.call(this._application, 'HasTrackList', false);
+        return this._get(this._application, 'HasTrackList', false);
     }
 
     get Identity() {
-        return this._get.call(this._application, 'Identity', _('Unknown'));
+        return this._get(this._application, 'Identity', _('Unknown'));
     }
 
     get SupportedMimeTypes() {
-        return this._get.call(this._application, 'SupportedMimeTypes', []);
+        return this._get(this._application, 'SupportedMimeTypes', []);
     }
 
     get SupportedUriSchemes() {
-        return this._get.call(this._application, 'SupportedUriSchemes', []);
+        return this._get(this._application, 'SupportedUriSchemes', []);
     }
 
     Quit() {
-        this._call.call(this._application, 'Quit');
+        this._call(this._application, 'Quit');
     }
 
     Raise() {
-        this._call.call(this._application, 'Raise');
+        this._call(this._application, 'Raise');
     }
 
     /*
      * The org.mpris.MediaPlayer2.Player Interface
      */
     get CanControl() {
-        return this._get('CanControl', false);
+        return this._get(this._player, 'CanControl', false);
     }
 
     get CanGoNext() {
-        return this._get('CanGoNext', false);
+        return this._get(this._player, 'CanGoNext', false);
     }
 
     get CanGoPrevious() {
-        return this._get('CanGoPrevious', false);
+        return this._get(this._player, 'CanGoPrevious', false);
     }
 
     get CanPause() {
-        return this._get('CanPause', false);
+        return this._get(this._player, 'CanPause', false);
     }
 
     get CanPlay() {
-        return this._get('CanPlay', false);
+        return this._get(this._player, 'CanPlay', false);
     }
 
     get CanSeek() {
-        return this._get('CanSeek', false);
+        return this._get(this._player, 'CanSeek', false);
     }
 
     get LoopStatus() {
-        return this._get('LoopStatus', 'None');
+        return this._get(this._player, 'LoopStatus', 'None');
     }
 
     set LoopStatus(status) {
-        this._set('LoopStatus', new GLib.Variant('s', status));
+        this._set(this._player, 'LoopStatus', new GLib.Variant('s', status));
     }
 
     get MaximumRate() {
-        return this._get('MaximumRate', 1.0);
+        return this._get(this._player, 'MaximumRate', 1.0);
     }
 
     get Metadata() {
@@ -795,23 +703,26 @@ var Player = GObject.registerClass({
             };
         }
 
-        return this._get('Metadata', this._metadata);
+        return this._get(this._player, 'Metadata', this._metadata);
     }
 
     get MinimumRate() {
-        return this._get('MinimumRate', 1.0);
+        return this._get(this._player, 'MinimumRate', 1.0);
     }
 
     get PlaybackStatus() {
-        return this._get('PlaybackStatus', 'Stopped');
+        return this._get(this._player, 'PlaybackStatus', 'Stopped');
     }
 
     // g-properties-changed is not emitted for this property
     get Position() {
         try {
-            let reply = this.call_sync(
+            let reply = this._player.call_sync(
                 'org.freedesktop.DBus.Properties.Get',
-                new GLib.Variant('(ss)', [this.g_interface_name, 'Position']),
+                new GLib.Variant('(ss)', [
+                    'org.mpris.MediaPlayer2.Player',
+                    'Position',
+                ]),
                 Gio.DBusCallFlags.NONE,
                 -1,
                 null
@@ -824,63 +735,64 @@ var Player = GObject.registerClass({
     }
 
     get Rate() {
-        return this._get('Rate', 1.0);
+        return this._get(this._player, 'Rate', 1.0);
     }
 
     set Rate(rate) {
-        this._set('Rate', new GLib.Variant('d', rate));
+        this._set(this._player, 'Rate', new GLib.Variant('d', rate));
     }
 
     get Shuffle() {
-        return this._get('Shuffle', false);
+        return this._get(this._player, 'Shuffle', false);
     }
 
     set Shuffle(mode) {
-        this._set('Shuffle', new GLib.Variant('b', mode));
+        this._set(this._player, 'Shuffle', new GLib.Variant('b', mode));
     }
 
     get Volume() {
-        return this._get('Volume', 1.0);
+        return this._get(this._player, 'Volume', 1.0);
     }
 
     set Volume(level) {
-        this._set('Volume', new GLib.Variant('d', level));
+        this._set(this._player, 'Volume', new GLib.Variant('d', level));
     }
 
     Next() {
-        this._call('Next');
+        this._call(this._player, 'Next');
     }
 
     OpenUri(uri) {
-        this._call('OpenUri', new GLib.Variant('(s)', [uri]));
+        this._call(this._player, 'OpenUri', new GLib.Variant('(s)', [uri]));
     }
 
     Previous() {
-        this._call('Previous');
+        this._call(this._player, 'Previous');
     }
 
     Pause() {
-        this._call('Pause');
+        this._call(this._player, 'Pause');
     }
 
     Play() {
-        this._call('Play');
+        this._call(this._player, 'Play');
     }
 
     PlayPause() {
-        this._call('PlayPause');
+        this._call(this._player, 'PlayPause');
     }
 
     Seek(offset) {
-        this._call('Seek', new GLib.Variant('(x)', [offset]));
+        this._call(this._player, 'Seek', new GLib.Variant('(x)', [offset]));
     }
 
     SetPosition(trackId, position) {
-        this._call('SetPosition', new GLib.Variant('(ox)', [trackId, position]));
+        this._call(this._player, 'SetPosition',
+            new GLib.Variant('(ox)', [trackId, position]));
     }
 
     Stop() {
-        this._call('Stop');
+        this._call(this._player, 'Stop');
     }
 
     destroy() {
@@ -888,13 +800,16 @@ var Player = GObject.registerClass({
             return;
 
         this._cancellable.cancel();
-        this._application.disconnect(this._propertiesChangedId);
-        GObject.signal_handlers_destroy(this._application);
-        GObject.signal_handlers_destroy(this);
+        this._application.disconnect(this._applicationChangedId);
+        this._player.disconnect(this._playerChangedId);
+        this._player.disconnect(this._playerSignalId);
     }
 });
 
 
+/**
+ * A manager for media players
+ */
 var Manager = GObject.registerClass({
     GTypeName: 'GSConnectMPRISManager',
     Signals: {
@@ -989,10 +904,10 @@ var Manager = GObject.registerClass({
     async _addPlayer(name) {
         try {
             if (!this._players.has(name)) {
-                let player = new Player(name);
+                let player = new PlayerProxy(name);
                 await player.initPromise();
 
-                player.connect('g-properties-changed',
+                player.connect('notify',
                     (player) => this.emit('player-changed', player));
 
                 player.connect('Seeked', this.emit.bind(this, 'player-seeked'));
