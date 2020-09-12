@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-09-10 22:31-0700\n"
-"PO-Revision-Date: 2020-09-11 05:36\n"
+"PO-Revision-Date: 2020-09-12 05:06\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -366,7 +366,7 @@ msgstr "旧版短信支持"
 
 #: data/ui/preferences-device-panel.ui:2027
 msgid "SFTP Automount"
-msgstr ""
+msgstr "自动挂载 SFTP"
 
 #: data/ui/preferences-device-panel.ui:2082
 #: data/ui/preferences-device-panel.ui:2408
@@ -549,15 +549,15 @@ msgstr "报告"
 
 #: data/ui/service-error-dialog.ui:72
 msgid "Something’s gone wrong"
-msgstr ""
+msgstr "出了一些错误"
 
 #: data/ui/service-error-dialog.ui:84
 msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
-msgstr ""
+msgstr "GSConnect 遇到了意外的错误，请报告这个错误，并在报告中包含任何您认为可能有用的信息。"
 
 #: data/ui/service-error-dialog.ui:118
 msgid "Technical Details"
-msgstr ""
+msgstr "技术信息"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: nautilus-extension/nautilus-gsconnect.py:164 webextension/gettext.js:33
@@ -795,7 +795,7 @@ msgstr "无法找到 OpenSSL（OpenSSL not found）"
 
 #: src/service/backends/lan.js:467
 msgid "Port already in use"
-msgstr ""
+msgstr "端口已被占用"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:252
@@ -911,7 +911,7 @@ msgstr "卸载"
 #: src/service/plugins/sftp.js:215
 #, javascript-format
 msgid "%s reported an error"
-msgstr ""
+msgstr "%s 报告了一个错误"
 
 #: src/service/plugins/share.js:14 src/service/plugins/share.js:20
 msgid "Share"
@@ -1013,7 +1013,7 @@ msgstr "系统音量"
 
 #: src/service/plugins/systemvolume.js:55
 msgid "PulseAudio not found"
-msgstr ""
+msgstr "未找到 PulseAudio"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:25
