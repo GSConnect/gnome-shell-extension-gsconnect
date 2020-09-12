@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-09-10 22:31-0700\n"
-"PO-Revision-Date: 2020-09-11 05:36\n"
+"PO-Revision-Date: 2020-09-12 10:57\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "Language: pl_PL\n"
@@ -366,7 +366,7 @@ msgstr "Obsługa SMS (poprzednia wersja)"
 
 #: data/ui/preferences-device-panel.ui:2027
 msgid "SFTP Automount"
-msgstr ""
+msgstr "Automatyczne montowanie SFTP"
 
 #: data/ui/preferences-device-panel.ui:2082
 #: data/ui/preferences-device-panel.ui:2408
