@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-09-10 22:31-0700\n"
-"PO-Revision-Date: 2020-09-13 09:24\n"
+"PO-Revision-Date: 2020-09-13 09:34\n"
 "Last-Translator: \n"
 "Language-Team: Ukrainian\n"
 "Language: uk_UA\n"
@@ -77,7 +77,7 @@ msgstr "Та інше…"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:84
 msgid "GSConnect in GNOME Shell"
-msgstr ""
+msgstr "GSConnect у GNOME Shell"
 
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/connect-dialog.ui:13 data/ui/preferences-window.ui:719
@@ -156,7 +156,7 @@ msgstr ""
 
 #: data/ui/messaging-conversation.ui:93
 msgid "Type a message and press Enter to send"
-msgstr ""
+msgstr "Введіть повідомлення та натисніть Enter, щоб надіслати"
 
 #: data/ui/messaging-window.ui:14 src/service/plugins/sms.js:27
 #: src/service/ui/messaging.js:1049
@@ -239,7 +239,7 @@ msgstr "Отримувати файли"
 
 #: data/ui/preferences-device-panel.ui:490
 msgid "Save files to"
-msgstr ""
+msgstr "Зберігати файли до"
 
 #: data/ui/preferences-device-panel.ui:551
 #: data/ui/preferences-device-panel.ui:2132
@@ -1016,7 +1016,7 @@ msgstr "Гучність системи"
 
 #: src/service/plugins/systemvolume.js:55
 msgid "PulseAudio not found"
-msgstr ""
+msgstr "PulseAudio не знайдено"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:25
