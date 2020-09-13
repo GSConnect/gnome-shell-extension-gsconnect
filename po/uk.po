@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-09-10 22:31-0700\n"
-"PO-Revision-Date: 2020-09-11 05:36\n"
+"PO-Revision-Date: 2020-09-13 09:24\n"
 "Last-Translator: \n"
 "Language-Team: Ukrainian\n"
 "Language: uk_UA\n"
@@ -25,11 +25,11 @@ msgstr "GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:6
 msgid "KDE Connect implementation for GNOME"
-msgstr ""
+msgstr "Реалізація KDE Connect для GNOME"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:16
 msgid "GSConnect Team"
-msgstr ""
+msgstr "Команда GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:32
 msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, macOS and Windows."
@@ -45,35 +45,35 @@ msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:40
 msgid "Send and receive messages"
-msgstr ""
+msgstr "Відправляти та отримувати повідомлення"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
 msgid "Sync clipboard content"
-msgstr ""
+msgstr "Синхронізувати вміст буфера обміну"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:42
 msgid "Sync contacts"
-msgstr ""
+msgstr "Синхронізувати контакти"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:43
 msgid "Sync notifications"
-msgstr ""
+msgstr "Синхронізувати сповіщення"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
 msgid "Control media players"
-msgstr ""
+msgstr "Керувати медіа плеєрами"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:45
 msgid "Control system volume"
-msgstr ""
+msgstr "Керувати гучністю системи"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:46
 msgid "Execute predefined commands"
-msgstr ""
+msgstr "Виконувати попередньо визначені команди"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:47
 msgid "And more…"
-msgstr ""
+msgstr "Та інше…"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:84
 msgid "GSConnect in GNOME Shell"
