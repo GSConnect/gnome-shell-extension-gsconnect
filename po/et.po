@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-09-10 22:31-0700\n"
-"PO-Revision-Date: 2020-09-11 05:36\n"
+"PO-Revision-Date: 2020-09-12 17:15\n"
 "Last-Translator: \n"
 "Language-Team: Estonian\n"
 "Language: et_EE\n"
@@ -366,7 +366,7 @@ msgstr "Pärand SMS-tugi"
 
 #: data/ui/preferences-device-panel.ui:2027
 msgid "SFTP Automount"
-msgstr ""
+msgstr "SFTP automaathaakimine"
 
 #: data/ui/preferences-device-panel.ui:2082
 #: data/ui/preferences-device-panel.ui:2408
@@ -549,15 +549,15 @@ msgstr "Teata"
 
 #: data/ui/service-error-dialog.ui:72
 msgid "Something’s gone wrong"
-msgstr ""
+msgstr "Midagi läks valesti"
 
 #: data/ui/service-error-dialog.ui:84
 msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
-msgstr ""
+msgstr "GSConnectil esines ootamatu viga. Palun teata veast ja lisa mistahes infot, mis võib lahendamisel kaasa aidata."
 
 #: data/ui/service-error-dialog.ui:118
 msgid "Technical Details"
-msgstr ""
+msgstr "Tehnilised andmed"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: nautilus-extension/nautilus-gsconnect.py:164 webextension/gettext.js:33
@@ -796,7 +796,7 @@ msgstr "OpenSSLi ei leitud"
 
 #: src/service/backends/lan.js:467
 msgid "Port already in use"
-msgstr ""
+msgstr "Port on juba kasutusel"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:252
@@ -912,7 +912,7 @@ msgstr "Haagi lahti"
 #: src/service/plugins/sftp.js:215
 #, javascript-format
 msgid "%s reported an error"
-msgstr ""
+msgstr "%s teatas vea"
 
 #: src/service/plugins/share.js:14 src/service/plugins/share.js:20
 msgid "Share"
