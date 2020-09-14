@@ -16,11 +16,10 @@ const Remote = imports.utils.remote;
  * Header for support logs
  */
 const LOG_HEADER = new GLib.Bytes(`
-GSConnect Version: ${Config.PACKAGE_VERSION}
-GSConnect Install: ${Config.IS_USER ? 'user' : 'system'}
-GJS: ${imports.system.version}
-XDG_SESSION_TYPE: ${GLib.getenv('XDG_SESSION_TYPE')}
-GDMSESSION: ${GLib.getenv('GDMSESSION')}
+GSConnect: ${Config.PACKAGE_VERSION} (${Config.IS_USER ? 'user' : 'system'})
+GJS:       ${imports.system.version}
+Session:   ${GLib.getenv('XDG_SESSION_TYPE')}
+OS:        ${GLib.get_os_info('PRETTY_NAME')}
 --------------------------------------------------------------------------------
 `);
 

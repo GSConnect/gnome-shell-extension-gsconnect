@@ -12,10 +12,10 @@ const Config = imports.config;
  * Issue Header
  */
 const ISSUE_HEADER = `
-GSConnect Version: ${Config.PACKAGE_VERSION}
-GSConnect Install: ${Config.IS_USER ? 'user' : 'system'}
-GJS: ${imports.system.version}
-XDG_SESSION_TYPE: ${GLib.getenv('XDG_SESSION_TYPE')}
+GSConnect: ${Config.PACKAGE_VERSION} (${Config.IS_USER ? 'user' : 'system'})
+GJS:       ${imports.system.version}
+Session:   ${GLib.getenv('XDG_SESSION_TYPE')}
+OS:        ${GLib.get_os_info('PRETTY_NAME')}
 `;
 
 
