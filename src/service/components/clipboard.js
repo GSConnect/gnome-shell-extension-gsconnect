@@ -7,76 +7,8 @@ const Gio = imports.gi.Gio;
 const GObject = imports.gi.GObject;
 
 
-const ClipboardProxy = GObject.registerClass({
-    GTypeName: 'GSConnectClipboardProxy',
-    Implements: [Gio.DBusInterface],
-    Properties: {
-        'text': GObject.ParamSpec.string(
-            'text',
-            'Text Content',
-            'The current text content of the clipboard',
-            GObject.ParamFlags.READWRITE,
-            ''
-        ),
-    },
-}, class ClipboardProxy extends Gio.DBusProxy {
-
-    _init() {
-        super._init({
-            g_bus_type: Gio.BusType.SESSION,
-            g_name: 'org.gnome.Shell.Extensions.GSConnect.Clipboard',
-            g_object_path: '/org/gnome/Shell/Extensions/GSConnect/Clipboard',
-            g_interface_name: 'org.gnome.Shell.Extensions.GSConnect.Clipboard',
-        });
-    }
-
-    vfunc_g_properties_changed(changed, invalidated) {
-        let properties = changed.deepUnpack();
-
-        if (!properties.hasOwnProperty('Text'))
-            return;
-
-        let content = this.get_cached_property('Text').unpack();
-
-        if (this.text === content)
-            return;
-
-        this._text = content;
-        this.notify('text');
-    }
-
-    get text() {
-        if (this._text === undefined)
-            this._text = this.get_cached_property('Text').unpack();
-
-        return this._text;
-    }
-
-    set text(content) {
-        if (this.text === content)
-            return;
-
-        this._text = content;
-        this.notify('text');
-
-        this._setProperty('Text', 's', content);
-    }
-
-    _setProperty(name, signature, value) {
-        let variant = new GLib.Variant(signature, value);
-
-        this.set_cached_property(name, variant);
-
-        this.call(
-            'org.freedesktop.DBus.Properties.Set',
-            new GLib.Variant('(ssv)', [this.g_interface_name, name, variant]),
-            Gio.DBusCallFlags.NONE,
-            -1,
-            null,
-            null
-        );
-    }
-});
+const DBUS_NAME = 'org.gnome.Shell.Extensions.GSConnect.Clipboard';
+const DBUS_PATH = '/org/gnome/Shell/Extensions/GSConnect/Clipboard';
 
 
 var Clipboard = GObject.registerClass({
@@ -95,33 +27,17 @@ var Clipboard = GObject.registerClass({
     _init() {
         super._init();
 
-        try {
-            this._clipboard = null;
+        this._cancellable = new Gio.Cancellable();
+        this._clipboard = null;
 
-            // On Wayland we use a small DBus server exported from the Shell
-            if (HAVE_WAYLAND) {
-                this._nameWatcherId = Gio.bus_watch_name(
-                    Gio.BusType.SESSION,
-                    'org.gnome.Shell.Extensions.GSConnect.Clipboard',
-                    Gio.BusNameWatcherFlags.NONE,
-                    this._onNameAppeared.bind(this),
-                    this._onNameVanished.bind(this)
-                );
-
-            // If we're in X11/Xorg we're just a wrapper around GtkClipboard
-            } else {
-                let display = Gdk.Display.get_default();
-                this._clipboard = Gtk.Clipboard.get_default(display);
-
-                this._ownerChangeId = this._clipboard.connect(
-                    'owner-change',
-                    this._onOwnerChange.bind(this)
-                );
-            }
-        } catch (e) {
-            this.destroy();
-            throw e;
-        }
+        this._ownerChangeId = 0;
+        this._nameWatcherId = Gio.bus_watch_name(
+            Gio.BusType.SESSION,
+            DBUS_NAME,
+            Gio.BusNameWatcherFlags.NONE,
+            this._onNameAppeared.bind(this),
+            this._onNameVanished.bind(this)
+        );
     }
 
     get text() {
@@ -138,80 +54,223 @@ var Clipboard = GObject.registerClass({
         this._text = content;
         this.notify('text');
 
-        if (!HAVE_WAYLAND && content !== null)
+        if (typeof content !== 'string')
+            return;
+
+        if (this._clipboard instanceof Gtk.Clipboard)
             this._clipboard.set_text(content, -1);
+
+        if (this._clipboard instanceof Gio.DBusProxy)
+            this._proxySetText(content);
     }
 
     async _onNameAppeared(connection, name, name_owner) {
         try {
-            this._clipboard = new ClipboardProxy();
+            // Cleanup the GtkClipboard
+            if (this._clipboard && this._ownerChangeId > 0) {
+                this._clipboard.disconnect(this._ownerChangeId);
+                this._ownerChangeId = 0;
+            }
+
+            // Create a proxy for the remote clipboard
+            this._clipboard = new Gio.DBusProxy({
+                g_bus_type: Gio.BusType.SESSION,
+                g_name: DBUS_NAME,
+                g_object_path: DBUS_PATH,
+                g_interface_name: DBUS_NAME,
+                g_flags: Gio.DBusProxyFlags.DO_NOT_LOAD_PROPERTIES,
+            });
 
             await new Promise((resolve, reject) => {
                 this._clipboard.init_async(
                     GLib.PRIORITY_DEFAULT,
-                    null,
+                    this._cancellable,
                     (proxy, res) => {
                         try {
-                            proxy.init_finish(res);
-                            resolve();
+                            resolve(proxy.init_finish(res));
                         } catch (e) {
-                            this._clipboard = null;
                             reject(e);
                         }
                     }
                 );
             });
 
-            this._clipboard.bind_property(
-                'text',
-                this,
-                'text',
-                (GObject.BindingFlags.BIDIRECTIONAL |
-                 GObject.BindingFlags.SYNC_CREATE)
+            this._ownerChangeId = this._clipboard.connect(
+                'g-signal',
+                this._onOwnerChange.bind(this)
             );
+
+            this._onOwnerChange();
         } catch (e) {
-            logError(e);
+            if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED)) {
+                debug(e);
+                this._onNameVanished(null, null);
+            }
         }
     }
 
     _onNameVanished(connection, name) {
-        this._clipboard = null;
+        if (this._clipboard && this._ownerChangeId > 0) {
+            this._clipboard.disconnect(this._ownerChangeId);
+            this._clipboardChangedId = 0;
+        }
+
+        const display = Gdk.Display.get_default();
+        this._clipboard = Gtk.Clipboard.get_default(display);
+
+        this._ownerChangeId = this._clipboard.connect(
+            'owner-change',
+            this._onOwnerChange.bind(this)
+        );
+
+        this._onOwnerChange();
     }
 
-    _onTextReceived(clipboard, text) {
-        if (typeof text === 'string' && this.text !== text) {
-            this._text = text;
-            this.notify('text');
+    async _onOwnerChange() {
+        try {
+            if (this._clipboard instanceof Gtk.Clipboard)
+                await this._gtkUpdateText();
+
+            else if (this._clipboard instanceof Gio.DBusProxy)
+                await this._proxyUpdateText();
+        } catch (e) {
+            if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
+                debug(e);
         }
     }
 
-    _onTargetsReceived(clipboard, atoms) {
-        // Empty clipboard
-        if (atoms.length === 0)
-            return this._onTextReceived(clipboard, '');
-
-        // As a special case we need to ignore copied files (eg. in Nautilus)
-        if (atoms.includes('text/uri-list'))
+    _applyUpdate(text) {
+        if (typeof text !== 'string' || this.text === text)
             return;
 
-        // Let GtkClipboard filter for supported types
-        clipboard.request_text(this._onTextReceived.bind(this));
+        this._text = text;
+        this.notify('text');
     }
 
-    _onOwnerChange(clipboard, event) {
-        clipboard.request_targets(this._onTargetsReceived.bind(this));
+    /*
+     * Proxy Clipboard
+     */
+    _proxyGetMimetypes() {
+        return new Promise((resolve, reject) => {
+            this._clipboard.call(
+                'GetMimetypes',
+                null,
+                Gio.DBusCallFlags.NO_AUTO_START,
+                -1,
+                this._cancellable,
+                (proxy, res) => {
+                    try {
+                        const reply = proxy.call_finish(res);
+                        resolve(reply.deepUnpack()[0]);
+                    } catch (e) {
+                        Gio.DBusError.strip_remote_error(e);
+                        reject(e);
+                    }
+                }
+            );
+        });
+    }
+
+    _proxyGetText() {
+        return new Promise((resolve, reject) => {
+            this._clipboard.call(
+                'GetText',
+                null,
+                Gio.DBusCallFlags.NO_AUTO_START,
+                -1,
+                this._cancellable,
+                (proxy, res) => {
+                    try {
+                        const reply = proxy.call_finish(res);
+                        resolve(reply.deepUnpack()[0]);
+                    } catch (e) {
+                        Gio.DBusError.strip_remote_error(e);
+                        reject(e);
+                    }
+                }
+            );
+        });
+    }
+
+    _proxySetText(text) {
+        this._clipboard.call(
+            'SetText',
+            new GLib.Variant('(s)', [text]),
+            Gio.DBusCallFlags.NO_AUTO_START,
+            -1,
+            this._cancellable,
+            (proxy, res) => {
+                try {
+                    proxy.call_finish(res);
+                } catch (e) {
+                    Gio.DBusError.strip_remote_error(e);
+                    debug(e);
+                }
+            }
+        );
+    }
+
+    async _proxyUpdateText() {
+        const mimetypes = await this._proxyGetMimetypes();
+
+        // Special case for a cleared clipboard
+        if (mimetypes.length === 0)
+            return this._applyUpdate('');
+
+        // Special case to ignore copied files
+        if (mimetypes.includes('text/uri-list'))
+            return;
+
+        const text = await this._proxyGetText();
+
+        this._applyUpdate(text);
+    }
+
+    /*
+     * GtkClipboard
+     */
+    _gtkGetMimetypes() {
+        return new Promise((resolve, reject) => {
+            this._clipboard.request_targets((clipboard, atoms) => resolve(atoms));
+        });
+    }
+
+    _gtkGetText() {
+        return new Promise((resolve, reject) => {
+            this._clipboard.request_text((clipboard, text) => resolve(text));
+        });
+    }
+
+    async _gtkUpdateText() {
+        const mimetypes = await this._gtkGetMimetypes();
+
+        // Special case for a cleared clipboard
+        if (mimetypes.length === 0)
+            return this._applyUpdate('');
+
+        // Special case to ignore copied files
+        if (mimetypes.includes('text/uri-list'))
+            return;
+
+        const text = await this._gtkGetText();
+
+        this._applyUpdate(text);
     }
 
     destroy() {
-        if (this._nameWatcherId) {
-            Gio.bus_unwatch_name(this._nameWatcherId);
-            this._nameWatcherId = 0;
-            this._clipboard = null;
-        }
+        if (this._cancellable.is_cancelled())
+            return;
 
-        if (this._ownerChangeId) {
+        this._cancellable.cancel();
+
+        if (this._clipboard && this._ownerChangeId > 0) {
             this._clipboard.disconnect(this._ownerChangeId);
             this._ownerChangedId = 0;
+        }
+
+        if (this._nameWatcherId > 0) {
+            Gio.bus_unwatch_name(this._nameWatcherId);
+            this._nameWatcherId = 0;
         }
     }
 });
