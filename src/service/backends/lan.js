@@ -777,7 +777,7 @@ var Channel = GObject.registerClass({
      */
     _sendIdent(connection) {
         return new Promise((resolve, reject) => {
-            connection.output_stream.write_all_async(
+            connection.get_output_stream().write_all_async(
                 this.backend.identity.serialize(),
                 GLib.PRIORITY_DEFAULT,
                 this.cancellable,
