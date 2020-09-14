@@ -32,22 +32,6 @@ function toUnderscoreCase(string) {
 
 
 /**
- * Build a GVariant type string from an method argument list.
- *
- * @param {Gio.DBusArgInfo[]} args - A list of out argument infos
- * @return {string} A GVariant type string
- */
-function _makeOutSignature(args) {
-    let ret = '';
-
-    for (var i = 0; i < args.length; i++)
-        ret += args[i].signature;
-
-    return `(${ret})`;
-}
-
-
-/**
  * DBus.Interface represents a DBus interface bound to an object instance, meant
  * to be exported over DBus.
  */
@@ -159,10 +143,10 @@ var Interface = GObject.registerClass({
         // Return the instance result or error
         try {
             if (!(retval instanceof GLib.Variant)) {
-                let outArgs = info.lookup_method(name).out_args;
+                const args = info.lookup_method(name).out_args;
                 retval = new GLib.Variant(
-                    _makeOutSignature(outArgs),
-                    (outArgs.length === 1) ? [retval] : retval
+                    `(${args.map(arg => arg.signature).join('')})`,
+                    (args.length === 1) ? [retval] : retval
                 );
             }
 
