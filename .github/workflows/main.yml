@@ -1,5 +1,3 @@
-# GSConect Tests
-
 name: CI
 
 on:
@@ -9,20 +7,45 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    container:
+      image: andyholmes/gsconnect-ci:latest
     steps:
-      - name: Pull test runner
-        run: docker pull andyholmes/gsconnect-tests
-
-      # Runs a set of commands using the runners shell
-      - name: Run all tests
-        env:
-          TEST_REPO: ${{ github.event.pull_request.head.repo.clone_url }}
-          TEST_BRANCH: ${{ github.event.pull_request.head.ref }}
+      - uses: actions/checkout@v2
+      - name: Prepare
         run: |
-          docker run --env TEST_REPO=$TEST_REPO \
-                     --env TEST_BRANCH=$TEST_BRANCH \
-                     andyholmes/gsconnect-tests
+          meson --prefix=/usr \
+                --libdir=lib/ \
+                -Dgnome_shell_libdir=/usr/lib64/ \
+                -Dpost_install=true \
+                _build
+
+      - name: Uninstalled Tests
+        run: |
+          meson test -C _build --suite gsconnect:data \
+                               --suite gsconnect:lint
+
+      - name: Installed Tests
+        run: |
+          ninja -C _build install
+          xvfb-run -a dbus-run-session -- \
+          gnome-desktop-testing-runner gsconnect -L _build/meson-logs
+
+      - name: Upload Test Logs
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-logs
+          path: _build/meson-logs
+
+      - name: Test Build
+        run: |
+          ninja -C _build make-zip
+
+      - name: Upload Test Build
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-build
+          path: _build/gsconnect@andyholmes.github.io.zip
+
