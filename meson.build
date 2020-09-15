@@ -15,6 +15,7 @@ prefix = get_option('prefix')
 datadir = join_paths(prefix, get_option('datadir'))
 extdatadir = join_paths(datadir, 'gnome-shell', 'extensions', extuuid)
 libdir = join_paths(prefix, get_option('libdir'))
+libexecdir = join_paths(prefix, get_option('libexecdir'))
 localedir = join_paths(prefix, get_option('localedir'))
 sysconfdir = get_option('sysconfdir')
 
@@ -107,6 +108,10 @@ if eslint.found()
     args: join_paths(meson.source_root(), 'src'),
     suite: 'lint',
   )
+  test('ESLint (Installed Tests)', eslint,
+    args: join_paths(meson.source_root(), 'installed-tests'),
+    suite: 'lint',
+  )
   test('ESLint (WebExtension)', eslint,
     args: join_paths(meson.source_root(), 'webextension'),
     suite: 'lint',
@@ -115,6 +120,7 @@ endif
 
 
 subdir('data')
+subdir('installed-tests')
 subdir('nautilus-extension')
 subdir('po')
 

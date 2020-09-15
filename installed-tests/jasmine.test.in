@@ -1,0 +1,4 @@
+[Test]
+Type=session
+Exec=@jasmine_path@ @installed_tests_execdir@/@name@
+Output=TAP

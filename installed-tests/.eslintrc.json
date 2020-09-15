@@ -1,0 +1,52 @@
+{
+    "env": {
+        "jasmine": true
+    },
+    "rules": {
+        "no-restricted-globals": [
+            "error",
+            {
+                "name": "fdescribe",
+                "message": "Do not commit fdescribe(). Use describe() instead."
+            },
+            {
+                "name": "fit",
+                "message": "Do not commit fit(). Use it() instead."
+            }
+        ],
+        "no-restricted-syntax": [
+            "error",
+            {
+                "selector": "CallExpression[callee.name=\"it\"] > ArrowFunctionExpression",
+                "message": "Arrow functions can mess up some Jasmine APIs. Use function () instead"
+            },
+            {
+                "selector": "CallExpression[callee.name=\"describe\"] > ArrowFunctionExpression",
+                "message": "Arrow functions can mess up some Jasmine APIs. Use function () instead"
+            },
+            {
+                "selector": "CallExpression[callee.name=\"beforeEach\"] > ArrowFunctionExpression",
+                "message": "Arrow functions can mess up some Jasmine APIs. Use function () instead"
+            },
+            {
+                "selector": "CallExpression[callee.name=\"afterEach\"] > ArrowFunctionExpression",
+                "message": "Arrow functions can mess up some Jasmine APIs. Use function () instead"
+            },
+            {
+                "selector": "CallExpression[callee.name=\"beforeAll\"] > ArrowFunctionExpression",
+                "message": "Arrow functions can mess up some Jasmine APIs. Use function () instead"
+            },
+            {
+                "selector": "CallExpression[callee.name=\"afterAll\"] > ArrowFunctionExpression",
+                "message": "Arrow functions can mess up some Jasmine APIs. Use function () instead"
+            }
+        ]
+    },
+    "globals": {
+        "clearInterval": "writable",
+        "clearTimeout": "writable",
+        "setInterval": "writable",
+        "setTimeout": "writable"
+    }
+}
+

@@ -116,3 +116,10 @@ option(
   description: 'Native Messaging Host directory for Mozilla'
 )
 
+option(
+  'installed_tests',
+  type: 'boolean',
+  value: true,
+  description: 'Install tests'
+)
+

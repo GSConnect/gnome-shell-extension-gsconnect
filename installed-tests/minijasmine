@@ -1,0 +1,177 @@
+#!/usr/bin/env gjs
+
+const {GLib} = imports.gi;
+
+
+// Utils
+function _formatMessage(message) {
+    return message.replace(/\n/g, '\\n');
+}
+
+function _formatStack(stack) {
+    if (!stack)
+        return '#   No stack';
+
+    return stack.split('\n')
+        .filter(line => line.indexOf('<Jasmine>') === -1)
+        .filter(line => line.indexOf('minijasmine') === -1)
+        .map(line => `#   ${line}`)
+        .join('\n');
+}
+
+function _setTimeout(continueTimeout, func, time) {
+    return GLib.timeout_add(GLib.PRIORITY_DEFAULT, time, function () {
+        func();
+        return continueTimeout;
+    });
+}
+
+function _clearTimeout(id) {
+    if (id > 0)
+        GLib.source_remove(id);
+}
+
+
+/**
+ * Reporter that outputs according to the Test Anything Protocol
+ * See http://testanything.org/tap-specification.html
+ */
+class TapReporter {
+    constructor() {
+        this._failedSuites = [];
+        this._specCount = 0;
+    }
+
+    jasmineStarted(info) {
+        print(`1..${info.totalSpecsDefined}`);
+    }
+
+    jasmineDone() {
+        this._failedSuites.forEach(failure => {
+            failure.failedExpectations.forEach(result => {
+                print('not ok - An error was thrown outside a test');
+                print(`# ${result.message}`);
+            });
+        });
+
+        globalThis._jasmineMain.quit();
+    }
+
+    suiteDone(result) {
+        if (result.failedExpectations && result.failedExpectations.length > 0) {
+            globalThis._jasmineRetval = 1;
+            this._failedSuites.push(result);
+        }
+
+        if (result.status === 'disabled')
+            print('# Suite was disabled:', result.fullName);
+    }
+
+    specStarted() {
+        this._specCount++;
+    }
+
+    specDone(result) {
+        let tapReport = 'ok';
+
+        if (result.status === 'failed') {
+            globalThis._jasmineRetval = 1;
+            tapReport = 'not ok';
+        }
+
+        tapReport += ` ${this._specCount} ${result.fullName}`;
+
+        if (result.status === 'pending' || result.status === 'disabled')
+            tapReport += ` # SKIP ${result.pendingReason || result.status}`;
+
+        print(tapReport);
+
+        // Print additional diagnostic info on failure
+        if (result.status === 'failed' && result.failedExpectations) {
+            result.failedExpectations.forEach(failedExpectation => {
+                print('# Message:', _formatMessage(failedExpectation.message));
+                print(`# Stack:\n${_formatStack(failedExpectation.stack)}`);
+            });
+        }
+    }
+}
+
+
+/**
+ * Initialize Jasmine
+ */
+function initJasmine() {
+    // Add the current path to the importer
+    const thisFile = /@(.+):\d+/.exec(Error().stack.split('\n')[1])[1];
+    const thisDir = GLib.path_get_dirname(thisFile);
+    imports.searchPath.unshift(thisDir);
+
+    // Install the browser setTimeout/setInterval API on the global object
+    globalThis.setTimeout = _setTimeout.bind(undefined, GLib.SOURCE_REMOVE);
+    globalThis.setInterval = _setTimeout.bind(undefined, GLib.SOURCE_CONTINUE);
+    globalThis.clearTimeout = globalThis.clearInterval = _clearTimeout;
+
+    // Load Jasmine
+    const jasmineRequire = imports.jasmine.getJasmineRequireObj();
+    const jasmineCore = jasmineRequire.core(jasmineRequire);
+    globalThis._jasmineEnv = jasmineCore.getEnv();
+
+    globalThis._jasmineMain = GLib.MainLoop.new(null, false);
+    globalThis._jasmineRetval = 0;
+
+    // Install Jasmine API on the global object
+    const iface = jasmineRequire.interface(jasmineCore, globalThis._jasmineEnv);
+    Object.assign(globalThis, iface);
+
+    // Register the TAP reporter
+    globalThis._jasmineEnv.addReporter(new TapReporter());
+}
+
+
+/**
+ * Initialize test suites
+ */
+function initTests() {
+    // Add the test path to the importer
+    const testDir = GLib.path_get_dirname(ARGV[0]);
+    imports.searchPath.unshift(testDir);
+
+    // Load the test suites
+    const testPath = GLib.path_get_basename(ARGV[0]).slice(0, -3);
+    void imports[testPath];
+}
+
+
+/**
+ * Run initialized tests
+ */
+function runTests() {
+    GLib.idle_add(GLib.PRIORITY_DEFAULT, function () {
+        try {
+            globalThis._jasmineEnv.execute();
+        } catch (e) {
+            print('Bail out! Exception occurred inside Jasmine:', e);
+            globalThis._jasmineRetval = 1;
+            globalThis._jasmineMain.quit();
+        }
+        return GLib.SOURCE_REMOVE;
+    });
+
+    globalThis._jasmineMain.run();
+
+    // Exhaust the event loop
+    const context = GLib.MainContext.default();
+
+    while (context.iteration(false))
+        continue;
+
+    // Return the exit status
+    imports.system.exit(globalThis._jasmineRetval);
+}
+
+
+// TODO: add CLI options for isolated XDG, DBus, etc
+initJasmine();
+initTests();
+runTests();
+
