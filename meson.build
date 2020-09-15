@@ -104,10 +104,12 @@ eslint = find_program('eslint', required: false)
 
 if eslint.found()
   test('ESLint (Source)', eslint,
-    args: join_paths(meson.source_root(), 'src')
+    args: join_paths(meson.source_root(), 'src'),
+    suite: 'lint',
   )
   test('ESLint (WebExtension)', eslint,
-    args: join_paths(meson.source_root(), 'webextension')
+    args: join_paths(meson.source_root(), 'webextension'),
+    suite: 'lint',
   )
 endif
 

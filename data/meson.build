@@ -39,10 +39,12 @@ desktop_utils = find_program('desktop-file-validate', required: false)
 
 if desktop_utils.found()
   test('Validate desktop file', desktop_utils,
-    args: [desktop_file]
+    args: [desktop_file],
+    suite: 'data',
   )
   test('Validate desktop file (Preferences)', desktop_utils,
-    args: [desktop_prefs_file]
+    args: [desktop_prefs_file],
+    suite: 'data',
   )
 endif
 

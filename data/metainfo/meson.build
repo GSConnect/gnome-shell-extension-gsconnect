@@ -11,7 +11,8 @@ appstream = find_program('appstreamcli', required: false)
 
 if appstream.found()
   test('Validate metainfo file', appstream,
-    args: ['validate', '--no-net', '--pedantic', metainfo_file]
+    args: ['validate', '--no-net', '--pedantic', metainfo_file],
+    suite: 'data',
   )
 endif
 
