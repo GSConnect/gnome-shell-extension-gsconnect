@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-09-10 22:31-0700\n"
-"PO-Revision-Date: 2020-09-11 05:36\n"
+"PO-Revision-Date: 2020-09-16 18:35\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Language: es_ES\n"
@@ -25,7 +25,7 @@ msgstr "GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:6
 msgid "KDE Connect implementation for GNOME"
-msgstr ""
+msgstr "Una implementación de KDE Connect para GNOME"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:16
 msgid "GSConnect Team"
@@ -33,7 +33,7 @@ msgstr "Equipo de GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:32
 msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, macOS and Windows."
-msgstr ""
+msgstr "GSConnect es una implementación completa de KDE Connect especialmente para GNOME Shell con integración para Nautilus, Chrome y Firefox. El equipo de KDE Connect tiene aplicaciones para Linux, BSD, Android, Sailfish, macOS y Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:35
 msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
@@ -152,11 +152,11 @@ msgstr "Escriba un mensaje"
 
 #: data/ui/messaging-conversation.ui:92
 msgid "Message Entry"
-msgstr ""
+msgstr "Entrada de mensaje"
 
 #: data/ui/messaging-conversation.ui:93
 msgid "Type a message and press Enter to send"
-msgstr ""
+msgstr "Escriba un mensaje y presione Enter para enviar"
 
 #: data/ui/messaging-window.ui:14 src/service/plugins/sms.js:27
 #: src/service/ui/messaging.js:1049
@@ -549,15 +549,15 @@ msgstr "Informe"
 
 #: data/ui/service-error-dialog.ui:72
 msgid "Something’s gone wrong"
-msgstr ""
+msgstr "Algo ha salido mal"
 
 #: data/ui/service-error-dialog.ui:84
 msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
-msgstr ""
+msgstr "GSConnect encontró un error inesperado. Por favor, informe del problema e incluya cualquier información que pueda ayudar."
 
 #: data/ui/service-error-dialog.ui:118
 msgid "Technical Details"
-msgstr ""
+msgstr "Detalles Técnicos"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: nautilus-extension/nautilus-gsconnect.py:164 webextension/gettext.js:33
@@ -796,7 +796,7 @@ msgstr "No se encontró OpenSSL"
 
 #: src/service/backends/lan.js:467
 msgid "Port already in use"
-msgstr ""
+msgstr "Puerto ya en uso"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:252
@@ -912,7 +912,7 @@ msgstr "Desmontar"
 #: src/service/plugins/sftp.js:215
 #, javascript-format
 msgid "%s reported an error"
-msgstr ""
+msgstr "%s informó de un error"
 
 #: src/service/plugins/share.js:14 src/service/plugins/share.js:20
 msgid "Share"
@@ -1014,7 +1014,7 @@ msgstr "Volumen del sistema"
 
 #: src/service/plugins/systemvolume.js:55
 msgid "PulseAudio not found"
-msgstr ""
+msgstr "PulseAudio no encontrado"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:25
