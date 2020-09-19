@@ -340,9 +340,12 @@ const Listener = GObject.registerClass({
             this._monitor = await DBus.newConnection();
             await this._monitorConnection();
         } catch (e) {
-            // FIXME: if something goes wrong the component will appear active
-            logError(e);
-            this.destroy();
+            const service = Gio.Application.get_default();
+
+            if (service !== null)
+                service.notify_error(e);
+            else
+                logError(e);
         }
     }
 

@@ -339,8 +339,12 @@ var Store = GObject.registerClass({
                 this._onDisappeared.bind(this)
             );
         } catch (e) {
-            logError(e);
-            this.destroy();
+            const service = Gio.Application.get_default();
+
+            if (service !== null)
+                service.notify_error(e);
+            else
+                logError(e);
         }
     }
 
