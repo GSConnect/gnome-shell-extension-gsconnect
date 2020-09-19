@@ -240,7 +240,10 @@ var Plugin = GObject.registerClass({
                 };
 
                 // Store the themed icons for the device preferences window
-                if (typeof notif.icon === 'string') {
+                if (notif.icon === undefined) {
+                    // Keep default
+
+                } else if (typeof notif.icon === 'string') {
                     this._applications[notif.appName].iconName = notif.icon;
 
                 } else if (notif.icon instanceof Gio.ThemedIcon) {
