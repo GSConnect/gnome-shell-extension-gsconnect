@@ -187,7 +187,6 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
     }
 
     _addGMenuItem(info) {
-        // TODO: Use an image menu item if there's an icon?
         let item = new PopupMenu.PopupMenuItem(info.label);
         this.addMenuItem(item);
 
@@ -598,7 +597,7 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
             let button = new IconButton({
                 action_group: this.action_group,
                 info: getItemInfo(model, index),
-                // TODO: Because this doesn't derive from a PopupMenu class
+                // NOTE: Because this doesn't derive from a PopupMenu class
                 //       it lacks some things its parent will expect from it
                 _parent: this,
                 _delegate: null,

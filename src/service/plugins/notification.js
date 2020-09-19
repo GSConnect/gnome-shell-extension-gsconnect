@@ -490,7 +490,7 @@ var Plugin = GObject.registerClass({
             ]);
 
             // Check if we've already downloaded this icon
-            // TODO: if we reject the transfer kdeconnect-android will resend
+            // NOTE: if we reject the transfer kdeconnect-android will resend
             //       the notification packet, which may cause problems wrt #789
             let file = Gio.File.new_for_path(path);
 

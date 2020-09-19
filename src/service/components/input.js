@@ -170,7 +170,7 @@ const RemoteSession = GObject.registerClass({
     }
 
     scrollPointer(dx, dy) {
-        // TODO: NotifyPointerAxis only seems to work on Wayland, but maybe
+        // NOTE: NotifyPointerAxis only seems to work on Wayland, but maybe
         //       NotifyPointerAxisDiscrete is the better choice anyways
         if (HAVE_WAYLAND) {
             this._call(

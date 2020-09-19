@@ -39,7 +39,7 @@
 
     <!-- Device Icons (Fallbacks) c/o Numix
 
-         TODO: GNOME currently doesn't have an icon for `laptop`
+         NOTE: GNOME currently doesn't have an icon for `laptop`
                The stock icon for `tablet` is actually a wacom tablet
     -->
     <file compressed="true" preprocess="xml-stripblanks">icons/laptop-symbolic.svg</file>

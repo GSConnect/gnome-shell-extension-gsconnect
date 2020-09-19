@@ -144,7 +144,7 @@ describe('The mpris plugin', function () {
         // Update while accounting for the offset conversion
         localPlayer.Seek(100000);
 
-        // TODO: although we can handle full seeked signals, kdeconnect-android
+        // NOTE: although we can handle full seeked signals, kdeconnect-android
         //       does not, and expects a position update instead
         await remotePlugin.awaitPacket('kdeconnect.mpris', {
             player: 'Music Player',
