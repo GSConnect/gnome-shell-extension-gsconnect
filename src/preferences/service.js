@@ -260,8 +260,6 @@ var Window = GObject.registerClass({
         this._saveGeometry();
         GLib.source_remove(this._refreshSource);
 
-        // FIXME: this wouldn't be necessary if we were disposing devices right
-        this.application.quit();
         return false;
     }
 
