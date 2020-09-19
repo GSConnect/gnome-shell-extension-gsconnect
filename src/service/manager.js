@@ -485,9 +485,6 @@ var Manager = GObject.registerClass({
         this.devices.forEach(device => device.destroy());
         this.devices.clear();
 
-        // TODO: Force a GC
-        imports.system.gc();
-
         this._active = false;
         this.notify('active');
     }
