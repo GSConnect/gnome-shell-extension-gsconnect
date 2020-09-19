@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-09-10 22:31-0700\n"
-"PO-Revision-Date: 2020-09-11 05:36\n"
+"PO-Revision-Date: 2020-09-19 18:23\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Language: ru_RU\n"
@@ -366,7 +366,7 @@ msgstr "Устаревшая поддержка SMS"
 
 #: data/ui/preferences-device-panel.ui:2027
 msgid "SFTP Automount"
-msgstr ""
+msgstr "Автомонтирование SFTP"
 
 #: data/ui/preferences-device-panel.ui:2082
 #: data/ui/preferences-device-panel.ui:2408
@@ -549,7 +549,7 @@ msgstr "Отзыв"
 
 #: data/ui/service-error-dialog.ui:72
 msgid "Something’s gone wrong"
-msgstr ""
+msgstr "Что-то пошло не так"
 
 #: data/ui/service-error-dialog.ui:84
 msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
