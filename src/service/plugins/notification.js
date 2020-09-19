@@ -256,6 +256,14 @@ var Plugin = GObject.registerClass({
                 this._applicationsChangedSkip = false;
             }
 
+            // Sending notifications forbidden
+            if (!this.settings.get_boolean('send-notifications'))
+                return;
+
+            // Sending when the session is active is forbidden
+            if (!this.settings.get_boolean('send-active') && this._session.active)
+                return;
+
             // Notifications disabled for this application
             if (notif.appName && !this._applications[notif.appName].enabled)
                 return;
@@ -458,13 +466,6 @@ var Plugin = GObject.registerClass({
      */
     async sendNotification(notif) {
         try {
-            if (!this.settings.get_boolean('send-notifications'))
-                return;
-
-            // Sending when the session is active is forbidden
-            if (!this.settings.get_boolean('send-active') && this._session.active)
-                return;
-
             let icon = notif.icon || null;
             delete notif.icon;
 
