@@ -1,6 +1,10 @@
-#!/usr/bin/env -S G_TLS_GNUTLS_PRIORITY="NORMAL:%COMPAT:+VERS-TLS1.0" gjs
+#!/usr/bin/env gjs
 
 'use strict';
+
+// Allow TLSv1.0 certificates
+// See https://github.com/andyholmes/gnome-shell-extension-gsconnect/issues/930
+imports.gi.GLib.setenv('G_TLS_GNUTLS_PRIORITY', 'NORMAL:%COMPAT:+VERS-TLS1.0', true);
 
 imports.gi.versions.Gdk = '3.0';
 imports.gi.versions.GdkPixbuf = '2.0';
