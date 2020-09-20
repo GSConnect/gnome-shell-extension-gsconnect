@@ -93,7 +93,11 @@ const ServiceIndicator = GObject.registerClass({
         this._item.label.clutter_text.x_expand = true;
         this.menu.addMenuItem(this._item);
 
-        AggregateMenu.menu.addMenuItem(this.menu, 4);
+        // Find current index of network menu
+        let menuItems = AggregateMenu.menu._getMenuItems();
+        let networkMenuIndex = menuItems.indexOf(AggregateMenu._network.menu) || 3;
+        // Place our menu below the network menu
+        AggregateMenu.menu.addMenuItem(this.menu, networkMenuIndex + 1);
 
         // Service Menu -> Devices Section
         this.deviceSection = new PopupMenu.PopupMenuSection();
