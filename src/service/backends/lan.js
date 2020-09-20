@@ -74,26 +74,13 @@ function _configureSocket(connection) {
  */
 var ChannelService = GObject.registerClass({
     GTypeName: 'GSConnectLanChannelService',
-    Implements: [Core.ChannelService],
     Properties: {
-        'active': GObject.ParamSpec.override(
-            'active',
-            Core.ChannelService
-        ),
         'certificate': GObject.ParamSpec.object(
             'certificate',
             'Certificate',
             'The TLS certificate',
             GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
             Gio.TlsCertificate.$gtype
-        ),
-        'id': GObject.ParamSpec.override(
-            'id',
-            Core.ChannelService
-        ),
-        'name': GObject.ParamSpec.override(
-            'name',
-            Core.ChannelService
         ),
         'port': GObject.ParamSpec.uint(
             'port',
@@ -104,7 +91,7 @@ var ChannelService = GObject.registerClass({
             DEFAULT_PORT
         ),
     },
-}, class LanChannelService extends GObject.Object {
+}, class LanChannelService extends Core.ChannelService {
 
     _init(params = {}) {
         super._init(params);
@@ -536,14 +523,7 @@ var ChannelService = GObject.registerClass({
  */
 var Channel = GObject.registerClass({
     GTypeName: 'GSConnectLanChannel',
-    Implements: [Core.Channel],
-    Properties: {
-        'closed': GObject.ParamSpec.override(
-            'closed',
-            Core.Channel
-        ),
-    },
-}, class LanChannel extends GObject.Object {
+}, class LanChannel extends Core.Channel {
 
     _init(params) {
         super._init();

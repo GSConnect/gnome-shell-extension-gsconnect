@@ -22,20 +22,7 @@ const TRANSFER_MAX = 2764;
  */
 var ChannelService = GObject.registerClass({
     GTypeName: 'GSConnectMockChannelService',
-    Implements: [Core.ChannelService],
     Properties: {
-        'active': GObject.ParamSpec.override(
-            'active',
-            Core.ChannelService
-        ),
-        'id': GObject.ParamSpec.override(
-            'id',
-            Core.ChannelService
-        ),
-        'name': GObject.ParamSpec.override(
-            'name',
-            Core.ChannelService
-        ),
         'port': GObject.ParamSpec.uint(
             'port',
             'Port',
@@ -45,7 +32,7 @@ var ChannelService = GObject.registerClass({
             DEFAULT_PORT
         ),
     },
-}, class MockChannelService extends GObject.Object {
+}, class MockChannelService extends Core.ChannelService {
 
     _init(params = {}) {
         super._init(params);
@@ -380,14 +367,7 @@ var ChannelService = GObject.registerClass({
  */
 var Channel = GObject.registerClass({
     GTypeName: 'GSConnectMockChannel',
-    Implements: [Core.Channel],
-    Properties: {
-        'closed': GObject.ParamSpec.override(
-            'closed',
-            Core.Channel
-        ),
-    },
-}, class MockChannel extends GObject.Object {
+}, class MockChannel extends Core.Channel {
 
     _init(params) {
         super._init();

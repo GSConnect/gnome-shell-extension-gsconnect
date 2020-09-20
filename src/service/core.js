@@ -149,7 +149,6 @@ var Packet = class Packet {
  */
 var Channel = GObject.registerClass({
     GTypeName: 'GSConnectChannel',
-    Requires: [GObject.Object],
     Properties: {
         'closed': GObject.ParamSpec.boolean(
             'closed',
@@ -159,7 +158,7 @@ var Channel = GObject.registerClass({
             false
         ),
     },
-}, class Channel extends GObject.Interface {
+}, class Channel extends GObject.Object {
 
     get address() {
         throw new GObject.NotImplementedError();
@@ -347,7 +346,6 @@ var Channel = GObject.registerClass({
  */
 var ChannelService = GObject.registerClass({
     GTypeName: 'GSConnectChannelService',
-    Requires: [GObject.Object],
     Properties: {
         'active': GObject.ParamSpec.boolean(
             'active',
@@ -378,7 +376,7 @@ var ChannelService = GObject.registerClass({
             return_type: GObject.TYPE_BOOLEAN,
         },
     },
-}, class ChannelService extends GObject.Interface {
+}, class ChannelService extends GObject.Object {
 
     get active() {
         if (this._active === undefined)
