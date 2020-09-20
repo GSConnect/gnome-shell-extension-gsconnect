@@ -65,6 +65,13 @@ var Plugin = GObject.registerClass({
         }
     }
 
+    get cancellable() {
+        if (this._cancellable === undefined)
+            this._cancellable = new Gio.Cancellable();
+
+        return this._cancellable;
+    }
+
     get device() {
         return this._device;
     }
@@ -215,6 +222,10 @@ var Plugin = GObject.registerClass({
      * any dangling signal handlers.
      */
     destroy() {
+        // Cancel any pending plugin operations
+        if (this._cancellable !== undefined)
+            this._cancellable.cancel();
+
         for (let action of this._gactions) {
             this.device.removeMenuAction(`device.${action.name}`);
             this.device.remove_action(action.name);
