@@ -23,11 +23,11 @@ var _LINUX_SOCKETS = true;
 
 try {
     // This should throw on FreeBSD
-    new Gio.Socket({
-        family: Gio.SocketFamily.IPV4,
-        protocol: Gio.SocketProtocol.TCP,
-        type: Gio.SocketType.STREAM,
-    }).get_option(6, 5);
+    Gio.Socket.new(
+        Gio.SocketFamily.IPV4,
+        Gio.SocketType.STREAM,
+        Gio.SocketProtocol.TCP
+    ).get_option(6, 5);
 } catch (e) {
     _LINUX_SOCKETS = false;
 }
@@ -227,13 +227,12 @@ var ChannelService = GObject.registerClass({
         );
 
         try {
-            this._udp6 = new Gio.Socket({
-                family: Gio.SocketFamily.IPV6,
-                type: Gio.SocketType.DATAGRAM,
-                protocol: Gio.SocketProtocol.UDP,
-                broadcast: true,
-            });
-            this._udp6.init(null);
+            this._udp6 = Gio.Socket.new(
+                Gio.SocketFamily.IPV6,
+                Gio.SocketType.DATAGRAM,
+                Gio.SocketProtocol.UDP
+            );
+            this._udp6.set_broadcast(true);
 
             // Bind the socket
             let inetAddr = Gio.InetAddress.new_any(Gio.SocketFamily.IPV6);
@@ -263,13 +262,12 @@ var ChannelService = GObject.registerClass({
         }
 
         try {
-            this._udp4 = new Gio.Socket({
-                family: Gio.SocketFamily.IPV4,
-                type: Gio.SocketType.DATAGRAM,
-                protocol: Gio.SocketProtocol.UDP,
-                broadcast: true,
-            });
-            this._udp4.init(null);
+            this._udp4 = Gio.Socket.new(
+                Gio.SocketFamily.IPV4,
+                Gio.SocketType.DATAGRAM,
+                Gio.SocketProtocol.UDP
+            );
+            this._udp4.set_broadcast(true);
 
             // Bind the socket
             let inetAddr = Gio.InetAddress.new_any(Gio.SocketFamily.IPV4);
