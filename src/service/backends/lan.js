@@ -429,7 +429,7 @@ var ChannelService = GObject.registerClass({
 
     buildIdentity() {
         // Chain-up, then add the TCP port
-        Core.ChannelService.prototype.buildIdentity.call(this);
+        super.buildIdentity();
         this.identity.body.tcpPort = this.port;
     }
 
