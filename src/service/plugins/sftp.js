@@ -147,53 +147,49 @@ var Plugin = GObject.registerClass({
     }
 
     async _listDirectories(mount) {
-        try {
-            let file = mount.get_root();
+        const file = mount.get_root();
 
-            let iter = await new Promise((resolve, reject) => {
-                file.enumerate_children_async(
-                    Gio.FILE_ATTRIBUTE_STANDARD_NAME,
-                    Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
-                    GLib.PRIORITY_DEFAULT,
-                    null, // TODO: cancellable
-                    (file, res) => {
-                        try {
-                            resolve(file.enumerate_children_finish(res));
-                        } catch (e) {
-                            reject(e);
-                        }
+        const iter = await new Promise((resolve, reject) => {
+            file.enumerate_children_async(
+                Gio.FILE_ATTRIBUTE_STANDARD_NAME,
+                Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
+                GLib.PRIORITY_DEFAULT,
+                this.cancellable,
+                (file, res) => {
+                    try {
+                        resolve(file.enumerate_children_finish(res));
+                    } catch (e) {
+                        reject(e);
                     }
-                );
-            });
+                }
+            );
+        });
 
-            let infos = await new Promise((resolve, reject) => {
-                iter.next_files_async(
-                    MAX_MOUNT_DIRS,
-                    GLib.PRIORITY_DEFAULT,
-                    null, // TODO: cancellable
-                    (iter, res) => {
-                        try {
-                            resolve(iter.next_files_finish(res));
-                        } catch (e) {
-                            reject(e);
-                        }
+        const infos = await new Promise((resolve, reject) => {
+            iter.next_files_async(
+                MAX_MOUNT_DIRS,
+                GLib.PRIORITY_DEFAULT,
+                this.cancellable,
+                (iter, res) => {
+                    try {
+                        resolve(iter.next_files_finish(res));
+                    } catch (e) {
+                        reject(e);
                     }
-                );
-            });
+                }
+            );
+        });
 
-            iter.close_async(GLib.PRIORITY_DEFAULT, null, null);
+        iter.close_async(GLib.PRIORITY_DEFAULT, null, null);
 
-            let directories = {};
+        const directories = {};
 
-            for (let info of infos) {
-                let name = info.get_name();
-                directories[name] = `${file.get_uri()}${name}/`;
-            }
-
-            return directories;
-        } catch (e) {
-            debug(e, this.device.name);
+        for (const info of infos) {
+            const name = info.get_name();
+            directories[name] = `${file.get_uri()}${name}/`;
         }
+
+        return directories;
     }
 
     _onAskQuestion(op, message, choices) {
@@ -399,14 +395,11 @@ var Plugin = GObject.registerClass({
             const index = this.device.removeMenuAction('device.mount');
             this.device.addMenuItem(filesMenuItem, index);
         } catch (e) {
-            if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED)) {
-                const service = Gio.Application.get_default();
+            if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
+                debug(e, this.device.name);
 
-                if (service !== null)
-                    service.notify_error(e);
-                else
-                    logError(e, this.device.name);
-            }
+            // Reset to allow retrying
+            this._gmount = null;
         }
     }
 
