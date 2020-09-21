@@ -49,6 +49,9 @@
   </description>
 
   <releases>
+    <release version="43" date="2020-09-21">
+      <url>https://github.com/andyholmes/gnome-shell-extension-gsconnect/releases/tag/v43</url>
+    </release>
     <release version="42" date="2020-09-19">
       <url>https://github.com/andyholmes/gnome-shell-extension-gsconnect/releases/tag/v42</url>
     </release>
