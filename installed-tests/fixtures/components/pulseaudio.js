@@ -166,7 +166,7 @@ var Component = GObject.registerClass({
     }
 
     lookup_sink(id) {
-        let sink = this._sinks.get(id);
+        const sink = this._sinks.get(id);
 
         return sink || null;
     }

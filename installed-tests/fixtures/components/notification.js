@@ -14,7 +14,7 @@ var Component = GObject.registerClass({
 }, class MockListener extends GObject.Object {
 
     fakeNotification(notif) {
-        let variant = GLib.Variant.full_pack(notif);
+        const variant = GLib.Variant.full_pack(notif);
         this.emit('notification-added', variant);
     }
 });

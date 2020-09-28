@@ -43,7 +43,7 @@ _('Send SMS');
 //
 JSON.load = function (gfile) {
     try {
-        let data = gfile.load_contents(null)[1];
+        const data = gfile.load_contents(null)[1];
 
         if (data instanceof Uint8Array)
             return JSON.parse(ByteArray.toString(data));
@@ -56,9 +56,9 @@ JSON.load = function (gfile) {
 };
 
 // Find the cwd, locale dir and po dir
-let cwd = Gio.File.new_for_path('.');
-let localedir = cwd.get_child('_locales');
-let podir = cwd.get_parent().get_child('po');
+const cwd = Gio.File.new_for_path('.');
+const localedir = cwd.get_child('_locales');
+const podir = cwd.get_parent().get_child('po');
 
 // Load the english translation as a template
 let template = localedir.get_child('en').get_child('messages.json');
@@ -69,7 +69,7 @@ template = JSON.load(template);
 let info, iter = podir.enumerate_children('standard::name', 0, null);
 
 while ((info = iter.next_file(null))) {
-    let [lang, ext] = info.get_name().split('.');
+    const [lang, ext] = info.get_name().split('.');
 
     // Only process PO files
     if (ext !== 'po')
@@ -87,8 +87,8 @@ while ((info = iter.next_file(null))) {
     print(`Processing ${lang} as ${langCode}`);
 
     // Make a new dir and file
-    let jsondir = localedir.get_child(langCode);
-    let jsonfile = jsondir.get_child('messages.json');
+    const jsondir = localedir.get_child(langCode);
+    const jsonfile = jsondir.get_child('messages.json');
     GLib.mkdir_with_parents(jsondir.get_path(), 448);
 
     // If the translation exists, update the template with its messages
@@ -102,7 +102,7 @@ while ((info = iter.next_file(null))) {
     let po = iter.get_child(info).load_contents(null)[1];
     po = ByteArray.toString(po);
 
-    for (let line of po.split('\n')) {
+    for (const line of po.split('\n')) {
         // If we have a msgid, we're expecting a msgstr
         if (msgid) {
             if (MSGSTR_REGEX.test(line))

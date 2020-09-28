@@ -94,9 +94,9 @@ const ServiceIndicator = GObject.registerClass({
         this.menu.addMenuItem(this._item);
 
         // Find current index of network menu
-        let menuItems = AggregateMenu.menu._getMenuItems();
-        let networkMenuIndex = menuItems.indexOf(AggregateMenu._network.menu);
-        let menuIndex = networkMenuIndex > -1 ? networkMenuIndex : 3;
+        const menuItems = AggregateMenu.menu._getMenuItems();
+        const networkMenuIndex = menuItems.indexOf(AggregateMenu._network.menu);
+        const menuIndex = networkMenuIndex > -1 ? networkMenuIndex : 3;
         // Place our menu below the network menu
         AggregateMenu.menu.addMenuItem(this.menu, menuIndex + 1);
 
@@ -140,7 +140,7 @@ const ServiceIndicator = GObject.registerClass({
 
     _enable() {
         try {
-            let enabled = this.settings.get_boolean('enabled');
+            const enabled = this.settings.get_boolean('enabled');
 
             // If the service state matches the enabled setting, we should
             // toggle the service by toggling the setting
@@ -162,29 +162,29 @@ const ServiceIndicator = GObject.registerClass({
     }
 
     _sync() {
-        let available = this.service.devices.filter(device => {
+        const available = this.service.devices.filter(device => {
             return (device.connected && device.paired);
         });
-        let panelMode = this.settings.get_boolean('show-indicators');
+        const panelMode = this.settings.get_boolean('show-indicators');
 
         // Hide status indicator if in Panel mode or no devices are available
         this._indicator.visible = (!panelMode && available.length);
 
         // Show device indicators in Panel mode if available
-        for (let device of this.service.devices) {
-            let isAvailable = available.includes(device);
-            let indicator = Main.panel.statusArea[device.g_object_path];
+        for (const device of this.service.devices) {
+            const isAvailable = available.includes(device);
+            const indicator = Main.panel.statusArea[device.g_object_path];
 
             indicator.visible = panelMode && isAvailable;
 
-            let menu = this._menus[device.g_object_path];
+            const menu = this._menus[device.g_object_path];
             menu.actor.visible = !panelMode && isAvailable;
             menu._title.actor.visible = !panelMode && isAvailable;
         }
 
         // One connected device in User Menu mode
         if (!panelMode && available.length === 1) {
-            let device = available[0];
+            const device = available[0];
 
             // Hide the menu title and move it to the submenu item
             this._menus[device.g_object_path]._title.actor.visible = false;
@@ -229,7 +229,7 @@ const ServiceIndicator = GObject.registerClass({
 
     _onDeviceChanged(device, changed, invalidated) {
         try {
-            let properties = changed.deepUnpack();
+            const properties = changed.deepUnpack();
 
             if (properties.hasOwnProperty('Connected') ||
                 properties.hasOwnProperty('Paired'))
@@ -242,11 +242,11 @@ const ServiceIndicator = GObject.registerClass({
     _onDeviceAdded(service, device) {
         try {
             // Device Indicator
-            let indicator = new Device.Indicator({device: device});
+            const indicator = new Device.Indicator({device: device});
             Main.panel.addToStatusArea(device.g_object_path, indicator);
 
             // Device Menu
-            let menu = new Device.Menu({
+            const menu = new Device.Menu({
                 device: device,
                 menu_type: 'list',
             });
@@ -316,13 +316,13 @@ const ServiceIndicator = GObject.registerClass({
             device._keybindings = [];
 
             // Get the keybindings
-            let keybindings = device.settings.get_value('keybindings').deepUnpack();
+            const keybindings = device.settings.get_value('keybindings').deepUnpack();
 
             // Apply the keybindings
-            for (let [action, accelerator] of Object.entries(keybindings)) {
-                let [, name, parameter] = Gio.Action.parse_detailed_name(action);
+            for (const [action, accelerator] of Object.entries(keybindings)) {
+                const [, name, parameter] = Gio.Action.parse_detailed_name(action);
 
-                let actionId = this._keybindings.add(
+                const actionId = this._keybindings.add(
                     accelerator,
                     () => device.action_group.activate_action(name, parameter)
                 );
@@ -371,7 +371,7 @@ const ServiceIndicator = GObject.registerClass({
             this.service.disconnect(this._deviceAddedId);
             this.service.disconnect(this._deviceRemovedId);
 
-            for (let device of this.service.devices)
+            for (const device of this.service.devices)
                 this._onDeviceRemoved(this.service, device, false);
 
             this.service.destroy();

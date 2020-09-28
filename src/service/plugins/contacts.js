@@ -97,8 +97,8 @@ var Plugin = GObject.registerClass({
 
     _handleUids(packet) {
         try {
-            let contacts = this._store.contacts;
-            let remote_uids = packet.body.uids;
+            const contacts = this._store.contacts;
+            const remote_uids = packet.body.uids;
             let removed = false;
             delete packet.body.uids;
 
@@ -108,7 +108,7 @@ var Plugin = GObject.registerClass({
 
             // Delete any contacts that were removed on the device
             for (let i = 0, len = contacts.length; i < len; i++) {
-                let contact = contacts[i];
+                const contact = contacts[i];
 
                 if (!remote_uids.includes(contact.id)) {
                     this._store.remove(contact.id, false);
@@ -117,10 +117,10 @@ var Plugin = GObject.registerClass({
             }
 
             // Build a list of new or updated contacts
-            let uids = [];
+            const uids = [];
 
-            for (let [uid, timestamp] of Object.entries(packet.body)) {
-                let contact = this._store.get_contact(uid);
+            for (const [uid, timestamp] of Object.entries(packet.body)) {
+                const contact = this._store.get_contact(uid);
 
                 if (!contact || contact.timestamp !== timestamp)
                     uids.push(uid);
@@ -154,7 +154,7 @@ var Plugin = GObject.registerClass({
             .replace(/=(?:\r\n?|\n|$)/g, '')
             // https://tools.ietf.org/html/rfc2045#section-6.7, note 1.
             .replace(/=([a-fA-F0-9]{2})/g, ($0, $1) => {
-                let codePoint = parseInt($1, 16);
+                const codePoint = parseInt($1, 16);
                 return String.fromCharCode(codePoint);
             });
     }
@@ -169,7 +169,7 @@ var Plugin = GObject.registerClass({
      */
     _decodeUTF8(input) {
         try {
-            let output = [];
+            const output = [];
             let i = 0;
             let c1 = 0;
             let seqlen = 0;
@@ -231,7 +231,7 @@ var Plugin = GObject.registerClass({
      */
     _parseVCard21(vcard_data) {
         // vcard skeleton
-        let vcard = {
+        const vcard = {
             fn: _('Unknown Contact'),
             tel: [],
         };
@@ -241,7 +241,7 @@ var Plugin = GObject.registerClass({
         const lines = unfolded.split(/\r\n|\r|\n/);
 
         for (let i = 0, len = lines.length; i < len; i++) {
-            let line = lines[i];
+            const line = lines[i];
             let results, key, type, value;
 
             // Empty line or a property we aren't interested in
@@ -263,10 +263,10 @@ var Plugin = GObject.registerClass({
                 type = type.split(';');
 
                 // Type(s)
-                let meta = {};
+                const meta = {};
 
                 for (let i = 0, len = type.length; i < len; i++) {
-                    let res = type[i].match(VCARD_TYPED_META);
+                    const res = type[i].match(VCARD_TYPED_META);
 
                     if (res)
                         meta[res[1]] = res[2];
@@ -310,9 +310,9 @@ var Plugin = GObject.registerClass({
      */
     async _parseVCardNative(uid, vcard_data) {
         try {
-            let vcard = this._parseVCard21(vcard_data);
+            const vcard = this._parseVCard21(vcard_data);
 
-            let contact = {
+            const contact = {
                 id: uid,
                 name: vcard.fn,
                 numbers: [],
@@ -332,7 +332,7 @@ var Plugin = GObject.registerClass({
 
             // Avatar
             if (vcard.photo) {
-                let data = GLib.base64_decode(vcard.photo[0].value[0]);
+                const data = GLib.base64_decode(vcard.photo[0].value[0]);
                 contact.avatar = await this._store.storeAvatar(data);
             }
 
@@ -350,7 +350,7 @@ var Plugin = GObject.registerClass({
      */
     async _parseVCard(uid, vcard_data) {
         try {
-            let contact = {
+            const contact = {
                 id: uid,
                 name: _('Unknown Contact'),
                 numbers: [],
@@ -358,11 +358,11 @@ var Plugin = GObject.registerClass({
                 timestamp: 0,
             };
 
-            let evcard = EBookContacts.VCard.new_from_string(vcard_data);
-            let attrs = evcard.get_attributes();
+            const evcard = EBookContacts.VCard.new_from_string(vcard_data);
+            const attrs = evcard.get_attributes();
 
             for (let i = 0, len = attrs.length; i < len; i++) {
-                let attr = attrs[i];
+                const attr = attrs[i];
                 let data, number;
 
                 switch (attr.get_name().toLowerCase()) {
@@ -412,7 +412,7 @@ var Plugin = GObject.registerClass({
             delete packet.body.uids;
 
             // Parse each vCard and add the contact
-            for (let [uid, vcard] of Object.entries(packet.body)) {
+            for (const [uid, vcard] of Object.entries(packet.body)) {
                 if (EBookContacts)
                     this._parseVCard(uid, vcard);
                 else

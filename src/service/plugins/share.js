@@ -91,7 +91,7 @@ var Plugin = GObject.registerClass({
             );
 
             // Fallback to ~/Downloads
-            let homeDir = GLib.get_home_dir();
+            const homeDir = GLib.get_home_dir();
 
             if (!receiveDir || receiveDir === homeDir)
                 receiveDir = GLib.build_filenamev([homeDir, 'Downloads']);
@@ -107,8 +107,8 @@ var Plugin = GObject.registerClass({
     }
 
     _getFile(filename) {
-        let dirpath = this._ensureReceiveDirectory();
-        let basepath = GLib.build_filenamev([dirpath, filename]);
+        const dirpath = this._ensureReceiveDirectory();
+        const basepath = GLib.build_filenamev([dirpath, filename]);
         let filepath = basepath;
         let copyNum = 0;
 
@@ -138,10 +138,10 @@ var Plugin = GObject.registerClass({
 
     async _handleFile(packet) {
         try {
-            let file = this._getFile(packet.body.filename);
+            const file = this._getFile(packet.body.filename);
 
             // Create the transfer
-            let transfer = this.device.createTransfer();
+            const transfer = this.device.createTransfer();
 
             transfer.addFile(packet, file);
 
@@ -190,7 +190,7 @@ var Plugin = GObject.registerClass({
                 iconName = 'document-save-symbolic';
 
                 if (packet.body.open) {
-                    let uri = file.get_uri();
+                    const uri = file.get_uri();
                     Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
                 }
             } catch (e) {
@@ -220,12 +220,12 @@ var Plugin = GObject.registerClass({
     }
 
     _handleUri(packet) {
-        let uri = packet.body.url;
+        const uri = packet.body.url;
         Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
     }
 
     _handleText(packet) {
-        let dialog = new Gtk.MessageDialog({
+        const dialog = new Gtk.MessageDialog({
             text: _('Text Shared By %s').format(this.device.name),
             secondary_text: URI.linkify(packet.body.text),
             secondary_use_markup: true,
@@ -241,7 +241,7 @@ var Plugin = GObject.registerClass({
      * Open the file chooser dialog for selecting a file or inputing a URI.
      */
     share() {
-        let dialog = new FileChooserDialog(this.device);
+        const dialog = new FileChooserDialog(this.device);
         dialog.show();
     }
 
@@ -261,7 +261,7 @@ var Plugin = GObject.registerClass({
                 file = Gio.File.new_for_path(path);
 
             // Create the transfer
-            let transfer = this.device.createTransfer();
+            const transfer = this.device.createTransfer();
 
             transfer.addFile({
                 type: 'kdeconnect.share.request',
@@ -377,8 +377,8 @@ var FileChooserDialog = GObject.registerClass({
         this.device = device;
 
         // Align checkbox with sidebar
-        let box = this.get_content_area().get_children()[0].get_children()[0];
-        let paned = box.get_children()[0];
+        const box = this.get_content_area().get_children()[0].get_children()[0];
+        const paned = box.get_children()[0];
         paned.bind_property(
             'position',
             this.extra_widget,
@@ -413,7 +413,7 @@ var FileChooserDialog = GObject.registerClass({
         this._uriButton.connect('toggled', this._onUriButtonToggled.bind(this));
 
         this.add_button(_('Cancel'), Gtk.ResponseType.CANCEL);
-        let sendButton = this.add_button(_('Send'), Gtk.ResponseType.OK);
+        const sendButton = this.add_button(_('Send'), Gtk.ResponseType.OK);
         sendButton.connect('clicked', this._sendLink.bind(this));
 
         this.get_header_bar().pack_end(this._uriButton);
@@ -422,7 +422,7 @@ var FileChooserDialog = GObject.registerClass({
 
     _onUpdatePreview(chooser) {
         try {
-            let pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
+            const pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
                 chooser.get_preview_filename(),
                 chooser.get_scale_factor() * 128,
                 -1
@@ -437,7 +437,7 @@ var FileChooserDialog = GObject.registerClass({
     }
 
     _onUriButtonToggled(button) {
-        let header = this.get_header_bar();
+        const header = this.get_header_bar();
 
         // Show the URL entry
         if (button.active) {
@@ -463,15 +463,15 @@ var FileChooserDialog = GObject.registerClass({
 
     vfunc_response(response_id) {
         if (response_id === Gtk.ResponseType.OK) {
-            for (let uri of this.get_uris()) {
-                let parameter = new GLib.Variant(
+            for (const uri of this.get_uris()) {
+                const parameter = new GLib.Variant(
                     '(sb)',
                     [uri, this.extra_widget.active]
                 );
                 this.device.activate_action('shareFile', parameter);
             }
         } else if (response_id === 1) {
-            let parameter = new GLib.Variant('s', this._uriEntry.text);
+            const parameter = new GLib.Variant('s', this._uriEntry.text);
             this.device.activate_action('shareUri', parameter);
         }
 

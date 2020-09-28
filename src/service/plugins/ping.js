@@ -39,7 +39,7 @@ var Plugin = GObject.registerClass({
 
     handlePacket(packet) {
         // Notification
-        let notif = {
+        const notif = {
             title: this.device.name,
             body: _('Ping'),
             icon: new Gio.ThemedIcon({name: `${this.device.icon_name}`}),
@@ -55,7 +55,7 @@ var Plugin = GObject.registerClass({
     }
 
     ping(message = '') {
-        let packet = {
+        const packet = {
             type: 'kdeconnect.ping',
             body: {},
         };

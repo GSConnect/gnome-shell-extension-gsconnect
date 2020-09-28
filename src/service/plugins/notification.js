@@ -103,7 +103,7 @@ const SMS_APPS = [
  * @return {boolean} Whether the notification is from an SMS app
  */
 function _isSmsNotification(packet) {
-    let id = packet.body.id;
+    const id = packet.body.id;
 
     if (id.includes('sms'))
         return true;
@@ -217,7 +217,7 @@ var Plugin = GObject.registerClass({
             return;
 
         try {
-            let json = settings.get_string(key);
+            const json = settings.get_string(key);
             this._applications = JSON.parse(json);
         } catch (e) {
             debug(e, this.device.name);
@@ -230,7 +230,7 @@ var Plugin = GObject.registerClass({
 
     _onNotificationAdded(listener, notification) {
         try {
-            let notif = notification.full_unpack();
+            const notif = notification.full_unpack();
 
             // An unconfigured application
             if (notif.appName && !this._applications[notif.appName]) {
@@ -247,7 +247,7 @@ var Plugin = GObject.registerClass({
                     this._applications[notif.appName].iconName = notif.icon;
 
                 } else if (notif.icon instanceof Gio.ThemedIcon) {
-                    let iconName = notif.icon.get_names()[0];
+                    const iconName = notif.icon.get_names()[0];
                     this._applications[notif.appName].iconName = iconName;
                 }
 
@@ -325,7 +325,7 @@ var Plugin = GObject.registerClass({
         // form "type|application-id|notification-id" so we can close it with
         // the appropriate service.
         if (packet.body.hasOwnProperty('cancel')) {
-            let [, type, application, id] = ID_REGEX.exec(packet.body.cancel);
+            const [, type, application, id] = ID_REGEX.exec(packet.body.cancel);
 
             if (type === 'fdo')
                 _removeNotification(parseInt(id));
@@ -341,7 +341,7 @@ var Plugin = GObject.registerClass({
      * @param {GLib.Bytes} bytes - The icon bytes
      */
     _uploadBytesIcon(packet, bytes) {
-        let stream = Gio.MemoryInputStream.new_from_bytes(bytes);
+        const stream = Gio.MemoryInputStream.new_from_bytes(bytes);
         this._uploadIconStream(packet, stream, bytes.get_size());
     }
 
@@ -352,7 +352,7 @@ var Plugin = GObject.registerClass({
      * @param {Gio.File} file - A file object for the icon
      */
     async _uploadFileIcon(packet, file) {
-        let read = new Promise((resolve, reject) => {
+        const read = new Promise((resolve, reject) => {
             file.read_async(GLib.PRIORITY_DEFAULT, null, (file, res) => {
                 try {
                     resolve(file.read_finish(res));
@@ -362,7 +362,7 @@ var Plugin = GObject.registerClass({
             });
         });
 
-        let query = new Promise((resolve, reject) => {
+        const query = new Promise((resolve, reject) => {
             file.query_info_async(
                 'standard::size',
                 Gio.FileQueryInfoFlags.NONE,
@@ -378,7 +378,7 @@ var Plugin = GObject.registerClass({
             );
         });
 
-        let [stream, info] = await Promise.all([read, query]);
+        const [stream, info] = await Promise.all([read, query]);
 
         this._uploadIconStream(packet, stream, info.get_size());
     }
@@ -390,13 +390,13 @@ var Plugin = GObject.registerClass({
      * @param {Gio.ThemedIcon} icon - The GIcon to upload
      */
     _uploadThemedIcon(packet, icon) {
-        let theme = Gtk.IconTheme.get_default();
+        const theme = Gtk.IconTheme.get_default();
         let file = null;
 
-        for (let name of icon.names) {
+        for (const name of icon.names) {
             // NOTE: kdeconnect-android doesn't support SVGs
-            let size = Math.max.apply(null, theme.get_icon_sizes(name));
-            let info = theme.lookup_icon(name, size, Gtk.IconLookupFlags.NO_SVG);
+            const size = Math.max.apply(null, theme.get_icon_sizes(name));
+            const info = theme.lookup_icon(name, size, Gtk.IconLookupFlags.NO_SVG);
 
             // Send the first icon we find from the options
             if (info) {
@@ -420,7 +420,7 @@ var Plugin = GObject.registerClass({
      */
     async _uploadIconStream(packet, stream, size) {
         try {
-            let transfer = this.device.createTransfer();
+            const transfer = this.device.createTransfer();
             transfer.addStream(packet, stream, size);
 
             await transfer.start();
@@ -469,7 +469,7 @@ var Plugin = GObject.registerClass({
      */
     async sendNotification(notif) {
         try {
-            let icon = notif.icon || null;
+            const icon = notif.icon || null;
             delete notif.icon;
 
             await this._uploadIcon({
@@ -487,7 +487,7 @@ var Plugin = GObject.registerClass({
                 return null;
 
             // Save the file in the global cache
-            let path = GLib.build_filenamev([
+            const path = GLib.build_filenamev([
                 Config.CACHEDIR,
                 packet.body.payloadHash || `${Date.now()}`,
             ]);
@@ -495,13 +495,13 @@ var Plugin = GObject.registerClass({
             // Check if we've already downloaded this icon
             // NOTE: if we reject the transfer kdeconnect-android will resend
             //       the notification packet, which may cause problems wrt #789
-            let file = Gio.File.new_for_path(path);
+            const file = Gio.File.new_for_path(path);
 
             if (file.query_exists(null))
                 return new Gio.FileIcon({file: file});
 
             // Open the target path and create a transfer
-            let transfer = this.device.createTransfer();
+            const transfer = this.device.createTransfer();
 
             transfer.addFile(packet, file);
 
@@ -660,7 +660,7 @@ var Plugin = GObject.registerClass({
 
         // If the message has no content, open a dialog for the user to add one
         if (!message) {
-            let dialog = new NotificationUI.ReplyDialog({
+            const dialog = new NotificationUI.ReplyDialog({
                 device: this.device,
                 uuid: uuid,
                 notification: notification,

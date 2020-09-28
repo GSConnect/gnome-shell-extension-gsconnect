@@ -98,12 +98,12 @@ var InputDialog = GObject.registerClass({
             use_header_bar: true,
         }, params));
 
-        let headerbar = this.get_titlebar();
+        const headerbar = this.get_titlebar();
         headerbar.title = _('Keyboard');
         headerbar.subtitle = this.device.name;
 
         // Main Box
-        let content = this.get_content_area();
+        const content = this.get_content_area();
         content.border_width = 0;
 
         // TRANSLATORS: Displayed when the remote keyboard is not ready to accept input
@@ -137,8 +137,8 @@ var InputDialog = GObject.registerClass({
         if (!this.plugin.state)
             debug('ignoring remote keyboard state');
 
-        let keyvalLower = Gdk.keyval_to_lower(event.keyval);
-        let realMask = event.state & Gtk.accelerator_get_default_mod_mask();
+        const keyvalLower = Gdk.keyval_to_lower(event.keyval);
+        const realMask = event.state & Gtk.accelerator_get_default_mod_mask();
 
         this.alt_label.sensitive = !isAlt(keyvalLower) && (realMask & Gdk.ModifierType.MOD1_MASK);
         this.ctrl_label.sensitive = !isCtrl(keyvalLower) && (realMask & Gdk.ModifierType.CONTROL_MASK);
@@ -186,7 +186,7 @@ var InputDialog = GObject.registerClass({
 
         debug(`keyval: ${event.keyval}, mask: ${realMask}`);
 
-        let request = {
+        const request = {
             alt: !!(realMask & Gdk.ModifierType.MOD1_MASK),
             ctrl: !!(realMask & Gdk.ModifierType.CONTROL_MASK),
             shift: !!(realMask & Gdk.ModifierType.SHIFT_MASK),
@@ -200,7 +200,7 @@ var InputDialog = GObject.registerClass({
 
         // key
         } else {
-            let codePoint = Gdk.keyval_to_unicode(event.keyval);
+            const codePoint = Gdk.keyval_to_unicode(event.keyval);
             request.key = String.fromCodePoint(codePoint);
         }
 
@@ -234,7 +234,7 @@ var InputDialog = GObject.registerClass({
 
         debug(`insert-text: ${text} (chars ${[...text].length})`);
 
-        for (let char of [...text]) {
+        for (const char of [...text]) {
             if (!char)
                 continue;
 
@@ -267,8 +267,8 @@ var InputDialog = GObject.registerClass({
         if (!this.visible || this._keyboard)
             return;
 
-        let seat = Gdk.Display.get_default().get_default_seat();
-        let status = seat.grab(
+        const seat = Gdk.Display.get_default().get_default_seat();
+        const status = seat.grab(
             this.get_window(),
             Gdk.SeatCapabilities.KEYBOARD,
             false,

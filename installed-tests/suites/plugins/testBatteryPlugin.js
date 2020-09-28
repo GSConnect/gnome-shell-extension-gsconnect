@@ -114,8 +114,8 @@ describe('The battery plugin', function () {
     });
 
     it('updates the GAction state', function () {
-        let batteryAction = remotePlugin.device.lookup_action('battery');
-        let [charging, icon, level, time] = batteryAction.state.deepUnpack();
+        const batteryAction = remotePlugin.device.lookup_action('battery');
+        const [charging, icon, level, time] = batteryAction.state.deepUnpack();
 
         expect(charging).toBeFalse();
         expect(icon).toBe('battery-good-symbolic');

@@ -51,7 +51,7 @@ var MockPlayer = GObject.registerClass({
         if (this._ownerId !== 0)
             return;
 
-        let name = this.Identity.replace(/\W*/g, '_');
+        const name = this.Identity.replace(/\W*/g, '_');
 
         this._ownerId = Gio.bus_own_name_on_connection(
             this._connection,

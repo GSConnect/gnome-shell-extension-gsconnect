@@ -570,7 +570,7 @@ const PlayerProxy = GObject.registerClass({
         try {
             this.freeze_notify();
 
-            for (let name in changed.deepUnpack())
+            for (const name in changed.deepUnpack())
                 this.notify(name);
 
             this.thaw_notify();
@@ -580,7 +580,7 @@ const PlayerProxy = GObject.registerClass({
     }
 
     initPromise() {
-        let application = new Promise((resolve, reject) => {
+        const application = new Promise((resolve, reject) => {
             this._application.init_async(0, this._cancellable, (proxy, res) => {
                 try {
                     resolve(proxy.init_finish(res));
@@ -590,7 +590,7 @@ const PlayerProxy = GObject.registerClass({
             });
         });
 
-        let player = new Promise((resolve, reject) => {
+        const player = new Promise((resolve, reject) => {
             this._player.init_async(0, this._cancellable, (proxy, res) => {
                 try {
                     resolve(proxy.init_finish(res));
@@ -717,7 +717,7 @@ const PlayerProxy = GObject.registerClass({
     // g-properties-changed is not emitted for this property
     get Position() {
         try {
-            let reply = this._player.call_sync(
+            const reply = this._player.call_sync(
                 'org.freedesktop.DBus.Properties.Get',
                 new GLib.Variant('(ss)', [
                     'org.mpris.MediaPlayer2.Player',
@@ -852,7 +852,7 @@ var Manager = GObject.registerClass({
 
     async _loadPlayers() {
         try {
-            let names = await new Promise((resolve, reject) => {
+            const names = await new Promise((resolve, reject) => {
                 this._connection.call(
                     'org.freedesktop.DBus',
                     '/org/freedesktop/DBus',
@@ -875,7 +875,7 @@ var Manager = GObject.registerClass({
             });
 
             for (let i = 0, len = names.length; i < len; i++) {
-                let name = names[i];
+                const name = names[i];
 
                 if (!name.startsWith('org.mpris.MediaPlayer2'))
                     continue;
@@ -904,7 +904,7 @@ var Manager = GObject.registerClass({
     async _addPlayer(name) {
         try {
             if (!this._players.has(name)) {
-                let player = new PlayerProxy(name);
+                const player = new PlayerProxy(name);
                 await player.initPromise();
 
                 player.connect('notify',
@@ -922,7 +922,7 @@ var Manager = GObject.registerClass({
 
     _removePlayer(name) {
         try {
-            let player = this._players.get(name);
+            const player = this._players.get(name);
 
             if (player !== undefined) {
                 this._paused.delete(name);
@@ -943,7 +943,7 @@ var Manager = GObject.registerClass({
      * @return {boolean} %true if the player was found
      */
     hasPlayer(identity) {
-        for (let player of this._players.values()) {
+        for (const player of this._players.values()) {
             if (player.Identity === identity)
                 return true;
         }
@@ -958,7 +958,7 @@ var Manager = GObject.registerClass({
      * @return {GSConnectMPRISPlayer|null} A player or %null
      */
     getPlayer(identity) {
-        for (let player of this._players.values()) {
+        for (const player of this._players.values()) {
             if (player.Identity === identity)
                 return player;
         }
@@ -972,10 +972,10 @@ var Manager = GObject.registerClass({
      * @return {string[]} A list of player identities
      */
     getIdentities() {
-        let identities = [];
+        const identities = [];
 
-        for (let player of this._players.values()) {
-            let identity = player.Identity;
+        for (const player of this._players.values()) {
+            const identity = player.Identity;
 
             if (identity)
                 identities.push(identity);
@@ -988,7 +988,7 @@ var Manager = GObject.registerClass({
      * A convenience function for pausing all players currently playing.
      */
     pauseAll() {
-        for (let [name, player] of this._players) {
+        for (const [name, player] of this._players) {
             if (player.PlaybackStatus === 'Playing' && player.CanPause) {
                 player.Pause();
                 this._paused.set(name, player);
@@ -1000,7 +1000,7 @@ var Manager = GObject.registerClass({
      * A convenience function for restarting all players paused with pauseAll().
      */
     unpauseAll() {
-        for (let player of this._paused.values()) {
+        for (const player of this._paused.values()) {
             if (player.PlaybackStatus === 'Paused' && player.CanPlay)
                 player.Play();
         }

@@ -18,7 +18,7 @@ function randomRGBA(salt = null, alpha = 1.0) {
     let red, green, blue;
 
     if (salt !== null) {
-        let hash = new GLib.Variant('s', `${salt}`).hash();
+        const hash = new GLib.Variant('s', `${salt}`).hash();
         red = ((hash & 0xFF0000) >> 16) / 255;
         green = ((hash & 0x00FF00) >> 8) / 255;
         blue = (hash & 0x0000FF) / 255;
@@ -40,11 +40,11 @@ function randomRGBA(salt = null, alpha = 1.0) {
  * @return {number} The relative luminance of the color
  */
 function relativeLuminance(rgba) {
-    let {red, green, blue} = rgba;
+    const {red, green, blue} = rgba;
 
-    let R = (red > 0.03928) ? red / 12.92 : Math.pow(((red + 0.055) / 1.055), 2.4);
-    let G = (green > 0.03928) ? green / 12.92 : Math.pow(((green + 0.055) / 1.055), 2.4);
-    let B = (blue > 0.03928) ? blue / 12.92 : Math.pow(((blue + 0.055) / 1.055), 2.4);
+    const R = (red > 0.03928) ? red / 12.92 : Math.pow(((red + 0.055) / 1.055), 2.4);
+    const G = (green > 0.03928) ? green / 12.92 : Math.pow(((green + 0.055) / 1.055), 2.4);
+    const B = (blue > 0.03928) ? blue / 12.92 : Math.pow(((blue + 0.055) / 1.055), 2.4);
 
     return 0.2126 * R + 0.7152 * G + 0.0722 * B;
 }
@@ -58,11 +58,11 @@ function relativeLuminance(rgba) {
  * @return {Gdk.RGBA} A GdkRGBA object for the foreground color
  */
 function getFgRGBA(rgba) {
-    let bgLuminance = relativeLuminance(rgba);
-    let lightContrast = (0.07275541795665634 + 0.05) / (bgLuminance + 0.05);
-    let darkContrast = (bgLuminance + 0.05) / (0.0046439628482972135 + 0.05);
+    const bgLuminance = relativeLuminance(rgba);
+    const lightContrast = (0.07275541795665634 + 0.05) / (bgLuminance + 0.05);
+    const darkContrast = (bgLuminance + 0.05) / (0.0046439628482972135 + 0.05);
 
-    let value = (darkContrast > lightContrast) ? 0.06 : 0.94;
+    const value = (darkContrast > lightContrast) ? 0.06 : 0.94;
     return new Gdk.RGBA({red: value, green: value, blue: value, alpha: 0.5});
 }
 
@@ -104,9 +104,9 @@ function getPixbufForPath(path, size, scale = 1.0) {
 }
 
 function getPixbufForIcon(name, size, scale, bgColor) {
-    let color = getFgRGBA(bgColor);
-    let theme = Gtk.IconTheme.get_default();
-    let info = theme.lookup_icon_for_scale(
+    const color = getFgRGBA(bgColor);
+    const theme = Gtk.IconTheme.get_default();
+    const info = theme.lookup_icon_for_scale(
         name,
         size,
         scale,
@@ -153,10 +153,10 @@ function getNumberTypeLabel(type) {
  * @return {string} A (possibly) better display number for the address
  */
 function getDisplayNumber(contact, address) {
-    let number = address.toPhoneNumber();
+    const number = address.toPhoneNumber();
 
-    for (let contactNumber of contact.numbers) {
-        let cnumber = contactNumber.value.toPhoneNumber();
+    for (const contactNumber of contact.numbers) {
+        const cnumber = contactNumber.value.toPhoneNumber();
 
         if (number.endsWith(cnumber) || cnumber.endsWith(number))
             return GLib.markup_escape_text(contactNumber.value, -1);
@@ -216,9 +216,9 @@ var Avatar = GObject.registerClass({
 
     _loadSurface() {
         // Get the monitor scale
-        let display = Gdk.Display.get_default();
-        let monitor = display.get_monitor_at_window(this.get_window());
-        let scale = monitor.get_scale_factor();
+        const display = Gdk.Display.get_default();
+        const monitor = display.get_monitor_at_window(this.get_window());
+        const scale = monitor.get_scale_factor();
 
         // If there's a contact with an avatar, try to load it
         if (this.contact && this.contact.avatar) {
@@ -227,7 +227,7 @@ var Avatar = GObject.registerClass({
 
             // Try loading the pixbuf
             if (!this._surface) {
-                let pixbuf = getPixbufForPath(
+                const pixbuf = getPixbufForPath(
                     this.contact.avatar,
                     this.width_request,
                     scale
@@ -258,7 +258,7 @@ var Avatar = GObject.registerClass({
             this._offset = (this.width_request - 24) / 2;
 
             // Load the fallback
-            let pixbuf = getPixbufForIcon(iconName, 24, scale, this.rgba);
+            const pixbuf = getPixbufForIcon(iconName, 24, scale, this.rgba);
 
             this._surface = Gdk.cairo_surface_create_from_pixbuf(
                 pixbuf,
@@ -273,7 +273,7 @@ var Avatar = GObject.registerClass({
             this._loadSurface();
 
         // Clip to a circle
-        let rad = this.width_request / 2;
+        const rad = this.width_request / 2;
         cr.arc(rad, rad, rad, 0, 2 * Math.PI);
         cr.clipPreserve();
 
@@ -435,7 +435,7 @@ var ContactChooser = GObject.registerClass({
             this._store.disconnect(this._contactChangedId);
 
             // Clear the contact list
-            let rows = this.list.get_children();
+            const rows = this.list.get_children();
 
             for (let i = 0, len = rows.length; i < len; i++) {
                 rows[i].destroy();
@@ -474,15 +474,15 @@ var ContactChooser = GObject.registerClass({
      * ContactStore Callbacks
      */
     _onContactAdded(store, id) {
-        let contact = this.store.get_contact(id);
+        const contact = this.store.get_contact(id);
         this._addContact(contact);
     }
 
     _onContactRemoved(store, id) {
-        let rows = this.list.get_children();
+        const rows = this.list.get_children();
 
         for (let i = 0, len = rows.length; i < len; i++) {
-            let row = rows[i];
+            const row = rows[i];
 
             if (row.contact.id === id) {
                 row.destroy();
@@ -519,7 +519,7 @@ var ContactChooser = GObject.registerClass({
 
             // ...or if we already do, then update it
             } else {
-                let address = entry.text;
+                const address = entry.text;
 
                 // Update contact object
                 dynamic.contact.name = address;
@@ -545,7 +545,7 @@ var ContactChooser = GObject.registerClass({
             return;
 
         // Emit the number
-        let address = row.number.value;
+        const address = row.number.value;
         this.emit('number-selected', address);
 
         // Reset the contact list
@@ -559,19 +559,19 @@ var ContactChooser = GObject.registerClass({
         if (row.__tmp)
             return true;
 
-        let query = row.get_parent()._entry;
+        const query = row.get_parent()._entry;
 
         // Show contact if text is substring of name
-        let queryName = query.toLocaleLowerCase();
+        const queryName = query.toLocaleLowerCase();
 
         if (row.contact.name.toLocaleLowerCase().includes(queryName))
             return true;
 
         // Show contact if text is substring of number
-        let queryNumber = query.toPhoneNumber();
+        const queryNumber = query.toPhoneNumber();
 
         if (queryNumber.length) {
-            for (let number of row.contact.numbers) {
+            for (const number of row.contact.numbers) {
                 if (number.value.toPhoneNumber().includes(queryNumber))
                     return true;
             }
@@ -596,14 +596,14 @@ var ContactChooser = GObject.registerClass({
 
     _populate() {
         // Add each contact
-        let contacts = this.store.contacts;
+        const contacts = this.store.contacts;
 
         for (let i = 0, len = contacts.length; i < len; i++)
             this._addContact(contacts[i]);
     }
 
     _addContactNumber(contact, index) {
-        let row = new AddressRow(contact, index);
+        const row = new AddressRow(contact, index);
         this.list.add(row);
 
         return row;
@@ -632,9 +632,9 @@ var ContactChooser = GObject.registerClass({
      */
     getSelected() {
         try {
-            let selected = {};
+            const selected = {};
 
-            for (let row of this.list.get_selected_rows())
+            for (const row of this.list.get_selected_rows())
                 selected[row.number.value] = row.contact;
 
             return selected;

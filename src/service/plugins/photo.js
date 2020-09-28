@@ -83,7 +83,7 @@ var Plugin = GObject.registerClass({
             );
 
             // Fallback to ~/Pictures
-            let homeDir = GLib.get_home_dir();
+            const homeDir = GLib.get_home_dir();
 
             if (!this._receiveDir || this._receiveDir === homeDir) {
                 this._receiveDir = GLib.build_filenamev([homeDir, 'Pictures']);
@@ -106,8 +106,8 @@ var Plugin = GObject.registerClass({
      * @return {Gio.File} a file object
      */
     _getFile(filename) {
-        let dirpath = this._ensureReceiveDirectory();
-        let basepath = GLib.build_filenamev([dirpath, filename]);
+        const dirpath = this._ensureReceiveDirectory();
+        const basepath = GLib.build_filenamev([dirpath, filename]);
         let filepath = basepath;
         let copyNum = 0;
 
@@ -139,7 +139,7 @@ var Plugin = GObject.registerClass({
             // Open the photo if successful, delete on failure
             await transfer.start();
 
-            let uri = file.get_uri();
+            const uri = file.get_uri();
             Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
         } catch (e) {
             debug(e, this.device.name);
@@ -157,9 +157,9 @@ var Plugin = GObject.registerClass({
      */
     _takePhoto(packet) {
         return new Promise((resolve, reject) => {
-            let time = GLib.DateTime.new_now_local().format('%T');
-            let path = GLib.build_filenamev([GLib.get_tmp_dir(), `${time}.jpg`]);
-            let proc = this._launcher.spawnv([
+            const time = GLib.DateTime.new_now_local().format('%T');
+            const path = GLib.build_filenamev([GLib.get_tmp_dir(), `${time}.jpg`]);
+            const proc = this._launcher.spawnv([
                 Config.FFMPEG_PATH,
                 '-f', 'video4linux2',
                 '-ss', '0:0:2',
@@ -192,7 +192,7 @@ var Plugin = GObject.registerClass({
 
         try {
             // Take a photo
-            let path = await this._takePhoto();
+            const path = await this._takePhoto();
 
             if (path.startsWith('file://'))
                 file = Gio.File.new_for_uri(path);

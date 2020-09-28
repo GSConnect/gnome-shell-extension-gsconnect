@@ -90,9 +90,9 @@ const _cFormat = new Intl.DateTimeFormat('default', {
  * @return {string} A localized timestamp similar to what Android Messages uses
  */
 function getTime(time) {
-    let date = new Date(time);
-    let now = new Date();
-    let diff = now - time;
+    const date = new Date(time);
+    const now = new Date();
+    const diff = now - time;
 
     // Super recent
     if (diff < TIME_SPAN_MINUTE)
@@ -132,9 +132,9 @@ function getTime(time) {
  * @return {string} A localized timestamp similar to what Android Messages uses
  */
 function getShortTime(time) {
-    let date = new Date(time);
-    let now = new Date();
-    let diff = now - time;
+    const date = new Date(time);
+    const now = new Date();
+    const diff = now - time;
 
     if (diff < TIME_SPAN_MINUTE)
         // TRANSLATORS: Less than a minute ago
@@ -178,7 +178,7 @@ function getDetailedTime(time) {
 
 
 function setAvatarVisible(row, visible) {
-    let incoming = row.message.type === Sms.MessageBox.INBOX;
+    const incoming = row.message.type === Sms.MessageBox.INBOX;
 
     // Adjust the margins
     if (visible) {
@@ -368,14 +368,14 @@ const Conversation = GObject.registerClass({
 
         for (let i = 0, len = this.addresses.length; i < len; i++) {
             // Lookup the contact
-            let address = this.addresses[i].address;
-            let contact = this.device.contacts.query({number: address});
+            const address = this.addresses[i].address;
+            const contact = this.device.contacts.query({number: address});
 
             // Get corrected address
             let number = address.toPhoneNumber();
 
-            for (let contactNumber of contact.numbers) {
-                let cnumber = contactNumber.value.toPhoneNumber();
+            for (const contactNumber of contact.numbers) {
+                const cnumber = contactNumber.value.toPhoneNumber();
 
                 if (number.endsWith(cnumber) || cnumber.endsWith(number)) {
                     number = contactNumber.value;
@@ -431,8 +431,8 @@ const Conversation = GObject.registerClass({
     }
 
     set thread_id(thread_id) {
-        let thread = this.plugin.threads[thread_id];
-        let message = (thread) ? thread[0] : null;
+        const thread = this.plugin.threads[thread_id];
+        const message = (thread) ? thread[0] : null;
 
         if (message && this.addresses.length === 0) {
             this.addresses = message.addresses;
@@ -471,9 +471,9 @@ const Conversation = GObject.registerClass({
     }
 
     _onKeyPressEvent(entry, event) {
-        let keyval = event.get_keyval()[1];
-        let state = event.get_state()[1];
-        let mask = state & Gtk.accelerator_get_default_mod_mask();
+        const keyval = event.get_keyval()[1];
+        const state = event.get_state()[1];
+        const mask = state & Gtk.accelerator_get_default_mod_mask();
 
         if (keyval === Gdk.KEY_Return && (mask & Gdk.ModifierType.SHIFT_MASK)) {
             entry.emit('insert-at-cursor', '\n');
@@ -492,7 +492,7 @@ const Conversation = GObject.registerClass({
         this.plugin.sendMessage(this.addresses, this.entry.text);
 
         // Add a phony message in the pending box
-        let message = new Gtk.Label({
+        const message = new Gtk.Label({
             label: URI.linkify(this.entry.text),
             halign: Gtk.Align.END,
             selectable: true,
@@ -515,8 +515,8 @@ const Conversation = GObject.registerClass({
     }
 
     _onSizeAllocate(listbox, allocation) {
-        let upper = this._vadj.get_upper();
-        let pageSize = this._vadj.get_page_size();
+        const upper = this._vadj.get_upper();
+        const pageSize = this._vadj.get_page_size();
 
         // If the scrolled window hasn't been filled yet, load another message
         if (upper <= pageSize) {
@@ -543,7 +543,7 @@ const Conversation = GObject.registerClass({
      */
     _createMessageRow(message) {
         // Ensure we have a contact
-        let sender = message.addresses[0].address || 'unknown';
+        const sender = message.addresses[0].address || 'unknown';
 
         if (this.contacts[sender] === undefined) {
             this.contacts[sender] = this.device.contacts.query({
@@ -657,7 +657,7 @@ const Conversation = GObject.registerClass({
                 throw TypeError(`invalid message box ${message.type}`);
 
             // Append the message
-            let row = this._createMessageRow(message);
+            const row = this._createMessageRow(message);
             this.list.add(row);
             this.list.invalidate_headers();
 
@@ -676,7 +676,7 @@ const Conversation = GObject.registerClass({
      */
     logPrevious() {
         try {
-            let message = this.__messages.pop();
+            const message = this.__messages.pop();
 
             if (!message)
                 return;
@@ -687,7 +687,7 @@ const Conversation = GObject.registerClass({
                 throw TypeError(`invalid message box ${message.type}`);
 
             // Prepend the message
-            let row = this._createMessageRow(message);
+            const row = this._createMessageRow(message);
             this.list.prepend(row);
             this.list.invalidate_headers();
         } catch (e) {
@@ -748,7 +748,7 @@ const ConversationSummary = GObject.registerClass({
         } else {
             this.avatar.contact = null;
             nameLabel = _('Group Message');
-            let participants = [];
+            const participants = [];
             message.addresses.forEach((address) => {
                 participants.push(this.contacts[address.address].name);
             });
@@ -775,7 +775,7 @@ const ConversationSummary = GObject.registerClass({
         this.body_label.label = `<small>${bodyLabel}</small>`;
 
         // Time
-        let timeLabel = `<small>${getShortTime(message.date)}</small>`;
+        const timeLabel = `<small>${getShortTime(message.date)}</small>`;
         this.time_label.label = timeLabel;
     }
 
@@ -783,7 +783,7 @@ const ConversationSummary = GObject.registerClass({
      * Update the relative time label.
      */
     update() {
-        let timeLabel = `<small>${getShortTime(this.message.date)}</small>`;
+        const timeLabel = `<small>${getShortTime(this.message.date)}</small>`;
         this.time_label.label = timeLabel;
     }
 });
@@ -902,7 +902,7 @@ var Window = GObject.registerClass({
 
         // Create a conversation widget if there isn't one
         let conversation = this.stack.get_child_by_name(thread_id);
-        let thread = this.plugin.threads[thread_id];
+        const thread = this.plugin.threads[thread_id];
 
         if (conversation === null) {
             if (!thread) {
@@ -937,14 +937,14 @@ var Window = GObject.registerClass({
     }
 
     _setHeaderBar(addresses = []) {
-        let address = addresses[0].address;
-        let contact = this.device.contacts.query({number: address});
+        const address = addresses[0].address;
+        const contact = this.device.contacts.query({number: address});
 
         if (addresses.length === 1) {
             this.headerbar.title = contact.name;
             this.headerbar.subtitle = Contacts.getDisplayNumber(contact, address);
         } else {
-            let otherLength = addresses.length - 1;
+            const otherLength = addresses.length - 1;
 
             this.headerbar.title = contact.name;
             this.headerbar.subtitle = ngettext(
@@ -968,8 +968,8 @@ var Window = GObject.registerClass({
     }
 
     _onNumberSelected(chooser, number) {
-        let contacts = chooser.getSelected();
-        let row = this._getRowForContacts(contacts);
+        const contacts = chooser.getSelected();
+        const row = this._getRowForContacts(contacts);
 
         if (row)
             row.emit('activate');
@@ -982,10 +982,10 @@ var Window = GObject.registerClass({
      */
     _onThreadsChanged() {
         // Get the last message in each thread
-        let messages = {};
+        const messages = {};
 
-        for (let [thread_id, thread] of Object.entries(this.plugin.threads)) {
-            let message = thread[thread.length - 1];
+        for (const [thread_id, thread] of Object.entries(this.plugin.threads)) {
+            const message = thread[thread.length - 1];
 
             // Skip messages without a body (eg. MMS messages without text)
             if (message.body)
@@ -993,13 +993,13 @@ var Window = GObject.registerClass({
         }
 
         // Update existing summaries and destroy old ones
-        for (let row of this.thread_list.get_children()) {
-            let message = messages[row.thread_id];
+        for (const row of this.thread_list.get_children()) {
+            const message = messages[row.thread_id];
 
             // If it's an existing conversation, update it
             if (message) {
                 // Ensure there's a contact mapping
-                let sender = message.addresses[0].address || 'unknown';
+                const sender = message.addresses[0].address || 'unknown';
 
                 if (row.contacts[sender] === undefined) {
                     row.contacts[sender] = this.device.contacts.query({
@@ -1013,7 +1013,7 @@ var Window = GObject.registerClass({
             // Otherwise destroy it
             } else {
                 // Destroy the conversation widget
-                let conversation = this.stack.get_child_by_name(`${row.thread_id}`);
+                const conversation = this.stack.get_child_by_name(`${row.thread_id}`);
 
                 if (conversation) {
                     conversation.destroy();
@@ -1028,9 +1028,9 @@ var Window = GObject.registerClass({
         }
 
         // What's left in the dictionary is new summaries
-        for (let message of Object.values(messages)) {
-            let contacts = this.device.contacts.lookupAddresses(message.addresses);
-            let conversation = new ConversationSummary(contacts, message);
+        for (const message of Object.values(messages)) {
+            const contacts = this.device.contacts.lookupAddresses(message.addresses);
+            const conversation = new ConversationSummary(contacts, message);
             this.thread_list.add(conversation);
         }
 
@@ -1069,14 +1069,14 @@ var Window = GObject.registerClass({
      * @return {ConversationSummary|null} The thread row or %null
      */
     _getRowForContacts(contacts) {
-        let addresses = Object.keys(contacts).map(address => {
+        const addresses = Object.keys(contacts).map(address => {
             return {address: address};
         });
 
         // Try to find a thread_id
-        let thread_id = this.plugin.getThreadIdForAddresses(addresses);
+        const thread_id = this.plugin.getThreadIdForAddresses(addresses);
 
-        for (let row of this.thread_list.get_children()) {
+        for (const row of this.thread_list.get_children()) {
             if (row.message.thread_id === thread_id)
                 return row;
         }
@@ -1086,9 +1086,9 @@ var Window = GObject.registerClass({
 
     setContacts(contacts) {
         // Group the addresses
-        let addresses = [];
+        const addresses = [];
 
-        for (let address of Object.keys(contacts))
+        for (const address of Object.keys(contacts))
             addresses.push({address: address});
 
         // Try to find a thread ID for this address group
@@ -1100,7 +1100,7 @@ var Window = GObject.registerClass({
             thread_id = thread_id.toString();
 
         // Try to find a thread row for the ID
-        let row = this._getRowForContacts(contacts);
+        const row = this._getRowForContacts(contacts);
 
         if (row !== null) {
             this.thread_list.select_row(row);
@@ -1108,7 +1108,7 @@ var Window = GObject.registerClass({
         }
 
         // We're creating a new conversation
-        let conversation = new Conversation({
+        const conversation = new Conversation({
             device: this.device,
             plugin: this.plugin,
             addresses: addresses,
@@ -1133,10 +1133,10 @@ var Window = GObject.registerClass({
     }
 
     _includesAddress(addresses, addressObj) {
-        let number = addressObj.address.toPhoneNumber();
+        const number = addressObj.address.toPhoneNumber();
 
-        for (let haystackObj of addresses) {
-            let tnumber = haystackObj.address.toPhoneNumber();
+        for (const haystackObj of addresses) {
+            const tnumber = haystackObj.address.toPhoneNumber();
 
             if (number.endsWith(tnumber) || tnumber.endsWith(number))
                 return true;
@@ -1157,22 +1157,22 @@ var Window = GObject.registerClass({
             return null;
 
         // First try to find a conversation by thread_id
-        let thread_id = `${message.thread_id}`;
-        let conversation = this.stack.get_child_by_name(thread_id);
+        const thread_id = `${message.thread_id}`;
+        const conversation = this.stack.get_child_by_name(thread_id);
 
         if (conversation !== null)
             return conversation;
 
         // Try and find one by matching addresses, which is necessary if we've
         // started a thread locally and haven't set the thread_id
-        let addresses = message.addresses;
+        const addresses = message.addresses;
 
-        for (let conversation of this.stack.get_children()) {
+        for (const conversation of this.stack.get_children()) {
             if (conversation.addresses === undefined ||
                 conversation.addresses.length !== addresses.length)
                 continue;
 
-            let caddrs = conversation.addresses;
+            const caddrs = conversation.addresses;
 
             // If we find a match, set `thread-id` on the conversation and the
             // child property `name`.
@@ -1255,7 +1255,7 @@ var ConversationChooser = GObject.registerClass({
         });
         this.set_titlebar(this.headerbar);
 
-        let newButton = new Gtk.Button({
+        const newButton = new Gtk.Button({
             image: new Gtk.Image({icon_name: 'list-add-symbolic'}),
             tooltip_text: _('New Conversation'),
             always_show_image: true,
@@ -1264,7 +1264,7 @@ var ConversationChooser = GObject.registerClass({
         this.headerbar.pack_start(newButton);
 
         // Threads
-        let scrolledWindow = new Gtk.ScrolledWindow({
+        const scrolledWindow = new Gtk.ScrolledWindow({
             can_focus: false,
             hexpand: true,
             vexpand: true,
@@ -1293,7 +1293,7 @@ var ConversationChooser = GObject.registerClass({
     }
 
     _new(button) {
-        let message = this.message;
+        const message = this.message;
         this.destroy();
 
         this.plugin.sms();

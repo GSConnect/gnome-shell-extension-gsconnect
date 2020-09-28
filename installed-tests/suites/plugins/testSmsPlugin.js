@@ -204,7 +204,7 @@ describe('The sms plugin', function () {
 
         testRig.setConnected(true);
 
-        for (let action in localPlugin._meta.actions)
+        for (const action in localPlugin._meta.actions)
             expect(localPlugin.device.get_action_enabled(action)).toBeTrue();
     });
 
@@ -269,7 +269,7 @@ describe('The sms plugin', function () {
     it('disables its GActions when disconnected', function () {
         testRig.setConnected(false);
 
-        for (let action in localPlugin._meta.actions)
+        for (const action in localPlugin._meta.actions)
             expect(localPlugin.device.get_action_enabled(action)).toBeFalse();
     });
 });

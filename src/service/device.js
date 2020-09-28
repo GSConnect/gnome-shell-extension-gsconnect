@@ -140,13 +140,13 @@ var Device = GObject.registerClass({
     }
 
     get connection_type() {
-        let lastConnection = this.settings.get_string('last-connection');
+        const lastConnection = this.settings.get_string('last-connection');
 
         return lastConnection.split('://')[0];
     }
 
     get contacts() {
-        let contacts = this._plugins.get('contacts');
+        const contacts = this._plugins.get('contacts');
 
         if (contacts && contacts.settings.get_boolean('contacts-source'))
             return contacts._store;
@@ -260,10 +260,10 @@ var Device = GObject.registerClass({
         }
 
         // Packets
-        let incoming = packet.body.incomingCapabilities.sort();
-        let outgoing = packet.body.outgoingCapabilities.sort();
-        let inc = this.settings.get_strv('incoming-capabilities');
-        let out = this.settings.get_strv('outgoing-capabilities');
+        const incoming = packet.body.incomingCapabilities.sort();
+        const outgoing = packet.body.outgoingCapabilities.sort();
+        const inc = this.settings.get_strv('incoming-capabilities');
+        const out = this.settings.get_strv('outgoing-capabilities');
 
         // Only write GSettings if something has changed
         if (incoming.join('') !== inc.join('') || outgoing.join('') !== out.join('')) {
@@ -272,14 +272,14 @@ var Device = GObject.registerClass({
         }
 
         // Determine supported plugins by matching incoming to outgoing types
-        let supported = [];
+        const supported = [];
 
-        for (let name in imports.service.plugins) {
+        for (const name in imports.service.plugins) {
             // Exclude mousepad/presenter plugins in unsupported sessions
             if (!HAVE_REMOTEINPUT && ['mousepad', 'presenter'].includes(name))
                 continue;
 
-            let meta = imports.service.plugins[name].Metadata;
+            const meta = imports.service.plugins[name].Metadata;
 
             // If we can handle packets it sends or send packets it can handle
             if (meta.incomingCapabilities.some(t => outgoing.includes(t)) ||
@@ -288,7 +288,7 @@ var Device = GObject.registerClass({
         }
 
         // Only write GSettings if something has changed
-        let currentSupported = this.settings.get_strv('supported-plugins');
+        const currentSupported = this.settings.get_strv('supported-plugins');
 
         if (currentSupported.join('') !== supported.sort().join(''))
             this.settings.set_strv('supported-plugins', supported);
@@ -368,7 +368,7 @@ var Device = GObject.registerClass({
      */
     launchProcess(args, cancellable = null) {
         if (this._launcher === undefined) {
-            let application = GLib.build_filenamev([
+            const application = GLib.build_filenamev([
                 Config.PACKAGE_DATADIR,
                 'service',
                 'daemon.js',
@@ -387,7 +387,7 @@ var Device = GObject.registerClass({
         }
 
         // Create and track the process
-        let proc = this._launcher.spawnv(args);
+        const proc = this._launcher.spawnv(args);
         proc.wait_check_async(cancellable, this._processExit.bind(this._procs));
         this._procs.add(proc);
 
@@ -409,7 +409,7 @@ var Device = GObject.registerClass({
             if (!this.paired)
                 return this.unpair();
 
-            let handler = this._handlers.get(packet.type);
+            const handler = this._handlers.get(packet.type);
 
             if (handler !== undefined)
                 handler.handlePacket(packet);
@@ -460,23 +460,23 @@ var Device = GObject.registerClass({
      */
     _registerActions() {
         // Pairing notification actions
-        let acceptPair = new Gio.SimpleAction({name: 'pair'});
+        const acceptPair = new Gio.SimpleAction({name: 'pair'});
         acceptPair.connect('activate', this.pair.bind(this));
         this.add_action(acceptPair);
 
-        let rejectPair = new Gio.SimpleAction({name: 'unpair'});
+        const rejectPair = new Gio.SimpleAction({name: 'unpair'});
         rejectPair.connect('activate', this.unpair.bind(this));
         this.add_action(rejectPair);
 
         // Transfer notification actions
-        let cancelTransfer = new Gio.SimpleAction({
+        const cancelTransfer = new Gio.SimpleAction({
             name: 'cancelTransfer',
             parameter_type: new GLib.VariantType('s'),
         });
         cancelTransfer.connect('activate', this.cancelTransfer.bind(this));
         this.add_action(cancelTransfer);
 
-        let openPath = new Gio.SimpleAction({
+        const openPath = new Gio.SimpleAction({
             name: 'openPath',
             parameter_type: new GLib.VariantType('s'),
         });
@@ -484,7 +484,7 @@ var Device = GObject.registerClass({
         this.add_action(openPath);
 
         // Preference helpers
-        let clearCache = new Gio.SimpleAction({
+        const clearCache = new Gio.SimpleAction({
             name: 'clearCache',
             parameter_type: null,
         });
@@ -502,7 +502,7 @@ var Device = GObject.registerClass({
     getMenuAction(actionName) {
         for (let i = 0, len = this.menu.get_n_items(); i < len; i++) {
             try {
-                let val = this.menu.get_item_attribute_value(i, 'action', null);
+                const val = this.menu.get_item_attribute_value(i, 'action', null);
 
                 if (val.unpack() === actionName)
                     return i;
@@ -547,7 +547,7 @@ var Device = GObject.registerClass({
      */
     addMenuAction(action, index = -1, label, icon_name) {
         try {
-            let item = new Gio.MenuItem();
+            const item = new Gio.MenuItem();
 
             if (label)
                 item.set_label(label);
@@ -577,7 +577,7 @@ var Device = GObject.registerClass({
      */
     removeMenuAction(actionName) {
         try {
-            let index = this.getMenuAction(actionName);
+            const index = this.getMenuAction(actionName);
 
             if (index > -1)
                 this.menu.remove(index);
@@ -627,7 +627,7 @@ var Device = GObject.registerClass({
             buttons: [],
         }, params);
 
-        let notif = new Gio.Notification();
+        const notif = new Gio.Notification();
         notif.set_title(params.title);
         notif.set_body(params.body);
         notif.set_icon(params.icon);
@@ -635,7 +635,7 @@ var Device = GObject.registerClass({
 
         // Default Action
         if (params.action) {
-            let hasParameter = (params.action.parameter !== null);
+            const hasParameter = (params.action.parameter !== null);
 
             if (!hasParameter)
                 params.action.parameter = new GLib.Variant('s', '');
@@ -652,8 +652,8 @@ var Device = GObject.registerClass({
         }
 
         // Buttons
-        for (let button of params.buttons) {
-            let hasParameter = (button.parameter !== null);
+        for (const button of params.buttons) {
+            const hasParameter = (button.parameter !== null);
 
             if (!hasParameter)
                 button.parameter = new GLib.Variant('s', '');
@@ -681,8 +681,8 @@ var Device = GObject.registerClass({
      */
     cancelTransfer(action, parameter) {
         try {
-            let uuid = parameter.unpack();
-            let transfer = this._transfers.get(uuid);
+            const uuid = parameter.unpack();
+            const transfer = this._transfers.get(uuid);
 
             if (transfer === undefined)
                 return;
@@ -700,7 +700,7 @@ var Device = GObject.registerClass({
      * @return {Core.Transfer} A new transfer
      */
     createTransfer() {
-        let transfer = new Core.Transfer({device: this});
+        const transfer = new Core.Transfer({device: this});
 
         // Track the transfer
         this._transfers.set(transfer.uuid, transfer);
@@ -726,15 +726,15 @@ var Device = GObject.registerClass({
     }
 
     openPath(action, parameter) {
-        let path = parameter.unpack();
+        const path = parameter.unpack();
 
         // Normalize paths to URIs, assuming local file
-        let uri = path.includes('://') ? path : `file://${path}`;
+        const uri = path.includes('://') ? path : `file://${path}`;
         Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
     }
 
     _clearCache(action, parameter) {
-        for (let plugin of this._plugins.values()) {
+        for (const plugin of this._plugins.values()) {
             try {
                 plugin.clearCache();
             } catch (e) {
@@ -850,12 +850,12 @@ var Device = GObject.registerClass({
 
         // If we've become unpaired, stop all subprocesses and transfers
         if (!paired) {
-            for (let proc of this._procs)
+            for (const proc of this._procs)
                 proc.force_exit();
 
             this._procs.clear();
 
-            for (let transfer of this._transfers.values())
+            for (const transfer of this._transfers.values())
                 transfer.close();
 
             this._transfers.clear();
@@ -926,9 +926,9 @@ var Device = GObject.registerClass({
      * Plugin Functions
      */
     _onAllowedPluginsChanged(settings) {
-        let disabled = this.settings.get_strv('disabled-plugins');
-        let supported = this.settings.get_strv('supported-plugins');
-        let allowed = supported.filter(name => !disabled.includes(name));
+        const disabled = this.settings.get_strv('disabled-plugins');
+        const supported = this.settings.get_strv('supported-plugins');
+        const allowed = supported.filter(name => !disabled.includes(name));
 
         // Unload any plugins that are disabled or unsupported
         this._plugins.forEach(plugin => {
@@ -941,7 +941,7 @@ var Device = GObject.registerClass({
             this.notify('contacts');
 
         // Load allowed plugins
-        for (let name of allowed)
+        for (const name of allowed)
             this._loadPlugin(name);
     }
 
@@ -955,7 +955,7 @@ var Device = GObject.registerClass({
                 plugin = new handler.Plugin(this);
 
                 // Register packet handlers
-                for (let packetType of handler.Metadata.incomingCapabilities)
+                for (const packetType of handler.Metadata.incomingCapabilities)
                     this._handlers.set(packetType, plugin);
 
                 // Register plugin
@@ -979,9 +979,9 @@ var Device = GObject.registerClass({
     }
 
     async _loadPlugins() {
-        let disabled = this.settings.get_strv('disabled-plugins');
+        const disabled = this.settings.get_strv('disabled-plugins');
 
-        for (let name of this.settings.get_strv('supported-plugins')) {
+        for (const name of this.settings.get_strv('supported-plugins')) {
             if (!disabled.includes(name))
                 await this._loadPlugin(name);
         }
@@ -995,7 +995,7 @@ var Device = GObject.registerClass({
                 // Unregister packet handlers
                 handler = imports.service.plugins[name];
 
-                for (let type of handler.Metadata.incomingCapabilities)
+                for (const type of handler.Metadata.incomingCapabilities)
                     this._handlers.delete(type);
 
                 // Unregister plugin
@@ -1009,12 +1009,12 @@ var Device = GObject.registerClass({
     }
 
     async _unloadPlugins() {
-        for (let name of this._plugins.keys())
+        for (const name of this._plugins.keys())
             await this._unloadPlugin(name);
     }
 
     _triggerPlugins() {
-        for (let plugin of this._plugins.values()) {
+        for (const plugin of this._plugins.values()) {
             if (this.connected)
                 plugin.connected();
             else

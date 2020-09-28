@@ -34,7 +34,7 @@ var Manager = class Manager {
 
     _onAcceleratorActivated(display, action, inputDevice, timestamp) {
         try {
-            let binding = this._keybindings.get(action);
+            const binding = this._keybindings.get(action);
 
             if (binding !== undefined)
                 binding.callback();
@@ -52,12 +52,12 @@ var Manager = class Manager {
      */
     add(accelerator, callback) {
         try {
-            let action = global.display.grab_accelerator(accelerator, 0);
+            const action = global.display.grab_accelerator(accelerator, 0);
 
             if (action === Meta.KeyBindingAction.NONE)
                 throw new Error(`Failed to add keybinding: '${accelerator}'`);
 
-            let name = Meta.external_binding_name_for_action(action);
+            const name = Meta.external_binding_name_for_action(action);
             Main.wm.allowKeybinding(name, Shell.ActionMode.ALL);
             this._keybindings.set(action, {name: name, callback: callback});
 
@@ -74,7 +74,7 @@ var Manager = class Manager {
      */
     remove(action) {
         try {
-            let binding = this._keybindings.get(action);
+            const binding = this._keybindings.get(action);
             global.display.ungrab_accelerator(action);
             Main.wm.allowKeybinding(binding.name, Shell.ActionMode.NONE);
             this._keybindings.delete(action);
@@ -87,7 +87,7 @@ var Manager = class Manager {
      * Remove all keybindings
      */
     removeAll() {
-        for (let action of this._keybindings.keys())
+        for (const action of this._keybindings.keys())
             this.remove(action);
     }
 

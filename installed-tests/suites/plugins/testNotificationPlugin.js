@@ -120,7 +120,7 @@ describe('The notification plugin', function () {
     it('enables its GActions when connected', function () {
         testRig.setConnected(true);
 
-        for (let action in localPlugin._meta.actions)
+        for (const action in localPlugin._meta.actions)
             expect(localPlugin.device.get_action_enabled(action)).toBeTrue();
     });
 
@@ -184,8 +184,8 @@ describe('The notification plugin', function () {
         });
 
         it('when sending for the application is not allowed', function () {
-            let applications = localPlugin.settings.get_string('applications');
-            let disabled = JSON.parse(applications);
+            const applications = localPlugin.settings.get_string('applications');
+            const disabled = JSON.parse(applications);
             disabled['Application'].enabled = false;
             localPlugin.settings.set_string('applications',
                 JSON.stringify(disabled));
@@ -280,10 +280,10 @@ describe('The notification plugin', function () {
     it('disables its GActions when disconnected', function () {
         testRig.setConnected(false);
 
-        for (let action in localPlugin._meta.actions)
+        for (const action in localPlugin._meta.actions)
             expect(localPlugin.device.get_action_enabled(action)).toBeFalse();
 
-        for (let action in remotePlugin._meta.actions)
+        for (const action in remotePlugin._meta.actions)
             expect(remotePlugin.device.get_action_enabled(action)).toBeFalse();
     });
 });

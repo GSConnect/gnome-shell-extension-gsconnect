@@ -75,8 +75,8 @@ var Battery = GObject.registerClass({
             return;
 
         if (action_group.has_action('battery')) {
-            let value = action_group.get_action_state('battery');
-            let [charging, icon_name, level, time] = value.deepUnpack();
+            const value = action_group.get_action_state('battery');
+            const [charging, icon_name, level, time] = value.deepUnpack();
 
             this._state = {
                 charging: charging,
@@ -95,7 +95,7 @@ var Battery = GObject.registerClass({
         if (action_name !== 'battery')
             return;
 
-        let [charging, icon_name, level, time] = value.deepUnpack();
+        const [charging, icon_name, level, time] = value.deepUnpack();
 
         this._state = {
             charging: charging,
@@ -111,7 +111,7 @@ var Battery = GObject.registerClass({
         if (!this._state)
             return null;
 
-        let {charging, level, time} = this._state;
+        const {charging, level, time} = this._state;
 
         if (level === 100)
             // TRANSLATORS: When the battery level is 100%
@@ -122,9 +122,9 @@ var Battery = GObject.registerClass({
             // EXAMPLE: 42% (Estimating…)
             return _('%d%% (Estimating…)').format(level);
 
-        let total = time / 60;
-        let minutes = Math.floor(total % 60);
-        let hours = Math.floor(total / 60);
+        const total = time / 60;
+        const minutes = Math.floor(total % 60);
+        const hours = Math.floor(total / 60);
 
         if (charging) {
             // TRANSLATORS: Estimated time until battery is charged
@@ -236,7 +236,7 @@ var Indicator = GObject.registerClass({
         this.add_child(this._icon);
 
         // Menu
-        let menu = new Menu({
+        const menu = new Menu({
             device: this.device,
             menu_type: 'icon',
         });

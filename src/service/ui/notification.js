@@ -59,7 +59,7 @@ var ReplyDialog = GObject.registerClass({
         );
 
         // Notification Data
-        let headerbar = this.get_titlebar();
+        const headerbar = this.get_titlebar();
         headerbar.title = params.notification.appName;
         headerbar.subtitle = this.device.name;
 

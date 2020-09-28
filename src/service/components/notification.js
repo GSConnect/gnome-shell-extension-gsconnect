@@ -8,7 +8,7 @@ const GObject = imports.gi.GObject;
 const DBus = imports.service.utils.dbus;
 
 
-let _nodeInfo = Gio.DBusNodeInfo.new_for_xml(`
+const _nodeInfo = Gio.DBusNodeInfo.new_for_xml(`
 <node>
   <interface name="org.freedesktop.Notifications">
     <method name="Notify">
@@ -92,13 +92,13 @@ const Listener = GObject.registerClass({
     _onSettingsChanged() {
         this._applications = {};
 
-        for (let app of this._settings.get_strv('application-children')) {
-            let appSettings = new Gio.Settings({
+        for (const app of this._settings.get_strv('application-children')) {
+            const appSettings = new Gio.Settings({
                 schema_id: 'org.gnome.desktop.notifications.application',
                 path: `/org/gnome/desktop/notifications/application/${app}/`,
             });
 
-            let appInfo = Gio.DesktopAppInfo.new(
+            const appInfo = Gio.DesktopAppInfo.new(
                 appSettings.get_string('application-id')
             );
 
@@ -165,19 +165,19 @@ const Listener = GObject.registerClass({
     async _getAppId(sender, appName) {
         try {
             // Get a list of well-known names, ignoring @sender
-            let names = await this._listNames();
+            const names = await this._listNames();
             names.splice(names.indexOf(sender), 1);
 
             // Make a short list for substring matches (fractal/org.gnome.Fractal)
-            let appLower = appName.toLowerCase();
+            const appLower = appName.toLowerCase();
 
-            let shortList = names.filter(name => {
+            const shortList = names.filter(name => {
                 return name.toLowerCase().includes(appLower);
             });
 
             // Run the short list first
-            for (let name of shortList) {
-                let nameOwner = await this._getNameOwner(name);
+            for (const name of shortList) {
+                const nameOwner = await this._getNameOwner(name);
 
                 if (nameOwner === sender)
                     return name;
@@ -186,8 +186,8 @@ const Listener = GObject.registerClass({
             }
 
             // Run the full list
-            for (let name of names) {
-                let nameOwner = await this._getNameOwner(name);
+            for (const name of names) {
+                const nameOwner = await this._getNameOwner(name);
 
                 if (nameOwner === sender)
                     return name;
@@ -213,8 +213,8 @@ const Listener = GObject.registerClass({
             return this._names[appName];
 
         try {
-            let appId = await this._getAppId(sender, appName);
-            let appInfo = Gio.DesktopAppInfo.new(`${appId}.desktop`);
+            const appId = await this._getAppId(sender, appName);
+            const appInfo = Gio.DesktopAppInfo.new(`${appId}.desktop`);
             this._names[appName] = appInfo.get_name();
             appName = appInfo.get_name();
         } catch (e) {
@@ -258,7 +258,7 @@ const Listener = GObject.registerClass({
 
                 // Try to brute-force an application name using DBus
                 if (!this.applications.hasOwnProperty(parameters[0])) {
-                    let sender = message.get_sender();
+                    const sender = message.get_sender();
                     parameters[0] = await this._getAppName(sender, parameters[0]);
                 }
 
@@ -355,14 +355,14 @@ const Listener = GObject.registerClass({
 
     _sendNotification(notif) {
         // Check if this application is disabled in desktop settings
-        let appSettings = this.applications[notif.appName];
+        const appSettings = this.applications[notif.appName];
 
         if (appSettings && !appSettings.get_boolean('enable'))
             return;
 
         // Send the notification to each supporting device
         // TODO: avoid the overhead of the GAction framework with a signal?
-        let variant = GLib.Variant.full_pack(notif);
+        const variant = GLib.Variant.full_pack(notif);
         this.emit('notification-added', variant);
     }
 
@@ -387,7 +387,7 @@ const Listener = GObject.registerClass({
         if (application === 'org.gnome.Shell.Extensions.GSConnect')
             return;
 
-        let appInfo = Gio.DesktopAppInfo.new(`${application}.desktop`);
+        const appInfo = Gio.DesktopAppInfo.new(`${application}.desktop`);
 
         // Try to get an icon for the notification
         if (!notification.hasOwnProperty('icon'))

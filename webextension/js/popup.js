@@ -54,21 +54,21 @@ async function sendUrl(device, action, url) {
  * @return {HTMLElement} - A <div> element with icon, name and actions
  */
 function getDeviceElement(device) {
-    let deviceElement = document.createElement('div');
+    const deviceElement = document.createElement('div');
     deviceElement.className = 'device';
 
-    let deviceIcon = document.createElement('img');
+    const deviceIcon = document.createElement('img');
     deviceIcon.className = 'device-icon';
     deviceIcon.src = `images/${device.type}.svg`;
     deviceElement.appendChild(deviceIcon);
 
-    let deviceName = document.createElement('span');
+    const deviceName = document.createElement('span');
     deviceName.className = 'device-name';
     deviceName.textContent = device.name;
     deviceElement.appendChild(deviceName);
 
     if (device.share) {
-        let shareButton = document.createElement('img');
+        const shareButton = document.createElement('img');
         shareButton.className = 'plugin-button';
         shareButton.src = 'images/open-in-browser.svg';
         shareButton.title = browser.i18n.getMessage('shareMessage');
@@ -80,7 +80,7 @@ function getDeviceElement(device) {
     }
 
     if (device.telephony) {
-        let telephonyButton = document.createElement('img');
+        const telephonyButton = document.createElement('img');
         telephonyButton.className = 'plugin-button';
         telephonyButton.src = 'images/message.svg';
         telephonyButton.title = browser.i18n.getMessage('smsMessage');
@@ -99,14 +99,14 @@ function getDeviceElement(device) {
  * Populate the browserAction popup
  */
 function setPopup() {
-    let devNode = document.getElementById('popup');
+    const devNode = document.getElementById('popup');
 
     while (devNode.hasChildNodes())
         devNode.removeChild(devNode.lastChild);
 
     if (CONNECTED && DEVICES.length) {
-        for (let device of DEVICES) {
-            let deviceElement = getDeviceElement(device);
+        for (const device of DEVICES) {
+            const deviceElement = getDeviceElement(device);
             devNode.appendChild(deviceElement);
         }
 
@@ -114,7 +114,7 @@ function setPopup() {
     }
 
     // Disconnected or no devices
-    let message = document.createElement('span');
+    const message = document.createElement('span');
     message.className = 'popup-menu-message';
     devNode.appendChild(message);
 
@@ -159,7 +159,7 @@ function onPortMessage(message, sender) {
  */
 async function onPopup() {
     try {
-        let tabs = await browser.tabs.query({
+        const tabs = await browser.tabs.query({
             active: true,
             currentWindow: true,
         });

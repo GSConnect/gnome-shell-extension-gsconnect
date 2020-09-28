@@ -31,10 +31,10 @@ if (Config.PACKAGE_DATADIR.startsWith(userDir)) {
         return path.endsWith('/gjs/girepository-1.0');
     }).replace('/gjs/girepository-1.0', '');
 
-    let gsdir = GLib.build_filenamev([libdir, 'gnome-shell']);
+    const gsdir = GLib.build_filenamev([libdir, 'gnome-shell']);
 
     if (!GLib.file_test(gsdir, GLib.FileTest.IS_DIR)) {
-        let currentDir = `/${GLib.path_get_basename(libdir)}`;
+        const currentDir = `/${GLib.path_get_basename(libdir)}`;
         libdir = libdir.replace(currentDir, '');
     }
 
@@ -65,13 +65,13 @@ Config.GSCHEMA = Gio.SettingsSchemaSource.new_from_directory(
 
 // Load DBus interfaces
 Config.DBUS = (() => {
-    let bytes = Gio.resources_lookup_data(
+    const bytes = Gio.resources_lookup_data(
         GLib.build_filenamev([Config.APP_PATH, `${Config.APP_ID}.xml`]),
         Gio.ResourceLookupFlags.NONE
     );
 
-    let xml = ByteArray.toString(bytes.toArray());
-    let dbus = Gio.DBusNodeInfo.new_for_xml(xml);
+    const xml = ByteArray.toString(bytes.toArray());
+    const dbus = Gio.DBusNodeInfo.new_for_xml(xml);
     dbus.nodes.forEach(info => info.cache_build());
 
     return dbus;
@@ -79,7 +79,7 @@ Config.DBUS = (() => {
 
 
 // Init User Directories
-for (let path of [Config.CACHEDIR, Config.CONFIGDIR, Config.RUNTIMEDIR])
+for (const path of [Config.CACHEDIR, Config.CONFIGDIR, Config.RUNTIMEDIR])
     GLib.mkdir_with_parents(path, 0o755);
 
 
@@ -114,8 +114,8 @@ const _debugFunc = function (error, prefix = null) {
     if (prefix)
         message = `${prefix}: ${message}`;
 
-    let [, func, file, line] = _debugCallerMatch.exec(caller);
-    let script = file.replace(Config.PACKAGE_DATADIR, '');
+    const [, func, file, line] = _debugCallerMatch.exec(caller);
+    const script = file.replace(Config.PACKAGE_DATADIR, '');
 
     GLib.log_structured('GSConnect', GLib.LogLevelFlags.LEVEL_MESSAGE, {
         'MESSAGE': `[${script}:${func}:${line}]: ${message}`,
@@ -148,7 +148,7 @@ else
  * @return {string} Return the string stripped of leading 0, and ' ()-+'
  */
 String.prototype.toPhoneNumber = function () {
-    let strippedNumber = this.replace(/^0*|[ ()+-]/g, '');
+    const strippedNumber = this.replace(/^0*|[ ()+-]/g, '');
 
     if (strippedNumber.length)
         return strippedNumber;
@@ -164,8 +164,8 @@ String.prototype.toPhoneNumber = function () {
  * @return {boolean} If `this` and @number are equivalent phone numbers
  */
 String.prototype.equalsPhoneNumber = function (number) {
-    let a = this.toPhoneNumber();
-    let b = number.toPhoneNumber();
+    const a = this.toPhoneNumber();
+    const b = number.toPhoneNumber();
 
     return (a.endsWith(b) || b.endsWith(a));
 };
@@ -182,7 +182,7 @@ Gio.File.rm_rf = function (file) {
             file = Gio.File.new_for_path(file);
 
         try {
-            let iter = file.enumerate_children(
+            const iter = file.enumerate_children(
                 'standard::name',
                 Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
                 null
@@ -213,7 +213,7 @@ Gio.File.rm_rf = function (file) {
  */
 function _full_pack(obj) {
     let packed;
-    let type = typeof obj;
+    const type = typeof obj;
 
     switch (true) {
         case (obj instanceof GLib.Variant):
@@ -246,7 +246,7 @@ function _full_pack(obj) {
         case (type === 'object'):
             packed = {};
 
-            for (let [key, val] of Object.entries(obj)) {
+            for (const [key, val] of Object.entries(obj)) {
                 if (val !== undefined)
                     packed[key] = _full_pack(val);
             }
@@ -269,7 +269,7 @@ GLib.Variant.full_pack = _full_pack;
  */
 function _full_unpack(obj) {
     obj = (obj === undefined) ? this : obj;
-    let unpacked = {};
+    const unpacked = {};
 
     switch (true) {
         case (obj === null):
@@ -285,7 +285,7 @@ function _full_unpack(obj) {
             return obj.map(e => _full_unpack(e));
 
         case (typeof obj === 'object'):
-            for (let [key, value] of Object.entries(obj)) {
+            for (const [key, value] of Object.entries(obj)) {
                 // Try to detect and deserialize GIcons
                 try {
                     if (key === 'icon' && value.get_type_string() === '(sv)')
@@ -323,8 +323,8 @@ GLib.Variant.prototype.full_unpack = _full_unpack;
  */
 Gio.TlsCertificate.new_for_paths = function (certPath, keyPath, commonName = null) {
     // Check if the certificate/key pair already exists
-    let certExists = GLib.file_test(certPath, GLib.FileTest.EXISTS);
-    let keyExists = GLib.file_test(keyPath, GLib.FileTest.EXISTS);
+    const certExists = GLib.file_test(certPath, GLib.FileTest.EXISTS);
+    const keyExists = GLib.file_test(keyPath, GLib.FileTest.EXISTS);
 
     // Create a new certificate and private key if necessary
     if (!certExists || !keyExists) {
@@ -332,7 +332,7 @@ Gio.TlsCertificate.new_for_paths = function (certPath, keyPath, commonName = nul
         if (!commonName)
             commonName = GLib.uuid_string_random();
 
-        let proc = new Gio.Subprocess({
+        const proc = new Gio.Subprocess({
             argv: [
                 Config.OPENSSL_PATH, 'req',
                 '-new', '-x509', '-sha256',
@@ -362,13 +362,13 @@ Object.defineProperties(Gio.TlsCertificate.prototype, {
     'fingerprint': {
         value: function () {
             if (!this.__fingerprint) {
-                let proc = new Gio.Subprocess({
+                const proc = new Gio.Subprocess({
                     argv: [Config.OPENSSL_PATH, 'x509', '-noout', '-fingerprint', '-sha1', '-inform', 'pem'],
                     flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE,
                 });
                 proc.init(null);
 
-                let stdout = proc.communicate_utf8(this.certificate_pem, null)[1];
+                const stdout = proc.communicate_utf8(this.certificate_pem, null)[1];
                 this.__fingerprint = /[a-zA-Z0-9:]{59}/.exec(stdout)[0];
             }
 
@@ -383,13 +383,13 @@ Object.defineProperties(Gio.TlsCertificate.prototype, {
     'common_name': {
         get: function () {
             if (!this.__common_name) {
-                let proc = new Gio.Subprocess({
+                const proc = new Gio.Subprocess({
                     argv: [Config.OPENSSL_PATH, 'x509', '-noout', '-subject', '-inform', 'pem'],
                     flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE,
                 });
                 proc.init(null);
 
-                let stdout = proc.communicate_utf8(this.certificate_pem, null)[1];
+                const stdout = proc.communicate_utf8(this.certificate_pem, null)[1];
                 this.__common_name = /(?:cn|CN) ?= ?([^,\n]*)/.exec(stdout)[1];
             }
 

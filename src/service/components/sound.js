@@ -47,7 +47,7 @@ var Player = class Player {
 
     _canberraPlaySound(name, cancellable) {
         return new Promise((resolve, reject) => {
-            let proc = this._canberra.spawnv(['canberra-gtk-play', '-i', name]);
+            const proc = this._canberra.spawnv(['canberra-gtk-play', '-i', name]);
 
             proc.wait_check_async(cancellable, (proc, res) => {
                 try {
@@ -172,7 +172,7 @@ var Player = class Player {
     }
 
     destroy() {
-        for (let cancellable of this._playing)
+        for (const cancellable of this._playing)
             cancellable.cancel();
     }
 };

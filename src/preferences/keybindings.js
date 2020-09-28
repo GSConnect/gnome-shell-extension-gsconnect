@@ -143,7 +143,7 @@ var ShortcutChooserDialog = GObject.registerClass({
 
     async _check() {
         try {
-            let available = await checkAccelerator(this.accelerator);
+            const available = await checkAccelerator(this.accelerator);
             this.set_button.visible = available;
             this.conflict_label.visible = !available;
         } catch (e) {
@@ -153,7 +153,7 @@ var ShortcutChooserDialog = GObject.registerClass({
     }
 
     _grab() {
-        let success = this._seat.grab(
+        const success = this._seat.grab(
             this.get_window(),
             Gdk.SeatCapabilities.KEYBOARD,
             true, // owner_events
@@ -210,7 +210,7 @@ async function checkAccelerator(accelerator, modeFlags = 0, grabFlags = 0) {
         let result = false;
 
         // Try to grab the accelerator
-        let action = await new Promise((resolve, reject) => {
+        const action = await new Promise((resolve, reject) => {
             Gio.DBus.session.call(
                 'org.gnome.Shell',
                 '/org/gnome/Shell',
@@ -274,7 +274,7 @@ async function checkAccelerator(accelerator, modeFlags = 0, grabFlags = 0) {
  */
 async function getAccelerator(summary, accelerator = null) {
     try {
-        let dialog = new ShortcutChooserDialog({
+        const dialog = new ShortcutChooserDialog({
             summary: summary,
             accelerator: accelerator,
         });

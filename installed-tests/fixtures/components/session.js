@@ -27,7 +27,7 @@ var Component = class MockSession {
      * @param {Object} obj - A dictionary of properties
      */
     update(obj) {
-        for (let [propertyName, propertyValue] of Object.entries(obj))
+        for (const [propertyName, propertyValue] of Object.entries(obj))
             this[`_${propertyName}`] = propertyValue;
     }
 };

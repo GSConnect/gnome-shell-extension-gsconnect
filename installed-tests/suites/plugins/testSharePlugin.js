@@ -52,10 +52,10 @@ describe('The share plugin', function () {
     it('enables its GActions when connected', function () {
         testRig.setConnected(true);
 
-        for (let action in localPlugin._meta.actions)
+        for (const action in localPlugin._meta.actions)
             expect(localPlugin.device.get_action_enabled(action)).toBeTrue();
 
-        for (let action in remotePlugin._meta.actions)
+        for (const action in remotePlugin._meta.actions)
             expect(remotePlugin.device.get_action_enabled(action)).toBeTrue();
     });
 
@@ -110,10 +110,10 @@ describe('The share plugin', function () {
     it('disables its GActions when disconnected', function () {
         testRig.setConnected(false);
 
-        for (let action in localPlugin._meta.actions)
+        for (const action in localPlugin._meta.actions)
             expect(localPlugin.device.get_action_enabled(action)).toBeFalse();
 
-        for (let action in remotePlugin._meta.actions)
+        for (const action in remotePlugin._meta.actions)
             expect(remotePlugin.device.get_action_enabled(action)).toBeFalse();
     });
 });

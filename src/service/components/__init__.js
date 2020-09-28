@@ -21,7 +21,7 @@ function acquire(name) {
         let info = Default.get(name);
 
         if (info === undefined) {
-            let module = imports.service.components[name];
+            const module = imports.service.components[name];
 
             info = {
                 instance: new module.Component(),
@@ -50,7 +50,7 @@ function acquire(name) {
  */
 function release(name) {
     try {
-        let info = Default.get(name);
+        const info = Default.get(name);
 
         if (info.refcount === 1) {
             info.instance.destroy();

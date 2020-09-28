@@ -43,7 +43,7 @@ var Plugin = GObject.registerClass({
             this._meta = imports.service.plugins[name].Metadata;
 
         // GSettings
-        let schema = Config.GSCHEMA.lookup(this._meta.id, false);
+        const schema = Config.GSCHEMA.lookup(this._meta.id, false);
 
         if (schema !== null) {
             this.settings = new Gio.Settings({
@@ -56,10 +56,10 @@ var Plugin = GObject.registerClass({
         this._gactions = [];
 
         if (this._meta.actions) {
-            let menu = this.device.settings.get_strv('menu-actions');
+            const menu = this.device.settings.get_strv('menu-actions');
 
-            for (let name in this._meta.actions) {
-                let info = this._meta.actions[name];
+            for (const name in this._meta.actions) {
+                const info = this._meta.actions[name];
                 this._registerAction(name, menu.indexOf(name), info);
             }
         }
@@ -99,7 +99,7 @@ var Plugin = GObject.registerClass({
     _registerAction(name, menuIndex, info) {
         try {
             // Device Action
-            let action = new Gio.SimpleAction({
+            const action = new Gio.SimpleAction({
                 name: name,
                 parameter_type: info.parameter_type,
                 enabled: false,
@@ -129,11 +129,11 @@ var Plugin = GObject.registerClass({
      */
     connected() {
         // Enabled based on device capabilities, which might change
-        let incoming = this.device.settings.get_strv('incoming-capabilities');
-        let outgoing = this.device.settings.get_strv('outgoing-capabilities');
+        const incoming = this.device.settings.get_strv('incoming-capabilities');
+        const outgoing = this.device.settings.get_strv('outgoing-capabilities');
 
-        for (let action of this._gactions) {
-            let info = this._meta.actions[action.name];
+        for (const action of this._gactions) {
+            const info = this._meta.actions[action.name];
 
             if (info.incoming.every(type => outgoing.includes(type)) &&
                 info.outgoing.every(type => incoming.includes(type)))
@@ -145,7 +145,7 @@ var Plugin = GObject.registerClass({
      * Called when the device disconnects.
      */
     disconnected() {
-        for (let action of this._gactions)
+        for (const action of this._gactions)
             action.set_enabled(false);
     }
 
@@ -174,7 +174,7 @@ var Plugin = GObject.registerClass({
             this._cacheProperties = names;
 
             // Ensure the device's cache directory exists
-            let cachedir = GLib.build_filenamev([
+            const cachedir = GLib.build_filenamev([
                 Config.CACHEDIR,
                 this.device.id,
             ]);
@@ -188,8 +188,8 @@ var Plugin = GObject.registerClass({
             await new Promise((resolve, reject) => {
                 this._cacheFile.load_contents_async(null, (file, res) => {
                     try {
-                        let contents = file.load_contents_finish(res)[1];
-                        let cache = JSON.parse(ByteArray.toString(contents));
+                        const contents = file.load_contents_finish(res)[1];
+                        const cache = JSON.parse(ByteArray.toString(contents));
                         Object.assign(this, cache);
 
                         resolve();
@@ -226,7 +226,7 @@ var Plugin = GObject.registerClass({
         if (this._cancellable !== undefined)
             this._cancellable.cancel();
 
-        for (let action of this._gactions) {
+        for (const action of this._gactions) {
             this.device.removeMenuAction(`device.${action.name}`);
             this.device.remove_action(action.name);
         }
@@ -235,9 +235,9 @@ var Plugin = GObject.registerClass({
         if (this._cacheFile !== undefined) {
             try {
                 // Build the cache
-                let cache = {};
+                const cache = {};
 
-                for (let name of this._cacheProperties)
+                for (const name of this._cacheProperties)
                     cache[name] = this[name];
 
                 this._cacheFile.replace_contents(

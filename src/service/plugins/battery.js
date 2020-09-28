@@ -186,8 +186,8 @@ var Plugin = GObject.registerClass({
      */
     _updateEstimate() {
         let rate, time, level;
-        let newTime = Math.floor(Date.now() / 1000);
-        let newLevel = this.level;
+        const newTime = Math.floor(Date.now() / 1000);
+        const newLevel = this.level;
 
         // Load the state; ensure we have sane values for calculation
         if (this.charging)
@@ -206,9 +206,9 @@ var Plugin = GObject.registerClass({
 
         // Update the rate; use a weighted average to account for missed changes
         // NOTE: (rate = seconds/percent)
-        let ldiff = this.charging ? newLevel - level : level - newLevel;
-        let tdiff = newTime - time;
-        let newRate = tdiff / ldiff;
+        const ldiff = this.charging ? newLevel - level : level - newLevel;
+        const tdiff = newTime - time;
+        const newRate = tdiff / ldiff;
 
         if (newRate && Number.isFinite(newRate))
             rate = Math.floor((rate * 0.4) + (newRate * 0.6));
@@ -352,7 +352,7 @@ var Plugin = GObject.registerClass({
     _monitorState() {
         try {
             // Currently only true if the remote device is a desktop (rare)
-            let incoming = this.device.settings.get_strv('incoming-capabilities');
+            const incoming = this.device.settings.get_strv('incoming-capabilities');
 
             if (!incoming.includes('kdeconnect.battery'))
                 return;
