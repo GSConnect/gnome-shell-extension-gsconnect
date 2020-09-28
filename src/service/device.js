@@ -780,6 +780,9 @@ var Device = GObject.registerClass({
      * Notify the user of an incoming pair request and set a 30s timeout
      */
     _notifyPairRequest() {
+        // Reset any active request
+        this._resetPairRequest();
+
         this.showNotification({
             id: 'pair-request',
             // TRANSLATORS: eg. Pair Request from Google Pixel
@@ -802,8 +805,6 @@ var Device = GObject.registerClass({
         });
 
         // Start a 30s countdown
-        this._resetPairRequest();
-
         this._incomingPairRequest = GLib.timeout_add_seconds(
             GLib.PRIORITY_DEFAULT,
             30,
