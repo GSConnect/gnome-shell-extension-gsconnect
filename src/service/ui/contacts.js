@@ -77,7 +77,7 @@ function getFgRGBA(rgba) {
  * @return {Gdk.Pixbuf} A pixbuf
  */
 function getPixbufForPath(path, size, scale = 1.0) {
-    let data, loader, pixbuf;
+    let data, loader;
 
     // Catch missing avatar files
     try {
@@ -96,7 +96,7 @@ function getPixbufForPath(path, size, scale = 1.0) {
         debug(e, path);
     }
 
-    pixbuf = loader.get_pixbuf();
+    const pixbuf = loader.get_pixbuf();
 
     // Scale to monitor
     size = Math.floor(size * scale);

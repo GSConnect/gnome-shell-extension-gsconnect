@@ -82,7 +82,8 @@ const _numberRegex = new RegExp(
 function findUrls(str) {
     _urlRegexp.lastIndex = 0;
 
-    let res = [], match;
+    const res = [];
+    let match;
 
     while ((match = _urlRegexp.exec(str))) {
         const name = match[2];

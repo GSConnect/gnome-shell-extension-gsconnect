@@ -66,7 +66,8 @@ template = JSON.load(template);
 
 //
 
-let info, iter = podir.enumerate_children('standard::name', 0, null);
+let info;
+const iter = podir.enumerate_children('standard::name', 0, null);
 
 while ((info = iter.next_file(null))) {
     const [lang, ext] = info.get_name().split('.');

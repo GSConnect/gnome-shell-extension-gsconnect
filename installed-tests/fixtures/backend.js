@@ -271,6 +271,7 @@ var ChannelService = GObject.registerClass({
         try {
             // Try to parse strings as <host>:<port>
             if (typeof address === 'string') {
+                // eslint-disable-next-line prefer-const
                 let [host, port] = address.split(':');
                 port = parseInt(port) || this.port;
                 address = Gio.InetSocketAddress.new_from_string(host, port);
