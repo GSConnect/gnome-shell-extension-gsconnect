@@ -75,14 +75,14 @@ var Plugin = GObject.registerClass({
 
     get gmount() {
         if (this._gmount === null && this.device.connected) {
-            let host = this.device.channel.host;
+            const host = this.device.channel.host;
 
-            let regex = new RegExp(
+            const regex = new RegExp(
                 `sftp://(${host}):(1739|17[4-5][0-9]|176[0-4])`
             );
 
-            for (let mount of this._volumeMonitor.get_mounts()) {
-                let uri = mount.get_root().get_uri();
+            for (const mount of this._volumeMonitor.get_mounts()) {
+                const uri = mount.get_root().get_uri();
 
                 if (regex.test(uri)) {
                     this._gmount = mount;
@@ -126,9 +126,9 @@ var Plugin = GObject.registerClass({
         if (this._gmount !== null || !this.device.connected)
             return;
 
-        let host = this.device.channel.host;
-        let regex = new RegExp(`sftp://(${host}):(1739|17[4-5][0-9]|176[0-4])`);
-        let uri = mount.get_root().get_uri();
+        const host = this.device.channel.host;
+        const regex = new RegExp(`sftp://(${host}):(1739|17[4-5][0-9]|176[0-4])`);
+        const uri = mount.get_root().get_uri();
 
         if (!regex.test(uri))
             return;
@@ -232,7 +232,7 @@ var Plugin = GObject.registerClass({
             await this._addPrivateKey();
 
             // Create a new mount operation
-            let op = new Gio.MountOperation({
+            const op = new Gio.MountOperation({
                 username: packet.body.user || null,
                 password: packet.body.password || null,
                 password_save: Gio.PasswordSave.NEVER,
@@ -242,9 +242,9 @@ var Plugin = GObject.registerClass({
             op.connect('ask-password', this._onAskPassword);
 
             // This is the actual call to mount the device
-            let host = this.device.channel.host;
-            let uri = `sftp://${host}:${packet.body.port}/`;
-            let file = Gio.File.new_for_uri(uri);
+            const host = this.device.channel.host;
+            const uri = `sftp://${host}:${packet.body.port}/`;
+            const file = Gio.File.new_for_uri(uri);
 
             await new Promise((resolve, reject) => {
                 file.mount_enclosing_volume(0, op, null, (file, res) => {
@@ -279,7 +279,7 @@ var Plugin = GObject.registerClass({
      * @return {Promise} A promise for the operation
      */
     _addPrivateKey() {
-        let ssh_add = this._launcher.spawnv([
+        const ssh_add = this._launcher.spawnv([
             Config.SSHADD_PATH,
             GLib.build_filenamev([Config.CONFIGDIR, 'private.pem']),
         ]);
@@ -287,7 +287,7 @@ var Plugin = GObject.registerClass({
         return new Promise((resolve, reject) => {
             ssh_add.communicate_utf8_async(null, null, (proc, res) => {
                 try {
-                    let result = proc.communicate_utf8_finish(res)[1].trim();
+                    const result = proc.communicate_utf8_finish(res)[1].trim();
 
                     if (proc.get_exit_status() !== 0)
                         debug(result, this.device.name);
@@ -309,7 +309,7 @@ var Plugin = GObject.registerClass({
     async _removeHostKey(host) {
         for (let port = 1739; port <= 1764; port++) {
             try {
-                let ssh_keygen = this._launcher.spawnv([
+                const ssh_keygen = this._launcher.spawnv([
                     Config.SSHKEYGEN_PATH,
                     '-R',
                     `[${host}]:${port}`,
@@ -337,7 +337,7 @@ var Plugin = GObject.registerClass({
         if (this._unmountSection === undefined) {
             this._unmountSection = new Gio.Menu();
 
-            let unmountItem = new Gio.MenuItem();
+            const unmountItem = new Gio.MenuItem();
             unmountItem.set_label(Metadata.actions.unmount.label);
             unmountItem.set_icon(new Gio.ThemedIcon({
                 name: Metadata.actions.unmount.icon_name,
@@ -379,7 +379,7 @@ var Plugin = GObject.registerClass({
             const dirSection = new Gio.Menu();
             const unmountSection = this._getUnmountSection();
 
-            for (let [name, uri] of Object.entries(directories))
+            for (const [name, uri] of Object.entries(directories))
                 dirSection.append(name, `device.openPath::${uri}`);
 
             // Files submenu
@@ -405,8 +405,8 @@ var Plugin = GObject.registerClass({
 
     _removeSubmenu() {
         try {
-            let index = this.device.removeMenuAction('device.mount');
-            let action = this.device.lookup_action('mount');
+            const index = this.device.removeMenuAction('device.mount');
+            const action = this.device.lookup_action('mount');
 
             if (action !== null) {
                 this.device.addMenuAction(
@@ -428,7 +428,7 @@ var Plugin = GObject.registerClass({
      */
     async _addSymlink(mount) {
         try {
-            let by_name_dir = Gio.File.new_for_path(
+            const by_name_dir = Gio.File.new_for_path(
                 `${Config.RUNTIMEDIR}/by-name/`
             );
 
@@ -447,14 +447,14 @@ var Plugin = GObject.registerClass({
             else if (safe_device_name === '..')
                 safe_device_name = '··';
 
-            let link_target = mount.get_root().get_path();
-            let link = Gio.File.new_for_path(
+            const link_target = mount.get_root().get_path();
+            const link = Gio.File.new_for_path(
                 `${by_name_dir.get_path()}/${safe_device_name}`
             );
 
             // Check for and remove any existing stale link
             try {
-                let link_stat = await new Promise((resolve, reject) => {
+                const link_stat = await new Promise((resolve, reject) => {
                     link.query_info_async(
                         'standard::symlink-target',
                         Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,

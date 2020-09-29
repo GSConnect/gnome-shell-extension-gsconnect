@@ -229,7 +229,7 @@ describe('Plugin packets', function () {
     });
 
     it('can be received if supported', function () {
-        let packet = {
+        const packet = {
             type: 'kdeconnect.foo',
             body: {},
         };

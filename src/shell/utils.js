@@ -18,7 +18,7 @@ const Config = Extension.imports.config;
 function getIcon(name) {
     if (getIcon._resource === undefined) {
         // Setup the desktop icons
-        let settings = imports.gi.St.Settings.get();
+        const settings = imports.gi.St.Settings.get();
         getIcon._desktop = new imports.gi.Gtk.IconTheme();
         getIcon._desktop.set_custom_theme(settings.gtk_icon_theme);
         settings.connect('notify::gtk-icon-theme', (settings_, key_) => {
@@ -26,8 +26,8 @@ function getIcon(name) {
         });
 
         // Preload our fallbacks
-        let iconPath = 'resource://org/gnome/Shell/Extensions/GSConnect/icons';
-        let iconNames = [
+        const iconPath = 'resource://org/gnome/Shell/Extensions/GSConnect/icons';
+        const iconNames = [
             'org.gnome.Shell.Extensions.GSConnect',
             'org.gnome.Shell.Extensions.GSConnect-symbolic',
             'computer-symbolic',
@@ -41,7 +41,7 @@ function getIcon(name) {
 
         getIcon._resource = {};
 
-        for (let iconName of iconNames) {
+        for (const iconName of iconNames) {
             getIcon._resource[iconName] = new Gio.FileIcon({
                 file: Gio.File.new_for_uri(`${iconPath}/${iconName}.svg`),
             });
@@ -70,12 +70,12 @@ function getIcon(name) {
  */
 function getResource(relativePath) {
     try {
-        let bytes = Gio.resources_lookup_data(
+        const bytes = Gio.resources_lookup_data(
             GLib.build_filenamev([Config.APP_PATH, relativePath]),
             Gio.ResourceLookupFlags.NONE
         );
 
-        let source = ByteArray.toString(bytes.toArray());
+        const source = ByteArray.toString(bytes.toArray());
 
         return source.replace('@PACKAGE_DATADIR@', Config.PACKAGE_DATADIR);
     } catch (e) {
@@ -95,7 +95,7 @@ function getResource(relativePath) {
  */
 function _installFile(dirname, basename, contents) {
     try {
-        let filename = GLib.build_filenamev([dirname, basename]);
+        const filename = GLib.build_filenamev([dirname, basename]);
         GLib.mkdir_with_parents(dirname, 0o755);
 
         return GLib.file_set_contents(filename, contents);
@@ -115,7 +115,7 @@ function _installFile(dirname, basename, contents) {
  */
 function _installResource(dirname, basename, relativePath) {
     try {
-        let contents = getResource(relativePath);
+        const contents = getResource(relativePath);
 
         return _installFile(dirname, basename, contents);
     } catch (e) {
@@ -129,35 +129,35 @@ function _installResource(dirname, basename, relativePath) {
  * Install the files necessary for the GSConnect service to run.
  */
 function installService() {
-    let confDir = GLib.get_user_config_dir();
-    let dataDir = GLib.get_user_data_dir();
-    let homeDir = GLib.get_home_dir();
+    const confDir = GLib.get_user_config_dir();
+    const dataDir = GLib.get_user_data_dir();
+    const homeDir = GLib.get_home_dir();
 
     // DBus Service
-    let dbusDir = GLib.build_filenamev([dataDir, 'dbus-1', 'services']);
-    let dbusFile = `${Config.APP_ID}.service`;
+    const dbusDir = GLib.build_filenamev([dataDir, 'dbus-1', 'services']);
+    const dbusFile = `${Config.APP_ID}.service`;
 
     // Desktop Entry
-    let appDir = GLib.build_filenamev([dataDir, 'applications']);
-    let appFile = `${Config.APP_ID}.desktop`;
-    let appPrefsFile = `${Config.APP_ID}.Preferences.desktop`;
+    const appDir = GLib.build_filenamev([dataDir, 'applications']);
+    const appFile = `${Config.APP_ID}.desktop`;
+    const appPrefsFile = `${Config.APP_ID}.Preferences.desktop`;
 
     // Application Icon
-    let iconDir = GLib.build_filenamev([dataDir, 'icons', 'hicolor', 'scalable', 'apps']);
-    let iconFull = `${Config.APP_ID}.svg`;
-    let iconSym = `${Config.APP_ID}-symbolic.svg`;
+    const iconDir = GLib.build_filenamev([dataDir, 'icons', 'hicolor', 'scalable', 'apps']);
+    const iconFull = `${Config.APP_ID}.svg`;
+    const iconSym = `${Config.APP_ID}-symbolic.svg`;
 
     // File Manager Extensions
-    let fileManagers = [
+    const fileManagers = [
         [`${dataDir}/nautilus-python/extensions`, 'nautilus-gsconnect.py'],
         [`${dataDir}/nemo-python/extensions`, 'nemo-gsconnect.py'],
     ];
 
     // WebExtension Manifests
-    let manifestFile = 'org.gnome.shell.extensions.gsconnect.json';
-    let google = getResource(`webextension/${manifestFile}.google.in`);
-    let mozilla = getResource(`webextension/${manifestFile}.mozilla.in`);
-    let manifests = [
+    const manifestFile = 'org.gnome.shell.extensions.gsconnect.json';
+    const google = getResource(`webextension/${manifestFile}.google.in`);
+    const mozilla = getResource(`webextension/${manifestFile}.mozilla.in`);
+    const manifests = [
         [`${confDir}/chromium/NativeMessagingHosts/`, google],
         [`${confDir}/google-chrome/NativeMessagingHosts/`, google],
         [`${confDir}/google-chrome-beta/NativeMessagingHosts/`, google],
@@ -182,10 +182,10 @@ function installService() {
         _installResource(iconDir, iconSym, `icons/${iconSym}`);
 
         // File Manager Extensions
-        let target = `${Config.PACKAGE_DATADIR}/nautilus-gsconnect.py`;
+        const target = `${Config.PACKAGE_DATADIR}/nautilus-gsconnect.py`;
 
-        for (let [dir, name] of fileManagers) {
-            let script = Gio.File.new_for_path(GLib.build_filenamev([dir, name]));
+        for (const [dir, name] of fileManagers) {
+            const script = Gio.File.new_for_path(GLib.build_filenamev([dir, name]));
 
             if (!script.query_exists(null)) {
                 GLib.mkdir_with_parents(dir, 0o755);
@@ -194,7 +194,7 @@ function installService() {
         }
 
         // WebExtension Manifests
-        for (let [dirname, contents] of manifests)
+        for (const [dirname, contents] of manifests)
             _installFile(dirname, manifestFile, contents);
 
     // Otherwise, if running as a system extension, ensure anything previously
@@ -206,10 +206,10 @@ function installService() {
         GLib.unlink(GLib.build_filenamev([iconDir, iconFull]));
         GLib.unlink(GLib.build_filenamev([iconDir, iconSym]));
 
-        for (let [dir, name] of fileManagers)
+        for (const [dir, name] of fileManagers)
             GLib.unlink(GLib.build_filenamev([dir, name]));
 
-        for (let manifest of manifests)
+        for (const manifest of manifests)
             GLib.unlink(GLib.build_filenamev([manifest[0], manifestFile]));
     }
 }

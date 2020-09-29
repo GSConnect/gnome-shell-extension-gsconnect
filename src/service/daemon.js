@@ -24,7 +24,7 @@ const Gtk = imports.gi.Gtk;
 
 // Bootstrap
 function get_datadir() {
-    let m = /@(.+):\d+/.exec((new Error()).stack.split('\n')[1]);
+    const m = /@(.+):\d+/.exec((new Error()).stack.split('\n')[1]);
     return Gio.File.new_for_path(m[1]).get_parent().get_parent().get_path();
 }
 
@@ -73,7 +73,7 @@ const Service = GObject.registerClass({
      * GActions
      */
     _initActions() {
-        let actions = [
+        const actions = [
             ['connect', this._identify.bind(this), new GLib.VariantType('s')],
             ['device', this._device.bind(this), new GLib.VariantType('(ssbv)')],
             ['error', this._error.bind(this), new GLib.VariantType('a{ss}')],
@@ -82,8 +82,8 @@ const Service = GObject.registerClass({
             ['refresh', this._identify.bind(this), null],
         ];
 
-        for (let [name, callback, type] of actions) {
-            let action = new Gio.SimpleAction({
+        for (const [name, callback, type] of actions) {
+            const action = new Gio.SimpleAction({
                 name: name,
                 parameter_type: type,
             });
@@ -105,7 +105,7 @@ const Service = GObject.registerClass({
 
             // Select the appropriate device(s)
             let devices;
-            let id = parameter[0].unpack();
+            const id = parameter[0].unpack();
 
             if (id === '*')
                 devices = this.manager.devices.values();
@@ -113,10 +113,10 @@ const Service = GObject.registerClass({
                 devices = [this.manager.devices.get(id)];
 
             // Unpack the action data and activate the action
-            let name = parameter[1].unpack();
-            let target = parameter[2].unpack() ? parameter[3].unpack() : null;
+            const name = parameter[1].unpack();
+            const target = parameter[2].unpack() ? parameter[3].unpack() : null;
 
-            for (let device of devices)
+            for (const device of devices)
                 device.activate_action(name, target);
         } catch (e) {
             logError(e);
@@ -125,7 +125,7 @@ const Service = GObject.registerClass({
 
     _error(action, parameter) {
         try {
-            let error = parameter.deepUnpack();
+            const error = parameter.deepUnpack();
 
             // If there's a URL, we have better information in the Wiki
             if (error.url !== undefined) {
@@ -138,7 +138,7 @@ const Service = GObject.registerClass({
                 return;
             }
 
-            let dialog = new ServiceUI.ErrorDialog(error);
+            const dialog = new ServiceUI.ErrorDialog(error);
             dialog.present();
         } catch (e) {
             logError(e);
@@ -177,8 +177,8 @@ const Service = GObject.registerClass({
 
             // Create an new notification
             let id, body, priority;
-            let notif = new Gio.Notification();
-            let icon = new Gio.ThemedIcon({name: 'dialog-error'});
+            const notif = new Gio.Notification();
+            const icon = new Gio.ThemedIcon({name: 'dialog-error'});
             let target = null;
 
             if (error.name === undefined)
@@ -235,7 +235,7 @@ const Service = GObject.registerClass({
         this._serviceMonitor.connect('changed', () => this.quit());
 
         // Init some resources
-        let provider = new Gtk.CssProvider();
+        const provider = new Gtk.CssProvider();
         provider.load_from_resource(`${Config.APP_PATH}/application.css`);
         Gtk.StyleContext.add_provider_for_screen(
             Gdk.Screen.get_default(),
@@ -245,7 +245,7 @@ const Service = GObject.registerClass({
 
         // Ensure our handlers are registered
         try {
-            let appInfo = Gio.DesktopAppInfo.new(`${Config.APP_ID}.desktop`);
+            const appInfo = Gio.DesktopAppInfo.new(`${Config.APP_ID}.desktop`);
             appInfo.add_supports_type('x-scheme-handler/sms');
             appInfo.add_supports_type('x-scheme-handler/tel');
         } catch (e) {
@@ -279,7 +279,7 @@ const Service = GObject.registerClass({
     vfunc_open(files, hint) {
         super.vfunc_open(files, hint);
 
-        for (let file of files) {
+        for (const file of files) {
             let action, parameter, title;
 
             try {
@@ -531,7 +531,7 @@ const Service = GObject.registerClass({
     }
 
     _cliAction(id, name, parameter = null) {
-        let parameters = [];
+        const parameters = [];
 
         if (parameter instanceof GLib.Variant)
             parameters[0] = parameter;
@@ -552,7 +552,7 @@ const Service = GObject.registerClass({
     }
 
     _cliListDevices(full = true) {
-        let result = Gio.DBus.session.call_sync(
+        const result = Gio.DBus.session.call_sync(
             'org.gnome.Shell.Extensions.GSConnect',
             '/org/gnome/Shell/Extensions/GSConnect',
             'org.freedesktop.DBus.ObjectManager',
@@ -564,7 +564,7 @@ const Service = GObject.registerClass({
             null
         );
 
-        let variant = result.unpack()[0].unpack();
+        const variant = result.unpack()[0].unpack();
         let device;
 
         for (let object of Object.values(variant)) {
@@ -583,8 +583,8 @@ const Service = GObject.registerClass({
             throw new TypeError('missing --message-body option');
 
         // TODO: currently we only support single-recipient messaging
-        let addresses = options.lookup_value('message', null).deepUnpack();
-        let body = options.lookup_value('message-body', null).deepUnpack();
+        const addresses = options.lookup_value('message', null).deepUnpack();
+        const body = options.lookup_value('message-body', null).deepUnpack();
 
         this._cliAction(
             id,
@@ -594,7 +594,7 @@ const Service = GObject.registerClass({
     }
 
     _cliNotify(id, options) {
-        let title = options.lookup_value('notification', null).unpack();
+        const title = options.lookup_value('notification', null).unpack();
         let body = '';
         let icon = null;
         let nid = `${Date.now()}`;
@@ -618,7 +618,7 @@ const Service = GObject.registerClass({
             });
         }
 
-        let notification = new GLib.Variant('a{sv}', {
+        const notification = new GLib.Variant('a{sv}', {
             appName: GLib.Variant.new_string(appName),
             id: GLib.Variant.new_string(nid),
             title: GLib.Variant.new_string(title),
@@ -633,7 +633,7 @@ const Service = GObject.registerClass({
     }
 
     _cliShareFile(device, options) {
-        let files = options.lookup_value('share-file', null).deepUnpack();
+        const files = options.lookup_value('share-file', null).deepUnpack();
 
         for (let file of files) {
             file = imports.byteArray.toString(file);
@@ -642,7 +642,7 @@ const Service = GObject.registerClass({
     }
 
     _cliShareLink(device, options) {
-        let uris = options.lookup_value('share-link', null).deepUnpack();
+        const uris = options.lookup_value('share-link', null).deepUnpack();
 
         for (let uri of uris) {
             uri = imports.byteArray.toString(uri);
@@ -651,7 +651,7 @@ const Service = GObject.registerClass({
     }
 
     _cliShareText(device, options) {
-        let text = options.lookup_value('share-text', null).unpack();
+        const text = options.lookup_value('share-text', null).unpack();
 
         this._cliAction(device, 'shareText', GLib.Variant.new_string(text));
     }
@@ -680,7 +680,7 @@ const Service = GObject.registerClass({
             if (!options.contains('device'))
                 return -1;
 
-            let id = options.lookup_value('device', null).unpack();
+            const id = options.lookup_value('device', null).unpack();
 
             // Pairing
             if (options.contains('pair')) {

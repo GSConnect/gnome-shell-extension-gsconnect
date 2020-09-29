@@ -21,7 +21,7 @@ const MockMediaPlayer = GObject.registerClass({
      * @param {Object} obj - A dictionary of properties
      */
     update(obj) {
-        for (let [propertyName, propertyValue] of Object.entries(obj))
+        for (const [propertyName, propertyValue] of Object.entries(obj))
             this[`_${propertyName}`] = propertyValue;
 
         // An arbitrary property to notify
@@ -86,7 +86,7 @@ const MockMediaPlayer = GObject.registerClass({
     }
 
     SetPosition(trackId, position) {
-        let offset = this._Position - position;
+        const offset = this._Position - position;
         this.Seek(offset);
     }
 });
@@ -118,7 +118,7 @@ var Component = GObject.registerClass({
     }
 
     addPlayer(identity) {
-        let player = new MockMediaPlayer(identity);
+        const player = new MockMediaPlayer(identity);
 
         player.connect('notify', () => this.emit('player-changed', player));
         player.connect('Seeked', this.emit.bind(this, 'player-seeked'));
@@ -130,7 +130,7 @@ var Component = GObject.registerClass({
     }
 
     removePlayer(identity) {
-        let player = this._players.get(identity);
+        const player = this._players.get(identity);
 
         if (player === undefined)
             return;
@@ -142,7 +142,7 @@ var Component = GObject.registerClass({
     }
 
     getPlayer(identity) {
-        for (let player of this._players.values()) {
+        for (const player of this._players.values()) {
             if (player.Identity === identity)
                 return player;
         }
@@ -151,7 +151,7 @@ var Component = GObject.registerClass({
     }
 
     hasPlayer(identity) {
-        for (let player of this._players.values()) {
+        for (const player of this._players.values()) {
             if (player.Identity === identity)
                 return true;
         }
@@ -160,10 +160,10 @@ var Component = GObject.registerClass({
     }
 
     getIdentities() {
-        let identities = [];
+        const identities = [];
 
-        for (let player of this._players.values()) {
-            let identity = player.Identity;
+        for (const player of this._players.values()) {
+            const identity = player.Identity;
 
             if (identity)
                 identities.push(identity);

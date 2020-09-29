@@ -10,7 +10,7 @@ const Config = imports.config;
 
 
 // Add gnome-shell's typelib dir to the search path
-let typelibDir = GLib.build_filenamev([Config.GNOME_SHELL_LIBDIR, 'gnome-shell']);
+const typelibDir = GLib.build_filenamev([Config.GNOME_SHELL_LIBDIR, 'gnome-shell']);
 GIRepository.Repository.prepend_search_path(typelibDir);
 GIRepository.Repository.prepend_library_path(typelibDir);
 
@@ -152,7 +152,7 @@ const Mixer = GObject.registerClass({
 
     vfunc_default_sink_changed(id) {
         try {
-            let sink = this.get_default_sink();
+            const sink = this.get_default_sink();
             this._output = (sink) ? new Stream(this, sink) : null;
         } catch (e) {
             logError(e);
@@ -161,7 +161,7 @@ const Mixer = GObject.registerClass({
 
     vfunc_default_source_changed(id) {
         try {
-            let source = this.get_default_source();
+            const source = this.get_default_source();
             this._input = (source) ? new Stream(this, source) : null;
         } catch (e) {
             logError(e);

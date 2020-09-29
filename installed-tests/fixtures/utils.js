@@ -32,8 +32,8 @@ const {ChannelService} = imports.fixtures.backend;
  * File Helpers
  */
 function get_datadir() {
-    let thisPath = /@(.+):\d+/.exec((new Error()).stack.split('\n')[1])[1];
-    let thisFile = Gio.File.new_for_path(thisPath);
+    const thisPath = /@(.+):\d+/.exec((new Error()).stack.split('\n')[1])[1];
+    const thisFile = Gio.File.new_for_path(thisPath);
 
     return thisFile.get_parent().get_parent().get_child('data').get_path();
 }
@@ -112,7 +112,7 @@ function generateIdentity(params = {}) {
         },
     };
 
-    for (let [key, value] of Object.entries(params)) {
+    for (const [key, value] of Object.entries(params)) {
         if (key === 'body')
             Object.assign(identity.body, value);
         else
@@ -131,7 +131,7 @@ function generateIdentity(params = {}) {
  * @return {boolean} %true if the object is a subset
  */
 function isSubset(obj, subset) {
-    for (let [key, val] of Object.entries(subset)) {
+    for (const [key, val] of Object.entries(subset)) {
         if (!obj.hasOwnProperty(key))
             return false;
 
@@ -176,7 +176,7 @@ function isSubset(obj, subset) {
  */
 async function _awaitPacket(type, body = null) {
     while (true) {
-        for (let [packet] of this.handlePacket.calls.allArgs()) {
+        for (const [packet] of this.handlePacket.calls.allArgs()) {
             if (packet.type !== type)
                 continue;
 
@@ -208,7 +208,7 @@ function isolateDirectories() {
     Config.CONFIGDIR = GLib.build_filenamev([tmpdir, 'config']);
     Config.RUNTIMEDIR = GLib.build_filenamev([tmpdir, 'runtime']);
 
-    for (let path of [Config.CACHEDIR, Config.CONFIGDIR, Config.RUNTIMEDIR])
+    for (const path of [Config.CACHEDIR, Config.CONFIGDIR, Config.RUNTIMEDIR])
         GLib.mkdir_with_parents(path, 0o755);
 
     return tmpdir;

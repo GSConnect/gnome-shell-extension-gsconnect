@@ -237,7 +237,7 @@ const RemoteSession = GObject.registerClass({
             this.pressKeysym(Gdk.KEY_Super_L);
 
         if (typeof input === 'string') {
-            let keysym = Gdk.unicode_to_keyval(input.codePointAt(0));
+            const keysym = Gdk.unicode_to_keyval(input.codePointAt(0));
             this.pressreleaseKeysym(keysym);
         } else {
             this.pressreleaseKeysym(input);
@@ -301,14 +301,14 @@ class Controller {
         if (HAVE_WAYLAND) {
             // eslint-disable-next-line no-global-assign
             HAVE_REMOTEINPUT = false;
-            let service = Gio.Application.get_default();
+            const service = Gio.Application.get_default();
 
             if (service === null)
                 return true;
 
             // First we're going to disabled the affected plugins on all devices
-            for (let device of service.manager.devices.values()) {
-                let supported = device.settings.get_strv('supported-plugins');
+            for (const device of service.manager.devices.values()) {
+                const supported = device.settings.get_strv('supported-plugins');
                 let index;
 
                 if ((index = supported.indexOf('mousepad')) > -1)
@@ -322,7 +322,7 @@ class Controller {
 
             // Second we need each backend to rebuild its identity packet and
             // broadcast the amended capabilities to the network
-            for (let backend of service.manager.backends.values())
+            for (const backend of service.manager.backends.values())
                 backend.buildIdentity();
 
             service.manager.identify();
@@ -364,7 +364,7 @@ class Controller {
 
     _onSessionExpired() {
         // If the session has been used recently, schedule a new expiry
-        let remainder = Math.floor(this._sessionExpiry - (Date.now() / 1000));
+        const remainder = Math.floor(this._sessionExpiry - (Date.now() / 1000));
 
         if (remainder > 0) {
             this._sessionExpiryId = GLib.timeout_add_seconds(
@@ -418,7 +418,7 @@ class Controller {
             return Promise.reject(new Error('No DBus connection'));
 
         return new Promise((resolve, reject) => {
-            let options = new GLib.Variant('(a{sv})', [{
+            const options = new GLib.Variant('(a{sv})', [{
                 'disable-animations': GLib.Variant.new_boolean(false),
                 'remote-desktop-session-id': GLib.Variant.new_string(sessionId),
             }]);
@@ -462,7 +462,7 @@ class Controller {
                 if (this._checkWayland())
                     return;
 
-                let fallback = imports.service.components.atspi;
+                const fallback = imports.service.components.atspi;
                 this._session = new fallback.Controller();
 
             // Mutter is available and there isn't another session starting
@@ -474,7 +474,7 @@ class Controller {
                 // This takes three steps: creating the remote desktop session,
                 // starting the session, and creating a screencast session for
                 // the remote desktop session.
-                let objectPath = await this._createRemoteDesktopSession();
+                const objectPath = await this._createRemoteDesktopSession();
 
                 this._session = new RemoteSession(objectPath);
                 await this._session.start();

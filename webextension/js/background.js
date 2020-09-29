@@ -117,7 +117,7 @@ async function forwardPortMessage(message) {
  */
 async function onContextItem(info, tab) {
     try {
-        let [id, action] = info.menuItemId.split(':');
+        const [id, action] = info.menuItemId.split(':');
 
         await postMessage({
             type: 'share',
@@ -155,7 +155,7 @@ async function createContextMenu(tab) {
                 contexts: _CONTEXTS,
             });
 
-            for (let device of State.devices) {
+            for (const device of State.devices) {
                 if (device.share && device.telephony) {
                     await browser.contextMenus.create({
                         id: device.id,
@@ -204,7 +204,7 @@ async function createContextMenu(tab) {
 
         // One device; we'll create a top level menu
         } else {
-            let device = State.devices[0];
+            const device = State.devices[0];
 
             if (device.share && device.telephony) {
                 await browser.contextMenus.create({
@@ -284,7 +284,7 @@ async function onPortMessage(message) {
         forwardPortMessage(message);
 
         //
-        let tabs = await browser.tabs.query({
+        const tabs = await browser.tabs.query({
             active: true,
             currentWindow: true,
         });
@@ -326,7 +326,7 @@ async function onDisconnect(port) {
 
         // Log disconnection
         if (browser.runtime.lastError) {
-            let message = browser.runtime.lastError.message;
+            const message = browser.runtime.lastError.message;
             console.warn(`Disconnected: ${message}`);
         }
 

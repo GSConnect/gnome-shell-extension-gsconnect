@@ -82,11 +82,12 @@ const _numberRegex = new RegExp(
 function findUrls(str) {
     _urlRegexp.lastIndex = 0;
 
-    let res = [], match;
+    const res = [];
+    let match;
 
     while ((match = _urlRegexp.exec(str))) {
-        let name = match[2];
-        let url = GLib.uri_parse_scheme(name) ? name : `http://${name}`;
+        const name = match[2];
+        const url = GLib.uri_parse_scheme(name) ? name : `http://${name}`;
         res.push({name, url, pos: match.index + match[1].length});
     }
 
@@ -103,7 +104,7 @@ function findUrls(str) {
  * @return {string} the modified text
  */
 function linkify(str, title = null) {
-    let text = GLib.markup_escape_text(str, -1);
+    const text = GLib.markup_escape_text(str, -1);
 
     _urlRegexp.lastIndex = 0;
 
@@ -124,15 +125,15 @@ function linkify(str, title = null) {
 var SmsURI = class URI {
     constructor(uri) {
         _smsRegex.lastIndex = 0;
-        let [, recipients, query] = _smsRegex.exec(uri);
+        const [, recipients, query] = _smsRegex.exec(uri);
 
         this.recipients = recipients.split(',').map(recipient => {
             _numberRegex.lastIndex = 0;
-            let [, number, params] = _numberRegex.exec(recipient);
+            const [, number, params] = _numberRegex.exec(recipient);
 
             if (params) {
-                for (let param of params.substr(1).split(';')) {
-                    let [key, value] = param.split('=');
+                for (const param of params.substr(1).split(';')) {
+                    const [key, value] = param.split('=');
 
                     // add phone-context to beginning of
                     if (key === 'phone-context' && value.startsWith('+'))
@@ -144,8 +145,8 @@ var SmsURI = class URI {
         });
 
         if (query) {
-            for (let field of query.split('&')) {
-                let [key, value] = field.split('=');
+            for (const field of query.split('&')) {
+                const [key, value] = field.split('=');
 
                 if (key === 'body') {
                     if (this.body)
@@ -158,7 +159,7 @@ var SmsURI = class URI {
     }
 
     toString() {
-        let uri = `sms:${this.recipients.join(',')}`;
+        const uri = `sms:${this.recipients.join(',')}`;
 
         return this.body ? `${uri}?body=${escape(this.body)}` : uri;
     }

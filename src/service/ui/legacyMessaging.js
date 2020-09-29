@@ -195,7 +195,7 @@ var Dialog = GObject.registerClass({
     }
 
     _onNumberSelected(chooser, number) {
-        let contacts = chooser.getSelected();
+        const contacts = chooser.getSelected();
 
         this.addresses = Object.keys(contacts).map(address => {
             return {address: address};

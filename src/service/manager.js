@@ -98,7 +98,7 @@ var Manager = GObject.registerClass({
         this.notify('discoverable');
 
         // FIXME: This whole thing just keeps getting uglier
-        let application = Gio.Application.get_default();
+        const application = Gio.Application.get_default();
 
         if (application === null)
             return;
@@ -109,7 +109,7 @@ var Manager = GObject.registerClass({
                 'discovery-warning'
             );
         } else {
-            let notif = new Gio.Notification();
+            const notif = new Gio.Notification();
             notif.set_title(_('Discovery Disabled'));
             notif.set_body(_('Discovery has been disabled due to the number of devices on this network.'));
             notif.set_icon(new Gio.ThemedIcon({name: 'dialog-warning'}));
@@ -154,7 +154,7 @@ var Manager = GObject.registerClass({
         this.notify('name');
 
         // Broadcast changes to the network
-        for (let backend of this.backends.values()) {
+        for (const backend of this.backends.values()) {
             backend.name = this.name;
             backend.buildIdentity();
         }
@@ -231,11 +231,11 @@ var Manager = GObject.registerClass({
     }
 
     _loadBackends() {
-        for (let name in imports.service.backends) {
+        for (const name in imports.service.backends) {
             try {
                 // Try to create the backend and track it if successful
-                let module = imports.service.backends[name];
-                let backend = new module.ChannelService({
+                const module = imports.service.backends[name];
+                const backend = new module.ChannelService({
                     id: this.id,
                     name: this.name,
                 });
@@ -261,8 +261,8 @@ var Manager = GObject.registerClass({
      */
     _loadDevices() {
         // Load cached devices
-        for (let id of this.settings.get_strv('devices')) {
-            let device = new Device.Device({body: {deviceId: id}});
+        for (const id of this.settings.get_strv('devices')) {
+            const device = new Device.Device({body: {deviceId: id}});
             this._exportDevice(device);
             this.devices.set(id, device);
         }
@@ -272,14 +272,14 @@ var Manager = GObject.registerClass({
         if (this.connection === null)
             return;
 
-        let info = {
+        const info = {
             object: null,
             interface: null,
             actions: 0,
             menu: 0,
         };
 
-        let objectPath = `${DEVICE_PATH}/${device.id.replace(/\W+/g, '_')}`;
+        const objectPath = `${DEVICE_PATH}/${device.id.replace(/\W+/g, '_')}`;
 
         // Export an object path for the device
         info.object = new Gio.DBusObjectSkeleton({
@@ -305,12 +305,12 @@ var Manager = GObject.registerClass({
         if (this.connection === null)
             return;
 
-        for (let device of this.devices.values())
+        for (const device of this.devices.values())
             this._exportDevice(device);
     }
 
     _unexportDevice(device) {
-        let info = this._exported.get(device);
+        const info = this._exported.get(device);
 
         if (info === undefined)
             return;
@@ -329,7 +329,7 @@ var Manager = GObject.registerClass({
     }
 
     _unexportDevices() {
-        for (let device of this.devices.values())
+        for (const device of this.devices.values())
             this._unexportDevice(device);
     }
 
@@ -350,7 +350,7 @@ var Manager = GObject.registerClass({
             //
             // If this is the third unpaired device to connect, we disable
             // discovery to avoid choking on networks with many devices
-            let unpaired = Array.from(this.devices.values()).filter(dev => {
+            const unpaired = Array.from(this.devices.values()).filter(dev => {
                 return !dev.paired;
             });
 
@@ -378,11 +378,11 @@ var Manager = GObject.registerClass({
      */
     _removeDevice(id) {
         // Delete all GSettings
-        let settings_path = `/org/gnome/shell/extensions/gsconnect/${id}/`;
+        const settings_path = `/org/gnome/shell/extensions/gsconnect/${id}/`;
         GLib.spawn_command_line_async(`dconf reset -f ${settings_path}`);
 
         // Delete the cache
-        let cache = GLib.build_filenamev([Config.CACHEDIR, id]);
+        const cache = GLib.build_filenamev([Config.CACHEDIR, id]);
         Gio.File.rm_rf(cache);
 
         // Forget the device
@@ -397,7 +397,7 @@ var Manager = GObject.registerClass({
      * @return {boolean} Always %true
      */
     _reconnect() {
-        for (let [id, device] of this.devices) {
+        for (const [id, device] of this.devices) {
             if (device.connected)
                 continue;
 
@@ -423,9 +423,9 @@ var Manager = GObject.registerClass({
         try {
             // If we're passed a parameter, try and find a backend for it
             if (uri !== null) {
-                let [scheme, address] = uri.split('://');
+                const [scheme, address] = uri.split('://');
 
-                let backend = this.backends.get(scheme);
+                const backend = this.backends.get(scheme);
 
                 if (backend !== undefined)
                     backend.broadcast(address);

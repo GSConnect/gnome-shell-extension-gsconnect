@@ -72,7 +72,7 @@ var Plugin = GObject.registerClass({
     disconnected() {
         super.disconnected();
 
-        for (let [identity, player] of this._players) {
+        for (const [identity, player] of this._players) {
             this._players.delete(identity);
             player.destroy();
         }
@@ -113,16 +113,16 @@ var Plugin = GObject.registerClass({
      */
     _handlePlayerList(playerList) {
         // Destroy removed players before adding new ones
-        for (let player of this._players.values()) {
+        for (const player of this._players.values()) {
             if (!playerList.includes(player.Identity)) {
                 this._players.delete(player.Identity);
                 player.destroy();
             }
         }
 
-        for (let identity of playerList) {
+        for (const identity of playerList) {
             if (!this._players.has(identity)) {
-                let player = new PlayerRemote(this.device, identity);
+                const player = new PlayerRemote(this.device, identity);
                 this._players.set(identity, player);
             }
 
@@ -144,7 +144,7 @@ var Plugin = GObject.registerClass({
      * @param {Object} packet - A `kdeconnect.mpris` packet
      */
     _handlePlayerUpdate(packet) {
-        let player = this._players.get(packet.body.player);
+        const player = this._players.get(packet.body.player);
 
         if (player === undefined)
             return;
@@ -234,14 +234,14 @@ var Plugin = GObject.registerClass({
                 await player.Seek(packet.body.Seek * 1000);
 
             if (packet.body.hasOwnProperty('SetPosition')) {
-                let offset = (packet.body.SetPosition * 1000) - player.Position;
+                const offset = (packet.body.SetPosition * 1000) - player.Position;
                 await player.Seek(offset);
             }
 
             // Information Request
             let hasResponse = false;
 
-            let response = {
+            const response = {
                 type: 'kdeconnect.mpris',
                 body: {
                     player: packet.body.player,
@@ -261,20 +261,20 @@ var Plugin = GObject.registerClass({
                     canSeek: player.CanSeek,
                 });
 
-                let metadata = player.Metadata;
+                const metadata = player.Metadata;
 
                 if (metadata.hasOwnProperty('mpris:artUrl')) {
-                    let file = Gio.File.new_for_uri(metadata['mpris:artUrl']);
+                    const file = Gio.File.new_for_uri(metadata['mpris:artUrl']);
                     response.body.albumArtUrl = file.get_uri();
                 }
 
                 if (metadata.hasOwnProperty('mpris:length')) {
-                    let trackLen = Math.floor(metadata['mpris:length'] / 1000);
+                    const trackLen = Math.floor(metadata['mpris:length'] / 1000);
                     response.body.length = trackLen;
                 }
 
                 if (metadata.hasOwnProperty('xesam:artist')) {
-                    let artists = metadata['xesam:artist'];
+                    const artists = metadata['xesam:artist'];
                     response.body.artist = artists.join(', ');
                 }
 
@@ -350,13 +350,13 @@ var Plugin = GObject.registerClass({
                 return;
 
             // Ensure the requested albumArtUrl matches the current mpris:artUrl
-            let metadata = player.Metadata;
+            const metadata = player.Metadata;
 
             if (!metadata.hasOwnProperty('mpris:artUrl'))
                 return;
 
-            let file = Gio.File.new_for_uri(metadata['mpris:artUrl']);
-            let request = Gio.File.new_for_uri(packet.body.albumArtUrl);
+            const file = Gio.File.new_for_uri(metadata['mpris:artUrl']);
+            const request = Gio.File.new_for_uri(packet.body.albumArtUrl);
 
             if (file.get_uri() !== request.get_uri())
                 throw RangeError(`invalid URI "${packet.body.albumArtUrl}"`);
@@ -364,7 +364,7 @@ var Plugin = GObject.registerClass({
             // Transfer the album art
             this._transferring.add(player);
 
-            let transfer = this.device.createTransfer();
+            const transfer = this.device.createTransfer();
 
             transfer.addFile({
                 type: 'kdeconnect.mpris',
@@ -411,7 +411,7 @@ var Plugin = GObject.registerClass({
             this._mpris = Components.release('mpris');
         }
 
-        for (let [identity, player] of this._players) {
+        for (const [identity, player] of this._players) {
             this._players.delete(identity);
             player.destroy();
         }
@@ -463,7 +463,7 @@ const PlayerRemote = GObject.registerClass({
         if (this._artUrl === state.albumArtUrl)
             return;
 
-        let file = this._getFile(state.albumArtUrl);
+        const file = this._getFile(state.albumArtUrl);
 
         if (file.query_exists(null)) {
             this._artUrl = file.get_uri();
@@ -563,7 +563,7 @@ const PlayerRemote = GObject.registerClass({
             if (this._ownerId !== 0)
                 return;
 
-            let name = [
+            const name = [
                 this.device.name,
                 this.Identity,
             ].join('').replace(/[\W]*/g, '');
@@ -600,7 +600,7 @@ const PlayerRemote = GObject.registerClass({
             file = this._getFile(packet.body.albumArtUrl);
 
             // Transfer the album art
-            let transfer = this.device.createTransfer();
+            const transfer = this.device.createTransfer();
             transfer.addFile(packet, file);
 
             await transfer.start();

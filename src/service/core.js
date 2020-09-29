@@ -230,7 +230,7 @@ var Channel = GObject.registerClass({
                 cancellable,
                 (stream, res) => {
                     try {
-                        let data = stream.read_line_finish_utf8(res)[0];
+                        const data = stream.read_line_finish_utf8(res)[0];
 
                         if (data === null) {
                             throw new Gio.IOErrorEnum({
@@ -421,17 +421,17 @@ var ChannelService = GObject.registerClass({
             },
         });
 
-        for (let name in imports.service.plugins) {
+        for (const name in imports.service.plugins) {
             // Exclude mousepad/presenter capability in unsupported sessions
             if (!HAVE_REMOTEINPUT && ['mousepad', 'presenter'].includes(name))
                 continue;
 
-            let meta = imports.service.plugins[name].Metadata;
+            const meta = imports.service.plugins[name].Metadata;
 
-            for (let type of meta.incomingCapabilities)
+            for (const type of meta.incomingCapabilities)
                 this._identity.body.incomingCapabilities.push(type);
 
-            for (let type of meta.outgoingCapabilities)
+            for (const type of meta.outgoingCapabilities)
                 this._identity.body.outgoingCapabilities.push(type);
         }
     }
@@ -584,7 +584,7 @@ var Transfer = GObject.registerClass({
                 return;
 
             if (item.file instanceof Gio.File) {
-                let read = new Promise((resolve, reject) => {
+                const read = new Promise((resolve, reject) => {
                     item.file.read_async(
                         GLib.PRIORITY_DEFAULT,
                         cancellable,
@@ -598,7 +598,7 @@ var Transfer = GObject.registerClass({
                     );
                 });
 
-                let query = new Promise((resolve, reject) => {
+                const query = new Promise((resolve, reject) => {
                     item.file.query_info_async(
                         Gio.FILE_ATTRIBUTE_STANDARD_SIZE,
                         Gio.FileQueryInfoFlags.NONE,
@@ -614,7 +614,7 @@ var Transfer = GObject.registerClass({
                     );
                 });
 
-                let [stream, info] = await Promise.all([read, query]);
+                const [stream, info] = await Promise.all([read, query]);
                 item.source = stream;
                 item.size = info.get_size();
             }
@@ -628,7 +628,7 @@ var Transfer = GObject.registerClass({
      * @param {Gio.File} file - A file to transfer
      */
     addFile(packet, file) {
-        let item = {
+        const item = {
             packet: new Packet(packet),
             file: file,
             source: null,
@@ -645,7 +645,7 @@ var Transfer = GObject.registerClass({
      * @param {string} path - A filepath to transfer
      */
     addPath(packet, path) {
-        let item = {
+        const item = {
             packet: new Packet(packet),
             file: Gio.File.new_for_path(path),
             source: null,
@@ -663,7 +663,7 @@ var Transfer = GObject.registerClass({
      * @param {number} [size] - Payload size
      */
     addStream(packet, stream, size = 0) {
-        let item = {
+        const item = {
             packet: new Packet(packet),
             file: null,
             source: null,

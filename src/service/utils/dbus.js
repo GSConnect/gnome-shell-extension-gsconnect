@@ -60,18 +60,18 @@ var Interface = GObject.registerClass({
         this._instanceMethods = {};
         this._instanceProperties = {};
 
-        let info = this.get_info();
+        const info = this.get_info();
         this.connect('handle-method-call', this._call.bind(this._instance, info));
         this.connect('handle-property-get', this._get.bind(this._instance, info));
         this.connect('handle-property-set', this._set.bind(this._instance, info));
 
         // Automatically forward known signals
-        let id = this._instance.connect('notify', this._notify.bind(this));
+        const id = this._instance.connect('notify', this._notify.bind(this));
         this._instanceHandlers.push(id);
 
-        for (let signal of info.signals) {
-            let type = `(${signal.args.map(arg => arg.signature).join('')})`;
-            let id = this._instance.connect(
+        for (const signal of info.signals) {
+            const type = `(${signal.args.map(arg => arg.signature).join('')})`;
+            const id = this._instance.connect(
                 signal.name,
                 this._emit.bind(this, signal.name, type)
             );
@@ -109,11 +109,11 @@ var Interface = GObject.registerClass({
 
         // Invoke the instance method
         try {
-            let args = parameters.unpack().map(parameter => {
+            const args = parameters.unpack().map(parameter => {
                 if (parameter.get_type_string() === 'h') {
-                    let message = invocation.get_message();
-                    let fds = message.get_unix_fd_list();
-                    let idx = parameter.deepUnpack();
+                    const message = invocation.get_message();
+                    const fds = message.get_unix_fd_list();
+                    const idx = parameter.deepUnpack();
                     return fds.get(idx);
                 } else {
                     return parameter.recursiveUnpack();
@@ -184,8 +184,8 @@ var Interface = GObject.registerClass({
     }
 
     _get(info, iface, name) {
-        let nativeValue = this[iface._nativeProp(this, name)];
-        let propertyInfo = info.lookup_property(name);
+        const nativeValue = this[iface._nativeProp(this, name)];
+        const propertyInfo = info.lookup_property(name);
 
         if (nativeValue === undefined || propertyInfo === null)
             return null;
@@ -194,14 +194,14 @@ var Interface = GObject.registerClass({
     }
 
     _set(info, iface, name, value) {
-        let nativeValue = value.recursiveUnpack();
+        const nativeValue = value.recursiveUnpack();
 
         this[iface._nativeProp(this, name)] = nativeValue;
     }
 
     _notify(obj, pspec) {
-        let name = toDBusCase(pspec.name);
-        let propertyInfo = this.get_info().lookup_property(name);
+        const name = toDBusCase(pspec.name);
+        const propertyInfo = this.get_info().lookup_property(name);
 
         if (propertyInfo === null)
             return;
@@ -218,7 +218,7 @@ var Interface = GObject.registerClass({
 
     destroy() {
         try {
-            for (let id of this._instanceHandlers)
+            for (const id of this._instanceHandlers)
                 this._instance.disconnect(id);
             this._instanceHandlers = [];
 

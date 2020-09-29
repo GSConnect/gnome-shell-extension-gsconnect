@@ -31,8 +31,8 @@ OS:        ${GLib.get_os_info('PRETTY_NAME')}
  */
 async function generateSupportLog(time) {
     try {
-        let [file, stream] = Gio.File.new_tmp('gsconnect.XXXXXX');
-        let logFile = stream.get_output_stream();
+        const [file, stream] = Gio.File.new_tmp('gsconnect.XXXXXX');
+        const logFile = stream.get_output_stream();
 
         await new Promise((resolve, reject) => {
             logFile.write_bytes_async(LOG_HEADER, 0, null, (file, res) => {
@@ -45,7 +45,7 @@ async function generateSupportLog(time) {
         });
 
         // FIXME: BSD???
-        let proc = new Gio.Subprocess({
+        const proc = new Gio.Subprocess({
             flags: (Gio.SubprocessFlags.STDOUT_PIPE |
                     Gio.SubprocessFlags.STDERR_MERGE),
             argv: ['journalctl', '--no-host', '--since', time],
@@ -76,7 +76,7 @@ async function generateSupportLog(time) {
             });
         });
 
-        let uri = file.get_uri();
+        const uri = file.get_uri();
         Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
     } catch (e) {
         logError(e);
@@ -109,8 +109,8 @@ var ConnectDialog = GObject.registerClass({
 
                 // Lan host/port entered
                 if (this.lan_ip.text) {
-                    let host = this.lan_ip.text;
-                    let port = this.lan_port.value;
+                    const host = this.lan_ip.text;
+                    const port = this.lan_port.value;
                     address = GLib.Variant.new_string(`lan://${host}:${port}`);
                 } else {
                     return false;
@@ -129,7 +129,7 @@ var ConnectDialog = GObject.registerClass({
 
 
 function rowSeparators(row, before) {
-    let header = row.get_header();
+    const header = row.get_header();
 
     if (before === null) {
         if (header !== null)
@@ -276,7 +276,7 @@ var Window = GObject.registerClass({
 
     _initMenu() {
         // Panel/User Menu mode
-        let displayMode = new Gio.PropertyAction({
+        const displayMode = new Gio.PropertyAction({
             name: 'display-mode',
             property_name: 'display-mode',
             object: this,
@@ -284,22 +284,22 @@ var Window = GObject.registerClass({
         this.add_action(displayMode);
 
         // About Dialog
-        let aboutDialog = new Gio.SimpleAction({name: 'about'});
+        const aboutDialog = new Gio.SimpleAction({name: 'about'});
         aboutDialog.connect('activate', this._aboutDialog.bind(this));
         this.add_action(aboutDialog);
 
         // "Connect to..." Dialog
-        let connectDialog = new Gio.SimpleAction({name: 'connect'});
+        const connectDialog = new Gio.SimpleAction({name: 'connect'});
         connectDialog.connect('activate', this._connectDialog.bind(this));
         this.add_action(connectDialog);
 
         // "Generate Support Log" GAction
-        let generateSupportLog = new Gio.SimpleAction({name: 'support-log'});
+        const generateSupportLog = new Gio.SimpleAction({name: 'support-log'});
         generateSupportLog.connect('activate', this._generateSupportLog.bind(this));
         this.add_action(generateSupportLog);
 
         // "Help" GAction
-        let help = new Gio.SimpleAction({name: 'help'});
+        const help = new Gio.SimpleAction({name: 'help'});
         help.connect('activate', this._help);
         this.add_action(help);
     }
@@ -328,7 +328,7 @@ var Window = GObject.registerClass({
         });
 
         // Size
-        let [width, height] = this._windowState.get_value('window-size').deepUnpack();
+        const [width, height] = this._windowState.get_value('window-size').deepUnpack();
 
         if (width && height)
             this.set_default_size(width, height);
@@ -339,10 +339,10 @@ var Window = GObject.registerClass({
     }
 
     _saveGeometry() {
-        let state = this.get_window().get_state();
+        const state = this.get_window().get_state();
 
         // Maximized State
-        let maximized = (state & Gdk.WindowState.MAXIMIZED);
+        const maximized = (state & Gdk.WindowState.MAXIMIZED);
         this._windowState.set_boolean('window-maximized', maximized);
 
         // Leave the size at the value before maximizing
@@ -350,7 +350,7 @@ var Window = GObject.registerClass({
             return;
 
         // Size
-        let size = this.get_size();
+        const size = this.get_size();
         this._windowState.set_value('window-size', new GLib.Variant('(ii)', size));
     }
 
@@ -406,7 +406,7 @@ var Window = GObject.registerClass({
      * "Generate Support Log" GAction
      */
     _generateSupportLog() {
-        let dialog = new Gtk.MessageDialog({
+        const dialog = new Gtk.MessageDialog({
             text: _('Generate Support Log'),
             secondary_text: _('Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log.'),
         });
@@ -415,7 +415,7 @@ var Window = GObject.registerClass({
 
         // Enable debug logging and mark the current time
         this.settings.set_boolean('debug', true);
-        let now = GLib.DateTime.new_now_local().format('%R');
+        const now = GLib.DateTime.new_now_local().format('%R');
 
         dialog.connect('response', (dialog, response_id) => {
             // Disable debug logging and destroy the dialog
@@ -434,7 +434,7 @@ var Window = GObject.registerClass({
      * "Help" GAction
      */
     _help(action, parameter) {
-        let uri = `${Config.PACKAGE_URL}/wiki/Help`;
+        const uri = `${Config.PACKAGE_URL}/wiki/Help`;
         Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
     }
 
@@ -520,14 +520,14 @@ var Window = GObject.registerClass({
     }
 
     _createDeviceRow(device) {
-        let row = new Gtk.ListBoxRow({
+        const row = new Gtk.ListBoxRow({
             height_request: 52,
             selectable: false,
             visible: true,
         });
         row.set_name(device.id);
 
-        let grid = new Gtk.Grid({
+        const grid = new Gtk.Grid({
             column_spacing: 12,
             margin_left: 20,
             margin_right: 20,
@@ -537,14 +537,14 @@ var Window = GObject.registerClass({
         });
         row.add(grid);
 
-        let icon = new Gtk.Image({
+        const icon = new Gtk.Image({
             gicon: new Gio.ThemedIcon({name: device.icon_name}),
             icon_size: Gtk.IconSize.BUTTON,
             visible: true,
         });
         grid.attach(icon, 0, 0, 1, 1);
 
-        let title = new Gtk.Label({
+        const title = new Gtk.Label({
             halign: Gtk.Align.START,
             hexpand: true,
             valign: Gtk.Align.CENTER,
@@ -553,7 +553,7 @@ var Window = GObject.registerClass({
         });
         grid.attach(title, 1, 0, 1, 1);
 
-        let status = new Gtk.Label({
+        const status = new Gtk.Label({
             halign: Gtk.Align.END,
             hexpand: true,
             valign: Gtk.Align.CENTER,
@@ -588,7 +588,7 @@ var Window = GObject.registerClass({
         try {
             if (!this.stack.get_child_by_name(device.id)) {
                 // Add the device preferences
-                let prefs = new Device.Panel(device);
+                const prefs = new Device.Panel(device);
                 this.stack.add_titled(prefs, device.id, device.name);
 
                 // Add a row to the device list
@@ -602,7 +602,7 @@ var Window = GObject.registerClass({
 
     _onDeviceRemoved(service, device) {
         try {
-            let prefs = this.stack.get_child_by_name(device.id);
+            const prefs = this.stack.get_child_by_name(device.id);
 
             if (prefs === null)
                 return;
@@ -626,8 +626,8 @@ var Window = GObject.registerClass({
                 return this._onPrevious();
 
             // Transition the panel
-            let name = row.get_name();
-            let prefs = this.stack.get_child_by_name(name);
+            const name = row.get_name();
+            const prefs = this.stack.get_child_by_name(name);
 
             this.stack.visible_child = prefs;
             this._setDeviceMenu(prefs);

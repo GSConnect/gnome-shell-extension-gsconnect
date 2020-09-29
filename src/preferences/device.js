@@ -14,14 +14,14 @@ const Keybindings = imports.preferences.keybindings;
 const DEVICE_PLUGINS = [];
 const DEVICE_SHORTCUTS = {};
 
-for (let name in imports.service.plugins) {
-    let module = imports.service.plugins[name];
+for (const name in imports.service.plugins) {
+    const module = imports.service.plugins[name];
 
     // Plugins
     DEVICE_PLUGINS.push(name);
 
     // Shortcuts (GActions without parameters)
-    for (let [name, action] of Object.entries(module.Metadata.actions)) {
+    for (const [name, action] of Object.entries(module.Metadata.actions)) {
         if (action.parameter_type === null)
             DEVICE_SHORTCUTS[name] = [action.icon_name, action.label];
     }
@@ -35,7 +35,7 @@ for (let name in imports.service.plugins) {
  * @param {Gtk.ListBoxRow} before - The previous row
  */
 function rowSeparators(row, before) {
-    let header = row.get_header();
+    const header = row.get_header();
 
     if (before === null) {
         if (header !== null)
@@ -344,12 +344,12 @@ var Panel = GObject.registerClass({
     }
 
     get_incoming_supported(type) {
-        let incoming = this.settings.get_strv('incoming-capabilities');
+        const incoming = this.settings.get_strv('incoming-capabilities');
         return incoming.includes(`kdeconnect.${type}`);
     }
 
     get_outgoing_supported(type) {
-        let outgoing = this.settings.get_strv('outgoing-capabilities');
+        const outgoing = this.settings.get_strv('outgoing-capabilities');
         return outgoing.includes(`kdeconnect.${type}`);
     }
 
@@ -373,12 +373,12 @@ var Panel = GObject.registerClass({
     }
 
     _onToggleRowActivated(box, row) {
-        let widget = row.get_child().get_child_at(1, 0);
+        const widget = row.get_child().get_child_at(1, 0);
         widget.active = !widget.active;
     }
 
     _onEncryptionInfo() {
-        let dialog = new Gtk.MessageDialog({
+        const dialog = new Gtk.MessageDialog({
             buttons: Gtk.ButtonsType.OK,
             text: _('Encryption Info'),
             secondary_text: this.device.encryption_info,
@@ -402,7 +402,7 @@ var Panel = GObject.registerClass({
         this.device.action_group.disconnect(this._actionRemovedId);
 
         // GSettings
-        for (let settings of Object.values(this._pluginSettings))
+        for (const settings of Object.values(this._pluginSettings))
             settings.run_dispose();
 
         this.settings.disconnect(this._keybindingsId);
@@ -416,7 +416,7 @@ var Panel = GObject.registerClass({
             this._pluginSettings = {};
 
         if (!this._pluginSettings.hasOwnProperty(name)) {
-            let meta = imports.service.plugins[name].Metadata;
+            const meta = imports.service.plugins[name].Metadata;
 
             this._pluginSettings[name] = new Gio.Settings({
                 settings_schema: Config.GSCHEMA.lookup(meta.id, -1),
@@ -476,16 +476,16 @@ var Panel = GObject.registerClass({
         this.actions.add_action(settings.create_action('talking-microphone'));
 
         // Pair Actions
-        let encryption_info = new Gio.SimpleAction({name: 'encryption-info'});
+        const encryption_info = new Gio.SimpleAction({name: 'encryption-info'});
         encryption_info.connect('activate', this._onEncryptionInfo.bind(this));
         this.actions.add_action(encryption_info);
 
-        let status_pair = new Gio.SimpleAction({name: 'pair'});
+        const status_pair = new Gio.SimpleAction({name: 'pair'});
         status_pair.connect('activate', this._deviceAction.bind(this.device));
         this.settings.bind('paired', status_pair, 'enabled', 16);
         this.actions.add_action(status_pair);
 
-        let status_unpair = new Gio.SimpleAction({name: 'unpair'});
+        const status_unpair = new Gio.SimpleAction({name: 'unpair'});
         status_unpair.connect('activate', this._deviceAction.bind(this.device));
         this.settings.bind('paired', status_unpair, 'enabled', 0);
         this.actions.add_action(status_unpair);
@@ -496,7 +496,7 @@ var Panel = GObject.registerClass({
      */
     _sharingSettings() {
         // Share Plugin
-        let settings = this.pluginSettings('share');
+        const settings = this.pluginSettings('share');
 
         settings.connect(
             'changed::receive-directory',
@@ -506,7 +506,7 @@ var Panel = GObject.registerClass({
 
         // Visibility
         this.desktop_list.foreach(row => {
-            let name = row.get_name();
+            const name = row.get_name();
             row.visible = this.get_outgoing_supported(`${name}.request`);
         });
 
@@ -521,7 +521,7 @@ var Panel = GObject.registerClass({
         this.share_list.set_header_func(rowSeparators);
 
         // Scroll with keyboard focus
-        let sharing_box = this.sharing_page.get_child().get_child();
+        const sharing_box = this.sharing_page.get_child().get_child();
         sharing_box.set_focus_vadjustment(this.sharing_page.vadjustment);
 
         // Continue focus chain between lists
@@ -538,7 +538,7 @@ var Panel = GObject.registerClass({
             );
 
             // Account for some corner cases with a fallback
-            let homeDir = GLib.get_home_dir();
+            const homeDir = GLib.get_home_dir();
 
             if (!receiveDir || receiveDir === homeDir)
                 receiveDir = GLib.build_filenamev([homeDir, 'Downloads']);
@@ -551,9 +551,9 @@ var Panel = GObject.registerClass({
     }
 
     _onReceiveDirectorySet(button) {
-        let settings = this.pluginSettings('share');
-        let receiveDir = settings.get_string('receive-directory');
-        let filename = button.get_filename();
+        const settings = this.pluginSettings('share');
+        const receiveDir = settings.get_string('receive-directory');
+        const filename = button.get_filename();
 
         if (filename !== receiveDir)
             settings.set_string('receive-directory', filename);
@@ -575,7 +575,7 @@ var Panel = GObject.registerClass({
             }
 
             // Check UPower for a battery
-            let hasBattery = await new Promise((resolve, reject) => {
+            const hasBattery = await new Promise((resolve, reject) => {
                 Gio.DBus.system.call(
                     'org.freedesktop.UPower',
                     '/org/freedesktop/UPower/devices/DisplayDevice',
@@ -591,9 +591,9 @@ var Panel = GObject.registerClass({
                     null,
                     (connection, res) => {
                         try {
-                            let variant = connection.call_finish(res);
-                            let value = variant.deepUnpack()[0];
-                            let isPresent = value.get_boolean();
+                            const variant = connection.call_finish(res);
+                            const value = variant.deepUnpack()[0];
+                            const isPresent = value.get_boolean();
 
                             resolve(isPresent);
                         } catch (e) {
@@ -616,17 +616,17 @@ var Panel = GObject.registerClass({
      */
     _runcommandSettings() {
         // Scroll with keyboard focus
-        let runcommand_box = this.runcommand_page.get_child().get_child();
+        const runcommand_box = this.runcommand_page.get_child().get_child();
         runcommand_box.set_focus_vadjustment(this.runcommand_page.vadjustment);
 
         // Local Command List
-        let settings = this.pluginSettings('runcommand');
+        const settings = this.pluginSettings('runcommand');
         this._commands = settings.get_value('command-list').recursiveUnpack();
 
         this.command_list.set_sort_func(this._sortCommands);
         this.command_list.set_header_func(rowSeparators);
 
-        for (let uuid of Object.keys(this._commands))
+        for (const uuid of Object.keys(this._commands))
             this._insertCommand(uuid);
     }
 
@@ -638,7 +638,7 @@ var Panel = GObject.registerClass({
     }
 
     _insertCommand(uuid) {
-        let row = new SectionRow({
+        const row = new SectionRow({
             title: this._commands[uuid].name,
             subtitle: this._commands[uuid].command,
             activatable: false,
@@ -646,7 +646,7 @@ var Panel = GObject.registerClass({
         row.set_name(uuid);
         row.subtitle_label.ellipsize = Pango.EllipsizeMode.MIDDLE;
 
-        let editButton = new Gtk.Button({
+        const editButton = new Gtk.Button({
             image: new Gtk.Image({
                 icon_name: 'document-edit-symbolic',
                 pixel_size: 16,
@@ -661,7 +661,7 @@ var Panel = GObject.registerClass({
         editButton.get_accessible().set_name(_('Edit'));
         row.get_child().attach(editButton, 2, 0, 1, 2);
 
-        let deleteButton = new Gtk.Button({
+        const deleteButton = new Gtk.Button({
             image: new Gtk.Image({
                 icon_name: 'edit-delete-symbolic',
                 pixel_size: 16,
@@ -696,8 +696,8 @@ var Panel = GObject.registerClass({
         }
 
         if (widget instanceof Gtk.Button) {
-            let row = widget.get_ancestor(Gtk.ListBoxRow.$gtype);
-            let uuid = row.get_name();
+            const row = widget.get_ancestor(Gtk.ListBoxRow.$gtype);
+            const uuid = row.get_name();
 
             this._commandEditor.uuid = uuid;
             this._commandEditor.command_name = this._commands[uuid].name;
@@ -712,9 +712,9 @@ var Panel = GObject.registerClass({
     }
 
     _storeCommands() {
-        let variant = {};
+        const variant = {};
 
-        for (let [uuid, command] of Object.entries(this._commands))
+        for (const [uuid, command] of Object.entries(this._commands))
             variant[uuid] = new GLib.Variant('a{ss}', command);
 
         this.pluginSettings('runcommand').set_value(
@@ -724,7 +724,7 @@ var Panel = GObject.registerClass({
     }
 
     _onDeleteCommand(button) {
-        let row = button.get_ancestor(Gtk.ListBoxRow.$gtype);
+        const row = button.get_ancestor(Gtk.ListBoxRow.$gtype);
         delete this._commands[row.get_name()];
         row.destroy();
 
@@ -743,7 +743,7 @@ var Panel = GObject.registerClass({
             //
             let row = null;
 
-            for (let child of this.command_list.get_children()) {
+            for (const child of this.command_list.get_children()) {
                 if (child.get_name() === dialog.uuid) {
                     row = child;
                     break;
@@ -766,7 +766,7 @@ var Panel = GObject.registerClass({
      * Notification Settings
      */
     _notificationSettings() {
-        let settings = this.pluginSettings('notification');
+        const settings = this.pluginSettings('notification');
 
         settings.bind(
             'send-notifications',
@@ -779,7 +779,7 @@ var Panel = GObject.registerClass({
         this.notification_list.set_header_func(rowSeparators);
 
         // Scroll with keyboard focus
-        let notification_box = this.notification_page.get_child().get_child();
+        const notification_box = this.notification_page.get_child().get_child();
         notification_box.set_focus_vadjustment(this.notification_page.vadjustment);
 
         // Continue focus chain between lists
@@ -793,7 +793,7 @@ var Panel = GObject.registerClass({
     }
 
     _onNotificationRowActivated(box, row) {
-        let settings = this.pluginSettings('notification');
+        const settings = this.pluginSettings('notification');
         let applications = {};
 
         try {
@@ -808,10 +808,10 @@ var Panel = GObject.registerClass({
     }
 
     _populateApplications(settings) {
-        let applications = this._queryApplications(settings);
+        const applications = this._queryApplications(settings);
 
-        for (let name in applications) {
-            let row = new SectionRow({
+        for (const name in applications) {
+            const row = new SectionRow({
                 gicon: Gio.Icon.new_for_string(applications[name].iconName),
                 title: name,
                 height_request: 48,
@@ -840,16 +840,16 @@ var Panel = GObject.registerClass({
         }
 
         // Scan applications that statically declare to show notifications
-        let ignoreId = 'org.gnome.Shell.Extensions.GSConnect.desktop';
+        const ignoreId = 'org.gnome.Shell.Extensions.GSConnect.desktop';
 
-        for (let appInfo of Gio.AppInfo.get_all()) {
+        for (const appInfo of Gio.AppInfo.get_all()) {
             if (appInfo.get_id() === ignoreId)
                 continue;
 
             if (!appInfo.get_boolean('X-GNOME-UsesNotifications'))
                 continue;
 
-            let appName = appInfo.get_name();
+            const appName = appInfo.get_name();
 
             if (appName === null || applications.hasOwnProperty(appName))
                 continue;
@@ -885,7 +885,7 @@ var Panel = GObject.registerClass({
      */
     _keybindingSettings() {
         // Scroll with keyboard focus
-        let shortcuts_box = this.shortcuts_page.get_child().get_child();
+        const shortcuts_box = this.shortcuts_page.get_child().get_child();
         shortcuts_box.set_focus_vadjustment(this.shortcuts_page.vadjustment);
 
         // Filter & Sort
@@ -894,7 +894,7 @@ var Panel = GObject.registerClass({
         this.shortcuts_actions_list.set_sort_func(titleSortFunc);
 
         // Init
-        for (let name in DEVICE_SHORTCUTS)
+        for (const name in DEVICE_SHORTCUTS)
             this._addPluginKeybinding(name);
 
         this._setPluginKeybindings();
@@ -915,15 +915,15 @@ var Panel = GObject.registerClass({
     }
 
     _addPluginKeybinding(name) {
-        let [icon_name, label] = DEVICE_SHORTCUTS[name];
+        const [icon_name, label] = DEVICE_SHORTCUTS[name];
 
-        let widget = new Gtk.Label({
+        const widget = new Gtk.Label({
             label: _('Disabled'),
             visible: true,
         });
         widget.get_style_context().add_class('dim-label');
 
-        let row = new SectionRow({
+        const row = new SectionRow({
             height_request: 48,
             icon_name: icon_name,
             title: label,
@@ -939,11 +939,11 @@ var Panel = GObject.registerClass({
     }
 
     _setPluginKeybindings() {
-        let keybindings = this.settings.get_value('keybindings').deepUnpack();
+        const keybindings = this.settings.get_value('keybindings').deepUnpack();
 
         this.shortcuts_actions_list.foreach(row => {
             if (keybindings[row.action]) {
-                let accel = Gtk.accelerator_parse(keybindings[row.action]);
+                const accel = Gtk.accelerator_parse(keybindings[row.action]);
                 row.widget.label = Gtk.accelerator_get_label(...accel);
             } else {
                 row.widget.label = _('Disabled');
@@ -952,9 +952,9 @@ var Panel = GObject.registerClass({
     }
 
     _onResetActionShortcuts(button) {
-        let keybindings = this.settings.get_value('keybindings').deepUnpack();
+        const keybindings = this.settings.get_value('keybindings').deepUnpack();
 
-        for (let action in keybindings) {
+        for (const action in keybindings) {
             // Don't reset remote command shortcuts
             if (!action.includes('::'))
                 delete keybindings[action];
@@ -968,7 +968,7 @@ var Panel = GObject.registerClass({
 
     async _onShortcutRowActivated(box, row) {
         try {
-            let keybindings = this.settings.get_value('keybindings').deepUnpack();
+            const keybindings = this.settings.get_value('keybindings').deepUnpack();
             let accel = keybindings[row.action] || null;
 
             accel = await Keybindings.getAccelerator(row.title, accel);
@@ -992,7 +992,7 @@ var Panel = GObject.registerClass({
      */
     _advancedSettings() {
         // Scroll with keyboard focus
-        let advanced_box = this.advanced_page.get_child().get_child();
+        const advanced_box = this.advanced_page.get_child().get_child();
         advanced_box.set_focus_vadjustment(this.advanced_page.vadjustment);
 
         // Sort & Separate
@@ -1014,7 +1014,7 @@ var Panel = GObject.registerClass({
         );
         this._onPluginsChanged(this.settings, null);
 
-        for (let name of DEVICE_PLUGINS)
+        for (const name of DEVICE_PLUGINS)
             this._addPlugin(name);
     }
 
@@ -1034,9 +1034,9 @@ var Panel = GObject.registerClass({
     }
 
     _addPlugin(name) {
-        let plugin = imports.service.plugins[name];
+        const plugin = imports.service.plugins[name];
 
-        let row = new SectionRow({
+        const row = new SectionRow({
             height_request: 48,
             title: plugin.Metadata.label,
             visible: this._supportedPlugins.includes(name),
@@ -1057,8 +1057,8 @@ var Panel = GObject.registerClass({
     }
 
     _updatePlugins(settings, key) {
-        for (let row of this.plugin_list.get_children()) {
-            let name = row.get_name();
+        for (const row of this.plugin_list.get_children()) {
+            const name = row.get_name();
 
             row.visible = this._supportedPlugins.includes(name);
             row.widget.active = this._enabledPlugins.includes(name);
@@ -1070,8 +1070,8 @@ var Panel = GObject.registerClass({
 
     _togglePlugin(widget) {
         try {
-            let name = widget.get_ancestor(Gtk.ListBoxRow.$gtype).get_name();
-            let index = this._disabledPlugins.indexOf(name);
+            const name = widget.get_ancestor(Gtk.ListBoxRow.$gtype).get_name();
+            const index = this._disabledPlugins.indexOf(name);
 
             // Either add or remove the plugin from the disabled list
             if (index > -1)

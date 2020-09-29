@@ -114,7 +114,7 @@ var Plugin = GObject.registerClass({
      * @return {Gdk.Pixbuf|null} A contact photo
      */
     _getThumbnailPixbuf(data) {
-        let loader = new GdkPixbuf.PixbufLoader();
+        const loader = new GdkPixbuf.PixbufLoader();
 
         try {
             data = GLib.base64_decode(data);

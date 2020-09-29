@@ -100,7 +100,7 @@ describe('The MPRIS component', function () {
         });
 
         it('and retrieve them', function () {
-            let proxy = manager.getPlayer(player.Identity);
+            const proxy = manager.getPlayer(player.Identity);
             expect(proxy.Identity).toBe(player.Identity);
         });
 

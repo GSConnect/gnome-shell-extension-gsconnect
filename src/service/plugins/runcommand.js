@@ -123,8 +123,8 @@ var Plugin = GObject.registerClass({
      */
     _handleCommand(key) {
         try {
-            let commands = this.settings.get_value('command-list');
-            let commandList = commands.recursiveUnpack();
+            const commands = this.settings.get_value('command-list');
+            const commandList = commands.recursiveUnpack();
 
             if (!commandList.hasOwnProperty(key)) {
                 throw new Gio.IOErrorEnum({
@@ -153,16 +153,16 @@ var Plugin = GObject.registerClass({
         this._remote_commands = commandList;
         this.notify('remote-commands');
 
-        let commandEntries = Object.entries(this.remote_commands);
+        const commandEntries = Object.entries(this.remote_commands);
 
         // If there are no commands, hide the menu by disabling the action
         this.device.lookup_action('commands').enabled = (commandEntries.length > 0);
 
         // Commands Submenu
-        let submenu = new Gio.Menu();
+        const submenu = new Gio.Menu();
 
-        for (let [uuid, info] of commandEntries) {
-            let item = new Gio.MenuItem();
+        for (const [uuid, info] of commandEntries) {
+            const item = new Gio.MenuItem();
             item.set_label(info.name);
             item.set_icon(
                 new Gio.ThemedIcon({name: 'application-x-executable-symbolic'})
@@ -172,7 +172,7 @@ var Plugin = GObject.registerClass({
         }
 
         // Commands Item
-        let item = new Gio.MenuItem();
+        const item = new Gio.MenuItem();
         item.set_detailed_action('device.commands::menu');
         item.set_attribute_value(
             'hidden-when',
@@ -183,8 +183,8 @@ var Plugin = GObject.registerClass({
         item.set_submenu(submenu);
 
         // If the submenu item is already present it will be replaced
-        let menuActions = this.device.settings.get_strv('menu-actions');
-        let index = menuActions.indexOf('commands');
+        const menuActions = this.device.settings.get_strv('menu-actions');
+        const index = menuActions.indexOf('commands');
 
         if (index > -1) {
             this.device.removeMenuAction('commands');
@@ -206,7 +206,7 @@ var Plugin = GObject.registerClass({
      * Send the local command list
      */
     _sendCommandList() {
-        let commands = this.settings.get_value('command-list').recursiveUnpack();
+        const commands = this.settings.get_value('command-list').recursiveUnpack();
 
         this.device.sendPacket({
             type: 'kdeconnect.runcommand',

@@ -36,10 +36,10 @@ function handlePacket(packet) {
         this.sendPacket(Packets.uidsResponse);
 
     } else if (packet.type === 'kdeconnect.contacts.request_vcards_by_uid') {
-        let response = Packets.vcardsResponse;
+        const response = Packets.vcardsResponse;
         response.body = {uids: packet.body.uids};
 
-        for (let uid of response.body.uids)
+        for (const uid of response.body.uids)
             response.body[uid] = VCards[uid];
 
         this.sendPacket(response);

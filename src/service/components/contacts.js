@@ -69,7 +69,7 @@ var Store = GObject.registerClass({
      */
     async _parseEContact(econtact, origin = 'desktop') {
         try {
-            let contact = {
+            const contact = {
                 id: econtact.id,
                 name: _('Unknown Contact'),
                 numbers: [],
@@ -82,10 +82,10 @@ var Store = GObject.registerClass({
                 contact.name = econtact.full_name;
 
             // Parse phone numbers
-            let nums = econtact.get_attributes(EBookContacts.ContactField.TEL);
+            const nums = econtact.get_attributes(EBookContacts.ContactField.TEL);
 
-            for (let attr of nums) {
-                let number = {
+            for (const attr of nums) {
+                const number = {
                     value: attr.get_value(),
                     type: 'unknown',
                 };
@@ -101,15 +101,15 @@ var Store = GObject.registerClass({
             }
 
             // Try and get a contact photo
-            let photo = econtact.photo;
+            const photo = econtact.photo;
 
             if (photo) {
                 if (photo.type === EBookContacts.ContactPhotoType.INLINED) {
-                    let data = photo.get_inlined()[0];
+                    const data = photo.get_inlined()[0];
                     contact.avatar = await this.storeAvatar(data);
 
                 } else if (photo.type === EBookContacts.ContactPhotoType.URI) {
-                    let uri = econtact.photo.get_uri();
+                    const uri = econtact.photo.get_uri();
                     contact.avatar = uri.replace('file://', '');
                 }
             }
@@ -177,13 +177,13 @@ var Store = GObject.registerClass({
      */
     _onObjectsAdded(connection, sender, path, iface, signal, params) {
         try {
-            let adds = params.get_child_value(0).get_strv();
+            const adds = params.get_child_value(0).get_strv();
 
             // NOTE: sequential pairs of vcard, id
             for (let i = 0, len = adds.length; i < len; i += 2) {
                 try {
-                    let vcard = adds[i];
-                    let econtact = EBookContacts.Contact.new_from_vcard(vcard);
+                    const vcard = adds[i];
+                    const econtact = EBookContacts.Contact.new_from_vcard(vcard);
                     this._parseEContact(econtact);
                 } catch (e) {
                     debug(e);
@@ -196,9 +196,9 @@ var Store = GObject.registerClass({
 
     _onObjectsRemoved(connection, sender, path, iface, signal, params) {
         try {
-            let changes = params.get_child_value(0).get_strv();
+            const changes = params.get_child_value(0).get_strv();
 
-            for (let id of changes) {
+            for (const id of changes) {
                 try {
                     this.remove(id, false);
                 } catch (e) {
@@ -212,13 +212,13 @@ var Store = GObject.registerClass({
 
     _onObjectsModified(connection, sender, path, iface, signal, params) {
         try {
-            let changes = params.get_child_value(0).get_strv();
+            const changes = params.get_child_value(0).get_strv();
 
             // NOTE: sequential pairs of vcard, id
             for (let i = 0, len = changes.length; i < len; i += 2) {
                 try {
-                    let vcard = changes[i];
-                    let econtact = EBookContacts.Contact.new_from_vcard(vcard);
+                    const vcard = changes[i];
+                    const econtact = EBookContacts.Contact.new_from_vcard(vcard);
                     this._parseEContact(econtact);
                 } catch (e) {
                     debug(e);
@@ -235,13 +235,13 @@ var Store = GObject.registerClass({
     async _onAppeared(watcher, source) {
         try {
             // Get an EBookClient and EBookView
-            let uid = source.get_uid();
-            let client = await this._getEBookClient(source);
-            let view = await this._getEBookView(client, 'exists "tel"');
+            const uid = source.get_uid();
+            const client = await this._getEBookClient(source);
+            const view = await this._getEBookView(client, 'exists "tel"');
 
             // Watch the view for changes to the address book
-            let connection = view.get_connection();
-            let objectPath = view.get_object_path();
+            const connection = view.get_connection();
+            const objectPath = view.get_object_path();
 
             view._objectsAddedId = connection.signal_subscribe(
                 null,
@@ -288,15 +288,15 @@ var Store = GObject.registerClass({
 
     _onDisappeared(watcher, source) {
         try {
-            let uid = source.get_uid();
-            let ebook = this._ebooks.get(uid);
+            const uid = source.get_uid();
+            const ebook = this._ebooks.get(uid);
 
             if (ebook === undefined)
                 return;
 
             // Disconnect the EBookView
             if (ebook.view) {
-                let connection = ebook.view.get_connection();
+                const connection = ebook.view.get_connection();
                 connection.signal_unsubscribe(ebook.view._objectsAddedId);
                 connection.signal_unsubscribe(ebook.view._objectsRemovedId);
                 connection.signal_unsubscribe(ebook.view._objectsModifiedId);
@@ -319,9 +319,9 @@ var Store = GObject.registerClass({
             this._ebooks = new Map();
 
             // Get the current EBooks
-            let registry = await this._getESourceRegistry();
+            const registry = await this._getESourceRegistry();
 
-            for (let source of registry.list_sources('Address Book'))
+            for (const source of registry.list_sources('Address Book'))
                 await this._onAppeared(null, source);
 
             // Watch for new and removed sources
@@ -349,7 +349,7 @@ var Store = GObject.registerClass({
     }
 
     *[Symbol.iterator]() {
-        let contacts = Object.values(this._cacheData);
+        const contacts = Object.values(this._cacheData);
 
         for (let i = 0, len = contacts.length; i < len; i++)
             yield contacts[i];
@@ -385,11 +385,11 @@ var Store = GObject.registerClass({
      */
     storeAvatar(contents) {
         return new Promise((resolve, reject) => {
-            let md5 = GLib.compute_checksum_for_data(
+            const md5 = GLib.compute_checksum_for_data(
                 GLib.ChecksumType.MD5,
                 contents
             );
-            let file = this._cacheDir.get_child(`${md5}`);
+            const file = this._cacheDir.get_child(`${md5}`);
 
             if (file.query_exists(null)) {
                 resolve(file.get_path());
@@ -424,15 +424,15 @@ var Store = GObject.registerClass({
      */
     query(query) {
         // First look for an existing contact by number
-        let contacts = this.contacts;
-        let matches = [];
-        let qnumber = query.number.toPhoneNumber();
+        const contacts = this.contacts;
+        const matches = [];
+        const qnumber = query.number.toPhoneNumber();
 
         for (let i = 0, len = contacts.length; i < len; i++) {
-            let contact = contacts[i];
+            const contact = contacts[i];
 
-            for (let num of contact.numbers) {
-                let cnumber = num.value.toPhoneNumber();
+            for (const num of contact.numbers) {
+                const cnumber = num.value.toPhoneNumber();
 
                 if (qnumber.endsWith(cnumber) || cnumber.endsWith(qnumber)) {
                     // If no query name or exact match, return immediately
@@ -536,11 +536,11 @@ var Store = GObject.registerClass({
      * @return {Object} A dictionary of phone numbers and contacts
      */
     lookupAddresses(addresses) {
-        let contacts = {};
+        const contacts = {};
 
         // Lookup contacts for each address
         for (let i = 0, len = addresses.length; i < len; i++) {
-            let address = addresses[i].address;
+            const address = addresses[i].address;
 
             contacts[address] = this.query({
                 number: address,
@@ -552,7 +552,7 @@ var Store = GObject.registerClass({
 
     async clear() {
         try {
-            let contacts = this.contacts;
+            const contacts = this.contacts;
 
             for (let i = 0, len = contacts.length; i < len; i++)
                 await this.remove(contacts[i].id, false);
@@ -573,8 +573,8 @@ var Store = GObject.registerClass({
             let contacts = Object.values(json);
 
             for (let i = 0, len = contacts.length; i < len; i++) {
-                let new_contact = contacts[i];
-                let contact = this._cacheData[new_contact.id];
+                const new_contact = contacts[i];
+                const contact = this._cacheData[new_contact.id];
 
                 if (!contact || new_contact.timestamp !== contact.timestamp)
                     await this.add(new_contact, false);
@@ -584,7 +584,7 @@ var Store = GObject.registerClass({
             contacts = this.contacts;
 
             for (let i = 0, len = contacts.length; i < len; i++) {
-                let contact = contacts[i];
+                const contact = contacts[i];
 
                 if (!json[contact.id])
                     await this.remove(contact.id, false);
@@ -622,7 +622,7 @@ var Store = GObject.registerClass({
             this._cacheData = await new Promise((resolve, reject) => {
                 this._cacheFile.load_contents_async(null, (file, res) => {
                     try {
-                        let contents = file.load_contents_finish(res)[1];
+                        const contents = file.load_contents_finish(res)[1];
 
                         resolve(JSON.parse(ByteArray.toString(contents)));
                     } catch (e) {
@@ -687,7 +687,7 @@ var Store = GObject.registerClass({
             this._watcher.disconnect(this._disappearedId);
             this._watcher = undefined;
 
-            for (let ebook of this._ebooks.values())
+            for (const ebook of this._ebooks.values())
                 this._onDisappeared(null, ebook.source);
 
             this._edsPrepared = false;

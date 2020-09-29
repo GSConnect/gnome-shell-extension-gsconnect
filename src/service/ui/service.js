@@ -72,7 +72,7 @@ var DeviceChooser = GObject.registerClass({
     vfunc_response(response_id) {
         if (response_id === Gtk.ResponseType.OK) {
             try {
-                let device = this.device_list.get_selected_row().device;
+                const device = this.device_list.get_selected_row().device;
                 device.activate_action(this.action_name, this.action_target);
             } catch (e) {
                 logError(e);
@@ -117,9 +117,9 @@ var DeviceChooser = GObject.registerClass({
 
     _onDevicesChanged() {
         // Collect known devices
-        let devices = {};
+        const devices = {};
 
-        for (let [id, device] of this.application.devices.entries())
+        for (const [id, device] of this.application.devices.entries())
             devices[id] = device;
 
         // Prune device rows
@@ -131,13 +131,13 @@ var DeviceChooser = GObject.registerClass({
         });
 
         // Add new devices
-        for (let device of Object.values(devices)) {
-            let action = device.lookup_action(this.action_name);
+        for (const device of Object.values(devices)) {
+            const action = device.lookup_action(this.action_name);
 
             if (action === null)
                 continue;
 
-            let row = new Gtk.ListBoxRow({
+            const row = new Gtk.ListBoxRow({
                 visible: action.enabled,
             });
             row.set_name(device.id);
@@ -150,21 +150,21 @@ var DeviceChooser = GObject.registerClass({
                 Gio.SettingsBindFlags.DEFAULT
             );
 
-            let grid = new Gtk.Grid({
+            const grid = new Gtk.Grid({
                 column_spacing: 12,
                 margin: 6,
                 visible: true,
             });
             row.add(grid);
 
-            let icon = new Gtk.Image({
+            const icon = new Gtk.Image({
                 icon_name: device.icon_name,
                 pixel_size: 32,
                 visible: true,
             });
             grid.attach(icon, 0, 0, 1, 1);
 
-            let name = new Gtk.Label({
+            const name = new Gtk.Label({
                 label: device.name,
                 halign: Gtk.Align.START,
                 hexpand: true,
@@ -233,10 +233,10 @@ var ErrorDialog = GObject.registerClass({
     }
 
     _buildUri(message, stack) {
-        let body = `\`\`\`${ISSUE_HEADER}\n${stack}\n\`\`\``;
-        let titleQuery = encodeURIComponent(message).replace('%20', '+');
-        let bodyQuery = encodeURIComponent(body).replace('%20', '+');
-        let uri = `${Config.PACKAGE_BUGREPORT}?title=${titleQuery}&body=${bodyQuery}`;
+        const body = `\`\`\`${ISSUE_HEADER}\n${stack}\n\`\`\``;
+        const titleQuery = encodeURIComponent(message).replace('%20', '+');
+        const bodyQuery = encodeURIComponent(body).replace('%20', '+');
+        const uri = `${Config.PACKAGE_BUGREPORT}?title=${titleQuery}&body=${bodyQuery}`;
 
         // Reasonable URI length limit
         if (uri.length > 2000)

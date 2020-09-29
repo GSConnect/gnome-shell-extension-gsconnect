@@ -85,7 +85,7 @@ describe('A LAN channel service', function () {
 
     describe('produces channels', function () {
         it('that can transfer packets', async function () {
-            let outgoingPacket = new Core.Packet({
+            const outgoingPacket = new Core.Packet({
                 type: 'kdeconnect.test',
                 body: {
                     foo: GLib.uuid_string_random(),
@@ -93,7 +93,7 @@ describe('A LAN channel service', function () {
             });
             await localChannel.sendPacket(outgoingPacket);
 
-            let incomingPacket = await remoteChannel.readPacket();
+            const incomingPacket = await remoteChannel.readPacket();
             expect(incomingPacket.type).toBe(outgoingPacket.type);
             expect(incomingPacket.body.foo).toBe(outgoingPacket.body.foo);
         });

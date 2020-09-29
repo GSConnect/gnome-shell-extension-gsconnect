@@ -84,7 +84,7 @@ var Plugin = GObject.registerClass({
     _changeSink(packet) {
         let stream;
 
-        for (let sink of this._mixer.get_sinks()) {
+        for (const sink of this._mixer.get_sinks()) {
             if (sink.name === packet.body.name) {
                 stream = sink;
                 break;
@@ -98,7 +98,7 @@ var Plugin = GObject.registerClass({
         }
 
         // Get a cache and store volume and mute states if changed
-        let cache = this._cache.get(stream) || {};
+        const cache = this._cache.get(stream) || {};
 
         if (packet.body.hasOwnProperty('muted')) {
             cache.muted = packet.body.muted;
@@ -121,7 +121,7 @@ var Plugin = GObject.registerClass({
      * @return {Object} The updated cache object
      */
     _updateCache(stream) {
-        let state = {
+        const state = {
             name: stream.name,
             description: stream.display_name,
             muted: stream.is_muted,
@@ -146,8 +146,8 @@ var Plugin = GObject.registerClass({
             return;
 
         // Check the cache
-        let stream = this._mixer.lookup_stream_id(id);
-        let cache = this._cache.get(stream) || {};
+        const stream = this._mixer.lookup_stream_id(id);
+        const cache = this._cache.get(stream) || {};
 
         // If the port has changed we have to send the whole list to update the
         // display name
@@ -159,7 +159,7 @@ var Plugin = GObject.registerClass({
         // If only volume and/or mute are set, send a single update
         if (cache.volume !== stream.volume || cache.muted !== stream.is_muted) {
             // Update the cache
-            let state = this._updateCache(stream);
+            const state = this._updateCache(stream);
 
             // Send the stream update
             this.device.sendPacket({
@@ -173,7 +173,7 @@ var Plugin = GObject.registerClass({
      * Send a list of local sinks
      */
     _sendSinkList() {
-        let sinkList = this._mixer.get_sinks().map(sink => {
+        const sinkList = this._mixer.get_sinks().map(sink => {
             return this._updateCache(sink);
         });
 

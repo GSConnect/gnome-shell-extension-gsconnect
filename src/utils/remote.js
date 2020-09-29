@@ -116,7 +116,7 @@ var Device = GObject.registerClass({
 
     vfunc_g_properties_changed(changed, invalidated) {
         try {
-            for (let name in changed.deepUnpack())
+            for (const name in changed.deepUnpack())
                 this.notify(_PROPERTIES[name]);
         } catch (e) {
             logError(e);
@@ -309,7 +309,7 @@ var Service = GObject.registerClass({
                 return;
 
             // Create a proxy
-            let device = new Device(this, object_path);
+            const device = new Device(this, object_path);
             await device.start();
 
             // Hold the proxy and emit ::device-added
@@ -333,7 +333,7 @@ var Service = GObject.registerClass({
                 return;
 
             // Get the proxy
-            let device = this._devices.get(object_path);
+            const device = this._devices.get(object_path);
 
             if (device === undefined)
                 return;
@@ -350,7 +350,7 @@ var Service = GObject.registerClass({
     }
 
     async _addDevices() {
-        let objects = await new Promise((resolve, reject) => {
+        const objects = await new Promise((resolve, reject) => {
             this.call(
                 'GetManagedObjects',
                 null,
@@ -359,7 +359,7 @@ var Service = GObject.registerClass({
                 null,
                 (proxy, res) => {
                     try {
-                        let variant = proxy.call_finish(res);
+                        const variant = proxy.call_finish(res);
                         resolve(variant.deepUnpack()[0]);
                     } catch (e) {
                         Gio.DBusError.strip_remote_error(e);
@@ -369,12 +369,12 @@ var Service = GObject.registerClass({
             );
         });
 
-        for (let [object_path, object] of Object.entries(objects))
+        for (const [object_path, object] of Object.entries(objects))
             await this._onInterfacesAdded(object_path, object);
     }
 
     _clearDevices() {
-        for (let [object_path, device] of this._devices) {
+        for (const [object_path, device] of this._devices) {
             this._devices.delete(object_path);
             this.emit('device-removed', device);
             device.destroy();
@@ -477,12 +477,12 @@ var Service = GObject.registerClass({
 
     activate_action(name, parameter = null) {
         try {
-            let paramArray = [];
+            const paramArray = [];
 
             if (parameter instanceof GLib.Variant)
                 paramArray[0] = parameter;
 
-            let connection = this.g_connection || Gio.DBus.session;
+            const connection = this.g_connection || Gio.DBus.session;
 
             connection.call(
                 SERVICE_NAME,

@@ -49,7 +49,7 @@ const NativeMessagingHost = GObject.registerClass({
             byte_order: Gio.DataStreamByteOrder.HOST_ENDIAN,
         });
 
-        let source = this._stdin.base_stream.create_source(null);
+        const source = this._stdin.base_stream.create_source(null);
         source.set_callback(this.receive.bind(this));
         source.attach(null);
 
@@ -69,8 +69,8 @@ const NativeMessagingHost = GObject.registerClass({
         }
 
         // Add currently managed devices
-        for (let object of this._manager.get_objects()) {
-            for (let iface of object.get_interfaces())
+        for (const object of this._manager.get_objects()) {
+            for (const iface of object.get_interfaces())
                 this._onInterfaceAdded(this._manager, object, iface);
         }
 
@@ -105,9 +105,9 @@ const NativeMessagingHost = GObject.registerClass({
     receive() {
         try {
             // Read the message
-            let length = this._stdin.read_int32(null);
-            let bytes = this._stdin.read_bytes(length, null).toArray();
-            let message = JSON.parse(imports.byteArray.toString(bytes));
+            const length = this._stdin.read_int32(null);
+            const bytes = this._stdin.read_bytes(length, null).toArray();
+            const message = JSON.parse(imports.byteArray.toString(bytes));
 
             // A request for a list of devices
             if (message.type === 'devices') {
@@ -116,7 +116,7 @@ const NativeMessagingHost = GObject.registerClass({
             // A request to invoke an action
             } else if (message.type === 'share') {
                 let actionName;
-                let device = this.devices[message.data.device];
+                const device = this.devices[message.data.device];
 
                 if (device) {
                     if (message.data.action === 'share')
@@ -139,7 +139,7 @@ const NativeMessagingHost = GObject.registerClass({
 
     send(message) {
         try {
-            let data = JSON.stringify(message);
+            const data = JSON.stringify(message);
             this._stdout.put_int32(data.length, null);
             this._stdout.put_string(data, null);
         } catch (e) {
@@ -153,11 +153,11 @@ const NativeMessagingHost = GObject.registerClass({
             return this.send({type: 'connected', data: false});
 
         // Collect all the devices with supported actions
-        let available = [];
+        const available = [];
 
-        for (let device of Object.values(this.devices)) {
-            let share = device.actions.get_action_enabled('shareUri');
-            let telephony = device.actions.get_action_enabled('shareSms');
+        for (const device of Object.values(this.devices)) {
+            const share = device.actions.get_action_enabled('shareUri');
+            const telephony = device.actions.get_action_enabled('shareSms');
 
             if (share || telephony) {
                 available.push({

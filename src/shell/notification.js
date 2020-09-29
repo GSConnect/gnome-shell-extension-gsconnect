@@ -49,7 +49,7 @@ const NotificationBanner = GObject.registerClass({
         }
 
         // Reply Button
-        let button = new St.Button({
+        const button = new St.Button({
             style_class: 'notification-button',
             label: _('Reply'),
             x_expand: true,
@@ -78,7 +78,7 @@ const NotificationBanner = GObject.registerClass({
     _onEntryRequested(button) {
         this.focused = true;
 
-        for (let child of this._buttonBox.get_children())
+        for (const child of this._buttonBox.get_children())
             child.visible = (child === this._replyEntry);
 
         // Release the notification focus with the entry focus
@@ -106,18 +106,18 @@ const NotificationBanner = GObject.registerClass({
             return;
 
         // Copy the text, then clear the entry
-        let text = clutter_text.text;
+        const text = clutter_text.text;
         clutter_text.text = '';
 
-        let {deviceId, requestReplyId} = this.notification;
+        const {deviceId, requestReplyId} = this.notification;
 
-        let target = new GLib.Variant('(ssbv)', [
+        const target = new GLib.Variant('(ssbv)', [
             deviceId,
             'replyNotification',
             true,
             new GLib.Variant('(ssa{ss})', [requestReplyId, text, {}]),
         ]);
-        let platformData = NotificationDaemon.getPlatformData();
+        const platformData = NotificationDaemon.getPlatformData();
 
         Gio.DBus.session.call(
             APP_ID,
@@ -162,13 +162,13 @@ const Source = GObject.registerClass({
 
         notification._remoteClosed = true;
 
-        let target = new GLib.Variant('(ssbv)', [
+        const target = new GLib.Variant('(ssbv)', [
             notification.deviceId,
             'closeNotification',
             true,
             new GLib.Variant('s', notification.remoteId),
         ]);
-        let platformData = NotificationDaemon.getPlatformData();
+        const platformData = NotificationDaemon.getPlatformData();
 
         Gio.DBus.session.call(
             APP_ID,
@@ -230,8 +230,8 @@ const Source = GObject.registerClass({
             notification.requestReplyId = requestReplyId;
 
             // Bail early If @notificationParams represents an exact repeat
-            let title = notificationParams.title.unpack();
-            let body = notificationParams.body
+            const title = notificationParams.title.unpack();
+            const body = notificationParams.body
                 ? notificationParams.body.unpack()
                 : null;
 
@@ -305,7 +305,7 @@ const Source = GObject.registerClass({
  * extension is loaded, it has to be patched in place.
  */
 function patchGSConnectNotificationSource() {
-    let source = Main.notificationDaemon._gtkNotificationDaemon._sources[APP_ID];
+    const source = Main.notificationDaemon._gtkNotificationDaemon._sources[APP_ID];
 
     if (source !== undefined) {
         // Patch in the subclassed methods
@@ -315,9 +315,9 @@ function patchGSConnectNotificationSource() {
         source.createBanner = Source.prototype.createBanner;
 
         // Connect to existing notifications
-        for (let notification of Object.values(source._notifications)) {
+        for (const notification of Object.values(source._notifications)) {
 
-            let _id = notification.connect('destroy', (notification, reason) => {
+            const _id = notification.connect('destroy', (notification, reason) => {
                 source._closeGSConnectNotification(notification, reason);
                 notification.disconnect(_id);
             });
@@ -334,7 +334,7 @@ const __ensureAppSource = NotificationDaemon.GtkNotificationDaemon.prototype._en
 
 // eslint-disable-next-line func-style
 const _ensureAppSource = function (appId) {
-    let source = __ensureAppSource.call(this, appId);
+    const source = __ensureAppSource.call(this, appId);
 
     if (source._appId === APP_ID) {
         source._closeGSConnectNotification = Source.prototype._closeGSConnectNotification;
@@ -365,13 +365,13 @@ const _addNotification = NotificationDaemon.GtkNotificationDaemonAppSource.proto
 function patchGtkNotificationSources() {
     // This should diverge as little as possible from the original
     // eslint-disable-next-line func-style
-    let addNotification = function (notificationId, notificationParams, showBanner) {
+    const addNotification = function (notificationId, notificationParams, showBanner) {
         this._notificationPending = true;
 
         if (this._notifications[notificationId])
             this._notifications[notificationId].destroy(MessageTray.NotificationDestroyedReason.REPLACED);
 
-        let notification = this._createNotification(notificationParams);
+        const notification = this._createNotification(notificationParams);
         notification.connect('destroy', (notification, reason) => {
             this._withdrawGSConnectNotification(notification, reason);
             delete this._notifications[notificationId];
@@ -387,7 +387,7 @@ function patchGtkNotificationSources() {
     };
 
     // eslint-disable-next-line func-style
-    let _withdrawGSConnectNotification = function (id, notification, reason) {
+    const _withdrawGSConnectNotification = function (id, notification, reason) {
         if (reason !== MessageTray.NotificationDestroyedReason.DISMISSED)
             return;
 
@@ -398,13 +398,13 @@ function patchGtkNotificationSources() {
         notification._remoteWithdrawn = true;
 
         // Recreate the notification id as it would've been sent
-        let target = new GLib.Variant('(ssbv)', [
+        const target = new GLib.Variant('(ssbv)', [
             '*',
             'withdrawNotification',
             true,
             new GLib.Variant('s', `gtk|${this._appId}|${id}`),
         ]);
-        let platformData = NotificationDaemon.getPlatformData();
+        const platformData = NotificationDaemon.getPlatformData();
 
         Gio.DBus.session.call(
             APP_ID,

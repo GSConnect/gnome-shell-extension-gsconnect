@@ -48,7 +48,7 @@ var Controller = class {
 
         // Try to read modifier keycodes from Gdk
         try {
-            let keymap = Gdk.Keymap.get_for_display(this._display);
+            const keymap = Gdk.Keymap.get_for_display(this._display);
             let modifier;
 
             modifier = keymap.get_entries_for_keyval(Gdk.KEY_Alt_L)[1][0];
@@ -72,9 +72,9 @@ var Controller = class {
      */
     clickPointer(button) {
         try {
-            let [, x, y] = this._pointer.get_position();
-            let monitor = this._display.get_monitor_at_point(x, y);
-            let scale = monitor.get_scale_factor();
+            const [, x, y] = this._pointer.get_position();
+            const monitor = this._display.get_monitor_at_point(x, y);
+            const scale = monitor.get_scale_factor();
             Atspi.generate_mouse_event(scale * x, scale * y, `b${button}c`);
         } catch (e) {
             logError(e);
@@ -83,9 +83,9 @@ var Controller = class {
 
     doubleclickPointer(button) {
         try {
-            let [, x, y] = this._pointer.get_position();
-            let monitor = this._display.get_monitor_at_point(x, y);
-            let scale = monitor.get_scale_factor();
+            const [, x, y] = this._pointer.get_position();
+            const monitor = this._display.get_monitor_at_point(x, y);
+            const scale = monitor.get_scale_factor();
             Atspi.generate_mouse_event(scale * x, scale * y, `b${button}d`);
         } catch (e) {
             logError(e);
@@ -94,9 +94,9 @@ var Controller = class {
 
     movePointer(dx, dy) {
         try {
-            let [, x, y] = this._pointer.get_position();
-            let monitor = this._display.get_monitor_at_point(x, y);
-            let scale = monitor.get_scale_factor();
+            const [, x, y] = this._pointer.get_position();
+            const monitor = this._display.get_monitor_at_point(x, y);
+            const scale = monitor.get_scale_factor();
             Atspi.generate_mouse_event(scale * dx, scale * dy, 'rel');
         } catch (e) {
             logError(e);
@@ -105,9 +105,9 @@ var Controller = class {
 
     pressPointer(button) {
         try {
-            let [, x, y] = this._pointer.get_position();
-            let monitor = this._display.get_monitor_at_point(x, y);
-            let scale = monitor.get_scale_factor();
+            const [, x, y] = this._pointer.get_position();
+            const monitor = this._display.get_monitor_at_point(x, y);
+            const scale = monitor.get_scale_factor();
             Atspi.generate_mouse_event(scale * x, scale * y, `b${button}p`);
         } catch (e) {
             logError(e);
@@ -116,9 +116,9 @@ var Controller = class {
 
     releasePointer(button) {
         try {
-            let [, x, y] = this._pointer.get_position();
-            let monitor = this._display.get_monitor_at_point(x, y);
-            let scale = monitor.get_scale_factor();
+            const [, x, y] = this._pointer.get_position();
+            const monitor = this._display.get_monitor_at_point(x, y);
+            const scale = monitor.get_scale_factor();
             Atspi.generate_mouse_event(scale * x, scale * y, `b${button}r`);
         } catch (e) {
             logError(e);
@@ -245,7 +245,7 @@ var Controller = class {
             this._modeUnlock(XKeycode.Shift_L);
 
             // Enter the unicode sequence
-            let ucode = key.charCodeAt(0).toString(16);
+            const ucode = key.charCodeAt(0).toString(16);
             let keysym;
 
             for (let h = 0, len = ucode.length; h < len; h++) {
