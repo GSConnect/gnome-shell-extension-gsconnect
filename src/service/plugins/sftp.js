@@ -325,7 +325,7 @@ var Plugin = GObject.registerClass({
                     });
                 });
             } catch (e) {
-                debug(e, this.device.name);
+                logError(e, this.device.name + ': `' + argv.join(' ') + '`');
             }
         }
     }
