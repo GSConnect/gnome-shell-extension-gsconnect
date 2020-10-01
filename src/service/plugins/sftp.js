@@ -308,12 +308,14 @@ var Plugin = GObject.registerClass({
      */
     async _removeHostKey(host) {
         for (let port = 1739; port <= 1764; port++) {
+            let argv;
             try {
-                const ssh_keygen = this._launcher.spawnv([
+                argv = [
                     Config.SSHKEYGEN_PATH,
                     '-R',
                     `[${host}]:${port}`,
-                ]);
+                ];
+                const ssh_keygen = this._launcher.spawnv(argv);
 
                 await new Promise((resolve, reject) => {
                     ssh_keygen.wait_check_async(null, (proc, res) => {
