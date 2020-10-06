@@ -642,12 +642,10 @@ const Service = GObject.registerClass({
     }
 
     _cliShareLink(device, options) {
-        const uris = options.lookup_value('share-link', null).deepUnpack();
+        const uris = options.lookup_value('share-link', null).unpack();
 
-        for (let uri of uris) {
-            uri = imports.byteArray.toString(uri);
-            this._cliAction(device, 'shareUri', GLib.Variant.new_string(uri));
-        }
+        for (const uri of uris)
+            this._cliAction(device, 'shareUri', uri);
     }
 
     _cliShareText(device, options) {
