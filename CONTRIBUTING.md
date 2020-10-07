@@ -146,7 +146,7 @@ the output or if it's more convenient simply run the application from the shell:
 
 ```sh
 $ cd ~/.local/share/gnome-shell/extensions/gsconnect@andyholmes.github.io
-& ./gsconnect-preferences
+$ ./gsconnect-preferences
 ```
 
 #### Shell Extension
