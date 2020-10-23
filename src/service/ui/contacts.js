@@ -300,15 +300,6 @@ const AddressRow = GObject.registerClass({
     GTypeName: 'GSConnectContactsAddressRow',
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/contacts-address-row.ui',
     Children: ['avatar', 'name-label', 'address-label', 'type-label'],
-    Properties: {
-        'avatar': GObject.ParamSpec.string(
-            'avatar',
-            'Avatar',
-            'Contact avatar',
-            GObject.ParamFlags.READABLE,
-            null
-        ),
-    },
 }, class AddressRow extends Gtk.ListBoxRow {
 
     _init(contact, index = 0) {
