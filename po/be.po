@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-09-10 22:31-0700\n"
-"PO-Revision-Date: 2020-11-01 16:58\n"
+"PO-Revision-Date: 2020-11-01 17:26\n"
 "Last-Translator: \n"
 "Language-Team: Belarusian\n"
 "Language: be_BY\n"
@@ -37,7 +37,7 @@ msgstr "GSConnect — гэта гатовая рэалізацыя KDE Connect, 
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:35
 msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
-msgstr "З дапамогай GSConnect вы можаце бяспечна падключацца да мабільных прылад, і іншыя стацыянарныя прылады да:"
+msgstr "З дапамогай GSConnect вы можаце бяспечна падключацца да мабільных і іншых стацыянарных прылады, каб:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
 msgid "Share files, links and text"
