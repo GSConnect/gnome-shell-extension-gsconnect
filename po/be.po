@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-09-10 22:31-0700\n"
-"PO-Revision-Date: 2020-11-01 16:34\n"
+"PO-Revision-Date: 2020-11-01 16:44\n"
 "Last-Translator: \n"
 "Language-Team: Belarusian\n"
 "Language: be_BY\n"
@@ -37,35 +37,35 @@ msgstr "GSConnect — гэта гатовая рэалізацыя KDE Connect, 
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:35
 msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
-msgstr ""
+msgstr "З дапамогай GSConnect вы можаце бяспечна падключацца да мабільных прылад, і іншыя стацыянарныя прылады да:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
 msgid "Share files, links and text"
-msgstr ""
+msgstr "Абугульваць файлы, спасылкі і тэкст"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:40
 msgid "Send and receive messages"
-msgstr ""
+msgstr "Адпраўляць і прымаць паведамленні"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
 msgid "Sync clipboard content"
-msgstr ""
+msgstr "Сінхранізаваць змесціва буфера абмену"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:42
 msgid "Sync contacts"
-msgstr ""
+msgstr "Сінхранізаваць кантакты"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:43
 msgid "Sync notifications"
-msgstr ""
+msgstr "Сінхранізаваць апавяшчэнні"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
 msgid "Control media players"
-msgstr ""
+msgstr "Кіраваць медыяпрайгравальнікамі"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:45
 msgid "Control system volume"
-msgstr ""
+msgstr "Кіраваць гучнасцю сістэмы"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:46
 msgid "Execute predefined commands"
