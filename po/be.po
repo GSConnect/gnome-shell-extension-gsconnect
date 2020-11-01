@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-09-10 22:31-0700\n"
-"PO-Revision-Date: 2020-11-01 16:54\n"
+"PO-Revision-Date: 2020-11-01 16:58\n"
 "Last-Translator: \n"
 "Language-Team: Belarusian\n"
 "Language: be_BY\n"
@@ -553,11 +553,11 @@ msgstr "Нешта пайшло не так"
 
 #: data/ui/service-error-dialog.ui:84
 msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
-msgstr ""
+msgstr "У GSConnect адбылася нечаканая памылка. Паведаміце аб праблеме разам з любой інфармацыяй, якая можа дапамагчы."
 
 #: data/ui/service-error-dialog.ui:118
 msgid "Technical Details"
-msgstr ""
+msgstr "Тэхнічныя падрабязнасці"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: nautilus-extension/nautilus-gsconnect.py:164 webextension/gettext.js:33
@@ -794,11 +794,11 @@ msgstr "Знаходжанне было адключана праз колька
 
 #: src/service/backends/lan.js:175
 msgid "OpenSSL not found"
-msgstr ""
+msgstr "OpenSSL не знойдзены"
 
 #: src/service/backends/lan.js:467
 msgid "Port already in use"
-msgstr ""
+msgstr "Порт ужо выкарыстоўваецца"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:252
@@ -854,7 +854,7 @@ msgstr "MPRIS"
 
 #: src/service/plugins/mpris.js:298
 msgid "Unknown"
-msgstr ""
+msgstr "Невядомы"
 
 #: src/service/plugins/notification.js:29
 msgid "Cancel Notification"
@@ -914,7 +914,7 @@ msgstr "Адлучыць"
 #: src/service/plugins/sftp.js:215
 #, javascript-format
 msgid "%s reported an error"
-msgstr ""
+msgstr "%s паведаміў пра памылку"
 
 #: src/service/plugins/share.js:14 src/service/plugins/share.js:20
 msgid "Share"
@@ -1016,7 +1016,7 @@ msgstr "Сістэмная гучнасць"
 
 #: src/service/plugins/systemvolume.js:55
 msgid "PulseAudio not found"
-msgstr ""
+msgstr "PulseAudio не знойдзены"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:25
@@ -1044,22 +1044,22 @@ msgstr "Выходны выклік"
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:130
 msgid "Fax"
-msgstr ""
+msgstr "Факс"
 
 #. TRANSLATORS: A work or office phone number
 #: src/service/ui/contacts.js:134
 msgid "Work"
-msgstr ""
+msgstr "Працоўны"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:138
 msgid "Mobile"
-msgstr ""
+msgstr "Мабільны"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:142
 msgid "Home"
-msgstr ""
+msgstr "Дамашні"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #. Update UI
