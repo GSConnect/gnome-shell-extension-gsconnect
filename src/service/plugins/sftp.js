@@ -308,26 +308,34 @@ var Plugin = GObject.registerClass({
      */
     async _removeHostKey(host) {
         for (let port = 1739; port <= 1764; port++) {
-            let argv;
             try {
-                argv = [
+                const ssh_keygen = this._launcher.spawnv([
                     Config.SSHKEYGEN_PATH,
                     '-R',
                     `[${host}]:${port}`,
-                ];
-                const ssh_keygen = this._launcher.spawnv(argv);
+                ]);
 
                 await new Promise((resolve, reject) => {
-                    ssh_keygen.wait_check_async(null, (proc, res) => {
+                    ssh_keygen.communicate_utf8_async(null, null, (proc, res) => {
                         try {
-                            resolve(proc.wait_check_finish(res));
+                            const stdout = proc.communicate_utf8_finish(res)[1];
+                            const status = proc.get_exit_status();
+
+                            if (status !== 0) {
+                                throw new Gio.IOErrorEnum({
+                                    code: Gio.io_error_from_errno(status),
+                                    message: `${GLib.strerror(status)}\n${stdout}`.trim(),
+                                });
+                            }
+
+                            resolve();
                         } catch (e) {
                             reject(e);
                         }
                     });
                 });
             } catch (e) {
-                logError(e, this.device.name + ': `' + argv.join(' ') + '`');
+                logError(e, this.device.name);
             }
         }
     }
