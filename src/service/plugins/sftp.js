@@ -316,16 +316,26 @@ var Plugin = GObject.registerClass({
                 ]);
 
                 await new Promise((resolve, reject) => {
-                    ssh_keygen.wait_check_async(null, (proc, res) => {
+                    ssh_keygen.communicate_utf8_async(null, null, (proc, res) => {
                         try {
-                            resolve(proc.wait_check_finish(res));
+                            const stdout = proc.communicate_utf8_finish(res)[1];
+                            const status = proc.get_exit_status();
+
+                            if (status !== 0) {
+                                throw new Gio.IOErrorEnum({
+                                    code: Gio.io_error_from_errno(status),
+                                    message: `${GLib.strerror(status)}\n${stdout}`.trim(),
+                                });
+                            }
+
+                            resolve();
                         } catch (e) {
                             reject(e);
                         }
                     });
                 });
             } catch (e) {
-                debug(e, this.device.name);
+                logError(e, this.device.name);
             }
         }
     }
