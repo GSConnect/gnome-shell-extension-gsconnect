@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-09-10 22:31-0700\n"
-"PO-Revision-Date: 2020-11-06 17:05\n"
+"PO-Revision-Date: 2020-11-28 20:35\n"
 "Last-Translator: \n"
 "Language-Team: Lithuanian\n"
 "Language: lt_LT\n"
@@ -33,11 +33,11 @@ msgstr "GSConnect komanda"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:32
 msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, macOS and Windows."
-msgstr ""
+msgstr "GSConnect yra pilnas KDE Connect įgyvendinimas, ypatingai skirtas integracijai su GNOME Shell ir Nautilus, Chrome bei Firefox. KDE Connect komanda turi programas, skirtas Linux, BSD, Android, Sailfish, macOS ir Windows sistemoms."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:35
 msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
-msgstr ""
+msgstr "Naudodami GSConnect galite saugiai prisijungti prie mobiliųjų įrenginių ir kitų stalinių kompiuterių norėdami:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
 msgid "Share files, links and text"
@@ -77,7 +77,7 @@ msgstr "Ir daugiau…"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:84
 msgid "GSConnect in GNOME Shell"
-msgstr ""
+msgstr "GSConnect kartu su GNOME Shell"
 
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/connect-dialog.ui:13 data/ui/preferences-window.ui:719
@@ -152,11 +152,11 @@ msgstr "Rašyti žinutę"
 
 #: data/ui/messaging-conversation.ui:92
 msgid "Message Entry"
-msgstr ""
+msgstr "Žinutės įvedimas"
 
 #: data/ui/messaging-conversation.ui:93
 msgid "Type a message and press Enter to send"
-msgstr ""
+msgstr "Rašykite žinutę ir norėdami išsiųsti paspauskite „Enter“"
 
 #: data/ui/messaging-window.ui:14 src/service/plugins/sms.js:27
 #: src/service/ui/messaging.js:1049
@@ -366,7 +366,7 @@ msgstr "Pasenusių SMS palaikymas"
 
 #: data/ui/preferences-device-panel.ui:2027
 msgid "SFTP Automount"
-msgstr ""
+msgstr "Automatinis SFTP prijungimas"
 
 #: data/ui/preferences-device-panel.ui:2082
 #: data/ui/preferences-device-panel.ui:2408
@@ -469,11 +469,11 @@ msgstr "Mobiliųjų nustatymai"
 
 #: data/ui/preferences-window.ui:159
 msgid "Service Menu"
-msgstr ""
+msgstr "Paslaugos meniu"
 
 #: data/ui/preferences-window.ui:182
 msgid "Device Menu"
-msgstr ""
+msgstr "Įrenginio meniu"
 
 #: data/ui/preferences-window.ui:196 data/ui/preferences-window.ui:211
 msgid "Edit Device Name"
@@ -613,7 +613,7 @@ msgstr "Išjungta"
 #: src/preferences/keybindings.js:64
 #, javascript-format
 msgid "Enter a new shortcut to change <b>%s</b>"
-msgstr "Norėdami pakeisti<b>%s</b>, įveskite naują trumpinį"
+msgstr "Norėdami pakeisti <b>%s</b>, įveskite naują trumpinį"
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -657,7 +657,7 @@ msgstr "Televizija"
 
 #: src/preferences/service.js:513
 msgid "Unpaired"
-msgstr "Nebesuporuotas"
+msgstr "Nesuporuotas"
 
 #: src/preferences/service.js:517
 msgid "Disconnected"
@@ -1111,7 +1111,7 @@ msgstr[3] "Ir dar %d adresatas"
 #: src/service/ui/mousepad.js:110
 #, javascript-format
 msgid "Remote keyboard on %s is not active"
-msgstr ""
+msgstr "Nuotolinė klaviatūra ties %s nėra aktyvi"
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
