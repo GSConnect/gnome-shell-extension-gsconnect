@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-09-10 22:31-0700\n"
-"PO-Revision-Date: 2020-12-16 19:16\n"
+"PO-Revision-Date: 2020-12-16 19:28\n"
 "Last-Translator: \n"
 "Language-Team: Danish\n"
 "Language: da_DK\n"
@@ -152,7 +152,7 @@ msgstr "Skriv en meddelelse"
 
 #: data/ui/messaging-conversation.ui:92
 msgid "Message Entry"
-msgstr ""
+msgstr "Besked Input"
 
 #: data/ui/messaging-conversation.ui:93
 msgid "Type a message and press Enter to send"
@@ -469,7 +469,7 @@ msgstr "Mobile Indstillinger"
 
 #: data/ui/preferences-window.ui:159
 msgid "Service Menu"
-msgstr ""
+msgstr "Service Menu"
 
 #: data/ui/preferences-window.ui:182
 msgid "Device Menu"
@@ -557,7 +557,7 @@ msgstr ""
 
 #: data/ui/service-error-dialog.ui:118
 msgid "Technical Details"
-msgstr ""
+msgstr "Tekniske Detaljer"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: nautilus-extension/nautilus-gsconnect.py:164 webextension/gettext.js:33
