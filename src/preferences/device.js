@@ -792,20 +792,28 @@ var Panel = GObject.registerClass({
         this._populateApplications(settings);
     }
 
-    _onNotificationRowActivated(box, row) {
-        const settings = this.pluginSettings('notification');
-        let applications = {};
-
+    _toggleNotification(widget) {
         try {
-            applications = JSON.parse(settings.get_string('applications'));
-        } catch (e) {
-            applications = {};
-        }
+            const row = widget.get_ancestor(Gtk.ListBoxRow.$gtype);
+            const settings = this.pluginSettings('notification');
+            let applications = {};
 
-        applications[row.title].enabled = !applications[row.title].enabled;
-        row.widget.label = applications[row.title].enabled ? _('On') : _('Off');
-        settings.set_string('applications', JSON.stringify(applications));
+            try {
+                applications = JSON.parse(settings.get_string('applications'));
+            } catch (e) {
+                applications = {};
+            }
+
+            applications[row.title].enabled = !applications[row.title].enabled;
+            row.widget.state = applications[row.title].enabled;
+            settings.set_string('applications', JSON.stringify(applications));
+
+        } catch (e) {
+            logError(e);
+        }
     }
+
+
 
     _populateApplications(settings) {
         const applications = this._queryApplications(settings);
@@ -815,8 +823,8 @@ var Panel = GObject.registerClass({
                 gicon: Gio.Icon.new_for_string(applications[name].iconName),
                 title: name,
                 height_request: 48,
-                widget: new Gtk.Label({
-                    label: applications[name].enabled ? _('On') : _('Off'),
+                widget: new Gtk.Switch({
+                    state: applications[name].enabled,
                     margin_start: 12,
                     margin_end: 12,
                     halign: Gtk.Align.END,
@@ -826,6 +834,7 @@ var Panel = GObject.registerClass({
                 }),
             });
 
+            row.widget.connect('notify::active', this._toggleNotification.bind(this));
             this.notification_apps.add(row);
         }
     }
