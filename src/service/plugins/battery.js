@@ -256,6 +256,7 @@ var Plugin = GObject.registerClass({
             buttons: buttons,
         });
     }
+
     /**
      * Notify the user the remote battery is at 60% charge.
      */
@@ -284,6 +285,7 @@ var Plugin = GObject.registerClass({
             buttons: buttons,
         });
     }
+
     /**
      * Notify the user the remote battery is at 80% charge.
      */
@@ -312,6 +314,7 @@ var Plugin = GObject.registerClass({
             buttons: buttons,
         });
     }
+
     /**
      * Notify the user the remote battery is low.
      */
@@ -363,7 +366,7 @@ var Plugin = GObject.registerClass({
                 this._sixtyBatteryNotification();
             else
                 this.device.hideNotification('battery|sixty');
-            
+
             // The level just changed to/from 80%
             if (this._level === 80)
                 this._eightyBatteryNotification();
