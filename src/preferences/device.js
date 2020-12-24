@@ -434,6 +434,8 @@ var Panel = GObject.registerClass({
         let settings = this.pluginSettings('battery');
         this.actions.add_action(settings.create_action('send-statistics'));
         this.actions.add_action(settings.create_action('low-battery-notification'));
+        this.actions.add_action(settings.create_action('sixty-battery-notification'));
+        this.actions.add_action(settings.create_action('eighty-battery-notification'));
         this.actions.add_action(settings.create_action('full-battery-notification'));
 
         settings = this.pluginSettings('clipboard');

@@ -256,7 +256,62 @@ var Plugin = GObject.registerClass({
             buttons: buttons,
         });
     }
+    /**
+     * Notify the user the remote battery is at 60% charge.
+     */
+    _sixtyBatteryNotification() {
+        if (!this.settings.get_boolean('sixty-battery-notification'))
+            return;
 
+        // Offer the option to ring the device, if available
+        let buttons = [];
+
+        if (this.device.get_action_enabled('ring')) {
+            buttons = [{
+                label: _('Ring'),
+                action: 'ring',
+                parameter: null,
+            }];
+        }
+
+        this.device.showNotification({
+            id: 'battery|sixty',
+            // TRANSLATORS: eg. Google Pixel: Battery is full
+            title: _('%s: Battery is 60% Charged').format(this.device.name),
+            // TRANSLATORS: when the battery is fully charged
+            body: _('60% Charged'),
+            icon: Gio.ThemedIcon.new('battery-full-charged-symbolic'),
+            buttons: buttons,
+        });
+    }
+    /**
+     * Notify the user the remote battery is at 80% charge.
+     */
+    _eightyBatteryNotification() {
+        if (!this.settings.get_boolean('eighty-battery-notification'))
+            return;
+
+        // Offer the option to ring the device, if available
+        let buttons = [];
+
+        if (this.device.get_action_enabled('ring')) {
+            buttons = [{
+                label: _('Ring'),
+                action: 'ring',
+                parameter: null,
+            }];
+        }
+
+        this.device.showNotification({
+            id: 'battery|eighty',
+            // TRANSLATORS: eg. Google Pixel: Battery is full
+            title: _('%s: Battery is 80% Charged').format(this.device.name),
+            // TRANSLATORS: when the battery is fully charged
+            body: _('80% Charged'),
+            icon: Gio.ThemedIcon.new('battery-full-charged-symbolic'),
+            buttons: buttons,
+        });
+    }
     /**
      * Notify the user the remote battery is low.
      */
@@ -302,6 +357,18 @@ var Plugin = GObject.registerClass({
             // If the level is above the threshold hide the notification
             if (this._level > this._thresholdLevel)
                 this.device.hideNotification('battery|low');
+
+            // The level just changed to/from 60%
+            if (this._level === 60)
+                this._sixtyBatteryNotification();
+            else
+                this.device.hideNotification('battery|sixty');
+            
+            // The level just changed to/from 80%
+            if (this._level === 80)
+                this._eightyBatteryNotification();
+            else
+                this.device.hideNotification('battery|eighty');
 
             // The level just changed to/from full
             if (this._level === 100)
