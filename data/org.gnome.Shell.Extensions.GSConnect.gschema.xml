@@ -81,6 +81,12 @@
     <key name="low-battery-notification" type="b">
       <default>true</default>
     </key>
+    <key name="sixty-battery-notification" type="b">
+      <default>false</default>
+    </key>
+    <key name="eighty-battery-notification" type="b">
+      <default>false</default>
+    </key>
     <key name="full-battery-notification" type="b">
       <default>false</default>
     </key>
