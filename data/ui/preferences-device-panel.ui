@@ -666,6 +666,124 @@
                               </object>
                             </child>
                             <child>
+                              <object class="GtkListBoxRow" id="battery-sixty-notification-row">
+                                <property name="height_request">56</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="action_name">settings.sixty-battery-notification</property>
+                                <property name="selectable">False</property>
+                                <child>
+                                  <object class="GtkGrid">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="margin_start">12</property>
+                                    <property name="margin_end">12</property>
+                                    <property name="hexpand">True</property>
+                                    <property name="vexpand">True</property>
+                                    <property name="column_spacing">12</property>
+                                    <child>
+                                      <object class="GtkLabel" id="battery-sixty-notification-label">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                        <property name="halign">start</property>
+                                        <property name="valign">center</property>
+                                        <property name="hexpand">True</property>
+                                        <property name="vexpand">True</property>
+                                        <property name="label" translatable="yes">60% Charged Notification</property>
+                                        <accessibility>
+                                          <relation type="label-for" target="battery-sixty-notification-row"/>
+                                          <relation type="label-for" target="battery-sixty-notification"/>
+                                        </accessibility>
+                                      </object>
+                                      <packing>
+                                        <property name="left_attach">0</property>
+                                        <property name="top_attach">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkSwitch" id="battery-sixty-notification">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="valign">center</property>
+                                        <property name="action_name">settings.sixty-battery-notification</property>
+                                        <accessibility>
+                                          <relation type="controlled-by" target="battery-sixty-notification-row"/>
+                                          <relation type="labelled-by" target="battery-sixty-notification-label"/>
+                                        </accessibility>
+                                      </object>
+                                      <packing>
+                                        <property name="left_attach">1</property>
+                                        <property name="top_attach">0</property>
+                                      </packing>
+                                    </child>
+                                  </object>
+                                </child>
+                                <accessibility>
+                                  <relation type="controller-for" target="battery-sixty-notification"/>
+                                  <relation type="labelled-by" target="battery-sixty-notification-label"/>
+                                </accessibility>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkListBoxRow" id="battery-eighty-notification-row">
+                                <property name="height_request">56</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="action_name">settings.eighty-battery-notification</property>
+                                <property name="selectable">False</property>
+                                <child>
+                                  <object class="GtkGrid">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="margin_start">12</property>
+                                    <property name="margin_end">12</property>
+                                    <property name="hexpand">True</property>
+                                    <property name="vexpand">True</property>
+                                    <property name="column_spacing">12</property>
+                                    <child>
+                                      <object class="GtkLabel" id="battery-eighty-notification-label">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                        <property name="halign">start</property>
+                                        <property name="valign">center</property>
+                                        <property name="hexpand">True</property>
+                                        <property name="vexpand">True</property>
+                                        <property name="label" translatable="yes">80% Charged Notification</property>
+                                        <accessibility>
+                                          <relation type="label-for" target="battery-eighty-notification-row"/>
+                                          <relation type="label-for" target="battery-eighty-notification"/>
+                                        </accessibility>
+                                      </object>
+                                      <packing>
+                                        <property name="left_attach">0</property>
+                                        <property name="top_attach">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkSwitch" id="battery-eighty-notification">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="valign">center</property>
+                                        <property name="action_name">settings.eighty-battery-notification</property>
+                                        <accessibility>
+                                          <relation type="controlled-by" target="battery-eighty-notification-row"/>
+                                          <relation type="labelled-by" target="battery-eighty-notification-label"/>
+                                        </accessibility>
+                                      </object>
+                                      <packing>
+                                        <property name="left_attach">1</property>
+                                        <property name="top_attach">0</property>
+                                      </packing>
+                                    </child>
+                                  </object>
+                                </child>
+                                <accessibility>
+                                  <relation type="controller-for" target="battery-eighty-notification"/>
+                                  <relation type="labelled-by" target="battery-eighty-notification-label"/>
+                                </accessibility>
+                              </object>
+                            </child>
+                            <child>
                               <object class="GtkListBoxRow" id="battery-full-notification-row">
                                 <property name="height_request">56</property>
                                 <property name="visible">True</property>
