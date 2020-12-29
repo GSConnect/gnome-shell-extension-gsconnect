@@ -277,9 +277,9 @@ var Plugin = GObject.registerClass({
 
         this.device.showNotification({
             id: 'battery|sixty',
-            // TRANSLATORS: eg. Google Pixel: Battery is full
+            // TRANSLATORS: eg. Google Pixel: Battery is 60% charged
             title: _('%s: Battery is 60% Charged').format(this.device.name),
-            // TRANSLATORS: when the battery is fully charged
+            // TRANSLATORS: when the battery is 60% charged
             body: _('60% Charged'),
             icon: Gio.ThemedIcon.new('battery-full-charged-symbolic'),
             buttons: buttons,
@@ -306,9 +306,9 @@ var Plugin = GObject.registerClass({
 
         this.device.showNotification({
             id: 'battery|eighty',
-            // TRANSLATORS: eg. Google Pixel: Battery is full
+            // TRANSLATORS: eg. Google Pixel: Battery is 80% Charged
             title: _('%s: Battery is 80% Charged').format(this.device.name),
-            // TRANSLATORS: when the battery is fully charged
+            // TRANSLATORS: when the battery is 80% charged
             body: _('80% Charged'),
             icon: Gio.ThemedIcon.new('battery-full-charged-symbolic'),
             buttons: buttons,
