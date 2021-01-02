@@ -278,7 +278,7 @@ var Plugin = GObject.registerClass({
         this.device.showNotification({
             id: 'battery|sixty',
             // TRANSLATORS: eg. Google Pixel: Battery is 60% charged
-            title: _('%s: Battery is 60% Charged').format(this.device.name),
+            title: _('%s: Battery is 60%% Charged').format(this.device.name),
             // TRANSLATORS: when the battery is 60% charged
             body: _('60% Charged'),
             icon: Gio.ThemedIcon.new('battery-full-charged-symbolic'),
@@ -307,7 +307,7 @@ var Plugin = GObject.registerClass({
         this.device.showNotification({
             id: 'battery|eighty',
             // TRANSLATORS: eg. Google Pixel: Battery is 80% Charged
-            title: _('%s: Battery is 80% Charged').format(this.device.name),
+            title: _('%s: Battery is 80%% Charged').format(this.device.name),
             // TRANSLATORS: when the battery is 80% charged
             body: _('80% Charged'),
             icon: Gio.ThemedIcon.new('battery-full-charged-symbolic'),
@@ -361,13 +361,13 @@ var Plugin = GObject.registerClass({
             if (this._level > this._thresholdLevel)
                 this.device.hideNotification('battery|low');
 
-            // The level just changed to/from 60%
+            // The level just changed to/from 60% while charging
             if (this._level === 60)
                 this._sixtyBatteryNotification();
             else
                 this.device.hideNotification('battery|sixty');
 
-            // The level just changed to/from 80%
+            // The level just changed to/from 80% while charging
             if (this._level === 80)
                 this._eightyBatteryNotification();
             else
