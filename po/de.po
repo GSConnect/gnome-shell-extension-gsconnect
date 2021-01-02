@@ -39,7 +39,7 @@ msgid ""
 "has applications for Linux, BSD, Android, Sailfish, macOS and Windows."
 msgstr ""
 "GSConnect ist eine vollständige Implementierung von KDE Connect für GNOME "
-"Shell, insbesondere mit Nautilus-, Chrome- und Firefos-Integration. Das KDE "
+"Shell, insbesondere mit Nautilus-, Chrome- und Firefox-Integration. Das KDE "
 "Connect-Team stellt für Linux, BSD, Android, Sailfish, macOS und Windows "
 "Anwendungen bereit."
 
@@ -251,7 +251,7 @@ msgstr "Dateien empfangen"
 
 #: data/ui/preferences-device-panel.ui:490
 msgid "Save files to"
-msgstr "Dateien speichern nach"
+msgstr "Dateien speichern unter"
 
 #: data/ui/preferences-device-panel.ui:551
 #: data/ui/preferences-device-panel.ui:2132
@@ -1090,7 +1090,7 @@ msgstr[1] "Und %d andere"
 #: src/service/ui/mousepad.js:110
 #, javascript-format
 msgid "Remote keyboard on %s is not active"
-msgstr "Entfernte Tastatur auf %s ist nicht aktiv"
+msgstr "Tastaturfernsteuerung auf %s ist nicht aktiv"
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
