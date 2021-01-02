@@ -362,13 +362,13 @@ var Plugin = GObject.registerClass({
                 this.device.hideNotification('battery|low');
 
             // The level just changed to/from 60% while charging
-            if (this._level === 60)
+            if (this._level === 60 && this._charging)
                 this._sixtyBatteryNotification();
             else
                 this.device.hideNotification('battery|sixty');
 
             // The level just changed to/from 80% while charging
-            if (this._level === 80)
+            if (this._level === 80 && this._charging)
                 this._eightyBatteryNotification();
             else
                 this.device.hideNotification('battery|eighty');
