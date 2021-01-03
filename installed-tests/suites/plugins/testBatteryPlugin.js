@@ -159,7 +159,7 @@ describe('The battery plugin', function () {
         localPlugin.device.sendPacket(Packets.sixtyBattery);
 
         await remotePlugin.awaitPacket('kdeconnect.battery',
-            Packets.lowBattery.body);
+            Packets.sixtyBattery.body);
         expect(remotePlugin.device.showNotification).toHaveBeenCalled();
     });
 
@@ -175,7 +175,7 @@ describe('The battery plugin', function () {
         localPlugin.device.sendPacket(Packets.eightyBattery);
 
         await remotePlugin.awaitPacket('kdeconnect.battery',
-            Packets.lowBattery.body);
+            Packets.eightyBattery.body);
         expect(remotePlugin.device.showNotification).toHaveBeenCalled();
     });
 
