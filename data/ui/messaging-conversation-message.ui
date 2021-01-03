@@ -34,6 +34,7 @@
           <object class="GtkLabel" id="sender-label">
             <property name="halign">start</property>
             <property name="valign">start</property>
+            <property name="selectable">True</property>
             <property name="margin_start">6</property>
             <attributes>
               <attribute name="weight" value="bold"/>

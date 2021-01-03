@@ -584,7 +584,7 @@ const Conversation = GObject.registerClass({
 
         if ((row.message.date - before.message.date) > TIME_SPAN_HOUR) {
             if (!header) {
-                header = new Gtk.Label({visible: true});
+                header = new Gtk.Label({visible: true, selectable: true});
                 header.get_style_context().add_class('dim-label');
                 row.set_header(header);
             }
