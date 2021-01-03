@@ -177,8 +177,8 @@ var Plugin = GObject.registerClass({
                     this.device.name
                 );
                 action = {
-                    name: 'openPath',
-                    parameter: new GLib.Variant('s', file.get_parent().get_uri()),
+                    name: 'openPathSelectFile',
+                    parameter: new GLib.Variant('s', file.get_uri()),
                 };
                 buttons = [
                     {
