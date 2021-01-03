@@ -743,7 +743,6 @@ var Device = GObject.registerClass({
     openPathSelectFile(action, parameter) {
         const path = parameter.unpack();
         const uri = path.includes('://') ? path : `file://${path}`;
-        debug(uri, null)
 
         Gio.DBus.session.call(
             'org.freedesktop.FileManager1',
