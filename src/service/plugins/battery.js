@@ -258,10 +258,10 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * Notify the user the remote battery is at 60% charge.
+     * Notify the user the remote battery is at custom charge level.
      */
-    _sixtyBatteryNotification() {
-        if (!this.settings.get_boolean('sixty-battery-notification'))
+    _customBatteryNotification() {
+        if (!this.settings.get_boolean('custom-battery-notification'))
             return;
 
         // Offer the option to ring the device, if available
@@ -276,40 +276,11 @@ var Plugin = GObject.registerClass({
         }
 
         this.device.showNotification({
-            id: 'battery|sixty',
-            // TRANSLATORS: eg. Google Pixel: Battery is 60% charged
-            title: _('%s: Battery is 60%% Charged').format(this.device.name),
-            // TRANSLATORS: when the battery is 60% charged
-            body: _('60% Charged'),
-            icon: Gio.ThemedIcon.new('battery-full-charged-symbolic'),
-            buttons: buttons,
-        });
-    }
-
-    /**
-     * Notify the user the remote battery is at 80% charge.
-     */
-    _eightyBatteryNotification() {
-        if (!this.settings.get_boolean('eighty-battery-notification'))
-            return;
-
-        // Offer the option to ring the device, if available
-        let buttons = [];
-
-        if (this.device.get_action_enabled('ring')) {
-            buttons = [{
-                label: _('Ring'),
-                action: 'ring',
-                parameter: null,
-            }];
-        }
-
-        this.device.showNotification({
-            id: 'battery|eighty',
-            // TRANSLATORS: eg. Google Pixel: Battery is 80% Charged
-            title: _('%s: Battery is 80%% Charged').format(this.device.name),
-            // TRANSLATORS: when the battery is 80% charged
-            body: _('80% Charged'),
+            id: 'battery|custom',
+            // TRANSLATORS: eg. Google Pixel: Battery has reached custom charge level
+            title: _('%s: Battery has reached custom charge level').format(this.device.name),
+            // TRANSLATORS: when the battery has reached custom charge level
+            body: _('%d%% Charged').format(this.level),
             icon: Gio.ThemedIcon.new('battery-full-charged-symbolic'),
             buttons: buttons,
         });
@@ -362,16 +333,10 @@ var Plugin = GObject.registerClass({
                 this.device.hideNotification('battery|low');
 
             // The level just changed to/from 60% while charging
-            if (this._level > 59 && this._charging)
-                this._sixtyBatteryNotification();
+            if (this._level === this.settings.get_uint('custom-battery-notification-value') && this._charging)
+                this._customBatteryNotification();
             else
-                this.device.hideNotification('battery|sixty');
-
-            // The level just changed to/from 80% while charging
-            if (this._level > 79 && this._charging)
-                this._eightyBatteryNotification();
-            else
-                this.device.hideNotification('battery|eighty');
+                this.device.hideNotification('battery|custom');
 
             // The level just changed to/from full
             if (this._level === 100)

@@ -564,6 +564,12 @@
                 <property name="can_focus">False</property>
                 <property name="shadow_type">none</property>
                 <child>
+                  <object class="GtkAdjustment" id="custom-battery-adjustment">
+                    <property name="upper">99</property>
+                    <property name="lower">01</property>
+                    <property name="step_increment">1</property>
+                    <property name="page_increment">5</property>
+                  </object>
                   <object class="GtkBox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
@@ -666,11 +672,11 @@
                               </object>
                             </child>
                             <child>
-                              <object class="GtkListBoxRow" id="battery-sixty-notification-row">
+                              <object class="GtkListBoxRow" id="battery-custom-notification-row">
                                 <property name="height_request">56</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
-                                <property name="action_name">settings.sixty-battery-notification</property>
+                                <property name="action_name">settings.custom-battery-notification</property>
                                 <property name="selectable">False</property>
                                 <child>
                                   <object class="GtkGrid">
@@ -682,17 +688,17 @@
                                     <property name="vexpand">True</property>
                                     <property name="column_spacing">12</property>
                                     <child>
-                                      <object class="GtkLabel" id="battery-sixty-notification-label">
+                                      <object class="GtkLabel" id="battery-custom-notification-label">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <property name="halign">start</property>
                                         <property name="valign">center</property>
                                         <property name="hexpand">True</property>
                                         <property name="vexpand">True</property>
-                                        <property name="label" translatable="yes">60% Charged Notification</property>
+                                        <property name="label" translatable="yes">Custom Charge Level Notification</property>
                                         <accessibility>
-                                          <relation type="label-for" target="battery-sixty-notification-row"/>
-                                          <relation type="label-for" target="battery-sixty-notification"/>
+                                          <relation type="label-for" target="battery-custom-notification-row"/>
+                                          <relation type="label-for" target="battery-custom-notification"/>
                                         </accessibility>
                                       </object>
                                       <packing>
@@ -701,14 +707,14 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkSwitch" id="battery-sixty-notification">
+                                      <object class="GtkSwitch" id="battery-custom-notification">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="valign">center</property>
-                                        <property name="action_name">settings.sixty-battery-notification</property>
+                                        <property name="action_name">settings.custom-battery-notification</property>
                                         <accessibility>
-                                          <relation type="controlled-by" target="battery-sixty-notification-row"/>
-                                          <relation type="labelled-by" target="battery-sixty-notification-label"/>
+                                          <relation type="controlled-by" target="battery-custom-notification-row"/>
+                                          <relation type="labelled-by" target="battery-custom-notification-label"/>
                                         </accessibility>
                                       </object>
                                       <packing>
@@ -716,70 +722,47 @@
                                         <property name="top_attach">0</property>
                                       </packing>
                                     </child>
-                                  </object>
-                                </child>
-                                <accessibility>
-                                  <relation type="controller-for" target="battery-sixty-notification"/>
-                                  <relation type="labelled-by" target="battery-sixty-notification-label"/>
-                                </accessibility>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkListBoxRow" id="battery-eighty-notification-row">
-                                <property name="height_request">56</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="action_name">settings.eighty-battery-notification</property>
-                                <property name="selectable">False</property>
-                                <child>
-                                  <object class="GtkGrid">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="margin_start">12</property>
-                                    <property name="margin_end">12</property>
-                                    <property name="hexpand">True</property>
-                                    <property name="vexpand">True</property>
-                                    <property name="column_spacing">12</property>
                                     <child>
-                                      <object class="GtkLabel" id="battery-eighty-notification-label">
+                                      <object class="GtkLabel" id="battery-custom-notification-spin-label">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <property name="halign">start</property>
                                         <property name="valign">center</property>
                                         <property name="hexpand">True</property>
                                         <property name="vexpand">True</property>
-                                        <property name="label" translatable="yes">80% Charged Notification</property>
+                                        <property name="label" translatable="yes">Set Custom Charge Level</property>
                                         <accessibility>
-                                          <relation type="label-for" target="battery-eighty-notification-row"/>
-                                          <relation type="label-for" target="battery-eighty-notification"/>
+                                          <relation type="label-for" target="battery-custom-notification-spin-row"/>
+                                          <relation type="label-for" target="battery-custom-notification-spin"/>
                                         </accessibility>
                                       </object>
                                       <packing>
                                         <property name="left_attach">0</property>
-                                        <property name="top_attach">0</property>
+                                        <property name="top_attach">1</property>
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkSwitch" id="battery-eighty-notification">
+                                      <object class="GtkSpinButton" id="battery-custom-notification-spin">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
-                                        <property name="valign">center</property>
-                                        <property name="action_name">settings.eighty-battery-notification</property>
+                                        <property name="valign">right</property>
+                                        <property name="adjustment">custom-battery-adjustment</property>
+                                        <signal name="value-changed" handler="_newCustomChargeLevel">
                                         <accessibility>
-                                          <relation type="controlled-by" target="battery-eighty-notification-row"/>
-                                          <relation type="labelled-by" target="battery-eighty-notification-label"/>
+                                          <relation type="controlled-by" target="battery-custom-notification-spin-row"/>
+                                          <relation type="labelled-by" target="battery-custom-notification-spin-label"/>
                                         </accessibility>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
-                                        <property name="top_attach">0</property>
+                                        <property name="top_attach">1</property>
                                       </packing>
                                     </child>
                                   </object>
                                 </child>
                                 <accessibility>
-                                  <relation type="controller-for" target="battery-eighty-notification"/>
-                                  <relation type="labelled-by" target="battery-eighty-notification-label"/>
+                                  <relation type="controller-for" target="battery-custom-notification"/>
+                                  <relation type="labelled-by" target="battery-custom-notification-label"/>
                                 </accessibility>
                               </object>
                             </child>

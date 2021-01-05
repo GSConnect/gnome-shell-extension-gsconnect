@@ -156,6 +156,7 @@ describe('The battery plugin', function () {
     });
 
     it('notifies when the battery is at 60%', async function () {
+        
         localPlugin.device.sendPacket(Packets.sixtyBattery);
 
         await remotePlugin.awaitPacket('kdeconnect.battery',
