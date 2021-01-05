@@ -732,7 +732,6 @@
                                         <property name="vexpand">True</property>
                                         <property name="label" translatable="yes">Set Custom Charge Level</property>
                                         <accessibility>
-                                          <relation type="label-for" target="battery-custom-notification-spin-row"/>
                                           <relation type="label-for" target="battery-custom-notification-spin"/>
                                         </accessibility>
                                       </object>
@@ -748,10 +747,6 @@
                                         <property name="valign">right</property>
                                         <property name="adjustment">custom-battery-adjustment</property>
                                         <signal name="value-changed" handler="_newCustomChargeLevel">
-                                        <accessibility>
-                                          <relation type="controlled-by" target="battery-custom-notification-spin-row"/>
-                                          <relation type="labelled-by" target="battery-custom-notification-spin-label"/>
-                                        </accessibility>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
