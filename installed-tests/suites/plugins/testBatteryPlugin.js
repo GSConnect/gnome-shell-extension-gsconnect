@@ -154,24 +154,7 @@ describe('The battery plugin', function () {
             Packets.goodBattery.body);
         expect(remotePlugin.device.hideNotification).toHaveBeenCalled();
     });
-
-    it('notifies when the battery is at 60%', async function () {
-        
-        localPlugin.device.sendPacket(Packets.sixtyBattery);
-
-        await remotePlugin.awaitPacket('kdeconnect.battery',
-            Packets.sixtyBattery.body);
-        expect(remotePlugin.device.showNotification).toHaveBeenCalled();
-    });
-
-    it('withdraws 60% battery notifications', async function () {
-        localPlugin.device.sendPacket(Packets.goodBattery);
-
-        await remotePlugin.awaitPacket('kdeconnect.battery',
-            Packets.goodBattery.body);
-        expect(remotePlugin.device.hideNotification).toHaveBeenCalled();
-    });
-
+    
     it('notifies when the battery is at 80%', async function () {
         localPlugin.device.sendPacket(Packets.eightyBattery);
 
