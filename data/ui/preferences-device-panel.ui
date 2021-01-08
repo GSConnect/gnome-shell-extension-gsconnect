@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface domain="org.gnome.Shell.Extensions.GSConnect">
   <requires lib="gtk+" version="3.24"/>
+  <object class="GtkAdjustment" id="battery-custom-adjustment">
+    <property name="upper">99</property>
+    <property name="lower">01</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">5</property>
+  </object>                                         
   <template class="GSConnectPreferencesDevicePanel" parent="GtkGrid">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -693,6 +699,7 @@
                                         <accessibility>
                                           <relation type="label-for" target="battery-custom-notification-row"/>
                                           <relation type="label-for" target="battery-custom-notification"/>
+                                          <relation type="label-for" target="battery-custom-notification-spin"/>
                                         </accessibility>
                                       </object>
                                       <packing>
@@ -712,48 +719,30 @@
                                         </accessibility>
                                       </object>
                                       <packing>
-                                        <property name="left_attach">1</property>
+                                        <property name="left_attach">2</property>
                                         <property name="top_attach">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel" id="battery-custom-notification-spin-label">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="halign">start</property>
-                                        <property name="valign">center</property>
-                                        <property name="hexpand">True</property>
-                                        <property name="vexpand">True</property>
-                                        <property name="label" translatable="yes">Set Custom Charge Level</property>
-                                        <accessibility>
-                                          <relation type="label-for" target="battery-custom-notification-spin"/>
-                                        </accessibility>
-                                      </object>
-                                      <packing>
-                                        <property name="left_attach">0</property>
-                                        <property name="top_attach">1</property>
                                       </packing>
                                     </child>
                                     <child>
                                       <object class="GtkSpinButton" id="battery-custom-notification-spin">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
-                                        <property name="valign">right</property>
-                                        <property name="adjustment">
-                                          <object class="GtkAdjustment">
-                                            <property name="upper">99</property>
-                                            <property name="lower">01</property>
-                                            <property name="step_increment">1</property>
-                                            <property name="page_increment">5</property>
-                                          </object>
-                                        </property>
-                                        <signal name="value-changed" handler="_newCustomChargeLevel">
+                                        <property name="max_length">2</property>
+                                        <property name="activates_default">True</property>
+                                        <property name="width_chars">2</property>
+                                        <property name="input_purpose">digits</property>
+                                        <property name="adjustment">battery-custom-adjustment</property>
+                                        <signal name="value-changed" handler="_newCustomChargeLevel" swapped="no"></signal>
+                                        <accessibility>
+                                          <relation type="controlled-by" target="battery-custom-notification-row"/>
+                                          <relation type="labelled-by" target="battery-custom-notification-label"/>
+                                        </accessibility>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
-                                        <property name="top_attach">1</property>
+                                        <property name="top_attach">0</property>
                                       </packing>
-                                    </child>
+                                    </child>                                    
                                   </object>
                                 </child>
                                 <accessibility>

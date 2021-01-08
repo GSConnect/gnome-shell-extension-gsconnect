@@ -615,9 +615,8 @@ var Panel = GObject.registerClass({
 
     _newCustomChargeLevel() {
         const settings = this.pluginSettings('battery');
-        this.set_value(settings.get_uint('custom-battery-notification-value'));
-        this.connect('value-changed', function (button) {
-            settings.set_uint('custom-battery-notification-value', button.get_value_as_int());
+        this.connect('notify::value-changed', function (button) {
+            settings.set_uint('custom-battery-notification-value', button);
         });
     }
 
