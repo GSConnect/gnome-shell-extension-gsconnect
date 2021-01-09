@@ -146,7 +146,7 @@ describe('The battery plugin', function () {
             Packets.goodBattery.body);
         expect(remotePlugin.device.hideNotification).toHaveBeenCalled();
     });
-    
+
     it('notifies when the battery is at custom level', async function () {
         remotePlugin.settings.set_boolean('custom-battery-notification', true);
         localPlugin.device.sendPacket(Packets.customBattery);
