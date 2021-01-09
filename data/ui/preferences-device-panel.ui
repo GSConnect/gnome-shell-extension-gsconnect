@@ -2,6 +2,7 @@
 <interface domain="org.gnome.Shell.Extensions.GSConnect">
   <requires lib="gtk+" version="3.24"/>
   <object class="GtkAdjustment" id="battery-custom-adjustment">
+    <property name="value">80</property>
     <property name="upper">99</property>
     <property name="lower">01</property>
     <property name="step_increment">1</property>
@@ -699,7 +700,7 @@
                                         <accessibility>
                                           <relation type="label-for" target="battery-custom-notification-row"/>
                                           <relation type="label-for" target="battery-custom-notification"/>
-                                          <relation type="label-for" target="battery-custom-notification-spin"/>
+                                          <relation type="label-for" target="battery-custom-notification-value"/>
                                         </accessibility>
                                       </object>
                                       <packing>
@@ -724,15 +725,15 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkSpinButton" id="battery-custom-notification-spin">
+                                      <object class="GtkSpinButton" id="battery-custom-notification-value">
                                         <property name="visible">True</property>
+                                        <property name="value">80</property>
                                         <property name="can_focus">True</property>
                                         <property name="max_length">2</property>
                                         <property name="activates_default">True</property>
                                         <property name="width_chars">2</property>
-                                        <property name="input_purpose">digits</property>
                                         <property name="adjustment">battery-custom-adjustment</property>
-                                        <signal name="value-changed" handler="_newCustomChargeLevel" swapped="no"></signal>
+                                        <signal name="output" handler="_setCustomChargeLevel" swapped="no"></signal>
                                         <accessibility>
                                           <relation type="controlled-by" target="battery-custom-notification-row"/>
                                           <relation type="labelled-by" target="battery-custom-notification-label"/>

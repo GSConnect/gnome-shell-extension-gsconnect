@@ -613,11 +613,13 @@ var Panel = GObject.registerClass({
         }
     }
 
-    _newCustomChargeLevel() {
+    _setCustomChargeLevel(spin) {
         const settings = this.pluginSettings('battery');
-        this.connect('notify::value-changed', function (button) {
-            settings.set_uint('custom-battery-notification-value', button);
-        });
+        const oldLevel = settings.get_value('custom-battery-notification-value').unpack();
+        const newLevel = GLib.Variant.new('d', spin.get_value());
+
+        if (newLevel !== oldLevel)
+            settings.set_value('custom-battery-notification-value', newLevel);
     }
 
     /**

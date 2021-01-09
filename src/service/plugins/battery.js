@@ -332,8 +332,8 @@ var Plugin = GObject.registerClass({
             if (this._level > this._thresholdLevel)
                 this.device.hideNotification('battery|low');
 
-            // The level just changed to/from 60% while charging
-            if (this._level === this.settings.get_uint('custom-battery-notification-value') && this._charging)
+            // The level just changed to/from custom level while charging
+            if ((this._level === this.settings.get_value('custom-battery-notification-value').unpack()) && this._charging)
                 this._customBatteryNotification();
             else
                 this.device.hideNotification('battery|custom');
