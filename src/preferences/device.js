@@ -1048,7 +1048,7 @@ var Panel = GObject.registerClass({
         const row = new SectionRow({
             height_request: 48,
             title: plugin.Metadata.label,
-            tooltip_text: plugin.Metadata.description ?? '',
+            tooltip_text: plugin.Metadata.description || '',
             visible: this._supportedPlugins.includes(name),
             widget: new Gtk.Switch({
                 active: this._enabledPlugins.includes(name),
