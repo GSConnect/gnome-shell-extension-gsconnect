@@ -20,6 +20,7 @@ try {
 
 var Metadata = {
     label: _('Contacts'),
+    description: _('Access contacts of the paired device'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Contacts',
     incomingCapabilities: [
         'kdeconnect.contacts.response_uids_timestamps',
@@ -453,4 +454,3 @@ var Plugin = GObject.registerClass({
         super.destroy();
     }
 });
-

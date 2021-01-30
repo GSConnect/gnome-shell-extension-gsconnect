@@ -10,6 +10,7 @@ const PluginBase = imports.service.plugin;
 
 var Metadata = {
     label: _('Battery'),
+    description: _('Receive battery information from device'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Battery',
     incomingCapabilities: [
         'kdeconnect.battery',
@@ -391,4 +392,3 @@ var Plugin = GObject.registerClass({
         super.destroy();
     }
 });
-

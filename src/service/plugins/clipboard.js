@@ -8,6 +8,7 @@ const PluginBase = imports.service.plugin;
 
 var Metadata = {
     label: _('Clipboard'),
+    description: _('Share clipboard with paired device'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Clipboard',
     incomingCapabilities: [
         'kdeconnect.clipboard',
@@ -175,4 +176,3 @@ var Plugin = GObject.registerClass({
         super.destroy();
     }
 });
-

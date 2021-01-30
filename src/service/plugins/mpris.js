@@ -13,6 +13,7 @@ const PluginBase = imports.service.plugin;
 
 var Metadata = {
     label: _('MPRIS'),
+    description: _('Bidirectional remote media playback control (Media Player Remote Interfacing Specification)'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.MPRIS',
     incomingCapabilities: ['kdeconnect.mpris', 'kdeconnect.mpris.request'],
     outgoingCapabilities: ['kdeconnect.mpris', 'kdeconnect.mpris.request'],
@@ -882,4 +883,3 @@ const PlayerRemote = GObject.registerClass({
         }
     }
 });
-

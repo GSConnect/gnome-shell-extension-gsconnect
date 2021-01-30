@@ -13,6 +13,7 @@ const URI = imports.service.utils.uri;
 var Metadata = {
     label: _('Share'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Share',
+    description: _('Enables receiving/sending of individual files from/to paired device'),
     incomingCapabilities: ['kdeconnect.share.request'],
     outgoingCapabilities: ['kdeconnect.share.request'],
     actions: {
@@ -478,4 +479,3 @@ var FileChooserDialog = GObject.registerClass({
         this.destroy();
     }
 });
-
