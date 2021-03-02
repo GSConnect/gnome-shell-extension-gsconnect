@@ -87,12 +87,7 @@ describe('The runcommand plugin', function () {
         localPlugin.settings.set_value('command-list', commandList);
 
         await remotePlugin.awaitPacket('kdeconnect.runcommand', {
-            commandList: {
-                'command-uuid': {
-                    name: 'Test Command',
-                    command: 'ls',
-                },
-            },
+            commandList: '{"command-uuid":{"name":"Test Command","command":"ls"}}',
         });
 
         expect(remotePlugin.remote_commands['command-uuid']).toBeDefined();
