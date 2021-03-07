@@ -51,14 +51,14 @@ var Plugin = GObject.registerClass({
 
     get hotspot_name() {
         if (this._hotspotName === undefined)
-            this._hotspotName = "";
+            this._hotspotName = '';
 
         return this._hotspotName;
     }
 
     get hotspot_bssid() {
         if (this._hotspotBssid === undefined)
-            this._hotspotBssid = "";
+            this._hotspotBssid = '';
 
         return this._hotspotBssid;
     }
@@ -72,14 +72,12 @@ var Plugin = GObject.registerClass({
 
     get network_type() {
         if (this._networkType === undefined)
-            this._networkType = "";
+            this._networkType = '';
 
         return this._networkType;
     }
 
     get signal_strength_icon_name() {
-        let icon;
-
         if (this.signal_strength === 0)
             return 'network-cellular-signal-none-symbolic'; // SIGNAL_STRENGTH_NONE_OR_UNKNOWN
         else if (this.signal_strength === 1)
@@ -95,21 +93,19 @@ var Plugin = GObject.registerClass({
     }
 
     get network_type_icon_name() {
-        let icon;
-
-        if (this.network_type === "GSM" || this.network_type === "CDMA" || this.network_type === "iDEN")
+        if (this.network_type === 'GSM' || this.network_type === 'CDMA' || this.network_type === 'iDEN')
             return 'network-cellular-2g-symbolic';
-        else if (this.network_type === "UMTS" || this.network_type === "CDMA2000")
+        else if (this.network_type === 'UMTS' || this.network_type === 'CDMA2000')
             return 'network-cellular-3g-symbolic';
-        else if (this.network_type === "LTE")
+        else if (this.network_type === 'LTE')
             return 'network-cellular-4g-symbolic';
-        else if (this.network_type === "EDGE")
+        else if (this.network_type === 'EDGE')
             return 'network-cellular-edge-symbolic';
-        else if (this.network_type === "GPRS")
+        else if (this.network_type === 'GPRS')
             return 'network-cellular-gprs-symbolic';
-        else if (this.network_type === "HSPA")
+        else if (this.network_type === 'HSPA')
             return 'network-cellular-hspa-symbolic';
-        else if (this.network_type === "5G") // FIXME: No icon for this!
+        else if (this.network_type === '5G') // FIXME: No icon for this!
             return 'network-cellular-symbolic';
 
         return 'network-cellular-symbolic';
