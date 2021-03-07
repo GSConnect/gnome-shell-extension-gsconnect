@@ -147,8 +147,15 @@ var Plugin = GObject.registerClass({
     _receiveState(packet) {
         this._hotspotName = packet.body.hotspotName;
         this._hotspotBssid = packet.body.hotspotBssid;
-        this._networkType = packet.body.networkType;
-        this._signalStrength = packet.body.signalStrength;
+        if (packet.body.signalStrengths) {
+            // TODO: Only first SIM (subscriptionID) is supported at the moment
+            let subs = Object.keys(packet.body.signalStrengths);
+            let firstSub = Math.min.apply(null, subs);
+            let data = packet.body.signalStrengths[firstSub];
+
+            this._networkType = data.networkType;
+            this._signalStrength = data.signalStrength;
+        }
 
         // Update DBus state
         this.__state.state = this.state;
@@ -160,7 +167,7 @@ var Plugin = GObject.registerClass({
     _requestState() {
         this.device.sendPacket({
             type: 'kdeconnect.connectivity_report.request',
-            body: {request: true},
+            body: {},
         });
     }
 
