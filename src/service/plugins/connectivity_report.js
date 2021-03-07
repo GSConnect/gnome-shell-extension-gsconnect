@@ -129,9 +129,9 @@ var Plugin = GObject.registerClass({
     _receiveState(packet) {
         if (packet.body.signalStrengths) {
             // TODO: Only first SIM (subscriptionID) is supported at the moment
-            let subs = Object.keys(packet.body.signalStrengths);
-            let firstSub = Math.min.apply(null, subs);
-            let data = packet.body.signalStrengths[firstSub];
+            const subs = Object.keys(packet.body.signalStrengths);
+            const firstSub = Math.min.apply(null, subs);
+            const data = packet.body.signalStrengths[firstSub];
 
             this._networkType = data.networkType;
             this._signalStrength = data.signalStrength;
