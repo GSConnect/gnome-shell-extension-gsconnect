@@ -40,27 +40,11 @@ var Plugin = GObject.registerClass({
             //   cellular_network_type_icon,
             //   cellular_network_strength(0..4),
             //   cellular_network_strength_icon,
-            //   hotspot_name,
-            //   hotspot_bssid,
             // )
-            parameter_type: new GLib.VariantType('(ssisss)'),
+            parameter_type: new GLib.VariantType('(ssis)'),
             state: this.state,
         });
         this.device.add_action(this.__state);
-    }
-
-    get hotspot_name() {
-        if (this._hotspotName === undefined)
-            this._hotspotName = '';
-
-        return this._hotspotName;
-    }
-
-    get hotspot_bssid() {
-        if (this._hotspotBssid === undefined)
-            this._hotspotBssid = '';
-
-        return this._hotspotBssid;
     }
 
     get signal_strength() {
@@ -113,14 +97,12 @@ var Plugin = GObject.registerClass({
 
     get state() {
         return new GLib.Variant(
-            '(ssisss)',
+            '(ssis)',
             [
                 this.network_type,
                 this.network_type_icon_name,
                 this.signal_strength,
                 this.signal_strength_icon_name,
-                this.hotspot_name,
-                this.hotspot_bssid,
             ]
         );
     }
@@ -145,8 +127,6 @@ var Plugin = GObject.registerClass({
      * @param {Core.Packet} packet - A kdeconnect.connectivity_report packet
      */
     _receiveState(packet) {
-        this._hotspotName = packet.body.hotspotName;
-        this._hotspotBssid = packet.body.hotspotBssid;
         if (packet.body.signalStrengths) {
             // TODO: Only first SIM (subscriptionID) is supported at the moment
             let subs = Object.keys(packet.body.signalStrengths);
