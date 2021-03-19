@@ -745,7 +745,7 @@ const PlayerRemote = GObject.registerClass({
             type: 'kdeconnect.mpris.request',
             body: {
                 player: this.Identity,
-                setVolume: Math.floor(this.Volume * 100),
+                setVolume: Math.floor(this._Volume * 100),
             },
         });
     }
