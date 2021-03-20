@@ -734,6 +734,13 @@ const PlayerRemote = GObject.registerClass({
         return 'Stopped';
     }
 
+    get Volume() {
+        if (this._Volume === undefined)
+            this._Volume = 0.3;
+
+        return this._Volume;
+    }
+
     set Volume(level) {
         if (this._Volume === level)
             return;
