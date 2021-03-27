@@ -3,6 +3,6 @@
     "name": "GSConnect",
     "description": "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. It does not rely on the KDE Connect desktop application and will not work with it installed.\n\nKDE Connect allows devices to securely share content like notifications or files and other features like SMS messaging and remote control. The KDE Connect team has applications for Linux, BSD, Android, Sailfish and Windows.\n\nPlease report issues on Github!",
     "version": @PACKAGE_VERSION@,
-    "shell-version": [ "3.38" ],
+    "shell-version": [ "3.38", "40" ],
     "url": "@PACKAGE_URL@/wiki"
 }
