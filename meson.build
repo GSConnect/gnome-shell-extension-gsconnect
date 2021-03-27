@@ -66,7 +66,7 @@ run_target(
     'DATADIR=' + datadir,
     'LOCALEDIR=' + localedir,
     'GSCHEMADIR=' + gschemadir,
-    'build-aux/ego/mkzip.sh'
+    join_paths(meson.source_root(), 'build-aux', 'ego', 'mkzip.sh')
   ]
 )
 
@@ -79,7 +79,7 @@ run_target(
     'LOCALEDIR=' + localedir,
     'GSCHEMADIR=' + gschemadir,
     'INSTALL=true',
-    'build-aux/ego/mkzip.sh'
+    join_paths(meson.source_root(), 'build-aux', 'ego', 'mkzip.sh')
   ]
 )
 
