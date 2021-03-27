@@ -7,7 +7,7 @@ const Gtk = imports.gi.Gtk;
 // Bootstrap
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const Utils = Extension.imports.shell.utils;
-
+const Compat = Extension.imports.compat;
 
 function init() {
     Utils.installService();
@@ -18,7 +18,7 @@ function buildPrefsWidget() {
     const widget = new Gtk.Box();
 
     GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
-        widget.get_toplevel().destroy();
+        Compat.get_root(widget).destroy();
         return false;
     });
 
