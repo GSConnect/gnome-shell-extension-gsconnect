@@ -8,6 +8,7 @@ const Pango = imports.gi.Pango;
 
 const Config = imports.config;
 const Keybindings = imports.preferences.keybindings;
+const Compat = imports.compat;
 
 
 // Build a list of plugins and shortcuts for devices
@@ -383,7 +384,7 @@ var Panel = GObject.registerClass({
             text: _('Encryption Info'),
             secondary_text: this.device.encryption_info,
             modal: true,
-            transient_for: this.get_toplevel(),
+            transient_for: Compat.get_root(this),
         });
         dialog.connect('response', (dialog) => dialog.destroy());
         dialog.present();
@@ -683,7 +684,7 @@ var Panel = GObject.registerClass({
         if (this._commandEditor === undefined) {
             this._commandEditor = new CommandEditor({
                 modal: true,
-                transient_for: this.get_toplevel(),
+                transient_for: Compat.get_root(this),
                 use_header_bar: true,
             });
 

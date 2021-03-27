@@ -7,6 +7,7 @@ const Gtk = imports.gi.Gtk;
 const Contacts = imports.service.ui.contacts;
 const Messaging = imports.service.ui.messaging;
 const URI = imports.service.utils.uri;
+const Compat = imports.compat;
 
 
 var Dialog = GObject.registerClass({
@@ -186,7 +187,7 @@ var Dialog = GObject.registerClass({
 
     _onActivateLink(label, uri) {
         Gtk.show_uri_on_window(
-            this.get_toplevel(),
+            Compat.get_root(this),
             uri.includes('://') ? uri : `https://${uri}`,
             Gtk.get_current_event_time()
         );
