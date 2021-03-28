@@ -27,7 +27,7 @@ var ChannelService = GObject.registerClass({
             'port',
             'Port',
             'The port used by the service',
-            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            GObject.ParamFlags.READWRITE,
             0,  GLib.MAXUINT16,
             DEFAULT_PORT
         ),

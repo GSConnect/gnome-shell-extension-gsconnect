@@ -249,7 +249,7 @@ var Panel = GObject.registerClass({
             'device',
             'Device',
             'The device being configured',
-            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            GObject.ParamFlags.READWRITE,
             GObject.Object.$gtype
         ),
     },
