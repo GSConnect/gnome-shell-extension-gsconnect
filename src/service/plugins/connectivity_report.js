@@ -89,8 +89,11 @@ var Plugin = GObject.registerClass({
             return 'network-cellular-gprs-symbolic';
         else if (this.network_type === 'HSPA')
             return 'network-cellular-hspa-symbolic';
-        else if (this.network_type === '5G') // FIXME: No icon for this!
+        else if (this.network_type === '5G') {
+            // FIXME: No icon for this!
+            // https://gitlab.gnome.org/GNOME/adwaita-icon-theme/-/issues/114
             return 'network-cellular-symbolic';
+        }
 
         return 'network-cellular-symbolic';
     }
@@ -157,4 +160,3 @@ var Plugin = GObject.registerClass({
         super.destroy();
     }
 });
-
