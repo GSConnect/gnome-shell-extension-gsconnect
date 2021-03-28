@@ -1,16 +1,16 @@
-name: CI
+name: gnome-3-38
 
 on:
   push:
-    branches: [ master ]
+    branches: [ gnome-3-38 ]
   pull_request:
-    branches: [ master ]
+    branches: [ gnome-3-38 ]
 
 jobs:
   test:
     runs-on: ubuntu-latest
     container:
-      image: gsconnect/gsconnect-ci:latest
+      image: gsconnect/gsconnect-ci:3.38
     steps:
       - uses: actions/checkout@v2
       - name: Prepare
