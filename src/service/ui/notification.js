@@ -5,7 +5,6 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 const URI = imports.service.utils.uri;
-const Compat = imports.compat;
 
 
 /**
@@ -157,7 +156,7 @@ var ReplyDialog = GObject.registerClass({
 
     _onActivateLink(label, uri) {
         Gtk.show_uri_on_window(
-            Compat.get_root(this),
+            this.get_root(),
             uri.includes('://') ? uri : `https://${uri}`,
             Gtk.get_current_event_time()
         );

@@ -11,7 +11,6 @@ const Pango = imports.gi.Pango;
 const Contacts = imports.service.ui.contacts;
 const Sms = imports.service.plugins.sms;
 const URI = imports.service.utils.uri;
-const Compat = imports.compat;
 
 
 /*
@@ -235,7 +234,7 @@ const ConversationMessage = GObject.registerClass({
 
     _onActivateLink(label, uri) {
         Gtk.show_uri_on_window(
-            Compat.get_root(this),
+            this.get_root(),
             uri.includes('://') ? uri : `https://${uri}`,
             Gtk.get_current_event_time()
         );
