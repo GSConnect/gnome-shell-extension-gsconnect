@@ -330,7 +330,7 @@ var ChannelService = GObject.registerClass({
             'id',
             'ID',
             'The hostname or other network unique id',
-            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            GObject.ParamFlags.READWRITE,
             null
         ),
         'name': GObject.ParamSpec.string(
@@ -480,7 +480,7 @@ var Transfer = GObject.registerClass({
             'channel',
             'Channel',
             'The channel that owns this transfer',
-            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            GObject.ParamFlags.READWRITE,
             Channel.$gtype
         ),
         'completed': GObject.ParamSpec.boolean(
@@ -494,7 +494,7 @@ var Transfer = GObject.registerClass({
             'device',
             'Device',
             'The device that created this transfer',
-            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            GObject.ParamFlags.READWRITE,
             GObject.Object.$gtype
         ),
     },
