@@ -79,14 +79,14 @@ var ChannelService = GObject.registerClass({
             'certificate',
             'Certificate',
             'The TLS certificate',
-            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            GObject.ParamFlags.READWRITE,
             Gio.TlsCertificate.$gtype
         ),
         'port': GObject.ParamSpec.uint(
             'port',
             'Port',
             'The port used by the service',
-            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            GObject.ParamFlags.READWRITE,
             0,  GLib.MAXUINT16,
             DEFAULT_PORT
         ),
