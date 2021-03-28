@@ -43,7 +43,7 @@ var Interface = GObject.registerClass({
             'g-instance',
             'Instance',
             'The delegate GObject',
-            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            GObject.ParamFlags.READWRITE,
             GObject.Object.$gtype
         ),
     },
