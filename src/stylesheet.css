@@ -36,6 +36,19 @@ PopupMenu.PopupMenuSection.gsconnect-device-section
     icon-size: 16px;
 }
 
+/* Signal Strength Widget */
+.gsconnect-device-signal-strength {
+    spacing: 3px;
+}
+
+.gsconnect-device-signal-strength StLabel {
+    font-size: 0.75em;
+}
+
+.gsconnect-device-signal-strength StIcon {
+    icon-size: 16px;
+}
+
 /* List Box */
 .gsconnect-list-box {
 }

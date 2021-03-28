@@ -165,6 +165,135 @@ var Battery = GObject.registerClass({
 
 
 /**
+ * A cell signal strength widget with two icons
+ */
+var SignalStrength = GObject.registerClass({
+    GTypeName: 'GSConnectShellDeviceSignalStrength',
+}, class SignalStrength extends St.BoxLayout {
+
+    _init(params) {
+        super._init({
+            reactive: true,
+            style_class: 'gsconnect-device-signal-strength',
+            track_hover: true,
+        });
+        Object.assign(this, params);
+
+        // Network Type Icon
+        this.networkTypeIcon = new St.Icon({
+            fallback_icon_name: 'network-cellular-symbolic',
+            icon_size: 16,
+        });
+        this.add_child(this.networkTypeIcon);
+
+        // Signal Strength Icon
+        this.signalStrengthIcon = new St.Icon({
+            fallback_icon_name: 'network-cellular-offline-symbolic',
+            icon_size: 16,
+        });
+        this.add_child(this.signalStrengthIcon);
+
+        // Network Type Text
+        this.tooltip = new Tooltip.Tooltip({
+            parent: this,
+            text: null,
+        });
+
+        // ConnectivityReport GAction
+        this._actionAddedId = this.device.action_group.connect(
+            'action-added',
+            this._onActionChanged.bind(this)
+        );
+        this._actionRemovedId = this.device.action_group.connect(
+            'action-removed',
+            this._onActionChanged.bind(this)
+        );
+        this._actionStateChangedId = this.device.action_group.connect(
+            'action-state-changed',
+            this._onStateChanged.bind(this)
+        );
+
+        this._onActionChanged(this.device.action_group, 'connectivityReport');
+
+        // Cleanup on destroy
+        this.connect('destroy', this._onDestroy);
+    }
+
+    _onActionChanged(action_group, action_name) {
+        if (action_name !== 'connectivityReport')
+            return;
+
+        if (action_group.has_action('connectivityReport')) {
+            const value = action_group.get_action_state('connectivityReport');
+            const [
+                cellular_network_type,
+                cellular_network_type_icon,
+                cellular_network_strength,
+                cellular_network_strength_icon,
+                hotspot_name,
+                hotspot_bssid,
+            ] = value.deepUnpack();
+
+            this._state = {
+                cellular_network_type: cellular_network_type,
+                cellular_network_type_icon: cellular_network_type_icon,
+                cellular_network_strength: cellular_network_strength,
+                cellular_network_strength_icon: cellular_network_strength_icon,
+                hotspot_name: hotspot_name,
+                hotspot_bssid: hotspot_bssid,
+            };
+        } else {
+            this._state = null;
+        }
+
+        this._sync();
+    }
+
+    _onStateChanged(action_group, action_name, value) {
+        if (action_name !== 'connectivityReport')
+            return;
+
+        const [
+            cellular_network_type,
+            cellular_network_type_icon,
+            cellular_network_strength,
+            cellular_network_strength_icon,
+            hotspot_name,
+            hotspot_bssid,
+        ] = value.deepUnpack();
+
+        this._state = {
+            cellular_network_type: cellular_network_type,
+            cellular_network_type_icon: cellular_network_type_icon,
+            cellular_network_strength: cellular_network_strength,
+            cellular_network_strength_icon: cellular_network_strength_icon,
+            hotspot_name: hotspot_name,
+            hotspot_bssid: hotspot_bssid,
+        };
+
+        this._sync();
+    }
+
+    _onDestroy(actor) {
+        actor.device.action_group.disconnect(actor._actionAddedId);
+        actor.device.action_group.disconnect(actor._actionRemovedId);
+        actor.device.action_group.disconnect(actor._actionStateChangedId);
+    }
+
+    _sync() {
+        this.visible = !!this._state;
+
+        if (!this.visible)
+            return;
+
+        this.networkTypeIcon.icon_name = this._state.cellular_network_type_icon;
+        this.signalStrengthIcon.icon_name = this._state.cellular_network_strength_icon;
+        this.tooltip.text = this._state.cellular_network_type;
+    }
+});
+
+
+/**
  * A PopupMenu used as an information and control center for a device
  */
 var Menu = class Menu extends PopupMenu.PopupMenuSection {
@@ -188,6 +317,10 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
             'text',
             GObject.BindingFlags.SYNC_CREATE
         );
+
+        // Title -> Cellular Signal Strength
+        this._signalStrength = new SignalStrength({device: this.device});
+        this._title.actor.add_child(this._signalStrength);
 
         // Title -> Battery
         this._battery = new Battery({device: this.device});
