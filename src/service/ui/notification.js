@@ -17,21 +17,21 @@ var ReplyDialog = GObject.registerClass({
             'device',
             'Device',
             'The device associated with this window',
-            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            GObject.ParamFlags.READWRITE,
             GObject.Object
         ),
         'plugin': GObject.ParamSpec.object(
             'plugin',
             'Plugin',
             'The plugin that owns this notification',
-            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            GObject.ParamFlags.READWRITE,
             GObject.Object
         ),
         'uuid': GObject.ParamSpec.string(
             'uuid',
             'UUID',
             'The notification reply UUID',
-            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            GObject.ParamFlags.READWRITE,
             null
         ),
     },
