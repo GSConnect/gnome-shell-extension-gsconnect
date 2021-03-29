@@ -1,57 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.38.2 -->
 <interface domain="org.gnome.Shell.Extensions.GSConnect">
   <requires lib="gtk+" version="3.24"/>
   <template class="GSConnectPreferencesSectionRow" parent="GtkListBoxRow">
-    <property name="height_request">56</property>
-    <property name="selectable">False</property>
+    <property name="height-request">56</property>
     <property name="visible">True</property>
-    <property name="can_focus">True</property>
-    <accessibility>
-      <relation type="labelled-by" target="title-label"/>
-      <relation type="described-by" target="subtitle-label"/>
-    </accessibility>
+    <property name="can-focus">True</property>
+    <property name="selectable">False</property>
     <child>
+      <!-- n-columns=3 n-rows=3 -->
       <object class="GtkGrid">
-        <property name="margin_top">8</property>
-        <property name="margin_bottom">8</property>
-        <property name="margin_start">12</property>
-        <property name="margin_end">12</property>
-        <property name="column_spacing">12</property>
         <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="margin-start">12</property>
+        <property name="margin-end">12</property>
+        <property name="margin-top">8</property>
+        <property name="margin-bottom">8</property>
+        <property name="column-spacing">12</property>
         <child>
           <object class="GtkImage" id="icon-image">
-            <property name="pixel_size">32</property>
+            <property name="can-focus">False</property>
+            <property name="pixel-size">32</property>
           </object>
           <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">0</property>
-            <property name="width">1</property>
+            <property name="left-attach">0</property>
+            <property name="top-attach">0</property>
             <property name="height">2</property>
           </packing>
         </child>
         <child>
           <object class="GtkLabel" id="title-label">
+            <property name="can-focus">False</property>
             <property name="halign">start</property>
-            <property name="hexpand">True</property>
             <property name="valign">center</property>
+            <property name="hexpand">True</property>
             <property name="vexpand">True</property>
             <accessibility>
               <relation type="label-for" target="GSConnectPreferencesSectionRow"/>
             </accessibility>
           </object>
           <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">0</property>
-            <property name="width">1</property>
-            <property name="height">1</property>
+            <property name="left-attach">1</property>
+            <property name="top-attach">0</property>
           </packing>
         </child>
         <child>
           <object class="GtkLabel" id="subtitle-label">
+            <property name="can-focus">False</property>
             <property name="halign">start</property>
-            <property name="hexpand">True</property>
             <property name="valign">center</property>
+            <property name="hexpand">True</property>
             <property name="vexpand">True</property>
+            <property name="ellipsize">end</property>
             <accessibility>
               <relation type="description-for" target="GSConnectPreferencesSectionRow"/>
             </accessibility>
@@ -60,16 +60,33 @@
             </style>
           </object>
           <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">1</property>
-            <property name="width">1</property>
-            <property name="height">1</property>
+            <property name="left-attach">1</property>
+            <property name="top-attach">1</property>
           </packing>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
         </child>
         <style>
           <class name="preferences-row"/>
         </style>
       </object>
     </child>
+    <accessibility>
+      <relation type="labelled-by" target="title-label"/>
+      <relation type="described-by" target="subtitle-label"/>
+    </accessibility>
   </template>
 </interface>
