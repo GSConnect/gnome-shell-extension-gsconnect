@@ -383,7 +383,7 @@ var Panel = GObject.registerClass({
             text: _('Encryption Info'),
             secondary_text: this.device.encryption_info,
             modal: true,
-            transient_for: this.get_root(),
+            transient_for: this.get_toplevel(),
         });
         dialog.connect('response', (dialog) => dialog.destroy());
         dialog.present();
@@ -683,7 +683,7 @@ var Panel = GObject.registerClass({
         if (this._commandEditor === undefined) {
             this._commandEditor = new CommandEditor({
                 modal: true,
-                transient_for: this.get_root(),
+                transient_for: this.get_toplevel(),
                 use_header_bar: true,
             });
 

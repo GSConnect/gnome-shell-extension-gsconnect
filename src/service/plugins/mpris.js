@@ -260,6 +260,15 @@ var Plugin = GObject.registerClass({
                     canGoNext: player.CanGoNext,
                     canGoPrevious: player.CanGoPrevious,
                     canSeek: player.CanSeek,
+
+                    // default values for members that will be filled conditionally
+                    albumArtUrl: '',
+                    length: 0,
+                    artist: '',
+                    title: '',
+                    album: '',
+                    nowPlaying: '',
+                    volume: 0,
                 });
 
                 const metadata = player.Metadata;

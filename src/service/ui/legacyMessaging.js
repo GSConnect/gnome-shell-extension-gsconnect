@@ -186,7 +186,7 @@ var Dialog = GObject.registerClass({
 
     _onActivateLink(label, uri) {
         Gtk.show_uri_on_window(
-            this.get_root(),
+            this.get_toplevel(),
             uri.includes('://') ? uri : `https://${uri}`,
             Gtk.get_current_event_time()
         );
