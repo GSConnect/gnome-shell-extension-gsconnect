@@ -13,7 +13,7 @@ const URI = imports.service.utils.uri;
 var Metadata = {
     label: _('Share'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Share',
-    description: _('Enables receiving/sending of individual files from/to paired device'),
+    description: _('Share files and URLs between devices'),
     incomingCapabilities: ['kdeconnect.share.request'],
     outgoingCapabilities: ['kdeconnect.share.request'],
     actions: {

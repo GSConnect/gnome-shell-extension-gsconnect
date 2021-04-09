@@ -9,7 +9,7 @@ const PluginBase = imports.service.plugin;
 
 var Metadata = {
     label: _('Ping'),
-    description: _('Send/receive small text messages to/from the paired device'),
+    description: _('Send and receive pings'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Ping',
     incomingCapabilities: ['kdeconnect.ping'],
     outgoingCapabilities: ['kdeconnect.ping'],

@@ -12,7 +12,7 @@ const PluginBase = imports.service.plugin;
 var Metadata = {
     label: _('SFTP'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.SFTP',
-    description: _('Access files on your device using SFTP'),
+    description: _('Browse the paired device filesystem'),
     incomingCapabilities: ['kdeconnect.sftp'],
     outgoingCapabilities: ['kdeconnect.sftp.request'],
     actions: {

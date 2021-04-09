@@ -11,7 +11,7 @@ const PluginBase = imports.service.plugin;
 
 var Metadata = {
     label: _('Telephony'),
-    description: _('Be notified about incoming calls of your paired device and automatically adjust system volume during ringing/ongoing calls'),
+    description: _('Be notified about calls and adjust system volume during ringing/ongoing calls'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony',
     incomingCapabilities: [
         'kdeconnect.telephony',

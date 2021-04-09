@@ -8,7 +8,7 @@ const PluginBase = imports.service.plugin;
 
 var Metadata = {
     label: _('Clipboard'),
-    description: _('Share clipboard with paired device'),
+    description: _('Share the clipboard content'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Clipboard',
     incomingCapabilities: [
         'kdeconnect.clipboard',

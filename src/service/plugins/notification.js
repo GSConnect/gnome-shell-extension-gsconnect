@@ -13,7 +13,7 @@ const NotificationUI = imports.service.ui.notification;
 
 var Metadata = {
     label: _('Notifications'),
-    description: _('Receive/send notifications from/to the paired device.'),
+    description: _('Share notifications with the paired device'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Notification',
     incomingCapabilities: [
         'kdeconnect.notification',
