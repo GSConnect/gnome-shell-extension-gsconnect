@@ -1049,7 +1049,6 @@ var Panel = GObject.registerClass({
             height_request: 48,
             title: plugin.Metadata.label,
             subtitle: plugin.Metadata.description || '',
-            tooltipy_text: plugin.Metadata.description || '',
             visible: this._supportedPlugins.includes(name),
             widget: new Gtk.Switch({
                 active: this._enabledPlugins.includes(name),
