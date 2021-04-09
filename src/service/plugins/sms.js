@@ -12,6 +12,7 @@ const URI = imports.service.utils.uri;
 
 var Metadata = {
     label: _('SMS'),
+    description: _('Send and read SMS of the paired device and be notified of new SMS'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.SMS',
     incomingCapabilities: [
         'kdeconnect.sms.messages',
@@ -524,4 +525,3 @@ var Plugin = GObject.registerClass({
         super.destroy();
     }
 });
-

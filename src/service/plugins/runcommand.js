@@ -10,6 +10,7 @@ const PluginBase = imports.service.plugin;
 var Metadata = {
     label: _('Run Commands'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.RunCommand',
+    description: _('Run commands on your paired device or let the device run predefined commands on this PC'),
     incomingCapabilities: [
         'kdeconnect.runcommand',
         'kdeconnect.runcommand.request',
@@ -247,4 +248,3 @@ var Plugin = GObject.registerClass({
         super.destroy();
     }
 });
-

@@ -8,6 +8,7 @@ const PluginBase = imports.service.plugin;
 
 var Metadata = {
     label: _('Presentation'),
+    description: _('Use the paired device as a presenter'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Presenter',
     incomingCapabilities: ['kdeconnect.presenter'],
     outgoingCapabilities: [],
@@ -49,4 +50,3 @@ var Plugin = GObject.registerClass({
         super.destroy();
     }
 });
-

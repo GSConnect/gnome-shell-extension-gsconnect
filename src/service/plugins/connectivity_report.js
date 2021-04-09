@@ -10,6 +10,7 @@ const PluginBase = imports.service.plugin;
 
 var Metadata = {
     label: _('Connectivity Report'),
+    description: _('Display connectivity status'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.ConnectivityReport',
     incomingCapabilities: [
         'kdeconnect.connectivity_report',

@@ -10,6 +10,7 @@ const PluginBase = imports.service.plugin;
 
 var Metadata = {
     label: _('Photo'),
+    description: _('Request the paired device to take a photo and transfer it to this PC'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Photo',
     incomingCapabilities: [
         'kdeconnect.photo',
@@ -238,4 +239,3 @@ var Plugin = GObject.registerClass({
         });
     }
 });
-

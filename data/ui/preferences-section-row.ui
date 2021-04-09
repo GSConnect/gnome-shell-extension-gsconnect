@@ -52,6 +52,7 @@
             <property name="hexpand">True</property>
             <property name="valign">center</property>
             <property name="vexpand">True</property>
+            <property name="ellipsize">3</property>
             <accessibility>
               <relation type="description-for" target="GSConnectPreferencesSectionRow"/>
             </accessibility>

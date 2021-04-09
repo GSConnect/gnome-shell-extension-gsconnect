@@ -10,6 +10,7 @@ const PluginBase = imports.service.plugin;
 
 var Metadata = {
     label: _('Mousepad'),
+    description: _('Enables the paired device to act as a remote mouse and keyboard'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Mousepad',
     incomingCapabilities: [
         'kdeconnect.mousepad.echo',
@@ -316,4 +317,3 @@ var Plugin = GObject.registerClass({
         super.destroy();
     }
 });
-

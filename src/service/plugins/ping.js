@@ -9,6 +9,7 @@ const PluginBase = imports.service.plugin;
 
 var Metadata = {
     label: _('Ping'),
+    description: _('Send and receive pings'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Ping',
     incomingCapabilities: ['kdeconnect.ping'],
     outgoingCapabilities: ['kdeconnect.ping'],
@@ -66,4 +67,3 @@ var Plugin = GObject.registerClass({
         this.device.sendPacket(packet);
     }
 });
-
