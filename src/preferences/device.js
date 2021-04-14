@@ -434,6 +434,8 @@ var Panel = GObject.registerClass({
         let settings = this.pluginSettings('battery');
         this.actions.add_action(settings.create_action('send-statistics'));
         this.actions.add_action(settings.create_action('low-battery-notification'));
+        this.actions.add_action(settings.create_action('custom-battery-notification'));
+        this.actions.add_action(settings.create_action('custom-battery-notification-value'));
         this.actions.add_action(settings.create_action('full-battery-notification'));
 
         settings = this.pluginSettings('clipboard');
@@ -609,6 +611,15 @@ var Panel = GObject.registerClass({
             this.battery_system_label.visible = false;
             this.battery_system.visible = false;
         }
+    }
+
+    _setCustomChargeLevel(spin) {
+        const settings = this.pluginSettings('battery');
+        const oldLevel = settings.get_value('custom-battery-notification-value').unpack();
+        const newLevel = GLib.Variant.new('d', spin.get_value());
+
+        if (newLevel !== oldLevel)
+            settings.set_value('custom-battery-notification-value', newLevel);
     }
 
     /**
