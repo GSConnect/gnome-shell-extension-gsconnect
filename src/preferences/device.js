@@ -266,6 +266,7 @@ var Panel = GObject.registerClass({
         'battery',
         'battery-device-label', 'battery-device', 'battery-device-list',
         'battery-system-label', 'battery-system', 'battery-system-list',
+        'battery-custom-notification-value',
 
         // RunCommand
         'runcommand', 'runcommand-page',
@@ -568,6 +569,9 @@ var Panel = GObject.registerClass({
         try {
             this.battery_device_list.set_header_func(rowSeparators);
             this.battery_system_list.set_header_func(rowSeparators);
+            const settings = this.pluginSettings('battery');
+            const oldLevel = settings.get_uint('custom-battery-notification-value');
+            this.battery_custom_notification_value.set_value(oldLevel);
 
             // If the device can't handle statistics we're done
             if (!this.get_incoming_supported('battery')) {
@@ -615,11 +619,7 @@ var Panel = GObject.registerClass({
 
     _setCustomChargeLevel(spin) {
         const settings = this.pluginSettings('battery');
-        const oldLevel = settings.get_value('custom-battery-notification-value').unpack();
-        const newLevel = GLib.Variant.new('d', spin.get_value());
-
-        if (newLevel !== oldLevel)
-            settings.set_value('custom-battery-notification-value', newLevel);
+        settings.set_uint('custom-battery-notification-value', spin.get_value_as_int());
     }
 
     /**

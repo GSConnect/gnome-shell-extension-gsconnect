@@ -696,7 +696,7 @@
                                         <property name="valign">center</property>
                                         <property name="hexpand">True</property>
                                         <property name="vexpand">True</property>
-                                        <property name="label" translatable="yes">Custom Charge Level Notification</property>
+                                        <property name="label" translatable="yes">Charged Up to Custom Level Notification</property>
                                         <accessibility>
                                           <relation type="label-for" target="battery-custom-notification-row"/>
                                           <relation type="label-for" target="battery-custom-notification"/>
