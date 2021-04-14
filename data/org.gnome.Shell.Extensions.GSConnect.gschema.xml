@@ -85,7 +85,7 @@
       <default>false</default>
       <summary>Enables custom battery notification</summary>
     </key>
-    <key name="custom-battery-notification-value" type="d">
+    <key name="custom-battery-notification-value" type="u">
       <range min="1" max="99"></range>
       <default>80</default>
     </key>
