@@ -1,5 +1,7 @@
 #!/usr/bin/env gjs
 
+// -*- mode: js; -*-
+
 'use strict';
 
 imports.gi.versions.Gdk = '3.0';
