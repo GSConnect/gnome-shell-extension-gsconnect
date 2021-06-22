@@ -228,6 +228,12 @@ var Plugin = GObject.registerClass({
             }
 
             // Player Properties
+            if (packet.body.hasOwnProperty('setLoopStatus'))
+                player.LoopStatus = packet.body.setLoopStatus;
+
+            if (packet.body.hasOwnProperty('setShuffle'))
+                player.Shuffle = packet.body.setShuffle;
+
             if (packet.body.hasOwnProperty('setVolume'))
                 player.Volume = packet.body.setVolume / 100;
 
@@ -260,6 +266,8 @@ var Plugin = GObject.registerClass({
                     canGoNext: player.CanGoNext,
                     canGoPrevious: player.CanGoPrevious,
                     canSeek: player.CanSeek,
+                    loopStatus: player.LoopStatus,
+                    shuffle: player.Shuffle,
 
                     // default values for members that will be filled conditionally
                     albumArtUrl: '',
