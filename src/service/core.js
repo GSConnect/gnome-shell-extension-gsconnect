@@ -229,20 +229,17 @@ var Channel = GObject.registerClass({
                 GLib.PRIORITY_DEFAULT,
                 cancellable,
                 (stream, res) => {
-                    try {
-                        const data = stream.read_line_finish_utf8(res)[0];
+                    const data = stream.read_line_finish_utf8(res)[0];
 
-                        if (data === null) {
-                            throw new Gio.IOErrorEnum({
-                                message: 'End of stream',
-                                code: Gio.IOErrorEnum.CONNECTION_CLOSED,
-                            });
-                        }
-
-                        resolve(new Packet(data));
-                    } catch (e) {
-                        reject(e);
+                    if (data === null) {
+                        log('GSConnect: End of stream');
+                        reject(new Gio.IOErrorEnum({
+                            message: 'End of stream',
+                            code: Gio.IOErrorEnum.CONNECTION_CLOSED,
+                        }));
                     }
+
+                    resolve(new Packet(data));
                 }
             );
         });
