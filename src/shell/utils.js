@@ -165,7 +165,7 @@ function installService() {
         [`${confDir}/BraveSoftware/Brave-Browser/NativeMessagingHosts/`, google],
         [`${homeDir}/.mozilla/native-messaging-hosts/`, mozilla],
         [`${homeDir}/.config/microsoft-edge-dev/NativeMessagingHosts`, google],
-        [`${homeDir}/.config/microsoft-edge-beta/NativeMessagingHosts`, google]
+        [`${homeDir}/.config/microsoft-edge-beta/NativeMessagingHosts`, google],
     ];
 
     // If running as a user extension, ensure the DBus service, desktop entry,
