@@ -50,14 +50,14 @@ function getIcon(name) {
 
     // Check the desktop icon theme
     if (getIcon._desktop.has_icon(name))
-        return new Gio.ThemedIcon({ name: name });
+        return new Gio.ThemedIcon({name: name});
 
     // Check our GResource
     if (getIcon._resource[name] !== undefined)
         return getIcon._resource[name];
 
     // Fallback to hoping it's in the theme somewhere
-    return new Gio.ThemedIcon({ name: name });
+    return new Gio.ThemedIcon({name: name});
 }
 
 
