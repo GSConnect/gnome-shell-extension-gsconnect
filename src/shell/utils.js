@@ -50,14 +50,14 @@ function getIcon(name) {
 
     // Check the desktop icon theme
     if (getIcon._desktop.has_icon(name))
-        return new Gio.ThemedIcon({name: name});
+        return new Gio.ThemedIcon({ name: name });
 
     // Check our GResource
     if (getIcon._resource[name] !== undefined)
         return getIcon._resource[name];
 
     // Fallback to hoping it's in the theme somewhere
-    return new Gio.ThemedIcon({name: name});
+    return new Gio.ThemedIcon({ name: name });
 }
 
 
@@ -164,6 +164,8 @@ function installService() {
         [`${confDir}/google-chrome-unstable/NativeMessagingHosts/`, google],
         [`${confDir}/BraveSoftware/Brave-Browser/NativeMessagingHosts/`, google],
         [`${homeDir}/.mozilla/native-messaging-hosts/`, mozilla],
+        [`${homeDir}/.config/microsoft-edge-dev/NativeMessagingHosts`, google],
+        [`${homeDir}/.config/microsoft-edge-beta/NativeMessagingHosts`, google]
     ];
 
     // If running as a user extension, ensure the DBus service, desktop entry,
@@ -197,8 +199,8 @@ function installService() {
         for (const [dirname, contents] of manifests)
             _installFile(dirname, manifestFile, contents);
 
-    // Otherwise, if running as a system extension, ensure anything previously
-    // installed when running as a user extension is removed.
+        // Otherwise, if running as a system extension, ensure anything previously
+        // installed when running as a user extension is removed.
     } else {
         GLib.unlink(GLib.build_filenamev([dbusDir, dbusFile]));
         GLib.unlink(GLib.build_filenamev([appDir, appFile]));
