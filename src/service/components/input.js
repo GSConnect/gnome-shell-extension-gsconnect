@@ -607,11 +607,10 @@ class Controller {
      */
     pressKey(input, modifiers) {
         // detecting if input was sent by text to speech
-        if ( typeof input == "string" && input.length > 1 && modifiers == 0 ) {
+        if (typeof input === 'string' && input.length > 1 && modifiers === 0) {
             debug(input);
-            for (let i = 0; i < input.length; i++) {
+            for (let i = 0; i < input.length; i++) 
                 this.pressKey(input[i], 0);
-            }
         }
 
         try {
