@@ -169,14 +169,14 @@ var Device = GObject.registerClass({
 
         // If the device is connected use the certificate from the connection
         } else if (this.connected) {
-            remoteFingerprint = this.channel.peer_certificate.fingerprint();
+            remoteFingerprint = this.channel.peer_certificate.sha256();
 
         // Otherwise pull it out of the settings
         } else if (this.paired) {
             remoteFingerprint = Gio.TlsCertificate.new_from_pem(
                 this.settings.get_string('certificate-pem'),
                 -1
-            ).fingerprint();
+            ).sha256();
         }
 
         // FIXME: another ugly reach-around
@@ -186,7 +186,7 @@ var Device = GObject.registerClass({
             lanBackend = this.service.manager.backends.get('lan');
 
         if (lanBackend && lanBackend.certificate)
-            localFingerprint = lanBackend.certificate.fingerprint();
+            localFingerprint = lanBackend.certificate.sha256();
 
         // TRANSLATORS: Label for TLS Certificate fingerprint
         //
