@@ -6,6 +6,8 @@
     <property type="s" name="Id" access="read"/>
     <property type="s" name="Name" access="read"/>
     <property type="b" name="Paired" access="read"/>
+    <property type="b" name="Pairing" access="read"/>
+    <property type="s" name="VerifyCode" access="read"/>
     <property type="s" name="IconName" access="read"/>
     <property type="s" name="Type" access="read"/>
   </interface>

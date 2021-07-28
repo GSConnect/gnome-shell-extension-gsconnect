@@ -62,12 +62,26 @@ var Device = GObject.registerClass({
             GObject.ParamFlags.READABLE,
             null
         ),
+        'pairing': GObject.ParamSpec.boolean(
+            'pairing',
+            'Pairing',
+            'Whether the device is in the process of being paired',
+            GObject.ParamFlags.READABLE,
+            false
+        ),
         'paired': GObject.ParamSpec.boolean(
             'paired',
             'Paired',
             'Whether the device is paired',
             GObject.ParamFlags.READABLE,
             false
+        ),
+        'verify-code': GObject.ParamSpec.string(
+            'verify-code',
+            'verifyCode',
+            'The verification code for device pairing',
+            GObject.ParamFlags.READABLE,
+            null
         ),
         'type': GObject.ParamSpec.string(
             'type',
@@ -189,7 +203,6 @@ var Device = GObject.registerClass({
         if (lanBackend && lanBackend.certificate)
             localCert = lanBackend.certificate;
 
-
         let verificationKey = '';
         if (localCert && remoteCert) {
             let a = localCert.pubkey_der();
@@ -216,6 +229,10 @@ var Device = GObject.registerClass({
 
     get name() {
         return this.settings.get_string('name');
+    }
+
+    get pairing() {
+        return this.settings.get_boolean('pairing');
     }
 
     get paired() {
@@ -818,6 +835,7 @@ var Device = GObject.registerClass({
             // The device is requesting pairing
             } else {
                 this._notifyPairRequest();
+                this._setPairing(true);
             }
         // Device is requesting unpairing/rejecting our request
         } else {
@@ -868,6 +886,8 @@ var Device = GObject.registerClass({
     _resetPairRequest() {
         this.hideNotification('pair-request');
 
+        this._setPairing(false);
+
         if (this._incomingPairRequest) {
             GLib.source_remove(this._incomingPairRequest);
             this._incomingPairRequest = 0;
@@ -877,6 +897,16 @@ var Device = GObject.registerClass({
             GLib.source_remove(this._outgoingPairRequest);
             this._outgoingPairRequest = 0;
         }
+    }
+
+    /**
+     * Set the internal pairing state of the device and emit ::notify
+     *
+     * @param {boolean} pairing - The pairing state to set
+     */
+    _setPairing(pairing) {
+        this.settings.set_boolean('pairing', pairing);
+        this.notify('pairing');
     }
 
     /**
@@ -942,6 +972,8 @@ var Device = GObject.registerClass({
                     type: 'kdeconnect.pair',
                     body: {pair: true},
                 });
+
+                this._setPairing(true);
 
                 this._outgoingPairRequest = GLib.timeout_add_seconds(
                     GLib.PRIORITY_DEFAULT,

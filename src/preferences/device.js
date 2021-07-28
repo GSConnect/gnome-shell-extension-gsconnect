@@ -258,7 +258,10 @@ var Panel = GObject.registerClass({
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/preferences-device-panel.ui',
     Children: [
-        'sidebar', 'stack', 'infobar',
+        'sidebar', 'stack',
+
+        // Pairing process
+        'infobar', 'infobar_stack', 'infobar_pair', 'infobar_verify', 'verifycode',
 
         // Sharing
         'sharing', 'sharing-page',
@@ -309,13 +312,27 @@ var Panel = GObject.registerClass({
             path: `/org/gnome/shell/extensions/gsconnect/device/${device.id}/`,
         });
 
-        // Infobar
+        // Pairing infobar
         this.device.bind_property(
             'paired',
             this.infobar,
             'reveal-child',
             (GObject.BindingFlags.SYNC_CREATE |
              GObject.BindingFlags.INVERT_BOOLEAN)
+        );
+        this.device.connect('notify::pairing', () => {
+            if (this.device.pairing)
+                this.infobar_stack.visible_child = this.infobar_verify;
+            else
+                this.infobar_stack.visible_child = this.infobar_pair;
+
+        });
+
+        this.device.bind_property(
+            'verify-code',
+            this.verifycode,
+            'label',
+            GObject.BindingFlags.SYNC_CREATE
         );
 
         this._setupActions();
