@@ -605,7 +605,7 @@ class Controller {
     /*
      * High-level keyboard input
      */
-    pressKey(input, modifiers) {
+    pressKeys(input, modifiers) {
         try {
             this._ensureAdapter();
         } catch (e) {
@@ -617,13 +617,15 @@ class Controller {
         
         // detecting if input was sent by text to speech
         if (typeof input === 'string' && input.length > 1 && modifiers === 0) {
-            for (let i = 0; i < input.length; i++) {
+            for (let i = 0; i < input.length; i++)
                 this._session.pressKey(input[i], 0);
-            }
-            return
+            return;
         }
-
         this._session.pressKey(input, modifiers);
+    }
+
+    pressKey(input, modifiers) {
+        debug(new Error().stack);
     }
 
     destroy() {
