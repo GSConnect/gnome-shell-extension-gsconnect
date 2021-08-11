@@ -608,24 +608,17 @@ class Controller {
     pressKeys(input, modifiers) {
         try {
             this._ensureAdapter();
+
+            // detecting if input was sent by text to speech
+            if (typeof input === 'string' && input.length > 1 && modifiers === 0) {
+                for (let i = 0; i < input.length; i++)
+                    this._session.pressKey(input[i], 0);
+                return;
+            }
+            this._session.pressKey(input, modifiers);
         } catch (e) {
             return debug(e);
         }
-        
-        debug(input);
-        debug(modifiers);
-        
-        // detecting if input was sent by text to speech
-        if (typeof input === 'string' && input.length > 1 && modifiers === 0) {
-            for (let i = 0; i < input.length; i++)
-                this._session.pressKey(input[i], 0);
-            return;
-        }
-        this._session.pressKey(input, modifiers);
-    }
-
-    pressKey(input, modifiers) {
-        debug(new Error().stack);
     }
 
     destroy() {
