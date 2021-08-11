@@ -612,7 +612,7 @@ class Controller {
             for (let i = 0; i < input.length; i++)
                 this._session.pressKey(input[i], modifiers);
         } catch (e) {
-            return debug(e);
+            debug(e);
         }
     }
 
@@ -640,4 +640,3 @@ class Controller {
  * The service class for this component
  */
 var Component = Controller;
-
