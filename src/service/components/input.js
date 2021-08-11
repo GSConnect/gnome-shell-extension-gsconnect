@@ -609,13 +609,8 @@ class Controller {
         try {
             this._ensureAdapter();
 
-            // detecting if input was sent by text to speech
-            if (typeof input === 'string' && input.length > 1 && modifiers === 0) {
-                for (let i = 0; i < input.length; i++)
-                    this._session.pressKey(input[i], 0);
-                return;
-            }
-            this._session.pressKey(input, modifiers);
+            for (let i = 0; i < input.length; i++)
+                this._session.pressKey(input[i], modifiers);
         } catch (e) {
             return debug(e);
         }
