@@ -24,7 +24,8 @@ jobs:
       - name: Uninstalled Tests
         run: |
           meson test -C _build --suite gsconnect:data \
-                               --suite gsconnect:lint
+                               --suite gsconnect:lint \
+                               --print-errorlogs
 
       - name: Installed Tests
         run: |
