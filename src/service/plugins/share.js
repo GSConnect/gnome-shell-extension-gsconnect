@@ -195,6 +195,8 @@ var Plugin = GObject.registerClass({
                     Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
                 }
             } catch (e) {
+                debug(e, this.device.name);
+
                 title = _('Transfer Failed');
                 // TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
                 body = _('Failed to receive “%s” from %s').format(
