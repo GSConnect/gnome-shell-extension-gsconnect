@@ -714,7 +714,7 @@ const Service = GObject.registerClass({
                 this._cliShareLink(id, options);
 
             if (options.contains('share-text'))
-                this._cliShareLink(id, options);
+                this._cliShareText(id, options);
 
             return 0;
         } catch (e) {
