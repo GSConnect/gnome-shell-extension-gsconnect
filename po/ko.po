@@ -1,0 +1,1122 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the org.gnome.Shell.Extensions.GSConnect package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-12-18 19:41+0100\n"
+"PO-Revision-Date: 2021-08-31 02:02+0900\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 3.0\n"
+"Last-Translator: \n"
+"Language: ko\n"
+
+#. TRANSLATORS: Extension name
+#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:5
+#: webextension/gettext.js:29
+msgid "GSConnect"
+msgstr "GSConnect 모바일 연동"
+
+#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:6
+msgid "KDE Connect implementation for GNOME"
+msgstr ""
+
+#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:16
+msgid "GSConnect Team"
+msgstr "GSConnect 팀"
+
+#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:32
+msgid ""
+"GSConnect is a complete implementation of KDE Connect especially for GNOME "
+"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
+"has applications for Linux, BSD, Android, Sailfish, macOS and Windows."
+msgstr ""
+
+#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:35
+msgid ""
+"With GSConnect you can securely connect to mobile devices and other desktops "
+"to:"
+msgstr ""
+
+#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
+msgid "Share files, links and text"
+msgstr "파일과 링크, 텍스트 공유"
+
+#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:40
+msgid "Send and receive messages"
+msgstr "메시지를 주고받기"
+
+#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
+msgid "Sync clipboard content"
+msgstr "클립보드 내용 동기화"
+
+#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:42
+msgid "Sync contacts"
+msgstr "연락처 동기화"
+
+#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:43
+msgid "Sync notifications"
+msgstr "알림 동기화"
+
+#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
+msgid "Control media players"
+msgstr "미디어 재생기 제어"
+
+#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:45
+msgid "Control system volume"
+msgstr "시스템 음량 제어"
+
+#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:46
+msgid "Execute predefined commands"
+msgstr "사전 설정된 명령어 실행"
+
+#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:47
+msgid "And more…"
+msgstr "그 외…"
+
+#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:93
+msgid "GSConnect in GNOME Shell"
+msgstr "그놈 쉘의 GSConnect 모바일 연동"
+
+#. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
+#: data/ui/connect-dialog.ui:13 data/ui/preferences-window.ui:719
+msgid "Connect to…"
+msgstr "연결하기…"
+
+#: data/ui/connect-dialog.ui:19 data/ui/legacy-messaging-dialog.ui:13
+#: data/ui/legacy-messaging-dialog.ui:17
+#: data/ui/notification-reply-dialog.ui:12
+#: data/ui/notification-reply-dialog.ui:16
+#: data/ui/preferences-command-editor.ui:14
+#: data/ui/preferences-command-editor.ui:150
+#: data/ui/preferences-shortcut-editor.ui:12
+#: data/ui/service-device-chooser.ui:14 data/ui/service-device-chooser.ui:18
+#: data/ui/service-error-dialog.ui:13 data/ui/service-error-dialog.ui:21
+#: src/preferences/service.js:413 src/service/plugins/share.js:158
+#: src/service/plugins/share.js:284 src/service/plugins/share.js:415
+msgid "Cancel"
+msgstr "취소"
+
+#: data/ui/connect-dialog.ui:26
+msgid "Connect"
+msgstr "연결"
+
+#: data/ui/connect-dialog.ui:73
+msgid "IP Address"
+msgstr "IP주소"
+
+#: data/ui/contact-chooser.ui:49
+msgid "No contacts"
+msgstr "연락처 없음"
+
+#: data/ui/contact-chooser.ui:61 data/ui/messaging-window.ui:96
+#: data/ui/mousepad-input-dialog.ui:49 data/ui/preferences-window.ui:745
+msgid "Help"
+msgstr "도움말"
+
+#: data/ui/contact-chooser.ui:102
+msgid "Type a phone number or name"
+msgstr "휴대전화 번호 및 이름 입력"
+
+#. TRANSLATORS: All other phone number types
+#: data/ui/contacts-address-row.ui:64 src/service/ui/contacts.js:145
+msgid "Other"
+msgstr "기타"
+
+#. TRANSLATORS: Share URL by SMS
+#: data/ui/legacy-messaging-dialog.ui:8 src/service/daemon.js:288
+#: src/service/daemon.js:402 src/service/plugins/sms.js:59
+#: webextension/gettext.js:41
+msgid "Send SMS"
+msgstr "메시지로 보내기"
+
+#: data/ui/legacy-messaging-dialog.ui:25 data/ui/legacy-messaging-dialog.ui:29
+#: data/ui/notification-reply-dialog.ui:24
+#: data/ui/notification-reply-dialog.ui:28 src/service/plugins/share.js:416
+msgid "Send"
+msgstr "보내기"
+
+#: data/ui/legacy-messaging-dialog.ui:62 data/ui/messaging-window.ui:256
+#: data/ui/notification-reply-dialog.ui:61
+msgid "Device is disconnected"
+msgstr "연결이 해제되었습니다"
+
+#: data/ui/messaging-conversation.ui:84 src/service/plugins/sms.js:51
+msgid "Send Message"
+msgstr "메시지 보내기"
+
+#: data/ui/messaging-conversation.ui:85 src/shell/notification.js:69
+msgid "Type a message"
+msgstr "메시지 입력"
+
+#: data/ui/messaging-conversation.ui:92
+msgid "Message Entry"
+msgstr "메시지 목록"
+
+#: data/ui/messaging-conversation.ui:93
+msgid "Type a message and press Enter to send"
+msgstr "메시지를 입력하고 Enter를 누르면 보냅니다"
+
+#: data/ui/messaging-window.ui:14 src/service/plugins/sms.js:27
+#: src/service/ui/messaging.js:1049
+msgid "Messaging"
+msgstr "대화"
+
+#: data/ui/messaging-window.ui:23 data/ui/messaging-window.ui:36
+#: src/service/ui/messaging.js:1260
+msgid "New Conversation"
+msgstr "새 대화"
+
+#: data/ui/messaging-window.ui:113
+msgid "No Conversations"
+msgstr "대화 없음"
+
+#: data/ui/messaging-window.ui:173
+msgid "No conversation selected"
+msgstr "선택된 대화 없음"
+
+#: data/ui/messaging-window.ui:189
+msgid "Select or start a conversation"
+msgstr "대화를 시작하거나 선택하십시오"
+
+#: data/ui/preferences-command-editor.ui:7
+msgid "Edit Command"
+msgstr "명령 편집"
+
+#: data/ui/preferences-command-editor.ui:21
+msgid "Save"
+msgstr "저장"
+
+#: data/ui/preferences-command-editor.ui:54
+msgid "Name"
+msgstr "이름"
+
+#: data/ui/preferences-command-editor.ui:92
+msgid "Command Line"
+msgstr "명령어"
+
+#: data/ui/preferences-command-editor.ui:114
+#: data/ui/preferences-command-editor.ui:143
+msgid "Choose an executable"
+msgstr ""
+
+#: data/ui/preferences-command-editor.ui:157
+msgid "Open"
+msgstr "열기"
+
+#: data/ui/preferences-device-panel.ui:39 src/preferences/service.js:490
+msgid "Desktop"
+msgstr "데스크탑"
+
+#: data/ui/preferences-device-panel.ui:88
+msgid "Camera"
+msgstr "카메라"
+
+#: data/ui/preferences-device-panel.ui:145
+msgid "Clipboard Sync"
+msgstr "클립보드 동기화"
+
+#: data/ui/preferences-device-panel.ui:211
+msgid "Media Players"
+msgstr "미디어 재생기"
+
+#: data/ui/preferences-device-panel.ui:268
+msgid "Mouse & Keyboard"
+msgstr "마우스 & 키보드"
+
+#: data/ui/preferences-device-panel.ui:325
+msgid "Volume Control"
+msgstr "볼륨 제어"
+
+#: data/ui/preferences-device-panel.ui:379 src/service/plugins/sftp.js:378
+msgid "Files"
+msgstr "파일"
+
+#: data/ui/preferences-device-panel.ui:431
+msgid "Receive Files"
+msgstr "파일 받기"
+
+#: data/ui/preferences-device-panel.ui:490
+msgid "Save files to"
+msgstr "파일 저장"
+
+#: data/ui/preferences-device-panel.ui:551
+#: data/ui/preferences-device-panel.ui:2132
+msgid "Sharing"
+msgstr "공유"
+
+#: data/ui/preferences-device-panel.ui:582
+msgid "Device Battery"
+msgstr "장치 배터리"
+
+#: data/ui/preferences-device-panel.ui:633
+msgid "Low Battery Notification"
+msgstr "배터리 부족 알림"
+
+#: data/ui/preferences-device-panel.ui:692
+msgid "Fully Charged Notification"
+msgstr "충전 완료 알림"
+
+#: data/ui/preferences-device-panel.ui:746
+msgid "System Battery"
+msgstr "시스템 배터리"
+
+#: data/ui/preferences-device-panel.ui:795
+msgid "Share Statistics"
+msgstr "상태 공유"
+
+#: data/ui/preferences-device-panel.ui:849
+#: data/ui/preferences-device-panel.ui:2178 src/service/plugins/battery.js:12
+msgid "Battery"
+msgstr "배터리"
+
+#: data/ui/preferences-device-panel.ui:879
+#: data/ui/preferences-device-panel.ui:964
+#: data/ui/preferences-device-panel.ui:2224
+#: src/service/plugins/runcommand.js:23 src/service/plugins/runcommand.js:31
+#: src/service/plugins/runcommand.js:182
+msgid "Commands"
+msgstr "명령"
+
+#: data/ui/preferences-device-panel.ui:938
+msgid "Add Command"
+msgstr "명령 추가"
+
+#: data/ui/preferences-device-panel.ui:1025
+msgid "Share Notifications"
+msgstr "알림 공유"
+
+#: data/ui/preferences-device-panel.ui:1085
+msgid "Share When Active"
+msgstr "활성화 시 공유"
+
+#: data/ui/preferences-device-panel.ui:1136
+msgid "Applications"
+msgstr "프로그램"
+
+#: data/ui/preferences-device-panel.ui:1182
+#: data/ui/preferences-device-panel.ui:2270
+#: src/service/plugins/notification.js:15
+msgid "Notifications"
+msgstr "알림"
+
+#: data/ui/preferences-device-panel.ui:1240 src/service/plugins/contacts.js:22
+msgid "Contacts"
+msgstr "연락처"
+
+#: data/ui/preferences-device-panel.ui:1293
+msgid "Incoming Calls"
+msgstr "수신 전화"
+
+#: data/ui/preferences-device-panel.ui:1342
+#: data/ui/preferences-device-panel.ui:1509
+msgid "Volume"
+msgstr "음량"
+
+#: data/ui/preferences-device-panel.ui:1408
+#: data/ui/preferences-device-panel.ui:1575
+msgid "Pause Media"
+msgstr "미디어 일시정지"
+
+#: data/ui/preferences-device-panel.ui:1461
+msgid "Ongoing Calls"
+msgstr "전화 걸 때"
+
+#: data/ui/preferences-device-panel.ui:1631
+msgid "Mute Microphone"
+msgstr "마이크 끄기"
+
+#: data/ui/preferences-device-panel.ui:1685
+#: data/ui/preferences-device-panel.ui:2316 src/service/plugins/telephony.js:13
+msgid "Telephony"
+msgstr "전화"
+
+#: data/ui/preferences-device-panel.ui:1720
+msgid "Action Shortcuts"
+msgstr "동작 바로가기"
+
+#: data/ui/preferences-device-panel.ui:1736
+msgid "Reset All…"
+msgstr "모두 초기화…"
+
+#: data/ui/preferences-device-panel.ui:1788
+msgid "Shortcuts"
+msgstr "바로가기"
+
+#: data/ui/preferences-device-panel.ui:1819
+msgid "Plugins"
+msgstr "플러그인"
+
+#: data/ui/preferences-device-panel.ui:1866
+msgid "Experimental"
+msgstr ""
+
+#: data/ui/preferences-device-panel.ui:1913
+msgid "Device Cache"
+msgstr "장치 캐시"
+
+#: data/ui/preferences-device-panel.ui:1931
+msgid "Clear Cache…"
+msgstr "캐시 삭제…"
+
+#: data/ui/preferences-device-panel.ui:1970
+msgid "Legacy SMS Support"
+msgstr "레거시 SMS 지원"
+
+#: data/ui/preferences-device-panel.ui:2027
+msgid "SFTP Automount"
+msgstr "SFTP 자동 마운트"
+
+#: data/ui/preferences-device-panel.ui:2082
+#: data/ui/preferences-device-panel.ui:2408
+msgid "Advanced"
+msgstr "고급"
+
+#: data/ui/preferences-device-panel.ui:2362
+msgid "Keyboard Shortcuts"
+msgstr "키보드 단축키"
+
+#: data/ui/preferences-device-panel.ui:2426
+msgid "Device Settings"
+msgstr "장치 설정"
+
+#. TRANSLATORS: Send a pair request to the device
+#: data/ui/preferences-device-panel.ui:2470
+#: data/ui/preferences-device-panel.ui:2562 src/service/daemon.js:381
+msgid "Pair"
+msgstr "연동"
+
+#: data/ui/preferences-device-panel.ui:2502
+msgid "Device is unpaired"
+msgstr "페어링이 해제되었습니다."
+
+#: data/ui/preferences-device-panel.ui:2517
+msgid "You may configure this device before pairing"
+msgstr "먼저 모바일 장치를 설정하십시오."
+
+#. TRANSLATORS: View the TLS Certificate fingerprint
+#: data/ui/preferences-device-panel.ui:2557
+msgid "Encryption Info"
+msgstr "암호화 정보"
+
+#. TRANSLATORS: Unpair the device and notify it
+#: data/ui/preferences-device-panel.ui:2568 src/service/daemon.js:390
+msgid "Unpair"
+msgstr "페어링 해제"
+
+#. TRANSLATORS: Send clipboard content to device
+#: data/ui/preferences-device-panel.ui:2580
+msgid "To Device"
+msgstr "장치에 보내기"
+
+#. TRANSLATORS: Receive clipboard content from the device
+#: data/ui/preferences-device-panel.ui:2586
+msgid "From Device"
+msgstr "장치에서 받아오기"
+
+#. TRANSLATORS: Don't change the system volume
+#: data/ui/preferences-device-panel.ui:2598
+#: data/ui/preferences-device-panel.ui:2631
+msgid "Nothing"
+msgstr "그대로"
+
+#. TRANSLATORS: Restore the system volume
+#: data/ui/preferences-device-panel.ui:2605
+#: data/ui/preferences-device-panel.ui:2638
+msgid "Restore"
+msgstr "되돌리기"
+
+#. TRANSLATORS: Lower the system volume
+#: data/ui/preferences-device-panel.ui:2612
+#: data/ui/preferences-device-panel.ui:2645
+msgid "Lower"
+msgstr "낮추기"
+
+#. TRANSLATORS: Mute the system volume
+#. TRANSLATORS: Silence the actively ringing call
+#: data/ui/preferences-device-panel.ui:2619
+#: data/ui/preferences-device-panel.ui:2652
+#: src/service/plugins/telephony.js:194
+msgid "Mute"
+msgstr "무음"
+
+#: data/ui/preferences-shortcut-editor.ui:18
+msgid "Set"
+msgstr "설정"
+
+#. Keys for cancelling (␛) or resetting (␈) a shortcut
+#: data/ui/preferences-shortcut-editor.ui:73
+msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
+msgstr "Esc 키를 눌러서 취소하고 백스페이스 키를 눌러 초기화합니다."
+
+#: data/ui/preferences-window.ui:17
+msgid "Device Name"
+msgstr "장치 이름"
+
+#: data/ui/preferences-window.ui:54
+msgid "_Rename"
+msgstr "이름 바꾸기(_R)"
+
+#: data/ui/preferences-window.ui:91 data/ui/preferences-window.ui:105
+msgid "Refresh"
+msgstr "새로 고침"
+
+#. Service Menu -> "Mobile Settings"
+#: data/ui/preferences-window.ui:132 src/extension.js:124
+msgid "Mobile Settings"
+msgstr "모바일 설정"
+
+#: data/ui/preferences-window.ui:159
+msgid "Service Menu"
+msgstr "서비스 메뉴"
+
+#: data/ui/preferences-window.ui:182
+msgid "Device Menu"
+msgstr "장치 메뉴"
+
+#: data/ui/preferences-window.ui:196 data/ui/preferences-window.ui:211
+msgid "Edit Device Name"
+msgstr "장치 이름 바꾸기"
+
+#: data/ui/preferences-window.ui:271
+msgid "Devices"
+msgstr "장치"
+
+#: data/ui/preferences-window.ui:321 src/preferences/service.js:652
+msgid "Searching for devices…"
+msgstr "장치 검색…"
+
+#: data/ui/preferences-window.ui:346
+msgid "Browser Add-Ons"
+msgstr "웹 브라우저 확장 기능"
+
+#: data/ui/preferences-window.ui:626
+msgid "Enable"
+msgstr "사용"
+
+#: data/ui/preferences-window.ui:658
+msgid "This device is invisible to unpaired devices"
+msgstr ""
+
+#: data/ui/preferences-window.ui:670 src/service/manager.js:113
+msgid "Discovery Disabled"
+msgstr ""
+
+#: data/ui/preferences-window.ui:724
+msgid "Display Mode"
+msgstr "표시 방식"
+
+#. TRANSLATORS: Show device indicators in the top bar
+#: data/ui/preferences-window.ui:727
+msgid "Panel"
+msgstr "패널"
+
+#. TRANSLATORS: Show devices in the user menu like Bluetooth
+#: data/ui/preferences-window.ui:733
+msgid "User Menu"
+msgstr "사용자 메뉴"
+
+#. TRANSLATORS: Generate a support log
+#: data/ui/preferences-window.ui:741 src/preferences/service.js:410
+msgid "Generate Support Log"
+msgstr "지원 기록 생성"
+
+#: data/ui/preferences-window.ui:749
+msgid "About GSConnect"
+msgstr "GSConnect 정보"
+
+#: data/ui/service-device-chooser.ui:8
+msgid "Select a Device"
+msgstr "장치 선택"
+
+#: data/ui/service-device-chooser.ui:26 data/ui/service-device-chooser.ui:31
+msgid "Select"
+msgstr "선택"
+
+#. TRANSLATORS: No devices are known or available
+#: data/ui/service-device-chooser.ui:94 webextension/gettext.js:37
+msgid "No Device Found"
+msgstr "장치를 찾을 수 없음"
+
+#: data/ui/service-device-chooser.ui:111
+msgid "Device List"
+msgstr "장치 목록"
+
+#: data/ui/service-error-dialog.ui:32 data/ui/service-error-dialog.ui:40
+msgid "Report"
+msgstr "보고"
+
+#: data/ui/service-error-dialog.ui:72
+msgid "Something’s gone wrong"
+msgstr "오류가 발생했습니다"
+
+#: data/ui/service-error-dialog.ui:84
+msgid ""
+"GSConnect encountered an unexpected error. Please report the problem and "
+"include any information that may help."
+msgstr "GSConnect 모바일 연동에 예기치 못한 오류가 발생했습니다."
+
+#: data/ui/service-error-dialog.ui:118
+msgid "Technical Details"
+msgstr "기술적 정보"
+
+#. TRANSLATORS: Top-level context menu item for GSConnect
+#: nautilus-extension/nautilus-gsconnect.py:164 webextension/gettext.js:33
+msgid "Send To Mobile Device"
+msgstr "모바일 기기에 전송"
+
+#. Service Menu
+#: src/extension.js:91
+msgid "Mobile Devices"
+msgstr "모바일 연동"
+
+#: src/extension.js:119
+msgid "Turn On"
+msgstr "켜기"
+
+#: src/extension.js:377
+msgid "Turn Off"
+msgstr "끄기"
+
+#: src/preferences/device.js:655 src/preferences/device.js:661
+msgid "Edit"
+msgstr "편집"
+
+#: src/preferences/device.js:670 src/preferences/device.js:676
+msgid "Remove"
+msgstr "삭제"
+
+#: src/preferences/device.js:806 src/preferences/device.js:819
+msgid "On"
+msgstr "켬"
+
+#: src/preferences/device.js:806 src/preferences/device.js:819
+msgid "Off"
+msgstr "끔"
+
+#: src/preferences/device.js:921 src/preferences/device.js:949
+msgid "Disabled"
+msgstr "사용 안 함"
+
+#. TRANSLATORS: Summary of a keyboard shortcut function
+#. Example: Enter a new shortcut to change Messaging
+#: src/preferences/keybindings.js:64
+#, javascript-format
+msgid "Enter a new shortcut to change <b>%s</b>"
+msgstr "새 바로가기 키를 입력<b>%s</b>"
+
+#. TRANSLATORS: When a keyboard shortcut is unavailable
+#. Example: [Ctrl]+[S] is already being used
+#: src/preferences/keybindings.js:130
+#, javascript-format
+msgid "%s is already being used"
+msgstr "%s는 이미 사용 중입니다"
+
+#: src/preferences/service.js:369
+msgid "A complete KDE Connect implementation for GNOME"
+msgstr ""
+
+#. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
+#: src/preferences/service.js:378
+msgid "translator-credits"
+msgstr ""
+"kuroehanako\n"
+"<kuroekmj@gmail.com>"
+
+#: src/preferences/service.js:411
+msgid ""
+"Debug messages are being logged. Take any steps necessary to reproduce a "
+"problem then review the log."
+msgstr ""
+"디버그 메시지가 기록 중입니다. Take any steps necessary to reproduce a "
+"problem then review the log."
+
+#: src/preferences/service.js:414
+msgid "Review Log"
+msgstr "기록 보기"
+
+#: src/preferences/service.js:482
+msgid "Laptop"
+msgstr "노트북"
+
+#: src/preferences/service.js:484
+msgid "Smartphone"
+msgstr "스마트폰"
+
+#: src/preferences/service.js:486
+msgid "Tablet"
+msgstr "태블릿"
+
+#: src/preferences/service.js:488
+msgid "Television"
+msgstr "TV"
+
+#: src/preferences/service.js:510
+msgid "Unpaired"
+msgstr "페어링 안 됨"
+
+#: src/preferences/service.js:514
+msgid "Disconnected"
+msgstr "연결되지 않음"
+
+#: src/preferences/service.js:518
+msgid "Connected"
+msgstr "연결 됨"
+
+#: src/preferences/service.js:654
+msgid "Waiting for service…"
+msgstr "서비스를 기다리는 중…"
+
+#: src/service/daemon.js:294
+msgid "Dial Number"
+msgstr "다이얼 번호"
+
+#: src/service/daemon.js:300 src/service/daemon.js:498
+#: src/service/plugins/share.js:28
+msgid "Share File"
+msgstr "파일 공유"
+
+#: src/service/daemon.js:351
+msgid "List available devices"
+msgstr "사용 가능한 장치 목록"
+
+#: src/service/daemon.js:360
+msgid "List all devices"
+msgstr "모든 장치 표시"
+
+#: src/service/daemon.js:369
+msgid "Target Device"
+msgstr "대상 장치"
+
+#: src/service/daemon.js:411
+msgid "Message Body"
+msgstr "메시지 내용"
+
+#: src/service/daemon.js:423 src/service/plugins/notification.js:53
+msgid "Send Notification"
+msgstr "알림 전송"
+
+#: src/service/daemon.js:432
+msgid "Notification App Name"
+msgstr "알림 앱 이름"
+
+#: src/service/daemon.js:441
+msgid "Notification Body"
+msgstr "알림 내용"
+
+#: src/service/daemon.js:450
+msgid "Notification Icon"
+msgstr "알림 아이콘"
+
+#: src/service/daemon.js:459
+msgid "Notification ID"
+msgstr "알림 ID"
+
+#: src/service/daemon.js:468 src/service/plugins/photo.js:12
+#: src/service/plugins/photo.js:24
+msgid "Photo"
+msgstr "사진"
+
+#: src/service/daemon.js:477 src/service/plugins/ping.js:11
+#: src/service/plugins/ping.js:17 src/service/plugins/ping.js:44
+msgid "Ping"
+msgstr "핑"
+
+#: src/service/daemon.js:486 src/service/plugins/battery.js:243
+#: src/service/plugins/battery.js:272 src/service/plugins/findmyphone.js:19
+msgid "Ring"
+msgstr "벨소리 울리기"
+
+#: src/service/daemon.js:507 src/service/plugins/share.js:44
+#: src/service/ui/messaging.js:1243 src/service/ui/messaging.js:1251
+msgid "Share Link"
+msgstr "링크 공유"
+
+#: src/service/daemon.js:516 src/service/plugins/share.js:36
+msgid "Share Text"
+msgstr "텍스트 공유"
+
+#: src/service/daemon.js:528
+msgid "Show release version"
+msgstr ""
+
+#. TRANSLATORS: eg. Pair Request from Google Pixel
+#: src/service/device.js:789
+#, javascript-format
+msgid "Pair Request from %s"
+msgstr "%s(으)로부터 연결 요청이 들어왔습니다"
+
+#: src/service/device.js:796
+msgid "Reject"
+msgstr "거부"
+
+#: src/service/device.js:801
+msgid "Accept"
+msgstr "수락"
+
+#: src/service/manager.js:114
+msgid ""
+"Discovery has been disabled due to the number of devices on this network."
+msgstr ""
+
+#: src/service/backends/lan.js:162
+msgid "OpenSSL not found"
+msgstr "OpenSSL을 찾을 수 없습니다"
+
+#: src/service/backends/lan.js:452
+msgid "Port already in use"
+msgstr "이미 사용 중인 포트"
+
+#. TRANSLATORS: eg. Google Pixel: Battery is full
+#: src/service/plugins/battery.js:252
+#, javascript-format
+msgid "%s: Battery is full"
+msgstr "%s: 충전됨"
+
+#. TRANSLATORS: when the battery is fully charged
+#. TRANSLATORS: When the battery level is 100%
+#: src/service/plugins/battery.js:254 src/shell/device.js:118
+msgid "Fully Charged"
+msgstr "충전이 완료되었습니다."
+
+#. TRANSLATORS: eg. Google Pixel: Battery is low
+#: src/service/plugins/battery.js:281
+#, javascript-format
+msgid "%s: Battery is low"
+msgstr "%s: 배터리 부족"
+
+#. TRANSLATORS: eg. 15% remaining
+#: src/service/plugins/battery.js:283
+#, javascript-format
+msgid "%d%% remaining"
+msgstr "%d%% 남음"
+
+#: src/service/plugins/clipboard.js:10
+msgid "Clipboard"
+msgstr "클립보드"
+
+#: src/service/plugins/clipboard.js:22
+msgid "Clipboard Push"
+msgstr "클립보드 보내기"
+
+#: src/service/plugins/clipboard.js:30
+msgid "Clipboard Pull"
+msgstr "클립보드 받아오기"
+
+#. Ensure we have a sender
+#. TRANSLATORS: No name or phone number
+#. Contact Name
+#: src/service/plugins/contacts.js:235 src/service/plugins/contacts.js:355
+#: src/service/plugins/telephony.js:152 src/service/plugins/telephony.js:171
+#: src/service/ui/contacts.js:607 src/service/ui/messaging.js:742
+msgid "Unknown Contact"
+msgstr "알 수 없는 연락처"
+
+#: src/service/plugins/findmyphone.js:13
+msgid "Find My Phone"
+msgstr "내 휴대전화 찾기"
+
+#: src/service/plugins/mousepad.js:12
+msgid "Mousepad"
+msgstr "터치패드"
+
+#: src/service/plugins/mousepad.js:26 src/service/ui/mousepad.js:102
+msgid "Keyboard"
+msgstr "키보드"
+
+#: src/service/plugins/mpris.js:15
+msgid "MPRIS"
+msgstr "MPRIS"
+
+#: src/service/plugins/mpris.js:298
+msgid "Unknown"
+msgstr "알 수 없음"
+
+#: src/service/plugins/notification.js:29
+msgid "Cancel Notification"
+msgstr "알림 취소"
+
+#: src/service/plugins/notification.js:37
+msgid "Close Notification"
+msgstr ""
+
+#: src/service/plugins/notification.js:45
+msgid "Reply Notification"
+msgstr ""
+
+#: src/service/plugins/notification.js:61
+msgid "Activate Notification"
+msgstr "알림 활성화"
+
+#: src/service/plugins/photo.js:219 src/service/plugins/share.js:127
+#: src/service/plugins/share.js:197 src/service/plugins/share.js:307
+msgid "Transfer Failed"
+msgstr "전송 실패"
+
+#. TRANSLATORS: eg. Failed to send "photo.jpg" to Google Pixel
+#. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
+#: src/service/plugins/photo.js:221 src/service/plugins/share.js:309
+#, javascript-format
+msgid "Failed to send “%s” to %s"
+msgstr "\"%s\"(을)를 %s(으)로 전송할 수 없음"
+
+#. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
+#. eg. Ping: A message sent with ping
+#: src/service/plugins/ping.js:51
+#, javascript-format
+msgid "Ping: %s"
+msgstr ""
+
+#: src/service/plugins/presenter.js:10
+msgid "Presentation"
+msgstr "발표"
+
+#: src/service/plugins/runcommand.js:11
+msgid "Run Commands"
+msgstr "명령 실행"
+
+#: src/service/plugins/sftp.js:13
+msgid "SFTP"
+msgstr "SFTP"
+
+#: src/service/plugins/sftp.js:19
+msgid "Mount"
+msgstr "마운트"
+
+#: src/service/plugins/sftp.js:27
+msgid "Unmount"
+msgstr "마운트 해제"
+
+#: src/service/plugins/share.js:14 src/service/plugins/share.js:20
+msgid "Share"
+msgstr "공유"
+
+#. TRANSLATORS: eg. Google Pixel is not allowed to upload files
+#: src/service/plugins/share.js:129
+#, javascript-format
+msgid "%s is not allowed to upload files"
+msgstr "%s(이)가 파일 업로드를 허용하지 않음"
+
+#: src/service/plugins/share.js:151 src/service/plugins/share.js:277
+msgid "Transferring File"
+msgstr "파일 전송 중"
+
+#. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
+#: src/service/plugins/share.js:153
+#, javascript-format
+msgid "Receiving “%s” from %s"
+msgstr "%s(으)로 \"%s\"(을)를 전송 중"
+
+#: src/service/plugins/share.js:172 src/service/plugins/share.js:297
+msgid "Transfer Successful"
+msgstr "전송 성공"
+
+#. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
+#: src/service/plugins/share.js:174
+#, javascript-format
+msgid "Received “%s” from %s"
+msgstr "%s에서 \"%s\"(을)를 받음"
+
+#: src/service/plugins/share.js:180
+msgid "Open Folder"
+msgstr "폴더 열기"
+
+#: src/service/plugins/share.js:185
+msgid "Open File"
+msgstr "파일 열기"
+
+#. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
+#: src/service/plugins/share.js:199
+#, javascript-format
+msgid "Failed to receive “%s” from %s"
+msgstr "%s(으)로 \"%s\"(을)를 전송하는 데 실패했습니다"
+
+#: src/service/plugins/share.js:229
+#, javascript-format
+msgid "Text Shared By %s"
+msgstr "%s에서 공유된 텍스트"
+
+#. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
+#: src/service/plugins/share.js:279
+#, javascript-format
+msgid "Sending “%s” to %s"
+msgstr "\"%s\"(을)를 %s(으)로 보내는 중"
+
+#. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
+#: src/service/plugins/share.js:299
+#, javascript-format
+msgid "Sent “%s” to %s"
+msgstr "\"%s\"(을)를 %s(으)로 보냈습니다"
+
+#. TRANSLATORS: eg. Send files to Google Pixel
+#: src/service/plugins/share.js:367
+#, javascript-format
+msgid "Send files to %s"
+msgstr "%s(으)로 파일 전송 중"
+
+#. TRANSLATORS: Mark the file to be opened once completed
+#: src/service/plugins/share.js:371
+msgid "Open when done"
+msgstr "완료 시 열기"
+
+#. TRANSLATORS: eg. Send a link to Google Pixel
+#: src/service/plugins/share.js:410
+#, javascript-format
+msgid "Send a link to %s"
+msgstr "%s(으)로 링크 보내기"
+
+#: src/service/plugins/sms.js:14
+msgid "SMS"
+msgstr "SMS 메시지"
+
+#: src/service/plugins/sms.js:35
+msgid "New SMS (URI)"
+msgstr "새 메시지"
+
+#: src/service/plugins/sms.js:43
+msgid "Reply SMS"
+msgstr "SMS 답장"
+
+#: src/service/plugins/sms.js:67
+msgid "Share SMS"
+msgstr "SMS 공유"
+
+#: src/service/plugins/systemvolume.js:11
+msgid "System Volume"
+msgstr "시스템 음량"
+
+#: src/service/plugins/systemvolume.js:55
+msgid "PulseAudio not found"
+msgstr "PulseAudio를 찾을 수 없습니다"
+
+#. TRANSLATORS: Silence the actively ringing call
+#: src/service/plugins/telephony.js:25
+msgid "Mute Call"
+msgstr "무음"
+
+#. TRANSLATORS: The phone is ringing
+#: src/service/plugins/telephony.js:190
+msgid "Incoming call"
+msgstr "전화 올 때"
+
+#. TRANSLATORS: A phone call is active
+#: src/service/plugins/telephony.js:205
+msgid "Ongoing call"
+msgstr "전화 걸 때"
+
+#. TRANSLATORS: A fax number
+#: src/service/ui/contacts.js:130
+msgid "Fax"
+msgstr "팩스"
+
+#. TRANSLATORS: A work or office phone number
+#: src/service/ui/contacts.js:134
+msgid "Work"
+msgstr "직장"
+
+#. TRANSLATORS: A mobile or cellular phone number
+#: src/service/ui/contacts.js:138
+msgid "Mobile"
+msgstr "휴대전화"
+
+#. TRANSLATORS: A home phone number
+#: src/service/ui/contacts.js:142
+msgid "Home"
+msgstr "집"
+
+#. TRANSLATORS: A phone number (eg. "Send to 555-5555")
+#. Update UI
+#: src/service/ui/contacts.js:505 src/service/ui/contacts.js:520
+#, javascript-format
+msgid "Send to %s"
+msgstr "%s로 전화 걸기"
+
+#. TRANSLATORS: Less than a minute ago
+#: src/service/ui/messaging.js:100 src/service/ui/messaging.js:141
+msgid "Just now"
+msgstr "방금"
+
+#. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
+#: src/service/ui/messaging.js:109
+#, javascript-format
+msgid "Yesterday・%s"
+msgstr "어제・%s"
+
+#: src/service/ui/messaging.js:146
+#, javascript-format
+msgid "%d minute"
+msgid_plural "%d minutes"
+msgstr[0] "%d분"
+
+#: src/service/ui/messaging.js:393
+msgid "Not available"
+msgstr "사용할 수 없음"
+
+#: src/service/ui/messaging.js:750
+msgid "Group Message"
+msgstr "그룹 메시지"
+
+#. TRANSLATORS: An outgoing message body in a conversation summary
+#: src/service/ui/messaging.js:765
+#, javascript-format
+msgid "You: %s"
+msgstr "상대: %s"
+
+#: src/service/ui/messaging.js:951
+#, javascript-format
+msgid "And %d other contact"
+msgid_plural "And %d others"
+msgstr[0] "%d 외"
+
+#. TRANSLATORS: Displayed when the remote keyboard is not ready to accept input
+#: src/service/ui/mousepad.js:110
+#, javascript-format
+msgid "Remote keyboard on %s is not active"
+msgstr ""
+
+#. TRANSLATORS: When no time estimate for the battery is available
+#. EXAMPLE: 42% (Estimating…)
+#: src/shell/device.js:123
+#, javascript-format
+msgid "%d%% (Estimating…)"
+msgstr "%d%% (예상 중…)"
+
+#. TRANSLATORS: Estimated time until battery is charged
+#. EXAMPLE: 42% (1:15 Until Full)
+#: src/shell/device.js:132
+#, javascript-format
+msgid "%d%% (%d∶%02d Until Full)"
+msgstr "%d%% (%d : 충전 중 %02d)"
+
+#. TRANSLATORS: Estimated time until battery is empty
+#. EXAMPLE: 42% (12:15 Remaining)
+#: src/shell/device.js:140
+#, javascript-format
+msgid "%d%% (%d∶%02d Remaining)"
+msgstr "%d%% (%d: %02d 남음)"
+
+#: src/shell/notification.js:54
+msgid "Reply"
+msgstr "답장"
+
+#. TRANSLATORS: Chrome/Firefox WebExtension description
+#: webextension/gettext.js:31
+msgid "Share links with GSConnect, direct to the browser or by SMS."
+msgstr ""
+
+#. TRANSLATORS: WebExtension can't connect to GSConnect
+#: webextension/gettext.js:35
+msgid "Service Unavailable"
+msgstr "서비스를 사용할 수 없음"
+
+#. TRANSLATORS: Open URL with the device's browser
+#: webextension/gettext.js:39
+msgid "Open in Browser"
+msgstr "브라우저에서 열기"
