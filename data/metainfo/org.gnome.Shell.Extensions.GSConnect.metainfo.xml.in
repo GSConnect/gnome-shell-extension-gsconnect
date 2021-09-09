@@ -8,9 +8,9 @@
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-2.0-or-later</project_license>
 
-  <url type="homepage">https://github.com/andyholmes/gnome-shell-extension-gsconnect/</url>
-  <url type="bugtracker">https://github.com/andyholmes/gnome-shell-extension-gsconnect/issues/new</url>
-  <url type="faq">https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Help</url>
+  <url type="homepage">https://github.com/GSConnect/gnome-shell-extension-gsconnect/</url>
+  <url type="bugtracker">https://github.com/GSConnect/gnome-shell-extension-gsconnect/issues/new</url>
+  <url type="faq">https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Help</url>
   <url type="translate">https://crwd.in/gsconnect</url>
 
   <developer_name>GSConnect Team</developer_name>
@@ -50,13 +50,13 @@
 
   <releases>
     <release version="47" date="2021-06-18">
-      <url>https://github.com/andyholmes/gnome-shell-extension-gsconnect/releases/tag/v47</url>
+      <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v47</url>
     </release>
     <release version="46" date="2021-03-29">
-      <url>https://github.com/andyholmes/gnome-shell-extension-gsconnect/releases/tag/v46</url>
+      <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v46</url>
     </release>
     <release version="45" date="2021-03-28">
-      <url>https://github.com/andyholmes/gnome-shell-extension-gsconnect/releases/tag/v45</url>
+      <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v45</url>
     </release>
     <release version="44" date="2020-10-27">
       <url>https://github.com/andyholmes/gnome-shell-extension-gsconnect/releases/tag/v44</url>
@@ -98,7 +98,7 @@
 
   <screenshots>
     <screenshot type="default">
-      <image>https://raw.githubusercontent.com/andyholmes/gnome-shell-extension-gsconnect/master/data/metainfo/image-01.png</image>
+      <image>https://raw.githubusercontent.com/GSConnect/gnome-shell-extension-gsconnect/master/data/metainfo/image-01.png</image>
       <caption>GSConnect in GNOME Shell</caption>
     </screenshot>
   </screenshots>
