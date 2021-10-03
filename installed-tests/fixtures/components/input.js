@@ -14,6 +14,6 @@ var Component = class {
 
     scrollPointer() {}
 
-    pressKey() {}
+    pressKeys() {}
 };
 

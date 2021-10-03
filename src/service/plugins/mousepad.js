@@ -186,13 +186,13 @@ var Plugin = GObject.registerClass({
 
                 // Regular key (printable ASCII or Unicode)
                 if (input.key) {
-                    this._input.pressKey(input.key, modifiers);
+                    this._input.pressKeys(input.key, modifiers);
                     this._sendEcho(input);
 
                 // Special key (eg. non-printable ASCII)
                 } else if (input.specialKey && KeyMap.has(input.specialKey)) {
                     keysym = KeyMap.get(input.specialKey);
-                    this._input.pressKey(keysym, modifiers);
+                    this._input.pressKeys(keysym, modifiers);
                     this._sendEcho(input);
                 }
                 break;
