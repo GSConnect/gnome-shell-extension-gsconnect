@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-10 22:31-0700\n"
+"POT-Creation-Date: 2021-10-02 17:35-0700\n"
 "PO-Revision-Date: 2021-07-22 08:32+0200\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
@@ -106,7 +106,7 @@ msgstr "Conectar con…"
 #: data/ui/service-device-chooser.ui:14 data/ui/service-device-chooser.ui:18
 #: data/ui/service-error-dialog.ui:13 data/ui/service-error-dialog.ui:21
 #: src/preferences/service.js:413 src/service/plugins/share.js:159
-#: src/service/plugins/share.js:285 src/service/plugins/share.js:416
+#: src/service/plugins/share.js:287 src/service/plugins/share.js:418
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -145,7 +145,7 @@ msgstr "Enviar SMS"
 
 #: data/ui/legacy-messaging-dialog.ui:25 data/ui/legacy-messaging-dialog.ui:29
 #: data/ui/notification-reply-dialog.ui:24
-#: data/ui/notification-reply-dialog.ui:28 src/service/plugins/share.js:417
+#: data/ui/notification-reply-dialog.ui:28 src/service/plugins/share.js:419
 msgid "Send"
 msgstr "Enviar"
 
@@ -941,13 +941,13 @@ msgstr ""
 "equipo"
 
 #: src/service/plugins/photo.js:220 src/service/plugins/share.js:128
-#: src/service/plugins/share.js:198 src/service/plugins/share.js:308
+#: src/service/plugins/share.js:200 src/service/plugins/share.js:310
 msgid "Transfer Failed"
 msgstr "Transferencia fallida"
 
 #. TRANSLATORS: eg. Failed to send "photo.jpg" to Google Pixel
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
-#: src/service/plugins/photo.js:222 src/service/plugins/share.js:310
+#: src/service/plugins/photo.js:222 src/service/plugins/share.js:312
 #, javascript-format
 msgid "Failed to send “%s” to %s"
 msgstr "Falló el envío de «%s» a %s"
@@ -1018,7 +1018,7 @@ msgstr "Compartir archivos y URLs entre dispositivos"
 msgid "%s is not allowed to upload files"
 msgstr "%s no tiene permitido cargar archivos"
 
-#: src/service/plugins/share.js:152 src/service/plugins/share.js:278
+#: src/service/plugins/share.js:152 src/service/plugins/share.js:280
 msgid "Transferring File"
 msgstr "Transfiriendo archivo"
 
@@ -1028,7 +1028,7 @@ msgstr "Transfiriendo archivo"
 msgid "Receiving “%s” from %s"
 msgstr "Recibiendo «%s» de %s"
 
-#: src/service/plugins/share.js:173 src/service/plugins/share.js:298
+#: src/service/plugins/share.js:173 src/service/plugins/share.js:300
 msgid "Transfer Successful"
 msgstr "Transferencia exitosa"
 
@@ -1047,41 +1047,41 @@ msgid "Open File"
 msgstr "Abrir archivo"
 
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:200
+#: src/service/plugins/share.js:202
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
 msgstr "Falló la recepción de «%s» desde %s"
 
-#: src/service/plugins/share.js:230
+#: src/service/plugins/share.js:232
 #, javascript-format
 msgid "Text Shared By %s"
 msgstr "Texto compartido por %s"
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
-#: src/service/plugins/share.js:280
+#: src/service/plugins/share.js:282
 #, javascript-format
 msgid "Sending “%s” to %s"
 msgstr "Enviando «%s» a %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:300
+#: src/service/plugins/share.js:302
 #, javascript-format
 msgid "Sent “%s” to %s"
 msgstr "Se envió «%s» a %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
-#: src/service/plugins/share.js:368
+#: src/service/plugins/share.js:370
 #, javascript-format
 msgid "Send files to %s"
 msgstr "Enviar archivos a %s"
 
 #. TRANSLATORS: Mark the file to be opened once completed
-#: src/service/plugins/share.js:372
+#: src/service/plugins/share.js:374
 msgid "Open when done"
 msgstr "Abrir al terminar"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
-#: src/service/plugins/share.js:411
+#: src/service/plugins/share.js:413
 #, javascript-format
 msgid "Send a link to %s"
 msgstr "Enviar un enlace a %s"
