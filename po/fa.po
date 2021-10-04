@@ -279,7 +279,7 @@ msgstr "باتری سامانه"
 
 #: data/ui/preferences-device-panel.ui:882
 msgid "Share Statistics"
-msgstr "هم‎رسانی آمار"
+msgstr "هم‌رسانی آمار"
 
 #: data/ui/preferences-device-panel.ui:936
 #: data/ui/preferences-device-panel.ui:2265 src/service/plugins/battery.js:12
