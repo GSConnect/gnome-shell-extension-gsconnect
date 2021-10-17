@@ -95,7 +95,7 @@ const ServiceIndicator = GObject.registerClass({
 
         // Find current index of network menu
         const menuItems = AggregateMenu.menu._getMenuItems();
-        const networkMenuIndex = menuItems.indexOf(AggregateMenu._network.menu);
+        const networkMenuIndex = AggregateMenu._network ? menuItems.indexOf(AggregateMenu._network.menu) : -1;
         const menuIndex = networkMenuIndex > -1 ? networkMenuIndex : 3;
         // Place our menu below the network menu
         AggregateMenu.menu.addMenuItem(this.menu, menuIndex + 1);
