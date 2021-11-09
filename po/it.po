@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2020-09-11 05:54\n"
+"PO-Revision-Date: 2021-11-09 01:51\n"
 "Last-Translator: \n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
@@ -14,8 +14,8 @@ msgstr ""
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: it\n"
-"X-Crowdin-File: /master/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
-"X-Crowdin-File-ID: 6\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] master/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File-ID: 13\n"
 
 #. TRANSLATORS: Extension name
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:5
@@ -32,22 +32,12 @@ msgid "GSConnect Team"
 msgstr "Team GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:32
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, macOS and Windows."
-msgstr ""
-"GSConnect è un'implementazione completa di KDE Connect per GNOME Shell, "
-"integrata con Nautilus, Chrome e Firefox. Il team di GSConnect produce "
-"applicazioni per Linux, BSD, Android, Sailfish, macOS e Windows."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, macOS and Windows."
+msgstr "GSConnect è un'implementazione completa di KDE Connect per GNOME Shell, integrata con Nautilus, Chrome e Firefox. Il team di GSConnect produce applicazioni per Linux, BSD, Android, Sailfish, macOS e Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:35
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"Con GSConnect è possibile connettersi in sicurezza a dispositivi mobili e "
-"altri computer per:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
+msgstr "Con GSConnect è possibile connettersi in sicurezza a dispositivi mobili e altri computer per:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
 msgid "Share files, links and text"
@@ -265,9 +255,8 @@ msgid "Low Battery Notification"
 msgstr "Notifica di batteria scarica"
 
 #: data/ui/preferences-device-panel.ui:699
-#, fuzzy
 msgid "Charged Up to Custom Level Notification"
-msgstr "Notifica di ricarica completa"
+msgstr "Notificare il raggiungimento del livello personalizzato di carica"
 
 #: data/ui/preferences-device-panel.ui:779
 msgid "Fully Charged Notification"
@@ -567,12 +556,8 @@ msgid "Something’s gone wrong"
 msgstr "Qualcosa è andato storto"
 
 #: data/ui/service-error-dialog.ui:84
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
-"GSConnet ha riscontrato un errore imprevisto. Segnalare il problema e "
-"includere le informazioni necessarie."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "GSConnet ha riscontrato un errore imprevisto. Segnalare il problema e includere le informazioni necessarie."
 
 #: data/ui/service-error-dialog.ui:118
 msgid "Technical Details"
@@ -641,12 +626,8 @@ msgid "translator-credits"
 msgstr "Jimmy Scionti <jimmy.scionti@gmail.com>"
 
 #: src/preferences/service.js:411
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"I messaggi di debug vengono registrati. Adotta tutte le misure necessarie "
-"per riprodurre un problema, quindi rivedi il registro."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "I messaggi di debug vengono registrati. Adotta tutte le misure necessarie per riprodurre un problema, quindi rivedi il registro."
 
 #: src/preferences/service.js:414
 msgid "Review Log"
@@ -803,11 +784,8 @@ msgid "Accept"
 msgstr "Accetta"
 
 #: src/service/manager.js:114
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
-msgstr ""
-"La ricerca è stata disattivata a causa dell'elevato numero di dispositivi "
-"nella rete."
+msgid "Discovery has been disabled due to the number of devices on this network."
+msgstr "La ricerca è stata disattivata a causa dell'elevato numero di dispositivi nella rete."
 
 #: src/service/backends/lan.js:162
 msgid "OpenSSL not found"
@@ -819,7 +797,7 @@ msgstr "Porta già in uso"
 
 #: src/service/plugins/battery.js:13
 msgid "Exchange battery information"
-msgstr ""
+msgstr "Scambiare informazioni sulla batteria"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:253
@@ -837,13 +815,13 @@ msgstr "Completamente carica"
 #: src/service/plugins/battery.js:282
 #, javascript-format
 msgid "%s: Battery has reached custom charge level"
-msgstr ""
+msgstr "%s: la batteria ha raggiunto il livello di carica impostato"
 
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:284
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%d%% Charged"
-msgstr "Completamente carica"
+msgstr "%d%% carico"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:311
@@ -862,9 +840,8 @@ msgid "Clipboard"
 msgstr "Appunti"
 
 #: src/service/plugins/clipboard.js:11
-#, fuzzy
 msgid "Share the clipboard content"
-msgstr "Sincronizzare il contenuto degli appunti"
+msgstr "Condividere il contenuto degli appunti"
 
 #: src/service/plugins/clipboard.js:23
 msgid "Clipboard Push"
@@ -876,7 +853,7 @@ msgstr "Ricevi appunti"
 
 #: src/service/plugins/contacts.js:23
 msgid "Access contacts of the paired device"
-msgstr ""
+msgstr "Accedere ai contatti del dispositivo"
 
 #: src/service/plugins/findmyphone.js:13
 msgid "Find My Phone"
@@ -884,7 +861,7 @@ msgstr "Trova il mio telefono"
 
 #: src/service/plugins/findmyphone.js:14
 msgid "Ring your paired device"
-msgstr ""
+msgstr "Fare squillare il dispositivo"
 
 #: src/service/plugins/mousepad.js:12
 msgid "Mousepad"
@@ -892,7 +869,7 @@ msgstr "Mousepad"
 
 #: src/service/plugins/mousepad.js:13
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr ""
+msgstr "Permette di usare il dispositivo come un mouse e una tastiera"
 
 #: src/service/plugins/mousepad.js:27 src/service/ui/mousepad.js:102
 msgid "Keyboard"
@@ -904,7 +881,7 @@ msgstr "MPRIS"
 
 #: src/service/plugins/mpris.js:16
 msgid "Bidirectional remote media playback control"
-msgstr ""
+msgstr "Controllo di riproduzione multimediale bidirezionale"
 
 #: src/service/plugins/mpris.js:316
 msgid "Unknown"
@@ -912,7 +889,7 @@ msgstr "Sconosciuto"
 
 #: src/service/plugins/notification.js:16
 msgid "Share notifications with the paired device"
-msgstr ""
+msgstr "Condividere le notifiche con il dispositivo"
 
 #: src/service/plugins/notification.js:30
 msgid "Cancel Notification"
@@ -932,7 +909,7 @@ msgstr "Attivare le notifiche"
 
 #: src/service/plugins/photo.js:13
 msgid "Request the paired device to take a photo and transfer it to this PC"
-msgstr ""
+msgstr "Richiedere al dispositivo di scattare una foto e trasferirla su questo PC"
 
 #: src/service/plugins/photo.js:220 src/service/plugins/share.js:128
 #: src/service/plugins/share.js:200 src/service/plugins/share.js:310
@@ -947,9 +924,8 @@ msgid "Failed to send “%s” to %s"
 msgstr "Invio fallito di \"%s\" a %s"
 
 #: src/service/plugins/ping.js:12
-#, fuzzy
 msgid "Send and receive pings"
-msgstr "Inviare e ricevere messaggi"
+msgstr "Inviare e ricevere ping"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -964,17 +940,15 @@ msgstr "Presentazione"
 
 #: src/service/plugins/presenter.js:11
 msgid "Use the paired device as a presenter"
-msgstr ""
+msgstr "Usa il dispositivo come presentatore"
 
 #: src/service/plugins/runcommand.js:11
 msgid "Run Commands"
 msgstr "Esegui comandi"
 
 #: src/service/plugins/runcommand.js:13
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
-msgstr ""
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
+msgstr "Eseguire comandi sul dispositivo o lasciare che il dispositivo esegua comandi predefiniti su questo PC"
 
 #: src/service/plugins/sftp.js:13
 msgid "SFTP"
@@ -982,7 +956,7 @@ msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:15
 msgid "Browse the paired device filesystem"
-msgstr ""
+msgstr "Sfogliare il file system del dispositivo"
 
 #: src/service/plugins/sftp.js:20
 msgid "Mount"
@@ -1003,7 +977,7 @@ msgstr "Invia file"
 
 #: src/service/plugins/share.js:16
 msgid "Share files and URLs between devices"
-msgstr ""
+msgstr "Condividere file e URL tra dispositivi"
 
 #. TRANSLATORS: eg. Google Pixel is not allowed to upload files
 #: src/service/plugins/share.js:130
@@ -1085,7 +1059,7 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:15
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
+msgstr "Inviare e leggere SMS del dispositivo e ricevere le notifiche per nuovi SMS"
 
 #: src/service/plugins/sms.js:36
 msgid "New SMS (URI)"
@@ -1105,16 +1079,15 @@ msgstr "Volume di sistema"
 
 #: src/service/plugins/systemvolume.js:12
 msgid "Enable the paired device to control the system volume"
-msgstr ""
+msgstr "Permettere al dispositivo di controllare il volume del sistema"
 
 #: src/service/plugins/systemvolume.js:56
 msgid "PulseAudio not found"
 msgstr "PulseAudio non trovato"
 
 #: src/service/plugins/telephony.js:14
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgstr "Ricevere notifiche sulle telefonate e livellare il volume durante le telefonate"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:26
@@ -1235,8 +1208,7 @@ msgstr "Rispondi"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:31
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
-"Condividi collegamenti con GSConnect, direttamente nel browser o via SMS."
+msgstr "Condividi collegamenti con GSConnect, direttamente nel browser o via SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:35
@@ -1248,8 +1220,3 @@ msgstr "Servizio non disponibile"
 msgid "Open in Browser"
 msgstr "Apri nel browser"
 
-#~ msgid "On"
-#~ msgstr "On"
-
-#~ msgid "Off"
-#~ msgstr "Off"
