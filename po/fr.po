@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2020-09-22 17:06\n"
+"PO-Revision-Date: 2021-11-09 01:50\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -14,8 +14,8 @@ msgstr ""
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: fr\n"
-"X-Crowdin-File: /master/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
-"X-Crowdin-File-ID: 6\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] master/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File-ID: 13\n"
 
 #. TRANSLATORS: Extension name
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:5
@@ -32,23 +32,12 @@ msgid "GSConnect Team"
 msgstr "Équipe GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:32
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, macOS and Windows."
-msgstr ""
-"GSConnect est une implémentation complète de KDE Connect, en particulier "
-"pour GNOME Shell avec l'intégration de Nautilus, Chrome et Firefox. L'équipe "
-"KDE Connect a des applications pour Linux, BSD, Android, Sailfish, macOS et "
-"Windows."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, macOS and Windows."
+msgstr "GSConnect est une implémentation complète de KDE Connect, en particulier pour GNOME Shell avec l'intégration de Nautilus, Chrome et Firefox. L'équipe KDE Connect a des applications pour Linux, BSD, Android, Sailfish, macOS et Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:35
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"Avec GSConnect, vous pouvez vous connecter en toute sécurité à des appareils "
-"mobiles et à d'autres ordinateurs de bureau à :"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
+msgstr "Avec GSConnect, vous pouvez vous connecter en toute sécurité à des appareils mobiles et à d'autres ordinateurs de bureau à :"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
 msgid "Share files, links and text"
@@ -266,9 +255,8 @@ msgid "Low Battery Notification"
 msgstr "Notification de batterie faible"
 
 #: data/ui/preferences-device-panel.ui:699
-#, fuzzy
 msgid "Charged Up to Custom Level Notification"
-msgstr "Notification entièrement chargée"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:779
 msgid "Fully Charged Notification"
@@ -464,9 +452,7 @@ msgstr "Définir"
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:73
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Appuyez sur Echap pour annuler ou sur Retour Arrière pour réinitialiser le "
-"raccourci clavier."
+msgstr "Appuyez sur Echap pour annuler ou sur Retour Arrière pour réinitialiser le raccourci clavier."
 
 #: data/ui/preferences-window.ui:17
 msgid "Device Name"
@@ -570,12 +556,8 @@ msgid "Something’s gone wrong"
 msgstr "Quelque chose s'est mal passé"
 
 #: data/ui/service-error-dialog.ui:84
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
-"GSConnect a rencontré une erreur inattendue. Veuillez signaler le problème "
-"et inclure toutes les informations qui pourraient nous aider."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "GSConnect a rencontré une erreur inattendue. Veuillez signaler le problème et inclure toutes les informations qui pourraient nous aider."
 
 #: data/ui/service-error-dialog.ui:118
 msgid "Technical Details"
@@ -644,12 +626,8 @@ msgid "translator-credits"
 msgstr "Mickaël Coiraton <mickael.coiraton@gmail.com>"
 
 #: src/preferences/service.js:411
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Les messages de dépannage sont enregistrés. Faites le nécessaire pour "
-"reproduire le problème puis vérifiez le fichier de log."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Les messages de dépannage sont enregistrés. Faites le nécessaire pour reproduire le problème puis vérifiez le fichier de log."
 
 #: src/preferences/service.js:414
 msgid "Review Log"
@@ -806,11 +784,8 @@ msgid "Accept"
 msgstr "Accepter"
 
 #: src/service/manager.js:114
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
-msgstr ""
-"La découverte a été désactivée en raison du nombre de périphériques sur ce "
-"réseau."
+msgid "Discovery has been disabled due to the number of devices on this network."
+msgstr "La découverte a été désactivée en raison du nombre de périphériques sur ce réseau."
 
 #: src/service/backends/lan.js:162
 msgid "OpenSSL not found"
@@ -844,9 +819,9 @@ msgstr ""
 
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:284
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%d%% Charged"
-msgstr "Complètement chargé"
+msgstr ""
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:311
@@ -865,9 +840,8 @@ msgid "Clipboard"
 msgstr "Presse-papiers"
 
 #: src/service/plugins/clipboard.js:11
-#, fuzzy
 msgid "Share the clipboard content"
-msgstr "Synchroniser le contenu du presse-papiers"
+msgstr ""
 
 #: src/service/plugins/clipboard.js:23
 msgid "Clipboard Push"
@@ -950,9 +924,8 @@ msgid "Failed to send “%s” to %s"
 msgstr "Échec d'envoi de « %s » vers %s"
 
 #: src/service/plugins/ping.js:12
-#, fuzzy
 msgid "Send and receive pings"
-msgstr "Envoyer et recevoir des messages"
+msgstr ""
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -974,9 +947,7 @@ msgid "Run Commands"
 msgstr "Exécuter des commandes"
 
 #: src/service/plugins/runcommand.js:13
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
 msgstr ""
 
 #: src/service/plugins/sftp.js:13
@@ -1115,8 +1086,7 @@ msgid "PulseAudio not found"
 msgstr "PulseAudio introuvable"
 
 #: src/service/plugins/telephony.js:14
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
 msgstr ""
 
 #. TRANSLATORS: Silence the actively ringing call
@@ -1238,8 +1208,7 @@ msgstr "Répondre"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:31
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
-"Partagez des liens avec GSConnect, directement vers le navigateur ou par SMS."
+msgstr "Partagez des liens avec GSConnect, directement vers le navigateur ou par SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:35
@@ -1251,8 +1220,3 @@ msgstr "Service indisponible"
 msgid "Open in Browser"
 msgstr "Ouvrir dans le navigateur"
 
-#~ msgid "On"
-#~ msgstr "Activé"
-
-#~ msgid "Off"
-#~ msgstr "Désactivé"

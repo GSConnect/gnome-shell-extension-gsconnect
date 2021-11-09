@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2020-12-16 19:28\n"
+"PO-Revision-Date: 2021-11-09 01:51\n"
 "Last-Translator: \n"
 "Language-Team: Danish\n"
 "Language: da_DK\n"
@@ -14,8 +14,8 @@ msgstr ""
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: da\n"
-"X-Crowdin-File: /master/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
-"X-Crowdin-File-ID: 6\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] master/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File-ID: 13\n"
 
 #. TRANSLATORS: Extension name
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:5
@@ -32,19 +32,12 @@ msgid "GSConnect Team"
 msgstr "GSConnect hold"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:32
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, macOS and Windows."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, macOS and Windows."
 msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:35
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"Med GSConnect du kan tilslut sikkert til mobil enheder og andre stationær "
-"computer til:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
+msgstr "Med GSConnect du kan tilslut sikkert til mobil enheder og andre stationær computer til:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
 msgid "Share files, links and text"
@@ -262,9 +255,8 @@ msgid "Low Battery Notification"
 msgstr "Lavt Batteri Notifikation"
 
 #: data/ui/preferences-device-panel.ui:699
-#, fuzzy
 msgid "Charged Up to Custom Level Notification"
-msgstr "Fuldt Opladet Notifikation"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:779
 msgid "Fully Charged Notification"
@@ -460,9 +452,7 @@ msgstr "Indstil"
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:73
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Tryk på Esc at annullere eller backspace-nøgle for at nulstille "
-"tastaturgenvejen."
+msgstr "Tryk på Esc at annullere eller backspace-nøgle for at nulstille tastaturgenvejen."
 
 #: data/ui/preferences-window.ui:17
 msgid "Device Name"
@@ -566,9 +556,7 @@ msgid "Something’s gone wrong"
 msgstr ""
 
 #: data/ui/service-error-dialog.ui:84
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
 msgstr ""
 
 #: data/ui/service-error-dialog.ui:118
@@ -638,12 +626,8 @@ msgid "translator-credits"
 msgstr "oversætter-kreditter"
 
 #: src/preferences/service.js:411
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Fejlmeddelelser er logges. Tage de nødvendige skridt til at reproducere et "
-"problem, og gennemgå loggen."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Fejlmeddelelser er logges. Tage de nødvendige skridt til at reproducere et problem, og gennemgå loggen."
 
 #: src/preferences/service.js:414
 msgid "Review Log"
@@ -800,10 +784,8 @@ msgid "Accept"
 msgstr "Acceptere"
 
 #: src/service/manager.js:114
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
-msgstr ""
-"Opdagelse er deaktiveret på grund af antallet af enheder på dette netværk."
+msgid "Discovery has been disabled due to the number of devices on this network."
+msgstr "Opdagelse er deaktiveret på grund af antallet af enheder på dette netværk."
 
 #: src/service/backends/lan.js:162
 msgid "OpenSSL not found"
@@ -837,9 +819,9 @@ msgstr ""
 
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:284
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%d%% Charged"
-msgstr "Fuldt Opladet"
+msgstr ""
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:311
@@ -858,9 +840,8 @@ msgid "Clipboard"
 msgstr "Udklipsholder"
 
 #: src/service/plugins/clipboard.js:11
-#, fuzzy
 msgid "Share the clipboard content"
-msgstr "Synkroniser udklipsholder indhold"
+msgstr ""
 
 #: src/service/plugins/clipboard.js:23
 msgid "Clipboard Push"
@@ -943,9 +924,8 @@ msgid "Failed to send “%s” to %s"
 msgstr "Kunne ikke send \"%s\" til %s"
 
 #: src/service/plugins/ping.js:12
-#, fuzzy
 msgid "Send and receive pings"
-msgstr "Send og modtag beskeder"
+msgstr ""
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -967,9 +947,7 @@ msgid "Run Commands"
 msgstr "Udføre Kommando"
 
 #: src/service/plugins/runcommand.js:13
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
 msgstr ""
 
 #: src/service/plugins/sftp.js:13
@@ -1108,8 +1086,7 @@ msgid "PulseAudio not found"
 msgstr "PulseAudio ikke fundet"
 
 #: src/service/plugins/telephony.js:14
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
 msgstr ""
 
 #. TRANSLATORS: Silence the actively ringing call
@@ -1243,8 +1220,3 @@ msgstr "Tjenesten er ikke tilgængelig"
 msgid "Open in Browser"
 msgstr "Åbn i browser"
 
-#~ msgid "On"
-#~ msgstr "Tænde"
-
-#~ msgid "Off"
-#~ msgstr "Slukke"

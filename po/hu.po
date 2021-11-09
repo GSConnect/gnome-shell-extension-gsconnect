@@ -1,22 +1,21 @@
-# Hungarian translation of GSConnect.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the org.gnome.Shell.Extensions.GSConnect package.
-# Báthory Péter <bathory86p@gmail.com>, 2018.
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
+"Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2020-04-28 16:09+0200\n"
-"Last-Translator: Báthory Péter <bathory86p@gmail.com>\n"
-"Language-Team: \n"
-"Language: hu\n"
+"PO-Revision-Date: 2021-11-09 01:51\n"
+"Last-Translator: \n"
+"Language-Team: Hungarian\n"
+"Language: hu_HU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.3\n"
+"X-Crowdin-Project: gsconnect\n"
+"X-Crowdin-Project-ID: 327933\n"
+"X-Crowdin-Language: hu\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] master/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File-ID: 13\n"
 
 #. TRANSLATORS: Extension name
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:5
@@ -25,26 +24,19 @@ msgid "GSConnect"
 msgstr "GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:6
-#, fuzzy
 msgid "KDE Connect implementation for GNOME"
-msgstr "Teljes KDE Connect implementáció GNOME-hoz"
+msgstr "KDE Connect implementáció GNOME-hoz"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:16
-#, fuzzy
 msgid "GSConnect Team"
-msgstr "GSConnect"
+msgstr "A GSConnect csapata"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:32
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, macOS and Windows."
-msgstr ""
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, macOS and Windows."
+msgstr "A GSConnect egy teljes KDE Connect implementáció főként a GNOME Shell-hez, Nautilus, Chrome és Firefox integrációval. A KDE Connect csapatának alkalmazásai elérhetőek Linux, BSD, Android, Sailfish, macOS és Windows rendszereken."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:35
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
 msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
@@ -60,24 +52,20 @@ msgid "Sync clipboard content"
 msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:42
-#, fuzzy
 msgid "Sync contacts"
-msgstr "Nincsenek névjegyek"
+msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:43
-#, fuzzy
 msgid "Sync notifications"
-msgstr "Értesítés küldése"
+msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
-#, fuzzy
 msgid "Control media players"
-msgstr "Médialejátszók"
+msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:45
-#, fuzzy
 msgid "Control system volume"
-msgstr "Rendszerhangerő"
+msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:46
 msgid "Execute predefined commands"
@@ -163,9 +151,8 @@ msgid "Type a message"
 msgstr "Írja be az üzenetet"
 
 #: data/ui/messaging-conversation.ui:92
-#, fuzzy
 msgid "Message Entry"
-msgstr "Üzenet szövege"
+msgstr ""
 
 #: data/ui/messaging-conversation.ui:93
 msgid "Type a message and press Enter to send"
@@ -194,9 +181,8 @@ msgid "Select or start a conversation"
 msgstr "Indítson, vagy válasszon ki egy beszélgetést"
 
 #: data/ui/preferences-command-editor.ui:7
-#, fuzzy
 msgid "Edit Command"
-msgstr "Parancsok"
+msgstr "Parancs szerkesztése"
 
 #: data/ui/preferences-command-editor.ui:21
 msgid "Save"
@@ -269,9 +255,8 @@ msgid "Low Battery Notification"
 msgstr "Alacsony töltöttség értesítés"
 
 #: data/ui/preferences-device-panel.ui:699
-#, fuzzy
 msgid "Charged Up to Custom Level Notification"
-msgstr "Teljes töltöttség értesítés"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:779
 msgid "Fully Charged Notification"
@@ -299,9 +284,8 @@ msgid "Commands"
 msgstr "Parancsok"
 
 #: data/ui/preferences-device-panel.ui:1025
-#, fuzzy
 msgid "Add Command"
-msgstr "Parancsok"
+msgstr "Parancs hozzáadása"
 
 #: data/ui/preferences-device-panel.ui:1112
 msgid "Share Notifications"
@@ -386,7 +370,7 @@ msgstr "Régi fajta SMS támogatás"
 
 #: data/ui/preferences-device-panel.ui:2114
 msgid "SFTP Automount"
-msgstr ""
+msgstr "SFPT automatikus csatolás"
 
 #: data/ui/preferences-device-panel.ui:2169
 #: data/ui/preferences-device-panel.ui:2495
@@ -398,9 +382,8 @@ msgid "Keyboard Shortcuts"
 msgstr "Gyorsbillentyűk"
 
 #: data/ui/preferences-device-panel.ui:2513
-#, fuzzy
 msgid "Device Settings"
-msgstr "Mobil beállítások"
+msgstr "Eszköz beállításai"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/ui/preferences-device-panel.ui:2557
@@ -469,9 +452,7 @@ msgstr "Kiválasztás"
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:73
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"A megszakításhoz nyomjon Esc gombot, vagy Backspace-t a gyorsbillentyű "
-"visszaállításához."
+msgstr "A megszakításhoz nyomjon Esc gombot, vagy Backspace-t a gyorsbillentyű visszaállításához."
 
 #: data/ui/preferences-window.ui:17
 msgid "Device Name"
@@ -491,14 +472,12 @@ msgid "Mobile Settings"
 msgstr "Mobil beállítások"
 
 #: data/ui/preferences-window.ui:159
-#, fuzzy
 msgid "Service Menu"
-msgstr "Szolgáltatás"
+msgstr ""
 
 #: data/ui/preferences-window.ui:182
-#, fuzzy
 msgid "Device Menu"
-msgstr "Eszköz neve"
+msgstr ""
 
 #: data/ui/preferences-window.ui:196 data/ui/preferences-window.ui:211
 msgid "Edit Device Name"
@@ -535,7 +514,7 @@ msgstr "Megjelenítési mód"
 #. TRANSLATORS: Show device indicators in the top bar
 #: data/ui/preferences-window.ui:727
 msgid "Panel"
-msgstr "Panel"
+msgstr ""
 
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
 #: data/ui/preferences-window.ui:733
@@ -565,9 +544,8 @@ msgid "No Device Found"
 msgstr "Nem található eszköz"
 
 #: data/ui/service-device-chooser.ui:111
-#, fuzzy
 msgid "Device List"
-msgstr "Eszközök"
+msgstr ""
 
 #: data/ui/service-error-dialog.ui:32 data/ui/service-error-dialog.ui:40
 msgid "Report"
@@ -578,9 +556,7 @@ msgid "Something’s gone wrong"
 msgstr ""
 
 #: data/ui/service-error-dialog.ui:84
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
 msgstr ""
 
 #: data/ui/service-error-dialog.ui:118
@@ -650,12 +626,8 @@ msgid "translator-credits"
 msgstr "Báthory Péter <bathory86p@gmail.com>"
 
 #: src/preferences/service.js:411
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"A hibakeresési üzenetek naplózásra kerülnek. Tegye meg a hiba "
-"reprodukálásához szükséges lépést, majd nézze át a naplót."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "A hibakeresési üzenetek naplózásra kerülnek. Tegye meg a hiba reprodukálásához szükséges lépést, majd nézze át a naplót."
 
 #: src/preferences/service.js:414
 msgid "Review Log"
@@ -663,7 +635,7 @@ msgstr "Napló átnézése"
 
 #: src/preferences/service.js:482
 msgid "Laptop"
-msgstr "Laptop"
+msgstr ""
 
 #: src/preferences/service.js:484
 msgid "Smartphone"
@@ -754,7 +726,7 @@ msgstr "Fotó"
 #: src/service/daemon.js:477 src/service/plugins/ping.js:11
 #: src/service/plugins/ping.js:18 src/service/plugins/ping.js:45
 msgid "Ping"
-msgstr "Ping"
+msgstr ""
 
 #: src/service/daemon.js:486 src/service/plugins/battery.js:244
 #: src/service/plugins/battery.js:273 src/service/plugins/battery.js:302
@@ -812,8 +784,7 @@ msgid "Accept"
 msgstr "Elfogadás"
 
 #: src/service/manager.js:114
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "A felderítés le lett tiltva a hálózaton lévő eszközök száma miatt."
 
 #: src/service/backends/lan.js:162
@@ -821,9 +792,8 @@ msgid "OpenSSL not found"
 msgstr ""
 
 #: src/service/backends/lan.js:452
-#, fuzzy
 msgid "Port already in use"
-msgstr "%s már használatban van"
+msgstr ""
 
 #: src/service/plugins/battery.js:13
 msgid "Exchange battery information"
@@ -849,9 +819,9 @@ msgstr ""
 
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:284
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%d%% Charged"
-msgstr "Teljesen feltöltve"
+msgstr ""
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:311
@@ -907,7 +877,7 @@ msgstr "Billentyűzet"
 
 #: src/service/plugins/mpris.js:15
 msgid "MPRIS"
-msgstr "MPRIS"
+msgstr ""
 
 #: src/service/plugins/mpris.js:16
 msgid "Bidirectional remote media playback control"
@@ -918,9 +888,8 @@ msgid "Unknown"
 msgstr "Ismeretlen"
 
 #: src/service/plugins/notification.js:16
-#, fuzzy
 msgid "Share notifications with the paired device"
-msgstr "Mobileszköz értesítéseinek némítása"
+msgstr ""
 
 #: src/service/plugins/notification.js:30
 msgid "Cancel Notification"
@@ -963,7 +932,7 @@ msgstr ""
 #: src/service/plugins/ping.js:52
 #, javascript-format
 msgid "Ping: %s"
-msgstr "Ping: %s"
+msgstr ""
 
 #: src/service/plugins/presenter.js:10
 msgid "Presentation"
@@ -978,14 +947,12 @@ msgid "Run Commands"
 msgstr "Parancsok futtatása"
 
 #: src/service/plugins/runcommand.js:13
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
 msgstr ""
 
 #: src/service/plugins/sftp.js:13
 msgid "SFTP"
-msgstr "SFTP"
+msgstr ""
 
 #: src/service/plugins/sftp.js:15
 msgid "Browse the paired device filesystem"
@@ -1088,7 +1055,7 @@ msgstr "Hivatkozás küldése ide: %s"
 
 #: src/service/plugins/sms.js:14
 msgid "SMS"
-msgstr "SMS"
+msgstr ""
 
 #: src/service/plugins/sms.js:15
 msgid "Send and read SMS of the paired device and be notified of new SMS"
@@ -1115,13 +1082,11 @@ msgid "Enable the paired device to control the system volume"
 msgstr ""
 
 #: src/service/plugins/systemvolume.js:56
-#, fuzzy
 msgid "PulseAudio not found"
-msgstr "PulseAudio hiba"
+msgstr ""
 
 #: src/service/plugins/telephony.js:14
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
 msgstr ""
 
 #. TRANSLATORS: Silence the actively ringing call
@@ -1150,7 +1115,7 @@ msgstr "Kimenő hívás"
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:130
 msgid "Fax"
-msgstr "Fax"
+msgstr ""
 
 #. TRANSLATORS: A work or office phone number
 #: src/service/ui/contacts.js:134
@@ -1243,8 +1208,7 @@ msgstr "Válasz"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:31
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
-"Hivatkozások megosztása GSConnecttel, közvetlenül a böngészőből vagy SMS-ben."
+msgstr "Hivatkozások megosztása GSConnecttel, közvetlenül a böngészőből vagy SMS-ben."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:35
@@ -1256,145 +1220,3 @@ msgstr "A szolgáltatás nem érhető el"
 msgid "Open in Browser"
 msgstr "Megnyitás böngészőben"
 
-#~ msgid "On"
-#~ msgstr "Be"
-
-#~ msgid "Off"
-#~ msgstr "Ki"
-
-#~ msgid "Set Shortcut"
-#~ msgstr "Gyorsbillentyű beállítása"
-
-#~ msgid "Network Error"
-#~ msgstr "Hálózati hiba"
-
-#~ msgid "All files"
-#~ msgstr "Összes fájl"
-
-#~ msgid "Camera pictures"
-#~ msgstr "Kamera fényképek"
-
-#~ msgid "Add"
-#~ msgstr "Hozzáadás"
-
-#~ msgid "Authentication Failure"
-#~ msgstr "Hitelesítési hiba"
-
-#~ msgid "Keyboard not ready"
-#~ msgstr "A billentyűzet nem áll készen"
-
-#~ msgid "%d hour"
-#~ msgid_plural "%d hours"
-#~ msgstr[0] "%d óra"
-#~ msgstr[1] "%d óra"
-
-#~ msgid "Until %s (%s)"
-#~ msgstr "%s-ig (%s)"
-
-#~ msgid "Do Not Disturb"
-#~ msgstr "Ne zavarjanak"
-
-#~ msgid "Until you turn off Do Not Disturb"
-#~ msgstr "Amíg ön ki nem kapcsolja a Ne zavarjanak funkciót"
-
-#~ msgid "Done"
-#~ msgstr "Kész"
-
-#~ msgid "Bluetooth Device"
-#~ msgstr "Bluetooth Eszköz"
-
-#~ msgid "Command Shortcuts"
-#~ msgstr "Parancs gyorsbillentyűk"
-
-#~ msgid "Delete"
-#~ msgstr "Törlés"
-
-#~ msgid "Delete this device"
-#~ msgstr "Eszköz törlése"
-
-#~ msgid "Unpair and remove all settings and files"
-#~ msgstr "Párosítás megszüntetése és az összes beállítás és fájl törlése"
-
-#~ msgid "Switch to Bluetooth"
-#~ msgstr "Váltás Bluetoothra"
-
-#~ msgid "Switch to LAN"
-#~ msgstr "Váltás LAN-ra"
-
-#~ msgid "%s Plugin Failed To Load"
-#~ msgstr "%s bővítményt nem sikerült betölteni"
-
-#~ msgid "Reconnect"
-#~ msgstr "Újracsatlakozás"
-
-#~ msgid "Settings"
-#~ msgstr "Beállítások"
-
-#~ msgid "Additional Software Required"
-#~ msgstr "További szoftverre van szükség"
-
-#~ msgid "Starting Transfer"
-#~ msgstr "Átvitel megkezdése"
-
-#~ msgid ""
-#~ "Transferred files are placed in the <a href=\"%s\">Downloads</a> folder."
-#~ msgstr ""
-#~ "Az átküldött fájlok a <a href=\"%s\"> Letöltések</a> könyvtárban "
-#~ "találhatók."
-
-#~ msgid "About"
-#~ msgstr "Névjegy"
-
-#~ msgid "Debugger"
-#~ msgstr "Hibakereső"
-
-#~ msgid "Appearance"
-#~ msgstr "Megjelenítés"
-
-#~ msgid "Discoverable"
-#~ msgstr "Felderíthető"
-
-#~ msgid "Restart Service"
-#~ msgstr "Szolgáltatás újraindítása"
-
-#~ msgid "Remote Filesystems"
-#~ msgstr "Távoli fájlrendszerek"
-
-#~ msgid "Sound Effects"
-#~ msgstr "Hanghatások"
-
-#~ msgid "Extended Keyboard Support"
-#~ msgstr "Kibővített billentyűzet támogatás"
-
-#~ msgid "Desktop Contacts"
-#~ msgstr "Asztali névjegyek"
-
-#~ msgid "Additional Features"
-#~ msgstr "További funkciók"
-
-#~ msgid "KDE Connect"
-#~ msgstr "KDE Connect"
-
-#~ msgid "Click to open preferences"
-#~ msgstr "Kattintson ide a beállítások megnyitásához"
-
-#~ msgid "Wayland Not Supported"
-#~ msgstr "Wayland nem támogatott"
-
-#~ msgid "Remote input not supported on Wayland"
-#~ msgstr "A távoli bevitel nem támogatott Wayland alatt"
-
-#~ msgid "GSConnect: %s"
-#~ msgstr "GSConnect: %s"
-
-#~ msgid "Locate Device"
-#~ msgstr "Eszköz keresése"
-
-#~ msgid "%s asked to locate this device"
-#~ msgstr "%s kérte ennek az eszköznek a megkeresését"
-
-#~ msgid "Found"
-#~ msgstr "Megtalálva"
-
-#~ msgid "Select a contact or number"
-#~ msgstr "Válassz egy névjegyet vagy telefonszámot"
