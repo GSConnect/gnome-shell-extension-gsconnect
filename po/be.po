@@ -3,21 +3,19 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2020-11-01 17:26\n"
+"PO-Revision-Date: 2021-11-09 01:51\n"
 "Last-Translator: \n"
 "Language-Team: Belarusian\n"
 "Language: be_BY\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || n%10>=5 && n%10<=9 || n"
-"%100>=11 && n%100<=14 ? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || n%10>=5 && n%10<=9 || n%100>=11 && n%100<=14 ? 2 : 3);\n"
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: be\n"
-"X-Crowdin-File: /master/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
-"X-Crowdin-File-ID: 6\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] master/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File-ID: 13\n"
 
 #. TRANSLATORS: Extension name
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:5
@@ -34,26 +32,16 @@ msgid "GSConnect Team"
 msgstr "Каманда GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:32
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, macOS and Windows."
-msgstr ""
-"GSConnect — гэта гатовая рэалізацыя KDE Connect, спецыяльна для GNOME Shell "
-"з інтэграцыяй у Nautilus, Chrome і Firefox. Каманда KDE Connect мае праграмы "
-"для Linux, BSD, Android, Sailfish, macOS і Windows."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, macOS and Windows."
+msgstr "GSConnect — гэта гатовая рэалізацыя KDE Connect, спецыяльна для GNOME Shell з інтэграцыяй у Nautilus, Chrome і Firefox. Каманда KDE Connect мае праграмы для Linux, BSD, Android, Sailfish, macOS і Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:35
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"З дапамогай GSConnect вы можаце бяспечна падключацца да мабільных і іншых "
-"стацыянарных прылады, каб:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
+msgstr "З дапамогай GSConnect вы можаце бяспечна падключацца да мабільных і іншых стацыянарных прылады, каб:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
 msgid "Share files, links and text"
-msgstr "Абугульваць файлы, спасылкі і тэкст"
+msgstr "Абагульваць файлы, спасылкі і тэкст"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:40
 msgid "Send and receive messages"
@@ -202,7 +190,7 @@ msgstr "Захаваць"
 
 #: data/ui/preferences-command-editor.ui:54
 msgid "Name"
-msgstr "Імя"
+msgstr "Назва"
 
 #: data/ui/preferences-command-editor.ui:92
 msgid "Command Line"
@@ -267,9 +255,8 @@ msgid "Low Battery Notification"
 msgstr "Апавяшчэнне пра нізкі ўзровень зараду акумулятара"
 
 #: data/ui/preferences-device-panel.ui:699
-#, fuzzy
 msgid "Charged Up to Custom Level Notification"
-msgstr "Апавяшчэнне пра поўнасцю зараджаны акумулятар"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:779
 msgid "Fully Charged Notification"
@@ -465,8 +452,7 @@ msgstr "Задаць"
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:73
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Націсніце Esc, каб скасаваць або Прабел, каб скінуць спалучэнне клавіш."
+msgstr "Націсніце Esc, каб скасаваць або Прабел, каб скінуць спалучэнне клавіш."
 
 #: data/ui/preferences-window.ui:17
 msgid "Device Name"
@@ -570,12 +556,8 @@ msgid "Something’s gone wrong"
 msgstr "Нешта пайшло не так"
 
 #: data/ui/service-error-dialog.ui:84
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
-"У GSConnect адбылася нечаканая памылка. Паведаміце аб праблеме разам з любой "
-"інфармацыяй, якая можа дапамагчы."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "У GSConnect адбылася нечаканая памылка. Паведаміце аб праблеме разам з любой інфармацыяй, якая можа дапамагчы."
 
 #: data/ui/service-error-dialog.ui:118
 msgid "Technical Details"
@@ -646,12 +628,8 @@ msgid "translator-credits"
 msgstr "Maksim Krapiŭka <metalomaniax@gmail.com>"
 
 #: src/preferences/service.js:411
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Паведамленні адладкі былі запісаны ў журнал. Зрабіце любыя крокі неабходныя "
-"для ўзнаўлення праблемы і затым праглядзіце журнал."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Паведамленні адладкі былі запісаны ў журнал. Зрабіце любыя крокі неабходныя для ўзнаўлення праблемы і затым праглядзіце журнал."
 
 #: src/preferences/service.js:414
 msgid "Review Log"
@@ -808,8 +786,7 @@ msgid "Accept"
 msgstr "Прыняць"
 
 #: src/service/manager.js:114
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Знаходжанне было адключана праз колькасць прылад у гэтай сетцы."
 
 #: src/service/backends/lan.js:162
@@ -844,9 +821,9 @@ msgstr ""
 
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:284
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%d%% Charged"
-msgstr "Зараджана цалкам"
+msgstr ""
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:311
@@ -865,9 +842,8 @@ msgid "Clipboard"
 msgstr "Буфер абмену"
 
 #: src/service/plugins/clipboard.js:11
-#, fuzzy
 msgid "Share the clipboard content"
-msgstr "Сінхранізаваць змесціва буфера абмену"
+msgstr ""
 
 #: src/service/plugins/clipboard.js:23
 msgid "Clipboard Push"
@@ -950,9 +926,8 @@ msgid "Failed to send “%s” to %s"
 msgstr "Збой адпраўкі “%s” у %s"
 
 #: src/service/plugins/ping.js:12
-#, fuzzy
 msgid "Send and receive pings"
-msgstr "Адпраўляць і прымаць паведамленні"
+msgstr ""
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -974,9 +949,7 @@ msgid "Run Commands"
 msgstr "Запусціць каманды"
 
 #: src/service/plugins/runcommand.js:13
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
 msgstr ""
 
 #: src/service/plugins/sftp.js:13
@@ -1115,8 +1088,7 @@ msgid "PulseAudio not found"
 msgstr "PulseAudio не знойдзены"
 
 #: src/service/plugins/telephony.js:14
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
 msgstr ""
 
 #. TRANSLATORS: Silence the actively ringing call
@@ -1254,8 +1226,3 @@ msgstr "Сэрвіс недаступны"
 msgid "Open in Browser"
 msgstr "Адкрыць у браўзеры"
 
-#~ msgid "On"
-#~ msgstr "Укл."
-
-#~ msgid "Off"
-#~ msgstr "Выкл."
