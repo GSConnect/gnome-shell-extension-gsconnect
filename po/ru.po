@@ -3,21 +3,19 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2020-09-19 18:43\n"
+"PO-Revision-Date: 2021-11-09 01:50\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Language: ru_RU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 "
-"&& n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 "
-"&& n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: ru\n"
-"X-Crowdin-File: /master/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
-"X-Crowdin-File-ID: 6\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] master/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File-ID: 13\n"
 
 #. TRANSLATORS: Extension name
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:5
@@ -34,22 +32,12 @@ msgid "GSConnect Team"
 msgstr "Команда GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:32
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, macOS and Windows."
-msgstr ""
-"GSConnect - это полная реализация KDE Connect для GNOME Shell с интеграцией "
-"в Nautilus, Chrome и Firefox. Команда KDE Connect также имеет приложения для "
-"Linux, BSD, Android, Sailfish, macOS и Windows."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, macOS and Windows."
+msgstr "GSConnect - это полная реализация KDE Connect для GNOME Shell с интеграцией в Nautilus, Chrome и Firefox. Команда KDE Connect также имеет приложения для Linux, BSD, Android, Sailfish, macOS и Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:35
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"С помощью GSConnect вы можете безопасно подключиться к мобильным устройствам "
-"и другим компьютерам:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
+msgstr "С помощью GSConnect вы можете безопасно подключиться к мобильным устройствам и другим компьютерам:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
 msgid "Share files, links and text"
@@ -267,9 +255,8 @@ msgid "Low Battery Notification"
 msgstr "Уведомление о низком уровне заряда"
 
 #: data/ui/preferences-device-panel.ui:699
-#, fuzzy
 msgid "Charged Up to Custom Level Notification"
-msgstr "Индикация полной зарядки"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:779
 msgid "Fully Charged Notification"
@@ -569,12 +556,8 @@ msgid "Something’s gone wrong"
 msgstr "Что-то пошло не так"
 
 #: data/ui/service-error-dialog.ui:84
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
-"Возникла непредвиденная ошибка. Пожалуйста, сообщите о проблеме, по "
-"возможности предоставьте дополнительную информацию."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "Возникла непредвиденная ошибка. Пожалуйста, сообщите о проблеме, по возможности предоставьте дополнительную информацию."
 
 #: data/ui/service-error-dialog.ui:118
 msgid "Technical Details"
@@ -645,12 +628,8 @@ msgid "translator-credits"
 msgstr "'Losted' <losted@wants.dicksinhisan.us>"
 
 #: src/preferences/service.js:411
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Отладочные сообщения будут записаны. Произведите действия при которых "
-"произошла проблема, затем посмотрите журнал."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Отладочные сообщения будут записаны. Произведите действия при которых произошла проблема, затем посмотрите журнал."
 
 #: src/preferences/service.js:414
 msgid "Review Log"
@@ -807,8 +786,7 @@ msgid "Accept"
 msgstr "Принять"
 
 #: src/service/manager.js:114
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Обнаружение было выключено из-за количества устройств в этой сети."
 
 #: src/service/backends/lan.js:162
@@ -843,9 +821,9 @@ msgstr ""
 
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:284
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%d%% Charged"
-msgstr "Полностью заряжено"
+msgstr ""
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:311
@@ -864,9 +842,8 @@ msgid "Clipboard"
 msgstr "Буфер обмена"
 
 #: src/service/plugins/clipboard.js:11
-#, fuzzy
 msgid "Share the clipboard content"
-msgstr "Синхронизировать буфер обмена"
+msgstr ""
 
 #: src/service/plugins/clipboard.js:23
 msgid "Clipboard Push"
@@ -949,9 +926,8 @@ msgid "Failed to send “%s” to %s"
 msgstr "Не удалось отправить «%s» на %s"
 
 #: src/service/plugins/ping.js:12
-#, fuzzy
 msgid "Send and receive pings"
-msgstr "Отправка и получение сообщений"
+msgstr ""
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -973,9 +949,7 @@ msgid "Run Commands"
 msgstr "Отправить Команду"
 
 #: src/service/plugins/runcommand.js:13
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
 msgstr ""
 
 #: src/service/plugins/sftp.js:13
@@ -1114,8 +1088,7 @@ msgid "PulseAudio not found"
 msgstr "PulseAudio не найден"
 
 #: src/service/plugins/telephony.js:14
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
 msgstr ""
 
 #. TRANSLATORS: Silence the actively ringing call
@@ -1253,8 +1226,3 @@ msgstr "Сервис недоступен"
 msgid "Open in Browser"
 msgstr "Открыть в браузере"
 
-#~ msgid "On"
-#~ msgstr "Вкл"
-
-#~ msgid "Off"
-#~ msgstr "Выкл"
