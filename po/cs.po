@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2020-09-11 07:48\n"
+"PO-Revision-Date: 2021-11-09 01:51\n"
 "Last-Translator: \n"
 "Language-Team: Czech\n"
 "Language: cs_CZ\n"
@@ -14,8 +14,8 @@ msgstr ""
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: cs\n"
-"X-Crowdin-File: /master/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
-"X-Crowdin-File-ID: 6\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] master/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File-ID: 13\n"
 
 #. TRANSLATORS: Extension name
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:5
@@ -32,23 +32,12 @@ msgid "GSConnect Team"
 msgstr "Kolektiv GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:32
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, macOS and Windows."
-msgstr ""
-"GSConnect je kompletní implementace nástroje KDE Connect, určená zejména pro "
-"prostředí GNOME Shell s napojením pro správce souborů Nautilus a dále pro "
-"webové prohlížeče Chrome a Firefox. Tým KDE Connect má aplikace pro systémy "
-"Linux, BSD, Android, Sailfish, macOS a Windows."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, macOS and Windows."
+msgstr "GSConnect je kompletní implementace nástroje KDE Connect, určená zejména pro prostředí GNOME Shell s napojením pro správce souborů Nautilus a dále pro webové prohlížeče Chrome a Firefox. Tým KDE Connect má aplikace pro systémy Linux, BSD, Android, Sailfish, macOS a Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:35
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"Pomocí GSConnect se můžete bezpečně připojit k mobilním zařízením a ostatním "
-"stolním počítačům a:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
+msgstr "Pomocí GSConnect se můžete bezpečně připojit k mobilním zařízením a ostatním stolním počítačům a:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
 msgid "Share files, links and text"
@@ -72,7 +61,7 @@ msgstr "Synchronizovat oznámení"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
 msgid "Control media players"
-msgstr "Ovládat hlasitost médií"
+msgstr "Ovládat přehrávání multimédií"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:45
 msgid "Control system volume"
@@ -80,7 +69,7 @@ msgstr "Ovládat hlasitost systému"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:46
 msgid "Execute predefined commands"
-msgstr "Spustit předpřipravené příkazy"
+msgstr "Spouštět předpřipravené příkazy"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:47
 msgid "And more…"
@@ -266,9 +255,8 @@ msgid "Low Battery Notification"
 msgstr "Upozornění na téměř vybitý akumulátor"
 
 #: data/ui/preferences-device-panel.ui:699
-#, fuzzy
 msgid "Charged Up to Custom Level Notification"
-msgstr "Oznámení o úplném dobití"
+msgstr "Změněno na uživatelsky určenou úroveň upozorňování"
 
 #: data/ui/preferences-device-panel.ui:779
 msgid "Fully Charged Notification"
@@ -568,16 +556,12 @@ msgid "Something’s gone wrong"
 msgstr "Něco se pokazilo"
 
 #: data/ui/service-error-dialog.ui:84
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
-"GSConnect narazilo na neočekávanou chybu. Nahlaste prosím problém a přiložte "
-"veškeré informace, které mohou pomoci."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "GSConnect narazilo na neočekávanou chybu. Nahlaste prosím problém a přiložte veškeré informace, které mohou pomoci."
 
 #: data/ui/service-error-dialog.ui:118
 msgid "Technical Details"
-msgstr "Technická pomoc"
+msgstr "Technické podrobnosti"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: nautilus-extension/nautilus-gsconnect.py:164 webextension/gettext.js:33
@@ -601,7 +585,7 @@ msgid_plural "%d Connected"
 msgstr[0] "%d připojen"
 msgstr[1] "%d připojené"
 msgstr[2] "%d připojených"
-msgstr[3] "%d připojených"
+msgstr[3] "%d připojené"
 
 #. TRANSLATORS: A menu option to deactivate the extension
 #: src/extension.js:377
@@ -644,12 +628,8 @@ msgid "translator-credits"
 msgstr "Pavel Borecki <pavel.borecki@gmail.com>"
 
 #: src/preferences/service.js:411
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Ladící zprávy jsou zaznamenávány. Podnikněte kroky, potřebné pro vyvolání "
-"problému a pak si záznam prohlédněte."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Ladící zprávy jsou zaznamenávány. Podnikněte kroky, potřebné pro vyvolání problému a pak si záznam prohlédněte."
 
 #: src/preferences/service.js:414
 msgid "Review Log"
@@ -806,8 +786,7 @@ msgid "Accept"
 msgstr "Přijmout"
 
 #: src/service/manager.js:114
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Kvůli velkému množství zařízení na této síti bylo objevování vypnuto."
 
 #: src/service/backends/lan.js:162
@@ -820,7 +799,7 @@ msgstr "Port už je používán"
 
 #: src/service/plugins/battery.js:13
 msgid "Exchange battery information"
-msgstr ""
+msgstr "Upřesňující informace o akumulátoru"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:253
@@ -838,13 +817,13 @@ msgstr "Plně nabito"
 #: src/service/plugins/battery.js:282
 #, javascript-format
 msgid "%s: Battery has reached custom charge level"
-msgstr ""
+msgstr "%s: Akumulátor dosáhl uživatelsky určené úrovně nabití"
 
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:284
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%d%% Charged"
-msgstr "Plně nabito"
+msgstr "%d%% nabito"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:311
@@ -863,9 +842,8 @@ msgid "Clipboard"
 msgstr "Schránka"
 
 #: src/service/plugins/clipboard.js:11
-#, fuzzy
 msgid "Share the clipboard content"
-msgstr "Synchronizovat obsah schránky"
+msgstr "Sdílet obsah schránky"
 
 #: src/service/plugins/clipboard.js:23
 msgid "Clipboard Push"
@@ -877,7 +855,7 @@ msgstr "Stahování schránky"
 
 #: src/service/plugins/contacts.js:23
 msgid "Access contacts of the paired device"
-msgstr ""
+msgstr "Přistupovat ke kontaktům na spárovaném zařízení"
 
 #: src/service/plugins/findmyphone.js:13
 msgid "Find My Phone"
@@ -885,7 +863,7 @@ msgstr "Najít můj telefon"
 
 #: src/service/plugins/findmyphone.js:14
 msgid "Ring your paired device"
-msgstr ""
+msgstr "Prozvonit vaše spárované zařízení"
 
 #: src/service/plugins/mousepad.js:12
 msgid "Mousepad"
@@ -893,7 +871,7 @@ msgstr "Myš"
 
 #: src/service/plugins/mousepad.js:13
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr ""
+msgstr "Umožní použít spárované zařízení jako vzdálenou myš a klávesnici"
 
 #: src/service/plugins/mousepad.js:27 src/service/ui/mousepad.js:102
 msgid "Keyboard"
@@ -905,7 +883,7 @@ msgstr "MPRIS"
 
 #: src/service/plugins/mpris.js:16
 msgid "Bidirectional remote media playback control"
-msgstr ""
+msgstr "Obousměrné dálkové ovládání přehrávání multimédií"
 
 #: src/service/plugins/mpris.js:316
 msgid "Unknown"
@@ -913,7 +891,7 @@ msgstr "Neznámé"
 
 #: src/service/plugins/notification.js:16
 msgid "Share notifications with the paired device"
-msgstr ""
+msgstr "Sdílet oznámení se spárovaným zařízením"
 
 #: src/service/plugins/notification.js:30
 msgid "Cancel Notification"
@@ -933,7 +911,7 @@ msgstr "Zapnout oznamování"
 
 #: src/service/plugins/photo.js:13
 msgid "Request the paired device to take a photo and transfer it to this PC"
-msgstr ""
+msgstr "Vyžádat si pořízení fotky spárovaným zařízením a přenést ji do tohoto počítače"
 
 #: src/service/plugins/photo.js:220 src/service/plugins/share.js:128
 #: src/service/plugins/share.js:200 src/service/plugins/share.js:310
@@ -948,9 +926,8 @@ msgid "Failed to send “%s” to %s"
 msgstr "Nepodařilo se odeslat „%s“ do %s"
 
 #: src/service/plugins/ping.js:12
-#, fuzzy
 msgid "Send and receive pings"
-msgstr "Odesílat a přijímat zprávy"
+msgstr "Odeslat a přijmout pingy"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -965,17 +942,15 @@ msgstr "Prezentace"
 
 #: src/service/plugins/presenter.js:11
 msgid "Use the paired device as a presenter"
-msgstr ""
+msgstr "Použít spárované zařízení jako prezentátor"
 
 #: src/service/plugins/runcommand.js:11
 msgid "Run Commands"
 msgstr "Spustit příkazy"
 
 #: src/service/plugins/runcommand.js:13
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
-msgstr ""
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
+msgstr "Spustit příkazy na svém spárovaném zařízení nebo nechat zařízení spouštět předem určené příkazy na tomto počítači"
 
 #: src/service/plugins/sftp.js:13
 msgid "SFTP"
@@ -983,7 +958,7 @@ msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:15
 msgid "Browse the paired device filesystem"
-msgstr ""
+msgstr "Procházet souborový systém spárovaného zařízení"
 
 #: src/service/plugins/sftp.js:20
 msgid "Mount"
@@ -1004,7 +979,7 @@ msgstr "Sdílet"
 
 #: src/service/plugins/share.js:16
 msgid "Share files and URLs between devices"
-msgstr ""
+msgstr "Sdílet soubory a URL adresy mezi zařízeními"
 
 #. TRANSLATORS: eg. Google Pixel is not allowed to upload files
 #: src/service/plugins/share.js:130
@@ -1086,7 +1061,7 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:15
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
+msgstr "Poslat a číst SMS zprávu ze spárovaného zařízení a být upozorněni na nové SMS"
 
 #: src/service/plugins/sms.js:36
 msgid "New SMS (URI)"
@@ -1106,16 +1081,15 @@ msgstr "Hlasitost systému"
 
 #: src/service/plugins/systemvolume.js:12
 msgid "Enable the paired device to control the system volume"
-msgstr ""
+msgstr "Umožnit ovládat ze spárovaného zařízení hlasitost zvuku na systému"
 
 #: src/service/plugins/systemvolume.js:56
 msgid "PulseAudio not found"
 msgstr "PulseAudio nenalezeno"
 
 #: src/service/plugins/telephony.js:14
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgstr "Dostávejte upozornění na hovory a upravujte hlasitost počítači při vyzvánění / probíhajících hovorech"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:26
@@ -1204,7 +1178,7 @@ msgid_plural "And %d others"
 msgstr[0] "A %d další kontakt"
 msgstr[1] "A %d další kontakty"
 msgstr[2] "A %d dalších kontaktů"
-msgstr[3] "A %d další"
+msgstr[3] "A %d další kontakty"
 
 #. TRANSLATORS: Displayed when the remote keyboard is not ready to accept input
 #: src/service/ui/mousepad.js:110
@@ -1240,8 +1214,7 @@ msgstr "Odpovědět"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:31
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
-"Sdílet odkazy pomocí GSConnect, přímo do prohlížeče nebo prostřednictvím SMS."
+msgstr "Sdílet odkazy pomocí GSConnect, přímo do prohlížeče nebo prostřednictvím SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:35
@@ -1253,8 +1226,3 @@ msgstr "Služba nedostupná"
 msgid "Open in Browser"
 msgstr "Otevřít v prohlížeči"
 
-#~ msgid "On"
-#~ msgstr "Zap."
-
-#~ msgid "Off"
-#~ msgstr "Vyp."
