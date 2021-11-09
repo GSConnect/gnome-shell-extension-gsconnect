@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2020-09-11 13:40\n"
+"PO-Revision-Date: 2021-11-09 01:50\n"
 "Last-Translator: \n"
 "Language-Team: Turkish\n"
 "Language: tr_TR\n"
@@ -14,8 +14,8 @@ msgstr ""
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: tr\n"
-"X-Crowdin-File: /master/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
-"X-Crowdin-File-ID: 6\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] master/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File-ID: 13\n"
 
 #. TRANSLATORS: Extension name
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:5
@@ -32,22 +32,12 @@ msgid "GSConnect Team"
 msgstr "GSConnect Takımı"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:32
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, macOS and Windows."
-msgstr ""
-"GSConnect, özellikle Nautilus, Chrome ve Firefox bütünleşmeli GNOME Shell "
-"için eksiksiz bir KDE Connect uygulamasıdır. KDE Connect ekibinin Linux, "
-"BSD, Android, Sailfish, macOS ve Windows için uygulamaları vardır."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, macOS and Windows."
+msgstr "GSConnect, özellikle Nautilus, Chrome ve Firefox bütünleşmeli GNOME Shell için eksiksiz bir KDE Connect uygulamasıdır. KDE Connect ekibinin Linux, BSD, Android, Sailfish, macOS ve Windows için uygulamaları vardır."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:35
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"GSConnect ile mobil cihazlara ve diğer masaüstlerine bağlanarak şunları "
-"yapabilirsiniz:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
+msgstr "GSConnect ile mobil cihazlara ve diğer masaüstlerine bağlanarak şunları yapabilirsiniz:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
 msgid "Share files, links and text"
@@ -265,9 +255,8 @@ msgid "Low Battery Notification"
 msgstr "Düşük Batarya Bildirimi"
 
 #: data/ui/preferences-device-panel.ui:699
-#, fuzzy
 msgid "Charged Up to Custom Level Notification"
-msgstr "Tam Şarj Bildirimi"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:779
 msgid "Fully Charged Notification"
@@ -463,8 +452,7 @@ msgstr "Ayarla"
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:73
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Klavye kısayolunu sıfırlamak için iptal, geri almak için ESC tuşuna bas."
+msgstr "Klavye kısayolunu sıfırlamak için iptal, geri almak için ESC tuşuna bas."
 
 #: data/ui/preferences-window.ui:17
 msgid "Device Name"
@@ -568,12 +556,8 @@ msgid "Something’s gone wrong"
 msgstr "Bir şeyler ters gitti"
 
 #: data/ui/service-error-dialog.ui:84
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
-"GSConnect beklenmedik bir hatayla karşılaştı. Lütfen sorunu bildirin ve "
-"yardımcı olabilecek tüm bilgileri ekleyin."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "GSConnect beklenmedik bir hatayla karşılaştı. Lütfen sorunu bildirin ve yardımcı olabilecek tüm bilgileri ekleyin."
 
 #: data/ui/service-error-dialog.ui:118
 msgid "Technical Details"
@@ -639,18 +623,13 @@ msgstr "GNOME için eksiksiz bir KDE Connect uygulaması"
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:378
 msgid "translator-credits"
-msgstr ""
-"Serdar Sağlam <teknomobil@yandex.com>\n"
+msgstr "Serdar Sağlam <teknomobil@yandex.com>\n"
 "Orhan Engin Okay <orhanenginokay@hotmail.com>\n"
 "A. Burak Tektaş <abtektas@gmail.com>"
 
 #: src/preferences/service.js:411
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Hata ayıklama mesajları kaydediliyor. Sorunu yeniden oluşturmak için gerekli "
-"adımları izleyin ve günlüğü inceleyin."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Hata ayıklama mesajları kaydediliyor. Sorunu yeniden oluşturmak için gerekli adımları izleyin ve günlüğü inceleyin."
 
 #: src/preferences/service.js:414
 msgid "Review Log"
@@ -807,8 +786,7 @@ msgid "Accept"
 msgstr "Kabul et"
 
 #: src/service/manager.js:114
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Bu ağdaki cihazların sayısı nedeniyle keşif devre dışı bırakıldı."
 
 #: src/service/backends/lan.js:162
@@ -843,9 +821,9 @@ msgstr ""
 
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:284
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%d%% Charged"
-msgstr "Şarj Oldu"
+msgstr ""
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:311
@@ -864,9 +842,8 @@ msgid "Clipboard"
 msgstr "Pano"
 
 #: src/service/plugins/clipboard.js:11
-#, fuzzy
 msgid "Share the clipboard content"
-msgstr "Pano içeriğini eşitle"
+msgstr ""
 
 #: src/service/plugins/clipboard.js:23
 msgid "Clipboard Push"
@@ -949,9 +926,8 @@ msgid "Failed to send “%s” to %s"
 msgstr "Gönderilemedi “%s” hedef %s"
 
 #: src/service/plugins/ping.js:12
-#, fuzzy
 msgid "Send and receive pings"
-msgstr "Mesaj gönder ve al"
+msgstr ""
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -973,9 +949,7 @@ msgid "Run Commands"
 msgstr "Komutları Çalıştır"
 
 #: src/service/plugins/runcommand.js:13
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
 msgstr ""
 
 #: src/service/plugins/sftp.js:13
@@ -1114,8 +1088,7 @@ msgid "PulseAudio not found"
 msgstr "PulseAudio bulunamadı"
 
 #: src/service/plugins/telephony.js:14
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
 msgstr ""
 
 #. TRANSLATORS: Silence the actively ringing call
@@ -1249,8 +1222,3 @@ msgstr "Servis Mevcut Değil"
 msgid "Open in Browser"
 msgstr "Tarayıcıda Aç"
 
-#~ msgid "On"
-#~ msgstr "Açık"
-
-#~ msgid "Off"
-#~ msgstr "Kapalı"
