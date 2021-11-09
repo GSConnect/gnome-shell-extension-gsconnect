@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2020-09-11 17:31+0200\n"
-"Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
+"PO-Revision-Date: 2021-10-04 16:59+0200\n"
+"Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
 "Language-Team: Dutch <vistausss@outlook.com>\n"
 "Language: nl_NL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.4.1\n"
+"X-Generator: Poedit 3.0\n"
 
 #. TRANSLATORS: Extension name
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:5
@@ -51,35 +51,35 @@ msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
 msgid "Share files, links and text"
-msgstr "-Bestanden, links en tekst te delen"
+msgstr "Bestanden, links en tekst te delen"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:40
 msgid "Send and receive messages"
-msgstr "-Berichten te versturen en ontvangen"
+msgstr "Berichten te versturen en ontvangen"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
 msgid "Sync clipboard content"
-msgstr "-De klembordinhoud te synchroniseren"
+msgstr "De klembordinhoud te synchroniseren"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:42
 msgid "Sync contacts"
-msgstr "-Contactpersonen te synchroniseren"
+msgstr "Contactpersonen te synchroniseren"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:43
 msgid "Sync notifications"
-msgstr "-Meldingen te synchroniseren"
+msgstr "Meldingen te synchroniseren"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
 msgid "Control media players"
-msgstr "-Mediaspelers te beheren"
+msgstr "Mediaspelers te bedienen"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:45
 msgid "Control system volume"
-msgstr "-Het volumeniveau van het systeem aan te passen"
+msgstr "Het volumeniveau van het systeem aan te passen"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:46
 msgid "Execute predefined commands"
-msgstr "-Opgegeven opdrachten uit te voeren"
+msgstr "Opgegeven opdrachten uit te voeren"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:47
 msgid "And more…"
@@ -166,7 +166,7 @@ msgstr "Berichtinhoud"
 
 #: data/ui/messaging-conversation.ui:93
 msgid "Type a message and press Enter to send"
-msgstr "Typ een bericht en druk op Enter om te versturen"
+msgstr "Typ een bericht en druk op enter om te versturen"
 
 #: data/ui/messaging-window.ui:14 src/service/plugins/sms.js:28
 #: src/service/ui/messaging.js:1049
@@ -265,9 +265,8 @@ msgid "Low Battery Notification"
 msgstr "Melding bij laag accuniveau"
 
 #: data/ui/preferences-device-panel.ui:699
-#, fuzzy
 msgid "Charged Up to Custom Level Notification"
-msgstr "Melding bij 100% accuniveau"
+msgstr "Melding bij ingesteld accuniveau"
 
 #: data/ui/preferences-device-panel.ui:779
 msgid "Fully Charged Notification"
@@ -332,7 +331,7 @@ msgstr "Volume"
 #: data/ui/preferences-device-panel.ui:1495
 #: data/ui/preferences-device-panel.ui:1662
 msgid "Pause Media"
-msgstr "Media pauzeren"
+msgstr "Media onderbreken"
 
 #: data/ui/preferences-device-panel.ui:1548
 msgid "Ongoing Calls"
@@ -373,7 +372,7 @@ msgstr "Apparaatcache"
 
 #: data/ui/preferences-device-panel.ui:2018
 msgid "Clear Cache…"
-msgstr "Cache opschonen…"
+msgstr "Cache legen…"
 
 #: data/ui/preferences-device-panel.ui:2057
 msgid "Legacy SMS Support"
@@ -400,7 +399,7 @@ msgstr "Apparaatinstellingen"
 #: data/ui/preferences-device-panel.ui:2557
 #: data/ui/preferences-device-panel.ui:2649 src/service/daemon.js:381
 msgid "Pair"
-msgstr "Aankoppelen"
+msgstr "Koppelen"
 
 #: data/ui/preferences-device-panel.ui:2589
 msgid "Device is unpaired"
@@ -640,7 +639,7 @@ msgstr "Een volledige KDE Connect-implementatie voor GNOME"
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:378
 msgid "translator-credits"
-msgstr "Heimen Stoffels"
+msgstr "Heimen Stoffels <vistausss@fastmail.com>"
 
 #: src/preferences/service.js:411
 msgid ""
@@ -777,7 +776,7 @@ msgstr "Niet beschikbaar"
 #: src/service/device.js:168
 #, javascript-format
 msgid "Bluetooth device at %s"
-msgstr "Bluetooth-apparaat op %s"
+msgstr "Bluetoothapparaat op %s"
 
 #. TRANSLATORS: Label for TLS Certificate fingerprint
 #.
@@ -820,13 +819,13 @@ msgstr "Deze poort is al in gebruik"
 
 #: src/service/plugins/battery.js:13
 msgid "Exchange battery information"
-msgstr ""
+msgstr "Accu-informatie uitwisselen"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:253
 #, javascript-format
 msgid "%s: Battery is full"
-msgstr "%s: accu is opgeladen"
+msgstr "%s: de accu is opgeladen"
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
@@ -838,19 +837,19 @@ msgstr "Volledig opgeladen"
 #: src/service/plugins/battery.js:282
 #, javascript-format
 msgid "%s: Battery has reached custom charge level"
-msgstr ""
+msgstr "%s: de accu heeft het ingestelde oplaadniveau bereikt"
 
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:284
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%d%% Charged"
-msgstr "Volledig opgeladen"
+msgstr "%d%% opgeladen"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:311
 #, javascript-format
 msgid "%s: Battery is low"
-msgstr "%s: accuniveau is laag"
+msgstr "%s: het accuniveau is laag"
 
 #. TRANSLATORS: eg. 15% remaining
 #: src/service/plugins/battery.js:313
@@ -863,9 +862,8 @@ msgid "Clipboard"
 msgstr "Klembord"
 
 #: src/service/plugins/clipboard.js:11
-#, fuzzy
 msgid "Share the clipboard content"
-msgstr "-De klembordinhoud te synchroniseren"
+msgstr "Klembordinhoud delen"
 
 #: src/service/plugins/clipboard.js:23
 msgid "Clipboard Push"
@@ -877,7 +875,7 @@ msgstr "Klembord ophalen"
 
 #: src/service/plugins/contacts.js:23
 msgid "Access contacts of the paired device"
-msgstr ""
+msgstr "Toegang tot contactpersonen van het gekoppelde apparaat"
 
 #: src/service/plugins/findmyphone.js:13
 msgid "Find My Phone"
@@ -885,7 +883,7 @@ msgstr "Zoek mijn telefoon"
 
 #: src/service/plugins/findmyphone.js:14
 msgid "Ring your paired device"
-msgstr ""
+msgstr "Gekoppeld apparaat laten rinkelen"
 
 #: src/service/plugins/mousepad.js:12
 msgid "Mousepad"
@@ -893,7 +891,7 @@ msgstr "Touchpad"
 
 #: src/service/plugins/mousepad.js:13
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr ""
+msgstr "Laat het gekoppelde apparaat fungeren als externe muis en toetsenbord"
 
 #: src/service/plugins/mousepad.js:27 src/service/ui/mousepad.js:102
 msgid "Keyboard"
@@ -905,16 +903,15 @@ msgstr "MPRIS"
 
 #: src/service/plugins/mpris.js:16
 msgid "Bidirectional remote media playback control"
-msgstr ""
+msgstr "Media twee kanten op bedienen"
 
 #: src/service/plugins/mpris.js:316
 msgid "Unknown"
 msgstr "Onbekend"
 
 #: src/service/plugins/notification.js:16
-#, fuzzy
 msgid "Share notifications with the paired device"
-msgstr "Geen geluid bij mobiele meldingen"
+msgstr "Meldingen delen met het gekoppelde apparaat"
 
 #: src/service/plugins/notification.js:30
 msgid "Cancel Notification"
@@ -935,6 +932,8 @@ msgstr "Melding inschakelen"
 #: src/service/plugins/photo.js:13
 msgid "Request the paired device to take a photo and transfer it to this PC"
 msgstr ""
+"Verzoek het gekoppelde apparaat een foto te maken en deze naar de pc te "
+"sturen"
 
 #: src/service/plugins/photo.js:220 src/service/plugins/share.js:128
 #: src/service/plugins/share.js:200 src/service/plugins/share.js:310
@@ -949,9 +948,8 @@ msgid "Failed to send “%s” to %s"
 msgstr "Versturen van “%s” naar %s mislukt"
 
 #: src/service/plugins/ping.js:12
-#, fuzzy
 msgid "Send and receive pings"
-msgstr "-Berichten te versturen en ontvangen"
+msgstr "Pings ontvangen en versturen"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -966,7 +964,7 @@ msgstr "Presentatie"
 
 #: src/service/plugins/presenter.js:11
 msgid "Use the paired device as a presenter"
-msgstr ""
+msgstr "Gekoppeld apparaat laten fungeren als presentatiescherm"
 
 #: src/service/plugins/runcommand.js:11
 msgid "Run Commands"
@@ -977,6 +975,8 @@ msgid ""
 "Run commands on your paired device or let the device run predefined commands "
 "on this PC"
 msgstr ""
+"Voer opdrachten uit op het gekoppelde apparaat of laat het apparaat vooraf "
+"ingestelde opdrachten uitvoeren op deze pc"
 
 #: src/service/plugins/sftp.js:13
 msgid "SFTP"
@@ -984,7 +984,7 @@ msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:15
 msgid "Browse the paired device filesystem"
-msgstr ""
+msgstr "Bladeren door het bestandssysteem van het gekoppelde apparaat"
 
 #: src/service/plugins/sftp.js:20
 msgid "Mount"
@@ -1005,7 +1005,7 @@ msgstr "Delen"
 
 #: src/service/plugins/share.js:16
 msgid "Share files and URLs between devices"
-msgstr ""
+msgstr "Bestanden en url's uitwisselen tussen apparaten"
 
 #. TRANSLATORS: eg. Google Pixel is not allowed to upload files
 #: src/service/plugins/share.js:130
@@ -1088,6 +1088,7 @@ msgstr "SMS"
 #: src/service/plugins/sms.js:15
 msgid "Send and read SMS of the paired device and be notified of new SMS"
 msgstr ""
+"Lees en verstuur sms'jes van het gekoppelde apparaat en ontvang sms-meldingen"
 
 #: src/service/plugins/sms.js:36
 msgid "New SMS (URI)"
@@ -1107,7 +1108,7 @@ msgstr "Volumeniveau van systeem"
 
 #: src/service/plugins/systemvolume.js:12
 msgid "Enable the paired device to control the system volume"
-msgstr ""
+msgstr "Laat het gekoppelde apparaat het systeemvolume aanpassen"
 
 #: src/service/plugins/systemvolume.js:56
 msgid "PulseAudio not found"
@@ -1117,6 +1118,8 @@ msgstr "PulseAudio is niet aangetroffen"
 msgid ""
 "Be notified about calls and adjust system volume during ringing/ongoing calls"
 msgstr ""
+"Ontvang meldingen omtrent oproepen en volume-aanpassingen tijdens rinkelen/"
+"actieve gesprekken"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:26
@@ -1214,7 +1217,7 @@ msgstr "Het externe toetsenbord op '%s' is inactief"
 #: src/shell/device.js:123
 #, javascript-format
 msgid "%d%% (Estimating…)"
-msgstr "%d%% (bezig met berekenen...)"
+msgstr "%d%% (bezig met berekenen…)"
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
