@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2021-11-13 21:06\n"
+"PO-Revision-Date: 2021-11-13 22:05\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese\n"
 "Language: pt_PT\n"
@@ -671,7 +671,7 @@ msgstr ""
 
 #: src/service/daemon.js:200
 msgid "Click for more information"
-msgstr ""
+msgstr "Clique para mais informação"
 
 #: src/service/daemon.js:294
 msgid "Dial Number"
@@ -712,7 +712,7 @@ msgstr ""
 
 #: src/service/daemon.js:450
 msgid "Notification Icon"
-msgstr ""
+msgstr "Ícone de notificação"
 
 #: src/service/daemon.js:459
 msgid "Notification ID"
@@ -833,7 +833,7 @@ msgstr "%s: A bateria está fraca"
 #: src/service/plugins/battery.js:313
 #, javascript-format
 msgid "%d%% remaining"
-msgstr ""
+msgstr "%d%% restante"
 
 #: src/service/plugins/clipboard.js:10
 msgid "Clipboard"
@@ -841,7 +841,7 @@ msgstr "Área de transferência"
 
 #: src/service/plugins/clipboard.js:11
 msgid "Share the clipboard content"
-msgstr ""
+msgstr "Partilhar o conteúdo da área de transferência"
 
 #: src/service/plugins/clipboard.js:23
 msgid "Clipboard Push"
@@ -857,15 +857,15 @@ msgstr ""
 
 #: src/service/plugins/findmyphone.js:13
 msgid "Find My Phone"
-msgstr ""
+msgstr "Encontrar o meu telefone"
 
 #: src/service/plugins/findmyphone.js:14
 msgid "Ring your paired device"
-msgstr ""
+msgstr "Tocar no seu dispositivo emparelhado"
 
 #: src/service/plugins/mousepad.js:12
 msgid "Mousepad"
-msgstr ""
+msgstr "Tapete de rato"
 
 #: src/service/plugins/mousepad.js:13
 msgid "Enables the paired device to act as a remote mouse and keyboard"
@@ -1003,7 +1003,7 @@ msgstr ""
 #: src/service/plugins/share.js:175
 #, javascript-format
 msgid "Received “%s” from %s"
-msgstr ""
+msgstr "Recebeu \"%s\" de %s"
 
 #: src/service/plugins/share.js:181
 msgid "Open Folder"
@@ -1017,18 +1017,18 @@ msgstr "Abrir ficheiro"
 #: src/service/plugins/share.js:202
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
-msgstr ""
+msgstr "Falha ao receber “%s” de %s"
 
 #: src/service/plugins/share.js:232
 #, javascript-format
 msgid "Text Shared By %s"
-msgstr ""
+msgstr "Texto partilhado por %s"
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
 #: src/service/plugins/share.js:282
 #, javascript-format
 msgid "Sending “%s” to %s"
-msgstr ""
+msgstr "A enviar \"%s\" para %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:302
@@ -1045,7 +1045,7 @@ msgstr "Enviar ficheiros para %s"
 #. TRANSLATORS: Mark the file to be opened once completed
 #: src/service/plugins/share.js:374
 msgid "Open when done"
-msgstr ""
+msgstr "Abrir quando terminar"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
 #: src/service/plugins/share.js:413
@@ -1059,15 +1059,15 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:15
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
+msgstr "Enviar e ler SMS do dispositivo emparelhado e ser notificado sobre o novo SMS"
 
 #: src/service/plugins/sms.js:36
 msgid "New SMS (URI)"
-msgstr ""
+msgstr "Novo SMS (URI)"
 
 #: src/service/plugins/sms.js:44
 msgid "Reply SMS"
-msgstr ""
+msgstr "Responder SMS"
 
 #: src/service/plugins/sms.js:68
 msgid "Share SMS"
@@ -1079,15 +1079,15 @@ msgstr "Volume do sistema"
 
 #: src/service/plugins/systemvolume.js:12
 msgid "Enable the paired device to control the system volume"
-msgstr ""
+msgstr "Ativar o dispositivo emparelhado para controlar o volume do sistema"
 
 #: src/service/plugins/systemvolume.js:56
 msgid "PulseAudio not found"
-msgstr ""
+msgstr "PulseAudio não encontrado"
 
 #: src/service/plugins/telephony.js:14
 msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
+msgstr "Ser notificado sobre as chamadas e ajustar o volume do sistema durante o toque/chamadas em curso"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:26
