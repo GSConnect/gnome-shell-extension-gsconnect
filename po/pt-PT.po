@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2021-11-09 14:08\n"
+"PO-Revision-Date: 2021-11-13 21:06\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese\n"
 "Language: pt_PT\n"
@@ -501,11 +501,11 @@ msgstr "Ativar"
 
 #: data/ui/preferences-window.ui:658
 msgid "This device is invisible to unpaired devices"
-msgstr ""
+msgstr "Este dispositivo é invisível a dispositivos não emparelhados"
 
 #: data/ui/preferences-window.ui:670 src/service/manager.js:113
 msgid "Discovery Disabled"
-msgstr ""
+msgstr "Detecção desativada"
 
 #: data/ui/preferences-window.ui:724
 msgid "Display Mode"
@@ -524,7 +524,7 @@ msgstr "﻿Menu do utilizador"
 #. TRANSLATORS: Generate a support log
 #: data/ui/preferences-window.ui:741 src/preferences/service.js:410
 msgid "Generate Support Log"
-msgstr ""
+msgstr "Gerar registo de suporte"
 
 #: data/ui/preferences-window.ui:749
 msgid "About GSConnect"
@@ -557,7 +557,7 @@ msgstr "Alguma coisa correu mal"
 
 #: data/ui/service-error-dialog.ui:84
 msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
-msgstr ""
+msgstr "O GSConnect encontrou um erro inesperado. Reporte o problema e inclua todas as informações que possam ajudar."
 
 #: data/ui/service-error-dialog.ui:118
 msgid "Technical Details"
@@ -566,7 +566,7 @@ msgstr "Informação técnica"
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: nautilus-extension/nautilus-gsconnect.py:164 webextension/gettext.js:33
 msgid "Send To Mobile Device"
-msgstr ""
+msgstr "Enviar para dispositivo móvel"
 
 #. Service Menu
 #: src/extension.js:91 src/extension.js:237
@@ -607,18 +607,18 @@ msgstr "Desativado"
 #: src/preferences/keybindings.js:64
 #, javascript-format
 msgid "Enter a new shortcut to change <b>%s</b>"
-msgstr ""
+msgstr "Introduza um novo atalho para alterar <b>%s</b>"
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
 #: src/preferences/keybindings.js:130
 #, javascript-format
 msgid "%s is already being used"
-msgstr ""
+msgstr "O %s já está a ser usado"
 
 #: src/preferences/service.js:369
 msgid "A complete KDE Connect implementation for GNOME"
-msgstr ""
+msgstr "Uma implementação completa do KDE Connect para o GNOME"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:378
@@ -675,7 +675,7 @@ msgstr ""
 
 #: src/service/daemon.js:294
 msgid "Dial Number"
-msgstr ""
+msgstr "Marcar número"
 
 #: src/service/daemon.js:300 src/service/daemon.js:498
 #: src/service/plugins/share.js:29
@@ -684,7 +684,7 @@ msgstr "Partilhar ficheiro"
 
 #: src/service/daemon.js:351
 msgid "List available devices"
-msgstr ""
+msgstr "Listar dispositivos disponíveis"
 
 #: src/service/daemon.js:360
 msgid "List all devices"
