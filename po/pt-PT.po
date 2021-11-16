@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2021-11-13 22:05\n"
+"PO-Revision-Date: 2021-11-16 14:24\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese\n"
 "Language: pt_PT\n"
@@ -627,7 +627,7 @@ msgstr "Hugo Carvalho <hugokarvalho@hotmail.com>"
 
 #: src/preferences/service.js:411
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
-msgstr ""
+msgstr "As mensagens de depuração estão a ser registadas. Tomar todas as medidas necessárias para reproduzir um problema e depois rever o registo."
 
 #: src/preferences/service.js:414
 msgid "Review Log"
@@ -667,7 +667,7 @@ msgstr "À espera de serviço..."
 
 #: src/service/daemon.js:189
 msgid "Click for help troubleshooting"
-msgstr ""
+msgstr "Clique para ajudar a solucionar problemas"
 
 #: src/service/daemon.js:200
 msgid "Click for more information"
@@ -708,7 +708,7 @@ msgstr "Nome da aplicação de notificação"
 
 #: src/service/daemon.js:441
 msgid "Notification Body"
-msgstr ""
+msgstr "Corpo da notificação"
 
 #: src/service/daemon.js:450
 msgid "Notification Icon"
@@ -756,7 +756,7 @@ msgstr "Não disponível"
 #: src/service/device.js:168
 #, javascript-format
 msgid "Bluetooth device at %s"
-msgstr ""
+msgstr "Dispositivo Bluetooth em %s"
 
 #. TRANSLATORS: Label for TLS Certificate fingerprint
 #.
@@ -773,7 +773,7 @@ msgstr "%s impressão digital:"
 #: src/service/device.js:793
 #, javascript-format
 msgid "Pair Request from %s"
-msgstr ""
+msgstr "Pedido para emparelhar de %s"
 
 #: src/service/device.js:800
 msgid "Reject"
@@ -785,25 +785,25 @@ msgstr "Aceitar"
 
 #: src/service/manager.js:114
 msgid "Discovery has been disabled due to the number of devices on this network."
-msgstr ""
+msgstr "A deteção foi desativada devido ao número de dispositivos nesta rede."
 
 #: src/service/backends/lan.js:162
 msgid "OpenSSL not found"
-msgstr ""
+msgstr "OpenSSL não encontrado"
 
 #: src/service/backends/lan.js:452
 msgid "Port already in use"
-msgstr ""
+msgstr "Porta já em utilização"
 
 #: src/service/plugins/battery.js:13
 msgid "Exchange battery information"
-msgstr ""
+msgstr "Trocar informações de bateria"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:253
 #, javascript-format
 msgid "%s: Battery is full"
-msgstr ""
+msgstr "%s: Bateria está carregada"
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
@@ -815,7 +815,7 @@ msgstr "Totalmente carregado"
 #: src/service/plugins/battery.js:282
 #, javascript-format
 msgid "%s: Battery has reached custom charge level"
-msgstr ""
+msgstr "%s: Bateria atingiu o nível de carga personalizada"
 
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:284
@@ -845,15 +845,15 @@ msgstr "Partilhar o conteúdo da área de transferência"
 
 #: src/service/plugins/clipboard.js:23
 msgid "Clipboard Push"
-msgstr ""
+msgstr "Enviar da área de transferência"
 
 #: src/service/plugins/clipboard.js:31
 msgid "Clipboard Pull"
-msgstr ""
+msgstr "Carregar da área de transferência"
 
 #: src/service/plugins/contacts.js:23
 msgid "Access contacts of the paired device"
-msgstr ""
+msgstr "Aceder a contactos do dispositivo emparelhado"
 
 #: src/service/plugins/findmyphone.js:13
 msgid "Find My Phone"
@@ -869,7 +869,7 @@ msgstr "Tapete de rato"
 
 #: src/service/plugins/mousepad.js:13
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr ""
+msgstr "Permite que o dispositivo emparelhado funcione como um rato e teclado remotos"
 
 #: src/service/plugins/mousepad.js:27 src/service/ui/mousepad.js:102
 msgid "Keyboard"
@@ -901,7 +901,7 @@ msgstr "Fechar notificação"
 
 #: src/service/plugins/notification.js:46
 msgid "Reply Notification"
-msgstr ""
+msgstr "Enviar notificação"
 
 #: src/service/plugins/notification.js:62
 msgid "Activate Notification"
@@ -969,7 +969,7 @@ msgstr "Desmontar"
 #: src/service/plugins/sftp.js:212
 #, javascript-format
 msgid "%s reported an error"
-msgstr ""
+msgstr "%s relatou um erro"
 
 #: src/service/plugins/share.js:14 src/service/plugins/share.js:21
 msgid "Share"
@@ -993,11 +993,11 @@ msgstr "A transferir ficheiro"
 #: src/service/plugins/share.js:154
 #, javascript-format
 msgid "Receiving “%s” from %s"
-msgstr ""
+msgstr "A receber \"%s\" de %s"
 
 #: src/service/plugins/share.js:173 src/service/plugins/share.js:300
 msgid "Transfer Successful"
-msgstr ""
+msgstr "Transferência bem sucedida"
 
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:175
