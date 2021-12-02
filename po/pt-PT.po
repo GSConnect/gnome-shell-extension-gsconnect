@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2021-11-16 14:24\n"
+"PO-Revision-Date: 2021-11-16 15:42\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese\n"
 "Language: pt_PT\n"
@@ -73,7 +73,7 @@ msgstr "Executar comandos predefinidos"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:47
 msgid "And more…"
-msgstr "E mais..."
+msgstr "E mais…"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:102
 msgid "GSConnect in GNOME Shell"
@@ -663,7 +663,7 @@ msgstr "Ligado"
 
 #: src/preferences/service.js:654
 msgid "Waiting for service…"
-msgstr "À espera de serviço..."
+msgstr "À espera de serviço…"
 
 #: src/service/daemon.js:189
 msgid "Click for help troubleshooting"
@@ -881,7 +881,7 @@ msgstr "MPRIS"
 
 #: src/service/plugins/mpris.js:16
 msgid "Bidirectional remote media playback control"
-msgstr ""
+msgstr "Controlo remoto bidirecional de reprodução multimédia"
 
 #: src/service/plugins/mpris.js:316
 msgid "Unknown"
@@ -889,7 +889,7 @@ msgstr "Desconhecida"
 
 #: src/service/plugins/notification.js:16
 msgid "Share notifications with the paired device"
-msgstr ""
+msgstr "Partilhar notificações com o dispositivo emparelhado"
 
 #: src/service/plugins/notification.js:30
 msgid "Cancel Notification"
@@ -905,11 +905,11 @@ msgstr "Enviar notificação"
 
 #: src/service/plugins/notification.js:62
 msgid "Activate Notification"
-msgstr ""
+msgstr "Ativar notificações"
 
 #: src/service/plugins/photo.js:13
 msgid "Request the paired device to take a photo and transfer it to this PC"
-msgstr ""
+msgstr "Solicitar ao dispositivo emparelhado para tirar uma fotografia e transferi-la para este PC"
 
 #: src/service/plugins/photo.js:220 src/service/plugins/share.js:128
 #: src/service/plugins/share.js:200 src/service/plugins/share.js:310
@@ -921,11 +921,11 @@ msgstr "Falha ao transferir"
 #: src/service/plugins/photo.js:222 src/service/plugins/share.js:312
 #, javascript-format
 msgid "Failed to send “%s” to %s"
-msgstr ""
+msgstr "Falha ao enviar “%s” para %s"
 
 #: src/service/plugins/ping.js:12
 msgid "Send and receive pings"
-msgstr ""
+msgstr "Envie e receba pings"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -940,7 +940,7 @@ msgstr "Apresentação"
 
 #: src/service/plugins/presenter.js:11
 msgid "Use the paired device as a presenter"
-msgstr ""
+msgstr "Usar o dispositivo emparelhado como apresentador"
 
 #: src/service/plugins/runcommand.js:11
 msgid "Run Commands"
@@ -948,7 +948,7 @@ msgstr "Executar comandos"
 
 #: src/service/plugins/runcommand.js:13
 msgid "Run commands on your paired device or let the device run predefined commands on this PC"
-msgstr ""
+msgstr "Executar comandos no dispositivo emparelhado ou permitir que o dispositivo execute comandos predefinidos neste PC"
 
 #: src/service/plugins/sftp.js:13
 msgid "SFTP"
@@ -956,7 +956,7 @@ msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:15
 msgid "Browse the paired device filesystem"
-msgstr ""
+msgstr "Navegar pelo sistema de ficheiros do dispositivo emparelhado"
 
 #: src/service/plugins/sftp.js:20
 msgid "Mount"
@@ -977,13 +977,13 @@ msgstr "Partilha"
 
 #: src/service/plugins/share.js:16
 msgid "Share files and URLs between devices"
-msgstr ""
+msgstr "Partilhar ficheiros e URLs entre dispositivos"
 
 #. TRANSLATORS: eg. Google Pixel is not allowed to upload files
 #: src/service/plugins/share.js:130
 #, javascript-format
 msgid "%s is not allowed to upload files"
-msgstr ""
+msgstr "%s não tem permissão para carregar ficheiros"
 
 #: src/service/plugins/share.js:152 src/service/plugins/share.js:280
 msgid "Transferring File"
@@ -1185,21 +1185,21 @@ msgstr "Teclado remoto na %s não está ativo"
 #: src/shell/device.js:123
 #, javascript-format
 msgid "%d%% (Estimating…)"
-msgstr "%d%% (A estimar…)"
+msgstr "%d%% (a estimar…)"
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
 #: src/shell/device.js:132
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
-msgstr "%d%% (%d∶%02d Até ficar carregada)"
+msgstr "%d%% (%d∶%02d até ficar carregada)"
 
 #. TRANSLATORS: Estimated time until battery is empty
 #. EXAMPLE: 42% (12:15 Remaining)
 #: src/shell/device.js:140
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
-msgstr "%d%% (%d∶%02d Restante)"
+msgstr "%d%% (%d∶%02d restante)"
 
 #: src/shell/notification.js:54
 msgid "Reply"
