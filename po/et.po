@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2021-12-03 15:26\n"
+"PO-Revision-Date: 2021-12-03 16:29\n"
 "Last-Translator: \n"
 "Language-Team: Estonian\n"
 "Language: et_EE\n"
@@ -256,7 +256,7 @@ msgstr "Tühjeneva aku teade"
 
 #: data/ui/preferences-device-panel.ui:699
 msgid "Charged Up to Custom Level Notification"
-msgstr "Teavitus kohandatud taseme laadimisest"
+msgstr "Teade kohandatud taseme laadimisest"
 
 #: data/ui/preferences-device-panel.ui:779
 msgid "Fully Charged Notification"
@@ -1059,7 +1059,7 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:15
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
+msgstr "Saada ja loe seotud seadme SMS-e ning saa teadet uute SMS-ide kohta"
 
 #: src/service/plugins/sms.js:36
 msgid "New SMS (URI)"
@@ -1079,7 +1079,7 @@ msgstr "Süsteemi helitugevus"
 
 #: src/service/plugins/systemvolume.js:12
 msgid "Enable the paired device to control the system volume"
-msgstr ""
+msgstr "Luba ühendatud seadmel juhtida süsteemi helitugevust"
 
 #: src/service/plugins/systemvolume.js:56
 msgid "PulseAudio not found"
@@ -1087,7 +1087,7 @@ msgstr "PulseAudiot ei leitud"
 
 #: src/service/plugins/telephony.js:14
 msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
+msgstr "Saa teadet kõnede kohta ning reguleeri saabuvate/väljuvate kõnede helitugevust"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:26
