@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2021-11-09 01:50\n"
+"PO-Revision-Date: 2021-12-03 16:29\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Language: ru_RU\n"
@@ -45,7 +45,7 @@ msgstr "Поделиться файлами, ссылками и текстом"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:40
 msgid "Send and receive messages"
-msgstr "Отправка и получение сообщений"
+msgstr "Отправить и получить сообщения"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
 msgid "Sync clipboard content"
@@ -61,15 +61,15 @@ msgstr "Синхронизировать уведомления"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
 msgid "Control media players"
-msgstr "Управление проигрывателями"
+msgstr "Управлять проигрывателями"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:45
 msgid "Control system volume"
-msgstr "Управление системной громкостью"
+msgstr "Управлять системной громкостью"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:46
 msgid "Execute predefined commands"
-msgstr "Выполнить заданные команды"
+msgstr "Выполнять заданные команды"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:47
 msgid "And more…"
@@ -256,11 +256,11 @@ msgstr "Уведомление о низком уровне заряда"
 
 #: data/ui/preferences-device-panel.ui:699
 msgid "Charged Up to Custom Level Notification"
-msgstr ""
+msgstr "Уведомление о зарядке до пользовательского уровня"
 
 #: data/ui/preferences-device-panel.ui:779
 msgid "Fully Charged Notification"
-msgstr "Индикация полной зарядки"
+msgstr "Уведомление о полной зарядке"
 
 #: data/ui/preferences-device-panel.ui:833
 msgid "System Battery"
@@ -799,7 +799,7 @@ msgstr "Порт уже используется"
 
 #: src/service/plugins/battery.js:13
 msgid "Exchange battery information"
-msgstr ""
+msgstr "Оповещать о состоянии батареи"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:253
@@ -817,13 +817,13 @@ msgstr "Полностью заряжено"
 #: src/service/plugins/battery.js:282
 #, javascript-format
 msgid "%s: Battery has reached custom charge level"
-msgstr ""
+msgstr "%s: Уровень заряда батареи достиг пользовательской отметки"
 
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:284
 #, javascript-format
 msgid "%d%% Charged"
-msgstr ""
+msgstr "%d%% заряжено"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:311
@@ -843,7 +843,7 @@ msgstr "Буфер обмена"
 
 #: src/service/plugins/clipboard.js:11
 msgid "Share the clipboard content"
-msgstr ""
+msgstr "Поделиться содержимым буфера обмена"
 
 #: src/service/plugins/clipboard.js:23
 msgid "Clipboard Push"
@@ -855,7 +855,7 @@ msgstr "Запросить Буфер обмена"
 
 #: src/service/plugins/contacts.js:23
 msgid "Access contacts of the paired device"
-msgstr ""
+msgstr "Получить доступ к контактам сопряжённого устройства"
 
 #: src/service/plugins/findmyphone.js:13
 msgid "Find My Phone"
@@ -863,7 +863,7 @@ msgstr "Найти мой смартфон"
 
 #: src/service/plugins/findmyphone.js:14
 msgid "Ring your paired device"
-msgstr ""
+msgstr "Сделать гудок вашим устройством"
 
 #: src/service/plugins/mousepad.js:12
 msgid "Mousepad"
@@ -871,7 +871,7 @@ msgstr "Тачпад"
 
 #: src/service/plugins/mousepad.js:13
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr ""
+msgstr "Позволяет сопряжённому устройству удалённо работать мышью и клавиатурой"
 
 #: src/service/plugins/mousepad.js:27 src/service/ui/mousepad.js:102
 msgid "Keyboard"
@@ -883,7 +883,7 @@ msgstr "MPRIS"
 
 #: src/service/plugins/mpris.js:16
 msgid "Bidirectional remote media playback control"
-msgstr ""
+msgstr "Двунаправлённое управление воспроизведением"
 
 #: src/service/plugins/mpris.js:316
 msgid "Unknown"
@@ -891,7 +891,7 @@ msgstr "Неизвестно"
 
 #: src/service/plugins/notification.js:16
 msgid "Share notifications with the paired device"
-msgstr ""
+msgstr "Поделиться уведомлениями с сопряжённым устройством"
 
 #: src/service/plugins/notification.js:30
 msgid "Cancel Notification"
@@ -911,7 +911,7 @@ msgstr "Активировать уведомление"
 
 #: src/service/plugins/photo.js:13
 msgid "Request the paired device to take a photo and transfer it to this PC"
-msgstr ""
+msgstr "Запросить устройство сделать снимок и отправить его на этот ПК"
 
 #: src/service/plugins/photo.js:220 src/service/plugins/share.js:128
 #: src/service/plugins/share.js:200 src/service/plugins/share.js:310
@@ -927,7 +927,7 @@ msgstr "Не удалось отправить «%s» на %s"
 
 #: src/service/plugins/ping.js:12
 msgid "Send and receive pings"
-msgstr ""
+msgstr "Отправка и получение пингов"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -942,7 +942,7 @@ msgstr "Презентация"
 
 #: src/service/plugins/presenter.js:11
 msgid "Use the paired device as a presenter"
-msgstr ""
+msgstr "Использовать сопряжённое устройство для презентации"
 
 #: src/service/plugins/runcommand.js:11
 msgid "Run Commands"
@@ -950,7 +950,7 @@ msgstr "Отправить Команду"
 
 #: src/service/plugins/runcommand.js:13
 msgid "Run commands on your paired device or let the device run predefined commands on this PC"
-msgstr ""
+msgstr "Выполнить команды на сопряжённом устройстве или позволить ему запустить определённые команды на этом ПК"
 
 #: src/service/plugins/sftp.js:13
 msgid "SFTP"
@@ -958,7 +958,7 @@ msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:15
 msgid "Browse the paired device filesystem"
-msgstr ""
+msgstr "Просмотреть файловую систему сопряжённого устройства"
 
 #: src/service/plugins/sftp.js:20
 msgid "Mount"
@@ -979,7 +979,7 @@ msgstr "Поделиться"
 
 #: src/service/plugins/share.js:16
 msgid "Share files and URLs between devices"
-msgstr ""
+msgstr "Делиться файлами и ссылками между устройствами"
 
 #. TRANSLATORS: eg. Google Pixel is not allowed to upload files
 #: src/service/plugins/share.js:130
@@ -1061,7 +1061,7 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:15
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
+msgstr "Отправка и чтение SMS с устройства и получение уведомлений о новых SMS"
 
 #: src/service/plugins/sms.js:36
 msgid "New SMS (URI)"
@@ -1081,7 +1081,7 @@ msgstr "Громкость"
 
 #: src/service/plugins/systemvolume.js:12
 msgid "Enable the paired device to control the system volume"
-msgstr ""
+msgstr "Разрешить сопряжённому устройству управлять громкостью системы"
 
 #: src/service/plugins/systemvolume.js:56
 msgid "PulseAudio not found"
@@ -1089,7 +1089,7 @@ msgstr "PulseAudio не найден"
 
 #: src/service/plugins/telephony.js:14
 msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
+msgstr "Уведомлять о звонках и регулировать громкость системы во время звонков"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:26
