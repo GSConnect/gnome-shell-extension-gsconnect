@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2021-11-09 01:50\n"
+"PO-Revision-Date: 2021-12-11 16:51\n"
 "Last-Translator: \n"
 "Language-Team: Lithuanian\n"
 "Language: lt_LT\n"
@@ -799,7 +799,7 @@ msgstr "Prievadas jau naudojamas"
 
 #: src/service/plugins/battery.js:13
 msgid "Exchange battery information"
-msgstr ""
+msgstr "Apsikeitimas informacija apie bateriją"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:253
@@ -817,13 +817,13 @@ msgstr "Pilnai įkrauta"
 #: src/service/plugins/battery.js:282
 #, javascript-format
 msgid "%s: Battery has reached custom charge level"
-msgstr ""
+msgstr "%s: Baterija pasiekė tinkintą įkrovos lygį"
 
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:284
 #, javascript-format
 msgid "%d%% Charged"
-msgstr ""
+msgstr "%d%% įkrauta"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:311
@@ -843,7 +843,7 @@ msgstr "Iškarpinė"
 
 #: src/service/plugins/clipboard.js:11
 msgid "Share the clipboard content"
-msgstr ""
+msgstr "Bendrinti iškarpinės turinį"
 
 #: src/service/plugins/clipboard.js:23
 msgid "Clipboard Push"
