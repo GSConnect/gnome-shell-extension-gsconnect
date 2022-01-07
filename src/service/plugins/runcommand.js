@@ -187,7 +187,7 @@ var Plugin = GObject.registerClass({
         let index = menuActions.indexOf('commands');
 
         if (index > -1) {
-            this.device.removeMenuAction('commands');
+            this.device.removeMenuAction('device.commands');
             this.device.addMenuItem(item, index);
         }
     }
