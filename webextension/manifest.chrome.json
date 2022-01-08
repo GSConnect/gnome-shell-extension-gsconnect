@@ -5,7 +5,7 @@
   "version": "8",
   "homepage_url": "https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki",
   "default_locale": "en",
-  "browser_action": {
+  "action": {
     "default_title": "__MSG_extensionName__",
     "default_popup": "popup.html",
     "default_icon": {
@@ -20,7 +20,7 @@
     }
   },
   "background": {
-    "page": "background.html"
+    "service_workers": "background.html"
   },
   "permissions": [
     "nativeMessaging",
