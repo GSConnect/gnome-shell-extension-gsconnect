@@ -3,7 +3,7 @@
   "name": "__MSG_extensionName__",
   "description": "__MSG_extensionDescription__",
   "version": "8",
-  "homepage_url": "https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki",
+  "homepage_url": "https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki",
   "default_locale": "en",
   "browser_action": {
     "default_title": "__MSG_extensionName__",

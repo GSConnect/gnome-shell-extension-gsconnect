@@ -1,4 +1,4 @@
-# See https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Packaging
+# See https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Packaging
 
 # Run meson/post-install.sh (glib-compile-schemas)
 option(
