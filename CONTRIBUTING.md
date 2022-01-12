@@ -172,10 +172,10 @@ discussion and mark the Pull Request as a fix for it.
 
 [design]: https://wiki.gnome.org/Projects/GnomeShell/Design/Principles
 [hig]: https://developer.gnome.org/hig/stable/
-[translating]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Translating
-[packaging]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Packaging
-[theming]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Theming
-[issue]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/issues
+[translating]: https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Translating
+[packaging]: https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Packaging
+[theming]: https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Theming
+[issue]: https://github.com/GSConnect/gnome-shell-extension-gsconnect/issues
 [pr]: https://github.com/GNOME/gnome-shell/pulls
 [gjs]: https://gitlab.gnome.org/GNOME/gjs/wikis/home
 
