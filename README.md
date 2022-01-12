@@ -24,6 +24,6 @@ Please see the **[Wiki][wiki]** for more information about
 [chrome]: https://chrome.google.com/webstore/detail/gsconnect/jfnifeihccihocjbfcfhicmmgpjicaec
 [firefox]: https://addons.mozilla.org/firefox/addon/gsconnect/
 [kdeconnect]: https://userbase.kde.org/KDEConnect
-[wiki]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/
-[features]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Features
-[help]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Help
+[wiki]: https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/
+[features]: https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Features
+[help]: https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Help

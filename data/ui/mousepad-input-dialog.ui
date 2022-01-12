@@ -47,7 +47,7 @@
                       <object class="GtkLinkButton">
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Help</property>
-                        <property name="uri">https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Help#remote-keyboard-not-active</property>
+                        <property name="uri">https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Help#remote-keyboard-not-active</property>
                         <property name="visible">True</property>
                       </object>
                       <packing>

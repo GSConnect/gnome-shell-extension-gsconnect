@@ -98,7 +98,7 @@
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="relief">none</property>
-                                <property name="uri">https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Help#sms-messages-dont-sync</property>
+                                <property name="uri">https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Help#sms-messages-dont-sync</property>
                               </object>
                               <packing>
                                 <property name="left_attach">0</property>
