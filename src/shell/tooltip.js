@@ -243,7 +243,7 @@ var Tooltip = class Tooltip {
             });
         }
 
-        GLib.timeout_add(GLib.PRIORITY_DEFAULT, 500, () => {
+        TOOLTIP_BROWSE_ID = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 500, () => {
             TOOLTIP_BROWSE_MODE = false;
             TOOLTIP_BROWSE_ID = 0;
             return false;
@@ -291,6 +291,11 @@ var Tooltip = class Tooltip {
         if (this._bin) {
             Main.layoutManager.uiGroup.remove_actor(this._bin);
             this._bin.destroy();
+        }
+
+        if (TOOLTIP_BROWSE_ID) {
+            GLib.source_remove(TOOLTIP_BROWSE_ID);
+            TOOLTIP_BROWSE_ID = 0;
         }
 
         if (this._hoverTimeoutId) {
