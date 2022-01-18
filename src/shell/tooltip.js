@@ -15,6 +15,9 @@ const Main = imports.ui.main;
  * Adapted from: https://github.com/RaphaelRochet/applications-overview-tooltip
  * See also: https://github.com/GNOME/gtk/blob/master/gtk/gtktooltip.c
  */
+var TOOLTIP_BROWSE_ID = 0;
+var TOOLTIP_BROWSE_MODE = false;
+
 var Tooltip = class Tooltip {
 
     constructor(params) {
@@ -23,9 +26,6 @@ var Tooltip = class Tooltip {
         this._bin = null;
         this._hoverTimeoutId = 0;
         this._showing = false;
-
-        this._tooltip_browse_id = 0;
-        this._tooltip_browse_mode = false;
 
         this._destroyId = this.parent.connect(
             'destroy',
@@ -212,11 +212,11 @@ var Tooltip = class Tooltip {
         }
 
         // Enable browse mode
-        this._tooltip_browse_mode = true;
+        TOOLTIP_BROWSE_MODE = true;
 
-        if (this._tooltip_browse_id) {
-            GLib.source_remove(this._tooltip_browse_id);
-            this._tooltip_browse_id = 0;
+        if (TOOLTIP_BROWSE_ID) {
+            GLib.source_remove(TOOLTIP_BROWSE_ID);
+            TOOLTIP_BROWSE_ID = 0;
         }
 
         if (this._hoverTimeoutId) {
@@ -243,9 +243,9 @@ var Tooltip = class Tooltip {
             });
         }
 
-        this._tooltip_browse_id = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 500, () => {
-            this._tooltip_browse_mode = false;
-            this._tooltip_browse_id = 0;
+        GLib.timeout_add(GLib.PRIORITY_DEFAULT, 500, () => {
+            TOOLTIP_BROWSE_MODE = false;
+            TOOLTIP_BROWSE_ID = 0;
             return false;
         });
 
@@ -266,7 +266,7 @@ var Tooltip = class Tooltip {
                 } else {
                     this._hoverTimeoutId = GLib.timeout_add(
                         GLib.PRIORITY_DEFAULT,
-                        (this._tooltip_browse_mode) ? 60 : 500,
+                        (TOOLTIP_BROWSE_MODE) ? 60 : 500,
                         () => {
                             this._show();
                             this._hoverTimeoutId = 0;
@@ -291,11 +291,6 @@ var Tooltip = class Tooltip {
         if (this._bin) {
             Main.layoutManager.uiGroup.remove_actor(this._bin);
             this._bin.destroy();
-        }
-
-        if (this._tooltip_browse_id) {
-            GLib.source_remove(this._tooltip_browse_id);
-            this._tooltip_browse_id = 0;
         }
 
         if (this._hoverTimeoutId) {
