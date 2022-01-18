@@ -12,7 +12,7 @@
 
 - [ ] Run `meson _build`
 - [ ] Run `ninja -C _build make-zip`
-- [ ] Tag a new release with notes at `https://github.com/andyholmes/gnome-shell-extension-gsconnect/releases/new`
+- [ ] Tag a new release with notes at `https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/new`
 - [ ] Add `_build/gsconnect@andyholmes.github.io.zip` to the release
 
 ## Release: EGO
