@@ -209,7 +209,7 @@ var Clipboard = GObject.registerClass({
             const mimetypes = this._selection.get_mimetypes(
                 Meta.SelectionType.SELECTION_CLIPBOARD);
 
-            const mimetype = mimetypes.find(type => TEXT_MIMETYPES.includes(type));
+            const mimetype = TEXT_MIMETYPES.find(type => mimetypes.includes(type));
 
             if (mimetype !== undefined) {
                 const stream = Gio.MemoryOutputStream.new_resizable();
