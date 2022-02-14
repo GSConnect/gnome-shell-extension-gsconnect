@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2022-02-14 14:48\n"
+"PO-Revision-Date: 2022-02-14 15:49\n"
 "Last-Translator: \n"
 "Language-Team: Belarusian\n"
 "Language: be_BY\n"
@@ -219,7 +219,7 @@ msgstr "Сінхранізацыя буферу абмену"
 
 #: data/ui/preferences-device-panel.ui:218
 msgid "Media Players"
-msgstr "Медыяплэеры"
+msgstr "Медыяпрайгравальнікі"
 
 #: data/ui/preferences-device-panel.ui:275
 msgid "Mouse & Keyboard"
@@ -256,7 +256,7 @@ msgstr "Апавяшчэнне пра нізкі ўзровень зараду �
 
 #: data/ui/preferences-device-panel.ui:699
 msgid "Charged Up to Custom Level Notification"
-msgstr "Апавяшчэнне пра зададзены ўзровень зараду"
+msgstr "Апавяшчаць пра зададзены ўзровень зараду"
 
 #: data/ui/preferences-device-panel.ui:779
 msgid "Fully Charged Notification"
@@ -843,7 +843,7 @@ msgstr "Буфер абмену"
 
 #: src/service/plugins/clipboard.js:11
 msgid "Share the clipboard content"
-msgstr "Абагуліць змесціва буфера абмену"
+msgstr "Абагульваць змесціва буфера абмену"
 
 #: src/service/plugins/clipboard.js:23
 msgid "Clipboard Push"
@@ -863,7 +863,7 @@ msgstr "Адшукаць мой тэлефон"
 
 #: src/service/plugins/findmyphone.js:14
 msgid "Ring your paired device"
-msgstr "Адгукнуцца спалучанай прыладай"
+msgstr "Адгукацца спалучанай прыладай"
 
 #: src/service/plugins/mousepad.js:12
 msgid "Mousepad"
@@ -911,7 +911,7 @@ msgstr "Актываваць апавяшчэнне"
 
 #: src/service/plugins/photo.js:13
 msgid "Request the paired device to take a photo and transfer it to this PC"
-msgstr "Запытаць спалучаную прыладу на здымку фота і перадачу яго на гэты ПК"
+msgstr "Запытваць спалучаную прыладу на здымку фота і перадачу яго на гэты ПК"
 
 #: src/service/plugins/photo.js:220 src/service/plugins/share.js:128
 #: src/service/plugins/share.js:200 src/service/plugins/share.js:310
@@ -927,7 +927,7 @@ msgstr "Збой адпраўкі “%s” у %s"
 
 #: src/service/plugins/ping.js:12
 msgid "Send and receive pings"
-msgstr "Адпраўка і атрыманне пінгу"
+msgstr "Адпраўляць і атрымліваць пінг"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
