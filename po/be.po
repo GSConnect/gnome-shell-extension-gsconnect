@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2022-02-14 13:33\n"
+"PO-Revision-Date: 2022-02-14 14:48\n"
 "Last-Translator: \n"
 "Language-Team: Belarusian\n"
 "Language: be_BY\n"
@@ -256,7 +256,7 @@ msgstr "Апавяшчэнне пра нізкі ўзровень зараду �
 
 #: data/ui/preferences-device-panel.ui:699
 msgid "Charged Up to Custom Level Notification"
-msgstr ""
+msgstr "Апавяшчэнне пра зададзены ўзровень зараду"
 
 #: data/ui/preferences-device-panel.ui:779
 msgid "Fully Charged Notification"
@@ -799,7 +799,7 @@ msgstr "Порт ужо выкарыстоўваецца"
 
 #: src/service/plugins/battery.js:13
 msgid "Exchange battery information"
-msgstr ""
+msgstr "Абмен інфармацыяй пра акумулятар"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:253
@@ -817,7 +817,7 @@ msgstr "Зараджана цалкам"
 #: src/service/plugins/battery.js:282
 #, javascript-format
 msgid "%s: Battery has reached custom charge level"
-msgstr ""
+msgstr "%s: акумулятар дасягнуў зададзенага ўзроўню зараду"
 
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:284
@@ -843,7 +843,7 @@ msgstr "Буфер абмену"
 
 #: src/service/plugins/clipboard.js:11
 msgid "Share the clipboard content"
-msgstr ""
+msgstr "Абагуліць змесціва буфера абмену"
 
 #: src/service/plugins/clipboard.js:23
 msgid "Clipboard Push"
@@ -855,7 +855,7 @@ msgstr "Запрасіць буфер абмену"
 
 #: src/service/plugins/contacts.js:23
 msgid "Access contacts of the paired device"
-msgstr ""
+msgstr "Доступ да кантактаў спалучанай прылады"
 
 #: src/service/plugins/findmyphone.js:13
 msgid "Find My Phone"
@@ -863,7 +863,7 @@ msgstr "Адшукаць мой тэлефон"
 
 #: src/service/plugins/findmyphone.js:14
 msgid "Ring your paired device"
-msgstr ""
+msgstr "Адгукнуцца спалучанай прыладай"
 
 #: src/service/plugins/mousepad.js:12
 msgid "Mousepad"
@@ -871,7 +871,7 @@ msgstr "Тачпад"
 
 #: src/service/plugins/mousepad.js:13
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr ""
+msgstr "Дазваляе спалучанай прыладзе дзейнічаць як аддаленай мышшу і клавіятурай"
 
 #: src/service/plugins/mousepad.js:27 src/service/ui/mousepad.js:102
 msgid "Keyboard"
@@ -883,7 +883,7 @@ msgstr "MPRIS"
 
 #: src/service/plugins/mpris.js:16
 msgid "Bidirectional remote media playback control"
-msgstr ""
+msgstr "Двухнакіраванае аддаленае кіраванне прайграваннем"
 
 #: src/service/plugins/mpris.js:316
 msgid "Unknown"
@@ -891,7 +891,7 @@ msgstr "Невядомы"
 
 #: src/service/plugins/notification.js:16
 msgid "Share notifications with the paired device"
-msgstr ""
+msgstr "Абагульваць апавяшчэнні са спалучанымі прыладамі"
 
 #: src/service/plugins/notification.js:30
 msgid "Cancel Notification"
@@ -911,7 +911,7 @@ msgstr "Актываваць апавяшчэнне"
 
 #: src/service/plugins/photo.js:13
 msgid "Request the paired device to take a photo and transfer it to this PC"
-msgstr ""
+msgstr "Запытаць спалучаную прыладу на здымку фота і перадачу яго на гэты ПК"
 
 #: src/service/plugins/photo.js:220 src/service/plugins/share.js:128
 #: src/service/plugins/share.js:200 src/service/plugins/share.js:310
@@ -927,7 +927,7 @@ msgstr "Збой адпраўкі “%s” у %s"
 
 #: src/service/plugins/ping.js:12
 msgid "Send and receive pings"
-msgstr ""
+msgstr "Адпраўка і атрыманне пінгу"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -942,7 +942,7 @@ msgstr "Прэзентацыя"
 
 #: src/service/plugins/presenter.js:11
 msgid "Use the paired device as a presenter"
-msgstr ""
+msgstr "Выкарыстоўваць спалучаную прыладу для прэзентацыі"
 
 #: src/service/plugins/runcommand.js:11
 msgid "Run Commands"
@@ -950,7 +950,7 @@ msgstr "Запусціць каманды"
 
 #: src/service/plugins/runcommand.js:13
 msgid "Run commands on your paired device or let the device run predefined commands on this PC"
-msgstr ""
+msgstr "Запускаць каманды на спалучанай прыладзе або дазволіць ёй запускаць прадвызначаныя каманды на гэтым ПК"
 
 #: src/service/plugins/sftp.js:13
 msgid "SFTP"
@@ -958,7 +958,7 @@ msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:15
 msgid "Browse the paired device filesystem"
-msgstr ""
+msgstr "Праглядаць файлавую сістэму спалучанай прылады"
 
 #: src/service/plugins/sftp.js:20
 msgid "Mount"
@@ -979,7 +979,7 @@ msgstr "Абагуліць"
 
 #: src/service/plugins/share.js:16
 msgid "Share files and URLs between devices"
-msgstr ""
+msgstr "Абагульваць файлы і спасылкі паміж прыладамі"
 
 #. TRANSLATORS: eg. Google Pixel is not allowed to upload files
 #: src/service/plugins/share.js:130
@@ -1061,7 +1061,7 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:15
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
+msgstr "Адпраўляць і чытаць SMS на спалучанай прыладзе, апавяшчаць пра новыя SMS"
 
 #: src/service/plugins/sms.js:36
 msgid "New SMS (URI)"
@@ -1081,7 +1081,7 @@ msgstr "Сістэмная гучнасць"
 
 #: src/service/plugins/systemvolume.js:12
 msgid "Enable the paired device to control the system volume"
-msgstr ""
+msgstr "Дазволіць спалучанай прыладзе кіраваць гучнасцю сістэмы"
 
 #: src/service/plugins/systemvolume.js:56
 msgid "PulseAudio not found"
@@ -1089,7 +1089,7 @@ msgstr "PulseAudio не знойдзены"
 
 #: src/service/plugins/telephony.js:14
 msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
+msgstr "Апавяшчаць пра выклікі і рэгуляваць гучнасць сістэмы падчас выклікаў"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:26
