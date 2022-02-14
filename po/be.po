@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2022-02-14 15:49\n"
+"PO-Revision-Date: 2022-02-14 23:26\n"
 "Last-Translator: \n"
 "Language-Team: Belarusian\n"
 "Language: be_BY\n"
@@ -321,7 +321,7 @@ msgstr "Гук"
 #: data/ui/preferences-device-panel.ui:1495
 #: data/ui/preferences-device-panel.ui:1662
 msgid "Pause Media"
-msgstr "Прыпыніць плэер"
+msgstr "Прыпыніць прайграванне"
 
 #: data/ui/preferences-device-panel.ui:1548
 msgid "Ongoing Calls"
@@ -946,7 +946,7 @@ msgstr "Выкарыстоўваць спалучаную прыладу для 
 
 #: src/service/plugins/runcommand.js:11
 msgid "Run Commands"
-msgstr "Запусціць каманды"
+msgstr "Запускаць каманды"
 
 #: src/service/plugins/runcommand.js:13
 msgid "Run commands on your paired device or let the device run predefined commands on this PC"
