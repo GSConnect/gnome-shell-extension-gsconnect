@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2021-11-09 01:50\n"
+"PO-Revision-Date: 2022-02-28 08:39\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Language: es_ES\n"
@@ -821,7 +821,7 @@ msgstr "%s: batería cargada al nivel personalizado"
 #: src/service/plugins/battery.js:284
 #, javascript-format
 msgid "%d%% Charged"
-msgstr "%d%% cargada"
+msgstr "%d %% cargada"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:311

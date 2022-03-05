@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2021-11-09 01:51\n"
+"PO-Revision-Date: 2022-02-28 08:39\n"
 "Last-Translator: \n"
 "Language-Team: Catalan\n"
 "Language: ca_ES\n"
@@ -366,7 +366,7 @@ msgstr "Neteja la memòria cau…"
 
 #: data/ui/preferences-device-panel.ui:2057
 msgid "Legacy SMS Support"
-msgstr "Suport de SMS llegat"
+msgstr "Compatibilitat d’SMS llegat"
 
 #: data/ui/preferences-device-panel.ui:2114
 msgid "SFTP Automount"
@@ -477,7 +477,7 @@ msgstr "Menú de serveis"
 
 #: data/ui/preferences-window.ui:182
 msgid "Device Menu"
-msgstr ""
+msgstr "Menú d’aparells"
 
 #: data/ui/preferences-window.ui:196 data/ui/preferences-window.ui:211
 msgid "Edit Device Name"
@@ -561,7 +561,7 @@ msgstr ""
 
 #: data/ui/service-error-dialog.ui:118
 msgid "Technical Details"
-msgstr ""
+msgstr "Detalls tècnics"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: nautilus-extension/nautilus-gsconnect.py:164 webextension/gettext.js:33
@@ -886,7 +886,7 @@ msgstr ""
 
 #: src/service/plugins/mpris.js:316
 msgid "Unknown"
-msgstr ""
+msgstr "Desconegut"
 
 #: src/service/plugins/notification.js:16
 msgid "Share notifications with the paired device"
@@ -1084,7 +1084,7 @@ msgstr ""
 
 #: src/service/plugins/systemvolume.js:56
 msgid "PulseAudio not found"
-msgstr ""
+msgstr "No s’ha trobat el PulseAudio"
 
 #: src/service/plugins/telephony.js:14
 msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
@@ -1160,7 +1160,7 @@ msgstr[1] "%d minuts"
 
 #: src/service/ui/messaging.js:750
 msgid "Group Message"
-msgstr ""
+msgstr "Missatge de grup"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:765
