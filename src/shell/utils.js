@@ -128,7 +128,7 @@ function _installResource(dirname, basename, relativePath) {
 /**
  * Install the files necessary for the GSConnect service to run.
  */
-function installService() {
+function installService(enabling) {
     const confDir = GLib.get_user_config_dir();
     const dataDir = GLib.get_user_data_dir();
     const homeDir = GLib.get_home_dir();
@@ -171,7 +171,7 @@ function installService() {
 
     // If running as a user extension, ensure the DBus service, desktop entry,
     // file manager scripts, and WebExtension manifests are installed.
-    if (Config.IS_USER) {
+    if (Config.IS_USER && enabling) {
         // DBus Service
         if (!_installResource(dbusDir, dbusFile, `${dbusFile}.in`))
             throw Error('GSConnect: Failed to install DBus Service');

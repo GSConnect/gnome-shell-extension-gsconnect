@@ -423,12 +423,6 @@ var serviceIndicator = null;
 
 
 function init() {
-    // If installed as a user extension, this will install the Desktop entry,
-    // DBus and systemd service files necessary for DBus activation and
-    // GNotifications. Since there's no uninit()/uninstall() hook for extensions
-    // and they're only used *by* GSConnect, they should be okay to leave.
-    Utils.installService();
-
     // These modify the notification source for GSConnect's GNotifications and
     // need to be active even when the extension is disabled (eg. lock screen).
     // Since they *only* affect notifications from GSConnect, it should be okay
@@ -443,6 +437,10 @@ function init() {
 
 
 function enable() {
+    // If installed as a user extension, this will install the Desktop entry,
+    // DBus and systemd service files necessary for DBus activation and
+    // GNotifications.
+    Utils.installService(true);
     serviceIndicator = new ServiceIndicator();
     Notification.patchGtkNotificationSources();
 }
@@ -452,4 +450,5 @@ function disable() {
     serviceIndicator.destroy();
     serviceIndicator = null;
     Notification.unpatchGtkNotificationSources();
+    Utils.installService(false);
 }
