@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2022-03-10 20:55\n"
+"PO-Revision-Date: 2022-03-10 21:51\n"
 "Last-Translator: \n"
 "Language-Team: Hungarian\n"
 "Language: hu_HU\n"
@@ -45,11 +45,11 @@ msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:40
 msgid "Send and receive messages"
-msgstr ""
+msgstr "Üzenetek küldése és fogadása"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
 msgid "Sync clipboard content"
-msgstr ""
+msgstr "Vágólap tartalmának szinkronizálása"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:42
 msgid "Sync contacts"
@@ -61,15 +61,15 @@ msgstr "Értesítések szinkronizálása"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
 msgid "Control media players"
-msgstr ""
+msgstr "Médialejátszók irányítása"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:45
 msgid "Control system volume"
-msgstr ""
+msgstr "Rendszerhangerő vezérlése"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:46
 msgid "Execute predefined commands"
-msgstr ""
+msgstr "Előre megadott parancsok végrehajtása"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:47
 msgid "And more…"
@@ -256,7 +256,7 @@ msgstr "Alacsony töltöttség értesítés"
 
 #: data/ui/preferences-device-panel.ui:699
 msgid "Charged Up to Custom Level Notification"
-msgstr ""
+msgstr "Szabadon állítható töltöttség értesítés"
 
 #: data/ui/preferences-device-panel.ui:779
 msgid "Fully Charged Notification"
@@ -477,7 +477,7 @@ msgstr ""
 
 #: data/ui/preferences-window.ui:182
 msgid "Device Menu"
-msgstr ""
+msgstr "Eszközmenü"
 
 #: data/ui/preferences-window.ui:196 data/ui/preferences-window.ui:211
 msgid "Edit Device Name"
@@ -514,7 +514,7 @@ msgstr "Megjelenítési mód"
 #. TRANSLATORS: Show device indicators in the top bar
 #: data/ui/preferences-window.ui:727
 msgid "Panel"
-msgstr ""
+msgstr "Panel"
 
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
 #: data/ui/preferences-window.ui:733
@@ -545,7 +545,7 @@ msgstr "Nem található eszköz"
 
 #: data/ui/service-device-chooser.ui:111
 msgid "Device List"
-msgstr ""
+msgstr "Eszközlista"
 
 #: data/ui/service-error-dialog.ui:32 data/ui/service-error-dialog.ui:40
 msgid "Report"
@@ -553,7 +553,7 @@ msgstr "Jelentés"
 
 #: data/ui/service-error-dialog.ui:72
 msgid "Something’s gone wrong"
-msgstr ""
+msgstr "Valami nem stimmel"
 
 #: data/ui/service-error-dialog.ui:84
 msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
@@ -561,7 +561,7 @@ msgstr "A GSConnect egy váratlan hibába ütközött. Kérlek jelentsd a hibát
 
 #: data/ui/service-error-dialog.ui:118
 msgid "Technical Details"
-msgstr ""
+msgstr "Technikai részletek"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: nautilus-extension/nautilus-gsconnect.py:164 webextension/gettext.js:33
@@ -797,7 +797,7 @@ msgstr "A port már használatban van"
 
 #: src/service/plugins/battery.js:13
 msgid "Exchange battery information"
-msgstr ""
+msgstr "Akkumulátoradatok küldése és fogadása"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:253
@@ -815,7 +815,7 @@ msgstr "Teljesen feltöltve"
 #: src/service/plugins/battery.js:282
 #, javascript-format
 msgid "%s: Battery has reached custom charge level"
-msgstr ""
+msgstr "%s: az akkumulátor elérte a megadott töltöttségi szintet"
 
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:284
@@ -841,7 +841,7 @@ msgstr "Vágólap"
 
 #: src/service/plugins/clipboard.js:11
 msgid "Share the clipboard content"
-msgstr ""
+msgstr "Vágólap tartalmának megosztása"
 
 #: src/service/plugins/clipboard.js:23
 msgid "Clipboard Push"
@@ -853,7 +853,7 @@ msgstr "Vágólap fogadás"
 
 #: src/service/plugins/contacts.js:23
 msgid "Access contacts of the paired device"
-msgstr ""
+msgstr "A párosított eszköz névjegyeinek elérése"
 
 #: src/service/plugins/findmyphone.js:13
 msgid "Find My Phone"
@@ -861,7 +861,7 @@ msgstr "Keresd meg a telefonom"
 
 #: src/service/plugins/findmyphone.js:14
 msgid "Ring your paired device"
-msgstr ""
+msgstr "A párosított eszköz megcsörgetése"
 
 #: src/service/plugins/mousepad.js:12
 msgid "Mousepad"
@@ -869,7 +869,7 @@ msgstr "Egérpad"
 
 #: src/service/plugins/mousepad.js:13
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr ""
+msgstr "A párosított eszköz egérként és billentyűzetként való használatának egedélyezése"
 
 #: src/service/plugins/mousepad.js:27 src/service/ui/mousepad.js:102
 msgid "Keyboard"
@@ -889,7 +889,7 @@ msgstr "Ismeretlen"
 
 #: src/service/plugins/notification.js:16
 msgid "Share notifications with the paired device"
-msgstr ""
+msgstr "Értesítések megosztása a párosított eszközzel"
 
 #: src/service/plugins/notification.js:30
 msgid "Cancel Notification"
@@ -948,7 +948,7 @@ msgstr "Parancsok futtatása"
 
 #: src/service/plugins/runcommand.js:13
 msgid "Run commands on your paired device or let the device run predefined commands on this PC"
-msgstr ""
+msgstr "Futtass parancsokat egy párosított eszközön, vagy engedélyzed, hogy előre megadott parancsokat futtassanak ezen a eszközön"
 
 #: src/service/plugins/sftp.js:13
 msgid "SFTP"
@@ -956,7 +956,7 @@ msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:15
 msgid "Browse the paired device filesystem"
-msgstr ""
+msgstr "A párosított eszköz fájlrendszerének böngészése"
 
 #: src/service/plugins/sftp.js:20
 msgid "Mount"
@@ -977,7 +977,7 @@ msgstr "Megosztás"
 
 #: src/service/plugins/share.js:16
 msgid "Share files and URLs between devices"
-msgstr ""
+msgstr "Fájlok és URL-ek megosztása eszközök között"
 
 #. TRANSLATORS: eg. Google Pixel is not allowed to upload files
 #: src/service/plugins/share.js:130
@@ -1059,7 +1059,7 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:15
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
+msgstr "Értesítés új SMS-ekről, és a párosított eszköz SMS-einek olvasása és SMS-ek küldése"
 
 #: src/service/plugins/sms.js:36
 msgid "New SMS (URI)"
@@ -1079,7 +1079,7 @@ msgstr "Rendszerhangerő"
 
 #: src/service/plugins/systemvolume.js:12
 msgid "Enable the paired device to control the system volume"
-msgstr ""
+msgstr "A rendszerhangerő állításának egedélyezése a párosított eszköz számára"
 
 #: src/service/plugins/systemvolume.js:56
 msgid "PulseAudio not found"
@@ -1087,7 +1087,7 @@ msgstr "PulseAudio nem található"
 
 #: src/service/plugins/telephony.js:14
 msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
+msgstr "Értesítés a hívásokról és a rendszerhangerő állítása csörgés/kimenő hívások közben"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:26
