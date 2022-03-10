@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2021-11-09 01:51\n"
+"PO-Revision-Date: 2022-03-10 20:55\n"
 "Last-Translator: \n"
 "Language-Team: Hungarian\n"
 "Language: hu_HU\n"
@@ -53,11 +53,11 @@ msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:42
 msgid "Sync contacts"
-msgstr ""
+msgstr "Névjegyek szinkronizálása"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:43
 msgid "Sync notifications"
-msgstr ""
+msgstr "Értesítések szinkronizálása"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
 msgid "Control media players"
@@ -73,7 +73,7 @@ msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:47
 msgid "And more…"
-msgstr ""
+msgstr "És még sok más…"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:102
 msgid "GSConnect in GNOME Shell"
@@ -557,7 +557,7 @@ msgstr ""
 
 #: data/ui/service-error-dialog.ui:84
 msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
-msgstr ""
+msgstr "A GSConnect egy váratlan hibába ütközött. Kérlek jelentsd a hibát, és csatolj minden információt, ami segíthet."
 
 #: data/ui/service-error-dialog.ui:118
 msgid "Technical Details"
@@ -635,7 +635,7 @@ msgstr "Napló átnézése"
 
 #: src/preferences/service.js:482
 msgid "Laptop"
-msgstr ""
+msgstr "Laptop"
 
 #: src/preferences/service.js:484
 msgid "Smartphone"
@@ -726,7 +726,7 @@ msgstr "Fotó"
 #: src/service/daemon.js:477 src/service/plugins/ping.js:11
 #: src/service/plugins/ping.js:18 src/service/plugins/ping.js:45
 msgid "Ping"
-msgstr ""
+msgstr "Ping"
 
 #: src/service/daemon.js:486 src/service/plugins/battery.js:244
 #: src/service/plugins/battery.js:273 src/service/plugins/battery.js:302
@@ -789,11 +789,11 @@ msgstr "A felderítés le lett tiltva a hálózaton lévő eszközök száma mia
 
 #: src/service/backends/lan.js:162
 msgid "OpenSSL not found"
-msgstr ""
+msgstr "Az OpenSSL nem található"
 
 #: src/service/backends/lan.js:452
 msgid "Port already in use"
-msgstr ""
+msgstr "A port már használatban van"
 
 #: src/service/plugins/battery.js:13
 msgid "Exchange battery information"
@@ -877,7 +877,7 @@ msgstr "Billentyűzet"
 
 #: src/service/plugins/mpris.js:15
 msgid "MPRIS"
-msgstr ""
+msgstr "MPRIS"
 
 #: src/service/plugins/mpris.js:16
 msgid "Bidirectional remote media playback control"
@@ -932,7 +932,7 @@ msgstr ""
 #: src/service/plugins/ping.js:52
 #, javascript-format
 msgid "Ping: %s"
-msgstr ""
+msgstr "Ping: %s"
 
 #: src/service/plugins/presenter.js:10
 msgid "Presentation"
@@ -952,7 +952,7 @@ msgstr ""
 
 #: src/service/plugins/sftp.js:13
 msgid "SFTP"
-msgstr ""
+msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:15
 msgid "Browse the paired device filesystem"
@@ -969,7 +969,7 @@ msgstr "Leválasztás"
 #: src/service/plugins/sftp.js:212
 #, javascript-format
 msgid "%s reported an error"
-msgstr ""
+msgstr "%s hibát jelzett"
 
 #: src/service/plugins/share.js:14 src/service/plugins/share.js:21
 msgid "Share"
@@ -1055,7 +1055,7 @@ msgstr "Hivatkozás küldése ide: %s"
 
 #: src/service/plugins/sms.js:14
 msgid "SMS"
-msgstr ""
+msgstr "SMS"
 
 #: src/service/plugins/sms.js:15
 msgid "Send and read SMS of the paired device and be notified of new SMS"
@@ -1083,7 +1083,7 @@ msgstr ""
 
 #: src/service/plugins/systemvolume.js:56
 msgid "PulseAudio not found"
-msgstr ""
+msgstr "PulseAudio nem található"
 
 #: src/service/plugins/telephony.js:14
 msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
@@ -1115,7 +1115,7 @@ msgstr "Kimenő hívás"
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:130
 msgid "Fax"
-msgstr ""
+msgstr "Fax"
 
 #. TRANSLATORS: A work or office phone number
 #: src/service/ui/contacts.js:134
