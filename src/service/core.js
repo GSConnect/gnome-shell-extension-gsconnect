@@ -428,6 +428,9 @@ var ChannelService = GObject.registerClass({
 
             const meta = imports.service.plugins[name].Metadata;
 
+            if (meta === undefined)
+                continue;
+
             for (const type of meta.incomingCapabilities)
                 this._identity.body.incomingCapabilities.push(type);
 

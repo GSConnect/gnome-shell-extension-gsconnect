@@ -38,6 +38,7 @@ const Settings = imports.preferences.service;
  */
 const Preferences = GObject.registerClass({
     GTypeName: 'GSConnectPreferences',
+    Implements: [Gio.ActionGroup],
 }, class Preferences extends Gtk.Application {
 
     _init() {
