@@ -17,6 +17,9 @@ const DEVICE_SHORTCUTS = {};
 for (const name in imports.service.plugins) {
     const module = imports.service.plugins[name];
 
+    if (module.Metadata === undefined)
+        continue;
+
     // Plugins
     DEVICE_PLUGINS.push(name);
 
