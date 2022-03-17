@@ -136,7 +136,7 @@ function isSubset(obj, subset) {
             return false;
 
         // We were only checking for the key itself
-        if (typeof val === undefined)
+        if (typeof val === 'undefined')
             continue;
 
         if (Array.isArray(val)) {
