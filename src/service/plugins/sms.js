@@ -100,13 +100,18 @@ var MessageStatus = {
 
 
 /**
- * SMS Message direction. IN/OUT match the 'type' field from the Android App
+ * SMS Message type, set from the 'type' field in the Android App
  * message packet.
  *
  * See: https://developer.android.com/reference/android/provider/Telephony.TextBasedSmsColumns.html
  *
- * IN: An incoming message
- * OUT: An outgoing message
+ * ALL: all messages
+ * INBOX: Received messages
+ * SENT: Sent messages
+ * DRAFT: Message drafts
+ * OUTBOX: Outgoing messages
+ * FAILED: Failed outgoing messages
+ * QUEUED: Messages queued to send later
  */
 var MessageBox = {
     ALL: 0,

@@ -167,7 +167,7 @@ String.prototype.equalsPhoneNumber = function (number) {
     const a = this.toPhoneNumber();
     const b = number.toPhoneNumber();
 
-    return (a.endsWith(b) || b.endsWith(a));
+    return (a.length && b.length && (a.endsWith(b) || b.endsWith(a)));
 };
 
 
