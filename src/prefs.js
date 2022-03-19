@@ -9,7 +9,7 @@ const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const Utils = Extension.imports.shell.utils;
 
 function init() {
-    Utils.installService();
+    Utils.installService(true);
 }
 
 function buildPrefsWidget() {
