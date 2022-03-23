@@ -163,6 +163,7 @@ function installService() {
         [`${confDir}/google-chrome-beta/NativeMessagingHosts/`, google],
         [`${confDir}/google-chrome-unstable/NativeMessagingHosts/`, google],
         [`${confDir}/BraveSoftware/Brave-Browser/NativeMessagingHosts/`, google],
+        [`${confDir}/BraveSoftware/Brave-Browser-Beta/NativeMessagingHosts/`, google],
         [`${confDir}/BraveSoftware/Brave-Browser-Nightly/NativeMessagingHosts/`, google],
         [`${homeDir}/.mozilla/native-messaging-hosts/`, mozilla],
         [`${homeDir}/.config/microsoft-edge-dev/NativeMessagingHosts`, google],
