@@ -609,8 +609,12 @@ class Controller {
         try {
             this._ensureAdapter();
 
-            for (let i = 0; i < input.length; i++)
-                this._session.pressKey(input[i], modifiers);
+            if (typeof input === 'string') {
+                for (let i = 0; i < input.length; i++)
+                    this._session.pressKey(input[i], modifiers);
+            } else {
+                this._session.pressKey(input, modifiers);
+            }
         } catch (e) {
             debug(e);
         }
