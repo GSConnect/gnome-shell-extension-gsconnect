@@ -1572,6 +1572,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label_xalign">0</property>
+                        <property name="margin_bottom">32</property>
                         <child>
                           <object class="GtkListBox" id="talking-list">
                             <property name="visible">True</property>
@@ -1767,7 +1768,102 @@ SPDX-License-Identifier: GPL-2.0-or-later
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
+                        <property name="position">4</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="after-list-label">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="margin-bottom">12</property>
+                        <property name="label" translatable="yes">After Calls</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                        </attributes>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
                         <property name="position">5</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkFrame">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="label-xalign">0</property>
+                        <child>
+                          <object class="GtkListBox" id="after-list">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="hexpand">True</property>
+                            <property name="selection-mode">none</property>
+                            <signal name="keynav-failed" handler="_onKeynavFailed" swapped="no"/>
+                            <signal name="row-activated" handler="_onToggleRowActivated" swapped="no"/>
+                            <child>
+                              <object class="GtkListBoxRow" id="after-unpause-row">
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <property name="height-request">56</property>
+                                <property name="selectable">False</property>
+                                <child>
+                                  <object class="GtkGrid">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="margin-start">12</property>
+                                    <property name="margin-end">12</property>
+                                    <property name="column-spacing">12</property>
+                                    <child>
+                                      <object class="GtkLabel" id="after-unpause-label">
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">False</property>
+                                        <property name="halign">start</property>
+                                        <property name="valign">center</property>
+                                        <property name="hexpand">True</property>
+                                        <property name="vexpand">True</property>
+                                        <property name="label" translatable="yes">Resume Paused Media</property>
+                                        <accessibility>
+                                          <relation type="label-for" target="after-unpause-row"/>
+                                          <relation type="label-for" target="after-unpause"/>
+                                        </accessibility>
+                                      </object>
+                                      <packing>
+                                        <property name="left-attach">0</property>
+                                        <property name="top-attach">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkSwitch" id="after-unpause">
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">True</property>
+                                        <property name="valign">center</property>
+                                        <property name="action-name">settings.after-unpause</property>
+                                        <accessibility>
+                                          <relation type="controlled-by" target="after-unpause-row"/>
+                                          <relation type="labelled-by" target="after-unpause-label"/>
+                                        </accessibility>
+                                      </object>
+                                      <packing>
+                                        <property name="left-attach">1</property>
+                                        <property name="top-attach">0</property>
+                                      </packing>
+                                    </child>
+                                  </object>
+                                </child>
+
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child type="label_item">
+                          <placeholder/>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">7</property>
                       </packing>
                     </child>
                   </object>

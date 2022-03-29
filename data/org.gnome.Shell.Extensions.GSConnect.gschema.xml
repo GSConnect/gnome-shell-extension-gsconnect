@@ -192,6 +192,8 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <key name="talking-pause" type="b">
       <default>true</default>
     </key>
+    <key name="after-unpause" type="b">
+      <default>true</default>
+    </key>
   </schema>
 </schemalist>
-
