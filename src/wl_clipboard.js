@@ -30,14 +30,6 @@ const DBUS_NODE = Gio.DBusNodeInfo.new_for_xml(`
     <method name="SetText">
       <arg direction="in" type="s" name="text"/>
     </method>
-    <method name="GetValue">
-      <arg direction="in" type="s" name="mimetype"/>
-      <arg direction="out" type="ay" name="value"/>
-    </method>
-    <method name="SetValue">
-      <arg direction="in" type="ay" name="value"/>
-      <arg direction="in" type="s" name="mimetype"/>
-    </method>
 
     <!-- Signals -->
     <signal name="OwnerChange"/>
