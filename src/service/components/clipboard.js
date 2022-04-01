@@ -10,6 +10,7 @@ const GObject = imports.gi.GObject;
 const DBUS_NAME = 'org.gnome.Shell.Extensions.GSConnect.Clipboard';
 const DBUS_PATH = '/org/gnome/Shell/Extensions/GSConnect/Clipboard';
 
+imports.wl_clipboard.watchService();
 
 var Clipboard = GObject.registerClass({
     GTypeName: 'GSConnectClipboard',
