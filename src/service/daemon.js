@@ -25,7 +25,6 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
-
 // Bootstrap
 function get_datadir() {
     const m = /@([^:]+):\d+/.exec(new Error().stack.split('\n')[1]);

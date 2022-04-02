@@ -5,13 +5,14 @@
 'use strict';
 
 const Gdk = imports.gi.Gdk;
+const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
 const Components = imports.service.components;
 const {InputDialog} = imports.service.ui.mousepad;
 const PluginBase = imports.service.plugin;
 
-
+const WITHOUT_GNOME = GLib.getenv('DESKTOP_SESSION') !== 'gnome';
 var Metadata = {
     label: _('Mousepad'),
     description: _('Enables the paired device to act as a remote mouse and keyboard'),
@@ -40,7 +41,6 @@ var Metadata = {
         },
     },
 };
-
 
 /**
  * A map of "KDE Connect" keyvals to Gdk
@@ -80,6 +80,40 @@ const KeyMap = new Map([
     [32, Gdk.KEY_F12],
 ]);
 
+const KeyMapCodes = new Map([
+    [1, 14],
+    [2, 15],
+    [3, 101],
+    [4, 105],
+    [5, 103],
+    [6, 106],
+    [7, 108],
+    [8, 104],
+    [9, 109],
+    [10, 102],
+    [11, 107],
+    [12, 28],
+    [13, 111],
+    [14, 1],
+    [15, 99],
+    [16, 70],
+    [17, 0],
+    [18, 0],
+    [19, 0],
+    [20, 0],
+    [21, 59],
+    [22, 60],
+    [23, 61],
+    [24, 62],
+    [25, 63],
+    [26, 64],
+    [27, 65],
+    [28, 66],
+    [29, 67],
+    [30, 68],
+    [31, 87],
+    [32, 88],
+]);
 
 /**
  * Mousepad Plugin
@@ -99,11 +133,13 @@ var Plugin = GObject.registerClass({
         ),
     },
 }, class Plugin extends PluginBase.Plugin {
-
     _init(device) {
         super._init(device, 'mousepad');
 
-        this._input = Components.acquire('input');
+        if (WITHOUT_GNOME)
+            this._input = Components.acquire('ydotool');
+        else
+            this._input = Components.acquire('input');
 
         this._shareControlChangedId = this.settings.connect(
             'changed::share-control',
@@ -158,6 +194,7 @@ var Plugin = GObject.registerClass({
 
         let keysym;
         let modifiers = 0;
+        const modifiers_codes = [];
 
         // These are ordered, as much as possible, to create the shortest code
         // path for high-frequency, low-latency events (eg. mouse movement)
@@ -176,27 +213,45 @@ var Plugin = GObject.registerClass({
                     return;
 
                 // Modifiers
-                if (input.alt)
+                if (input.alt) {
                     modifiers |= Gdk.ModifierType.MOD1_MASK;
+                    modifiers_codes.push(56);
+                }
 
-                if (input.ctrl)
+                if (input.ctrl) {
                     modifiers |= Gdk.ModifierType.CONTROL_MASK;
+                    modifiers_codes.push(29);
+                }
 
-                if (input.shift)
+                if (input.shift) {
                     modifiers |= Gdk.ModifierType.SHIFT_MASK;
+                    modifiers_codes.push(42);
+                }
 
-                if (input.super)
+                if (input.super) {
                     modifiers |= Gdk.ModifierType.SUPER_MASK;
+                    modifiers_codes.push(125);
+                }
 
                 // Regular key (printable ASCII or Unicode)
                 if (input.key) {
-                    this._input.pressKeys(input.key, modifiers);
+                    if (WITHOUT_GNOME)
+                        this._input.pressKeys(input.key, modifiers_codes);
+                    else
+                        this._input.pressKeys(input.key, modifiers);
+
                     this._sendEcho(input);
 
                 // Special key (eg. non-printable ASCII)
                 } else if (input.specialKey && KeyMap.has(input.specialKey)) {
-                    keysym = KeyMap.get(input.specialKey);
-                    this._input.pressKeys(keysym, modifiers);
+                    if (WITHOUT_GNOME) {
+                        keysym = KeyMapCodes.get(input.specialKey);
+                        this._input.pressKeys(keysym, modifiers_codes);
+                    } else {
+                        keysym = KeyMap.get(input.specialKey);
+                        this._input.pressKeys(keysym, modifiers);
+                    }
+
                     this._sendEcho(input);
                 }
                 break;
@@ -310,8 +365,12 @@ var Plugin = GObject.registerClass({
     }
 
     destroy() {
-        if (this._input !== undefined)
-            this._input = Components.release('input');
+        if (this._input !== undefined) {
+            if (WITHOUT_GNOME)
+                this._input = Components.release('ydotool');
+            else
+                this._input = Components.release('input');
+        }
 
         if (this._dialog !== undefined)
             this._dialog.destroy();

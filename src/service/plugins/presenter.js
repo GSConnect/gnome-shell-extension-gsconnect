@@ -5,11 +5,13 @@
 'use strict';
 
 const GObject = imports.gi.GObject;
+const GLib = imports.gi.GLib;
 
 const Components = imports.service.components;
 const PluginBase = imports.service.plugin;
 
 
+const WITHOUT_GNOME = GLib.getenv('DESKTOP_SESSION') !== 'gnome';
 var Metadata = {
     label: _('Presentation'),
     description: _('Use the paired device as a presenter'),
@@ -32,7 +34,10 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'presenter');
 
-        this._input = Components.acquire('input');
+        if (WITHOUT_GNOME)
+            this._input = Components.acquire('ydotool');
+        else
+            this._input = Components.acquire('input');
     }
 
     handlePacket(packet) {
@@ -48,8 +53,12 @@ var Plugin = GObject.registerClass({
     }
 
     destroy() {
-        if (this._input !== undefined)
-            this._input = Components.release('input');
+        if (this._input !== undefined) {
+            if (WITHOUT_GNOME)
+                this._input = Components.release('ydotool');
+            else
+                this._input = Components.release('input');
+        }
 
         super.destroy();
     }
