@@ -15,6 +15,10 @@ const DBUS_NAME = 'org.gnome.Shell.Extensions.GSConnect.Clipboard';
 const DBUS_PATH = '/org/gnome/Shell/Extensions/GSConnect/Clipboard';
 
 
+if (GLib.getenv('DESKTOP_SESSION') !== 'gnome')
+    imports.wl_clipboard.watchService();
+
+
 var Clipboard = GObject.registerClass({
     GTypeName: 'GSConnectClipboard',
     Properties: {
@@ -105,6 +109,19 @@ var Clipboard = GObject.registerClass({
             );
 
             this._onOwnerChange();
+            if (GLib.getenv('DESKTOP_SESSION') !== 'gnome') {
+                // Directly subscrible signal
+                this.signalHanlder = Gio.DBus.session.signal_subscribe(
+                    DBUS_NAME,
+                    DBUS_NAME,
+                    'OwnerChange',
+                    DBUS_PATH,
+                    null,
+                    Gio.DBusSignalFlags.NONE,
+                    this._onOwnerChange.bind(this)
+                );
+            }
+
         } catch (e) {
             if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED)) {
                 debug(e);
@@ -276,6 +293,10 @@ var Clipboard = GObject.registerClass({
             Gio.bus_unwatch_name(this._nameWatcherId);
             this._nameWatcherId = 0;
         }
+
+        if (this.signalHanlder)
+            Gio.DBus.session.signal_unsubscribe(this.signalHanlder);
+
     }
 });
 
@@ -285,3 +306,4 @@ var Clipboard = GObject.registerClass({
  */
 var Component = Clipboard;
 
+// vim:tabstop=2:shiftwidth=2:expandtab
