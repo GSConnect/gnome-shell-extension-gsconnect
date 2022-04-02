@@ -3,7 +3,7 @@
 const Gio = imports.gi.Gio;
 const Gdk = imports.gi.Gdk;
 
-const keyCodes = new Set([
+const keyCodes = new Map([
     ['1', 2],
     ['2', 3],
     ['3', 4],
@@ -120,13 +120,25 @@ class Controller {
 
     pressKeys(input, modifiers_codes) {
         if (typeof input === 'string' && modifiers_codes.length === 0) {
-            this.args = ['type', '--', input];
+            try {
+                this._launcher.spawnv(['wtype', input]);
+            } catch (e) {
+                debug(e);
+                this.arg = ['type', '--', input];
+            }
         } else {
             if (typeof input === 'number') {
                 modifiers_codes.push(input);
             } else if (typeof input === 'string') {
-                for (var i = 0; i < input.length; i++)
-                    modifiers_codes.push(keyCodes.get(input[i]));
+                input = input.toUpperCase();
+                for (var i = 0; i < input.length; i++) {
+                    if (keyCodes.get(input[i])) {
+                        modifiers_codes.push(keyCodes.get(input[i]));
+                    } else {
+                        debug('Keycode for ' + input[i] + ' not found');
+                        return;
+                    }
+                }
 
             }
             this._args = ['key'];
