@@ -65,14 +65,14 @@ var Clipboard = GObject.registerClass(
 
             this._transferring = false;
 
-            this.watcher = launcher.spawnv([
+            this.watcher = Gio.Subprocess.new([
                 'wl-paste',
                 '-w',
                 'dbus-send',
                 DBUS_PATH,
                 '--dest=' + DBUS_NAME,
                 DBUS_NAME + '.OwnerChange',
-            ]);
+            ], Gio.SubprocessFlags.NONE);
 
             // Prepare DBus interface
             this._handleMethodCallId = this.connect(
