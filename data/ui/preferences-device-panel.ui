@@ -1772,12 +1772,12 @@ SPDX-License-Identifier: GPL-2.0-or-later
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkLabel" id="after-list-label">
+                      <object class="GtkLabel" id="ended-list-label">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="halign">start</property>
                         <property name="margin-bottom">12</property>
-                        <property name="label" translatable="yes">After Calls</property>
+                        <property name="label" translatable="yes">Call Ended</property>
                         <attributes>
                           <attribute name="weight" value="bold"/>
                         </attributes>
@@ -1794,7 +1794,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                         <property name="can-focus">False</property>
                         <property name="label-xalign">0</property>
                         <child>
-                          <object class="GtkListBox" id="after-list">
+                          <object class="GtkListBox" id="ended-list">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <property name="hexpand">True</property>
@@ -1802,7 +1802,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                             <signal name="keynav-failed" handler="_onKeynavFailed" swapped="no"/>
                             <signal name="row-activated" handler="_onToggleRowActivated" swapped="no"/>
                             <child>
-                              <object class="GtkListBoxRow" id="after-unpause-row">
+                              <object class="GtkListBoxRow" id="ended-resume-row">
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
                                 <property name="height-request">56</property>
@@ -1815,7 +1815,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                                     <property name="margin-end">12</property>
                                     <property name="column-spacing">12</property>
                                     <child>
-                                      <object class="GtkLabel" id="after-unpause-label">
+                                      <object class="GtkLabel" id="ended-resume-label">
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
                                         <property name="halign">start</property>
@@ -1824,8 +1824,8 @@ SPDX-License-Identifier: GPL-2.0-or-later
                                         <property name="vexpand">True</property>
                                         <property name="label" translatable="yes">Resume Paused Media</property>
                                         <accessibility>
-                                          <relation type="label-for" target="after-unpause-row"/>
-                                          <relation type="label-for" target="after-unpause"/>
+                                          <relation type="label-for" target="ended-resume-row"/>
+                                          <relation type="label-for" target="ended-resume"/>
                                         </accessibility>
                                       </object>
                                       <packing>
@@ -1834,14 +1834,14 @@ SPDX-License-Identifier: GPL-2.0-or-later
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkSwitch" id="after-unpause">
+                                      <object class="GtkSwitch" id="ended-resume">
                                         <property name="visible">True</property>
                                         <property name="can-focus">True</property>
                                         <property name="valign">center</property>
-                                        <property name="action-name">settings.after-unpause</property>
+                                        <property name="action-name">settings.ended-resume</property>
                                         <accessibility>
-                                          <relation type="controlled-by" target="after-unpause-row"/>
-                                          <relation type="labelled-by" target="after-unpause-label"/>
+                                          <relation type="controlled-by" target="ended-resume-row"/>
+                                          <relation type="labelled-by" target="ended-resume-label"/>
                                         </accessibility>
                                       </object>
                                       <packing>

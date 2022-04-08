@@ -99,7 +99,7 @@ var Plugin = GObject.registerClass({
      * Restore volume and microphone, plus media player state
      * (if we changed it and restore is enabled).
      *
-     * If we're going to auto-unpause, make sure to do that first
+     * If we're going to auto-resume, make sure to do that first
      * before raising volume.
      * Otherwise, still raise the volume (so the user can unpause).
      *
@@ -109,10 +109,10 @@ var Plugin = GObject.registerClass({
     _restoreMediaState() {
         // Media Playback
         if (this._mpris) {
-            if (this.settings.get_boolean('after-unpause')) {
+            if (this.settings.get_boolean('ended-resume')) {
                 this._mpris.unpauseAll();
             } else {
-                /* Even if unpause is disabled, we still need to clear
+                /* Even if resume is disabled, we still need to clear
                  * the list of which players we're holding paused
                  *
                  * TODO: This potentially worsens the multi-device
