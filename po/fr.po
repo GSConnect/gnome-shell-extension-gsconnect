@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2021-11-09 01:50\n"
+"PO-Revision-Date: 2022-04-19 13:48\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -256,7 +256,7 @@ msgstr "Notification de batterie faible"
 
 #: data/ui/preferences-device-panel.ui:699
 msgid "Charged Up to Custom Level Notification"
-msgstr ""
+msgstr "Notification de batterie à un niveau de charge personnalisé"
 
 #: data/ui/preferences-device-panel.ui:779
 msgid "Fully Charged Notification"
@@ -797,7 +797,7 @@ msgstr "Port déjà utilisé"
 
 #: src/service/plugins/battery.js:13
 msgid "Exchange battery information"
-msgstr ""
+msgstr "Échanger les informations sur la batterie"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:253
@@ -815,13 +815,13 @@ msgstr "Complètement chargé"
 #: src/service/plugins/battery.js:282
 #, javascript-format
 msgid "%s: Battery has reached custom charge level"
-msgstr ""
+msgstr "%s: La batterie a atteint le niveau de charge personnalisé"
 
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:284
 #, javascript-format
 msgid "%d%% Charged"
-msgstr ""
+msgstr "%d%% Chargé"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:311
@@ -841,7 +841,7 @@ msgstr "Presse-papiers"
 
 #: src/service/plugins/clipboard.js:11
 msgid "Share the clipboard content"
-msgstr ""
+msgstr "Partager le contenu du presse-papiers"
 
 #: src/service/plugins/clipboard.js:23
 msgid "Clipboard Push"
@@ -853,7 +853,7 @@ msgstr "Récupérer le presse-papiers"
 
 #: src/service/plugins/contacts.js:23
 msgid "Access contacts of the paired device"
-msgstr ""
+msgstr "Accéder aux contacts de l'appareil appairé"
 
 #: src/service/plugins/findmyphone.js:13
 msgid "Find My Phone"
@@ -861,7 +861,7 @@ msgstr "Trouver mon téléphone"
 
 #: src/service/plugins/findmyphone.js:14
 msgid "Ring your paired device"
-msgstr ""
+msgstr "Faire sonner l'appareil appairé"
 
 #: src/service/plugins/mousepad.js:12
 msgid "Mousepad"
@@ -869,7 +869,7 @@ msgstr "Pavé tactile"
 
 #: src/service/plugins/mousepad.js:13
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr ""
+msgstr "Permet à l'appareil apparié d'agir comme une souris et un clavier à distance"
 
 #: src/service/plugins/mousepad.js:27 src/service/ui/mousepad.js:102
 msgid "Keyboard"
