@@ -11,6 +11,8 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/messaging-conversation-summary.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/messaging-conversation.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/messaging-window.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/bluetooth-handoff-dialog.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/bluetooth-handoff-device-row.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/mousepad-input-dialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/notification-reply-dialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/preferences-command-editor.ui</file>
