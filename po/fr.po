@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2021-11-09 01:50\n"
+"PO-Revision-Date: 2022-04-19 14:49\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -29,7 +29,7 @@ msgstr "Une implémentation de KDE Connect pour GNOME"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:16
 msgid "GSConnect Team"
-msgstr "Équipe GSConnect"
+msgstr "L'équipe de GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:32
 msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, macOS and Windows."
@@ -256,11 +256,11 @@ msgstr "Notification de batterie faible"
 
 #: data/ui/preferences-device-panel.ui:699
 msgid "Charged Up to Custom Level Notification"
-msgstr ""
+msgstr "Notification de batterie à un niveau de charge personnalisé"
 
 #: data/ui/preferences-device-panel.ui:779
 msgid "Fully Charged Notification"
-msgstr "Notification entièrement chargée"
+msgstr "Notification de batterie entièrement chargée"
 
 #: data/ui/preferences-device-panel.ui:833
 msgid "System Battery"
@@ -268,7 +268,7 @@ msgstr "Batterie système"
 
 #: data/ui/preferences-device-panel.ui:882
 msgid "Share Statistics"
-msgstr "Partager les statistiques"
+msgstr "Partager des statistiques"
 
 #: data/ui/preferences-device-panel.ui:936
 #: data/ui/preferences-device-panel.ui:2265 src/service/plugins/battery.js:12
@@ -293,7 +293,7 @@ msgstr "Synchroniser les notifications"
 
 #: data/ui/preferences-device-panel.ui:1172
 msgid "Share When Active"
-msgstr "Partager quand actif"
+msgstr "Partager quand l'appareil est actif"
 
 #: data/ui/preferences-device-panel.ui:1223
 msgid "Applications"
@@ -553,7 +553,7 @@ msgstr "Signaler"
 
 #: data/ui/service-error-dialog.ui:72
 msgid "Something’s gone wrong"
-msgstr "Quelque chose s'est mal passé"
+msgstr "Un problème est survenu"
 
 #: data/ui/service-error-dialog.ui:84
 msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
@@ -797,7 +797,7 @@ msgstr "Port déjà utilisé"
 
 #: src/service/plugins/battery.js:13
 msgid "Exchange battery information"
-msgstr ""
+msgstr "Échanger les informations sur la batterie"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:253
@@ -815,13 +815,13 @@ msgstr "Complètement chargé"
 #: src/service/plugins/battery.js:282
 #, javascript-format
 msgid "%s: Battery has reached custom charge level"
-msgstr ""
+msgstr "%s: La batterie a atteint le niveau de charge personnalisé"
 
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:284
 #, javascript-format
 msgid "%d%% Charged"
-msgstr ""
+msgstr "%d%% Chargé"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:311
@@ -841,7 +841,7 @@ msgstr "Presse-papiers"
 
 #: src/service/plugins/clipboard.js:11
 msgid "Share the clipboard content"
-msgstr ""
+msgstr "Partager le contenu du presse-papiers"
 
 #: src/service/plugins/clipboard.js:23
 msgid "Clipboard Push"
@@ -853,7 +853,7 @@ msgstr "Récupérer le presse-papiers"
 
 #: src/service/plugins/contacts.js:23
 msgid "Access contacts of the paired device"
-msgstr ""
+msgstr "Accéder aux contacts de l'appareil appairé"
 
 #: src/service/plugins/findmyphone.js:13
 msgid "Find My Phone"
@@ -861,7 +861,7 @@ msgstr "Trouver mon téléphone"
 
 #: src/service/plugins/findmyphone.js:14
 msgid "Ring your paired device"
-msgstr ""
+msgstr "Faire sonner l'appareil appairé"
 
 #: src/service/plugins/mousepad.js:12
 msgid "Mousepad"
@@ -869,7 +869,7 @@ msgstr "Pavé tactile"
 
 #: src/service/plugins/mousepad.js:13
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr ""
+msgstr "Permet à l'appareil appairé d'agir comme une souris et un clavier à distance"
 
 #: src/service/plugins/mousepad.js:27 src/service/ui/mousepad.js:102
 msgid "Keyboard"
@@ -881,7 +881,7 @@ msgstr "MPRIS"
 
 #: src/service/plugins/mpris.js:16
 msgid "Bidirectional remote media playback control"
-msgstr ""
+msgstr "Contrôle à distance bidirectionnel de lecture de médias"
 
 #: src/service/plugins/mpris.js:316
 msgid "Unknown"
@@ -889,7 +889,7 @@ msgstr "Inconnu"
 
 #: src/service/plugins/notification.js:16
 msgid "Share notifications with the paired device"
-msgstr ""
+msgstr "Partager les notifications avec l'appareil appairé"
 
 #: src/service/plugins/notification.js:30
 msgid "Cancel Notification"
@@ -909,7 +909,7 @@ msgstr "Active la notification"
 
 #: src/service/plugins/photo.js:13
 msgid "Request the paired device to take a photo and transfer it to this PC"
-msgstr ""
+msgstr "Demander à l'appareil appairé de prendre une photo et de la transférer vers ce PC"
 
 #: src/service/plugins/photo.js:220 src/service/plugins/share.js:128
 #: src/service/plugins/share.js:200 src/service/plugins/share.js:310
@@ -925,7 +925,7 @@ msgstr "Échec d'envoi de « %s » vers %s"
 
 #: src/service/plugins/ping.js:12
 msgid "Send and receive pings"
-msgstr ""
+msgstr "Envoyer et recevoir des pings"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -940,7 +940,7 @@ msgstr "Présentation"
 
 #: src/service/plugins/presenter.js:11
 msgid "Use the paired device as a presenter"
-msgstr ""
+msgstr "Utiliser l'appareil appairé comme présentateur"
 
 #: src/service/plugins/runcommand.js:11
 msgid "Run Commands"
@@ -948,7 +948,7 @@ msgstr "Exécuter des commandes"
 
 #: src/service/plugins/runcommand.js:13
 msgid "Run commands on your paired device or let the device run predefined commands on this PC"
-msgstr ""
+msgstr "Exécutez des commandes sur votre périphérique appairé ou laissez le périphérique exécuter des commandes prédéfinies sur ce PC"
 
 #: src/service/plugins/sftp.js:13
 msgid "SFTP"
@@ -956,7 +956,7 @@ msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:15
 msgid "Browse the paired device filesystem"
-msgstr ""
+msgstr "Parcourir le système de fichiers de l'appareil appairé"
 
 #: src/service/plugins/sftp.js:20
 msgid "Mount"
@@ -977,7 +977,7 @@ msgstr "Partage"
 
 #: src/service/plugins/share.js:16
 msgid "Share files and URLs between devices"
-msgstr ""
+msgstr "Partager des fichiers et des URL entre les appareils"
 
 #. TRANSLATORS: eg. Google Pixel is not allowed to upload files
 #: src/service/plugins/share.js:130
@@ -1059,7 +1059,7 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:15
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
+msgstr "Envoyer et lire les SMS de l'appareil appairé et être informé des nouveaux SMS"
 
 #: src/service/plugins/sms.js:36
 msgid "New SMS (URI)"
@@ -1079,7 +1079,7 @@ msgstr "Volume du système"
 
 #: src/service/plugins/systemvolume.js:12
 msgid "Enable the paired device to control the system volume"
-msgstr ""
+msgstr "Permettre à l'appareil appairé de contrôler le volume du système"
 
 #: src/service/plugins/systemvolume.js:56
 msgid "PulseAudio not found"
@@ -1087,7 +1087,7 @@ msgstr "PulseAudio introuvable"
 
 #: src/service/plugins/telephony.js:14
 msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
+msgstr "Être notifié des appels et régler le volume du système pendant la sonnerie/les appels en cours"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:26
