@@ -1,14 +1,15 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the org.gnome.Shell.Extensions.GSConnect package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# prescott66, 2018.
+# Jose Riha <jose1711@gmail.com>, 2019-2022.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2019-09-29 16:23+0200\n"
+"PO-Revision-Date: 2022-04-28 22:33+0200\n"
 "Last-Translator: Jose Riha <jose1711@gmail.com>\n"
 "Language-Team: \n"
 "Language: sk\n"
@@ -25,14 +26,12 @@ msgid "GSConnect"
 msgstr "GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:6
-#, fuzzy
 msgid "KDE Connect implementation for GNOME"
-msgstr "Kompletná implementácia aplikácie KDE Connect pre prostredie GNOME"
+msgstr "Implementácia aplikácie KDE Connect pre prostredie GNOME"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:16
-#, fuzzy
 msgid "GSConnect Team"
-msgstr "GSConnect"
+msgstr "Tím GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:32
 msgid ""
@@ -40,56 +39,55 @@ msgid ""
 "Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
 "has applications for Linux, BSD, Android, Sailfish, macOS and Windows."
 msgstr ""
+"GSConnect je kompletná implementácia nástroja KDE Connect určená predovšetkým pre prostredie GNOME Shell s integráciou správcu súborov Nautilus a internetové prehliadače Chrome a Firefox. Tím KDE Connect vytvoril aplikácie pre Linux, BSD, Android, Sailfish, macOS a Windows."
+
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:35
 msgid ""
 "With GSConnect you can securely connect to mobile devices and other desktops "
 "to:"
 msgstr ""
+"Vďaka GSConnect-u sa môžete bezpečne pripojiť k mobilným zariadeniam a ďalším stolným počítačom a:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
 msgid "Share files, links and text"
-msgstr ""
+msgstr "Zdieľať súbory, prepojenia a text"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:40
 msgid "Send and receive messages"
-msgstr ""
+msgstr "Posielať a prijímať správy"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
 msgid "Sync clipboard content"
-msgstr ""
+msgstr "Synchronizovať obsah schránky"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:42
-#, fuzzy
 msgid "Sync contacts"
-msgstr "Žiadne kontakty"
+msgstr "Synchronizovať kontakty"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:43
-#, fuzzy
 msgid "Sync notifications"
-msgstr "Odoslať oznámenie"
+msgstr "Synchronizovať oznámenia"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
-#, fuzzy
 msgid "Control media players"
-msgstr "Multimediálne prehrávače"
+msgstr "Ovládať multimediálne prehrávače"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:45
-#, fuzzy
 msgid "Control system volume"
-msgstr "Systémová hlasitosť"
+msgstr "Ovládať systémovú hlasitosť"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:46
 msgid "Execute predefined commands"
-msgstr ""
+msgstr "Spustiť predpripravené príkazy"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:47
 msgid "And more…"
-msgstr ""
+msgstr "A viac…"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:102
 msgid "GSConnect in GNOME Shell"
-msgstr ""
+msgstr "GSConnect v GNOME Shelli"
 
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/connect-dialog.ui:13 data/ui/preferences-window.ui:719
@@ -163,13 +161,12 @@ msgid "Type a message"
 msgstr "Zadajte správu"
 
 #: data/ui/messaging-conversation.ui:92
-#, fuzzy
 msgid "Message Entry"
-msgstr "Telo správy"
+msgstr "Zadanie správy"
 
 #: data/ui/messaging-conversation.ui:93
 msgid "Type a message and press Enter to send"
-msgstr ""
+msgstr "Zadajte správu a stlačením klávesu Enter ju odošlite"
 
 #: data/ui/messaging-window.ui:14 src/service/plugins/sms.js:28
 #: src/service/ui/messaging.js:1049
@@ -194,9 +191,8 @@ msgid "Select or start a conversation"
 msgstr "Vyberte alebo začnite novú konverzáciu"
 
 #: data/ui/preferences-command-editor.ui:7
-#, fuzzy
 msgid "Edit Command"
-msgstr "Príkazy"
+msgstr "Upraviť príkaz"
 
 #: data/ui/preferences-command-editor.ui:21
 msgid "Save"
@@ -249,12 +245,11 @@ msgstr "Súbory"
 
 #: data/ui/preferences-device-panel.ui:438
 msgid "Receive Files"
-msgstr "Prijať súbory"
+msgstr "Prijímať súbory"
 
 #: data/ui/preferences-device-panel.ui:497
-#, fuzzy
 msgid "Save files to"
-msgstr "Odoslanie súborov do zariadenia %s"
+msgstr "Ukladať súbory do"
 
 #: data/ui/preferences-device-panel.ui:558
 #: data/ui/preferences-device-panel.ui:2219
@@ -270,9 +265,8 @@ msgid "Low Battery Notification"
 msgstr "Upozornenie na slabú batériu"
 
 #: data/ui/preferences-device-panel.ui:699
-#, fuzzy
 msgid "Charged Up to Custom Level Notification"
-msgstr "Oznámenie o plnom nabití"
+msgstr "Oznámenie o nabití na nastavenú úroveň"
 
 #: data/ui/preferences-device-panel.ui:779
 msgid "Fully Charged Notification"
@@ -300,9 +294,8 @@ msgid "Commands"
 msgstr "Príkazy"
 
 #: data/ui/preferences-device-panel.ui:1025
-#, fuzzy
 msgid "Add Command"
-msgstr "Príkazy"
+msgstr "Pridať príkaz"
 
 #: data/ui/preferences-device-panel.ui:1112
 msgid "Share Notifications"
@@ -310,7 +303,7 @@ msgstr "Zdieľať oznámenia"
 
 #: data/ui/preferences-device-panel.ui:1172
 msgid "Share When Active"
-msgstr ""
+msgstr "Zdieľať, keď je aktívny"
 
 #: data/ui/preferences-device-panel.ui:1223
 msgid "Applications"
@@ -338,7 +331,7 @@ msgstr "Hlasitosť"
 #: data/ui/preferences-device-panel.ui:1495
 #: data/ui/preferences-device-panel.ui:1662
 msgid "Pause Media"
-msgstr "Pozastaviť médiá"
+msgstr "Pozastaviť multimédiá"
 
 #: data/ui/preferences-device-panel.ui:1548
 msgid "Ongoing Calls"
@@ -374,13 +367,12 @@ msgid "Experimental"
 msgstr "Experimentálne"
 
 #: data/ui/preferences-device-panel.ui:2000
-#, fuzzy
 msgid "Device Cache"
-msgstr "Meno zariadenia"
+msgstr "Vyrovnávacia pamäť zariadenia"
 
 #: data/ui/preferences-device-panel.ui:2018
 msgid "Clear Cache…"
-msgstr ""
+msgstr "Vyčistiť vyrovnávaciu pamäť…"
 
 #: data/ui/preferences-device-panel.ui:2057
 msgid "Legacy SMS Support"
@@ -388,7 +380,7 @@ msgstr "Podpora SMS (zastarané)"
 
 #: data/ui/preferences-device-panel.ui:2114
 msgid "SFTP Automount"
-msgstr ""
+msgstr "Automatické pripojenie SFTP"
 
 #: data/ui/preferences-device-panel.ui:2169
 #: data/ui/preferences-device-panel.ui:2495
@@ -400,9 +392,8 @@ msgid "Keyboard Shortcuts"
 msgstr "Klávesové skratky"
 
 #: data/ui/preferences-device-panel.ui:2513
-#, fuzzy
 msgid "Device Settings"
-msgstr "Mobilné nastavenia"
+msgstr "Nastavenie zariadenia"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/ui/preferences-device-panel.ui:2557
@@ -448,13 +439,13 @@ msgstr "Bez zmeny"
 #: data/ui/preferences-device-panel.ui:2692
 #: data/ui/preferences-device-panel.ui:2725
 msgid "Restore"
-msgstr ""
+msgstr "Obnoviť"
 
 #. TRANSLATORS: Lower the system volume
 #: data/ui/preferences-device-panel.ui:2699
 #: data/ui/preferences-device-panel.ui:2732
 msgid "Lower"
-msgstr "Tichšie"
+msgstr "Znížiť"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the actively ringing call
@@ -493,14 +484,12 @@ msgid "Mobile Settings"
 msgstr "Mobilné nastavenia"
 
 #: data/ui/preferences-window.ui:159
-#, fuzzy
 msgid "Service Menu"
-msgstr "Služba"
+msgstr "Ponuka služieb"
 
 #: data/ui/preferences-window.ui:182
-#, fuzzy
 msgid "Device Menu"
-msgstr "Meno zariadenia"
+msgstr "Ponuka zariadenia"
 
 #: data/ui/preferences-window.ui:196 data/ui/preferences-window.ui:211
 msgid "Edit Device Name"
@@ -567,9 +556,8 @@ msgid "No Device Found"
 msgstr "Nenašlo sa žiadne zariadenie"
 
 #: data/ui/service-device-chooser.ui:111
-#, fuzzy
 msgid "Device List"
-msgstr "Zariadenia"
+msgstr "Zoznam zariadení"
 
 #: data/ui/service-error-dialog.ui:32 data/ui/service-error-dialog.ui:40
 msgid "Report"
@@ -577,17 +565,18 @@ msgstr "Ohlásiť"
 
 #: data/ui/service-error-dialog.ui:72
 msgid "Something’s gone wrong"
-msgstr ""
+msgstr "Niečo sa pokazilo"
 
 #: data/ui/service-error-dialog.ui:84
 msgid ""
 "GSConnect encountered an unexpected error. Please report the problem and "
 "include any information that may help."
 msgstr ""
+"GSConnect narazil na neočakávanú chybu. Prosím, nahláste tento problém a priložte všetky informácie, ktoré môžu byť užitočné."
 
 #: data/ui/service-error-dialog.ui:118
 msgid "Technical Details"
-msgstr ""
+msgstr "Technické podrobnosti"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: nautilus-extension/nautilus-gsconnect.py:164 webextension/gettext.js:33
@@ -821,16 +810,15 @@ msgstr "Objavenie bolo zakázané kvôli počtu zariadení na tejto sieti."
 
 #: src/service/backends/lan.js:162
 msgid "OpenSSL not found"
-msgstr ""
+msgstr "OpenSSL nebolo nájdené"
 
 #: src/service/backends/lan.js:452
-#, fuzzy
 msgid "Port already in use"
-msgstr "Klávesová skratka %s sa už používa"
+msgstr "Port už sa používa"
 
 #: src/service/plugins/battery.js:13
 msgid "Exchange battery information"
-msgstr ""
+msgstr "Vymieňať informácie o batérii"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:253
@@ -848,19 +836,19 @@ msgstr "Plne nabitá"
 #: src/service/plugins/battery.js:282
 #, javascript-format
 msgid "%s: Battery has reached custom charge level"
-msgstr ""
+msgstr "%s: Batéria dosiahla nastavenú úroveň nabitia"
 
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:284
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%d%% Charged"
-msgstr "Plne nabitá"
+msgstr "%d%% nabité"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:311
 #, javascript-format
 msgid "%s: Battery is low"
-msgstr "%s: Batéria je vybitá"
+msgstr "%s: Batéria je takmer vybitá"
 
 #. TRANSLATORS: eg. 15% remaining
 #: src/service/plugins/battery.js:313
@@ -874,7 +862,7 @@ msgstr "Schránka"
 
 #: src/service/plugins/clipboard.js:11
 msgid "Share the clipboard content"
-msgstr ""
+msgstr "Zdieľať obsah schránky"
 
 #: src/service/plugins/clipboard.js:23
 msgid "Clipboard Push"
@@ -886,15 +874,15 @@ msgstr "Prijať obsah schránky"
 
 #: src/service/plugins/contacts.js:23
 msgid "Access contacts of the paired device"
-msgstr ""
+msgstr "Pristupovať ku kontaktom na spárovanom zariadení"
 
 #: src/service/plugins/findmyphone.js:13
 msgid "Find My Phone"
-msgstr "Nájsť môj  telefón"
+msgstr "Nájdi môj telefón"
 
 #: src/service/plugins/findmyphone.js:14
 msgid "Ring your paired device"
-msgstr ""
+msgstr "Prezvoní vaše spárované zariadenie"
 
 #: src/service/plugins/mousepad.js:12
 msgid "Mousepad"
@@ -902,7 +890,7 @@ msgstr "Ovládanie myši"
 
 #: src/service/plugins/mousepad.js:13
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr ""
+msgstr "Umožní použiť spárované zariadenie ako vzdialenú myš a klávesnicu"
 
 #: src/service/plugins/mousepad.js:27 src/service/ui/mousepad.js:102
 msgid "Keyboard"
@@ -914,17 +902,15 @@ msgstr "MPRIS"
 
 #: src/service/plugins/mpris.js:16
 msgid "Bidirectional remote media playback control"
-msgstr ""
+msgstr "Obojsmerné diaľkové ovládanie prehrávania multimédií"
 
 #: src/service/plugins/mpris.js:316
-#, fuzzy
 msgid "Unknown"
-msgstr "Neznámy kontakt"
+msgstr "Neznáme"
 
 #: src/service/plugins/notification.js:16
-#, fuzzy
 msgid "Share notifications with the paired device"
-msgstr "Stíšenie oznámení z mobilného zariadenia"
+msgstr "Zdieľať oznámenia so spárovaným zariadením"
 
 #: src/service/plugins/notification.js:30
 msgid "Cancel Notification"
@@ -944,7 +930,7 @@ msgstr "Aktivovať oznámenia"
 
 #: src/service/plugins/photo.js:13
 msgid "Request the paired device to take a photo and transfer it to this PC"
-msgstr ""
+msgstr "Požiadať spárované zariadenie o vytvorenie fotografie a jej prenos do tohto počítača"
 
 #: src/service/plugins/photo.js:220 src/service/plugins/share.js:128
 #: src/service/plugins/share.js:200 src/service/plugins/share.js:310
@@ -960,7 +946,7 @@ msgstr "Zlyhalo odoslanie súboru „%s“ do zariadenia %s"
 
 #: src/service/plugins/ping.js:12
 msgid "Send and receive pings"
-msgstr ""
+msgstr "Odoslať a prijímať pingy"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -970,13 +956,12 @@ msgid "Ping: %s"
 msgstr "Ping: %s"
 
 #: src/service/plugins/presenter.js:10
-#, fuzzy
 msgid "Presentation"
-msgstr "Integrácia v aplikácii Súbory"
+msgstr "Prezentácia"
 
 #: src/service/plugins/presenter.js:11
 msgid "Use the paired device as a presenter"
-msgstr ""
+msgstr "Použiť spárované zariadenie ako prezentátor"
 
 #: src/service/plugins/runcommand.js:11
 msgid "Run Commands"
@@ -987,6 +972,7 @@ msgid ""
 "Run commands on your paired device or let the device run predefined commands "
 "on this PC"
 msgstr ""
+"Spustiť príkazy na vašom spárovanom zariadení alebo umožniť zariadeniu spúšťať predpripravené príkazy na tomto počítači"
 
 #: src/service/plugins/sftp.js:13
 msgid "SFTP"
@@ -994,7 +980,7 @@ msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:15
 msgid "Browse the paired device filesystem"
-msgstr ""
+msgstr "Prehliadať súborový systém spárovaného zariadenia"
 
 #: src/service/plugins/sftp.js:20
 msgid "Mount"
@@ -1007,7 +993,7 @@ msgstr "Odpojiť"
 #: src/service/plugins/sftp.js:212
 #, javascript-format
 msgid "%s reported an error"
-msgstr ""
+msgstr "%s nahlásilo chybu"
 
 #: src/service/plugins/share.js:14 src/service/plugins/share.js:21
 msgid "Share"
@@ -1015,7 +1001,7 @@ msgstr "Zdieľať"
 
 #: src/service/plugins/share.js:16
 msgid "Share files and URLs between devices"
-msgstr ""
+msgstr "Zdieľať súbory a URL adresy medzi zariadeniami"
 
 #. TRANSLATORS: eg. Google Pixel is not allowed to upload files
 #: src/service/plugins/share.js:130
@@ -1097,7 +1083,7 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:15
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
+msgstr "Odoslať a čítať SMS správy zo spárovaného zariadenia a dostávať upozornenia na nové správy"
 
 #: src/service/plugins/sms.js:36
 msgid "New SMS (URI)"
@@ -1117,17 +1103,17 @@ msgstr "Systémová hlasitosť"
 
 #: src/service/plugins/systemvolume.js:12
 msgid "Enable the paired device to control the system volume"
-msgstr ""
+msgstr "Povoliť spárovanému zariadeniu ovládať systémovú hlasitosť"
 
 #: src/service/plugins/systemvolume.js:56
-#, fuzzy
 msgid "PulseAudio not found"
-msgstr "Chyba systému PulseAudio"
+msgstr "PulseAudio nebolo nájdené"
 
 #: src/service/plugins/telephony.js:14
 msgid ""
 "Be notified about calls and adjust system volume during ringing/ongoing calls"
 msgstr ""
+"Dostávať upozornenia na hovory a upravovať hlasitosť počas zvonenia/prebiehajúceho hovoru"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:26
@@ -1220,7 +1206,7 @@ msgstr[2] "A %d ďalších kontaktov"
 #: src/service/ui/mousepad.js:110
 #, javascript-format
 msgid "Remote keyboard on %s is not active"
-msgstr ""
+msgstr "Vzdialená klávesnica na %s nie je aktívna"
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
