@@ -225,7 +225,7 @@ var Plugin = GObject.registerClass({
             }
 
             // If this message is marked read, mark the rest as read
-            if (message.read === MessageStatus.READ) {
+            if (message.read === MessageStatus.READ && cache.length > 0) {
                 for (const msg of cache)
                     msg.read = MessageStatus.READ;
             }
