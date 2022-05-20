@@ -140,6 +140,14 @@ if (settings.get_boolean('debug'))
 else
     globalThis.debug = () => {};
 
+settings.connect('changed::debug-detail', (settings, key) => {
+    globalThis.debugDetail = settings.get_boolean(key);
+});
+
+if (settings.get_boolean('debug-detail'))
+    globalThis.debugDetail = true;
+else
+    globalThis.debugDetail = false;
 
 /**
  * A simple (for now) pre-comparison sanitizer for phone numbers

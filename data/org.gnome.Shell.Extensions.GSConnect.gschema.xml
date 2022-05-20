@@ -22,6 +22,12 @@
     <key name="debug" type="b">
       <default>false</default>
     </key>
+    <key name="debug-detail" type="b">
+      <default>true</default>
+      <description>
+        Include dumps of packet contents in debug output.
+      </description>
+    </key>
     <key name="discoverable" type="b">
       <default>true</default>
     </key>
