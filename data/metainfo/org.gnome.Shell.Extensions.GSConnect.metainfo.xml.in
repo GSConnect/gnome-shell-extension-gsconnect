@@ -49,6 +49,12 @@
   </description>
 
   <releases>
+    <release version="53" date="2022-03-20">
+      <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v53</url>
+    </release>
+    <release version="51" date="2022-03-20">
+      <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v51</url>
+    </release>
     <release version="50" date="2022-03-19">
       <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v50</url>
     </release>
