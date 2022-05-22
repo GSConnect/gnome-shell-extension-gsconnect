@@ -90,10 +90,8 @@ var Plugin = GObject.registerClass({
             return 'network-cellular-gprs-symbolic';
         else if (this.network_type === 'HSPA')
             return 'network-cellular-hspa-symbolic';
-        // FIXME: No icon for this!
-        // https://gitlab.gnome.org/GNOME/adwaita-icon-theme/-/issues/114
         else if (this.network_type === '5G')
-            return 'network-cellular-symbolic';
+            return 'network-cellular-5g-symbolic';
 
         return 'network-cellular-symbolic';
     }
