@@ -160,7 +160,7 @@ settings.connect('changed::debug', (settings, key) => {
     if (!enabled)
         globalThis.debugPacket = () => {};
     else
-        globalThis.debugPacket = __getPacketFunc(settings, 'packet-detail');
+        globalThis.debugPacket = __getPacketFunc(settings, 'debug-detail');
 });
 
 if (settings.get_boolean('debug')) {
