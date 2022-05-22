@@ -338,10 +338,7 @@ var Device = GObject.registerClass({
             let packet = null;
 
             while ((packet = await this.channel.readPacket())) {
-                if (globalThis.debugDetail)
-                    debug(packet, this.name);
-                else
-                    debug(packet.type, this.name);
+                debugPacket(packet, this.name);
                 this.handlePacket(packet);
             }
         } catch (e) {
@@ -449,10 +446,7 @@ var Device = GObject.registerClass({
 
             while ((next = this._outputQueue.shift())) {
                 await this.channel.sendPacket(next);
-                if (globalThis.debugDetail)
-                    debug(next, this.name);
-                else
-                    debug(next.type, this.name);
+                debugPacket(next, this.name);
             }
 
             this._outputLock = false;
