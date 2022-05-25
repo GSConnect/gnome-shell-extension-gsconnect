@@ -79,14 +79,14 @@ var ChannelService = GObject.registerClass({
             'certificate',
             'Certificate',
             'The TLS certificate',
-            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            GObject.ParamFlags.READWRITE,
             Gio.TlsCertificate.$gtype
         ),
         'port': GObject.ParamSpec.uint(
             'port',
             'Port',
             'The port used by the service',
-            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            GObject.ParamFlags.READWRITE,
             0,  GLib.MAXUINT16,
             DEFAULT_PORT
         ),
@@ -859,11 +859,20 @@ var Channel = GObject.registerClass({
         // Start the transfer
         const transferredSize = await this._transfer(source, target, cancellable);
 
-        if (transferredSize !== packet.payloadSize) {
+        // If we get less than expected, we've certainly got corruption
+        if (transferredSize < packet.payloadSize) {
             throw new Gio.IOErrorEnum({
-                code: Gio.IOErrorEnum.PARTIAL_INPUT,
-                message: 'Transfer incomplete',
+                code: Gio.IOErrorEnum.FAILED,
+                message: `Incomplete: ${transferredSize}/${packet.payloadSize}`,
             });
+
+        // TODO: sometimes kdeconnect-android under-reports a file's size
+        //       https://github.com/GSConnect/gnome-shell-extension-gsconnect/issues/1157
+        } else if (transferredSize > packet.payloadSize) {
+            logError(new Gio.IOErrorEnum({
+                code: Gio.IOErrorEnum.FAILED,
+                message: `Extra Data: ${transferredSize - packet.payloadSize}`,
+            }));
         }
     }
 

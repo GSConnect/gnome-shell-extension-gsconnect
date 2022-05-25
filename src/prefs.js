@@ -8,7 +8,6 @@ const Gtk = imports.gi.Gtk;
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const Utils = Extension.imports.shell.utils;
 
-
 function init() {
     Utils.installService();
 }
@@ -18,7 +17,7 @@ function buildPrefsWidget() {
     const widget = new Gtk.Box();
 
     GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
-        widget.get_toplevel().destroy();
+        widget.get_root().destroy();
         return false;
     });
 

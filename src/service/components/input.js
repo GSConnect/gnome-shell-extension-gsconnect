@@ -605,10 +605,16 @@ class Controller {
     /*
      * High-level keyboard input
      */
-    pressKey(input, modifiers) {
+    pressKeys(input, modifiers) {
         try {
             this._ensureAdapter();
-            this._session.pressKey(input, modifiers);
+
+            if (typeof input === 'string') {
+                for (let i = 0; i < input.length; i++)
+                    this._session.pressKey(input[i], modifiers);
+            } else {
+                this._session.pressKey(input, modifiers);
+            }
         } catch (e) {
             debug(e);
         }
@@ -638,4 +644,3 @@ class Controller {
  * The service class for this component
  */
 var Component = Controller;
-

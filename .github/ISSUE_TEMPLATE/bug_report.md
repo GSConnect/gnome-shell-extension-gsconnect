@@ -51,4 +51,4 @@ Please generate a support log ([Instructions](../wiki/Help#generate-support-log)
 
 **Additional Notes:**
 
-Add any addtional information about the problem or your system.
+Add any additional information about the problem or your system.

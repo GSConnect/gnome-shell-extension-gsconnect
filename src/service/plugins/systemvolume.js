@@ -9,6 +9,7 @@ const PluginBase = imports.service.plugin;
 
 var Metadata = {
     label: _('System Volume'),
+    description: _('Enable the paired device to control the system volume'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.SystemVolume',
     incomingCapabilities: ['kdeconnect.systemvolume.request'],
     outgoingCapabilities: ['kdeconnect.systemvolume'],
@@ -197,4 +198,3 @@ var Plugin = GObject.registerClass({
         super.destroy();
     }
 });
-

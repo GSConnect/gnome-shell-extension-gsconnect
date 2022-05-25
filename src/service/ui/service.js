@@ -119,7 +119,7 @@ var DeviceChooser = GObject.registerClass({
         // Collect known devices
         const devices = {};
 
-        for (const [id, device] of this.application.devices.entries())
+        for (const [id, device] of this.application.manager.devices.entries())
             devices[id] = device;
 
         // Prune device rows

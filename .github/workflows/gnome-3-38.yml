@@ -1,0 +1,52 @@
+name: gnome-3-38
+
+on:
+  push:
+    branches: [ gnome-3-38 ]
+  pull_request:
+    branches: [ gnome-3-38 ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: gsconnect/gsconnect-ci:3.38
+    steps:
+      - uses: actions/checkout@v2
+      - name: Prepare
+        run: |
+          meson --prefix=/usr \
+                --libdir=lib/ \
+                -Dgnome_shell_libdir=/usr/lib64/ \
+                -Dpost_install=true \
+                _build
+
+      - name: Uninstalled Tests
+        run: |
+          meson test -C _build --suite gsconnect:data \
+                               --suite gsconnect:lint \
+                               --print-errorlogs
+
+      - name: Installed Tests
+        run: |
+          ninja -C _build install
+          xvfb-run -a dbus-run-session -- \
+          gnome-desktop-testing-runner gsconnect -L _build/meson-logs
+
+      - name: Upload Test Logs
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-logs
+          path: _build/meson-logs
+
+      - name: Test Build
+        run: |
+          ninja -C _build make-zip
+
+      - name: Upload Test Build
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-build
+          path: _build/gsconnect@andyholmes.github.io.zip
+

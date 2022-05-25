@@ -10,6 +10,7 @@ const PluginBase = imports.service.plugin;
 var Metadata = {
     label: _('Run Commands'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.RunCommand',
+    description: _('Run commands on your paired device or let the device run predefined commands on this PC'),
     incomingCapabilities: [
         'kdeconnect.runcommand',
         'kdeconnect.runcommand.request',
@@ -147,9 +148,18 @@ var Plugin = GObject.registerClass({
      * Parse the response to a request for the remote command list. Remove the
      * command menu if there are no commands, otherwise amend the menu.
      *
-     * @param {Object[]} commandList - A list of remote commands
+     * @param {string|Object[]} commandList - A list of remote commands
      */
     _handleCommandList(commandList) {
+        // See: https://github.com/GSConnect/gnome-shell-extension-gsconnect/issues/1051
+        if (typeof commandList === 'string') {
+            try {
+                commandList = JSON.parse(commandList);
+            } catch (e) {
+                commandList = {};
+            }
+        }
+
         this._remote_commands = commandList;
         this.notify('remote-commands');
 
@@ -187,7 +197,7 @@ var Plugin = GObject.registerClass({
         const index = menuActions.indexOf('commands');
 
         if (index > -1) {
-            this.device.removeMenuAction('commands');
+            this.device.removeMenuAction('device.commands');
             this.device.addMenuItem(item, index);
         }
     }
@@ -207,10 +217,11 @@ var Plugin = GObject.registerClass({
      */
     _sendCommandList() {
         const commands = this.settings.get_value('command-list').recursiveUnpack();
+        const commandList = JSON.stringify(commands);
 
         this.device.sendPacket({
             type: 'kdeconnect.runcommand',
-            body: {commandList: commands},
+            body: {commandList: commandList},
         });
     }
 
@@ -237,4 +248,3 @@ var Plugin = GObject.registerClass({
         super.destroy();
     }
 });
-

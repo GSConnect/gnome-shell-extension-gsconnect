@@ -95,7 +95,7 @@ const ServiceIndicator = GObject.registerClass({
 
         // Find current index of network menu
         const menuItems = AggregateMenu.menu._getMenuItems();
-        const networkMenuIndex = menuItems.indexOf(AggregateMenu._network.menu);
+        const networkMenuIndex = AggregateMenu._network ? menuItems.indexOf(AggregateMenu._network.menu) : -1;
         const menuIndex = networkMenuIndex > -1 ? networkMenuIndex : 3;
         // Place our menu below the network menu
         AggregateMenu.menu.addMenuItem(this.menu, menuIndex + 1);
@@ -190,6 +190,24 @@ const ServiceIndicator = GObject.registerClass({
             this._menus[device.g_object_path]._title.actor.visible = false;
             this._item.label.text = device.name;
 
+            // Destroy any other device's signalStrength
+            if (this._item._signalStrength && this._item._signalStrength.device !== device) {
+                this._item._signalStrength.destroy();
+                this._item._signalStrength = null;
+            }
+
+            // Add the signalStrength to the submenu item
+            if (!this._item._signalStrength) {
+                this._item._signalStrength = new Device.SignalStrength({
+                    device: device,
+                    opacity: 128,
+                });
+                this._item.actor.insert_child_below(
+                    this._item._signalStrength,
+                    this._item._triangleBin
+                );
+            }
+
             // Destroy any other device's battery
             if (this._item._battery && this._item._battery.device !== device) {
                 this._item._battery.destroy();
@@ -223,6 +241,12 @@ const ServiceIndicator = GObject.registerClass({
             if (this._item._battery) {
                 this._item._battery.destroy();
                 this._item._battery = null;
+            }
+
+            // Destroy any signalStrength in the submenu item
+            if (this._item._signalStrength) {
+                this._item._signalStrength.destroy();
+                this._item._signalStrength = null;
             }
         }
     }

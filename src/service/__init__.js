@@ -167,7 +167,7 @@ String.prototype.equalsPhoneNumber = function (number) {
     const a = this.toPhoneNumber();
     const b = number.toPhoneNumber();
 
-    return (a.endsWith(b) || b.endsWith(a));
+    return (a.length && b.length && (a.endsWith(b) || b.endsWith(a)));
 };
 
 
@@ -354,22 +354,22 @@ Gio.TlsCertificate.new_for_paths = function (certPath, keyPath, commonName = nul
 
 Object.defineProperties(Gio.TlsCertificate.prototype, {
     /**
-     * Compute a SHA1 fingerprint of the certificate.
+     * Compute a SHA256 fingerprint of the certificate.
      * See: https://gitlab.gnome.org/GNOME/glib/issues/1290
      *
-     * @return {string} A SHA1 fingerprint of the certificate.
+     * @return {string} A SHA256 fingerprint of the certificate.
      */
-    'fingerprint': {
+    'sha256': {
         value: function () {
             if (!this.__fingerprint) {
                 const proc = new Gio.Subprocess({
-                    argv: [Config.OPENSSL_PATH, 'x509', '-noout', '-fingerprint', '-sha1', '-inform', 'pem'],
+                    argv: [Config.OPENSSL_PATH, 'x509', '-noout', '-fingerprint', '-sha256', '-inform', 'pem'],
                     flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE,
                 });
                 proc.init(null);
 
                 const stdout = proc.communicate_utf8(this.certificate_pem, null)[1];
-                this.__fingerprint = /[a-zA-Z0-9:]{59}/.exec(stdout)[0];
+                this.__fingerprint = /[a-zA-Z0-9:]{95}/.exec(stdout)[0];
             }
 
             return this.__fingerprint;

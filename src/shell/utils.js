@@ -163,7 +163,11 @@ function installService() {
         [`${confDir}/google-chrome-beta/NativeMessagingHosts/`, google],
         [`${confDir}/google-chrome-unstable/NativeMessagingHosts/`, google],
         [`${confDir}/BraveSoftware/Brave-Browser/NativeMessagingHosts/`, google],
+        [`${confDir}/BraveSoftware/Brave-Browser-Beta/NativeMessagingHosts/`, google],
+        [`${confDir}/BraveSoftware/Brave-Browser-Nightly/NativeMessagingHosts/`, google],
         [`${homeDir}/.mozilla/native-messaging-hosts/`, mozilla],
+        [`${homeDir}/.config/microsoft-edge-dev/NativeMessagingHosts`, google],
+        [`${homeDir}/.config/microsoft-edge-beta/NativeMessagingHosts`, google],
     ];
 
     // If running as a user extension, ensure the DBus service, desktop entry,
@@ -197,8 +201,8 @@ function installService() {
         for (const [dirname, contents] of manifests)
             _installFile(dirname, manifestFile, contents);
 
-    // Otherwise, if running as a system extension, ensure anything previously
-    // installed when running as a user extension is removed.
+        // Otherwise, if running as a system extension, ensure anything previously
+        // installed when running as a user extension is removed.
     } else {
         GLib.unlink(GLib.build_filenamev([dbusDir, dbusFile]));
         GLib.unlink(GLib.build_filenamev([appDir, appFile]));

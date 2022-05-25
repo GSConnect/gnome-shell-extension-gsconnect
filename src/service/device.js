@@ -169,14 +169,14 @@ var Device = GObject.registerClass({
 
         // If the device is connected use the certificate from the connection
         } else if (this.connected) {
-            remoteFingerprint = this.channel.peer_certificate.fingerprint();
+            remoteFingerprint = this.channel.peer_certificate.sha256();
 
         // Otherwise pull it out of the settings
         } else if (this.paired) {
             remoteFingerprint = Gio.TlsCertificate.new_from_pem(
                 this.settings.get_string('certificate-pem'),
                 -1
-            ).fingerprint();
+            ).sha256();
         }
 
         // FIXME: another ugly reach-around
@@ -186,7 +186,7 @@ var Device = GObject.registerClass({
             lanBackend = this.service.manager.backends.get('lan');
 
         if (lanBackend && lanBackend.certificate)
-            localFingerprint = lanBackend.certificate.fingerprint();
+            localFingerprint = lanBackend.certificate.sha256();
 
         // TRANSLATORS: Label for TLS Certificate fingerprint
         //
@@ -280,6 +280,9 @@ var Device = GObject.registerClass({
                 continue;
 
             const meta = imports.service.plugins[name].Metadata;
+
+            if (meta === undefined)
+                continue;
 
             // If we can handle packets it sends or send packets it can handle
             if (meta.incomingCapabilities.some(t => outgoing.includes(t)) ||
@@ -623,6 +626,10 @@ var Device = GObject.registerClass({
     showNotification(params) {
         if (this.service === null)
             return;
+
+        // KDE Connect on Android can sometimes give an undefined for params.body
+        Object.keys(params)
+            .forEach(key => params[key] === undefined && delete params[key]);
 
         params = Object.assign({
             id: Date.now(),

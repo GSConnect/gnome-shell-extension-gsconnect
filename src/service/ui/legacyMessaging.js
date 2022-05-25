@@ -16,14 +16,14 @@ var Dialog = GObject.registerClass({
             'device',
             'Device',
             'The device associated with this window',
-            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            GObject.ParamFlags.READWRITE,
             GObject.Object
         ),
         'plugin': GObject.ParamSpec.object(
             'plugin',
             'Plugin',
             'The plugin providing messages',
-            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            GObject.ParamFlags.READWRITE,
             GObject.Object
         ),
     },

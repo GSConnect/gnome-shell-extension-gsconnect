@@ -330,7 +330,7 @@ var ChannelService = GObject.registerClass({
             'id',
             'ID',
             'The hostname or other network unique id',
-            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            GObject.ParamFlags.READWRITE,
             null
         ),
         'name': GObject.ParamSpec.string(
@@ -428,6 +428,9 @@ var ChannelService = GObject.registerClass({
 
             const meta = imports.service.plugins[name].Metadata;
 
+            if (meta === undefined)
+                continue;
+
             for (const type of meta.incomingCapabilities)
                 this._identity.body.incomingCapabilities.push(type);
 
@@ -480,7 +483,7 @@ var Transfer = GObject.registerClass({
             'channel',
             'Channel',
             'The channel that owns this transfer',
-            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            GObject.ParamFlags.READWRITE,
             Channel.$gtype
         ),
         'completed': GObject.ParamSpec.boolean(
@@ -494,7 +497,7 @@ var Transfer = GObject.registerClass({
             'device',
             'Device',
             'The device that created this transfer',
-            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            GObject.ParamFlags.READWRITE,
             GObject.Object.$gtype
         ),
     },

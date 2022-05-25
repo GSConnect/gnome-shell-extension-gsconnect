@@ -233,8 +233,12 @@ var Manager = GObject.registerClass({
     _loadBackends() {
         for (const name in imports.service.backends) {
             try {
-                // Try to create the backend and track it if successful
                 const module = imports.service.backends[name];
+
+                if (module.ChannelService === undefined)
+                    continue;
+
+                // Try to create the backend and track it if successful
                 const backend = new module.ChannelService({
                     id: this.id,
                     name: this.name,

@@ -13,6 +13,7 @@ const URI = imports.service.utils.uri;
 var Metadata = {
     label: _('Share'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Share',
+    description: _('Share files and URLs between devices'),
     incomingCapabilities: ['kdeconnect.share.request'],
     outgoingCapabilities: ['kdeconnect.share.request'],
     actions: {
@@ -199,6 +200,8 @@ var Plugin = GObject.registerClass({
                     Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
                 }
             } catch (e) {
+                debug(e, this.device.name);
+
                 title = _('Transfer Failed');
                 // TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
                 body = _('Failed to receive “%s” from %s').format(
@@ -484,4 +487,3 @@ var FileChooserDialog = GObject.registerClass({
         this.destroy();
     }
 });
-

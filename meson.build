@@ -1,6 +1,6 @@
 project('gsconnect',
   'c',
-  version: '44',
+  version: '53',
   meson_version: '>= 0.46.0'
 )
 
@@ -39,8 +39,8 @@ endif
 # Configuration
 extconfig = configuration_data()
 extconfig.set('PACKAGE_VERSION', meson.project_version())
-extconfig.set('PACKAGE_URL', 'https://github.com/andyholmes/gnome-shell-extension-gsconnect')
-extconfig.set('PACKAGE_BUGREPORT', 'https://github.com/andyholmes/gnome-shell-extension-gsconnect/issues/new')
+extconfig.set('PACKAGE_URL', 'https://github.com/GSConnect/gnome-shell-extension-gsconnect')
+extconfig.set('PACKAGE_BUGREPORT', 'https://github.com/GSConnect/gnome-shell-extension-gsconnect/issues/new')
 extconfig.set('PACKAGE_DATADIR', extdatadir)
 extconfig.set('PACKAGE_LOCALEDIR', localedir)
 extconfig.set('GSETTINGS_SCHEMA_DIR', gschemadir)
@@ -66,7 +66,7 @@ run_target(
     'DATADIR=' + datadir,
     'LOCALEDIR=' + localedir,
     'GSCHEMADIR=' + gschemadir,
-    'build-aux/ego/mkzip.sh'
+    join_paths(meson.source_root(), 'build-aux', 'ego', 'mkzip.sh')
   ]
 )
 
@@ -79,7 +79,7 @@ run_target(
     'LOCALEDIR=' + localedir,
     'GSCHEMADIR=' + gschemadir,
     'INSTALL=true',
-    'build-aux/ego/mkzip.sh'
+    join_paths(meson.source_root(), 'build-aux', 'ego', 'mkzip.sh')
   ]
 )
 

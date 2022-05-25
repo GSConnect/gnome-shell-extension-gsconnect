@@ -11,6 +11,7 @@ const PluginBase = imports.service.plugin;
 
 var Metadata = {
     label: _('Find My Phone'),
+    description: _('Ring your paired device'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.FindMyPhone',
     incomingCapabilities: ['kdeconnect.findmyphone.request'],
     outgoingCapabilities: ['kdeconnect.findmyphone.request'],
@@ -127,14 +128,14 @@ const Dialog = GObject.registerClass({
             'device',
             'Device',
             'The device associated with this window',
-            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            GObject.ParamFlags.READWRITE,
             GObject.Object
         ),
         'plugin': GObject.ParamSpec.object(
             'plugin',
             'Plugin',
             'The plugin providing messages',
-            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            GObject.ParamFlags.READWRITE,
             GObject.Object
         ),
     },
@@ -242,4 +243,3 @@ const Dialog = GObject.registerClass({
         this._plugin = plugin;
     }
 });
-

@@ -20,6 +20,14 @@ const Packets = {
             thresholdEvent: 1,
         },
     },
+    customBattery: {
+        type: 'kdeconnect.battery',
+        body: {
+            currentCharge: 80,
+            isCharging: true,
+            thresholdEvent: 0,
+        },
+    },
     fullBattery: {
         type: 'kdeconnect.battery',
         body: {
@@ -132,6 +140,23 @@ describe('The battery plugin', function () {
     });
 
     it('withdraws low battery notifications', async function () {
+        localPlugin.device.sendPacket(Packets.goodBattery);
+
+        await remotePlugin.awaitPacket('kdeconnect.battery',
+            Packets.goodBattery.body);
+        expect(remotePlugin.device.hideNotification).toHaveBeenCalled();
+    });
+
+    it('notifies when the battery is at custom level', async function () {
+        remotePlugin.settings.set_boolean('custom-battery-notification', true);
+        localPlugin.device.sendPacket(Packets.customBattery);
+
+        await remotePlugin.awaitPacket('kdeconnect.battery',
+            Packets.customBattery.body);
+        expect(remotePlugin.device.showNotification).toHaveBeenCalled();
+    });
+
+    it('withdraws custom battery notifications', async function () {
         localPlugin.device.sendPacket(Packets.goodBattery);
 
         await remotePlugin.awaitPacket('kdeconnect.battery',

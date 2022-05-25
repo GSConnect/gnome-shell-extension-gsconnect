@@ -2,15 +2,18 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - main
   pull_request:
-    branches: [ master ]
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
   test:
     runs-on: ubuntu-latest
     container:
-      image: andyholmes/gsconnect-ci:latest
+      image: gsconnect/gsconnect-ci:latest
     steps:
       - uses: actions/checkout@v2
       - name: Prepare
@@ -24,7 +27,8 @@ jobs:
       - name: Uninstalled Tests
         run: |
           meson test -C _build --suite gsconnect:data \
-                               --suite gsconnect:lint
+                               --suite gsconnect:lint \
+                               --print-errorlogs
 
       - name: Installed Tests
         run: |

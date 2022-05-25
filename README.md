@@ -18,12 +18,12 @@ With GSConnect you can securely connect to mobile devices and other desktops to:
 Please see the **[Wiki][wiki]** for more information about
 **[Features][features]** and **[Help][help]**.
 
-[<img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true" alt="Get it on GNOME Extensions" height="100" align="middle">][ego] [<img alt="Available in the Chrome Web Store" src="https://developer.chrome.com/webstore/images/ChromeWebStore_BadgeWBorder_v2_206x58.png" align="middle" hspace="12"/>][chrome] [<img src="https://addons.cdn.mozilla.net/static/img/addons-buttons/AMO-button_1.png" alt="Get the Add-On" align="middle">][firefox]
+[<img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true" alt="Get it on GNOME Extensions" height="100" align="middle">][ego] [<img alt="Available in the Chrome Web Store" src="https://storage.googleapis.com/chrome-gcs-uploader.appspot.com/image/WlD8wC6g8khYWPJUsQceQkhXSlv1/UV4C4ybeBTsZt43U4xis.png" align="middle" hspace="12"/>][chrome] [<img src="https://ffp4g1ylyit3jdyti1hqcvtb-wpengine.netdna-ssl.com/addons/files/2015/11/get-the-addon.png" alt="Get the Add-On" align="middle">][firefox]
 
 [ego]: https://extensions.gnome.org/extension/1319/gsconnect/
 [chrome]: https://chrome.google.com/webstore/detail/gsconnect/jfnifeihccihocjbfcfhicmmgpjicaec
 [firefox]: https://addons.mozilla.org/firefox/addon/gsconnect/
 [kdeconnect]: https://userbase.kde.org/KDEConnect
-[wiki]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/
-[features]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Features
-[help]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Help
+[wiki]: https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/
+[features]: https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Features
+[help]: https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Help

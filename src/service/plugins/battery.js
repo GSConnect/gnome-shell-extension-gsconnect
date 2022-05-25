@@ -10,6 +10,7 @@ const PluginBase = imports.service.plugin;
 
 var Metadata = {
     label: _('Battery'),
+    description: _('Exchange battery information'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Battery',
     incomingCapabilities: [
         'kdeconnect.battery',
@@ -258,6 +259,35 @@ var Plugin = GObject.registerClass({
     }
 
     /**
+     * Notify the user the remote battery is at custom charge level.
+     */
+    _customBatteryNotification() {
+        if (!this.settings.get_boolean('custom-battery-notification'))
+            return;
+
+        // Offer the option to ring the device, if available
+        let buttons = [];
+
+        if (this.device.get_action_enabled('ring')) {
+            buttons = [{
+                label: _('Ring'),
+                action: 'ring',
+                parameter: null,
+            }];
+        }
+
+        this.device.showNotification({
+            id: 'battery|custom',
+            // TRANSLATORS: eg. Google Pixel: Battery has reached custom charge level
+            title: _('%s: Battery has reached custom charge level').format(this.device.name),
+            // TRANSLATORS: when the battery has reached custom charge level
+            body: _('%d%% Charged').format(this.level),
+            icon: Gio.ThemedIcon.new('battery-full-charged-symbolic'),
+            buttons: buttons,
+        });
+    }
+
+    /**
      * Notify the user the remote battery is low.
      */
     _lowBatteryNotification() {
@@ -302,6 +332,12 @@ var Plugin = GObject.registerClass({
             // If the level is above the threshold hide the notification
             if (this._level > this._thresholdLevel)
                 this.device.hideNotification('battery|low');
+
+            // The level just changed to/from custom level while charging
+            if ((this._level === this.settings.get_uint('custom-battery-notification-value')) && this._charging)
+                this._customBatteryNotification();
+            else
+                this.device.hideNotification('battery|custom');
 
             // The level just changed to/from full
             if (this._level === 100)
@@ -391,4 +427,3 @@ var Plugin = GObject.registerClass({
         super.destroy();
     }
 });
-
