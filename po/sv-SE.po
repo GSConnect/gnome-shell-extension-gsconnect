@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2021-12-08 20:22\n"
+"PO-Revision-Date: 2022-05-27 00:13\n"
 "Last-Translator: \n"
 "Language-Team: Swedish\n"
 "Language: sv_SE\n"
@@ -14,8 +14,8 @@ msgstr ""
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: sv-SE\n"
-"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] master/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
-"X-Crowdin-File-ID: 13\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:5
@@ -256,7 +256,7 @@ msgstr "Avisering vid låg batterinivå"
 
 #: data/ui/preferences-device-panel.ui:699
 msgid "Charged Up to Custom Level Notification"
-msgstr "Avisering när laddning uppgår till inställd nivå"
+msgstr "Avisering när uppladdning når inställd nivå"
 
 #: data/ui/preferences-device-panel.ui:779
 msgid "Fully Charged Notification"
@@ -397,7 +397,7 @@ msgstr "Enheten är oparad"
 
 #: data/ui/preferences-device-panel.ui:2604
 msgid "You may configure this device before pairing"
-msgstr "Du kan konfigurera den här enheten innan parning"
+msgstr "Du kan konfigurera den här enheten innan ihopparning"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
 #: data/ui/preferences-device-panel.ui:2644 src/preferences/device.js:384
@@ -501,7 +501,7 @@ msgstr "Aktivera"
 
 #: data/ui/preferences-window.ui:658
 msgid "This device is invisible to unpaired devices"
-msgstr "Den här enheten är osynlig för oparade enheter"
+msgstr "Den här enheten är osynlig för enheter som inte är ihopparade"
 
 #: data/ui/preferences-window.ui:670 src/service/manager.js:113
 msgid "Discovery Disabled"
@@ -651,7 +651,7 @@ msgstr "TV"
 
 #: src/preferences/service.js:510
 msgid "Unpaired"
-msgstr "Oparad"
+msgstr "Inte ihopparad"
 
 #: src/preferences/service.js:514
 msgid "Disconnected"
@@ -773,7 +773,7 @@ msgstr "%s fingeravtryck:"
 #: src/service/device.js:793
 #, javascript-format
 msgid "Pair Request from %s"
-msgstr "Parförfrågan från %s"
+msgstr "Begäran om ihopparning från %s"
 
 #: src/service/device.js:800
 msgid "Reject"
@@ -861,7 +861,7 @@ msgstr "Hitta min telefon"
 
 #: src/service/plugins/findmyphone.js:14
 msgid "Ring your paired device"
-msgstr "Ring din parkopplade enhet"
+msgstr "Ring din ihopparade enhet"
 
 #: src/service/plugins/mousepad.js:12
 msgid "Mousepad"
@@ -869,7 +869,7 @@ msgstr "Musmatta"
 
 #: src/service/plugins/mousepad.js:13
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr "Gör det möjligt för den parkopplade enheten att fungera som en fjärrmus och tangentbord"
+msgstr "Gör det möjligt för den ihopparade enheten att fungera som en fjärrmus och tangentbord"
 
 #: src/service/plugins/mousepad.js:27 src/service/ui/mousepad.js:102
 msgid "Keyboard"
@@ -889,7 +889,7 @@ msgstr "Okänd"
 
 #: src/service/plugins/notification.js:16
 msgid "Share notifications with the paired device"
-msgstr "Dela aviseringar med den parkopplade enheten"
+msgstr "Dela aviseringar med den ihopparade enheten"
 
 #: src/service/plugins/notification.js:30
 msgid "Cancel Notification"
@@ -909,7 +909,7 @@ msgstr "Aktivera avisering"
 
 #: src/service/plugins/photo.js:13
 msgid "Request the paired device to take a photo and transfer it to this PC"
-msgstr "Be den parkopplade enheten att ta ett foto och överföra det till den här datorn"
+msgstr "Be den ihopparade enheten att ta ett foto och överföra det till den här datorn"
 
 #: src/service/plugins/photo.js:220 src/service/plugins/share.js:128
 #: src/service/plugins/share.js:200 src/service/plugins/share.js:310
@@ -940,7 +940,7 @@ msgstr "Presentation"
 
 #: src/service/plugins/presenter.js:11
 msgid "Use the paired device as a presenter"
-msgstr "Använd den parkopplade enheten som presentatör"
+msgstr "Använd den ihopparade enheten som presentatör"
 
 #: src/service/plugins/runcommand.js:11
 msgid "Run Commands"
@@ -948,7 +948,7 @@ msgstr "Kör kommandon"
 
 #: src/service/plugins/runcommand.js:13
 msgid "Run commands on your paired device or let the device run predefined commands on this PC"
-msgstr "Kör kommandon på din parkopplade enhet eller låt enheten köra fördefinierade kommandon på den här datorn"
+msgstr "Kör kommandon på din ihopparade enhet eller låt enheten köra fördefinierade kommandon på den här datorn"
 
 #: src/service/plugins/sftp.js:13
 msgid "SFTP"
@@ -956,7 +956,7 @@ msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:15
 msgid "Browse the paired device filesystem"
-msgstr "Bläddra i den parkopplade enhetens filsystem"
+msgstr "Bläddra i den ihopparade enhetens filsystem"
 
 #: src/service/plugins/sftp.js:20
 msgid "Mount"
@@ -1059,7 +1059,7 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:15
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr "Skicka och läsa SMS från den parade enheten och bli meddelad om nya SMS"
+msgstr "Skicka och läs SMS från den ihopparade enheten och bli meddelad om nya SMS"
 
 #: src/service/plugins/sms.js:36
 msgid "New SMS (URI)"
@@ -1079,7 +1079,7 @@ msgstr "Systemvolym"
 
 #: src/service/plugins/systemvolume.js:12
 msgid "Enable the paired device to control the system volume"
-msgstr "Aktivera den parkopplade enheten för att styra systemets volym"
+msgstr "Gör det möjligt för den ihopparade enheten att styra systemets volym"
 
 #: src/service/plugins/systemvolume.js:56
 msgid "PulseAudio not found"
