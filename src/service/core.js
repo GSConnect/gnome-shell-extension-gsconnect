@@ -83,14 +83,14 @@ var Packet = class Packet {
     /**
      * Update the packet from a dictionary or string of JSON
      *
-     * @param {Object|string} source - Source data
+     * @param {Object|string} data - Source data
      */
-    update(source) {
+    update(data) {
         try {
             if (typeof data === 'string')
-                Object.assign(this, JSON.parse(source));
+                Object.assign(this, JSON.parse(data));
             else
-                Object.assign(this, source);
+                Object.assign(this, data);
         } catch (e) {
             throw Error(`Malformed data: ${e.message}`);
         }
