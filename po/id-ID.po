@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2022-05-27 00:13\n"
+"PO-Revision-Date: 2022-05-31 23:32\n"
 "Last-Translator: \n"
 "Language-Team: Indonesian\n"
 "Language: id_ID\n"
@@ -194,7 +194,7 @@ msgstr "Nama"
 
 #: data/ui/preferences-command-editor.ui:92
 msgid "Command Line"
-msgstr ""
+msgstr "Baris Perintah"
 
 #: data/ui/preferences-command-editor.ui:114
 #: data/ui/preferences-command-editor.ui:143
@@ -397,7 +397,7 @@ msgstr "Perangkat tidak terhubung"
 
 #: data/ui/preferences-device-panel.ui:2604
 msgid "You may configure this device before pairing"
-msgstr ""
+msgstr "Anda dapat mengkonfigurasi perangkat ini dulu sebelum menghubungkan"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
 #: data/ui/preferences-device-panel.ui:2644 src/preferences/device.js:384
@@ -460,7 +460,7 @@ msgstr "Nama Perangkat"
 
 #: data/ui/preferences-window.ui:54
 msgid "_Rename"
-msgstr ""
+msgstr "Ubah _nama"
 
 #: data/ui/preferences-window.ui:91 data/ui/preferences-window.ui:105
 msgid "Refresh"
@@ -501,7 +501,7 @@ msgstr "Aktifkan"
 
 #: data/ui/preferences-window.ui:658
 msgid "This device is invisible to unpaired devices"
-msgstr ""
+msgstr "Perangkat ini tidak terlihat pada perangkat yang belum dihubungkan"
 
 #: data/ui/preferences-window.ui:670 src/service/manager.js:113
 msgid "Discovery Disabled"
@@ -509,7 +509,7 @@ msgstr ""
 
 #: data/ui/preferences-window.ui:724
 msgid "Display Mode"
-msgstr ""
+msgstr "Mode Tampilan"
 
 #. TRANSLATORS: Show device indicators in the top bar
 #: data/ui/preferences-window.ui:727
@@ -524,7 +524,7 @@ msgstr ""
 #. TRANSLATORS: Generate a support log
 #: data/ui/preferences-window.ui:741 src/preferences/service.js:410
 msgid "Generate Support Log"
-msgstr ""
+msgstr "Hasilkan Log Dukungan"
 
 #: data/ui/preferences-window.ui:749
 msgid "About GSConnect"
@@ -695,7 +695,7 @@ msgstr ""
 
 #: src/service/daemon.js:411
 msgid "Message Body"
-msgstr ""
+msgstr "Isi Pesan"
 
 #: src/service/daemon.js:423 src/service/plugins/notification.js:54
 msgid "Send Notification"
