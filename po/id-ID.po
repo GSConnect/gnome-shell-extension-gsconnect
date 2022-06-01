@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2022-05-31 23:32\n"
+"PO-Revision-Date: 2022-06-01 00:34\n"
 "Last-Translator: \n"
 "Language-Team: Indonesian\n"
 "Language: id_ID\n"
@@ -731,7 +731,7 @@ msgstr "Ping"
 #: src/service/plugins/battery.js:273 src/service/plugins/battery.js:302
 #: src/service/plugins/findmyphone.js:20
 msgid "Ring"
-msgstr ""
+msgstr "Dering"
 
 #: src/service/daemon.js:507 src/service/plugins/share.js:45
 #: src/service/ui/messaging.js:1243 src/service/ui/messaging.js:1251
@@ -772,7 +772,7 @@ msgstr ""
 #: src/service/device.js:793
 #, javascript-format
 msgid "Pair Request from %s"
-msgstr ""
+msgstr "Permintaan Dihubungkan dari %s"
 
 #: src/service/device.js:800
 msgid "Reject"
@@ -844,11 +844,11 @@ msgstr "Bagikan isi papan klip"
 
 #: src/service/plugins/clipboard.js:23
 msgid "Clipboard Push"
-msgstr ""
+msgstr "Dorong Papan Klip"
 
 #: src/service/plugins/clipboard.js:31
 msgid "Clipboard Pull"
-msgstr ""
+msgstr "Tarik Papan Klip"
 
 #: src/service/plugins/contacts.js:23
 msgid "Access contacts of the paired device"
@@ -896,11 +896,11 @@ msgstr ""
 
 #: src/service/plugins/notification.js:38
 msgid "Close Notification"
-msgstr ""
+msgstr "Tutup Notifikasi"
 
 #: src/service/plugins/notification.js:46
 msgid "Reply Notification"
-msgstr ""
+msgstr "Balas Notifikasi"
 
 #: src/service/plugins/notification.js:62
 msgid "Activate Notification"
@@ -935,23 +935,23 @@ msgstr "Ping: %s"
 
 #: src/service/plugins/presenter.js:10
 msgid "Presentation"
-msgstr ""
+msgstr "Presentasi"
 
 #: src/service/plugins/presenter.js:11
 msgid "Use the paired device as a presenter"
-msgstr ""
+msgstr "Gunakan perangkat terhubung sebagai presenter"
 
 #: src/service/plugins/runcommand.js:11
 msgid "Run Commands"
-msgstr ""
+msgstr "Jalankan Perintah"
 
 #: src/service/plugins/runcommand.js:13
 msgid "Run commands on your paired device or let the device run predefined commands on this PC"
-msgstr ""
+msgstr "Jalankan perintah pada perangkat terhubung Anda atau biarkan perangkat tersebut menjalankan perintah yang sudah ditentukan di PC ini"
 
 #: src/service/plugins/sftp.js:13
 msgid "SFTP"
-msgstr ""
+msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:15
 msgid "Browse the paired device filesystem"
@@ -959,7 +959,7 @@ msgstr ""
 
 #: src/service/plugins/sftp.js:20
 msgid "Mount"
-msgstr ""
+msgstr "Muat"
 
 #: src/service/plugins/sftp.js:28
 msgid "Unmount"
