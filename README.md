@@ -1,7 +1,7 @@
 [GSConnect][ego] is a complete implementation of [KDE Connect][kdeconnect]
 especially for GNOME Shell with Nautilus, [Chrome][chrome] and
 [Firefox][firefox] integration. The KDE Connect team has applications for Linux,
-BSD, Android, Sailfish, macOS and Windows.
+BSD, Android, Sailfish, iOS, macOS and Windows.
 
 With GSConnect you can securely connect to mobile devices and other desktops to:
 
