@@ -34,7 +34,7 @@ jobs:
 
       - name: Upload Test Logs
         if: ${{ always() }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: test-logs
           path: _build/meson-logs
@@ -44,7 +44,7 @@ jobs:
           ninja -C _build make-zip
 
       - name: Upload Test Build
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: test-build
           path: _build/gsconnect@andyholmes.github.io.zip
