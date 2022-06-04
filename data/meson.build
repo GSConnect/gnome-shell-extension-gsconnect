@@ -63,7 +63,11 @@ dbus = dependency('dbus-1', required: false)
 if get_option('session_bus_services_dir') != ''
   dbus_dir = get_option('session_bus_services_dir')
 elif dbus.found()
-  dbus_dir = dbus.get_pkgconfig_variable('session_bus_services_dir')
+  dbus_dir = dbus.get_variable(
+    pkgconfig: 'session_bus_services_dir',
+    internal: 'session_bus_services_dir',
+    default_value: join_paths(datadir, 'dbus-1', 'services'),
+  )
 else
   dbus_dir = join_paths(datadir, 'dbus-1', 'services')
 endif

@@ -1,27 +1,11 @@
 # See https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Packaging
 
-# Run meson/post-install.sh (glib-compile-schemas)
-option(
-  'post_install',
-  type: 'boolean',
-  value: false,
-  description: 'Run meson/post-install.sh (eg. glib-compile-schemas)'
-)
-
 # GNOME Shell LIBDIR
 option(
   'gnome_shell_libdir',
   type: 'string',
   value: '',
   description: 'LIBDIR for GNOME Shell (eg. $LIBDIR/gnome-shell/Gvc-1.0.typelib)'
-)
-
-# GSettings schema directory
-option(
-  'gsettings_schemadir',
-  type: 'string',
-  value: '',
-  description: 'GSettings Schema directory'
 )
 
 # DBus service file
