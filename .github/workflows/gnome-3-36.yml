@@ -18,7 +18,6 @@ jobs:
           meson --prefix=/usr \
                 --libdir=lib/ \
                 -Dgnome_shell_libdir=/usr/lib64/ \
-                -Dpost_install=true \
                 _build
 
       - name: Uninstalled Tests

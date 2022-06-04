@@ -107,7 +107,6 @@ $ meson --prefix=/usr \
         --libdir=lib/ \
         -Dgnome_shell_libdir=/usr/lib64/ \
         -Dfirewalld=true \
-        -Dpost_install=true \
         _build
 $ ninja -C _build install
 ```
