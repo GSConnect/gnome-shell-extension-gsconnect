@@ -5,9 +5,10 @@ root = true
 # All files: UTF-8 with Unix-style newlines,
 # and a newline at the end of the file
 [*]
-insert_final_newline = true
-end_of_line = lf
 charset = utf-8
+end_of_line = lf
+trim_trailing_whitespace = true
+insert_final_newline = true
 
 # JavaScript, Python, CSS: 4-space indents
 [*.{js,py,css}]
