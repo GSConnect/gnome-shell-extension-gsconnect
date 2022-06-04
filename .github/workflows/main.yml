@@ -13,7 +13,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     container:
-      image: gsconnect/gsconnect-ci:latest
+      image: ghcr.io/gsconnect/gsconnect-ci:main
     steps:
       - uses: actions/checkout@v2
       - name: Prepare
@@ -21,7 +21,6 @@ jobs:
           meson --prefix=/usr \
                 --libdir=lib/ \
                 -Dgnome_shell_libdir=/usr/lib64/ \
-                -Dpost_install=true \
                 _build
 
       - name: Uninstalled Tests
