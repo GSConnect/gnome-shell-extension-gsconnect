@@ -182,6 +182,14 @@ function ensurePermissions() {
  * Install the files necessary for the GSConnect service to run.
  */
 function installService() {
+    const settings = new Gio.Settings({
+        settings_schema: Config.GSCHEMA.lookup(
+            'org.gnome.Shell.Extensions.GSConnect',
+            null
+        ),
+        path: '/org/gnome/shell/extensions/gsconnect/',
+    });
+
     const confDir = GLib.get_user_config_dir();
     const dataDir = GLib.get_user_data_dir();
     const homeDir = GLib.get_home_dir();
@@ -251,8 +259,9 @@ function installService() {
         }
 
         // WebExtension Manifests
-        for (const [dirname, contents] of manifests)
-            _installFile(dirname, manifestFile, contents);
+        if (settings.get_boolean("create-native-messaging-hosts"))
+            for (const [dirname, contents] of manifests)
+                _installFile(dirname, manifestFile, contents);
 
         // Otherwise, if running as a system extension, ensure anything previously
         // installed when running as a user extension is removed.
