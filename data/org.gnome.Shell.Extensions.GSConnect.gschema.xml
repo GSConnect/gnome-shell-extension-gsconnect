@@ -18,6 +18,9 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <key name="keep-alive-when-locked" type="b">
       <default>true</default>
     </key>
+    <key name="create-native-messaging-hosts" type="b">
+      <default>true</default>
+    </key>
 
     <!-- Service Settings -->
     <key name="id" type="s">
