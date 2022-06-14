@@ -41,7 +41,6 @@ var Plugin = GObject.registerClass({
 
         this._dialog = null;
         this._player = Components.acquire('sound');
-        this._mixer = Components.acquire('pulseaudio');
     }
 
     handlePacket(packet) {
@@ -97,9 +96,6 @@ var Plugin = GObject.registerClass({
 
     destroy() {
         this._cancelRequest();
-
-        if (this._mixer !== undefined)
-            this._mixer = Components.release('pulseaudio');
 
         if (this._player !== undefined)
             this._player = Components.release('sound');
@@ -161,21 +157,9 @@ const Dialog = GObject.registerClass({
         this.maximize();
         this.message_area.destroy();
 
-        // If an output stream is available start fading the volume up
-        if (this.plugin._mixer && this.plugin._mixer.output) {
-            this._stream = this.plugin._mixer.output;
-
-            this._previousMuted = this._stream.muted;
-            this._previousVolume = this._stream.volume;
-
-            this._stream.muted = false;
-            this._stream.fade(0.85, 15);
-
-        // Otherwise ensure audible-bell is enabled
-        } else {
-            this._previousBell = _WM_SETTINGS.get_boolean('audible-bell');
-            _WM_SETTINGS.set_boolean('audible-bell', true);
-        }
+        // Ensure audible-bell is enabled
+        this._previousBell = _WM_SETTINGS.get_boolean('audible-bell');
+        _WM_SETTINGS.set_boolean('audible-bell', true);
 
         // Start the alarm
         if (this.plugin._player !== undefined)
@@ -201,15 +185,8 @@ const Dialog = GObject.registerClass({
         // Stop the alarm
         this.cancellable.cancel();
 
-        // Restore the mixer level
-        if (this._stream) {
-            this._stream.muted = this._previousMuted;
-            this._stream.fade(this._previousVolume);
-
         // Restore the audible-bell
-        } else {
-            _WM_SETTINGS.set_boolean('audible-bell', this._previousBell);
-        }
+        _WM_SETTINGS.set_boolean('audible-bell', this._previousBell);
 
         this.destroy();
     }
