@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2022-06-16 12:20\n"
+"PO-Revision-Date: 2022-06-16 13:26\n"
 "Last-Translator: \n"
 "Language-Team: Arabic\n"
 "Language: ar_SA\n"
@@ -370,7 +370,7 @@ msgstr "دعم الرسائل النصية القديم"
 
 #: data/ui/preferences-device-panel.ui:2114
 msgid "SFTP Automount"
-msgstr ""
+msgstr "توصيل آلي لـ FTP المحمي"
 
 #: data/ui/preferences-device-panel.ui:2169
 #: data/ui/preferences-device-panel.ui:2495
@@ -881,7 +881,7 @@ msgstr "لوحة المفاتيح"
 
 #: src/service/plugins/mpris.js:15
 msgid "MPRIS"
-msgstr ""
+msgstr "MPRIS مواصفات واجهة مشغل الوسائط عن بعد"
 
 #: src/service/plugins/mpris.js:16
 msgid "Bidirectional remote media playback control"
@@ -901,93 +901,93 @@ msgstr "إلغاء الإشعارات"
 
 #: src/service/plugins/notification.js:38
 msgid "Close Notification"
-msgstr ""
+msgstr "إغلاق الإشعارات"
 
 #: src/service/plugins/notification.js:46
 msgid "Reply Notification"
-msgstr ""
+msgstr "الرد على الإشعارات"
 
 #: src/service/plugins/notification.js:62
 msgid "Activate Notification"
-msgstr ""
+msgstr "تفعيل الإشعارات"
 
 #: src/service/plugins/photo.js:13
 msgid "Request the paired device to take a photo and transfer it to this PC"
-msgstr ""
+msgstr "اطلب من الجهاز المقترن التقاط صورة وتحويلها إلى هذا الكمبيوتر"
 
 #: src/service/plugins/photo.js:220 src/service/plugins/share.js:128
 #: src/service/plugins/share.js:200 src/service/plugins/share.js:310
 msgid "Transfer Failed"
-msgstr ""
+msgstr "فشل التحويل"
 
 #. TRANSLATORS: eg. Failed to send "photo.jpg" to Google Pixel
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/photo.js:222 src/service/plugins/share.js:312
 #, javascript-format
 msgid "Failed to send “%s” to %s"
-msgstr ""
+msgstr "فشل إرسال \"%s\" إلى %s"
 
 #: src/service/plugins/ping.js:12
 msgid "Send and receive pings"
-msgstr ""
+msgstr "إرسال واستقبال الوخزات"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
 #: src/service/plugins/ping.js:52
 #, javascript-format
 msgid "Ping: %s"
-msgstr ""
+msgstr "الوخز: %s"
 
 #: src/service/plugins/presenter.js:10
 msgid "Presentation"
-msgstr ""
+msgstr "عرض"
 
 #: src/service/plugins/presenter.js:11
 msgid "Use the paired device as a presenter"
-msgstr ""
+msgstr "استخدم الجهاز المقترن كمقدم عرض"
 
 #: src/service/plugins/runcommand.js:11
 msgid "Run Commands"
-msgstr ""
+msgstr "تشغيل الأوامر"
 
 #: src/service/plugins/runcommand.js:13
 msgid "Run commands on your paired device or let the device run predefined commands on this PC"
-msgstr ""
+msgstr "تشغيل الأوامر على جهازك المقترن أو السماح للجهاز بتشغيل الأوامر المحددة مسبقاً على هذا الكمبيوتر"
 
 #: src/service/plugins/sftp.js:13
 msgid "SFTP"
-msgstr ""
+msgstr "اتصال FTP محمى"
 
 #: src/service/plugins/sftp.js:15
 msgid "Browse the paired device filesystem"
-msgstr ""
+msgstr "تصفح نظام ملفات الجهاز المقترن"
 
 #: src/service/plugins/sftp.js:20
 msgid "Mount"
-msgstr ""
+msgstr "توصيل"
 
 #: src/service/plugins/sftp.js:28
 msgid "Unmount"
-msgstr ""
+msgstr "إلغاء التوصيل"
 
 #: src/service/plugins/sftp.js:212
 #, javascript-format
 msgid "%s reported an error"
-msgstr ""
+msgstr "%s التبليغ عن خطأ"
 
 #: src/service/plugins/share.js:14 src/service/plugins/share.js:21
 msgid "Share"
-msgstr ""
+msgstr "مشاركة"
 
 #: src/service/plugins/share.js:16
 msgid "Share files and URLs between devices"
-msgstr ""
+msgstr "مشاركة الملفات والروابط بين الأجهزة"
 
 #. TRANSLATORS: eg. Google Pixel is not allowed to upload files
 #: src/service/plugins/share.js:130
 #, javascript-format
 msgid "%s is not allowed to upload files"
-msgstr ""
+msgstr "%s غير مسموح له برفع الملفات"
 
 #: src/service/plugins/share.js:152 src/service/plugins/share.js:280
 msgid "Transferring File"
