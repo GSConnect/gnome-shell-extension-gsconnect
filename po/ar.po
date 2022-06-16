@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2022-05-27 00:14\n"
+"PO-Revision-Date: 2022-06-16 11:24\n"
 "Last-Translator: \n"
 "Language-Team: Arabic\n"
 "Language: ar_SA\n"
@@ -514,7 +514,7 @@ msgstr ""
 #. TRANSLATORS: Show device indicators in the top bar
 #: data/ui/preferences-window.ui:727
 msgid "Panel"
-msgstr ""
+msgstr "لوحة"
 
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
 #: data/ui/preferences-window.ui:733
@@ -524,19 +524,19 @@ msgstr ""
 #. TRANSLATORS: Generate a support log
 #: data/ui/preferences-window.ui:741 src/preferences/service.js:410
 msgid "Generate Support Log"
-msgstr ""
+msgstr "إنشاء سجل الدعم"
 
 #: data/ui/preferences-window.ui:749
 msgid "About GSConnect"
-msgstr ""
+msgstr "حول GSConnect"
 
 #: data/ui/service-device-chooser.ui:8
 msgid "Select a Device"
-msgstr ""
+msgstr "تحديد جهاز"
 
 #: data/ui/service-device-chooser.ui:26 data/ui/service-device-chooser.ui:31
 msgid "Select"
-msgstr ""
+msgstr "تحديد"
 
 #. TRANSLATORS: No devices are known or available
 #: data/ui/service-device-chooser.ui:94 webextension/gettext.js:37
@@ -545,7 +545,7 @@ msgstr "لم يتم العثور على أي جهاز"
 
 #: data/ui/service-device-chooser.ui:111
 msgid "Device List"
-msgstr ""
+msgstr "قائمة الأجهزة"
 
 #: data/ui/service-error-dialog.ui:32 data/ui/service-error-dialog.ui:40
 msgid "Report"
@@ -553,37 +553,37 @@ msgstr ""
 
 #: data/ui/service-error-dialog.ui:72
 msgid "Something’s gone wrong"
-msgstr ""
+msgstr "حدث خطأ ما"
 
 #: data/ui/service-error-dialog.ui:84
 msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
-msgstr ""
+msgstr "واجه GSConnect خطأ غير متوقع. يرجى الإبلاغ عن المشكلة وإدراج أي معلومات قد تساعد."
 
 #: data/ui/service-error-dialog.ui:118
 msgid "Technical Details"
-msgstr ""
+msgstr "التفاصيل التقنية"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: nautilus-extension/nautilus-gsconnect.py:164 webextension/gettext.js:33
 msgid "Send To Mobile Device"
-msgstr ""
+msgstr "إرسال إلى جهاز الجوال"
 
 #. Service Menu
 #: src/extension.js:91 src/extension.js:237
 msgid "Mobile Devices"
-msgstr ""
+msgstr "الأجهزة المحمولة"
 
 #. TRANSLATORS: A menu option to activate the extension
 #: src/extension.js:119 src/extension.js:380
 msgid "Turn On"
-msgstr ""
+msgstr "تشغيل"
 
 #: src/extension.js:232
 #, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d متصل"
+msgstr[1] "%d متصل"
 msgstr[2] ""
 msgstr[3] ""
 msgstr[4] ""
@@ -592,7 +592,7 @@ msgstr[5] ""
 #. TRANSLATORS: A menu option to deactivate the extension
 #: src/extension.js:377
 msgid "Turn Off"
-msgstr ""
+msgstr "إيقاف التشغيل"
 
 #: src/preferences/device.js:666 src/preferences/device.js:672
 msgid "Edit"
@@ -604,25 +604,25 @@ msgstr "إزالة"
 
 #: src/preferences/device.js:941 src/preferences/device.js:969
 msgid "Disabled"
-msgstr ""
+msgstr "معطّل"
 
 #. TRANSLATORS: Summary of a keyboard shortcut function
 #. Example: Enter a new shortcut to change Messaging
 #: src/preferences/keybindings.js:64
 #, javascript-format
 msgid "Enter a new shortcut to change <b>%s</b>"
-msgstr ""
+msgstr "أدخل اختصار جديد لتغيير <b>%s</b>"
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
 #: src/preferences/keybindings.js:130
 #, javascript-format
 msgid "%s is already being used"
-msgstr ""
+msgstr "%s قيد الاستخدام بالفعل"
 
 #: src/preferences/service.js:369
 msgid "A complete KDE Connect implementation for GNOME"
-msgstr ""
+msgstr "تطبيق KDE كامل لربط GNOME"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:378
