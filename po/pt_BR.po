@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2022-05-27 00:13\n"
+"PO-Revision-Date: 2022-07-04 13:04\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese, Brazilian\n"
 "Language: pt_BR\n"
@@ -842,7 +842,7 @@ msgstr "Área de transferência"
 
 #: src/service/plugins/clipboard.js:11
 msgid "Share the clipboard content"
-msgstr ""
+msgstr "Compartilhar conteúdo da área de transferência"
 
 #: src/service/plugins/clipboard.js:23
 msgid "Clipboard Push"
@@ -854,7 +854,7 @@ msgstr "Pegar da área de transferência"
 
 #: src/service/plugins/contacts.js:23
 msgid "Access contacts of the paired device"
-msgstr ""
+msgstr "Acessar contatos do aparelho pareado"
 
 #: src/service/plugins/findmyphone.js:13
 msgid "Find My Phone"
