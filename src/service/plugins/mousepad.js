@@ -194,9 +194,9 @@ var Plugin = GObject.registerClass({
                     // Convert PageUp and PageDown to Left and Right respectively
                     // This is done to fix Slideshow Remote
                     if (input.specialKey === 8)
-                        keysym = KeyMap.get(4)
+                        keysym = KeyMap.get(4);
                     else if (input.specialKey === 9)
-                        keysym = KeyMap.get(6)
+                        keysym = KeyMap.get(6);
                     else
                         keysym = KeyMap.get(input.specialKey);
                     this._input.pressKeys(keysym, modifiers);
