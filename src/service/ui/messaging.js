@@ -444,8 +444,14 @@ const Conversation = GObject.registerClass({
     }
 
     _onConnected(device) {
-        if (device.connected)
-            this.pending_box.foreach(msg => msg.destroy());
+        // The device has disconnected, so add a label to any pending messages
+        // indicating they may not have completed sending.
+        if (!device.connected) {
+            this.pending_box.foreach(pending => {
+                pending.sender_label.label = _('Message not sent');
+                pending.sender_label.visible = true;
+            });
+        }
     }
 
     _onDestroy(conversation) {
@@ -495,19 +501,12 @@ const Conversation = GObject.registerClass({
         this.plugin.sendMessage(this.addresses, this.entry.text);
 
         // Add a phony message in the pending box
-        const message = new Gtk.Label({
-            label: URI.linkify(this.entry.text),
-            halign: Gtk.Align.END,
-            selectable: true,
-            use_markup: true,
-            visible: true,
-            wrap: true,
-            wrap_mode: Pango.WrapMode.WORD_CHAR,
-            xalign: 0,
+        const message = new ConversationMessage(null, {
+            addresses: this.addresses,
+            date: Date.now(),
+            body: this.entry.text,
+            type: Sms.MessageBox.SENT,
         });
-        message.get_style_context().add_class('message-out');
-        message.date = Date.now();
-        message.type = Sms.MessageBox.SENT;
 
         // Notify to reveal the pending box
         this.pending_box.add(message);
@@ -664,10 +663,16 @@ const Conversation = GObject.registerClass({
             this.list.add(row);
             this.list.invalidate_headers();
 
-            // Remove the first pending message
+            // Check pending messages for confirmation
             if (this.has_pending && message.type === Sms.MessageBox.SENT) {
-                this.pending_box.get_children()[0].destroy();
-                this.notify('has-pending');
+                for (const pending of this.pending_box.get_children()) {
+                    if (message.body === pending.message.body &&
+                        message.date >= pending.message.date) {
+                        pending.destroy();
+                        this.notify('has-pending');
+                        break;
+                    }
+                }
             }
         } catch (e) {
             debug(e);
