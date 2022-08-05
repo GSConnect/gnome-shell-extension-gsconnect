@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2022-05-27 00:13\n"
+"PO-Revision-Date: 2022-08-05 01:23\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -1019,7 +1019,7 @@ msgstr "Datei öffnen"
 #: src/service/plugins/share.js:202
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
-msgstr "Empfang von „%s“ von %s gescheitert"
+msgstr "Empfang von »%s« von %s gescheitert"
 
 #: src/service/plugins/share.js:232
 #, javascript-format
