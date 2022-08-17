@@ -29,7 +29,6 @@ if "nemo" in sys.argv[0].lower():
     from gi.repository import Nemo as FileManager
 else:
     # Otherwise, just assume it's nautilus-python
-    gi.require_version('Nautilus', '3.0')
     from gi.repository import Nautilus as FileManager
 
 
