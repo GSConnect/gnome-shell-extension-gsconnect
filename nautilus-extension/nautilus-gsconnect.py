@@ -29,7 +29,6 @@ if "nemo" in sys.argv[0].lower():
     from gi.repository import Nemo as FileManager
 else:
     # Otherwise, just assume it's nautilus-python
-    gi.require_version('Nautilus', '3.0')
     from gi.repository import Nautilus as FileManager
 
 
@@ -141,7 +140,10 @@ class GSConnectShareExtension(GObject.Object, FileManager.MenuProvider):
             variant = GLib.Variant('(sb)', (file.get_uri(), False))
             action_group.activate_action('shareFile', variant)
 
-    def get_file_items(self, window, files):
+    def get_file_items(self, *args):
+        # `args` will be `[files: List[Nautilus.FileInfo]]` in Nautilus 4.0 API,
+        # and `[window: Gtk.Widget, files: List[Nautilus.FileInfo]]` in Nautilus 3.0 API.
+        files = args[-1]
         """Return a list of select files to be sent"""
 
         # Only accept regular files
