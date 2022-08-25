@@ -7,7 +7,7 @@ const Gtk = imports.gi.Gtk;
 const Main = imports.ui.main;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
-const AggregateMenu = Main.panel.statusArea.aggregateMenu;
+const QuickSettings = Main.panel.statusArea.quickSettings;
 
 // Bootstrap
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
@@ -84,8 +84,8 @@ const ServiceIndicator = GObject.registerClass({
         );
         this._indicator.visible = false;
 
-        AggregateMenu._indicators.insert_child_at_index(this, 0);
-        AggregateMenu._gsconnect = this;
+        QuickSettings._indicators.insert_child_at_index(this, 0);
+        QuickSettings._gsconnect = this;
 
         // Service Menu
         this._item = new PopupMenu.PopupSubMenuMenuItem(_('Mobile Devices'), true);
@@ -94,11 +94,11 @@ const ServiceIndicator = GObject.registerClass({
         this.menu.addMenuItem(this._item);
 
         // Find current index of network menu
-        const menuItems = AggregateMenu.menu._getMenuItems();
-        const networkMenuIndex = AggregateMenu._network ? menuItems.indexOf(AggregateMenu._network.menu) : -1;
+        const menuItems = QuickSettings.menu._getMenuItems();
+        const networkMenuIndex = QuickSettings._network ? menuItems.indexOf(QuickSettings._network.menu) : -1;
         const menuIndex = networkMenuIndex > -1 ? networkMenuIndex : 3;
         // Place our menu below the network menu
-        AggregateMenu.menu.addMenuItem(this.menu, menuIndex + 1);
+        QuickSettings.menu.addMenuItem(this.menu, menuIndex + 1);
 
         // Service Menu -> Devices Section
         this.deviceSection = new PopupMenu.PopupMenuSection();
@@ -413,7 +413,7 @@ const ServiceIndicator = GObject.registerClass({
         this._item.destroy();
         this.menu.destroy();
 
-        delete AggregateMenu._gsconnect;
+        delete QuickSettings._gsconnect;
         super.destroy();
     }
 });
