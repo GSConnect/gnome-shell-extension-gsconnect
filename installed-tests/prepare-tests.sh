@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 APP_ID="org.gnome.Shell.Extensions.GSConnect"
 #G_TEST_BUILDDIR=${MESON_BUILD_ROOT}/installed-tests
