@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2022-08-22 07:18+0300\n"
+"PO-Revision-Date: 2022-08-27 01:59+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: el\n"
@@ -61,23 +61,23 @@ msgstr "Στείλτε και λάβετε μηνύματα"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
 msgid "Sync clipboard content"
-msgstr "Συγχρονίστε το περιεχόμενο του πρόχειρου σας"
+msgstr "Συγχρονίσετε το περιεχόμενο του πρόχειρου σας"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:42
 msgid "Sync contacts"
-msgstr "Συγχρονίστε της επαφές σας"
+msgstr "Συγχρονίσετε της επαφές σας"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:43
 msgid "Sync notifications"
-msgstr "Συγχρονίστε της ειδοποίησης σας"
+msgstr "Συγχρονίσετε της ειδοποίησης σας"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
 msgid "Control media players"
-msgstr "Ελέγξτε της συσκευές σας αναπαραγωγής πολυμέσων"
+msgstr "Ελέγξετε της συσκευές σας αναπαραγωγής πολυμέσων"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:45
 msgid "Control system volume"
-msgstr "Ελέγξτε την ένταση του συστήματος σας"
+msgstr "Ελέξετε την ένταση του συστήματος σας"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:46
 msgid "Execute predefined commands"
