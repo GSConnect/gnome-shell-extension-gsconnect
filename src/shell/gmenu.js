@@ -200,10 +200,14 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         }
 
         // Modify the ::activate callback to invoke the GAction or submenu
-        item.disconnect(item._activateId);
-        item._activateId = item.connect(
+        const activateId = GObject.signal_handler_find(item, 'activate');
+        if (activateId)
+            item.disconnect(activateId);
+
+        item.connectObject(
             'activate',
-            this._onGMenuItemActivate.bind(this)
+            this._onGMenuItemActivate.bind(this),
+            this
         );
 
         return item;
@@ -284,12 +288,14 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
             this.addMenuItem(prev, 0);
 
             // Modify the ::activate callback to close the submenu
-            prev.disconnect(prev._activateId);
+            const activateId = GObject.signal_handler_find(prev, 'activate');
+            if (activateId)
+                prev.disconnect(activateId);
 
-            prev._activateId = prev.connect('activate', (item, event) => {
+            prev.connectObject('activate', (item, event) => {
                 this.emit('activate', item);
                 this._parent.submenu = null;
-            });
+            }, this);
         }
     }
 
