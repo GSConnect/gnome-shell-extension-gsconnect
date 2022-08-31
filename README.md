@@ -51,4 +51,4 @@ If you need additional permissions, you may request them from one of the
 [issues]: https://github.com/GSConnect/gnome-shell-extension-gsconnect/issues
 [help-wanted]: https://github.com/GSConnect/gnome-shell-extension-gsconnect/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22
 [needs-review]: https://github.com/GSConnect/gnome-shell-extension-gsconnect/pulls?q=is%3Apr+is%3Aopen+label%3A%22needs+review%22
-[people]: https://github.com/GSConnect/gnome-shell-extension-gsconnect/people
+[people]: https://github.com/orgs/GSConnect/people
