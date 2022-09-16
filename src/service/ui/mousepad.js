@@ -89,6 +89,7 @@ var InputDialog = GObject.registerClass({
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/mousepad-input-dialog.ui',
     Children: [
         'infobar', 'infobar-label',
+        'touchpad-eventbox', 'mouse-left-button', 'mouse-middle-button', 'mouse-right-button',
         'shift-label', 'ctrl-label', 'alt-label', 'super-label', 'entry',
     ],
 }, class InputDialog extends Gtk.Dialog {

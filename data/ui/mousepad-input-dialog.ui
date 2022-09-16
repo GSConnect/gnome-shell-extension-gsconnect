@@ -73,9 +73,78 @@
             <property name="position">0</property>
           </packing>
         </child>
+
+        <child>
+          <object class="GtkBox">
+            <property name="vexpand">True</property>
+            <property name="halign">fill</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkEventBox" id="touchpad-eventbox">
+                <child>
+                  <object class="GtkLabel">
+                    <property name="can_focus">False</property>
+                    <property name="vexpand">True</property>
+                    <property name="halign">fill</property>
+                    <property name="justify">center</property>
+                    <property name="label" translatable="True">Touchpad.
+Drag on this area to move mouse cursor.
+Press long to drag to drag mouse cursor.
+
+Simple click will be sent to paired device.
+Left, middle, right button, and wheel scrolls.</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkActionBar">
+                <child type="center">
+                  <object class="GtkButtonBox">
+                    <style>
+                      <class name="linked"/>
+                    </style>
+                    <child>
+                      <object class="GtkButton" id="mouse-left-button">
+                        <property name="can_focus">False</property>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="label">LMB</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="mouse-middle-button">
+                        <property name="can_focus">False</property>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="label">MMB</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="mouse-right-button">
+                        <property name="can_focus">False</property>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="label">RMB</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+
         <child>
           <object class="GtkGrid">
             <property name="can_focus">False</property>
+            <property name="vexpand">False</property>
             <property name="margin_left">6</property>
             <property name="margin_right">6</property>
             <property name="margin_top">6</property>
@@ -171,4 +240,3 @@
     </child>
   </template>
 </interface>
-
