@@ -297,4 +297,31 @@ var InputDialog = GObject.registerClass({
 
         this.entry.buffer.text = '';
     }
+
+    _onMouseLeftButtonClicked(button) {
+        this.device.sendPacket({
+            type: 'kdeconnect.mousepad.request',
+            body: {
+                singleclick: true
+            }
+        });
+    }
+
+    _onMouseMiddleButtonClicked(button) {
+        this.device.sendPacket({
+            type: 'kdeconnect.mousepad.request',
+            body: {
+                middleclick: true
+            }
+        });
+    }
+
+    _onMouseRightButtonClicked(button) {
+        this.device.sendPacket({
+            type: 'kdeconnect.mousepad.request',
+            body: {
+                rightclick: true
+            }
+        });
+    }
 });
