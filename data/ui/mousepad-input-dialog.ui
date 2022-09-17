@@ -107,6 +107,7 @@ Left, middle, right button, and wheel scrolls.</property>
                     <child>
                       <object class="GtkButton" id="mouse-left-button">
                         <property name="can_focus">False</property>
+                        <signal name="clicked" handler="_onMouseLeftButtonClicked"/>
                         <child>
                           <object class="GtkImage">
                             <property name="icon-name">mouse-left-button-symbolic</property>
@@ -117,6 +118,7 @@ Left, middle, right button, and wheel scrolls.</property>
                     <child>
                       <object class="GtkButton" id="mouse-middle-button">
                         <property name="can_focus">False</property>
+                        <signal name="clicked" handler="_onMouseMiddleButtonClicked"/>
                         <child>
                           <object class="GtkImage">
                             <property name="icon-name">mouse-with-smaller-scrollwheel-symbolic</property>
@@ -127,6 +129,7 @@ Left, middle, right button, and wheel scrolls.</property>
                     <child>
                       <object class="GtkButton" id="mouse-right-button">
                         <property name="can_focus">False</property>
+                        <signal name="clicked" handler="_onMouseRightButtonClicked"/>
                         <child>
                           <object class="GtkImage">
                             <property name="icon-name">mouse-right-button-symbolic</property>
