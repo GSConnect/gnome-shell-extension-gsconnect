@@ -58,6 +58,9 @@
     <file compressed="true" preprocess="xml-stripblanks">icons/sms-send.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">icons/sms-symbolic.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">images/enter-keyboard-shortcut.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">icons/mouse-left-button-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">icons/mouse-right-button-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">icons/mouse-with-smaller-scrollwheel-symbolic.svg</file>
 
     <!-- WebExtension Manifests & Badges -->
     <file compressed="true">webextension/org.gnome.shell.extensions.gsconnect.json.google.in</file>
