@@ -242,4 +242,20 @@ Left, middle, right button, and wheel scrolls.</property>
       </object>
     </child>
   </template>
+
+  <!-- Touchpad Gestures -->
+  <object class="GtkGestureDrag" id="touchpad-drag">
+    <property name="widget">touchpad-eventbox</property>
+    <signal name="begin" handler="_onTouchpadDragBegin"/>
+    <signal name="drag-update" handler="_onTouchpadDragUpdate"/>
+    <signal name="end" handler="_onTouchpadDragEnd"/>
+  </object>
+
+  <object class="GtkGestureLongPress" id="touchpad-long-press">
+    <property name="widget">touchpad-eventbox</property>
+    <property name="button">0</property>
+    <signal name="cancelled" handler="_onTouchpadLongPressCancelled"/>
+    <signal name="pressed" handler="_onTouchpadLongPressPressed"/>
+    <signal name="end" handler="_onTouchpadLongPressEnd"/>
+  </object>
 </interface>

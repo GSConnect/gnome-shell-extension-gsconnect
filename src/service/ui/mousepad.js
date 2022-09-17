@@ -90,6 +90,7 @@ var InputDialog = GObject.registerClass({
     Children: [
         'infobar', 'infobar-label',
         'touchpad-eventbox', 'mouse-left-button', 'mouse-middle-button', 'mouse-right-button',
+        'touchpad-drag', 'touchpad-long-press',
         'shift-label', 'ctrl-label', 'alt-label', 'super-label', 'entry',
     ],
 }, class InputDialog extends Gtk.Dialog {
@@ -118,6 +119,11 @@ var InputDialog = GObject.registerClass({
 
         this.infobar.connect('notify::reveal-child', this._onState.bind(this));
         this.plugin.bind_property('state', this.infobar, 'reveal-child', 6);
+
+        // Mouse Pad
+        this.touchpad_motion_x = 0;
+        this.touchpad_motion_y = 0;
+        this.touchpad_holding = false;
 
         this.show_all();
     }
@@ -323,5 +329,99 @@ var InputDialog = GObject.registerClass({
                 rightclick: true
             }
         });
+    }
+
+    _onTouchpadDragBegin(gesture) {
+        debug(gesture)
+        this.touchpad_motion_x = 0;
+        this.touchpad_motion_y = 0;
+    }
+
+    _onTouchpadDragUpdate(gesture, offset_x, offset_y) {
+        var diff_x = offset_x - this.touchpad_motion_x;
+        var diff_y = offset_y - this.touchpad_motion_y;
+
+        this.device.sendPacket({
+            type: 'kdeconnect.mousepad.request',
+            body: {
+                dx: diff_x,
+                dy: diff_y
+            },
+        });
+
+        this.touchpad_motion_x = offset_x;
+        this.touchpad_motion_y = offset_y;
+    }
+
+    _onTouchpadDragEnd(gesture) {
+        this.touchpad_motion_x = 0;
+        this.touchpad_motion_y = 0;
+    }
+
+    _onTouchpadLongPressCancelled(gesture) {
+        const gesture_button = gesture.get_current_button();
+
+        var motion_x = this.touchpad_motion_x;
+        var motion_y = this.touchpad_motion_y;
+
+        motion_x = (motion_x < 0) ? (-motion_x) : motion_x;
+        motion_y = (motion_y < 0) ? (-motion_y) : motion_y;
+
+        var is_click = (motion_x < 4) && (motion_y < 4);
+
+        if (is_click) {
+            if (gesture_button == 1){
+                this.device.sendPacket({
+                    type: 'kdeconnect.mousepad.request',
+                    body: {
+                        singleclick: true
+                    },
+                });
+            } else if (gesture_button == 2) {
+                this.device.sendPacket({
+                    type: 'kdeconnect.mousepad.request',
+                    body: {
+                        middleclick: true
+                    },
+                });
+            } else if (gesture_button == 3) {
+                this.device.sendPacket({
+                    type: 'kdeconnect.mousepad.request',
+                    body: {
+                        rightclick: true
+                    },
+                });
+            }
+        }
+    }
+
+    _onTouchpadLongPressPressed(gesture) {
+        const gesture_button = gesture.get_current_button();
+
+        if (gesture_button != 1) {
+            debug ("Long press on other type of buttons are not handled.")
+            return;
+        } else {
+            this.device.sendPacket({
+                type: 'kdeconnect.mousepad.request',
+                body: {
+                    singlehold: true
+                },
+            });
+            this.touchpad_holding = true;
+        }
+    }
+
+    _onTouchpadLongPressEnd(gesture) {
+        debug("Long Press Ended");
+        if (this.touchpad_holding) {
+            this.device.sendPacket({
+                type: 'kdeconnect.mousepad.request',
+                body: {
+                    singlerelease: true
+                },
+            })
+            this.touchpad_holding = false;
+        }
     }
 });
