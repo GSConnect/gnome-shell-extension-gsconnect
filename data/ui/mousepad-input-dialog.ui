@@ -108,8 +108,8 @@ Left, middle, right button, and wheel scrolls.</property>
                       <object class="GtkButton" id="mouse-left-button">
                         <property name="can_focus">False</property>
                         <child>
-                          <object class="GtkLabel">
-                            <property name="label">LMB</property>
+                          <object class="GtkImage">
+                            <property name="icon-name">mouse-left-button-symbolic</property>
                           </object>
                         </child>
                       </object>
@@ -118,8 +118,8 @@ Left, middle, right button, and wheel scrolls.</property>
                       <object class="GtkButton" id="mouse-middle-button">
                         <property name="can_focus">False</property>
                         <child>
-                          <object class="GtkLabel">
-                            <property name="label">MMB</property>
+                          <object class="GtkImage">
+                            <property name="icon-name">mouse-with-smaller-scrollwheel-symbolic</property>
                           </object>
                         </child>
                       </object>
@@ -128,8 +128,8 @@ Left, middle, right button, and wheel scrolls.</property>
                       <object class="GtkButton" id="mouse-right-button">
                         <property name="can_focus">False</property>
                         <child>
-                          <object class="GtkLabel">
-                            <property name="label">RMB</property>
+                          <object class="GtkImage">
+                            <property name="icon-name">mouse-right-button-symbolic</property>
                           </object>
                         </child>
                       </object>
