@@ -241,10 +241,10 @@ var Plugin = GObject.registerClass({
 
         if (input.key) {
             this._dialog._isAck = true;
-            this._dialog.text.buffer.text += input.key;
+            this._dialog.entry.buffer.text += input.key;
             this._dialog._isAck = false;
         } else if (KeyMap.get(input.specialKey) === Gdk.KEY_BackSpace) {
-            this._dialog.text.emit('backspace');
+            this._dialog.entry.emit('backspace');
         }
     }
 
