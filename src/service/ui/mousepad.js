@@ -125,6 +125,9 @@ var InputDialog = GObject.registerClass({
         this.touchpad_motion_y = 0;
         this.touchpad_holding = false;
 
+        // Scroll Input
+        this.add_events(Gdk.EventMask.SCROLL_MASK)
+
         this.show_all();
     }
 
@@ -221,6 +224,24 @@ var InputDialog = GObject.registerClass({
             return super.vfunc_key_press_event(event);
 
         return false;
+    }
+
+    vfunc_scroll_event(event) {
+        print (event.type);
+
+        if (event.delta_x == 0 && event.delta_y == 0) {
+            return true;
+        }
+
+        this.device.sendPacket({
+            type: 'kdeconnect.mousepad.request',
+            body: {
+                scroll: true,
+                dx: event.delta_x * 200,
+                dy: event.delta_y * 200
+            },
+        })
+        return true;
     }
 
     vfunc_window_state_event(event) {
