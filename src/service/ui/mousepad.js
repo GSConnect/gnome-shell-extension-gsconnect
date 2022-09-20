@@ -1,5 +1,6 @@
 'use strict';
 
+const GLib = imports.gi.GLib;
 const Gdk = imports.gi.Gdk;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
@@ -121,8 +122,11 @@ var InputDialog = GObject.registerClass({
         this.plugin.bind_property('state', this.infobar, 'reveal-child', 6);
 
         // Mouse Pad
+        this.touchpad_motion_prev_x = 0;
+        this.touchpad_motion_prev_y = 0;
         this.touchpad_motion_x = 0;
         this.touchpad_motion_y = 0;
+        this.touchpad_motion_timeout = 0;
         this.touchpad_holding = false;
 
         // Scroll Input
@@ -354,29 +358,29 @@ var InputDialog = GObject.registerClass({
 
     _onTouchpadDragBegin(gesture) {
         debug(gesture)
+        this.touchpad_motion_prev_x = 0;
+        this.touchpad_motion_prev_y = 0;
         this.touchpad_motion_x = 0;
         this.touchpad_motion_y = 0;
+
+        this.touchpad_motion_timeout =
+            GLib.timeout_add(GLib.PRIORITY_DEFAULT, 10,
+                this._onTouchpadMotionTimeout.bind(this));
     }
 
     _onTouchpadDragUpdate(gesture, offset_x, offset_y) {
-        var diff_x = offset_x - this.touchpad_motion_x;
-        var diff_y = offset_y - this.touchpad_motion_y;
-
-        this.device.sendPacket({
-            type: 'kdeconnect.mousepad.request',
-            body: {
-                dx: diff_x,
-                dy: diff_y
-            },
-        });
-
         this.touchpad_motion_x = offset_x;
         this.touchpad_motion_y = offset_y;
     }
 
     _onTouchpadDragEnd(gesture) {
+        this.touchpad_motion_prev_x = 0;
+        this.touchpad_motion_prev_y = 0;
         this.touchpad_motion_x = 0;
         this.touchpad_motion_y = 0;
+
+        GLib.Source.remove(this.touchpad_motion_timeout);
+        this.touchpad_motion_timeout = 0;
     }
 
     _onTouchpadLongPressCancelled(gesture) {
@@ -444,5 +448,22 @@ var InputDialog = GObject.registerClass({
             })
             this.touchpad_holding = false;
         }
+    }
+    
+    _onTouchpadMotionTimeout() {
+        var diff_x = this.touchpad_motion_x - this.touchpad_motion_prev_x;
+        var diff_y = this.touchpad_motion_y - this.touchpad_motion_prev_y;
+
+        this.device.sendPacket({
+            type: 'kdeconnect.mousepad.request',
+            body: {
+                dx: diff_x,
+                dy: diff_y
+            },
+        });
+
+        this.touchpad_motion_prev_x = this.touchpad_motion_x;
+        this.touchpad_motion_prev_y = this.touchpad_motion_y;
+        return true;
     }
 });
