@@ -122,15 +122,12 @@ var InputDialog = GObject.registerClass({
         this.plugin.bind_property('state', this.infobar, 'reveal-child', 6);
 
         // Mouse Pad
-        this.touchpad_motion_prev_x = 0;
-        this.touchpad_motion_prev_y = 0;
-        this.touchpad_motion_x = 0;
-        this.touchpad_motion_y = 0;
-        this.touchpad_motion_timeout = 0;
+        this._resetTouchpadMotion();
+        this.touchpad_motion_timeout_id = 0;
         this.touchpad_holding = false;
 
         // Scroll Input
-        this.add_events(Gdk.EventMask.SCROLL_MASK)
+        this.add_events(Gdk.EventMask.SCROLL_MASK);
 
         this.show_all();
     }
@@ -231,20 +228,17 @@ var InputDialog = GObject.registerClass({
     }
 
     vfunc_scroll_event(event) {
-        print (event.type);
-
-        if (event.delta_x == 0 && event.delta_y == 0) {
+        if (event.delta_x === 0 && event.delta_y === 0)
             return true;
-        }
 
         this.device.sendPacket({
             type: 'kdeconnect.mousepad.request',
             body: {
                 scroll: true,
                 dx: event.delta_x * 200,
-                dy: event.delta_y * 200
+                dy: event.delta_y * 200,
             },
-        })
+        });
         return true;
     }
 
@@ -329,12 +323,19 @@ var InputDialog = GObject.registerClass({
         this.entry.buffer.text = '';
     }
 
+    _resetTouchpadMotion() {
+        this.touchpad_motion_prev_x = 0;
+        this.touchpad_motion_prev_y = 0;
+        this.touchpad_motion_x = 0;
+        this.touchpad_motion_y = 0;
+    }
+
     _onMouseLeftButtonClicked(button) {
         this.device.sendPacket({
             type: 'kdeconnect.mousepad.request',
             body: {
-                singleclick: true
-            }
+                singleclick: true,
+            },
         });
     }
 
@@ -342,8 +343,8 @@ var InputDialog = GObject.registerClass({
         this.device.sendPacket({
             type: 'kdeconnect.mousepad.request',
             body: {
-                middleclick: true
-            }
+                middleclick: true,
+            },
         });
     }
 
@@ -351,19 +352,15 @@ var InputDialog = GObject.registerClass({
         this.device.sendPacket({
             type: 'kdeconnect.mousepad.request',
             body: {
-                rightclick: true
-            }
+                rightclick: true,
+            },
         });
     }
 
     _onTouchpadDragBegin(gesture) {
-        debug(gesture)
-        this.touchpad_motion_prev_x = 0;
-        this.touchpad_motion_prev_y = 0;
-        this.touchpad_motion_x = 0;
-        this.touchpad_motion_y = 0;
+        this._resetTouchpadMotion();
 
-        this.touchpad_motion_timeout =
+        this.touchpad_motion_timeout_id =
             GLib.timeout_add(GLib.PRIORITY_DEFAULT, 10,
                 this._onTouchpadMotionTimeout.bind(this));
     }
@@ -374,63 +371,56 @@ var InputDialog = GObject.registerClass({
     }
 
     _onTouchpadDragEnd(gesture) {
-        this.touchpad_motion_prev_x = 0;
-        this.touchpad_motion_prev_y = 0;
-        this.touchpad_motion_x = 0;
-        this.touchpad_motion_y = 0;
+        this._resetTouchpadMotion();
 
-        GLib.Source.remove(this.touchpad_motion_timeout);
-        this.touchpad_motion_timeout = 0;
+        GLib.Source.remove(this.touchpad_motion_timeout_id);
+        this.touchpad_motion_timeout_id = 0;
     }
 
     _onTouchpadLongPressCancelled(gesture) {
         const gesture_button = gesture.get_current_button();
 
-        var motion_x = this.touchpad_motion_x;
-        var motion_y = this.touchpad_motion_y;
-
-        motion_x = (motion_x < 0) ? (-motion_x) : motion_x;
-        motion_y = (motion_y < 0) ? (-motion_y) : motion_y;
-
-        var is_click = (motion_x < 4) && (motion_y < 4);
+        // Check user dragged less than certain distances.
+        const is_click =
+            (Math.abs(this.touchpad_motion_x) < 4) &&
+            (Math.abs(this.touchpad_motion_y) < 4);
 
         if (is_click) {
-            if (gesture_button == 1){
-                this.device.sendPacket({
-                    type: 'kdeconnect.mousepad.request',
-                    body: {
-                        singleclick: true
-                    },
-                });
-            } else if (gesture_button == 2) {
-                this.device.sendPacket({
-                    type: 'kdeconnect.mousepad.request',
-                    body: {
-                        middleclick: true
-                    },
-                });
-            } else if (gesture_button == 3) {
-                this.device.sendPacket({
-                    type: 'kdeconnect.mousepad.request',
-                    body: {
-                        rightclick: true
-                    },
-                });
+            var click_body = {};
+            switch (gesture_button) {
+                case 1:
+                    click_body.singleclick = true;
+                    break;
+
+                case 2:
+                    click_body.middleclick = true;
+                    break;
+
+                case 3:
+                    click_body.rightclick = true;
+                    break;
+
+                default:
+                    return;
             }
+
+            this.device.sendPacket({
+                type: 'kdeconnect.mousepad.request',
+                body: click_body,
+            });
         }
     }
 
     _onTouchpadLongPressPressed(gesture) {
         const gesture_button = gesture.get_current_button();
 
-        if (gesture_button != 1) {
-            debug ("Long press on other type of buttons are not handled.")
-            return;
+        if (gesture_button !== 1) {
+            debug('Long press on other type of buttons are not handled.');
         } else {
             this.device.sendPacket({
                 type: 'kdeconnect.mousepad.request',
                 body: {
-                    singlehold: true
+                    singlehold: true,
                 },
             });
             this.touchpad_holding = true;
@@ -438,14 +428,13 @@ var InputDialog = GObject.registerClass({
     }
 
     _onTouchpadLongPressEnd(gesture) {
-        debug("Long Press Ended");
         if (this.touchpad_holding) {
             this.device.sendPacket({
                 type: 'kdeconnect.mousepad.request',
                 body: {
-                    singlerelease: true
+                    singlerelease: true,
                 },
-            })
+            });
             this.touchpad_holding = false;
         }
     }
@@ -458,7 +447,7 @@ var InputDialog = GObject.registerClass({
             type: 'kdeconnect.mousepad.request',
             body: {
                 dx: diff_x,
-                dy: diff_y
+                dy: diff_y,
             },
         });
 
