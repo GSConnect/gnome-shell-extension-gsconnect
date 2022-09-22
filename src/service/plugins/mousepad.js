@@ -24,7 +24,7 @@ var Metadata = {
     ],
     actions: {
         keyboard: {
-            label: _('Keyboard'),
+            label: _('Remote Input'),
             icon_name: 'input-keyboard-symbolic',
 
             parameter_type: null,
