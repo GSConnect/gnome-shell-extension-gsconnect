@@ -102,7 +102,7 @@ var InputDialog = GObject.registerClass({
         }, params));
 
         const headerbar = this.get_titlebar();
-        headerbar.title = _('Keyboard');
+        headerbar.title = _('Remote Input');
         headerbar.subtitle = this.device.name;
 
         // Main Box
@@ -449,7 +449,7 @@ var InputDialog = GObject.registerClass({
             this.touchpad_holding = false;
         }
     }
-    
+
     _onTouchpadMotionTimeout() {
         var diff_x = this.touchpad_motion_x - this.touchpad_motion_prev_x;
         var diff_y = this.touchpad_motion_y - this.touchpad_motion_prev_y;
