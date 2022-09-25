@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-09-25 09:29+0900\n"
-"PO-Revision-Date: 2022-09-25 13:42\n"
+"PO-Revision-Date: 2022-09-25 14:40\n"
 "Last-Translator: \n"
 "Language-Team: Ukrainian\n"
 "Language: uk_UA\n"
@@ -186,7 +186,11 @@ msgid "Touchpad.\n"
 "Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr ""
+msgstr "Тачпад.\n"
+"Перетягніть на цю ділянку, щоб перемістити курсор миші.\n"
+"Щоб перемістити курсор натисніть та утримуйте.\n\n"
+"Просте натискання буде відправлене на пов'язаний пристрій.\n"
+"Ліва, середня, права кнопка та прокручування коліщатка."
 
 #: data/ui/preferences-command-editor.ui:7
 msgid "Edit Command"
@@ -883,7 +887,7 @@ msgstr "Дозволяє пов'язаному пристрою працюват
 
 #: src/service/plugins/mousepad.js:27 src/service/ui/mousepad.js:105
 msgid "Remote Input"
-msgstr ""
+msgstr "Віддалене введення"
 
 #: src/service/plugins/mpris.js:15
 msgid "MPRIS"
