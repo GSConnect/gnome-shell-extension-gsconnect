@@ -87,7 +87,7 @@
                     <property name="vexpand">True</property>
                     <property name="halign">fill</property>
                     <property name="justify">center</property>
-                    <property name="label" translatable="True">Touchpad.
+                    <property name="label" translatable="yes">Touchpad.
 Drag on this area to move mouse cursor.
 Press long to drag to drag mouse cursor.
 
