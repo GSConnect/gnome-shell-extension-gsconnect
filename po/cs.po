@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-09-25 09:29+0900\n"
-"PO-Revision-Date: 2022-09-25 02:53\n"
+"PO-Revision-Date: 2022-09-26 08:24\n"
 "Last-Translator: \n"
 "Language-Team: Czech\n"
 "Language: cs_CZ\n"
@@ -33,7 +33,7 @@ msgstr "Kolektiv GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:32
 msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
+msgstr "GSConnect je kompletní implementace nástroje KDE Connect, určená zejména pro prostředí GNOME Shell s napojením pro správce souborů Nautilus a dále pro webové prohlížeče Chrome a Firefox. Tým KDE Connect má aplikace pro systémy Linux, BSD, Android, Sailfish, iOS, macOS a Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:35
 msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
@@ -186,7 +186,11 @@ msgid "Touchpad.\n"
 "Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr ""
+msgstr "Touchpad.\n"
+"Přetáhněte tuto oblast pro přesun kurzoru myši.\n"
+"Stiskněte dlouze pro přetažení kurzoru.\n\n"
+"Jednoduché kliknutí bude odesláno do spárovaného zařízení.\n"
+"Levé, prostřední, pravé a posouvací kolečko."
 
 #: data/ui/preferences-command-editor.ui:7
 msgid "Edit Command"
@@ -883,7 +887,7 @@ msgstr "Umožní použít spárované zařízení jako vzdálenou myš a kláves
 
 #: src/service/plugins/mousepad.js:27 src/service/ui/mousepad.js:105
 msgid "Remote Input"
-msgstr ""
+msgstr "Vzdálený vstup"
 
 #: src/service/plugins/mpris.js:15
 msgid "MPRIS"
