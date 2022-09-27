@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-09-25 09:29+0900\n"
-"PO-Revision-Date: 2022-09-25 02:53\n"
+"PO-Revision-Date: 2022-09-27 07:32\n"
 "Last-Translator: \n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
@@ -33,7 +33,7 @@ msgstr "Team GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:32
 msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
+msgstr "GSConnect è un'implementazione completa di KDE Connect per GNOME Shell, integrata con Nautilus, Chrome e Firefox. Il team di GSConnect produce applicazioni per Linux, BSD, Android, Sailfish, iOS, macOS e Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:35
 msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
@@ -186,7 +186,11 @@ msgid "Touchpad.\n"
 "Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr ""
+msgstr "Touchpad.\n"
+"Trascina su questa area per spostare il cursore del mouse.\n"
+"Premi a lungo per trascinare il cursore del mouse.\n\n"
+"Un semplice clic verrà inviato al dispositivo accoppiato.\n"
+"Sinistra, centrale, tasto destro e rotelle della ruota."
 
 #: data/ui/preferences-command-editor.ui:7
 msgid "Edit Command"
@@ -881,7 +885,7 @@ msgstr "Permette di usare il dispositivo come un mouse e una tastiera"
 
 #: src/service/plugins/mousepad.js:27 src/service/ui/mousepad.js:105
 msgid "Remote Input"
-msgstr ""
+msgstr "Immissione remoto"
 
 #: src/service/plugins/mpris.js:15
 msgid "MPRIS"
