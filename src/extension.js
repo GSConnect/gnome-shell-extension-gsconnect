@@ -7,7 +7,8 @@ const Gtk = imports.gi.Gtk;
 const Main = imports.ui.main;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
-const AggregateMenu = Main.panel.statusArea.aggregateMenu;
+const QuickSettingsMenu = Main.panel.statusArea.quickSettings;
+const QuickSettings = imports.ui.quickSettings;
 
 // Bootstrap
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
@@ -31,12 +32,10 @@ Extension.getIcon = Utils.getIcon;
  */
 const ServiceIndicator = GObject.registerClass({
     GTypeName: 'GSConnectServiceIndicator',
-}, class ServiceIndicator extends PanelMenu.SystemIndicator {
+}, class ServiceIndicator extends QuickSettings.QuickMenuToggle {
 
     _init() {
         super._init();
-
-        this._menus = {};
 
         this._keybindings = new Keybindings.Manager();
 
@@ -77,29 +76,6 @@ const ServiceIndicator = GObject.registerClass({
             this._onServiceChanged.bind(this)
         );
 
-        // Service Indicator
-        this._indicator = this._addIndicator();
-        this._indicator.gicon = Extension.getIcon(
-            'org.gnome.Shell.Extensions.GSConnect-symbolic'
-        );
-        this._indicator.visible = false;
-
-        AggregateMenu._indicators.insert_child_at_index(this, 0);
-        AggregateMenu._gsconnect = this;
-
-        // Service Menu
-        this._item = new PopupMenu.PopupSubMenuMenuItem(_('Mobile Devices'), true);
-        this._item.icon.gicon = this._indicator.gicon;
-        this._item.label.clutter_text.x_expand = true;
-        this.menu.addMenuItem(this._item);
-
-        // Find current index of network menu
-        const menuItems = AggregateMenu.menu._getMenuItems();
-        const networkMenuIndex = AggregateMenu._network ? menuItems.indexOf(AggregateMenu._network.menu) : -1;
-        const menuIndex = networkMenuIndex > -1 ? networkMenuIndex : 3;
-        // Place our menu below the network menu
-        AggregateMenu.menu.addMenuItem(this.menu, menuIndex + 1);
-
         // Service Menu -> Devices Section
         this.deviceSection = new PopupMenu.PopupMenuSection();
         this.deviceSection.actor.add_style_class_name('gsconnect-device-section');
@@ -109,19 +85,6 @@ const ServiceIndicator = GObject.registerClass({
             'visible',
             Gio.SettingsBindFlags.INVERT_BOOLEAN
         );
-        this._item.menu.addMenuItem(this.deviceSection);
-
-        // Service Menu -> Separator
-        this._item.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
-
-        // Service Menu -> "Turn On/Off"
-        this._enableItem = this._item.menu.addAction(
-            _('Turn On'),
-            this._enable.bind(this)
-        );
-
-        // Service Menu -> "Mobile Settings"
-        this._item.menu.addAction(_('Mobile Settings'), this._preferences);
 
         // Prime the service
         this._initService();
@@ -410,17 +373,55 @@ const ServiceIndicator = GObject.registerClass({
         this.settings.run_dispose();
 
         // Destroy the PanelMenu.SystemIndicator actors
-        this._item.destroy();
         this.menu.destroy();
 
-        delete AggregateMenu._gsconnect;
+        delete QuickSettingsMenu._gsconnect;
         super.destroy();
     }
 });
 
+const FeatureIndicator = GObject.registerClass(
+class FeatureIndicator extends QuickSettings.SystemIndicator {
+    _init() {
+        super._init();
+
+        // Create the toggle menu and associate it with the indicator, being
+        // sure to destroy it along with the indicator
+        this.quickSettingsItems.push(new FeatureToggle());
+        
+        // Add the indicator to the panel and the toggle to the menu
+        QuickSettingsMenu._addItems(this.quickSettingsItems);
+    }
+	destroy() {
+        this.quickSettingsItems.forEach(item => item.destroy());
+    }
+});
+
+const FeatureToggle = GObject.registerClass(
+class FeatureToggle extends QuickSettings.QuickToggle {
+    _init() {
+        super._init({
+            label: 'GSConnect',
+            iconName: 'selection-mode-symbolic',
+            toggleMode: true,
+        });
+
+		// Binding the toggle to a GSettings key
+        this._settings = new Gio.Settings({
+            settings_schema: Config.GSCHEMA.lookup(
+                'org.gnome.Shell.Extensions.GSConnect',
+                null
+            ),
+            path: '/org/gnome/shell/extensions/gsconnect/',
+        });
+        this._settings.bind('enabled',
+            this, 'checked',
+            Gio.SettingsBindFlags.DEFAULT);
+    }
+});
 
 var serviceIndicator = null;
-
+var featureIndicator = null;
 
 function init() {
     // If installed as a user extension, this will install the Desktop entry,
@@ -444,12 +445,14 @@ function init() {
 
 function enable() {
     serviceIndicator = new ServiceIndicator();
+	featureIndicator = new FeatureIndicator();
     Notification.patchGtkNotificationSources();
 }
 
 
 function disable() {
     serviceIndicator.destroy();
+    featureIndicator.destroy()
     serviceIndicator = null;
     Notification.unpatchGtkNotificationSources();
 }
