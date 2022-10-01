@@ -402,7 +402,7 @@ class FeatureToggle extends QuickSettings.QuickToggle {
     _init() {
         super._init({
             label: 'GSConnect',
-            iconName: 'selection-mode-symbolic',
+            iconName: 'org.gnome.Shell.Extensions.GSConnect-symbolic',
             toggleMode: true,
         });
 
