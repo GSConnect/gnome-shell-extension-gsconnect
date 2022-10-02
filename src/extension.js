@@ -153,7 +153,7 @@ const ServiceIndicator = GObject.registerClass({
         const panelMode = this.settings.get_boolean('show-indicators');
 
         // Hide status indicator if in Panel mode or no devices are available
-        featureIndicator.indicatorvisibility(panelMode)
+        featureIndicator._indicator.visible = (!panelMode && available.length);
 
         // Show device indicators in Panel mode if available
         for (const device of this.service.devices) {
@@ -393,7 +393,7 @@ class FeatureIndicator extends QuickSettings.SystemIndicator {
     _init() {
         super._init();
 
-        // Set enabled state to true on start
+        // GSettings
         this.settings = new Gio.Settings({
             settings_schema: Config.GSCHEMA.lookup(
                 'org.gnome.Shell.Extensions.GSConnect',
@@ -401,11 +401,12 @@ class FeatureIndicator extends QuickSettings.SystemIndicator {
             ),
             path: '/org/gnome/shell/extensions/gsconnect/',
         });
-        this.settings.set_boolean('enabled', true);
 
         // Create the icon for the indicator
         this._indicator = this._addIndicator();
         this._indicator.icon_name = 'org.gnome.Shell.Extensions.GSConnect-symbolic';
+        // Hide the indicator by default
+        this._indicator.visible = false
 
         // Create the toggle menu and associate it with the indicator
         this.quickSettingsItems.push(new ServiceIndicator());
@@ -414,17 +415,16 @@ class FeatureIndicator extends QuickSettings.SystemIndicator {
         QuickSettingsMenu._indicators.insert_child_at_index(this, 0)
         QuickSettingsMenu._addItems(this.quickSettingsItems);
     }
-    indicatorvisibility(panelMode) {
-        if (panelMode) {
-            this._indicator.visible=false
-        } else {
-            this._indicator.visible=true
-        }
-    }
 	destroy() {
         // Set enabled state to false to kill the service on destroy
         this.settings.set_boolean('enabled', false);
         this.quickSettingsItems.forEach(item => item.destroy());
+        // Destroy indicator
+        // Workaround: Disabling and enabling extension multiple times increases
+        // padding between new indicator and other indicators. Hide indicator before
+        // destroying to workaround this bug.
+        this._indicator.visible = false
+        this._indicator.destroy();
     }
 });
 
