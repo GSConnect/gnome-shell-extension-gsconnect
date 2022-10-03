@@ -40,7 +40,7 @@ const ServiceIndicator = GObject.registerClass({
             iconName: 'org.gnome.Shell.Extensions.GSConnect-symbolic',
             toggleMode: true,
         });
-        
+
         // Set QuickMenuToggle header.
         this.menu.setHeader('org.gnome.Shell.Extensions.GSConnect-symbolic', 'GSConnect',
             'Sync between your devices');
@@ -165,68 +165,6 @@ const ServiceIndicator = GObject.registerClass({
             const menu = this._menus[device.g_object_path];
             menu.actor.visible = !panelMode && isAvailable;
             menu._title.actor.visible = !panelMode && isAvailable;
-        }
-
-        // One connected device in User Menu mode
-        if (!panelMode && available.length === 1) {
-            const device = available[0];
-
-            // Destroy any other device's signalStrength
-            if (this._item._signalStrength && this._item._signalStrength.device !== device) {
-                this._item._signalStrength.destroy();
-                this._item._signalStrength = null;
-            }
-
-            // Add the signalStrength to the submenu item
-            if (!this._item._signalStrength) {
-                this._item._signalStrength = new Device.SignalStrength({
-                    device: device,
-                    opacity: 128,
-                });
-                this._item.actor.insert_child_below(
-                    this._item._signalStrength,
-                    this._item._triangleBin
-                );
-            }
-
-            // Destroy any other device's battery
-            if (this._item._battery && this._item._battery.device !== device) {
-                this._item._battery.destroy();
-                this._item._battery = null;
-            }
-
-            // Add the battery to the submenu item
-            if (!this._item._battery) {
-                this._item._battery = new Device.Battery({
-                    device: device,
-                    opacity: 128,
-                });
-                this._item.actor.insert_child_below(
-                    this._item._battery,
-                    this._item._triangleBin
-                );
-            }
-        } else {
-            if (available.length > 1) {
-                // TRANSLATORS: %d is the number of devices connected
-                this._item.label.text = Extension.ngettext(
-                    '%d Connected',
-                    '%d Connected',
-                    available.length
-                ).format(available.length);
-            }
-
-            // Destroy any battery in the submenu item
-            if (this._item._battery) {
-                this._item._battery.destroy();
-                this._item._battery = null;
-            }
-
-            // Destroy any signalStrength in the submenu item
-            if (this._item._signalStrength) {
-                this._item._signalStrength.destroy();
-                this._item._signalStrength = null;
-            }
         }
     }
 
@@ -406,16 +344,17 @@ class FeatureIndicator extends QuickSettings.SystemIndicator {
         this._indicator = this._addIndicator();
         this._indicator.icon_name = 'org.gnome.Shell.Extensions.GSConnect-symbolic';
         // Hide the indicator by default
-        this._indicator.visible = false
+        this._indicator.visible = false;
 
         // Create the toggle menu and associate it with the indicator
         this.quickSettingsItems.push(new ServiceIndicator());
-        
+
         // Add the indicator to the panel and the toggle to the menu
-        QuickSettingsMenu._indicators.insert_child_at_index(this, 0)
+        QuickSettingsMenu._indicators.insert_child_at_index(this, 0);
         QuickSettingsMenu._addItems(this.quickSettingsItems);
     }
-	destroy() {
+
+    destroy() {
         // Set enabled state to false to kill the service on destroy
         this.settings.set_boolean('enabled', false);
         this.quickSettingsItems.forEach(item => item.destroy());
@@ -423,7 +362,7 @@ class FeatureIndicator extends QuickSettings.SystemIndicator {
         // Workaround: Disabling and enabling extension multiple times increases
         // padding between new indicator and other indicators. Hide indicator before
         // destroying to workaround this bug.
-        this._indicator.visible = false
+        this._indicator.visible = false;
         this._indicator.destroy();
     }
 });
@@ -451,13 +390,13 @@ function init() {
 
 
 function enable() {
-	featureIndicator = new FeatureIndicator();
+    featureIndicator = new FeatureIndicator();
     Notification.patchGtkNotificationSources();
 }
 
 
 function disable() {
     featureIndicator.destroy();
-    featureIndicator = null
+    featureIndicator = null;
     Notification.unpatchGtkNotificationSources();
 }
