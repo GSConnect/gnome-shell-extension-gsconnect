@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-09-25 09:29+0900\n"
-"PO-Revision-Date: 2022-09-25 02:53\n"
+"PO-Revision-Date: 2022-10-07 08:24\n"
 "Last-Translator: \n"
 "Language-Team: Korean\n"
 "Language: ko_KR\n"
@@ -25,7 +25,7 @@ msgstr "GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:6
 msgid "KDE Connect implementation for GNOME"
-msgstr "그놈을 위한 KDE Connect의 호환 기능"
+msgstr "GNOME을 위한 KDE Connect의 호환 기능"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:16
 msgid "GSConnect Team"
@@ -590,12 +590,12 @@ msgstr "켜기"
 #, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
-msgstr[0] ""
+msgstr[0] "%d 연결됨"
 
 #. TRANSLATORS: A menu option to deactivate the extension
 #: src/extension.js:377
 msgid "Turn Off"
-msgstr ""
+msgstr "GSConnect 끄기"
 
 #: src/preferences/device.js:669 src/preferences/device.js:675
 msgid "Edit"
@@ -678,7 +678,7 @@ msgstr ""
 
 #: src/service/daemon.js:200
 msgid "Click for more information"
-msgstr ""
+msgstr "자세한 내용을 보려면 여기를 클릭하십시오."
 
 #: src/service/daemon.js:294
 msgid "Dial Number"
@@ -804,7 +804,7 @@ msgstr "포트가 사용 중입니다"
 
 #: src/service/plugins/battery.js:13
 msgid "Exchange battery information"
-msgstr ""
+msgstr "배터리 정보 교환"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:253
@@ -828,7 +828,7 @@ msgstr ""
 #: src/service/plugins/battery.js:284
 #, javascript-format
 msgid "%d%% Charged"
-msgstr ""
+msgstr "%d%% 충전됨"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:311
@@ -848,7 +848,7 @@ msgstr "클립보드"
 
 #: src/service/plugins/clipboard.js:11
 msgid "Share the clipboard content"
-msgstr ""
+msgstr "클립보드 내용 동기화"
 
 #: src/service/plugins/clipboard.js:23
 msgid "Clipboard Push"
@@ -860,7 +860,7 @@ msgstr "클립보드 받기"
 
 #: src/service/plugins/contacts.js:23
 msgid "Access contacts of the paired device"
-msgstr ""
+msgstr "페어링된 장치의 연락처 보기"
 
 #: src/service/plugins/findmyphone.js:13
 msgid "Find My Phone"
@@ -880,7 +880,7 @@ msgstr ""
 
 #: src/service/plugins/mousepad.js:27 src/service/ui/mousepad.js:105
 msgid "Remote Input"
-msgstr ""
+msgstr "원격 입력"
 
 #: src/service/plugins/mpris.js:15
 msgid "MPRIS"
