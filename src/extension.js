@@ -30,9 +30,9 @@ Extension.getIcon = Utils.getIcon;
  * A System Indicator used as the hub for spawning device indicators and
  * indicating that the extension is active when there are none.
  */
-const ServiceIndicator = GObject.registerClass({
+const ServiceToggle = GObject.registerClass({
     GTypeName: 'GSConnectServiceIndicator',
-}, class ServiceIndicator extends QuickSettings.QuickMenuToggle {
+}, class ServiceToggle extends QuickSettings.QuickMenuToggle {
 
     _init() {
         super._init({
@@ -43,7 +43,7 @@ const ServiceIndicator = GObject.registerClass({
 
         // Set QuickMenuToggle header.
         this.menu.setHeader('org.gnome.Shell.Extensions.GSConnect-symbolic', 'GSConnect',
-            'Sync between your devices');
+            _('Sync between your devices'));
 
         this._menus = {};
 
@@ -153,7 +153,7 @@ const ServiceIndicator = GObject.registerClass({
         const panelMode = this.settings.get_boolean('show-indicators');
 
         // Hide status indicator if in Panel mode or no devices are available
-        featureIndicator._indicator.visible = (!panelMode && available.length);
+        serviceIndicator._indicator.visible = (!panelMode && available.length);
 
         // Show device indicators in Panel mode if available
         for (const device of this.service.devices) {
@@ -307,6 +307,7 @@ const ServiceIndicator = GObject.registerClass({
             for (const device of this.service.devices)
                 this._onDeviceRemoved(this.service, device, false);
 
+            this.service.stop();
             this.service.destroy();
         }
 
@@ -321,24 +322,14 @@ const ServiceIndicator = GObject.registerClass({
         // Destroy the PanelMenu.SystemIndicator actors
         this.menu.destroy();
 
-        delete QuickSettingsMenu._gsconnect;
         super.destroy();
     }
 });
 
-const FeatureIndicator = GObject.registerClass(
-class FeatureIndicator extends QuickSettings.SystemIndicator {
+const ServiceIndicator = GObject.registerClass(
+class ServiceIndicator extends QuickSettings.SystemIndicator {
     _init() {
         super._init();
-
-        // GSettings
-        this.settings = new Gio.Settings({
-            settings_schema: Config.GSCHEMA.lookup(
-                'org.gnome.Shell.Extensions.GSConnect',
-                null
-            ),
-            path: '/org/gnome/shell/extensions/gsconnect/',
-        });
 
         // Create the icon for the indicator
         this._indicator = this._addIndicator();
@@ -347,7 +338,7 @@ class FeatureIndicator extends QuickSettings.SystemIndicator {
         this._indicator.visible = false;
 
         // Create the toggle menu and associate it with the indicator
-        this.quickSettingsItems.push(new ServiceIndicator());
+        this.quickSettingsItems.push(new ServiceToggle());
 
         // Add the indicator to the panel and the toggle to the menu
         QuickSettingsMenu._indicators.insert_child_at_index(this, 0);
@@ -356,18 +347,14 @@ class FeatureIndicator extends QuickSettings.SystemIndicator {
 
     destroy() {
         // Set enabled state to false to kill the service on destroy
-        this.settings.set_boolean('enabled', false);
         this.quickSettingsItems.forEach(item => item.destroy());
-        // Destroy indicator
-        // Workaround: Disabling and enabling extension multiple times increases
-        // padding between new indicator and other indicators. Hide indicator before
-        // destroying to workaround this bug.
-        this._indicator.visible = false;
+        // Destroy the indicator
         this._indicator.destroy();
+        super.destroy();
     }
 });
 
-var featureIndicator = null;
+var serviceIndicator = null;
 
 function init() {
     // If installed as a user extension, this will install the Desktop entry,
@@ -390,13 +377,13 @@ function init() {
 
 
 function enable() {
-    featureIndicator = new FeatureIndicator();
+    serviceIndicator = new ServiceIndicator();
     Notification.patchGtkNotificationSources();
 }
 
 
 function disable() {
-    featureIndicator.destroy();
-    featureIndicator = null;
+    serviceIndicator.destroy();
+    serviceIndicator = null;
     Notification.unpatchGtkNotificationSources();
 }
