@@ -123,25 +123,6 @@ const ServiceToggle = GObject.registerClass({
         }
     }
 
-    _enable() {
-        try {
-            const enabled = this.settings.get_boolean('enabled');
-
-            // If the service state matches the enabled setting, we should
-            // toggle the service by toggling the setting
-            if (this.service.active === enabled)
-                this.settings.set_boolean('enabled', !enabled);
-
-            // Otherwise, we should change the service to match the setting
-            else if (this.service.active)
-                this.service.stop();
-            else
-                this.service.start();
-        } catch (e) {
-            logError(e, 'GSConnect');
-        }
-    }
-
     _preferences() {
         Gio.Subprocess.new([`${Extension.path}/gsconnect-preferences`], 0);
     }
