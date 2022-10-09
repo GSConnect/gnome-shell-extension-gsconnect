@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2022-05-27 00:13\n"
+"POT-Creation-Date: 2022-09-25 09:29+0900\n"
+"PO-Revision-Date: 2022-09-25 02:53\n"
 "Last-Translator: \n"
 "Language-Team: Danish\n"
 "Language: da_DK\n"
@@ -32,7 +32,7 @@ msgid "GSConnect Team"
 msgstr "GSConnect hold"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:32
-msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, macOS and Windows."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
 msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:35
@@ -75,7 +75,7 @@ msgstr ""
 msgid "And more…"
 msgstr "Og mere…"
 
-#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:102
+#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:117
 msgid "GSConnect in GNOME Shell"
 msgstr "GSConnect i GNOME Shell"
 
@@ -159,12 +159,12 @@ msgid "Type a message and press Enter to send"
 msgstr ""
 
 #: data/ui/messaging-window.ui:14 src/service/plugins/sms.js:28
-#: src/service/ui/messaging.js:1049
+#: src/service/ui/messaging.js:1052
 msgid "Messaging"
 msgstr "Messaging"
 
 #: data/ui/messaging-window.ui:23 data/ui/messaging-window.ui:36
-#: src/service/ui/messaging.js:1260
+#: src/service/ui/messaging.js:1263
 msgid "New Conversation"
 msgstr "Ny Samtale"
 
@@ -179,6 +179,14 @@ msgstr "Ingen samtaler valgt"
 #: data/ui/messaging-window.ui:189
 msgid "Select or start a conversation"
 msgstr "Vælg eller start en samtale"
+
+#: data/ui/mousepad-input-dialog.ui:90
+msgid "Touchpad.\n"
+"Drag on this area to move mouse cursor.\n"
+"Press long to drag to drag mouse cursor.\n\n"
+"Simple click will be sent to paired device.\n"
+"Left, middle, right button, and wheel scrolls."
+msgstr ""
 
 #: data/ui/preferences-command-editor.ui:7
 msgid "Edit Command"
@@ -400,7 +408,7 @@ msgid "You may configure this device before pairing"
 msgstr "Du kan konfigurere denne enhed før parring"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
-#: data/ui/preferences-device-panel.ui:2644 src/preferences/device.js:384
+#: data/ui/preferences-device-panel.ui:2644 src/preferences/device.js:387
 msgid "Encryption Info"
 msgstr "Kryptering Info"
 
@@ -564,7 +572,7 @@ msgid "Technical Details"
 msgstr "Tekniske Detaljer"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
-#: nautilus-extension/nautilus-gsconnect.py:164 webextension/gettext.js:33
+#: nautilus-extension/nautilus-gsconnect.py:168 webextension/gettext.js:33
 msgid "Send To Mobile Device"
 msgstr "Send til Mobil Enhed"
 
@@ -590,15 +598,15 @@ msgstr[1] "%d Tilsuttet"
 msgid "Turn Off"
 msgstr "Sluk"
 
-#: src/preferences/device.js:666 src/preferences/device.js:672
+#: src/preferences/device.js:669 src/preferences/device.js:675
 msgid "Edit"
 msgstr "Rediger"
 
-#: src/preferences/device.js:681 src/preferences/device.js:687
+#: src/preferences/device.js:684 src/preferences/device.js:690
 msgid "Remove"
 msgstr "Fjerne"
 
-#: src/preferences/device.js:941 src/preferences/device.js:969
+#: src/preferences/device.js:944 src/preferences/device.js:972
 msgid "Disabled"
 msgstr "Deaktiveret"
 
@@ -735,7 +743,7 @@ msgid "Ring"
 msgstr "Ring"
 
 #: src/service/daemon.js:507 src/service/plugins/share.js:45
-#: src/service/ui/messaging.js:1243 src/service/ui/messaging.js:1251
+#: src/service/ui/messaging.js:1246 src/service/ui/messaging.js:1254
 msgid "Share Link"
 msgstr "Del Link"
 
@@ -748,7 +756,7 @@ msgid "Show release version"
 msgstr ""
 
 #: src/service/device.js:162 src/service/device.js:163
-#: src/service/ui/messaging.js:393
+#: src/service/ui/messaging.js:396
 msgid "Not available"
 msgstr "Ikke Tilgængelig"
 
@@ -770,16 +778,16 @@ msgid "%s Fingerprint:"
 msgstr "%s Fingeraftryk:"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
-#: src/service/device.js:793
+#: src/service/device.js:796
 #, javascript-format
 msgid "Pair Request from %s"
 msgstr "Paranmodning fra %s"
 
-#: src/service/device.js:800
+#: src/service/device.js:803
 msgid "Reject"
 msgstr "Afvise"
 
-#: src/service/device.js:805
+#: src/service/device.js:808
 msgid "Accept"
 msgstr "Acceptere"
 
@@ -871,9 +879,9 @@ msgstr "Musemåtte"
 msgid "Enables the paired device to act as a remote mouse and keyboard"
 msgstr ""
 
-#: src/service/plugins/mousepad.js:27 src/service/ui/mousepad.js:102
-msgid "Keyboard"
-msgstr "Tastatur"
+#: src/service/plugins/mousepad.js:27 src/service/ui/mousepad.js:105
+msgid "Remote Input"
+msgstr ""
 
 #: src/service/plugins/mpris.js:15
 msgid "MPRIS"
@@ -1098,7 +1106,7 @@ msgstr "Stum Opkald"
 #. TRANSLATORS: No name or phone number
 #. Contact Name
 #: src/service/plugins/telephony.js:153 src/service/plugins/telephony.js:172
-#: src/service/ui/contacts.js:607 src/service/ui/messaging.js:742
+#: src/service/ui/contacts.js:607 src/service/ui/messaging.js:745
 msgid "Unknown Contact"
 msgstr "Ukendt Kontakt"
 
@@ -1157,17 +1165,17 @@ msgid_plural "%d minutes"
 msgstr[0] "%d minut"
 msgstr[1] "%d minutter"
 
-#: src/service/ui/messaging.js:750
+#: src/service/ui/messaging.js:753
 msgid "Group Message"
 msgstr "Gruppebesked"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
-#: src/service/ui/messaging.js:765
+#: src/service/ui/messaging.js:768
 #, javascript-format
 msgid "You: %s"
 msgstr "Du: %s"
 
-#: src/service/ui/messaging.js:951
+#: src/service/ui/messaging.js:954
 #, javascript-format
 msgid "And %d other contact"
 msgid_plural "And %d others"
@@ -1175,7 +1183,7 @@ msgstr[0] "Og %d andre kontakt"
 msgstr[1] "Og %d andre"
 
 #. TRANSLATORS: Displayed when the remote keyboard is not ready to accept input
-#: src/service/ui/mousepad.js:110
+#: src/service/ui/mousepad.js:113
 #, javascript-format
 msgid "Remote keyboard on %s is not active"
 msgstr ""
