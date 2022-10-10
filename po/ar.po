@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2022-08-05 01:23\n"
+"POT-Creation-Date: 2022-09-25 09:29+0900\n"
+"PO-Revision-Date: 2022-09-25 02:53\n"
 "Last-Translator: \n"
 "Language-Team: Arabic\n"
 "Language: ar_SA\n"
@@ -32,8 +32,8 @@ msgid "GSConnect Team"
 msgstr "فريق GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:32
-msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, macOS and Windows."
-msgstr "GSConnect هو تنفيذ كامل لوصل KDE خاصة لـ GNOME Shell مع تكامل Nautilus و Chrome و Firefox. فريق اتصال KDE لديه تطبيقات لـ Linux و BSD و Android و Sailfish و macOS و Windows."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:35
 msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
@@ -75,7 +75,7 @@ msgstr "تنفيذ أوامر محددة مسبقاً"
 msgid "And more…"
 msgstr "والمزيد…"
 
-#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:102
+#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:117
 msgid "GSConnect in GNOME Shell"
 msgstr "GSConnect في صدفة غنوم"
 
@@ -159,12 +159,12 @@ msgid "Type a message and press Enter to send"
 msgstr "اكتب رسالة واضغط على Enter لإرسالها"
 
 #: data/ui/messaging-window.ui:14 src/service/plugins/sms.js:28
-#: src/service/ui/messaging.js:1049
+#: src/service/ui/messaging.js:1052
 msgid "Messaging"
 msgstr "المراسة"
 
 #: data/ui/messaging-window.ui:23 data/ui/messaging-window.ui:36
-#: src/service/ui/messaging.js:1260
+#: src/service/ui/messaging.js:1263
 msgid "New Conversation"
 msgstr "محادثة جديدة"
 
@@ -179,6 +179,14 @@ msgstr "لم يتم تحديد أي محادثة"
 #: data/ui/messaging-window.ui:189
 msgid "Select or start a conversation"
 msgstr "تحديد أو بدء محادثة"
+
+#: data/ui/mousepad-input-dialog.ui:90
+msgid "Touchpad.\n"
+"Drag on this area to move mouse cursor.\n"
+"Press long to drag to drag mouse cursor.\n\n"
+"Simple click will be sent to paired device.\n"
+"Left, middle, right button, and wheel scrolls."
+msgstr ""
 
 #: data/ui/preferences-command-editor.ui:7
 msgid "Edit Command"
@@ -400,7 +408,7 @@ msgid "You may configure this device before pairing"
 msgstr "قد تحتاج إلى إعداد هذا الجهاز أولا قبل اﻹقتران"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
-#: data/ui/preferences-device-panel.ui:2644 src/preferences/device.js:384
+#: data/ui/preferences-device-panel.ui:2644 src/preferences/device.js:387
 msgid "Encryption Info"
 msgstr "معلومات التشفير"
 
@@ -564,7 +572,7 @@ msgid "Technical Details"
 msgstr "التفاصيل التقنية"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
-#: nautilus-extension/nautilus-gsconnect.py:164 webextension/gettext.js:33
+#: nautilus-extension/nautilus-gsconnect.py:168 webextension/gettext.js:33
 msgid "Send To Mobile Device"
 msgstr "إرسال إلى جهاز الجوال"
 
@@ -594,15 +602,15 @@ msgstr[5] "%d متصل"
 msgid "Turn Off"
 msgstr "إيقاف التشغيل"
 
-#: src/preferences/device.js:666 src/preferences/device.js:672
+#: src/preferences/device.js:669 src/preferences/device.js:675
 msgid "Edit"
 msgstr "تعديل"
 
-#: src/preferences/device.js:681 src/preferences/device.js:687
+#: src/preferences/device.js:684 src/preferences/device.js:690
 msgid "Remove"
 msgstr "إزالة"
 
-#: src/preferences/device.js:941 src/preferences/device.js:969
+#: src/preferences/device.js:944 src/preferences/device.js:972
 msgid "Disabled"
 msgstr "معطّل"
 
@@ -739,7 +747,7 @@ msgid "Ring"
 msgstr "رنين"
 
 #: src/service/daemon.js:507 src/service/plugins/share.js:45
-#: src/service/ui/messaging.js:1243 src/service/ui/messaging.js:1251
+#: src/service/ui/messaging.js:1246 src/service/ui/messaging.js:1254
 msgid "Share Link"
 msgstr "مشاركة الرابط"
 
@@ -752,7 +760,7 @@ msgid "Show release version"
 msgstr "إظهار رقم الإصدار"
 
 #: src/service/device.js:162 src/service/device.js:163
-#: src/service/ui/messaging.js:393
+#: src/service/ui/messaging.js:396
 msgid "Not available"
 msgstr "غير مُـتوفـّر"
 
@@ -774,16 +782,16 @@ msgid "%s Fingerprint:"
 msgstr "%s بصمة الإصبع:"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
-#: src/service/device.js:793
+#: src/service/device.js:796
 #, javascript-format
 msgid "Pair Request from %s"
 msgstr "طلب الاقتران من %s"
 
-#: src/service/device.js:800
+#: src/service/device.js:803
 msgid "Reject"
 msgstr "رفض"
 
-#: src/service/device.js:805
+#: src/service/device.js:808
 msgid "Accept"
 msgstr "قبول"
 
@@ -875,9 +883,9 @@ msgstr "لوحة الفأرة"
 msgid "Enables the paired device to act as a remote mouse and keyboard"
 msgstr "تمكين الجهاز المقترن للعمل كفأرة عن بعد ولوحة المفاتيح"
 
-#: src/service/plugins/mousepad.js:27 src/service/ui/mousepad.js:102
-msgid "Keyboard"
-msgstr "لوحة المفاتيح"
+#: src/service/plugins/mousepad.js:27 src/service/ui/mousepad.js:105
+msgid "Remote Input"
+msgstr ""
 
 #: src/service/plugins/mpris.js:15
 msgid "MPRIS"
@@ -1102,7 +1110,7 @@ msgstr "كتم المكالمة"
 #. TRANSLATORS: No name or phone number
 #. Contact Name
 #: src/service/plugins/telephony.js:153 src/service/plugins/telephony.js:172
-#: src/service/ui/contacts.js:607 src/service/ui/messaging.js:742
+#: src/service/ui/contacts.js:607 src/service/ui/messaging.js:745
 msgid "Unknown Contact"
 msgstr "جهة اتصال غير معروفة"
 
@@ -1165,17 +1173,17 @@ msgstr[3] "%d دقائق"
 msgstr[4] "%d دقائق"
 msgstr[5] "%d دقائق"
 
-#: src/service/ui/messaging.js:750
+#: src/service/ui/messaging.js:753
 msgid "Group Message"
 msgstr "رسالة جماعية"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
-#: src/service/ui/messaging.js:765
+#: src/service/ui/messaging.js:768
 #, javascript-format
 msgid "You: %s"
 msgstr "أنت: %s"
 
-#: src/service/ui/messaging.js:951
+#: src/service/ui/messaging.js:954
 #, javascript-format
 msgid "And %d other contact"
 msgid_plural "And %d others"
@@ -1187,7 +1195,7 @@ msgstr[4] "و %d آخرين"
 msgstr[5] "و %d آخرين"
 
 #. TRANSLATORS: Displayed when the remote keyboard is not ready to accept input
-#: src/service/ui/mousepad.js:110
+#: src/service/ui/mousepad.js:113
 #, javascript-format
 msgid "Remote keyboard on %s is not active"
 msgstr "لوحة المفاتيح البعيدة في %s غير نشطة"

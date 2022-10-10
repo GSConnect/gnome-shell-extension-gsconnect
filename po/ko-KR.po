@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2022-05-27 00:13\n"
+"POT-Creation-Date: 2022-09-25 09:29+0900\n"
+"PO-Revision-Date: 2022-10-07 08:24\n"
 "Last-Translator: \n"
 "Language-Team: Korean\n"
 "Language: ko_KR\n"
@@ -25,15 +25,15 @@ msgstr "GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:6
 msgid "KDE Connect implementation for GNOME"
-msgstr "그놈을 위한 KDE Connect의 호환 기능"
+msgstr "GNOME을 위한 KDE Connect의 호환 기능"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:16
 msgid "GSConnect Team"
 msgstr "GSConnect 팀"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:32
-msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, macOS and Windows."
-msgstr "GSConnect는 KDE Connect를 그놈 데스크탑 환경에서 완전히 사용할 수 있는 도구입니다. 리눅스, BSD, 안드로이드, Sailfish, macOS, Windows용 KDE Connect 앱을 받을 수 있습니다."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:35
 msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
@@ -75,7 +75,7 @@ msgstr "정의된 명령 실행"
 msgid "And more…"
 msgstr "더 보기…"
 
-#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:102
+#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:117
 msgid "GSConnect in GNOME Shell"
 msgstr "GNOME Shell의 GSConnect"
 
@@ -159,12 +159,12 @@ msgid "Type a message and press Enter to send"
 msgstr "메시지를 입력한 후 전송하려면 Enter 키를 누르십시오"
 
 #: data/ui/messaging-window.ui:14 src/service/plugins/sms.js:28
-#: src/service/ui/messaging.js:1049
+#: src/service/ui/messaging.js:1052
 msgid "Messaging"
 msgstr "메시지"
 
 #: data/ui/messaging-window.ui:23 data/ui/messaging-window.ui:36
-#: src/service/ui/messaging.js:1260
+#: src/service/ui/messaging.js:1263
 msgid "New Conversation"
 msgstr "새 대화"
 
@@ -179,6 +179,14 @@ msgstr "선택된 대화 없음"
 #: data/ui/messaging-window.ui:189
 msgid "Select or start a conversation"
 msgstr "대화를 선택하거나 시작"
+
+#: data/ui/mousepad-input-dialog.ui:90
+msgid "Touchpad.\n"
+"Drag on this area to move mouse cursor.\n"
+"Press long to drag to drag mouse cursor.\n\n"
+"Simple click will be sent to paired device.\n"
+"Left, middle, right button, and wheel scrolls."
+msgstr ""
 
 #: data/ui/preferences-command-editor.ui:7
 msgid "Edit Command"
@@ -400,7 +408,7 @@ msgid "You may configure this device before pairing"
 msgstr "페어링 전에 디바이스를 설정해야 합니다"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
-#: data/ui/preferences-device-panel.ui:2644 src/preferences/device.js:384
+#: data/ui/preferences-device-panel.ui:2644 src/preferences/device.js:387
 msgid "Encryption Info"
 msgstr "암호화 정보"
 
@@ -564,7 +572,7 @@ msgid "Technical Details"
 msgstr "자세히 보기"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
-#: nautilus-extension/nautilus-gsconnect.py:164 webextension/gettext.js:33
+#: nautilus-extension/nautilus-gsconnect.py:168 webextension/gettext.js:33
 msgid "Send To Mobile Device"
 msgstr "모바일 기기로 전송"
 
@@ -582,22 +590,22 @@ msgstr "켜기"
 #, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
-msgstr[0] ""
+msgstr[0] "%d 연결됨"
 
 #. TRANSLATORS: A menu option to deactivate the extension
 #: src/extension.js:377
 msgid "Turn Off"
-msgstr ""
+msgstr "GSConnect 끄기"
 
-#: src/preferences/device.js:666 src/preferences/device.js:672
+#: src/preferences/device.js:669 src/preferences/device.js:675
 msgid "Edit"
 msgstr "편집"
 
-#: src/preferences/device.js:681 src/preferences/device.js:687
+#: src/preferences/device.js:684 src/preferences/device.js:690
 msgid "Remove"
 msgstr "제거"
 
-#: src/preferences/device.js:941 src/preferences/device.js:969
+#: src/preferences/device.js:944 src/preferences/device.js:972
 msgid "Disabled"
 msgstr "사용 안 함"
 
@@ -670,7 +678,7 @@ msgstr ""
 
 #: src/service/daemon.js:200
 msgid "Click for more information"
-msgstr ""
+msgstr "자세한 내용을 보려면 여기를 클릭하십시오."
 
 #: src/service/daemon.js:294
 msgid "Dial Number"
@@ -734,7 +742,7 @@ msgid "Ring"
 msgstr "벨"
 
 #: src/service/daemon.js:507 src/service/plugins/share.js:45
-#: src/service/ui/messaging.js:1243 src/service/ui/messaging.js:1251
+#: src/service/ui/messaging.js:1246 src/service/ui/messaging.js:1254
 msgid "Share Link"
 msgstr "링크 공유"
 
@@ -747,7 +755,7 @@ msgid "Show release version"
 msgstr "릴리즈 버전 보기"
 
 #: src/service/device.js:162 src/service/device.js:163
-#: src/service/ui/messaging.js:393
+#: src/service/ui/messaging.js:396
 msgid "Not available"
 msgstr "사용할 수 없음"
 
@@ -769,16 +777,16 @@ msgid "%s Fingerprint:"
 msgstr ""
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
-#: src/service/device.js:793
+#: src/service/device.js:796
 #, javascript-format
 msgid "Pair Request from %s"
 msgstr "%s(으)로부터 연결 요청됨"
 
-#: src/service/device.js:800
+#: src/service/device.js:803
 msgid "Reject"
 msgstr "거부"
 
-#: src/service/device.js:805
+#: src/service/device.js:808
 msgid "Accept"
 msgstr "동의"
 
@@ -796,7 +804,7 @@ msgstr "포트가 사용 중입니다"
 
 #: src/service/plugins/battery.js:13
 msgid "Exchange battery information"
-msgstr ""
+msgstr "배터리 정보 교환"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:253
@@ -820,7 +828,7 @@ msgstr ""
 #: src/service/plugins/battery.js:284
 #, javascript-format
 msgid "%d%% Charged"
-msgstr ""
+msgstr "%d%% 충전됨"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:311
@@ -840,7 +848,7 @@ msgstr "클립보드"
 
 #: src/service/plugins/clipboard.js:11
 msgid "Share the clipboard content"
-msgstr ""
+msgstr "클립보드 내용 동기화"
 
 #: src/service/plugins/clipboard.js:23
 msgid "Clipboard Push"
@@ -852,7 +860,7 @@ msgstr "클립보드 받기"
 
 #: src/service/plugins/contacts.js:23
 msgid "Access contacts of the paired device"
-msgstr ""
+msgstr "페어링된 장치의 연락처 보기"
 
 #: src/service/plugins/findmyphone.js:13
 msgid "Find My Phone"
@@ -870,9 +878,9 @@ msgstr "트랙패드"
 msgid "Enables the paired device to act as a remote mouse and keyboard"
 msgstr ""
 
-#: src/service/plugins/mousepad.js:27 src/service/ui/mousepad.js:102
-msgid "Keyboard"
-msgstr "키보드"
+#: src/service/plugins/mousepad.js:27 src/service/ui/mousepad.js:105
+msgid "Remote Input"
+msgstr "원격 입력"
 
 #: src/service/plugins/mpris.js:15
 msgid "MPRIS"
@@ -1097,7 +1105,7 @@ msgstr "무음 통화"
 #. TRANSLATORS: No name or phone number
 #. Contact Name
 #: src/service/plugins/telephony.js:153 src/service/plugins/telephony.js:172
-#: src/service/ui/contacts.js:607 src/service/ui/messaging.js:742
+#: src/service/ui/contacts.js:607 src/service/ui/messaging.js:745
 msgid "Unknown Contact"
 msgstr "알 수 없는 연락처"
 
@@ -1155,24 +1163,24 @@ msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d분"
 
-#: src/service/ui/messaging.js:750
+#: src/service/ui/messaging.js:753
 msgid "Group Message"
 msgstr "그룹 메시지"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
-#: src/service/ui/messaging.js:765
+#: src/service/ui/messaging.js:768
 #, javascript-format
 msgid "You: %s"
 msgstr "%s"
 
-#: src/service/ui/messaging.js:951
+#: src/service/ui/messaging.js:954
 #, javascript-format
 msgid "And %d other contact"
 msgid_plural "And %d others"
 msgstr[0] "외 %d명"
 
 #. TRANSLATORS: Displayed when the remote keyboard is not ready to accept input
-#: src/service/ui/mousepad.js:110
+#: src/service/ui/mousepad.js:113
 #, javascript-format
 msgid "Remote keyboard on %s is not active"
 msgstr "%s의 원격 키보드가 활성화되지 않음"

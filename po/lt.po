@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2022-05-27 00:13\n"
+"POT-Creation-Date: 2022-09-25 09:29+0900\n"
+"PO-Revision-Date: 2022-09-25 02:53\n"
 "Last-Translator: \n"
 "Language-Team: Lithuanian\n"
 "Language: lt_LT\n"
@@ -32,8 +32,8 @@ msgid "GSConnect Team"
 msgstr "GSConnect komanda"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:32
-msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, macOS and Windows."
-msgstr "GSConnect yra pilnas KDE Connect įgyvendinimas, ypatingai skirtas integracijai su GNOME Shell ir Nautilus, Chrome bei Firefox. KDE Connect komanda turi programas, skirtas Linux, BSD, Android, Sailfish, macOS ir Windows sistemoms."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:35
 msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
@@ -75,7 +75,7 @@ msgstr "Vykdyti iš anksto nustatytas komandas"
 msgid "And more…"
 msgstr "Ir daugiau…"
 
-#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:102
+#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:117
 msgid "GSConnect in GNOME Shell"
 msgstr "GSConnect kartu su GNOME Shell"
 
@@ -159,12 +159,12 @@ msgid "Type a message and press Enter to send"
 msgstr "Rašykite žinutę ir norėdami išsiųsti paspauskite „Enter“"
 
 #: data/ui/messaging-window.ui:14 src/service/plugins/sms.js:28
-#: src/service/ui/messaging.js:1049
+#: src/service/ui/messaging.js:1052
 msgid "Messaging"
 msgstr "Susirašinėjimai"
 
 #: data/ui/messaging-window.ui:23 data/ui/messaging-window.ui:36
-#: src/service/ui/messaging.js:1260
+#: src/service/ui/messaging.js:1263
 msgid "New Conversation"
 msgstr "Naujas pokalbis"
 
@@ -179,6 +179,14 @@ msgstr "Nepasirinktas joks pokalbis"
 #: data/ui/messaging-window.ui:189
 msgid "Select or start a conversation"
 msgstr "Pasirinkite arba pradėkite pokalbį"
+
+#: data/ui/mousepad-input-dialog.ui:90
+msgid "Touchpad.\n"
+"Drag on this area to move mouse cursor.\n"
+"Press long to drag to drag mouse cursor.\n\n"
+"Simple click will be sent to paired device.\n"
+"Left, middle, right button, and wheel scrolls."
+msgstr ""
 
 #: data/ui/preferences-command-editor.ui:7
 msgid "Edit Command"
@@ -400,7 +408,7 @@ msgid "You may configure this device before pairing"
 msgstr "Prieš suporuodami, galite konfigūruoti šį įrenginį"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
-#: data/ui/preferences-device-panel.ui:2644 src/preferences/device.js:384
+#: data/ui/preferences-device-panel.ui:2644 src/preferences/device.js:387
 msgid "Encryption Info"
 msgstr "Šifravimo informacija"
 
@@ -564,7 +572,7 @@ msgid "Technical Details"
 msgstr "Techninė informacija"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
-#: nautilus-extension/nautilus-gsconnect.py:164 webextension/gettext.js:33
+#: nautilus-extension/nautilus-gsconnect.py:168 webextension/gettext.js:33
 msgid "Send To Mobile Device"
 msgstr "Siųsti į mobilųjį įrenginį"
 
@@ -592,15 +600,15 @@ msgstr[3] "%d prijungtas"
 msgid "Turn Off"
 msgstr "Išjungti"
 
-#: src/preferences/device.js:666 src/preferences/device.js:672
+#: src/preferences/device.js:669 src/preferences/device.js:675
 msgid "Edit"
 msgstr "Taisyti"
 
-#: src/preferences/device.js:681 src/preferences/device.js:687
+#: src/preferences/device.js:684 src/preferences/device.js:690
 msgid "Remove"
 msgstr "Šalinti"
 
-#: src/preferences/device.js:941 src/preferences/device.js:969
+#: src/preferences/device.js:944 src/preferences/device.js:972
 msgid "Disabled"
 msgstr "Išjungta"
 
@@ -737,7 +745,7 @@ msgid "Ring"
 msgstr "Rasti telefoną"
 
 #: src/service/daemon.js:507 src/service/plugins/share.js:45
-#: src/service/ui/messaging.js:1243 src/service/ui/messaging.js:1251
+#: src/service/ui/messaging.js:1246 src/service/ui/messaging.js:1254
 msgid "Share Link"
 msgstr "Bendrinti nuorodą"
 
@@ -750,7 +758,7 @@ msgid "Show release version"
 msgstr "Rodyti laidos versiją"
 
 #: src/service/device.js:162 src/service/device.js:163
-#: src/service/ui/messaging.js:393
+#: src/service/ui/messaging.js:396
 msgid "Not available"
 msgstr "Neprieinamas"
 
@@ -772,16 +780,16 @@ msgid "%s Fingerprint:"
 msgstr "%s kontrolinis kodas:"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
-#: src/service/device.js:793
+#: src/service/device.js:796
 #, javascript-format
 msgid "Pair Request from %s"
 msgstr "Suporavimo užklausa nuo %s"
 
-#: src/service/device.js:800
+#: src/service/device.js:803
 msgid "Reject"
 msgstr "Atmesti"
 
-#: src/service/device.js:805
+#: src/service/device.js:808
 msgid "Accept"
 msgstr "Priimti"
 
@@ -873,9 +881,9 @@ msgstr "Jutiklinis kilimėlis"
 msgid "Enables the paired device to act as a remote mouse and keyboard"
 msgstr "Leidžia suporuotam įrenginiui veikti kaip nuotolinei pelei ir klaviatūrai"
 
-#: src/service/plugins/mousepad.js:27 src/service/ui/mousepad.js:102
-msgid "Keyboard"
-msgstr "Klaviatūra"
+#: src/service/plugins/mousepad.js:27 src/service/ui/mousepad.js:105
+msgid "Remote Input"
+msgstr ""
 
 #: src/service/plugins/mpris.js:15
 msgid "MPRIS"
@@ -1100,7 +1108,7 @@ msgstr "Nutildyti skambutį"
 #. TRANSLATORS: No name or phone number
 #. Contact Name
 #: src/service/plugins/telephony.js:153 src/service/plugins/telephony.js:172
-#: src/service/ui/contacts.js:607 src/service/ui/messaging.js:742
+#: src/service/ui/contacts.js:607 src/service/ui/messaging.js:745
 msgid "Unknown Contact"
 msgstr "Nežinomas adresatas"
 
@@ -1161,17 +1169,17 @@ msgstr[1] "%d minutės"
 msgstr[2] "%d minučių"
 msgstr[3] "%d minutė"
 
-#: src/service/ui/messaging.js:750
+#: src/service/ui/messaging.js:753
 msgid "Group Message"
 msgstr "Grupės žinutė"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
-#: src/service/ui/messaging.js:765
+#: src/service/ui/messaging.js:768
 #, javascript-format
 msgid "You: %s"
 msgstr "Jūs: %s"
 
-#: src/service/ui/messaging.js:951
+#: src/service/ui/messaging.js:954
 #, javascript-format
 msgid "And %d other contact"
 msgid_plural "And %d others"
@@ -1181,7 +1189,7 @@ msgstr[2] "Ir dar %d adresatų"
 msgstr[3] "Ir dar %d adresatas"
 
 #. TRANSLATORS: Displayed when the remote keyboard is not ready to accept input
-#: src/service/ui/mousepad.js:110
+#: src/service/ui/mousepad.js:113
 #, javascript-format
 msgid "Remote keyboard on %s is not active"
 msgstr "Nuotolinė klaviatūra ties %s nėra aktyvi"

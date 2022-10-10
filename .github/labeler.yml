@@ -1,0 +1,3 @@
+# Add <triage> label to new issues
+triage:
+  - '.*'
