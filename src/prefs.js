@@ -13,11 +13,11 @@ function init() {
 function fillPreferencesWindow(window) {
     const widget = new Adw.PreferencesPage();
     window.add(widget);
-    
+
     GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
         window.close();
     });
-    
+
     Gio.Subprocess.new([`${Extension.path}/gsconnect-preferences`], 0);
 }
 
