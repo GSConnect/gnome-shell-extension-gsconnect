@@ -575,6 +575,44 @@
                               </packing>
                             </child>
                             <child>
+                              <object class="GtkLabel" id="kdeconnect-ios">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="halign">end</property>
+                                <property name="label">iOS:</property>
+                                <accessibility>
+                                  <relation type="label-for" target="kdeconnect-appstore"/>
+                                </accessibility>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLinkButton" id="kdeconnect-appstore">
+                                <property name="label">App Store</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="halign">start</property>
+                                <property name="relief">none</property>
+                                <property name="uri">https://apps.apple.com/us/app/kde-connect/id1580245991</property>
+                                <accessibility>
+                                  <relation type="labelled-by" target="kdeconnect-ios"/>
+                                </accessibility>
+                                <child internal-child="accessible">
+                                  <object class="AtkObject" id="kdeconnect-appstore-atkobject">
+                                    <property name="AtkObject::accessible-role">link</property>
+                                  </object>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="top_attach">2</property>
+                              </packing>
+                            </child>
+                            <child>
                               <placeholder/>
                             </child>
                             <accessibility>
