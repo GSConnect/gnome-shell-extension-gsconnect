@@ -486,6 +486,13 @@ var Device = GObject.registerClass({
         openPath.connect('activate', this.openPath);
         this.add_action(openPath);
 
+        const showPathInFolder = new Gio.SimpleAction({
+            name: 'showPathInFolder',
+            parameter_type: new GLib.VariantType('s'),
+        });
+        showPathInFolder.connect('activate', this.showPathInFolder);
+        this.add_action(showPathInFolder);
+
         // Preference helpers
         const clearCache = new Gio.SimpleAction({
             name: 'clearCache',
@@ -738,6 +745,32 @@ var Device = GObject.registerClass({
         // Normalize paths to URIs, assuming local file
         const uri = path.includes('://') ? path : `file://${path}`;
         Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
+    }
+
+    showPathInFolder(action, parameter) {
+        const path = parameter.unpack();
+        const uri = path.includes('://') ? path : `file://${path}`;
+
+        const connection = Gio.DBus.session;
+        connection.call(
+            'org.freedesktop.FileManager1',
+            '/org/freedesktop/FileManager1',
+            'org.freedesktop.FileManager1',
+            'ShowItems',
+            new GLib.Variant('(ass)', [[uri], 's']),
+            null,
+            Gio.DBusCallFlags.NONE,
+            -1,
+            null,
+            (connection, res) => {
+                try {
+                    connection.call_finish(res);
+                } catch (e) {
+                    Gio.DBusError.strip_remote_error(e);
+                    logError(e);
+                }
+            }
+        );
     }
 
     _clearCache(action, parameter) {
