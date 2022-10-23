@@ -160,8 +160,6 @@ var Device = GObject.registerClass({
 
     // FIXME: backend should do this stuff
     get encryption_info() {
-        let remoteFingerprint = _('Not available');
-        let localFingerprint = _('Not available');
         let localCert = null;
         let remoteCert = null;
 
@@ -173,7 +171,6 @@ var Device = GObject.registerClass({
         // If the device is connected use the certificate from the connection
         } else if (this.connected) {
             remoteCert = this.channel.peer_certificate;
-            remoteFingerprint = remoteCert.sha256();
 
         // Otherwise pull it out of the settings
         } else if (this.paired) {
@@ -181,7 +178,6 @@ var Device = GObject.registerClass({
                 this.settings.get_string('certificate-pem'),
                 -1
             );
-            remoteFingerprint = remoteCert.sha256();
         }
 
         // FIXME: another ugly reach-around
@@ -190,10 +186,9 @@ var Device = GObject.registerClass({
         if (this.service !== null)
             lanBackend = this.service.manager.backends.get('lan');
 
-        if (lanBackend && lanBackend.certificate) {
+        if (lanBackend && lanBackend.certificate)
             localCert = lanBackend.certificate;
-            localFingerprint = localCert.sha256();
-        }
+
 
         let verificationKey = '';
         if (localCert && remoteCert) {
@@ -201,7 +196,7 @@ var Device = GObject.registerClass({
             let b = remoteCert.pubkey_der();
             if (a.compare(b) < 0)
                 [a, b] = [b, a]; // swap
-            let checksum = new GLib.Checksum(GLib.ChecksumType.SHA256);
+            const checksum = new GLib.Checksum(GLib.ChecksumType.SHA256);
             checksum.update(ByteArray.fromGBytes(a));
             checksum.update(ByteArray.fromGBytes(b));
             verificationKey = checksum.get_string();

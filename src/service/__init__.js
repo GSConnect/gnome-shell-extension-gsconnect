@@ -354,30 +354,6 @@ Gio.TlsCertificate.new_for_paths = function (certPath, keyPath, commonName = nul
 
 Object.defineProperties(Gio.TlsCertificate.prototype, {
     /**
-     * Compute a SHA256 fingerprint of the certificate.
-     * See: https://gitlab.gnome.org/GNOME/glib/issues/1290
-     *
-     * @return {string} A SHA256 fingerprint of the certificate.
-     */
-    'sha256': {
-        value: function () {
-            if (!this.__fingerprint) {
-                const proc = new Gio.Subprocess({
-                    argv: [Config.OPENSSL_PATH, 'x509', '-noout', '-fingerprint', '-sha256', '-inform', 'pem'],
-                    flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE,
-                });
-                proc.init(null);
-
-                const stdout = proc.communicate_utf8(this.certificate_pem, null)[1];
-                this.__fingerprint = /[a-zA-Z0-9:]{95}/.exec(stdout)[0];
-            }
-
-            return this.__fingerprint;
-        },
-        enumerable: false,
-    },
-
-    /**
      * The common name of the certificate.
      */
     'common_name': {
