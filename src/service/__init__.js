@@ -397,5 +397,33 @@ Object.defineProperties(Gio.TlsCertificate.prototype, {
         },
         enumerable: true,
     },
-});
 
+    /**
+     * Get just the pubkey as a DER ByteArray of a certificate.
+     *
+     * @return {GLib.Bytes} The pubkey as DER of the certificate.
+     */
+    'pubkey_der': {
+        value: function () {
+            if (!this.__pubkey_der) {
+                let proc = new Gio.Subprocess({
+                    argv: [Config.OPENSSL_PATH, 'x509', '-noout', '-pubkey', '-inform', 'pem'],
+                    flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE,
+                });
+                proc.init(null);
+
+                const pubkey = proc.communicate_utf8(this.certificate_pem, null)[1];
+                proc = new Gio.Subprocess({
+                    argv: [Config.OPENSSL_PATH, 'pkey', '-pubin', '-inform', 'pem', '-outform', 'der'],
+                    flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE,
+                });
+                proc.init(null);
+                this.__pubkey_der = proc.communicate(ByteArray.fromString(pubkey), null)[1];
+            }
+
+            return this.__pubkey_der;
+        },
+        enumerable: false,
+    },
+
+});

@@ -3,6 +3,7 @@
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
+const ByteArray = imports.byteArray;
 
 const Config = imports.config;
 const Components = imports.service.components;
@@ -161,6 +162,8 @@ var Device = GObject.registerClass({
     get encryption_info() {
         let remoteFingerprint = _('Not available');
         let localFingerprint = _('Not available');
+        let localCert = null;
+        let remoteCert = null;
 
         // Bluetooth connections have no certificate so we use the host address
         if (this.connection_type === 'bluetooth') {
@@ -169,14 +172,16 @@ var Device = GObject.registerClass({
 
         // If the device is connected use the certificate from the connection
         } else if (this.connected) {
-            remoteFingerprint = this.channel.peer_certificate.sha256();
+            remoteCert = this.channel.peer_certificate;
+            remoteFingerprint = remoteCert.sha256();
 
         // Otherwise pull it out of the settings
         } else if (this.paired) {
-            remoteFingerprint = Gio.TlsCertificate.new_from_pem(
+            remoteCert = Gio.TlsCertificate.new_from_pem(
                 this.settings.get_string('certificate-pem'),
                 -1
-            ).sha256();
+            );
+            remoteFingerprint = remoteCert.sha256();
         }
 
         // FIXME: another ugly reach-around
@@ -185,19 +190,29 @@ var Device = GObject.registerClass({
         if (this.service !== null)
             lanBackend = this.service.manager.backends.get('lan');
 
-        if (lanBackend && lanBackend.certificate)
-            localFingerprint = lanBackend.certificate.sha256();
+        if (lanBackend && lanBackend.certificate) {
+            localCert = lanBackend.certificate;
+            localFingerprint = localCert.sha256();
+        }
 
-        // TRANSLATORS: Label for TLS Certificate fingerprint
+        let verificationKey = '';
+        if (localCert && remoteCert) {
+            let a = localCert.pubkey_der();
+            let b = remoteCert.pubkey_der();
+            if (a.compare(b) < 0)
+                [a, b] = [b, a]; // swap
+            let checksum = new GLib.Checksum(GLib.ChecksumType.SHA256);
+            checksum.update(ByteArray.fromGBytes(a));
+            checksum.update(ByteArray.fromGBytes(b));
+            verificationKey = checksum.get_string();
+        }
+
+        // TRANSLATORS: Label for TLS connection verification key
         //
         // Example:
         //
-        // Google Pixel Fingerprint:
-        // 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-        return _('%s Fingerprint:').format(this.name) + '\n' +
-            remoteFingerprint + '\n\n' +
-            _('%s Fingerprint:').format('GSConnect') + '\n' +
-            localFingerprint;
+        // Verification key: 0123456789abcdef000000000000000000000000
+        return _('Verification key: %s').format(verificationKey);
     }
 
     get id() {
