@@ -355,30 +355,6 @@ Gio.TlsCertificate.new_for_paths = function (certPath, keyPath, commonName = nul
 
 Object.defineProperties(Gio.TlsCertificate.prototype, {
     /**
-     * Compute a SHA256 fingerprint of the certificate.
-     * See: https://gitlab.gnome.org/GNOME/glib/issues/1290
-     *
-     * @returns {string} A SHA256 fingerprint of the certificate.
-     */
-    'sha256': {
-        value: function () {
-            if (!this.__fingerprint) {
-                const proc = new Gio.Subprocess({
-                    argv: [Config.OPENSSL_PATH, 'x509', '-noout', '-fingerprint', '-sha256', '-inform', 'pem'],
-                    flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE,
-                });
-                proc.init(null);
-
-                const stdout = proc.communicate_utf8(this.certificate_pem, null)[1];
-                this.__fingerprint = /[a-zA-Z0-9:]{95}/.exec(stdout)[0];
-            }
-
-            return this.__fingerprint;
-        },
-        enumerable: false,
-    },
-
-    /**
      * The common name of the certificate.
      */
     'common_name': {
@@ -398,4 +374,33 @@ Object.defineProperties(Gio.TlsCertificate.prototype, {
         },
         enumerable: true,
     },
+
+    /**
+     * Get just the pubkey as a DER ByteArray of a certificate.
+     *
+     * @return {GLib.Bytes} The pubkey as DER of the certificate.
+     */
+    'pubkey_der': {
+        value: function () {
+            if (!this.__pubkey_der) {
+                let proc = new Gio.Subprocess({
+                    argv: [Config.OPENSSL_PATH, 'x509', '-noout', '-pubkey', '-inform', 'pem'],
+                    flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE,
+                });
+                proc.init(null);
+
+                const pubkey = proc.communicate_utf8(this.certificate_pem, null)[1];
+                proc = new Gio.Subprocess({
+                    argv: [Config.OPENSSL_PATH, 'pkey', '-pubin', '-inform', 'pem', '-outform', 'der'],
+                    flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE,
+                });
+                proc.init(null);
+                this.__pubkey_der = proc.communicate(ByteArray.fromString(pubkey), null)[1];
+            }
+
+            return this.__pubkey_der;
+        },
+        enumerable: false,
+    },
+
 });
