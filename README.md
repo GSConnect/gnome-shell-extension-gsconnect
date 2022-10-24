@@ -39,6 +39,12 @@ of GSConnect, you can start by [triaging new issues][issues],
 If you need additional permissions, you may request them from one of the
 [current maintainers][people].
 
+## Nightly Builds
+
+For early updaters of GNOME Shell and those that wish to test the upcoming version
+of GSConnect, there are automated builds available for [download][nightly-build].
+See [Installing from Nightly Build][nightly-install] for installation instructions.
+
 [ego]: https://extensions.gnome.org/extension/1319/gsconnect/
 [chrome]: https://chrome.google.com/webstore/detail/gsconnect/jfnifeihccihocjbfcfhicmmgpjicaec
 [firefox]: https://addons.mozilla.org/firefox/addon/gsconnect/
@@ -52,3 +58,5 @@ If you need additional permissions, you may request them from one of the
 [help-wanted]: https://github.com/GSConnect/gnome-shell-extension-gsconnect/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22
 [needs-review]: https://github.com/GSConnect/gnome-shell-extension-gsconnect/pulls?q=is%3Apr+is%3Aopen+label%3A%22needs+review%22
 [people]: https://github.com/orgs/GSConnect/people
+[nightly-build]: https://nightly.link/GSConnect/gnome-shell-extension-gsconnect/workflows/main/main/test-build.zip
+[nightly-install]: https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Installation#install-from-nightly-build
