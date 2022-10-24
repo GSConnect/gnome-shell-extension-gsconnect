@@ -57,6 +57,10 @@
                 "allowArrowFunctions": true
             }
         ],
+        "grouped-accessor-pairs": [
+            "error",
+            "getBeforeSet"
+        ],
         "indent": [
             "error",
             4,
@@ -87,7 +91,12 @@
             "unix"
         ],
         "lines-between-class-members": "error",
-        "max-nested-callbacks": "error",
+        "max-nested-callbacks": [
+            "error",
+            {
+                "max": 5
+            }
+        ],
         "max-statements-per-line": "error",
         "new-parens": "error",
         "no-array-constructor": "error",
