@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-09-25 09:29+0900\n"
-"PO-Revision-Date: 2022-09-25 02:53\n"
+"PO-Revision-Date: 2022-10-26 15:44\n"
 "Last-Translator: \n"
 "Language-Team: Arabic\n"
 "Language: ar_SA\n"
@@ -33,7 +33,7 @@ msgstr "فريق GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:32
 msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
+msgstr "GSConnect هو تنفيذ كامل لـ KDE Connect خاصة لـ GNOME Shell مع تكامل Nautilus و Chrome و Firefox. فريق KDE Connect لديه تطبيقات لـ Linux و BSD و Android و Sailfish و iOS و macOS و Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:35
 msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
@@ -186,7 +186,11 @@ msgid "Touchpad.\n"
 "Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr ""
+msgstr "Touchpad.\n"
+"اسحب على هذه المنطقة لتحريك مؤشر الماوس.\n"
+"اضغط مطولاً للسحب لسحب مؤشر الماوس.\n\n"
+"سيتم إرسال النقر البسيط إلى الجهاز المقترن.\n"
+"التمرير من اليسار والوسط واليمين والعجلة."
 
 #: data/ui/preferences-command-editor.ui:7
 msgid "Edit Command"
@@ -885,7 +889,7 @@ msgstr "تمكين الجهاز المقترن للعمل كفأرة عن بعد
 
 #: src/service/plugins/mousepad.js:27 src/service/ui/mousepad.js:105
 msgid "Remote Input"
-msgstr ""
+msgstr "الإدخال عن بعد"
 
 #: src/service/plugins/mpris.js:15
 msgid "MPRIS"
