@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-10-26 19:12-0700\n"
-"PO-Revision-Date: 2022-10-27 02:23\n"
+"PO-Revision-Date: 2022-10-27 15:54\n"
 "Last-Translator: \n"
 "Language-Team: Ukrainian\n"
 "Language: uk_UA\n"
@@ -582,7 +582,7 @@ msgstr "Відправити до мобільного пристрою"
 
 #: src/extension.js:46
 msgid "Sync between your devices"
-msgstr ""
+msgstr "Синхронізація між пристроями"
 
 #: src/preferences/device.js:669 src/preferences/device.js:675
 msgid "Edit"
@@ -755,7 +755,7 @@ msgstr "Bluetooth-пристрій %s"
 #: src/service/device.js:210
 #, javascript-format
 msgid "Verification key: %s"
-msgstr ""
+msgstr "Ключ перевірки: %s"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:839
@@ -995,7 +995,7 @@ msgstr "Отримано «%s» від %s"
 
 #: src/service/plugins/share.js:185
 msgid "Show File Location"
-msgstr ""
+msgstr "Показати розташування файлу"
 
 #: src/service/plugins/share.js:190
 msgid "Open File"
