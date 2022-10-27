@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-10-26 19:12-0700\n"
-"PO-Revision-Date: 2022-10-27 02:23\n"
+"PO-Revision-Date: 2022-10-27 05:30\n"
 "Last-Translator: \n"
 "Language-Team: Korean\n"
 "Language: ko_KR\n"
@@ -578,7 +578,7 @@ msgstr "모바일 기기로 전송"
 
 #: src/extension.js:46
 msgid "Sync between your devices"
-msgstr ""
+msgstr "기기 동기화"
 
 #: src/preferences/device.js:669 src/preferences/device.js:675
 msgid "Edit"
@@ -751,7 +751,7 @@ msgstr ""
 #: src/service/device.js:210
 #, javascript-format
 msgid "Verification key: %s"
-msgstr ""
+msgstr "인증 키: %s"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:839
@@ -991,7 +991,7 @@ msgstr "\"%s\"를 %s에서 받았습니다."
 
 #: src/service/plugins/share.js:185
 msgid "Show File Location"
-msgstr ""
+msgstr "파일 위치 표시"
 
 #: src/service/plugins/share.js:190
 msgid "Open File"
