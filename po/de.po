@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-10-26 19:12-0700\n"
-"PO-Revision-Date: 2022-10-27 13:58\n"
+"PO-Revision-Date: 2022-10-27 19:30\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -757,7 +757,7 @@ msgstr "Bluetooth-Gerät bei %s"
 #: src/service/device.js:210
 #, javascript-format
 msgid "Verification key: %s"
-msgstr "Bestätigungsschlüssel; %s"
+msgstr "Bestätigungsschlüssel: %s"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:839
