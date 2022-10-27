@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-25 09:29+0900\n"
+"POT-Creation-Date: 2022-10-26 19:12-0700\n"
 "PO-Revision-Date: 2022-09-26 08:24\n"
 "Last-Translator: \n"
 "Language-Team: Czech\n"
@@ -14,7 +14,8 @@ msgstr ""
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: cs\n"
-"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org."
+"gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -32,12 +33,23 @@ msgid "GSConnect Team"
 msgstr "Kolektiv GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:32
-msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr "GSConnect je kompletní implementace nástroje KDE Connect, určená zejména pro prostředí GNOME Shell s napojením pro správce souborů Nautilus a dále pro webové prohlížeče Chrome a Firefox. Tým KDE Connect má aplikace pro systémy Linux, BSD, Android, Sailfish, iOS, macOS a Windows."
+msgid ""
+"GSConnect is a complete implementation of KDE Connect especially for GNOME "
+"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
+"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr ""
+"GSConnect je kompletní implementace nástroje KDE Connect, určená zejména pro "
+"prostředí GNOME Shell s napojením pro správce souborů Nautilus a dále pro "
+"webové prohlížeče Chrome a Firefox. Tým KDE Connect má aplikace pro systémy "
+"Linux, BSD, Android, Sailfish, iOS, macOS a Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:35
-msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
-msgstr "Pomocí GSConnect se můžete bezpečně připojit k mobilním zařízením a ostatním stolním počítačům a:"
+msgid ""
+"With GSConnect you can securely connect to mobile devices and other desktops "
+"to:"
+msgstr ""
+"Pomocí GSConnect se můžete bezpečně připojit k mobilním zařízením a ostatním "
+"stolním počítačům a:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
 msgid "Share files, links and text"
@@ -75,12 +87,12 @@ msgstr "Spouštět předpřipravené příkazy"
 msgid "And more…"
 msgstr "A další…"
 
-#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:117
+#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:120
 msgid "GSConnect in GNOME Shell"
 msgstr "GSConnect v GNOME Shell"
 
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
-#: data/ui/connect-dialog.ui:13 data/ui/preferences-window.ui:719
+#: data/ui/connect-dialog.ui:13 data/ui/preferences-window.ui:757
 msgid "Connect to…"
 msgstr "Připojit k…"
 
@@ -94,7 +106,7 @@ msgstr "Připojit k…"
 #: data/ui/service-device-chooser.ui:14 data/ui/service-device-chooser.ui:18
 #: data/ui/service-error-dialog.ui:13 data/ui/service-error-dialog.ui:21
 #: src/preferences/service.js:413 src/service/plugins/share.js:159
-#: src/service/plugins/share.js:287 src/service/plugins/share.js:418
+#: src/service/plugins/share.js:292 src/service/plugins/share.js:423
 msgid "Cancel"
 msgstr "Storno"
 
@@ -111,7 +123,7 @@ msgid "No contacts"
 msgstr "Žádné kontakty"
 
 #: data/ui/contact-chooser.ui:61 data/ui/messaging-window.ui:96
-#: data/ui/mousepad-input-dialog.ui:49 data/ui/preferences-window.ui:745
+#: data/ui/mousepad-input-dialog.ui:49 data/ui/preferences-window.ui:783
 msgid "Help"
 msgstr "Nápověda"
 
@@ -133,7 +145,7 @@ msgstr "Poslat SMS"
 
 #: data/ui/legacy-messaging-dialog.ui:25 data/ui/legacy-messaging-dialog.ui:29
 #: data/ui/notification-reply-dialog.ui:24
-#: data/ui/notification-reply-dialog.ui:28 src/service/plugins/share.js:419
+#: data/ui/notification-reply-dialog.ui:28 src/service/plugins/share.js:424
 msgid "Send"
 msgstr "Poslat"
 
@@ -181,14 +193,18 @@ msgid "Select or start a conversation"
 msgstr "Vybrat nebo zahájit konverzaci"
 
 #: data/ui/mousepad-input-dialog.ui:90
-msgid "Touchpad.\n"
+msgid ""
+"Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n\n"
+"Press long to drag to drag mouse cursor.\n"
+"\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr "Touchpad.\n"
+msgstr ""
+"Touchpad.\n"
 "Přetáhněte tuto oblast pro přesun kurzoru myši.\n"
-"Stiskněte dlouze pro přetažení kurzoru.\n\n"
+"Stiskněte dlouze pro přetažení kurzoru.\n"
+"\n"
 "Jednoduché kliknutí bude odesláno do spárovaného zařízení.\n"
 "Levé, prostřední, pravé a posouvací kolečko."
 
@@ -479,7 +495,7 @@ msgid "Refresh"
 msgstr "Obnovit"
 
 #. Service Menu -> "Mobile Settings"
-#: data/ui/preferences-window.ui:132 src/extension.js:124
+#: data/ui/preferences-window.ui:132 src/extension.js:109
 msgid "Mobile Settings"
 msgstr "Nastavení telefonu"
 
@@ -507,38 +523,38 @@ msgstr "Vyhledávání zařízení…"
 msgid "Browser Add-Ons"
 msgstr "Doplňky pro prohlížeče"
 
-#: data/ui/preferences-window.ui:626
+#: data/ui/preferences-window.ui:664
 msgid "Enable"
 msgstr "Zapnout"
 
-#: data/ui/preferences-window.ui:658
+#: data/ui/preferences-window.ui:696
 msgid "This device is invisible to unpaired devices"
 msgstr "Toto zařízení je pro nespárovaná zařízení neviditelné"
 
-#: data/ui/preferences-window.ui:670 src/service/manager.js:113
+#: data/ui/preferences-window.ui:708 src/service/manager.js:113
 msgid "Discovery Disabled"
 msgstr "Objevování vypnuto"
 
-#: data/ui/preferences-window.ui:724
+#: data/ui/preferences-window.ui:762
 msgid "Display Mode"
 msgstr "Režim zobrazení"
 
 #. TRANSLATORS: Show device indicators in the top bar
-#: data/ui/preferences-window.ui:727
+#: data/ui/preferences-window.ui:765
 msgid "Panel"
 msgstr "Panel"
 
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
-#: data/ui/preferences-window.ui:733
+#: data/ui/preferences-window.ui:771
 msgid "User Menu"
 msgstr "Uživatelská nabídka"
 
 #. TRANSLATORS: Generate a support log
-#: data/ui/preferences-window.ui:741 src/preferences/service.js:410
+#: data/ui/preferences-window.ui:779 src/preferences/service.js:410
 msgid "Generate Support Log"
 msgstr "Vytvořit záznam událostí pro podporu"
 
-#: data/ui/preferences-window.ui:749
+#: data/ui/preferences-window.ui:787
 msgid "About GSConnect"
 msgstr "O GSConnect"
 
@@ -568,8 +584,12 @@ msgid "Something’s gone wrong"
 msgstr "Něco se pokazilo"
 
 #: data/ui/service-error-dialog.ui:84
-msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
-msgstr "GSConnect narazilo na neočekávanou chybu. Nahlaste prosím problém a přiložte veškeré informace, které mohou pomoci."
+msgid ""
+"GSConnect encountered an unexpected error. Please report the problem and "
+"include any information that may help."
+msgstr ""
+"GSConnect narazilo na neočekávanou chybu. Nahlaste prosím problém a přiložte "
+"veškeré informace, které mohou pomoci."
 
 #: data/ui/service-error-dialog.ui:118
 msgid "Technical Details"
@@ -580,29 +600,9 @@ msgstr "Technické podrobnosti"
 msgid "Send To Mobile Device"
 msgstr "Odeslat do mobilního zařízení"
 
-#. Service Menu
-#: src/extension.js:91 src/extension.js:237
-msgid "Mobile Devices"
-msgstr "Mobilní zařízení"
-
-#. TRANSLATORS: A menu option to activate the extension
-#: src/extension.js:119 src/extension.js:380
-msgid "Turn On"
-msgstr "Zapnout"
-
-#: src/extension.js:232
-#, javascript-format
-msgid "%d Connected"
-msgid_plural "%d Connected"
-msgstr[0] "%d připojen"
-msgstr[1] "%d připojené"
-msgstr[2] "%d připojených"
-msgstr[3] "%d připojené"
-
-#. TRANSLATORS: A menu option to deactivate the extension
-#: src/extension.js:377
-msgid "Turn Off"
-msgstr "Vypnout"
+#: src/extension.js:46
+msgid "Sync between your devices"
+msgstr ""
 
 #: src/preferences/device.js:669 src/preferences/device.js:675
 msgid "Edit"
@@ -640,8 +640,12 @@ msgid "translator-credits"
 msgstr "Pavel Borecki <pavel.borecki@gmail.com>"
 
 #: src/preferences/service.js:411
-msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
-msgstr "Ladící zprávy jsou zaznamenávány. Podnikněte kroky, potřebné pro vyvolání problému a pak si záznam prohlédněte."
+msgid ""
+"Debug messages are being logged. Take any steps necessary to reproduce a "
+"problem then review the log."
+msgstr ""
+"Ladící zprávy jsou zaznamenávány. Podnikněte kroky, potřebné pro vyvolání "
+"problému a pak si záznam prohlédněte."
 
 #: src/preferences/service.js:414
 msgid "Review Log"
@@ -761,44 +765,39 @@ msgstr "Sdílet text"
 msgid "Show release version"
 msgstr "Zobrazit verzi vydání"
 
-#: src/service/device.js:162 src/service/device.js:163
-#: src/service/ui/messaging.js:396
-msgid "Not available"
-msgstr "Není k dispozici"
-
 #. TRANSLATORS: Bluetooth address for remote device
-#: src/service/device.js:168
+#: src/service/device.js:169
 #, javascript-format
 msgid "Bluetooth device at %s"
 msgstr "Bluetooth zařízení na %s"
 
-#. TRANSLATORS: Label for TLS Certificate fingerprint
+#. TRANSLATORS: Label for TLS connection verification key
 #.
 #. Example:
 #.
-#. Google Pixel Fingerprint:
-#. 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-#: src/service/device.js:197 src/service/device.js:199
-#, javascript-format
-msgid "%s Fingerprint:"
-msgstr "Otisk %s:"
+#. Verification key: 0123456789abcdef000000000000000000000000
+#: src/service/device.js:210
+#, fuzzy, javascript-format
+msgid "Verification key: %s"
+msgstr "Oznámení"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
-#: src/service/device.js:796
+#: src/service/device.js:839
 #, javascript-format
 msgid "Pair Request from %s"
 msgstr "Žádost o spárování od %s"
 
-#: src/service/device.js:803
+#: src/service/device.js:846
 msgid "Reject"
 msgstr "Odmítnout"
 
-#: src/service/device.js:808
+#: src/service/device.js:851
 msgid "Accept"
 msgstr "Přijmout"
 
 #: src/service/manager.js:114
-msgid "Discovery has been disabled due to the number of devices on this network."
+msgid ""
+"Discovery has been disabled due to the number of devices on this network."
 msgstr "Kvůli velkému množství zařízení na této síti bylo objevování vypnuto."
 
 #: src/service/backends/lan.js:162
@@ -923,16 +922,18 @@ msgstr "Zapnout oznamování"
 
 #: src/service/plugins/photo.js:13
 msgid "Request the paired device to take a photo and transfer it to this PC"
-msgstr "Vyžádat si pořízení fotky spárovaným zařízením a přenést ji do tohoto počítače"
+msgstr ""
+"Vyžádat si pořízení fotky spárovaným zařízením a přenést ji do tohoto "
+"počítače"
 
 #: src/service/plugins/photo.js:220 src/service/plugins/share.js:128
-#: src/service/plugins/share.js:200 src/service/plugins/share.js:310
+#: src/service/plugins/share.js:204 src/service/plugins/share.js:315
 msgid "Transfer Failed"
 msgstr "Přenos se nezdařil"
 
 #. TRANSLATORS: eg. Failed to send "photo.jpg" to Google Pixel
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
-#: src/service/plugins/photo.js:222 src/service/plugins/share.js:312
+#: src/service/plugins/photo.js:222 src/service/plugins/share.js:317
 #, javascript-format
 msgid "Failed to send “%s” to %s"
 msgstr "Nepodařilo se odeslat „%s“ do %s"
@@ -961,8 +962,12 @@ msgid "Run Commands"
 msgstr "Spustit příkazy"
 
 #: src/service/plugins/runcommand.js:13
-msgid "Run commands on your paired device or let the device run predefined commands on this PC"
-msgstr "Spustit příkazy na svém spárovaném zařízení nebo nechat zařízení spouštět předem určené příkazy na tomto počítači"
+msgid ""
+"Run commands on your paired device or let the device run predefined commands "
+"on this PC"
+msgstr ""
+"Spustit příkazy na svém spárovaném zařízení nebo nechat zařízení spouštět "
+"předem určené příkazy na tomto počítači"
 
 #: src/service/plugins/sftp.js:13
 msgid "SFTP"
@@ -999,7 +1004,7 @@ msgstr "Sdílet soubory a URL adresy mezi zařízeními"
 msgid "%s is not allowed to upload files"
 msgstr "%s není umožněno nahrávat soubory"
 
-#: src/service/plugins/share.js:152 src/service/plugins/share.js:280
+#: src/service/plugins/share.js:152 src/service/plugins/share.js:285
 msgid "Transferring File"
 msgstr "Přenášení souboru"
 
@@ -1009,7 +1014,7 @@ msgstr "Přenášení souboru"
 msgid "Receiving “%s” from %s"
 msgstr "Získávání „%s“ z %s"
 
-#: src/service/plugins/share.js:173 src/service/plugins/share.js:300
+#: src/service/plugins/share.js:173 src/service/plugins/share.js:305
 msgid "Transfer Successful"
 msgstr "Přenos úspěšný"
 
@@ -1019,50 +1024,50 @@ msgstr "Přenos úspěšný"
 msgid "Received “%s” from %s"
 msgstr "Obdrženo „%s“ z %s"
 
-#: src/service/plugins/share.js:181
-msgid "Open Folder"
-msgstr "Otevřít složku"
+#: src/service/plugins/share.js:185
+msgid "Show File Location"
+msgstr ""
 
-#: src/service/plugins/share.js:186
+#: src/service/plugins/share.js:190
 msgid "Open File"
 msgstr "Otevřít soubor"
 
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:202
+#: src/service/plugins/share.js:206
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
 msgstr "Nepodařilo se přijmout „%s“ od %s"
 
-#: src/service/plugins/share.js:232
+#: src/service/plugins/share.js:237
 #, javascript-format
 msgid "Text Shared By %s"
 msgstr "Text sdílený %s"
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
-#: src/service/plugins/share.js:282
+#: src/service/plugins/share.js:287
 #, javascript-format
 msgid "Sending “%s” to %s"
 msgstr "Posílání „%s“ do %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:302
+#: src/service/plugins/share.js:307
 #, javascript-format
 msgid "Sent “%s” to %s"
 msgstr "„%s“ odesláno do %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
-#: src/service/plugins/share.js:370
+#: src/service/plugins/share.js:375
 #, javascript-format
 msgid "Send files to %s"
 msgstr "Odeslat soubory do %s"
 
 #. TRANSLATORS: Mark the file to be opened once completed
-#: src/service/plugins/share.js:374
+#: src/service/plugins/share.js:379
 msgid "Open when done"
 msgstr "Po dokončení otevřít"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
-#: src/service/plugins/share.js:413
+#: src/service/plugins/share.js:418
 #, javascript-format
 msgid "Send a link to %s"
 msgstr "Poslat odkaz do %s"
@@ -1073,7 +1078,8 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:15
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr "Poslat a číst SMS zprávu ze spárovaného zařízení a být upozorněni na nové SMS"
+msgstr ""
+"Poslat a číst SMS zprávu ze spárovaného zařízení a být upozorněni na nové SMS"
 
 #: src/service/plugins/sms.js:36
 msgid "New SMS (URI)"
@@ -1100,8 +1106,11 @@ msgid "PulseAudio not found"
 msgstr "PulseAudio nenalezeno"
 
 #: src/service/plugins/telephony.js:14
-msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr "Dostávejte upozornění na hovory a upravujte hlasitost počítači při vyzvánění / probíhajících hovorech"
+msgid ""
+"Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgstr ""
+"Dostávejte upozornění na hovory a upravujte hlasitost počítači při "
+"vyzvánění / probíhajících hovorech"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:26
@@ -1173,6 +1182,10 @@ msgstr[1] "%d minuty"
 msgstr[2] "%d minut"
 msgstr[3] "%d minut"
 
+#: src/service/ui/messaging.js:396
+msgid "Not available"
+msgstr "Není k dispozici"
+
 #: src/service/ui/messaging.js:753
 msgid "Group Message"
 msgstr "Skupinová zpráva"
@@ -1226,7 +1239,8 @@ msgstr "Odpovědět"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:31
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr "Sdílet odkazy pomocí GSConnect, přímo do prohlížeče nebo prostřednictvím SMS."
+msgstr ""
+"Sdílet odkazy pomocí GSConnect, přímo do prohlížeče nebo prostřednictvím SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:35
