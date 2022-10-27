@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-10-26 19:12-0700\n"
-"PO-Revision-Date: 2022-09-25 02:53\n"
+"PO-Revision-Date: 2022-10-27 02:23\n"
 "Last-Translator: \n"
 "Language-Team: Hungarian\n"
 "Language: hu_HU\n"
@@ -14,8 +14,7 @@ msgstr ""
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: hu\n"
-"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org."
-"gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -33,19 +32,12 @@ msgid "GSConnect Team"
 msgstr "A GSConnect csapata"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:32
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
 msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:35
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"A GSConnect segítségével biztonságosan csatlakozhat mobileszközökhöz és "
-"másik számítógépekhez a következőkhöz:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
+msgstr "A GSConnect segítségével biztonságosan csatlakozhat mobileszközökhöz és másik számítógépekhez a következőkhöz:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
 msgid "Share files, links and text"
@@ -189,11 +181,9 @@ msgid "Select or start a conversation"
 msgstr "Indítson, vagy válasszon ki egy beszélgetést"
 
 #: data/ui/mousepad-input-dialog.ui:90
-msgid ""
-"Touchpad.\n"
+msgid "Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n"
-"\n"
+"Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
 msgstr ""
@@ -470,9 +460,7 @@ msgstr "Kiválasztás"
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:73
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"A megszakításhoz nyomjon Esc gombot, vagy Backspace-t a gyorsbillentyű "
-"visszaállításához."
+msgstr "A megszakításhoz nyomjon Esc gombot, vagy Backspace-t a gyorsbillentyű visszaállításához."
 
 #: data/ui/preferences-window.ui:17
 msgid "Device Name"
@@ -576,12 +564,8 @@ msgid "Something’s gone wrong"
 msgstr "Valami elromlott"
 
 #: data/ui/service-error-dialog.ui:84
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
-"A GSConnect egy váratlan hibába ütközött. Kérem, jelentse a hibát, és "
-"csatoljon minden olyan információt, ami segíthet."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "A GSConnect egy váratlan hibába ütközött. Kérem, jelentse a hibát, és csatoljon minden olyan információt, ami segíthet."
 
 #: data/ui/service-error-dialog.ui:118
 msgid "Technical Details"
@@ -632,12 +616,8 @@ msgid "translator-credits"
 msgstr "Báthory Péter <bathory86p@gmail.com>"
 
 #: src/preferences/service.js:411
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"A hibakeresési üzenetek naplózásra kerülnek. Tegye meg a hiba "
-"reprodukálásához szükséges lépést, majd nézze át a naplót."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "A hibakeresési üzenetek naplózásra kerülnek. Tegye meg a hiba reprodukálásához szükséges lépést, majd nézze át a naplót."
 
 #: src/preferences/service.js:414
 msgid "Review Log"
@@ -769,9 +749,9 @@ msgstr "Bluetooth eszköz itt: %s"
 #.
 #. Verification key: 0123456789abcdef000000000000000000000000
 #: src/service/device.js:210
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "Verification key: %s"
-msgstr "Értesítések"
+msgstr ""
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:839
@@ -788,8 +768,7 @@ msgid "Accept"
 msgstr "Elfogadás"
 
 #: src/service/manager.js:114
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "A felderítés le lett tiltva a hálózaton lévő eszközök száma miatt."
 
 #: src/service/backends/lan.js:162
@@ -874,9 +853,7 @@ msgstr "Egérpad"
 
 #: src/service/plugins/mousepad.js:13
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr ""
-"A párosított eszköz egérként és billentyűzetként való használatának "
-"egedélyezése"
+msgstr "A párosított eszköz egérként és billentyűzetként való használatának egedélyezése"
 
 #: src/service/plugins/mousepad.js:27 src/service/ui/mousepad.js:105
 msgid "Remote Input"
@@ -916,9 +893,7 @@ msgstr "Értesítés aktiválása"
 
 #: src/service/plugins/photo.js:13
 msgid "Request the paired device to take a photo and transfer it to this PC"
-msgstr ""
-"Párosított eszköz megkérése, hogy készítsen fényképet, és vigye át erre a "
-"számítógépre"
+msgstr "Párosított eszköz megkérése, hogy készítsen fényképet, és vigye át erre a számítógépre"
 
 #: src/service/plugins/photo.js:220 src/service/plugins/share.js:128
 #: src/service/plugins/share.js:204 src/service/plugins/share.js:315
@@ -956,12 +931,8 @@ msgid "Run Commands"
 msgstr "Parancsok futtatása"
 
 #: src/service/plugins/runcommand.js:13
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
-msgstr ""
-"Parancsok futtatása a párosított eszközön, vagy előre megadott parancsok "
-"futtassanak engedélyezése ezen a számítógépen"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
+msgstr "Parancsok futtatása a párosított eszközön, vagy előre megadott parancsok futtassanak engedélyezése ezen a számítógépen"
 
 #: src/service/plugins/sftp.js:13
 msgid "SFTP"
@@ -1072,9 +1043,7 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:15
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
-"Értesítés új SMS-ekről, és a párosított eszköz SMS-einek olvasása és SMS-ek "
-"küldése"
+msgstr "Értesítés új SMS-ekről, és a párosított eszköz SMS-einek olvasása és SMS-ek küldése"
 
 #: src/service/plugins/sms.js:36
 msgid "New SMS (URI)"
@@ -1101,11 +1070,8 @@ msgid "PulseAudio not found"
 msgstr "PulseAudio nem található"
 
 #: src/service/plugins/telephony.js:14
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
-"Értesítés a hívásokról és a rendszerhangerő állítása csörgés/folyamatban "
-"lévő hívások közben"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgstr "Értesítés a hívásokról és a rendszerhangerő állítása csörgés/folyamatban lévő hívások közben"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:26
@@ -1230,8 +1196,7 @@ msgstr "Válasz"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:31
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
-"Hivatkozások megosztása GSConnecttel, közvetlenül a böngészőből vagy SMS-ben."
+msgstr "Hivatkozások megosztása GSConnecttel, közvetlenül a böngészőből vagy SMS-ben."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:35
