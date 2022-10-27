@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-10-26 19:12-0700\n"
-"PO-Revision-Date: 2022-10-14 14:27\n"
+"PO-Revision-Date: 2022-10-27 02:23\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Language: es_ES\n"
@@ -14,8 +14,7 @@ msgstr ""
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: es-ES\n"
-"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org."
-"gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -33,23 +32,12 @@ msgid "GSConnect Team"
 msgstr "Equipo de GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:32
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
-"GSConnect es una implementación completa de KDE Connect especialmente para "
-"GNOME Shell con integración para Nautilus, Chrome y Firefox. El equipo de "
-"KDE Connect tiene aplicaciones para Linux, BSD, Android, Sailfish, iOS, "
-"macOS y Windows."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr "GSConnect es una implementación completa de KDE Connect especialmente para GNOME Shell con integración para Nautilus, Chrome y Firefox. El equipo de KDE Connect tiene aplicaciones para Linux, BSD, Android, Sailfish, iOS, macOS y Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:35
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"Con GSConnect, puede conectar de manera segura con dispositivos móviles y de "
-"escritorio para:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
+msgstr "Con GSConnect, puede conectar de manera segura con dispositivos móviles y de escritorio para:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
 msgid "Share files, links and text"
@@ -193,18 +181,14 @@ msgid "Select or start a conversation"
 msgstr "Seleccione una conversación o inicie una"
 
 #: data/ui/mousepad-input-dialog.ui:90
-msgid ""
-"Touchpad.\n"
+msgid "Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n"
-"\n"
+"Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr ""
-"Panel táctil.\n"
+msgstr "Panel táctil.\n"
 "Arrastre en esta zona para mover el cursor del ratón.\n"
-"Pulse prolongadamente para arrastrar el cursor del ratón.\n"
-"\n"
+"Pulse prolongadamente para arrastrar el cursor del ratón.\n\n"
 "Un simple clic se enviará al dispositivo emparejado.\n"
 "Botón izquierdo, central, derecho y rueda de desplazamiento."
 
@@ -480,8 +464,7 @@ msgstr "Establecer"
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:73
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Oprima Esc para cancelar o Retroceso para restablecer el atajo de teclado."
+msgstr "Oprima Esc para cancelar o Retroceso para restablecer el atajo de teclado."
 
 #: data/ui/preferences-window.ui:17
 msgid "Device Name"
@@ -585,12 +568,8 @@ msgid "Something’s gone wrong"
 msgstr "Algo ha salido mal"
 
 #: data/ui/service-error-dialog.ui:84
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
-"GSConnect encontró un error inesperado. Por favor, informe del problema e "
-"incluya cualquier información que pueda ayudar."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "GSConnect encontró un error inesperado. Por favor, informe del problema e incluya cualquier información que pueda ayudar."
 
 #: data/ui/service-error-dialog.ui:118
 msgid "Technical Details"
@@ -641,12 +620,8 @@ msgid "translator-credits"
 msgstr "Adolfo Jayme Barrientos <fitojb@ubuntu.com>, 2018-2019"
 
 #: src/preferences/service.js:411
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Los mensajes de depuración están registrándose. Realice las acciones "
-"necesarias para reproducir un problema y, a continuación, revise el registro."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Los mensajes de depuración están registrándose. Realice las acciones necesarias para reproducir un problema y, a continuación, revise el registro."
 
 #: src/preferences/service.js:414
 msgid "Review Log"
@@ -778,9 +753,9 @@ msgstr "Dispositivo Bluetooth en %s"
 #.
 #. Verification key: 0123456789abcdef000000000000000000000000
 #: src/service/device.js:210
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "Verification key: %s"
-msgstr "Notificaciones"
+msgstr ""
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:839
@@ -797,11 +772,8 @@ msgid "Accept"
 msgstr "Aceptar"
 
 #: src/service/manager.js:114
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
-msgstr ""
-"Se desactivó el descubrimiento debido al número de dispositivos presentes en "
-"esta red."
+msgid "Discovery has been disabled due to the number of devices on this network."
+msgstr "Se desactivó el descubrimiento debido al número de dispositivos presentes en esta red."
 
 #: src/service/backends/lan.js:162
 msgid "OpenSSL not found"
@@ -885,8 +857,7 @@ msgstr "Mousepad"
 
 #: src/service/plugins/mousepad.js:13
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr ""
-"Permite que el dispositivo emparejado actúe como ratón y teclado remotos"
+msgstr "Permite que el dispositivo emparejado actúe como ratón y teclado remotos"
 
 #: src/service/plugins/mousepad.js:27 src/service/ui/mousepad.js:105
 msgid "Remote Input"
@@ -926,9 +897,7 @@ msgstr "Activar notificación"
 
 #: src/service/plugins/photo.js:13
 msgid "Request the paired device to take a photo and transfer it to this PC"
-msgstr ""
-"Solicitar al dispositivo emparejado que tome una foto y la transfiera a este "
-"equipo"
+msgstr "Solicitar al dispositivo emparejado que tome una foto y la transfiera a este equipo"
 
 #: src/service/plugins/photo.js:220 src/service/plugins/share.js:128
 #: src/service/plugins/share.js:204 src/service/plugins/share.js:315
@@ -966,12 +935,8 @@ msgid "Run Commands"
 msgstr "Ejecutar órdenes"
 
 #: src/service/plugins/runcommand.js:13
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
-msgstr ""
-"Ejecute órdenes en su dispositivo emparejado o deje que el dispositivo "
-"ejecute órdenes predefinidas en este equipo"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
+msgstr "Ejecute órdenes en su dispositivo emparejado o deje que el dispositivo ejecute órdenes predefinidas en este equipo"
 
 #: src/service/plugins/sftp.js:13
 msgid "SFTP"
@@ -1082,9 +1047,7 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:15
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
-"Enviar y leer SMS del dispositivo emparejado y recibir notificaciones de "
-"nuevos SMS"
+msgstr "Enviar y leer SMS del dispositivo emparejado y recibir notificaciones de nuevos SMS"
 
 #: src/service/plugins/sms.js:36
 msgid "New SMS (URI)"
@@ -1104,19 +1067,15 @@ msgstr "Volumen del sistema"
 
 #: src/service/plugins/systemvolume.js:12
 msgid "Enable the paired device to control the system volume"
-msgstr ""
-"Habilitar el dispositivo emparejado para controlar el volumen del sistema"
+msgstr "Habilitar el dispositivo emparejado para controlar el volumen del sistema"
 
 #: src/service/plugins/systemvolume.js:56
 msgid "PulseAudio not found"
 msgstr "No se encontró PulseAudio"
 
 #: src/service/plugins/telephony.js:14
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
-"Ser notificado sobre las llamadas y ajustar el volumen del sistema durante "
-"las llamadas que suenan/están en curso"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgstr "Ser notificado sobre las llamadas y ajustar el volumen del sistema durante las llamadas que suenan/están en curso"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:26
@@ -1241,8 +1200,7 @@ msgstr "Responder"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:31
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
-"Comparta enlaces con GSConnect, directamente al navegador o a través de SMS."
+msgstr "Comparta enlaces con GSConnect, directamente al navegador o a través de SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:35
