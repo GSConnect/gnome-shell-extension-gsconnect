@@ -3,20 +3,18 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-10-26 19:12-0700\n"
-"PO-Revision-Date: 2022-09-25 02:53\n"
+"PO-Revision-Date: 2022-10-27 02:23\n"
 "Last-Translator: \n"
 "Language-Team: Arabic\n"
 "Language: ar_SA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
-"&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: ar\n"
-"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org."
-"gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -34,19 +32,12 @@ msgid "GSConnect Team"
 msgstr "فريق GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:32
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr "GSConnect هو تنفيذ كامل لـ KDE Connect خاصة لـ GNOME Shell مع تكامل Nautilus و Chrome و Firefox. فريق KDE Connect لديه تطبيقات لـ Linux و BSD و Android و Sailfish و iOS و macOS و Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:35
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"مع GSConnect يمكنك الاتصال الآمن بالأجهزة المحمولة وغيرها من أجهزة المكتب "
-"إلى:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
+msgstr "مع GSConnect يمكنك الاتصال الآمن بالأجهزة المحمولة وغيرها من أجهزة المكتب إلى:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
 msgid "Share files, links and text"
@@ -190,14 +181,16 @@ msgid "Select or start a conversation"
 msgstr "تحديد أو بدء محادثة"
 
 #: data/ui/mousepad-input-dialog.ui:90
-msgid ""
-"Touchpad.\n"
+msgid "Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n"
-"\n"
+"Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr ""
+msgstr "Touchpad.\n"
+"اسحب على هذه المنطقة لتحريك مؤشر الماوس.\n"
+"اضغط مطولاً للسحب لسحب مؤشر الماوس.\n\n"
+"سيتم إرسال النقر البسيط إلى الجهاز المقترن.\n"
+"التمرير من اليسار والوسط واليمين والعجلة."
 
 #: data/ui/preferences-command-editor.ui:7
 msgid "Edit Command"
@@ -575,12 +568,8 @@ msgid "Something’s gone wrong"
 msgstr "حدث خطأ ما"
 
 #: data/ui/service-error-dialog.ui:84
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
-"واجه GSConnect خطأ غير متوقع. يرجى الإبلاغ عن المشكلة وإدراج أي معلومات قد "
-"تساعد."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "واجه GSConnect خطأ غير متوقع. يرجى الإبلاغ عن المشكلة وإدراج أي معلومات قد تساعد."
 
 #: data/ui/service-error-dialog.ui:118
 msgid "Technical Details"
@@ -631,12 +620,8 @@ msgid "translator-credits"
 msgstr "المترجمين"
 
 #: src/preferences/service.js:411
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"يتم تسجيل رسائل تصحيح الأخطاء. اتخاذ أي خطوات ضرورية لإعادة تكرار مشكلة ثم "
-"مراجعة السجل."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "يتم تسجيل رسائل تصحيح الأخطاء. اتخاذ أي خطوات ضرورية لإعادة تكرار مشكلة ثم مراجعة السجل."
 
 #: src/preferences/service.js:414
 msgid "Review Log"
@@ -768,9 +753,9 @@ msgstr "جهاز البلوتوث في %s"
 #.
 #. Verification key: 0123456789abcdef000000000000000000000000
 #: src/service/device.js:210
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "Verification key: %s"
-msgstr "الإشعارات"
+msgstr ""
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:839
@@ -787,8 +772,7 @@ msgid "Accept"
 msgstr "قبول"
 
 #: src/service/manager.js:114
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "تم تعطيل الاكتشاف بسبب عدد الأجهزة على هذه الشبكة."
 
 #: src/service/backends/lan.js:162
@@ -877,7 +861,7 @@ msgstr "تمكين الجهاز المقترن للعمل كفأرة عن بعد
 
 #: src/service/plugins/mousepad.js:27 src/service/ui/mousepad.js:105
 msgid "Remote Input"
-msgstr ""
+msgstr "الإدخال عن بعد"
 
 #: src/service/plugins/mpris.js:15
 msgid "MPRIS"
@@ -951,12 +935,8 @@ msgid "Run Commands"
 msgstr "تشغيل الأوامر"
 
 #: src/service/plugins/runcommand.js:13
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
-msgstr ""
-"تشغيل الأوامر على جهازك المقترن أو السماح للجهاز بتشغيل الأوامر المحددة "
-"مسبقاً على هذا الكمبيوتر"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
+msgstr "تشغيل الأوامر على جهازك المقترن أو السماح للجهاز بتشغيل الأوامر المحددة مسبقاً على هذا الكمبيوتر"
 
 #: src/service/plugins/sftp.js:13
 msgid "SFTP"
@@ -1067,9 +1047,7 @@ msgstr "الرسائل القصيرة"
 
 #: src/service/plugins/sms.js:15
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
-"إرسال وقراءة الرسائل القصيرة للجهاز المقترن مع إعلامك بالرسائل القصيرة "
-"الجديدة"
+msgstr "إرسال وقراءة الرسائل القصيرة للجهاز المقترن مع إعلامك بالرسائل القصيرة الجديدة"
 
 #: src/service/plugins/sms.js:36
 msgid "New SMS (URI)"
@@ -1096,11 +1074,8 @@ msgid "PulseAudio not found"
 msgstr "لم يتم العثور على PulseAudio"
 
 #: src/service/plugins/telephony.js:14
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
-"يتم إشعاره بالمكالمات وتعديل مستوى صوت النظام أثناء الرنين / المكالمات "
-"الجارية"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgstr "يتم إشعاره بالمكالمات وتعديل مستوى صوت النظام أثناء الرنين / المكالمات الجارية"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:26
@@ -1233,8 +1208,7 @@ msgstr "الرد"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:31
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
-"مشاركة الروابط مع GSConnect، مباشرة إلى المتصفح أو بواسطة الرسائل القصيرة."
+msgstr "مشاركة الروابط مع GSConnect، مباشرة إلى المتصفح أو بواسطة الرسائل القصيرة."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:35
