@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-10-26 19:12-0700\n"
-"PO-Revision-Date: 2022-10-27 02:23\n"
+"PO-Revision-Date: 2022-11-06 13:40\n"
 "Last-Translator: \n"
 "Language-Team: Catalan\n"
 "Language: ca_ES\n"
@@ -752,7 +752,7 @@ msgstr "Dispositiu Bluetooth a %s"
 #: src/service/device.js:210
 #, javascript-format
 msgid "Verification key: %s"
-msgstr ""
+msgstr "Clau de verificació: %s"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:839
@@ -992,7 +992,7 @@ msgstr "S’ha rebut «%s» del %s"
 
 #: src/service/plugins/share.js:185
 msgid "Show File Location"
-msgstr ""
+msgstr "Mostra la ubicació del fitxer"
 
 #: src/service/plugins/share.js:190
 msgid "Open File"
