@@ -110,6 +110,26 @@ if eslint.found()
   )
 endif
 
+black = find_program('black', required: false)
+if black.found()
+  test('Python Black (Nautilus Extension)', black,
+    args: [
+      '--check',
+      '--diff',
+      join_paths(meson.project_source_root(), 'nautilus-extension')
+    ],
+    suite: 'lint-python',
+  )
+endif
+
+flake8 = find_program('flake8', required: false)
+if flake8.found()
+  test('Python Flake8 (Nautilus Extension)', flake8,
+    args: join_paths(meson.project_source_root(), 'nautilus-extension'),
+    suite: 'lint-python',
+  )
+endif
+
 
 subdir('data')
 subdir('installed-tests')
