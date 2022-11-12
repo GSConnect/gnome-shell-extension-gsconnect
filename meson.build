@@ -118,7 +118,7 @@ if black.found()
       '--diff',
       join_paths(meson.project_source_root(), 'nautilus-extension')
     ],
-    suite: 'lint-python',
+    suite: 'lint',
   )
 endif
 
@@ -126,7 +126,7 @@ flake8 = find_program('flake8', required: false)
 if flake8.found()
   test('Python Flake8 (Nautilus Extension)', flake8,
     args: join_paths(meson.project_source_root(), 'nautilus-extension'),
-    suite: 'lint-python',
+    suite: 'lint',
   )
 endif
 
