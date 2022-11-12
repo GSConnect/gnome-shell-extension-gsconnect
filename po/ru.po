@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-10-26 19:12-0700\n"
-"PO-Revision-Date: 2022-10-27 02:23\n"
+"PO-Revision-Date: 2022-11-12 15:01\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Language: ru_RU\n"
@@ -33,7 +33,7 @@ msgstr "Команда GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:32
 msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
+msgstr "GSConnect - это полная реализация KDE Connect для GNOME Shell с интеграцией в Nautilus, Chrome и Firefox. Команда KDE Connect также имеет приложения для Linux, BSD, Android, Sailfish, iOS, macOS и Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:35
 msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
@@ -578,7 +578,7 @@ msgstr "Отправить на устройство"
 
 #: src/extension.js:46
 msgid "Sync between your devices"
-msgstr ""
+msgstr "Синхронизируйтесь между своими устройствами"
 
 #: src/preferences/device.js:669 src/preferences/device.js:675
 msgid "Edit"
@@ -751,7 +751,7 @@ msgstr "Bluetooth устройство на %s"
 #: src/service/device.js:210
 #, javascript-format
 msgid "Verification key: %s"
-msgstr ""
+msgstr "Ключ проверки: %s"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:839
@@ -857,7 +857,7 @@ msgstr "Позволяет сопряжённому устройству уда�
 
 #: src/service/plugins/mousepad.js:27 src/service/ui/mousepad.js:105
 msgid "Remote Input"
-msgstr ""
+msgstr "Удалённый Ввод"
 
 #: src/service/plugins/mpris.js:15
 msgid "MPRIS"
@@ -991,7 +991,7 @@ msgstr "Получен «%s» от %s"
 
 #: src/service/plugins/share.js:185
 msgid "Show File Location"
-msgstr ""
+msgstr "Показать Расположение Файла"
 
 #: src/service/plugins/share.js:190
 msgid "Open File"
