@@ -96,7 +96,7 @@ function getDeviceElement(device) {
 
 
 /**
- * Populate the browserAction popup
+ * Populate the action popup
  */
 function setPopup() {
     const devNode = document.getElementById('popup');

@@ -47,11 +47,11 @@ function toggleAction(tab = null) {
     try {
         // Disable on "about:" pages
         if (_ABOUT.test(tab.url))
-            browser.browserAction.disable(tab.id);
+            browser.action.disable(tab.id);
         else
-            browser.browserAction.enable(tab.id);
+            browser.action.enable(tab.id);
     } catch (e) {
-        browser.browserAction.disable();
+        browser.action.disable();
     }
 }
 
@@ -79,7 +79,7 @@ async function postMessage(message) {
 
 
 /**
- * Forward a message from the browserAction popup to the NMH
+ * Forward a message from the action popup to the NMH
  *
  * @param {Object} message - A message from the NMH to forward
  * @param {*} sender - A message from the NMH to forward
@@ -96,7 +96,7 @@ async function onPopupMessage(message, sender, sendResponse) {
 
 
 /**
- * Forward a message from the NMH to the browserAction popup
+ * Forward a message from the NMH to the action popup
  *
  * @param {Object} message - A message from the NMH to forward
  */
@@ -305,8 +305,8 @@ async function onDisconnect(port) {
     try {
         State.connected = false;
         State.port = null;
-        browser.browserAction.setBadgeText({text: '\u26D4'});
-        browser.browserAction.setBadgeBackgroundColor({color: [198, 40, 40, 255]});
+        browser.action.setBadgeText({text: '\u26D4'});
+        browser.action.setBadgeBackgroundColor({color: [198, 40, 40, 255]});
         forwardPortMessage({type: 'connected', data: false});
 
         // Clear context menu
@@ -347,8 +347,8 @@ async function connect() {
         State.port = browser.runtime.connectNative('org.gnome.shell.extensions.gsconnect');
 
         // Clear the badge and tell the popup we're disconnected
-        browser.browserAction.setBadgeText({text: ''});
-        browser.browserAction.setBadgeBackgroundColor({color: [0, 0, 0, 0]});
+        browser.action.setBadgeText({text: ''});
+        browser.action.setBadgeBackgroundColor({color: [0, 0, 0, 0]});
 
         // Reset the back-off delay if we stay connected
         reconnectResetTimer = window.setTimeout(() => {
@@ -365,10 +365,10 @@ async function connect() {
 }
 
 
-// Forward messages from the browserAction popup
+// Forward messages from the action popup
 browser.runtime.onMessage.addListener(onPopupMessage);
 
-// Keep browserAction up to date
+// Keep action up to date
 browser.tabs.onActivated.addListener((info) => {
     browser.tabs.get(info.tabId).then(toggleAction);
 });
@@ -390,7 +390,7 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
 
 /**
- * Startup: set initial state of the browserAction and try to connect
+ * Startup: set initial state of the action and try to connect
  */
 toggleAction();
 connect();

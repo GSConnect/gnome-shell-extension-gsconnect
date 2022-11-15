@@ -1,11 +1,11 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "__MSG_extensionName__",
   "description": "__MSG_extensionDescription__",
   "version": "8",
   "homepage_url": "https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki",
   "default_locale": "en",
-  "browser_action": {
+  "action": {
     "default_title": "__MSG_extensionName__",
     "default_popup": "popup.html",
     "default_icon": {
@@ -20,7 +20,7 @@
     }
   },
   "background": {
-    "page": "background.html"
+    "service_workers": "background.html"
   },
   "permissions": [
     "nativeMessaging",
