@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+
+SPDX-License-Identifier: GPL-2.0-or-later
+-->
+
 <service>
   <short>GSConnect</short>
   <description>KDE Connect implementation for GNOME</description>
