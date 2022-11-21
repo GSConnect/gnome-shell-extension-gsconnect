@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 var PACKAGE_VERSION = @PACKAGE_VERSION@;
 var PACKAGE_URL = '@PACKAGE_URL@';
 var PACKAGE_BUGREPORT = '@PACKAGE_BUGREPORT@';

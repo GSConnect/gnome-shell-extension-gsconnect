@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+
 backend_tests_execdir = join_paths(installed_tests_execdir, 'backends')
 backend_tests_metadir = join_paths(installed_tests_metadir, 'backends')
 

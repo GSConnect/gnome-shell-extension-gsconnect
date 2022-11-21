@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+
 # A script for building GSConnect WebExtension zips for Chrome or Firefox.
 # TODO: Mozilla Firefox extension requires node 'web-ext'
 

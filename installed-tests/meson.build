@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+
 installed_tests_execdir = join_paths(libexecdir, 'installed-tests', meson.project_name())
 installed_tests_metadir = join_paths(datadir, 'installed-tests', meson.project_name())
 

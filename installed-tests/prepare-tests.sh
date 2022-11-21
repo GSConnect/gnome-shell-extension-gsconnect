@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+
 APP_ID="org.gnome.Shell.Extensions.GSConnect"
 #G_TEST_BUILDDIR=${MESON_BUILD_ROOT}/installed-tests
 

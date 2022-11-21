@@ -1,0 +1,23 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: gnome-shell-extension-gsconnect
+Upstream-Contact: GSConnect Developers <>
+Source: https://github.com/GSConnect/gnome-shell-extension-gsconnect
+
+# Sample paragraph, commented out:
+#
+# Files: src/*
+# Copyright: $YEAR $NAME <$CONTACT>
+# License: ...
+
+Files: data/icons/* data/images/* data/metainfo/*.png
+Copyright: GSConnect Developers <>
+License: GPL-2.0-or-later
+
+Files: installed-tests/data/*
+Copyright: GSConnect Developers <>
+License: GPL-2.0-or-later
+
+Files: webextension/images/*
+Copyright: GSConnect Developers <>
+License: GPL-2.0-or-later
+

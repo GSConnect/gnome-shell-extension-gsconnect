@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+
 # AppStream MetaInfo
 metainfo_file = i18n.merge_file(
   input: app_id + '.metainfo.xml.in',
