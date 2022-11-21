@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+
 export DESTDIR="${MESON_BUILD_ROOT}/_zip"
 
 ZIP_DIR="${MESON_BUILD_ROOT}/${UUID}"
