@@ -1,0 +1,121 @@
+# SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+name: Bug report
+description: Report an issue to help us improve GSConnect
+body:
+- type: markdown
+  attributes:
+    value: "> **ATTENTION**: GSConnect only supports the latest, stable version of GNOME. We are no longer accepting bug reports for previous versions."
+
+- type: textarea
+  id: summary
+  attributes:
+    label: Describe the bug
+    description: "A clear and concise description of what the bug is."
+  validations:
+    required: true
+
+- type: textarea
+  id: repro
+  attributes:
+    label: Steps to reproduce
+    description: "List the steps to perform that will trigger the bug."
+    placeholder: |
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+        4. See error
+
+- type: textarea
+  id: expected
+  attributes:
+    label: Expected behavior
+    description: "A clear and concise description of what you expected to happen."
+
+- type: markdown
+  attributes:
+    value: "# System details"
+
+- type: input
+  id: gsconnect_version
+  attributes:
+    label: GSConnect version
+    description: (Launch "Mobile Settings" and select "About" from the menu)
+  validations:
+    required: true
+
+- type: dropdown
+  id: source
+  attributes:
+    label: Installed from
+    options:
+      - GNOME Extensions website
+      - GitHub releases (zip file)
+      - OS package manager
+      - Extension Manager
+      - other source
+  validations:
+    required: true
+
+- type: input
+  id: shell_version
+  attributes:
+    label: GNOME Shell version
+
+- type: input
+  id: distro
+  attributes:
+    label: Linux distribution/release
+    placeholder: "Ubuntu 22.04, Fedora 37, Debian 11, Arch, etc."
+
+- type: markdown
+  attributes:
+    value: "# GSConnect environment"
+
+- type: input
+  id: devices
+  attributes:
+    label: Paired device(s)
+    placeholder: Pixel 7, Motorola edge 2022, Lenovo Tab P11, etc...
+
+- type: input
+  id: app_version
+  attributes:
+    label: KDE Connect app version
+    description: (Open the app's menu and tap "About")
+    placeholder: 1.19.1
+
+- type: input
+  id: plugins
+  attributes:
+    label: Plugin(s)
+    description: "(If the issue only occurs with certain plugins enabled, list them here.)"
+
+- type: markdown
+  attributes:
+    value: "# Additional materials"
+
+- type: textarea
+  id: logs
+  attributes:
+    label: Support log
+    description: "Please generate a support log ([Instructions](../wiki/Help#generate-support-log))"
+    placeholder: "Paste any support log messages related to this issue here."
+    render: plain text
+
+- type: textarea
+  id: screenshots
+  attributes:
+    label: Screenshots
+    description: |
+      If applicable, add screenshots to help explain your problem.
+      You can drag-and-drop or cut-and-paste images into the text areas on this form.
+      Use either the box below, or a different field if appropriate.
+    placeholder: (Drop images here.)
+
+- type: textarea
+  id: notes
+  attributes:
+    label: Notes
+    description: Any other useful details regarding the issue, your system environment, or this report
