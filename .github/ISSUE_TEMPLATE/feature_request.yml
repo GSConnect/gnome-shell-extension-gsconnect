@@ -1,0 +1,99 @@
+# SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+name: Feature request or idea
+description: Suggest an improvement to GSConnect
+labels: enhancement
+body:
+- type: textarea
+  id: summary
+  attributes:
+    label: Describe your request
+    description: >
+      Is your feature request related to a problem?
+      Please provide a clear and concise description of what the problem is.
+    placeholder: I'm always frustrated when [...]
+  validations:
+    required: true
+
+- type: textarea
+  id: solution
+  attributes:
+    label: Proposed solution
+    description: >
+      Describe the solution you'd like.
+      Provide a clear and concise description of what you want to happen.
+    placeholder: It would be great if [...]
+
+- type: textarea
+  id: alternatives
+  attributes:
+    label: Alternatives
+    description: |
+      A clear and concise summary of any alternative solutions or features you've considered.
+
+- type: markdown
+  attributes:
+    value: "# System details"
+
+- type: input
+  id: gsconnect_version
+  attributes:
+    label: GSConnect version
+    description: (Launch "Mobile Settings" and select "About" from the menu)
+  validations:
+    required: true
+
+- type: dropdown
+  id: install_source
+  attributes:
+    label: Installed from
+    options:
+      - GNOME Extensions website
+      - GitHub releases (zip file)
+      - OS package manager
+      - Extension Manager
+      - other source
+  validations:
+    required: true
+
+- type: input
+  id: shell_version
+  attributes:
+    label: GNOME Shell version
+
+- type: input
+  id: distro
+  attributes:
+    label: Linux distribution/release
+    placeholder: "Ubuntu 22.04, Fedora 37, Debian 11, Arch, etc."
+
+- type: textarea
+  id: notes
+  attributes:
+   label: Additional context
+   description: >
+     Add any other context for your suggestion,
+     including screenshots if applicable.
+
+- type: markdown
+  attributes:
+    value: "# All device features must first exist in KDE Connect"
+- type: markdown
+  attributes:
+    value: >
+      GSConnect works in concert with the
+      [KDE Connect](https://community.kde.org/KDEConnect)
+      app on paired Android devices.
+      Communication between GSConnect and the device is controlled by **KDE Connect**,
+      _not_ GSConnect.
+
+
+      Any request that would require features not supported in KDE Connect,
+      or would require GSConnect to deviate from the KDE Connect protocols,
+      cannot be implemented and will not be considered.
+      
+      
+      All such requests should be made to the KDE Connect project.
+      The requested functionality can only be implemented in GSConnect
+      **after** support is added to KDE Connect.
