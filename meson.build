@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+
 project('gsconnect',
   'c',
   version: '54',
@@ -106,6 +110,26 @@ if eslint.found()
   )
   test('ESLint (WebExtension)', eslint,
     args: join_paths(meson.project_source_root(), 'webextension'),
+    suite: 'lint',
+  )
+endif
+
+black = find_program('black', required: false)
+if black.found()
+  test('Python Black (Nautilus Extension)', black,
+    args: [
+      '--check',
+      '--diff',
+      join_paths(meson.project_source_root(), 'nautilus-extension')
+    ],
+    suite: 'lint',
+  )
+endif
+
+flake8 = find_program('flake8', required: false)
+if flake8.found()
+  test('Python Flake8 (Nautilus Extension)', flake8,
+    args: join_paths(meson.project_source_root(), 'nautilus-extension'),
     suite: 'lint',
   )
 endif

@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+
 # Topmost editorconfig for project, don't ascend
 # to parent directories when scanning configs
 root = true
@@ -26,7 +30,7 @@ indent_style = space
 indent_size = 2
 
 # WebExtension templates: 4-space indents
-[data/org.gnome.shell.extensions.gsconnect.json-{chrome,mozilla}]
+[data/webextension/*.in]
 indent_style = space
 indent_size = 4
 

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 'use strict';
 
 const Gio = imports.gi.Gio;
@@ -106,7 +110,9 @@ const ServiceToggle = GObject.registerClass({
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
         // Service Menu -> "Mobile Settings"
-        this.menu.addAction(_('Mobile Settings'), this._preferences);
+        this.menu.addSettingsAction(
+            _('Mobile Settings'),
+            'org.gnome.Shell.Extensions.GSConnect.Preferences.desktop');
 
         // Prime the service
         this._initService();
@@ -121,10 +127,6 @@ const ServiceToggle = GObject.registerClass({
         } catch (e) {
             logError(e, 'GSConnect');
         }
-    }
-
-    _preferences() {
-        Gio.Subprocess.new([`${Extension.path}/gsconnect-preferences`], 0);
     }
 
     _sync() {

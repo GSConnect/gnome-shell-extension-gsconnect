@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+
+SPDX-License-Identifier: GPL-2.0-or-later
+-->
+
 # GSConnect
 
 [<img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true" alt="Get it on GNOME Extensions" height="100" align="middle">][ego] [<img alt="Available in the Chrome Web Store" src="https://storage.googleapis.com/chrome-gcs-uploader.appspot.com/image/WlD8wC6g8khYWPJUsQceQkhXSlv1/UV4C4ybeBTsZt43U4xis.png" align="middle" hspace="12"/>][chrome] [<img src="https://ffp4g1ylyit3jdyti1hqcvtb-wpengine.netdna-ssl.com/addons/files/2015/11/get-the-addon.png" alt="Get the Add-On" align="middle">][firefox]
@@ -39,6 +45,12 @@ of GSConnect, you can start by [triaging new issues][issues],
 If you need additional permissions, you may request them from one of the
 [current maintainers][people].
 
+## Nightly Builds
+
+For early updaters of GNOME Shell and those that wish to test the upcoming version
+of GSConnect, there are automated builds available for [download][nightly-build].
+See [Installing from Nightly Build][nightly-install] for installation instructions.
+
 [ego]: https://extensions.gnome.org/extension/1319/gsconnect/
 [chrome]: https://chrome.google.com/webstore/detail/gsconnect/jfnifeihccihocjbfcfhicmmgpjicaec
 [firefox]: https://addons.mozilla.org/firefox/addon/gsconnect/
@@ -52,3 +64,5 @@ If you need additional permissions, you may request them from one of the
 [help-wanted]: https://github.com/GSConnect/gnome-shell-extension-gsconnect/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22
 [needs-review]: https://github.com/GSConnect/gnome-shell-extension-gsconnect/pulls?q=is%3Apr+is%3Aopen+label%3A%22needs+review%22
 [people]: https://github.com/orgs/GSConnect/people
+[nightly-build]: https://nightly.link/GSConnect/gnome-shell-extension-gsconnect/workflows/main/main/test-build.zip
+[nightly-install]: https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Installation#install-from-nightly-build

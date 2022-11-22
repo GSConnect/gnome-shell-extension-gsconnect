@@ -1,13 +1,12 @@
-# Persian translations for org.gnome.Shell.Extensions.GSConnect package.
-# Copyright (C) 2021 THE org.gnome.Shell.Extensions.GSConnect'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the org.gnome.Shell.Extensions.GSConnect package.
-# Automatically generated, 2021.
+# SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
 #
+# SPDX-License-Identifier: GPL-2.0-or-later
+
 msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-02 17:35-0700\n"
+"POT-Creation-Date: 2022-10-26 19:12-0700\n"
 "PO-Revision-Date: 2021-10-04 17:41+0330\n"
 "Last-Translator: eshagh <eshagh094@gmail.com>\n"
 "Language-Team: Persian\n"
@@ -33,10 +32,11 @@ msgid "GSConnect Team"
 msgstr "گروه جی‌اس‌کانکت"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:32
+#, fuzzy
 msgid ""
 "GSConnect is a complete implementation of KDE Connect especially for GNOME "
 "Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, macOS and Windows."
+"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
 msgstr ""
 "جی‌اس‌کانکت، پیاده‌سازی کاملی از کی‌دی‌ای کانکت، مخصوص پوستهٔ گنوم با یکپارچگی "
 "ناتیلوس، کروم و فایرفاکس است. گروه کی‌دی‌ای کانکت، برنامه‌هایی برای گنو/لینوکس، "
@@ -86,12 +86,12 @@ msgstr "دستورهای از پیش تعریف‌شده را اجرا کنید"
 msgid "And more…"
 msgstr "و بیش‌تر…"
 
-#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:102
+#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:120
 msgid "GSConnect in GNOME Shell"
 msgstr "جی‌اس‌کانکت در پوستهٔ گنوم"
 
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
-#: data/ui/connect-dialog.ui:13 data/ui/preferences-window.ui:719
+#: data/ui/connect-dialog.ui:13 data/ui/preferences-window.ui:757
 msgid "Connect to…"
 msgstr "وصل شدن به…"
 
@@ -105,7 +105,7 @@ msgstr "وصل شدن به…"
 #: data/ui/service-device-chooser.ui:14 data/ui/service-device-chooser.ui:18
 #: data/ui/service-error-dialog.ui:13 data/ui/service-error-dialog.ui:21
 #: src/preferences/service.js:413 src/service/plugins/share.js:159
-#: src/service/plugins/share.js:287 src/service/plugins/share.js:418
+#: src/service/plugins/share.js:292 src/service/plugins/share.js:423
 msgid "Cancel"
 msgstr "لغو"
 
@@ -122,7 +122,7 @@ msgid "No contacts"
 msgstr "بدون آشنا"
 
 #: data/ui/contact-chooser.ui:61 data/ui/messaging-window.ui:96
-#: data/ui/mousepad-input-dialog.ui:49 data/ui/preferences-window.ui:745
+#: data/ui/mousepad-input-dialog.ui:49 data/ui/preferences-window.ui:783
 msgid "Help"
 msgstr "راهنما"
 
@@ -144,7 +144,7 @@ msgstr "فرستادن پیامک"
 
 #: data/ui/legacy-messaging-dialog.ui:25 data/ui/legacy-messaging-dialog.ui:29
 #: data/ui/notification-reply-dialog.ui:24
-#: data/ui/notification-reply-dialog.ui:28 src/service/plugins/share.js:419
+#: data/ui/notification-reply-dialog.ui:28 src/service/plugins/share.js:424
 msgid "Send"
 msgstr "فرستادن"
 
@@ -170,12 +170,12 @@ msgid "Type a message and press Enter to send"
 msgstr "پیامی نوشته و برای فرستادن، ورود را بزنید"
 
 #: data/ui/messaging-window.ui:14 src/service/plugins/sms.js:28
-#: src/service/ui/messaging.js:1049
+#: src/service/ui/messaging.js:1052
 msgid "Messaging"
 msgstr "پیام‌رسانی"
 
 #: data/ui/messaging-window.ui:23 data/ui/messaging-window.ui:36
-#: src/service/ui/messaging.js:1260
+#: src/service/ui/messaging.js:1263
 msgid "New Conversation"
 msgstr "گفت‌وگوی جدید"
 
@@ -190,6 +190,16 @@ msgstr "گفت‌وگوی گزیده نشده"
 #: data/ui/messaging-window.ui:189
 msgid "Select or start a conversation"
 msgstr "گفت‌وگویی را برگیده یا آغاز کنید"
+
+#: data/ui/mousepad-input-dialog.ui:90
+msgid ""
+"Touchpad.\n"
+"Drag on this area to move mouse cursor.\n"
+"Press long to drag to drag mouse cursor.\n"
+"\n"
+"Simple click will be sent to paired device.\n"
+"Left, middle, right button, and wheel scrolls."
+msgstr ""
 
 #: data/ui/preferences-command-editor.ui:7
 msgid "Edit Command"
@@ -411,7 +421,7 @@ msgid "You may configure this device before pairing"
 msgstr "ممکن است بخواهید پیش از جفت کردن، این افزاره را پیکربندی کنید"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
-#: data/ui/preferences-device-panel.ui:2644 src/preferences/device.js:384
+#: data/ui/preferences-device-panel.ui:2644 src/preferences/device.js:387
 msgid "Encryption Info"
 msgstr "اطّلاعات رمزنگاری"
 
@@ -478,7 +488,7 @@ msgid "Refresh"
 msgstr "نوسازی"
 
 #. Service Menu -> "Mobile Settings"
-#: data/ui/preferences-window.ui:132 src/extension.js:124
+#: data/ui/preferences-window.ui:132 src/extension.js:109
 msgid "Mobile Settings"
 msgstr "تنظیمات تلفن همراه"
 
@@ -506,38 +516,38 @@ msgstr "در جست‌وجوی افزاره‌ها…"
 msgid "Browser Add-Ons"
 msgstr "افزونه‌های مرورگر"
 
-#: data/ui/preferences-window.ui:626
+#: data/ui/preferences-window.ui:664
 msgid "Enable"
 msgstr "به کار انداختن"
 
-#: data/ui/preferences-window.ui:658
+#: data/ui/preferences-window.ui:696
 msgid "This device is invisible to unpaired devices"
 msgstr "این افزاره برای افزاره‌های جفت نشده، نامریی است"
 
-#: data/ui/preferences-window.ui:670 src/service/manager.js:113
+#: data/ui/preferences-window.ui:708 src/service/manager.js:113
 msgid "Discovery Disabled"
 msgstr "کشف از کار افتاد"
 
-#: data/ui/preferences-window.ui:724
+#: data/ui/preferences-window.ui:762
 msgid "Display Mode"
 msgstr "حالت نمایش"
 
 #. TRANSLATORS: Show device indicators in the top bar
-#: data/ui/preferences-window.ui:727
+#: data/ui/preferences-window.ui:765
 msgid "Panel"
 msgstr "تابلو"
 
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
-#: data/ui/preferences-window.ui:733
+#: data/ui/preferences-window.ui:771
 msgid "User Menu"
 msgstr "فهرست کاربر"
 
 #. TRANSLATORS: Generate a support log
-#: data/ui/preferences-window.ui:741 src/preferences/service.js:410
+#: data/ui/preferences-window.ui:779 src/preferences/service.js:410
 msgid "Generate Support Log"
 msgstr "ایجاد گزارش پشتیبانی"
 
-#: data/ui/preferences-window.ui:749
+#: data/ui/preferences-window.ui:787
 msgid "About GSConnect"
 msgstr "دربارهٔ جی‌اس‌کانکت"
 
@@ -579,41 +589,23 @@ msgid "Technical Details"
 msgstr "جزییات فنی"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
-#: nautilus-extension/nautilus-gsconnect.py:164 webextension/gettext.js:33
+#: nautilus-extension/nautilus-gsconnect.py:168 webextension/gettext.js:33
 msgid "Send To Mobile Device"
 msgstr "فرستادن به افزارهٔ همراه"
 
-#. Service Menu
-#: src/extension.js:91 src/extension.js:237
-msgid "Mobile Devices"
-msgstr "افزاره‌های همراه"
+#: src/extension.js:46
+msgid "Sync between your devices"
+msgstr ""
 
-#. TRANSLATORS: A menu option to activate the extension
-#: src/extension.js:119 src/extension.js:380
-msgid "Turn On"
-msgstr "روشن کردن"
-
-#: src/extension.js:232
-#, javascript-format
-msgid "%d Connected"
-msgid_plural "%d Connected"
-msgstr[0] "%d وصل‌شده"
-msgstr[1] "%d وصل‌شده"
-
-#. TRANSLATORS: A menu option to deactivate the extension
-#: src/extension.js:377
-msgid "Turn Off"
-msgstr "خاموش کردن"
-
-#: src/preferences/device.js:666 src/preferences/device.js:672
+#: src/preferences/device.js:669 src/preferences/device.js:675
 msgid "Edit"
 msgstr "ویرایش"
 
-#: src/preferences/device.js:681 src/preferences/device.js:687
+#: src/preferences/device.js:684 src/preferences/device.js:690
 msgid "Remove"
 msgstr "برداشتن"
 
-#: src/preferences/device.js:941 src/preferences/device.js:969
+#: src/preferences/device.js:944 src/preferences/device.js:972
 msgid "Disabled"
 msgstr "از کار افتاده"
 
@@ -754,7 +746,7 @@ msgid "Ring"
 msgstr "زنگ"
 
 #: src/service/daemon.js:507 src/service/plugins/share.js:45
-#: src/service/ui/messaging.js:1243 src/service/ui/messaging.js:1251
+#: src/service/ui/messaging.js:1246 src/service/ui/messaging.js:1254
 msgid "Share Link"
 msgstr "هم‌رسانی پیوند"
 
@@ -766,39 +758,33 @@ msgstr "هم‌رسانی متن"
 msgid "Show release version"
 msgstr "نمایش نگارش ارائه"
 
-#: src/service/device.js:162 src/service/device.js:163
-#: src/service/ui/messaging.js:393
-msgid "Not available"
-msgstr "ناموجود"
-
 #. TRANSLATORS: Bluetooth address for remote device
-#: src/service/device.js:168
+#: src/service/device.js:169
 #, javascript-format
 msgid "Bluetooth device at %s"
 msgstr "دستگاه بلوتوث در %s"
 
-#. TRANSLATORS: Label for TLS Certificate fingerprint
+#. TRANSLATORS: Label for TLS connection verification key
 #.
 #. Example:
 #.
-#. Google Pixel Fingerprint:
-#. 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-#: src/service/device.js:197 src/service/device.js:199
-#, javascript-format
-msgid "%s Fingerprint:"
-msgstr "اثرانگشت %s:"
+#. Verification key: 0123456789abcdef000000000000000000000000
+#: src/service/device.js:210
+#, fuzzy, javascript-format
+msgid "Verification key: %s"
+msgstr "آگاهی‌ها"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
-#: src/service/device.js:793
+#: src/service/device.js:839
 #, javascript-format
 msgid "Pair Request from %s"
 msgstr "درخواست جفت کردن از %s"
 
-#: src/service/device.js:800
+#: src/service/device.js:846
 msgid "Reject"
 msgstr "رد کردن"
 
-#: src/service/device.js:805
+#: src/service/device.js:851
 msgid "Accept"
 msgstr "پذیرش"
 
@@ -892,9 +878,9 @@ msgstr "صفحهٔ موشی"
 msgid "Enables the paired device to act as a remote mouse and keyboard"
 msgstr ""
 
-#: src/service/plugins/mousepad.js:27 src/service/ui/mousepad.js:102
-msgid "Keyboard"
-msgstr "صفحه‌کلید"
+#: src/service/plugins/mousepad.js:27 src/service/ui/mousepad.js:105
+msgid "Remote Input"
+msgstr ""
 
 #: src/service/plugins/mpris.js:15
 msgid "MPRIS"
@@ -933,13 +919,13 @@ msgid "Request the paired device to take a photo and transfer it to this PC"
 msgstr ""
 
 #: src/service/plugins/photo.js:220 src/service/plugins/share.js:128
-#: src/service/plugins/share.js:200 src/service/plugins/share.js:310
+#: src/service/plugins/share.js:204 src/service/plugins/share.js:315
 msgid "Transfer Failed"
 msgstr "جابه‌جایی شکست خورد"
 
 #. TRANSLATORS: eg. Failed to send "photo.jpg" to Google Pixel
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
-#: src/service/plugins/photo.js:222 src/service/plugins/share.js:312
+#: src/service/plugins/photo.js:222 src/service/plugins/share.js:317
 #, javascript-format
 msgid "Failed to send “%s” to %s"
 msgstr "شکست در فرستادن «%s» به %s"
@@ -1008,7 +994,7 @@ msgstr "هم‌رسانی پرونده‌ها و نشانی‌ها میان دس
 msgid "%s is not allowed to upload files"
 msgstr "%s اجازهٔ بارگذاری پرونده‌ها را ندارد"
 
-#: src/service/plugins/share.js:152 src/service/plugins/share.js:280
+#: src/service/plugins/share.js:152 src/service/plugins/share.js:285
 msgid "Transferring File"
 msgstr "در حال جابه‌جایی پرونده‌ها"
 
@@ -1018,7 +1004,7 @@ msgstr "در حال جابه‌جایی پرونده‌ها"
 msgid "Receiving “%s” from %s"
 msgstr "در حال دریافت «%s» از %s"
 
-#: src/service/plugins/share.js:173 src/service/plugins/share.js:300
+#: src/service/plugins/share.js:173 src/service/plugins/share.js:305
 msgid "Transfer Successful"
 msgstr "جابه‌جایی موفق"
 
@@ -1028,50 +1014,50 @@ msgstr "جابه‌جایی موفق"
 msgid "Received “%s” from %s"
 msgstr "«%s» از %s دریافت شد"
 
-#: src/service/plugins/share.js:181
-msgid "Open Folder"
-msgstr "گشودن شاخه"
+#: src/service/plugins/share.js:185
+msgid "Show File Location"
+msgstr ""
 
-#: src/service/plugins/share.js:186
+#: src/service/plugins/share.js:190
 msgid "Open File"
 msgstr "گشودن پرونده"
 
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:202
+#: src/service/plugins/share.js:206
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
 msgstr "شکست در گرفتن «%s» از %s"
 
-#: src/service/plugins/share.js:232
+#: src/service/plugins/share.js:237
 #, javascript-format
 msgid "Text Shared By %s"
 msgstr "متن هم‌رسانده از %s"
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
-#: src/service/plugins/share.js:282
+#: src/service/plugins/share.js:287
 #, javascript-format
 msgid "Sending “%s” to %s"
 msgstr "در حال فرستادن «%s» به %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:302
+#: src/service/plugins/share.js:307
 #, javascript-format
 msgid "Sent “%s” to %s"
 msgstr "«%s» به %s فرستاده شد"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
-#: src/service/plugins/share.js:370
+#: src/service/plugins/share.js:375
 #, javascript-format
 msgid "Send files to %s"
 msgstr "فرستادن پرونده‌ها به %s"
 
 #. TRANSLATORS: Mark the file to be opened once completed
-#: src/service/plugins/share.js:374
+#: src/service/plugins/share.js:379
 msgid "Open when done"
 msgstr "گشودن هنگام اتمام"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
-#: src/service/plugins/share.js:413
+#: src/service/plugins/share.js:418
 #, javascript-format
 msgid "Send a link to %s"
 msgstr "فرستادن پیوندی به %s"
@@ -1122,7 +1108,7 @@ msgstr "خموشی تماس"
 #. TRANSLATORS: No name or phone number
 #. Contact Name
 #: src/service/plugins/telephony.js:153 src/service/plugins/telephony.js:172
-#: src/service/ui/contacts.js:607 src/service/ui/messaging.js:742
+#: src/service/ui/contacts.js:607 src/service/ui/messaging.js:745
 msgid "Unknown Contact"
 msgstr "آشنای ناشناس"
 
@@ -1181,17 +1167,21 @@ msgid_plural "%d minutes"
 msgstr[0] "%d دقیقه"
 msgstr[1] "%d دقیقه"
 
-#: src/service/ui/messaging.js:750
+#: src/service/ui/messaging.js:396
+msgid "Not available"
+msgstr "ناموجود"
+
+#: src/service/ui/messaging.js:753
 msgid "Group Message"
 msgstr "پیام گروهی"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
-#: src/service/ui/messaging.js:765
+#: src/service/ui/messaging.js:768
 #, javascript-format
 msgid "You: %s"
 msgstr "شما: %s"
 
-#: src/service/ui/messaging.js:951
+#: src/service/ui/messaging.js:954
 #, javascript-format
 msgid "And %d other contact"
 msgid_plural "And %d others"
@@ -1199,7 +1189,7 @@ msgstr[0] "و %d آشنای دیگر"
 msgstr[1] "و %d آشنای دیگر"
 
 #. TRANSLATORS: Displayed when the remote keyboard is not ready to accept input
-#: src/service/ui/mousepad.js:110
+#: src/service/ui/mousepad.js:113
 #, javascript-format
 msgid "Remote keyboard on %s is not active"
 msgstr "صفحه‌کلید دوردست روی %s فعّال نیست"
