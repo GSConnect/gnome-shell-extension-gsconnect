@@ -50,9 +50,13 @@ jobs:
         run: |
           ninja -C _build make-zip
 
-      - name: Upload Test Build
+      - name: Stage packaged extension
+        run: |
+          ninja -C _build make-pkgdir
+
+      - name: Create and upload packaged artifact
         uses: actions/upload-artifact@v3
         with:
-          name: test-build
-          path: _build/gsconnect@andyholmes.github.io.zip
+          name: gsconnect@andyholmes.github.io.zip
+          path: _build/gsconnect@andyholmes.github.io/
 
