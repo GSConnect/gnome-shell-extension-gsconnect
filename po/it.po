@@ -1,13 +1,9 @@
-# SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
-#
-# SPDX-License-Identifier: GPL-2.0-or-later
-
 msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-10-26 19:12-0700\n"
-"PO-Revision-Date: 2022-10-27 06:45\n"
+"PO-Revision-Date: 2022-11-23 01:02\n"
 "Last-Translator: \n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
@@ -865,7 +861,7 @@ msgstr "Permette di usare il dispositivo come un mouse e una tastiera"
 
 #: src/service/plugins/mousepad.js:27 src/service/ui/mousepad.js:105
 msgid "Remote Input"
-msgstr "Immissione remoto"
+msgstr "Immissione remota"
 
 #: src/service/plugins/mpris.js:15
 msgid "MPRIS"
