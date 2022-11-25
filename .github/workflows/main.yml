@@ -57,6 +57,6 @@ jobs:
       - name: Create and upload packaged artifact
         uses: actions/upload-artifact@v3
         with:
-          name: gsconnect@andyholmes.github.io.zip
+          name: gsconnect@andyholmes.github.io
           path: _build/gsconnect@andyholmes.github.io/
 
