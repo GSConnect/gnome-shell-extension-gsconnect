@@ -1,14 +1,14 @@
 {
     "extensionName": {
-        "message": "GSConnect",
+        "message": "جی‌اس‌کانکت",
         "description": "The extension name"
     },
     "extensionDescription": {
-        "message": "Hivatkozások megosztása GSConnecttel, közvetlenül a böngészőből vagy SMS-ben.",
+        "message": "با جی‌اس کانکت، پیوندها را با پیامک یا مستقیماً در مرورگر هم‌رسانی کنید.",
         "description": "The extension description"
     },
     "contextMenuMultipleDevices": {
-        "message": "Küldés mobileszközre",
+        "message": "فرستادن به افزارهٔ همراه",
         "description": "Top-level Context Menu label when multiple devices are available"
     },
     "contextMenuSinglePlugin": {
@@ -26,19 +26,19 @@
         }
     },
     "popupMenuDisconnected": {
-        "message": "A szolgáltatás nem érhető el",
+        "message": "خدمت ناموجود",
         "description": "Popup Menu label when disconnected from the GNOME Shell extension"
     },
     "popupMenuNoDevices": {
-        "message": "Nem található eszköz",
+        "message": "هیچ افزاره‌ای پیدا نشد",
         "description": "Popup Menu label when no devices are connected or have supported plugins enabled"
     },
     "shareMessage": {
-        "message": "Megnyitás böngészőben",
+        "message": "گشودن در مرورگر",
         "description": "Context Menu label for opening a link in the device's web browser"
     },
     "smsMessage": {
-        "message": "SMS küldése",
+        "message": "فرستادن پیامک",
         "description": "Context Menu label for sharing a link in an SMS message"
     }
 }

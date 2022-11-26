@@ -4,11 +4,11 @@
         "description": "The extension name"
     },
     "extensionDescription": {
-        "message": "Hivatkozások megosztása GSConnecttel, közvetlenül a böngészőből vagy SMS-ben.",
+        "message": "Dela länkar med GSConnect, direkt till webbläsaren eller med SMS.",
         "description": "The extension description"
     },
     "contextMenuMultipleDevices": {
-        "message": "Küldés mobileszközre",
+        "message": "Skicka till mobil enhet",
         "description": "Top-level Context Menu label when multiple devices are available"
     },
     "contextMenuSinglePlugin": {
@@ -26,19 +26,19 @@
         }
     },
     "popupMenuDisconnected": {
-        "message": "A szolgáltatás nem érhető el",
+        "message": "Tjänsten är inte tillgänglig",
         "description": "Popup Menu label when disconnected from the GNOME Shell extension"
     },
     "popupMenuNoDevices": {
-        "message": "Nem található eszköz",
+        "message": "Ingen enhet hittades",
         "description": "Popup Menu label when no devices are connected or have supported plugins enabled"
     },
     "shareMessage": {
-        "message": "Megnyitás böngészőben",
+        "message": "Öppna i webbläsare",
         "description": "Context Menu label for opening a link in the device's web browser"
     },
     "smsMessage": {
-        "message": "SMS küldése",
+        "message": "Skicka SMS",
         "description": "Context Menu label for sharing a link in an SMS message"
     }
 }
