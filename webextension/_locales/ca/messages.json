@@ -30,7 +30,7 @@
         "description": "Popup Menu label when disconnected from the GNOME Shell extension"
     },
     "popupMenuNoDevices": {
-        "message": "No s'ha trobat cap dispositiu",
+        "message": "No s’ha trobat cap dispositiu",
         "description": "Popup Menu label when no devices are connected or have supported plugins enabled"
     },
     "shareMessage": {
