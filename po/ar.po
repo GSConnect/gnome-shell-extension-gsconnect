@@ -1,13 +1,9 @@
-# SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
-#
-# SPDX-License-Identifier: GPL-2.0-or-later
-
 msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-10-26 19:12-0700\n"
-"PO-Revision-Date: 2022-10-27 02:23\n"
+"PO-Revision-Date: 2022-11-27 18:21\n"
 "Last-Translator: \n"
 "Language-Team: Arabic\n"
 "Language: ar_SA\n"
@@ -586,7 +582,7 @@ msgstr "إرسال إلى جهاز الجوال"
 
 #: src/extension.js:46
 msgid "Sync between your devices"
-msgstr ""
+msgstr "المزامنة بين أجهزتك"
 
 #: src/preferences/device.js:669 src/preferences/device.js:675
 msgid "Edit"
@@ -759,7 +755,7 @@ msgstr "جهاز البلوتوث في %s"
 #: src/service/device.js:210
 #, javascript-format
 msgid "Verification key: %s"
-msgstr ""
+msgstr "مفتاح التحقق: %s"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:839
@@ -999,7 +995,7 @@ msgstr "تلقى \"%s\" من %s"
 
 #: src/service/plugins/share.js:185
 msgid "Show File Location"
-msgstr ""
+msgstr "إظهار موقع الملف"
 
 #: src/service/plugins/share.js:190
 msgid "Open File"
