@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 'use strict';
 
 const Gdk = imports.gi.Gdk;
@@ -33,7 +37,7 @@ var Metadata = {
     ],
     actions: {
         keyboard: {
-            label: _('Keyboard'),
+            label: _('Remote Input'),
             icon_name: 'input-keyboard-symbolic',
 
             parameter_type: null,
@@ -304,10 +308,10 @@ var Plugin = GObject.registerClass({
 
         if (input.key) {
             this._dialog._isAck = true;
-            this._dialog.text.buffer.text += input.key;
+            this._dialog.entry.buffer.text += input.key;
             this._dialog._isAck = false;
         } else if (KeyMap.get(input.specialKey) === Gdk.KEY_BackSpace) {
-            this._dialog.text.emit('backspace');
+            this._dialog.entry.emit('backspace');
         }
     }
 

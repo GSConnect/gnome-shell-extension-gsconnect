@@ -1,9 +1,13 @@
+# SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+
 msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-02 17:35-0700\n"
-"PO-Revision-Date: 2022-05-27 00:13\n"
+"POT-Creation-Date: 2022-10-26 19:12-0700\n"
+"PO-Revision-Date: 2022-10-27 10:52\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "Language: pl_PL\n"
@@ -32,8 +36,8 @@ msgid "GSConnect Team"
 msgstr "Zespół GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:32
-msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, macOS and Windows."
-msgstr "GSConnect to pełna implementacja KDE Connect specjalnie dla Powłoki GNOME z integracją z programami Nautilus, Chrome i Firefox. Zespół KDE Connect ma aplikacje dla systemów Linux, BSD, Android, Sailfish, macOS i Windows."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr "GSConnect to pełna implementacja KDE Connect specjalnie dla Powłoki GNOME z integracją z programami Nautilus, Chrome i Firefox. Zespół KDE Connect ma aplikacje dla systemów Linux, BSD, Android, Sailfish, iOS, macOS i Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:35
 msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
@@ -75,12 +79,12 @@ msgstr "Wykonywać wcześniej określone polecenia"
 msgid "And more…"
 msgstr "I wiele więcej…"
 
-#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:102
+#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:120
 msgid "GSConnect in GNOME Shell"
 msgstr "GSConnect w Powłoce GNOME"
 
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
-#: data/ui/connect-dialog.ui:13 data/ui/preferences-window.ui:719
+#: data/ui/connect-dialog.ui:13 data/ui/preferences-window.ui:757
 msgid "Connect to…"
 msgstr "Połącz z…"
 
@@ -94,7 +98,7 @@ msgstr "Połącz z…"
 #: data/ui/service-device-chooser.ui:14 data/ui/service-device-chooser.ui:18
 #: data/ui/service-error-dialog.ui:13 data/ui/service-error-dialog.ui:21
 #: src/preferences/service.js:413 src/service/plugins/share.js:159
-#: src/service/plugins/share.js:287 src/service/plugins/share.js:418
+#: src/service/plugins/share.js:292 src/service/plugins/share.js:423
 msgid "Cancel"
 msgstr "Anuluj"
 
@@ -111,7 +115,7 @@ msgid "No contacts"
 msgstr "Brak kontaktów"
 
 #: data/ui/contact-chooser.ui:61 data/ui/messaging-window.ui:96
-#: data/ui/mousepad-input-dialog.ui:49 data/ui/preferences-window.ui:745
+#: data/ui/mousepad-input-dialog.ui:49 data/ui/preferences-window.ui:783
 msgid "Help"
 msgstr "Pomoc"
 
@@ -133,7 +137,7 @@ msgstr "Wyślij SMS"
 
 #: data/ui/legacy-messaging-dialog.ui:25 data/ui/legacy-messaging-dialog.ui:29
 #: data/ui/notification-reply-dialog.ui:24
-#: data/ui/notification-reply-dialog.ui:28 src/service/plugins/share.js:419
+#: data/ui/notification-reply-dialog.ui:28 src/service/plugins/share.js:424
 msgid "Send"
 msgstr "Wyślij"
 
@@ -159,12 +163,12 @@ msgid "Type a message and press Enter to send"
 msgstr "Proszę wpisać wiadomość i nacisnąć klawisz Enter, aby ją wysłać"
 
 #: data/ui/messaging-window.ui:14 src/service/plugins/sms.js:28
-#: src/service/ui/messaging.js:1049
+#: src/service/ui/messaging.js:1052
 msgid "Messaging"
 msgstr "Wiadomości"
 
 #: data/ui/messaging-window.ui:23 data/ui/messaging-window.ui:36
-#: src/service/ui/messaging.js:1260
+#: src/service/ui/messaging.js:1263
 msgid "New Conversation"
 msgstr "Nowa rozmowa"
 
@@ -179,6 +183,18 @@ msgstr "Nie wybrano rozmowy"
 #: data/ui/messaging-window.ui:189
 msgid "Select or start a conversation"
 msgstr "Wybierz lub rozpocznij rozmowę"
+
+#: data/ui/mousepad-input-dialog.ui:90
+msgid "Touchpad.\n"
+"Drag on this area to move mouse cursor.\n"
+"Press long to drag to drag mouse cursor.\n\n"
+"Simple click will be sent to paired device.\n"
+"Left, middle, right button, and wheel scrolls."
+msgstr "Panel dotykowy.\n"
+"Przeciągnięcie na tym obszarze przeniesie kursor myszy.\n"
+"Długie naciśnięcie przeciągnie kursor myszy.\n\n"
+"Proste kliknięcie zostanie wysłane do połączonego urządzenia.\n"
+"Lewy, środkowy, prawy przycisk i przewinięcia kółkiem."
 
 #: data/ui/preferences-command-editor.ui:7
 msgid "Edit Command"
@@ -400,7 +416,7 @@ msgid "You may configure this device before pairing"
 msgstr "Można skonfigurować to urządzenie przed powiązaniem"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
-#: data/ui/preferences-device-panel.ui:2644 src/preferences/device.js:384
+#: data/ui/preferences-device-panel.ui:2644 src/preferences/device.js:387
 msgid "Encryption Info"
 msgstr "Informacje o szyfrowaniu"
 
@@ -467,7 +483,7 @@ msgid "Refresh"
 msgstr "Odśwież"
 
 #. Service Menu -> "Mobile Settings"
-#: data/ui/preferences-window.ui:132 src/extension.js:124
+#: data/ui/preferences-window.ui:132 src/extension.js:109
 msgid "Mobile Settings"
 msgstr "Ustawienia urządzeń mobilnych"
 
@@ -495,38 +511,38 @@ msgstr "Wyszukiwanie urządzeń…"
 msgid "Browser Add-Ons"
 msgstr "Dodatki do przeglądarek"
 
-#: data/ui/preferences-window.ui:626
+#: data/ui/preferences-window.ui:664
 msgid "Enable"
 msgstr "Włącz"
 
-#: data/ui/preferences-window.ui:658
+#: data/ui/preferences-window.ui:696
 msgid "This device is invisible to unpaired devices"
 msgstr "To urządzenie jest niewidoczne dla niepowiązanych urządzeń"
 
-#: data/ui/preferences-window.ui:670 src/service/manager.js:113
+#: data/ui/preferences-window.ui:708 src/service/manager.js:113
 msgid "Discovery Disabled"
 msgstr "Wykrywanie jest wyłączone"
 
-#: data/ui/preferences-window.ui:724
+#: data/ui/preferences-window.ui:762
 msgid "Display Mode"
 msgstr "Tryb wyświetlania"
 
 #. TRANSLATORS: Show device indicators in the top bar
-#: data/ui/preferences-window.ui:727
+#: data/ui/preferences-window.ui:765
 msgid "Panel"
 msgstr "Panel"
 
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
-#: data/ui/preferences-window.ui:733
+#: data/ui/preferences-window.ui:771
 msgid "User Menu"
 msgstr "Menu użytkownika"
 
 #. TRANSLATORS: Generate a support log
-#: data/ui/preferences-window.ui:741 src/preferences/service.js:410
+#: data/ui/preferences-window.ui:779 src/preferences/service.js:410
 msgid "Generate Support Log"
 msgstr "Utwórz dziennik wsparcia"
 
-#: data/ui/preferences-window.ui:749
+#: data/ui/preferences-window.ui:787
 msgid "About GSConnect"
 msgstr "O programie"
 
@@ -564,43 +580,23 @@ msgid "Technical Details"
 msgstr "Informacje techniczne"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
-#: nautilus-extension/nautilus-gsconnect.py:164 webextension/gettext.js:33
+#: nautilus-extension/nautilus-gsconnect.py:168 webextension/gettext.js:33
 msgid "Send To Mobile Device"
 msgstr "Wyślij na urządzenie mobilne"
 
-#. Service Menu
-#: src/extension.js:91 src/extension.js:237
-msgid "Mobile Devices"
-msgstr "Urządzenia mobilne"
+#: src/extension.js:46
+msgid "Sync between your devices"
+msgstr "Synchronizacja pomiędzy urządzeniami"
 
-#. TRANSLATORS: A menu option to activate the extension
-#: src/extension.js:119 src/extension.js:380
-msgid "Turn On"
-msgstr "Włącz"
-
-#: src/extension.js:232
-#, javascript-format
-msgid "%d Connected"
-msgid_plural "%d Connected"
-msgstr[0] "%d połączone urządzenie"
-msgstr[1] "%d połączone urządzenia"
-msgstr[2] "%d połączonych urządzeń"
-msgstr[3] "%d połączonych urządzeń"
-
-#. TRANSLATORS: A menu option to deactivate the extension
-#: src/extension.js:377
-msgid "Turn Off"
-msgstr "Wyłącz"
-
-#: src/preferences/device.js:666 src/preferences/device.js:672
+#: src/preferences/device.js:669 src/preferences/device.js:675
 msgid "Edit"
 msgstr "Modyfikuje"
 
-#: src/preferences/device.js:681 src/preferences/device.js:687
+#: src/preferences/device.js:684 src/preferences/device.js:690
 msgid "Remove"
 msgstr "Usuwa"
 
-#: src/preferences/device.js:941 src/preferences/device.js:969
+#: src/preferences/device.js:944 src/preferences/device.js:972
 msgid "Disabled"
 msgstr "Wyłączone"
 
@@ -739,7 +735,7 @@ msgid "Ring"
 msgstr "Zadzwoń"
 
 #: src/service/daemon.js:507 src/service/plugins/share.js:45
-#: src/service/ui/messaging.js:1243 src/service/ui/messaging.js:1251
+#: src/service/ui/messaging.js:1246 src/service/ui/messaging.js:1254
 msgid "Share Link"
 msgstr "Udostępnij odnośnik"
 
@@ -751,39 +747,33 @@ msgstr "Udostępnij tekst"
 msgid "Show release version"
 msgstr "Wyświetla wersję wydania"
 
-#: src/service/device.js:162 src/service/device.js:163
-#: src/service/ui/messaging.js:393
-msgid "Not available"
-msgstr "Niedostępne"
-
 #. TRANSLATORS: Bluetooth address for remote device
-#: src/service/device.js:168
+#: src/service/device.js:169
 #, javascript-format
 msgid "Bluetooth device at %s"
 msgstr "Urządzenie Bluetooth pod adresem %s"
 
-#. TRANSLATORS: Label for TLS Certificate fingerprint
+#. TRANSLATORS: Label for TLS connection verification key
 #.
 #. Example:
 #.
-#. Google Pixel Fingerprint:
-#. 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-#: src/service/device.js:197 src/service/device.js:199
+#. Verification key: 0123456789abcdef000000000000000000000000
+#: src/service/device.js:210
 #, javascript-format
-msgid "%s Fingerprint:"
-msgstr "Odcisk urządzenia %s:"
+msgid "Verification key: %s"
+msgstr "Klucz weryfikacji: %s"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
-#: src/service/device.js:793
+#: src/service/device.js:839
 #, javascript-format
 msgid "Pair Request from %s"
 msgstr "Prośba o powiązanie z urządzenia %s"
 
-#: src/service/device.js:800
+#: src/service/device.js:846
 msgid "Reject"
 msgstr "Odrzuć"
 
-#: src/service/device.js:805
+#: src/service/device.js:851
 msgid "Accept"
 msgstr "Przyjmij"
 
@@ -875,9 +865,9 @@ msgstr "Podkładka pod mysz"
 msgid "Enables the paired device to act as a remote mouse and keyboard"
 msgstr "Umożliwienie używania powiązanego urządzenia jako zdalnej myszy i klawiatury"
 
-#: src/service/plugins/mousepad.js:27 src/service/ui/mousepad.js:102
-msgid "Keyboard"
-msgstr "Klawiatura"
+#: src/service/plugins/mousepad.js:27 src/service/ui/mousepad.js:105
+msgid "Remote Input"
+msgstr "Zdalne sterowanie"
 
 #: src/service/plugins/mpris.js:15
 msgid "MPRIS"
@@ -916,13 +906,13 @@ msgid "Request the paired device to take a photo and transfer it to this PC"
 msgstr "Powiązane urządzenie robi zdjęcie i przesyła je do komputera"
 
 #: src/service/plugins/photo.js:220 src/service/plugins/share.js:128
-#: src/service/plugins/share.js:200 src/service/plugins/share.js:310
+#: src/service/plugins/share.js:204 src/service/plugins/share.js:315
 msgid "Transfer Failed"
 msgstr "Przesłanie się nie powiodło"
 
 #. TRANSLATORS: eg. Failed to send "photo.jpg" to Google Pixel
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
-#: src/service/plugins/photo.js:222 src/service/plugins/share.js:312
+#: src/service/plugins/photo.js:222 src/service/plugins/share.js:317
 #, javascript-format
 msgid "Failed to send “%s” to %s"
 msgstr "Wysłanie „%s” do urządzenia %s się nie powiodło"
@@ -989,7 +979,7 @@ msgstr "Udostępnianie plików i adresów URL między urządzeniami"
 msgid "%s is not allowed to upload files"
 msgstr "Urządzenie %s nie może wysyłać plików"
 
-#: src/service/plugins/share.js:152 src/service/plugins/share.js:280
+#: src/service/plugins/share.js:152 src/service/plugins/share.js:285
 msgid "Transferring File"
 msgstr "Przesyłanie pliku"
 
@@ -999,7 +989,7 @@ msgstr "Przesyłanie pliku"
 msgid "Receiving “%s” from %s"
 msgstr "Odbieranie „%s” z urządzenia %s"
 
-#: src/service/plugins/share.js:173 src/service/plugins/share.js:300
+#: src/service/plugins/share.js:173 src/service/plugins/share.js:305
 msgid "Transfer Successful"
 msgstr "Pomyślnie przesłano"
 
@@ -1009,50 +999,50 @@ msgstr "Pomyślnie przesłano"
 msgid "Received “%s” from %s"
 msgstr "Odebrano „%s” z urządzenia %s"
 
-#: src/service/plugins/share.js:181
-msgid "Open Folder"
-msgstr "Otwórz katalog"
+#: src/service/plugins/share.js:185
+msgid "Show File Location"
+msgstr "Wyświetl położenie pliku"
 
-#: src/service/plugins/share.js:186
+#: src/service/plugins/share.js:190
 msgid "Open File"
 msgstr "Otwórz plik"
 
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:202
+#: src/service/plugins/share.js:206
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
 msgstr "Odebranie „%s” z urządzenia %s się nie powiodło"
 
-#: src/service/plugins/share.js:232
+#: src/service/plugins/share.js:237
 #, javascript-format
 msgid "Text Shared By %s"
 msgstr "Tekst udostępniony przez: %s"
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
-#: src/service/plugins/share.js:282
+#: src/service/plugins/share.js:287
 #, javascript-format
 msgid "Sending “%s” to %s"
 msgstr "Wysyłanie „%s” do urządzenia %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:302
+#: src/service/plugins/share.js:307
 #, javascript-format
 msgid "Sent “%s” to %s"
 msgstr "Wysłano „%s” do urządzenia %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
-#: src/service/plugins/share.js:370
+#: src/service/plugins/share.js:375
 #, javascript-format
 msgid "Send files to %s"
 msgstr "Wysłanie plików do urządzenia %s"
 
 #. TRANSLATORS: Mark the file to be opened once completed
-#: src/service/plugins/share.js:374
+#: src/service/plugins/share.js:379
 msgid "Open when done"
 msgstr "Otwarcie po ukończeniu"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
-#: src/service/plugins/share.js:413
+#: src/service/plugins/share.js:418
 #, javascript-format
 msgid "Send a link to %s"
 msgstr "Wysyła odnośnik do urządzenia %s"
@@ -1102,7 +1092,7 @@ msgstr "Wycisz połączenie"
 #. TRANSLATORS: No name or phone number
 #. Contact Name
 #: src/service/plugins/telephony.js:153 src/service/plugins/telephony.js:172
-#: src/service/ui/contacts.js:607 src/service/ui/messaging.js:742
+#: src/service/ui/contacts.js:607 src/service/ui/messaging.js:745
 msgid "Unknown Contact"
 msgstr "Nieznany kontakt"
 
@@ -1163,17 +1153,21 @@ msgstr[1] "%d minuty"
 msgstr[2] "%d minut"
 msgstr[3] "%d minut"
 
-#: src/service/ui/messaging.js:750
+#: src/service/ui/messaging.js:396
+msgid "Not available"
+msgstr "Niedostępne"
+
+#: src/service/ui/messaging.js:753
 msgid "Group Message"
 msgstr "Wiadomość grupowa"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
-#: src/service/ui/messaging.js:765
+#: src/service/ui/messaging.js:768
 #, javascript-format
 msgid "You: %s"
 msgstr "Ja: %s"
 
-#: src/service/ui/messaging.js:951
+#: src/service/ui/messaging.js:954
 #, javascript-format
 msgid "And %d other contact"
 msgid_plural "And %d others"
@@ -1183,7 +1177,7 @@ msgstr[2] "I %d innych kontaktów"
 msgstr[3] "I %d innych kontaktów"
 
 #. TRANSLATORS: Displayed when the remote keyboard is not ready to accept input
-#: src/service/ui/mousepad.js:110
+#: src/service/ui/mousepad.js:113
 #, javascript-format
 msgid "Remote keyboard on %s is not active"
 msgstr "Zdalna klawiatura na urządzeniu %s nie jest aktywna"

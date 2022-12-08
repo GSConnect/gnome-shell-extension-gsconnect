@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+
 project_identifier: org.gnome.Shell.Extensions.GSConnect
 files:
   - source: /po/org.gnome.Shell.Extensions.GSConnect.pot

@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+
 export DESTDIR="${MESON_BUILD_ROOT}/_zip"
 
 ZIP_DIR="${MESON_BUILD_ROOT}/${UUID}"
@@ -21,6 +25,12 @@ cp -pr ${DESTDIR}/${DATADIR}/nautilus-python/extensions/* ${ZIP_DIR}
 cp -pr ${DESTDIR}/${LOCALEDIR} ${ZIP_DIR}
 cp -pr ${DESTDIR}/${GSCHEMADIR} ${ZIP_DIR}
 glib-compile-schemas ${ZIP_DIR}/schemas
+
+# Stop without zipping dir, if requested
+if [ "$NOZIP" = true ]; then
+    echo "Extension staged in ${ZIP_DIR}";
+    exit 0;
+fi
 
 # COMPRESS
 cd ${ZIP_DIR}

@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+
 name: CI
 
 on:
@@ -13,15 +17,14 @@ jobs:
   test:
     runs-on: ubuntu-latest
     container:
-      image: gsconnect/gsconnect-ci:latest
+      image: ghcr.io/gsconnect/gsconnect-ci:main
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Prepare
         run: |
           meson --prefix=/usr \
                 --libdir=lib/ \
                 -Dgnome_shell_libdir=/usr/lib64/ \
-                -Dpost_install=true \
                 _build
 
       - name: Uninstalled Tests
@@ -38,7 +41,7 @@ jobs:
 
       - name: Upload Test Logs
         if: ${{ always() }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: test-logs
           path: _build/meson-logs
@@ -47,9 +50,13 @@ jobs:
         run: |
           ninja -C _build make-zip
 
-      - name: Upload Test Build
-        uses: actions/upload-artifact@v2
+      - name: Stage packaged extension
+        run: |
+          ninja -C _build make-pkgdir
+
+      - name: Create and upload packaged artifact
+        uses: actions/upload-artifact@v3
         with:
-          name: test-build
-          path: _build/gsconnect@andyholmes.github.io.zip
+          name: gsconnect@andyholmes.github.io
+          path: _build/gsconnect@andyholmes.github.io/
 

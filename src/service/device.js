@@ -1,8 +1,13 @@
+// SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 'use strict';
 
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
+const ByteArray = imports.byteArray;
 
 const Config = imports.config;
 const Components = imports.service.components;
@@ -159,8 +164,8 @@ var Device = GObject.registerClass({
 
     // FIXME: backend should do this stuff
     get encryption_info() {
-        let remoteFingerprint = _('Not available');
-        let localFingerprint = _('Not available');
+        let localCert = null;
+        let remoteCert = null;
 
         // Bluetooth connections have no certificate so we use the host address
         if (this.connection_type === 'bluetooth') {
@@ -169,14 +174,14 @@ var Device = GObject.registerClass({
 
         // If the device is connected use the certificate from the connection
         } else if (this.connected) {
-            remoteFingerprint = this.channel.peer_certificate.sha256();
+            remoteCert = this.channel.peer_certificate;
 
         // Otherwise pull it out of the settings
         } else if (this.paired) {
-            remoteFingerprint = Gio.TlsCertificate.new_from_pem(
+            remoteCert = Gio.TlsCertificate.new_from_pem(
                 this.settings.get_string('certificate-pem'),
                 -1
-            ).sha256();
+            );
         }
 
         // FIXME: another ugly reach-around
@@ -186,18 +191,27 @@ var Device = GObject.registerClass({
             lanBackend = this.service.manager.backends.get('lan');
 
         if (lanBackend && lanBackend.certificate)
-            localFingerprint = lanBackend.certificate.sha256();
+            localCert = lanBackend.certificate;
 
-        // TRANSLATORS: Label for TLS Certificate fingerprint
+
+        let verificationKey = '';
+        if (localCert && remoteCert) {
+            let a = localCert.pubkey_der();
+            let b = remoteCert.pubkey_der();
+            if (a.compare(b) < 0)
+                [a, b] = [b, a]; // swap
+            const checksum = new GLib.Checksum(GLib.ChecksumType.SHA256);
+            checksum.update(ByteArray.fromGBytes(a));
+            checksum.update(ByteArray.fromGBytes(b));
+            verificationKey = checksum.get_string();
+        }
+
+        // TRANSLATORS: Label for TLS connection verification key
         //
         // Example:
         //
-        // Google Pixel Fingerprint:
-        // 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-        return _('%s Fingerprint:').format(this.name) + '\n' +
-            remoteFingerprint + '\n\n' +
-            _('%s Fingerprint:').format('GSConnect') + '\n' +
-            localFingerprint;
+        // Verification key: 0123456789abcdef000000000000000000000000
+        return _('Verification key: %s').format(verificationKey);
     }
 
     get id() {
@@ -486,6 +500,13 @@ var Device = GObject.registerClass({
         openPath.connect('activate', this.openPath);
         this.add_action(openPath);
 
+        const showPathInFolder = new Gio.SimpleAction({
+            name: 'showPathInFolder',
+            parameter_type: new GLib.VariantType('s'),
+        });
+        showPathInFolder.connect('activate', this.showPathInFolder);
+        this.add_action(showPathInFolder);
+
         // Preference helpers
         const clearCache = new Gio.SimpleAction({
             name: 'clearCache',
@@ -738,6 +759,32 @@ var Device = GObject.registerClass({
         // Normalize paths to URIs, assuming local file
         const uri = path.includes('://') ? path : `file://${path}`;
         Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
+    }
+
+    showPathInFolder(action, parameter) {
+        const path = parameter.unpack();
+        const uri = path.includes('://') ? path : `file://${path}`;
+
+        const connection = Gio.DBus.session;
+        connection.call(
+            'org.freedesktop.FileManager1',
+            '/org/freedesktop/FileManager1',
+            'org.freedesktop.FileManager1',
+            'ShowItems',
+            new GLib.Variant('(ass)', [[uri], 's']),
+            null,
+            Gio.DBusCallFlags.NONE,
+            -1,
+            null,
+            (connection, res) => {
+                try {
+                    connection.call_finish(res);
+                } catch (e) {
+                    Gio.DBusError.strip_remote_error(e);
+                    logError(e);
+                }
+            }
+        );
     }
 
     _clearCache(action, parameter) {

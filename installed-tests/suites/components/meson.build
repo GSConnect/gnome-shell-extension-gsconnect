@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+
 component_tests_execdir = join_paths(installed_tests_execdir, 'components')
 component_tests_metadir = join_paths(installed_tests_metadir, 'components')
 

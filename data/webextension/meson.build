@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+
 # WebExtension Manifests
 if get_option('webextension')
   nmh_manifest = 'org.gnome.shell.extensions.gsconnect.json'

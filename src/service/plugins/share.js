@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 'use strict';
 
 const GdkPixbuf = imports.gi.GdkPixbuf;
@@ -164,7 +168,7 @@ var Plugin = GObject.registerClass({
             });
 
             // We'll show a notification (success or failure)
-            let title, body, iconName;
+            let title, body, action, iconName;
             let buttons = [];
 
             try {
@@ -176,11 +180,15 @@ var Plugin = GObject.registerClass({
                     packet.body.filename,
                     this.device.name
                 );
+                action = {
+                    name: 'showPathInFolder',
+                    parameter: new GLib.Variant('s', file.get_uri()),
+                };
                 buttons = [
                     {
-                        label: _('Open Folder'),
-                        action: 'openPath',
-                        parameter: new GLib.Variant('s', file.get_parent().get_uri()),
+                        label: _('Show File Location'),
+                        action: 'showPathInFolder',
+                        parameter: new GLib.Variant('s', file.get_uri()),
                     },
                     {
                         label: _('Open File'),
@@ -214,6 +222,7 @@ var Plugin = GObject.registerClass({
                 id: transfer.uuid,
                 title: title,
                 body: body,
+                action: action,
                 buttons: buttons,
                 icon: new Gio.ThemedIcon({name: iconName}),
             });

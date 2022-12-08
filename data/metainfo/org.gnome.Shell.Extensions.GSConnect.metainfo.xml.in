@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+
+SPDX-License-Identifier: GPL-2.0-or-later
+-->
+
 <component type="desktop-application">
   <id>org.gnome.Shell.Extensions.GSConnect</id>
 
@@ -30,7 +37,7 @@
 
   <description>
     <p>
-      GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, macOS and Windows.
+      GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows.
     </p>
     <p>
       With GSConnect you can securely connect to mobile devices and other desktops to:
@@ -49,6 +56,9 @@
   </description>
 
   <releases>
+    <release version="54" date="2022-10-17">
+      <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v54</url>
+    </release>
     <release version="53" date="2022-03-20">
       <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v53</url>
     </release>

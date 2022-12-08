@@ -1,8 +1,10 @@
+// SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 'use strict';
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const Gtk = imports.gi.Gtk;
+const {Gio, GLib, Adw} = imports.gi;
 
 // Bootstrap
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
@@ -12,17 +14,14 @@ function init() {
     Utils.installService();
 }
 
-function buildPrefsWidget() {
-    // Destroy the window once the mainloop starts
-    const widget = new Gtk.Box();
+function fillPreferencesWindow(window) {
+    const widget = new Adw.PreferencesPage();
+    window.add(widget);
 
     GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
-        widget.get_root().destroy();
-        return false;
+        window.close();
     });
 
     Gio.Subprocess.new([`${Extension.path}/gsconnect-preferences`], 0);
-
-    return widget;
 }
 

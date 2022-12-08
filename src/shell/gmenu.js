@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 'use strict';
 
 const Atk = imports.gi.Atk;
@@ -199,11 +203,10 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
             );
         }
 
-        // Modify the ::activate callback to invoke the GAction or submenu
-        item.disconnect(item._activateId);
-        item._activateId = item.connect(
+        item.connectObject(
             'activate',
-            this._onGMenuItemActivate.bind(this)
+            this._onGMenuItemActivate.bind(this),
+            this
         );
 
         return item;
@@ -283,13 +286,10 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
             prev.replace_child(prev._ornamentLabel, prevArrow);
             this.addMenuItem(prev, 0);
 
-            // Modify the ::activate callback to close the submenu
-            prev.disconnect(prev._activateId);
-
-            prev._activateId = prev.connect('activate', (item, event) => {
+            prev.connectObject('activate', (item, event) => {
                 this.emit('activate', item);
                 this._parent.submenu = null;
-            });
+            }, this);
         }
     }
 

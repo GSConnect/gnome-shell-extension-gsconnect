@@ -1,7 +1,11 @@
+# SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+
 project('gsconnect',
   'c',
-  version: '53',
-  meson_version: '>= 0.46.0'
+  version: '54',
+  meson_version: '>= 0.59.0',
 )
 
 gnome = import('gnome')
@@ -19,13 +23,7 @@ libexecdir = join_paths(prefix, get_option('libexecdir'))
 localedir = join_paths(prefix, get_option('localedir'))
 sysconfdir = get_option('sysconfdir')
 
-
-# GSettings schema dir
-if get_option('gsettings_schemadir') != ''
-  gschemadir = get_option('gsettings_schemadir')
-else
-  gschemadir = join_paths(datadir, 'glib-2.0', 'schemas')
-endif
+gschemadir = join_paths(datadir, 'glib-2.0', 'schemas')
 
 
 # GNOME Shell LIBDIR
@@ -59,6 +57,20 @@ extconfig.set('SSHKEYGEN_PATH', get_option('sshkeygen_path'))
 env_util = find_program('env')
 
 run_target(
+  'make-pkgdir',
+  command: [
+    env_util,
+    'UUID=' + extuuid,
+    'DATADIR=' + datadir,
+    'LOCALEDIR=' + localedir,
+    'GSCHEMADIR=' + gschemadir,
+    'NOZIP=true',
+    join_paths(meson.project_source_root(), 'build-aux', 'ego', 'mkzip.sh')
+  ]
+)
+
+
+run_target(
   'make-zip',
   command: [
     env_util,
@@ -66,7 +78,7 @@ run_target(
     'DATADIR=' + datadir,
     'LOCALEDIR=' + localedir,
     'GSCHEMADIR=' + gschemadir,
-    join_paths(meson.source_root(), 'build-aux', 'ego', 'mkzip.sh')
+    join_paths(meson.project_source_root(), 'build-aux', 'ego', 'mkzip.sh')
   ]
 )
 
@@ -79,19 +91,17 @@ run_target(
     'LOCALEDIR=' + localedir,
     'GSCHEMADIR=' + gschemadir,
     'INSTALL=true',
-    join_paths(meson.source_root(), 'build-aux', 'ego', 'mkzip.sh')
+    join_paths(meson.project_source_root(), 'build-aux', 'ego', 'mkzip.sh')
   ]
 )
 
 
 # Post-Install script for distributions without the hooks
-if get_option('post_install')
-    meson.add_install_script(
-      env_util.path(),
-      'GSCHEMADIR=' + gschemadir,
-      join_paths(meson.source_root(), 'build-aux', 'meson', 'post-install.sh')
-    )
-endif
+gnome.post_install(
+  glib_compile_schemas: true,
+  gtk_update_icon_cache: true,
+  update_desktop_database: true,
+)
 
 
 # Extension Source
@@ -105,15 +115,35 @@ eslint = find_program('eslint', required: false)
 
 if eslint.found()
   test('ESLint (Source)', eslint,
-    args: join_paths(meson.source_root(), 'src'),
+    args: join_paths(meson.project_source_root(), 'src'),
     suite: 'lint',
   )
   test('ESLint (Installed Tests)', eslint,
-    args: join_paths(meson.source_root(), 'installed-tests'),
+    args: join_paths(meson.project_source_root(), 'installed-tests'),
     suite: 'lint',
   )
   test('ESLint (WebExtension)', eslint,
-    args: join_paths(meson.source_root(), 'webextension'),
+    args: join_paths(meson.project_source_root(), 'webextension'),
+    suite: 'lint',
+  )
+endif
+
+black = find_program('black', required: false)
+if black.found()
+  test('Python Black (Nautilus Extension)', black,
+    args: [
+      '--check',
+      '--diff',
+      join_paths(meson.project_source_root(), 'nautilus-extension')
+    ],
+    suite: 'lint',
+  )
+endif
+
+flake8 = find_program('flake8', required: false)
+if flake8.found()
+  test('Python Flake8 (Nautilus Extension)', flake8,
+    args: join_paths(meson.project_source_root(), 'nautilus-extension'),
     suite: 'lint',
   )
 endif

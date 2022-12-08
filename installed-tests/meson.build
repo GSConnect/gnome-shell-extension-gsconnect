@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+
 installed_tests_execdir = join_paths(libexecdir, 'installed-tests', meson.project_name())
 installed_tests_metadir = join_paths(datadir, 'installed-tests', meson.project_name())
 
@@ -27,8 +31,8 @@ installed_tests_prepared = custom_target(
   build_by_default: true,
            command: [
              env_util,
-             'MESON_BUILD_ROOT=' + meson.build_root(),
-             'MESON_SOURCE_ROOT=' + meson.source_root(),
+             'MESON_BUILD_ROOT=' + meson.project_build_root(),
+             'MESON_SOURCE_ROOT=' + meson.project_source_root(),
              'G_TEST_BUILDDIR=' + installed_tests_builddir,
              'G_TEST_SRCDIR=' + installed_tests_srcdir,
              join_paths(installed_tests_srcdir, 'prepare-tests.sh')

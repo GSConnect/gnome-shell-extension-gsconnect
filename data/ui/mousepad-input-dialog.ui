@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+
+SPDX-License-Identifier: GPL-2.0-or-later
+-->
+
 <interface>
   <requires lib="gtk+" version="3.24"/>
   <template class="GSConnectMousepadInputDialog" parent="GtkDialog">
@@ -73,9 +80,81 @@
             <property name="position">0</property>
           </packing>
         </child>
+
+        <child>
+          <object class="GtkBox">
+            <property name="vexpand">True</property>
+            <property name="halign">fill</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkEventBox" id="touchpad-eventbox">
+                <child>
+                  <object class="GtkLabel">
+                    <property name="can_focus">False</property>
+                    <property name="vexpand">True</property>
+                    <property name="halign">fill</property>
+                    <property name="justify">center</property>
+                    <property name="label" translatable="yes">Touchpad.
+Drag on this area to move mouse cursor.
+Press long to drag to drag mouse cursor.
+
+Simple click will be sent to paired device.
+Left, middle, right button, and wheel scrolls.</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkActionBar">
+                <child type="center">
+                  <object class="GtkButtonBox">
+                    <style>
+                      <class name="linked"/>
+                    </style>
+                    <child>
+                      <object class="GtkButton" id="mouse-left-button">
+                        <property name="can_focus">False</property>
+                        <signal name="clicked" handler="_onMouseLeftButtonClicked"/>
+                        <child>
+                          <object class="GtkImage">
+                            <property name="icon-name">mouse-left-button-symbolic</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="mouse-middle-button">
+                        <property name="can_focus">False</property>
+                        <signal name="clicked" handler="_onMouseMiddleButtonClicked"/>
+                        <child>
+                          <object class="GtkImage">
+                            <property name="icon-name">mouse-with-smaller-scrollwheel-symbolic</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="mouse-right-button">
+                        <property name="can_focus">False</property>
+                        <signal name="clicked" handler="_onMouseRightButtonClicked"/>
+                        <child>
+                          <object class="GtkImage">
+                            <property name="icon-name">mouse-right-button-symbolic</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+
         <child>
           <object class="GtkGrid">
             <property name="can_focus">False</property>
+            <property name="vexpand">False</property>
             <property name="margin_left">6</property>
             <property name="margin_right">6</property>
             <property name="margin_top">6</property>
@@ -170,5 +249,20 @@
       </object>
     </child>
   </template>
-</interface>
 
+  <!-- Touchpad Gestures -->
+  <object class="GtkGestureDrag" id="touchpad-drag">
+    <property name="widget">touchpad-eventbox</property>
+    <signal name="begin" handler="_onTouchpadDragBegin"/>
+    <signal name="drag-update" handler="_onTouchpadDragUpdate"/>
+    <signal name="end" handler="_onTouchpadDragEnd"/>
+  </object>
+
+  <object class="GtkGestureLongPress" id="touchpad-long-press">
+    <property name="widget">touchpad-eventbox</property>
+    <property name="button">0</property>
+    <signal name="cancelled" handler="_onTouchpadLongPressCancelled"/>
+    <signal name="pressed" handler="_onTouchpadLongPressPressed"/>
+    <signal name="end" handler="_onTouchpadLongPressEnd"/>
+  </object>
+</interface>

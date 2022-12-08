@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+
 name: gnome-3-38
 
 on:
@@ -12,13 +16,12 @@ jobs:
     container:
       image: gsconnect/gsconnect-ci:3.38
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Prepare
         run: |
           meson --prefix=/usr \
                 --libdir=lib/ \
                 -Dgnome_shell_libdir=/usr/lib64/ \
-                -Dpost_install=true \
                 _build
 
       - name: Uninstalled Tests
@@ -35,7 +38,7 @@ jobs:
 
       - name: Upload Test Logs
         if: ${{ always() }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: test-logs
           path: _build/meson-logs
@@ -45,7 +48,7 @@ jobs:
           ninja -C _build make-zip
 
       - name: Upload Test Build
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: test-build
           path: _build/gsconnect@andyholmes.github.io.zip
