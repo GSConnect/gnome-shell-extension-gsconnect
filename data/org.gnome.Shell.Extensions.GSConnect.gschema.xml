@@ -15,6 +15,9 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <key name="show-indicators" type="b">
       <default>false</default>
     </key>
+    <key name="keep-alive-when-locked" type="b">
+      <default>true</default>
+    </key>
 
     <!-- Service Settings -->
     <key name="id" type="s">
