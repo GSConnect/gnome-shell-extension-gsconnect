@@ -227,6 +227,9 @@ var Window = GObject.registerClass({
         // Application Menu
         this._initMenu();
 
+        // Setting: Keep Alive When Locked
+        this.add_action(this.settings.create_action('keep-alive-when-locked'));
+
         // Broadcast automatically every 5 seconds if there are no devices yet
         this._refreshSource = GLib.timeout_add_seconds(
             GLib.PRIORITY_DEFAULT,
@@ -658,4 +661,3 @@ var Window = GObject.registerClass({
             this.device_list_placeholder.label = _('Waiting for service…');
     }
 });
-

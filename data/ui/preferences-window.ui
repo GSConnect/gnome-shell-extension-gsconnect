@@ -345,6 +345,63 @@ SPDX-License-Identifier: GPL-2.0-or-later
                           </packing>
                         </child>
                         <child>
+                          <object class="GtkLabel" id="behavior-when-locked-label">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">start</property>
+                            <property name="margin_bottom">12</property>
+                            <property name="label" translatable="yes">Behavior When Locked</property>
+                            <attributes>
+                              <attribute name="weight" value="bold"/>
+                            </attributes>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">3</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkBox" id="behavior-when-locked-box">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="margin_left">12</property>
+                            <property name="margin_right">12</property>
+                            <property name="margin_bottom">20</property>
+                            <property name="spacing">24</property>
+                            <child>
+                              <object class="GtkLabel" id="keep-alive-when-locked-label">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="halign">start</property>
+                                <property name="margin_bottom">12</property>
+                                <property name="label" translatable="yes">Keep Alive</property>
+                                <accessibility>
+                                  <relation type="label-for" target="keep-alive-when-locked"/>
+                                </accessibility>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkSwitch" id="keep-alive-when-locked">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="halign">start</property>
+                                <property name="margin_bottom">10</property>
+                                <property name="action_name">win.keep-alive-when-locked</property>
+                                <accessibility>
+                                  <relation type="labelled-by" target="keep-alive-when-locked-label"/>
+                                </accessibility>
+                              </object>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">3</property>
+                          </packing>
+
+                        </child>
+                        <child>
                           <object class="GtkLabel" id="webextension-label">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
@@ -361,7 +418,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">True</property>
-                            <property name="position">3</property>
+                            <property name="position">4</property>
                           </packing>
                         </child>
                         <child>
@@ -450,7 +507,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">True</property>
-                            <property name="position">4</property>
+                            <property name="position">5</property>
                           </packing>
                         </child>
                         <child>
@@ -471,7 +528,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">True</property>
-                            <property name="position">5</property>
+                            <property name="position">6</property>
                           </packing>
                         </child>
                         <child>
@@ -634,7 +691,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">True</property>
-                            <property name="position">6</property>
+                            <property name="position">7</property>
                           </packing>
                         </child>
                       </object>

@@ -290,7 +290,8 @@ const ServiceToggle = GObject.registerClass({
             for (const device of this.service.devices)
                 this._onDeviceRemoved(this.service, device, false);
 
-            this.service.stop();
+            if (!this.settings.get_boolean('keep-alive-when-locked'))
+                this.service.stop();
             this.service.destroy();
         }
 
