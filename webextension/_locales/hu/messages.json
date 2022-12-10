@@ -4,11 +4,11 @@
         "description": "The extension name"
     },
     "extensionDescription": {
-        "message": "Share links with GSConnect, direct to the browser or by SMS.",
+        "message": "Hivatkozások megosztása GSConnecttel, közvetlenül a böngészőből vagy SMS-ben.",
         "description": "The extension description"
     },
     "contextMenuMultipleDevices": {
-        "message": "Küldés mobil eszközre",
+        "message": "Küldés mobileszközre",
         "description": "Top-level Context Menu label when multiple devices are available"
     },
     "contextMenuSinglePlugin": {
