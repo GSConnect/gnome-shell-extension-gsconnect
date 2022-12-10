@@ -387,12 +387,10 @@ SPDX-License-Identifier: GPL-2.0-or-later
                                 <property name="can_focus">True</property>
                                 <property name="halign">start</property>
                                 <property name="margin_bottom">10</property>
-                                <!-- <property name="action_name">settings.keep-alive-when-locked</property> -->
+                                <property name="action_name">win.keep-alive-when-locked</property>
                                 <accessibility>
-                                  <!-- <relation type="controlled-by" target="behavior-when-locked-box"/> -->
                                   <relation type="labelled-by" target="keep-alive-when-locked-label"/>
                                 </accessibility>
-
                               </object>
                             </child>
                           </object>
