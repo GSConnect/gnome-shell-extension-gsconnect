@@ -1,6 +1,15 @@
 // SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
-//
 // SPDX-License-Identifier: GPL-2.0-or-later
+//
+// SDPX-SnippetLineRange: 161:171
+// SPDX-SnippetCopyrightText: Mathias Bynens
+// SPDX-SnippetComment: https://github.com/mathiasbynens/quoted-printable/blob/master/src/quoted-printable.js
+// SPDX-License-Identifier: MIT
+//
+// SDPX-SnippetLineRange: 182:219
+// SPDX-SnippetCopyrightText: Kevin van Zonneveld
+// SPDX-SnippetComment: https://github.com/kvz/locutus/blob/master/src/php/xml/utf8_decode.js
+// SPDX-License-Identifier: MIT
 
 'use strict';
 
@@ -146,8 +155,6 @@ var Plugin = GObject.registerClass({
     /**
      * Decode a string encoded as "QUOTED-PRINTABLE" and return a regular string
      *
-     * See: https://github.com/mathiasbynens/quoted-printable/blob/master/src/quoted-printable.js
-     *
      * @param {string} input - The QUOTED-PRINTABLE string
      * @return {string} The decoded string
      */
@@ -166,8 +173,6 @@ var Plugin = GObject.registerClass({
 
     /**
      * Decode a string encoded as "UTF-8" and return a regular string
-     *
-     * See: https://github.com/kvz/locutus/blob/master/src/php/xml/utf8_decode.js
      *
      * @param {string} input - The UTF-8 string
      * @return {string} The decoded string
