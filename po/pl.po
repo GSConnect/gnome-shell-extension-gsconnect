@@ -1,26 +1,20 @@
-# SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
-#
-# SPDX-License-Identifier: GPL-2.0-or-later
 msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-10 23:37+0100\n"
-"PO-Revision-Date: 2022-10-27 10:52\n"
+"PO-Revision-Date: 2022-12-11 11:50\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "Language: pl_PL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && "
-"(n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && "
-"n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: pl\n"
-"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org."
-"gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -38,22 +32,12 @@ msgid "GSConnect Team"
 msgstr "Zespół GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
-"GSConnect to pełna implementacja KDE Connect specjalnie dla Powłoki GNOME "
-"z integracją z programami Nautilus, Chrome i Firefox. Zespół KDE Connect ma "
-"aplikacje dla systemów Linux, BSD, Android, Sailfish, iOS, macOS i Windows."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr "GSConnect to pełna implementacja KDE Connect specjalnie dla Powłoki GNOME z integracją z programami Nautilus, Chrome i Firefox. Zespół KDE Connect ma aplikacje dla systemów Linux, BSD, Android, Sailfish, iOS, macOS i Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:42
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"Za pomocą GSConnect można bezpiecznie połączyć się z telefonem i innymi "
-"komputerami, aby:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
+msgstr "Za pomocą GSConnect można bezpiecznie połączyć się z telefonem i innymi komputerami, aby:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:46
 msgid "Share files, links and text"
@@ -197,18 +181,14 @@ msgid "Select or start a conversation"
 msgstr "Wybierz lub rozpocznij rozmowę"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid ""
-"Touchpad.\n"
+msgid "Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n"
-"\n"
+"Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr ""
-"Panel dotykowy.\n"
+msgstr "Panel dotykowy.\n"
 "Przeciągnięcie na tym obszarze przeniesie kursor myszy.\n"
-"Długie naciśnięcie przeciągnie kursor myszy.\n"
-"\n"
+"Długie naciśnięcie przeciągnie kursor myszy.\n\n"
 "Proste kliknięcie zostanie wysłane do połączonego urządzenia.\n"
 "Lewy, środkowy, prawy przycisk i przewinięcia kółkiem."
 
@@ -524,11 +504,11 @@ msgstr "Wyszukiwanie urządzeń…"
 
 #: data/ui/preferences-window.ui:353
 msgid "Behavior When Locked"
-msgstr ""
+msgstr "Zachowanie po zablokowaniu"
 
 #: data/ui/preferences-window.ui:378
 msgid "Keep Alive"
-msgstr ""
+msgstr "Bez wyłączania"
 
 #: data/ui/preferences-window.ui:410
 msgid "Browser Add-Ons"
@@ -595,12 +575,8 @@ msgid "Something’s gone wrong"
 msgstr "Coś się nie powiodło"
 
 #: data/ui/service-error-dialog.ui:91
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
-"Wystąpił nieoczekiwany błąd w GSConnect. Proszę go zgłosić i dołączyć "
-"wszelkie informacje, które mogą pomóc."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "Wystąpił nieoczekiwany błąd w GSConnect. Proszę go zgłosić i dołączyć wszelkie informacje, które mogą pomóc."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
@@ -648,18 +624,13 @@ msgstr "Pełna implementacja KDE Connect dla środowiska GNOME"
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:385
 msgid "translator-credits"
-msgstr ""
-"Adrian Kryński <krynkaxd@gmail.com>, 2017\n"
+msgstr "Adrian Kryński <krynkaxd@gmail.com>, 2017\n"
 "Piotr Drąg <piotrdrag@gmail.com>, 2018-2020\n"
 "Aviary.pl <community-poland@mozilla.org>, 2018-2020"
 
 #: src/preferences/service.js:418
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Komunikaty debugowania są zapisywane w dzienniku. Proszę podjąć działania "
-"niezbędne do powtórzenia problemu, a następnie przejrzeć dziennik."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Komunikaty debugowania są zapisywane w dzienniku. Proszę podjąć działania niezbędne do powtórzenia problemu, a następnie przejrzeć dziennik."
 
 #: src/preferences/service.js:421
 msgid "Review Log"
@@ -810,8 +781,7 @@ msgid "Accept"
 msgstr "Przyjmij"
 
 #: src/service/manager.js:118
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Wykrywanie zostało wyłączone z powodu liczby urządzeń w tej sieci."
 
 #: src/service/backends/lan.js:166
@@ -896,8 +866,7 @@ msgstr "Podkładka pod mysz"
 
 #: src/service/plugins/mousepad.js:17
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr ""
-"Umożliwienie używania powiązanego urządzenia jako zdalnej myszy i klawiatury"
+msgstr "Umożliwienie używania powiązanego urządzenia jako zdalnej myszy i klawiatury"
 
 #: src/service/plugins/mousepad.js:31 src/service/ui/mousepad.js:109
 msgid "Remote Input"
@@ -975,12 +944,8 @@ msgid "Run Commands"
 msgstr "Wykonywanie poleceń"
 
 #: src/service/plugins/runcommand.js:17
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
-msgstr ""
-"Wykonywanie poleceń na powiązanym urządzeniu lub umożliwienie urządzeniu "
-"wykonywania wcześniej ustalonych poleceń na tym komputerze"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
+msgstr "Wykonywanie poleceń na powiązanym urządzeniu lub umożliwienie urządzeniu wykonywania wcześniej ustalonych poleceń na tym komputerze"
 
 #: src/service/plugins/sftp.js:17
 msgid "SFTP"
@@ -1091,9 +1056,7 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:19
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
-"Wysyłanie i odczytywanie wiadomości SMS powiązanego urządzenia "
-"i powiadamianie o nowych SMS-ach"
+msgstr "Wysyłanie i odczytywanie wiadomości SMS powiązanego urządzenia i powiadamianie o nowych SMS-ach"
 
 #: src/service/plugins/sms.js:40
 msgid "New SMS (URI)"
@@ -1120,11 +1083,8 @@ msgid "PulseAudio not found"
 msgstr "Nie odnaleziono usługi PulseAudio"
 
 #: src/service/plugins/telephony.js:18
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
-"Powiadamianie o połączeniach i dostosowywanie głośności systemu podczas "
-"oczekujących/trwających połączeń"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgstr "Powiadamianie o połączeniach i dostosowywanie głośności systemu podczas oczekujących/trwających połączeń"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:30
@@ -1253,9 +1213,7 @@ msgstr "Odpowiedz"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:35
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
-"Udostępnianie odnośników za pomocą GSConnect, bezpośrednio do przeglądarki "
-"lub przez wiadomość SMS."
+msgstr "Udostępnianie odnośników za pomocą GSConnect, bezpośrednio do przeglądarki lub przez wiadomość SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:39
@@ -1266,3 +1224,4 @@ msgstr "Usługa jest niedostępna"
 #: webextension/gettext.js:43
 msgid "Open in Browser"
 msgstr "Otwórz w przeglądarce"
+
