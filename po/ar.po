@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-10 23:37+0100\n"
-"PO-Revision-Date: 2022-12-12 06:42\n"
+"PO-Revision-Date: 2022-12-25 18:09\n"
 "Last-Translator: \n"
 "Language-Team: Arabic\n"
 "Language: ar_SA\n"
@@ -504,11 +504,11 @@ msgstr "جارٍ البحث عن أجهزة…"
 
 #: data/ui/preferences-window.ui:353
 msgid "Behavior When Locked"
-msgstr ""
+msgstr "السلوك عند القفل"
 
 #: data/ui/preferences-window.ui:378
 msgid "Keep Alive"
-msgstr ""
+msgstr "الإبقاء قَيْد التشغيل"
 
 #: data/ui/preferences-window.ui:410
 msgid "Browser Add-Ons"
