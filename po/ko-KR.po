@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-10 23:37+0100\n"
-"PO-Revision-Date: 2022-12-29 05:44\n"
+"PO-Revision-Date: 2022-12-29 07:01\n"
 "Last-Translator: \n"
 "Language-Team: Korean\n"
 "Language: ko_KR\n"
@@ -186,7 +186,11 @@ msgid "Touchpad.\n"
 "Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr ""
+msgstr "터치패드.\n"
+"마우스 커서를 움직이려면 이 영역을 드래그 하십시오.\n"
+"마우스 커서 드래그를 하려면 길게 누른 후 드래그 하십시오.\n\n"
+"왼쪽 클릭, 중간 클릭, 오른쪽 클릭, 휠 스크롤 등.\n"
+"간단한 클릭 신호가 페어링 된 장치에 전달됩니다."
 
 #: data/ui/preferences-command-editor.ui:14
 msgid "Edit Command"
@@ -500,11 +504,11 @@ msgstr "장치를 찾는 중…"
 
 #: data/ui/preferences-window.ui:353
 msgid "Behavior When Locked"
-msgstr ""
+msgstr "잠겼을 때 동작"
 
 #: data/ui/preferences-window.ui:378
 msgid "Keep Alive"
-msgstr ""
+msgstr "계속 유지"
 
 #: data/ui/preferences-window.ui:410
 msgid "Browser Add-Ons"
@@ -916,7 +920,7 @@ msgstr "\"%s\"를 %s에 보내는 데 실패했습니다."
 
 #: src/service/plugins/ping.js:16
 msgid "Send and receive pings"
-msgstr ""
+msgstr "핑 주고 받기"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -1070,7 +1074,7 @@ msgstr "시스템 볼륨"
 
 #: src/service/plugins/systemvolume.js:16
 msgid "Enable the paired device to control the system volume"
-msgstr ""
+msgstr "페어링된 장치의 시스템 볼륨 제어 활성화"
 
 #: src/service/plugins/systemvolume.js:60
 msgid "PulseAudio not found"
@@ -1078,7 +1082,7 @@ msgstr "PulseAudio를 찾을 수 없음"
 
 #: src/service/plugins/telephony.js:18
 msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
+msgstr "전화 받거나 걸 때 전화나 시스템 볼륨 조정 알림 받기"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:30
