@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-10 23:37+0100\n"
-"PO-Revision-Date: 2022-12-22 10:19\n"
+"PO-Revision-Date: 2022-12-29 05:44\n"
 "Last-Translator: \n"
 "Language-Team: Korean\n"
 "Language: ko_KR\n"
@@ -33,7 +33,7 @@ msgstr "GSConnect 팀"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
 msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
+msgstr "GSConnect는 노틸러스, 크롬, 파이어폭스 연동과 함께 사용하는 그놈 셸을 위한 완전한 KDE Connect 구현체 입니다. KDE Connect 팀 에서는 리눅스, BSD, 안드로이드, Sailfish, iOS, macOS 및 Windows 용 앱을 제공하고 있습니다."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:42
 msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
