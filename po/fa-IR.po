@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-10 23:37+0100\n"
-"PO-Revision-Date: 2023-01-09 20:38\n"
+"PO-Revision-Date: 2023-01-09 23:22\n"
 "Last-Translator: \n"
 "Language-Team: Persian\n"
 "Language: fa_IR\n"
@@ -33,7 +33,7 @@ msgstr "گروه جی‌اس‌کانکت"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
 msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
+msgstr "جی‌اس‌کانکت، پیاده‌سازی کاملی از کی‌دی‌ای کانکت، مخصوص پوستهٔ گنوم با یکپارچگی ناتیلوس، کروم و فایرفاکس است. گروه کی‌دی‌ای کانکت، برنامه‌هایی برای گنو/لینوکس، بی‌اس‌دی، اندروید، سیل‌فیش، آی‌اواس، مک‌او‌اس و ویندوز دارند."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:42
 msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
@@ -186,7 +186,11 @@ msgid "Touchpad.\n"
 "Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr ""
+msgstr "صفحه‌لمسی.\n"
+"برای جابه‌جایی نشانگر موشی این‌جا بکشید.\n"
+"برای کشیدن نشانگر موشی طولانی نگه دارید.\n\n"
+"کلیک ساده به افزارهٔ جفت شده فرستاده خواهد شد.\n"
+"دکمه‌های راست، وسط، چپ و لغزنده‌های چرخی."
 
 #: data/ui/preferences-command-editor.ui:14
 msgid "Edit Command"
@@ -500,11 +504,11 @@ msgstr "در جست‌وجوی افزاره‌ها…"
 
 #: data/ui/preferences-window.ui:353
 msgid "Behavior When Locked"
-msgstr ""
+msgstr "ذفتار هنگام قفل بودن"
 
 #: data/ui/preferences-window.ui:378
 msgid "Keep Alive"
-msgstr ""
+msgstr "فعّال نگه داشتن"
 
 #: data/ui/preferences-window.ui:410
 msgid "Browser Add-Ons"
@@ -585,7 +589,7 @@ msgstr "فرستادن به افزارهٔ همراه"
 
 #: src/extension.js:50
 msgid "Sync between your devices"
-msgstr ""
+msgstr "همگام‌سازی میان افزاره‌هایتان"
 
 #: src/preferences/device.js:673 src/preferences/device.js:679
 msgid "Edit"
@@ -758,7 +762,7 @@ msgstr "دستگاه بلوتوث در %s"
 #: src/service/device.js:214
 #, javascript-format
 msgid "Verification key: %s"
-msgstr ""
+msgstr "کلید تأیید هویت: %s"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:843
@@ -864,7 +868,7 @@ msgstr "قادر کردن افزارهٔ جفت شده برای عمل به ع�
 
 #: src/service/plugins/mousepad.js:31 src/service/ui/mousepad.js:109
 msgid "Remote Input"
-msgstr ""
+msgstr "ورودی دوردست"
 
 #: src/service/plugins/mpris.js:19
 msgid "MPRIS"
@@ -880,7 +884,7 @@ msgstr "ناشناخته"
 
 #: src/service/plugins/notification.js:20
 msgid "Share notifications with the paired device"
-msgstr ""
+msgstr "هم‌رسانی آگاهی‌ها با افزارهٔ جفت شده"
 
 #: src/service/plugins/notification.js:34
 msgid "Cancel Notification"
@@ -900,7 +904,7 @@ msgstr "فعال سازی آگاهی"
 
 #: src/service/plugins/photo.js:17
 msgid "Request the paired device to take a photo and transfer it to this PC"
-msgstr ""
+msgstr "درخواست از افزارهٔ جفت شده برای نماگرفت و انتقالش به این رایانه"
 
 #: src/service/plugins/photo.js:224 src/service/plugins/share.js:132
 #: src/service/plugins/share.js:208 src/service/plugins/share.js:319
@@ -931,7 +935,7 @@ msgstr "ارائه"
 
 #: src/service/plugins/presenter.js:15
 msgid "Use the paired device as a presenter"
-msgstr ""
+msgstr "استفاده از افزارهٔ جفت شده به عنوان ارائه دهنده"
 
 #: src/service/plugins/runcommand.js:15
 msgid "Run Commands"
@@ -939,7 +943,7 @@ msgstr "اجرای دستورها"
 
 #: src/service/plugins/runcommand.js:17
 msgid "Run commands on your paired device or let the device run predefined commands on this PC"
-msgstr ""
+msgstr "اجرای فرمان‌ها روی افزارهٔ جفت شده‌ةان یا اجازه به افزاره برای اجرای فرمان‌های از پیش تعریف شده روی این رایانه"
 
 #: src/service/plugins/sftp.js:17
 msgid "SFTP"
@@ -947,7 +951,7 @@ msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:19
 msgid "Browse the paired device filesystem"
-msgstr ""
+msgstr "مرور سامانه‌پروندهٔ افزارهٔ جفت شده"
 
 #: src/service/plugins/sftp.js:24
 msgid "Mount"
@@ -998,7 +1002,7 @@ msgstr "«%s» از %s دریافت شد"
 
 #: src/service/plugins/share.js:189
 msgid "Show File Location"
-msgstr ""
+msgstr "نمایش مکان پرونده"
 
 #: src/service/plugins/share.js:194
 msgid "Open File"
@@ -1050,7 +1054,7 @@ msgstr "پیامک"
 
 #: src/service/plugins/sms.js:19
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
+msgstr "فرستادن یا خواندن پیامک افزارهٔ جفت شده و آگاه شدن از پیامک جدید"
 
 #: src/service/plugins/sms.js:40
 msgid "New SMS (URI)"
@@ -1070,7 +1074,7 @@ msgstr "حجم صدای سامانه"
 
 #: src/service/plugins/systemvolume.js:16
 msgid "Enable the paired device to control the system volume"
-msgstr ""
+msgstr "قادر کردن افزارهٔ جفت شده برای واپایش حجم صدای سامانه"
 
 #: src/service/plugins/systemvolume.js:60
 msgid "PulseAudio not found"
@@ -1078,7 +1082,7 @@ msgstr "پالس‌آدیو پیدا نشد"
 
 #: src/service/plugins/telephony.js:18
 msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
+msgstr "آگاه شدن از تماس‌ها و تنظیم حجم صدای سامانه در طول زنگ خوردن و تماس"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:30
