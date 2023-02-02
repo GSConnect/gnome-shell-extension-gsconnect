@@ -4,11 +4,11 @@
         "description": "The extension name"
     },
     "extensionDescription": {
-        "message": "Hivatkozások megosztása GSConnecttel, közvetlenül a böngészőből vagy SMS-ben.",
+        "message": "Keppelingen mei GSConnect ferstjoere, direkt nei de browser of mei SMS.",
         "description": "The extension description"
     },
     "contextMenuMultipleDevices": {
-        "message": "Küldés mobileszközre",
+        "message": "Nei Mobiel Apparaat ferstjoere",
         "description": "Top-level Context Menu label when multiple devices are available"
     },
     "contextMenuSinglePlugin": {
@@ -26,19 +26,19 @@
         }
     },
     "popupMenuDisconnected": {
-        "message": "A szolgáltatás nem érhető el",
+        "message": "Tsjinst Ûnbeskikber",
         "description": "Popup Menu label when disconnected from the GNOME Shell extension"
     },
     "popupMenuNoDevices": {
-        "message": "Nem található eszköz",
+        "message": "Gjin Apparaat Fûn",
         "description": "Popup Menu label when no devices are connected or have supported plugins enabled"
     },
     "shareMessage": {
-        "message": "Megnyitás böngészőben",
+        "message": "Yn Browser Iepenje",
         "description": "Context Menu label for opening a link in the device's web browser"
     },
     "smsMessage": {
-        "message": "SMS küldése",
+        "message": "SMS Ferstjoere",
         "description": "Context Menu label for sharing a link in an SMS message"
     }
 }
