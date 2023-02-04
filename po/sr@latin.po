@@ -1165,19 +1165,19 @@ msgstr ""
 #: src/service/ui/contacts.js:138
 #, fuzzy
 msgid "Work"
-msgstr "%s・Posao"
+msgstr "Posao"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:142
 #, fuzzy
 msgid "Mobile"
-msgstr "%s・Mobilni"
+msgstr "Mobilni"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:146
 #, fuzzy
 msgid "Home"
-msgstr "%s・Kućni"
+msgstr "Kućni"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #. Update UI
