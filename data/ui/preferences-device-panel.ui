@@ -14,7 +14,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <property name="lower">01</property>
     <property name="step_increment">1</property>
     <property name="page_increment">5</property>
-  </object>                                         
+  </object>
   <template class="GSConnectPreferencesDevicePanel" parent="GtkGrid">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -577,7 +577,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="shadow_type">none</property>
-                <child>                  
+                <child>
                   <object class="GtkBox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
@@ -685,7 +685,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="activatable">True</property>
-                                <property name="action_name">settings.custom-battery-notification</property>                                
+                                <property name="action_name">settings.custom-battery-notification</property>
                                 <child>
                                   <object class="GtkGrid">
                                     <property name="visible">True</property>
@@ -750,7 +750,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                                         <property name="left_attach">1</property>
                                         <property name="top_attach">0</property>
                                       </packing>
-                                    </child>                                    
+                                    </child>
                                   </object>
                                 </child>
                                 <accessibility>
@@ -1116,6 +1116,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                                         <property name="valign">center</property>
                                         <property name="hexpand">True</property>
                                         <property name="vexpand">True</property>
+                                        <!-- TRANSLATORS: 'Share' is a verb here; this refers to the action of sharing -->
                                         <property name="label" translatable="yes">Share Notifications</property>
                                         <accessibility>
                                           <relation type="label-for" target="share-notification-row"/>

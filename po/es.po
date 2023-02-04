@@ -320,7 +320,7 @@ msgstr "Añadir orden"
 
 #: data/ui/preferences-device-panel.ui:1119
 msgid "Share Notifications"
-msgstr "Notificaciones de compartición"
+msgstr "Compartir notificaciones"
 
 #: data/ui/preferences-device-panel.ui:1179
 msgid "Share When Active"
