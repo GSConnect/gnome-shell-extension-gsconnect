@@ -9,28 +9,30 @@ files:
     languages_mapping:
       locale:
         ar-SA: ar
+        be: be
         ca-ES: ca
         ca: ca
-        fr: fr
+        cs: cs
         da: da
         de: de
-        pt-BR: pt_BR
-        pt-PT: pt_PT
-        nl: nl_NL
-        nl-BE: nl_BE
         es-ES: es
-        be: be
-        cs: cs
         et: et
+        fi: fi
+        fr: fr
         gl: gl
         hu: hu
         it: it
         ja: ja
         lt: lt
+        nl-BE: nl_BE
+        nl: nl_NL
         pl: pl
+        pt-BR: pt_BR
+        pt-PT: pt_PT
         ru: ru
         sk: sk
         sr: sr
+        sr-CS: sr@latin
         tr: tr
         uk: uk
         zh-CN: zh_CN
