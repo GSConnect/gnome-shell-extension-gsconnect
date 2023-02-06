@@ -1,12 +1,9 @@
-# SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
-#
-# SPDX-License-Identifier: GPL-2.0-or-later
 msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-10 23:37+0100\n"
-"PO-Revision-Date: 2023-02-03 16:30\n"
+"PO-Revision-Date: 2023-02-05 22:01\n"
 "Last-Translator: Elias Arno Eskelinen <elias.eskelinen@protonmail.com>\n"
 "Language-Team: Finnish\n"
 "Language: fi_FI\n"
@@ -35,19 +32,15 @@ msgid "GSConnect Team"
 msgstr "GSConnect -tiimi"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
-#, fuzzy
 msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
-"GSConnect on täydellinen toteutus KDE Connectista erityisesti GNOME "
+msgstr "GSConnect on täydellinen toteutus KDE Connectista erityisesti GNOME "
 "Shellille Nautilus-, Chrome- ja Firefox-integraatiolla. KDE Connect -"
 "tiimillä on sovelluksia Linuxille, BSD:lle, Androidille, Sailfishille, macOS:"
 "lle ja Windowsille."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:42
 msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
-msgstr ""
-"GSConnectin avulla voit muodostaa turvallisen yhteyden mobiililaitteisiin ja "
-"muihin tietokoneisiin:"
+msgstr "GSConnectin avulla voit muodostaa turvallisen yhteyden mobiililaitteisiin ja muihin tietokoneisiin:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:46
 msgid "Share files, links and text"
@@ -273,7 +266,6 @@ msgid "Low Battery Notification"
 msgstr "Ilmoitus Akun Alhaisesta Varaustasosta"
 
 #: data/ui/preferences-device-panel.ui:706
-#, fuzzy
 msgid "Charged Up to Custom Level Notification"
 msgstr "Ilmoitus Akun Täydestä Varaustasosta"
 
@@ -583,9 +575,7 @@ msgstr "Jokin meni pieleen"
 
 #: data/ui/service-error-dialog.ui:91
 msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
-msgstr ""
-"GSConnect havaitsi odottamattoman virheen. Ilmoita ongelmasta ja liitä "
-"mukaan kaikki mahdolliset tiedot."
+msgstr "GSConnect havaitsi odottamattoman virheen. Ilmoita ongelmasta ja liitä mukaan kaikki mahdolliset tiedot."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
@@ -637,9 +627,7 @@ msgstr "kääntäjät"
 
 #: src/preferences/service.js:418
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
-msgstr ""
-"Vianmääritysviestit kirjataan. Tee kaikki tarvittavat toimenpiteet ongelman "
-"toistamiseksi ja tarkista sitten loki."
+msgstr "Vianmääritysviestit kirjataan. Tee kaikki tarvittavat toimenpiteet ongelman toistamiseksi ja tarkista sitten loki."
 
 #: src/preferences/service.js:421
 msgid "Review Log"
@@ -738,7 +726,7 @@ msgstr "Kuva"
 #: src/service/daemon.js:481 src/service/plugins/ping.js:15
 #: src/service/plugins/ping.js:22 src/service/plugins/ping.js:49
 msgid "Ping"
-msgstr "Ping"
+msgstr ""
 
 #: src/service/daemon.js:490 src/service/plugins/battery.js:248
 #: src/service/plugins/battery.js:277 src/service/plugins/battery.js:306
@@ -771,9 +759,9 @@ msgstr ""
 #.
 #. Verification key: 0123456789abcdef000000000000000000000000
 #: src/service/device.js:214
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "Verification key: %s"
-msgstr "Ilmoitukset"
+msgstr ""
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:843
@@ -791,9 +779,7 @@ msgstr "Hyväksy"
 
 #: src/service/manager.js:118
 msgid "Discovery has been disabled due to the number of devices on this network."
-msgstr ""
-"Laitehaku on poistettu käytöstä tässä verkossa olevien laitteiden lukumäärän "
-"vuoksi."
+msgstr "Laitehaku on poistettu käytöstä tässä verkossa olevien laitteiden lukumäärän vuoksi."
 
 #: src/service/backends/lan.js:166
 msgid "OpenSSL not found"
@@ -827,9 +813,9 @@ msgstr ""
 
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:288
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%d%% Charged"
-msgstr "Täysin Ladattu"
+msgstr ""
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:315
@@ -848,7 +834,6 @@ msgid "Clipboard"
 msgstr "Leikepöytä"
 
 #: src/service/plugins/clipboard.js:15
-#, fuzzy
 msgid "Share the clipboard content"
 msgstr "Synkronoi leikepöydän sisältö"
 
@@ -933,7 +918,6 @@ msgid "Failed to send “%s” to %s"
 msgstr "“%s” lähettäminen kohteelle %s epäonnistui"
 
 #: src/service/plugins/ping.js:16
-#, fuzzy
 msgid "Send and receive pings"
 msgstr "Lähetä ja vastaanota viestejä"
 
