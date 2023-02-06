@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-10 23:37+0100\n"
-"PO-Revision-Date: 2023-02-04 09:43\n"
+"PO-Revision-Date: 2023-02-06 00:59\n"
 "Last-Translator: \n"
 "Language-Team: Serbian (Latin)\n"
 "Language: sr@latin\n"
@@ -21,11 +21,11 @@ msgstr ""
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:12
 #: webextension/gettext.js:33
 msgid "GSConnect"
-msgstr ""
+msgstr "GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:13
 msgid "KDE Connect implementation for GNOME"
-msgstr ""
+msgstr "Potpuna implementacija KDE Konekta za Gnom"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:23
 msgid "GSConnect Team"
@@ -53,19 +53,19 @@ msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:49
 msgid "Sync contacts"
-msgstr ""
+msgstr "Nema kontakata"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:50
 msgid "Sync notifications"
-msgstr ""
+msgstr "Pošalji obaveštenje"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:51
 msgid "Control media players"
-msgstr ""
+msgstr "Medijski plejeri"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:52
 msgid "Control system volume"
-msgstr ""
+msgstr "Sistemska jačina"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:53
 msgid "Execute predefined commands"
@@ -82,7 +82,7 @@ msgstr ""
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/connect-dialog.ui:20 data/ui/preferences-window.ui:821
 msgid "Connect to…"
-msgstr "Повежи се са…"
+msgstr "Poveži se sa…"
 
 #: data/ui/connect-dialog.ui:26 data/ui/legacy-messaging-dialog.ui:20
 #: data/ui/legacy-messaging-dialog.ui:24
@@ -96,63 +96,63 @@ msgstr "Повежи се са…"
 #: src/preferences/service.js:420 src/service/plugins/share.js:163
 #: src/service/plugins/share.js:296 src/service/plugins/share.js:427
 msgid "Cancel"
-msgstr "Откажи"
+msgstr "Otkaži"
 
 #: data/ui/connect-dialog.ui:33
 msgid "Connect"
-msgstr "Повежи"
+msgstr "Poveži"
 
 #: data/ui/connect-dialog.ui:80
 msgid "IP Address"
-msgstr ""
+msgstr "IP adresa"
 
 #: data/ui/contact-chooser.ui:56
 msgid "No contacts"
-msgstr ""
+msgstr "Nema kontakata"
 
 #: data/ui/contact-chooser.ui:68 data/ui/messaging-window.ui:103
 #: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:847
 msgid "Help"
-msgstr "Помоћ"
+msgstr "Pomoć"
 
 #: data/ui/contact-chooser.ui:109
 msgid "Type a phone number or name"
-msgstr "Унеите број телефона или име"
+msgstr "Uneite broj telefona ili ime"
 
 #. TRANSLATORS: All other phone number types
 #: data/ui/contacts-address-row.ui:71 src/service/ui/contacts.js:149
 msgid "Other"
-msgstr ""
+msgstr "Drugo"
 
 #. TRANSLATORS: Share URL by SMS
 #: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:292
 #: src/service/daemon.js:406 src/service/plugins/sms.js:64
 #: webextension/gettext.js:45
 msgid "Send SMS"
-msgstr "Пошаљи СМС"
+msgstr "Pošalji SMS"
 
 #: data/ui/legacy-messaging-dialog.ui:32 data/ui/legacy-messaging-dialog.ui:36
 #: data/ui/notification-reply-dialog.ui:31
 #: data/ui/notification-reply-dialog.ui:35 src/service/plugins/share.js:428
 msgid "Send"
-msgstr "Пошаљи"
+msgstr "Pošalji"
 
 #: data/ui/legacy-messaging-dialog.ui:69 data/ui/messaging-window.ui:263
 #: data/ui/notification-reply-dialog.ui:68
 msgid "Device is disconnected"
-msgstr "Уређај није повезан"
+msgstr "Uređaj nije povezan"
 
 #: data/ui/messaging-conversation.ui:91 src/service/plugins/sms.js:56
 msgid "Send Message"
-msgstr ""
+msgstr "Pošalji poruku"
 
 #: data/ui/messaging-conversation.ui:92 src/shell/notification.js:73
 msgid "Type a message"
-msgstr "Унесите поруку"
+msgstr "Unesite poruku"
 
 #: data/ui/messaging-conversation.ui:99
 msgid "Message Entry"
-msgstr ""
+msgstr "Nova poruka"
 
 #: data/ui/messaging-conversation.ui:100
 msgid "Type a message and press Enter to send"
@@ -161,24 +161,24 @@ msgstr ""
 #: data/ui/messaging-window.ui:21 src/service/plugins/sms.js:32
 #: src/service/ui/messaging.js:1056
 msgid "Messaging"
-msgstr "Поруке"
+msgstr "Poruke"
 
 #: data/ui/messaging-window.ui:30 data/ui/messaging-window.ui:43
 #: src/service/ui/messaging.js:1267
 msgid "New Conversation"
-msgstr ""
+msgstr "Novi razgovor"
 
 #: data/ui/messaging-window.ui:120
 msgid "No Conversations"
-msgstr ""
+msgstr "Nema razgovora"
 
 #: data/ui/messaging-window.ui:180
 msgid "No conversation selected"
-msgstr ""
+msgstr "Nije izabran razgovor"
 
 #: data/ui/messaging-window.ui:196
 msgid "Select or start a conversation"
-msgstr ""
+msgstr "Izaberite ili započnite razgovor"
 
 #: data/ui/mousepad-input-dialog.ui:97
 msgid "Touchpad.\n"
@@ -190,56 +190,56 @@ msgstr ""
 
 #: data/ui/preferences-command-editor.ui:14
 msgid "Edit Command"
-msgstr ""
+msgstr "Naredbe"
 
 #: data/ui/preferences-command-editor.ui:28
 msgid "Save"
-msgstr ""
+msgstr "Snimi"
 
 #: data/ui/preferences-command-editor.ui:61
 msgid "Name"
-msgstr "Име"
+msgstr "Ime"
 
 #: data/ui/preferences-command-editor.ui:99
 msgid "Command Line"
-msgstr "Командна линија"
+msgstr "Komandna linija"
 
 #: data/ui/preferences-command-editor.ui:121
 #: data/ui/preferences-command-editor.ui:150
 msgid "Choose an executable"
-msgstr "Изаберите извршни фајл"
+msgstr "Izaberite izvršni fajl"
 
 #: data/ui/preferences-command-editor.ui:164
 msgid "Open"
-msgstr "Отвори"
+msgstr "Otvori"
 
 #: data/ui/preferences-device-panel.ui:53 src/preferences/service.js:497
 msgid "Desktop"
-msgstr "Радна површ"
+msgstr "Radna površ"
 
 #: data/ui/preferences-device-panel.ui:102
 msgid "Camera"
-msgstr ""
+msgstr "Kamera"
 
 #: data/ui/preferences-device-panel.ui:159
 msgid "Clipboard Sync"
-msgstr "Синхронизација оставе"
+msgstr "Sinhronizacija ostave"
 
 #: data/ui/preferences-device-panel.ui:225
 msgid "Media Players"
-msgstr "Медијски плејери"
+msgstr "Medijski plejeri"
 
 #: data/ui/preferences-device-panel.ui:282
 msgid "Mouse & Keyboard"
-msgstr "Миш и тастатура"
+msgstr "Miš i tastatura"
 
 #: data/ui/preferences-device-panel.ui:339
 msgid "Volume Control"
-msgstr "Јачина звука"
+msgstr "Jačina zvuka"
 
 #: data/ui/preferences-device-panel.ui:393 src/service/plugins/sftp.js:383
 msgid "Files"
-msgstr "Фајлови"
+msgstr "Fajlovi"
 
 #: data/ui/preferences-device-panel.ui:445
 msgid "Receive Files"
