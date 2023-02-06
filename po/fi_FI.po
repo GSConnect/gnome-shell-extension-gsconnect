@@ -4,7 +4,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-10 23:37+0100\n"
 "PO-Revision-Date: 2023-02-05 22:01\n"
-"Last-Translator: \n"
+"Last-Translator: Elias Arno Eskelinen <elias.eskelinen@protonmail.com>\n"
 "Language-Team: Finnish\n"
 "Language: fi_FI\n"
 "MIME-Version: 1.0\n"
@@ -33,7 +33,10 @@ msgstr "GSConnect -tiimi"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
 msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
+msgstr "GSConnect on täydellinen toteutus KDE Connectista erityisesti GNOME "
+"Shellille Nautilus-, Chrome- ja Firefox-integraatiolla. KDE Connect -"
+"tiimillä on sovelluksia Linuxille, BSD:lle, Androidille, Sailfishille, macOS:"
+"lle ja Windowsille."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:42
 msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
@@ -264,7 +267,7 @@ msgstr "Ilmoitus Akun Alhaisesta Varaustasosta"
 
 #: data/ui/preferences-device-panel.ui:706
 msgid "Charged Up to Custom Level Notification"
-msgstr ""
+msgstr "Ilmoitus Akun Täydestä Varaustasosta"
 
 #: data/ui/preferences-device-panel.ui:786
 msgid "Fully Charged Notification"
@@ -832,7 +835,7 @@ msgstr "Leikepöytä"
 
 #: src/service/plugins/clipboard.js:15
 msgid "Share the clipboard content"
-msgstr ""
+msgstr "Synkronoi leikepöydän sisältö"
 
 #: src/service/plugins/clipboard.js:27
 msgid "Clipboard Push"
@@ -868,7 +871,7 @@ msgstr ""
 
 #: src/service/plugins/mpris.js:19
 msgid "MPRIS"
-msgstr ""
+msgstr "MPRIS"
 
 #: src/service/plugins/mpris.js:20
 msgid "Bidirectional remote media playback control"
@@ -916,7 +919,7 @@ msgstr "“%s” lähettäminen kohteelle %s epäonnistui"
 
 #: src/service/plugins/ping.js:16
 msgid "Send and receive pings"
-msgstr ""
+msgstr "Lähetä ja vastaanota viestejä"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -943,7 +946,7 @@ msgstr ""
 
 #: src/service/plugins/sftp.js:17
 msgid "SFTP"
-msgstr ""
+msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:19
 msgid "Browse the paired device filesystem"

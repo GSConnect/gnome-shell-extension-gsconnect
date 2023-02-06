@@ -5,9 +5,9 @@
 project_identifier: org.gnome.Shell.Extensions.GSConnect
 files:
   - source: /po/org.gnome.Shell.Extensions.GSConnect.pot
-    translation: /po/%locale%.po
+    translation: /po/%locale_with_underscore%.po
     languages_mapping:
-      locale:
+      locale_with_underscore:
         ar-SA: ar
         be: be
         ca-ES: ca
@@ -17,7 +17,7 @@ files:
         de: de
         es-ES: es
         et: et
-        fi: fi
+        fi-FI: fi
         fr: fr
         gl: gl
         hu: hu
