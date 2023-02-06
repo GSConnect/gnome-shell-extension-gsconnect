@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-10 23:37+0100\n"
-"PO-Revision-Date: 2023-02-06 09:28\n"
+"PO-Revision-Date: 2023-02-06 10:35\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
 "Language: fi_FI\n"
@@ -724,7 +724,7 @@ msgstr "Kuva"
 #: src/service/daemon.js:481 src/service/plugins/ping.js:15
 #: src/service/plugins/ping.js:22 src/service/plugins/ping.js:49
 msgid "Ping"
-msgstr ""
+msgstr "Ping"
 
 #: src/service/daemon.js:490 src/service/plugins/battery.js:248
 #: src/service/plugins/battery.js:277 src/service/plugins/battery.js:306
@@ -845,7 +845,7 @@ msgstr "Leikepöydän veto"
 
 #: src/service/plugins/contacts.js:27
 msgid "Access contacts of the paired device"
-msgstr ""
+msgstr "Käytä parilaitteen yhteystietoja"
 
 #: src/service/plugins/findmyphone.js:17
 msgid "Find My Phone"
@@ -861,7 +861,7 @@ msgstr "Kosketuslevy"
 
 #: src/service/plugins/mousepad.js:17
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr ""
+msgstr "Mahdollistaa parilaitteen toimia etähiirenä ja -näppäimistönä"
 
 #: src/service/plugins/mousepad.js:31 src/service/ui/mousepad.js:109
 msgid "Remote Input"
@@ -881,7 +881,7 @@ msgstr "Tuntematon"
 
 #: src/service/plugins/notification.js:20
 msgid "Share notifications with the paired device"
-msgstr ""
+msgstr "Jaa ilmoitukset parilaitteen kanssa"
 
 #: src/service/plugins/notification.js:34
 msgid "Cancel Notification"
@@ -917,7 +917,7 @@ msgstr "Tiedoston “%s” lähettäminen laitteelle %s epäonnistui"
 
 #: src/service/plugins/ping.js:16
 msgid "Send and receive pings"
-msgstr ""
+msgstr "Lähetä ja vastaanota pingejä"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -948,7 +948,7 @@ msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:19
 msgid "Browse the paired device filesystem"
-msgstr ""
+msgstr "Selaa laiteparin tiedostojärjestelmää"
 
 #: src/service/plugins/sftp.js:24
 msgid "Mount"
@@ -969,7 +969,7 @@ msgstr "Jaa"
 
 #: src/service/plugins/share.js:20
 msgid "Share files and URLs between devices"
-msgstr ""
+msgstr "Jaa tiedostoja ja URL-osoitteita laitteiden välillä"
 
 #. TRANSLATORS: eg. Google Pixel is not allowed to upload files
 #: src/service/plugins/share.js:134
