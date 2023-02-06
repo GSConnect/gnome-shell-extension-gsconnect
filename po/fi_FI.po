@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-10 23:37+0100\n"
-"PO-Revision-Date: 2023-02-05 22:01\n"
-"Last-Translator: Elias Arno Eskelinen <elias.eskelinen@protonmail.com>\n"
+"PO-Revision-Date: 2023-02-06 06:23\n"
+"Last-Translator: \n"
 "Language-Team: Finnish\n"
 "Language: fi_FI\n"
 "MIME-Version: 1.0\n"
@@ -33,10 +33,7 @@ msgstr "GSConnect -tiimi"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
 msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr "GSConnect on täydellinen toteutus KDE Connectista erityisesti GNOME "
-"Shellille Nautilus-, Chrome- ja Firefox-integraatiolla. KDE Connect -"
-"tiimillä on sovelluksia Linuxille, BSD:lle, Androidille, Sailfishille, macOS:"
-"lle ja Windowsille."
+msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:42
 msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
@@ -267,7 +264,7 @@ msgstr "Ilmoitus Akun Alhaisesta Varaustasosta"
 
 #: data/ui/preferences-device-panel.ui:706
 msgid "Charged Up to Custom Level Notification"
-msgstr "Ilmoitus Akun Täydestä Varaustasosta"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:786
 msgid "Fully Charged Notification"
@@ -503,11 +500,11 @@ msgstr "Etsitään laitteita…"
 
 #: data/ui/preferences-window.ui:353
 msgid "Behavior When Locked"
-msgstr ""
+msgstr "Toiminta kun lukittuna"
 
 #: data/ui/preferences-window.ui:378
 msgid "Keep Alive"
-msgstr ""
+msgstr "Pidä päällä"
 
 #: data/ui/preferences-window.ui:410
 msgid "Browser Add-Ons"
@@ -588,7 +585,7 @@ msgstr "Lähetä mobiililaitteeseen"
 
 #: src/extension.js:50
 msgid "Sync between your devices"
-msgstr ""
+msgstr "Synkronoi laitteidesi välillä"
 
 #: src/preferences/device.js:673 src/preferences/device.js:679
 msgid "Edit"
@@ -761,7 +758,7 @@ msgstr ""
 #: src/service/device.js:214
 #, javascript-format
 msgid "Verification key: %s"
-msgstr ""
+msgstr "Vahvistusavain: %s"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:843
@@ -835,7 +832,7 @@ msgstr "Leikepöytä"
 
 #: src/service/plugins/clipboard.js:15
 msgid "Share the clipboard content"
-msgstr "Synkronoi leikepöydän sisältö"
+msgstr ""
 
 #: src/service/plugins/clipboard.js:27
 msgid "Clipboard Push"
@@ -871,7 +868,7 @@ msgstr ""
 
 #: src/service/plugins/mpris.js:19
 msgid "MPRIS"
-msgstr "MPRIS"
+msgstr ""
 
 #: src/service/plugins/mpris.js:20
 msgid "Bidirectional remote media playback control"
@@ -919,7 +916,7 @@ msgstr "“%s” lähettäminen kohteelle %s epäonnistui"
 
 #: src/service/plugins/ping.js:16
 msgid "Send and receive pings"
-msgstr "Lähetä ja vastaanota viestejä"
+msgstr ""
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -1001,7 +998,7 @@ msgstr "Vastaanotettiin “%s” kohteelta %s"
 
 #: src/service/plugins/share.js:189
 msgid "Show File Location"
-msgstr ""
+msgstr "Näytä tiedoston sijainti"
 
 #: src/service/plugins/share.js:194
 msgid "Open File"
