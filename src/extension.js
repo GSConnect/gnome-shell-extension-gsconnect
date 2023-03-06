@@ -25,6 +25,7 @@ const Config = Extension.imports.config;
 const Device = Extension.imports.shell.device;
 const Keybindings = Extension.imports.shell.keybindings;
 const Notification = Extension.imports.shell.notification;
+const Input = Extension.imports.shell.input;
 const Remote = Extension.imports.utils.remote;
 
 Extension.getIcon = Utils.getIcon;
@@ -359,10 +360,14 @@ function init() {
     Clipboard.watchService();
 }
 
+var lockscreenInput = null;
 
 function enable() {
     serviceIndicator = new ServiceIndicator();
     Notification.patchGtkNotificationSources();
+
+    lockscreenInput = new Input.LockscreenRemoteAccess();
+    lockscreenInput.patchInhibitor();
 }
 
 
@@ -370,4 +375,9 @@ function disable() {
     serviceIndicator.destroy();
     serviceIndicator = null;
     Notification.unpatchGtkNotificationSources();
+
+    if (lockscreenInput){
+        lockscreenInput.unpatchInhibitor();
+        lockscreenInput = null;
+    }
 }
