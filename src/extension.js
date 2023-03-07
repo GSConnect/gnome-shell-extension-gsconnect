@@ -376,7 +376,7 @@ function disable() {
     serviceIndicator = null;
     Notification.unpatchGtkNotificationSources();
 
-    if (lockscreenInput){
+    if (lockscreenInput) {
         lockscreenInput.unpatchInhibitor();
         lockscreenInput = null;
     }
