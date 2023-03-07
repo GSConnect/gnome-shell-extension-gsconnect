@@ -340,6 +340,7 @@ class ServiceIndicator extends QuickSettings.SystemIndicator {
 });
 
 var serviceIndicator = null;
+var lockscreenInput = null;
 
 function init() {
     // If installed as a user extension, this will install the Desktop entry,
@@ -360,7 +361,6 @@ function init() {
     Clipboard.watchService();
 }
 
-var lockscreenInput = null;
 
 function enable() {
     serviceIndicator = new ServiceIndicator();
