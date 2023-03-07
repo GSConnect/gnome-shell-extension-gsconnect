@@ -11,7 +11,7 @@ const Config = Extension.imports.config;
 
 var LockscreenRemoteAccess = class LockscreenRemoteAccess {
 
-    constructor(){
+    constructor() {
         this._inhibitor = null;
         this._settings = new Gio.Settings({
             settings_schema: Config.GSCHEMA.lookup(
@@ -22,20 +22,20 @@ var LockscreenRemoteAccess = class LockscreenRemoteAccess {
         });
     }
 
-    patchInhibitor(){
+    patchInhibitor() {
         if (this._inhibitor)
             return;
 
-        if (this._settings.get_boolean('keep-alive-when-locked')){
+        if (this._settings.get_boolean('keep-alive-when-locked')) {
             this._inhibitor = global.backend.get_remote_access_controller().inhibit_remote_access;
             global.backend.get_remote_access_controller().inhibit_remote_access = () => {};
         }
     }
 
-    unpatchInhibitor(){
+    unpatchInhibitor() {
         if (!this._inhibitor)
             return;
         global.backend.get_remote_access_controller().inhibit_remote_access = this._inhibitor;
         this._inhibitor = null;
     }
-}
+};
