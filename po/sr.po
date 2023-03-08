@@ -1,51 +1,42 @@
-# SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
-#
-# SPDX-License-Identifier: GPL-2.0-or-later
 msgid ""
 msgstr ""
-"Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
+"Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-10 23:37+0100\n"
-"PO-Revision-Date: 2019-09-25 15:46+0200\n"
-"Last-Translator: Слободан Терзић <slobodan.terzic@zoho.eu>\n"
-"Language-Team: \n"
-"Language: sr\n"
+"PO-Revision-Date: 2023-02-03 16:30\n"
+"Last-Translator: \n"
+"Language-Team: Serbian (Cyrillic)\n"
+"Language: sr_RS\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.1\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Crowdin-Project: gsconnect\n"
+"X-Crowdin-Project-ID: 327933\n"
+"X-Crowdin-Language: sr\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File-ID: 18\n"
 
-# Leaving the name in original form for About dialog.
 #. TRANSLATORS: Extension name
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:12
 #: webextension/gettext.js:33
 msgid "GSConnect"
-msgstr "GSConnect"
+msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:13
-#, fuzzy
 msgid "KDE Connect implementation for GNOME"
-msgstr "Потпуна имплементација КДЕ Конекта за Гном"
+msgstr ""
 
-# Leaving the name in original form for About dialog.
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:23
-#, fuzzy
 msgid "GSConnect Team"
-msgstr "GSConnect"
+msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
 msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:42
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
 msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:46
@@ -61,24 +52,20 @@ msgid "Sync clipboard content"
 msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:49
-#, fuzzy
 msgid "Sync contacts"
-msgstr "Нема контаката"
+msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:50
-#, fuzzy
 msgid "Sync notifications"
-msgstr "Пошаљи обавештење"
+msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:51
-#, fuzzy
 msgid "Control media players"
-msgstr "Медијски плејери"
+msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:52
-#, fuzzy
 msgid "Control system volume"
-msgstr "Системска јачина"
+msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:53
 msgid "Execute predefined commands"
@@ -117,11 +104,11 @@ msgstr "Повежи"
 
 #: data/ui/connect-dialog.ui:80
 msgid "IP Address"
-msgstr "ИП адреса"
+msgstr ""
 
 #: data/ui/contact-chooser.ui:56
 msgid "No contacts"
-msgstr "Нема контаката"
+msgstr ""
 
 #: data/ui/contact-chooser.ui:68 data/ui/messaging-window.ui:103
 #: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:847
@@ -134,9 +121,8 @@ msgstr "Унеите број телефона или име"
 
 #. TRANSLATORS: All other phone number types
 #: data/ui/contacts-address-row.ui:71 src/service/ui/contacts.js:149
-#, fuzzy
 msgid "Other"
-msgstr "Друго"
+msgstr ""
 
 #. TRANSLATORS: Share URL by SMS
 #: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:292
@@ -158,16 +144,15 @@ msgstr "Уређај није повезан"
 
 #: data/ui/messaging-conversation.ui:91 src/service/plugins/sms.js:56
 msgid "Send Message"
-msgstr "Пошаљи поруку"
+msgstr ""
 
 #: data/ui/messaging-conversation.ui:92 src/shell/notification.js:73
 msgid "Type a message"
 msgstr "Унесите поруку"
 
 #: data/ui/messaging-conversation.ui:99
-#, fuzzy
 msgid "Message Entry"
-msgstr "Нова порука"
+msgstr ""
 
 #: data/ui/messaging-conversation.ui:100
 msgid "Type a message and press Enter to send"
@@ -181,38 +166,35 @@ msgstr "Поруке"
 #: data/ui/messaging-window.ui:30 data/ui/messaging-window.ui:43
 #: src/service/ui/messaging.js:1267
 msgid "New Conversation"
-msgstr "Нови разговор"
+msgstr ""
 
 #: data/ui/messaging-window.ui:120
 msgid "No Conversations"
-msgstr "Нема разговора"
+msgstr ""
 
 #: data/ui/messaging-window.ui:180
 msgid "No conversation selected"
-msgstr "Није изабран разговор"
+msgstr ""
 
 #: data/ui/messaging-window.ui:196
 msgid "Select or start a conversation"
-msgstr "Изаберите или започните разговор"
+msgstr ""
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid ""
-"Touchpad.\n"
+msgid "Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n"
-"\n"
+"Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
 msgstr ""
 
 #: data/ui/preferences-command-editor.ui:14
-#, fuzzy
 msgid "Edit Command"
-msgstr "Наредбе"
+msgstr ""
 
 #: data/ui/preferences-command-editor.ui:28
 msgid "Save"
-msgstr "Сними"
+msgstr ""
 
 #: data/ui/preferences-command-editor.ui:61
 msgid "Name"
@@ -237,7 +219,7 @@ msgstr "Радна површ"
 
 #: data/ui/preferences-device-panel.ui:102
 msgid "Camera"
-msgstr "Камера"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:159
 msgid "Clipboard Sync"
@@ -261,12 +243,11 @@ msgstr "Фајлови"
 
 #: data/ui/preferences-device-panel.ui:445
 msgid "Receive Files"
-msgstr "Прими фајлове"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:504
-#, fuzzy
 msgid "Save files to"
-msgstr "Пошаљи фајлове на %s"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:565
 #: data/ui/preferences-device-panel.ui:2226
@@ -275,28 +256,27 @@ msgstr "Дељење"
 
 #: data/ui/preferences-device-panel.ui:596
 msgid "Device Battery"
-msgstr "Батерија уређаја"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:647
 msgid "Low Battery Notification"
-msgstr "Обавештење о скоро празној батерији"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:706
-#, fuzzy
 msgid "Charged Up to Custom Level Notification"
-msgstr "Обавештење о потпуној напуњености"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:786
 msgid "Fully Charged Notification"
-msgstr "Обавештење о потпуној напуњености"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:840
 msgid "System Battery"
-msgstr "Батерија система"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:889
 msgid "Share Statistics"
-msgstr "Дели стстистику"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:943
 #: data/ui/preferences-device-panel.ui:2272 src/service/plugins/battery.js:16
@@ -312,9 +292,8 @@ msgid "Commands"
 msgstr "Наредбе"
 
 #: data/ui/preferences-device-panel.ui:1032
-#, fuzzy
 msgid "Add Command"
-msgstr "Наредбе"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:1119
 msgid "Share Notifications"
@@ -383,12 +362,11 @@ msgstr "Прикључци"
 
 #: data/ui/preferences-device-panel.ui:1960
 msgid "Experimental"
-msgstr "Пробно"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:2007
-#, fuzzy
 msgid "Device Cache"
-msgstr "Назив уређаја"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:2025
 msgid "Clear Cache…"
@@ -396,7 +374,7 @@ msgstr ""
 
 #: data/ui/preferences-device-panel.ui:2064
 msgid "Legacy SMS Support"
-msgstr "Наследна подршка за СМС"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:2121
 msgid "SFTP Automount"
@@ -412,9 +390,8 @@ msgid "Keyboard Shortcuts"
 msgstr "Пречице тастатуре"
 
 #: data/ui/preferences-device-panel.ui:2520
-#, fuzzy
 msgid "Device Settings"
-msgstr "Подешавање"
+msgstr ""
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/ui/preferences-device-panel.ui:2564
@@ -424,16 +401,16 @@ msgstr "Упари"
 
 #: data/ui/preferences-device-panel.ui:2596
 msgid "Device is unpaired"
-msgstr "Уређај је распарен"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:2611
 msgid "You may configure this device before pairing"
-msgstr "Можете подесити овај уређај пре упаривања"
+msgstr ""
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
 #: data/ui/preferences-device-panel.ui:2651 src/preferences/device.js:391
 msgid "Encryption Info"
-msgstr "Информације о шифровању"
+msgstr ""
 
 #. TRANSLATORS: Unpair the device and notify it
 #: data/ui/preferences-device-panel.ui:2662 src/service/daemon.js:394
@@ -483,16 +460,15 @@ msgstr "Постави"
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:80
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Притисните Есц да откажете или Повратник да ресетујете пречицу тастатуре."
+msgstr "Притисните Есц да откажете или Повратник да ресетујете пречицу тастатуре."
 
 #: data/ui/preferences-window.ui:24
 msgid "Device Name"
-msgstr "Назив уређаја"
+msgstr ""
 
 #: data/ui/preferences-window.ui:61
 msgid "_Rename"
-msgstr "_Преименуј"
+msgstr ""
 
 #: data/ui/preferences-window.ui:98 data/ui/preferences-window.ui:112
 msgid "Refresh"
@@ -503,26 +479,24 @@ msgid "Mobile Settings"
 msgstr "Подешавање"
 
 #: data/ui/preferences-window.ui:166
-#, fuzzy
 msgid "Service Menu"
-msgstr "Сервис"
+msgstr ""
 
 #: data/ui/preferences-window.ui:189
-#, fuzzy
 msgid "Device Menu"
-msgstr "Назив уређаја"
+msgstr ""
 
 #: data/ui/preferences-window.ui:203 data/ui/preferences-window.ui:218
 msgid "Edit Device Name"
-msgstr "Уреди назив уређаја"
+msgstr ""
 
 #: data/ui/preferences-window.ui:278
 msgid "Devices"
-msgstr "Уређаји"
+msgstr ""
 
 #: data/ui/preferences-window.ui:328 src/preferences/service.js:659
 msgid "Searching for devices…"
-msgstr "Тражим уређаје…"
+msgstr ""
 
 #: data/ui/preferences-window.ui:353
 msgid "Behavior When Locked"
@@ -538,11 +512,11 @@ msgstr "Додаци за прегледаче"
 
 #: data/ui/preferences-window.ui:728
 msgid "Enable"
-msgstr "Омогући"
+msgstr ""
 
 #: data/ui/preferences-window.ui:760
 msgid "This device is invisible to unpaired devices"
-msgstr "Овај уређај је невидљив неупареним уређајима"
+msgstr ""
 
 #: data/ui/preferences-window.ui:772 src/service/manager.js:117
 msgid "Discovery Disabled"
@@ -565,12 +539,11 @@ msgstr "Кориснички мени"
 #. TRANSLATORS: Generate a support log
 #: data/ui/preferences-window.ui:843 src/preferences/service.js:417
 msgid "Generate Support Log"
-msgstr "Направи дневник за подршку"
+msgstr ""
 
-# Leaving the name in original form for About dialog.
 #: data/ui/preferences-window.ui:851
 msgid "About GSConnect"
-msgstr "О програму"
+msgstr ""
 
 #: data/ui/service-device-chooser.ui:15
 msgid "Select a Device"
@@ -586,9 +559,8 @@ msgid "No Device Found"
 msgstr "Нема нађених уређаја"
 
 #: data/ui/service-device-chooser.ui:118
-#, fuzzy
 msgid "Device List"
-msgstr "Уређаји"
+msgstr ""
 
 #: data/ui/service-error-dialog.ui:39 data/ui/service-error-dialog.ui:47
 msgid "Report"
@@ -599,9 +571,7 @@ msgid "Something’s gone wrong"
 msgstr ""
 
 #: data/ui/service-error-dialog.ui:91
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
 msgstr ""
 
 #: data/ui/service-error-dialog.ui:125
@@ -619,11 +589,11 @@ msgstr ""
 
 #: src/preferences/device.js:673 src/preferences/device.js:679
 msgid "Edit"
-msgstr "Уреди"
+msgstr ""
 
 #: src/preferences/device.js:688 src/preferences/device.js:694
 msgid "Remove"
-msgstr "Уклони"
+msgstr ""
 
 #: src/preferences/device.js:948 src/preferences/device.js:976
 msgid "Disabled"
@@ -653,16 +623,12 @@ msgid "translator-credits"
 msgstr "Слободан Терзић (githzerai06@gmail.com)"
 
 #: src/preferences/service.js:418
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
 msgstr ""
-"Поруке за исправљање грешака се бележе. Предузмите неопходне кораке да "
-"поново призведете проблем и прегеледајте дневник."
 
 #: src/preferences/service.js:421
 msgid "Review Log"
-msgstr "Преглед дневника"
+msgstr ""
 
 #: src/preferences/service.js:489
 msgid "Laptop"
@@ -678,31 +644,31 @@ msgstr "Таблет"
 
 #: src/preferences/service.js:495
 msgid "Television"
-msgstr "Телевизија"
+msgstr ""
 
 #: src/preferences/service.js:517
 msgid "Unpaired"
-msgstr "Распарен"
+msgstr ""
 
 #: src/preferences/service.js:521
 msgid "Disconnected"
-msgstr "Неповезан"
+msgstr ""
 
 #: src/preferences/service.js:525
 msgid "Connected"
-msgstr "Повезан"
+msgstr ""
 
 #: src/preferences/service.js:661
 msgid "Waiting for service…"
-msgstr "Чекам на сервис…"
+msgstr ""
 
 #: src/service/daemon.js:193
 msgid "Click for help troubleshooting"
-msgstr "Кликните за помоћ у отклањању"
+msgstr ""
 
 #: src/service/daemon.js:204
 msgid "Click for more information"
-msgstr "Кликните за више детаља"
+msgstr ""
 
 #: src/service/daemon.js:298
 msgid "Dial Number"
@@ -714,53 +680,45 @@ msgid "Share File"
 msgstr "Дели фајл"
 
 #: src/service/daemon.js:355
-#, fuzzy
 msgid "List available devices"
-msgstr "Није доступно"
+msgstr ""
 
 #: src/service/daemon.js:364
-#, fuzzy
 msgid "List all devices"
-msgstr "Мобилни уређаји"
+msgstr ""
 
 #: src/service/daemon.js:373
-#, fuzzy
 msgid "Target Device"
-msgstr "На уређај"
+msgstr ""
 
 #: src/service/daemon.js:415
-#, fuzzy
 msgid "Message Body"
-msgstr "Нова порука"
+msgstr ""
 
 #: src/service/daemon.js:427 src/service/plugins/notification.js:58
 msgid "Send Notification"
 msgstr "Пошаљи обавештење"
 
 #: src/service/daemon.js:436
-#, fuzzy
 msgid "Notification App Name"
-msgstr "Обавештења"
+msgstr ""
 
 #: src/service/daemon.js:445
-#, fuzzy
 msgid "Notification Body"
-msgstr "Обавештења"
+msgstr ""
 
 #: src/service/daemon.js:454
-#, fuzzy
 msgid "Notification Icon"
-msgstr "Обавештења"
+msgstr ""
 
 #: src/service/daemon.js:463
-#, fuzzy
 msgid "Notification ID"
-msgstr "Обавештења"
+msgstr ""
 
 #: src/service/daemon.js:472 src/service/plugins/photo.js:16
 #: src/service/plugins/photo.js:29
 msgid "Photo"
-msgstr "Фотографије"
+msgstr ""
 
 #: src/service/daemon.js:481 src/service/plugins/ping.js:15
 #: src/service/plugins/ping.js:22 src/service/plugins/ping.js:49
@@ -771,7 +729,7 @@ msgstr "Пинг"
 #: src/service/plugins/battery.js:277 src/service/plugins/battery.js:306
 #: src/service/plugins/findmyphone.js:24
 msgid "Ring"
-msgstr "Позвони"
+msgstr ""
 
 #: src/service/daemon.js:511 src/service/plugins/share.js:49
 #: src/service/ui/messaging.js:1250 src/service/ui/messaging.js:1258
@@ -783,15 +741,14 @@ msgid "Share Text"
 msgstr "Дели текст"
 
 #: src/service/daemon.js:532
-#, fuzzy
 msgid "Show release version"
-msgstr "Додајте особе да започнете разговор"
+msgstr ""
 
 #. TRANSLATORS: Bluetooth address for remote device
 #: src/service/device.js:173
 #, javascript-format
 msgid "Bluetooth device at %s"
-msgstr "Блутут уређај на %s"
+msgstr ""
 
 #. TRANSLATORS: Label for TLS connection verification key
 #.
@@ -799,9 +756,9 @@ msgstr "Блутут уређај на %s"
 #.
 #. Verification key: 0123456789abcdef000000000000000000000000
 #: src/service/device.js:214
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "Verification key: %s"
-msgstr "Обавештења"
+msgstr ""
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:843
@@ -818,8 +775,7 @@ msgid "Accept"
 msgstr "Прихвати"
 
 #: src/service/manager.js:118
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Откривање је онемогућено услед броја уређаја у овој мрежи."
 
 #: src/service/backends/lan.js:166
@@ -827,9 +783,8 @@ msgid "OpenSSL not found"
 msgstr ""
 
 #: src/service/backends/lan.js:456
-#, fuzzy
 msgid "Port already in use"
-msgstr "%s је спреман за употребу"
+msgstr ""
 
 #: src/service/plugins/battery.js:17
 msgid "Exchange battery information"
@@ -837,9 +792,9 @@ msgstr ""
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:257
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s: Battery is full"
-msgstr "%s: батерија је при крају"
+msgstr ""
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
@@ -855,9 +810,9 @@ msgstr ""
 
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:288
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%d%% Charged"
-msgstr "Потпуно пуна"
+msgstr ""
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:315
@@ -920,14 +875,12 @@ msgid "Bidirectional remote media playback control"
 msgstr ""
 
 #: src/service/plugins/mpris.js:320
-#, fuzzy
 msgid "Unknown"
-msgstr "Непознат контакт"
+msgstr ""
 
 #: src/service/plugins/notification.js:20
-#, fuzzy
 msgid "Share notifications with the paired device"
-msgstr "Утишај обавештења мобилиних уређаја"
+msgstr ""
 
 #: src/service/plugins/notification.js:34
 msgid "Cancel Notification"
@@ -943,7 +896,7 @@ msgstr "Обавештење о оддговору"
 
 #: src/service/plugins/notification.js:66
 msgid "Activate Notification"
-msgstr "Активирај обавештење"
+msgstr ""
 
 #: src/service/plugins/photo.js:17
 msgid "Request the paired device to take a photo and transfer it to this PC"
@@ -973,9 +926,8 @@ msgid "Ping: %s"
 msgstr "Пинг: %s"
 
 #: src/service/plugins/presenter.js:14
-#, fuzzy
 msgid "Presentation"
-msgstr "Уграђивање у Фајлове"
+msgstr ""
 
 #: src/service/plugins/presenter.js:15
 msgid "Use the paired device as a presenter"
@@ -986,9 +938,7 @@ msgid "Run Commands"
 msgstr "Извршавање нареби"
 
 #: src/service/plugins/runcommand.js:17
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
 msgstr ""
 
 #: src/service/plugins/sftp.js:17
@@ -1027,9 +977,8 @@ msgid "%s is not allowed to upload files"
 msgstr ""
 
 #: src/service/plugins/share.js:156 src/service/plugins/share.js:289
-#, fuzzy
 msgid "Transferring File"
-msgstr "Пренос није успео"
+msgstr ""
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:158
@@ -1086,9 +1035,8 @@ msgstr "Пошаљи фајлове на %s"
 
 #. TRANSLATORS: Mark the file to be opened once completed
 #: src/service/plugins/share.js:383
-#, fuzzy
 msgid "Open when done"
-msgstr "Отвори у прегледачу"
+msgstr ""
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
 #: src/service/plugins/share.js:422
@@ -1125,13 +1073,11 @@ msgid "Enable the paired device to control the system volume"
 msgstr ""
 
 #: src/service/plugins/systemvolume.js:60
-#, fuzzy
 msgid "PulseAudio not found"
-msgstr "Грешка Пулсаудија"
+msgstr ""
 
 #: src/service/plugins/telephony.js:18
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
 msgstr ""
 
 #. TRANSLATORS: Silence the actively ringing call
@@ -1160,25 +1106,22 @@ msgstr "Текући позив"
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:134
 msgid "Fax"
-msgstr "Факс"
+msgstr ""
 
 #. TRANSLATORS: A work or office phone number
 #: src/service/ui/contacts.js:138
-#, fuzzy
 msgid "Work"
-msgstr "Посао"
+msgstr ""
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:142
-#, fuzzy
 msgid "Mobile"
-msgstr "Мобилни"
+msgstr ""
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:146
-#, fuzzy
 msgid "Home"
-msgstr "Кућни"
+msgstr ""
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #. Update UI
@@ -1202,18 +1145,17 @@ msgstr "Јуче・%s"
 #, javascript-format
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] "%d минут"
-msgstr[1] "%d минута"
-msgstr[2] "%d минута"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 #: src/service/ui/messaging.js:400
 msgid "Not available"
 msgstr "Није доступно"
 
 #: src/service/ui/messaging.js:757
-#, fuzzy
 msgid "Group Message"
-msgstr "Нова порука"
+msgstr ""
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:772
@@ -1258,7 +1200,7 @@ msgstr "%d%% (%d∶%02d преостаје)"
 
 #: src/shell/notification.js:58
 msgid "Reply"
-msgstr "Одговори"
+msgstr ""
 
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:35
@@ -1275,136 +1217,3 @@ msgstr "Сервис није доступан"
 msgid "Open in Browser"
 msgstr "Отвори у прегледачу"
 
-#~ msgid "Add"
-#~ msgstr "Додај"
-
-#~ msgid "On"
-#~ msgstr "Укључен"
-
-#~ msgid "Off"
-#~ msgstr "Искључен"
-
-#~ msgid "Set Shortcut"
-#~ msgstr "Постави пречицу"
-
-#~ msgid "Authentication Failure"
-#~ msgstr "Грешка аутентификацје"
-
-#~ msgid "Network Error"
-#~ msgstr "Грешка мреже"
-
-#~ msgid "Keyboard not ready"
-#~ msgstr "Тастатура није спремна"
-
-#~ msgid "All files"
-#~ msgstr "Сви фајлови"
-
-#~ msgid "Camera pictures"
-#~ msgstr "Слике са камере"
-
-#, javascript-format
-#~ msgid "%d hour"
-#~ msgid_plural "%d hours"
-#~ msgstr[0] "%d час"
-#~ msgstr[1] "%d часа"
-#~ msgstr[2] "%d часова"
-
-#, javascript-format
-#~ msgid "Until %s (%s)"
-#~ msgstr "До %s (%s)"
-
-#~ msgid "Do Not Disturb"
-#~ msgstr "Не узнемиравај"
-
-#~ msgid "Until you turn off Do Not Disturb"
-#~ msgstr "Док не искључим Не узнемиравај"
-
-#~ msgid "Done"
-#~ msgstr "Готово"
-
-#~ msgid "Command Shortcuts"
-#~ msgstr "Пречице наредби"
-
-#~ msgid "Delete"
-#~ msgstr "Обриши"
-
-#~ msgid "Delete this device"
-#~ msgstr "Обриши овај уређај"
-
-#~ msgid "Unpair and remove all settings and files"
-#~ msgstr "Распари и уклони све поставке и фајлове"
-
-#~ msgid "Debugger"
-#~ msgstr "Исправљач грешака"
-
-#~ msgid "About"
-#~ msgstr "О програму"
-
-#, fuzzy
-#~ msgid "Switch to Bluetooth"
-#~ msgstr "Повежи Блутутом"
-
-#~ msgid "Appearance"
-#~ msgstr "Изглед"
-
-#~ msgid "Discoverable"
-#~ msgstr "Откривање је омогућено"
-
-#~ msgid "Restart Service"
-#~ msgstr "Поново покрени сервис"
-
-#~ msgid "Settings"
-#~ msgstr "Подешавање"
-
-#~ msgid "Remote Filesystems"
-#~ msgstr "Удаљени системи фајлова"
-
-#~ msgid "Sound Effects"
-#~ msgstr "Звучни ефекти"
-
-#~ msgid "Extended Keyboard Support"
-#~ msgstr "Проширена подршка за тастатуру"
-
-#~ msgid "Desktop Contacts"
-#~ msgstr "Контакти са десктопа"
-
-#~ msgid "Additional Features"
-#~ msgstr "Додатне могућности"
-
-# Leaving the name in original form for About dialog.
-#~ msgid "KDE Connect"
-#~ msgstr "KDE Connect"
-
-#~ msgid "Click to open preferences"
-#~ msgstr "Кликните да отворите поставке"
-
-#~ msgid "Additional Software Required"
-#~ msgstr "Неопходан је додатан софтвер"
-
-#~ msgid "%s Plugin Failed To Load"
-#~ msgstr "Неуспело учитавање пркључка %s"
-
-#~ msgid "Wayland Not Supported"
-#~ msgstr "Вејланд није подржан"
-
-#~ msgid "Remote input not supported on Wayland"
-#~ msgstr "Унос на даљину није подржан под Вејландом"
-
-# Leaving the name in original form for About dialog.
-#~ msgid "GSConnect: %s"
-#~ msgstr "GSConnect: %s"
-
-#~ msgid "Reconnect"
-#~ msgstr "Поново повежи"
-
-#~ msgid "Locate Device"
-#~ msgstr "Лоцирање уређаја"
-
-#~ msgid "%s asked to locate this device"
-#~ msgstr "%s тражи овај уређај"
-
-#~ msgid "Found"
-#~ msgstr "Нађен"
-
-#~ msgid "Starting Transfer"
-#~ msgstr "Започињем пренос"
