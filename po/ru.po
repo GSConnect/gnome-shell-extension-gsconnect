@@ -1,26 +1,20 @@
-# SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
-#
-# SPDX-License-Identifier: GPL-2.0-or-later
 msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-10 23:37+0100\n"
-"PO-Revision-Date: 2022-10-27 02:23\n"
+"PO-Revision-Date: 2023-03-09 14:55\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Language: ru_RU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 "
-"&& n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 "
-"&& n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: ru\n"
-"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org."
-"gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -38,19 +32,12 @@ msgid "GSConnect Team"
 msgstr "Команда GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr "GSConnect - это полная реализация KDE Connect для GNOME Shell с интеграцией в Nautilus, Chrome и Firefox. Команда KDE Connect также имеет приложения для Linux, BSD, Android, Sailfish, iOS, macOS и Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:42
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"С помощью GSConnect вы можете безопасно подключиться к мобильным устройствам "
-"и другим компьютерам:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
+msgstr "С помощью GSConnect вы можете безопасно подключиться к мобильным устройствам и другим компьютерам:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:46
 msgid "Share files, links and text"
@@ -194,14 +181,15 @@ msgid "Select or start a conversation"
 msgstr "Выберите или начните диалог"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid ""
-"Touchpad.\n"
+msgid "Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n"
-"\n"
+"Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr ""
+msgstr "Тачпад\n"
+"Для управления курсором удерживайте ЛКМ и перемещайте мышь.\n\n"
+"Одинарный клик будет отправлен на сопряжённое устройство.\n"
+"Используйте левую, среднюю и правую кнопку мыши, а также колесо прокрутки."
 
 #: data/ui/preferences-command-editor.ui:14
 msgid "Edit Command"
@@ -515,7 +503,7 @@ msgstr "Поиск устройств…"
 
 #: data/ui/preferences-window.ui:353
 msgid "Behavior When Locked"
-msgstr ""
+msgstr "Поведение при блокировке"
 
 #: data/ui/preferences-window.ui:378
 msgid "Keep Alive"
@@ -586,12 +574,8 @@ msgid "Something’s gone wrong"
 msgstr "Что-то пошло не так"
 
 #: data/ui/service-error-dialog.ui:91
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
-"Возникла непредвиденная ошибка. Пожалуйста, сообщите о проблеме, по "
-"возможности предоставьте дополнительную информацию."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "Возникла непредвиденная ошибка. Пожалуйста, сообщите о проблеме, по возможности предоставьте дополнительную информацию."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
@@ -604,7 +588,7 @@ msgstr "Отправить на устройство"
 
 #: src/extension.js:50
 msgid "Sync between your devices"
-msgstr ""
+msgstr "Синхронизируйтесь между своими устройствами"
 
 #: src/preferences/device.js:673 src/preferences/device.js:679
 msgid "Edit"
@@ -642,12 +626,8 @@ msgid "translator-credits"
 msgstr "'Losted' <losted@wants.dicksinhisan.us>"
 
 #: src/preferences/service.js:418
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Отладочные сообщения будут записаны. Произведите действия при которых "
-"произошла проблема, затем посмотрите журнал."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Отладочные сообщения будут записаны. Произведите действия при которых произошла проблема, затем посмотрите журнал."
 
 #: src/preferences/service.js:421
 msgid "Review Log"
@@ -781,7 +761,7 @@ msgstr "Bluetooth устройство на %s"
 #: src/service/device.js:214
 #, javascript-format
 msgid "Verification key: %s"
-msgstr ""
+msgstr "Ключ проверки: %s"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:843
@@ -798,8 +778,7 @@ msgid "Accept"
 msgstr "Принять"
 
 #: src/service/manager.js:118
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Обнаружение было выключено из-за количества устройств в этой сети."
 
 #: src/service/backends/lan.js:166
@@ -884,12 +863,11 @@ msgstr "Тачпад"
 
 #: src/service/plugins/mousepad.js:17
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr ""
-"Позволяет сопряжённому устройству удалённо работать мышью и клавиатурой"
+msgstr "Позволяет сопряжённому устройству удалённо работать мышью и клавиатурой"
 
 #: src/service/plugins/mousepad.js:31 src/service/ui/mousepad.js:109
 msgid "Remote Input"
-msgstr ""
+msgstr "Удалённый Ввод"
 
 #: src/service/plugins/mpris.js:19
 msgid "MPRIS"
@@ -963,12 +941,8 @@ msgid "Run Commands"
 msgstr "Отправить Команду"
 
 #: src/service/plugins/runcommand.js:17
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
-msgstr ""
-"Выполнить команды на сопряжённом устройстве или позволить ему запустить "
-"определённые команды на этом ПК"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
+msgstr "Выполнить команды на сопряжённом устройстве или позволить ему запустить определённые команды на этом ПК"
 
 #: src/service/plugins/sftp.js:17
 msgid "SFTP"
@@ -1027,7 +1001,7 @@ msgstr "Получен «%s» от %s"
 
 #: src/service/plugins/share.js:189
 msgid "Show File Location"
-msgstr ""
+msgstr "Показать Расположение Файла"
 
 #: src/service/plugins/share.js:194
 msgid "Open File"
@@ -1106,8 +1080,7 @@ msgid "PulseAudio not found"
 msgstr "PulseAudio не найден"
 
 #: src/service/plugins/telephony.js:18
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
 msgstr "Уведомлять о звонках и регулировать громкость системы во время звонков"
 
 #. TRANSLATORS: Silence the actively ringing call
@@ -1248,3 +1221,4 @@ msgstr "Сервис недоступен"
 #: webextension/gettext.js:43
 msgid "Open in Browser"
 msgstr "Открыть в браузере"
+
