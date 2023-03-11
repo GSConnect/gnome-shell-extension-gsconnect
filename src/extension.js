@@ -41,7 +41,7 @@ const ServiceToggle = GObject.registerClass({
 
     _init() {
         super._init({
-            label: 'GSConnect',
+            title: 'GSConnect',
             iconName: 'org.gnome.Shell.Extensions.GSConnect-symbolic',
             toggleMode: true,
         });
