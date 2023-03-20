@@ -45,7 +45,7 @@ const ServiceToggle = GObject.registerClass({
             toggleMode: true,
         });
 
-        this.set({iconName: 'org.gnome.Shell.Extensions.GSConnect-symbolic'})
+        this.set({iconName: 'org.gnome.Shell.Extensions.GSConnect-symbolic'});
 
         // Set QuickMenuToggle header.
         this.menu.setHeader('org.gnome.Shell.Extensions.GSConnect-symbolic', 'GSConnect',
