@@ -151,6 +151,20 @@ const ServiceToggle = GObject.registerClass({
             menu.actor.visible = !panelMode && isAvailable;
             menu._title.actor.visible = !panelMode && isAvailable;
         }
+
+        // Set subtitle on Quick Settings tile
+        if (available.length === 1) {
+            this.subtitle = available[0].name;
+        } else if (available.length > 1) {
+            // TRANSLATORS: %d is the number of devices connected
+            this.subtitle = Extension.ngettext(
+                '%d Connected',
+                '%d Connected',
+                available.length
+            ).format(available.length);
+        } else {
+            this.subtitle = null;
+        }
     }
 
     _onDeviceChanged(device, changed, invalidated) {
