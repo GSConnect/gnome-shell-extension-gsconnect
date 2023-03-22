@@ -1,12 +1,9 @@
-# SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
-#
-# SPDX-License-Identifier: GPL-2.0-or-later
 msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-03-22 10:01+0530\n"
-"PO-Revision-Date: 2022-11-06 13:40\n"
+"PO-Revision-Date: 2023-03-22 04:45\n"
 "Last-Translator: \n"
 "Language-Team: Catalan\n"
 "Language: ca_ES\n"
@@ -17,8 +14,7 @@ msgstr ""
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: ca\n"
-"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org."
-"gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -36,19 +32,12 @@ msgid "GSConnect Team"
 msgstr "L’equip del GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
 msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:42
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"Amb el GSConnect podeu connectar-vos de forma segura a dispositius mòbils i "
-"altres escriptoris per a:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
+msgstr "Amb el GSConnect podeu connectar-vos de forma segura a dispositius mòbils i altres escriptoris per a:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:46
 msgid "Share files, links and text"
@@ -192,11 +181,9 @@ msgid "Select or start a conversation"
 msgstr "Seleccioneu una conversa o inicieu-ne una de nova"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid ""
-"Touchpad.\n"
+msgid "Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n"
-"\n"
+"Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
 msgstr ""
@@ -474,9 +461,7 @@ msgstr "Defineix"
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:80
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Premeu Esc per a cancel·lar o Retrocés per a reinicialitzar la drecera de "
-"teclat."
+msgstr "Premeu Esc per a cancel·lar o Retrocés per a reinicialitzar la drecera de teclat."
 
 #: data/ui/preferences-window.ui:24
 msgid "Device Name"
@@ -587,9 +572,7 @@ msgid "Something’s gone wrong"
 msgstr "Alguna cosa ha anat malament"
 
 #: data/ui/service-error-dialog.ui:91
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
 msgstr ""
 
 #: data/ui/service-error-dialog.ui:125
@@ -606,11 +589,11 @@ msgid "Sync between your devices"
 msgstr ""
 
 #: src/extension.js:161
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
-msgstr[0] "Connectat"
-msgstr[1] "Connectat"
+msgstr[0] "%d connectat"
+msgstr[1] "%d connectats"
 
 #: src/preferences/device.js:673 src/preferences/device.js:679
 msgid "Edit"
@@ -645,17 +628,12 @@ msgstr "Una implementació completa de KDE Connect per al GNOME"
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:385
 msgid "translator-credits"
-msgstr ""
-"Adolfo Jayme Barrientos <fitojb@ubuntu.com>, 2019-2020\n"
+msgstr "Adolfo Jayme Barrientos <fitojb@ubuntu.com>, 2019-2020\n"
 "Marc Riera Irigoyen <marcriera@softcatala.org>, 2019"
 
 #: src/preferences/service.js:418
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"S’estan registrant els missatges de depuració. Efectueu els passos "
-"necessaris per a reproduir un problema i, tot seguit, reviseu el registre."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "S’estan registrant els missatges de depuració. Efectueu els passos necessaris per a reproduir un problema i, tot seguit, reviseu el registre."
 
 #: src/preferences/service.js:421
 msgid "Review Log"
@@ -806,8 +784,7 @@ msgid "Accept"
 msgstr "Accepta-la"
 
 #: src/service/manager.js:118
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr ""
 
 #: src/service/backends/lan.js:166
@@ -970,9 +947,7 @@ msgid "Run Commands"
 msgstr "Execució d’ordres"
 
 #: src/service/plugins/runcommand.js:17
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
 msgstr ""
 
 #: src/service/plugins/sftp.js:17
@@ -1111,8 +1086,7 @@ msgid "PulseAudio not found"
 msgstr "No s’ha trobat el PulseAudio"
 
 #: src/service/plugins/telephony.js:18
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
 msgstr ""
 
 #. TRANSLATORS: Silence the actively ringing call
@@ -1238,9 +1212,7 @@ msgstr "Respon"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:35
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
-"Compartiu enllaços amb el GSConnect, directament al navegador o mitjançant "
-"SMS."
+msgstr "Compartiu enllaços amb el GSConnect, directament al navegador o mitjançant SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:39
@@ -1251,3 +1223,4 @@ msgstr "El servei no està disponible"
 #: webextension/gettext.js:43
 msgid "Open in Browser"
 msgstr "Obre al navegador"
+
