@@ -3,20 +3,18 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-03-22 10:01+0530\n"
-"PO-Revision-Date: 2022-12-21 22:38\n"
+"PO-Revision-Date: 2023-03-22 04:45\n"
 "Last-Translator: \n"
 "Language-Team: Lithuanian\n"
 "Language: lt_LT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && (n%100>19 || n%100<11) ? 0 : "
-"(n%10>=2 && n%10<=9) && (n%100>19 || n%100<11) ? 1 : n%1!=0 ? 2: 3);\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && (n%100>19 || n%100<11) ? 0 : (n%10>=2 && n%10<=9) && (n%100>19 || n%100<11) ? 1 : n%1!=0 ? 2: 3);\n"
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: lt\n"
-"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org."
-"gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -34,23 +32,12 @@ msgid "GSConnect Team"
 msgstr "GSConnect komanda"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
-"GSConnect yra pilnas KDE Connect įgyvendinimas, ypatingai skirtas "
-"integracijai su GNOME Shell ir Nautilus, Chrome bei Firefox. KDE Connect "
-"komanda turi programas, skirtas Linux, BSD, Android, Sailfish, iOS, macOS ir "
-"Windows sistemoms."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr "GSConnect yra pilnas KDE Connect įgyvendinimas, ypatingai skirtas integracijai su GNOME Shell ir Nautilus, Chrome bei Firefox. KDE Connect komanda turi programas, skirtas Linux, BSD, Android, Sailfish, iOS, macOS ir Windows sistemoms."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:42
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"Naudodami GSConnect galite saugiai prisijungti prie mobiliųjų įrenginių ir "
-"kitų stalinių kompiuterių norėdami:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
+msgstr "Naudodami GSConnect galite saugiai prisijungti prie mobiliųjų įrenginių ir kitų stalinių kompiuterių norėdami:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:46
 msgid "Share files, links and text"
@@ -194,11 +181,9 @@ msgid "Select or start a conversation"
 msgstr "Pasirinkite arba pradėkite pokalbį"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid ""
-"Touchpad.\n"
+msgid "Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n"
-"\n"
+"Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
 msgstr ""
@@ -476,9 +461,7 @@ msgstr "Nustatyti"
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:80
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Norėdami atsisakyti, paspauskite Grįžimo (Esc) klavišą arba Naikinimo "
-"(Backspace) klavišą, norėdami atstatyti trumpinį."
+msgstr "Norėdami atsisakyti, paspauskite Grįžimo (Esc) klavišą arba Naikinimo (Backspace) klavišą, norėdami atstatyti trumpinį."
 
 #: data/ui/preferences-window.ui:24
 msgid "Device Name"
@@ -589,12 +572,8 @@ msgid "Something’s gone wrong"
 msgstr "Kažkas nutiko"
 
 #: data/ui/service-error-dialog.ui:91
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
-"GSConnect susidūrė su netikėta klaida. Praneškite apie problemą ir įtraukite "
-"bet kokią informaciją, kuri galėtų padėti."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "GSConnect susidūrė su netikėta klaida. Praneškite apie problemą ir įtraukite bet kokią informaciją, kuri galėtų padėti."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
@@ -610,13 +589,13 @@ msgid "Sync between your devices"
 msgstr ""
 
 #: src/extension.js:161
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
-msgstr[0] "Prijungtas"
-msgstr[1] "Prijungtas"
-msgstr[2] "Prijungtas"
-msgstr[3] "Prijungtas"
+msgstr[0] "%d prijungtas"
+msgstr[1] "%d prijungti"
+msgstr[2] "%d prijungtų"
+msgstr[3] "%d prijungtas"
 
 #: src/preferences/device.js:673 src/preferences/device.js:679
 msgid "Edit"
@@ -654,12 +633,8 @@ msgid "translator-credits"
 msgstr "Moo"
 
 #: src/preferences/service.js:418
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Derinimo pranešimai yra registruojami. Atlikite reikiamus veiksmus, kad "
-"pakartotumėte problemą, o tuomet peržiūrėkite žurnalą."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Derinimo pranešimai yra registruojami. Atlikite reikiamus veiksmus, kad pakartotumėte problemą, o tuomet peržiūrėkite žurnalą."
 
 #: src/preferences/service.js:421
 msgid "Review Log"
@@ -810,8 +785,7 @@ msgid "Accept"
 msgstr "Priimti"
 
 #: src/service/manager.js:118
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Aptikimas buvo išjungtas dėl šiame tinkle esančių įrenginių skaičiaus."
 
 #: src/service/backends/lan.js:166
@@ -896,8 +870,7 @@ msgstr "Jutiklinis kilimėlis"
 
 #: src/service/plugins/mousepad.js:17
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr ""
-"Leidžia suporuotam įrenginiui veikti kaip nuotolinei pelei ir klaviatūrai"
+msgstr "Leidžia suporuotam įrenginiui veikti kaip nuotolinei pelei ir klaviatūrai"
 
 #: src/service/plugins/mousepad.js:31 src/service/ui/mousepad.js:109
 msgid "Remote Input"
@@ -937,9 +910,7 @@ msgstr "Aktyvuoti pranešimą"
 
 #: src/service/plugins/photo.js:17
 msgid "Request the paired device to take a photo and transfer it to this PC"
-msgstr ""
-"Prašyti, kad suporuotas įrenginys padarytų nuotrauką ir perduotų ją į šį "
-"kompiuterį"
+msgstr "Prašyti, kad suporuotas įrenginys padarytų nuotrauką ir perduotų ją į šį kompiuterį"
 
 #: src/service/plugins/photo.js:224 src/service/plugins/share.js:132
 #: src/service/plugins/share.js:208 src/service/plugins/share.js:319
@@ -977,12 +948,8 @@ msgid "Run Commands"
 msgstr "Vykdyti komandas"
 
 #: src/service/plugins/runcommand.js:17
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
-msgstr ""
-"Vykdyti komandas suporuotame įrenginyje arba leisti įrenginiui vykdyti šiame "
-"kompiuteryje iš anksto apibrėžtas komandas"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
+msgstr "Vykdyti komandas suporuotame įrenginyje arba leisti įrenginiui vykdyti šiame kompiuteryje iš anksto apibrėžtas komandas"
 
 #: src/service/plugins/sftp.js:17
 msgid "SFTP"
@@ -1093,9 +1060,7 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:19
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
-"Siųsti bei gauti suporuoto įrenginio SMS žinutes ir gauti pranešimus apie "
-"naujas SMS"
+msgstr "Siųsti bei gauti suporuoto įrenginio SMS žinutes ir gauti pranešimus apie naujas SMS"
 
 #: src/service/plugins/sms.js:40
 msgid "New SMS (URI)"
@@ -1122,11 +1087,8 @@ msgid "PulseAudio not found"
 msgstr "PulseAudio nerasta"
 
 #: src/service/plugins/telephony.js:18
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
-"Gauti pranešimus apie skambučius ir reguliuoti sistemos garsumą skambučių "
-"metu"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgstr "Gauti pranešimus apie skambučius ir reguliuoti sistemos garsumą skambučių metu"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:30
@@ -1255,9 +1217,7 @@ msgstr "Atsakyti"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:35
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
-"Bendrinti nuorodas, naudojant GSConnect, tiesiogiai į naršyklę ar per SMS "
-"žinutę."
+msgstr "Bendrinti nuorodas, naudojant GSConnect, tiesiogiai į naršyklę ar per SMS žinutę."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:39
@@ -1268,3 +1228,4 @@ msgstr "Paslauga neprieinama"
 #: webextension/gettext.js:43
 msgid "Open in Browser"
 msgstr "Atverti naršyklėje"
+
