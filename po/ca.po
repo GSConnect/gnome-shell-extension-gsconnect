@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-10 23:37+0100\n"
+"POT-Creation-Date: 2023-03-22 10:01+0530\n"
 "PO-Revision-Date: 2022-11-06 13:40\n"
 "Last-Translator: \n"
 "Language-Team: Catalan\n"
@@ -263,7 +263,7 @@ msgid "Save files to"
 msgstr "Desa els fitxers a"
 
 #: data/ui/preferences-device-panel.ui:565
-#: data/ui/preferences-device-panel.ui:2226
+#: data/ui/preferences-device-panel.ui:2227
 msgid "Sharing"
 msgstr "Compartició"
 
@@ -292,13 +292,13 @@ msgid "Share Statistics"
 msgstr "Comparteix estadístiques"
 
 #: data/ui/preferences-device-panel.ui:943
-#: data/ui/preferences-device-panel.ui:2272 src/service/plugins/battery.js:16
+#: data/ui/preferences-device-panel.ui:2273 src/service/plugins/battery.js:16
 msgid "Battery"
 msgstr "Bateria"
 
 #: data/ui/preferences-device-panel.ui:973
 #: data/ui/preferences-device-panel.ui:1058
-#: data/ui/preferences-device-panel.ui:2318
+#: data/ui/preferences-device-panel.ui:2319
 #: src/service/plugins/runcommand.js:28 src/service/plugins/runcommand.js:36
 #: src/service/plugins/runcommand.js:196
 msgid "Commands"
@@ -308,160 +308,161 @@ msgstr "Ordres"
 msgid "Add Command"
 msgstr "Afegeix una ordre"
 
-#: data/ui/preferences-device-panel.ui:1119
+#. TRANSLATORS: 'Share' is a verb here; this refers to the action of sharing
+#: data/ui/preferences-device-panel.ui:1120
 msgid "Share Notifications"
 msgstr "Notificacions de compartició"
 
-#: data/ui/preferences-device-panel.ui:1179
+#: data/ui/preferences-device-panel.ui:1180
 msgid "Share When Active"
 msgstr "Comparteix quan estigui actiu"
 
-#: data/ui/preferences-device-panel.ui:1230
+#: data/ui/preferences-device-panel.ui:1231
 msgid "Applications"
 msgstr "Aplicacions"
 
-#: data/ui/preferences-device-panel.ui:1276
-#: data/ui/preferences-device-panel.ui:2364
+#: data/ui/preferences-device-panel.ui:1277
+#: data/ui/preferences-device-panel.ui:2365
 #: src/service/plugins/notification.js:19
 msgid "Notifications"
 msgstr "Notificacions"
 
-#: data/ui/preferences-device-panel.ui:1334 src/service/plugins/contacts.js:26
+#: data/ui/preferences-device-panel.ui:1335 src/service/plugins/contacts.js:26
 msgid "Contacts"
 msgstr "Contactes"
 
-#: data/ui/preferences-device-panel.ui:1387
+#: data/ui/preferences-device-panel.ui:1388
 msgid "Incoming Calls"
 msgstr "Trucades entrants"
 
-#: data/ui/preferences-device-panel.ui:1436
-#: data/ui/preferences-device-panel.ui:1603
+#: data/ui/preferences-device-panel.ui:1437
+#: data/ui/preferences-device-panel.ui:1604
 msgid "Volume"
 msgstr "Volum"
 
-#: data/ui/preferences-device-panel.ui:1502
-#: data/ui/preferences-device-panel.ui:1669
+#: data/ui/preferences-device-panel.ui:1503
+#: data/ui/preferences-device-panel.ui:1670
 msgid "Pause Media"
 msgstr "Posa en pausa la multimèdia"
 
-#: data/ui/preferences-device-panel.ui:1555
+#: data/ui/preferences-device-panel.ui:1556
 msgid "Ongoing Calls"
 msgstr "Trucades en curs"
 
-#: data/ui/preferences-device-panel.ui:1725
+#: data/ui/preferences-device-panel.ui:1726
 msgid "Mute Microphone"
 msgstr "Silencia el micròfon"
 
-#: data/ui/preferences-device-panel.ui:1779
-#: data/ui/preferences-device-panel.ui:2410 src/service/plugins/telephony.js:17
+#: data/ui/preferences-device-panel.ui:1780
+#: data/ui/preferences-device-panel.ui:2411 src/service/plugins/telephony.js:17
 msgid "Telephony"
 msgstr "Telefonia"
 
-#: data/ui/preferences-device-panel.ui:1814
+#: data/ui/preferences-device-panel.ui:1815
 msgid "Action Shortcuts"
 msgstr "Dreceres d’accions"
 
-#: data/ui/preferences-device-panel.ui:1830
+#: data/ui/preferences-device-panel.ui:1831
 msgid "Reset All…"
 msgstr "Reinicialitza-ho tot…"
 
-#: data/ui/preferences-device-panel.ui:1882
+#: data/ui/preferences-device-panel.ui:1883
 msgid "Shortcuts"
 msgstr "Dreceres"
 
-#: data/ui/preferences-device-panel.ui:1913
+#: data/ui/preferences-device-panel.ui:1914
 msgid "Plugins"
 msgstr "Connectors"
 
-#: data/ui/preferences-device-panel.ui:1960
+#: data/ui/preferences-device-panel.ui:1961
 msgid "Experimental"
 msgstr "Experiments"
 
-#: data/ui/preferences-device-panel.ui:2007
+#: data/ui/preferences-device-panel.ui:2008
 msgid "Device Cache"
 msgstr "Memòria cau del dispositiu"
 
-#: data/ui/preferences-device-panel.ui:2025
+#: data/ui/preferences-device-panel.ui:2026
 msgid "Clear Cache…"
 msgstr "Neteja la memòria cau…"
 
-#: data/ui/preferences-device-panel.ui:2064
+#: data/ui/preferences-device-panel.ui:2065
 msgid "Legacy SMS Support"
 msgstr "Compatibilitat d’SMS llegat"
 
-#: data/ui/preferences-device-panel.ui:2121
+#: data/ui/preferences-device-panel.ui:2122
 msgid "SFTP Automount"
 msgstr "Muntatge automàtic d’SFTP"
 
-#: data/ui/preferences-device-panel.ui:2176
-#: data/ui/preferences-device-panel.ui:2502
+#: data/ui/preferences-device-panel.ui:2177
+#: data/ui/preferences-device-panel.ui:2503
 msgid "Advanced"
 msgstr "Avançat"
 
-#: data/ui/preferences-device-panel.ui:2456
+#: data/ui/preferences-device-panel.ui:2457
 msgid "Keyboard Shortcuts"
 msgstr "Dreceres de teclat"
 
-#: data/ui/preferences-device-panel.ui:2520
+#: data/ui/preferences-device-panel.ui:2521
 msgid "Device Settings"
 msgstr "Paràmetres del dispositiu"
 
 #. TRANSLATORS: Send a pair request to the device
-#: data/ui/preferences-device-panel.ui:2564
-#: data/ui/preferences-device-panel.ui:2656 src/service/daemon.js:385
+#: data/ui/preferences-device-panel.ui:2565
+#: data/ui/preferences-device-panel.ui:2657 src/service/daemon.js:385
 msgid "Pair"
 msgstr "Aparella"
 
-#: data/ui/preferences-device-panel.ui:2596
+#: data/ui/preferences-device-panel.ui:2597
 msgid "Device is unpaired"
 msgstr "No s’ha aparellat el dispositiu"
 
-#: data/ui/preferences-device-panel.ui:2611
+#: data/ui/preferences-device-panel.ui:2612
 msgid "You may configure this device before pairing"
 msgstr "Podeu configurar el dispositiu abans d’aparellar-lo"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
-#: data/ui/preferences-device-panel.ui:2651 src/preferences/device.js:391
+#: data/ui/preferences-device-panel.ui:2652 src/preferences/device.js:391
 msgid "Encryption Info"
 msgstr "Informació de xifratge"
 
 #. TRANSLATORS: Unpair the device and notify it
-#: data/ui/preferences-device-panel.ui:2662 src/service/daemon.js:394
+#: data/ui/preferences-device-panel.ui:2663 src/service/daemon.js:394
 msgid "Unpair"
 msgstr "Desaparella"
 
 #. TRANSLATORS: Send clipboard content to device
-#: data/ui/preferences-device-panel.ui:2674
+#: data/ui/preferences-device-panel.ui:2675
 msgid "To Device"
 msgstr "Al dispositiu"
 
 #. TRANSLATORS: Receive clipboard content from the device
-#: data/ui/preferences-device-panel.ui:2680
+#: data/ui/preferences-device-panel.ui:2681
 msgid "From Device"
 msgstr "Des del dispositiu"
 
 #. TRANSLATORS: Don't change the system volume
-#: data/ui/preferences-device-panel.ui:2692
-#: data/ui/preferences-device-panel.ui:2725
+#: data/ui/preferences-device-panel.ui:2693
+#: data/ui/preferences-device-panel.ui:2726
 msgid "Nothing"
 msgstr "Res"
 
 #. TRANSLATORS: Restore the system volume
-#: data/ui/preferences-device-panel.ui:2699
-#: data/ui/preferences-device-panel.ui:2732
+#: data/ui/preferences-device-panel.ui:2700
+#: data/ui/preferences-device-panel.ui:2733
 msgid "Restore"
 msgstr "Restaura"
 
 #. TRANSLATORS: Lower the system volume
-#: data/ui/preferences-device-panel.ui:2706
-#: data/ui/preferences-device-panel.ui:2739
+#: data/ui/preferences-device-panel.ui:2707
+#: data/ui/preferences-device-panel.ui:2740
 msgid "Lower"
 msgstr "Abaixa"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the actively ringing call
-#: data/ui/preferences-device-panel.ui:2713
-#: data/ui/preferences-device-panel.ui:2746
+#: data/ui/preferences-device-panel.ui:2714
+#: data/ui/preferences-device-panel.ui:2747
 #: src/service/plugins/telephony.js:199
 msgid "Mute"
 msgstr "Silencia"
@@ -489,7 +490,7 @@ msgstr "_Canvia el nom"
 msgid "Refresh"
 msgstr "Actualitza"
 
-#: data/ui/preferences-window.ui:139 src/extension.js:114
+#: data/ui/preferences-window.ui:139 src/extension.js:116
 msgid "Mobile Settings"
 msgstr "Paràmetres del mòbil"
 
@@ -600,9 +601,16 @@ msgstr "Detalls tècnics"
 msgid "Send To Mobile Device"
 msgstr "Envia al dispositiu mòbil"
 
-#: src/extension.js:50
+#: src/extension.js:52
 msgid "Sync between your devices"
 msgstr ""
+
+#: src/extension.js:161
+#, fuzzy, javascript-format
+msgid "%d Connected"
+msgid_plural "%d Connected"
+msgstr[0] "Connectat"
+msgstr[1] "Connectat"
 
 #: src/preferences/device.js:673 src/preferences/device.js:679
 msgid "Edit"
