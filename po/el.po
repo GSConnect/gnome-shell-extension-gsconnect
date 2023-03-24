@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-03-22 10:01+0530\n"
-"PO-Revision-Date: 2022-08-27 01:59+0300\n"
+"PO-Revision-Date: 2023-03-24 11:53+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: el\n"
@@ -31,16 +31,15 @@ msgid "GSConnect Team"
 msgstr "Η ομάδα του GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
-#, fuzzy
 msgid ""
 "GSConnect is a complete implementation of KDE Connect especially for GNOME "
 "Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
 "has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
 msgstr ""
-"Το GSConnect είναι μια πλήρης υλοποίηση του KDE Connect ειδικά για το "
-"γραφικό κέλυφος GNOME με ενσωμάτωση Nautilus, Chrome και Firefox. Η ομάδα "
-"του KDE Connect διαθέτει εφαρμογές για Linux, BSD, Android, Sailfish, macOS "
-"και Windows."
+"Το GSConnect είναι μια πλήρης υλοποίηση του KDE Connect για το γραφικό "
+"κέλυφος GNOME με ενσωμάτωση Nautilus, Chrome και Firefox. Η ομάδα του KDE "
+"Connect διαθέτει εφαρμογές για Linux, BSD, Android, Sailfish, macOS και "
+"Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:42
 msgid ""
@@ -200,6 +199,12 @@ msgid ""
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
 msgstr ""
+"Επιφάνεια αφής.\n"
+"Σύρετε σε αυτή την περιοχή για να μετακινήσετε τον κέρσορα του ποντικιού.\n"
+"Πατήστε παρατεταμένα για να σύρετε  τον κέρσορα του ποντικιού.\n"
+"\n"
+"Απλά πατήστε και το πλήκτρο θα αποσταλεί στη συνδεδεμένη συσκευή.\n"
+"Αριστερό, μεσαίο, δεξί κουμπί και τροχός κύλισης."
 
 #: data/ui/preferences-command-editor.ui:14
 msgid "Edit Command"
@@ -517,11 +522,11 @@ msgstr "Αναζήτηση συσκευών…"
 
 #: data/ui/preferences-window.ui:353
 msgid "Behavior When Locked"
-msgstr ""
+msgstr "Συμπεριφορά όταν είναι κλειδωμένο"
 
 #: data/ui/preferences-window.ui:378
 msgid "Keep Alive"
-msgstr ""
+msgstr "Διατηρήστε"
 
 #: data/ui/preferences-window.ui:410
 msgid "Browser Add-Ons"
@@ -606,14 +611,14 @@ msgstr "Αποστολή σε φορητή συσκευή"
 
 #: src/extension.js:52
 msgid "Sync between your devices"
-msgstr ""
+msgstr "Συγχρονισμός μεταξύ των συσκευών σας"
 
 #: src/extension.js:161
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
-msgstr[0] "Συνδεδεμένο"
-msgstr[1] "Συνδεδεμένο"
+msgstr[0] "%d Συνδεδεμένη"
+msgstr[1] "%d Συνδεδεμένες"
 
 #: src/preferences/device.js:673 src/preferences/device.js:679
 msgid "Edit"
@@ -789,9 +794,9 @@ msgstr "Συσκευή Bluetooth σε %s"
 #.
 #. Verification key: 0123456789abcdef000000000000000000000000
 #: src/service/device.js:214
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "Verification key: %s"
-msgstr "Ειδοποιήσεις"
+msgstr "Κλειδί επαλήθευσης: %s"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:843
@@ -902,7 +907,7 @@ msgstr ""
 
 #: src/service/plugins/mousepad.js:31 src/service/ui/mousepad.js:109
 msgid "Remote Input"
-msgstr ""
+msgstr "Απομακρυσμένη εισαγωγή"
 
 #: src/service/plugins/mpris.js:19
 msgid "MPRIS"
@@ -1042,7 +1047,7 @@ msgstr "Ελήφθη \"%s\" από %s"
 
 #: src/service/plugins/share.js:189
 msgid "Show File Location"
-msgstr ""
+msgstr "Εμφάνιση θέσης αρχείου"
 
 #: src/service/plugins/share.js:194
 msgid "Open File"
