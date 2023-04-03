@@ -1,12 +1,9 @@
-# SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
-#
-# SPDX-License-Identifier: GPL-2.0-or-later
 msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-03-22 10:01+0530\n"
-"PO-Revision-Date: 2022-10-27 02:23\n"
+"PO-Revision-Date: 2023-03-22 04:45\n"
 "Last-Translator: \n"
 "Language-Team: Estonian\n"
 "Language: et_EE\n"
@@ -17,8 +14,7 @@ msgstr ""
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: et\n"
-"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org."
-"gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -36,19 +32,12 @@ msgid "GSConnect Team"
 msgstr "GSConnecti meeskond"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
 msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:42
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"GSConnecti abil saad sa turvaliselt ühenduda mobiilseadmete ja teiste "
-"töölaudadega, et:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
+msgstr "GSConnecti abil saad sa turvaliselt ühenduda mobiilseadmete ja teiste töölaudadega, et:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:46
 msgid "Share files, links and text"
@@ -192,11 +181,9 @@ msgid "Select or start a conversation"
 msgstr "Vali või alusta vestlus"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid ""
-"Touchpad.\n"
+msgid "Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n"
-"\n"
+"Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
 msgstr ""
@@ -474,8 +461,7 @@ msgstr "Määra"
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:80
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Vajuta tühistamiseks Esc või klaviatuuriotsetee lähtestamiseks Tagasilüke."
+msgstr "Vajuta tühistamiseks Esc või klaviatuuriotsetee lähtestamiseks Tagasilüke."
 
 #: data/ui/preferences-window.ui:24
 msgid "Device Name"
@@ -586,12 +572,8 @@ msgid "Something’s gone wrong"
 msgstr "Midagi läks valesti"
 
 #: data/ui/service-error-dialog.ui:91
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
-"GSConnectil esines ootamatu viga. Palun teata veast ja lisa mistahes infot, "
-"mis võib lahendamisel kaasa aidata."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "GSConnectil esines ootamatu viga. Palun teata veast ja lisa mistahes infot, mis võib lahendamisel kaasa aidata."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
@@ -607,11 +589,11 @@ msgid "Sync between your devices"
 msgstr ""
 
 #: src/extension.js:161
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
-msgstr[0] "Ühendatud"
-msgstr[1] "Ühendatud"
+msgstr[0] "%d ühendatud"
+msgstr[1] "%d ühendatud"
 
 #: src/preferences/device.js:673 src/preferences/device.js:679
 msgid "Edit"
@@ -649,12 +631,8 @@ msgid "translator-credits"
 msgstr "Madis O, 2018."
 
 #: src/preferences/service.js:418
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Silumissõnumid logitakse. Teosta mistahes vajalikud sammud probleemi "
-"taasloomiseks, seejärel vaata logi üle."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Silumissõnumid logitakse. Teosta mistahes vajalikud sammud probleemi taasloomiseks, seejärel vaata logi üle."
 
 #: src/preferences/service.js:421
 msgid "Review Log"
@@ -805,8 +783,7 @@ msgid "Accept"
 msgstr "Nõustu"
 
 #: src/service/manager.js:118
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Avastamine on keelatud selles võrgus olevate seadmete arvu tõttu."
 
 #: src/service/backends/lan.js:166
@@ -969,12 +946,8 @@ msgid "Run Commands"
 msgstr "Käivita käsklusi"
 
 #: src/service/plugins/runcommand.js:17
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
-msgstr ""
-"Käivita käsklusi seotud seadmel või luba seadmel käivitada ettemääratuid "
-"käske selles arvutis"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
+msgstr "Käivita käsklusi seotud seadmel või luba seadmel käivitada ettemääratuid käske selles arvutis"
 
 #: src/service/plugins/sftp.js:17
 msgid "SFTP"
@@ -1112,11 +1085,8 @@ msgid "PulseAudio not found"
 msgstr "PulseAudiot ei leitud"
 
 #: src/service/plugins/telephony.js:18
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
-"Saa teadet kõnede kohta ning reguleeri saabuvate/väljuvate kõnede "
-"helitugevust"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgstr "Saa teadet kõnede kohta ning reguleeri saabuvate/väljuvate kõnede helitugevust"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:30
@@ -1252,3 +1222,4 @@ msgstr "Teenus pole saadaval"
 #: webextension/gettext.js:43
 msgid "Open in Browser"
 msgstr "Ava brauseris"
+

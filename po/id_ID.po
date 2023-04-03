@@ -5,15 +5,15 @@ msgstr ""
 "POT-Creation-Date: 2023-03-22 10:01+0530\n"
 "PO-Revision-Date: 2023-03-22 04:45\n"
 "Last-Translator: \n"
-"Language-Team: Hungarian\n"
-"Language: hu_HU\n"
+"Language-Team: Indonesian\n"
+"Language: id_ID\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
-"X-Crowdin-Language: hu\n"
+"X-Crowdin-Language: id\n"
 "X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
@@ -25,11 +25,11 @@ msgstr "GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:13
 msgid "KDE Connect implementation for GNOME"
-msgstr "KDE Connect implementáció GNOME-hoz"
+msgstr "Implementasi KDE Connect untuk GNOME"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:23
 msgid "GSConnect Team"
-msgstr "A GSConnect csapata"
+msgstr "Tim GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
 msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
@@ -37,52 +37,52 @@ msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:42
 msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
-msgstr "A GSConnect segítségével biztonságosan csatlakozhat mobileszközökhöz és másik számítógépekhez a következőkhöz:"
+msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:46
 msgid "Share files, links and text"
-msgstr "Fájlok, hivatkozások, szövegek megosztása"
+msgstr "Membagikan berkas, tautan, dan teks"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:47
 msgid "Send and receive messages"
-msgstr "Üzenetek küldése és fogadása"
+msgstr "Mengirim serta menerima pesan"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:48
 msgid "Sync clipboard content"
-msgstr "Vágólap tartalmának szinkronizálása"
+msgstr "Menyinkronkan isi papan klip"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:49
 msgid "Sync contacts"
-msgstr "Névjegyek szinkronizálása"
+msgstr "Menyinkronkan kontak"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:50
 msgid "Sync notifications"
-msgstr "Értesítések szinkronizálása"
+msgstr "Menyinkronkan notifikasi"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:51
 msgid "Control media players"
-msgstr "Médialejátszók irányítása"
+msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:52
 msgid "Control system volume"
-msgstr "Rendszerhangerő vezérlése"
+msgstr "Mengendalikan volume sistem"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:53
 msgid "Execute predefined commands"
-msgstr "Előre megadott parancsok végrehajtása"
+msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:54
 msgid "And more…"
-msgstr "És még sok más…"
+msgstr "Dan banyak lagi…"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:127
 msgid "GSConnect in GNOME Shell"
-msgstr "GSConnect a GNOME Shellben"
+msgstr "GSConnect di GNOME Shell"
 
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/connect-dialog.ui:20 data/ui/preferences-window.ui:821
 msgid "Connect to…"
-msgstr "Kapcsolódás egy eszközhöz…"
+msgstr "Hubungkan dengan…"
 
 #: data/ui/connect-dialog.ui:26 data/ui/legacy-messaging-dialog.ui:20
 #: data/ui/legacy-messaging-dialog.ui:24
@@ -96,89 +96,89 @@ msgstr "Kapcsolódás egy eszközhöz…"
 #: src/preferences/service.js:420 src/service/plugins/share.js:163
 #: src/service/plugins/share.js:296 src/service/plugins/share.js:427
 msgid "Cancel"
-msgstr "Mégsem"
+msgstr "Batal"
 
 #: data/ui/connect-dialog.ui:33
 msgid "Connect"
-msgstr "Kapcsolódás"
+msgstr "Hubungkan"
 
 #: data/ui/connect-dialog.ui:80
 msgid "IP Address"
-msgstr "IP-cím"
+msgstr "Alamat IP"
 
 #: data/ui/contact-chooser.ui:56
 msgid "No contacts"
-msgstr "Nincsenek névjegyek"
+msgstr ""
 
 #: data/ui/contact-chooser.ui:68 data/ui/messaging-window.ui:103
 #: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:847
 msgid "Help"
-msgstr "Súgó"
+msgstr "Bantuan"
 
 #: data/ui/contact-chooser.ui:109
 msgid "Type a phone number or name"
-msgstr "Adjon meg egy telefonszámot vagy nevet"
+msgstr "Ketik nomor telepon atau nama"
 
 #. TRANSLATORS: All other phone number types
 #: data/ui/contacts-address-row.ui:71 src/service/ui/contacts.js:149
 msgid "Other"
-msgstr "Egyéb"
+msgstr "Lainnya"
 
 #. TRANSLATORS: Share URL by SMS
 #: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:292
 #: src/service/daemon.js:406 src/service/plugins/sms.js:64
 #: webextension/gettext.js:45
 msgid "Send SMS"
-msgstr "SMS küldése"
+msgstr "Kirim SMS"
 
 #: data/ui/legacy-messaging-dialog.ui:32 data/ui/legacy-messaging-dialog.ui:36
 #: data/ui/notification-reply-dialog.ui:31
 #: data/ui/notification-reply-dialog.ui:35 src/service/plugins/share.js:428
 msgid "Send"
-msgstr "Küldés"
+msgstr "Kirim"
 
 #: data/ui/legacy-messaging-dialog.ui:69 data/ui/messaging-window.ui:263
 #: data/ui/notification-reply-dialog.ui:68
 msgid "Device is disconnected"
-msgstr "Az eszköz nincs csatlakoztatva"
+msgstr "Perangkat terputus"
 
 #: data/ui/messaging-conversation.ui:91 src/service/plugins/sms.js:56
 msgid "Send Message"
-msgstr "Üzenet küldése"
+msgstr "Kirim Pesan"
 
 #: data/ui/messaging-conversation.ui:92 src/shell/notification.js:73
 msgid "Type a message"
-msgstr "Írja be az üzenetet"
+msgstr "Ketik pesan"
 
 #: data/ui/messaging-conversation.ui:99
 msgid "Message Entry"
-msgstr "Üzenet"
+msgstr ""
 
 #: data/ui/messaging-conversation.ui:100
 msgid "Type a message and press Enter to send"
-msgstr "Írja be az üzenetet, majd küldéshez nyomja meg az Entert"
+msgstr "Ketik pesan dan tekan Enter untuk mengirim"
 
 #: data/ui/messaging-window.ui:21 src/service/plugins/sms.js:32
 #: src/service/ui/messaging.js:1056
 msgid "Messaging"
-msgstr "Üzenetküldés"
+msgstr "Perpesanan"
 
 #: data/ui/messaging-window.ui:30 data/ui/messaging-window.ui:43
 #: src/service/ui/messaging.js:1267
 msgid "New Conversation"
-msgstr "Új beszélgetés"
+msgstr "Percakapan Baru"
 
 #: data/ui/messaging-window.ui:120
 msgid "No Conversations"
-msgstr "Nincsenek beszélgetések"
+msgstr "Tidak Ada Percakapan"
 
 #: data/ui/messaging-window.ui:180
 msgid "No conversation selected"
-msgstr "Nincs kiválasztva beszélgetés"
+msgstr "Tidak ada percakapan yang dipilih"
 
 #: data/ui/messaging-window.ui:196
 msgid "Select or start a conversation"
-msgstr "Indítson, vagy válasszon ki egy beszélgetést"
+msgstr "Pilih atau mulai sebuah percakapan"
 
 #: data/ui/mousepad-input-dialog.ui:97
 msgid "Touchpad.\n"
@@ -190,98 +190,98 @@ msgstr ""
 
 #: data/ui/preferences-command-editor.ui:14
 msgid "Edit Command"
-msgstr "Parancs szerkesztése"
+msgstr "Sunting Perintah"
 
 #: data/ui/preferences-command-editor.ui:28
 msgid "Save"
-msgstr "Mentés"
+msgstr "Simpan"
 
 #: data/ui/preferences-command-editor.ui:61
 msgid "Name"
-msgstr "Név"
+msgstr "Nama"
 
 #: data/ui/preferences-command-editor.ui:99
 msgid "Command Line"
-msgstr "Parancssor"
+msgstr "Baris Perintah"
 
 #: data/ui/preferences-command-editor.ui:121
 #: data/ui/preferences-command-editor.ui:150
 msgid "Choose an executable"
-msgstr "Válasszon egy programot"
+msgstr ""
 
 #: data/ui/preferences-command-editor.ui:164
 msgid "Open"
-msgstr "Megnyitás"
+msgstr "Buka"
 
 #: data/ui/preferences-device-panel.ui:53 src/preferences/service.js:497
 msgid "Desktop"
-msgstr "Asztali gép"
+msgstr "Desktop"
 
 #: data/ui/preferences-device-panel.ui:102
 msgid "Camera"
-msgstr "Fényképező"
+msgstr "Kamera"
 
 #: data/ui/preferences-device-panel.ui:159
 msgid "Clipboard Sync"
-msgstr "Vágólap-szinkronizálás"
+msgstr "Sinkronisasi Papan Klip"
 
 #: data/ui/preferences-device-panel.ui:225
 msgid "Media Players"
-msgstr "Médialejátszók"
+msgstr "Pemutar Media"
 
 #: data/ui/preferences-device-panel.ui:282
 msgid "Mouse & Keyboard"
-msgstr "Egér és billentyűzet"
+msgstr "Tetikus & Papan Ketik"
 
 #: data/ui/preferences-device-panel.ui:339
 msgid "Volume Control"
-msgstr "Hangerőszabályzó"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:393 src/service/plugins/sftp.js:383
 msgid "Files"
-msgstr "Fájlok"
+msgstr "Berkas-berkas"
 
 #: data/ui/preferences-device-panel.ui:445
 msgid "Receive Files"
-msgstr "Fájlok fogadása"
+msgstr "Terima berkas-berkas"
 
 #: data/ui/preferences-device-panel.ui:504
 msgid "Save files to"
-msgstr "Fájlok mentése ide"
+msgstr "Simpan berkas-berkas di"
 
 #: data/ui/preferences-device-panel.ui:565
 #: data/ui/preferences-device-panel.ui:2227
 msgid "Sharing"
-msgstr "Megosztás"
+msgstr "Berbagi"
 
 #: data/ui/preferences-device-panel.ui:596
 msgid "Device Battery"
-msgstr "Eszköz akkumulátora"
+msgstr "Baterai Perangkat"
 
 #: data/ui/preferences-device-panel.ui:647
 msgid "Low Battery Notification"
-msgstr "Alacsony töltöttség értesítés"
+msgstr "Notifikasi Baterai Lemah"
 
 #: data/ui/preferences-device-panel.ui:706
 msgid "Charged Up to Custom Level Notification"
-msgstr "Szabadon állítható feltöltöttségi értesítés"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:786
 msgid "Fully Charged Notification"
-msgstr "Teljes töltöttség értesítés"
+msgstr "Notifikasi Baterai Terisi Penuh"
 
 #: data/ui/preferences-device-panel.ui:840
 msgid "System Battery"
-msgstr "Rendszer-akkumulátor"
+msgstr "Baterai Sistem"
 
 #: data/ui/preferences-device-panel.ui:889
 msgid "Share Statistics"
-msgstr "Statisztikák megosztása"
+msgstr "Bagikan Statistik"
 
 #: data/ui/preferences-device-panel.ui:943
 #: data/ui/preferences-device-panel.ui:2273 src/service/plugins/battery.js:16
 msgid "Battery"
-msgstr "Akkumulátor"
+msgstr "Baterai"
 
 #: data/ui/preferences-device-panel.ui:973
 #: data/ui/preferences-device-panel.ui:1058
@@ -289,162 +289,162 @@ msgstr "Akkumulátor"
 #: src/service/plugins/runcommand.js:28 src/service/plugins/runcommand.js:36
 #: src/service/plugins/runcommand.js:196
 msgid "Commands"
-msgstr "Parancsok"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:1032
 msgid "Add Command"
-msgstr "Parancs hozzáadása"
+msgstr "Tambahkan Perintah"
 
 #. TRANSLATORS: 'Share' is a verb here; this refers to the action of sharing
 #: data/ui/preferences-device-panel.ui:1120
 msgid "Share Notifications"
-msgstr "Értesítések megosztása"
+msgstr "Bagikan Notifikasi"
 
 #: data/ui/preferences-device-panel.ui:1180
 msgid "Share When Active"
-msgstr "Megosztás aktív használat közben"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:1231
 msgid "Applications"
-msgstr "Alkalmazások"
+msgstr "Aplikasi-aplikasi"
 
 #: data/ui/preferences-device-panel.ui:1277
 #: data/ui/preferences-device-panel.ui:2365
 #: src/service/plugins/notification.js:19
 msgid "Notifications"
-msgstr "Értesítések"
+msgstr "Notifikasi"
 
 #: data/ui/preferences-device-panel.ui:1335 src/service/plugins/contacts.js:26
 msgid "Contacts"
-msgstr "Névjegyek"
+msgstr "Kontak"
 
 #: data/ui/preferences-device-panel.ui:1388
 msgid "Incoming Calls"
-msgstr "Bejövő hívások"
+msgstr "Panggilan Masuk"
 
 #: data/ui/preferences-device-panel.ui:1437
 #: data/ui/preferences-device-panel.ui:1604
 msgid "Volume"
-msgstr "Hangerő"
+msgstr "Volume"
 
 #: data/ui/preferences-device-panel.ui:1503
 #: data/ui/preferences-device-panel.ui:1670
 msgid "Pause Media"
-msgstr "Média szüneteltetése"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:1556
 msgid "Ongoing Calls"
-msgstr "Folyamatban lévő hívások"
+msgstr "Panggilan Aktif"
 
 #: data/ui/preferences-device-panel.ui:1726
 msgid "Mute Microphone"
-msgstr "Mikrofon némítása"
+msgstr "Bisukan Mikrofon"
 
 #: data/ui/preferences-device-panel.ui:1780
 #: data/ui/preferences-device-panel.ui:2411 src/service/plugins/telephony.js:17
 msgid "Telephony"
-msgstr "Telefonálás"
+msgstr "Telepon"
 
 #: data/ui/preferences-device-panel.ui:1815
 msgid "Action Shortcuts"
-msgstr "Műveletek gyorsbillentyűi"
+msgstr "Pintasan Tindakan"
 
 #: data/ui/preferences-device-panel.ui:1831
 msgid "Reset All…"
-msgstr "Összes visszaállítása…"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:1883
 msgid "Shortcuts"
-msgstr "Gyorsbillentyűk"
+msgstr "Pintasan"
 
 #: data/ui/preferences-device-panel.ui:1914
 msgid "Plugins"
-msgstr "Bővítmények"
+msgstr "Plugin-plugin"
 
 #: data/ui/preferences-device-panel.ui:1961
 msgid "Experimental"
-msgstr "Kísérleti"
+msgstr "Eksperimental"
 
 #: data/ui/preferences-device-panel.ui:2008
 msgid "Device Cache"
-msgstr "Eszköz gyorsítótár"
+msgstr "Cache Perangkat"
 
 #: data/ui/preferences-device-panel.ui:2026
 msgid "Clear Cache…"
-msgstr "Gyorsítótár ürítése…"
+msgstr "Hapus Cache…"
 
 #: data/ui/preferences-device-panel.ui:2065
 msgid "Legacy SMS Support"
-msgstr "Régi fajta SMS támogatás"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:2122
 msgid "SFTP Automount"
-msgstr "SFPT automatikus csatolása"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:2177
 #: data/ui/preferences-device-panel.ui:2503
 msgid "Advanced"
-msgstr "Speciális"
+msgstr "Lanjutan"
 
 #: data/ui/preferences-device-panel.ui:2457
 msgid "Keyboard Shortcuts"
-msgstr "Gyorsbillentyűk"
+msgstr "Pintasan Papan Ketik"
 
 #: data/ui/preferences-device-panel.ui:2521
 msgid "Device Settings"
-msgstr "Eszköz beállításai"
+msgstr "Pengaturan Perangkat"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/ui/preferences-device-panel.ui:2565
 #: data/ui/preferences-device-panel.ui:2657 src/service/daemon.js:385
 msgid "Pair"
-msgstr "Párosítás"
+msgstr "Hubungkan"
 
 #: data/ui/preferences-device-panel.ui:2597
 msgid "Device is unpaired"
-msgstr "Az eszköz nincs párosítva"
+msgstr "Perangkat tidak terhubung"
 
 #: data/ui/preferences-device-panel.ui:2612
 msgid "You may configure this device before pairing"
-msgstr "Párosítás előtt testre szabhatja az eszközt"
+msgstr "Anda dapat mengkonfigurasi perangkat ini dulu sebelum menghubungkan"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
 #: data/ui/preferences-device-panel.ui:2652 src/preferences/device.js:391
 msgid "Encryption Info"
-msgstr "Titkosítási információ"
+msgstr "Informasi Enkripsi"
 
 #. TRANSLATORS: Unpair the device and notify it
 #: data/ui/preferences-device-panel.ui:2663 src/service/daemon.js:394
 msgid "Unpair"
-msgstr "Párosítás megszűntetése"
+msgstr "Putuskan"
 
 #. TRANSLATORS: Send clipboard content to device
 #: data/ui/preferences-device-panel.ui:2675
 msgid "To Device"
-msgstr "Eszközre"
+msgstr "Ke Perangkat"
 
 #. TRANSLATORS: Receive clipboard content from the device
 #: data/ui/preferences-device-panel.ui:2681
 msgid "From Device"
-msgstr "Eszközről"
+msgstr "Dari Perangkat"
 
 #. TRANSLATORS: Don't change the system volume
 #: data/ui/preferences-device-panel.ui:2693
 #: data/ui/preferences-device-panel.ui:2726
 msgid "Nothing"
-msgstr "Semmi"
+msgstr "Tidak Ada"
 
 #. TRANSLATORS: Restore the system volume
 #: data/ui/preferences-device-panel.ui:2700
 #: data/ui/preferences-device-panel.ui:2733
 msgid "Restore"
-msgstr "Visszaállítás"
+msgstr "Pulihkan"
 
 #. TRANSLATORS: Lower the system volume
 #: data/ui/preferences-device-panel.ui:2707
 #: data/ui/preferences-device-panel.ui:2740
 msgid "Lower"
-msgstr "Halkítás"
+msgstr "Kecilkan"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the actively ringing call
@@ -452,52 +452,52 @@ msgstr "Halkítás"
 #: data/ui/preferences-device-panel.ui:2747
 #: src/service/plugins/telephony.js:199
 msgid "Mute"
-msgstr "Némítás"
+msgstr "Bisukan"
 
 #: data/ui/preferences-shortcut-editor.ui:25
 msgid "Set"
-msgstr "Kiválasztás"
+msgstr ""
 
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:80
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr "A megszakításhoz nyomjon Esc gombot, vagy Backspace-t a gyorsbillentyű visszaállításához."
+msgstr ""
 
 #: data/ui/preferences-window.ui:24
 msgid "Device Name"
-msgstr "Eszköz neve"
+msgstr "Nama Perangkat"
 
 #: data/ui/preferences-window.ui:61
 msgid "_Rename"
-msgstr "_Átnevezés"
+msgstr "Ubah _nama"
 
 #: data/ui/preferences-window.ui:98 data/ui/preferences-window.ui:112
 msgid "Refresh"
-msgstr "Frissítés"
+msgstr "Muat ulang"
 
 #: data/ui/preferences-window.ui:139 src/extension.js:116
 msgid "Mobile Settings"
-msgstr "Mobilbeállítások"
+msgstr ""
 
 #: data/ui/preferences-window.ui:166
 msgid "Service Menu"
-msgstr "Szervizmenü"
+msgstr "Menu Layanan"
 
 #: data/ui/preferences-window.ui:189
 msgid "Device Menu"
-msgstr "Eszközmenü"
+msgstr "Menu Perangkat"
 
 #: data/ui/preferences-window.ui:203 data/ui/preferences-window.ui:218
 msgid "Edit Device Name"
-msgstr "Eszköz nevének szerkesztése"
+msgstr "Sunting Nama Perangkat"
 
 #: data/ui/preferences-window.ui:278
 msgid "Devices"
-msgstr "Eszközök"
+msgstr "Perangkat-perangkat"
 
 #: data/ui/preferences-window.ui:328 src/preferences/service.js:659
 msgid "Searching for devices…"
-msgstr "Eszközök keresése…"
+msgstr "Mencari perangkat…"
 
 #: data/ui/preferences-window.ui:353
 msgid "Behavior When Locked"
@@ -509,23 +509,23 @@ msgstr ""
 
 #: data/ui/preferences-window.ui:410
 msgid "Browser Add-Ons"
-msgstr "Böngésző bővítmények"
+msgstr ""
 
 #: data/ui/preferences-window.ui:728
 msgid "Enable"
-msgstr "Engedélyez"
+msgstr "Aktifkan"
 
 #: data/ui/preferences-window.ui:760
 msgid "This device is invisible to unpaired devices"
-msgstr "Ez az eszköz nem látható a párosítatlan eszközök számára"
+msgstr "Perangkat ini tidak terlihat pada perangkat yang belum dihubungkan"
 
 #: data/ui/preferences-window.ui:772 src/service/manager.js:117
 msgid "Discovery Disabled"
-msgstr "Felderítés letiltva"
+msgstr ""
 
 #: data/ui/preferences-window.ui:826
 msgid "Display Mode"
-msgstr "Megjelenítési mód"
+msgstr "Mode Tampilan"
 
 #. TRANSLATORS: Show device indicators in the top bar
 #: data/ui/preferences-window.ui:829
@@ -535,54 +535,54 @@ msgstr "Panel"
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
 #: data/ui/preferences-window.ui:835
 msgid "User Menu"
-msgstr "Felhasználói menü"
+msgstr ""
 
 #. TRANSLATORS: Generate a support log
 #: data/ui/preferences-window.ui:843 src/preferences/service.js:417
 msgid "Generate Support Log"
-msgstr "Naplófájl készítése terméktámogatáshoz"
+msgstr "Hasilkan Log Dukungan"
 
 #: data/ui/preferences-window.ui:851
 msgid "About GSConnect"
-msgstr "A GSConnect névjegye"
+msgstr "Tentang GSConnect"
 
 #: data/ui/service-device-chooser.ui:15
 msgid "Select a Device"
-msgstr "Eszköz kiválasztása"
+msgstr "Pilih Perangkat"
 
 #: data/ui/service-device-chooser.ui:33 data/ui/service-device-chooser.ui:38
 msgid "Select"
-msgstr "Kiválasztás"
+msgstr "Pilih"
 
 #. TRANSLATORS: No devices are known or available
 #: data/ui/service-device-chooser.ui:101 webextension/gettext.js:41
 msgid "No Device Found"
-msgstr "Nem található eszköz"
+msgstr "Tidak Ada Perangkat Yang Ditemukan"
 
 #: data/ui/service-device-chooser.ui:118
 msgid "Device List"
-msgstr "Eszközlista"
+msgstr "Daftar Perangkat"
 
 #: data/ui/service-error-dialog.ui:39 data/ui/service-error-dialog.ui:47
 msgid "Report"
-msgstr "Jelentés"
+msgstr "Laporkan"
 
 #: data/ui/service-error-dialog.ui:79
 msgid "Something’s gone wrong"
-msgstr "Valami elromlott"
+msgstr "Ada yang salah"
 
 #: data/ui/service-error-dialog.ui:91
 msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
-msgstr "A GSConnect egy váratlan hibába ütközött. Kérem, jelentse a hibát, és csatoljon minden olyan információt, ami segíthet."
+msgstr "GSConnect mengalami kesalahan yang tak terduga. Harap laporkan masalahnya dan sertakan informasi yang mungkin membantu."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
-msgstr "Technikai részletek"
+msgstr "Keterangan Teknis"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: nautilus-extension/nautilus-gsconnect.py:183 webextension/gettext.js:37
 msgid "Send To Mobile Device"
-msgstr "Küldés mobileszközre"
+msgstr ""
 
 #: src/extension.js:52
 msgid "Sync between your devices"
@@ -592,51 +592,50 @@ msgstr ""
 #, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
-msgstr[0] "Egy eszköz csatlakoztatva"
-msgstr[1] "%d eszköz csatlakoztatva"
+msgstr[0] "%d terhubung"
 
 #: src/preferences/device.js:673 src/preferences/device.js:679
 msgid "Edit"
-msgstr "Szerkesztés"
+msgstr "Sunting"
 
 #: src/preferences/device.js:688 src/preferences/device.js:694
 msgid "Remove"
-msgstr "Eltávolítás"
+msgstr "Hapus"
 
 #: src/preferences/device.js:948 src/preferences/device.js:976
 msgid "Disabled"
-msgstr "Letiltva"
+msgstr "Dinonaktifkan"
 
 #. TRANSLATORS: Summary of a keyboard shortcut function
 #. Example: Enter a new shortcut to change Messaging
 #: src/preferences/keybindings.js:68
 #, javascript-format
 msgid "Enter a new shortcut to change <b>%s</b>"
-msgstr "<b>%s</b> módosításához adjon meg egy új gyorsbillentyűt"
+msgstr ""
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
 #: src/preferences/keybindings.js:134
 #, javascript-format
 msgid "%s is already being used"
-msgstr "%s már használatban van"
+msgstr "%s sudah digunakan"
 
 #: src/preferences/service.js:376
 msgid "A complete KDE Connect implementation for GNOME"
-msgstr "Teljes KDE Connect implementáció GNOME-hoz"
+msgstr "Implementasi lengkap KDE Connect untuk GNOME"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:385
 msgid "translator-credits"
-msgstr "Báthory Péter <bathory86p@gmail.com>"
+msgstr "@liimee"
 
 #: src/preferences/service.js:418
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
-msgstr "A hibakeresési üzenetek naplózásra kerülnek. Tegye meg a hiba reprodukálásához szükséges lépést, majd nézze át a naplót."
+msgstr ""
 
 #: src/preferences/service.js:421
 msgid "Review Log"
-msgstr "Napló átnézése"
+msgstr ""
 
 #: src/preferences/service.js:489
 msgid "Laptop"
@@ -644,89 +643,89 @@ msgstr "Laptop"
 
 #: src/preferences/service.js:491
 msgid "Smartphone"
-msgstr "Okostelefon"
+msgstr "Ponsel"
 
 #: src/preferences/service.js:493
 msgid "Tablet"
-msgstr "Táblagép"
+msgstr "Tablet"
 
 #: src/preferences/service.js:495
 msgid "Television"
-msgstr "TV"
+msgstr "Televisi"
 
 #: src/preferences/service.js:517
 msgid "Unpaired"
-msgstr "Nincs párosítva"
+msgstr "Tidak terhubung"
 
 #: src/preferences/service.js:521
 msgid "Disconnected"
-msgstr "Nincs csatlakoztatva"
+msgstr "Terputus"
 
 #: src/preferences/service.js:525
 msgid "Connected"
-msgstr "Csatlakoztatva"
+msgstr "Terhubung"
 
 #: src/preferences/service.js:661
 msgid "Waiting for service…"
-msgstr "Várakozás a szolgáltatásra…"
+msgstr "Menunggu layanan…"
 
 #: src/service/daemon.js:193
 msgid "Click for help troubleshooting"
-msgstr "Kattintson ide, hogy segítséget kapjon a hibaelhárításhoz"
+msgstr ""
 
 #: src/service/daemon.js:204
 msgid "Click for more information"
-msgstr "További információért kattintson ide"
+msgstr "Klik untuk informasi lebih lanjut"
 
 #: src/service/daemon.js:298
 msgid "Dial Number"
-msgstr "Telefonszám hívása"
+msgstr ""
 
 #: src/service/daemon.js:304 src/service/daemon.js:502
 #: src/service/plugins/share.js:33
 msgid "Share File"
-msgstr "Fájl megosztása"
+msgstr "Bagikan Berkas"
 
 #: src/service/daemon.js:355
 msgid "List available devices"
-msgstr "Elérhető eszközök listázása"
+msgstr ""
 
 #: src/service/daemon.js:364
 msgid "List all devices"
-msgstr "Összes eszköz listázása"
+msgstr ""
 
 #: src/service/daemon.js:373
 msgid "Target Device"
-msgstr "Céleszköz"
+msgstr ""
 
 #: src/service/daemon.js:415
 msgid "Message Body"
-msgstr "Üzenet szövege"
+msgstr "Isi Pesan"
 
 #: src/service/daemon.js:427 src/service/plugins/notification.js:58
 msgid "Send Notification"
-msgstr "Értesítés küldése"
+msgstr "Kirim Notifikasi"
 
 #: src/service/daemon.js:436
 msgid "Notification App Name"
-msgstr "Értesítés alkalmazásnév"
+msgstr ""
 
 #: src/service/daemon.js:445
 msgid "Notification Body"
-msgstr "Értesítés törzs"
+msgstr "Isi Notifikasi"
 
 #: src/service/daemon.js:454
 msgid "Notification Icon"
-msgstr "Értesítés ikon"
+msgstr "Ikon Notifikasi"
 
 #: src/service/daemon.js:463
 msgid "Notification ID"
-msgstr "Értesítés ID"
+msgstr "ID Notifikasi"
 
 #: src/service/daemon.js:472 src/service/plugins/photo.js:16
 #: src/service/plugins/photo.js:29
 msgid "Photo"
-msgstr "Fotó"
+msgstr "Foto"
 
 #: src/service/daemon.js:481 src/service/plugins/ping.js:15
 #: src/service/plugins/ping.js:22 src/service/plugins/ping.js:49
@@ -737,26 +736,26 @@ msgstr "Ping"
 #: src/service/plugins/battery.js:277 src/service/plugins/battery.js:306
 #: src/service/plugins/findmyphone.js:24
 msgid "Ring"
-msgstr "Csörgetés"
+msgstr "Dering"
 
 #: src/service/daemon.js:511 src/service/plugins/share.js:49
 #: src/service/ui/messaging.js:1250 src/service/ui/messaging.js:1258
 msgid "Share Link"
-msgstr "Hivatkozás megosztása"
+msgstr "Bagikan Tautan"
 
 #: src/service/daemon.js:520 src/service/plugins/share.js:41
 msgid "Share Text"
-msgstr "Szöveg megosztása"
+msgstr "Bagikan Teks"
 
 #: src/service/daemon.js:532
 msgid "Show release version"
-msgstr "Kiadás verziószámának megjelenítése"
+msgstr ""
 
 #. TRANSLATORS: Bluetooth address for remote device
 #: src/service/device.js:173
 #, javascript-format
 msgid "Bluetooth device at %s"
-msgstr "Bluetooth eszköz itt: %s"
+msgstr ""
 
 #. TRANSLATORS: Label for TLS connection verification key
 #.
@@ -772,103 +771,103 @@ msgstr ""
 #: src/service/device.js:843
 #, javascript-format
 msgid "Pair Request from %s"
-msgstr "Párosítási kérelem innen: %s"
+msgstr "Permintaan Dihubungkan dari %s"
 
 #: src/service/device.js:850
 msgid "Reject"
-msgstr "Elutasítás"
+msgstr "Tolak"
 
 #: src/service/device.js:855
 msgid "Accept"
-msgstr "Elfogadás"
+msgstr "Terima"
 
 #: src/service/manager.js:118
 msgid "Discovery has been disabled due to the number of devices on this network."
-msgstr "A felderítés le lett tiltva a hálózaton lévő eszközök száma miatt."
+msgstr ""
 
 #: src/service/backends/lan.js:166
 msgid "OpenSSL not found"
-msgstr "Az OpenSSL nem található"
+msgstr "OpenSSL tidak ditemukan"
 
 #: src/service/backends/lan.js:456
 msgid "Port already in use"
-msgstr "A port már használatban van"
+msgstr "Port sudah digunakan"
 
 #: src/service/plugins/battery.js:17
 msgid "Exchange battery information"
-msgstr "Akkumulátoradatok küldése és fogadása"
+msgstr ""
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:257
 #, javascript-format
 msgid "%s: Battery is full"
-msgstr "%s: Akkumulátor feltöltve"
+msgstr "%s: Baterai penuh"
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
 #: src/service/plugins/battery.js:259 src/shell/device.js:122
 msgid "Fully Charged"
-msgstr "Teljesen feltöltve"
+msgstr "Terisi Penuh"
 
 #. TRANSLATORS: eg. Google Pixel: Battery has reached custom charge level
 #: src/service/plugins/battery.js:286
 #, javascript-format
 msgid "%s: Battery has reached custom charge level"
-msgstr "%s: az akkumulátor elérte a megadott töltöttségi szintet"
+msgstr ""
 
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:288
 #, javascript-format
 msgid "%d%% Charged"
-msgstr "%d%% töltöttség"
+msgstr "%d%% Terisi"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:315
 #, javascript-format
 msgid "%s: Battery is low"
-msgstr "%s: alacsony töltöttség"
+msgstr "%s: Baterai lemah"
 
 #. TRANSLATORS: eg. 15% remaining
 #: src/service/plugins/battery.js:317
 #, javascript-format
 msgid "%d%% remaining"
-msgstr "%d%% van hátra"
+msgstr "%d%% tersisa"
 
 #: src/service/plugins/clipboard.js:14
 msgid "Clipboard"
-msgstr "Vágólap"
+msgstr "Papan Klip"
 
 #: src/service/plugins/clipboard.js:15
 msgid "Share the clipboard content"
-msgstr "Vágólap tartalmának megosztása"
+msgstr "Bagikan isi papan klip"
 
 #: src/service/plugins/clipboard.js:27
 msgid "Clipboard Push"
-msgstr "Vágólap küldése"
+msgstr "Dorong Papan Klip"
 
 #: src/service/plugins/clipboard.js:35
 msgid "Clipboard Pull"
-msgstr "Vágólap fogadása"
+msgstr "Tarik Papan Klip"
 
 #: src/service/plugins/contacts.js:27
 msgid "Access contacts of the paired device"
-msgstr "A párosított eszköz névjegyeinek elérése"
+msgstr ""
 
 #: src/service/plugins/findmyphone.js:17
 msgid "Find My Phone"
-msgstr "Keresd meg a telefonom"
+msgstr "Temukan Ponselku"
 
 #: src/service/plugins/findmyphone.js:18
 msgid "Ring your paired device"
-msgstr "A párosított eszköz megcsörgetése"
+msgstr ""
 
 #: src/service/plugins/mousepad.js:16
 msgid "Mousepad"
-msgstr "Egérpad"
+msgstr ""
 
 #: src/service/plugins/mousepad.js:17
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr "A párosított eszköz egérként és billentyűzetként való használatának egedélyezése"
+msgstr ""
 
 #: src/service/plugins/mousepad.js:31 src/service/ui/mousepad.js:109
 msgid "Remote Input"
@@ -880,51 +879,51 @@ msgstr "MPRIS"
 
 #: src/service/plugins/mpris.js:20
 msgid "Bidirectional remote media playback control"
-msgstr "Kétirányú médialejátszó-távirányító"
+msgstr ""
 
 #: src/service/plugins/mpris.js:320
 msgid "Unknown"
-msgstr "Ismeretlen"
+msgstr ""
 
 #: src/service/plugins/notification.js:20
 msgid "Share notifications with the paired device"
-msgstr "Értesítések megosztása a párosított eszközzel"
+msgstr ""
 
 #: src/service/plugins/notification.js:34
 msgid "Cancel Notification"
-msgstr "Értesítés megszakítása"
+msgstr ""
 
 #: src/service/plugins/notification.js:42
 msgid "Close Notification"
-msgstr "Értesítés bezárása"
+msgstr "Tutup Notifikasi"
 
 #: src/service/plugins/notification.js:50
 msgid "Reply Notification"
-msgstr "Válasz értesítésre"
+msgstr "Balas Notifikasi"
 
 #: src/service/plugins/notification.js:66
 msgid "Activate Notification"
-msgstr "Értesítés aktiválása"
+msgstr ""
 
 #: src/service/plugins/photo.js:17
 msgid "Request the paired device to take a photo and transfer it to this PC"
-msgstr "Párosított eszköz megkérése, hogy készítsen fényképet, és vigye át erre a számítógépre"
+msgstr "Minta perangkat yang terhubung untuk mengambil foto dan mengirimkannya ke PC ini"
 
 #: src/service/plugins/photo.js:224 src/service/plugins/share.js:132
 #: src/service/plugins/share.js:208 src/service/plugins/share.js:319
 msgid "Transfer Failed"
-msgstr "Sikertelen átvitel"
+msgstr ""
 
 #. TRANSLATORS: eg. Failed to send "photo.jpg" to Google Pixel
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/photo.js:226 src/service/plugins/share.js:321
 #, javascript-format
 msgid "Failed to send “%s” to %s"
-msgstr "„%s” küldése %s eszközre nem sikerült"
+msgstr "Gagal mengirim “%s” ke %s"
 
 #: src/service/plugins/ping.js:16
 msgid "Send and receive pings"
-msgstr "Pingelések fogadása és küldése"
+msgstr "Kirim dan terima ping"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -935,19 +934,19 @@ msgstr "Ping: %s"
 
 #: src/service/plugins/presenter.js:14
 msgid "Presentation"
-msgstr "Prezentáció"
+msgstr "Presentasi"
 
 #: src/service/plugins/presenter.js:15
 msgid "Use the paired device as a presenter"
-msgstr "A párosított eszköz használata prezentációs távirányítóként"
+msgstr "Gunakan perangkat terhubung sebagai presenter"
 
 #: src/service/plugins/runcommand.js:15
 msgid "Run Commands"
-msgstr "Parancsok futtatása"
+msgstr "Jalankan Perintah"
 
 #: src/service/plugins/runcommand.js:17
 msgid "Run commands on your paired device or let the device run predefined commands on this PC"
-msgstr "Parancsok futtatása a párosított eszközön, vagy előre megadott parancsok futtassanak engedélyezése ezen a számítógépen"
+msgstr "Jalankan perintah pada perangkat terhubung Anda atau biarkan perangkat tersebut menjalankan perintah yang sudah ditentukan di PC ini"
 
 #: src/service/plugins/sftp.js:17
 msgid "SFTP"
@@ -955,54 +954,54 @@ msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:19
 msgid "Browse the paired device filesystem"
-msgstr "A párosított eszköz fájlrendszerének böngészése"
+msgstr ""
 
 #: src/service/plugins/sftp.js:24
 msgid "Mount"
-msgstr "Csatolás"
+msgstr "Muat"
 
 #: src/service/plugins/sftp.js:32
 msgid "Unmount"
-msgstr "Leválasztás"
+msgstr ""
 
 #: src/service/plugins/sftp.js:216
 #, javascript-format
 msgid "%s reported an error"
-msgstr "%s hibát jelzett"
+msgstr "%s melaporkan sebuah kesalahan"
 
 #: src/service/plugins/share.js:18 src/service/plugins/share.js:25
 msgid "Share"
-msgstr "Megosztás"
+msgstr "Bagikan"
 
 #: src/service/plugins/share.js:20
 msgid "Share files and URLs between devices"
-msgstr "Fájlok és URL-ek megosztása eszközök között"
+msgstr ""
 
 #. TRANSLATORS: eg. Google Pixel is not allowed to upload files
 #: src/service/plugins/share.js:134
 #, javascript-format
 msgid "%s is not allowed to upload files"
-msgstr "% számára nem engedélyezett a fájlok feltöltése"
+msgstr "%s tidak diizinkan untuk mengunggah berkas"
 
 #: src/service/plugins/share.js:156 src/service/plugins/share.js:289
 msgid "Transferring File"
-msgstr "Fájl átvitele"
+msgstr ""
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:158
 #, javascript-format
 msgid "Receiving “%s” from %s"
-msgstr "„%s” fogadása innen: %s"
+msgstr "Menerima “%s” dari %s"
 
 #: src/service/plugins/share.js:177 src/service/plugins/share.js:309
 msgid "Transfer Successful"
-msgstr "Sikeres átvitel"
+msgstr ""
 
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:179
 #, javascript-format
 msgid "Received “%s” from %s"
-msgstr "„%s” fogadva innen: %s"
+msgstr "“%s” dari %s diterima"
 
 #: src/service/plugins/share.js:189
 msgid "Show File Location"
@@ -1010,47 +1009,47 @@ msgstr ""
 
 #: src/service/plugins/share.js:194
 msgid "Open File"
-msgstr "Fájl megnyitása"
+msgstr "Buka Berkas"
 
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:210
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
-msgstr "„%s” fogadása %s eszközről nem sikerült"
+msgstr "Gagal menerima “%s” dari %s"
 
 #: src/service/plugins/share.js:241
 #, javascript-format
 msgid "Text Shared By %s"
-msgstr "%s által megosztott szöveg"
+msgstr "Teks Dibagikan Oleh %s"
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
 #: src/service/plugins/share.js:291
 #, javascript-format
 msgid "Sending “%s” to %s"
-msgstr "„%s” küldése ide: %s"
+msgstr "Mengirim “%s” ke %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:311
 #, javascript-format
 msgid "Sent “%s” to %s"
-msgstr "„%s” elküldve ide: %s"
+msgstr "“%s” dikirim ke %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:379
 #, javascript-format
 msgid "Send files to %s"
-msgstr "Fájlok küldése ide: %s"
+msgstr "Kirim berkas-berkas ke %s"
 
 #. TRANSLATORS: Mark the file to be opened once completed
 #: src/service/plugins/share.js:383
 msgid "Open when done"
-msgstr "Megnyitás ha kész"
+msgstr "Buka saat selesai"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
 #: src/service/plugins/share.js:422
 #, javascript-format
 msgid "Send a link to %s"
-msgstr "Hivatkozás küldése ide: %s"
+msgstr "Kirim tautan ke %s"
 
 #: src/service/plugins/sms.js:18
 msgid "SMS"
@@ -1058,40 +1057,40 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:19
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr "Értesítés új SMS-ekről, és a párosított eszköz SMS-einek olvasása és SMS-ek küldése"
+msgstr "Kirim dan baca SMS di perangkat yang terhubung dan dapatkan notifikasi ketika menerima SMS baru"
 
 #: src/service/plugins/sms.js:40
 msgid "New SMS (URI)"
-msgstr "Új SMS (URI)"
+msgstr "SMS Baru (URI)"
 
 #: src/service/plugins/sms.js:48
 msgid "Reply SMS"
-msgstr "SMS válasz"
+msgstr "Balas SMS"
 
 #: src/service/plugins/sms.js:72
 msgid "Share SMS"
-msgstr "SMS megosztása"
+msgstr ""
 
 #: src/service/plugins/systemvolume.js:15
 msgid "System Volume"
-msgstr "Rendszerhangerő"
+msgstr "Volume Sistem"
 
 #: src/service/plugins/systemvolume.js:16
 msgid "Enable the paired device to control the system volume"
-msgstr "A rendszerhangerő állításának egedélyezése a párosított eszköz számára"
+msgstr ""
 
 #: src/service/plugins/systemvolume.js:60
 msgid "PulseAudio not found"
-msgstr "PulseAudio nem található"
+msgstr "PulseAudio tidak ditemukan"
 
 #: src/service/plugins/telephony.js:18
 msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr "Értesítés a hívásokról és a rendszerhangerő állítása csörgés/folyamatban lévő hívások közben"
+msgstr ""
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:30
 msgid "Mute Call"
-msgstr "Hívás némítása"
+msgstr ""
 
 #. Ensure we have a sender
 #. TRANSLATORS: No name or phone number
@@ -1099,127 +1098,125 @@ msgstr "Hívás némítása"
 #: src/service/plugins/telephony.js:157 src/service/plugins/telephony.js:176
 #: src/service/ui/contacts.js:611 src/service/ui/messaging.js:749
 msgid "Unknown Contact"
-msgstr "Ismeretlen névjegy"
+msgstr ""
 
 #. TRANSLATORS: The phone is ringing
 #: src/service/plugins/telephony.js:195
 msgid "Incoming call"
-msgstr "Bejövő hívás"
+msgstr "Panggilan masuk"
 
 #. TRANSLATORS: A phone call is active
 #: src/service/plugins/telephony.js:210
 msgid "Ongoing call"
-msgstr "Hívás folyamatban"
+msgstr "Panggilan aktif"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:134
 msgid "Fax"
-msgstr "Fax"
+msgstr "Faks"
 
 #. TRANSLATORS: A work or office phone number
 #: src/service/ui/contacts.js:138
 msgid "Work"
-msgstr "Munkahelyi"
+msgstr "Kantor"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:142
 msgid "Mobile"
-msgstr "Mobil"
+msgstr "Seluler"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:146
 msgid "Home"
-msgstr "Otthoni"
+msgstr "Rumah"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #. Update UI
 #: src/service/ui/contacts.js:509 src/service/ui/contacts.js:524
 #, javascript-format
 msgid "Send to %s"
-msgstr "Küldés neki: %s"
+msgstr "Kirim ke %s"
 
 #. TRANSLATORS: Less than a minute ago
 #: src/service/ui/messaging.js:104 src/service/ui/messaging.js:145
 msgid "Just now"
-msgstr "Épp most"
+msgstr "Baru saja"
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
 #: src/service/ui/messaging.js:113
 #, javascript-format
 msgid "Yesterday・%s"
-msgstr "Tegnap・%s"
+msgstr "Kemarin • %s"
 
 #: src/service/ui/messaging.js:150
 #, javascript-format
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] "%d perc"
-msgstr[1] "%d perc"
+msgstr[0] "%d menit"
 
 #: src/service/ui/messaging.js:400
 msgid "Not available"
-msgstr "Nem érhető el"
+msgstr "Tidak tersedia"
 
 #: src/service/ui/messaging.js:757
 msgid "Group Message"
-msgstr "Csoportos üzenet"
+msgstr ""
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:772
 #, javascript-format
 msgid "You: %s"
-msgstr "Te: %s"
+msgstr "Anda: %s"
 
 #: src/service/ui/messaging.js:958
 #, javascript-format
 msgid "And %d other contact"
 msgid_plural "And %d others"
-msgstr[0] "És %d másik névjegy"
-msgstr[1] "És további %d"
+msgstr[0] "Dan %d kontak lain"
 
 #. TRANSLATORS: Displayed when the remote keyboard is not ready to accept input
 #: src/service/ui/mousepad.js:117
 #, javascript-format
 msgid "Remote keyboard on %s is not active"
-msgstr "A távoli billentyűzet %s eszközön nem aktív"
+msgstr ""
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
 #: src/shell/device.js:127
 #, javascript-format
 msgid "%d%% (Estimating…)"
-msgstr "%d%% (becslés…)"
+msgstr "%d%% (Memperkirakan…)"
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
 #: src/shell/device.js:136
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
-msgstr "%d%% (%d∶%02d a feltöltésig)"
+msgstr "%d%% (%d:%02d Sampai Penuh)"
 
 #. TRANSLATORS: Estimated time until battery is empty
 #. EXAMPLE: 42% (12:15 Remaining)
 #: src/shell/device.js:144
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
-msgstr "%d%% (%d∶%02d van hátra)"
+msgstr "%d%% (%d:%02d Tersisa)"
 
 #: src/shell/notification.js:58
 msgid "Reply"
-msgstr "Válasz"
+msgstr "Balas"
 
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:35
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr "Hivatkozások megosztása GSConnecttel, közvetlenül a böngészőből vagy SMS-ben."
+msgstr ""
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:39
 msgid "Service Unavailable"
-msgstr "A szolgáltatás nem érhető el"
+msgstr "Layanan Tidak Tersedia"
 
 #. TRANSLATORS: Open URL with the device's browser
 #: webextension/gettext.js:43
 msgid "Open in Browser"
-msgstr "Megnyitás böngészőben"
+msgstr "Buka di Browser"
 
