@@ -251,14 +251,19 @@ const Listener = GObject.registerClass({
             // libnotify
             } else if (name === 'Notify') {
                 const message = invocation.get_message();
+                const destination = message.get_destination();
 
-                if (this._fdoNameOwner === undefined) {
-                    this._fdoNameOwner = await this._getNameOwner(
-                        'org.freedesktop.Notifications');
+                // Deduplicate notifications; only accept messages
+                // directed to the notification bus, or its owner.
+                if (destination !== 'org.freedesktop.Notifications') {
+                    if (this._fdoNameOwner === undefined) {
+                        this._fdoNameOwner = await this._getNameOwner(
+                            'org.freedesktop.Notifications');
+                    }
+
+                    if (this._fdoNameOwner !== destination)
+                        return;
                 }
-
-                if (this._fdoNameOwner !== message.get_destination())
-                    return;
 
                 // Try to brute-force an application name using DBus
                 if (!this.applications.hasOwnProperty(parameters[0])) {
@@ -441,4 +446,3 @@ const Listener = GObject.registerClass({
  * The service class for this component
  */
 var Component = Listener;
-
