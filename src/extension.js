@@ -364,6 +364,14 @@ var serviceIndicator = null;
 var lockscreenInput = null;
 
 function init() {
+    // If installed as a user extension, this checks the permissions
+    // on certain critical files in the extension directory
+    // to ensure that they have the executable bit set,
+    // and makes them executable if not. Some packaging methods
+    // (particularly GitHub Actions artifacts) automatically remove
+    // executable bits from all contents, presumably for security.
+    Utils.ensurePermissions();
+
     // If installed as a user extension, this will install the Desktop entry,
     // DBus and systemd service files necessary for DBus activation and
     // GNotifications. Since there's no uninit()/uninstall() hook for extensions
