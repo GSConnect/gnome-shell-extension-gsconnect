@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-03-22 10:01+0530\n"
-"PO-Revision-Date: 2023-03-22 04:45\n"
+"PO-Revision-Date: 2023-04-09 10:05\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese\n"
 "Language: pt_PT\n"
@@ -632,7 +632,11 @@ msgstr "Uma implementação completa do KDE Connect para o GNOME"
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:385
 msgid "translator-credits"
-msgstr "Hugo Carvalho <hugokarvalho@hotmail.com>"
+msgstr "Duarte Loreto <happyguy_pt@hotmail.com>\n"
+"Tiago Santos <tiagofsantos81@sapo.pt>\n"
+"Pedro Albuquerque <palbuquerque73@gmail.com>\n"
+"Juliano de Souza Camargo <julianos@pm.me>\n"
+"Hugo Carvalho <hugokarvalho@hotmail.com>"
 
 #: src/preferences/service.js:418
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
