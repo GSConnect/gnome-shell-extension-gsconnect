@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-03-22 10:01+0530\n"
-"PO-Revision-Date: 2023-03-22 04:45\n"
+"PO-Revision-Date: 2023-04-21 03:34\n"
 "Last-Translator: \n"
 "Language-Team: Hungarian\n"
 "Language: hu_HU\n"
@@ -982,7 +982,7 @@ msgstr "Fájlok és URL-ek megosztása eszközök között"
 #: src/service/plugins/share.js:134
 #, javascript-format
 msgid "%s is not allowed to upload files"
-msgstr "% számára nem engedélyezett a fájlok feltöltése"
+msgstr "%s zámára nem engedélyezett a fájlok feltöltése"
 
 #: src/service/plugins/share.js:156 src/service/plugins/share.js:289
 msgid "Transferring File"
