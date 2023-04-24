@@ -854,10 +854,9 @@ var Channel = GObject.registerClass({
                     reject(e);
                 }
             });
-        });
+        }).then(this._encryptClient.bind(this));
 
-        let connection = await openConnection;
-        connection = await this._encryptClient(connection);
+        const connection = await openConnection;
         const source = connection.get_input_stream();
 
         // Start the transfer
@@ -911,17 +910,17 @@ var Channel = GObject.registerClass({
                     }
                 }
             );
-        });
+        }).then(this._encryptServer.bind(this));
 
-        // Notify the device we're ready
+        // Create an upload request
         packet.body.payloadHash = this.checksum;
         packet.payloadSize = size;
         packet.payloadTransferInfo = {port: port};
-        this.sendPacket(new Core.Packet(packet));
+        const requestUpload = this.sendPacket(new Core.Packet(packet));
 
-        // Accept the connection and configure the channel
-        let connection = await acceptConnection;
-        connection = await this._encryptServer(connection);
+        // Request an upload stream, accept the connection and get the output
+        const [, connection] = await Promise.all([requestUpload,
+            acceptConnection]);
         const target = connection.get_output_stream();
 
         // Start the transfer
