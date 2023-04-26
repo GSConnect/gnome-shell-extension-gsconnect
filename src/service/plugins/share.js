@@ -17,7 +17,10 @@ export const Metadata = {
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Share',
     description: _('Share files and URLs between devices'),
     incomingCapabilities: ['kdeconnect.share.request'],
-    outgoingCapabilities: ['kdeconnect.share.request'],
+    outgoingCapabilities: [
+        'kdeconnect.share.request',
+        'kdeconnect.share.request.update'
+    ],
     actions: {
         share: {
             label: _('Share'),
@@ -34,6 +37,25 @@ export const Metadata = {
             parameter_type: new GLib.VariantType('(sb)'),
             incoming: [],
             outgoing: ['kdeconnect.share.request'],
+        },
+        shareFiles: {
+            label: _('Share Files'),
+            icon_name: 'document-send-symbolic',
+
+            parameter_type: new GLib.VariantType('(asb)'),
+            incoming: [],
+            outgoing: [
+                'kdeconnect.share.request',
+                'kdeconnect.share.request.update',
+            ],
+        },
+        shareFilesWithTemps: {
+            label: _('Share Files (including temporaries)'),
+            incoming: [],
+            outgoing: [
+                'kdeconnect.share.request',
+                'kdeconnect.share.request.update',
+            ],
         },
         shareText: {
             label: _('Share Text'),
@@ -336,6 +358,153 @@ const SharePlugin = GObject.registerClass({
     }
 
     /**
+     * Share one or more local file paths
+     *
+     * @param {Array<String>} transferList - Array of local file paths
+     * @param {boolean} open - Whether the file should be opened after transfer
+     */
+    async shareFiles(transferList, open = false) {
+        if (transferList.length === 1)
+            await this.shareFile(transferList[0], open);
+        else
+            await this.shareFilesWithTemps(transferList);
+    }
+
+    /**
+     * Share one or more local file paths, and delete temporaries when done
+     *
+     * @param {Array<String>} transferList - Array of local file paths
+     * @param {Array<String>} tempList - Temporary files that should be
+     *                                   deleted after transfer
+     */
+    async shareFilesWithTemps(transferList, tempList = []) {
+        try {
+
+            if (!transferList)
+                return;
+
+            debug(transferList);
+
+            const packet_list = [];
+            let payload_size = 0;
+
+            for (const path of transferList) {
+                let file;
+
+                if (path.includes('://'))
+                    file = Gio.File.new_for_uri(path);
+                else
+                    file = Gio.File.new_for_path(path);
+
+                const info = await file.query_info_async(
+                    Gio.FILE_ATTRIBUTE_STANDARD_SIZE,
+                    Gio.FileQueryInfoFlags.NONE,
+                    GLib.PRIORITY_DEFAULT
+                );
+
+                const filesize = info.get_size();
+                payload_size += filesize;
+
+                const delete_after = tempList.contains(path);
+
+                packet_list.push([
+                    {
+                        type: 'kdeconnect.share.request',
+                        body: {
+                            filename: file.get_basename(),
+                            open: false,
+                        },
+                    },
+                    file,
+                    filesize,
+                    delete_after,
+                ]);
+
+            }
+
+            debug(packet_list);
+            await this._do_transfer(packet_list, payload_size);
+
+        } catch (e) {
+            logError(e, `${this.device.name}: shareFilesWithTemps`);
+        }
+    }
+
+
+    async _do_transfer(packet_list, payload_size) {
+        try {
+            // Create the transfer
+            const transfer = this.device.createTransfer();
+
+            const file_count = packet_list.length;
+            transfer.setCountAndSize(file_count, payload_size);
+
+            for (const [packet, file, size, deleteAfter] of packet_list)
+                transfer.addFile(packet, file, size, deleteAfter);
+
+            // Notify that we're about to start the transfer
+            const notif_title = _('Transferring Files');
+            // TRANSLATORS: eg. Sending 3 files to Google Pixel
+            const notif_body = ngettext(
+                'Sending %d file to %s',
+                'Sending %d files to %s',
+                file_count
+            ).format(
+                file_count,
+                this.device.name
+            );
+            this.device.showNotification({
+                id: transfer.uuid,
+                title: notif_title,
+                body: notif_body,
+                buttons: [{
+                    label: _('Cancel'),
+                    action: 'cancelTransfer',
+                    parameter: new GLib.Variant('s', transfer.uuid),
+                }],
+                icon: new Gio.ThemedIcon({name: 'document-send-symbolic'}),
+            });
+
+            // We'll show a notification (success or failure)
+            let title, body, iconName;
+
+            try {
+                await transfer.start();
+
+                title = _('Transfer Successful');
+                // TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
+                body = ngettext(
+                    'Sent %d file to %s',
+                    'Sent %d files to %s',
+                    file_count
+                ).format(
+                    file_count,
+                    this.device.name
+                );
+                iconName = 'document-send-symbolic';
+            } catch (e) {
+                debug(e, this.device.name);
+
+                title = _('Transfer Failed');
+                // TRANSLATORS: eg. File transfer to Google Pixel failed
+                body = _('File transfer to %s failed').format(this.device.name);
+                iconName = 'dialog-warning-symbolic';
+            }
+
+            this.device.hideNotification(transfer.uuid);
+            this.device.showNotification({
+                id: transfer.uuid,
+                title: title,
+                body: body,
+                icon: new Gio.ThemedIcon({name: iconName}),
+            });
+        } catch (e) {
+            logError(e, `${this.device.name}: _do_transfer`);
+        }
+    }
+
+
+    /**
      * Share a string of text. Remote behaviour is undefined.
      *
      * @param {string} text - A string of unicode text
@@ -473,13 +642,16 @@ const FileChooserDialog = GObject.registerClass({
 
     vfunc_response(response_id) {
         if (response_id === Gtk.ResponseType.OK) {
+            const uris = [];
             for (const uri of this.get_uris()) {
-                const parameter = new GLib.Variant(
-                    '(sb)',
-                    [uri, this.extra_widget.active]
-                );
-                this.device.activate_action('shareFile', parameter);
+            	uris.push(uri);
             }
+            const parameters = new GLib.Variant('(asb)', [
+            	uris,
+            	this.extra_widget.active,
+            ]);
+            debug(parameters.deepUnpack());
+            this.device.activate_action('shareFiles', parameters);
         } else if (response_id === 1) {
             const parameter = new GLib.Variant('s', this._uriEntry.text);
             this.device.activate_action('shareUri', parameter);
