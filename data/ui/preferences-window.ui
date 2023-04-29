@@ -370,18 +370,6 @@ SPDX-License-Identifier: GPL-2.0-or-later
                             <property name="margin_bottom">20</property>
                             <property name="spacing">24</property>
                             <child>
-                              <object class="GtkLabel" id="keep-alive-when-locked-label">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="halign">start</property>
-                                <property name="margin_bottom">12</property>
-                                <property name="label" translatable="yes">GSConnect remains active when GNOME Shell is locked</property>
-                                <accessibility>
-                                  <relation type="label-for" target="keep-alive-when-locked"/>
-                                </accessibility>
-                              </object>
-                            </child>
-                            <child>
                               <object class="GtkSwitch" id="keep-alive-when-locked">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
@@ -390,6 +378,18 @@ SPDX-License-Identifier: GPL-2.0-or-later
                                 <property name="action_name">win.keep-alive-when-locked</property>
                                 <accessibility>
                                   <relation type="labelled-by" target="keep-alive-when-locked-label"/>
+                                </accessibility>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="keep-alive-when-locked-label">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="halign">start</property>
+                                <property name="margin_bottom">12</property>
+                                <property name="label" translatable="yes">GSConnect remains active when GNOME Shell is locked</property>
+                                <accessibility>
+                                  <relation type="label-for" target="keep-alive-when-locked"/>
                                 </accessibility>
                               </object>
                             </child>
