@@ -345,12 +345,12 @@ SPDX-License-Identifier: GPL-2.0-or-later
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkLabel" id="behavior-when-locked-label">
+                          <object class="GtkLabel" id="extension-settings-label">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="halign">start</property>
                             <property name="margin_bottom">12</property>
-                            <property name="label" translatable="yes">Behavior When Locked</property>
+                            <property name="label" translatable="yes">Extension Settings</property>
                             <attributes>
                               <attribute name="weight" value="bold"/>
                             </attributes>
@@ -362,7 +362,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkBox" id="behavior-when-locked-box">
+                          <object class="GtkBox" id="extension-settings-box">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="margin_left">12</property>
@@ -375,7 +375,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                                 <property name="can_focus">False</property>
                                 <property name="halign">start</property>
                                 <property name="margin_bottom">12</property>
-                                <property name="label" translatable="yes">Keep Alive</property>
+                                <property name="label" translatable="yes">GSConnect remains active when GNOME Shell is locked</property>
                                 <accessibility>
                                   <relation type="label-for" target="keep-alive-when-locked"/>
                                 </accessibility>
