@@ -82,7 +82,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <property name="can_focus">False</property>
     <property name="icon_name">org.gnome.Shell.Extensions.GSConnect-symbolic</property>
     <property name="default_width">640</property>
-    <property name="default_height">440</property>
+    <property name="default_height">460</property>
     <child type="titlebar">
       <object class="GtkHeaderBar" id="headerbar">
         <property name="visible">True</property>
@@ -345,12 +345,12 @@ SPDX-License-Identifier: GPL-2.0-or-later
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkLabel" id="behavior-when-locked-label">
+                          <object class="GtkLabel" id="extension-settings-label">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="halign">start</property>
                             <property name="margin_bottom">12</property>
-                            <property name="label" translatable="yes">Behavior When Locked</property>
+                            <property name="label" translatable="yes">Extension Settings</property>
                             <attributes>
                               <attribute name="weight" value="bold"/>
                             </attributes>
@@ -362,25 +362,13 @@ SPDX-License-Identifier: GPL-2.0-or-later
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkBox" id="behavior-when-locked-box">
+                          <object class="GtkBox" id="extension-settings-box">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="margin_left">12</property>
                             <property name="margin_right">12</property>
                             <property name="margin_bottom">20</property>
                             <property name="spacing">24</property>
-                            <child>
-                              <object class="GtkLabel" id="keep-alive-when-locked-label">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="halign">start</property>
-                                <property name="margin_bottom">12</property>
-                                <property name="label" translatable="yes">Keep Alive</property>
-                                <accessibility>
-                                  <relation type="label-for" target="keep-alive-when-locked"/>
-                                </accessibility>
-                              </object>
-                            </child>
                             <child>
                               <object class="GtkSwitch" id="keep-alive-when-locked">
                                 <property name="visible">True</property>
@@ -390,6 +378,18 @@ SPDX-License-Identifier: GPL-2.0-or-later
                                 <property name="action_name">win.keep-alive-when-locked</property>
                                 <accessibility>
                                   <relation type="labelled-by" target="keep-alive-when-locked-label"/>
+                                </accessibility>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="keep-alive-when-locked-label">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="halign">start</property>
+                                <property name="margin_bottom">12</property>
+                                <property name="label" translatable="yes">GSConnect remains active when GNOME Shell is locked</property>
+                                <accessibility>
+                                  <relation type="label-for" target="keep-alive-when-locked"/>
                                 </accessibility>
                               </object>
                             </child>
