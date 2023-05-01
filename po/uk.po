@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-04-29 00:46-0400\n"
-"PO-Revision-Date: 2023-05-01 15:40\n"
+"PO-Revision-Date: 2023-05-01 17:36\n"
 "Last-Translator: \n"
 "Language-Team: Ukrainian\n"
 "Language: uk_UA\n"
@@ -505,11 +505,11 @@ msgstr "Пошук пристроїв…"
 
 #: data/ui/preferences-window.ui:353
 msgid "Extension Settings"
-msgstr ""
+msgstr "Налаштування розширення"
 
 #: data/ui/preferences-window.ui:378
 msgid "GSConnect remains active when GNOME Shell is locked"
-msgstr ""
+msgstr "GSConnect залишається активним, коли GNOME Shell заблоковано"
 
 #: data/ui/preferences-window.ui:410
 msgid "Browser Add-Ons"
