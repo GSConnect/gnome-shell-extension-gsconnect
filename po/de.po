@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-22 10:01+0530\n"
-"PO-Revision-Date: 2023-03-22 04:45\n"
+"POT-Creation-Date: 2023-04-29 00:46-0400\n"
+"PO-Revision-Date: 2023-05-01 18:39\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -75,7 +75,7 @@ msgstr "Vordefinierte Befehle ausführen"
 msgid "And more…"
 msgstr "Und mehr …"
 
-#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:127
+#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:130
 msgid "GSConnect in GNOME Shell"
 msgstr "GSConnect in der GNOME Shell"
 
@@ -504,12 +504,12 @@ msgid "Searching for devices…"
 msgstr "Geräte werden gesucht…"
 
 #: data/ui/preferences-window.ui:353
-msgid "Behavior When Locked"
-msgstr "Verhalten bei Sperrung"
+msgid "Extension Settings"
+msgstr "Erweiterungseinstellungen"
 
 #: data/ui/preferences-window.ui:378
-msgid "Keep Alive"
-msgstr "Verbindung aufrecht halten"
+msgid "GSConnect remains active when GNOME Shell is locked"
+msgstr "GSConnect bleibt aktiv, wenn GNOME Shell gesperrt ist"
 
 #: data/ui/preferences-window.ui:410
 msgid "Browser Add-Ons"
