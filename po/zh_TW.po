@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-22 10:01+0530\n"
-"PO-Revision-Date: 2023-03-22 04:45\n"
+"POT-Creation-Date: 2023-04-29 00:46-0400\n"
+"PO-Revision-Date: 2023-05-01 15:40\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -75,7 +75,7 @@ msgstr ""
 msgid "And more…"
 msgstr ""
 
-#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:127
+#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:130
 msgid "GSConnect in GNOME Shell"
 msgstr ""
 
@@ -500,11 +500,11 @@ msgid "Searching for devices…"
 msgstr "正在搜尋裝置…"
 
 #: data/ui/preferences-window.ui:353
-msgid "Behavior When Locked"
+msgid "Extension Settings"
 msgstr ""
 
 #: data/ui/preferences-window.ui:378
-msgid "Keep Alive"
+msgid "GSConnect remains active when GNOME Shell is locked"
 msgstr ""
 
 #: data/ui/preferences-window.ui:410
@@ -592,7 +592,7 @@ msgstr ""
 #, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
-msgstr[0] "%d 已連線"
+msgstr[0] "%d 台裝置已連線"
 
 #: src/preferences/device.js:673 src/preferences/device.js:679
 msgid "Edit"
