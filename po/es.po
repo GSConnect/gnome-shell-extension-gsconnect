@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-04-29 00:46-0400\n"
-"PO-Revision-Date: 2023-05-01 15:40\n"
+"PO-Revision-Date: 2023-05-02 05:59\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Language: es_ES\n"
@@ -505,11 +505,11 @@ msgstr "Buscando dispositivos…"
 
 #: data/ui/preferences-window.ui:353
 msgid "Extension Settings"
-msgstr ""
+msgstr "Configuración de la extensión"
 
 #: data/ui/preferences-window.ui:378
 msgid "GSConnect remains active when GNOME Shell is locked"
-msgstr ""
+msgstr "GSConnect permanece activo mientras GNOME Shell está bloqueado"
 
 #: data/ui/preferences-window.ui:410
 msgid "Browser Add-Ons"
@@ -590,7 +590,7 @@ msgstr "Enviar a dispositivo móvil"
 
 #: src/extension.js:52
 msgid "Sync between your devices"
-msgstr ""
+msgstr "Sincronizar entre sus dispositivos"
 
 #: src/extension.js:161
 #, javascript-format
@@ -770,7 +770,7 @@ msgstr "Dispositivo Bluetooth en %s"
 #: src/service/device.js:214
 #, javascript-format
 msgid "Verification key: %s"
-msgstr ""
+msgstr "Clave de verificación: %s"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:843
@@ -1010,7 +1010,7 @@ msgstr "Se recibió «%s» de %s"
 
 #: src/service/plugins/share.js:189
 msgid "Show File Location"
-msgstr ""
+msgstr "Mostrar ubicación del archivo"
 
 #: src/service/plugins/share.js:194
 msgid "Open File"
