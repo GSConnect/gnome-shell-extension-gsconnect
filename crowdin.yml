@@ -5,35 +5,14 @@
 project_identifier: org.gnome.Shell.Extensions.GSConnect
 files:
   - source: /po/org.gnome.Shell.Extensions.GSConnect.pot
-    translation: /po/%locale_with_underscore%.po
+    translation: /po/%two_letters_code%.po
     languages_mapping:
-      locale_with_underscore:
-        ar-SA: ar
-        be: be
-        ca-ES: ca
-        ca: ca
-        cs: cs
-        da: da
-        de: de
-        es-ES: es
-        et: et
-        fi-FI: fi
-        fr: fr
-        gl: gl
-        hu: hu
-        it: it
-        ja: ja
-        lt: lt
+      two_letters_code:
         nl-BE: nl_BE
-        nl: nl_NL
-        pl: pl
+        nl-NL: nl
         pt-BR: pt_BR
-        pt-PT: pt_PT
-        ru: ru
-        sk: sk
-        sr: sr
+        pt-PT: pt
         sr-CS: sr@latin
-        tr: tr
-        uk: uk
+        sr-SP: sr
         zh-CN: zh_CN
         zh-TW: zh_TW
