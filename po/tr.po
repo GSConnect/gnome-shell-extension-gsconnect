@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-04-29 00:46-0400\n"
-"PO-Revision-Date: 2023-05-30 15:06\n"
+"PO-Revision-Date: 2023-05-30 16:05\n"
 "Last-Translator: \n"
 "Language-Team: Turkish\n"
 "Language: tr_TR\n"
@@ -186,7 +186,11 @@ msgid "Touchpad.\n"
 "Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr ""
+msgstr "Dokunmatik yüzey.\n"
+"Fare imlecini hareket ettirmek için bu alanda sürükleyin.\n"
+"Fare imlecini bi yerden bi yere sürüklemek için uzun basın.\n\n"
+"Eşleştirilmiş cihaza basit bir tıklama gönderilecektir.\n"
+"Sol, orta, sağ düğme ve imleç kaydırmaları."
 
 #: data/ui/preferences-command-editor.ui:14
 msgid "Edit Command"
@@ -586,7 +590,7 @@ msgstr "Mobil Cihaza Gönder"
 
 #: src/extension.js:52
 msgid "Sync between your devices"
-msgstr ""
+msgstr "Cihazlarınız arasında eşitleyin"
 
 #: src/extension.js:161
 #, javascript-format
