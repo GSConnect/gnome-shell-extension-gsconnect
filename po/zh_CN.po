@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-04-29 00:46-0400\n"
-"PO-Revision-Date: 2023-06-10 15:50\n"
+"PO-Revision-Date: 2023-06-10 16:49\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -590,7 +590,7 @@ msgstr "发送到移动设备"
 
 #: src/extension.js:52
 msgid "Sync between your devices"
-msgstr "您的设备之间同步"
+msgstr "在您的设备间同步"
 
 #: src/extension.js:161
 #, javascript-format
@@ -958,7 +958,7 @@ msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:19
 msgid "Browse the paired device filesystem"
-msgstr ""
+msgstr "浏览配对设备的文件系统"
 
 #: src/service/plugins/sftp.js:24
 msgid "Mount"
@@ -979,7 +979,7 @@ msgstr "共享"
 
 #: src/service/plugins/share.js:20
 msgid "Share files and URLs between devices"
-msgstr ""
+msgstr "在设备间共享文件和 URL"
 
 #. TRANSLATORS: eg. Google Pixel is not allowed to upload files
 #: src/service/plugins/share.js:134
