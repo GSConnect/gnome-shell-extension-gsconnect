@@ -8,7 +8,7 @@
 
 // Allow TLSv1.0 certificates
 // See https://github.com/GSConnect/gnome-shell-extension-gsconnect/issues/930
-imports.gi.GLib.setenv('G_TLS_GNUTLS_PRIORITY', 'NORMAL:%COMPAT:+VERS-TLS1.0', true);
+imports.gi.GLib.setenv('G_TLS_GNUTLS_PRIORITY', 'NORMAL:%COMPAT:+VERS-ALL', true);
 
 imports.gi.versions.Gdk = '3.0';
 imports.gi.versions.GdkPixbuf = '2.0';
