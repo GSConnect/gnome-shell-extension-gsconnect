@@ -67,8 +67,23 @@ SPDX-License-Identifier: GPL-2.0-or-later
             <signal name="activate-link" handler="_onActivateLink" swapped="no"/>
           </object>
           <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">1</property>
+            <property name="left-attach">1</property>
+            <property name="top-attach">1</property>
+            <property name="width">1</property>
+            <property name="height">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox" id="attachment-box">
+            <property name="can-focus">FalseGdkPix</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="left-attach">1</property>
+            <property name="top-attach">2</property>
             <property name="width">1</property>
             <property name="height">1</property>
           </packing>
