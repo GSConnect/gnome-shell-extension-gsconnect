@@ -119,7 +119,7 @@ var Clipboard = GObject.registerClass({
             this._onOwnerChange();
             if (!HAVE_GNOME) {
                 // Directly subscrible signal
-                this.signalHanlder = Gio.DBus.session.signal_subscribe(
+                this.signalHandler = Gio.DBus.session.signal_subscribe(
                     DBUS_NAME,
                     DBUS_NAME,
                     'OwnerChange',
@@ -302,8 +302,8 @@ var Clipboard = GObject.registerClass({
             this._nameWatcherId = 0;
         }
 
-        if (!HAVE_GNOME && this.signalHanlder)
-            Gio.DBus.session.signal_unsubscribe(this.signalHanlder);
+        if (!HAVE_GNOME && this.signalHandler)
+            Gio.DBus.session.signal_unsubscribe(this.signalHandler);
 
     }
 });
