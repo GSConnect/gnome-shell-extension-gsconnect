@@ -111,7 +111,9 @@ class Controller {
     }
 
     scrollPointer(dx, dy) {
-        // Not implemented yet
+        if (dx === 0 && dy === 0)
+            return;
+        this.args = ['mousemove', '-w', '--', dx.toString(), dy.toString()];
     }
 
     /*
