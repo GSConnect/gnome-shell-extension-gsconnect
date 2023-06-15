@@ -24,9 +24,9 @@ function getIcon(name) {
         // Setup the desktop icons
         const settings = imports.gi.St.Settings.get();
         getIcon._desktop = new imports.gi.Gtk.IconTheme();
-        getIcon._desktop.set_custom_theme(settings.gtk_icon_theme);
+        getIcon._desktop.set_theme_name(settings.gtk_icon_theme);
         settings.connect('notify::gtk-icon-theme', (settings_, key_) => {
-            getIcon._desktop.set_custom_theme(settings_.gtk_icon_theme);
+            getIcon._desktop.set_theme_name(settings_.gtk_icon_theme);
         });
 
         // Preload our fallbacks
@@ -128,6 +128,55 @@ function _installResource(dirname, basename, relativePath) {
     }
 }
 
+/**
+ * Use Gio.File to ensure a file's executable bits are set.
+ *
+ * @param {string} filepath - An absolute path to a file
+ * @returns {boolean} - True if the file already was, or is now, executable
+ */
+function _setExecutable(filepath) {
+    try {
+        const file = Gio.File.new_for_path(filepath);
+        const finfo = file.query_info(
+            `${Gio.FILE_ATTRIBUTE_STANDARD_TYPE},${Gio.FILE_ATTRIBUTE_UNIX_MODE}`,
+            Gio.FileQueryInfoFlags.NO_FOLLOW_SYMLINKS,
+            null);
+
+        if (!finfo.has_attribute(Gio.FILE_ATTRIBUTE_UNIX_MODE))
+            return false;
+
+        const mode = finfo.get_attribute_uint32(
+            Gio.FILE_ATTRIBUTE_UNIX_MODE);
+        const new_mode = (mode | 0o111);
+        if (mode === new_mode)
+            return true;
+
+        return file.set_attribute_uint32(
+            Gio.FILE_ATTRIBUTE_UNIX_MODE,
+            new_mode,
+            Gio.FileQueryInfoFlags.NO_FOLLOW_SYMLINKS,
+            null);
+    } catch (e) {
+        logError(e, 'GSConnect');
+        return false;
+    }
+}
+
+/**
+ * Ensure critical files in the extension directory have the
+ * correct permissions.
+ */
+function ensurePermissions() {
+    if (Config.IS_USER) {
+        const executableFiles = [
+            'gsconnect-preferences',
+            'service/daemon.js',
+            'service/nativeMessagingHost.js',
+        ];
+        for (const file of executableFiles)
+            _setExecutable(GLib.build_filenamev([Extension.path, file]));
+    }
+}
 
 /**
  * Install the files necessary for the GSConnect service to run.
@@ -221,4 +270,3 @@ function installService() {
             GLib.unlink(GLib.build_filenamev([manifest[0], manifestFile]));
     }
 }
-

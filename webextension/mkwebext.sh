@@ -23,14 +23,23 @@ elif [ "${1}" == "chrome" ] || [ "${1}" == "firefox" ]; then
 
     # Copy relevant files
     mkdir ${1}
-
     mkdir ${1}/images
-    cp -R js ${1}/
-    cp -R _locales ${1}/
+
     cp background.html ${1}/
     cp manifest.${1}.json ${1}/manifest.json
     cp popup.html ${1}/
     cp stylesheet.css ${1}/
+
+    mkdir ${1}/js
+    cp js/*.js ${1}/js/
+    cp js/*.map ${1}/js/
+
+    # Copy translations
+    for dir in ./_locales/*; do
+        localedest=${1}/_locales/$(basename ${dir})
+	mkdir -p ${localedest}
+	cp ${dir}/*.json ${localedest}/
+    done
 fi
 
 

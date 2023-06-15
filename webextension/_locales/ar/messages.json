@@ -4,11 +4,11 @@
         "description": "The extension name"
     },
     "extensionDescription": {
-        "message": "Share links with GSConnect, direct to the browser or by SMS.",
+        "message": "مشاركة الروابط مع GSConnect، مباشرة إلى المتصفح أو بواسطة الرسائل القصيرة.",
         "description": "The extension description"
     },
     "contextMenuMultipleDevices": {
-        "message": "Send To Mobile Device",
+        "message": "إرسال إلى جهاز الجوال",
         "description": "Top-level Context Menu label when multiple devices are available"
     },
     "contextMenuSinglePlugin": {
@@ -38,7 +38,7 @@
         "description": "Context Menu label for opening a link in the device's web browser"
     },
     "smsMessage": {
-        "message": "Send SMS",
+        "message": "إرسال الرسائل القصيرة",
         "description": "Context Menu label for sharing a link in an SMS message"
     }
 }
