@@ -57,7 +57,7 @@ try:
     _ = i18n.gettext
 
 except (IOError, OSError) as e:
-    print("GSConnect: {0}".format(e.strerror))
+    print("GSConnect: {0}".format(str(e)))
     i18n = gettext.translation(
         SERVICE_NAME, localedir=LOCALE_DIR, fallback=True
     )

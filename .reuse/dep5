@@ -13,6 +13,10 @@ Files: data/icons/* data/images/* data/metainfo/*.png
 Copyright: GSConnect Developers <>
 License: GPL-2.0-or-later
 
+Files: po/*.po po/*.pot
+Copyright: GSConnect Community
+License: GPL-2.0-or-later
+
 Files: installed-tests/data/*
 Copyright: GSConnect Developers <>
 License: GPL-2.0-or-later

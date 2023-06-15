@@ -25,6 +25,7 @@ const Config = Extension.imports.config;
 const Device = Extension.imports.shell.device;
 const Keybindings = Extension.imports.shell.keybindings;
 const Notification = Extension.imports.shell.notification;
+const Input = Extension.imports.shell.input;
 const Remote = Extension.imports.utils.remote;
 
 Extension.getIcon = Utils.getIcon;
@@ -40,10 +41,11 @@ const ServiceToggle = GObject.registerClass({
 
     _init() {
         super._init({
-            label: 'GSConnect',
-            iconName: 'org.gnome.Shell.Extensions.GSConnect-symbolic',
+            title: 'GSConnect',
             toggleMode: true,
         });
+
+        this.set({iconName: 'org.gnome.Shell.Extensions.GSConnect-symbolic'});
 
         // Set QuickMenuToggle header.
         this.menu.setHeader('org.gnome.Shell.Extensions.GSConnect-symbolic', 'GSConnect',
@@ -148,6 +150,20 @@ const ServiceToggle = GObject.registerClass({
             const menu = this._menus[device.g_object_path];
             menu.actor.visible = !panelMode && isAvailable;
             menu._title.actor.visible = !panelMode && isAvailable;
+        }
+
+        // Set subtitle on Quick Settings tile
+        if (available.length === 1) {
+            this.subtitle = available[0].name;
+        } else if (available.length > 1) {
+            // TRANSLATORS: %d is the number of devices connected
+            this.subtitle = Extension.ngettext(
+                '%d Connected',
+                '%d Connected',
+                available.length
+            ).format(available.length);
+        } else {
+            this.subtitle = null;
         }
     }
 
@@ -290,7 +306,8 @@ const ServiceToggle = GObject.registerClass({
             for (const device of this.service.devices)
                 this._onDeviceRemoved(this.service, device, false);
 
-            this.service.stop();
+            if (!this.settings.get_boolean('keep-alive-when-locked'))
+                this.service.stop();
             this.service.destroy();
         }
 
@@ -326,6 +343,12 @@ class ServiceIndicator extends QuickSettings.SystemIndicator {
         // Add the indicator to the panel and the toggle to the menu
         QuickSettingsMenu._indicators.insert_child_at_index(this, 0);
         QuickSettingsMenu._addItems(this.quickSettingsItems);
+
+        // Ensure the tile(s) are above the background apps menu
+        for (const item of this.quickSettingsItems) {
+            QuickSettingsMenu.menu._grid.set_child_below_sibling(item,
+                QuickSettingsMenu._backgroundApps.quickSettingsItems[0]);
+        }
     }
 
     destroy() {
@@ -338,8 +361,17 @@ class ServiceIndicator extends QuickSettings.SystemIndicator {
 });
 
 var serviceIndicator = null;
+var lockscreenInput = null;
 
 function init() {
+    // If installed as a user extension, this checks the permissions
+    // on certain critical files in the extension directory
+    // to ensure that they have the executable bit set,
+    // and makes them executable if not. Some packaging methods
+    // (particularly GitHub Actions artifacts) automatically remove
+    // executable bits from all contents, presumably for security.
+    Utils.ensurePermissions();
+
     // If installed as a user extension, this will install the Desktop entry,
     // DBus and systemd service files necessary for DBus activation and
     // GNotifications. Since there's no uninit()/uninstall() hook for extensions
@@ -362,6 +394,9 @@ function init() {
 function enable() {
     serviceIndicator = new ServiceIndicator();
     Notification.patchGtkNotificationSources();
+
+    lockscreenInput = new Input.LockscreenRemoteAccess();
+    lockscreenInput.patchInhibitor();
 }
 
 
@@ -369,4 +404,9 @@ function disable() {
     serviceIndicator.destroy();
     serviceIndicator = null;
     Notification.unpatchGtkNotificationSources();
+
+    if (lockscreenInput) {
+        lockscreenInput.unpatchInhibitor();
+        lockscreenInput = null;
+    }
 }

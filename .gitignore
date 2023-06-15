@@ -4,3 +4,5 @@
 
 _build
 *~
+webextension/*.zip
+
