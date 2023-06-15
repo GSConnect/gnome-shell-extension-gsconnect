@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: JingMatrix https://github.com/JingMatrix
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 'use strict';
 
 const ByteArray = imports.byteArray;
