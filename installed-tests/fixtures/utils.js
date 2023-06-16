@@ -32,6 +32,10 @@ const {Plugin} = imports.service.plugin;
 const {ChannelService} = imports.fixtures.backend;
 
 
+// Force testing under GNOME
+globalThis.HAVE_GNOME = true;
+
+
 /*
  * File Helpers
  */
