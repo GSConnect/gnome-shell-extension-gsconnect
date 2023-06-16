@@ -93,6 +93,7 @@ for (const path of [Config.CACHEDIR, Config.CONFIGDIR, Config.RUNTIMEDIR])
  */
 globalThis.HAVE_REMOTEINPUT = GLib.getenv('GDMSESSION') !== 'ubuntu-wayland';
 globalThis.HAVE_WAYLAND = GLib.getenv('XDG_SESSION_TYPE') === 'wayland';
+globalThis.HAVE_GNOME = GLib.getenv('GNOME_SETUP_DISPLAY') !== null;
 
 
 /**
@@ -143,6 +144,15 @@ if (settings.get_boolean('debug'))
     globalThis.debug = _debugFunc;
 else
     globalThis.debug = () => {};
+
+
+/**
+ * Start wl_clipboard if not under Gnome
+ */
+if (!globalThis.HAVE_GNOME) {
+    debug('Not running as a Gnome extension');
+    imports.wl_clipboard.watchService();
+}
 
 
 /**
