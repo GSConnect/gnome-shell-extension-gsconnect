@@ -10,16 +10,6 @@ const Components = imports.service.components;
 const PluginBase = imports.service.plugin;
 
 
-// decide if it is under gnome-shell
-var HAVE_GNOME = true;
-try {
-// eslint-disable-next-line no-unused-expressions
-    imports.ui;
-} catch (e) {
-    debug('Not under gnome-shell');
-    HAVE_GNOME = false;
-    imports.wl_clipboard.watchService();
-}
 var Metadata = {
     label: _('Presentation'),
     description: _('Use the paired device as a presenter'),
@@ -42,7 +32,7 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'presenter');
 
-        if (!HAVE_GNOME)
+        if (!globalThis.HAVE_GNOME)
             this._input = Components.acquire('ydotool');
         else
             this._input = Components.acquire('input');
@@ -62,7 +52,7 @@ var Plugin = GObject.registerClass({
 
     destroy() {
         if (this._input !== undefined) {
-            if (!HAVE_GNOME)
+            if (!globalThis.HAVE_GNOME)
                 this._input = Components.release('ydotool');
             else
                 this._input = Components.release('input');

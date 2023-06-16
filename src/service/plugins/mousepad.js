@@ -11,16 +11,7 @@ const Components = imports.service.components;
 const {InputDialog} = imports.service.ui.mousepad;
 const PluginBase = imports.service.plugin;
 
-// decide if it is under gnome-shell
-var HAVE_GNOME = true;
-try {
-// eslint-disable-next-line no-unused-expressions
-    imports.ui;
-} catch (e) {
-    debug('Not under gnome-shell');
-    HAVE_GNOME = false;
-    imports.wl_clipboard.watchService();
-}
+
 var Metadata = {
     label: _('Mousepad'),
     description: _('Enables the paired device to act as a remote mouse and keyboard'),
@@ -144,7 +135,7 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'mousepad');
 
-        if (!HAVE_GNOME)
+        if (!globalThis.HAVE_GNOME)
             this._input = Components.acquire('ydotool');
         else
             this._input = Components.acquire('input');
@@ -243,7 +234,7 @@ var Plugin = GObject.registerClass({
 
                 // Regular key (printable ASCII or Unicode)
                 if (input.key) {
-                    if (!HAVE_GNOME)
+                    if (!globalThis.HAVE_GNOME)
                         this._input.pressKeys(input.key, modifiers_codes);
                     else
                         this._input.pressKeys(input.key, modifiers);
@@ -252,7 +243,7 @@ var Plugin = GObject.registerClass({
 
                 // Special key (eg. non-printable ASCII)
                 } else if (input.specialKey && KeyMap.has(input.specialKey)) {
-                    if (!HAVE_GNOME) {
+                    if (!globalThis.HAVE_GNOME) {
                         keysym = KeyMapCodes.get(input.specialKey);
                         this._input.pressKeys(keysym, modifiers_codes);
                     } else {
@@ -374,7 +365,7 @@ var Plugin = GObject.registerClass({
 
     destroy() {
         if (this._input !== undefined) {
-            if (!HAVE_GNOME)
+            if (!globalThis.HAVE_GNOME)
                 this._input = Components.release('ydotool');
             else
                 this._input = Components.release('input');

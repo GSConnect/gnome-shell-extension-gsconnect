@@ -15,18 +15,6 @@ const DBUS_NAME = 'org.gnome.Shell.Extensions.GSConnect.Clipboard';
 const DBUS_PATH = '/org/gnome/Shell/Extensions/GSConnect/Clipboard';
 
 
-// decide if it is under gnome-shell
-var HAVE_GNOME = true;
-try {
-// eslint-disable-next-line no-unused-expressions
-    imports.ui;
-} catch (e) {
-    debug('Not under gnome-shell');
-    HAVE_GNOME = false;
-    imports.wl_clipboard.watchService();
-}
-
-
 var Clipboard = GObject.registerClass({
     GTypeName: 'GSConnectClipboard',
     Properties: {
@@ -117,7 +105,7 @@ var Clipboard = GObject.registerClass({
             );
 
             this._onOwnerChange();
-            if (!HAVE_GNOME) {
+            if (!globalThis.HAVE_GNOME) {
                 // Directly subscrible signal
                 this.signalHandler = Gio.DBus.session.signal_subscribe(
                     DBUS_NAME,
@@ -302,7 +290,7 @@ var Clipboard = GObject.registerClass({
             this._nameWatcherId = 0;
         }
 
-        if (!HAVE_GNOME && this.signalHandler)
+        if (!globalThis.HAVE_GNOME && this.signalHandler)
             Gio.DBus.session.signal_unsubscribe(this.signalHandler);
 
     }
