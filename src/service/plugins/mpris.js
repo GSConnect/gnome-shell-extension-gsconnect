@@ -647,7 +647,9 @@ const PlayerRemote = GObject.registerClass({
         this.freeze_notify();
 
         // Metadata
-        if (state.hasOwnProperty('nowPlaying'))
+        if (state.hasOwnProperty('nowPlaying') ||
+            state.hasOwnProperty('artist') ||
+            state.hasOwnProperty('title'))
             this._updateMetadata(state);
 
         // Playback Status
