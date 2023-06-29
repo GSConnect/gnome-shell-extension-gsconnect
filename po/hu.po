@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-04-29 00:46-0400\n"
-"PO-Revision-Date: 2023-05-01 15:40\n"
+"PO-Revision-Date: 2023-06-29 12:21\n"
 "Last-Translator: \n"
 "Language-Team: Hungarian\n"
 "Language: hu_HU\n"
@@ -766,7 +766,7 @@ msgstr "Bluetooth eszköz itt: %s"
 #: src/service/device.js:214
 #, javascript-format
 msgid "Verification key: %s"
-msgstr ""
+msgstr "Ellenőrző kulcs: %s"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:843
