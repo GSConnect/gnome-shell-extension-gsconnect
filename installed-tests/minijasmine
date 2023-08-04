@@ -23,18 +23,6 @@ function _formatStack(stack) {
         .join('\n');
 }
 
-function _setTimeout(continueTimeout, func, time) {
-    return GLib.timeout_add(GLib.PRIORITY_DEFAULT, time, function () {
-        func();
-        return continueTimeout;
-    });
-}
-
-function _clearTimeout(id) {
-    if (id > 0)
-        GLib.source_remove(id);
-}
-
 
 /**
  * Reporter that outputs according to the Test Anything Protocol
@@ -109,11 +97,6 @@ function initJasmine() {
     const thisFile = /@(.+):\d+/.exec(Error().stack.split('\n')[1])[1];
     const thisDir = GLib.path_get_dirname(thisFile);
     imports.searchPath.unshift(thisDir);
-
-    // Install the browser setTimeout/setInterval API on the global object
-    globalThis.setTimeout = _setTimeout.bind(undefined, GLib.SOURCE_REMOVE);
-    globalThis.setInterval = _setTimeout.bind(undefined, GLib.SOURCE_CONTINUE);
-    globalThis.clearTimeout = globalThis.clearInterval = _clearTimeout;
 
     // Load Jasmine
     const jasmineRequire = imports.jasmine.getJasmineRequireObj();
