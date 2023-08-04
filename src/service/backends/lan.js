@@ -15,7 +15,9 @@ const Core = imports.service.core;
 /**
  * TCP Port Constants
  */
-const DEFAULT_PORT = 1716;
+const PROTOCOL_PORT_DEFAULT = 1716;
+const PROTOCOL_PORT_MIN = 1716;
+const PROTOCOL_PORT_MAX = 1764;
 const TRANSFER_MIN = 1739;
 const TRANSFER_MAX = 1764;
 
@@ -92,7 +94,7 @@ var ChannelService = GObject.registerClass({
             'The port used by the service',
             GObject.ParamFlags.READWRITE,
             0,  GLib.MAXUINT16,
-            DEFAULT_PORT
+            PROTOCOL_PORT_DEFAULT
         ),
     },
 }, class LanChannelService extends Core.ChannelService {
@@ -106,6 +108,7 @@ var ChannelService = GObject.registerClass({
 
         //
         this._tcp = null;
+        this._tcpPort = PROTOCOL_PORT_DEFAULT;
         this._udp4 = null;
         this._udp6 = null;
 
@@ -139,7 +142,7 @@ var ChannelService = GObject.registerClass({
 
     get port() {
         if (this._port === undefined)
-            this._port = DEFAULT_PORT;
+            this._port = PROTOCOL_PORT_DEFAULT;
 
         return this._port;
     }
@@ -190,9 +193,30 @@ var ChannelService = GObject.registerClass({
     _initTcpListener() {
         try {
             this._tcp = new Gio.SocketService();
-            this._tcp.add_inet_port(this.port, null);
+
+            let tcpPort = this.port;
+            const tcpPortMax = tcpPort +
+                (PROTOCOL_PORT_MAX - PROTOCOL_PORT_MIN);
+
+            while (tcpPort <= tcpPortMax) {
+                try {
+                    this._tcp.add_inet_port(tcpPort, null);
+                    break;
+                } catch (e) {
+                    if (tcpPort < tcpPortMax) {
+                        tcpPort++;
+                        continue;
+                    }
+
+                    throw e;
+                }
+            }
+
+            this._tcpPort = tcpPort;
             this._tcp.connect('incoming', this._onIncomingChannel.bind(this));
         } catch (e) {
+            this._tcp.stop();
+            this._tcp.close();
             this._tcp = null;
 
             throw e;
@@ -214,7 +238,7 @@ var ChannelService = GObject.registerClass({
             // Accept the connection
             await channel.accept(connection);
             channel.identity.body.tcpHost = channel.host;
-            channel.identity.body.tcpPort = this.port;
+            channel.identity.body.tcpPort = this._tcpPort;
             channel.allowed = this._allowed.has(host);
 
             this.channel(channel);
@@ -241,7 +265,7 @@ var ChannelService = GObject.registerClass({
             // Bind the socket
             const inetAddr = Gio.InetAddress.new_any(Gio.SocketFamily.IPV6);
             const sockAddr = Gio.InetSocketAddress.new(inetAddr, this.port);
-            this._udp6.bind(sockAddr, false);
+            this._udp6.bind(sockAddr, true);
 
             // Input stream
             this._udp6_stream = new Gio.DataInputStream({
@@ -276,7 +300,7 @@ var ChannelService = GObject.registerClass({
             // Bind the socket
             const inetAddr = Gio.InetAddress.new_any(Gio.SocketFamily.IPV4);
             const sockAddr = Gio.InetSocketAddress.new(inetAddr, this.port);
-            this._udp4.bind(sockAddr, false);
+            this._udp4.bind(sockAddr, true);
 
             // Input stream
             this._udp4_stream = new Gio.DataInputStream({
@@ -432,7 +456,7 @@ var ChannelService = GObject.registerClass({
     buildIdentity() {
         // Chain-up, then add the TCP port
         super.buildIdentity();
-        this.identity.body.tcpPort = this.port;
+        this.identity.body.tcpPort = this._tcpPort;
     }
 
     start() {
@@ -570,7 +594,7 @@ var Channel = GObject.registerClass({
             if (this.identity && this.identity.body.tcpPort)
                 this._port = this.identity.body.tcpPort;
             else
-                return DEFAULT_PORT;
+                return PROTOCOL_PORT_DEFAULT;
         }
 
         return this._port;
