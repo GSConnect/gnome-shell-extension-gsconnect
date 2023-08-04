@@ -125,58 +125,6 @@ var Store = GObject.registerClass({
     }
 
     /*
-     * EDS Helpers
-     */
-    _getEBookClient(source, cancellable = null) {
-        return new Promise((resolve, reject) => {
-            EBook.BookClient.connect(source, 0, cancellable, (source, res) => {
-                try {
-                    resolve(EBook.BookClient.connect_finish(res));
-                } catch (e) {
-                    reject(e);
-                }
-            });
-        });
-    }
-
-    _getEBookView(client, query = '', cancellable = null) {
-        return new Promise((resolve, reject) => {
-            client.get_view(query, cancellable, (client, res) => {
-                try {
-                    resolve(client.get_view_finish(res)[1]);
-                } catch (e) {
-                    reject(e);
-                }
-            });
-        });
-    }
-
-    _getEContacts(client, query = '', cancellable = null) {
-        return new Promise((resolve, reject) => {
-            client.get_contacts(query, cancellable, (client, res) => {
-                try {
-                    resolve(client.get_contacts_finish(res)[1]);
-                } catch (e) {
-                    debug(e);
-                    resolve([]);
-                }
-            });
-        });
-    }
-
-    _getESourceRegistry(cancellable = null) {
-        return new Promise((resolve, reject) => {
-            EDataServer.SourceRegistry.new(cancellable, (registry, res) => {
-                try {
-                    resolve(EDataServer.SourceRegistry.new_finish(res));
-                } catch (e) {
-                    reject(e);
-                }
-            });
-        });
-    }
-
-    /*
      * AddressBook DBus callbacks
      */
     _onObjectsAdded(connection, sender, path, iface, signal, params) {
@@ -240,8 +188,8 @@ var Store = GObject.registerClass({
         try {
             // Get an EBookClient and EBookView
             const uid = source.get_uid();
-            const client = await this._getEBookClient(source);
-            const view = await this._getEBookView(client, 'exists "tel"');
+            const client = await EBook.BookClient.connect(source, null);
+            const [view] = await client.get_view('exists "tel"', null);
 
             // Watch the view for changes to the address book
             const connection = view.get_connection();
@@ -387,35 +335,23 @@ var Store = GObject.registerClass({
      * @param {ByteArray} contents - An image ByteArray
      * @return {string|undefined} File path or %undefined on failure
      */
-    storeAvatar(contents) {
-        return new Promise((resolve, reject) => {
-            const md5 = GLib.compute_checksum_for_data(
-                GLib.ChecksumType.MD5,
-                contents
-            );
-            const file = this._cacheDir.get_child(`${md5}`);
+    async storeAvatar(contents) {
+        const md5 = GLib.compute_checksum_for_data(GLib.ChecksumType.MD5,
+            contents);
+        const file = this._cacheDir.get_child(`${md5}`);
 
-            if (file.query_exists(null)) {
-                resolve(file.get_path());
-            } else {
-                file.replace_contents_bytes_async(
+        if (!file.query_exists(null)) {
+            try {
+                await file.replace_contents_bytes_async(
                     new GLib.Bytes(contents),
-                    null,
-                    false,
-                    Gio.FileCreateFlags.REPLACE_DESTINATION,
-                    null,
-                    (file, res) => {
-                        try {
-                            file.replace_contents_finish(res);
-                            resolve(file.get_path());
-                        } catch (e) {
-                            debug(e, 'Storing avatar');
-                            resolve(undefined);
-                        }
-                    }
-                );
+                    null, false, Gio.FileCreateFlags.REPLACE_DESTINATION, null);
+            } catch (e) {
+                debug(e, 'Storing avatar');
+                return undefined;
             }
-        });
+        }
+
+        return file.get_path();
     }
 
     /**
@@ -623,17 +559,8 @@ var Store = GObject.registerClass({
      */
     async load() {
         try {
-            this._cacheData = await new Promise((resolve, reject) => {
-                this._cacheFile.load_contents_async(null, (file, res) => {
-                    try {
-                        const contents = file.load_contents_finish(res)[1];
-
-                        resolve(JSON.parse(ByteArray.toString(contents)));
-                    } catch (e) {
-                        reject(e);
-                    }
-                });
-            });
+            const [contents] = await this._cacheFile.load_contents_async(null);
+            this._cacheData = JSON.parse(ByteArray.toString(contents));
         } catch (e) {
             debug(e);
         } finally {
@@ -657,22 +584,9 @@ var Store = GObject.registerClass({
         try {
             this.__cache_lock = true;
 
-            await new Promise((resolve, reject) => {
-                this._cacheFile.replace_contents_bytes_async(
-                    new GLib.Bytes(JSON.stringify(this._cacheData, null, 2)),
-                    null,
-                    false,
-                    Gio.FileCreateFlags.REPLACE_DESTINATION,
-                    null,
-                    (file, res) => {
-                        try {
-                            resolve(file.replace_contents_finish(res));
-                        } catch (e) {
-                            reject(e);
-                        }
-                    }
-                );
-            });
+            const contents = new GLib.Bytes(JSON.stringify(this._cacheData, null, 2));
+            await this._cacheFile.replace_contents_bytes_async(contents, null,
+                false, Gio.FileCreateFlags.REPLACE_DESTINATION, null);
         } catch (e) {
             debug(e);
         } finally {

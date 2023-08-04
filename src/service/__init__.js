@@ -14,6 +14,46 @@ const GLib = imports.gi.GLib;
 const Config = imports.config;
 
 
+// Promise Wrappers
+try {
+    const {EBook, EDataServer} = imports.gi;
+
+    Gio._promisify(EBook.BookClient, 'connect');
+    Gio._promisify(EBook.BookClient.prototype, 'get_view');
+    Gio._promisify(EBook.BookClient.prototype, 'get_contacts');
+    Gio._promisify(EDataServer.SourceRegistry, 'new');
+} finally {
+    // Silence import errors
+}
+
+Gio._promisify(Gio.AsyncInitable.prototype, 'init_async');
+Gio._promisify(Gio.DBusConnection.prototype, 'call');
+Gio._promisify(Gio.DBusProxy.prototype, 'call');
+Gio._promisify(Gio.DataInputStream.prototype, 'read_line_async',
+    'read_line_finish_utf8');
+Gio._promisify(Gio.File.prototype, 'delete_async');
+Gio._promisify(Gio.File.prototype, 'enumerate_children_async');
+Gio._promisify(Gio.File.prototype, 'load_contents_async');
+Gio._promisify(Gio.File.prototype, 'mount_enclosing_volume');
+Gio._promisify(Gio.File.prototype, 'query_info_async');
+Gio._promisify(Gio.File.prototype, 'read_async');
+Gio._promisify(Gio.File.prototype, 'replace_async');
+Gio._promisify(Gio.File.prototype, 'replace_contents_bytes_async',
+    'replace_contents_finish');
+Gio._promisify(Gio.FileEnumerator.prototype, 'next_files_async');
+Gio._promisify(Gio.Mount.prototype, 'unmount_with_operation');
+Gio._promisify(Gio.InputStream.prototype, 'close_async');
+Gio._promisify(Gio.OutputStream.prototype, 'close_async');
+Gio._promisify(Gio.OutputStream.prototype, 'splice_async');
+Gio._promisify(Gio.OutputStream.prototype, 'write_all_async');
+Gio._promisify(Gio.SocketClient.prototype, 'connect_async');
+Gio._promisify(Gio.SocketListener.prototype, 'accept_async');
+Gio._promisify(Gio.Subprocess.prototype, 'communicate_utf8_async');
+Gio._promisify(Gio.Subprocess.prototype, 'wait_check_async');
+Gio._promisify(Gio.TlsConnection.prototype, 'handshake_async');
+Gio._promisify(Gio.DtlsConnection.prototype, 'handshake_async');
+
+
 // User Directories
 Config.CACHEDIR = GLib.build_filenamev([GLib.get_user_cache_dir(), 'gsconnect']);
 Config.CONFIGDIR = GLib.build_filenamev([GLib.get_user_config_dir(), 'gsconnect']);

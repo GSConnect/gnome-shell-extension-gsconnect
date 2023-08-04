@@ -161,27 +161,18 @@ var Plugin = GObject.registerClass({
      * @return {Promise<string>} A file path
      */
     _takePhoto(packet) {
-        return new Promise((resolve, reject) => {
-            const time = GLib.DateTime.new_now_local().format('%T');
-            const path = GLib.build_filenamev([GLib.get_tmp_dir(), `${time}.jpg`]);
-            const proc = this._launcher.spawnv([
-                Config.FFMPEG_PATH,
-                '-f', 'video4linux2',
-                '-ss', '0:0:2',
-                '-i', '/dev/video0',
-                '-frames', '1',
-                path,
-            ]);
+        const time = GLib.DateTime.new_now_local().format('%T');
+        const path = GLib.build_filenamev([GLib.get_tmp_dir(), `${time}.jpg`]);
+        const proc = this._launcher.spawnv([
+            Config.FFMPEG_PATH,
+            '-f', 'video4linux2',
+            '-ss', '0:0:2',
+            '-i', '/dev/video0',
+            '-frames', '1',
+            path,
+        ]);
 
-            proc.wait_check_async(null, (proc, res) => {
-                try {
-                    proc.wait_check_finish(res);
-                    resolve(path);
-                } catch (e) {
-                    reject(e);
-                }
-            });
-        });
+        return proc.wait_check_async(null);
     }
 
     /**

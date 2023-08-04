@@ -154,37 +154,14 @@ var Plugin = GObject.registerClass({
     async _listDirectories(mount) {
         const file = mount.get_root();
 
-        const iter = await new Promise((resolve, reject) => {
-            file.enumerate_children_async(
-                Gio.FILE_ATTRIBUTE_STANDARD_NAME,
-                Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
-                GLib.PRIORITY_DEFAULT,
-                this.cancellable,
-                (file, res) => {
-                    try {
-                        resolve(file.enumerate_children_finish(res));
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
-            );
-        });
+        const iter = await file.enumerate_children_async(
+            Gio.FILE_ATTRIBUTE_STANDARD_NAME,
+            Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
+            GLib.PRIORITY_DEFAULT,
+            this.cancellable);
 
-        const infos = await new Promise((resolve, reject) => {
-            iter.next_files_async(
-                MAX_MOUNT_DIRS,
-                GLib.PRIORITY_DEFAULT,
-                this.cancellable,
-                (iter, res) => {
-                    try {
-                        resolve(iter.next_files_finish(res));
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
-            );
-        });
-
+        const infos = await iter.next_files_async(MAX_MOUNT_DIRS,
+            GLib.PRIORITY_DEFAULT, this.cancellable);
         iter.close_async(GLib.PRIORITY_DEFAULT, null, null);
 
         const directories = {};
@@ -251,26 +228,17 @@ var Plugin = GObject.registerClass({
             const uri = `sftp://${host}:${packet.body.port}/`;
             const file = Gio.File.new_for_uri(uri);
 
-            await new Promise((resolve, reject) => {
-                file.mount_enclosing_volume(0, op, null, (file, res) => {
-                    try {
-                        resolve(file.mount_enclosing_volume_finish(res));
-                    } catch (e) {
-                        // Special case when the GMount didn't unmount properly
-                        // but is still on the same port and can be reused.
-                        if (e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.ALREADY_MOUNTED)) {
-                            resolve(true);
-
-                        // There's a good chance this is a host key verification
-                        // error; regardless we'll remove the key for security.
-                        } else {
-                            this._removeHostKey(host);
-                            reject(e);
-                        }
-                    }
-                });
-            });
+            await file.mount_enclosing_volume(GLib.PRIORITY_DEFAULT, op,
+                this.cancellable);
         } catch (e) {
+            // Special case when the GMount didn't unmount properly but is still
+            // on the same port and can be reused.
+            if (e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.ALREADY_MOUNTED))
+                return;
+
+            // There's a good chance this is a host key verification error;
+            // regardless we'll remove the key for security.
+            this._removeHostKey(this.device.channel.host);
             logError(e, this.device.name);
         } finally {
             this._mounting = false;
@@ -283,26 +251,17 @@ var Plugin = GObject.registerClass({
      *
      * @return {Promise} A promise for the operation
      */
-    _addPrivateKey() {
+    async _addPrivateKey() {
         const ssh_add = this._launcher.spawnv([
             Config.SSHADD_PATH,
             GLib.build_filenamev([Config.CONFIGDIR, 'private.pem']),
         ]);
 
-        return new Promise((resolve, reject) => {
-            ssh_add.communicate_utf8_async(null, null, (proc, res) => {
-                try {
-                    const result = proc.communicate_utf8_finish(res)[1].trim();
+        const [stdout] = await ssh_add.communicate_utf8_async(null,
+            this.cancellable);
 
-                    if (proc.get_exit_status() !== 0)
-                        debug(result, this.device.name);
-
-                    resolve();
-                } catch (e) {
-                    reject(e);
-                }
-            });
-        });
+        if (ssh_add.get_exit_status() !== 0)
+            debug(stdout.trim(), this.device.name);
     }
 
     /**
@@ -320,25 +279,17 @@ var Plugin = GObject.registerClass({
                     `[${host}]:${port}`,
                 ]);
 
-                await new Promise((resolve, reject) => {
-                    ssh_keygen.communicate_utf8_async(null, null, (proc, res) => {
-                        try {
-                            const stdout = proc.communicate_utf8_finish(res)[1];
-                            const status = proc.get_exit_status();
+                const [stdout] = await ssh_keygen.communicate_utf8_async(null,
+                    this.cancellable);
 
-                            if (status !== 0) {
-                                throw new Gio.IOErrorEnum({
-                                    code: Gio.io_error_from_errno(status),
-                                    message: `${GLib.strerror(status)}\n${stdout}`.trim(),
-                                });
-                            }
+                const status = ssh_keygen.get_exit_status();
 
-                            resolve();
-                        } catch (e) {
-                            reject(e);
-                        }
+                if (status !== 0) {
+                    throw new Gio.IOErrorEnum({
+                        code: Gio.io_error_from_errno(status),
+                        message: `${GLib.strerror(status)}\n${stdout}`.trim(),
                     });
-                });
+                }
             } catch (e) {
                 logError(e, this.device.name);
             }
@@ -464,49 +415,27 @@ var Plugin = GObject.registerClass({
 
             const link_target = mount.get_root().get_path();
             const link = Gio.File.new_for_path(
-                `${by_name_dir.get_path()}/${safe_device_name}`
-            );
+                `${by_name_dir.get_path()}/${safe_device_name}`);
 
             // Check for and remove any existing stale link
             try {
-                const link_stat = await new Promise((resolve, reject) => {
-                    link.query_info_async(
-                        'standard::symlink-target',
-                        Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
-                        GLib.PRIORITY_DEFAULT,
-                        null,
-                        (link, res) => {
-                            try {
-                                resolve(link.query_info_finish(res));
-                            } catch (e) {
-                                reject(e);
-                            }
-                        }
-                    );
-                });
+                const link_stat = await link.query_info_async(
+                    'standard::symlink-target',
+                    Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
+                    GLib.PRIORITY_DEFAULT,
+                    this.cancellable);
 
                 if (link_stat.get_symlink_target() === link_target)
                     return;
 
-                await new Promise((resolve, reject) => {
-                    link.delete_async(
-                        GLib.PRIORITY_DEFAULT,
-                        null,
-                        (link, res) => {
-                            try {
-                                resolve(link.delete_finish(res));
-                            } catch (e) {
-                                reject(e);
-                            }
-                        }
-                    );
-                });
+                await link.delete_async(GLib.PRIORITY_DEFAULT,
+                    this.cancellable);
             } catch (e) {
                 if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.NOT_FOUND))
                     throw e;
             }
 
-            link.make_symbolic_link(link_target, null);
+            link.make_symbolic_link(link_target, this.cancellable);
         } catch (e) {
             debug(e, this.device.name);
         }
@@ -538,20 +467,10 @@ var Plugin = GObject.registerClass({
             this._removeSubmenu();
             this._mounting = false;
 
-            await new Promise((resolve, reject) => {
-                this.gmount.unmount_with_operation(
-                    Gio.MountUnmountFlags.FORCE,
-                    new Gio.MountOperation(),
-                    null,
-                    (mount, res) => {
-                        try {
-                            resolve(mount.unmount_with_operation_finish(res));
-                        } catch (e) {
-                            reject(e);
-                        }
-                    }
-                );
-            });
+            await this.gmount.unmount_with_operation(
+                Gio.MountUnmountFlags.FORCE,
+                new Gio.MountOperation(),
+                this.cancellable);
         } catch (e) {
             debug(e, this.device.name);
         }

@@ -103,24 +103,11 @@ var Battery = GObject.registerClass({
                 g_flags: Gio.DBusProxyFlags.DO_NOT_AUTO_START,
             });
 
-            await new Promise((resolve, reject) => {
-                this._proxy.init_async(
-                    GLib.PRIORITY_DEFAULT,
-                    this._cancellable,
-                    (proxy, res) => {
-                        try {
-                            resolve(proxy.init_finish(res));
-                        } catch (e) {
-                            reject(e);
-                        }
-                    }
-                );
-            });
+            await this._proxy.init_async(GLib.PRIORITY_DEFAULT,
+                this._cancellable);
 
             this._propertiesChangedId = this._proxy.connect(
-                'g-properties-changed',
-                this._onPropertiesChanged.bind(this)
-            );
+                'g-properties-changed', this._onPropertiesChanged.bind(this));
 
             this._initProperties(this._proxy);
         } catch (e) {
