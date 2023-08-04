@@ -234,26 +234,6 @@ var Interface = GObject.registerClass({
     }
 });
 
-
-/**
- * Get the DBus connection on @busType
- *
- * @param {Gio.BusType} [busType] - a Gio.BusType constant
- * @param {Gio.Cancellable} [cancellable] - an optional Gio.Cancellable
- * @return {Promise<Gio.DBusConnection>} A DBus connection
- */
-function getConnection(busType = Gio.BusType.SESSION, cancellable = null) {
-    return new Promise((resolve, reject) => {
-        Gio.bus_get(busType, cancellable, (connection, res) => {
-            try {
-                resolve(Gio.bus_get_finish(res));
-            } catch (e) {
-                reject(e);
-            }
-        });
-    });
-}
-
 /**
  * Get a new, dedicated DBus connection on @busType
  *

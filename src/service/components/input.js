@@ -44,6 +44,7 @@ const RemoteSession = GObject.registerClass({
         if (!this._started)
             return;
 
+        // Pass a null callback to allow this call to finish itself
         this.call(name, parameters, Gio.DBusCallFlags.NONE, -1, null, null);
     }
 
@@ -60,39 +61,9 @@ const RemoteSession = GObject.registerClass({
             if (this._started)
                 return;
 
-            // Initialize the proxy
-            await new Promise((resolve, reject) => {
-                this.init_async(
-                    GLib.PRIORITY_DEFAULT,
-                    null,
-                    (proxy, res) => {
-                        try {
-                            proxy.init_finish(res);
-                            resolve();
-                        } catch (e) {
-                            reject(e);
-                        }
-                    }
-                );
-            });
-
-            // Start the session
-            await new Promise((resolve, reject) => {
-                this.call(
-                    'Start',
-                    null,
-                    Gio.DBusCallFlags.NONE,
-                    -1,
-                    null,
-                    (proxy, res) => {
-                        try {
-                            resolve(proxy.call_finish(res));
-                        } catch (e) {
-                            reject(e);
-                        }
-                    }
-                );
-            });
+            // Initialize the proxy, and start the session
+            await this.init_async(GLib.PRIORITY_DEFAULT, null);
+            await this.call('Start', null, Gio.DBusCallFlags.NONE, -1, null);
 
             this._started = true;
         } catch (e) {
@@ -106,6 +77,8 @@ const RemoteSession = GObject.registerClass({
     stop() {
         if (this._started) {
             this._started = false;
+
+            // Pass a null callback to allow this call to finish itself
             this.call('Stop', null, Gio.DBusCallFlags.NONE, -1, null, null);
         }
     }
@@ -390,63 +363,45 @@ class Controller {
         return GLib.SOURCE_REMOVE;
     }
 
-    _createRemoteDesktopSession() {
+    async _createRemoteDesktopSession() {
         if (this.connection === null)
             return Promise.reject(new Error('No DBus connection'));
 
-        return new Promise((resolve, reject) => {
-            this.connection.call(
-                'org.gnome.Mutter.RemoteDesktop',
-                '/org/gnome/Mutter/RemoteDesktop',
-                'org.gnome.Mutter.RemoteDesktop',
-                'CreateSession',
-                null,
-                null,
-                Gio.DBusCallFlags.NONE,
-                -1,
-                null,
-                (connection, res) => {
-                    try {
-                        res = connection.call_finish(res);
-                        resolve(res.deepUnpack()[0]);
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
-            );
-        });
+        const reply = await this.connection.call(
+            'org.gnome.Mutter.RemoteDesktop',
+            '/org/gnome/Mutter/RemoteDesktop',
+            'org.gnome.Mutter.RemoteDesktop',
+            'CreateSession',
+            null,
+            null,
+            Gio.DBusCallFlags.NONE,
+            -1,
+            null);
+
+        return reply.deepUnpack()[0];
     }
 
-    _createScreenCastSession(sessionId) {
+    async _createScreenCastSession(sessionId) {
         if (this.connection === null)
-            return Promise.reject(new Error('No DBus connection'));
+            throw new Error('No DBus connection');
 
-        return new Promise((resolve, reject) => {
-            const options = new GLib.Variant('(a{sv})', [{
-                'disable-animations': GLib.Variant.new_boolean(false),
-                'remote-desktop-session-id': GLib.Variant.new_string(sessionId),
-            }]);
+        const options = new GLib.Variant('(a{sv})', [{
+            'disable-animations': GLib.Variant.new_boolean(false),
+            'remote-desktop-session-id': GLib.Variant.new_string(sessionId),
+        }]);
 
-            this.connection.call(
-                'org.gnome.Mutter.ScreenCast',
-                '/org/gnome/Mutter/ScreenCast',
-                'org.gnome.Mutter.ScreenCast',
-                'CreateSession',
-                options,
-                null,
-                Gio.DBusCallFlags.NONE,
-                -1,
-                null,
-                (connection, res) => {
-                    try {
-                        res = connection.call_finish(res);
-                        resolve(res.deepUnpack()[0]);
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
-            );
-        });
+        const reply = await this.connection.call(
+            'org.gnome.Mutter.ScreenCast',
+            '/org/gnome/Mutter/ScreenCast',
+            'org.gnome.Mutter.ScreenCast',
+            'CreateSession',
+            options,
+            null,
+            Gio.DBusCallFlags.NONE,
+            -1,
+            null);
+
+        return reply.deepUnpack()[0];
     }
 
     async _ensureAdapter() {

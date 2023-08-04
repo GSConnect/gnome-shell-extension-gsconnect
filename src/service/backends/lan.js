@@ -250,16 +250,11 @@ var ChannelService = GObject.registerClass({
     _initUdpListener() {
         // Default broadcast address
         this._udp_address = Gio.InetSocketAddress.new_from_string(
-            '255.255.255.255',
-            this.port
-        );
+            '255.255.255.255', this.port);
 
         try {
-            this._udp6 = Gio.Socket.new(
-                Gio.SocketFamily.IPV6,
-                Gio.SocketType.DATAGRAM,
-                Gio.SocketProtocol.UDP
-            );
+            this._udp6 = Gio.Socket.new(Gio.SocketFamily.IPV6,
+                Gio.SocketType.DATAGRAM, Gio.SocketProtocol.UDP);
             this._udp6.set_broadcast(true);
 
             // Bind the socket
@@ -290,11 +285,8 @@ var ChannelService = GObject.registerClass({
         }
 
         try {
-            this._udp4 = Gio.Socket.new(
-                Gio.SocketFamily.IPV4,
-                Gio.SocketType.DATAGRAM,
-                Gio.SocketProtocol.UDP
-            );
+            this._udp4 = Gio.Socket.new(Gio.SocketFamily.IPV4,
+                Gio.SocketType.DATAGRAM, Gio.SocketProtocol.UDP);
             this._udp4.set_broadcast(true);
 
             // Bind the socket
@@ -324,21 +316,20 @@ var ChannelService = GObject.registerClass({
     }
 
     _onIncomingIdentity(socket) {
-        let host, data, packet;
+        let host;
 
         // Try to peek the remote address
         try {
-            host = socket.receive_message(
-                [],
-                Gio.SocketMsgFlags.PEEK,
-                null
-            )[1].address.to_string();
+            host = socket.receive_message([], Gio.SocketMsgFlags.PEEK, null)[1]
+                .address.to_string();
         } catch (e) {
             logError(e);
         }
 
         // Whether or not we peeked the address, we need to read the packet
         try {
+            let data;
+
             if (socket === this._udp6)
                 data = this._udp6_stream.read_line_utf8(null)[0];
             else
@@ -346,9 +337,9 @@ var ChannelService = GObject.registerClass({
 
             // Discard the packet if we failed to peek the address
             if (host === undefined)
-                return;
+                return GLib.SOURCE_CONTINUE;
 
-            packet = new Core.Packet(data);
+            const packet = new Core.Packet(data);
             packet.body.tcpHost = host;
             this._onIdentity(packet);
         } catch (e) {
@@ -386,21 +377,12 @@ var ChannelService = GObject.registerClass({
             this._channels.set(channel.address, channel);
 
             // Open a TCP connection
-            const connection = await new Promise((resolve, reject) => {
-                const address = Gio.InetSocketAddress.new_from_string(
-                    packet.body.tcpHost,
-                    packet.body.tcpPort
-                );
-                const client = new Gio.SocketClient({enable_proxy: false});
+            const address = Gio.InetSocketAddress.new_from_string(
+                packet.body.tcpHost, packet.body.tcpPort);
 
-                client.connect_async(address, null, (client, res) => {
-                    try {
-                        resolve(client.connect_finish(res));
-                    } catch (e) {
-                        reject(e);
-                    }
-                });
-            });
+            const client = new Gio.SocketClient({enable_proxy: false});
+            const connection = await client.connect_async(address,
+                this.cancellable);
 
             // Connect the channel and attach it to the device on success
             await channel.open(connection);
@@ -488,9 +470,7 @@ var ChannelService = GObject.registerClass({
         if (this._networkChangedId === 0) {
             this._networkAvailable = this._networkMonitor.network_available;
             this._networkChangedId = this._networkMonitor.connect(
-                'network-changed',
-                this._onNetworkChanged.bind(this)
-            );
+                'network-changed', this._onNetworkChanged.bind(this));
         }
 
         this._active = true;
@@ -605,31 +585,6 @@ var Channel = GObject.registerClass({
     }
 
     /**
-     * Handshake Gio.TlsConnection
-     *
-     * @param {Gio.TlsConnection} connection - A TLS connection
-     * @return {Promise} A promise for the operation
-     */
-    _handshake(connection) {
-        return new Promise((resolve, reject) => {
-            connection.validation_flags = Gio.TlsCertificateFlags.EXPIRED;
-            connection.authentication_mode = Gio.TlsAuthenticationMode.REQUIRED;
-
-            connection.handshake_async(
-                GLib.PRIORITY_DEFAULT,
-                this.cancellable,
-                (connection, res) => {
-                    try {
-                        resolve(connection.handshake_finish(res));
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
-            );
-        });
-    }
-
-    /**
      * Authenticate a TLS connection.
      *
      * @param {Gio.TlsConnection} connection - A TLS connection
@@ -637,7 +592,11 @@ var Channel = GObject.registerClass({
      */
     async _authenticate(connection) {
         // Standard TLS Handshake
-        await this._handshake(connection);
+        connection.validation_flags = Gio.TlsCertificateFlags.EXPIRED;
+        connection.authentication_mode = Gio.TlsAuthenticationMode.REQUIRED;
+
+        await connection.handshake_async(GLib.PRIORITY_DEFAULT,
+            this.cancellable);
 
         // Get a settings object for the device
         let settings;
@@ -706,10 +665,8 @@ var Channel = GObject.registerClass({
     _encryptClient(connection) {
         _configureSocket(connection);
 
-        connection = Gio.TlsClientConnection.new(
-            connection,
-            connection.socket.remote_address
-        );
+        connection = Gio.TlsClientConnection.new(connection,
+            connection.socket.remote_address);
         connection.set_certificate(this.certificate);
 
         return this._authenticate(connection);
@@ -736,69 +693,6 @@ var Channel = GObject.registerClass({
     }
 
     /**
-     * Read the identity packet from the new connection
-     *
-     * @param {Gio.SocketConnection} connection - An unencrypted socket
-     * @return {Promise} A promise for the operation
-     */
-    _receiveIdent(connection) {
-        return new Promise((resolve, reject) => {
-            // In principle this disposable wrapper could buffer more than the
-            // identity packet, but in practice the remote device shouldn't send
-            // any more data until the TLS connection is negotiated.
-            const stream = new Gio.DataInputStream({
-                base_stream: connection.input_stream,
-                close_base_stream: false,
-            });
-
-            stream.read_line_async(
-                GLib.PRIORITY_DEFAULT,
-                this.cancellable,
-                (stream, res) => {
-                    try {
-                        const data = stream.read_line_finish_utf8(res)[0];
-                        stream.close(null);
-
-                        // Store the identity as an object property
-                        this.identity = new Core.Packet(data);
-
-                        // Reject connections without a deviceId
-                        if (!this.identity.body.deviceId)
-                            throw new Error('missing deviceId');
-
-                        resolve();
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
-            );
-        });
-    }
-
-    /**
-     * Write our identity packet to the new connection
-     *
-     * @param {Gio.SocketConnection} connection - An unencrypted socket
-     * @return {Promise} A promise for the operation
-     */
-    _sendIdent(connection) {
-        return new Promise((resolve, reject) => {
-            connection.get_output_stream().write_all_async(
-                this.backend.identity.serialize(),
-                GLib.PRIORITY_DEFAULT,
-                this.cancellable,
-                (stream, res) => {
-                    try {
-                        resolve(stream.write_all_finish(res));
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
-            );
-        });
-    }
-
-    /**
      * Negotiate an incoming connection
      *
      * @param {Gio.TcpConnection} connection - The incoming connection
@@ -810,7 +704,23 @@ var Channel = GObject.registerClass({
             this._connection = connection;
             this.backend.channels.set(this.address, this);
 
-            await this._receiveIdent(this._connection);
+            // In principle this disposable wrapper could buffer more than the
+            // identity packet, but in practice the remote device shouldn't send
+            // any more data until the TLS connection is negotiated.
+            const stream = new Gio.DataInputStream({
+                base_stream: connection.input_stream,
+                close_base_stream: false,
+            });
+
+            const data = await stream.read_line_async(GLib.PRIORITY_DEFAULT,
+                this.cancellable);
+            stream.close_async(GLib.PRIORITY_DEFAULT, null, null);
+
+            this.identity = new Core.Packet(data[0]);
+
+            if (!this.identity.body.deviceId)
+                throw new Error('missing deviceId');
+
             this._connection = await this._encryptClient(connection);
         } catch (e) {
             this.close();
@@ -830,7 +740,11 @@ var Channel = GObject.registerClass({
             this._connection = connection;
             this.backend.channels.set(this.address, this);
 
-            await this._sendIdent(this._connection);
+            await connection.get_output_stream().write_all_async(
+                this.backend.identity.serialize(),
+                GLib.PRIORITY_DEFAULT,
+                this.cancellable);
+
             this._connection = await this._encryptServer(connection);
         } catch (e) {
             this.close();
@@ -863,28 +777,19 @@ var Channel = GObject.registerClass({
     }
 
     async download(packet, target, cancellable = null) {
-        const openConnection = new Promise((resolve, reject) => {
-            const client = new Gio.SocketClient({enable_proxy: false});
+        const address = Gio.InetSocketAddress.new_from_string(this.host,
+            packet.payloadTransferInfo.port);
 
-            const address = Gio.InetSocketAddress.new_from_string(
-                this.host,
-                packet.payloadTransferInfo.port
-            );
-
-            client.connect_async(address, cancellable, (client, res) => {
-                try {
-                    resolve(client.connect_finish(res));
-                } catch (e) {
-                    reject(e);
-                }
-            });
-        }).then(this._encryptClient.bind(this));
-
-        const connection = await openConnection;
-        const source = connection.get_input_stream();
+        const client = new Gio.SocketClient({enable_proxy: false});
+        const connection = await client.connect_async(address, cancellable)
+            .then(this._encryptClient.bind(this));
 
         // Start the transfer
-        const transferredSize = await this._transfer(source, target, cancellable);
+        const transferredSize = await target.splice_async(
+            connection.input_stream,
+            (Gio.OutputStreamSpliceFlags.CLOSE_SOURCE |
+             Gio.OutputStreamSpliceFlags.CLOSE_TARGET),
+            GLib.PRIORITY_DEFAULT, cancellable);
 
         // If we get less than expected, we've certainly got corruption
         if (transferredSize < packet.payloadSize) {
@@ -923,32 +828,26 @@ var Channel = GObject.registerClass({
         }
 
         // Listen for the incoming connection
-        const acceptConnection = new Promise((resolve, reject) => {
-            listener.accept_async(
-                cancellable,
-                (listener, res, source_object) => {
-                    try {
-                        resolve(listener.accept_finish(res)[0]);
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
-            );
-        }).then(this._encryptServer.bind(this));
+        const acceptConnection = listener.accept_async(cancellable)
+            .then(result => this._encryptServer(result[0]));
 
         // Create an upload request
         packet.body.payloadHash = this.checksum;
         packet.payloadSize = size;
         packet.payloadTransferInfo = {port: port};
-        const requestUpload = this.sendPacket(new Core.Packet(packet));
+        const requestUpload = this.sendPacket(new Core.Packet(packet),
+            cancellable);
 
         // Request an upload stream, accept the connection and get the output
         const [, connection] = await Promise.all([requestUpload,
             acceptConnection]);
-        const target = connection.get_output_stream();
 
         // Start the transfer
-        const transferredSize = await this._transfer(source, target, cancellable);
+        const transferredSize = await connection.output_stream.splice_async(
+            source,
+            (Gio.OutputStreamSpliceFlags.CLOSE_SOURCE |
+             Gio.OutputStreamSpliceFlags.CLOSE_TARGET),
+            GLib.PRIORITY_DEFAULT, cancellable);
 
         if (transferredSize !== size) {
             throw new Gio.IOErrorEnum({
@@ -956,25 +855,6 @@ var Channel = GObject.registerClass({
                 message: 'Transfer incomplete',
             });
         }
-    }
-
-    _transfer(source, target, cancellable) {
-        return new Promise((resolve, reject) => {
-            target.splice_async(
-                source,
-                (Gio.OutputStreamSpliceFlags.CLOSE_SOURCE |
-                 Gio.OutputStreamSpliceFlags.CLOSE_TARGET),
-                GLib.PRIORITY_DEFAULT,
-                cancellable,
-                (target, res) => {
-                    try {
-                        resolve(target.splice_finish(res));
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
-            );
-        });
     }
 
     async rejectTransfer(packet) {
@@ -985,24 +865,13 @@ var Channel = GObject.registerClass({
             if (packet.payloadTransferInfo.port === undefined)
                 return;
 
-            let connection = await new Promise((resolve, reject) => {
-                const client = new Gio.SocketClient({enable_proxy: false});
+            const address = Gio.InetSocketAddress.new_from_string(this.host,
+                packet.payloadTransferInfo.port);
 
-                const address = Gio.InetSocketAddress.new_from_string(
-                    this.host,
-                    packet.payloadTransferInfo.port
-                );
+            const client = new Gio.SocketClient({enable_proxy: false});
+            const connection = await client.connect_async(address, null)
+                .then(this._encryptClient.bind(this));
 
-                client.connect_async(address, null, (client, res) => {
-                    try {
-                        resolve(client.connect_finish(res));
-                    } catch (e) {
-                        resolve();
-                    }
-                });
-            });
-
-            connection = await this._encryptClient(connection);
             connection.close_async(GLib.PRIORITY_DEFAULT, null, null);
         } catch (e) {
             debug(e, this.device.name);

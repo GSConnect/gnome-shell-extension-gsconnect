@@ -113,16 +113,11 @@ var ChannelService = GObject.registerClass({
     _initUdpListener() {
         // Default broadcast address
         this._udp_address = Gio.InetSocketAddress.new_from_string(
-            '255.255.255.255',
-            this.port
-        );
+            '255.255.255.255', this.port);
 
         try {
-            this._udp6 = Gio.Socket.new(
-                Gio.SocketFamily.IPV6,
-                Gio.SocketType.DATAGRAM,
-                Gio.SocketProtocol.UDP
-            );
+            this._udp6 = Gio.Socket.new(Gio.SocketFamily.IPV6,
+                Gio.SocketType.DATAGRAM, Gio.SocketProtocol.UDP);
             this._udp6.set_broadcast(true);
 
             // Bind the socket
@@ -153,11 +148,8 @@ var ChannelService = GObject.registerClass({
         }
 
         try {
-            this._udp4 = Gio.Socket.new(
-                Gio.SocketFamily.IPV4,
-                Gio.SocketType.DATAGRAM,
-                Gio.SocketProtocol.UDP
-            );
+            this._udp4 = Gio.Socket.new(Gio.SocketFamily.IPV4,
+                Gio.SocketType.DATAGRAM, Gio.SocketProtocol.UDP);
             this._udp4.set_broadcast(true);
 
             // Bind the socket
@@ -191,11 +183,8 @@ var ChannelService = GObject.registerClass({
 
         // Try to peek the remote address
         try {
-            host = socket.receive_message(
-                [],
-                Gio.SocketMsgFlags.PEEK,
-                null
-            )[1].address.to_string();
+            host = socket.receive_message([], Gio.SocketMsgFlags.PEEK, null)[1]
+                .address.to_string();
         } catch (e) {
             logError(e);
         }
@@ -246,21 +235,12 @@ var ChannelService = GObject.registerClass({
             this._channels.set(channel.address, channel);
 
             // Open a TCP connection
-            const connection = await new Promise((resolve, reject) => {
-                const address = Gio.InetSocketAddress.new_from_string(
-                    packet.body.tcpHost,
-                    packet.body.tcpPort
-                );
-                const client = new Gio.SocketClient({enable_proxy: false});
+            const address = Gio.InetSocketAddress.new_from_string(
+                packet.body.tcpHost, packet.body.tcpPort);
 
-                client.connect_async(address, null, (client, res) => {
-                    try {
-                        resolve(client.connect_finish(res));
-                    } catch (e) {
-                        reject(e);
-                    }
-                });
-            });
+            const client = new Gio.SocketClient({enable_proxy: false});
+            const connection = await client.connect_async(address,
+                this.cancellable);
 
             // Connect the channel and attach it to the device on success
             await channel.open(connection);
@@ -406,45 +386,6 @@ var Channel = GObject.registerClass({
         this._port = port;
     }
 
-    _receiveIdent(connection) {
-        return new Promise((resolve, reject) => {
-            this.input_stream.read_line_async(
-                GLib.PRIORITY_DEFAULT,
-                this.cancellable,
-                (stream, res) => {
-                    try {
-                        const data = stream.read_line_finish_utf8(res)[0];
-                        this.identity = new Core.Packet(data);
-
-                        if (!this.identity.body.deviceId)
-                            throw new Error('missing deviceId');
-
-                        resolve();
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
-            );
-        });
-    }
-
-    _sendIdent(connection) {
-        return new Promise((resolve, reject) => {
-            connection.get_output_stream().write_all_async(
-                this.backend.identity.serialize(),
-                GLib.PRIORITY_DEFAULT,
-                this.cancellable,
-                (stream, res) => {
-                    try {
-                        resolve(stream.write_all_finish(res));
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
-            );
-        });
-    }
-
     async accept(connection) {
         try {
             this._connection = connection;
@@ -454,7 +395,13 @@ var Channel = GObject.registerClass({
                 base_stream: this._connection.get_input_stream(),
             });
 
-            await this._receiveIdent(this._connection);
+            const [data] = await this.input_stream.read_line_async(
+                GLib.PRIORITY_DEFAULT, this.cancellable);
+
+            this.identity = new Core.Packet(data);
+
+            if (!this.identity.body.deviceId)
+                throw new Error('missing deviceId');
         } catch (e) {
             this.close();
             return e;
@@ -470,7 +417,10 @@ var Channel = GObject.registerClass({
                 base_stream: this._connection.get_input_stream(),
             });
 
-            await this._sendIdent(this._connection);
+            await connection.output_stream.write_all_async(
+                this.backend.identity.serialize(),
+                GLib.PRIORITY_DEFAULT,
+                this.cancellable);
         } catch (e) {
             this.close();
             return e;
@@ -487,6 +437,7 @@ var Channel = GObject.registerClass({
         this.backend.channels.delete(this.address);
         this.cancellable.cancel();
 
+        // These calls are not Promisified, so they can finish themselves
         if (this._connection)
             this._connection.close_async(GLib.PRIORITY_DEFAULT, null, null);
 
@@ -498,27 +449,18 @@ var Channel = GObject.registerClass({
     }
 
     async download(packet, target, cancellable = null) {
-        const connection = await new Promise((resolve, reject) => {
-            const client = new Gio.SocketClient({enable_proxy: false});
+        const address = Gio.InetSocketAddress.new_from_string(this.host,
+            packet.payloadTransferInfo.port);
 
-            const address = Gio.InetSocketAddress.new_from_string(
-                this.host,
-                packet.payloadTransferInfo.port
-            );
-
-            client.connect_async(address, cancellable, (client, res) => {
-                try {
-                    resolve(client.connect_finish(res));
-                } catch (e) {
-                    reject(e);
-                }
-            });
-        });
-
-        const source = connection.get_input_stream();
+        const client = new Gio.SocketClient({enable_proxy: false});
+        const connection = await client.connect_async(address, cancellable);
 
         // Start the transfer
-        const transferredSize = await this._transfer(source, target, cancellable);
+        const transferredSize = await connection.output_stream.splice_async(
+            target, connection.input_stream,
+            (Gio.OutputStreamSpliceFlags.CLOSE_SOURCE |
+             Gio.OutputStreamSpliceFlags.CLOSE_TARGET),
+            GLib.PRIORITY_DEFAULT, cancellable);
 
         if (transferredSize !== packet.payloadSize) {
             throw new Gio.IOErrorEnum({
@@ -548,31 +490,24 @@ var Channel = GObject.registerClass({
         }
 
         // Listen for the incoming connection
-        const acceptConnection = new Promise((resolve, reject) => {
-            listener.accept_async(
-                cancellable,
-                (listener, res, source_object) => {
-                    try {
-                        resolve(listener.accept_finish(res)[0]);
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
-            );
-        });
+        const acceptConnection = listener.accept_async(cancellable);
 
         // Notify the device we're ready
         packet.body.payloadHash = this.checksum;
         packet.payloadSize = size;
         packet.payloadTransferInfo = {port: port};
-        this.sendPacket(new Core.Packet(packet));
+        const sendPacket = this.sendPacket(new Core.Packet(packet),
+            cancellable);
 
         // Accept the connection and configure the channel
-        const connection = await acceptConnection;
-        const target = connection.get_output_stream();
+        const [, connection] = await Promise([sendPacket, acceptConnection]);
 
         // Start the transfer
-        const transferredSize = await this._transfer(source, target, cancellable);
+        const transferredSize = await connection.output_stream.splice_async(
+            source,
+            (Gio.OutputStreamSpliceFlags.CLOSE_SOURCE |
+             Gio.OutputStreamSpliceFlags.CLOSE_TARGET),
+            GLib.PRIORITY_DEFAULT, cancellable);
 
         if (transferredSize !== size) {
             throw new Gio.IOErrorEnum({
@@ -580,25 +515,6 @@ var Channel = GObject.registerClass({
                 message: 'Transfer incomplete',
             });
         }
-    }
-
-    _transfer(source, target, cancellable) {
-        return new Promise((resolve, reject) => {
-            target.splice_async(
-                source,
-                (Gio.OutputStreamSpliceFlags.CLOSE_SOURCE |
-                 Gio.OutputStreamSpliceFlags.CLOSE_TARGET),
-                GLib.PRIORITY_DEFAULT,
-                cancellable,
-                (target, res) => {
-                    try {
-                        resolve(target.splice_finish(res));
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
-            );
-        });
     }
 
     async rejectTransfer(packet) {
@@ -609,22 +525,12 @@ var Channel = GObject.registerClass({
             if (packet.payloadTransferInfo.port === undefined)
                 return;
 
-            const connection = await new Promise((resolve, reject) => {
-                const client = new Gio.SocketClient({enable_proxy: false});
+            const address = Gio.InetSocketAddress.new_from_string(this.host,
+                packet.payloadTransferInfo.port);
 
-                const address = Gio.InetSocketAddress.new_from_string(
-                    this.host,
-                    packet.payloadTransferInfo.port
-                );
-
-                client.connect_async(address, null, (client, res) => {
-                    try {
-                        resolve(client.connect_finish(res));
-                    } catch (e) {
-                        resolve();
-                    }
-                });
-            });
+            const client = new Gio.SocketClient({enable_proxy: false});
+            const connection = await client.connect_async(address,
+                this.cancellable);
 
             connection.close_async(GLib.PRIORITY_DEFAULT, null, null);
         } catch (e) {

@@ -357,32 +357,9 @@ var Plugin = GObject.registerClass({
      * @param {Gio.File} file - A file object for the icon
      */
     async _uploadFileIcon(packet, file) {
-        const read = new Promise((resolve, reject) => {
-            file.read_async(GLib.PRIORITY_DEFAULT, null, (file, res) => {
-                try {
-                    resolve(file.read_finish(res));
-                } catch (e) {
-                    reject(e);
-                }
-            });
-        });
-
-        const query = new Promise((resolve, reject) => {
-            file.query_info_async(
-                'standard::size',
-                Gio.FileQueryInfoFlags.NONE,
-                GLib.PRIORITY_DEFAULT,
-                null,
-                (file, res) => {
-                    try {
-                        resolve(file.query_info_finish(res));
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
-            );
-        });
-
+        const read = file.read_async(GLib.PRIORITY_DEFAULT, null);
+        const query = file.query_info_async('standard::size',
+            Gio.FileQueryInfoFlags.NONE, GLib.PRIORITY_DEFAULT, null);
         const [stream, info] = await Promise.all([read, query]);
 
         this._uploadIconStream(packet, stream, info.get_size());
