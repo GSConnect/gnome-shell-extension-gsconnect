@@ -259,9 +259,10 @@ function installService() {
         }
 
         // WebExtension Manifests
-        if (settings.get_boolean("create-native-messaging-hosts"))
+        if (settings.get_boolean('create-native-messaging-hosts')) {
             for (const [dirname, contents] of manifests)
                 _installFile(dirname, manifestFile, contents);
+        }
 
         // Otherwise, if running as a system extension, ensure anything previously
         // installed when running as a user extension is removed.
