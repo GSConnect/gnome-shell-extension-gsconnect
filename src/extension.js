@@ -132,9 +132,10 @@ const ServiceToggle = GObject.registerClass({
     }
 
     _sync() {
-        const available = this.service.devices.filter(device => {
+        const availableBeforeFiltering = this.service.devices.filter(device => {
             return (device.connected && device.paired);
         });
+        const available = availableBeforeFiltering.filter(device => !(device.name && device.name.toLowerCase().includes('waydroid')));
         const panelMode = this.settings.get_boolean('show-indicators');
 
         // Hide status indicator if in Panel mode or no devices are available
