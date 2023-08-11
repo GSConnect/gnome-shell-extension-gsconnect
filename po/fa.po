@@ -1,20 +1,21 @@
-# SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
-#
-# SPDX-License-Identifier: GPL-2.0-or-later
 msgid ""
 msgstr ""
-"Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
+"Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-22 10:01+0530\n"
-"PO-Revision-Date: 2021-10-04 17:41+0330\n"
-"Last-Translator: eshagh <eshagh094@gmail.com>\n"
+"POT-Creation-Date: 2023-04-29 00:46-0400\n"
+"PO-Revision-Date: 2023-05-01 15:40\n"
+"Last-Translator: \n"
 "Language-Team: Persian\n"
-"Language: fa\n"
+"Language: fa_IR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n==0 || n==1);\n"
-"X-Generator: Poedit 3.0\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: gsconnect\n"
+"X-Crowdin-Project-ID: 327933\n"
+"X-Crowdin-Language: fa\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:12
@@ -31,23 +32,12 @@ msgid "GSConnect Team"
 msgstr "گروه جی‌اس‌کانکت"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
-#, fuzzy
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
-"جی‌اس‌کانکت، پیاده‌سازی کاملی از کی‌دی‌ای کانکت، مخصوص پوستهٔ گنوم با یکپارچگی "
-"ناتیلوس، کروم و فایرفاکس است. گروه کی‌دی‌ای کانکت، برنامه‌هایی برای گنو/لینوکس، "
-"بی‌اس‌دی، اندروید، سیل‌فیس، مک او‌اس و ویندوز دارند."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr "جی‌اس‌کانکت، پیاده‌سازی کاملی از کی‌دی‌ای کانکت، مخصوص پوستهٔ گنوم با یکپارچگی ناتیلوس، کروم و فایرفاکس است. گروه کی‌دی‌ای کانکت، برنامه‌هایی برای گنو/لینوکس، بی‌اس‌دی، اندروید، سیل‌فیش، آی‌اواس، مک‌او‌اس و ویندوز دارند."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:42
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"با جی‌اس‌کانکت می‌توانید به صورت امن به افزاره‌های همراه و دیگر میزکارهایتان وصل "
-"شوید تا:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
+msgstr "با جی‌اس‌کانکت می‌توانید به صورت امن به افزاره‌های همراه و دیگر میزکارهایتان وصل شوید تا:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:46
 msgid "Share files, links and text"
@@ -85,7 +75,7 @@ msgstr "دستورهای از پیش تعریف‌شده را اجرا کنید"
 msgid "And more…"
 msgstr "و بیش‌تر…"
 
-#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:127
+#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:130
 msgid "GSConnect in GNOME Shell"
 msgstr "جی‌اس‌کانکت در پوستهٔ گنوم"
 
@@ -191,14 +181,16 @@ msgid "Select or start a conversation"
 msgstr "گفت‌وگویی را برگیده یا آغاز کنید"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid ""
-"Touchpad.\n"
+msgid "Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n"
-"\n"
+"Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr ""
+msgstr "صفحه‌لمسی.\n"
+"برای جابه‌جایی نشانگر موشی این‌جا بکشید.\n"
+"برای کشیدن نشانگر موشی طولانی نگه دارید.\n\n"
+"کلیک ساده به افزارهٔ جفت شده فرستاده خواهد شد.\n"
+"دکمه‌های راست، وسط، چپ و لغزنده‌های چرخی."
 
 #: data/ui/preferences-command-editor.ui:14
 msgid "Edit Command"
@@ -512,11 +504,11 @@ msgid "Searching for devices…"
 msgstr "در جست‌وجوی افزاره‌ها…"
 
 #: data/ui/preferences-window.ui:353
-msgid "Behavior When Locked"
+msgid "Extension Settings"
 msgstr ""
 
 #: data/ui/preferences-window.ui:378
-msgid "Keep Alive"
+msgid "GSConnect remains active when GNOME Shell is locked"
 msgstr ""
 
 #: data/ui/preferences-window.ui:410
@@ -584,12 +576,8 @@ msgid "Something’s gone wrong"
 msgstr "چیزی اشتباه شد"
 
 #: data/ui/service-error-dialog.ui:91
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
-"جی‌ای‌کانکت با خطایی غیرمنتظره روبه‌رو شد. لطفاً مشکل را گزارش داده و هر "
-"اطّلاعاتی که ممکن است کمک کند را بدهید."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "جی‌ای‌کانکت با خطایی غیرمنتظره روبه‌رو شد. لطفاً مشکل را گزارش داده و هر اطّلاعاتی که ممکن است کمک کند را بدهید."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
@@ -602,14 +590,14 @@ msgstr "فرستادن به افزارهٔ همراه"
 
 #: src/extension.js:52
 msgid "Sync between your devices"
-msgstr ""
+msgstr "همگام‌سازی میان افزاره‌هایتان"
 
 #: src/extension.js:161
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
-msgstr[0] "وصل شده"
-msgstr[1] "وصل شده"
+msgstr[0] "%d وصل‌شده"
+msgstr[1] "%d وصل‌شده"
 
 #: src/preferences/device.js:673 src/preferences/device.js:679
 msgid "Edit"
@@ -647,12 +635,8 @@ msgid "translator-credits"
 msgstr "دانیال بهزادی <dani.behzi@ubuntu.com>"
 
 #: src/preferences/service.js:418
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"پیام‌های رفع اشکال ثبت شده‌اند. هر اقدامی که برای بازتولید مشکل لازم است را "
-"انجام داده، سپس گزارش را بررسی کنید."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "پیام‌های رفع اشکال ثبت شده‌اند. هر اقدامی که برای بازتولید مشکل لازم است را انجام داده، سپس گزارش را بررسی کنید."
 
 #: src/preferences/service.js:421
 msgid "Review Log"
@@ -784,9 +768,9 @@ msgstr "دستگاه بلوتوث در %s"
 #.
 #. Verification key: 0123456789abcdef000000000000000000000000
 #: src/service/device.js:214
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "Verification key: %s"
-msgstr "آگاهی‌ها"
+msgstr "کلید تأیید هویت: %s"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:843
@@ -803,8 +787,7 @@ msgid "Accept"
 msgstr "پذیرش"
 
 #: src/service/manager.js:118
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "به خاطر تعداد افزاره‌های روی این شبکه، کشف از کار افتاد."
 
 #: src/service/backends/lan.js:166
@@ -817,7 +800,7 @@ msgstr "درگاه از پیش در حال استفاده است"
 
 #: src/service/plugins/battery.js:17
 msgid "Exchange battery information"
-msgstr ""
+msgstr "تبادل اطّلاعات باتری"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:257
@@ -835,9 +818,8 @@ msgstr "شارژ کامل شد"
 #: src/service/plugins/battery.js:286
 #, javascript-format
 msgid "%s: Battery has reached custom charge level"
-msgstr ""
+msgstr "%s: باتری به سطح شارژ شخصی رسید"
 
-# در این رشته از نویسه‌های ایزوله چپ‌به‌راست استفاده شده است
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:288
 #, javascript-format
@@ -890,11 +872,11 @@ msgstr "صفحهٔ موشی"
 
 #: src/service/plugins/mousepad.js:17
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr ""
+msgstr "قادر کردن افزارهٔ جفت شده برای عمل به عنوان موشی و صفحه‌کلید"
 
 #: src/service/plugins/mousepad.js:31 src/service/ui/mousepad.js:109
 msgid "Remote Input"
-msgstr ""
+msgstr "ورودی دوردست"
 
 #: src/service/plugins/mpris.js:19
 msgid "MPRIS"
@@ -902,7 +884,7 @@ msgstr "MPRIS"
 
 #: src/service/plugins/mpris.js:20
 msgid "Bidirectional remote media playback control"
-msgstr ""
+msgstr "واپایش پخش رسانهٔ دوردست دوطرفه"
 
 #: src/service/plugins/mpris.js:320
 msgid "Unknown"
@@ -910,7 +892,7 @@ msgstr "ناشناخته"
 
 #: src/service/plugins/notification.js:20
 msgid "Share notifications with the paired device"
-msgstr ""
+msgstr "هم‌رسانی آگاهی‌ها با افزارهٔ جفت شده"
 
 #: src/service/plugins/notification.js:34
 msgid "Cancel Notification"
@@ -930,7 +912,7 @@ msgstr "فعال سازی آگاهی"
 
 #: src/service/plugins/photo.js:17
 msgid "Request the paired device to take a photo and transfer it to this PC"
-msgstr ""
+msgstr "درخواست از افزارهٔ جفت شده برای نماگرفت و انتقالش به این رایانه"
 
 #: src/service/plugins/photo.js:224 src/service/plugins/share.js:132
 #: src/service/plugins/share.js:208 src/service/plugins/share.js:319
@@ -961,17 +943,15 @@ msgstr "ارائه"
 
 #: src/service/plugins/presenter.js:15
 msgid "Use the paired device as a presenter"
-msgstr ""
+msgstr "استفاده از افزارهٔ جفت شده به عنوان ارائه دهنده"
 
 #: src/service/plugins/runcommand.js:15
 msgid "Run Commands"
 msgstr "اجرای دستورها"
 
 #: src/service/plugins/runcommand.js:17
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
-msgstr ""
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
+msgstr "اجرای فرمان‌ها روی افزارهٔ جفت شده‌ةان یا اجازه به افزاره برای اجرای فرمان‌های از پیش تعریف شده روی این رایانه"
 
 #: src/service/plugins/sftp.js:17
 msgid "SFTP"
@@ -979,7 +959,7 @@ msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:19
 msgid "Browse the paired device filesystem"
-msgstr ""
+msgstr "مرور سامانه‌پروندهٔ افزارهٔ جفت شده"
 
 #: src/service/plugins/sftp.js:24
 msgid "Mount"
@@ -1030,7 +1010,7 @@ msgstr "«%s» از %s دریافت شد"
 
 #: src/service/plugins/share.js:189
 msgid "Show File Location"
-msgstr ""
+msgstr "نمایش مکان پرونده"
 
 #: src/service/plugins/share.js:194
 msgid "Open File"
@@ -1082,7 +1062,7 @@ msgstr "پیامک"
 
 #: src/service/plugins/sms.js:19
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
+msgstr "فرستادن یا خواندن پیامک افزارهٔ جفت شده و آگاه شدن از پیامک جدید"
 
 #: src/service/plugins/sms.js:40
 msgid "New SMS (URI)"
@@ -1102,16 +1082,15 @@ msgstr "حجم صدای سامانه"
 
 #: src/service/plugins/systemvolume.js:16
 msgid "Enable the paired device to control the system volume"
-msgstr ""
+msgstr "قادر کردن افزارهٔ جفت شده برای واپایش حجم صدای سامانه"
 
 #: src/service/plugins/systemvolume.js:60
 msgid "PulseAudio not found"
 msgstr "پالس‌آدیو پیدا نشد"
 
 #: src/service/plugins/telephony.js:18
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgstr "آگاه شدن از تماس‌ها و تنظیم حجم صدای سامانه در طول زنگ خوردن و تماس"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:30
@@ -1208,7 +1187,6 @@ msgstr[1] "و %d آشنای دیگر"
 msgid "Remote keyboard on %s is not active"
 msgstr "صفحه‌کلید دوردست روی %s فعّال نیست"
 
-# در این رشته از نویسه‌های ایزوله چپ‌به‌راست استفاده شده است
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
 #: src/shell/device.js:127
@@ -1216,7 +1194,6 @@ msgstr "صفحه‌کلید دوردست روی %s فعّال نیست"
 msgid "%d%% (Estimating…)"
 msgstr "⁦%d٪⁩ (در حال محاسبه…)"
 
-# در این رشته از نویسه‌های ایزوله چپ‌به‌راست استفاده شده است
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
 #: src/shell/device.js:136
@@ -1224,7 +1201,6 @@ msgstr "⁦%d٪⁩ (در حال محاسبه…)"
 msgid "%d%% (%d∶%02d Until Full)"
 msgstr "⁦%d٪⁩ (⁦%d:%02d⁩ تا پر شدن)"
 
-# در این رشته از نویسه‌های ایزوله چپ‌به‌راست استفاده شده است
 #. TRANSLATORS: Estimated time until battery is empty
 #. EXAMPLE: 42% (12:15 Remaining)
 #: src/shell/device.js:144
@@ -1251,8 +1227,3 @@ msgstr "خدمت ناموجود"
 msgid "Open in Browser"
 msgstr "گشودن در مرورگر"
 
-#~ msgid "On"
-#~ msgstr "روشن"
-
-#~ msgid "Off"
-#~ msgstr "خاموش"
