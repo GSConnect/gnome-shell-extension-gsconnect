@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-04-29 00:46-0400\n"
-"PO-Revision-Date: 2023-05-01 15:40\n"
+"PO-Revision-Date: 2023-08-26 23:10\n"
 "Last-Translator: \n"
 "Language-Team: Lithuanian\n"
 "Language: lt_LT\n"
@@ -501,11 +501,11 @@ msgstr "Ieškoma įrenginių…"
 
 #: data/ui/preferences-window.ui:353
 msgid "Extension Settings"
-msgstr ""
+msgstr "Plėtinio nustatymai"
 
 #: data/ui/preferences-window.ui:378
 msgid "GSConnect remains active when GNOME Shell is locked"
-msgstr ""
+msgstr "GSConnect lieka aktyvus, kai GNOME Shell yra užrakintas"
 
 #: data/ui/preferences-window.ui:410
 msgid "Browser Add-Ons"
@@ -586,7 +586,7 @@ msgstr "Siųsti į mobilųjį įrenginį"
 
 #: src/extension.js:52
 msgid "Sync between your devices"
-msgstr ""
+msgstr "Sinchronizuoti tarp įrenginių"
 
 #: src/extension.js:161
 #, javascript-format
@@ -768,7 +768,7 @@ msgstr "Bluetooth įrenginys ties %s"
 #: src/service/device.js:214
 #, javascript-format
 msgid "Verification key: %s"
-msgstr ""
+msgstr "Patvirtinimo raktas: %s"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:843
@@ -874,7 +874,7 @@ msgstr "Leidžia suporuotam įrenginiui veikti kaip nuotolinei pelei ir klaviat�
 
 #: src/service/plugins/mousepad.js:31 src/service/ui/mousepad.js:109
 msgid "Remote Input"
-msgstr ""
+msgstr "Nuotolinė įvestis"
 
 #: src/service/plugins/mpris.js:19
 msgid "MPRIS"
@@ -1008,7 +1008,7 @@ msgstr "Gautas „%s“ iš %s"
 
 #: src/service/plugins/share.js:189
 msgid "Show File Location"
-msgstr ""
+msgstr "Rodyti failo vietą"
 
 #: src/service/plugins/share.js:194
 msgid "Open File"
