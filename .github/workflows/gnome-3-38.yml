@@ -16,7 +16,7 @@ jobs:
     container:
       image: gsconnect/gsconnect-ci:3.38
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Prepare
         run: |
           meson --prefix=/usr \

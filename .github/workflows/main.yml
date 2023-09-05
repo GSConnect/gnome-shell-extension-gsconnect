@@ -21,7 +21,7 @@ jobs:
     container:
       image: ghcr.io/gsconnect/gsconnect-ci:main
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Prepare
         run: |
           meson --prefix=/usr \
