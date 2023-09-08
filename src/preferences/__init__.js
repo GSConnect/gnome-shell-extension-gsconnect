@@ -6,8 +6,8 @@
 
 const Gettext = imports.gettext;
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
+import * as Gio from "gi://Gio";
+import * as GLib from "gi://GLib";
 
 const Config = imports.config;
 

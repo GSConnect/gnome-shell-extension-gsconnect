@@ -4,9 +4,9 @@
 
 'use strict';
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
+import * as Gio from "gi://Gio";
+import * as GLib from "gi://GLib";
+import * as GObject from "gi://GObject";
 
 const SERVICE_NAME = 'org.gnome.Shell.Extensions.GSConnect';
 const SERVICE_PATH = '/org/gnome/Shell/Extensions/GSConnect';

@@ -6,8 +6,8 @@
 
 const ByteArray = imports.byteArray;
 
-const GLib = imports.gi.GLib;
-const Gio = imports.gi.Gio;
+import * as GLib from "gi://GLib";
+import * as Gio from "gi://Gio";
 
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const Config = Extension.imports.config;
@@ -22,7 +22,7 @@ const Config = Extension.imports.config;
 function getIcon(name) {
     if (getIcon._resource === undefined) {
         // Setup the desktop icons
-        const settings = imports.gi.St.Settings.get();
+        import * as settings from "gi://St.Settings.get()";
         getIcon._desktop = new imports.gi.Gtk.IconTheme();
         getIcon._desktop.set_theme_name(settings.gtk_icon_theme);
         settings.connect('notify::gtk-icon-theme', (settings_, key_) => {

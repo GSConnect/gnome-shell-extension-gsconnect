@@ -4,11 +4,11 @@
 
 'use strict';
 
-const Clutter = imports.gi.Clutter;
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const Pango = imports.gi.Pango;
-const St = imports.gi.St;
+import * as Clutter from "gi://Clutter";
+import * as Gio from "gi://Gio";
+import * as GLib from "gi://GLib";
+import * as Pango from "gi://Pango";
+import * as St from "gi://St";
 
 const Main = imports.ui.main;
 

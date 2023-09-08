@@ -6,9 +6,9 @@
 
 const Gettext = imports.gettext;
 
-const GLib = imports.gi.GLib;
-const Gio = imports.gi.Gio;
-const Gtk = imports.gi.Gtk;
+import * as GLib from "gi://GLib";
+import * as Gio from "gi://Gio";
+import * as Gtk from "gi://Gtk";
 
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const Config = Extension.imports.config;

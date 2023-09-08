@@ -6,8 +6,8 @@
 
 imports.gi.versions.Atspi = '2.0';
 
-const Atspi = imports.gi.Atspi;
-const Gdk = imports.gi.Gdk;
+import * as Atspi from "gi://Atspi";
+import * as Gdk from "gi://Gdk";
 
 
 /**

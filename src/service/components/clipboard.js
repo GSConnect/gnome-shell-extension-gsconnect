@@ -4,11 +4,11 @@
 
 'use strict';
 
-const Gdk = imports.gi.Gdk;
-const GLib = imports.gi.GLib;
-const Gtk = imports.gi.Gtk;
-const Gio = imports.gi.Gio;
-const GObject = imports.gi.GObject;
+import * as Gdk from "gi://Gdk";
+import * as GLib from "gi://GLib";
+import * as Gtk from "gi://Gtk";
+import * as Gio from "gi://Gio";
+import * as GObject from "gi://GObject";
 
 
 const DBUS_NAME = 'org.gnome.Shell.Extensions.GSConnect.Clipboard';

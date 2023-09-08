@@ -4,9 +4,9 @@
 
 'use strict';
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
+import * as Gio from "gi://Gio";
+import * as GLib from "gi://GLib";
+import * as GObject from "gi://GObject";
 const ByteArray = imports.byteArray;
 
 const Config = imports.config;

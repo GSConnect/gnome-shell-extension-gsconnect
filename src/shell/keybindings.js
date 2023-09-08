@@ -6,8 +6,8 @@
 
 const Config = imports.misc.config;
 const Main = imports.ui.main;
-const Meta = imports.gi.Meta;
-const Shell = imports.gi.Shell;
+import * as Meta from "gi://Meta";
+import * as Shell from "gi://Shell";
 
 
 /**

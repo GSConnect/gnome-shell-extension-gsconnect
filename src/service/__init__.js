@@ -7,9 +7,9 @@
 const ByteArray = imports.byteArray;
 const Gettext = imports.gettext;
 
-const Gio = imports.gi.Gio;
-const GIRepository = imports.gi.GIRepository;
-const GLib = imports.gi.GLib;
+import * as Gio from "gi://Gio";
+import * as GIRepository from "gi://GIRepository";
+import * as GLib from "gi://GLib";
 
 const Config = imports.config;
 

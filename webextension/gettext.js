@@ -7,8 +7,8 @@
 'use strict';
 
 const ByteArray = imports.byteArray;
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
+import * as Gio from "gi://Gio";
+import * as GLib from "gi://GLib";
 
 // eslint-disable-next-line no-redeclare
 const _ = (msgid) => GLib.dgettext('org.gnome.Shell.Extensions.GSConnect', msgid);

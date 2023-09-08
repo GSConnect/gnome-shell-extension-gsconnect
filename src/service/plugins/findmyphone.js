@@ -4,10 +4,10 @@
 
 'use strict';
 
-const Gdk = imports.gi.Gdk;
-const Gio = imports.gi.Gio;
-const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
+import * as Gdk from "gi://Gdk";
+import * as Gio from "gi://Gio";
+import * as GObject from "gi://GObject";
+import * as Gtk from "gi://Gtk";
 
 const Components = imports.service.components;
 const PluginBase = imports.service.plugin;

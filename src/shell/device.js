@@ -4,9 +4,9 @@
 
 'use strict';
 
-const Clutter = imports.gi.Clutter;
-const GObject = imports.gi.GObject;
-const St = imports.gi.St;
+import * as Clutter from "gi://Clutter";
+import * as GObject from "gi://GObject";
+import * as St from "gi://St";
 
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;

@@ -4,10 +4,10 @@
 
 'use strict';
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GjsPrivate = imports.gi.GjsPrivate;
-const GObject = imports.gi.GObject;
+import * as Gio from "gi://Gio";
+import * as GLib from "gi://GLib";
+import * as GjsPrivate from "gi://GjsPrivate";
+import * as GObject from "gi://GObject";
 
 const DBus = imports.service.utils.dbus;
 

@@ -4,11 +4,11 @@
 
 'use strict';
 
-const Atk = imports.gi.Atk;
-const Clutter = imports.gi.Clutter;
-const Gio = imports.gi.Gio;
-const GObject = imports.gi.GObject;
-const St = imports.gi.St;
+import * as Atk from "gi://Atk";
+import * as Clutter from "gi://Clutter";
+import * as Gio from "gi://Gio";
+import * as GObject from "gi://GObject";
+import * as St from "gi://St";
 
 const PopupMenu = imports.ui.popupMenu;
 

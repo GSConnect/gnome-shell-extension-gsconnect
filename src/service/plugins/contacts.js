@@ -4,8 +4,8 @@
 
 'use strict';
 
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
+import * as GLib from "gi://GLib";
+import * as GObject from "gi://GObject";
 
 const PluginBase = imports.service.plugin;
 const Contacts = imports.service.components.contacts;

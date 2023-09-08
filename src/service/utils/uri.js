@@ -4,7 +4,7 @@
 
 'use strict';
 
-const GLib = imports.gi.GLib;
+import * as GLib from "gi://GLib";
 
 
 /**

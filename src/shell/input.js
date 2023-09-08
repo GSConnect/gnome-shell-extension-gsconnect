@@ -4,7 +4,7 @@
 
 'use strict';
 
-const Gio = imports.gi.Gio;
+import * as Gio from "gi://Gio";
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
 
 const Config = Extension.imports.config;

@@ -6,7 +6,7 @@
 
 const Utils = imports.fixtures.utils;
 
-const GLib = imports.gi.GLib;
+import * as GLib from "gi://GLib";
 
 
 const VCards = {

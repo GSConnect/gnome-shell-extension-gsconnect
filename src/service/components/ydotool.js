@@ -4,8 +4,8 @@
 
 'use strict';
 
-const Gio = imports.gi.Gio;
-const Gdk = imports.gi.Gdk;
+import * as Gio from "gi://Gio";
+import * as Gdk from "gi://Gdk";
 
 const keyCodes = new Map([
     ['1', 2],

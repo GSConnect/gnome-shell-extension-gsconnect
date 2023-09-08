@@ -4,9 +4,9 @@
 
 'use strict';
 
-const Gio = imports.gi.Gio;
-const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
+import * as Gio from "gi://Gio";
+import * as GObject from "gi://GObject";
+import * as Gtk from "gi://Gtk";
 
 const URI = imports.service.utils.uri;
 

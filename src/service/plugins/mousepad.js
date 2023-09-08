@@ -4,8 +4,8 @@
 
 'use strict';
 
-const Gdk = imports.gi.Gdk;
-const GObject = imports.gi.GObject;
+import * as Gdk from "gi://Gdk";
+import * as GObject from "gi://GObject";
 
 const Components = imports.service.components;
 const {InputDialog} = imports.service.ui.mousepad;

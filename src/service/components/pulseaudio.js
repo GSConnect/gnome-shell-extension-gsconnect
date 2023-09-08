@@ -6,9 +6,9 @@
 
 const Tweener = imports.tweener.tweener;
 
-const GIRepository = imports.gi.GIRepository;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
+import * as GIRepository from "gi://GIRepository";
+import * as GLib from "gi://GLib";
+import * as GObject from "gi://GObject";
 
 const Config = imports.config;
 
@@ -18,7 +18,7 @@ const typelibDir = GLib.build_filenamev([Config.GNOME_SHELL_LIBDIR, 'gnome-shell
 GIRepository.Repository.prepend_search_path(typelibDir);
 GIRepository.Repository.prepend_library_path(typelibDir);
 
-const Gvc = imports.gi.Gvc;
+import * as Gvc from "gi://Gvc";
 
 
 /**

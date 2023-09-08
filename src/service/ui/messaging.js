@@ -6,11 +6,11 @@
 
 const Tweener = imports.tweener.tweener;
 
-const Gdk = imports.gi.Gdk;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
-const Pango = imports.gi.Pango;
+import * as Gdk from "gi://Gdk";
+import * as GLib from "gi://GLib";
+import * as GObject from "gi://GObject";
+import * as Gtk from "gi://Gtk";
+import * as Pango from "gi://Pango";
 
 const Contacts = imports.service.ui.contacts;
 const Sms = imports.service.plugins.sms;

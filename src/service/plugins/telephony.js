@@ -4,10 +4,10 @@
 
 'use strict';
 
-const GdkPixbuf = imports.gi.GdkPixbuf;
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
+import * as GdkPixbuf from "gi://GdkPixbuf";
+import * as Gio from "gi://Gio";
+import * as GLib from "gi://GLib";
+import * as GObject from "gi://GObject";
 
 const Components = imports.service.components;
 const PluginBase = imports.service.plugin;

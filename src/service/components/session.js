@@ -4,8 +4,8 @@
 
 'use strict';
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
+import * as Gio from "gi://Gio";
+import * as GLib from "gi://GLib";
 
 
 const Session = class {

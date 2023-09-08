@@ -6,8 +6,8 @@
 
 const Tweener = imports.tweener.tweener;
 
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
+import * as GLib from "gi://GLib";
+import * as GObject from "gi://GObject";
 
 
 class MockStream {

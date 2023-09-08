@@ -4,7 +4,7 @@
 
 'use strict';
 
-const GObject = imports.gi.GObject;
+import * as GObject from "gi://GObject";
 
 const Components = imports.service.components;
 const Config = imports.config;

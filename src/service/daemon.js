@@ -15,11 +15,11 @@ imports.gi.versions.GObject = '2.0';
 imports.gi.versions.Gtk = '3.0';
 imports.gi.versions.Pango = '1.0';
 
-const Gdk = imports.gi.Gdk;
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
+import * as Gdk from "gi://Gdk";
+import * as Gio from "gi://Gio";
+import * as GLib from "gi://GLib";
+import * as GObject from "gi://GObject";
+import * as Gtk from "gi://Gtk";
 
 // Bootstrap
 function get_datadir() {

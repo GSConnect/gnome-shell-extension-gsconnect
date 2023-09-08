@@ -4,10 +4,10 @@
 
 'use strict';
 
-const GLib = imports.gi.GLib;
-const Gio = imports.gi.Gio;
-const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
+import * as GLib from "gi://GLib";
+import * as Gio from "gi://Gio";
+import * as GObject from "gi://GObject";
+import * as Gtk from "gi://Gtk";
 
 const Config = imports.config;
 

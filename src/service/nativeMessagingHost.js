@@ -10,9 +10,9 @@ imports.gi.versions.Gio = '2.0';
 imports.gi.versions.GLib = '2.0';
 imports.gi.versions.GObject = '2.0';
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
+import * as Gio from "gi://Gio";
+import * as GLib from "gi://GLib";
+import * as GObject from "gi://GObject";
 const System = imports.system;
 
 

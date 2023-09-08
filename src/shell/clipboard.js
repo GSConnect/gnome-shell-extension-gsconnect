@@ -6,12 +6,12 @@
 
 const ByteArray = imports.byteArray;
 
-const Gio = imports.gi.Gio;
-const GjsPrivate = imports.gi.GjsPrivate;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
+import * as Gio from "gi://Gio";
+import * as GjsPrivate from "gi://GjsPrivate";
+import * as GLib from "gi://GLib";
+import * as GObject from "gi://GObject";
 
-const Meta = imports.gi.Meta;
+import * as Meta from "gi://Meta";
 
 
 /*
