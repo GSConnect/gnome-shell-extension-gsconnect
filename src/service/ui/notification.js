@@ -8,7 +8,7 @@ import * as Gio from "gi://Gio";
 import * as GObject from "gi://GObject";
 import * as Gtk from "gi://Gtk";
 
-const URI = imports.service.utils.uri;
+const URI = imports.service.utils.uri; //todo port import
 
 
 /**

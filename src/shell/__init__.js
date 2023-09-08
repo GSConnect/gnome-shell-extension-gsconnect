@@ -4,14 +4,14 @@
 
 'use strict';
 
-const Gettext = imports.gettext;
+const Gettext = imports.gettext; //todo port import
 
 import * as GLib from "gi://GLib";
 import * as Gio from "gi://Gio";
 import * as Gtk from "gi://Gtk";
 
-const Extension = imports.misc.extensionUtils.getCurrentExtension();
-const Config = Extension.imports.config;
+const Extension = imports.misc.extensionUtils.getCurrentExtension(); //todo port import
+const Config = Extension.imports.config; //todo port import
 Config.PACKAGE_DATADIR = Extension.path;
 
 

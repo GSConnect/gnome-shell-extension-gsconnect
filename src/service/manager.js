@@ -8,9 +8,9 @@ import * as Gio from "gi://Gio";
 import * as GLib from "gi://GLib";
 import * as GObject from "gi://GObject";
 
-const Config = imports.config;
-const DBus = imports.service.utils.dbus;
-const Device = imports.service.device;
+const Config = imports.config; //todo port import
+const DBus = imports.service.utils.dbus; //todo port import
+const Device = imports.service.device; //todo port import
 
 const DEVICE_NAME = 'org.gnome.Shell.Extensions.GSConnect.Device';
 const DEVICE_PATH = '/org/gnome/Shell/Extensions/GSConnect/Device';
@@ -235,9 +235,9 @@ var Manager = GObject.registerClass({
     }
 
     _loadBackends() {
-        for (const name in imports.service.backends) {
+        for (const name in imports.service.backends) { //todo port import
             try {
-                const module = imports.service.backends[name];
+                const module = imports.service.backends[name]; //todo port import
 
                 if (module.ChannelService === undefined)
                     continue;

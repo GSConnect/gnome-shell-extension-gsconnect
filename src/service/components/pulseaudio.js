@@ -4,13 +4,13 @@
 
 'use strict';
 
-const Tweener = imports.tweener.tweener;
+const Tweener = imports.tweener.tweener; //todo port import
 
 import * as GIRepository from "gi://GIRepository";
 import * as GLib from "gi://GLib";
 import * as GObject from "gi://GObject";
 
-const Config = imports.config;
+const Config = imports.config; //todo port import
 
 
 // Add gnome-shell's typelib dir to the search path

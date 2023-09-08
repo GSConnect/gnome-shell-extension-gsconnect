@@ -5,9 +5,9 @@
 'use strict';
 
 import * as Gio from "gi://Gio";
-const Extension = imports.misc.extensionUtils.getCurrentExtension();
+const Extension = imports.misc.extensionUtils.getCurrentExtension(); //todo port import
 
-const Config = Extension.imports.config;
+const Config = Extension.imports.config; //todo port import
 
 var LockscreenRemoteAccess = class LockscreenRemoteAccess {
 

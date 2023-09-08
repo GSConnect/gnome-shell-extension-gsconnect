@@ -6,14 +6,14 @@
 
 'use strict';
 
-imports.gi.versions.Gdk = '3.0';
-imports.gi.versions.GdkPixbuf = '2.0';
-imports.gi.versions.Gio = '2.0';
-imports.gi.versions.GIRepository = '2.0';
-imports.gi.versions.GLib = '2.0';
-imports.gi.versions.GObject = '2.0';
-imports.gi.versions.Gtk = '3.0';
-imports.gi.versions.Pango = '1.0';
+imports.gi.versions.Gdk = '3.0'; //todo port import
+imports.gi.versions.GdkPixbuf = '2.0'; //todo port import
+imports.gi.versions.Gio = '2.0'; //todo port import
+imports.gi.versions.GIRepository = '2.0'; //todo port import
+imports.gi.versions.GLib = '2.0'; //todo port import
+imports.gi.versions.GObject = '2.0'; //todo port import
+imports.gi.versions.Gtk = '3.0'; //todo port import
+imports.gi.versions.Pango = '1.0'; //todo port import
 
 import * as Gdk from "gi://Gdk";
 import * as Gio from "gi://Gio";
@@ -36,14 +36,14 @@ function get_datadir() {
     return Gio.File.new_for_path(path).get_parent().get_parent().get_path();
 }
 
-imports.searchPath.unshift(get_datadir());
-imports.config.PACKAGE_DATADIR = imports.searchPath[0];
+imports.searchPath.unshift(get_datadir()); //todo port import
+imports.config.PACKAGE_DATADIR = imports.searchPath[0]; //todo port import
 
 
 // Local Imports
-const Config = imports.config;
-const Manager = imports.service.manager;
-const ServiceUI = imports.service.ui.service;
+const Config = imports.config; //todo port import
+const Manager = imports.service.manager; //todo port import
+const ServiceUI = imports.service.ui.service; //todo port import
 
 
 /**
@@ -340,7 +340,7 @@ const Service = GObject.registerClass({
             continue;
 
         // Force a GC to prevent any more calls back into JS, then chain-up
-        imports.system.gc();
+        imports.system.gc(); //todo port import
         super.vfunc_shutdown();
     }
 
@@ -644,7 +644,7 @@ const Service = GObject.registerClass({
         const files = options.lookup_value('share-file', null).deepUnpack();
 
         for (let file of files) {
-            file = imports.byteArray.toString(file);
+            file = imports.byteArray.toString(file); //todo port import
             this._cliAction(device, 'shareFile', GLib.Variant.new('(sb)', [file, false]));
         }
     }
@@ -732,5 +732,5 @@ const Service = GObject.registerClass({
     }
 });
 
-(new Service()).run([imports.system.programInvocationName].concat(ARGV));
+(new Service()).run([imports.system.programInvocationName].concat(ARGV)); //todo port import
 

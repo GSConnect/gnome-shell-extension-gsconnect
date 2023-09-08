@@ -9,7 +9,7 @@ import * as GLib from "gi://GLib";
 import * as GjsPrivate from "gi://GjsPrivate";
 import * as GObject from "gi://GObject";
 
-const DBus = imports.service.utils.dbus;
+const DBus = imports.service.utils.dbus; //todo port import
 
 
 const _nodeInfo = Gio.DBusNodeInfo.new_for_xml(`

@@ -9,8 +9,8 @@ import * as Gio from "gi://Gio";
 import * as GObject from "gi://GObject";
 import * as Gtk from "gi://Gtk";
 
-const Components = imports.service.components;
-const PluginBase = imports.service.plugin;
+const Components = imports.service.components; //todo port import
+const PluginBase = imports.service.plugin; //todo port import
 
 
 var Metadata = {

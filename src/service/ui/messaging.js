@@ -4,7 +4,7 @@
 
 'use strict';
 
-const Tweener = imports.tweener.tweener;
+const Tweener = imports.tweener.tweener; //todo port import
 
 import * as Gdk from "gi://Gdk";
 import * as GLib from "gi://GLib";
@@ -12,9 +12,9 @@ import * as GObject from "gi://GObject";
 import * as Gtk from "gi://Gtk";
 import * as Pango from "gi://Pango";
 
-const Contacts = imports.service.ui.contacts;
-const Sms = imports.service.plugins.sms;
-const URI = imports.service.utils.uri;
+const Contacts = imports.service.ui.contacts; //todo port import
+const Sms = imports.service.plugins.sms; //todo port import
+const URI = imports.service.utils.uri; //todo port import
 
 
 /*
@@ -459,7 +459,7 @@ const Conversation = GObject.registerClass({
         conversation.list.foreach(message => {
             // HACK: temporary mitigator for mysterious GtkListBox leak
             message.destroy();
-            imports.system.gc();
+            imports.system.gc(); //todo port import
         });
     }
 
@@ -1024,13 +1024,13 @@ var Window = GObject.registerClass({
 
                 if (conversation) {
                     conversation.destroy();
-                    imports.system.gc();
+                    imports.system.gc(); //todo port import
                 }
 
                 // Then the summary widget
                 row.destroy();
                 // HACK: temporary mitigator for mysterious GtkListBox leak
-                imports.system.gc();
+                imports.system.gc(); //todo port import
             }
         }
 

@@ -4,8 +4,8 @@
 
 'use strict';
 
-const {GObject} = imports.gi;
-const MPRIS = imports.service.components.mpris;
+const {GObject} = imports.gi; //todo port import
+const MPRIS = imports.service.components.mpris; //todo port import
 
 
 const MockMediaPlayer = GObject.registerClass({

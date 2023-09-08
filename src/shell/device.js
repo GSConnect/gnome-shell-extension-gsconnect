@@ -8,15 +8,15 @@ import * as Clutter from "gi://Clutter";
 import * as GObject from "gi://GObject";
 import * as St from "gi://St";
 
-const PanelMenu = imports.ui.panelMenu;
-const PopupMenu = imports.ui.popupMenu;
+const PanelMenu = imports.ui.panelMenu; //todo port import
+const PopupMenu = imports.ui.popupMenu; //todo port import
 
-const Extension = imports.misc.extensionUtils.getCurrentExtension();
+const Extension = imports.misc.extensionUtils.getCurrentExtension(); //todo port import
 
 // eslint-disable-next-line no-redeclare
 const _ = Extension._;
-const GMenu = Extension.imports.shell.gmenu;
-const Tooltip = Extension.imports.shell.tooltip;
+const GMenu = Extension.imports.shell.gmenu; //todo port import
+const Tooltip = Extension.imports.shell.tooltip; //todo port import
 
 
 /**

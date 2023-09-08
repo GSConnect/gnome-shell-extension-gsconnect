@@ -7,11 +7,11 @@
 import * as Gio from "gi://Gio";
 import * as GLib from "gi://GLib";
 import * as GObject from "gi://GObject";
-const ByteArray = imports.byteArray;
+const ByteArray = imports.byteArray; //todo port import
 
-const Config = imports.config;
-const Components = imports.service.components;
-const Core = imports.service.core;
+const Config = imports.config; //todo port import
+const Components = imports.service.components; //todo port import
+const Core = imports.service.core; //todo port import
 
 
 /**
@@ -288,12 +288,12 @@ var Device = GObject.registerClass({
         // Determine supported plugins by matching incoming to outgoing types
         const supported = [];
 
-        for (const name in imports.service.plugins) {
+        for (const name in imports.service.plugins) { //todo port import
             // Exclude mousepad/presenter plugins in unsupported sessions
             if (!HAVE_REMOTEINPUT && ['mousepad', 'presenter'].includes(name))
                 continue;
 
-            const meta = imports.service.plugins[name].Metadata;
+            const meta = imports.service.plugins[name].Metadata; //todo port import
 
             if (meta === undefined)
                 continue;
@@ -1006,7 +1006,7 @@ var Device = GObject.registerClass({
         try {
             if (this.paired && !this._plugins.has(name)) {
                 // Instantiate the handler
-                handler = imports.service.plugins[name];
+                handler = imports.service.plugins[name]; //todo port import
                 plugin = new handler.Plugin(this);
 
                 // Register packet handlers
@@ -1048,7 +1048,7 @@ var Device = GObject.registerClass({
         try {
             if (this._plugins.has(name)) {
                 // Unregister packet handlers
-                handler = imports.service.plugins[name];
+                handler = imports.service.plugins[name]; //todo port import
 
                 for (const type of handler.Metadata.incomingCapabilities)
                     this._handlers.delete(type);

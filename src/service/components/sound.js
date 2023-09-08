@@ -28,7 +28,7 @@ var Player = class Player {
         if (this._backend === undefined) {
             // Prefer GSound
             try {
-                this._gsound = new imports.gi.GSound.Context();
+                this._gsound = new imports.gi.GSound.Context(); //todo port import
                 this._gsound.init(null);
                 this._backend = 'gsound';
 

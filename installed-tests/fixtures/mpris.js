@@ -4,11 +4,11 @@
 
 'use strict';
 
-const {Gio, GLib, GObject} = imports.gi;
+const {Gio, GLib, GObject} = imports.gi; //todo port import
 
-const Config = imports.config;
-const DBus = imports.service.utils.dbus;
-const MPRIS = imports.service.components.mpris;
+const Config = imports.config; //todo port import
+const DBus = imports.service.utils.dbus; //todo port import
+const MPRIS = imports.service.components.mpris; //todo port import
 
 
 /*

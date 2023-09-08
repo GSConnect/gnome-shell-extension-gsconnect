@@ -4,8 +4,8 @@
 
 'use strict';
 
-const Config = imports.misc.config;
-const Main = imports.ui.main;
+const Config = imports.misc.config; //todo port import
+const Main = imports.ui.main; //todo port import
 import * as Meta from "gi://Meta";
 import * as Shell from "gi://Shell";
 

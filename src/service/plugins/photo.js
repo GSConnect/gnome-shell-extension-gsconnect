@@ -8,8 +8,8 @@ import * as Gio from "gi://Gio";
 import * as GLib from "gi://GLib";
 import * as GObject from "gi://GObject";
 
-const Config = imports.config;
-const PluginBase = imports.service.plugin;
+const Config = imports.config; //todo port import
+const PluginBase = imports.service.plugin; //todo port import
 
 
 var Metadata = {

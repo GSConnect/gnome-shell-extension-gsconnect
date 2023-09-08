@@ -4,13 +4,13 @@
 
 'use strict';
 
-const ByteArray = imports.byteArray;
+const ByteArray = imports.byteArray; //todo port import
 
 import * as Gio from "gi://Gio";
 import * as GLib from "gi://GLib";
 import * as GObject from "gi://GObject";
 
-const Config = imports.config;
+const Config = imports.config; //todo port import
 
 var HAVE_EDS = true;
 var EBook = null;
@@ -18,9 +18,9 @@ var EBookContacts = null;
 var EDataServer = null;
 
 try {
-    EBook = imports.gi.EBook;
-    EBookContacts = imports.gi.EBookContacts;
-    EDataServer = imports.gi.EDataServer;
+    EBook = imports.gi.EBook; //todo port import
+    EBookContacts = imports.gi.EBookContacts; //todo port import
+    EDataServer = imports.gi.EDataServer; //todo port import
 } catch (e) {
     HAVE_EDS = false;
 }

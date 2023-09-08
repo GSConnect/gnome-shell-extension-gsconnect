@@ -8,8 +8,8 @@ import * as Gio from "gi://Gio";
 import * as GLib from "gi://GLib";
 import * as GObject from "gi://GObject";
 
-const Config = imports.config;
-const Core = imports.service.core;
+const Config = imports.config; //todo port import
+const Core = imports.service.core; //todo port import
 
 
 /**

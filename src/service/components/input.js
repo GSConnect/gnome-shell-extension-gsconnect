@@ -421,7 +421,7 @@ class Controller {
                 if (this._checkWayland())
                     return;
 
-                const fallback = imports.service.components.atspi;
+                const fallback = imports.service.components.atspi; //todo port import
                 this._session = new fallback.Controller();
 
             // Mutter is available and there isn't another session starting

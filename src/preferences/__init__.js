@@ -4,12 +4,12 @@
 
 'use strict';
 
-const Gettext = imports.gettext;
+const Gettext = imports.gettext; //todo port import
 
 import * as Gio from "gi://Gio";
 import * as GLib from "gi://GLib";
 
-const Config = imports.config;
+const Config = imports.config; //todo port import
 
 
 // Ensure config.js is setup properly
@@ -24,7 +24,7 @@ if (Config.PACKAGE_DATADIR.startsWith(userDir)) {
 
 
 // Init Gettext
-String.prototype.format = imports.format.format;
+String.prototype.format = imports.format.format; //todo port import
 Gettext.bindtextdomain(Config.APP_ID, Config.PACKAGE_LOCALEDIR);
 globalThis._ = GLib.dgettext.bind(null, Config.APP_ID);
 globalThis.ngettext = GLib.dngettext.bind(null, Config.APP_ID);

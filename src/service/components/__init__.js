@@ -25,7 +25,7 @@ function acquire(name) {
         let info = Default.get(name);
 
         if (info === undefined) {
-            const module = imports.service.components[name];
+            const module = imports.service.components[name]; //todo port import
 
             info = {
                 instance: new module.Component(),

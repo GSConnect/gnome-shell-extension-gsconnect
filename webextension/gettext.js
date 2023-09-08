@@ -6,7 +6,7 @@
 
 'use strict';
 
-const ByteArray = imports.byteArray;
+const ByteArray = imports.byteArray; //todo port import
 import * as Gio from "gi://Gio";
 import * as GLib from "gi://GLib";
 

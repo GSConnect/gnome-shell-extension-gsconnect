@@ -8,25 +8,25 @@ import * as Gio from "gi://Gio";
 import * as GObject from "gi://GObject";
 import * as Gtk from "gi://Gtk";
 
-const Main = imports.ui.main;
-const PanelMenu = imports.ui.panelMenu;
-const PopupMenu = imports.ui.popupMenu;
+const Main = imports.ui.main; //todo port import
+const PanelMenu = imports.ui.panelMenu; //todo port import
+const PopupMenu = imports.ui.popupMenu; //todo port import
 const QuickSettingsMenu = Main.panel.statusArea.quickSettings;
-const QuickSettings = imports.ui.quickSettings;
+const QuickSettings = imports.ui.quickSettings; //todo port import
 
 // Bootstrap
-const Extension = imports.misc.extensionUtils.getCurrentExtension();
-const Utils = Extension.imports.shell.utils;
+const Extension = imports.misc.extensionUtils.getCurrentExtension(); //todo port import
+const Utils = Extension.imports.shell.utils; //todo port import
 
 // eslint-disable-next-line no-redeclare
 const _ = Extension._;
-const Clipboard = Extension.imports.shell.clipboard;
-const Config = Extension.imports.config;
-const Device = Extension.imports.shell.device;
-const Keybindings = Extension.imports.shell.keybindings;
-const Notification = Extension.imports.shell.notification;
-const Input = Extension.imports.shell.input;
-const Remote = Extension.imports.utils.remote;
+const Clipboard = Extension.imports.shell.clipboard; //todo port import
+const Config = Extension.imports.config; //todo port import
+const Device = Extension.imports.shell.device; //todo port import
+const Keybindings = Extension.imports.shell.keybindings; //todo port import
+const Notification = Extension.imports.shell.notification; //todo port import
+const Input = Extension.imports.shell.input; //todo port import
+const Remote = Extension.imports.utils.remote; //todo port import
 
 Extension.getIcon = Utils.getIcon;
 

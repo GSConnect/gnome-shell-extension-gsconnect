@@ -10,16 +10,16 @@ import * as GObject from "gi://GObject";
 import * as Gtk from "gi://Gtk";
 import * as Pango from "gi://Pango";
 
-const Config = imports.config;
-const Keybindings = imports.preferences.keybindings;
+const Config = imports.config; //todo port import
+const Keybindings = imports.preferences.keybindings; //todo port import
 
 
 // Build a list of plugins and shortcuts for devices
 const DEVICE_PLUGINS = [];
 const DEVICE_SHORTCUTS = {};
 
-for (const name in imports.service.plugins) {
-    const module = imports.service.plugins[name];
+for (const name in imports.service.plugins) { //todo port import
+    const module = imports.service.plugins[name]; //todo port import
 
     if (module.Metadata === undefined)
         continue;
@@ -424,7 +424,7 @@ var Panel = GObject.registerClass({
             this._pluginSettings = {};
 
         if (!this._pluginSettings.hasOwnProperty(name)) {
-            const meta = imports.service.plugins[name].Metadata;
+            const meta = imports.service.plugins[name].Metadata; //todo port import
 
             this._pluginSettings[name] = new Gio.Settings({
                 settings_schema: Config.GSCHEMA.lookup(meta.id, -1),
@@ -1061,7 +1061,7 @@ var Panel = GObject.registerClass({
     }
 
     _addPlugin(name) {
-        const plugin = imports.service.plugins[name];
+        const plugin = imports.service.plugins[name]; //todo port import
 
         const row = new SectionRow({
             height_request: 48,

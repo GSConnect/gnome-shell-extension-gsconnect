@@ -8,10 +8,10 @@ import * as Gio from "gi://Gio";
 import * as GLib from "gi://GLib";
 import * as GObject from "gi://GObject";
 
-const PluginBase = imports.service.plugin;
-const LegacyMessaging = imports.service.ui.legacyMessaging;
-const Messaging = imports.service.ui.messaging;
-const URI = imports.service.utils.uri;
+const PluginBase = imports.service.plugin; //todo port import
+const LegacyMessaging = imports.service.ui.legacyMessaging; //todo port import
+const Messaging = imports.service.ui.messaging; //todo port import
+const URI = imports.service.utils.uri; //todo port import
 
 
 var Metadata = {

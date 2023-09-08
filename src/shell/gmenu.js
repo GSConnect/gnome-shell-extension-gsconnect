@@ -10,11 +10,11 @@ import * as Gio from "gi://Gio";
 import * as GObject from "gi://GObject";
 import * as St from "gi://St";
 
-const PopupMenu = imports.ui.popupMenu;
+const PopupMenu = imports.ui.popupMenu; //todo port import
 
-const Extension = imports.misc.extensionUtils.getCurrentExtension();
+const Extension = imports.misc.extensionUtils.getCurrentExtension(); //todo port import
 
-const Tooltip = Extension.imports.shell.tooltip;
+const Tooltip = Extension.imports.shell.tooltip; //todo port import
 
 
 /**

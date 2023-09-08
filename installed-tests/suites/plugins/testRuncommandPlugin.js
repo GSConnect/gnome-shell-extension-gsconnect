@@ -4,9 +4,9 @@
 
 'use strict';
 
-const {GLib} = imports.gi;
+const {GLib} = imports.gi; //todo port import
 
-const Utils = imports.fixtures.utils;
+const Utils = imports.fixtures.utils; //todo port import
 
 
 describe('The runcommand plugin', function () {

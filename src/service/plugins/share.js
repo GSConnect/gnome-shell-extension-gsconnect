@@ -10,8 +10,8 @@ import * as GLib from "gi://GLib";
 import * as GObject from "gi://GObject";
 import * as Gtk from "gi://Gtk";
 
-const PluginBase = imports.service.plugin;
-const URI = imports.service.utils.uri;
+const PluginBase = imports.service.plugin; //todo port import
+const URI = imports.service.utils.uri; //todo port import
 
 
 var Metadata = {

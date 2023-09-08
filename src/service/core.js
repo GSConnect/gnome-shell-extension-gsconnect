@@ -18,7 +18,7 @@ function _getDeviceType() {
     try {
         let type = GLib.file_get_contents('/sys/class/dmi/id/chassis_type')[1];
 
-        type = Number(imports.byteArray.toString(type));
+        type = Number(imports.byteArray.toString(type)); //todo port import
 
         if ([8, 9, 10, 14].includes(type))
             return 'laptop';
@@ -409,12 +409,12 @@ var ChannelService = GObject.registerClass({
             },
         });
 
-        for (const name in imports.service.plugins) {
+        for (const name in imports.service.plugins) { //todo port import
             // Exclude mousepad/presenter capability in unsupported sessions
             if (!HAVE_REMOTEINPUT && ['mousepad', 'presenter'].includes(name))
                 continue;
 
-            const meta = imports.service.plugins[name].Metadata;
+            const meta = imports.service.plugins[name].Metadata; //todo port import
 
             if (meta === undefined)
                 continue;

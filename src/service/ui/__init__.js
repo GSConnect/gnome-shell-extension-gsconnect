@@ -9,7 +9,7 @@ import * as Gio from "gi://Gio";
 import * as GLib from "gi://GLib";
 import * as Gtk from "gi://Gtk";
 
-const Config = imports.config;
+const Config = imports.config; //todo port import
 
 
 /*

@@ -9,11 +9,11 @@ import * as GLib from "gi://GLib";
 import * as GObject from "gi://GObject";
 import * as St from "gi://St";
 
-const Main = imports.ui.main;
-const MessageTray = imports.ui.messageTray;
-const NotificationDaemon = imports.ui.notificationDaemon;
+const Main = imports.ui.main; //todo port import
+const MessageTray = imports.ui.messageTray; //todo port import
+const NotificationDaemon = imports.ui.notificationDaemon; //todo port import
 
-const Extension = imports.misc.extensionUtils.getCurrentExtension();
+const Extension = imports.misc.extensionUtils.getCurrentExtension(); //todo port import
 
 // eslint-disable-next-line no-redeclare
 const _ = Extension._;

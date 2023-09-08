@@ -6,8 +6,8 @@
 
 import * as GObject from "gi://GObject";
 
-const Components = imports.service.components;
-const PluginBase = imports.service.plugin;
+const Components = imports.service.components; //todo port import
+const PluginBase = imports.service.plugin; //todo port import
 
 
 var Metadata = {

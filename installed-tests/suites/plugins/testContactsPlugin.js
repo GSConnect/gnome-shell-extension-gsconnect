@@ -4,7 +4,7 @@
 
 'use strict';
 
-const Utils = imports.fixtures.utils;
+const Utils = imports.fixtures.utils; //todo port import
 
 import * as GLib from "gi://GLib";
 
@@ -136,7 +136,7 @@ describe('The contacts plugin', function () {
         while (localPlugin._store.contacts.length)
             await Promise.idle();
 
-        imports.service.plugins.contacts.EBookContacts = null;
+        imports.service.plugins.contacts.EBookContacts = null; //todo port import
 
         localPlugin._requestVCards(['valid']);
 

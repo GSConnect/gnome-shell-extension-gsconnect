@@ -9,7 +9,7 @@ import * as Gio from "gi://Gio";
 import * as GObject from "gi://GObject";
 import * as Gtk from "gi://Gtk";
 
-const Config = imports.config;
+const Config = imports.config; //todo port import
 
 
 /*
@@ -17,7 +17,7 @@ const Config = imports.config;
  */
 const ISSUE_HEADER = `
 GSConnect: ${Config.PACKAGE_VERSION} (${Config.IS_USER ? 'user' : 'system'})
-GJS:       ${imports.system.version}
+GJS:       ${imports.system.version} //todo port import
 Session:   ${GLib.getenv('XDG_SESSION_TYPE')}
 OS:        ${GLib.get_os_info('PRETTY_NAME')}
 `;

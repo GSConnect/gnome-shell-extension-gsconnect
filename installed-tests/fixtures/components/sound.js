@@ -4,7 +4,7 @@
 
 'use strict';
 
-const {Gio, GLib} = imports.gi;
+const {Gio, GLib} = imports.gi; //todo port import
 
 
 var Component = class MockPlayer {

@@ -4,15 +4,15 @@
 
 'use strict';
 
-imports.gi.versions.Gdk = '3.0';
-imports.gi.versions.Gtk = '3.0';
+imports.gi.versions.Gdk = '3.0'; //todo port import
+imports.gi.versions.Gtk = '3.0'; //todo port import
 
-const ByteArray = imports.byteArray;
-const {Gio, GLib} = imports.gi;
+const ByteArray = imports.byteArray; //todo port import
+const {Gio, GLib} = imports.gi; //todo port import
 
 
 // Ensure the environment is prepared for testing
-const Config = imports.config;
+const Config = imports.config; //todo port import
 
 if (GLib.getenv('GSCONNECT_TEST')) {
     Config.PACKAGE_DATADIR = GLib.getenv('GJS_PATH');
@@ -22,14 +22,14 @@ if (GLib.getenv('GSCONNECT_TEST')) {
     GLib.setenv('GSETTINGS_BACKEND', 'memory', true);
     GLib.setenv('NO_AT_BRIDGE', '1', true);
 
-    imports.searchPath.unshift(Config.PACKAGE_DATADIR);
+    imports.searchPath.unshift(Config.PACKAGE_DATADIR); //todo port import
 }
 
 
-const {Device} = imports.service.device;
-const {Plugin} = imports.service.plugin;
+const {Device} = imports.service.device; //todo port import
+const {Plugin} = imports.service.plugin; //todo port import
 
-const {ChannelService} = imports.fixtures.backend;
+const {ChannelService} = imports.fixtures.backend; //todo port import
 
 
 // Force testing under GNOME
@@ -209,7 +209,7 @@ Plugin.prototype.awaitPacket = _awaitPacket;
  * @return {string} The root temporary directory
  */
 function isolateDirectories() {
-    const Config = imports.config;
+    const Config = imports.config; //todo port import
     const tmpdir = GLib.Dir.make_tmp('gsconnect.XXXXXX');
 
     Config.CACHEDIR = GLib.build_filenamev([tmpdir, 'cache']);
@@ -227,8 +227,8 @@ function isolateDirectories() {
  * Patch in the mock components for plugin tests.
  */
 function mockComponents() {
-    const Components = imports.service.components;
-    const MockComponents = imports.fixtures.components;
+    const Components = imports.service.components; //todo port import
+    const MockComponents = imports.fixtures.components; //todo port import
 
     Components.acquire = function (name) {
         return new MockComponents[name].Component();

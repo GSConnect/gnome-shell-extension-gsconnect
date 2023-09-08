@@ -4,13 +4,13 @@
 
 'use strict';
 
-const ByteArray = imports.byteArray;
+const ByteArray = imports.byteArray; //todo port import
 
 import * as Gio from "gi://Gio";
 import * as GLib from "gi://GLib";
 import * as GObject from "gi://GObject";
 
-const Config = imports.config;
+const Config = imports.config; //todo port import
 
 
 /**
@@ -44,7 +44,7 @@ var Plugin = GObject.registerClass({
         this._meta = meta;
 
         if (this._meta === null)
-            this._meta = imports.service.plugins[name].Metadata;
+            this._meta = imports.service.plugins[name].Metadata; //todo port import
 
         // GSettings
         const schema = Config.GSCHEMA.lookup(this._meta.id, false);

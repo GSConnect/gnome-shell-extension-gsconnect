@@ -8,11 +8,11 @@ import * as Gio from "gi://Gio";
 import * as GLib from "gi://GLib";
 import * as GObject from "gi://GObject";
 
-const Components = imports.service.components;
-const Config = imports.config;
-const DBus = imports.service.utils.dbus;
-const MPRIS = imports.service.components.mpris;
-const PluginBase = imports.service.plugin;
+const Components = imports.service.components; //todo port import
+const Config = imports.config; //todo port import
+const DBus = imports.service.utils.dbus; //todo port import
+const MPRIS = imports.service.components.mpris; //todo port import
+const PluginBase = imports.service.plugin; //todo port import
 
 
 var Metadata = {

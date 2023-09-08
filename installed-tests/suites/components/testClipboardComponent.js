@@ -4,11 +4,11 @@
 
 'use strict';
 
-const Utils = imports.fixtures.utils;
+const Utils = imports.fixtures.utils; //todo port import
 
-const {Gdk, Gtk, Gio, GLib} = imports.gi;
+const {Gdk, Gtk, Gio, GLib} = imports.gi; //todo port import
 
-const {Clipboard} = imports.service.components.clipboard;
+const {Clipboard} = imports.service.components.clipboard; //todo port import
 
 
 describe('The Clipboard component', function () {

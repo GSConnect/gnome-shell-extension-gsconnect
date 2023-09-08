@@ -8,9 +8,9 @@ import * as Gio from "gi://Gio";
 import * as GObject from "gi://GObject";
 import * as Gtk from "gi://Gtk";
 
-const Contacts = imports.service.ui.contacts;
-const Messaging = imports.service.ui.messaging;
-const URI = imports.service.utils.uri;
+const Contacts = imports.service.ui.contacts; //todo port import
+const Messaging = imports.service.ui.messaging; //todo port import
+const URI = imports.service.utils.uri; //todo port import
 
 
 var Dialog = GObject.registerClass({

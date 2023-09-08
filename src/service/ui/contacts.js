@@ -435,7 +435,7 @@ var ContactChooser = GObject.registerClass({
             for (let i = 0, len = rows.length; i < len; i++) {
                 rows[i].destroy();
                 // HACK: temporary mitigator for mysterious GtkListBox leak
-                imports.system.gc();
+                imports.system.gc(); //todo port import
             }
         }
 
@@ -482,7 +482,7 @@ var ContactChooser = GObject.registerClass({
             if (row.contact.id === id) {
                 row.destroy();
                 // HACK: temporary mitigator for mysterious GtkListBox leak
-                imports.system.gc();
+                imports.system.gc(); //todo port import
             }
         }
     }

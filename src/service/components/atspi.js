@@ -4,7 +4,7 @@
 
 'use strict';
 
-imports.gi.versions.Atspi = '2.0';
+imports.gi.versions.Atspi = '2.0'; //todo port import
 
 import * as Atspi from "gi://Atspi";
 import * as Gdk from "gi://Gdk";

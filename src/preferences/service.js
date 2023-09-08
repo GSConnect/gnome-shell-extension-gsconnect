@@ -11,9 +11,9 @@ import * as GLib from "gi://GLib";
 import * as GObject from "gi://GObject";
 import * as Gtk from "gi://Gtk";
 
-const Config = imports.config;
-const Device = imports.preferences.device;
-const Remote = imports.utils.remote;
+const Config = imports.config; //todo port import
+const Device = imports.preferences.device; //todo port import
+const Remote = imports.utils.remote; //todo port import
 
 
 /*
@@ -21,7 +21,7 @@ const Remote = imports.utils.remote;
  */
 const LOG_HEADER = new GLib.Bytes(`
 GSConnect: ${Config.PACKAGE_VERSION} (${Config.IS_USER ? 'user' : 'system'})
-GJS:       ${imports.system.version}
+GJS:       ${imports.system.version} //todo port import
 Session:   ${GLib.getenv('XDG_SESSION_TYPE')}
 OS:        ${GLib.get_os_info('PRETTY_NAME')}
 --------------------------------------------------------------------------------

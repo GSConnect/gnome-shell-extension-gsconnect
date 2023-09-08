@@ -4,11 +4,11 @@
 
 'use strict';
 
-const {Gio, GLib} = imports.gi;
+const {Gio, GLib} = imports.gi; //todo port import
 
-const Utils = imports.fixtures.utils;
+const Utils = imports.fixtures.utils; //todo port import
 
-const Device = imports.service.device;
+const Device = imports.service.device; //todo port import
 
 
 describe('A device constructed from a packet', function () {

@@ -4,7 +4,7 @@
 
 'use strict';
 
-const {Gio, GLib, GObject} = imports.gi;
+const {Gio, GLib, GObject} = imports.gi; //todo port import
 
 
 var Component = GObject.registerClass({

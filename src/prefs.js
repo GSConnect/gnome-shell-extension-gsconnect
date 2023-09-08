@@ -4,11 +4,11 @@
 
 'use strict';
 
-const {Gio, GLib, Adw} = imports.gi;
+const {Gio, GLib, Adw} = imports.gi; //todo port import
 
 // Bootstrap
-const Extension = imports.misc.extensionUtils.getCurrentExtension();
-const Utils = Extension.imports.shell.utils;
+const Extension = imports.misc.extensionUtils.getCurrentExtension(); //todo port import
+const Utils = Extension.imports.shell.utils; //todo port import
 
 function init() {
     Utils.installService();

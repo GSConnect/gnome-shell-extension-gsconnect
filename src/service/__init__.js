@@ -4,19 +4,19 @@
 
 'use strict';
 
-const ByteArray = imports.byteArray;
-const Gettext = imports.gettext;
+const ByteArray = imports.byteArray; //todo port import
+const Gettext = imports.gettext; //todo port import
 
 import * as Gio from "gi://Gio";
 import * as GIRepository from "gi://GIRepository";
 import * as GLib from "gi://GLib";
 
-const Config = imports.config;
+const Config = imports.config; //todo port import
 
 
 // Promise Wrappers
 try {
-    const {EBook, EDataServer} = imports.gi;
+    const {EBook, EDataServer} = imports.gi; //todo port import
 
     Gio._promisify(EBook.BookClient, 'connect');
     Gio._promisify(EBook.BookClient.prototype, 'get_view');
@@ -87,7 +87,7 @@ if (Config.PACKAGE_DATADIR.startsWith(userDir)) {
 
 
 // Init Gettext
-String.prototype.format = imports.format.format;
+String.prototype.format = imports.format.format; //todo port import
 Gettext.bindtextdomain(Config.APP_ID, Config.PACKAGE_LOCALEDIR);
 globalThis._ = GLib.dgettext.bind(null, Config.APP_ID);
 globalThis.ngettext = GLib.dngettext.bind(null, Config.APP_ID);
@@ -191,7 +191,7 @@ else
  */
 if (!globalThis.HAVE_GNOME) {
     debug('Not running as a Gnome extension');
-    imports.wl_clipboard.watchService();
+    imports.wl_clipboard.watchService(); //todo port import
 }
 
 

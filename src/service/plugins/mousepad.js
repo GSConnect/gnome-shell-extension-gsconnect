@@ -7,9 +7,9 @@
 import * as Gdk from "gi://Gdk";
 import * as GObject from "gi://GObject";
 
-const Components = imports.service.components;
-const {InputDialog} = imports.service.ui.mousepad;
-const PluginBase = imports.service.plugin;
+const Components = imports.service.components; //todo port import
+const {InputDialog} = imports.service.ui.mousepad; //todo port import
+const PluginBase = imports.service.plugin; //todo port import
 
 
 var Metadata = {

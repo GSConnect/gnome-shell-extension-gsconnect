@@ -4,13 +4,13 @@
 
 'use strict';
 
-const {Gio, GLib, GObject} = imports.gi;
+const {Gio, GLib, GObject} = imports.gi; //todo port import
 
-const Utils = imports.fixtures.utils;
+const Utils = imports.fixtures.utils; //todo port import
 
-const Device = imports.service.device;
-const Components = imports.service.components;
-const PluginBase = imports.service.plugin;
+const Device = imports.service.device; //todo port import
+const Components = imports.service.components; //todo port import
+const PluginBase = imports.service.plugin; //todo port import
 
 
 /*

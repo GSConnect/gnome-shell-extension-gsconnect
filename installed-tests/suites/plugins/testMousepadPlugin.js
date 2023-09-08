@@ -4,9 +4,9 @@
 
 'use strict';
 
-const Utils = imports.fixtures.utils;
+const Utils = imports.fixtures.utils; //todo port import
 
-const {Gdk} = imports.gi;
+const {Gdk} = imports.gi; //todo port import
 
 
 describe('The mousepad plugin', function () {

@@ -7,8 +7,8 @@
 import * as GLib from "gi://GLib";
 import * as GObject from "gi://GObject";
 
-const PluginBase = imports.service.plugin;
-const Contacts = imports.service.components.contacts;
+const PluginBase = imports.service.plugin; //todo port import
+const Contacts = imports.service.components.contacts; //todo port import
 
 /*
  * We prefer libebook's vCard parser if it's available
@@ -16,7 +16,7 @@ const Contacts = imports.service.components.contacts;
 var EBookContacts;
 
 try {
-    EBookContacts = imports.gi.EBookContacts;
+    EBookContacts = imports.gi.EBookContacts; //todo port import
 } catch (e) {
     EBookContacts = null;
 }

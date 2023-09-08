@@ -9,10 +9,10 @@ import * as GLib from "gi://GLib";
 import * as GObject from "gi://GObject";
 import * as Gtk from "gi://Gtk";
 
-const Components = imports.service.components;
-const Config = imports.config;
-const PluginBase = imports.service.plugin;
-const NotificationUI = imports.service.ui.notification;
+const Components = imports.service.components; //todo port import
+const Config = imports.config; //todo port import
+const PluginBase = imports.service.plugin; //todo port import
+const NotificationUI = imports.service.ui.notification; //todo port import
 
 
 var Metadata = {

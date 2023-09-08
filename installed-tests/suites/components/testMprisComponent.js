@@ -4,12 +4,12 @@
 
 'use strict';
 
-const {Gio, GLib} = imports.gi;
+const {Gio, GLib} = imports.gi; //todo port import
 
-const Utils = imports.fixtures.utils;
-const {MockPlayer} = imports.fixtures.mpris;
+const Utils = imports.fixtures.utils; //todo port import
+const {MockPlayer} = imports.fixtures.mpris; //todo port import
 
-const MPRIS = imports.service.components.mpris;
+const MPRIS = imports.service.components.mpris; //todo port import
 
 
 // Prevent auto-loading

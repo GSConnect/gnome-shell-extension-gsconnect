@@ -10,7 +10,7 @@ import * as GLib from "gi://GLib";
 import * as Pango from "gi://Pango";
 import * as St from "gi://St";
 
-const Main = imports.ui.main;
+const Main = imports.ui.main; //todo port import
 
 
 /**

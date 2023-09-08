@@ -4,13 +4,13 @@
 
 'use strict';
 
-const ByteArray = imports.byteArray;
+const ByteArray = imports.byteArray; //todo port import
 
 import * as GLib from "gi://GLib";
 import * as Gio from "gi://Gio";
 
-const Extension = imports.misc.extensionUtils.getCurrentExtension();
-const Config = Extension.imports.config;
+const Extension = imports.misc.extensionUtils.getCurrentExtension(); //todo port import
+const Config = Extension.imports.config; //todo port import
 
 
 /**
@@ -23,7 +23,7 @@ function getIcon(name) {
     if (getIcon._resource === undefined) {
         // Setup the desktop icons
         import * as settings from "gi://St.Settings.get()";
-        getIcon._desktop = new imports.gi.Gtk.IconTheme();
+        getIcon._desktop = new imports.gi.Gtk.IconTheme(); //todo port import
         getIcon._desktop.set_theme_name(settings.gtk_icon_theme);
         settings.connect('notify::gtk-icon-theme', (settings_, key_) => {
             getIcon._desktop.set_theme_name(settings_.gtk_icon_theme);

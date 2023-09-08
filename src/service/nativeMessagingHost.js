@@ -6,14 +6,14 @@
 
 'use strict';
 
-imports.gi.versions.Gio = '2.0';
-imports.gi.versions.GLib = '2.0';
-imports.gi.versions.GObject = '2.0';
+imports.gi.versions.Gio = '2.0'; //todo port import
+imports.gi.versions.GLib = '2.0'; //todo port import
+imports.gi.versions.GObject = '2.0'; //todo port import
 
 import * as Gio from "gi://Gio";
 import * as GLib from "gi://GLib";
 import * as GObject from "gi://GObject";
-const System = imports.system;
+const System = imports.system; //todo port import
 
 
 const NativeMessagingHost = GObject.registerClass({
@@ -111,7 +111,7 @@ const NativeMessagingHost = GObject.registerClass({
             // Read the message
             const length = this._stdin.read_int32(null);
             const bytes = this._stdin.read_bytes(length, null).toArray();
-            const message = JSON.parse(imports.byteArray.toString(bytes));
+            const message = JSON.parse(imports.byteArray.toString(bytes)); //todo port import
 
             // A request for a list of devices
             if (message.type === 'devices') {

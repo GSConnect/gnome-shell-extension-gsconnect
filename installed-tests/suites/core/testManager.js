@@ -4,11 +4,11 @@
 
 'use strict';
 
-const {GLib} = imports.gi;
+const {GLib} = imports.gi; //todo port import
 
-const Utils = imports.fixtures.utils;
+const Utils = imports.fixtures.utils; //todo port import
 
-const {Manager} = imports.service.manager;
+const {Manager} = imports.service.manager; //todo port import
 
 
 // TODO: * device management
