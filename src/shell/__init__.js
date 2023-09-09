@@ -11,7 +11,7 @@ import * as Gio from "gi://Gio";
 import * as Gtk from "gi://Gtk";
 
 const Extension = imports.misc.extensionUtils.getCurrentExtension(); //todo port import
-const Config = Extension.imports.config; //todo port import
+import * as Config from "./config/.js";
 Config.PACKAGE_DATADIR = Extension.path;
 
 

@@ -15,8 +15,8 @@ const Extension = imports.misc.extensionUtils.getCurrentExtension(); //todo port
 
 // eslint-disable-next-line no-redeclare
 const _ = Extension._;
-const GMenu = Extension.imports.shell.gmenu; //todo port import
-const Tooltip = Extension.imports.shell.tooltip; //todo port import
+import * as GMenu from "./shell/gmenu.js";
+import * as Tooltip from "./shell/tooltip.js";
 
 
 /**

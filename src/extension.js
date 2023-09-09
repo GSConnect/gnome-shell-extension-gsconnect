@@ -16,17 +16,17 @@ const QuickSettings = imports.ui.quickSettings; //todo port import
 
 // Bootstrap
 const Extension = imports.misc.extensionUtils.getCurrentExtension(); //todo port import
-const Utils = Extension.imports.shell.utils; //todo port import
+import * as Utils from "./shell/utils.js";
 
 // eslint-disable-next-line no-redeclare
 const _ = Extension._;
-const Clipboard = Extension.imports.shell.clipboard; //todo port import
-const Config = Extension.imports.config; //todo port import
-const Device = Extension.imports.shell.device; //todo port import
-const Keybindings = Extension.imports.shell.keybindings; //todo port import
-const Notification = Extension.imports.shell.notification; //todo port import
-const Input = Extension.imports.shell.input; //todo port import
-const Remote = Extension.imports.utils.remote; //todo port import
+import * as Clipboard from "./shell/clipboard.js";
+import * as Config from "./config/.js";
+import * as Device from "./shell/device.js";
+import * as Keybindings from "./shell/keybindings.js";
+import * as Notification from "./shell/notification.js";
+import * as Input from "./shell/input.js";
+import * as Remote from "./utils/remote.js";
 
 Extension.getIcon = Utils.getIcon;
 
