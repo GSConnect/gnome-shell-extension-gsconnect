@@ -21,7 +21,7 @@ import * as Utils from "./shell/utils.js";
 // eslint-disable-next-line no-redeclare
 const _ = Extension._;
 import * as Clipboard from "./shell/clipboard.js";
-import * as Config from "./config/.js";
+import * as Config from "./config.js";
 import * as Device from "./shell/device.js";
 import * as Keybindings from "./shell/keybindings.js";
 import * as Notification from "./shell/notification.js";
