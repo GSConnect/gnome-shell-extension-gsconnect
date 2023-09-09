@@ -8,8 +8,8 @@ import * as Clutter from "gi://Clutter";
 import * as GObject from "gi://GObject";
 import * as St from "gi://St";
 
-const PanelMenu = imports.ui.panelMenu; //todo port import
-const PopupMenu = imports.ui.popupMenu; //todo port import
+import * as PanelMenu from "resource:///org/gnome/shell/ui/panelMenu.js";
+import * as PopupMenu from "resource:///org/gnome/shell/ui/popupMenu.js";
 
 
 // eslint-disable-next-line no-redeclare

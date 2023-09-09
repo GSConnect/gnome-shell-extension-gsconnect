@@ -8,11 +8,11 @@ import * as Gio from "gi://Gio";
 import * as GObject from "gi://GObject";
 import * as Gtk from "gi://Gtk";
 
-const Main = imports.ui.main; //todo port import
-const PanelMenu = imports.ui.panelMenu; //todo port import
-const PopupMenu = imports.ui.popupMenu; //todo port import
+import * as Main from "resource:///org/gnome/shell/ui/main.js";
+import * as PanelMenu from "resource:///org/gnome/shell/ui/panelMenu.js";
+import * as PopupMenu from "resource:///org/gnome/shell/ui/popupMenu.js";
 const QuickSettingsMenu = Main.panel.statusArea.quickSettings;
-const QuickSettings = imports.ui.quickSettings; //todo port import
+import * as QuickSettings from "resource:///org/gnome/shell/ui/quickSettings.js";
 
 // Bootstrap
 import * as Utils from "./shell/utils.js";

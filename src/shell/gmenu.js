@@ -10,7 +10,7 @@ import * as Gio from "gi://Gio";
 import * as GObject from "gi://GObject";
 import * as St from "gi://St";
 
-const PopupMenu = imports.ui.popupMenu; //todo port import
+import * as PopupMenu from "resource:///org/gnome/shell/ui/popupMenu.js";
 
 
 import * as Tooltip from "./shell/tooltip.js";

@@ -9,9 +9,9 @@ import * as GLib from "gi://GLib";
 import * as GObject from "gi://GObject";
 import * as St from "gi://St";
 
-const Main = imports.ui.main; //todo port import
-const MessageTray = imports.ui.messageTray; //todo port import
-const NotificationDaemon = imports.ui.notificationDaemon; //todo port import
+import * as Main from "resource:///org/gnome/shell/ui/main.js";
+import * as MessageTray from "resource:///org/gnome/shell/ui/messageTray.js";
+import * as NotificationDaemon from "resource:///org/gnome/shell/ui/notificationDaemon.js";
 
 
 // eslint-disable-next-line no-redeclare

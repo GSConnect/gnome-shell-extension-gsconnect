@@ -5,7 +5,7 @@
 'use strict';
 
 const Config = imports.misc.config; //todo port import
-const Main = imports.ui.main; //todo port import
+import * as Main from "resource:///org/gnome/shell/ui/main.js";
 import * as Meta from "gi://Meta";
 import * as Shell from "gi://Shell";
 
