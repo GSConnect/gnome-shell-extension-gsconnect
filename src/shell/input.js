@@ -5,7 +5,6 @@
 'use strict';
 
 import * as Gio from "gi://Gio";
-const Extension = imports.misc.extensionUtils.getCurrentExtension(); //todo port import
 
 import * as Config from "./config.js";
 

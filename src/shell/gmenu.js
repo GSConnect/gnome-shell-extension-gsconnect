@@ -12,7 +12,6 @@ import * as St from "gi://St";
 
 const PopupMenu = imports.ui.popupMenu; //todo port import
 
-const Extension = imports.misc.extensionUtils.getCurrentExtension(); //todo port import
 
 import * as Tooltip from "./shell/tooltip.js";
 

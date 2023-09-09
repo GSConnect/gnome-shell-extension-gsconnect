@@ -13,7 +13,6 @@ const Main = imports.ui.main; //todo port import
 const MessageTray = imports.ui.messageTray; //todo port import
 const NotificationDaemon = imports.ui.notificationDaemon; //todo port import
 
-const Extension = imports.misc.extensionUtils.getCurrentExtension(); //todo port import
 
 // eslint-disable-next-line no-redeclare
 const _ = Extension._;

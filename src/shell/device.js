@@ -11,7 +11,6 @@ import * as St from "gi://St";
 const PanelMenu = imports.ui.panelMenu; //todo port import
 const PopupMenu = imports.ui.popupMenu; //todo port import
 
-const Extension = imports.misc.extensionUtils.getCurrentExtension(); //todo port import
 
 // eslint-disable-next-line no-redeclare
 const _ = Extension._;

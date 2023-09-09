@@ -9,7 +9,6 @@ const ByteArray = imports.byteArray; //todo port import
 import * as GLib from "gi://GLib";
 import * as Gio from "gi://Gio";
 
-const Extension = imports.misc.extensionUtils.getCurrentExtension(); //todo port import
 import * as Config from "./config.js";
 
 

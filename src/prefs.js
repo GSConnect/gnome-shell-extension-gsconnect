@@ -7,7 +7,6 @@
 const {Gio, GLib, Adw} = imports.gi; //todo port import
 
 // Bootstrap
-const Extension = imports.misc.extensionUtils.getCurrentExtension(); //todo port import
 import * as Utils from "./shell/utils.js";
 
 function init() {
