@@ -8,12 +8,12 @@
 
 'use strict';
 
-imports.gi.versions.Gdk = '3.0';
-imports.gi.versions.GdkPixbuf = '2.0';
-imports.gi.versions.Gio = '2.0';
-imports.gi.versions.GLib = '2.0';
-imports.gi.versions.GObject = '2.0';
-imports.gi.versions.Gtk = '3.0';
+imports.gi.versions.Gdk = '3.0'; // todo port import
+imports.gi.versions.GdkPixbuf = '2.0'; // todo port import
+imports.gi.versions.Gio = '2.0'; // todo port import
+imports.gi.versions.GLib = '2.0'; // todo port import
+imports.gi.versions.GObject = '2.0'; // todo port import
+imports.gi.versions.Gtk = '3.0'; // todo port import
 
 import * as Gdk from "gi://Gdk";
 import * as Gio from "gi://Gio";
@@ -37,13 +37,13 @@ function get_datadir() {
     return Gio.File.new_for_path(path).get_parent().get_path();
 }
 
-imports.searchPath.unshift(get_datadir());
-imports.config.PACKAGE_DATADIR = imports.searchPath[0];
+imports.searchPath.unshift(get_datadir()); // todo port import
+imports.config.PACKAGE_DATADIR = imports.searchPath[0]; // todo port import
 
 
 // Local Imports
-const Config = imports.config;
-const Settings = imports.preferences.service;
+const Config = imports.config; // todo port import
+const Settings = imports.preferences.service; // todo port import
 
 
 /**
@@ -125,4 +125,4 @@ const Preferences = GObject.registerClass({
     }
 });
 
-(new Preferences()).run([imports.system.programInvocationName].concat(ARGV));
+(new Preferences()).run([imports.system.programInvocationName].concat(ARGV)); // todo port import

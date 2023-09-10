@@ -1,0 +1,7 @@
+// legacy
+const ByteArray = imports.byteArray; // todo port import
+let prepare = (out instanceof Uint8Array) ? ByteArray.toString(out) : out.toString();
+
+// new
+let decoder = new TextDecoder('utf-8');
+let prepare = decoder.decode(out);

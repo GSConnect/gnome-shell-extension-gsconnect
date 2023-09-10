@@ -4,7 +4,7 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-const {GLib} = imports.gi;
+const {GLib} = imports.gi; // todo port import
 
 
 // Utils
@@ -96,10 +96,10 @@ function initJasmine() {
     // Add the current path to the importer
     const thisFile = /@(.+):\d+/.exec(Error().stack.split('\n')[1])[1];
     const thisDir = GLib.path_get_dirname(thisFile);
-    imports.searchPath.unshift(thisDir);
+    imports.searchPath.unshift(thisDir); // todo port import
 
     // Load Jasmine
-    const jasmineRequire = imports.jasmine.getJasmineRequireObj();
+    const jasmineRequire = imports.jasmine.getJasmineRequireObj(); // todo port import
     const jasmineCore = jasmineRequire.core(jasmineRequire);
     globalThis._jasmineEnv = jasmineCore.getEnv();
 
@@ -121,7 +121,7 @@ function initJasmine() {
 function initTests() {
     // Add the test path to the importer
     const testDir = GLib.path_get_dirname(ARGV[0]);
-    imports.searchPath.unshift(testDir);
+    imports.searchPath.unshift(testDir); // todo port import
 
     // Load the test suites
     const testPath = GLib.path_get_basename(ARGV[0]).slice(0, -3);
@@ -153,7 +153,7 @@ function runTests() {
         continue;
 
     // Return the exit status
-    imports.system.exit(globalThis._jasmineRetval);
+    imports.system.exit(globalThis._jasmineRetval); // todo port import
 }
 
 
