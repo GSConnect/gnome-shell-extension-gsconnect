@@ -12,6 +12,7 @@ import { ExtensionPreferences } from 'resource:///org/gnome/Shell/Extensions/js/
 
 export default class GSConnectExtensionPreferences extends ExtensionPreferences {
     constructor() {
+        Utils.initialiseExtensionData(this.path);
         Utils.installService();
     }
 

@@ -7,8 +7,37 @@ import GLib from 'gi://GLib';
 import Gtk from 'gi://Gtk';
 import St from 'gi://St';
 
-const Extension = imports.misc.extensionUtils.getCurrentExtension(); // FIXME
 import Config from '../config.js';
+
+
+/**
+ * Initialise and setup Config, GResources and GSchema.
+ * FIXME: Between prefs and extension, do we only need this to run once? We can easily introduce something in that case, but I'm not sure.
+ */
+export function setupExtensionData(extensionPath) {
+    // Ensure config.js is setup properly
+    Config.PACKAGE_DATADIR = extensionPath;
+    const userDir = GLib.build_filenamev([GLib.get_user_data_dir(), 'gnome-shell']);
+
+    if (Config.PACKAGE_DATADIR.startsWith(userDir)) {
+        Config.IS_USER = true;
+
+        Config.GSETTINGS_SCHEMA_DIR = `${Config.PACKAGE_DATADIR}/schemas`;
+        Config.PACKAGE_LOCALEDIR = `${Config.PACKAGE_DATADIR}/locale`;
+    }
+
+    // Init GResources
+    Gio.Resource.load(
+        GLib.build_filenamev([Config.PACKAGE_DATADIR, `${Config.APP_ID}.gresource`])
+    )._register();
+
+    // Init GSchema
+    Config.GSCHEMA = Gio.SettingsSchemaSource.new_from_directory(
+        Config.GSETTINGS_SCHEMA_DIR,
+        Gio.SettingsSchemaSource.get_default(),
+        false
+    );
+}
 
 
 /**
@@ -172,7 +201,7 @@ export function ensurePermissions() {
             'service/nativeMessagingHost.js',
         ];
         for (const file of executableFiles)
-            _setExecutable(GLib.build_filenamev([Extension.path, file])); // FIXME
+            _setExecutable(GLib.build_filenamev([Config.PACKAGE_DATADIR, file]));
     }
 }
 
