@@ -171,20 +171,54 @@ const _debugFunc = function (error, prefix = null) {
     });
 };
 
+/**
+ * A special debug function for logging packet dumps with
+ * their contents omitted.
+ * @param {object} packet - A GSConnect packet payload
+ * @param {string} [prefix] - An optional prefix for the dump
+ */
+// eslint-disable-next-line func-style
+const _packetDebugFunc = function (packet, prefix = null) {
+    globalThis.debug(packet.type, prefix);
+};
+
+/**
+ * A helper to set the function used for globalThis.debugPacket()
+ * @param {object} settings - a Gio.Settings instance
+ * @param {string} key - the settings key used to select the correct
+ *                       debug function
+ */
+// eslint-disable-next-line func-style
+const __getPacketFunc = function (settings, key) {
+    const detailEnabled = settings.get_boolean(key);
+    return detailEnabled ? globalThis.debug : _packetDebugFunc;
+};
+
 // Swap the function out for a no-op anonymous function for speed
 const settings = new Gio.Settings({
     settings_schema: Config.GSCHEMA.lookup(Config.APP_ID, true),
 });
 
 settings.connect('changed::debug', (settings, key) => {
-    globalThis.debug = settings.get_boolean(key) ? _debugFunc : () => {};
+    const enabled = settings.get_boolean(key);
+    globalThis.debug = enabled ? _debugFunc : () => {};
+    if (!enabled)
+        globalThis.debugPacket = () => {};
+    else
+        globalThis.debugPacket = __getPacketFunc(settings, 'debug-detail');
 });
 
-if (settings.get_boolean('debug'))
+if (settings.get_boolean('debug')) {
     globalThis.debug = _debugFunc;
-else
+    globalThis.debugPacket = __getPacketFunc(settings, 'debug-detail');
+} else {
     globalThis.debug = () => {};
+    globalThis.debugPacket = () => {};
+}
 
+settings.connect('changed::debug-detail', (settings, key) => {
+    globalThis.debugPacket = __getPacketFunc(settings, key);
+});
 
 /**
  * Start wl_clipboard if not under Gnome
