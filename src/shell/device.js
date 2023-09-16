@@ -2,27 +2,25 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Clutter from 'gi://Clutter';
+import GObject from 'gi://GObject';
+import St from 'gi://St';
 
-const Clutter = imports.gi.Clutter;
-const GObject = imports.gi.GObject;
-const St = imports.gi.St;
+import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
+import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 
-const PanelMenu = imports.ui.panelMenu;
-const PopupMenu = imports.ui.popupMenu;
-
-const Extension = imports.misc.extensionUtils.getCurrentExtension();
+import { gettext as _ } from 'resource:///org/gnome/shell/extensions/extension.js';
+import { getIcon } from './utils.js';
 
 // eslint-disable-next-line no-redeclare
-const _ = Extension._;
-const GMenu = Extension.imports.shell.gmenu;
-const Tooltip = Extension.imports.shell.tooltip;
+import * as GMenu from './gmenu.js';
+import Tooltip from './tooltip.js';
 
 
 /**
  * A battery widget with an icon, text percentage and time estimate tooltip
  */
-var Battery = GObject.registerClass({
+export const Battery = GObject.registerClass({
     GTypeName: 'GSConnectShellDeviceBattery',
 }, class Battery extends St.BoxLayout {
 
@@ -49,7 +47,7 @@ var Battery = GObject.registerClass({
         this.add_child(this.icon);
 
         // Battery Estimate
-        this.tooltip = new Tooltip.Tooltip({
+        this.tooltip = new Tooltip({
             parent: this,
             text: null,
         });
@@ -171,7 +169,7 @@ var Battery = GObject.registerClass({
 /**
  * A cell signal strength widget with two icons
  */
-var SignalStrength = GObject.registerClass({
+export const SignalStrength = GObject.registerClass({
     GTypeName: 'GSConnectShellDeviceSignalStrength',
 }, class SignalStrength extends St.BoxLayout {
 
@@ -198,7 +196,7 @@ var SignalStrength = GObject.registerClass({
         this.add_child(this.signalStrengthIcon);
 
         // Network Type Text
-        this.tooltip = new Tooltip.Tooltip({
+        this.tooltip = new Tooltip({
             parent: this,
             text: null,
         });
@@ -300,7 +298,7 @@ var SignalStrength = GObject.registerClass({
 /**
  * A PopupMenu used as an information and control center for a device
  */
-var Menu = class Menu extends PopupMenu.PopupMenuSection {
+export class Menu extends PopupMenu.PopupMenuSection {
 
     constructor(params) {
         super();
@@ -357,7 +355,7 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
 /**
  * An indicator representing a Device in the Status Area
  */
-var Indicator = GObject.registerClass({
+export const Indicator = GObject.registerClass({
     GTypeName: 'GSConnectDeviceIndicator',
 }, class Indicator extends PanelMenu.Button {
 
@@ -367,7 +365,7 @@ var Indicator = GObject.registerClass({
 
         // Device Icon
         this._icon = new St.Icon({
-            gicon: Extension.getIcon(this.device.icon_name),
+            gicon: getIcon(this.device.icon_name),
             style_class: 'system-status-icon gsconnect-device-indicator',
         });
         this.add_child(this._icon);
