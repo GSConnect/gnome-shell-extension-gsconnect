@@ -364,6 +364,8 @@ export let lockscreenInput = null;
 
 export default class GSConnectExtension extends Extension {
     constructor() {
+        Utils.setupExtensionData(this.path);
+
         // If installed as a user extension, this checks the permissions
         // on certain critical files in the extension directory
         // to ensure that they have the executable bit set,
