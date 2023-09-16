@@ -2,17 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import GLib from 'gi://GLib';
+import Gio from 'gi://Gio';
 
-const Gettext = imports.gettext;
-
-const GLib = imports.gi.GLib;
-const Gio = imports.gi.Gio;
-const Gtk = imports.gi.Gtk;
-
-const Extension = imports.misc.extensionUtils.getCurrentExtension();
-const Config = Extension.imports.config;
-Config.PACKAGE_DATADIR = Extension.path;
+const Extension = imports.misc.extensionUtils.getCurrentExtension(); // FIXME
+import Config from '../config.js';
+Config.PACKAGE_DATADIR = Extension.path; // FIXME
 
 
 // Ensure config.js is setup properly
@@ -24,12 +19,6 @@ if (Config.PACKAGE_DATADIR.startsWith(userDir)) {
     Config.GSETTINGS_SCHEMA_DIR = `${Extension.path}/schemas`;
     Config.PACKAGE_LOCALEDIR = `${Extension.path}/locale`;
 }
-
-
-// Init Gettext
-Gettext.bindtextdomain(Config.APP_ID, Config.PACKAGE_LOCALEDIR);
-Extension._ = GLib.dgettext.bind(null, Config.APP_ID);
-Extension.ngettext = GLib.dngettext.bind(null, Config.APP_ID);
 
 
 // Init GResources

@@ -2,16 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gio from 'gi://Gio';
+import GjsPrivate from 'gi://GjsPrivate';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
 
-const ByteArray = imports.byteArray;
-
-const Gio = imports.gi.Gio;
-const GjsPrivate = imports.gi.GjsPrivate;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
-
-const Meta = imports.gi.Meta;
+import Meta from 'gi://Meta';
 
 
 /*
@@ -65,7 +61,7 @@ const TEXT_MIMETYPES = [
  * A simple clipboard portal, especially useful on Wayland where GtkClipboard
  * doesn't work in the background.
  */
-var Clipboard = GObject.registerClass({
+export const Clipboard = GObject.registerClass({
     GTypeName: 'GSConnectShellClipboard',
 }, class GSConnectShellClipboard extends GjsPrivate.DBusImplementation {
 
@@ -229,7 +225,7 @@ var Clipboard = GObject.registerClass({
                             const bytes = stream.steal_as_bytes();
                             const bytearray = bytes.get_data();
 
-                            resolve(ByteArray.toString(bytearray));
+                            resolve(new TextDecoder().decode(bytearray));
                         } catch (e) {
                             reject(e);
                         }
@@ -342,13 +338,13 @@ var Clipboard = GObject.registerClass({
 });
 
 
-var _portal = null;
-var _portalId = 0;
+export let _portal = null;
+export let _portalId = 0;
 
 /**
  * Watch for the service to start and export the clipboard portal when it does.
  */
-function watchService() {
+export function watchService() {
     if (GLib.getenv('XDG_SESSION_TYPE') !== 'wayland')
         return;
 
@@ -375,7 +371,7 @@ function watchService() {
 /**
  * Stop watching the service and export the portal if currently running.
  */
-function unwatchService() {
+export function unwatchService() {
     if (_portalId > 0) {
         Gio.bus_unwatch_name(_portalId);
         _portalId = 0;

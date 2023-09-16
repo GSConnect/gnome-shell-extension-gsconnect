@@ -2,26 +2,28 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
-
-const {Gio, GLib, Adw} = imports.gi;
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import Adw from 'gi://Adw';
 
 // Bootstrap
-const Extension = imports.misc.extensionUtils.getCurrentExtension();
-const Utils = Extension.imports.shell.utils;
+import * as Utils from './shell/utils.js';
+import { ExtensionPreferences } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
-function init() {
-    Utils.installService();
-}
+export default class GSConnectExtensionPreferences extends ExtensionPreferences {
+    constructor() {
+        Utils.installService();
+    }
 
-function fillPreferencesWindow(window) {
-    const widget = new Adw.PreferencesPage();
-    window.add(widget);
+    fillPreferencesWindow(window) {
+        const widget = new Adw.PreferencesPage();
+        window.add(widget);
 
-    GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
-        window.close();
-    });
+        GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
+            window.close();
+        });
 
-    Gio.Subprocess.new([`${Extension.path}/gsconnect-preferences`], 0);
+        Gio.Subprocess.new([`${this.path}/gsconnect-preferences`], 0);
+    }
 }
 

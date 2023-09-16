@@ -2,15 +2,13 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import Gtk from 'gi://Gtk';
+import St from 'gi://St';
 
-const ByteArray = imports.byteArray;
-
-const GLib = imports.gi.GLib;
-const Gio = imports.gi.Gio;
-
-const Extension = imports.misc.extensionUtils.getCurrentExtension();
-const Config = Extension.imports.config;
+const Extension = imports.misc.extensionUtils.getCurrentExtension(); // FIXME
+import Config from '../config.js';
 
 
 /**
@@ -19,11 +17,11 @@ const Config = Extension.imports.config;
  * @param {string} name - A themed icon name
  * @return {Gio.Icon} A themed icon
  */
-function getIcon(name) {
+export function getIcon(name) {
     if (getIcon._resource === undefined) {
         // Setup the desktop icons
-        const settings = imports.gi.St.Settings.get();
-        getIcon._desktop = new imports.gi.Gtk.IconTheme();
+        const settings = St.Settings.get();
+        getIcon._desktop = new Gtk.IconTheme();
         getIcon._desktop.set_theme_name(settings.gtk_icon_theme);
         settings.connect('notify::gtk-icon-theme', (settings_, key_) => {
             getIcon._desktop.set_theme_name(settings_.gtk_icon_theme);
@@ -79,7 +77,7 @@ function getResource(relativePath) {
             Gio.ResourceLookupFlags.NONE
         );
 
-        const source = ByteArray.toString(bytes.toArray());
+        const source = new TextDecoder().decode(bytes.toArray());
 
         return source.replace('@PACKAGE_DATADIR@', Config.PACKAGE_DATADIR);
     } catch (e) {
@@ -166,7 +164,7 @@ function _setExecutable(filepath) {
  * Ensure critical files in the extension directory have the
  * correct permissions.
  */
-function ensurePermissions() {
+export function ensurePermissions() {
     if (Config.IS_USER) {
         const executableFiles = [
             'gsconnect-preferences',
@@ -174,14 +172,14 @@ function ensurePermissions() {
             'service/nativeMessagingHost.js',
         ];
         for (const file of executableFiles)
-            _setExecutable(GLib.build_filenamev([Extension.path, file]));
+            _setExecutable(GLib.build_filenamev([Extension.path, file])); // FIXME
     }
 }
 
 /**
  * Install the files necessary for the GSConnect service to run.
  */
-function installService() {
+export function installService() {
     const settings = new Gio.Settings({
         settings_schema: Config.GSCHEMA.lookup(
             'org.gnome.Shell.Extensions.GSConnect',

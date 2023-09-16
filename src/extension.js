@@ -2,33 +2,31 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gio from 'gi://Gio';
+import GObject from 'gi://GObject';
 
-const Gio = imports.gi.Gio;
-const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
-
-const Main = imports.ui.main;
-const PanelMenu = imports.ui.panelMenu;
-const PopupMenu = imports.ui.popupMenu;
-const QuickSettingsMenu = Main.panel.statusArea.quickSettings;
-const QuickSettings = imports.ui.quickSettings;
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
+import * as QuickSettings from 'resource:///org/gnome/shell/ui/quickSettings.js';
 
 // Bootstrap
-const Extension = imports.misc.extensionUtils.getCurrentExtension();
-const Utils = Extension.imports.shell.utils;
+import {
+    Extension,
+    gettext as _,
+    ngettext
+} from 'resource:///org/gnome/shell/extensions/extension.js';
+import * as Utils from './shell/utils.js';
 
 // eslint-disable-next-line no-redeclare
-const _ = Extension._;
-const Clipboard = Extension.imports.shell.clipboard;
-const Config = Extension.imports.config;
-const Device = Extension.imports.shell.device;
-const Keybindings = Extension.imports.shell.keybindings;
-const Notification = Extension.imports.shell.notification;
-const Input = Extension.imports.shell.input;
-const Remote = Extension.imports.utils.remote;
+import * as Clipboard from './shell/clipboard.js';
+import Config from './config.js';
+import * as Device from './shell/device.js';
+import * as Keybindings from './shell/keybindings.js';
+import * as Notification from './shell/notification.js';
+import * as Input from './shell/input.js';
+import Remote from './utils/remote.js';
 
-Extension.getIcon = Utils.getIcon;
+const QuickSettingsMenu = Main.panel.statusArea.quickSettings;
 
 
 /**
@@ -157,7 +155,7 @@ const ServiceToggle = GObject.registerClass({
             this.subtitle = available[0].name;
         } else if (available.length > 1) {
             // TRANSLATORS: %d is the number of devices connected
-            this.subtitle = Extension.ngettext(
+            this.subtitle = ngettext(
                 '%d Connected',
                 '%d Connected',
                 available.length
@@ -341,6 +339,7 @@ class ServiceIndicator extends QuickSettings.SystemIndicator {
         this.quickSettingsItems.push(new ServiceToggle());
 
         // Add the indicator to the panel and the toggle to the menu
+        // FIXME I think this is a problem that needs replacing?
         QuickSettingsMenu._indicators.insert_child_at_index(this, 0);
         QuickSettingsMenu._addItems(this.quickSettingsItems);
 
@@ -360,53 +359,53 @@ class ServiceIndicator extends QuickSettings.SystemIndicator {
     }
 });
 
-var serviceIndicator = null;
-var lockscreenInput = null;
+export let serviceIndicator = null;
+export let lockscreenInput = null;
 
-function init() {
-    // If installed as a user extension, this checks the permissions
-    // on certain critical files in the extension directory
-    // to ensure that they have the executable bit set,
-    // and makes them executable if not. Some packaging methods
-    // (particularly GitHub Actions artifacts) automatically remove
-    // executable bits from all contents, presumably for security.
-    Utils.ensurePermissions();
+export default class GSConnectExtension extends Extension {
+    constructor() {
+        // If installed as a user extension, this checks the permissions
+        // on certain critical files in the extension directory
+        // to ensure that they have the executable bit set,
+        // and makes them executable if not. Some packaging methods
+        // (particularly GitHub Actions artifacts) automatically remove
+        // executable bits from all contents, presumably for security.
+        Utils.ensurePermissions();
 
-    // If installed as a user extension, this will install the Desktop entry,
-    // DBus and systemd service files necessary for DBus activation and
-    // GNotifications. Since there's no uninit()/uninstall() hook for extensions
-    // and they're only used *by* GSConnect, they should be okay to leave.
-    Utils.installService();
+        // If installed as a user extension, this will install the Desktop entry,
+        // DBus and systemd service files necessary for DBus activation and
+        // GNotifications. Since there's no uninit()/uninstall() hook for extensions
+        // and they're only used *by* GSConnect, they should be okay to leave.
+        Utils.installService();
 
-    // These modify the notification source for GSConnect's GNotifications and
-    // need to be active even when the extension is disabled (eg. lock screen).
-    // Since they *only* affect notifications from GSConnect, it should be okay
-    // to leave them applied.
-    Notification.patchGSConnectNotificationSource();
-    Notification.patchGtkNotificationDaemon();
+        // These modify the notification source for GSConnect's GNotifications and
+        // need to be active even when the extension is disabled (eg. lock screen).
+        // Since they *only* affect notifications from GSConnect, it should be okay
+        // to leave them applied.
+        Notification.patchGSConnectNotificationSource();
+        Notification.patchGtkNotificationDaemon();
 
-    // This watches for the service to start and exports a custom clipboard
-    // portal for use on Wayland
-    Clipboard.watchService();
-}
+        // This watches for the service to start and exports a custom clipboard
+        // portal for use on Wayland
+        Clipboard.watchService();
+    }
 
+    enable() {
+        serviceIndicator = new ServiceIndicator();
+        Notification.patchGtkNotificationSources();
 
-function enable() {
-    serviceIndicator = new ServiceIndicator();
-    Notification.patchGtkNotificationSources();
+        lockscreenInput = new Input.LockscreenRemoteAccess();
+        lockscreenInput.patchInhibitor();
+    }
 
-    lockscreenInput = new Input.LockscreenRemoteAccess();
-    lockscreenInput.patchInhibitor();
-}
+    disable() {
+        serviceIndicator.destroy();
+        serviceIndicator = null;
+        Notification.unpatchGtkNotificationSources();
 
-
-function disable() {
-    serviceIndicator.destroy();
-    serviceIndicator = null;
-    Notification.unpatchGtkNotificationSources();
-
-    if (lockscreenInput) {
-        lockscreenInput.unpatchInhibitor();
-        lockscreenInput = null;
+        if (lockscreenInput) {
+            lockscreenInput.unpatchInhibitor();
+            lockscreenInput = null;
+        }
     }
 }
