@@ -393,7 +393,7 @@ export const IconButton = GObject.registerClass({
             this.action_target = params.info.target;
 
         if (params.info.hasOwnProperty('label')) {
-            this.tooltip = new Tooltip.Tooltip({
+            this.tooltip = new Tooltip({
                 parent: this,
                 markup: params.info.label,
             });
