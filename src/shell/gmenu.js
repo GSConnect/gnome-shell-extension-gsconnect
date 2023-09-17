@@ -10,7 +10,7 @@ import St from 'gi://St';
 
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 
-import { getIcon } from './utils.js';
+import {getIcon} from './utils.js';
 
 import Tooltip from './tooltip.js';
 
@@ -368,7 +368,7 @@ export class ListBox extends PopupMenu.PopupMenuSection {
 
         super.destroy();
     }
-};
+}
 
 
 /**
@@ -643,5 +643,5 @@ export class IconBox extends PopupMenu.PopupMenuSection {
         super._setParent(parent);
         this._onItemsChanged(this.model, 0, 0, this.model.get_n_items());
     }
-};
+}
 

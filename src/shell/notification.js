@@ -11,8 +11,8 @@ import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as MessageTray from 'resource:///org/gnome/shell/ui/messageTray.js';
 import * as NotificationDaemon from 'resource:///org/gnome/shell/ui/notificationDaemon.js';
 
-import { gettext as _ } from 'resource:///org/gnome/shell/extensions/extension.js';
-import { getIcon } from './utils.js';
+import {gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
+import {getIcon} from './utils.js';
 
 // eslint-disable-next-line no-redeclare
 const APP_ID = 'org.gnome.Shell.Extensions.GSConnect';
@@ -29,11 +29,11 @@ const REPLY_REGEX = new RegExp(/^([^|]+)\|([\s\S]+)\|([0-9a-f]{8}-[0-9a-f]{4}-[1
 /**
  * Extracted from notificationDaemon.js, as it's no longer exported
  * https://gitlab.gnome.org/GNOME/gnome-shell/-/blob/main/js/ui/notificationDaemon.js#L556
- * @returns {{ 'desktop-startup-id': string }}
+ * @returns {{ 'desktop-startup-id': string }} Object with ID containing current time
  */
 function getPlatformData() {
-    let startupId = GLib.Variant.new('s', `_TIME${global.get_current_time()}`);
-    return { 'desktop-startup-id': startupId };
+    const startupId = GLib.Variant.new('s', `_TIME${global.get_current_time()}`);
+    return {'desktop-startup-id': startupId};
 }
 
 // This is no longer directly exported, so we do this instead for now

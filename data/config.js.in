@@ -22,9 +22,8 @@ var SSHKEYGEN_PATH = '@SSHKEYGEN_PATH@';
 var FFMPEG_PATH = '@FFMPEG_PATH@';
 
 
-if (!globalThis.GSConnectLegacyExports) {
+if (!globalThis.GSConnectLegacyExports)
     globalThis.GSConnectLegacyExports = {};
-}
 globalThis.GSConnectLegacyExports.Config = {
     PACKAGE_VERSION,
     PACKAGE_URL,

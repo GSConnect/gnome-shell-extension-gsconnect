@@ -36,4 +36,4 @@ export class LockscreenRemoteAccess {
         global.backend.get_remote_access_controller().inhibit_remote_access = this._inhibitor;
         this._inhibitor = null;
     }
-};
+}
