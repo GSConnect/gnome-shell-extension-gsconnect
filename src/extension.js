@@ -19,12 +19,15 @@ import * as Utils from './shell/utils.js';
 
 // eslint-disable-next-line no-redeclare
 import * as Clipboard from './shell/clipboard.js';
-import Config from './config.js';
+import './config.js';
 import * as Device from './shell/device.js';
 import * as Keybindings from './shell/keybindings.js';
 import * as Notification from './shell/notification.js';
 import * as Input from './shell/input.js';
-import Remote from './utils/remote.js';
+import './utils/remote.js';
+// FIXME: As a workaround, we are using globalThis for module interop.
+const Config = globalThis.GSConnectLegacyExports.Config;
+const Remote = globalThis.GSConnectLegacyExports.Remote;
 
 const QuickSettingsMenu = Main.panel.statusArea.quickSettings;
 

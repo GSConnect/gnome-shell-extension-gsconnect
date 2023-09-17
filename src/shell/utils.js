@@ -7,7 +7,8 @@ import GLib from 'gi://GLib';
 import Gtk from 'gi://Gtk';
 import St from 'gi://St';
 
-import Config from '../config.js';
+import '../config.js';
+const Config = globalThis.GSConnectLegacyExports.Config;
 
 
 /**

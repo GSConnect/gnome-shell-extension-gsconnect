@@ -4,7 +4,8 @@
 
 import Gio from 'gi://Gio';
 
-import Config from '../config.js';
+import '../config.js';
+const Config = globalThis.GSConnectLegacyExports.Config;
 
 export class LockscreenRemoteAccess {
 
