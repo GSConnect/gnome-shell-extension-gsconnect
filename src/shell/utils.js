@@ -5,15 +5,17 @@
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import Gtk from 'gi://Gtk';
-import St from 'gi://St';
 
 import '../config.js';
 const Config = globalThis.GSConnectLegacyExports.Config;
+let St = null; // St is not available for prefs.js importing this file.
+try {
+    St = (await import('gi://St')).default;
+} catch (e) { }
 
 
 /**
  * Initialise and setup Config, GResources and GSchema.
- * FIXME: Between prefs and extension, do we only need this to run once? We can easily introduce something in that case, but I'm not sure.
  */
 export function setupExtensionData(extensionPath) {
     // Ensure config.js is setup properly
