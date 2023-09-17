@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 import Gio from 'gi://Gio';
-import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
@@ -19,18 +18,13 @@ import {
 import * as Utils from './shell/utils.js';
 
 // eslint-disable-next-line no-redeclare
+import Config from './config.mjs';
 import * as Clipboard from './shell/clipboard.js';
 import * as Device from './shell/device.js';
 import * as Keybindings from './shell/keybindings.js';
 import * as Notification from './shell/notification.js';
 import * as Input from './shell/input.js';
-
-// Enable legacy import support
-const [filename] = GLib.filename_from_uri(import.meta.url);
-const dirname = GLib.path_get_dirname(filename);
-imports.searchPath.unshift(dirname);
-const Config = imports.config;
-const Remote = imports.utils.remote;
+import Remote from './utils/remote.mjs';
 
 const QuickSettingsMenu = Main.panel.statusArea.quickSettings;
 

@@ -3,13 +3,8 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 import Gio from 'gi://Gio';
-import GLib from 'gi://GLib';
 
-// Enable legacy import support
-const [filename] = GLib.filename_from_uri(import.meta.url);
-const dirname = GLib.path_get_dirname(GLib.path_get_dirname(filename));
-imports.searchPath.unshift(dirname);
-const Config = imports.config;
+import Config from '../config.mjs';
 
 export class LockscreenRemoteAccess {
 
