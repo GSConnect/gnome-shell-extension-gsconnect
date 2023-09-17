@@ -517,9 +517,3 @@ var Service = GObject.registerClass({
         }
     }
 });
-
-
-if (!globalThis.GSConnectLegacyExports)
-    globalThis.GSConnectLegacyExports = {};
-globalThis.GSConnectLegacyExports.Remote = {Service};
-
