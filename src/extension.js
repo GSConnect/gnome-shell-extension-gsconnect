@@ -354,10 +354,11 @@ class ServiceIndicator extends QuickSettings.SystemIndicator {
     }
 });
 
-export let serviceIndicator = null;
-export let lockscreenInput = null;
+let serviceIndicator = null;
 
 export default class GSConnectExtension extends Extension {
+    lockscreenInput = null;
+
     constructor(metadata) {
         super(metadata);
         Utils.setupExtensionData(this.path);
@@ -392,8 +393,8 @@ export default class GSConnectExtension extends Extension {
         serviceIndicator = new ServiceIndicator();
         Notification.patchGtkNotificationSources();
 
-        lockscreenInput = new Input.LockscreenRemoteAccess();
-        lockscreenInput.patchInhibitor();
+        this.lockscreenInput = new Input.LockscreenRemoteAccess();
+        this.lockscreenInput.patchInhibitor();
     }
 
     disable() {
@@ -401,9 +402,9 @@ export default class GSConnectExtension extends Extension {
         serviceIndicator = null;
         Notification.unpatchGtkNotificationSources();
 
-        if (lockscreenInput) {
-            lockscreenInput.unpatchInhibitor();
-            lockscreenInput = null;
+        if (this.lockscreenInput) {
+            this.lockscreenInput.unpatchInhibitor();
+            this.lockscreenInput = null;
         }
     }
 }

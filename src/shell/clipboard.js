@@ -338,8 +338,8 @@ export const Clipboard = GObject.registerClass({
 });
 
 
-export let _portal = null;
-export let _portalId = 0;
+let _portal = null;
+let _portalId = 0;
 
 /**
  * Watch for the service to start and export the clipboard portal when it does.
