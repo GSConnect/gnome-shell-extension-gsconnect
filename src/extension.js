@@ -339,7 +339,7 @@ class ServiceIndicator extends QuickSettings.SystemIndicator {
         this.quickSettingsItems.push(new ServiceToggle());
 
         // Add the indicator to the panel and the toggle to the menu
-        // FIXME I think this is a problem that needs replacing?
+        // FIXME: I think this wants replacing? https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/2894
         QuickSettingsMenu._indicators.insert_child_at_index(this, 0);
         QuickSettingsMenu._addItems(this.quickSettingsItems);
 
@@ -363,7 +363,8 @@ export let serviceIndicator = null;
 export let lockscreenInput = null;
 
 export default class GSConnectExtension extends Extension {
-    constructor() {
+    constructor(metadata) {
+        super(metadata);
         Utils.setupExtensionData(this.path);
 
         // If installed as a user extension, this checks the permissions
