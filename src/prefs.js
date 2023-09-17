@@ -11,7 +11,8 @@ import * as Utils from './shell/utils.js';
 import { ExtensionPreferences } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
 export default class GSConnectExtensionPreferences extends ExtensionPreferences {
-    constructor() {
+    constructor(metadata) {
+        super(metadata);
         Utils.initialiseExtensionData(this.path);
         Utils.installService();
     }
