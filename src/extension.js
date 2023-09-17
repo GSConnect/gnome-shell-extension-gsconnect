@@ -342,15 +342,7 @@ class ServiceIndicator extends QuickSettings.SystemIndicator {
         this.quickSettingsItems.push(new ServiceToggle());
 
         // Add the indicator to the panel and the toggle to the menu
-        // FIXME: I think this wants replacing? https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/2894
-        QuickSettingsMenu._indicators.insert_child_at_index(this, 0);
-        QuickSettingsMenu._addItems(this.quickSettingsItems);
-
-        // Ensure the tile(s) are above the background apps menu
-        for (const item of this.quickSettingsItems) {
-            QuickSettingsMenu.menu._grid.set_child_below_sibling(item,
-                QuickSettingsMenu._backgroundApps.quickSettingsItems[0]);
-        }
+        QuickSettingsMenu.addExternalIndicator(this);
     }
 
     destroy() {
