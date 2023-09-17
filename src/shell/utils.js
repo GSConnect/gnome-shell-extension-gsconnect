@@ -16,6 +16,7 @@ try {
 
 /**
  * Initialise and setup Config, GResources and GSchema.
+ * @param {string} extensionPath - The absolute path to the extension directory
  */
 export function setupExtensionData(extensionPath) {
     // Ensure config.js is setup properly

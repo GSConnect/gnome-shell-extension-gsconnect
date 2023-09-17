@@ -305,5 +305,5 @@ export default class Tooltip {
             this._hoverTimeoutId = 0;
         }
     }
-};
+}
 

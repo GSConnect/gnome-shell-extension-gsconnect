@@ -286,6 +286,21 @@
         "HAVE_REMOTEINPUT": false
     },
     "parserOptions": {
-        "ecmaVersion": 2017
-    }
+        "ecmaVersion": "latest"
+    },
+    "overrides": [
+        {
+            "files": [
+                "src/shell/**/*.js",
+                "src/extension.js",
+                "src/prefs.js"
+            ],
+            "env": {
+                "shared-node-browser": true
+            },
+            "parserOptions": {
+                "sourceType": "module"
+            }
+        }
+    ]
 }

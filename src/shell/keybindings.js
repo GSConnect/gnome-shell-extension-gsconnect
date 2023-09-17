@@ -99,5 +99,5 @@ export class Manager {
         global.display.disconnect(this._acceleratorActivatedId);
         this.removeAll();
     }
-};
+}
 
