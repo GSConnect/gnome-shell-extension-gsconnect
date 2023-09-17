@@ -20,24 +20,3 @@ var OPENSSL_PATH = '@OPENSSL_PATH@';
 var SSHADD_PATH = '@SSHADD_PATH@';
 var SSHKEYGEN_PATH = '@SSHKEYGEN_PATH@';
 var FFMPEG_PATH = '@FFMPEG_PATH@';
-
-
-if (!globalThis.GSConnectLegacyExports)
-    globalThis.GSConnectLegacyExports = {};
-globalThis.GSConnectLegacyExports.Config = {
-    PACKAGE_VERSION,
-    PACKAGE_URL,
-    PACKAGE_BUGREPORT,
-    PACKAGE_DATADIR,
-    PACKAGE_LOCALEDIR,
-    GSETTINGS_SCHEMA_DIR,
-    GNOME_SHELL_LIBDIR,
-    APP_ID,
-    APP_PATH,
-    IS_USER,
-    OPENSSL_PATH,
-    SSHADD_PATH,
-    SSHKEYGEN_PATH,
-    FFMPEG_PATH,
-};
-

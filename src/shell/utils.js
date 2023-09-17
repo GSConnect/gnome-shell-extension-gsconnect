@@ -6,12 +6,16 @@ import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import Gtk from 'gi://Gtk';
 
-import '../config.js';
-const Config = globalThis.GSConnectLegacyExports.Config;
 let St = null; // St is not available for prefs.js importing this file.
 try {
     St = (await import('gi://St')).default;
 } catch (e) { }
+
+// Enable legacy import support
+const [filename] = GLib.filename_from_uri(import.meta.url);
+const dirname = GLib.path_get_dirname(GLib.path_get_dirname(filename));
+imports.searchPath.unshift(dirname);
+const Config = imports.config;
 
 
 /**
