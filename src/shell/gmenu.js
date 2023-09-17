@@ -281,7 +281,7 @@ export class ListBox extends PopupMenu.PopupMenuSection {
             const prev = new PopupMenu.PopupMenuItem(this.submenu_for.label.text);
             prev.label.style = 'font-weight: bold;';
             const prevArrow = PopupMenu.arrowIcon(St.Side.LEFT);
-            prev.replace_child(prev._ornamentLabel, prevArrow);
+            prev.replace_child(prev._ornamentIcon, prevArrow);
             this.addMenuItem(prev, 0);
 
             prev.connectObject('activate', (item, event) => {
