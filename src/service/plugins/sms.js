@@ -85,7 +85,7 @@ var Metadata = {
  *
  * TEXT_MESSAGE: Has a "body" field which contains pure, human-readable text
  */
-var MessageEvent = {
+var MessageEventType = {
     TEXT_MESSAGE: 0x1,
 };
 

@@ -111,7 +111,7 @@ const NativeMessagingHost = GObject.registerClass({
             // Read the message
             const length = this._stdin.read_int32(null);
             const bytes = this._stdin.read_bytes(length, null).toArray();
-            const message = JSON.parse(imports.byteArray.toString(bytes));
+            const message = JSON.parse(new TextDecoder().decode(bytes));
 
             // A request for a list of devices
             if (message.type === 'devices') {

@@ -1,6 +1,7 @@
 {
     "env": {
-        "es2021": true
+        "es2021": true,
+        "shared-node-browser": true
     },
     "extends": "eslint:recommended",
     "rules": {
@@ -295,9 +296,6 @@
                 "src/extension.js",
                 "src/prefs.js"
             ],
-            "env": {
-                "shared-node-browser": true
-            },
             "parserOptions": {
                 "sourceType": "module"
             }

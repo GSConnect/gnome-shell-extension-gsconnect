@@ -4,7 +4,6 @@
 
 'use strict';
 
-const ByteArray = imports.byteArray;
 const Gettext = imports.gettext;
 
 const Gio = imports.gi.Gio;
@@ -114,7 +113,7 @@ Config.DBUS = (() => {
         Gio.ResourceLookupFlags.NONE
     );
 
-    const xml = ByteArray.toString(bytes.toArray());
+    const xml = new TextDecoder().decode(bytes.toArray());
     const dbus = Gio.DBusNodeInfo.new_for_xml(xml);
     dbus.nodes.forEach(info => info.cache_build());
 
@@ -448,7 +447,7 @@ Object.defineProperties(Gio.TlsCertificate.prototype, {
                     flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE,
                 });
                 proc.init(null);
-                this.__pubkey_der = proc.communicate(ByteArray.fromString(pubkey), null)[1];
+                this.__pubkey_der = proc.communicate(new TextEncoder().encode(pubkey), null)[1];
             }
 
             return this.__pubkey_der;

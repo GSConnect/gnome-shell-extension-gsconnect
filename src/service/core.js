@@ -18,7 +18,7 @@ function _getDeviceType() {
     try {
         let type = GLib.file_get_contents('/sys/class/dmi/id/chassis_type')[1];
 
-        type = Number(imports.byteArray.toString(type));
+        type = Number(new TextDecoder().decode(type));
 
         if ([8, 9, 10, 14].includes(type))
             return 'laptop';
