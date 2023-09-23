@@ -15,6 +15,7 @@ const Pango = imports.gi.Pango;
 const Contacts = imports.service.ui.contacts;
 const Sms = imports.service.plugins.sms;
 const URI = imports.service.utils.uri;
+const _ui = imports.service.utils.ui;
 
 
 /*

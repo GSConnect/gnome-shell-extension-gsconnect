@@ -9,6 +9,7 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 const URI = imports.service.utils.uri;
+const _ui = imports.service.utils.ui;
 
 
 /**

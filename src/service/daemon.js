@@ -39,6 +39,8 @@ function get_datadir() {
 imports.searchPath.unshift(get_datadir());
 imports.config.PACKAGE_DATADIR = imports.searchPath[0];
 
+const _setup = imports.service.utils.setup;
+
 
 // Local Imports
 const Config = imports.config;

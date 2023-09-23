@@ -11,6 +11,7 @@ const Gtk = imports.gi.Gtk;
 const Contacts = imports.service.ui.contacts;
 const Messaging = imports.service.ui.messaging;
 const URI = imports.service.utils.uri;
+const _ui = imports.service.utils.ui;
 
 
 var Dialog = GObject.registerClass({
