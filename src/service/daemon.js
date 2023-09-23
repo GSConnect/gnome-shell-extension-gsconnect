@@ -469,15 +469,6 @@ const Service = GObject.registerClass({
         );
 
         this.add_main_option(
-            'photo',
-            0,
-            GLib.OptionFlags.NONE,
-            GLib.OptionArg.NONE,
-            _('Photo'),
-            null
-        );
-
-        this.add_main_option(
             'ping',
             0,
             GLib.OptionFlags.NONE,
@@ -705,9 +696,6 @@ const Service = GObject.registerClass({
 
             if (options.contains('notification'))
                 this._cliNotify(id, options);
-
-            if (options.contains('photo'))
-                this._cliAction(id, 'photo');
 
             if (options.contains('ping'))
                 this._cliAction(id, 'ping', GLib.Variant.new_string(''));
