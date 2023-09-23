@@ -291,6 +291,9 @@
             "files": [
                 "webextension/**/*.js",
                 "src/shell/**/*.js",
+                "src/utils/**/*.js",
+                "src/preferences/**/*.js",
+                "src/gsconnect-preferences",
                 "src/extension.js",
                 "src/prefs.js"
             ],

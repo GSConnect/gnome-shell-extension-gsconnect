@@ -23,7 +23,7 @@ import * as Keybindings from './shell/keybindings.js';
 import * as Notification from './shell/notification.js';
 import * as Input from './shell/input.js';
 import * as Utils from './shell/utils.js';
-import Remote from './utils/remote.mjs';
+import * as Remote from './utils/remote.js';
 import setup from './utils/setup.mjs';
 
 const QuickSettingsMenu = Main.panel.statusArea.quickSettings;

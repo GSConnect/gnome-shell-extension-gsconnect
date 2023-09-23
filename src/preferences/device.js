@@ -2,22 +2,21 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
+import Gtk from 'gi://Gtk';
+import Pango from 'gi://Pango';
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
-const Pango = imports.gi.Pango;
-
-const Config = imports.config;
-const Keybindings = imports.preferences.keybindings;
+import Config from '../config.mjs';
+import * as Keybindings from './keybindings.js';
 
 
 // Build a list of plugins and shortcuts for devices
 const DEVICE_PLUGINS = [];
 const DEVICE_SHORTCUTS = {};
 
+// FIXME ESM
 for (const name in imports.service.plugins) {
     const module = imports.service.plugins[name];
 
@@ -41,7 +40,7 @@ for (const name in imports.service.plugins) {
  * @param {Gtk.ListBoxRow} row - The current row
  * @param {Gtk.ListBoxRow} before - The previous row
  */
-function rowSeparators(row, before) {
+export function rowSeparators(row, before) {
     const header = row.get_header();
 
     if (before === null) {
@@ -63,7 +62,7 @@ function rowSeparators(row, before) {
  * @param {Gtk.ListBoxRow} row2 - The second row
  * @return {number} -1, 0 or 1
  */
-function titleSortFunc(row1, row2) {
+export function titleSortFunc(row1, row2) {
     if (!row1.title || !row2.title)
         return 0;
 
@@ -249,7 +248,7 @@ const CommandEditor = GObject.registerClass({
 /**
  * A widget for configuring a remote device.
  */
-var Panel = GObject.registerClass({
+export const Panel = GObject.registerClass({
     GTypeName: 'GSConnectPreferencesDevicePanel',
     Properties: {
         'device': GObject.ParamSpec.object(

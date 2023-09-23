@@ -1,4 +1,4 @@
-#!/usr/bin/env gjs
+#!/usr/bin/env -S gjs -m
 
 // SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
 //
@@ -6,44 +6,25 @@
 
 // -*- mode: js; -*-
 
-'use strict';
+import Gdk from 'gi://Gdk?version=3.0';
+import 'gi://GdkPixbuf?version=2.0';
+import Gio from 'gi://Gio?version=2.0';
+import GLib from 'gi://GLib?version=2.0';
+import GObject from 'gi://GObject?version=2.0';
+import Gtk from 'gi://Gtk?version=3.0';
 
-imports.gi.versions.Gdk = '3.0';
-imports.gi.versions.GdkPixbuf = '2.0';
-imports.gi.versions.Gio = '2.0';
-imports.gi.versions.GioUnix = '2.0';
-imports.gi.versions.GLib = '2.0';
-imports.gi.versions.GObject = '2.0';
-imports.gi.versions.Gtk = '3.0';
+import system from 'system';
 
-const Gdk = imports.gi.Gdk;
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
+import {Window} from './preferences/service.js';
+import setup, {setupGettext} from './utils/setup.mjs';
+import Config from './config.mjs';
 
+import('gi://GioUnix?version=2.0').catch(() => {}); // Set version for optional dependency
 
-// Bootstrap
-function get_datadir() {
-    let [, path] = /@([^:]+):\d+/.exec(new Error().stack.split('\n')[1]);
-    const info = Gio.File.new_for_path(path)
-        .query_info('standard::*', Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS, null);
-    path = info.get_is_symlink() ? info.get_symlink_target() : path;
-
-    return Gio.File.new_for_path(path).get_parent().get_path();
-}
-
-imports.searchPath.unshift(get_datadir());
-imports.config.PACKAGE_DATADIR = imports.searchPath[0];
 
 // Bootstrap
-const {setup, setupGettext} = imports.utils.setup;
-setup(imports.config.PACKAGE_DATADIR);
+setup(GLib.path_get_dirname(GLib.filename_from_uri(import.meta.url)[0]));
 setupGettext();
-
-// Local Imports
-const Config = imports.config;
-const Settings = imports.preferences.service;
 
 
 /**
@@ -66,7 +47,7 @@ const Preferences = GObject.registerClass({
 
     vfunc_activate() {
         if (this._window === undefined) {
-            this._window = new Settings.Window({
+            this._window = new Window({
                 application: this,
             });
         }
@@ -78,7 +59,7 @@ const Preferences = GObject.registerClass({
         super.vfunc_startup();
 
         // Init some resources
-        let provider = new Gtk.CssProvider();
+        const provider = new Gtk.CssProvider();
         provider.load_from_resource(`${Config.APP_PATH}/application.css`);
         Gtk.StyleContext.add_provider_for_screen(
             Gdk.Screen.get_default(),
@@ -86,13 +67,13 @@ const Preferences = GObject.registerClass({
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         );
 
-        let actions = [
+        const actions = [
             ['refresh', null],
             ['connect', GLib.VariantType.new('s')],
         ];
 
-        for (let [name, type] of actions) {
-            let action = new Gio.SimpleAction({
+        for (const [name, type] of actions) {
+            const action = new Gio.SimpleAction({
                 name: name,
                 parameter_type: type,
             });
@@ -102,7 +83,7 @@ const Preferences = GObject.registerClass({
 
     vfunc_activate_action(action_name, parameter) {
         try {
-            let paramArray = [];
+            const paramArray = [];
 
             if (parameter instanceof GLib.Variant)
                 paramArray[0] = parameter;
@@ -125,4 +106,4 @@ const Preferences = GObject.registerClass({
     }
 });
 
-(new Preferences()).run([imports.system.programInvocationName].concat(ARGV));
+(new Preferences()).run([system.programInvocationName].concat(ARGV));
