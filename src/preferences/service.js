@@ -2,18 +2,18 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gdk from 'gi://Gdk';
+import GdkPixbuf from 'gi://GdkPixbuf';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
+import Gtk from 'gi://Gtk';
 
-const Gdk = imports.gi.Gdk;
-const GdkPixbuf = imports.gi.GdkPixbuf;
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
+import system from 'system';
 
-const Config = imports.config;
-const Device = imports.preferences.device;
-const Remote = imports.utils.remote;
+import Config from '../config.mjs';
+import {Panel, rowSeparators} from './device.js';
+import {Service} from '../utils/remote.js';
 
 
 /*
@@ -21,7 +21,7 @@ const Remote = imports.utils.remote;
  */
 const LOG_HEADER = new GLib.Bytes(`
 GSConnect: ${Config.PACKAGE_VERSION} (${Config.IS_USER ? 'user' : 'system'})
-GJS:       ${imports.system.version}
+GJS:       ${system.version}
 Session:   ${GLib.getenv('XDG_SESSION_TYPE')}
 OS:        ${GLib.get_os_info('PRETTY_NAME')}
 --------------------------------------------------------------------------------
@@ -91,7 +91,7 @@ async function generateSupportLog(time) {
 /**
  * "Connect to..." Dialog
  */
-var ConnectDialog = GObject.registerClass({
+const ConnectDialog = GObject.registerClass({
     GTypeName: 'GSConnectConnectDialog',
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/connect-dialog.ui',
     Children: [
@@ -132,7 +132,7 @@ var ConnectDialog = GObject.registerClass({
 });
 
 
-var Window = GObject.registerClass({
+export const Window = GObject.registerClass({
     GTypeName: 'GSConnectPreferencesWindow',
     Properties: {
         'display-mode': GObject.ParamSpec.string(
@@ -173,7 +173,7 @@ var Window = GObject.registerClass({
         });
 
         // Service Proxy
-        this.service = new Remote.Service();
+        this.service = new Service();
 
         this._deviceAddedId = this.service.connect(
             'device-added',
@@ -198,7 +198,7 @@ var Window = GObject.registerClass({
         this.service_box.set_focus_vadjustment(this.service_window.vadjustment);
 
         // Device List
-        this.device_list.set_header_func(Device.rowSeparators);
+        this.device_list.set_header_func(rowSeparators);
 
         // Discoverable InfoBar
         this.settings.bind(
@@ -580,7 +580,7 @@ var Window = GObject.registerClass({
         try {
             if (!this.stack.get_child_by_name(device.id)) {
                 // Add the device preferences
-                const prefs = new Device.Panel(device);
+                const prefs = new Panel(device);
                 this.stack.add_titled(prefs, device.id, device.name);
 
                 // Add a row to the device list
