@@ -14,7 +14,6 @@ plugin_tests = [
   'MousepadPlugin',
   'MprisPlugin',
   'NotificationPlugin',
-  'PhotoPlugin',
   'PingPlugin',
   'PresenterPlugin',
   'RuncommandPlugin',

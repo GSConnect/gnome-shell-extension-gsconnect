@@ -59,7 +59,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
       <default>{}</default>
     </key>
     <key name="menu-actions" type="as">
-      <default>["sms", "ring", "mount", "commands", "share", "photo", "keyboard"]</default>
+      <default>["sms", "ring", "mount", "commands", "share", "keyboard"]</default>
     </key>
     <key name="name" type="s">
       <default>""</default>
@@ -139,14 +139,6 @@ SPDX-License-Identifier: GPL-2.0-or-later
     </key>
     <key name="applications" type="s">
       <default>'{}'</default>
-    </key>
-  </schema>
-  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Photo">
-    <key name="share-camera" type="b">
-      <default>true</default>
-    </key>
-    <key name="receive-directory" type="s">
-      <default>""</default>
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Ping"/>

@@ -32,7 +32,6 @@ src/service/plugins/findmyphone.js
 src/service/plugins/mousepad.js
 src/service/plugins/mpris.js
 src/service/plugins/notification.js
-src/service/plugins/photo.js
 src/service/plugins/ping.js
 src/service/plugins/presenter.js
 src/service/plugins/runcommand.js
