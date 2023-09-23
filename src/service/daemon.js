@@ -635,7 +635,7 @@ const Service = GObject.registerClass({
         const files = options.lookup_value('share-file', null).deepUnpack();
 
         for (let file of files) {
-            file = imports.byteArray.toString(file);
+            file = new TextDecoder().decode(file);
             this._cliAction(device, 'shareFile', GLib.Variant.new('(sb)', [file, false]));
         }
     }

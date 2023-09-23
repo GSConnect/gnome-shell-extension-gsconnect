@@ -7,7 +7,6 @@
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
-const ByteArray = imports.byteArray;
 
 const Config = imports.config;
 const Components = imports.service.components;
@@ -201,8 +200,8 @@ var Device = GObject.registerClass({
             if (a.compare(b) < 0)
                 [a, b] = [b, a]; // swap
             const checksum = new GLib.Checksum(GLib.ChecksumType.SHA256);
-            checksum.update(ByteArray.fromGBytes(a));
-            checksum.update(ByteArray.fromGBytes(b));
+            checksum.update(a.toArray());
+            checksum.update(b.toArray());
             verificationKey = checksum.get_string();
         }
 
