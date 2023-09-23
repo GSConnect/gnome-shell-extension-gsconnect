@@ -53,6 +53,7 @@ Gio._promisify(Gio.TlsConnection.prototype, 'handshake_async');
 Gio._promisify(Gio.DtlsConnection.prototype, 'handshake_async');
 
 
+// FIXME when ESM: Shares code with src/shell/utils.js, gsconnect-preferences for gettext initialisation too
 // User Directories
 Config.CACHEDIR = GLib.build_filenamev([GLib.get_user_cache_dir(), 'gsconnect']);
 Config.CONFIGDIR = GLib.build_filenamev([GLib.get_user_config_dir(), 'gsconnect']);
@@ -424,6 +425,7 @@ Object.defineProperties(Gio.TlsCertificate.prototype, {
 
             return this.__common_name;
         },
+        configurable: true,
         enumerable: true,
     },
 
@@ -452,6 +454,7 @@ Object.defineProperties(Gio.TlsCertificate.prototype, {
 
             return this.__pubkey_der;
         },
+        configurable: true,
         enumerable: false,
     },
 
