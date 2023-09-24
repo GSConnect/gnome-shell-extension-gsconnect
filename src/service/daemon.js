@@ -17,7 +17,7 @@ import system from 'system';
 
 import './utils/setup.js';
 
-import Config from '../config.mjs';
+import Config from '../config.js';
 import Manager from './manager.js';
 import * as ServiceUI from './ui/service.js';
 

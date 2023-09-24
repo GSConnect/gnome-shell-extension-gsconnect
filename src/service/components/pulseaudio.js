@@ -6,7 +6,7 @@ import GIRepository from 'gi://GIRepository';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 
-import Config from '../../config.mjs';
+import Config from '../../config.js';
 
 const Tweener = imports.tweener.tweener;
 

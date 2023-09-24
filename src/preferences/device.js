@@ -8,7 +8,7 @@ import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk';
 import Pango from 'gi://Pango';
 
-import Config from '../config.mjs';
+import Config from '../config.js';
 import * as Keybindings from './keybindings.js';
 
 
@@ -16,7 +16,6 @@ import * as Keybindings from './keybindings.js';
 const DEVICE_PLUGINS = [];
 const DEVICE_SHORTCUTS = {};
 
-// FIXME ESM
 for (const name in imports.service.plugins) {
     const module = imports.service.plugins[name];
 

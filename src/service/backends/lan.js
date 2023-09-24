@@ -6,7 +6,7 @@ import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 
-import Config from '../../config.mjs';
+import Config from '../../config.js';
 import * as Core from '../core.js';
 
 // Retain compatibility with GLib < 2.80, which lacks GioUnix

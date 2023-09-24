@@ -11,7 +11,7 @@ import Gtk from 'gi://Gtk';
 
 import system from 'system';
 
-import Config from '../config.mjs';
+import Config from '../config.js';
 import {Panel, rowSeparators} from './device.js';
 import {Service} from '../utils/remote.js';
 

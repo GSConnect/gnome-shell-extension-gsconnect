@@ -16,8 +16,8 @@ import Gtk from 'gi://Gtk?version=3.0';
 import system from 'system';
 
 import {Window} from './preferences/service.js';
-import setup, {setupGettext} from './utils/setup.mjs';
-import Config from './config.mjs';
+import setup, {setupGettext} from './utils/setup.js';
+import Config from './config.js';
 
 import('gi://GioUnix?version=2.0').catch(() => {}); // Set version for optional dependency
 
