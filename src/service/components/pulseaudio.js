@@ -2,15 +2,13 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import GIRepository from 'gi://GIRepository';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
+
+import Config from '../../config.mjs';
 
 const Tweener = imports.tweener.tweener;
-
-const GIRepository = imports.gi.GIRepository;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
-
-const Config = imports.config;
 
 
 // Add gnome-shell's typelib dir to the search path
@@ -18,7 +16,7 @@ const typelibDir = GLib.build_filenamev([Config.GNOME_SHELL_LIBDIR, 'gnome-shell
 GIRepository.Repository.prepend_search_path(typelibDir);
 GIRepository.Repository.prepend_library_path(typelibDir);
 
-const Gvc = imports.gi.Gvc;
+const Gvc = (await import('gi://Gvc')).default;
 
 
 /**
@@ -265,4 +263,4 @@ const Mixer = GObject.registerClass({
 /**
  * The service class for this component
  */
-var Component = Mixer;
+export default Mixer;

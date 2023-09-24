@@ -284,22 +284,7 @@
         "ngettext": false
     },
     "parserOptions": {
-        "ecmaVersion": "latest"
-    },
-    "overrides": [
-        {
-            "files": [
-                "webextension/**/*.js",
-                "src/shell/**/*.js",
-                "src/utils/**/*.js",
-                "src/preferences/**/*.js",
-                "src/gsconnect-preferences",
-                "src/extension.js",
-                "src/prefs.js"
-            ],
-            "parserOptions": {
-                "sourceType": "module"
-            }
-        }
-    ]
+        "ecmaVersion": "latest",
+        "sourceType": "module"
+    }
 }

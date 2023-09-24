@@ -2,16 +2,14 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
-
-const PluginBase = imports.service.plugin;
+import Plugin from '../plugin.js';
 
 
-var Metadata = {
+export const Metadata = {
     label: _('Run Commands'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.RunCommand',
     description: _('Run commands on your paired device or let the device run predefined commands on this PC'),
@@ -49,7 +47,7 @@ var Metadata = {
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/remotecommands
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/runcommand
  */
-var Plugin = GObject.registerClass({
+const RunCommandPlugin = GObject.registerClass({
     GTypeName: 'GSConnectRunCommandPlugin',
     Properties: {
         'remote-commands': GObject.param_spec_variant(
@@ -61,7 +59,7 @@ var Plugin = GObject.registerClass({
             GObject.ParamFlags.READABLE
         ),
     },
-}, class Plugin extends PluginBase.Plugin {
+}, class RunCommandPlugin extends Plugin {
 
     _init(device) {
         super._init(device, 'runcommand');
@@ -252,3 +250,5 @@ var Plugin = GObject.registerClass({
         super.destroy();
     }
 });
+
+export default RunCommandPlugin;

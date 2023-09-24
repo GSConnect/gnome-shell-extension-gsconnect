@@ -2,12 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gdk from 'gi://Gdk';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
 
-const Gdk = imports.gi.Gdk;
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
+import AtspiController from './atspi.js';
 
 
 const SESSION_TIMEOUT = 15;
@@ -229,7 +229,7 @@ const RemoteSession = GObject.registerClass({
 });
 
 
-class Controller {
+export default class Controller {
     constructor() {
         this._nameAppearedId = 0;
         this._session = null;
@@ -339,8 +339,7 @@ class Controller {
             if (this.connection === null) {
                 debug('Falling back to Atspi');
 
-                const fallback = imports.service.components.atspi;
-                this._session = new fallback.Controller();
+                this._session = new AtspiController();
 
             // Mutter is available and there isn't another session starting
             } else if (this._sessionStarting === false) {
@@ -513,9 +512,3 @@ class Controller {
         }
     }
 }
-
-
-/**
- * The service class for this component
- */
-var Component = Controller;

@@ -2,17 +2,15 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gdk from 'gi://Gdk';
+import GObject from 'gi://GObject';
 
-const Gdk = imports.gi.Gdk;
-const GObject = imports.gi.GObject;
-
-const Components = imports.service.components;
-const {InputDialog} = imports.service.ui.mousepad;
-const PluginBase = imports.service.plugin;
+import * as Components from '../components/index.js';
+import {InputDialog} from '../ui/mousepad.js';
+import Plugin from '../plugin.js';
 
 
-var Metadata = {
+export const Metadata = {
     label: _('Mousepad'),
     description: _('Enables the paired device to act as a remote mouse and keyboard'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Mousepad',
@@ -120,7 +118,7 @@ const KeyMapCodes = new Map([
  *
  * TODO: support outgoing mouse events?
  */
-var Plugin = GObject.registerClass({
+const MousepadPlugin = GObject.registerClass({
     GTypeName: 'GSConnectMousepadPlugin',
     Properties: {
         'state': GObject.ParamSpec.boolean(
@@ -131,7 +129,7 @@ var Plugin = GObject.registerClass({
             false
         ),
     },
-}, class Plugin extends PluginBase.Plugin {
+}, class MousepadPlugin extends Plugin {
     _init(device) {
         super._init(device, 'mousepad');
 
@@ -379,3 +377,5 @@ var Plugin = GObject.registerClass({
         super.destroy();
     }
 });
+
+export default MousepadPlugin;

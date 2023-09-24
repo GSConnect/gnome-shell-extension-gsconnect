@@ -2,15 +2,13 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import GObject from 'gi://GObject';
 
-const GObject = imports.gi.GObject;
-
-const Components = imports.service.components;
-const PluginBase = imports.service.plugin;
+import * as Components from '../components/index.js';
+import Plugin from '../plugin.js';
 
 
-var Metadata = {
+export const Metadata = {
     label: _('Clipboard'),
     description: _('Share the clipboard content'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Clipboard',
@@ -47,9 +45,9 @@ var Metadata = {
  * Clipboard Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/clipboard
  */
-var Plugin = GObject.registerClass({
+const ClipboardPlugin = GObject.registerClass({
     GTypeName: 'GSConnectClipboardPlugin',
-}, class Plugin extends PluginBase.Plugin {
+}, class ClipboardPlugin extends Plugin {
 
     _init(device) {
         super._init(device, 'clipboard');
@@ -180,3 +178,5 @@ var Plugin = GObject.registerClass({
         super.destroy();
     }
 });
+
+export default ClipboardPlugin;
