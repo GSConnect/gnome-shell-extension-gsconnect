@@ -6,6 +6,8 @@ import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 
+import plugins from './plugins/index.js';
+
 
 /**
  * Get the local device type.
@@ -407,8 +409,8 @@ export const ChannelService = GObject.registerClass({
             },
         });
 
-        for (const name in imports.service.plugins) {
-            const meta = imports.service.plugins[name].Metadata;
+        for (const name in plugins) {
+            const meta = plugins[name].Metadata;
 
             if (meta === undefined)
                 continue;
