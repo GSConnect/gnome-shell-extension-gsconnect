@@ -15,6 +15,25 @@ const DEVICE_PATH = '/org/gnome/Shell/Extensions/GSConnect/Device';
 const DEVICE_IFACE = Config.DBUS.lookup_interface(DEVICE_NAME);
 
 
+// Load all backends using dynamic import
+const backends = {};
+
+const dir = Gio.File.new_for_uri(import.meta.url).get_parent().resolve_relative_path('backends');
+const iter = await dir.enumerate_children_async(
+    Gio.FILE_ATTRIBUTE_STANDARD_NAME,
+    Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
+    GLib.PRIORITY_DEFAULT,
+    null);
+const infos = await iter.next_files_async(100, GLib.PRIORITY_DEFAULT, null);
+iter.close_async(GLib.PRIORITY_DEFAULT, null, null);
+
+for (let i = 0; i < infos.length; i++) {
+    const info = infos[i];
+    const name = info.get_name().replace(/\.js$/, '');
+    backends[name] = await import(`./backends/${name}.js`);
+}
+
+
 /**
  * A manager for devices.
  */
@@ -233,9 +252,9 @@ const Manager = GObject.registerClass({
     }
 
     _loadBackends() {
-        for (const name in imports.service.backends) {
+        for (const name in backends) {
             try {
-                const module = imports.service.backends[name];
+                const module = backends[name];
 
                 if (module.ChannelService === undefined)
                     continue;

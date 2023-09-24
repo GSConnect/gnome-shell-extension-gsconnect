@@ -2,12 +2,33 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
 
 /*
  * Singleton Tracker
  */
 const Default = new Map();
 
+// Load all components using dynamic import
+const components = {};
+
+const dir = Gio.File.new_for_uri(import.meta.url).get_parent();
+const iter = await dir.enumerate_children_async(
+    Gio.FILE_ATTRIBUTE_STANDARD_NAME,
+    Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
+    GLib.PRIORITY_DEFAULT,
+    null);
+const infos = await iter.next_files_async(100, GLib.PRIORITY_DEFAULT, null);
+iter.close_async(GLib.PRIORITY_DEFAULT, null, null);
+
+for (let i = 0; i < infos.length; i++) {
+    const info = infos[i];
+    const name = info.get_name().replace(/\.js$/, '');
+    if (name === 'index')
+        continue;
+    components[name] = await import(`./${name}.js`);
+}
 
 /**
  * Acquire a reference to a component. Calls to this function should always be
@@ -23,10 +44,10 @@ export function acquire(name) {
         let info = Default.get(name);
 
         if (info === undefined) {
-            const module = imports.service.components[name];
+            const module = components[name];
 
             info = {
-                instance: new module.Component(),
+                instance: new module.default(),
                 refcount: 0,
             };
 

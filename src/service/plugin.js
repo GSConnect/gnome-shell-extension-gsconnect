@@ -7,6 +7,7 @@ import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 
 import Config from '../config.js';
+import plugins from './plugins/index.js';
 
 
 /**
@@ -40,7 +41,7 @@ const Plugin = GObject.registerClass({
         this._meta = meta;
 
         if (this._meta === null)
-            this._meta = imports.service.plugins[name].Metadata;
+            this._meta = plugins[name].Metadata;
 
         // GSettings
         const schema = Config.GSCHEMA.lookup(this._meta.id, false);
