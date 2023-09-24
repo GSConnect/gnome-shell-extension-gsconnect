@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="3.24"/>
+  <template class="GSConnectBluetoothHandoffDialog" parent="GtkDialog">
+    <property name="can_focus">False</property>
+    <property name="default_width">500</property>
+    <property name="default_height">400</property>
+    <property name="type_hint">dialog</property>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="can_focus">False</property>
+        <property name="margin_left">36</property>
+        <property name="margin_right">36</property>
+        <property name="margin_top">24</property>
+        <property name="margin_bottom">24</property>
+        <property name="orientation">vertical</property>
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkListBox" id="device_list">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="visible">True</property>
+            <property name="margin_bottom">18</property>
+            <property name="selection-mode">none</property>
+            <style>
+              <class name="frame"/>
+            </style>
+            <child type="placeholder">
+              <object class="GtkListBoxRow">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="selectable">False</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="margin_top">12</property>
+                    <property name="margin_bottom">12</property>
+                    <property name="margin_left">12</property>
+                    <property name="margin_right">12</property>
+                    <property name="label" translatable="yes">No Devices</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="instruction-label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="wrap">True</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>
+
