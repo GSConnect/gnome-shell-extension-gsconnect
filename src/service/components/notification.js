@@ -2,14 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GjsPrivate from 'gi://GjsPrivate';
+import GObject from 'gi://GObject';
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GjsPrivate = imports.gi.GjsPrivate;
-const GObject = imports.gi.GObject;
-
-const DBus = imports.service.utils.dbus;
+import * as DBus from '../utils/dbus.js';
 
 
 const _nodeInfo = Gio.DBusNodeInfo.new_for_xml(`
@@ -408,4 +406,4 @@ const Listener = GObject.registerClass({
 /**
  * The service class for this component
  */
-var Component = Listener;
+export default Listener;

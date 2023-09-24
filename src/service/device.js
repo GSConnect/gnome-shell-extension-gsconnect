@@ -2,16 +2,13 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
-
-const Config = imports.config;
-const Components = imports.service.components;
-const Core = imports.service.core;
-
+import Config from '../config.mjs';
+import * as Components from './components/index.js';
+import * as Core from './core.js';
 
 /**
  * An object representing a remote device.
@@ -20,7 +17,7 @@ const Core = imports.service.core;
  * GActionGroup and GActionMap interfaces, like Gio.Application.
  *
  */
-var Device = GObject.registerClass({
+const Device = GObject.registerClass({
     GTypeName: 'GSConnectDevice',
     Properties: {
         'connected': GObject.ParamSpec.boolean(
@@ -1104,3 +1101,4 @@ var Device = GObject.registerClass({
     }
 });
 
+export default Device;

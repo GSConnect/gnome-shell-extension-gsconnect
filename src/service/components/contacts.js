@@ -2,23 +2,21 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
+import Config from '../../config.mjs';
 
-const Config = imports.config;
-
-var HAVE_EDS = true;
-var EBook = null;
-var EBookContacts = null;
-var EDataServer = null;
+let HAVE_EDS = true;
+let EBook = null;
+let EBookContacts = null;
+let EDataServer = null;
 
 try {
-    EBook = imports.gi.EBook;
-    EBookContacts = imports.gi.EBookContacts;
-    EDataServer = imports.gi.EDataServer;
+    EBook = (await import('gi://EBook')).default;
+    EBookContacts = (await import('gi://EBookContacts')).default;
+    EDataServer = (await import('gi://EDataServer')).default;
 } catch (e) {
     HAVE_EDS = false;
 }
@@ -27,7 +25,7 @@ try {
 /**
  * A store for contacts
  */
-var Store = GObject.registerClass({
+const Store = GObject.registerClass({
     GTypeName: 'GSConnectContactsStore',
     Properties: {
         'context': GObject.ParamSpec.string(
@@ -611,9 +609,5 @@ var Store = GObject.registerClass({
     }
 });
 
-
-/**
- * The service class for this component
- */
-var Component = Store;
+export default Store;
 

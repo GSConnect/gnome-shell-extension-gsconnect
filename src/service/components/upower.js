@@ -2,11 +2,9 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
-
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
 
 
 /**
@@ -49,7 +47,7 @@ const DeviceState = {
 /**
  * A class representing the system battery.
  */
-var Battery = GObject.registerClass({
+const Battery = GObject.registerClass({
     GTypeName: 'GSConnectSystemBattery',
     Signals: {
         'changed': {
@@ -213,5 +211,5 @@ var Battery = GObject.registerClass({
 /**
  * The service class for this component
  */
-var Component = Battery;
+export default Battery;
 

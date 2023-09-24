@@ -2,19 +2,17 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import GdkPixbuf from 'gi://GdkPixbuf';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
+import Gtk from 'gi://Gtk';
 
-const GdkPixbuf = imports.gi.GdkPixbuf;
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
-
-const PluginBase = imports.service.plugin;
-const URI = imports.service.utils.uri;
+import Plugin from '../plugin.js';
+import * as URI from '../utils/uri.js';
 
 
-var Metadata = {
+export const Metadata = {
     label: _('Share'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Share',
     description: _('Share files and URLs between devices'),
@@ -64,9 +62,9 @@ var Metadata = {
  * TODO: receiving 'text' TODO: Window with textview & 'Copy to Clipboard..
  *       https://github.com/KDE/kdeconnect-kde/commit/28f11bd5c9a717fb9fbb3f02ddd6cea62021d055
  */
-var Plugin = GObject.registerClass({
+const SharePlugin = GObject.registerClass({
     GTypeName: 'GSConnectSharePlugin',
-}, class Plugin extends PluginBase.Plugin {
+}, class SharePlugin extends Plugin {
 
     _init(device) {
         super._init(device, 'share');
@@ -369,7 +367,7 @@ var Plugin = GObject.registerClass({
 
 
 /** A simple FileChooserDialog for sharing files */
-var FileChooserDialog = GObject.registerClass({
+const FileChooserDialog = GObject.registerClass({
     GTypeName: 'GSConnectShareFileChooserDialog',
 }, class FileChooserDialog extends Gtk.FileChooserDialog {
 
@@ -490,3 +488,5 @@ var FileChooserDialog = GObject.registerClass({
         this.destroy();
     }
 });
+
+export default SharePlugin;

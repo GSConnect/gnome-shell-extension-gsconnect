@@ -2,14 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
-
-const Config = imports.config;
-const Core = imports.service.core;
+import Config from '../../config.mjs';
+import * as Core from '../core.js';
 
 
 /**
@@ -25,7 +23,7 @@ const TRANSFER_MAX = 1764;
 /*
  * One-time check for Linux/FreeBSD socket options
  */
-var _LINUX_SOCKETS = true;
+export let _LINUX_SOCKETS = true;
 
 try {
     // This should throw on FreeBSD
@@ -44,7 +42,7 @@ try {
  *
  * @param {Gio.SocketConnection} connection - The connection to configure
  */
-function _configureSocket(connection) {
+export function _configureSocket(connection) {
     try {
         if (_LINUX_SOCKETS) {
             connection.socket.set_option(6, 4, 10); // TCP_KEEPIDLE
@@ -78,7 +76,7 @@ function _configureSocket(connection) {
  * include the TCP port, while the IP address is taken from the UDP packet
  * itself. We respond by opening a TCP connection to that address.
  */
-var ChannelService = GObject.registerClass({
+export const ChannelService = GObject.registerClass({
     GTypeName: 'GSConnectLanChannelService',
     Properties: {
         'certificate': GObject.ParamSpec.object(
@@ -527,7 +525,7 @@ var ChannelService = GObject.registerClass({
  * This class essentially just extends Core.Channel to set TCP socket options
  * and negotiate TLS encrypted connections.
  */
-var Channel = GObject.registerClass({
+export const Channel = GObject.registerClass({
     GTypeName: 'GSConnectLanChannel',
 }, class LanChannel extends Core.Channel {
 

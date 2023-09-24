@@ -2,19 +2,17 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
-
-const Config = imports.config;
+import Config from '../config.mjs';
 
 
 /**
  * Base class for device plugins.
  */
-var Plugin = GObject.registerClass({
+const Plugin = GObject.registerClass({
     GTypeName: 'GSConnectPlugin',
     Properties: {
         'device': GObject.ParamSpec.object(
@@ -247,4 +245,6 @@ var Plugin = GObject.registerClass({
         GObject.signal_handlers_destroy(this);
     }
 });
+
+export default Plugin;
 

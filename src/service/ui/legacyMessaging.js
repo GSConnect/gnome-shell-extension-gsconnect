@@ -2,19 +2,17 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gio from 'gi://Gio';
+import GObject from 'gi://GObject';
+import Gtk from 'gi://Gtk';
 
-const Gio = imports.gi.Gio;
-const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
-
-const Contacts = imports.service.ui.contacts;
-const Messaging = imports.service.ui.messaging;
-const URI = imports.service.utils.uri;
-const _ui = imports.service.utils.ui;
+import * as Contacts from '../ui/contacts.js';
+import * as Messaging from '../ui/messaging.js';
+import * as URI from '../utils/uri.js';
+import '../utils/ui.js';
 
 
-var Dialog = GObject.registerClass({
+const Dialog = GObject.registerClass({
     GTypeName: 'GSConnectLegacyMessagingDialog',
     Properties: {
         'device': GObject.ParamSpec.object(
@@ -226,3 +224,4 @@ var Dialog = GObject.registerClass({
     }
 });
 
+export default Dialog;

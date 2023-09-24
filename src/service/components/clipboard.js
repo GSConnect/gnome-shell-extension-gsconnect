@@ -2,20 +2,21 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
-
-const Gdk = imports.gi.Gdk;
-const GLib = imports.gi.GLib;
-const Gtk = imports.gi.Gtk;
-const Gio = imports.gi.Gio;
-const GObject = imports.gi.GObject;
+import Gdk from 'gi://Gdk';
+import GLib from 'gi://GLib';
+import Gtk from 'gi://Gtk';
+import Gio from 'gi://Gio';
+import GObject from 'gi://GObject';
 
 
 const DBUS_NAME = 'org.gnome.Shell.Extensions.GSConnect.Clipboard';
 const DBUS_PATH = '/org/gnome/Shell/Extensions/GSConnect/Clipboard';
 
 
-var Clipboard = GObject.registerClass({
+/**
+ * The service class for this component
+ */
+const Clipboard = GObject.registerClass({
     GTypeName: 'GSConnectClipboard',
     Properties: {
         'text': GObject.ParamSpec.string(
@@ -219,10 +220,6 @@ var Clipboard = GObject.registerClass({
     }
 });
 
-
-/**
- * The service class for this component
- */
-var Component = Clipboard;
+export default Clipboard;
 
 // vim:tabstop=2:shiftwidth=2:expandtab

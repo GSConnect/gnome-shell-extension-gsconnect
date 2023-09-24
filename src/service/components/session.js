@@ -2,10 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
-
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
 
 
 const Session = class {
@@ -82,5 +80,5 @@ const Session = class {
 /**
  * The service class for this component
  */
-var Component = Session;
+export default Session;
 

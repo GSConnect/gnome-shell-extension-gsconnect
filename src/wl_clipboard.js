@@ -2,12 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
-
-const Gio = imports.gi.Gio;
-const GjsPrivate = imports.gi.GjsPrivate;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
+import Gio from 'gi://Gio';
+import GjsPrivate from 'gi://GjsPrivate';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
 
 // laucher for wl-clipboard
 const launcher = new Gio.SubprocessLauncher({
@@ -55,7 +53,7 @@ const TEXT_MIMETYPES = [
  * A simple clipboard portal, especially useful on Wayland where GtkClipboard
  * doesn't work in the background.
  */
-var Clipboard = GObject.registerClass(
+export const Clipboard = GObject.registerClass(
     {
         GTypeName: 'GSConnectShellClipboard',
     },
@@ -258,13 +256,13 @@ var Clipboard = GObject.registerClass(
     }
 );
 
-var _portal = null;
-var _portalId = 0;
+let _portal = null;
+let _portalId = 0;
 
 /**
  * Watch for the service to start and export the clipboard portal when it does.
  */
-function watchService() {
+export function watchService() {
     if (_portalId > 0)
         return;
 
@@ -288,7 +286,7 @@ function watchService() {
 /**
  * Stop watching the service and export the portal if currently running.
  */
-function unwatchService() {
+export function unwatchService() {
     if (_portalId > 0) {
         Gio.bus_unwatch_name(_portalId);
         _portalId = 0;

@@ -2,14 +2,14 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import GLib from 'gi://GLib';
+import Gio from 'gi://Gio';
+import GObject from 'gi://GObject';
+import Gtk from 'gi://Gtk';
 
-const GLib = imports.gi.GLib;
-const Gio = imports.gi.Gio;
-const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
+import system from 'system';
 
-const Config = imports.config;
+import Config from '../../config.mjs';
 
 
 /*
@@ -17,7 +17,7 @@ const Config = imports.config;
  */
 const ISSUE_HEADER = `
 GSConnect: ${Config.PACKAGE_VERSION} (${Config.IS_USER ? 'user' : 'system'})
-GJS:       ${imports.system.version}
+GJS:       ${system.version}
 Session:   ${GLib.getenv('XDG_SESSION_TYPE')}
 OS:        ${GLib.get_os_info('PRETTY_NAME')}
 `;
@@ -26,7 +26,7 @@ OS:        ${GLib.get_os_info('PRETTY_NAME')}
 /**
  * A dialog for selecting a device
  */
-var DeviceChooser = GObject.registerClass({
+export const DeviceChooser = GObject.registerClass({
     GTypeName: 'GSConnectServiceDeviceChooser',
     Properties: {
         'action-name': GObject.ParamSpec.string(
@@ -192,7 +192,7 @@ var DeviceChooser = GObject.registerClass({
 /**
  * A dialog for reporting an error.
  */
-var ErrorDialog = GObject.registerClass({
+export const ErrorDialog = GObject.registerClass({
     GTypeName: 'GSConnectServiceErrorDialog',
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/service-error-dialog.ui',
     Children: [
