@@ -16,7 +16,7 @@ import {
     ngettext
 } from 'resource:///org/gnome/shell/extensions/extension.js';
 
-import Config from './config.mjs';
+import Config from './config.js';
 import * as Clipboard from './shell/clipboard.js';
 import * as Device from './shell/device.js';
 import * as Keybindings from './shell/keybindings.js';
@@ -24,7 +24,7 @@ import * as Notification from './shell/notification.js';
 import * as Input from './shell/input.js';
 import * as Utils from './shell/utils.js';
 import * as Remote from './utils/remote.js';
-import setup from './utils/setup.mjs';
+import setup from './utils/setup.js';
 
 const QuickSettingsMenu = Main.panel.statusArea.quickSettings;
 

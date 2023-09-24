@@ -4,7 +4,7 @@
 
 import Gio from 'gi://Gio';
 
-import Config from '../config.mjs';
+import Config from '../config.js';
 
 export class LockscreenRemoteAccess {
 

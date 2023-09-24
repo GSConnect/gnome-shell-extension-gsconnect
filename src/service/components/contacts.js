@@ -6,7 +6,7 @@ import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 
-import Config from '../../config.mjs';
+import Config from '../../config.js';
 
 let HAVE_EDS = true;
 let EBook = null;
