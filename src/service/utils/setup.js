@@ -2,19 +2,20 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import {watchService} from '../../wl_clipboard.js';
 
-const Gio = imports.gi.Gio;
-const GIRepository = imports.gi.GIRepository;
-const GLib = imports.gi.GLib;
+import Gio from 'gi://Gio';
+import GIRepository from 'gi://GIRepository';
+import GLib from 'gi://GLib';
 
-const Config = imports.config;
-const {setup, setupGettext} = imports.utils.setup;
+import Config from '../../config.mjs';
+import setup, {setupGettext} from '../../utils/setup.mjs';
 
 
 // Promise Wrappers
 try {
-    const {EBook, EDataServer} = imports.gi;
+    const EBook = (await import('gi://EBook')).default;
+    const EDataServer = (await import('gi://EDataServer')).default;
 
     Gio._promisify(EBook.BookClient, 'connect');
     Gio._promisify(EBook.BookClient.prototype, 'get_view');
@@ -58,7 +59,10 @@ Config.CONFIGDIR = GLib.build_filenamev([GLib.get_user_config_dir(), 'gsconnect'
 Config.RUNTIMEDIR = GLib.build_filenamev([GLib.get_user_runtime_dir(), 'gsconnect']);
 
 // Bootstrap
-setup(Config.PACKAGE_DATADIR);
+const utilsFolder = GLib.path_get_dirname(GLib.filename_from_uri(import.meta.url)[0]);
+const serviceFolder = GLib.path_get_dirname(utilsFolder);
+const extensionFolder = GLib.path_get_dirname(serviceFolder);
+setup(extensionFolder);
 setupGettext();
 
 if (Config.IS_USER) {
@@ -157,7 +161,7 @@ else
  */
 if (!globalThis.HAVE_GNOME) {
     debug('Not running as a Gnome extension');
-    imports.wl_clipboard.watchService();
+    watchService();
 }
 
 

@@ -1,25 +1,19 @@
-#!/usr/bin/env gjs
+#!/usr/bin/env -S gjs -m
 
 // SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gio from 'gi://Gio?version=2.0';
+import GLib from 'gi://GLib?version=2.0';
+import GObject from 'gi://GObject?version=2.0';
 
-imports.gi.versions.Gio = '2.0';
-imports.gi.versions.GioUnix = '2.0';
-imports.gi.versions.GLib = '2.0';
-imports.gi.versions.GObject = '2.0';
-
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
-const System = imports.system;
+import system from 'system';
 
 // Retain compatibility with GLib < 2.80, which lacks GioUnix
 let GioUnix;
 try {
-    GioUnix = imports.gi.GioUnix;
+    GioUnix = (await import('gi://GioUnix?version=2.0')).default;
 } catch (e) {
     GioUnix = {
         InputStream: Gio.UnixInputStream,
@@ -227,5 +221,5 @@ const NativeMessagingHost = GObject.registerClass({
 });
 
 // NOTE: must not pass ARGV
-(new NativeMessagingHost()).run([System.programInvocationName]);
+(new NativeMessagingHost()).run([system.programInvocationName]);
 

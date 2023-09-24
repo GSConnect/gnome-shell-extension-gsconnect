@@ -2,13 +2,13 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gdk from 'gi://Gdk';
+import GdkPixbuf from 'gi://GdkPixbuf';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
+import Gtk from 'gi://Gtk';
 
-const Gdk = imports.gi.Gdk;
-const GdkPixbuf = imports.gi.GdkPixbuf;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
+import system from 'system';
 
 
 /**
@@ -156,7 +156,7 @@ function getNumberTypeLabel(type) {
  * @param {string} address - A phone number
  * @return {string} A (possibly) better display number for the address
  */
-function getDisplayNumber(contact, address) {
+export function getDisplayNumber(contact, address) {
     const number = address.toPhoneNumber();
 
     for (const contactNumber of contact.numbers) {
@@ -175,7 +175,7 @@ function getDisplayNumber(contact, address) {
  */
 const AvatarCache = new WeakMap();
 
-var Avatar = GObject.registerClass({
+export const Avatar = GObject.registerClass({
     GTypeName: 'GSConnectContactAvatar',
 }, class ContactAvatar extends Gtk.DrawingArea {
 
@@ -363,7 +363,7 @@ const AddressRow = GObject.registerClass({
 /**
  * A widget for selecting contact addresses (usually phone numbers)
  */
-var ContactChooser = GObject.registerClass({
+export const ContactChooser = GObject.registerClass({
     GTypeName: 'GSConnectContactChooser',
     Properties: {
         'device': GObject.ParamSpec.object(
@@ -435,7 +435,7 @@ var ContactChooser = GObject.registerClass({
             for (let i = 0, len = rows.length; i < len; i++) {
                 rows[i].destroy();
                 // HACK: temporary mitigator for mysterious GtkListBox leak
-                imports.system.gc();
+                system.gc();
             }
         }
 
@@ -482,7 +482,7 @@ var ContactChooser = GObject.registerClass({
             if (row.contact.id === id) {
                 row.destroy();
                 // HACK: temporary mitigator for mysterious GtkListBox leak
-                imports.system.gc();
+                system.gc();
             }
         }
     }

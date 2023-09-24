@@ -2,9 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
-
-const GLib = imports.gi.GLib;
+import GLib from 'gi://GLib';
 
 
 /**
@@ -83,7 +81,7 @@ const _numberRegex = new RegExp(
  * @param {string} str - the string to search
  * @return {Object[]} the list of match objects, as described above
  */
-function findUrls(str) {
+export function findUrls(str) {
     _urlRegexp.lastIndex = 0;
 
     const res = [];
@@ -107,7 +105,7 @@ function findUrls(str) {
  * @param {string} [title] - An optional title (eg. alt text, tooltip)
  * @return {string} the modified text
  */
-function linkify(str, title = null) {
+export function linkify(str, title = null) {
     const text = GLib.markup_escape_text(str, -1);
 
     _urlRegexp.lastIndex = 0;
@@ -126,7 +124,7 @@ function linkify(str, title = null) {
 /**
  * A simple parsing class for sms: URI's (https://tools.ietf.org/html/rfc5724)
  */
-var SmsURI = class URI {
+export default class URI {
     constructor(uri) {
         _smsRegex.lastIndex = 0;
         const [, recipients, query] = _smsRegex.exec(uri);
@@ -167,5 +165,5 @@ var SmsURI = class URI {
 
         return this.body ? `${uri}?body=${escape(this.body)}` : uri;
     }
-};
+}
 

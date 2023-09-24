@@ -2,23 +2,26 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gdk from 'gi://Gdk';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
 
-const Gdk = imports.gi.Gdk;
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
+let GSound = null;
+try {
+    GSound = (await import('gi://GSound')).default;
+} catch (e) {}
 
 
 /*
  * Used to ensure 'audible-bell' is enabled for fallback
  */
-const WM_SETTINGS = new Gio.Settings({
+/* const WM_SETTINGS = new Gio.Settings({
     schema_id: 'org.gnome.desktop.wm.preferences',
     path: '/org/gnome/desktop/wm/preferences/',
-});
+}); */
 
 
-var Player = class Player {
+const Player = class Player {
 
     constructor() {
         this._playing = new Set();
@@ -27,14 +30,14 @@ var Player = class Player {
     get backend() {
         if (this._backend === undefined) {
             // Prefer GSound
-            try {
-                this._gsound = new imports.gi.GSound.Context();
+            if (GSound !== null) {
+                this._gsound = new GSound.Context();
                 this._gsound.init(null);
                 this._backend = 'gsound';
 
             // Try falling back to libcanberra, otherwise just re-run the test
             // in case one or the other is installed later
-            } catch (e) {
+            } else {
                 if (GLib.find_program_in_path('canberra-gtk-play') !== null) {
                     this._canberra = new Gio.SubprocessLauncher({
                         flags: Gio.SubprocessFlags.NONE,
@@ -176,5 +179,5 @@ var Player = class Player {
 /**
  * The service class for this component
  */
-var Component = Player;
+export default Player;
 

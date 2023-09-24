@@ -2,19 +2,17 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
-
-const PluginBase = imports.service.plugin;
-const LegacyMessaging = imports.service.ui.legacyMessaging;
-const Messaging = imports.service.ui.messaging;
-const URI = imports.service.utils.uri;
+import Plugin from '../plugin.js';
+import LegacyMessagingDialog from '../ui/legacyMessaging.js';
+import * as Messaging from '../ui/messaging.js';
+import SmsURI from '../utils/uri.js';
 
 
-var Metadata = {
+export const Metadata = {
     label: _('SMS'),
     description: _('Send and read SMS of the paired device and be notified of new SMS'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.SMS',
@@ -85,7 +83,7 @@ var Metadata = {
  *
  * TEXT_MESSAGE: Has a "body" field which contains pure, human-readable text
  */
-var MessageEventType = {
+export const MessageEventType = {
     TEXT_MESSAGE: 0x1,
 };
 
@@ -97,7 +95,7 @@ var MessageEventType = {
  * UNREAD: A message not marked as read
  * READ: A message marked as read
  */
-var MessageStatus = {
+export const MessageStatus = {
     UNREAD: 0,
     READ: 1,
 };
@@ -117,7 +115,7 @@ var MessageStatus = {
  * FAILED: Failed outgoing messages
  * QUEUED: Messages queued to send later
  */
-var MessageBox = {
+export const MessageBox = {
     ALL: 0,
     INBOX: 1,
     SENT: 2,
@@ -133,7 +131,7 @@ var MessageBox = {
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/sms
  * https://github.com/KDE/kdeconnect-android/tree/master/src/org/kde/kdeconnect/Plugins/SMSPlugin/
  */
-var Plugin = GObject.registerClass({
+const SMSPlugin = GObject.registerClass({
     GTypeName: 'GSConnectSMSPlugin',
     Properties: {
         'threads': GObject.param_spec_variant(
@@ -145,7 +143,7 @@ var Plugin = GObject.registerClass({
             GObject.ParamFlags.READABLE
         ),
     },
-}, class Plugin extends PluginBase.Plugin {
+}, class SMSPlugin extends Plugin {
 
     _init(device) {
         super._init(device, 'sms');
@@ -162,7 +160,7 @@ var Plugin = GObject.registerClass({
 
     get window() {
         if (this.settings.get_boolean('legacy-sms')) {
-            return new LegacyMessaging.Dialog({
+            return new LegacyMessagingDialog({
                 device: this.device,
                 plugin: this,
             });
@@ -473,7 +471,7 @@ var Plugin = GObject.registerClass({
      */
     uriSms(uri) {
         try {
-            uri = new URI.SmsURI(uri);
+            uri = new SmsURI(uri);
 
             // Lookup contacts
             const addresses = uri.recipients.map(number => {
@@ -534,3 +532,5 @@ var Plugin = GObject.registerClass({
         super.destroy();
     }
 });
+
+export default SMSPlugin;

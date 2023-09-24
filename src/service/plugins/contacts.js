@@ -2,27 +2,25 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
 
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
-
-const PluginBase = imports.service.plugin;
-const Contacts = imports.service.components.contacts;
+import Plugin from '../plugin.js';
+import Contacts from '../components/contacts.js';
 
 /*
  * We prefer libebook's vCard parser if it's available
  */
-var EBookContacts;
+let EBookContacts;
 
 try {
-    EBookContacts = imports.gi.EBookContacts;
+    EBookContacts = (await import('gi://EBookContacts')).default;
 } catch (e) {
     EBookContacts = null;
 }
 
 
-var Metadata = {
+export const Metadata = {
     label: _('Contacts'),
     description: _('Access contacts of the paired device'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Contacts',
@@ -53,14 +51,14 @@ const VCARD_TYPED_META = /([a-z]+)=(.*)/i;
  * Contacts Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/contacts
  */
-var Plugin = GObject.registerClass({
+const ContactsPlugin = GObject.registerClass({
     GTypeName: 'GSConnectContactsPlugin',
-}, class Plugin extends PluginBase.Plugin {
+}, class ContactsPlugin extends Plugin {
 
     _init(device) {
         super._init(device, 'contacts');
 
-        this._store = new Contacts.Store(device.id);
+        this._store = new Contacts(device.id);
         this._store.fetch = this._requestUids.bind(this);
 
         // Notify when the store is ready
@@ -458,3 +456,5 @@ var Plugin = GObject.registerClass({
         super.destroy();
     }
 });
+
+export default ContactsPlugin;

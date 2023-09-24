@@ -2,8 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
-
 
 /*
  * Singleton Tracker
@@ -18,7 +16,7 @@ const Default = new Map();
  * @param {string} name - The module name
  * @return {*} The default instance of a component
  */
-function acquire(name) {
+export function acquire(name) {
     let component;
 
     try {
@@ -52,7 +50,7 @@ function acquire(name) {
  * @param {string} name - The module name
  * @return {null} A %null value, useful for overriding a traced variable
  */
-function release(name) {
+export function release(name) {
     try {
         const info = Default.get(name);
 

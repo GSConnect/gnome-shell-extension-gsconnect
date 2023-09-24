@@ -2,20 +2,18 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gio from 'gi://Gio';
+import GObject from 'gi://GObject';
+import Gtk from 'gi://Gtk';
 
-const Gio = imports.gi.Gio;
-const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
-
-const URI = imports.service.utils.uri;
-const _ui = imports.service.utils.ui;
+import * as URI from '../utils/uri.js';
+import '../utils/ui.js';
 
 
 /**
  * A dialog for repliable notifications.
  */
-var ReplyDialog = GObject.registerClass({
+const ReplyDialog = GObject.registerClass({
     GTypeName: 'GSConnectNotificationReplyDialog',
     Properties: {
         'device': GObject.ParamSpec.object(
@@ -177,3 +175,4 @@ var ReplyDialog = GObject.registerClass({
     }
 });
 
+export default ReplyDialog;

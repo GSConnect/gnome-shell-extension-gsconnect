@@ -1,47 +1,27 @@
-#!/usr/bin/env gjs
+#!/usr/bin/env -S gjs -m
 
 // SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gdk from 'gi://Gdk?version=3.0';
+import 'gi://GdkPixbuf?version=2.0';
+import Gio from 'gi://Gio?version=2.0';
+import 'gi://GIRepository?version=2.0';
+import GLib from 'gi://GLib?version=2.0';
+import GObject from 'gi://GObject?version=2.0';
+import Gtk from 'gi://Gtk?version=3.0';
+import 'gi://Pango?version=1.0';
 
-imports.gi.versions.Gdk = '3.0';
-imports.gi.versions.GdkPixbuf = '2.0';
-imports.gi.versions.Gio = '2.0';
-imports.gi.versions.GioUnix = '2.0';
-imports.gi.versions.GIRepository = '2.0';
-imports.gi.versions.GLib = '2.0';
-imports.gi.versions.GObject = '2.0';
-imports.gi.versions.Gtk = '3.0';
-imports.gi.versions.Pango = '1.0';
+import system from 'system';
 
-const Gdk = imports.gi.Gdk;
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
+import './utils/setup.js';
 
-// Bootstrap
-function get_datadir() {
-    let [, path] = /@([^:]+):\d+/.exec(new Error().stack.split('\n')[1]);
-    const info = Gio.File.new_for_path(path)
-        .query_info('standard::*', Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS, null);
-    path = info.get_is_symlink() ? info.get_symlink_target() : path;
+import Config from '../config.mjs';
+import Manager from './manager.js';
+import * as ServiceUI from './ui/service.js';
 
-    return Gio.File.new_for_path(path).get_parent().get_parent().get_path();
-}
-
-imports.searchPath.unshift(get_datadir());
-imports.config.PACKAGE_DATADIR = imports.searchPath[0];
-
-const _setup = imports.service.utils.setup;
-
-
-// Local Imports
-const Config = imports.config;
-const Manager = imports.service.manager;
-const ServiceUI = imports.service.ui.service;
+import('gi://GioUnix?version=2.0').catch(() => {}); // Set version for optional dependency
 
 
 /**
@@ -268,7 +248,7 @@ const Service = GObject.registerClass({
         if (!super.vfunc_dbus_register(connection, object_path))
             return false;
 
-        this.manager = new Manager.Manager({
+        this.manager = new Manager({
             connection: connection,
             object_path: object_path,
         });
@@ -338,7 +318,7 @@ const Service = GObject.registerClass({
             continue;
 
         // Force a GC to prevent any more calls back into JS, then chain-up
-        imports.system.gc();
+        system.gc();
         super.vfunc_shutdown();
     }
 
@@ -718,5 +698,5 @@ const Service = GObject.registerClass({
     }
 });
 
-(new Service()).run([imports.system.programInvocationName].concat(ARGV));
+(new Service()).run([system.programInvocationName].concat(ARGV));
 
