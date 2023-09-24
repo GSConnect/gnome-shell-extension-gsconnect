@@ -9,6 +9,7 @@ import GObject from 'gi://GObject';
 import Config from '../config.js';
 import * as Components from './components/index.js';
 import * as Core from './core.js';
+import plugins from './plugins/index.js';
 
 /**
  * An object representing a remote device.
@@ -294,8 +295,8 @@ const Device = GObject.registerClass({
         // Determine supported plugins by matching incoming to outgoing types
         const supported = [];
 
-        for (const name in imports.service.plugins) {
-            const meta = imports.service.plugins[name].Metadata;
+        for (const name in plugins) {
+            const meta = plugins[name].Metadata;
 
             if (meta === undefined)
                 continue;
@@ -1008,8 +1009,8 @@ const Device = GObject.registerClass({
         try {
             if (this.paired && !this._plugins.has(name)) {
                 // Instantiate the handler
-                handler = imports.service.plugins[name];
-                plugin = new handler.Plugin(this);
+                handler = plugins[name];
+                plugin = new handler.default(this);
 
                 // Register packet handlers
                 for (const packetType of handler.Metadata.incomingCapabilities)
@@ -1050,7 +1051,7 @@ const Device = GObject.registerClass({
         try {
             if (this._plugins.has(name)) {
                 // Unregister packet handlers
-                handler = imports.service.plugins[name];
+                handler = plugins[name];
 
                 for (const type of handler.Metadata.incomingCapabilities)
                     this._handlers.delete(type);
