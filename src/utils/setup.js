@@ -2,18 +2,18 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
 
-const Gettext = imports.gettext;
+import Gettext from 'gettext';
 
-const Config = imports.config;
+import Config from '../config.js';
 
 
 /**
  * Initialise and setup Gettext.
  */
-function setupGettext() {
+export function setupGettext() {
     // Init Gettext
     String.prototype.format = imports.format.format;
     Gettext.bindtextdomain(Config.APP_ID, Config.PACKAGE_LOCALEDIR);
@@ -25,7 +25,7 @@ function setupGettext() {
  * Initialise and setup Config, GResources and GSchema.
  * @param {string} extensionPath - The absolute path to the extension directory
  */
-function setup(extensionPath) {
+export default function setup(extensionPath) {
     // Ensure config.js is setup properly
     Config.PACKAGE_DATADIR = extensionPath;
     const userDir = GLib.build_filenamev([GLib.get_user_data_dir(), 'gnome-shell']);

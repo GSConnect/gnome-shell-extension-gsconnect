@@ -7,7 +7,7 @@ import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import Gtk from 'gi://Gtk';
 
-import Config from '../../config.mjs';
+import Config from '../../config.js';
 
 
 /*

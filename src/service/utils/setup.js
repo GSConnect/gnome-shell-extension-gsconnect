@@ -8,8 +8,8 @@ import Gio from 'gi://Gio';
 import GIRepository from 'gi://GIRepository';
 import GLib from 'gi://GLib';
 
-import Config from '../../config.mjs';
-import setup, {setupGettext} from '../../utils/setup.mjs';
+import Config from '../../config.js';
+import setup, {setupGettext} from '../../utils/setup.js';
 
 
 // Promise Wrappers
