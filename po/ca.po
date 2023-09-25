@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-04-29 00:46-0400\n"
-"PO-Revision-Date: 2023-05-01 15:40\n"
+"PO-Revision-Date: 2023-09-25 07:38\n"
 "Last-Translator: \n"
 "Language-Team: Catalan\n"
 "Language: ca_ES\n"
@@ -33,7 +33,7 @@ msgstr "L’equip del GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
 msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
+msgstr "GSConnect és una implementació completa de KDE Connect especialment per a GNOME Shell amb integració amb Nautilus, Chrome i Firefox. L'equip de KDE Connect té aplicacions per a Linux, BSD, Android, Sailfish, iOS, macOS i Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:42
 msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
@@ -77,7 +77,7 @@ msgstr "I més…"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:130
 msgid "GSConnect in GNOME Shell"
-msgstr ""
+msgstr "GSConnect en el GNOME Shell"
 
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/connect-dialog.ui:20 data/ui/preferences-window.ui:821
@@ -122,7 +122,7 @@ msgstr "Introduïu un número telefònic o un nom"
 #. TRANSLATORS: All other phone number types
 #: data/ui/contacts-address-row.ui:71 src/service/ui/contacts.js:149
 msgid "Other"
-msgstr ""
+msgstr "Altres"
 
 #. TRANSLATORS: Share URL by SMS
 #: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:292
@@ -156,7 +156,7 @@ msgstr ""
 
 #: data/ui/messaging-conversation.ui:100
 msgid "Type a message and press Enter to send"
-msgstr ""
+msgstr "Escriu un missatge i apreta Enter per enviar"
 
 #: data/ui/messaging-window.ui:21 src/service/plugins/sms.js:32
 #: src/service/ui/messaging.js:1056
@@ -243,7 +243,7 @@ msgstr "Fitxers"
 
 #: data/ui/preferences-device-panel.ui:445
 msgid "Receive Files"
-msgstr ""
+msgstr "Rebre fitxers"
 
 #: data/ui/preferences-device-panel.ui:504
 msgid "Save files to"
@@ -501,11 +501,11 @@ msgstr "S’estan cercant dispositius…"
 
 #: data/ui/preferences-window.ui:353
 msgid "Extension Settings"
-msgstr ""
+msgstr "Configuració de l'extensió"
 
 #: data/ui/preferences-window.ui:378
 msgid "GSConnect remains active when GNOME Shell is locked"
-msgstr ""
+msgstr "GSConnect es manté actiu quan GNOME Shell està bloquejat"
 
 #: data/ui/preferences-window.ui:410
 msgid "Browser Add-Ons"
@@ -565,7 +565,7 @@ msgstr "Llista de dispositius"
 
 #: data/ui/service-error-dialog.ui:39 data/ui/service-error-dialog.ui:47
 msgid "Report"
-msgstr ""
+msgstr "Informar d'un error"
 
 #: data/ui/service-error-dialog.ui:79
 msgid "Something’s gone wrong"
@@ -573,7 +573,7 @@ msgstr "Alguna cosa ha anat malament"
 
 #: data/ui/service-error-dialog.ui:91
 msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
-msgstr ""
+msgstr "GSConnect ha trobat un error inesperat. Si us plau, informa del problema i inclou qualsevol informació que pugui ajudar."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
@@ -586,7 +586,7 @@ msgstr "Envia al dispositiu mòbil"
 
 #: src/extension.js:52
 msgid "Sync between your devices"
-msgstr ""
+msgstr "Sincronitza entre els teus dispositius"
 
 #: src/extension.js:161
 #, javascript-format
