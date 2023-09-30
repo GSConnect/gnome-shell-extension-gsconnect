@@ -292,6 +292,7 @@
     "overrides": [
         {
             "files": [
+                "webextension/**/*.js",
                 "src/shell/**/*.js",
                 "src/extension.js",
                 "src/prefs.js"
