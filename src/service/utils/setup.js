@@ -13,17 +13,15 @@ import setup, {setupGettext} from '../../utils/setup.js';
 
 
 // Promise Wrappers
-try {
-    const EBook = (await import('gi://EBook')).default;
-    const EDataServer = (await import('gi://EDataServer')).default;
-
+// We don't use top-level await since it returns control flow to importing module, causing bugs
+import('gi://EBook').then(({default: EBook}) => {
     Gio._promisify(EBook.BookClient, 'connect');
     Gio._promisify(EBook.BookClient.prototype, 'get_view');
     Gio._promisify(EBook.BookClient.prototype, 'get_contacts');
+}).catch(console.debug);
+import('gi://EDataServer').then(({default: EDataServer}) => {
     Gio._promisify(EDataServer.SourceRegistry, 'new');
-} catch (e) {
-    // Silence import errors
-}
+}).catch(console.debug);
 
 Gio._promisify(Gio.AsyncInitable.prototype, 'init_async');
 Gio._promisify(Gio.DBusConnection.prototype, 'call');
