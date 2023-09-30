@@ -2,28 +2,38 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-import Gio from 'gi://Gio';
-import GLib from 'gi://GLib';
+import * as battery from './battery.js';
+import * as clipboard from './clipboard.js';
+import * as connectivity_report from './connectivity_report.js';
+import * as contacts from './contacts.js';
+import * as findmyphone from './findmyphone.js';
+import * as mousepad from './mousepad.js';
+import * as mpris from './mpris.js';
+import * as notification from './notification.js';
+import * as ping from './ping.js';
+import * as presenter from './presenter.js';
+import * as runcommand from './runcommand.js';
+import * as sftp from './sftp.js';
+import * as share from './share.js';
+import * as sms from './sms.js';
+import * as systemvolume from './systemvolume.js';
+import * as telephony from './telephony.js';
 
-
-// Load all plugins using dynamic import
-const plugins = {};
-
-const dir = Gio.File.new_for_uri(import.meta.url).get_parent();
-const iter = await dir.enumerate_children_async(
-    Gio.FILE_ATTRIBUTE_STANDARD_NAME,
-    Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
-    GLib.PRIORITY_DEFAULT,
-    null);
-const infos = await iter.next_files_async(100, GLib.PRIORITY_DEFAULT, null);
-iter.close_async(GLib.PRIORITY_DEFAULT, null, null);
-
-for (let i = 0; i < infos.length; i++) {
-    const info = infos[i];
-    const name = info.get_name().replace(/\.js$/, '');
-    if (name === 'index')
-        continue;
-    plugins[name] = await import(`./${name}.js`);
-}
-
-export default plugins;
+export default {
+    battery,
+    clipboard,
+    connectivity_report,
+    contacts,
+    findmyphone,
+    mousepad,
+    mpris,
+    notification,
+    ping,
+    presenter,
+    runcommand,
+    sftp,
+    share,
+    sms,
+    systemvolume,
+    telephony,
+};
