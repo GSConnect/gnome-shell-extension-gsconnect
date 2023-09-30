@@ -1,14 +1,11 @@
-#!/usr/bin/env gjs
+#!/usr/bin/env -S gjs -m
 
 // SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
-
-const ByteArray = imports.byteArray;
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
 
 // eslint-disable-next-line no-redeclare
 const _ = (msgid) => GLib.dgettext('org.gnome.Shell.Extensions.GSConnect', msgid);
@@ -50,7 +47,7 @@ JSON.load = function (gfile) {
         const data = gfile.load_contents(null)[1];
 
         if (data instanceof Uint8Array)
-            return JSON.parse(ByteArray.toString(data));
+            return JSON.parse(new TextDecoder().decode(data));
         else
             return JSON.parse(data.toString());
     } catch (e) {
@@ -105,7 +102,7 @@ while ((info = iter.next_file(null))) {
     // Read the PO file and search the msgid's for our strings
     let msgid = false;
     let po = iter.get_child(info).load_contents(null)[1];
-    po = ByteArray.toString(po);
+    po = new TextDecoder().decode(po);
 
     for (const line of po.split('\n')) {
         // If we have a msgid, we're expecting a msgstr
