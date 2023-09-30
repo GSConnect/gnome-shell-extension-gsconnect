@@ -106,4 +106,4 @@ const Preferences = GObject.registerClass({
     }
 });
 
-(new Preferences()).run([system.programInvocationName].concat(ARGV));
+await (new Preferences()).runAsync([system.programInvocationName].concat(ARGV));

@@ -698,5 +698,5 @@ const Service = GObject.registerClass({
     }
 });
 
-(new Service()).run([system.programInvocationName].concat(ARGV));
+await (new Service()).runAsync([system.programInvocationName].concat(ARGV));
 
