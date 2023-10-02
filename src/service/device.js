@@ -108,6 +108,7 @@ var Device = GObject.registerClass({
             ),
             path: `/org/gnome/shell/extensions/gsconnect/device/${this.id}/`,
         });
+        this._migratePlugins();
 
         // Watch for changes to supported and disabled plugins
         this._disabledPluginsChangedId = this.settings.connect(
@@ -250,6 +251,15 @@ var Device = GObject.registerClass({
 
     get type() {
         return this.settings.get_string('type');
+    }
+
+    _migratePlugins() {
+        const deprecated = ['photo'];
+        const supported = this.settings
+            .get_strv('supported-plugins')
+            .filter(name => !deprecated.includes(name));
+
+        this.settings.set_strv('supported-plugins', supported);
     }
 
     _handleIdentity(packet) {
