@@ -14,7 +14,6 @@ import * as NotificationDaemon from 'resource:///org/gnome/shell/ui/notification
 import {gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
 import {getIcon} from './utils.js';
 
-// eslint-disable-next-line no-redeclare
 const APP_ID = 'org.gnome.Shell.Extensions.GSConnect';
 const APP_PATH = '/org/gnome/Shell/Extensions/GSConnect';
 

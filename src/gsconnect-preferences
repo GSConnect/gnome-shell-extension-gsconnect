@@ -40,6 +40,10 @@ function get_datadir() {
 imports.searchPath.unshift(get_datadir());
 imports.config.PACKAGE_DATADIR = imports.searchPath[0];
 
+// Bootstrap
+const {setup, setupGettext} = imports.utils.setup;
+setup(imports.config.PACKAGE_DATADIR);
+setupGettext();
 
 // Local Imports
 const Config = imports.config;

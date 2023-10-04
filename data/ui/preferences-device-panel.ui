@@ -79,63 +79,6 @@ SPDX-License-Identifier: GPL-2.0-or-later
                             <signal name="row-activated" handler="_onToggleRowActivated" swapped="no"/>
                             <signal name="keynav-failed" handler="_onKeynavFailed" swapped="no"/>
                             <child>
-                              <object class="GtkListBoxRow" id="photo">
-                                <property name="height_request">56</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="selectable">False</property>
-                                <child>
-                                  <object class="GtkGrid">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="margin_start">12</property>
-                                    <property name="margin_end">12</property>
-                                    <property name="column_spacing">12</property>
-                                    <child>
-                                      <object class="GtkLabel" id="share-photo-label">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="halign">start</property>
-                                        <property name="valign">center</property>
-                                        <property name="hexpand">True</property>
-                                        <property name="vexpand">True</property>
-                                        <property name="label" translatable="yes">Camera</property>
-                                        <accessibility>
-                                          <relation type="label-for" target="photo"/>
-                                          <relation type="label-for" target="share-photo"/>
-                                        </accessibility>
-                                      </object>
-                                      <packing>
-                                        <property name="left_attach">0</property>
-                                        <property name="top_attach">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkSwitch" id="share-photo">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">True</property>
-                                        <property name="halign">end</property>
-                                        <property name="valign">center</property>
-                                        <property name="action_name">settings.share-camera</property>
-                                        <accessibility>
-                                          <relation type="controlled-by" target="photo"/>
-                                          <relation type="labelled-by" target="share-photo-label"/>
-                                        </accessibility>
-                                      </object>
-                                      <packing>
-                                        <property name="left_attach">1</property>
-                                        <property name="top_attach">0</property>
-                                      </packing>
-                                    </child>
-                                  </object>
-                                </child>
-                                <accessibility>
-                                  <relation type="controller-for" target="share-photo"/>
-                                  <relation type="labelled-by" target="share-photo-label"/>
-                                </accessibility>
-                              </object>
-                            </child>
-                            <child>
                               <object class="GtkListBoxRow" id="clipboard">
                                 <property name="height_request">56</property>
                                 <property name="visible">True</property>

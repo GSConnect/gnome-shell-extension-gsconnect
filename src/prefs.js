@@ -8,12 +8,13 @@ import Adw from 'gi://Adw';
 
 // Bootstrap
 import * as Utils from './shell/utils.js';
+import setup from './utils/setup.mjs';
 import {ExtensionPreferences} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
 export default class GSConnectExtensionPreferences extends ExtensionPreferences {
     constructor(metadata) {
         super(metadata);
-        Utils.setupExtensionData(this.path);
+        setup(this.path);
         Utils.installService();
     }
 

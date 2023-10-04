@@ -4,14 +4,12 @@
 
 'use strict';
 
-const ByteArray = imports.byteArray;
-const Gettext = imports.gettext;
-
 const Gio = imports.gi.Gio;
 const GIRepository = imports.gi.GIRepository;
 const GLib = imports.gi.GLib;
 
 const Config = imports.config;
+const {setup, setupGettext} = imports.utils.setup;
 
 
 // Promise Wrappers
@@ -59,16 +57,11 @@ Config.CACHEDIR = GLib.build_filenamev([GLib.get_user_cache_dir(), 'gsconnect'])
 Config.CONFIGDIR = GLib.build_filenamev([GLib.get_user_config_dir(), 'gsconnect']);
 Config.RUNTIMEDIR = GLib.build_filenamev([GLib.get_user_runtime_dir(), 'gsconnect']);
 
+// Bootstrap
+setup(Config.PACKAGE_DATADIR);
+setupGettext();
 
-// Ensure config.js is setup properly
-const userDir = GLib.build_filenamev([GLib.get_user_data_dir(), 'gnome-shell']);
-
-if (Config.PACKAGE_DATADIR.startsWith(userDir)) {
-    Config.IS_USER = true;
-
-    Config.GSETTINGS_SCHEMA_DIR = `${Config.PACKAGE_DATADIR}/schemas`;
-    Config.PACKAGE_LOCALEDIR = `${Config.PACKAGE_DATADIR}/locale`;
-
+if (Config.IS_USER) {
     // Infer libdir by assuming gnome-shell shares a common prefix with gjs;
     // assume the parent directory if it's not there
     let libdir = GIRepository.Repository.get_search_path().find(path => {
@@ -86,27 +79,6 @@ if (Config.PACKAGE_DATADIR.startsWith(userDir)) {
 }
 
 
-// Init Gettext
-String.prototype.format = imports.format.format;
-Gettext.bindtextdomain(Config.APP_ID, Config.PACKAGE_LOCALEDIR);
-globalThis._ = GLib.dgettext.bind(null, Config.APP_ID);
-globalThis.ngettext = GLib.dngettext.bind(null, Config.APP_ID);
-
-
-// Init GResources
-Gio.Resource.load(
-    GLib.build_filenamev([Config.PACKAGE_DATADIR, `${Config.APP_ID}.gresource`])
-)._register();
-
-
-// Init GSchema
-Config.GSCHEMA = Gio.SettingsSchemaSource.new_from_directory(
-    Config.GSETTINGS_SCHEMA_DIR,
-    Gio.SettingsSchemaSource.get_default(),
-    false
-);
-
-
 // Load DBus interfaces
 Config.DBUS = (() => {
     const bytes = Gio.resources_lookup_data(
@@ -114,7 +86,7 @@ Config.DBUS = (() => {
         Gio.ResourceLookupFlags.NONE
     );
 
-    const xml = ByteArray.toString(bytes.toArray());
+    const xml = new TextDecoder().decode(bytes.toArray());
     const dbus = Gio.DBusNodeInfo.new_for_xml(xml);
     dbus.nodes.forEach(info => info.cache_build());
 
@@ -425,6 +397,7 @@ Object.defineProperties(Gio.TlsCertificate.prototype, {
 
             return this.__common_name;
         },
+        configurable: true,
         enumerable: true,
     },
 
@@ -448,11 +421,12 @@ Object.defineProperties(Gio.TlsCertificate.prototype, {
                     flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE,
                 });
                 proc.init(null);
-                this.__pubkey_der = proc.communicate(ByteArray.fromString(pubkey), null)[1];
+                this.__pubkey_der = proc.communicate(new TextEncoder().encode(pubkey), null)[1];
             }
 
             return this.__pubkey_der;
         },
+        configurable: true,
         enumerable: false,
     },
 

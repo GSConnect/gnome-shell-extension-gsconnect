@@ -26,6 +26,7 @@ if (GLib.getenv('GSCONNECT_TEST')) {
 }
 
 
+const _setup = imports.service.utils.setup;
 const {Device} = imports.service.device;
 const {Plugin} = imports.service.plugin;
 

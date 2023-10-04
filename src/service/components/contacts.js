@@ -4,8 +4,6 @@
 
 'use strict';
 
-const ByteArray = imports.byteArray;
-
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
@@ -330,9 +328,9 @@ var Store = GObject.registerClass({
     }
 
     /**
-     * Save a ByteArray to file and return the path
+     * Save a Uint8Array to file and return the path
      *
-     * @param {ByteArray} contents - An image ByteArray
+     * @param {Uint8Array} contents - An image byte array
      * @return {string|undefined} File path or %undefined on failure
      */
     async storeAvatar(contents) {
@@ -560,7 +558,7 @@ var Store = GObject.registerClass({
     async load() {
         try {
             const [contents] = await this._cacheFile.load_contents_async(null);
-            this._cacheData = JSON.parse(ByteArray.toString(contents));
+            this._cacheData = JSON.parse(new TextDecoder().decode(contents));
         } catch (e) {
             debug(e);
         } finally {

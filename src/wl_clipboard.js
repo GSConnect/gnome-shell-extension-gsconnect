@@ -4,8 +4,6 @@
 
 'use strict';
 
-const ByteArray = imports.byteArray;
-
 const Gio = imports.gi.Gio;
 const GjsPrivate = imports.gi.GjsPrivate;
 const GLib = imports.gi.GLib;
