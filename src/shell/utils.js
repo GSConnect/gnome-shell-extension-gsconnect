@@ -140,7 +140,7 @@ function _setExecutable(filepath) {
         const file = Gio.File.new_for_path(filepath);
         const finfo = file.query_info(
             `${Gio.FILE_ATTRIBUTE_STANDARD_TYPE},${Gio.FILE_ATTRIBUTE_UNIX_MODE}`,
-            Gio.FileQueryInfoFlags.NO_FOLLOW_SYMLINKS,
+            Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
             null);
 
         if (!finfo.has_attribute(Gio.FILE_ATTRIBUTE_UNIX_MODE))
@@ -155,7 +155,7 @@ function _setExecutable(filepath) {
         return file.set_attribute_uint32(
             Gio.FILE_ATTRIBUTE_UNIX_MODE,
             new_mode,
-            Gio.FileQueryInfoFlags.NO_FOLLOW_SYMLINKS,
+            Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
             null);
     } catch (e) {
         logError(e, 'GSConnect');
