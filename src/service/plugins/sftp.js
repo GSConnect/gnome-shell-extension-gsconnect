@@ -7,7 +7,6 @@ import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 
 import Config from '../../config.js';
-import * as Lan from '../backends/lan.js';
 import Plugin from '../plugin.js';
 
 
@@ -104,7 +103,7 @@ const SFTPPlugin = GObject.registerClass({
         super.connected();
 
         // Only enable for Lan connections
-        if (this.device.channel instanceof Lan.Channel) {
+        if (this.device.channel.constructor.name === 'LanChannel') { // FIXME: Circular import workaround
             if (this.settings.get_boolean('automount'))
                 this.mount();
         } else {

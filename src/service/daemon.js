@@ -15,7 +15,7 @@ import 'gi://Pango?version=1.0';
 
 import system from 'system';
 
-import './utils/setup.js';
+import './init.js';
 
 import Config from '../config.js';
 import Manager from './manager.js';
