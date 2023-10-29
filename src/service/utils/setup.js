@@ -20,7 +20,7 @@ try {
     Gio._promisify(EBook.BookClient.prototype, 'get_view');
     Gio._promisify(EBook.BookClient.prototype, 'get_contacts');
     Gio._promisify(EDataServer.SourceRegistry, 'new');
-} finally {
+} catch(e) {
     // Silence import errors
 }
 
