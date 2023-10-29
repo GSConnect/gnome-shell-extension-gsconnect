@@ -37,15 +37,13 @@ const Player = class Player {
 
             // Try falling back to libcanberra, otherwise just re-run the test
             // in case one or the other is installed later
+            } else if (GLib.find_program_in_path('canberra-gtk-play') !== null) {
+                this._canberra = new Gio.SubprocessLauncher({
+                    flags: Gio.SubprocessFlags.NONE,
+                });
+                this._backend = 'libcanberra';
             } else {
-                if (GLib.find_program_in_path('canberra-gtk-play') !== null) {
-                    this._canberra = new Gio.SubprocessLauncher({
-                        flags: Gio.SubprocessFlags.NONE,
-                    });
-                    this._backend = 'libcanberra';
-                } else {
-                    return null;
-                }
+                return null;
             }
         }
 
