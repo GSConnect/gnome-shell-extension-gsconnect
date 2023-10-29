@@ -2,14 +2,14 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-import {watchService} from '../../wl_clipboard.js';
+import {watchService} from '../wl_clipboard.js';
 
 import Gio from 'gi://Gio';
 import GIRepository from 'gi://GIRepository';
 import GLib from 'gi://GLib';
 
-import Config from '../../config.js';
-import setup, {setupGettext} from '../../utils/setup.js';
+import Config from '../config.js';
+import setup, {setupGettext} from '../utils/setup.js';
 
 
 // Promise Wrappers
@@ -57,8 +57,7 @@ Config.CONFIGDIR = GLib.build_filenamev([GLib.get_user_config_dir(), 'gsconnect'
 Config.RUNTIMEDIR = GLib.build_filenamev([GLib.get_user_runtime_dir(), 'gsconnect']);
 
 // Bootstrap
-const utilsFolder = GLib.path_get_dirname(GLib.filename_from_uri(import.meta.url)[0]);
-const serviceFolder = GLib.path_get_dirname(utilsFolder);
+const serviceFolder = GLib.path_get_dirname(GLib.filename_from_uri(import.meta.url)[0]);
 const extensionFolder = GLib.path_get_dirname(serviceFolder);
 setup(extensionFolder);
 setupGettext();
