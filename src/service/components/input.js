@@ -381,29 +381,6 @@ class Controller {
         return reply.deepUnpack()[0];
     }
 
-    async _createScreenCastSession(sessionId) {
-        if (this.connection === null)
-            throw new Error('No DBus connection');
-
-        const options = new GLib.Variant('(a{sv})', [{
-            'disable-animations': GLib.Variant.new_boolean(false),
-            'remote-desktop-session-id': GLib.Variant.new_string(sessionId),
-        }]);
-
-        const reply = await this.connection.call(
-            'org.gnome.Mutter.ScreenCast',
-            '/org/gnome/Mutter/ScreenCast',
-            'org.gnome.Mutter.ScreenCast',
-            'CreateSession',
-            options,
-            null,
-            Gio.DBusCallFlags.NONE,
-            -1,
-            null);
-
-        return reply.deepUnpack()[0];
-    }
-
     async _ensureAdapter() {
         try {
             // Update the timestamp of the last event
@@ -437,8 +414,6 @@ class Controller {
 
                 this._session = new RemoteSession(objectPath);
                 await this._session.start();
-
-                await this._createScreenCastSession(this._session.session_id);
 
                 // Watch for the session ending
                 this._sessionClosedId = this._session.connect(
