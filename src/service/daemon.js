@@ -23,15 +23,10 @@ const Gtk = imports.gi.Gtk;
 
 // Bootstrap
 function get_datadir() {
-    const m = /@([^:]+):\d+/.exec(new Error().stack.split('\n')[1]);
-    let path = null;
-    const symbolic_link = Gio.File.new_for_path(m[1])
-        .query_info('standard::*', null, null)
-        .get_symlink_target();
-    if (symbolic_link)
-        path = symbolic_link;
-    else
-        path = m[1];
+    let [, path] = /@([^:]+):\d+/.exec(new Error().stack.split('\n')[1]);
+    const info = Gio.File.new_for_path(path)
+        .query_info('standard::*', Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS, null);
+    path = info.get_is_symlink() ? info.get_symlink_target() : path;
 
     return Gio.File.new_for_path(path).get_parent().get_parent().get_path();
 }
