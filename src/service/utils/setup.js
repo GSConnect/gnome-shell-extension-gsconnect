@@ -105,7 +105,7 @@ for (const path of [Config.CACHEDIR, Config.CONFIGDIR, Config.RUNTIMEDIR])
  */
 globalThis.HAVE_REMOTEINPUT = GLib.getenv('GDMSESSION') !== 'ubuntu-wayland';
 globalThis.HAVE_WAYLAND = GLib.getenv('XDG_SESSION_TYPE') === 'wayland';
-globalThis.HAVE_GNOME = GLib.getenv('GSCONNECT_MODE')?.toLowerCase() !== 'cli' && (GLib.getenv('GNOME_SETUP_DISPLAY') !== null || GLib.getenv('XDG_CURRENT_DESKTOP')?.toUpperCase() === 'GNOME' || GLib.getenv('XDG_SESSION_DESKTOP')?.toLowerCase() === 'gnome');
+globalThis.HAVE_GNOME = GLib.getenv('GSCONNECT_MODE')?.toLowerCase() !== 'cli' && (GLib.getenv('GNOME_SETUP_DISPLAY') !== null || GLib.getenv('XDG_CURRENT_DESKTOP')?.toUpperCase()?.includes('GNOME') || GLib.getenv('XDG_SESSION_DESKTOP')?.toLowerCase() === 'gnome');
 
 
 /**
