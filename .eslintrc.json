@@ -281,9 +281,7 @@
         "_": false,
         "_C": false,
         "_N": false,
-        "ngettext": false,
-
-        "HAVE_WAYLAND": false
+        "ngettext": false
     },
     "parserOptions": {
         "ecmaVersion": "latest"

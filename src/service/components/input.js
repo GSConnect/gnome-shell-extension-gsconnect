@@ -147,18 +147,7 @@ const RemoteSession = GObject.registerClass({
     }
 
     scrollPointer(dx, dy) {
-        // NOTE: NotifyPointerAxis only seems to work on Wayland, but maybe
-        //       NotifyPointerAxisDiscrete is the better choice anyways
-        if (HAVE_WAYLAND) {
-            this._call(
-                'NotifyPointerAxis',
-                GLib.Variant.new('(ddu)', [dx, dy, 0])
-            );
-            this._call(
-                'NotifyPointerAxis',
-                GLib.Variant.new('(ddu)', [0, 0, 1])
-            );
-        } else if (dy > 0) {
+        if (dy > 0) {
             this._call(
                 'NotifyPointerAxisDiscrete',
                 GLib.Variant.new('(ui)', [Gdk.ScrollDirection.UP, 1])
@@ -266,48 +255,6 @@ class Controller {
         return this._connection;
     }
 
-    /**
-     * Check if this is a Wayland session, specifically for distributions that
-     * don't ship pipewire support (eg. Debian/Ubuntu).
-     *
-     * FIXME: this is a super ugly hack that should go away
-     *
-     * @return {boolean} %true if wayland is not supported
-     */
-    _checkWayland() {
-        if (HAVE_WAYLAND) {
-            const service = Gio.Application.get_default();
-
-            if (service === null)
-                return true;
-
-            // First we're going to disabled the affected plugins on all devices
-            for (const device of service.manager.devices.values()) {
-                const supported = device.settings.get_strv('supported-plugins');
-                let index;
-
-                if ((index = supported.indexOf('mousepad')) > -1)
-                    supported.splice(index, 1);
-
-                if ((index = supported.indexOf('presenter')) > -1)
-                    supported.splice(index, 1);
-
-                device.settings.set_strv('supported-plugins', supported);
-            }
-
-            // Second we need each backend to rebuild its identity packet and
-            // broadcast the amended capabilities to the network
-            for (const backend of service.manager.backends.values())
-                backend.buildIdentity();
-
-            service.manager.identify();
-
-            return true;
-        }
-
-        return false;
-    }
-
     _onNameAppeared(connection, name, name_owner) {
         try {
             this._connection = connection;
@@ -391,10 +338,6 @@ class Controller {
             // Mutter's RemoteDesktop is not available, fall back to Atspi
             if (this.connection === null) {
                 debug('Falling back to Atspi');
-
-                // If we got here in Wayland, we need to re-adjust and bail
-                if (this._checkWayland())
-                    return;
 
                 const fallback = imports.service.components.atspi;
                 this._session = new fallback.Controller();
