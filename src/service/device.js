@@ -298,10 +298,6 @@ var Device = GObject.registerClass({
         const supported = [];
 
         for (const name in imports.service.plugins) {
-            // Exclude mousepad/presenter plugins in unsupported sessions
-            if (!HAVE_REMOTEINPUT && ['mousepad', 'presenter'].includes(name))
-                continue;
-
             const meta = imports.service.plugins[name].Metadata;
 
             if (meta === undefined)

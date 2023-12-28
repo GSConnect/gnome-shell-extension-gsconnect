@@ -283,8 +283,7 @@
         "_N": false,
         "ngettext": false,
 
-        "HAVE_WAYLAND": false,
-        "HAVE_REMOTEINPUT": false
+        "HAVE_WAYLAND": false
     },
     "parserOptions": {
         "ecmaVersion": "latest"

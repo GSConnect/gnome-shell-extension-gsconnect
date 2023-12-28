@@ -276,8 +276,6 @@ class Controller {
      */
     _checkWayland() {
         if (HAVE_WAYLAND) {
-            // eslint-disable-next-line no-global-assign
-            HAVE_REMOTEINPUT = false;
             const service = Gio.Application.get_default();
 
             if (service === null)
