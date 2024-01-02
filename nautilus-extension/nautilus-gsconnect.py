@@ -177,24 +177,36 @@ class GSConnectShareExtension(GObject.Object, FileManager.MenuProvider):
         if not devices:
             return ()
 
-        # Context Menu Item
-        menu = FileManager.MenuItem(
-            name="GSConnectShareExtension::Devices",
-            label=_("Send To Mobile Device"),
-        )
+        # If there's exactly 1 device, no submenu
+        if len(devices) == 1:
+            name, action_group = devices[0]
+            menu = FileManager.MenuItem(
+                name="GSConnectShareExtension::Device" + name,
+                # TRANSLATORS: Send to <device_name>, for file manager
+                # context menu
+                label=_("Send to %s") % name,
+            )
+            menu.connect("activate", self.send_files, files, action_group)
 
-        # Context Submenu
-        submenu = FileManager.Menu()
-        menu.set_submenu(submenu)
-
-        # Context Submenu Items
-        for name, action_group in devices:
-            item = FileManager.MenuItem(
-                name="GSConnectShareExtension::Device" + name, label=name
+        else:
+            # Context Menu Item
+            menu = FileManager.MenuItem(
+                name="GSConnectShareExtension::Devices",
+                label=_("Send To Mobile Device"),
             )
 
-            item.connect("activate", self.send_files, files, action_group)
+            # Context Submenu
+            submenu = FileManager.Menu()
+            menu.set_submenu(submenu)
 
-            submenu.append_item(item)
+            # Context Submenu Items
+            for name, action_group in devices:
+                item = FileManager.MenuItem(
+                    name="GSConnectShareExtension::Device" + name, label=name
+                )
+
+                item.connect("activate", self.send_files, files, action_group)
+
+                submenu.append_item(item)
 
         return (menu,)
