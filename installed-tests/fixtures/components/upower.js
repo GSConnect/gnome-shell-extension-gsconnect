@@ -2,12 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
-
-const {GObject} = imports.gi;
+import GObject from 'gi://GObject';
 
 
-var Component = GObject.registerClass({
+const Component = GObject.registerClass({
     GTypeName: 'GSConnectMockBattery',
     Signals: {
         'changed': {flags: GObject.SignalFlags.RUN_FIRST},
@@ -49,4 +47,6 @@ var Component = GObject.registerClass({
         this.emit('changed');
     }
 });
+
+export default Component;
 

@@ -2,11 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
 
-const {Gio, GLib} = imports.gi;
-
-const Utils = imports.fixtures.utils;
+import * as Utils from '../fixtures/utils.js';
 
 
 const Notifications = {
@@ -59,7 +58,7 @@ describe('The notification plugin', function () {
     let localPlugin, remotePlugin;
 
     beforeAll(async function () {
-        Utils.mockComponents();
+        await Utils.mockComponents();
 
         testRig = new Utils.TestRig();
         await testRig.prepare({

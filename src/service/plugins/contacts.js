@@ -12,6 +12,9 @@ import Contacts from '../components/contacts.js';
  * We prefer libebook's vCard parser if it's available
  */
 let EBookContacts;
+export const setEBookContacts = (ebook) => { // This function is only for tests to call!
+    EBookContacts = ebook;
+};
 
 try {
     EBookContacts = (await import('gi://EBookContacts')).default;

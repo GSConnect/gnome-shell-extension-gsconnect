@@ -2,10 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import GObject from 'gi://GObject';
 
-const {GObject} = imports.gi;
-const MPRIS = imports.service.components.mpris;
+import Config from '../../config.js';
+const MPRIS = await import(`file://${Config.PACKAGE_DATADIR}/service/components/mpris.js`);
 
 
 const MockMediaPlayer = GObject.registerClass({
@@ -96,7 +96,7 @@ const MockMediaPlayer = GObject.registerClass({
 });
 
 
-var Component = GObject.registerClass({
+const Component = GObject.registerClass({
     GTypeName: 'MockMPRISManager',
     Signals: {
         'player-added': {
@@ -182,4 +182,6 @@ var Component = GObject.registerClass({
     unpauseAll() {
     }
 });
+
+export default Component;
 

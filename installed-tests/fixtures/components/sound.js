@@ -2,12 +2,11 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
 
-const {Gio, GLib} = imports.gi;
 
-
-var Component = class MockPlayer {
+export default class MockPlayerComponent {
 
     constructor() {
         this._playing = new Set();
@@ -60,5 +59,5 @@ var Component = class MockPlayer {
             this._playing.delete(cancellable);
         }
     }
-};
+}
 
