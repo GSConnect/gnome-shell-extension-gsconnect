@@ -193,7 +193,7 @@ const Mixer = !Gvc ? null : GObject.registerClass({
      */
     lowerVolume(duration = 1) {
         try {
-            if (this.output.volume > 0.15) {
+            if (this.output && this.output.volume > 0.15) {
                 this._previousVolume = Number(this.output.volume);
                 this.output.fade(0.15, duration);
             }
@@ -207,7 +207,7 @@ const Mixer = !Gvc ? null : GObject.registerClass({
      */
     muteVolume() {
         try {
-            if (this.output.muted)
+            if (!this.output || this.output.muted)
                 return;
 
             this.output.muted = true;
@@ -222,7 +222,7 @@ const Mixer = !Gvc ? null : GObject.registerClass({
      */
     muteMicrophone() {
         try {
-            if (this.input.muted)
+            if (!this.input || this.input.muted)
                 return;
 
             this.input.muted = true;
@@ -269,4 +269,3 @@ const Mixer = !Gvc ? null : GObject.registerClass({
  * The service class for this component
  */
 export default Mixer;
-
