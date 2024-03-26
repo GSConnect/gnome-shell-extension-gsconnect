@@ -47,9 +47,8 @@ const NotificationBanner = GObject.registerClass({
     GTypeName: 'GSConnectNotificationBanner',
 }, class NotificationBanner extends Calendar.NotificationMessage {
 
-    _init(notification) {
-        super._init(notification);
-
+    constructor(notification) {
+        super(notification);
         if (notification.requestReplyId !== undefined)
             this._addReplyAction();
     }
