@@ -9,6 +9,7 @@ import St from 'gi://St';
 
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as MessageTray from 'resource:///org/gnome/shell/ui/messageTray.js';
+import * as Calendar from 'resource:///org/gnome/shell/ui/calendar.js';
 import * as NotificationDaemon from 'resource:///org/gnome/shell/ui/notificationDaemon.js';
 
 import {gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
@@ -44,7 +45,7 @@ const GtkNotificationDaemon = Main.notificationDaemon._gtkNotificationDaemon.con
  */
 const NotificationBanner = GObject.registerClass({
     GTypeName: 'GSConnectNotificationBanner',
-}, class NotificationBanner extends MessageTray.NotificationBanner {
+}, class NotificationBanner extends Calendar.NotificationMessage {
 
     _init(notification) {
         super._init(notification);
