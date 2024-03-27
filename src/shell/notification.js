@@ -214,7 +214,7 @@ const Source = GObject.registerClass({
 
         // Parse the id to determine if it's a repliable notification, device
         // notification or a regular local notification
-        let notificationId = notification.id;
+        const notificationId = notification.id;
         let idMatch, deviceId, requestReplyId, remoteId, localId;
 
         if ((idMatch = REPLY_REGEX.exec(notificationId))) {
@@ -283,7 +283,7 @@ const Source = GObject.registerClass({
             });
             this._notifications[localId] = cachedNotification;
         }
-        
+
         if (this.notifications.includes(cachedNotification)) {
             cachedNotification.acknowledged = false;
             this.emit('notification-request-banner', cachedNotification);
