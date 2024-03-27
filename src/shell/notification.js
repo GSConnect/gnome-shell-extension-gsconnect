@@ -367,8 +367,6 @@ export function unpatchGtkNotificationDaemon() {
 const _addNotification = NotificationDaemon.GtkNotificationDaemonAppSource.prototype.addNotification;
 
 export function patchGtkNotificationSources() {
-    const addNotification = Source.prototype.addNotification;
-
     // eslint-disable-next-line func-style
     const _withdrawGSConnectNotification = function (id, notification, reason) {
         if (reason !== MessageTray.NotificationDestroyedReason.DISMISSED)
@@ -410,7 +408,6 @@ export function patchGtkNotificationSources() {
         );
     };
 
-    NotificationDaemon.GtkNotificationDaemonAppSource.prototype.addNotification = addNotification;
     NotificationDaemon.GtkNotificationDaemonAppSource.prototype._withdrawGSConnectNotification = _withdrawGSConnectNotification;
 }
 
