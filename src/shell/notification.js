@@ -230,14 +230,14 @@ const Source = GObject.registerClass({
         }
 
         // Fix themed icons
-        /* if (notificationParams.icon) {
-            let gicon = Gio.Icon.deserialize(notificationParams.icon);
+        if (notification.icon) {
+            let gicon = notification.icon;
 
             if (gicon instanceof Gio.ThemedIcon) {
                 gicon = getIcon(gicon.names[0]);
-                notificationParams.icon = gicon.serialize();
+                notification.icon = gicon.serialize();
             }
-        } */
+        }
 
         let cachedNotification = this._notifications[localId];
 
