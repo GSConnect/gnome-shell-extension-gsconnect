@@ -209,11 +209,12 @@ const Source = GObject.registerClass({
     /*
      * Override to control notification spawning
      */
-    addNotification(notificationId, notificationParams, showBanner) {
+    addNotification(notification) {
         this._notificationPending = true;
 
         // Parse the id to determine if it's a repliable notification, device
         // notification or a regular local notification
+        let notificationId = notification.id;
         let idMatch, deviceId, requestReplyId, remoteId, localId;
 
         if ((idMatch = REPLY_REGEX.exec(notificationId))) {
@@ -229,84 +230,72 @@ const Source = GObject.registerClass({
         }
 
         // Fix themed icons
-        if (notificationParams.icon) {
+        /* if (notificationParams.icon) {
             let gicon = Gio.Icon.deserialize(notificationParams.icon);
 
             if (gicon instanceof Gio.ThemedIcon) {
                 gicon = getIcon(gicon.names[0]);
                 notificationParams.icon = gicon.serialize();
             }
-        }
+        } */
 
-        let notification = this._notifications[localId];
+        let cachedNotification = this._notifications[localId];
 
         // Check if this is a repeat
-        if (notification) {
-            notification.requestReplyId = requestReplyId;
+        if (cachedNotification) {
+            cachedNotification.requestReplyId = requestReplyId;
 
             // Bail early If @notificationParams represents an exact repeat
-            const title = notificationParams.title.unpack();
-            const body = notificationParams.body
-                ? notificationParams.body.unpack()
+            const title = notification.title;
+            const body = notification.body
+                ? notification.body
                 : null;
 
-            if (notification.title === title &&
-                notification.bannerBodyText === body) {
+            if (cachedNotification.title === title &&
+                cachedNotification.bannerBodyText === body) {
                 this._notificationPending = false;
                 return;
             }
 
-            notification.title = title;
-            notification.bannerBodyText = body;
+            cachedNotification.title = title;
+            cachedNotification.bannerBodyText = body;
+            cachedNotification.body = body;
 
         // Device Notification
         } else if (idMatch) {
-            notification = this._createNotification(notificationParams);
+            cachedNotification = notification;
 
-            notification.deviceId = deviceId;
-            notification.remoteId = remoteId;
-            notification.requestReplyId = requestReplyId;
+            cachedNotification.deviceId = deviceId;
+            cachedNotification.remoteId = remoteId;
+            cachedNotification.requestReplyId = requestReplyId;
 
-            notification.connect('destroy', (notification, reason) => {
+            cachedNotification.connect('destroy', (notification, reason) => {
                 this._closeGSConnectNotification(notification, reason);
                 delete this._notifications[localId];
             });
 
-            this._notifications[localId] = notification;
+            this._notifications[localId] = cachedNotification;
 
         // Service Notification
         } else {
-            notification = this._createNotification(notificationParams);
-            notification.connect('destroy', (notification, reason) => {
+            cachedNotification.connect('destroy', (notification, reason) => {
                 delete this._notifications[localId];
             });
-            this._notifications[localId] = notification;
+            this._notifications[localId] = cachedNotification;
+        }
+        
+        if (this.notifications.includes(cachedNotification)) {
+            cachedNotification.acknowledged = false;
+            this.emit('notification-request-banner', cachedNotification);
+            return;
         }
 
-        if (showBanner)
-            this.showNotification(notification);
-        else
-            this.pushNotification(notification);
+        this.notifications.push(cachedNotification);
+
+        this.emit('notification-added', cachedNotification);
+        this.emit('notification-request-banner', cachedNotification);
 
         this._notificationPending = false;
-    }
-
-    /*
-     * Override to raise the usual notification limit (3)
-     */
-    pushNotification(notification) {
-        if (this.notifications.includes(notification))
-            return;
-
-        while (this.notifications.length >= 10)
-            this.notifications.shift().destroy(MessageTray.NotificationDestroyedReason.EXPIRED);
-
-        notification.connect('destroy', this._onNotificationDestroy.bind(this));
-        notification.connect('notify::acknowledged', this.countUpdated.bind(this));
-        this.notifications.push(notification);
-        this.emit('notification-added', notification);
-
-        this.countUpdated();
     }
 
     createBanner(notification) {
@@ -378,28 +367,7 @@ export function unpatchGtkNotificationDaemon() {
 const _addNotification = NotificationDaemon.GtkNotificationDaemonAppSource.prototype.addNotification;
 
 export function patchGtkNotificationSources() {
-    // This should diverge as little as possible from the original
-    // eslint-disable-next-line func-style
-    const addNotification = function (notificationId, notificationParams, showBanner) {
-        this._notificationPending = true;
-
-        if (this._notifications[notificationId])
-            this._notifications[notificationId].destroy(MessageTray.NotificationDestroyedReason.REPLACED);
-
-        const notification = this._createNotification(notificationParams);
-        notification.connect('destroy', (notification, reason) => {
-            this._withdrawGSConnectNotification(notification, reason);
-            delete this._notifications[notificationId];
-        });
-        this._notifications[notificationId] = notification;
-
-        if (showBanner)
-            this.showNotification(notification);
-        else
-            this.pushNotification(notification);
-
-        this._notificationPending = false;
-    };
+    const addNotification = Source.prototype.addNotification;
 
     // eslint-disable-next-line func-style
     const _withdrawGSConnectNotification = function (id, notification, reason) {
