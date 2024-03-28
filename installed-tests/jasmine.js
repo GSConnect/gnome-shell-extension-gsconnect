@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 // eslint-disable-next-line no-unused-vars
-var getJasmineRequireObj = (function(jasmineGlobal) {
+export const getJasmineRequireObj = (function(jasmineGlobal) {
   var jasmineRequire;
 
   if (

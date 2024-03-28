@@ -2,12 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
-
-const GLib = imports.gi.GLib;
-const Gdk = imports.gi.Gdk;
-const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
+import GLib from 'gi://GLib';
+import Gdk from 'gi://Gdk';
+import GObject from 'gi://GObject';
+import Gtk from 'gi://Gtk';
 
 
 /**
@@ -73,7 +71,7 @@ const isShift = (key) => [Gdk.KEY_Shift_L, Gdk.KEY_Shift_R].includes(key);
 const isSuper = (key) => [Gdk.KEY_Super_L, Gdk.KEY_Super_R].includes(key);
 
 
-var InputDialog = GObject.registerClass({
+export const InputDialog = GObject.registerClass({
     GTypeName: 'GSConnectMousepadInputDialog',
     Properties: {
         'device': GObject.ParamSpec.object(
@@ -390,7 +388,7 @@ var InputDialog = GObject.registerClass({
             (Math.abs(this.touchpad_motion_y) < 4);
 
         if (is_click) {
-            var click_body = {};
+            const click_body = {};
             switch (gesture_button) {
                 case 1:
                     click_body.singleclick = true;
@@ -444,8 +442,8 @@ var InputDialog = GObject.registerClass({
     }
 
     _onTouchpadMotionTimeout() {
-        var diff_x = this.touchpad_motion_x - this.touchpad_motion_prev_x;
-        var diff_y = this.touchpad_motion_y - this.touchpad_motion_prev_y;
+        const diff_x = this.touchpad_motion_x - this.touchpad_motion_prev_x;
+        const diff_y = this.touchpad_motion_y - this.touchpad_motion_prev_y;
 
         this.device.sendPacket({
             type: 'kdeconnect.mousepad.request',

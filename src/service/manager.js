@@ -2,25 +2,30 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
+import Config from '../config.js';
+import * as DBus from './utils/dbus.js';
+import Device from './device.js';
 
-const Config = imports.config;
-const DBus = imports.service.utils.dbus;
-const Device = imports.service.device;
+import * as LanBackend from './backends/lan.js';
 
 const DEVICE_NAME = 'org.gnome.Shell.Extensions.GSConnect.Device';
 const DEVICE_PATH = '/org/gnome/Shell/Extensions/GSConnect/Device';
 const DEVICE_IFACE = Config.DBUS.lookup_interface(DEVICE_NAME);
 
 
+const backends = {
+    lan: LanBackend,
+};
+
+
 /**
  * A manager for devices.
  */
-var Manager = GObject.registerClass({
+const Manager = GObject.registerClass({
     GTypeName: 'GSConnectManager',
     Properties: {
         'active': GObject.ParamSpec.boolean(
@@ -235,9 +240,9 @@ var Manager = GObject.registerClass({
     }
 
     _loadBackends() {
-        for (const name in imports.service.backends) {
+        for (const name in backends) {
             try {
-                const module = imports.service.backends[name];
+                const module = backends[name];
 
                 if (module.ChannelService === undefined)
                     continue;
@@ -270,7 +275,7 @@ var Manager = GObject.registerClass({
     _loadDevices() {
         // Load cached devices
         for (const id of this.settings.get_strv('devices')) {
-            const device = new Device.Device({body: {deviceId: id}});
+            const device = new Device({body: {deviceId: id}});
             this._exportDevice(device);
             this.devices.set(id, device);
         }
@@ -346,7 +351,7 @@ var Manager = GObject.registerClass({
      * of known devices if it doesn't exist.
      *
      * @param {Core.Packet} packet - An identity packet for the device
-     * @return {Device.Device} A device object
+     * @return {Device} A device object
      */
     _ensureDevice(packet) {
         let device = this.devices.get(packet.body.deviceId);
@@ -365,7 +370,7 @@ var Manager = GObject.registerClass({
             if (unpaired.length === 3)
                 this.discoverable = false;
 
-            device = new Device.Device(packet);
+            device = new Device(packet);
             this._exportDevice(device);
             this.devices.set(device.id, device);
 
@@ -505,4 +510,6 @@ var Manager = GObject.registerClass({
         this.set_connection(null);
     }
 });
+
+export default Manager;
 

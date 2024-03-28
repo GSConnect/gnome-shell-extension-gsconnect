@@ -2,18 +2,15 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
-
-const Config = imports.config;
-const Lan = imports.service.backends.lan;
-const PluginBase = imports.service.plugin;
+import Config from '../../config.js';
+import Plugin from '../plugin.js';
 
 
-var Metadata = {
+export const Metadata = {
     label: _('SFTP'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.SFTP',
     description: _('Browse the paired device filesystem'),
@@ -48,9 +45,9 @@ const MAX_MOUNT_DIRS = 12;
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/sftp
  * https://github.com/KDE/kdeconnect-android/tree/master/src/org/kde/kdeconnect/Plugins/SftpPlugin
  */
-var Plugin = GObject.registerClass({
+const SFTPPlugin = GObject.registerClass({
     GTypeName: 'GSConnectSFTPPlugin',
-}, class Plugin extends PluginBase.Plugin {
+}, class SFTPPlugin extends Plugin {
 
     _init(device) {
         super._init(device, 'sftp');
@@ -106,7 +103,7 @@ var Plugin = GObject.registerClass({
         super.connected();
 
         // Only enable for Lan connections
-        if (this.device.channel instanceof Lan.Channel) {
+        if (this.device.channel.constructor.name === 'LanChannel') { // FIXME: Circular import workaround
             if (this.settings.get_boolean('automount'))
                 this.mount();
         } else {
@@ -486,3 +483,5 @@ var Plugin = GObject.registerClass({
         super.destroy();
     }
 });
+
+export default SFTPPlugin;

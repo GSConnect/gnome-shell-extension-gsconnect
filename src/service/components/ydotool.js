@@ -2,10 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
-
-const Gio = imports.gi.Gio;
-const Gdk = imports.gi.Gdk;
+import Gio from 'gi://Gio';
+import Gdk from 'gi://Gdk';
 
 const keyCodes = new Map([
     ['1', 2],
@@ -55,7 +53,7 @@ const keyCodes = new Map([
     ['/', 53],
     ['\\', 43],
 ]);
-class Controller {
+export default class Controller {
     constructor() {
         // laucher for wl-clipboard
         this._launcher = new Gio.SubprocessLauncher({
@@ -137,7 +135,7 @@ class Controller {
                 modifiers_codes.push(input);
             } else if (typeof input === 'string') {
                 input = input.toUpperCase();
-                for (var i = 0; i < input.length; i++) {
+                for (let i = 0; i < input.length; i++) {
                     if (keyCodes.get(input[i])) {
                         modifiers_codes.push(keyCodes.get(input[i]));
                     } else {
@@ -160,8 +158,3 @@ class Controller {
         this._args = [];
     }
 }
-
-/**
- * The service class for this component
- */
-var Component = Controller;

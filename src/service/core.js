@@ -2,11 +2,11 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
+import plugins from './plugins/index.js';
 
 
 /**
@@ -14,7 +14,7 @@ const GObject = imports.gi.GObject;
  *
  * @return {string} A device type string
  */
-function _getDeviceType() {
+export function _getDeviceType() {
     try {
         let type = GLib.file_get_contents('/sys/class/dmi/id/chassis_type')[1];
 
@@ -34,7 +34,7 @@ function _getDeviceType() {
  * The packet class is a simple Object-derived class, offering some conveniences
  * for working with KDE Connect packets.
  */
-var Packet = class Packet {
+export class Packet {
 
     constructor(data = null) {
         this.id = 0;
@@ -114,7 +114,7 @@ var Packet = class Packet {
 
         return (Object.keys(this.payloadTransferInfo).length > 0);
     }
-};
+}
 
 
 /**
@@ -122,7 +122,7 @@ var Packet = class Packet {
  * devices. The implementation is responsible for all negotiation of the
  * underlying protocol.
  */
-var Channel = GObject.registerClass({
+export const Channel = GObject.registerClass({
     GTypeName: 'GSConnectChannel',
     Properties: {
         'closed': GObject.ParamSpec.boolean(
@@ -297,7 +297,7 @@ var Channel = GObject.registerClass({
  * ChannelService implementations provide Channel objects, emitting the
  * ChannelService::channel signal when a new connection has been accepted.
  */
-var ChannelService = GObject.registerClass({
+export const ChannelService = GObject.registerClass({
     GTypeName: 'GSConnectChannelService',
     Properties: {
         'active': GObject.ParamSpec.boolean(
@@ -409,8 +409,8 @@ var ChannelService = GObject.registerClass({
             },
         });
 
-        for (const name in imports.service.plugins) {
-            const meta = imports.service.plugins[name].Metadata;
+        for (const name in plugins) {
+            const meta = plugins[name].Metadata;
 
             if (meta === undefined)
                 continue;
@@ -460,7 +460,7 @@ var ChannelService = GObject.registerClass({
 /**
  * A class representing a file transfer.
  */
-var Transfer = GObject.registerClass({
+export const Transfer = GObject.registerClass({
     GTypeName: 'GSConnectTransfer',
     Properties: {
         'channel': GObject.ParamSpec.object(

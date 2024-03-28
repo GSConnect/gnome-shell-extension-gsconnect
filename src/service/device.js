@@ -2,16 +2,14 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
-
-const Config = imports.config;
-const Components = imports.service.components;
-const Core = imports.service.core;
-
+import Config from '../config.js';
+import * as Components from './components/index.js';
+import * as Core from './core.js';
+import plugins from './plugins/index.js';
 
 /**
  * An object representing a remote device.
@@ -20,7 +18,7 @@ const Core = imports.service.core;
  * GActionGroup and GActionMap interfaces, like Gio.Application.
  *
  */
-var Device = GObject.registerClass({
+const Device = GObject.registerClass({
     GTypeName: 'GSConnectDevice',
     Properties: {
         'connected': GObject.ParamSpec.boolean(
@@ -297,8 +295,8 @@ var Device = GObject.registerClass({
         // Determine supported plugins by matching incoming to outgoing types
         const supported = [];
 
-        for (const name in imports.service.plugins) {
-            const meta = imports.service.plugins[name].Metadata;
+        for (const name in plugins) {
+            const meta = plugins[name].Metadata;
 
             if (meta === undefined)
                 continue;
@@ -1011,8 +1009,8 @@ var Device = GObject.registerClass({
         try {
             if (this.paired && !this._plugins.has(name)) {
                 // Instantiate the handler
-                handler = imports.service.plugins[name];
-                plugin = new handler.Plugin(this);
+                handler = plugins[name];
+                plugin = new handler.default(this);
 
                 // Register packet handlers
                 for (const packetType of handler.Metadata.incomingCapabilities)
@@ -1053,7 +1051,7 @@ var Device = GObject.registerClass({
         try {
             if (this._plugins.has(name)) {
                 // Unregister packet handlers
-                handler = imports.service.plugins[name];
+                handler = plugins[name];
 
                 for (const type of handler.Metadata.incomingCapabilities)
                     this._handlers.delete(type);
@@ -1104,3 +1102,4 @@ var Device = GObject.registerClass({
     }
 });
 
+export default Device;

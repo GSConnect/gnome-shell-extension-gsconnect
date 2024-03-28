@@ -2,8 +2,31 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import * as atspi from './atspi.js';
+import * as clipboard from './clipboard.js';
+import * as contacts from './contacts.js';
+import * as input from './input.js';
+import * as mpris from './mpris.js';
+import * as notification from './notification.js';
+import * as pulseaudio from './pulseaudio.js';
+import * as session from './session.js';
+import * as sound from './sound.js';
+import * as upower from './upower.js';
+import * as ydotool from './ydotool.js';
 
+export const components = {
+    atspi,
+    clipboard,
+    contacts,
+    input,
+    mpris,
+    notification,
+    pulseaudio,
+    session,
+    sound,
+    upower,
+    ydotool,
+};
 
 /*
  * Singleton Tracker
@@ -18,17 +41,17 @@ const Default = new Map();
  * @param {string} name - The module name
  * @return {*} The default instance of a component
  */
-function acquire(name) {
+export function acquire(name) {
     let component;
 
     try {
         let info = Default.get(name);
 
         if (info === undefined) {
-            const module = imports.service.components[name];
+            const module = components[name];
 
             info = {
-                instance: new module.Component(),
+                instance: new module.default(),
                 refcount: 0,
             };
 
@@ -52,7 +75,7 @@ function acquire(name) {
  * @param {string} name - The module name
  * @return {null} A %null value, useful for overriding a traced variable
  */
-function release(name) {
+export function release(name) {
     try {
         const info = Default.get(name);
 

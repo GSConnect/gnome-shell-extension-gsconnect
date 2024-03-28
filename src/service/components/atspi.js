@@ -2,12 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
-
-imports.gi.versions.Atspi = '2.0';
-
-const Atspi = imports.gi.Atspi;
-const Gdk = imports.gi.Gdk;
+import Atspi from 'gi://Atspi?version=2.0';
+import Gdk from 'gi://Gdk';
 
 
 /**
@@ -30,7 +26,7 @@ const XKeycode = {
 /**
  * A thin wrapper around Atspi for X11 sessions without Pipewire support.
  */
-var Controller = class {
+export default class Controller {
     constructor() {
         // Atspi.init() return 2 on fail, but still marks itself as inited. We
         // uninit before throwing an error otherwise any future call to init()
@@ -312,5 +308,5 @@ var Controller = class {
             // Silence errors
         }
     }
-};
+}
 

@@ -2,9 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
-
-const Utils = imports.fixtures.utils;
+import * as Utils from '../fixtures/utils.js';
 
 
 describe('The share plugin', function () {

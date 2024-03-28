@@ -2,27 +2,26 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import {watchService} from '../wl_clipboard.js';
 
-const Gio = imports.gi.Gio;
-const GIRepository = imports.gi.GIRepository;
-const GLib = imports.gi.GLib;
+import Gio from 'gi://Gio';
+import GIRepository from 'gi://GIRepository';
+import GLib from 'gi://GLib';
 
-const Config = imports.config;
-const {setup, setupGettext} = imports.utils.setup;
+import Config from '../config.js';
+import setup, {setupGettext} from '../utils/setup.js';
 
 
 // Promise Wrappers
-try {
-    const {EBook, EDataServer} = imports.gi;
-
+// We don't use top-level await since it returns control flow to importing module, causing bugs
+import('gi://EBook').then(({default: EBook}) => {
     Gio._promisify(EBook.BookClient, 'connect');
     Gio._promisify(EBook.BookClient.prototype, 'get_view');
     Gio._promisify(EBook.BookClient.prototype, 'get_contacts');
+}).catch(console.debug);
+import('gi://EDataServer').then(({default: EDataServer}) => {
     Gio._promisify(EDataServer.SourceRegistry, 'new');
-} catch (e) {
-    // Silence import errors
-}
+}).catch(console.debug);
 
 Gio._promisify(Gio.AsyncInitable.prototype, 'init_async');
 Gio._promisify(Gio.DBusConnection.prototype, 'call');
@@ -58,7 +57,9 @@ Config.CONFIGDIR = GLib.build_filenamev([GLib.get_user_config_dir(), 'gsconnect'
 Config.RUNTIMEDIR = GLib.build_filenamev([GLib.get_user_runtime_dir(), 'gsconnect']);
 
 // Bootstrap
-setup(Config.PACKAGE_DATADIR);
+const serviceFolder = GLib.path_get_dirname(GLib.filename_from_uri(import.meta.url)[0]);
+const extensionFolder = GLib.path_get_dirname(serviceFolder);
+setup(extensionFolder);
 setupGettext();
 
 if (Config.IS_USER) {
@@ -157,7 +158,7 @@ else
  */
 if (!globalThis.HAVE_GNOME) {
     debug('Not running as a Gnome extension');
-    imports.wl_clipboard.watchService();
+    watchService();
 }
 
 

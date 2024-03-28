@@ -2,20 +2,20 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gdk from 'gi://Gdk';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
+import Gtk from 'gi://Gtk';
+import Pango from 'gi://Pango';
+
+import system from 'system';
+
+import * as Contacts from './contacts.js';
+import * as Sms from '../plugins/sms.js';
+import * as URI from '../utils/uri.js';
+import '../utils/ui.js';
 
 const Tweener = imports.tweener.tweener;
-
-const Gdk = imports.gi.Gdk;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
-const Pango = imports.gi.Pango;
-
-const Contacts = imports.service.ui.contacts;
-const Sms = imports.service.plugins.sms;
-const URI = imports.service.utils.uri;
-const _ui = imports.service.utils.ui;
 
 
 /*
@@ -460,7 +460,7 @@ const Conversation = GObject.registerClass({
         conversation.list.foreach(message => {
             // HACK: temporary mitigator for mysterious GtkListBox leak
             message.destroy();
-            imports.system.gc();
+            system.gc();
         });
     }
 
@@ -800,7 +800,7 @@ const ConversationSummary = GObject.registerClass({
 /**
  * A Gtk.ApplicationWindow for SMS conversations
  */
-var Window = GObject.registerClass({
+export const Window = GObject.registerClass({
     GTypeName: 'GSConnectMessagingWindow',
     Properties: {
         'device': GObject.ParamSpec.object(
@@ -1025,13 +1025,13 @@ var Window = GObject.registerClass({
 
                 if (conversation) {
                     conversation.destroy();
-                    imports.system.gc();
+                    system.gc();
                 }
 
                 // Then the summary widget
                 row.destroy();
                 // HACK: temporary mitigator for mysterious GtkListBox leak
-                imports.system.gc();
+                system.gc();
             }
         }
 
@@ -1219,7 +1219,7 @@ var Window = GObject.registerClass({
 /**
  * A Gtk.ApplicationWindow for selecting from open conversations
  */
-var ConversationChooser = GObject.registerClass({
+export const ConversationChooser = GObject.registerClass({
     GTypeName: 'GSConnectConversationChooser',
     Properties: {
         'device': GObject.ParamSpec.object(

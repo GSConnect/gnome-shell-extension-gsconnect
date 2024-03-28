@@ -2,14 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
-
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
 
 
-var Player = GObject.registerClass({
+export const Player = GObject.registerClass({
     GTypeName: 'GSConnectMediaPlayerInterface',
     Properties: {
         // Application Properties
@@ -790,7 +788,7 @@ const PlayerProxy = GObject.registerClass({
 /**
  * A manager for media players
  */
-var Manager = GObject.registerClass({
+const Manager = GObject.registerClass({
     GTypeName: 'GSConnectMPRISManager',
     Signals: {
         'player-added': {
@@ -1001,5 +999,5 @@ var Manager = GObject.registerClass({
 /**
  * The service class for this component
  */
-var Component = Manager;
+export default Manager;
 

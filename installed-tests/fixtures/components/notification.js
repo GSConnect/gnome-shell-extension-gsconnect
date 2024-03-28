@@ -2,12 +2,11 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
 
-const {Gio, GLib, GObject} = imports.gi;
 
-
-var Component = GObject.registerClass({
+const Component = GObject.registerClass({
     GTypeName: 'GSConnectMockNotificationListener',
     Signals: {
         'notification-added': {
@@ -22,4 +21,6 @@ var Component = GObject.registerClass({
         this.emit('notification-added', variant);
     }
 });
+
+export default Component;
 
