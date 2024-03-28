@@ -968,6 +968,7 @@ var Manager = GObject.registerClass({
             if (player.PlaybackStatus === 'Playing' && player.CanPause) {
                 player.Pause();
                 this._paused.set(name, player);
+                debug(`Paused ${name}`);
             }
         }
     }
@@ -976,11 +977,19 @@ var Manager = GObject.registerClass({
      * A convenience function for restarting all players paused with pauseAll().
      */
     unpauseAll() {
-        for (const player of this._paused.values()) {
-            if (player.PlaybackStatus === 'Paused' && player.CanPlay)
+        for (const [name, player] of this._paused) {
+            if (player.PlaybackStatus === 'Paused' && player.CanPlay) {
                 player.Play();
+                debug(`Unpaused ${name}`);
+            } else {
+                debug(`Cannot unpause ${name}, skipping`);
+            }
         }
 
+        this._paused.clear();
+    }
+
+    clearPaused() {
         this._paused.clear();
     }
 
