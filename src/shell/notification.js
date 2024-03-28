@@ -56,7 +56,7 @@ const NotificationBanner = GObject.registerClass({
     _addReplyAction() {
         if (!this._buttonBox) {
             this._buttonBox = new St.BoxLayout({
-                style_class: 'notification-actions',
+                style_class: 'notification-buttons-bin',
                 x_expand: true,
             });
             this.setActionArea(this._buttonBox);
