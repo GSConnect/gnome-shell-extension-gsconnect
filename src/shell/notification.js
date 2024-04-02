@@ -284,19 +284,38 @@ const Source = GObject.registerClass({
             this._notifications[localId] = cachedNotification;
         }
 
-        if (this.notifications.includes(cachedNotification)) {
-            cachedNotification.acknowledged = false;
-            this.emit('notification-request-banner', cachedNotification);
+        this._addNotificationToMessageTray(cachedNotification);
+
+        this._notificationPending = false;
+    }
+
+    /*
+     * Reimplementation of MessageTray.addNotification to raise the usual
+     * notification limit (3)
+     */
+    _addNotificationToMessageTray(notification) {
+        if (this.notifications.includes(notification)) {
+            notification.acknowledged = false;
             return;
         }
 
-        cachedNotification.connect('destroy', this._onNotificationDestroy.bind(this));
-        this.notifications.push(cachedNotification);
+        while (this.notifications.length >= 10) {
+            const [oldest] = this.notifications;
+            oldest.destroy(MessageTray.NotificationDestroyedReason.EXPIRED);
+        }
 
-        this.emit('notification-added', cachedNotification);
-        this.emit('notification-request-banner', cachedNotification);
+        notification.connect('destroy', this._onNotificationDestroy.bind(this));
+        notification.connect('notify::acknowledged', () => {
+            this.countUpdated();
 
-        this._notificationPending = false;
+            // If acknowledged was set to false try to show the notification again
+            if (!notification.acknowledged)
+                this.emit('notification-request-banner', notification);
+        });
+        this.notifications.push(notification);
+
+        this.emit('notification-added', notification);
+        this.emit('notification-request-banner', notification);
     }
 
     createBanner(notification) {
@@ -316,7 +335,7 @@ export function patchGSConnectNotificationSource() {
         // Patch in the subclassed methods
         source._closeGSConnectNotification = Source.prototype._closeGSConnectNotification;
         source.addNotification = Source.prototype.addNotification;
-        source.pushNotification = Source.prototype.pushNotification;
+        source._addNotificationToMessageTray = Source.prototype._addNotificationToMessageTray;
         source.createBanner = Source.prototype.createBanner;
 
         // Connect to existing notifications
@@ -344,7 +363,7 @@ const _ensureAppSource = function (appId) {
     if (source._appId === APP_ID) {
         source._closeGSConnectNotification = Source.prototype._closeGSConnectNotification;
         source.addNotification = Source.prototype.addNotification;
-        source.pushNotification = Source.prototype.pushNotification;
+        source._addNotificationToMessageTray = Source.prototype._addNotificationToMessageTray;
         source.createBanner = Source.prototype.createBanner;
     }
 
