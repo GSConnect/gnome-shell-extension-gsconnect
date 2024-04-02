@@ -228,23 +228,11 @@ const Source = GObject.registerClass({
     }
 
     /*
-     * Override to control notification spawning
+     * Add notification to source or update existing notification with extra
+     * GsConnect information
      */
-    addNotification(notification) {
-        this._notificationPending = true;
-
+    _createNotification(notification) {
         const [idMatch, deviceId, requestReplyId, remoteId, localId] = this._parseNotificationId(notification.id);
-
-        // Fix themed icons
-        if (notification.icon) {
-            let gicon = notification.icon;
-
-            if (gicon instanceof Gio.ThemedIcon) {
-                gicon = getIcon(gicon.names[0]);
-                notification.icon = gicon.serialize();
-            }
-        }
-
         let cachedNotification = this._notifications[localId];
 
         // Check if this is a repeat
@@ -258,10 +246,8 @@ const Source = GObject.registerClass({
                 : null;
 
             if (cachedNotification.title === title &&
-                cachedNotification.bannerBodyText === body) {
-                this._notificationPending = false;
+                cachedNotification.bannerBodyText === body)
                 return;
-            }
 
             cachedNotification.title = title;
             cachedNotification.bannerBodyText = body;
@@ -289,8 +275,27 @@ const Source = GObject.registerClass({
             });
             this._notifications[localId] = cachedNotification;
         }
+        return cachedNotification;
+    }
 
-        this._addNotificationToMessageTray(cachedNotification);
+    /*
+     * Override to control notification spawning
+     */
+    addNotification(notification) {
+        this._notificationPending = true;
+
+        // Fix themed icons
+        if (notification.icon) {
+            let gicon = notification.icon;
+
+            if (gicon instanceof Gio.ThemedIcon) {
+                gicon = getIcon(gicon.names[0]);
+                notification.icon = gicon.serialize();
+            }
+        }
+
+        const createdNotification = this._createNotification(notification);
+        this._addNotificationToMessageTray(createdNotification);
 
         this._notificationPending = false;
     }
@@ -341,6 +346,7 @@ export function patchGSConnectNotificationSource() {
         // Patch in the subclassed methods
         source._closeGSConnectNotification = Source.prototype._closeGSConnectNotification;
         source._parseNotificationId = Source.prototype._parseNotificationId;
+        source._createNotification = Source.prototype._createNotification;
         source.addNotification = Source.prototype.addNotification;
         source._addNotificationToMessageTray = Source.prototype._addNotificationToMessageTray;
         source.createBanner = Source.prototype.createBanner;
@@ -370,6 +376,7 @@ const _ensureAppSource = function (appId) {
     if (source._appId === APP_ID) {
         source._closeGSConnectNotification = Source.prototype._closeGSConnectNotification;
         source._parseNotificationId = Source.prototype._parseNotificationId;
+        source._createNotification = Source.prototype._createNotification;
         source.addNotification = Source.prototype.addNotification;
         source._addNotificationToMessageTray = Source.prototype._addNotificationToMessageTray;
         source.createBanner = Source.prototype.createBanner;
