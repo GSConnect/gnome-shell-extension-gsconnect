@@ -290,6 +290,7 @@ const Source = GObject.registerClass({
             return;
         }
 
+        cachedNotification.connect('destroy', this._onNotificationDestroy.bind(this));
         this.notifications.push(cachedNotification);
 
         this.emit('notification-added', cachedNotification);
