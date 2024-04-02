@@ -233,7 +233,7 @@ const Source = GObject.registerClass({
      */
     _createNotification(notification) {
         const [idMatch, deviceId, requestReplyId, remoteId, localId] = this._parseNotificationId(notification.id);
-        let cachedNotification = this._notifications[localId];
+        const cachedNotification = this._notifications[localId];
 
         // Check if this is a repeat
         if (cachedNotification) {
@@ -247,35 +247,35 @@ const Source = GObject.registerClass({
 
             if (cachedNotification.title === title &&
                 cachedNotification.bannerBodyText === body)
-                return;
+                return cachedNotification;
 
             cachedNotification.title = title;
             cachedNotification.bannerBodyText = body;
             cachedNotification.body = body;
 
+            return cachedNotification;
+        }
+
         // Device Notification
-        } else if (idMatch) {
-            cachedNotification = notification;
+        if (idMatch) {
+            notification.deviceId = deviceId;
+            notification.remoteId = remoteId;
+            notification.requestReplyId = requestReplyId;
 
-            cachedNotification.deviceId = deviceId;
-            cachedNotification.remoteId = remoteId;
-            cachedNotification.requestReplyId = requestReplyId;
-
-            cachedNotification.connect('destroy', (notification, reason) => {
+            notification.connect('destroy', (notification, reason) => {
                 this._closeGSConnectNotification(notification, reason);
                 delete this._notifications[localId];
             });
 
-            this._notifications[localId] = cachedNotification;
-
         // Service Notification
         } else {
-            cachedNotification.connect('destroy', (notification, reason) => {
+            notification.connect('destroy', (notification, reason) => {
                 delete this._notifications[localId];
             });
-            this._notifications[localId] = cachedNotification;
         }
-        return cachedNotification;
+
+        this._notifications[localId] = notification;
+        return notification;
     }
 
     /*
