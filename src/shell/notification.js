@@ -207,14 +207,10 @@ const Source = GObject.registerClass({
     }
 
     /*
-     * Override to control notification spawning
+     * Parse the id to determine if it's a repliable notification, device
+     * notification or a regular local notification
      */
-    addNotification(notification) {
-        this._notificationPending = true;
-
-        // Parse the id to determine if it's a repliable notification, device
-        // notification or a regular local notification
-        const notificationId = notification.id;
+    _parseNotificationId(notificationId) {
         let idMatch, deviceId, requestReplyId, remoteId, localId;
 
         if ((idMatch = REPLY_REGEX.exec(notificationId))) {
@@ -228,6 +224,16 @@ const Source = GObject.registerClass({
         } else {
             localId = notificationId;
         }
+        return [idMatch, deviceId, requestReplyId, remoteId, localId];
+    }
+
+    /*
+     * Override to control notification spawning
+     */
+    addNotification(notification) {
+        this._notificationPending = true;
+
+        const [idMatch, deviceId, requestReplyId, remoteId, localId] = this._parseNotificationId(notification.id);
 
         // Fix themed icons
         if (notification.icon) {
@@ -334,6 +340,7 @@ export function patchGSConnectNotificationSource() {
     if (source !== undefined) {
         // Patch in the subclassed methods
         source._closeGSConnectNotification = Source.prototype._closeGSConnectNotification;
+        source._parseNotificationId = Source.prototype._parseNotificationId;
         source.addNotification = Source.prototype.addNotification;
         source._addNotificationToMessageTray = Source.prototype._addNotificationToMessageTray;
         source.createBanner = Source.prototype.createBanner;
@@ -362,6 +369,7 @@ const _ensureAppSource = function (appId) {
 
     if (source._appId === APP_ID) {
         source._closeGSConnectNotification = Source.prototype._closeGSConnectNotification;
+        source._parseNotificationId = Source.prototype._parseNotificationId;
         source.addNotification = Source.prototype.addNotification;
         source._addNotificationToMessageTray = Source.prototype._addNotificationToMessageTray;
         source.createBanner = Source.prototype.createBanner;
