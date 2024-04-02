@@ -246,11 +246,10 @@ const Source = GObject.registerClass({
                 : null;
 
             if (cachedNotification.title === title &&
-                cachedNotification.bannerBodyText === body)
+                cachedNotification.body === body)
                 return cachedNotification;
 
             cachedNotification.title = title;
-            cachedNotification.bannerBodyText = body;
             cachedNotification.body = body;
 
             return cachedNotification;
