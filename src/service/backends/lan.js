@@ -5,6 +5,7 @@
 'use strict';
 
 const Gio = imports.gi.Gio;
+const GioUnix = imports.GioUnix;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
@@ -264,7 +265,7 @@ var ChannelService = GObject.registerClass({
 
             // Input stream
             this._udp6_stream = new Gio.DataInputStream({
-                base_stream: new Gio.UnixInputStream({
+                base_stream: new GioUnix.InputStream({
                     fd: this._udp6.fd,
                     close_fd: false,
                 }),
@@ -296,7 +297,7 @@ var ChannelService = GObject.registerClass({
 
             // Input stream
             this._udp4_stream = new Gio.DataInputStream({
-                base_stream: new Gio.UnixInputStream({
+                base_stream: new GioUnix.InputStream({
                     fd: this._udp4.fd,
                     close_fd: false,
                 }),

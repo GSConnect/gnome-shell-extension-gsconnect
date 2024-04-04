@@ -11,6 +11,7 @@
 imports.gi.versions.Gdk = '3.0';
 imports.gi.versions.GdkPixbuf = '2.0';
 imports.gi.versions.Gio = '2.0';
+imports.gi.versions.GioUnix = '2.0';
 imports.gi.versions.GLib = '2.0';
 imports.gi.versions.GObject = '2.0';
 imports.gi.versions.Gtk = '3.0';
