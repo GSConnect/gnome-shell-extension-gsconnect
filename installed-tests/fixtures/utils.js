@@ -222,11 +222,16 @@ function isolateDirectories() {
  * Patch in the mock components for plugin tests.
  */
 export async function mockComponents() {
-    const {components} = await import(`file://${Config.PACKAGE_DATADIR}/service/components/index.js`);
+    const {functionOverrides} = await import(`file://${Config.PACKAGE_DATADIR}/service/components/index.js`);
     const MockComponents = await import('./components/index.js');
 
-    for (const [name, module] of Object.entries(MockComponents))
-        components[name] = module;
+    functionOverrides.acquire = function (name) {
+        return new MockComponents[name].default();
+    };
+
+    functionOverrides.release = function (name) {
+        return null;
+    };
 }
 
 /**
