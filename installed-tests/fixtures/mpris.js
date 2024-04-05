@@ -2,23 +2,23 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gio from 'gi://Gio';
+import GObject from 'gi://GObject';
 
-const {Gio, GLib, GObject} = imports.gi;
-
-const Config = imports.config;
-const DBus = imports.service.utils.dbus;
-const MPRIS = imports.service.components.mpris;
+import TestConfig from '../config.js'; // FIXME: Having two config.js isn't... great...
+const DBus = await import(`file://${TestConfig.PACKAGE_DATADIR}/service/utils/dbus.js`);
+const MPRIS = await import(`file://${TestConfig.PACKAGE_DATADIR}/service/components/mpris.js`);
 
 
 /*
  * A class for mirroring a remote Media Player on DBus
  */
+const Config = (await import(`file://${TestConfig.PACKAGE_DATADIR}/config.js`)).default;
 const MPRISIface = Config.DBUS.lookup_interface('org.mpris.MediaPlayer2');
 const MPRISPlayerIface = Config.DBUS.lookup_interface('org.mpris.MediaPlayer2.Player');
 
 
-var MockPlayer = GObject.registerClass({
+const MockPlayer = GObject.registerClass({
     GTypeName: 'GSConnectMockPlayer',
 }, class MockPlayer extends MPRIS.Player {
 
@@ -123,3 +123,6 @@ var MockPlayer = GObject.registerClass({
         }
     }
 });
+
+export default MockPlayer;
+

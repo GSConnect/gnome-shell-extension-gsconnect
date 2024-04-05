@@ -2,9 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
-
-const Utils = imports.fixtures.utils;
+import * as Utils from '../fixtures/utils.js';
 
 
 function handlePacket(packet) {
@@ -24,7 +22,7 @@ describe('The systemvolume plugin', function () {
     let remoteDevice;
 
     beforeAll(async function () {
-        Utils.mockComponents();
+        await Utils.mockComponents();
 
         testRig = new Utils.TestRig();
         await testRig.prepare({

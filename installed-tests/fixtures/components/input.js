@@ -2,10 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
 
-
-var Component = class {
+export default class Component {
     clickPointer() {}
 
     doubleclickPointer() {}
@@ -19,5 +17,5 @@ var Component = class {
     scrollPointer() {}
 
     pressKeys() {}
-};
+}
 

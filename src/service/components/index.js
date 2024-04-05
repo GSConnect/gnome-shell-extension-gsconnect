@@ -14,7 +14,7 @@ import * as sound from './sound.js';
 import * as upower from './upower.js';
 import * as ydotool from './ydotool.js';
 
-const components = {
+export const components = {
     atspi,
     clipboard,
     contacts,

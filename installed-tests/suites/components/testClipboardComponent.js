@@ -2,13 +2,14 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import '../fixtures/utils.js';
 
-const Utils = imports.fixtures.utils;
+import Gdk from 'gi://Gdk';
+import Gtk from 'gi://Gtk';
+import GLib from 'gi://GLib';
 
-const {Gdk, Gtk, Gio, GLib} = imports.gi;
-
-const {Clipboard} = imports.service.components.clipboard;
+import Config from '../config.js';
+const {default: Clipboard} = await import(`file://${Config.PACKAGE_DATADIR}/service/components/clipboard.js`);
 
 
 describe('The Clipboard component', function () {

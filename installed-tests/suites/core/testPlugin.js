@@ -2,15 +2,16 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
 
-const {Gio, GLib, GObject} = imports.gi;
+import * as Utils from '../fixtures/utils.js';
 
-const Utils = imports.fixtures.utils;
-
-const Device = imports.service.device;
-const Components = imports.service.components;
-const PluginBase = imports.service.plugin;
+import Config from '../config.js';
+const {default: Device} = await import(`file://${Config.PACKAGE_DATADIR}/service/device.js`);
+const Components = await import(`file://${Config.PACKAGE_DATADIR}/service/components/index.js`);
+const {default: Plugin} = await import(`file://${Config.PACKAGE_DATADIR}/service/plugin.js`);
 
 
 /*
@@ -52,7 +53,7 @@ var Metadata = {
 
 const TestPlugin = GObject.registerClass({
     GTypeName: 'GSConnectTestPlugin',
-}, class TestPlugin extends PluginBase.Plugin {
+}, class TestPlugin extends Plugin {
     _init(device) {
         super._init(device, 'foobarbaz', Metadata);
 
@@ -121,7 +122,7 @@ describe('Plugin GActions', function () {
             },
         });
 
-        device = new Device.Device(identity);
+        device = new Device(identity);
         plugin = new TestPlugin(device);
 
         spyOn(plugin, 'foo').and.callThrough();
@@ -199,7 +200,7 @@ describe('Plugin packets', function () {
             },
         });
 
-        device = new Device.Device(identity);
+        device = new Device(identity);
         plugin = new TestPlugin(device);
 
         device._plugins.set('foobarbaz', plugin);
@@ -256,7 +257,7 @@ describe('Plugin cache', function () {
             },
         });
 
-        device = new Device.Device(identity);
+        device = new Device(identity);
         plugin = new TestPlugin(device);
     });
 

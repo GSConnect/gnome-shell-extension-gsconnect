@@ -2,10 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
 
-
-var Component = class MockSession {
+export default class MockSessionComponent {
     get idle() {
         if (this._idle === undefined)
             this._idle = false;
@@ -34,5 +32,5 @@ var Component = class MockSession {
         for (const [propertyName, propertyValue] of Object.entries(obj))
             this[`_${propertyName}`] = propertyValue;
     }
-};
+}
 

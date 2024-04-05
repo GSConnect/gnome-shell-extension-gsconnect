@@ -2,11 +2,9 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import * as Utils from '../fixtures/utils.js';
 
-const Utils = imports.fixtures.utils;
-
-const {Gdk} = imports.gi;
+import Gdk from 'gi://Gdk';
 
 
 describe('The mousepad plugin', function () {
@@ -14,7 +12,7 @@ describe('The mousepad plugin', function () {
     let localPlugin, remotePlugin;
 
     beforeAll(async function () {
-        Utils.mockComponents();
+        await Utils.mockComponents();
 
         testRig = new Utils.TestRig();
         await testRig.prepare({

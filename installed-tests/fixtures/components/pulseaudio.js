@@ -2,12 +2,9 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import GObject from 'gi://GObject';
 
 const Tweener = imports.tweener.tweener;
-
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
 
 
 class MockStream {
@@ -100,7 +97,7 @@ class MockStream {
 }
 
 
-var Component = GObject.registerClass({
+const Component = GObject.registerClass({
     GTypeName: 'GSConnectMockMixer',
     Signals: {
         'output-added': {
@@ -231,4 +228,6 @@ var Component = GObject.registerClass({
         }
     }
 });
+
+export default Component;
 

@@ -2,18 +2,17 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import GLib from 'gi://GLib';
 
-const {Gio, GLib} = imports.gi;
+import '../fixtures/utils.js';
+import MockPlayer from '../fixtures/mpris.js';
 
-const Utils = imports.fixtures.utils;
-const {MockPlayer} = imports.fixtures.mpris;
-
-const MPRIS = imports.service.components.mpris;
+import Config from '../config.js';
+const {default: Manager} = await import(`file://${Config.PACKAGE_DATADIR}/service/components/mpris.js`);
 
 
 // Prevent auto-loading
-MPRIS.Manager.prototype._loadPlayers = function () {};
+Manager.prototype._loadPlayers = function () {};
 
 
 describe('The MPRIS component', function () {
@@ -21,7 +20,7 @@ describe('The MPRIS component', function () {
     let player;
 
     beforeAll(function () {
-        manager = new MPRIS.Manager();
+        manager = new Manager();
         player = new MockPlayer(GLib.uuid_string_random());
     });
 

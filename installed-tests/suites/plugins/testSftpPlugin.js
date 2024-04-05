@@ -2,10 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import * as Utils from '../fixtures/utils.js';
 
-const Utils = imports.fixtures.utils;
-const {Plugin} = imports.service.plugin;
+import Config from '../config.js';
+const {default: Plugin} = await import(`file://${Config.PACKAGE_DATADIR}/service/plugin.js`);
 
 
 const Packets = {

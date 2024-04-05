@@ -2,9 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
-
-const Utils = imports.fixtures.utils;
+import * as Utils from '../fixtures/utils.js';
 
 
 describe('The mpris plugin', function () {
@@ -12,7 +10,7 @@ describe('The mpris plugin', function () {
     let localPlugin, remotePlugin;
 
     beforeAll(async function () {
-        Utils.mockComponents();
+        await Utils.mockComponents();
 
         testRig = new Utils.TestRig();
         await testRig.prepare({
