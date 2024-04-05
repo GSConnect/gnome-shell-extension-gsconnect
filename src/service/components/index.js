@@ -14,7 +14,9 @@ import * as sound from './sound.js';
 import * as upower from './upower.js';
 import * as ydotool from './ydotool.js';
 
-export const components = {
+export const functionOverrides = {};
+
+const components = {
     atspi,
     clipboard,
     contacts,
@@ -42,6 +44,9 @@ const Default = new Map();
  * @return {*} The default instance of a component
  */
 export function acquire(name) {
+    if (functionOverrides.acquire)
+        return functionOverrides.acquire(name);
+
     let component;
 
     try {
@@ -76,6 +81,9 @@ export function acquire(name) {
  * @return {null} A %null value, useful for overriding a traced variable
  */
 export function release(name) {
+    if (functionOverrides.release)
+        return functionOverrides.release(name);
+
     try {
         const info = Default.get(name);
 
