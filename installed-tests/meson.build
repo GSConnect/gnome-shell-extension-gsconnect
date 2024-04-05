@@ -21,7 +21,7 @@ test_env.set('G_DEBUG', 'fatal-warnings,fatal-criticals')
 
 
 test_config_js = configure_file(
-  input: '../data/config.js.in',
+  input: './config.js.in',
   output: 'config.js',
   configuration: extconfig,
 )

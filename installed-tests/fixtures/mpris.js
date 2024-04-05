@@ -5,15 +5,14 @@
 import Gio from 'gi://Gio';
 import GObject from 'gi://GObject';
 
-import TestConfig from '../config.js'; // FIXME: Having two config.js isn't... great...
-const DBus = await import(`file://${TestConfig.PACKAGE_DATADIR}/service/utils/dbus.js`);
-const MPRIS = await import(`file://${TestConfig.PACKAGE_DATADIR}/service/components/mpris.js`);
+import Config from '../config.js';
+const DBus = await import(`file://${Config.PACKAGE_DATADIR}/service/utils/dbus.js`);
+const MPRIS = await import(`file://${Config.PACKAGE_DATADIR}/service/components/mpris.js`);
 
 
 /*
  * A class for mirroring a remote Media Player on DBus
  */
-const Config = (await import(`file://${TestConfig.PACKAGE_DATADIR}/config.js`)).default;
 const MPRISIface = Config.DBUS.lookup_interface('org.mpris.MediaPlayer2');
 const MPRISPlayerIface = Config.DBUS.lookup_interface('org.mpris.MediaPlayer2.Player');
 
