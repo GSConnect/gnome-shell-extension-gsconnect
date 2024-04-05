@@ -2,11 +2,11 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import * as Utils from '../fixtures/utils.js';
 
-const Utils = imports.fixtures.utils;
+import GLib from 'gi://GLib';
 
-const GLib = imports.gi.GLib;
+import Config from '../config.js';
 
 
 const VCards = {
@@ -136,7 +136,8 @@ describe('The contacts plugin', function () {
         while (localPlugin._store.contacts.length)
             await Promise.idle();
 
-        imports.service.plugins.contacts.EBookContacts = null;
+        await import(`file://${Config.PACKAGE_DATADIR}/service/plugins/contacts.js`)
+            .then(({setEBookContacts}) => setEBookContacts(null));
 
         localPlugin._requestVCards(['valid']);
 

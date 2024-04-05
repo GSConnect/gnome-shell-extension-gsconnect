@@ -2,15 +2,14 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
 
-const {Gio, GLib} = imports.gi;
+import * as Utils from '../fixtures/utils.js';
 
-const Utils = imports.fixtures.utils;
-
-const Core = imports.service.core;
-const Device = imports.service.device;
-const Lan = imports.service.backends.lan;
+import Config from '../config.js';
+const Core = await import(`file://${Config.PACKAGE_DATADIR}/service/core.js`);
+const Lan = await import(`file://${Config.PACKAGE_DATADIR}/service/backends/lan.js`);
 
 
 describe('A LAN channel service', function () {

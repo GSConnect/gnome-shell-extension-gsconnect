@@ -2,13 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import '../fixtures/utils.js';
 
-const {Gio, GLib} = imports.gi;
-
-const Utils = imports.fixtures.utils;
-
-const Core = imports.service.core;
+import Config from '../config.js';
+const Core = await import(`file://${Config.PACKAGE_DATADIR}/service/core.js`);
 
 
 /*

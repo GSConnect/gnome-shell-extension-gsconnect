@@ -2,13 +2,13 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
 
-const {Gio, GLib} = imports.gi;
+import * as Utils from '../fixtures/utils.js';
 
-const Utils = imports.fixtures.utils;
-
-const Device = imports.service.device;
+import Config from '../config.js';
+const {default: Device} = await import(`file://${Config.PACKAGE_DATADIR}/service/device.js`);
 
 
 describe('A device constructed from a packet', function () {
@@ -21,7 +21,7 @@ describe('A device constructed from a packet', function () {
                 outgoingCapabilities: ['kdeconnect.ping'],
             },
         });
-        device = new Device.Device(identity);
+        device = new Device(identity);
     });
 
     afterAll(function () {
@@ -70,7 +70,7 @@ describe('A device constructed from an ID', function () {
 
     beforeAll(function () {
         id = GLib.uuid_string_random();
-        device = new Device.Device({body: {deviceId: id}});
+        device = new Device({body: {deviceId: id}});
     });
 
     afterAll(function () {

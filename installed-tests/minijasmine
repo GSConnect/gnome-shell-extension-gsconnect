@@ -1,10 +1,12 @@
-#!/usr/bin/env gjs
+#!/usr/bin/env -S gjs -m
 
 // SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-const {GLib} = imports.gi;
+import GLib from 'gi://GLib';
+import system from 'system';
+import {getJasmineRequireObj} from './jasmine.js';
 
 
 // Utils
@@ -93,13 +95,8 @@ class TapReporter {
  * Initialize Jasmine
  */
 function initJasmine() {
-    // Add the current path to the importer
-    const thisFile = /@(.+):\d+/.exec(Error().stack.split('\n')[1])[1];
-    const thisDir = GLib.path_get_dirname(thisFile);
-    imports.searchPath.unshift(thisDir);
-
     // Load Jasmine
-    const jasmineRequire = imports.jasmine.getJasmineRequireObj();
+    const jasmineRequire = getJasmineRequireObj();
     const jasmineCore = jasmineRequire.core(jasmineRequire);
     globalThis._jasmineEnv = jasmineCore.getEnv();
 
@@ -118,21 +115,16 @@ function initJasmine() {
 /**
  * Initialize test suites
  */
-function initTests() {
-    // Add the test path to the importer
-    const testDir = GLib.path_get_dirname(ARGV[0]);
-    imports.searchPath.unshift(testDir);
-
-    // Load the test suites
-    const testPath = GLib.path_get_basename(ARGV[0]).slice(0, -3);
-    void imports[testPath];
+async function initTests() {
+    // Load the test suite
+    await import(`file://${ARGV[0]}`);
 }
 
 
 /**
  * Run initialized tests
  */
-function runTests() {
+async function runTests() {
     GLib.idle_add(GLib.PRIORITY_DEFAULT, function () {
         try {
             globalThis._jasmineEnv.execute();
@@ -144,7 +136,7 @@ function runTests() {
         return GLib.SOURCE_REMOVE;
     });
 
-    globalThis._jasmineMain.run();
+    await globalThis._jasmineMain.runAsync();
 
     // Exhaust the event loop
     const context = GLib.MainContext.default();
@@ -153,12 +145,12 @@ function runTests() {
         continue;
 
     // Return the exit status
-    imports.system.exit(globalThis._jasmineRetval);
+    system.exit(globalThis._jasmineRetval);
 }
 
 
 // TODO: add CLI options for isolated XDG, DBus, etc
 initJasmine();
-initTests();
-runTests();
+await initTests();
+await runTests();
 

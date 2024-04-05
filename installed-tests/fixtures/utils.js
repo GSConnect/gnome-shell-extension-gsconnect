@@ -2,17 +2,15 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import 'gi://Gdk?version=3.0';
+import 'gi://Gtk?version=3.0';
 
-imports.gi.versions.Gdk = '3.0';
-imports.gi.versions.Gtk = '3.0';
-
-const ByteArray = imports.byteArray;
-const {Gio, GLib} = imports.gi;
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
 
 
 // Ensure the environment is prepared for testing
-const Config = imports.config;
+import Config from '../config.js';
 
 if (GLib.getenv('GSCONNECT_TEST')) {
     Config.PACKAGE_DATADIR = GLib.getenv('GJS_PATH');
@@ -21,16 +19,14 @@ if (GLib.getenv('GSCONNECT_TEST')) {
     GLib.setenv('G_DEBUG', 'fatal-warnings,fatal-criticals', true);
     GLib.setenv('GSETTINGS_BACKEND', 'memory', true);
     GLib.setenv('NO_AT_BRIDGE', '1', true);
-
-    imports.searchPath.unshift(Config.PACKAGE_DATADIR);
 }
 
 
-const _setup = imports.service.utils.setup;
-const {Device} = imports.service.device;
-const {Plugin} = imports.service.plugin;
+await import(`file://${Config.PACKAGE_DATADIR}/service/init.js`);
+const {default: Device} = await import(`file://${Config.PACKAGE_DATADIR}/service/device.js`);
+const {default: Plugin} = await import(`file://${Config.PACKAGE_DATADIR}/service/plugin.js`);
 
-const {ChannelService} = imports.fixtures.backend;
+const {ChannelService} = await import('./backend.js');
 
 
 // Force testing under GNOME
@@ -41,8 +37,7 @@ globalThis.HAVE_GNOME = true;
  * File Helpers
  */
 function get_datadir() {
-    const thisPath = /@(.+):\d+/.exec((new Error()).stack.split('\n')[1])[1];
-    const thisFile = Gio.File.new_for_path(thisPath);
+    const thisFile = Gio.File.new_for_uri(import.meta.url);
 
     return thisFile.get_parent().get_parent().get_child('data').get_path();
 }
@@ -50,26 +45,26 @@ function get_datadir() {
 const DATA_PATH = get_datadir();
 
 
-function getDataPath(filename) {
+export function getDataPath(filename) {
     return GLib.build_filenamev([DATA_PATH, filename]);
 }
 
 
-function getDataUri(filename) {
+export function getDataUri(filename) {
     return `file://${getDataPath(filename)}`;
 }
 
 
-function getDataFile(filename) {
+export function getDataFile(filename) {
     return Gio.File.new_for_path(getDataPath(filename));
 }
 
 
-function loadDataContents(filename) {
+export function loadDataContents(filename) {
     const path = getDataPath(filename);
     const bytes = GLib.file_get_contents(path)[1];
 
-    return ByteArray.toString(bytes);
+    return new TextDecoder().decode(bytes);
 }
 
 
@@ -107,7 +102,7 @@ function getDeviceType() {
  * @param {Object} params - Override parameters
  * @return {Object} A pseudo-random identity packet
  */
-function generateIdentity(params = {}) {
+export function generateIdentity(params = {}) {
     const identity = {
         'id': Date.now(),
         'type': 'kdeconnect.identity',
@@ -210,7 +205,6 @@ Plugin.prototype.awaitPacket = _awaitPacket;
  * @return {string} The root temporary directory
  */
 function isolateDirectories() {
-    const Config = imports.config;
     const tmpdir = GLib.Dir.make_tmp('gsconnect.XXXXXX');
 
     Config.CACHEDIR = GLib.build_filenamev([tmpdir, 'cache']);
@@ -227,17 +221,12 @@ function isolateDirectories() {
 /**
  * Patch in the mock components for plugin tests.
  */
-function mockComponents() {
-    const Components = imports.service.components;
-    const MockComponents = imports.fixtures.components;
+export async function mockComponents() {
+    const {components} = await import(`file://${Config.PACKAGE_DATADIR}/service/components/index.js`);
+    const MockComponents = await import('./components/index.js');
 
-    Components.acquire = function (name) {
-        return new MockComponents[name].Component();
-    };
-
-    Components.release = function (name) {
-        return null;
-    };
+    for (const [name, module] of Object.entries(MockComponents))
+        components[name] = module;
 }
 
 /**
@@ -272,7 +261,7 @@ function removeDirectory(file) {
 /**
  * A test rig with two active GSconnectChannelService instances.
  */
-var TestRig = class {
+export class TestRig {
     /**
      * Create a new test rig.
      *
@@ -399,5 +388,5 @@ var TestRig = class {
         if (this._tmpdir)
             removeDirectory(this._tmpdir);
     }
-};
+}
 

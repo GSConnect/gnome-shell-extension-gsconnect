@@ -2,11 +2,9 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import GLib from 'gi://GLib';
 
-const {GLib} = imports.gi;
-
-const Utils = imports.fixtures.utils;
+import * as Utils from '../fixtures/utils.js';
 
 
 describe('The runcommand plugin', function () {

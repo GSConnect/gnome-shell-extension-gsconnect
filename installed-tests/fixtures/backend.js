@@ -2,19 +2,17 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
-
-const Config = imports.config;
-const Core = imports.service.core;
+import Config from '../config.js';
+const Core = await import(`file://${Config.PACKAGE_DATADIR}/service/core.js`);
 
 // Retain compatibility with GLib < 2.80, which lacks GioUnix
 let GioUnix;
 try {
-    GioUnix = imports.gi.GioUnix;
+    GioUnix = (await import('gi://GioUnix')).default;
 } catch (e) {
     GioUnix = {
         InputStream: Gio.UnixInputStream,
@@ -35,7 +33,7 @@ const TRANSFER_MAX = 2764;
  * A simple IP-based backend for tests. This should ostensibly be kept up to
  * date with backends/lan.js as it is essentially a clone without the TLS parts.
  */
-var ChannelService = GObject.registerClass({
+export const ChannelService = GObject.registerClass({
     GTypeName: 'GSConnectMockChannelService',
     Properties: {
         'port': GObject.ParamSpec.uint(
@@ -358,7 +356,7 @@ var ChannelService = GObject.registerClass({
 /**
  * A simple IP-based channel for tests
  */
-var Channel = GObject.registerClass({
+export const Channel = GObject.registerClass({
     GTypeName: 'GSConnectMockChannel',
 }, class MockChannel extends Core.Channel {
 

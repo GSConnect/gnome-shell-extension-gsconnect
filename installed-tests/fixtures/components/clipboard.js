@@ -2,12 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
-
-const {GObject} = imports.gi;
+import GObject from 'gi://GObject';
 
 
-var Component = GObject.registerClass({
+const Component = GObject.registerClass({
     GTypeName: 'MockClipboard',
     Properties: {
         'text': GObject.ParamSpec.string(
@@ -35,4 +33,6 @@ var Component = GObject.registerClass({
         this.notify('text');
     }
 });
+
+export default Component;
 

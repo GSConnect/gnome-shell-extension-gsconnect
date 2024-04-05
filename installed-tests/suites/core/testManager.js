@@ -2,13 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import GLib from 'gi://GLib';
 
-const {GLib} = imports.gi;
+import * as Utils from '../fixtures/utils.js';
 
-const Utils = imports.fixtures.utils;
-
-const {Manager} = imports.service.manager;
+import Config from '../config.js';
+const {default: Manager} = await import(`file://${Config.PACKAGE_DATADIR}/service/manager.js`);
 
 
 // TODO: * device management
