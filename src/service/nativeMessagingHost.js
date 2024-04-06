@@ -12,10 +12,20 @@ imports.gi.versions.GLib = '2.0';
 imports.gi.versions.GObject = '2.0';
 
 const Gio = imports.gi.Gio;
-const GioUnix = imports.gi.GioUnix;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const System = imports.system;
+
+// Retain compatibility with GLib < 2.80, which lacks GioUnix
+let GioUnix;
+try {
+    GioUnix = imports.gi.GioUnix;
+} catch (e) {
+    GioUnix = {
+        InputStream: Gio.UnixInputStream,
+        OutputStream: Gio.UnixOutputStream,
+    };
+}
 
 
 const NativeMessagingHost = GObject.registerClass({
