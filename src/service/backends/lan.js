@@ -5,13 +5,22 @@
 'use strict';
 
 const Gio = imports.gi.Gio;
-const GioUnix = imports.gi.GioUnix;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
 const Config = imports.config;
 const Core = imports.service.core;
 
+// Retain compatibility with GLib < 2.80, which lacks GioUnix
+let GioUnix;
+try {
+    GioUnix = imports.gi.GioUnix;
+} catch (e) {
+    GioUnix = {
+        InputStream: Gio.UnixInputStream,
+        OutputStream: Gio.UnixOutputStream,
+    };
+}
 
 /**
  * TCP Port Constants
