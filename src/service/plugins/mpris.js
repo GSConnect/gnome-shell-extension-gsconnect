@@ -242,11 +242,22 @@ var Plugin = GObject.registerClass({
                 player.Volume = packet.body.setVolume / 100;
 
             if (packet.body.hasOwnProperty('Seek'))
-                await player.Seek(packet.body.Seek * 1000);
+                await player.Seek(packet.body.Seek);
 
             if (packet.body.hasOwnProperty('SetPosition')) {
-                const offset = (packet.body.SetPosition * 1000) - player.Position;
-                await player.Seek(offset);
+                // We want to avoid implementing this as a seek operation,
+                // because some players seek a fixed amount for every
+                // seek request, only respecting the sign of the parameter.
+                // (Chrome, for example, will only seek ±5 seconds, regardless
+                // what value is passed to Seek().)
+                const position = packet.body.SetPosition;
+                const metadata = player.Metadata;
+                if (metadata.hasOwnProperty('mpris:trackid')) {
+                    const trackId = metadata['mpris:trackid'];
+                    await player.SetPosition(trackId, position * 1000);
+                } else {
+                    await player.Seek(position * 1000 - player.Position);
+                }
             }
 
             // Information Request
