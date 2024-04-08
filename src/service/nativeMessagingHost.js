@@ -7,6 +7,7 @@
 'use strict';
 
 imports.gi.versions.Gio = '2.0';
+imports.gi.versions.GioUnix = '2.0';
 imports.gi.versions.GLib = '2.0';
 imports.gi.versions.GObject = '2.0';
 
@@ -14,6 +15,17 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const System = imports.system;
+
+// Retain compatibility with GLib < 2.80, which lacks GioUnix
+let GioUnix;
+try {
+    GioUnix = imports.gi.GioUnix;
+} catch (e) {
+    GioUnix = {
+        InputStream: Gio.UnixInputStream,
+        OutputStream: Gio.UnixOutputStream,
+    };
+}
 
 
 const NativeMessagingHost = GObject.registerClass({
@@ -44,12 +56,12 @@ const NativeMessagingHost = GObject.registerClass({
 
         // IO Channels
         this._stdin = new Gio.DataInputStream({
-            base_stream: new Gio.UnixInputStream({fd: 0}),
+            base_stream: new GioUnix.InputStream({fd: 0}),
             byte_order: Gio.DataStreamByteOrder.HOST_ENDIAN,
         });
 
         this._stdout = new Gio.DataOutputStream({
-            base_stream: new Gio.UnixOutputStream({fd: 1}),
+            base_stream: new GioUnix.OutputStream({fd: 1}),
             byte_order: Gio.DataStreamByteOrder.HOST_ENDIAN,
         });
 

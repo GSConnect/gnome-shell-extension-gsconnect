@@ -11,6 +11,17 @@ const GObject = imports.gi.GObject;
 const Config = imports.config;
 const Core = imports.service.core;
 
+// Retain compatibility with GLib < 2.80, which lacks GioUnix
+let GioUnix;
+try {
+    GioUnix = imports.gi.GioUnix;
+} catch (e) {
+    GioUnix = {
+        InputStream: Gio.UnixInputStream,
+        OutputStream: Gio.UnixOutputStream,
+    };
+}
+
 
 /**
  * TCP Port Constants
@@ -127,7 +138,7 @@ var ChannelService = GObject.registerClass({
 
             // Input stream
             this._udp6_stream = new Gio.DataInputStream({
-                base_stream: new Gio.UnixInputStream({
+                base_stream: new GioUnix.InputStream({
                     fd: this._udp6.fd,
                     close_fd: false,
                 }),
@@ -159,7 +170,7 @@ var ChannelService = GObject.registerClass({
 
             // Input stream
             this._udp4_stream = new Gio.DataInputStream({
-                base_stream: new Gio.UnixInputStream({
+                base_stream: new GioUnix.InputStream({
                     fd: this._udp4.fd,
                     close_fd: false,
                 }),
