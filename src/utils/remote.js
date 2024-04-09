@@ -9,7 +9,6 @@ import GObject from 'gi://GObject';
 const SERVICE_NAME = 'org.gnome.Shell.Extensions.GSConnect';
 const SERVICE_PATH = '/org/gnome/Shell/Extensions/GSConnect';
 const DEVICE_NAME = 'org.gnome.Shell.Extensions.GSConnect.Device';
-// const DEVICE_PATH = '/org/gnome/Shell/Extensions/GSConnect/Device';
 
 
 const _PROPERTIES = {
