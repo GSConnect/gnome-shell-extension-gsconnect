@@ -12,15 +12,6 @@ try {
 } catch (e) {}
 
 
-/*
- * Used to ensure 'audible-bell' is enabled for fallback
- */
-/* const WM_SETTINGS = new Gio.Settings({
-    schema_id: 'org.gnome.desktop.wm.preferences',
-    path: '/org/gnome/desktop/wm/preferences/',
-}); */
-
-
 const Player = class Player {
 
     constructor() {

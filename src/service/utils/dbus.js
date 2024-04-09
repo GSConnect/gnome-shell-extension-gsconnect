@@ -17,12 +17,6 @@ function toDBusCase(string) {
     }).replace(/[\s_-]+/g, '');
 }
 
-/* function toHyphenCase(string) {
-    return string.replace(/(?:[A-Z])/g, (ltr, offset) => {
-        return (offset > 0) ? `-${ltr.toLowerCase()}` : ltr.toLowerCase();
-    }).replace(/[\s_]+/g, '');
-} */
-
 function toUnderscoreCase(string) {
     return string.replace(/(?:^\w|[A-Z]|_|\b\w)/g, (ltr, offset) => {
         if (ltr === '_')
