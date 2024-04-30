@@ -167,15 +167,14 @@ const SFTPPlugin = GObject.registerClass({
                 const name = info.get_name();
                 directories[name] = `${file.get_uri()}${name}/`;
             }
-        }
-        catch (e) {
+        } catch (e) {
             debug(e, this.device.name);
 
             // If no directories were found, fall back to using 'multiPaths'
             if (this._mount_body.hasOwnProperty('multiPaths')) {
                 for (let i = 0; i < this._mount_body.multiPaths.length; i++) {
-                    let name = this._mount_body.pathNames[i];
-                    let path = this._mount_body.multiPaths[i];
+                    const name = this._mount_body.pathNames[i];
+                    const path = this._mount_body.multiPaths[i];
                     directories[name] = `${file.get_uri()}${path}/`;
                 }
             }
@@ -219,7 +218,7 @@ const SFTPPlugin = GObject.registerClass({
                 return;
 
             this._mounting = true;
-            this._mount_body = packet.body
+            this._mount_body = packet.body;
 
             // Ensure the private key is in the keyring
             await this._addPrivateKey();
