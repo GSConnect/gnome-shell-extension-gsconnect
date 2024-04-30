@@ -150,22 +150,35 @@ const SFTPPlugin = GObject.registerClass({
 
     async _listDirectories(mount) {
         const file = mount.get_root();
-
-        const iter = await file.enumerate_children_async(
-            Gio.FILE_ATTRIBUTE_STANDARD_NAME,
-            Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
-            GLib.PRIORITY_DEFAULT,
-            this.cancellable);
-
-        const infos = await iter.next_files_async(MAX_MOUNT_DIRS,
-            GLib.PRIORITY_DEFAULT, this.cancellable);
-        iter.close_async(GLib.PRIORITY_DEFAULT, null, null);
-
         const directories = {};
 
-        for (const info of infos) {
-            const name = info.get_name();
-            directories[name] = `${file.get_uri()}${name}/`;
+        try {
+            const iter = await file.enumerate_children_async(
+                Gio.FILE_ATTRIBUTE_STANDARD_NAME,
+                Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
+                GLib.PRIORITY_DEFAULT,
+                this.cancellable);
+
+            const infos = await iter.next_files_async(MAX_MOUNT_DIRS,
+                GLib.PRIORITY_DEFAULT, this.cancellable);
+            iter.close_async(GLib.PRIORITY_DEFAULT, null, null);
+
+            for (const info of infos) {
+                const name = info.get_name();
+                directories[name] = `${file.get_uri()}${name}/`;
+            }
+        }
+        catch (e) {
+            debug(e, this.device.name);
+
+            // If no directories were found, fall back to using 'multiPaths'
+            if (this._mount_body.hasOwnProperty('multiPaths')) {
+                for (let i = 0; i < this._mount_body.multiPaths.length; i++) {
+                    let name = this._mount_body.pathNames[i];
+                    let path = this._mount_body.multiPaths[i];
+                    directories[name] = `${file.get_uri()}${path}/`;
+                }
+            }
         }
 
         return directories;
@@ -206,6 +219,7 @@ const SFTPPlugin = GObject.registerClass({
                 return;
 
             this._mounting = true;
+            this._mount_body = packet.body
 
             // Ensure the private key is in the keyring
             await this._addPrivateKey();
