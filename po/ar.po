@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 09:31-0500\n"
-"PO-Revision-Date: 2024-05-09 01:47\n"
+"PO-Revision-Date: 2024-05-09 03:03\n"
 "Last-Translator: \n"
 "Language-Team: Arabic\n"
 "Language: ar_SA\n"
@@ -96,11 +96,11 @@ msgstr "الاتصال بـ…"
 #: src/preferences/service.js:405 src/service/plugins/share.js:163
 #: src/service/plugins/share.js:296 src/service/plugins/share.js:427
 msgid "Cancel"
-msgstr "إلغاء"
+msgstr "ألغِ"
 
 #: data/ui/connect-dialog.ui:33
 msgid "Connect"
-msgstr "اتصال"
+msgstr "اتصل"
 
 #: data/ui/connect-dialog.ui:80
 msgid "IP Address"
@@ -135,7 +135,7 @@ msgstr "إرسال الرسائل القصيرة"
 #: data/ui/notification-reply-dialog.ui:31
 #: data/ui/notification-reply-dialog.ui:35 src/service/plugins/share.js:428
 msgid "Send"
-msgstr "إرسال"
+msgstr "أرسل"
 
 #: data/ui/legacy-messaging-dialog.ui:69 data/ui/messaging-window.ui:263
 #: data/ui/notification-reply-dialog.ui:68
@@ -178,7 +178,7 @@ msgstr "لم يتم تحديد أي محادثة"
 
 #: data/ui/messaging-window.ui:196
 msgid "Select or start a conversation"
-msgstr "تحديد أو بدء محادثة"
+msgstr "اختر محادثة أو ابدأ واحدة"
 
 #: data/ui/mousepad-input-dialog.ui:97
 msgid "Touchpad.\n"
@@ -198,7 +198,7 @@ msgstr "تعديل الأمر"
 
 #: data/ui/preferences-command-editor.ui:28
 msgid "Save"
-msgstr "حفظ"
+msgstr "احفظ"
 
 #: data/ui/preferences-command-editor.ui:61
 msgid "Name"
@@ -416,7 +416,7 @@ msgstr "معلومات التشفير"
 #. TRANSLATORS: Unpair the device and notify it
 #: data/ui/preferences-device-panel.ui:2606 src/service/daemon.js:395
 msgid "Unpair"
-msgstr "إلغاء الاقتران"
+msgstr "ألغِ الاقتران"
 
 #. TRANSLATORS: Send clipboard content to device
 #: data/ui/preferences-device-panel.ui:2618
@@ -477,7 +477,7 @@ msgstr "تحديث"
 
 #: data/ui/preferences-window.ui:139 src/extension.js:114
 msgid "Mobile Settings"
-msgstr "إعدادات الجهاز"
+msgstr "إعدادات الهاتف"
 
 #: data/ui/preferences-window.ui:166
 msgid "Service Menu"
@@ -952,11 +952,11 @@ msgstr "تصفح نظام ملفات الجهاز المقترن"
 
 #: src/service/plugins/sftp.js:24
 msgid "Mount"
-msgstr "توصيل"
+msgstr "صِل"
 
 #: src/service/plugins/sftp.js:32
 msgid "Unmount"
-msgstr "إلغاء التوصيل"
+msgstr "افصل"
 
 #: src/service/plugins/sftp.js:193
 #, javascript-format
@@ -965,7 +965,7 @@ msgstr "%s التبليغ عن خطأ"
 
 #: src/service/plugins/share.js:18 src/service/plugins/share.js:25
 msgid "Share"
-msgstr "مشاركة"
+msgstr "شارك"
 
 #: src/service/plugins/share.js:20
 msgid "Share files and URLs between devices"
