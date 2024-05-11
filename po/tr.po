@@ -268,7 +268,7 @@ msgstr "Düşük Batarya Bildirimi"
 
 #: data/ui/preferences-device-panel.ui:706
 msgid "Charged Up to Custom Level Notification"
-msgstr ""
+msgstr "Batarya Özel Seviyeye Ulaştı Bildirimi"
 
 #: data/ui/preferences-device-panel.ui:786
 msgid "Fully Charged Notification"
@@ -802,7 +802,7 @@ msgstr "Bağlantı noktası zaten kullanılıyor"
 
 #: src/service/plugins/battery.js:17
 msgid "Exchange battery information"
-msgstr ""
+msgstr "Batarya bilgilerine erişin"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:257
@@ -820,13 +820,13 @@ msgstr "Şarj Oldu"
 #: src/service/plugins/battery.js:286
 #, javascript-format
 msgid "%s: Battery has reached custom charge level"
-msgstr ""
+msgstr "%s: Batarya özel şarj seviyesine ulaştı"
 
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:288
 #, javascript-format
 msgid "%d%% Charged"
-msgstr ""
+msgstr "Şarjınız %d%%"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:315
@@ -846,7 +846,7 @@ msgstr "Pano"
 
 #: src/service/plugins/clipboard.js:15
 msgid "Share the clipboard content"
-msgstr ""
+msgstr "Pano içeriğini paylaş"
 
 #: src/service/plugins/clipboard.js:27
 msgid "Clipboard Push"
@@ -858,7 +858,7 @@ msgstr "Panodan Al"
 
 #: src/service/plugins/contacts.js:27
 msgid "Access contacts of the paired device"
-msgstr ""
+msgstr "Eşleştirilen cihazın kişilerine eriş"
 
 #: src/service/plugins/findmyphone.js:17
 msgid "Find My Phone"
@@ -866,7 +866,7 @@ msgstr "Telefonumu Bul"
 
 #: src/service/plugins/findmyphone.js:18
 msgid "Ring your paired device"
-msgstr ""
+msgstr "Eşleştirilmiş cihazınızın zilini çaldırın"
 
 #: src/service/plugins/mousepad.js:16
 msgid "Mousepad"
@@ -874,7 +874,7 @@ msgstr "Fare Desteği"
 
 #: src/service/plugins/mousepad.js:17
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr ""
+msgstr "Eşleştirilen cihazın fare ve klavye görevi görmesine izin verin"
 
 #: src/service/plugins/mousepad.js:31 src/service/ui/mousepad.js:109
 msgid "Remote Input"
@@ -886,7 +886,7 @@ msgstr "MPRIS"
 
 #: src/service/plugins/mpris.js:20
 msgid "Bidirectional remote media playback control"
-msgstr ""
+msgstr "Çift yönlü uzaktan medya oynatma kontrolü"
 
 #: src/service/plugins/mpris.js:320
 msgid "Unknown"
@@ -894,7 +894,7 @@ msgstr "Bilinmeyen"
 
 #: src/service/plugins/notification.js:20
 msgid "Share notifications with the paired device"
-msgstr ""
+msgstr "Bildirimleri eşleşen cihazla paylaşın"
 
 #: src/service/plugins/notification.js:34
 msgid "Cancel Notification"
@@ -914,7 +914,7 @@ msgstr "Bildirimi Etkinleştir"
 
 #: src/service/plugins/photo.js:17
 msgid "Request the paired device to take a photo and transfer it to this PC"
-msgstr ""
+msgstr "Eşleştirilen cihazın fotoğraf çekmesini ve bu bilgisayara aktarmasını isteyin"
 
 #: src/service/plugins/photo.js:224 src/service/plugins/share.js:132
 #: src/service/plugins/share.js:208 src/service/plugins/share.js:319
@@ -930,7 +930,7 @@ msgstr "Gönderilemedi “%s” hedef %s"
 
 #: src/service/plugins/ping.js:16
 msgid "Send and receive pings"
-msgstr ""
+msgstr "Yoklama gönder ve al"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -945,7 +945,7 @@ msgstr "Sunum"
 
 #: src/service/plugins/presenter.js:15
 msgid "Use the paired device as a presenter"
-msgstr ""
+msgstr "Eşleştirilen cihazı sunum için kullanma"
 
 #: src/service/plugins/runcommand.js:15
 msgid "Run Commands"
@@ -953,7 +953,7 @@ msgstr "Komutları Çalıştır"
 
 #: src/service/plugins/runcommand.js:17
 msgid "Run commands on your paired device or let the device run predefined commands on this PC"
-msgstr ""
+msgstr "Eşleştirilmiş cihazınızda komutları çalıştırın veya cihazın bu bilgisayarda önceden tanımlanmış komutları çalıştırmasına izin verin"
 
 #: src/service/plugins/sftp.js:17
 msgid "SFTP"
@@ -961,7 +961,7 @@ msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:19
 msgid "Browse the paired device filesystem"
-msgstr ""
+msgstr "Eşleştirilmiş cihazın dosya sistemine göz atın"
 
 #: src/service/plugins/sftp.js:24
 msgid "Mount"
@@ -982,7 +982,7 @@ msgstr "Paylaş"
 
 #: src/service/plugins/share.js:20
 msgid "Share files and URLs between devices"
-msgstr ""
+msgstr "Cihazlar arasında dosya ve URL paylaş"
 
 #. TRANSLATORS: eg. Google Pixel is not allowed to upload files
 #: src/service/plugins/share.js:134
@@ -1064,7 +1064,7 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:19
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
+msgstr "Eşleştirilmiş cihazdan SMS gönderin ve okuyun ayrıca yeni SMS'lerden haberdar olun"
 
 #: src/service/plugins/sms.js:40
 msgid "New SMS (URI)"
@@ -1084,7 +1084,7 @@ msgstr "Sistem Sesi"
 
 #: src/service/plugins/systemvolume.js:16
 msgid "Enable the paired device to control the system volume"
-msgstr ""
+msgstr "Eşleştirilmiş cihazın sistem sesini kontrol etmesini etkinleştirin"
 
 #: src/service/plugins/systemvolume.js:60
 msgid "PulseAudio not found"
@@ -1092,7 +1092,7 @@ msgstr "PulseAudio bulunamadı"
 
 #: src/service/plugins/telephony.js:18
 msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
+msgstr "Aramalar hakkında bildirim alın ve zil sesi/devam eden aramalar sırasında sistem sesini ayarlayın"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:30
