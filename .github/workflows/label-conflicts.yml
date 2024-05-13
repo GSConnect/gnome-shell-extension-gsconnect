@@ -23,7 +23,7 @@ jobs:
       pull-requests: write
     steps:
       - name: check if PRs are mergeable
-        uses: eps1lon/actions-label-merge-conflict@v3.0.0
+        uses: eps1lon/actions-label-merge-conflict@v3.0.1
         with:
           dirtyLabel: "conflicts"
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
