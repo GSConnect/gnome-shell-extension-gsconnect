@@ -196,7 +196,7 @@ const SharePlugin = GObject.registerClass({
                 ];
                 iconName = 'document-save-symbolic';
 
-                let gtk_recent_manager = Gtk.RecentManager.get_default();
+                const gtk_recent_manager = Gtk.RecentManager.get_default();
                 gtk_recent_manager.add_item(file.get_uri());
 
                 if (packet.body.open) {
