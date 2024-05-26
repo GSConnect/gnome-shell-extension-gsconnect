@@ -698,5 +698,8 @@ const Service = GObject.registerClass({
     }
 });
 
-await (new Service()).runAsync([system.programInvocationName].concat(ARGV));
-
+const service = new Service();
+if (service.hasOwnProperty('runAsync'))
+    await service.runAsync([system.programInvocationName].concat(ARGV));
+else
+    service.run([system.programInvocationName].concat(ARGV));
