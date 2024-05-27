@@ -9,7 +9,7 @@ Source: https://github.com/GSConnect/gnome-shell-extension-gsconnect
 # Copyright: $YEAR $NAME <$CONTACT>
 # License: ...
 
-Files: data/icons/* data/images/* data/metainfo/*.png
+Files: data/icons/* data/images/* data/metainfo/*.png data/metainfo/*.xcf
 Copyright: GSConnect Developers <>
 License: GPL-2.0-or-later
 
