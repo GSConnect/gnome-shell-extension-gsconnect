@@ -99,9 +99,4 @@ const Preferences = GObject.registerClass({
     }
 });
 
-const prefs = new Preferences();
-if (prefs.hasOwnProperty('runAsync'))
-    await prefs.runAsync([system.programInvocationName].concat(ARGV));
-else
-    prefs.run([system.programInvocationName].concat(ARGV));
-
+await (new Preferences()).runAsync([system.programInvocationName].concat(ARGV));
