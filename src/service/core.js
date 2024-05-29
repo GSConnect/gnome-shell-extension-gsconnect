@@ -492,6 +492,7 @@ export const Transfer = GObject.registerClass({
 
         this._cancellable = new Gio.Cancellable();
         this._items = [];
+        this._temporaries = [];
         this._count = 0;
         this._totalSize = 0;
     }
@@ -590,8 +591,10 @@ export const Transfer = GObject.registerClass({
      * @param {Core.Packet} packet - A packet
      * @param {Gio.File} file - A file to transfer
      * @param {number} [size] - The file size in bytes
+     * @param {bool} delete_after - File is a temporary that should be
+     *                              disposed of after transferring
      */
-    addFile(packet, file, size = null) {
+    addFile(packet, file, size = null, delete_after = false) {
         const item = {
             packet: new Packet(packet),
             file: file,
@@ -601,6 +604,8 @@ export const Transfer = GObject.registerClass({
         };
 
         this._items.push(item);
+        if (delete_after)
+            this._temporaries.push(file);
     }
 
     /**
@@ -661,7 +666,7 @@ export const Transfer = GObject.registerClass({
                 body: {
                     numberOfFiles: this._count,
                     totalPayloadSize: this._totalSize,
-                }
+                },
             }),
             file: null,
             source: null,
@@ -703,7 +708,7 @@ export const Transfer = GObject.registerClass({
                 }
 
                 if (item.packet.type === 'kdeconnect.share.request.update') {
-                    debug("Sending update packet");
+                    debug('Sending update packet');
                     debug(item.packet);
                     await this.channel.sendPacket(
                         item.packet, this._cancellable);
@@ -725,6 +730,7 @@ export const Transfer = GObject.registerClass({
             error = e;
         } finally {
             this._completed = true;
+            this._process_deletes();
             this.notify('completed');
         }
 
@@ -735,5 +741,16 @@ export const Transfer = GObject.registerClass({
     cancel() {
         if (this._cancellable.is_cancelled() === false)
             this._cancellable.cancel();
+    }
+
+    async _process_deletes() {
+        let tempfile;
+        while ((tempfile = this._temporaries.shift())) {
+            try {
+                await tempfile.delete_async(this._cancellable);
+            } catch (e) {
+                logError(e, 'GSConnect');
+            }
+        }
     }
 });
