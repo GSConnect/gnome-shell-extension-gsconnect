@@ -12,11 +12,10 @@ https://github.com/Bajoja/indicator-kdeconnect/blob/master/data/extensions/kdeco
 """
 
 import os.path
-import pathlib
 import sys
 import tempfile
 import zipfile
-import typing as T
+from pathlib import Path
 from gettext import translation, GNUTranslations, NullTranslations
 
 import gi
@@ -149,12 +148,25 @@ class GSConnectShareExtension(GObject.Object, FileManager.MenuProvider):
                 ),
             )
 
+    @staticmethod
+    def _unique_filename(path: Path):
+        parent = path.parent
+        suffix = "".join(path.suffixes)
+        basename = path.name.removesuffix(suffix)
+        for i in range(1, 1000):
+            newpath = parent / f"{basename} ({i}){suffix}"
+            if not newpath.exists():
+                return newpath
+        raise ValueError(f"Could not find unique name for {path}")
+
     def make_temporary_zipfile(self, dir):
         """Recursively walk ``dir`` and create a zipfile, returning its URI."""
         if self.tempdir is None:
             self.tempdir = tempfile.mkdtemp(prefix='gsconnect')
-        dirpath = pathlib.Path(dir)
-        zippath = pathlib.Path(self.tempdir) / dirpath.with_suffix('.zip').name
+        dirpath = Path(dir)
+        zippath = Path(self.tempdir) / dirpath.with_suffix('.zip').name
+        if zippath.exists():
+            zippath = self._unique_filename(zippath)
         with zipfile.ZipFile(zippath, "w") as z:
             for parent, subdirs, subfiles in dirpath.walk():
                 # Create directory entries, to include empty directories
@@ -235,7 +247,8 @@ class GSConnectShareExtension(GObject.Object, FileManager.MenuProvider):
             item = FileManager.MenuItem(
                 name="GSConnectShareExtension::Device" + name, label=name
             )
-            item.connect("activate", self.send_files, list(files), action_group)
+            item.connect(
+                "activate", self.send_files, list(files), action_group)
             return item
         submenu_items = {
             name: make_submenu_item(name, action_group, files)
