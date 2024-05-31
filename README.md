@@ -6,7 +6,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
 
 # GSConnect
 
-[<img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true" alt="Get it on GNOME Extensions" height="100" align="middle">][ego] [<img alt="Available in the Chrome Web Store" src="data/images/chrome-badge.png" align="middle" hspace="12"/>][chrome] [<img src="data/images/firefox-badge.png" alt="Get the Add-On" align="middle">][firefox]
+[<img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true" alt="Get it on GNOME Extensions" height="100" align="middle">][ego] [<img alt="Available in the Chrome Web Store" src="https://raw.githubusercontent.com/GSConnect/gnome-shell-extension-gsconnect/main/data/images/chrome-badge.png" align="middle" hspace="12"/>][chrome] [<img src="https://raw.githubusercontent.com/GSConnect/gnome-shell-extension-gsconnect/main/data/images/firefox-badge.png" alt="Get the Add-On" align="middle">][firefox]
 
 ## Overview
 
