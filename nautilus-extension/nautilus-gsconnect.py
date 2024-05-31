@@ -58,9 +58,7 @@ try:
     i18n = translation(SERVICE_NAME, localedir=LOCALE_DIR)
 except (IOError, OSError) as e:
     print(f"GSConnect: {e}", file=sys.stdout)
-    i18n = translation(
-        SERVICE_NAME, localedir=LOCALE_DIR, fallback=True
-    )
+    i18n = translation(SERVICE_NAME, localedir=LOCALE_DIR, fallback=True)
 
 _ = i18n.gettext
 
@@ -162,9 +160,9 @@ class GSConnectShareExtension(GObject.Object, FileManager.MenuProvider):
     def make_temporary_zipfile(self, dir):
         """Recursively walk ``dir`` and create a zipfile, returning its URI."""
         if self.tempdir is None:
-            self.tempdir = tempfile.mkdtemp(prefix='gsconnect')
+            self.tempdir = tempfile.mkdtemp(prefix="gsconnect")
         dirpath = Path(dir)
-        zippath = Path(self.tempdir) / dirpath.with_suffix('.zip').name
+        zippath = Path(self.tempdir) / dirpath.with_suffix(".zip").name
         if zippath.exists():
             zippath = self._unique_filename(zippath)
         with zipfile.ZipFile(zippath, "w") as z:
@@ -181,12 +179,14 @@ class GSConnectShareExtension(GObject.Object, FileManager.MenuProvider):
                     except OSError as e:
                         print(
                             f"GSConnect: Can't add {arcfile} to zip: {e}",
-                            file=sys.stderr)
+                            file=sys.stderr,
+                        )
                         continue
         return zippath.as_uri()
 
     def send_files(
-            self, menu, selected: list[FileManager.FileInfo], action_group):
+        self, menu, selected: list[FileManager.FileInfo], action_group
+    ):
         """Send *files* to *device_id*."""
         all_files = set(selected)
 
@@ -247,9 +247,9 @@ class GSConnectShareExtension(GObject.Object, FileManager.MenuProvider):
             item = FileManager.MenuItem(
                 name="GSConnectShareExtension::Device" + name, label=name
             )
-            item.connect(
-                "activate", self.send_files, list(files), action_group)
+            item.connect("activate", self.send_files, list(files), action_group)
             return item
+
         submenu_items = {
             name: make_submenu_item(name, action_group, files)
             for name, action_group in devices.items()
