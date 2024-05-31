@@ -491,10 +491,13 @@ export const Transfer = GObject.registerClass({
         super._init(params);
 
         this._cancellable = new Gio.Cancellable();
+        // Separate because we want to delete temporaries even if cancelled.
+        this._delete_cancellable = new Gio.Cancellable();
         this._items = [];
         this._temporaries = [];
         this._count = 0;
         this._totalSize = 0;
+        this._multiFile = false;
     }
 
     get channel() {
@@ -659,6 +662,7 @@ export const Transfer = GObject.registerClass({
     setCountAndSize(numberOfFiles, totalPayloadSize) {
         this._count = numberOfFiles;
         this._totalSize = totalPayloadSize;
+        this._multiFile = true;
 
         const item = {
             packet: new Packet({
@@ -719,8 +723,10 @@ export const Transfer = GObject.registerClass({
                         await this.channel.download(item.packet, item.target,
                             this._cancellable);
                     } else {
-                        item.packet.body.numberOfFiles = this._count;
-                        item.packet.body.totalPayloadSize = this._totalSize;
+                        if (this._multiFile) {
+                            item.packet.body.numberOfFiles = this._count;
+                            item.packet.body.totalPayloadSize = this._totalSize;
+                        }
                         await this.channel.upload(item.packet, item.source,
                             item.size, this._cancellable);
                     }
@@ -730,6 +736,7 @@ export const Transfer = GObject.registerClass({
             error = e;
         } finally {
             this._completed = true;
+            // Delete temporaries even on error, to avoid polluting tempdir
             this._process_deletes();
             this.notify('completed');
         }
@@ -747,7 +754,8 @@ export const Transfer = GObject.registerClass({
         let tempfile;
         while ((tempfile = this._temporaries.shift())) {
             try {
-                await tempfile.delete_async(this._cancellable);
+                debug(`deleting ${tempfile.name}`);
+                await tempfile.delete_async(this._delete_cancellable, null);
             } catch (e) {
                 logError(e, 'GSConnect');
             }

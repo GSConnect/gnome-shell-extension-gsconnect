@@ -19,7 +19,7 @@ export const Metadata = {
     incomingCapabilities: ['kdeconnect.share.request'],
     outgoingCapabilities: [
         'kdeconnect.share.request',
-        'kdeconnect.share.request.update'
+        'kdeconnect.share.request.update',
     ],
     actions: {
         share: {
@@ -51,6 +51,8 @@ export const Metadata = {
         },
         shareFilesWithTemps: {
             label: _('Share Files (including temporaries)'),
+
+            parameter_type: new GLib.VariantType('(asas)'),
             incoming: [],
             outgoing: [
                 'kdeconnect.share.request',
@@ -399,13 +401,14 @@ const SharePlugin = GObject.registerClass({
                 const info = await file.query_info_async(
                     Gio.FILE_ATTRIBUTE_STANDARD_SIZE,
                     Gio.FileQueryInfoFlags.NONE,
-                    GLib.PRIORITY_DEFAULT
+                    GLib.PRIORITY_DEFAULT,
+                    null
                 );
 
                 const filesize = info.get_size();
                 payload_size += filesize;
 
-                const delete_after = tempList.contains(path);
+                const delete_after = tempList.includes(path);
 
                 packet_list.push([
                     {
@@ -643,12 +646,11 @@ const FileChooserDialog = GObject.registerClass({
     vfunc_response(response_id) {
         if (response_id === Gtk.ResponseType.OK) {
             const uris = [];
-            for (const uri of this.get_uris()) {
-            	uris.push(uri);
-            }
+            for (const uri of this.get_uris())
+                uris.push(uri);
             const parameters = new GLib.Variant('(asb)', [
-            	uris,
-            	this.extra_widget.active,
+                uris,
+                this.extra_widget.active,
             ]);
             debug(parameters.deepUnpack());
             this.device.activate_action('shareFiles', parameters);
