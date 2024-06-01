@@ -13,7 +13,7 @@ Files: data/icons/* data/images/chrome-badge.png data/images/enter-keyboard-shor
 Copyright: GSConnect Developers <>
 License: GPL-2.0-or-later
 
-File: data/images/firefox-badge.png
+Files: data/images/firefox-badge.png
 Copyright: 1998–2024 by individual mozilla.org contributors <>
 License: CC-BY-SA-3.0
 
