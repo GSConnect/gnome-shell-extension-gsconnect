@@ -9,9 +9,13 @@ Source: https://github.com/GSConnect/gnome-shell-extension-gsconnect
 # Copyright: $YEAR $NAME <$CONTACT>
 # License: ...
 
-Files: data/icons/* data/images/* data/metainfo/*.png
+Files: data/icons/* data/images/chrome-badge.png data/images/enter-keyboard-shortcut.svg data/metainfo/*.png
 Copyright: GSConnect Developers <>
 License: GPL-2.0-or-later
+
+File: data/images/firefox-badge.png
+Copyright: 1998–2024 by individual mozilla.org contributors <>
+License: CC-BY-SA-3.0
 
 Files: po/*.po po/*.pot
 Copyright: GSConnect Community
