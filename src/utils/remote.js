@@ -17,7 +17,9 @@ const _PROPERTIES = {
     'IconName': 'icon-name',
     'Id': 'id',
     'Name': 'name',
+    'Pairing': 'pairing',
     'Paired': 'paired',
+    'VerifyCode': 'verify-code',
     'Type': 'type',
 };
 
@@ -87,10 +89,24 @@ export const Device = GObject.registerClass({
             GObject.ParamFlags.READABLE,
             null
         ),
+        'pairing': GObject.ParamSpec.boolean(
+            'pairing',
+            'Pairing',
+            'Whether the device is in the process of being paired',
+            GObject.ParamFlags.READABLE,
+            null
+        ),
         'paired': GObject.ParamSpec.boolean(
             'paired',
             'Paired',
             'Whether the device is paired',
+            GObject.ParamFlags.READABLE,
+            null
+        ),
+        'verify-code': GObject.ParamSpec.string(
+            'verify-code',
+            'verifyCode',
+            'The verification code for device pairing',
             GObject.ParamFlags.READABLE,
             null
         ),
@@ -152,8 +168,16 @@ export const Device = GObject.registerClass({
         return this._get('Name', 'Unknown');
     }
 
+    get pairing() {
+        return this._get('Pairing', false);
+    }
+
     get paired() {
         return this._get('Paired', false);
+    }
+
+    get verify_code() {
+        return this._get('VerifyCode', false);
     }
 
     get service() {
