@@ -170,7 +170,8 @@ function _setExecutable(filepath) {
 export function ensurePermissions() {
     if (Config.IS_USER) {
         const executableFiles = [
-            'gsconnect-preferences',
+            'gsconnect-preferences.sh',
+            'gsconnect.sh',
             'service/daemon.js',
             'service/nativeMessagingHost.js',
         ];
