@@ -99,7 +99,7 @@ const Clipboard = GObject.registerClass({
             if (!globalThis.HAVE_GNOME) {
                 // Directly subscrible signal
                 this.signalHandler = Gio.DBus.session.signal_subscribe(
-                    DBUS_NAME,
+                    null,
                     DBUS_NAME,
                     'OwnerChange',
                     DBUS_PATH,

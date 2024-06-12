@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-2.0-or-later
 
-name: "Label merge conflicts"
+name: "Merge conflicts"
 on:
   # So that PRs touching the same files as the push are updated
   push:
@@ -17,13 +17,13 @@ on:
     types: [synchronize]
 
 jobs:
-  conflicts:
+  label:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
     steps:
       - name: check if PRs are mergeable
-        uses: eps1lon/actions-label-merge-conflict@v3.0.1
+        uses: eps1lon/actions-label-merge-conflict@v3.0.2
         with:
           dirtyLabel: "conflicts"
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
