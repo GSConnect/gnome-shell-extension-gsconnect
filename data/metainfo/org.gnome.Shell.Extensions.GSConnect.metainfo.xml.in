@@ -3,7 +3,7 @@
 <!--
 SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
 
-SPDX-License-Identifier: GPL-2.0-or-later
+SPDX-License-Identifier: CC0-1.0
 -->
 
 <component type="desktop-application">
@@ -20,7 +20,9 @@ SPDX-License-Identifier: GPL-2.0-or-later
   <url type="faq">https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Help</url>
   <url type="translate">https://crwd.in/gsconnect</url>
 
-  <developer_name>GSConnect Team</developer_name>
+  <developer id="io.github.gsconnect">
+      <name>GSConnect Team</name>
+  </developer>
 
   <launchable type="desktop-id">org.gnome.Shell.Extensions.GSConnect.desktop</launchable>
   <launchable type="desktop-id">org.gnome.Shell.Extensions.GSConnect.Preferences.desktop</launchable>
