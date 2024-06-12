@@ -491,7 +491,13 @@ export const Transfer = GObject.registerClass({
         super._init(params);
 
         this._cancellable = new Gio.Cancellable();
+        // Separate because we want to delete temporaries even if cancelled.
+        this._delete_cancellable = new Gio.Cancellable();
         this._items = [];
+        this._temporaries = [];
+        this._count = 0;
+        this._totalSize = 0;
+        this._multiFile = false;
     }
 
     get channel() {
@@ -564,15 +570,20 @@ export const Transfer = GObject.registerClass({
                 const read = item.file.read_async(GLib.PRIORITY_DEFAULT,
                     cancellable);
 
-                const query = item.file.query_info_async(
-                    Gio.FILE_ATTRIBUTE_STANDARD_SIZE,
-                    Gio.FileQueryInfoFlags.NONE,
-                    GLib.PRIORITY_DEFAULT,
-                    cancellable);
+                if (!item.hasOwnProperty('size') || item.size === null) {
+                    const query = item.file.query_info_async(
+                        Gio.FILE_ATTRIBUTE_STANDARD_SIZE,
+                        Gio.FileQueryInfoFlags.NONE,
+                        GLib.PRIORITY_DEFAULT,
+                        cancellable);
 
-                const [stream, info] = await Promise.all([read, query]);
-                item.source = stream;
-                item.size = info.get_size();
+                    const [stream, info] = await Promise.all([read, query]);
+                    item.source = stream;
+                    item.size = info.get_size();
+                } else {
+                    const stream = await read;
+                    item.source = stream;
+                }
             }
         }
     }
@@ -582,16 +593,22 @@ export const Transfer = GObject.registerClass({
      *
      * @param {Core.Packet} packet - A packet
      * @param {Gio.File} file - A file to transfer
+     * @param {number} [size] - The file size in bytes
+     * @param {bool} delete_after - File is a temporary that should be
+     *                              disposed of after transferring
      */
-    addFile(packet, file) {
+    addFile(packet, file, size = null, delete_after = false) {
         const item = {
             packet: new Packet(packet),
             file: file,
             source: null,
             target: null,
+            size: size,
         };
 
         this._items.push(item);
+        if (delete_after)
+            this._temporaries.push(file);
     }
 
     /**
@@ -606,6 +623,7 @@ export const Transfer = GObject.registerClass({
             file: Gio.File.new_for_path(path),
             source: null,
             target: null,
+            size: null,
         };
 
         this._items.push(item);
@@ -633,6 +651,34 @@ export const Transfer = GObject.registerClass({
             item.target = stream;
 
         this._items.push(item);
+    }
+
+    /**
+     * Set metadata for the transfer group
+     *
+     * @param {number} numberOfFiles - Count of files to send/receive
+     * @param {number} totalPayloadSize - Combined size, in bytes
+     */
+    setCountAndSize(numberOfFiles, totalPayloadSize) {
+        this._count = numberOfFiles;
+        this._totalSize = totalPayloadSize;
+        this._multiFile = true;
+
+        const item = {
+            packet: new Packet({
+                type: 'kdeconnect.share.request.update',
+                body: {
+                    numberOfFiles: this._count,
+                    totalPayloadSize: this._totalSize,
+                },
+            }),
+            file: null,
+            source: null,
+            target: null,
+            size: null,
+        };
+
+        this._items.unshift(item);
     }
 
     /**
@@ -665,20 +711,33 @@ export const Transfer = GObject.registerClass({
                     });
                 }
 
-                await this._ensureStream(item, this._cancellable);
-
-                if (item.packet.hasPayload()) {
-                    await this.channel.download(item.packet, item.target,
-                        this._cancellable);
+                if (item.packet.type === 'kdeconnect.share.request.update') {
+                    debug('Sending update packet');
+                    debug(item.packet);
+                    await this.channel.sendPacket(
+                        item.packet, this._cancellable);
                 } else {
-                    await this.channel.upload(item.packet, item.source,
-                        item.size, this._cancellable);
+                    await this._ensureStream(item, this._cancellable);
+
+                    if (item.packet.hasPayload()) {
+                        await this.channel.download(item.packet, item.target,
+                            this._cancellable);
+                    } else {
+                        if (this._multiFile) {
+                            item.packet.body.numberOfFiles = this._count;
+                            item.packet.body.totalPayloadSize = this._totalSize;
+                        }
+                        await this.channel.upload(item.packet, item.source,
+                            item.size, this._cancellable);
+                    }
                 }
             }
         } catch (e) {
             error = e;
         } finally {
             this._completed = true;
+            // Delete temporaries even on error, to avoid polluting tempdir
+            this._process_deletes();
             this.notify('completed');
         }
 
@@ -690,5 +749,16 @@ export const Transfer = GObject.registerClass({
         if (this._cancellable.is_cancelled() === false)
             this._cancellable.cancel();
     }
-});
 
+    async _process_deletes() {
+        let tempfile;
+        while ((tempfile = this._temporaries.shift())) {
+            try {
+                debug(`deleting ${tempfile.name}`);
+                await tempfile.delete_async(this._delete_cancellable, null);
+            } catch (e) {
+                logError(e, 'GSConnect');
+            }
+        }
+    }
+});

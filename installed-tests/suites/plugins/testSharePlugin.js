@@ -15,17 +15,21 @@ describe('The share plugin', function () {
             localDevice: {
                 incomingCapabilities: [
                     'kdeconnect.share.request',
+                    'kdeconnect.share.request.update',
                 ],
                 outgoingCapabilities: [
                     'kdeconnect.share.request',
+                    'kdeconnect.share.request.update',
                 ],
             },
             remoteDevice: {
                 incomingCapabilities: [
                     'kdeconnect.share.request',
+                    'kdeconnect.share.request.update',
                 ],
                 outgoingCapabilities: [
                     'kdeconnect.share.request',
+                    'kdeconnect.share.request.update',
                 ],
             },
         });
@@ -119,4 +123,3 @@ describe('The share plugin', function () {
             expect(remotePlugin.device.get_action_enabled(action)).toBeFalse();
     });
 });
-
