@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 09:31-0500\n"
-"PO-Revision-Date: 2024-07-14 10:46\n"
+"PO-Revision-Date: 2024-07-14 11:43\n"
 "Last-Translator: \n"
 "Language-Team: Korean\n"
 "Language: ko_KR\n"
@@ -264,7 +264,7 @@ msgstr "배터리 부족 알림"
 
 #: data/ui/preferences-device-panel.ui:649
 msgid "Charged Up to Custom Level Notification"
-msgstr ""
+msgstr "설정된 배터리 충전 수준을 초과함"
 
 #: data/ui/preferences-device-panel.ui:729
 msgid "Fully Charged Notification"
@@ -501,11 +501,11 @@ msgstr "장치를 찾는 중…"
 
 #: data/ui/preferences-window.ui:353
 msgid "Extension Settings"
-msgstr ""
+msgstr "확장 설정"
 
 #: data/ui/preferences-window.ui:390
 msgid "GSConnect remains active when GNOME Shell is locked"
-msgstr ""
+msgstr "GSConnect는 그놈 쉘이 잠겨있을 때에도 동작합니다"
 
 #: data/ui/preferences-window.ui:410
 msgid "Browser Add-Ons"
@@ -818,7 +818,7 @@ msgstr "충전 완료"
 #: src/service/plugins/battery.js:286
 #, javascript-format
 msgid "%s: Battery has reached custom charge level"
-msgstr ""
+msgstr "%s: 설정된 배터리 충전 수준에 도달하였습니다"
 
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:288
