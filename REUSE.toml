@@ -1,0 +1,44 @@
+# SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+
+version = 1
+SPDX-PackageName = "gnome-shell-extension-gsconnect"
+SPDX-PackageSupplier = "GSConnect Developers <>"
+SPDX-PackageDownloadLocation = "https://github.com/GSConnect/gnome-shell-extension-gsconnect"
+
+[[annotations]]
+path = ["data/icons/**", "data/images/enter-keyboard-shortcut.svg", "data/metainfo/**.png"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "GSConnect Developers <>"
+SPDX-License-Identifier = "GPL-2.0-or-later"
+
+[[annotations]]
+path = "data/images/chrome-badge.png"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Google <https://developers.google.com/>"
+SPDX-License-Identifier = "CC-BY-4.0"
+
+[[annotations]]
+path = "data/images/firefox-badge.png"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "1998–2024 by individual mozilla.org contributors <>"
+SPDX-License-Identifier = "CC-BY-SA-3.0"
+
+[[annotations]]
+path = ["po/**.po", "po/**.pot"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "GSConnect Community"
+SPDX-License-Identifier = "GPL-2.0-or-later"
+
+[[annotations]]
+path = "installed-tests/data/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "GSConnect Developers <>"
+SPDX-License-Identifier = "GPL-2.0-or-later"
+
+[[annotations]]
+path = "webextension/images/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "GSConnect Developers <>"
+SPDX-License-Identifier = "GPL-2.0-or-later"
