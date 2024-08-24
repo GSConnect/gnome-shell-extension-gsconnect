@@ -459,7 +459,6 @@ const FileChooserDialog = GObject.registerClass({
             this._uriEntry.grab_focus();
             this.set_response_sensitive(Gtk.ResponseType.OK, true);
 
-
         // Hide the URL entry
         } else {
             header.set_custom_title(null);
