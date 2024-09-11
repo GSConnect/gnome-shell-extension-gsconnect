@@ -239,19 +239,20 @@ const Source = GObject.registerClass({
         if (cachedNotification) {
             cachedNotification.requestReplyId = requestReplyId;
 
-            // Bail early If @notificationParams represents an exact repeat
             const title = notification.title;
             const body = notification.body
                 ? notification.body
                 : null;
 
+            // Bail early If @notification represents an exact repeat
             if (cachedNotification.title === title &&
                 cachedNotification.body === body)
                 return cachedNotification;
 
+            // If the details have changed, flag as an update
             cachedNotification.title = title;
             cachedNotification.body = body;
-
+            cachedNotification.acknowledged = false;
             return cachedNotification;
         }
 
@@ -304,10 +305,8 @@ const Source = GObject.registerClass({
      * notification limit (3)
      */
     _addNotificationToMessageTray(notification) {
-        if (this.notifications.includes(notification)) {
-            notification.acknowledged = false;
+        if (this.notifications.includes(notification))
             return;
-        }
 
         while (this.notifications.length >= 10) {
             const [oldest] = this.notifications;
