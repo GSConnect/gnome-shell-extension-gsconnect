@@ -35,6 +35,13 @@ const Manager = GObject.registerClass({
             GObject.ParamFlags.READABLE,
             false
         ),
+        'debug': GObject.ParamSpec.boolean(
+            'debug',
+            'Debug',
+            'Whether debug logging is enabled in GSConnect',
+            GObject.ParamFlags.READWRITE,
+            false
+        ),
         'discoverable': GObject.ParamSpec.boolean(
             'discoverable',
             'Discoverable',
@@ -83,6 +90,21 @@ const Manager = GObject.registerClass({
             this._backends = new Map();
 
         return this._backends;
+    }
+
+    get debug() {
+        if (this._debug === undefined)
+            this._debug = this.settings.get_boolean('debug');
+
+        return this._debug;
+    }
+
+    set debug(value) {
+        if (this._debug === value)
+            return;
+
+        this._debug = value;
+        this._onDebugChanged(this._debug);
     }
 
     get devices() {
@@ -203,9 +225,18 @@ const Manager = GObject.registerClass({
             this.settings.set_string('name', GLib.get_host_name());
 
         // Bound Properties
+        this.settings.bind('debug', this, 'debug', 0);
         this.settings.bind('discoverable', this, 'discoverable', 0);
         this.settings.bind('id', this, 'id', 0);
         this.settings.bind('name', this, 'name', 0);
+    }
+
+    _onDebugChanged(debug = false) {
+        // If debugging is disabled, install a no-op for speed
+        if (debug && globalThis._debugFunc !== undefined)
+            globalThis.debug = globalThis._debugFunc;
+        else
+            globalThis.debug = () => {};
     }
 
     /*
@@ -512,4 +543,3 @@ const Manager = GObject.registerClass({
 });
 
 export default Manager;
-
