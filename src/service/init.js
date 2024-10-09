@@ -138,20 +138,17 @@ const _debugFunc = function (error, prefix = null) {
     });
 };
 
-// Swap the function out for a no-op anonymous function for speed
+globalThis._debugFunc = _debugFunc;
+
 const settings = new Gio.Settings({
     settings_schema: Config.GSCHEMA.lookup(Config.APP_ID, true),
 });
-
-settings.connect('changed::debug', (settings, key) => {
-    globalThis.debug = settings.get_boolean(key) ? _debugFunc : () => {};
-});
-
-if (settings.get_boolean('debug'))
-    globalThis.debug = _debugFunc;
-else
+if (settings.get_boolean('debug')) {
+    globalThis.debug = globalThis._debugFunc;
+} else {
+    // Swap the function out for a no-op anonymous function for speed
     globalThis.debug = () => {};
-
+}
 
 /**
  * Start wl_clipboard if not under Gnome

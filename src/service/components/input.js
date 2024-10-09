@@ -10,7 +10,7 @@ import GObject from 'gi://GObject';
 import AtspiController from './atspi.js';
 
 
-const SESSION_TIMEOUT = 15;
+const SESSION_TIMEOUT = 300;
 
 
 const RemoteSession = GObject.registerClass({
