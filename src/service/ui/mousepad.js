@@ -100,6 +100,8 @@ export const InputDialog = GObject.registerClass({
 
     _init(params) {
         super._init(Object.assign({
+            application: Gio.Application.get_default(),
+            title: _('Remote Input'),
             use_header_bar: true,
         }, params));
 
