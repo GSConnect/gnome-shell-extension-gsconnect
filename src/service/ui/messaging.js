@@ -836,7 +836,6 @@ export const Window = GObject.registerClass({
         super._init(Object.assign({
             application: Gio.Application.get_default(),
             title: _('Messaging'),
-            use_header_bar: true,
         }, params));
         this.headerbar.subtitle = this.device.name;
 
