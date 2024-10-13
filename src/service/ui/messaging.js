@@ -833,7 +833,11 @@ export const Window = GObject.registerClass({
 }, class MessagingWindow extends Gtk.ApplicationWindow {
 
     _init(params) {
-        super._init(params);
+        super._init(Object.assign({
+            application: Gio.Application.get_default(),
+            title: _('Messaging'),
+            use_header_bar: true,
+        }, params));
         this.headerbar.subtitle = this.device.name;
 
         this.insert_action_group('device', this.device);
@@ -1317,4 +1321,3 @@ export const ConversationChooser = GObject.registerClass({
         this.destroy();
     }
 });
-
