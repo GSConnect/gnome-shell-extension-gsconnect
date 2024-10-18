@@ -53,7 +53,6 @@ export const DeviceChooser = GObject.registerClass({
         super._init({
             use_header_bar: true,
             application: Gio.Application.get_default(),
-            title: params.title,
         });
         this.set_keep_above(true);
 

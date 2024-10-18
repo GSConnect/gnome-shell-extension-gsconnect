@@ -145,7 +145,6 @@ const Dialog = GObject.registerClass({
     _init(params) {
         super._init({
             application: Gio.Application.get_default(),
-            title: _('Ringing'),
             buttons: Gtk.ButtonsType.CLOSE,
             device: params.device,
             image: new Gtk.Image({

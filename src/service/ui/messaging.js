@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 import Gdk from 'gi://Gdk';
+import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk';
@@ -835,7 +836,6 @@ export const Window = GObject.registerClass({
     _init(params) {
         super._init(Object.assign({
             application: Gio.Application.get_default(),
-            title: _('Messaging'),
         }, params));
         this.headerbar.subtitle = this.device.name;
 

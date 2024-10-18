@@ -45,7 +45,6 @@ const ReplyDialog = GObject.registerClass({
     _init(params) {
         super._init({
             application: Gio.Application.get_default(),
-            title: _('Reply'),
             device: params.device,
             plugin: params.plugin,
             uuid: params.uuid,

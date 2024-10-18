@@ -40,7 +40,6 @@ const Dialog = GObject.registerClass({
     _init(params) {
         super._init({
             application: Gio.Application.get_default(),
-            title: _('Send SMS'),
             device: params.device,
             plugin: params.plugin,
             use_header_bar: true,
