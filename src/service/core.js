@@ -20,7 +20,10 @@ export function _getDeviceType() {
 
         type = Number(new TextDecoder().decode(type));
 
-        if ([8, 9, 10, 14].includes(type))
+        if ([30, 32].includes(type))
+            return 'tablet';
+
+        if ([8, 9, 10, 14, 31].includes(type))
             return 'laptop';
 
         return 'desktop';
@@ -691,4 +694,3 @@ export const Transfer = GObject.registerClass({
             this._cancellable.cancel();
     }
 });
-
