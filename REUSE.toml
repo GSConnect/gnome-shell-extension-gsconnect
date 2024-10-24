@@ -13,12 +13,15 @@ precedence = "aggregate"
 SPDX-FileCopyrightText = "GSConnect Developers <>"
 SPDX-License-Identifier = "GPL-2.0-or-later"
 
+# According to https://developer.chrome.com/docs/webstore/branding
 [[annotations]]
 path = "data/images/chrome-badge.png"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "Google <https://developers.google.com/>"
 SPDX-License-Identifier = "CC-BY-4.0"
 
+# According to
+# https://extensionworkshop.com/documentation/publish/promoting-your-extension/
 [[annotations]]
 path = "data/images/firefox-badge.png"
 precedence = "aggregate"
