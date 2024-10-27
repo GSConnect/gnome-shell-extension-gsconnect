@@ -23,7 +23,6 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <file compressed="true" preprocess="xml-stripblanks">ui/preferences-command-editor.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/preferences-device-panel.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/preferences-section-row.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/preferences-shortcut-editor.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/preferences-window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/service-device-chooser.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/service-error-dialog.ui</file>

@@ -10,7 +10,6 @@ import Pango from 'gi://Pango';
 
 import Config from '../config.js';
 import plugins from '../service/plugins/index.js';
-import * as Keybindings from './keybindings.js';
 
 
 // Build a list of plugins and shortcuts for devices
@@ -987,27 +986,6 @@ export const Panel = GObject.registerClass({
             'keybindings',
             new GLib.Variant('a{ss}', keybindings)
         );
-    }
-
-    async _onShortcutRowActivated(box, row) {
-        try {
-            const keybindings = this.settings.get_value('keybindings').deepUnpack();
-            let accel = keybindings[row.action] || null;
-
-            accel = await Keybindings.getAccelerator(row.title, accel);
-
-            if (accel)
-                keybindings[row.action] = accel;
-            else
-                delete keybindings[row.action];
-
-            this.settings.set_value(
-                'keybindings',
-                new GLib.Variant('a{ss}', keybindings)
-            );
-        } catch (e) {
-            logError(e);
-        }
     }
 
     /**
