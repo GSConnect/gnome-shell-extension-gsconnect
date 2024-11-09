@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 09:31-0500\n"
-"PO-Revision-Date: 2024-11-09 06:33\n"
+"PO-Revision-Date: 2024-11-09 07:37\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -53,7 +53,7 @@ msgstr "同步剪貼簿內容"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:49
 msgid "Sync contacts"
-msgstr ""
+msgstr "同步聯絡人資訊"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:50
 msgid "Sync notifications"
@@ -264,7 +264,7 @@ msgstr "低電量通知"
 
 #: data/ui/preferences-device-panel.ui:649
 msgid "Charged Up to Custom Level Notification"
-msgstr ""
+msgstr "收費達到自訂等級通知"
 
 #: data/ui/preferences-device-panel.ui:729
 msgid "Fully Charged Notification"
@@ -293,7 +293,7 @@ msgstr "指令"
 
 #: data/ui/preferences-device-panel.ui:975
 msgid "Add Command"
-msgstr ""
+msgstr "增加指令"
 
 #. TRANSLATORS: 'Share' is a verb here; this refers to the action of sharing
 #: data/ui/preferences-device-panel.ui:1063
@@ -302,7 +302,7 @@ msgstr "分享通知"
 
 #: data/ui/preferences-device-panel.ui:1123
 msgid "Share When Active"
-msgstr ""
+msgstr "活躍時分享"
 
 #: data/ui/preferences-device-panel.ui:1174
 msgid "Applications"
@@ -371,7 +371,7 @@ msgstr "裝置快取"
 
 #: data/ui/preferences-device-panel.ui:1969
 msgid "Clear Cache…"
-msgstr ""
+msgstr "清除快取..."
 
 #: data/ui/preferences-device-panel.ui:2008
 msgid "Legacy SMS Support"
@@ -379,7 +379,7 @@ msgstr "舊版簡訊支援"
 
 #: data/ui/preferences-device-panel.ui:2065
 msgid "SFTP Automount"
-msgstr ""
+msgstr "SFTP 自動掛載"
 
 #: data/ui/preferences-device-panel.ui:2120
 #: data/ui/preferences-device-panel.ui:2446
@@ -770,7 +770,7 @@ msgstr "在「%s」的藍牙裝置"
 #: src/service/device.js:214
 #, javascript-format
 msgid "Verification key: %s"
-msgstr ""
+msgstr "驗證金鑰：%s"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:848
@@ -792,15 +792,15 @@ msgstr "因為此網域內的裝置數量，探索已停用"
 
 #: src/service/backends/lan.js:169
 msgid "OpenSSL not found"
-msgstr ""
+msgstr "未找到 OpenSSL"
 
 #: src/service/backends/lan.js:462
 msgid "Port already in use"
-msgstr ""
+msgstr "連接埠已在使用中"
 
 #: src/service/plugins/battery.js:17
 msgid "Exchange battery information"
-msgstr ""
+msgstr "交換電池資訊"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:257
@@ -818,13 +818,13 @@ msgstr "充電完成"
 #: src/service/plugins/battery.js:286
 #, javascript-format
 msgid "%s: Battery has reached custom charge level"
-msgstr ""
+msgstr "%s：電池已達到自訂充電電量"
 
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:288
 #, javascript-format
 msgid "%d%% Charged"
-msgstr ""
+msgstr "%d%% 已充電"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:315
@@ -844,7 +844,7 @@ msgstr "剪貼簿"
 
 #: src/service/plugins/clipboard.js:15
 msgid "Share the clipboard content"
-msgstr ""
+msgstr "分享剪貼簿內容"
 
 #: src/service/plugins/clipboard.js:27
 msgid "Clipboard Push"
@@ -856,7 +856,7 @@ msgstr "接收剪貼簿"
 
 #: src/service/plugins/contacts.js:27
 msgid "Access contacts of the paired device"
-msgstr ""
+msgstr "存取配對裝置的聯絡人"
 
 #: src/service/plugins/findmyphone.js:17
 msgid "Find My Phone"
@@ -864,7 +864,7 @@ msgstr "找尋我的手機"
 
 #: src/service/plugins/findmyphone.js:18
 msgid "Ring your paired device"
-msgstr ""
+msgstr "響鈴您的配對裝置"
 
 #: src/service/plugins/mousepad.js:16
 msgid "Mousepad"
@@ -872,7 +872,7 @@ msgstr "觸控板"
 
 #: src/service/plugins/mousepad.js:17
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr ""
+msgstr "使配對裝置充當遠端滑鼠和鍵盤"
 
 #: src/service/plugins/mousepad.js:31 src/service/ui/mousepad.js:109
 msgid "Remote Input"
@@ -884,7 +884,7 @@ msgstr "MPRIS"
 
 #: src/service/plugins/mpris.js:20
 msgid "Bidirectional remote media playback control"
-msgstr ""
+msgstr "雙向遠端媒體播放控制"
 
 #: src/service/plugins/mpris.js:320
 msgid "Unknown"
@@ -892,7 +892,7 @@ msgstr "未知"
 
 #: src/service/plugins/notification.js:20
 msgid "Share notifications with the paired device"
-msgstr ""
+msgstr "與配對裝置共享通知"
 
 #: src/service/plugins/notification.js:34
 msgid "Cancel Notification"
@@ -912,7 +912,7 @@ msgstr "啟用通知"
 
 #: src/service/plugins/ping.js:16
 msgid "Send and receive pings"
-msgstr ""
+msgstr "傳送和接收 ping 的封包"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -923,7 +923,7 @@ msgstr "Ping: %s"
 
 #: src/service/plugins/presenter.js:14
 msgid "Presentation"
-msgstr ""
+msgstr "簡報"
 
 #: src/service/plugins/presenter.js:15
 msgid "Use the paired device as a presenter"
@@ -935,7 +935,7 @@ msgstr "執行指令"
 
 #: src/service/plugins/runcommand.js:17
 msgid "Run commands on your paired device or let the device run predefined commands on this PC"
-msgstr ""
+msgstr "在配對裝置上執行指令或讓裝置在此電腦上執行預定義指令"
 
 #: src/service/plugins/sftp.js:17
 msgid "SFTP"
@@ -943,7 +943,7 @@ msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:19
 msgid "Browse the paired device filesystem"
-msgstr ""
+msgstr "瀏覽配對裝置檔案系統"
 
 #: src/service/plugins/sftp.js:24
 msgid "Mount"
@@ -956,7 +956,7 @@ msgstr "卸載"
 #: src/service/plugins/sftp.js:193
 #, javascript-format
 msgid "%s reported an error"
-msgstr ""
+msgstr "%s 回報了一個錯誤"
 
 #: src/service/plugins/share.js:18 src/service/plugins/share.js:25
 msgid "Share"
@@ -964,7 +964,7 @@ msgstr "共享"
 
 #: src/service/plugins/share.js:20
 msgid "Share files and URLs between devices"
-msgstr ""
+msgstr "在裝置之間分享檔案和網址"
 
 #: src/service/plugins/share.js:132 src/service/plugins/share.js:208
 #: src/service/plugins/share.js:319
@@ -999,7 +999,7 @@ msgstr "已接收「%s」，來自於「%s」"
 
 #: src/service/plugins/share.js:189
 msgid "Show File Location"
-msgstr ""
+msgstr "顯示檔案位置"
 
 #: src/service/plugins/share.js:194
 msgid "Open File"
@@ -1057,7 +1057,7 @@ msgstr "簡訊"
 
 #: src/service/plugins/sms.js:19
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
+msgstr "傳送和讀取配對裝置的簡訊並收到新簡訊通知"
 
 #: src/service/plugins/sms.js:40
 msgid "New SMS (URI)"
@@ -1077,15 +1077,15 @@ msgstr "系統音量"
 
 #: src/service/plugins/systemvolume.js:16
 msgid "Enable the paired device to control the system volume"
-msgstr ""
+msgstr "啟用配對裝置控制系統音量"
 
 #: src/service/plugins/systemvolume.js:60
 msgid "PulseAudio not found"
-msgstr ""
+msgstr "未找到 PulseAudio"
 
 #: src/service/plugins/telephony.js:18
 msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
+msgstr "在響鈴/通話過程中收到有關通話的通知並調整系統音量"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:30
@@ -1113,22 +1113,22 @@ msgstr "通話中"
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:134
 msgid "Fax"
-msgstr ""
+msgstr "傳真"
 
 #. TRANSLATORS: A work or office phone number
 #: src/service/ui/contacts.js:138
 msgid "Work"
-msgstr ""
+msgstr "公司電話"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:142
 msgid "Mobile"
-msgstr ""
+msgstr "手機號碼"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:146
 msgid "Home"
-msgstr ""
+msgstr "家用電話號碼"
 
 #. TRANSLATORS: Less than a minute ago
 #: src/service/ui/messaging.js:105 src/service/ui/messaging.js:146
@@ -1171,7 +1171,7 @@ msgstr[0] "和 %d 位其他聯絡人"
 #: src/service/ui/mousepad.js:117
 #, javascript-format
 msgid "Remote keyboard on %s is not active"
-msgstr ""
+msgstr "%s 上的遠端鍵盤未啟動"
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
