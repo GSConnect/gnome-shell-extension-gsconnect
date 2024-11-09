@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 09:31-0500\n"
-"PO-Revision-Date: 2024-11-09 05:11\n"
+"PO-Revision-Date: 2024-11-09 06:33\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -25,11 +25,11 @@ msgstr "GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:13
 msgid "KDE Connect implementation for GNOME"
-msgstr ""
+msgstr "GNOME 的 KDE Con​​nect 實現"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:23
 msgid "GSConnect Team"
-msgstr ""
+msgstr "GSConnect 團隊"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
 msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
@@ -37,11 +37,11 @@ msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:42
 msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
-msgstr ""
+msgstr "借助 GSConnect，您可以安全地連線到行動裝置和其他桌面："
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:46
 msgid "Share files, links and text"
-msgstr ""
+msgstr "分享檔案、連結和文字"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:47
 msgid "Send and receive messages"
@@ -49,7 +49,7 @@ msgstr "傳送和接收訊息"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:48
 msgid "Sync clipboard content"
-msgstr ""
+msgstr "同步剪貼簿內容"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:49
 msgid "Sync contacts"
@@ -65,19 +65,19 @@ msgstr "控制媒體播放器"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:52
 msgid "Control system volume"
-msgstr ""
+msgstr "控制系統音量"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:53
 msgid "Execute predefined commands"
-msgstr ""
+msgstr "執行預定義指令"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:54
 msgid "And more…"
-msgstr ""
+msgstr "還有更多…"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:133
 msgid "GSConnect in GNOME Shell"
-msgstr ""
+msgstr "GNOME Shell 中的 GSConnect"
 
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/connect-dialog.ui:20 data/ui/preferences-window.ui:821
@@ -117,19 +117,19 @@ msgstr "幫助"
 
 #: data/ui/contact-chooser.ui:109
 msgid "Type a phone number or name"
-msgstr "輸入電話號碼或姓名"
+msgstr "輸入電話號碼或名稱"
 
 #. TRANSLATORS: All other phone number types
 #: data/ui/contacts-address-row.ui:71 src/service/ui/contacts.js:149
 msgid "Other"
-msgstr ""
+msgstr "其他"
 
 #. TRANSLATORS: Share URL by SMS
 #: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:293
 #: src/service/daemon.js:407 src/service/plugins/sms.js:64
 #: webextension/gettext.js:42
 msgid "Send SMS"
-msgstr "發送簡訊"
+msgstr "傳送簡訊"
 
 #: data/ui/legacy-messaging-dialog.ui:32 data/ui/legacy-messaging-dialog.ui:36
 #: data/ui/notification-reply-dialog.ui:31
@@ -140,7 +140,7 @@ msgstr "傳送"
 #: data/ui/legacy-messaging-dialog.ui:69 data/ui/messaging-window.ui:263
 #: data/ui/notification-reply-dialog.ui:68
 msgid "Device is disconnected"
-msgstr "設備已斷開"
+msgstr "裝置已斷線"
 
 #: data/ui/messaging-conversation.ui:91 src/service/plugins/sms.js:56
 msgid "Send Message"
@@ -152,16 +152,16 @@ msgstr "輸入訊息"
 
 #: data/ui/messaging-conversation.ui:99
 msgid "Message Entry"
-msgstr ""
+msgstr "訊息輸入"
 
 #: data/ui/messaging-conversation.ui:100
 msgid "Type a message and press Enter to send"
-msgstr ""
+msgstr "輸入訊息並按 Enter 傳送"
 
 #: data/ui/messaging-window.ui:21 src/service/plugins/sms.js:32
 #: src/service/ui/messaging.js:1057
 msgid "Messaging"
-msgstr "發送簡訊"
+msgstr "傳送簡訊"
 
 #: data/ui/messaging-window.ui:30 data/ui/messaging-window.ui:43
 #: src/service/ui/messaging.js:1268
@@ -174,7 +174,7 @@ msgstr "沒有對話"
 
 #: data/ui/messaging-window.ui:180
 msgid "No conversation selected"
-msgstr "尚無對話"
+msgstr "沒有選定的對話"
 
 #: data/ui/messaging-window.ui:196
 msgid "Select or start a conversation"
@@ -187,14 +187,14 @@ msgid "Touchpad.\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
 msgstr "觸控板。\n"
-"拖曳此區域可移動滑鼠遊標。\n"
-"長按拖曳可拖曳滑鼠遊標。\n\n"
+"拖曳此區域可移動滑鼠游標。\n"
+"長按拖曳可拖曳滑鼠游標。\n\n"
 "只需點擊一下即可傳送至配對裝置。\n"
 "左、中、右按鈕和滾輪滾動。"
 
 #: data/ui/preferences-command-editor.ui:14
 msgid "Edit Command"
-msgstr ""
+msgstr "編輯指令"
 
 #: data/ui/preferences-command-editor.ui:28
 msgid "Save"
@@ -206,7 +206,7 @@ msgstr "名稱"
 
 #: data/ui/preferences-command-editor.ui:99
 msgid "Command Line"
-msgstr "命令列"
+msgstr "命令行"
 
 #: data/ui/preferences-command-editor.ui:121
 #: data/ui/preferences-command-editor.ui:150
@@ -215,7 +215,7 @@ msgstr "選擇可執行程式"
 
 #: data/ui/preferences-command-editor.ui:164
 msgid "Open"
-msgstr "打開"
+msgstr "開啟"
 
 #: data/ui/preferences-device-panel.ui:53 src/preferences/service.js:482
 msgid "Desktop"
@@ -247,7 +247,7 @@ msgstr "接收檔案"
 
 #: data/ui/preferences-device-panel.ui:447
 msgid "Save files to"
-msgstr ""
+msgstr "將檔案儲存到"
 
 #: data/ui/preferences-device-panel.ui:508
 #: data/ui/preferences-device-panel.ui:2170
@@ -367,7 +367,7 @@ msgstr "實驗性質"
 
 #: data/ui/preferences-device-panel.ui:1951
 msgid "Device Cache"
-msgstr ""
+msgstr "裝置快取"
 
 #: data/ui/preferences-device-panel.ui:1969
 msgid "Clear Cache…"
@@ -438,7 +438,7 @@ msgstr "無動作"
 #: data/ui/preferences-device-panel.ui:2643
 #: data/ui/preferences-device-panel.ui:2676
 msgid "Restore"
-msgstr ""
+msgstr "恢復"
 
 #. TRANSLATORS: Lower the system volume
 #: data/ui/preferences-device-panel.ui:2650
@@ -469,7 +469,7 @@ msgstr "裝置名稱"
 
 #: data/ui/preferences-window.ui:61
 msgid "_Rename"
-msgstr "重新命名（_R）"
+msgstr "重新命名(_R)"
 
 #: data/ui/preferences-window.ui:98 data/ui/preferences-window.ui:112
 msgid "Refresh"
@@ -477,7 +477,7 @@ msgstr "重新整理"
 
 #: data/ui/preferences-window.ui:139 src/extension.js:114
 msgid "Mobile Settings"
-msgstr "手機設置"
+msgstr "手機設定"
 
 #: data/ui/preferences-window.ui:166
 msgid "Service Menu"
@@ -489,7 +489,7 @@ msgstr "裝置選單"
 
 #: data/ui/preferences-window.ui:203 data/ui/preferences-window.ui:218
 msgid "Edit Device Name"
-msgstr "修改裝置名稱"
+msgstr "編輯裝置名稱"
 
 #: data/ui/preferences-window.ui:278
 msgid "Devices"
@@ -505,7 +505,7 @@ msgstr "擴充設定"
 
 #: data/ui/preferences-window.ui:390
 msgid "GSConnect remains active when GNOME Shell is locked"
-msgstr ""
+msgstr "GNOME Shell 鎖定時 GSConnect 保持活動狀態"
 
 #: data/ui/preferences-window.ui:410
 msgid "Browser Add-Ons"
@@ -521,7 +521,7 @@ msgstr "未配對裝置看不到此裝置"
 
 #: data/ui/preferences-window.ui:772 src/service/manager.js:117
 msgid "Discovery Disabled"
-msgstr "禁止被探索"
+msgstr "探索已停用"
 
 #: data/ui/preferences-window.ui:826
 msgid "Display Mode"
@@ -540,7 +540,7 @@ msgstr "使用者選單"
 #. TRANSLATORS: Generate a support log
 #: data/ui/preferences-window.ui:843 src/preferences/service.js:402
 msgid "Generate Support Log"
-msgstr "產生支援 Log"
+msgstr "產生支援日誌"
 
 #: data/ui/preferences-window.ui:851
 msgid "About GSConnect"
@@ -561,7 +561,7 @@ msgstr "找不到裝置"
 
 #: data/ui/service-device-chooser.ui:118
 msgid "Device List"
-msgstr ""
+msgstr "裝置列表"
 
 #: data/ui/service-error-dialog.ui:39 data/ui/service-error-dialog.ui:47
 msgid "Report"
@@ -569,15 +569,15 @@ msgstr "回報"
 
 #: data/ui/service-error-dialog.ui:79
 msgid "Something’s gone wrong"
-msgstr ""
+msgstr "出了點問題"
 
 #: data/ui/service-error-dialog.ui:91
 msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
-msgstr ""
+msgstr "GSConnect 遇到意外錯誤。請回報問題並包含任何可能有幫助的資訊。"
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
-msgstr ""
+msgstr "技術細節"
 
 #. TRANSLATORS: Send to <device_name>, for file manager
 #. context menu
@@ -888,7 +888,7 @@ msgstr ""
 
 #: src/service/plugins/mpris.js:320
 msgid "Unknown"
-msgstr ""
+msgstr "未知"
 
 #: src/service/plugins/notification.js:20
 msgid "Share notifications with the paired device"
