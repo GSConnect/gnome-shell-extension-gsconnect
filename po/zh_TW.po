@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 09:31-0500\n"
-"PO-Revision-Date: 2024-11-09 10:12\n"
+"PO-Revision-Date: 2024-11-09 11:23\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -673,7 +673,7 @@ msgstr "已中斷連線"
 
 #: src/preferences/service.js:510
 msgid "Connected"
-msgstr "已連接"
+msgstr "已連線"
 
 #: src/preferences/service.js:646
 msgid "Waiting for service…"
@@ -714,7 +714,7 @@ msgstr "訊息內文"
 
 #: src/service/daemon.js:428 src/service/plugins/notification.js:58
 msgid "Send Notification"
-msgstr "發送通知"
+msgstr "傳送通知"
 
 #: src/service/daemon.js:437
 msgid "Notification App Name"
@@ -722,7 +722,7 @@ msgstr "程式名稱通知"
 
 #: src/service/daemon.js:446
 msgid "Notification Body"
-msgstr "通知欄本身"
+msgstr "通知內容"
 
 #: src/service/daemon.js:455
 msgid "Notification Icon"
@@ -730,7 +730,7 @@ msgstr "通知圖示"
 
 #: src/service/daemon.js:464
 msgid "Notification ID"
-msgstr "ID 通知"
+msgstr "通知 ID"
 
 #: src/service/daemon.js:473 src/service/plugins/ping.js:15
 #: src/service/plugins/ping.js:22 src/service/plugins/ping.js:49
@@ -741,7 +741,7 @@ msgstr "Ping"
 #: src/service/plugins/battery.js:277 src/service/plugins/battery.js:306
 #: src/service/plugins/findmyphone.js:24
 msgid "Ring"
-msgstr "響音"
+msgstr "鈴聲"
 
 #: src/service/daemon.js:503 src/service/plugins/share.js:49
 #: src/service/ui/messaging.js:1251 src/service/ui/messaging.js:1259
@@ -864,7 +864,7 @@ msgstr "找尋我的手機"
 
 #: src/service/plugins/findmyphone.js:18
 msgid "Ring your paired device"
-msgstr "響鈴您的配對裝置"
+msgstr "讓您的配對裝置鈴聲響起"
 
 #: src/service/plugins/mousepad.js:16
 msgid "Mousepad"
@@ -872,7 +872,7 @@ msgstr "觸控板"
 
 #: src/service/plugins/mousepad.js:17
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr "使配對裝置充當遠端滑鼠和鍵盤"
+msgstr "讓配對裝置充當遠端滑鼠和鍵盤"
 
 #: src/service/plugins/mousepad.js:31 src/service/ui/mousepad.js:109
 msgid "Remote Input"
@@ -927,7 +927,7 @@ msgstr "簡報"
 
 #: src/service/plugins/presenter.js:15
 msgid "Use the paired device as a presenter"
-msgstr "使用配對的裝置作為簡報者"
+msgstr "使用配對的裝置作為簡報設備"
 
 #: src/service/plugins/runcommand.js:15
 msgid "Run Commands"
@@ -951,7 +951,7 @@ msgstr "掛載"
 
 #: src/service/plugins/sftp.js:32
 msgid "Unmount"
-msgstr "卸載"
+msgstr "取消掛載"
 
 #: src/service/plugins/sftp.js:193
 #, javascript-format
@@ -1108,7 +1108,7 @@ msgstr "來電"
 #. TRANSLATORS: A phone call is active
 #: src/service/plugins/telephony.js:210
 msgid "Ongoing call"
-msgstr "正在進行的通話"
+msgstr "通話中"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:134
