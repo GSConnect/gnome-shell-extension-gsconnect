@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 09:31-0500\n"
-"PO-Revision-Date: 2024-11-09 09:17\n"
+"PO-Revision-Date: 2024-11-09 10:12\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -33,7 +33,7 @@ msgstr "GSConnect 團隊"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
 msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
+msgstr "GSConnect 是 KDE Con​​nect 的完整實現，特別適用於 GNOME Shell 與 Nautilus、Chrome 和 Firefox 的整合。 KDE Con​​nect 團隊擁有適用於 Linux、BSD、Android、Sailfish、iOS、macOS 和 Windows 的應用程式。"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:42
 msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
@@ -161,7 +161,7 @@ msgstr "輸入訊息並按 Enter 鍵傳送"
 #: data/ui/messaging-window.ui:21 src/service/plugins/sms.js:32
 #: src/service/ui/messaging.js:1057
 msgid "Messaging"
-msgstr "傳送簡訊"
+msgstr "傳訊"
 
 #: data/ui/messaging-window.ui:30 data/ui/messaging-window.ui:43
 #: src/service/ui/messaging.js:1268
@@ -188,8 +188,8 @@ msgid "Touchpad.\n"
 "Left, middle, right button, and wheel scrolls."
 msgstr "觸控板。\n"
 "拖曳此區域可移動滑鼠游標。\n"
-"長按拖曳可拖曳滑鼠游標。\n\n"
-"只需點擊一下即可傳送至配對裝置。\n"
+"長按可拖曳滑鼠游標。\n\n"
+"只需點擊一下即可傳送到配對的裝置。\n"
 "左、中、右按鈕和滾輪滾動。"
 
 #: data/ui/preferences-command-editor.ui:14
@@ -892,7 +892,7 @@ msgstr "未知"
 
 #: src/service/plugins/notification.js:20
 msgid "Share notifications with the paired device"
-msgstr "與配對裝置共享通知"
+msgstr "與配對裝置分享通知"
 
 #: src/service/plugins/notification.js:34
 msgid "Cancel Notification"
@@ -927,7 +927,7 @@ msgstr "簡報"
 
 #: src/service/plugins/presenter.js:15
 msgid "Use the paired device as a presenter"
-msgstr ""
+msgstr "使用配對的裝置作為簡報者"
 
 #: src/service/plugins/runcommand.js:15
 msgid "Run Commands"
@@ -960,7 +960,7 @@ msgstr "%s 回報了一個錯誤"
 
 #: src/service/plugins/share.js:18 src/service/plugins/share.js:25
 msgid "Share"
-msgstr "共享"
+msgstr "分享"
 
 #: src/service/plugins/share.js:20
 msgid "Share files and URLs between devices"
@@ -1201,7 +1201,7 @@ msgstr "回覆"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:32
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr "直接用瀏覽器或經由簡訊和 GSConnect 共享鏈結"
+msgstr "直接用瀏覽器或經由簡訊和 GSConnect 分享連結"
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:36
@@ -1211,5 +1211,5 @@ msgstr "服務無法使用"
 #. TRANSLATORS: Open URL with the device's browser
 #: webextension/gettext.js:40
 msgid "Open in Browser"
-msgstr "以瀏覽器開啟"
+msgstr "在瀏覽器中開啟"
 
