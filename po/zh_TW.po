@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 09:31-0500\n"
-"PO-Revision-Date: 2024-11-09 07:37\n"
+"PO-Revision-Date: 2024-11-09 09:17\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -53,7 +53,7 @@ msgstr "同步剪貼簿內容"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:49
 msgid "Sync contacts"
-msgstr "同步聯絡人資訊"
+msgstr "同步聯絡人"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:50
 msgid "Sync notifications"
@@ -156,7 +156,7 @@ msgstr "訊息輸入"
 
 #: data/ui/messaging-conversation.ui:100
 msgid "Type a message and press Enter to send"
-msgstr "輸入訊息並按 Enter 傳送"
+msgstr "輸入訊息並按 Enter 鍵傳送"
 
 #: data/ui/messaging-window.ui:21 src/service/plugins/sms.js:32
 #: src/service/ui/messaging.js:1057
@@ -264,7 +264,7 @@ msgstr "低電量通知"
 
 #: data/ui/preferences-device-panel.ui:649
 msgid "Charged Up to Custom Level Notification"
-msgstr "收費達到自訂等級通知"
+msgstr "充電達到自訂等級通知"
 
 #: data/ui/preferences-device-panel.ui:729
 msgid "Fully Charged Notification"
@@ -316,7 +316,7 @@ msgstr "通知"
 
 #: data/ui/preferences-device-panel.ui:1278 src/service/plugins/contacts.js:26
 msgid "Contacts"
-msgstr "聯繫人"
+msgstr "聯絡人"
 
 #: data/ui/preferences-device-panel.ui:1331
 msgid "Incoming Calls"
@@ -347,7 +347,7 @@ msgstr "電話"
 
 #: data/ui/preferences-device-panel.ui:1758
 msgid "Action Shortcuts"
-msgstr "應用快捷鍵"
+msgstr "動作快捷鍵"
 
 #: data/ui/preferences-device-panel.ui:1774
 msgid "Reset All…"
@@ -406,7 +406,7 @@ msgstr "裝置已取消配對"
 
 #: data/ui/preferences-device-panel.ui:2555
 msgid "You may configure this device before pairing"
-msgstr "您可以在配對此裝置前進行設置"
+msgstr "您可以在配對之前設定此裝置"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
 #: data/ui/preferences-device-panel.ui:2595 src/preferences/device.js:391
@@ -746,7 +746,7 @@ msgstr "響音"
 #: src/service/daemon.js:503 src/service/plugins/share.js:49
 #: src/service/ui/messaging.js:1251 src/service/ui/messaging.js:1259
 msgid "Share Link"
-msgstr "共享鏈結"
+msgstr "分享連結"
 
 #: src/service/daemon.js:512 src/service/plugins/share.js:41
 msgid "Share Text"
@@ -754,7 +754,7 @@ msgstr "分享文字"
 
 #: src/service/daemon.js:524
 msgid "Show release version"
-msgstr "顯示版本"
+msgstr "顯示發布版本"
 
 #. TRANSLATORS: Bluetooth address for remote device
 #: src/service/device.js:173
@@ -979,7 +979,7 @@ msgstr "不允許「%s」上傳檔案"
 
 #: src/service/plugins/share.js:156 src/service/plugins/share.js:289
 msgid "Transferring File"
-msgstr "檔案傳送中"
+msgstr "傳送檔案中"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:158
@@ -1003,7 +1003,7 @@ msgstr "顯示檔案位置"
 
 #: src/service/plugins/share.js:194
 msgid "Open File"
-msgstr "打開檔案"
+msgstr "開啟檔案"
 
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:210
@@ -1049,7 +1049,7 @@ msgstr "當完成時開啟"
 #: src/service/plugins/share.js:422
 #, javascript-format
 msgid "Send a link to %s"
-msgstr "發送一個鏈結到「%s」"
+msgstr "傳送一個連結到「%s」"
 
 #: src/service/plugins/sms.js:18
 msgid "SMS"
@@ -1061,7 +1061,7 @@ msgstr "傳送和讀取配對裝置的簡訊並收到新簡訊通知"
 
 #: src/service/plugins/sms.js:40
 msgid "New SMS (URI)"
-msgstr "新增簡訊（URI）"
+msgstr "新增簡訊 (URI)"
 
 #: src/service/plugins/sms.js:48
 msgid "Reply SMS"
@@ -1108,7 +1108,7 @@ msgstr "來電"
 #. TRANSLATORS: A phone call is active
 #: src/service/plugins/telephony.js:210
 msgid "Ongoing call"
-msgstr "通話中"
+msgstr "正在進行的通話"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:134
@@ -1159,7 +1159,7 @@ msgstr "群組簡訊"
 #: src/service/ui/messaging.js:773
 #, javascript-format
 msgid "You: %s"
-msgstr "你：%s"
+msgstr "您：%s"
 
 #: src/service/ui/messaging.js:959
 #, javascript-format
