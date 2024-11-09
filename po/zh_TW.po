@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 09:31-0500\n"
-"PO-Revision-Date: 2024-11-09 11:23\n"
+"PO-Revision-Date: 2024-11-09 12:39\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -741,7 +741,7 @@ msgstr "Ping"
 #: src/service/plugins/battery.js:277 src/service/plugins/battery.js:306
 #: src/service/plugins/findmyphone.js:24
 msgid "Ring"
-msgstr "鈴聲"
+msgstr "響鈴"
 
 #: src/service/daemon.js:503 src/service/plugins/share.js:49
 #: src/service/ui/messaging.js:1251 src/service/ui/messaging.js:1259
