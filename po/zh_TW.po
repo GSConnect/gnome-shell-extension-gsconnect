@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 09:31-0500\n"
-"PO-Revision-Date: 2024-11-10 04:51\n"
+"PO-Revision-Date: 2024-11-10 06:50\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -856,7 +856,7 @@ msgstr "接收剪貼簿"
 
 #: src/service/plugins/contacts.js:27
 msgid "Access contacts of the paired device"
-msgstr "存取配對裝置的聯絡人"
+msgstr "取用配對裝置的聯絡人"
 
 #: src/service/plugins/findmyphone.js:17
 msgid "Find My Phone"
