@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 09:31-0500\n"
-"PO-Revision-Date: 2024-11-10 08:49\n"
+"PO-Revision-Date: 2024-11-10 10:39\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -302,7 +302,7 @@ msgstr "分享通知"
 
 #: data/ui/preferences-device-panel.ui:1123
 msgid "Share When Active"
-msgstr "裝置處於活動狀態時分享"
+msgstr "有作用時分享"
 
 #: data/ui/preferences-device-panel.ui:1174
 msgid "Applications"
@@ -505,7 +505,7 @@ msgstr "擴充設定"
 
 #: data/ui/preferences-window.ui:390
 msgid "GSConnect remains active when GNOME Shell is locked"
-msgstr "GNOME Shell 鎖定時 GSConnect 保持活動狀態"
+msgstr "GNOME Shell 鎖定時 GSConnect 保持作用"
 
 #: data/ui/preferences-window.ui:410
 msgid "Browser Add-Ons"
@@ -1171,7 +1171,7 @@ msgstr[0] "和 %d 位其他聯絡人"
 #: src/service/ui/mousepad.js:117
 #, javascript-format
 msgid "Remote keyboard on %s is not active"
-msgstr "%s 上的遠端鍵盤處於非活動狀態"
+msgstr "%s 上的遠端鍵盤沒有作用"
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
