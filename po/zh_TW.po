@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 09:31-0500\n"
-"PO-Revision-Date: 2024-11-09 12:39\n"
+"PO-Revision-Date: 2024-11-10 04:51\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -161,7 +161,7 @@ msgstr "輸入訊息並按 Enter 鍵傳送"
 #: data/ui/messaging-window.ui:21 src/service/plugins/sms.js:32
 #: src/service/ui/messaging.js:1057
 msgid "Messaging"
-msgstr "傳訊"
+msgstr "傳送簡訊"
 
 #: data/ui/messaging-window.ui:30 data/ui/messaging-window.ui:43
 #: src/service/ui/messaging.js:1268
@@ -1118,17 +1118,17 @@ msgstr "傳真"
 #. TRANSLATORS: A work or office phone number
 #: src/service/ui/contacts.js:138
 msgid "Work"
-msgstr "公司電話"
+msgstr "公司"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:142
 msgid "Mobile"
-msgstr "手機號碼"
+msgstr "手機"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:146
 msgid "Home"
-msgstr "家用電話號碼"
+msgstr "住家"
 
 #. TRANSLATORS: Less than a minute ago
 #: src/service/ui/messaging.js:105 src/service/ui/messaging.js:146
