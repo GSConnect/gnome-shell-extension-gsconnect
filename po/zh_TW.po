@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 09:31-0500\n"
-"PO-Revision-Date: 2024-11-10 10:39\n"
+"PO-Revision-Date: 2024-11-10 11:48\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -223,7 +223,7 @@ msgstr "桌面"
 
 #: data/ui/preferences-device-panel.ui:102
 msgid "Clipboard Sync"
-msgstr "同步剪貼簿"
+msgstr "剪貼簿同步"
 
 #: data/ui/preferences-device-panel.ui:168
 msgid "Media Players"
