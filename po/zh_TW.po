@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 09:31-0500\n"
-"PO-Revision-Date: 2024-11-12 14:35\n"
+"PO-Revision-Date: 2024-11-12 16:46\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -505,11 +505,11 @@ msgstr "擴充設定"
 
 #: data/ui/preferences-window.ui:390
 msgid "GSConnect remains active when GNOME Shell is locked"
-msgstr "GNOME Shell 鎖定時 GSConnect 保持作用"
+msgstr "當 GNOME Shell 處於鎖定狀態時使 GSConnect 仍保持運作"
 
 #: data/ui/preferences-window.ui:410
 msgid "Browser Add-Ons"
-msgstr "瀏覽器外掛"
+msgstr "瀏覽器附加元件"
 
 #: data/ui/preferences-window.ui:728
 msgid "Enable"
@@ -521,7 +521,7 @@ msgstr "未配對裝置看不到此裝置"
 
 #: data/ui/preferences-window.ui:772 src/service/manager.js:117
 msgid "Discovery Disabled"
-msgstr "探索已停用"
+msgstr "探索已被停用"
 
 #: data/ui/preferences-window.ui:826
 msgid "Display Mode"
@@ -927,7 +927,7 @@ msgstr "簡報"
 
 #: src/service/plugins/presenter.js:15
 msgid "Use the paired device as a presenter"
-msgstr "使用配對的裝置作為簡報設備"
+msgstr "使用配對的裝置作為簡報器"
 
 #: src/service/plugins/runcommand.js:15
 msgid "Run Commands"
@@ -943,7 +943,7 @@ msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:19
 msgid "Browse the paired device filesystem"
-msgstr "瀏覽配對裝置檔案系統"
+msgstr "瀏覽已配對裝置的檔案系統"
 
 #: src/service/plugins/sftp.js:24
 msgid "Mount"
@@ -951,7 +951,7 @@ msgstr "掛載"
 
 #: src/service/plugins/sftp.js:32
 msgid "Unmount"
-msgstr "取消掛載"
+msgstr "解除掛載"
 
 #: src/service/plugins/sftp.js:193
 #, javascript-format
