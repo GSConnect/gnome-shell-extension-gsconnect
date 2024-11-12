@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 09:31-0500\n"
-"PO-Revision-Date: 2024-11-12 13:24\n"
+"PO-Revision-Date: 2024-11-12 14:35\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -438,7 +438,7 @@ msgstr "無動作"
 #: data/ui/preferences-device-panel.ui:2643
 #: data/ui/preferences-device-panel.ui:2676
 msgid "Restore"
-msgstr "恢復"
+msgstr "回復"
 
 #. TRANSLATORS: Lower the system volume
 #: data/ui/preferences-device-panel.ui:2650
@@ -632,24 +632,24 @@ msgstr "「%s」已經被使用"
 
 #: src/preferences/service.js:361
 msgid "A complete KDE Connect implementation for GNOME"
-msgstr "一個為 GNOME 完整實做的 KDE Connect"
+msgstr "一個為 GNOME 桌面環境設計的 KDE Connect 完整實作"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:370
 msgid "translator-credits"
-msgstr "翻譯組員"
+msgstr "翻譯者銘謝"
 
 #: src/preferences/service.js:403
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
-msgstr "除錯訊息已被紀錄。請執行任何可能造成問題的動作，然後查看日誌。"
+msgstr "除錯訊息已被紀錄。請執行任何重現問題的必要動作，然後審閱運行紀錄。"
 
 #: src/preferences/service.js:406
 msgid "Review Log"
-msgstr "查看日誌"
+msgstr "審閱運行紀錄"
 
 #: src/preferences/service.js:474
 msgid "Laptop"
-msgstr "筆電"
+msgstr "筆記型電腦"
 
 #: src/preferences/service.js:476
 msgid "Smartphone"
@@ -657,7 +657,7 @@ msgstr "智慧型手機"
 
 #: src/preferences/service.js:478
 msgid "Tablet"
-msgstr "平板"
+msgstr "平板電腦"
 
 #: src/preferences/service.js:480
 msgid "Television"
@@ -673,7 +673,7 @@ msgstr "已中斷連線"
 
 #: src/preferences/service.js:510
 msgid "Connected"
-msgstr "已連線"
+msgstr "已連接"
 
 #: src/preferences/service.js:646
 msgid "Waiting for service…"
@@ -931,7 +931,7 @@ msgstr "使用配對的裝置作為簡報設備"
 
 #: src/service/plugins/runcommand.js:15
 msgid "Run Commands"
-msgstr "執行指令"
+msgstr "執行命令"
 
 #: src/service/plugins/runcommand.js:17
 msgid "Run commands on your paired device or let the device run predefined commands on this PC"
@@ -1178,21 +1178,21 @@ msgstr "%s 上的遠端鍵盤沒有作用"
 #: src/shell/device.js:124
 #, javascript-format
 msgid "%d%% (Estimating…)"
-msgstr "%d%% (計算中…)"
+msgstr "%d%%（估算中……）"
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
 #: src/shell/device.js:133
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
-msgstr "%d%%（距離充滿還需 %d∶%02d ）"
+msgstr "%d%%（距離充滿還需 %d∶%02d）"
 
 #. TRANSLATORS: Estimated time until battery is empty
 #. EXAMPLE: 42% (12:15 Remaining)
 #: src/shell/device.js:141
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
-msgstr "%d%% (%d∶%02d 剩餘)"
+msgstr "%d%%（剩下 %d∶%02d）"
 
 #: src/shell/notification.js:69
 msgid "Reply"
@@ -1201,7 +1201,7 @@ msgstr "回覆"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:32
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr "直接用瀏覽器或經由簡訊和 GSConnect 分享連結"
+msgstr "使用 GSConnect 分享連結至裝置的 Web 瀏覽器或是經由簡訊發送。"
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:36
