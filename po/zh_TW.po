@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 09:31-0500\n"
-"PO-Revision-Date: 2024-11-12 11:58\n"
+"PO-Revision-Date: 2024-11-12 13:24\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -41,7 +41,7 @@ msgstr "借助 GSConnect，您可以安全地連線到行動裝置和其他的�
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:46
 msgid "Share files, links and text"
-msgstr "分享檔案、連結和文字"
+msgstr "分享檔案、連結和文字內容"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:47
 msgid "Send and receive messages"
@@ -256,7 +256,7 @@ msgstr "分享"
 
 #: data/ui/preferences-device-panel.ui:539
 msgid "Device Battery"
-msgstr "裝置電池"
+msgstr "裝置電量"
 
 #: data/ui/preferences-device-panel.ui:590
 msgid "Low Battery Notification"
@@ -302,11 +302,11 @@ msgstr "分享通知"
 
 #: data/ui/preferences-device-panel.ui:1123
 msgid "Share When Active"
-msgstr "有作用時分享"
+msgstr "於裝置處於活動狀態下仍分享"
 
 #: data/ui/preferences-device-panel.ui:1174
 msgid "Applications"
-msgstr "應用程式"
+msgstr "應用軟體"
 
 #: data/ui/preferences-device-panel.ui:1220
 #: data/ui/preferences-device-panel.ui:2308
@@ -330,7 +330,7 @@ msgstr "音量"
 #: data/ui/preferences-device-panel.ui:1446
 #: data/ui/preferences-device-panel.ui:1613
 msgid "Pause Media"
-msgstr "暫停媒體"
+msgstr "暫停撥放中的媒體"
 
 #: data/ui/preferences-device-panel.ui:1499
 msgid "Ongoing Calls"
@@ -338,7 +338,7 @@ msgstr "通話中"
 
 #: data/ui/preferences-device-panel.ui:1669
 msgid "Mute Microphone"
-msgstr "靜音麥克風"
+msgstr "將麥克風設置為靜音"
 
 #: data/ui/preferences-device-panel.ui:1723
 #: data/ui/preferences-device-panel.ui:2354 src/service/plugins/telephony.js:17
@@ -359,7 +359,7 @@ msgstr "快捷鍵"
 
 #: data/ui/preferences-device-panel.ui:1857
 msgid "Plugins"
-msgstr "外掛"
+msgstr "可接入元件"
 
 #: data/ui/preferences-device-panel.ui:1904
 msgid "Experimental"
@@ -477,7 +477,7 @@ msgstr "重新整理"
 
 #: data/ui/preferences-window.ui:139 src/extension.js:114
 msgid "Mobile Settings"
-msgstr "手機設定"
+msgstr "行動裝置設定"
 
 #: data/ui/preferences-window.ui:166
 msgid "Service Menu"
