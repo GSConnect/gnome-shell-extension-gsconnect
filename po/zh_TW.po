@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 09:31-0500\n"
-"PO-Revision-Date: 2024-11-10 11:48\n"
+"PO-Revision-Date: 2024-11-12 11:58\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -33,11 +33,11 @@ msgstr "GSConnect 團隊"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
 msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr "GSConnect 是 KDE Con​​nect 的完整實現，特別適用於 GNOME Shell 與 Nautilus、Chrome 和 Firefox 的整合。 KDE Con​​nect 團隊擁有適用於 Linux、BSD、Android、Sailfish、iOS、macOS 和 Windows 的應用程式。"
+msgstr "GSConnect 是包含 Nautilus、Chrome 和 Firefox 的整合，特別適用於 GNOME Shell 的 KDE Con​​nect 完整實現。KDE Con​​nect 團隊擁有適用於 Linux、BSD、Android、Sailfish、iOS、macOS 和 Windows 的應用程式。"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:42
 msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
-msgstr "借助 GSConnect，您可以安全地連線到行動裝置和其他桌面："
+msgstr "借助 GSConnect，您可以安全地連線到行動裝置和其他的桌上型電腦以："
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:46
 msgid "Share files, links and text"
@@ -73,7 +73,7 @@ msgstr "執行預定義指令"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:54
 msgid "And more…"
-msgstr "還有更多…"
+msgstr "還有更多……"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:133
 msgid "GSConnect in GNOME Shell"
@@ -82,7 +82,7 @@ msgstr "GNOME Shell 中的 GSConnect"
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/connect-dialog.ui:20 data/ui/preferences-window.ui:821
 msgid "Connect to…"
-msgstr "連線到…"
+msgstr "連線到……"
 
 #: data/ui/connect-dialog.ui:26 data/ui/legacy-messaging-dialog.ui:20
 #: data/ui/legacy-messaging-dialog.ui:24
@@ -104,7 +104,7 @@ msgstr "連線"
 
 #: data/ui/connect-dialog.ui:80
 msgid "IP Address"
-msgstr "IP 位址"
+msgstr "IP 地址"
 
 #: data/ui/contact-chooser.ui:56
 msgid "No contacts"
@@ -113,11 +113,11 @@ msgstr "沒有聯絡人"
 #: data/ui/contact-chooser.ui:68 data/ui/messaging-window.ui:103
 #: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:847
 msgid "Help"
-msgstr "幫助"
+msgstr "尋求幫助"
 
 #: data/ui/contact-chooser.ui:109
 msgid "Type a phone number or name"
-msgstr "輸入電話號碼或名稱"
+msgstr "輸入電話號碼或姓名"
 
 #. TRANSLATORS: All other phone number types
 #: data/ui/contacts-address-row.ui:71 src/service/ui/contacts.js:149
@@ -152,11 +152,11 @@ msgstr "輸入訊息"
 
 #: data/ui/messaging-conversation.ui:99
 msgid "Message Entry"
-msgstr "訊息輸入"
+msgstr "訊息輸入框"
 
 #: data/ui/messaging-conversation.ui:100
 msgid "Type a message and press Enter to send"
-msgstr "輸入訊息並按 Enter 鍵傳送"
+msgstr "於此輸入訊息並按 Enter 鍵傳送"
 
 #: data/ui/messaging-window.ui:21 src/service/plugins/sms.js:32
 #: src/service/ui/messaging.js:1057
@@ -178,7 +178,7 @@ msgstr "沒有選定的對話"
 
 #: data/ui/messaging-window.ui:196
 msgid "Select or start a conversation"
-msgstr "選擇或開始聊天"
+msgstr "選擇或發起一個新的對話"
 
 #: data/ui/mousepad-input-dialog.ui:97
 msgid "Touchpad.\n"
@@ -194,7 +194,7 @@ msgstr "觸控板。\n"
 
 #: data/ui/preferences-command-editor.ui:14
 msgid "Edit Command"
-msgstr "編輯指令"
+msgstr "編輯命令"
 
 #: data/ui/preferences-command-editor.ui:28
 msgid "Save"
@@ -211,7 +211,7 @@ msgstr "命令行"
 #: data/ui/preferences-command-editor.ui:121
 #: data/ui/preferences-command-editor.ui:150
 msgid "Choose an executable"
-msgstr "選擇可執行程式"
+msgstr "選擇一個可執行檔"
 
 #: data/ui/preferences-command-editor.ui:164
 msgid "Open"
@@ -231,7 +231,7 @@ msgstr "媒體播放器"
 
 #: data/ui/preferences-device-panel.ui:225
 msgid "Mouse & Keyboard"
-msgstr "滑鼠 & 鍵盤"
+msgstr "滑鼠與鍵盤"
 
 #: data/ui/preferences-device-panel.ui:282
 msgid "Volume Control"
@@ -264,7 +264,7 @@ msgstr "低電量通知"
 
 #: data/ui/preferences-device-panel.ui:649
 msgid "Charged Up to Custom Level Notification"
-msgstr "充電達到自訂等級通知"
+msgstr "充電達到自訂電量通知"
 
 #: data/ui/preferences-device-panel.ui:729
 msgid "Fully Charged Notification"
@@ -272,11 +272,11 @@ msgstr "電池充飽通知"
 
 #: data/ui/preferences-device-panel.ui:783
 msgid "System Battery"
-msgstr "系統電池"
+msgstr "系統電量"
 
 #: data/ui/preferences-device-panel.ui:832
 msgid "Share Statistics"
-msgstr "分享狀態"
+msgstr "分享統計數字"
 
 #: data/ui/preferences-device-panel.ui:886
 #: data/ui/preferences-device-panel.ui:2216 src/service/plugins/battery.js:16
@@ -289,11 +289,11 @@ msgstr "電池"
 #: src/service/plugins/runcommand.js:28 src/service/plugins/runcommand.js:36
 #: src/service/plugins/runcommand.js:196
 msgid "Commands"
-msgstr "指令"
+msgstr "命令"
 
 #: data/ui/preferences-device-panel.ui:975
 msgid "Add Command"
-msgstr "增加指令"
+msgstr "增加命令"
 
 #. TRANSLATORS: 'Share' is a verb here; this refers to the action of sharing
 #: data/ui/preferences-device-panel.ui:1063
@@ -351,7 +351,7 @@ msgstr "動作快捷鍵"
 
 #: data/ui/preferences-device-panel.ui:1774
 msgid "Reset All…"
-msgstr "全部重設"
+msgstr "全部重設…"
 
 #: data/ui/preferences-device-panel.ui:1826
 msgid "Shortcuts"
@@ -677,7 +677,7 @@ msgstr "已連線"
 
 #: src/preferences/service.js:646
 msgid "Waiting for service…"
-msgstr "等待伺服器…"
+msgstr "正在等待服務…"
 
 #: src/service/daemon.js:194
 msgid "Click for help troubleshooting"
@@ -718,7 +718,7 @@ msgstr "傳送通知"
 
 #: src/service/daemon.js:437
 msgid "Notification App Name"
-msgstr "程式名稱通知"
+msgstr "通知程式名稱"
 
 #: src/service/daemon.js:446
 msgid "Notification Body"
