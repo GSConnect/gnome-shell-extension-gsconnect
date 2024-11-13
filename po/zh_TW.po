@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 09:31-0500\n"
-"PO-Revision-Date: 2024-11-13 05:51\n"
+"PO-Revision-Date: 2024-11-13 09:31\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -33,7 +33,7 @@ msgstr "GSConnect 團隊"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:39
 msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr "GSConnect 是包含 Nautilus、Chrome 和 Firefox 的整合，特別適用於 GNOME Shell 的 KDE Con​​nect 完整實現。KDE Con​​nect 團隊擁有適用於 Linux、BSD、Android、Sailfish、iOS、macOS 和 Windows 的應用程式。"
+msgstr "GSConnect 是 KDE Con​​nect 的完整實現，特別是 GNOME Shell 與 Nautilus、Chrome、Firefox 三者的整合。 KDE Con​​nect 團隊擁有適用於 Linux、BSD、Android、Sailfish、iOS、macOS 和 Windows 的應用程式。"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:42
 msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
@@ -338,7 +338,7 @@ msgstr "通話中"
 
 #: data/ui/preferences-device-panel.ui:1669
 msgid "Mute Microphone"
-msgstr "將麥克風設置為靜音"
+msgstr "麥克風設為靜音"
 
 #: data/ui/preferences-device-panel.ui:1723
 #: data/ui/preferences-device-panel.ui:2354 src/service/plugins/telephony.js:17
@@ -359,7 +359,7 @@ msgstr "快捷鍵"
 
 #: data/ui/preferences-device-panel.ui:1857
 msgid "Plugins"
-msgstr "可接入元件"
+msgstr "外掛"
 
 #: data/ui/preferences-device-panel.ui:1904
 msgid "Experimental"
@@ -641,7 +641,7 @@ msgstr "翻譯者銘謝"
 
 #: src/preferences/service.js:403
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
-msgstr "除錯訊息已被紀錄。請執行任何重現問題的必要動作，然後審閱運行紀錄。"
+msgstr "除錯訊息已被記入日誌中。請執行任何重現問題的必要動作，然後審閱該日誌。"
 
 #: src/preferences/service.js:406
 msgid "Review Log"
