@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 09:31-0500\n"
-"PO-Revision-Date: 2024-11-12 16:46\n"
+"PO-Revision-Date: 2024-11-13 05:51\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -592,7 +592,7 @@ msgstr "傳送到「%s」"
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: nautilus-extension/nautilus-gsconnect.py:194 webextension/gettext.js:34
 msgid "Send To Mobile Device"
-msgstr "傳送到手機"
+msgstr "傳送到行動裝置"
 
 #: src/extension.js:50
 msgid "Sync between your devices"
