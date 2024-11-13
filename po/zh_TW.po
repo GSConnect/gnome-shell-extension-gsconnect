@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 09:31-0500\n"
-"PO-Revision-Date: 2024-11-13 12:00\n"
+"PO-Revision-Date: 2024-11-13 14:43\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -421,12 +421,12 @@ msgstr "取消配對"
 #. TRANSLATORS: Send clipboard content to device
 #: data/ui/preferences-device-panel.ui:2618
 msgid "To Device"
-msgstr "到裝置"
+msgstr "傳送至本裝置"
 
 #. TRANSLATORS: Receive clipboard content from the device
 #: data/ui/preferences-device-panel.ui:2624
 msgid "From Device"
-msgstr "從裝置"
+msgstr "從本裝置傳出"
 
 #. TRANSLATORS: Don't change the system volume
 #: data/ui/preferences-device-panel.ui:2636
