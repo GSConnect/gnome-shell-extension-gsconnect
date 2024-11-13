@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 09:31-0500\n"
-"PO-Revision-Date: 2024-11-13 09:31\n"
+"PO-Revision-Date: 2024-11-13 10:39\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -113,7 +113,7 @@ msgstr "沒有聯絡人"
 #: data/ui/contact-chooser.ui:68 data/ui/messaging-window.ui:103
 #: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:847
 msgid "Help"
-msgstr "尋求幫助"
+msgstr "求助"
 
 #: data/ui/contact-chooser.ui:109
 msgid "Type a phone number or name"
@@ -156,7 +156,7 @@ msgstr "訊息輸入框"
 
 #: data/ui/messaging-conversation.ui:100
 msgid "Type a message and press Enter to send"
-msgstr "於此輸入訊息並按 Enter 鍵傳送"
+msgstr "輸入訊息並按 Enter 鍵傳送"
 
 #: data/ui/messaging-window.ui:21 src/service/plugins/sms.js:32
 #: src/service/ui/messaging.js:1057
@@ -252,7 +252,7 @@ msgstr "將檔案儲存到"
 #: data/ui/preferences-device-panel.ui:508
 #: data/ui/preferences-device-panel.ui:2170
 msgid "Sharing"
-msgstr "分享"
+msgstr "共享"
 
 #: data/ui/preferences-device-panel.ui:539
 msgid "Device Battery"
@@ -302,11 +302,11 @@ msgstr "分享通知"
 
 #: data/ui/preferences-device-panel.ui:1123
 msgid "Share When Active"
-msgstr "於裝置處於活動狀態下仍分享"
+msgstr "裝置處於活動狀態時分享"
 
 #: data/ui/preferences-device-panel.ui:1174
 msgid "Applications"
-msgstr "應用軟體"
+msgstr "應用程式"
 
 #: data/ui/preferences-device-panel.ui:1220
 #: data/ui/preferences-device-panel.ui:2308
@@ -461,7 +461,7 @@ msgstr "設定"
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:80
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr "按下 Esc 取消快捷鍵，或按下倒退鍵（Backspace）重設快捷鍵。"
+msgstr "按下 Esc 以取消快捷鍵，或按下 Backspace 以重設快捷鍵。"
 
 #: data/ui/preferences-window.ui:24
 msgid "Device Name"
@@ -641,11 +641,11 @@ msgstr "翻譯者銘謝"
 
 #: src/preferences/service.js:403
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
-msgstr "除錯訊息已被記入日誌中。請執行任何重現問題的必要動作，然後審閱該日誌。"
+msgstr "除錯訊息已被記入日誌中。請執行任何重現問題的必要動作，然後審核該日誌。"
 
 #: src/preferences/service.js:406
 msgid "Review Log"
-msgstr "審閱運行紀錄"
+msgstr "審核日誌"
 
 #: src/preferences/service.js:474
 msgid "Laptop"
@@ -673,7 +673,7 @@ msgstr "已中斷連線"
 
 #: src/preferences/service.js:510
 msgid "Connected"
-msgstr "已連接"
+msgstr "已連線"
 
 #: src/preferences/service.js:646
 msgid "Waiting for service…"
@@ -892,7 +892,7 @@ msgstr "未知"
 
 #: src/service/plugins/notification.js:20
 msgid "Share notifications with the paired device"
-msgstr "與配對裝置分享通知"
+msgstr "與配對裝置共享通知"
 
 #: src/service/plugins/notification.js:34
 msgid "Cancel Notification"
@@ -951,7 +951,7 @@ msgstr "掛載"
 
 #: src/service/plugins/sftp.js:32
 msgid "Unmount"
-msgstr "解除掛載"
+msgstr "卸載"
 
 #: src/service/plugins/sftp.js:193
 #, javascript-format
@@ -1201,7 +1201,7 @@ msgstr "回覆"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:32
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr "使用 GSConnect 分享連結至裝置的 Web 瀏覽器或是經由簡訊發送。"
+msgstr "使用 GSConnect 分享連結至裝置的 Web 瀏覽器或是經由簡訊傳送。"
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:36
