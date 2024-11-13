@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 09:31-0500\n"
-"PO-Revision-Date: 2024-11-13 14:43\n"
+"PO-Revision-Date: 2024-11-13 16:58\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -206,7 +206,7 @@ msgstr "名稱"
 
 #: data/ui/preferences-command-editor.ui:99
 msgid "Command Line"
-msgstr "命令行"
+msgstr "命令列"
 
 #: data/ui/preferences-command-editor.ui:121
 #: data/ui/preferences-command-editor.ui:150
