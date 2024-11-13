@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 09:31-0500\n"
-"PO-Revision-Date: 2024-11-13 10:39\n"
+"PO-Revision-Date: 2024-11-13 12:00\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -37,7 +37,7 @@ msgstr "GSConnect 是 KDE Con​​nect 的完整實現，特別是 GNOME Shell 
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:42
 msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
-msgstr "借助 GSConnect，您可以安全地連線到行動裝置和其他的桌上型電腦以："
+msgstr "借助 GSConnect，您可以安全地連至行動裝置和其他的桌上型電腦以："
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:46
 msgid "Share files, links and text"
@@ -82,7 +82,7 @@ msgstr "GNOME Shell 中的 GSConnect"
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/connect-dialog.ui:20 data/ui/preferences-window.ui:821
 msgid "Connect to…"
-msgstr "連線到……"
+msgstr "連至…"
 
 #: data/ui/connect-dialog.ui:26 data/ui/legacy-messaging-dialog.ui:20
 #: data/ui/legacy-messaging-dialog.ui:24
@@ -100,7 +100,7 @@ msgstr "取消"
 
 #: data/ui/connect-dialog.ui:33
 msgid "Connect"
-msgstr "連線"
+msgstr "連結"
 
 #: data/ui/connect-dialog.ui:80
 msgid "IP Address"
@@ -602,7 +602,7 @@ msgstr "在您的裝置之間同步"
 #, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
-msgstr[0] "%d 台裝置已連線"
+msgstr[0] "%d 台裝置已連結"
 
 #: src/preferences/device.js:670 src/preferences/device.js:676
 msgid "Edit"
@@ -669,11 +669,11 @@ msgstr "未配對"
 
 #: src/preferences/service.js:506
 msgid "Disconnected"
-msgstr "已中斷連線"
+msgstr "已中斷連結"
 
 #: src/preferences/service.js:510
 msgid "Connected"
-msgstr "已連線"
+msgstr "已連結"
 
 #: src/preferences/service.js:646
 msgid "Waiting for service…"
