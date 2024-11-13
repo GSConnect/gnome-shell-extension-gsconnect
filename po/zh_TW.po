@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 09:31-0500\n"
-"PO-Revision-Date: 2024-11-13 16:58\n"
+"PO-Revision-Date: 2024-11-13 17:59\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -69,7 +69,7 @@ msgstr "控制系統音量"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:53
 msgid "Execute predefined commands"
-msgstr "執行預定義指令"
+msgstr "執行預定義命令"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:54
 msgid "And more…"
@@ -935,7 +935,7 @@ msgstr "執行命令"
 
 #: src/service/plugins/runcommand.js:17
 msgid "Run commands on your paired device or let the device run predefined commands on this PC"
-msgstr "在配對裝置上執行指令或讓裝置在此電腦上執行預定義指令"
+msgstr "在配對裝置上執行命令或讓裝置在此電腦上執行預定義命令"
 
 #: src/service/plugins/sftp.js:17
 msgid "SFTP"
