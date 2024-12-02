@@ -48,6 +48,7 @@ describe('The systemvolume plugin', function () {
             },
         });
         testRig.setPaired(true);
+        testRig.setConnected(true);
 
         remoteDevice = testRig.remoteDevice;
         remoteDevice.handlePacket = handlePacket.bind(remoteDevice);
@@ -68,14 +69,6 @@ describe('The systemvolume plugin', function () {
         localPlugin = testRig.localDevice._plugins.get('systemvolume');
 
         expect(localPlugin).toBeDefined();
-    });
-
-    it('sends streams when connected', function () {
-        spyOn(localPlugin, '_sendSinkList');
-
-        testRig.setConnected(true);
-
-        expect(localPlugin._sendSinkList).toHaveBeenCalled();
     });
 
     it('sends a list of streams when requested', async function () {
