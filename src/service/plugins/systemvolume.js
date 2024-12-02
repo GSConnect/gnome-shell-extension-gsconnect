@@ -73,12 +73,6 @@ const SystemVolumePlugin = GObject.registerClass({
         }
     }
 
-    connected() {
-        super.connected();
-
-        this._sendSinkList();
-    }
-
     /**
      * Handle a request to change an output
      *
