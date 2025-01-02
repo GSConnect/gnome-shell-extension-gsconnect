@@ -12,6 +12,33 @@ import Plugin from '../plugin.js';
 import * as URI from '../utils/uri.js';
 
 
+
+function renameFile(str) {
+
+    let copyNum = 1;
+    let position = str.length - 1;
+
+    while (position >= 0) {
+        if (str[position] === "." || position === 0) {
+            if (
+                str[position - 1] === ")" &&
+                str[position - 3] === "(" &&
+                !isNaN(str[position - 2])
+            ) {
+                copyNum = parseInt(str[position - 2]) + 1;
+                str = str.slice(0, position - 3) + str.slice(position);
+                position -= 3;
+            }
+
+            str = str.slice(0, position) + `(${copyNum})` + str.slice(position);
+            return str;
+        }
+        position--;
+    }
+
+
+}
+
 export const Metadata = {
     label: _('Share'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Share',
@@ -109,15 +136,21 @@ const SharePlugin = GObject.registerClass({
         return receiveDir;
     }
 
+
+
     _getFile(filename) {
         const dirpath = this._ensureReceiveDirectory();
         const basepath = GLib.build_filenamev([dirpath, filename]);
         let filepath = basepath;
-        let copyNum = 0;
-
-        while (GLib.file_test(filepath, GLib.FileTest.EXISTS))
-            filepath = `${basepath} (${++copyNum})`;
-
+        
+        // let copyNum = 0;
+        
+        while (GLib.file_test(filepath, GLib.FileTest.EXISTS)){
+            const newFilename = renameFile(filename);
+            filepath = GLib.build_filenamev([dirpath, newFilename]);
+            filename = newFilename; 
+            // filepath = `${basepath} (${++copyNum})`;
+        }
         return Gio.File.new_for_path(filepath);
     }
 
@@ -132,7 +165,7 @@ const SharePlugin = GObject.registerClass({
                 body: _('%s is not allowed to upload files').format(
                     this.device.name
                 ),
-                icon: new Gio.ThemedIcon({name: 'dialog-error-symbolic'}),
+                icon: new Gio.ThemedIcon({ name: 'dialog-error-symbolic' }),
             });
         } catch (e) {
             debug(e, this.device.name);
@@ -162,7 +195,7 @@ const SharePlugin = GObject.registerClass({
                     action: 'cancelTransfer',
                     parameter: new GLib.Variant('s', transfer.uuid),
                 }],
-                icon: new Gio.ThemedIcon({name: 'document-save-symbolic'}),
+                icon: new Gio.ThemedIcon({ name: 'document-save-symbolic' }),
             });
 
             // We'll show a notification (success or failure)
@@ -225,7 +258,7 @@ const SharePlugin = GObject.registerClass({
                 body: body,
                 action: action,
                 buttons: buttons,
-                icon: new Gio.ThemedIcon({name: iconName}),
+                icon: new Gio.ThemedIcon({ name: iconName }),
             });
         } catch (e) {
             logError(e, this.device.name);
@@ -298,7 +331,7 @@ const SharePlugin = GObject.registerClass({
                     action: 'cancelTransfer',
                     parameter: new GLib.Variant('s', transfer.uuid),
                 }],
-                icon: new Gio.ThemedIcon({name: 'document-send-symbolic'}),
+                icon: new Gio.ThemedIcon({ name: 'document-send-symbolic' }),
             });
 
             // We'll show a notification (success or failure)
@@ -331,7 +364,7 @@ const SharePlugin = GObject.registerClass({
                 id: transfer.uuid,
                 title: title,
                 body: body,
-                icon: new Gio.ThemedIcon({name: iconName}),
+                icon: new Gio.ThemedIcon({ name: iconName }),
             });
         } catch (e) {
             debug(e, this.device.name);
@@ -346,7 +379,7 @@ const SharePlugin = GObject.registerClass({
     shareText(text) {
         this.device.sendPacket({
             type: 'kdeconnect.share.request',
-            body: {text: text},
+            body: { text: text },
         });
     }
 
@@ -363,7 +396,7 @@ const SharePlugin = GObject.registerClass({
 
         this.device.sendPacket({
             type: 'kdeconnect.share.request',
-            body: {url: uri},
+            body: { url: uri },
         });
     }
 });
@@ -459,7 +492,7 @@ const FileChooserDialog = GObject.registerClass({
             this._uriEntry.grab_focus();
             this.set_response_sensitive(Gtk.ResponseType.OK, true);
 
-        // Hide the URL entry
+            // Hide the URL entry
         } else {
             header.set_custom_title(null);
             this.set_response_sensitive(
