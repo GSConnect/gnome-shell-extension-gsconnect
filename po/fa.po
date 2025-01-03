@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-03 13:38-0500\n"
-"PO-Revision-Date: 2023-05-01 15:40\n"
+"PO-Revision-Date: 2025-01-03 22:06\n"
 "Last-Translator: \n"
 "Language-Team: Persian\n"
 "Language: fa_IR\n"
@@ -14,8 +14,7 @@ msgstr ""
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: fa\n"
-"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org."
-"gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -33,22 +32,12 @@ msgid "GSConnect Team"
 msgstr "گروه جی‌اس‌کانکت"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
-"جی‌اس‌کانکت، پیاده‌سازی کاملی از کی‌دی‌ای کانکت، مخصوص پوستهٔ گنوم با یکپارچگی "
-"ناتیلوس، کروم و فایرفاکس است. گروه کی‌دی‌ای کانکت، برنامه‌هایی برای گنو/لینوکس، "
-"بی‌اس‌دی، اندروید، سیل‌فیش، آی‌اواس، مک‌او‌اس و ویندوز دارند."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr "جی‌اس‌کانکت، پیاده‌سازی کاملی از کی‌دی‌ای کانکت، مخصوص پوستهٔ گنوم با یکپارچگی ناتیلوس، کروم و فایرفاکس است. گروه کی‌دی‌ای کانکت، برنامه‌هایی برای گنو/لینوکس، بی‌اس‌دی، اندروید، سیل‌فیش، آی‌اواس، مک‌او‌اس و ویندوز دارند."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"با جی‌اس‌کانکت می‌توانید به صورت امن به افزاره‌های همراه و دیگر میزکارهایتان وصل "
-"شوید تا:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
+msgstr "با جی‌اس‌کانکت می‌توانید به صورت امن به افزاره‌های همراه و دیگر میزکارهایتان وصل شوید تا:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:48
 msgid "Share files, links and text"
@@ -191,18 +180,14 @@ msgid "Select or start a conversation"
 msgstr "گفت‌وگویی را برگیده یا آغاز کنید"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid ""
-"Touchpad.\n"
+msgid "Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n"
-"\n"
+"Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr ""
-"صفحه‌لمسی.\n"
+msgstr "صفحه‌لمسی.\n"
 "برای جابه‌جایی نشانگر موشی این‌جا بکشید.\n"
-"برای کشیدن نشانگر موشی طولانی نگه دارید.\n"
-"\n"
+"برای کشیدن نشانگر موشی طولانی نگه دارید.\n\n"
 "کلیک ساده به افزارهٔ جفت شده فرستاده خواهد شد.\n"
 "دکمه‌های راست، وسط، چپ و لغزنده‌های چرخی."
 
@@ -515,11 +500,11 @@ msgstr "در جست‌وجوی افزاره‌ها…"
 
 #: data/ui/preferences-window.ui:353
 msgid "Extension Settings"
-msgstr ""
+msgstr "تنظیمات افزونه"
 
 #: data/ui/preferences-window.ui:390
 msgid "GSConnect remains active when GNOME Shell is locked"
-msgstr ""
+msgstr "جی‌اس‌کانکت هنگام قفل بودن پوستهٔ گنوم فعّال می‌ماند"
 
 #: data/ui/preferences-window.ui:410
 msgid "Browser Add-Ons"
@@ -591,12 +576,8 @@ msgid "Something’s gone wrong"
 msgstr "چیزی اشتباه شد"
 
 #: data/ui/service-error-dialog.ui:91
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
-"جی‌ای‌کانکت با خطایی غیرمنتظره روبه‌رو شد. لطفاً مشکل را گزارش داده و هر "
-"اطّلاعاتی که ممکن است کمک کند را بدهید."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "جی‌ای‌کانکت با خطایی غیرمنتظره روبه‌رو شد. لطفاً مشکل را گزارش داده و هر اطّلاعاتی که ممکن است کمک کند را بدهید."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
@@ -664,12 +645,8 @@ msgid "translator-credits"
 msgstr "دانیال بهزادی <dani.behzi@ubuntu.com>"
 
 #: src/preferences/service.js:403
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"پیام‌های رفع اشکال ثبت شده‌اند. هر اقدامی که برای بازتولید مشکل لازم است را "
-"انجام داده، سپس گزارش را بررسی کنید."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "پیام‌های رفع اشکال ثبت شده‌اند. هر اقدامی که برای بازتولید مشکل لازم است را انجام داده، سپس گزارش را بررسی کنید."
 
 #: src/preferences/service.js:406
 msgid "Review Log"
@@ -815,8 +792,7 @@ msgid "Accept"
 msgstr "پذیرش"
 
 #: src/service/manager.js:145
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "به خاطر تعداد افزاره‌های روی این شبکه، کشف از کار افتاد."
 
 #: src/service/backends/lan.js:177
@@ -963,12 +939,8 @@ msgid "Run Commands"
 msgstr "اجرای دستورها"
 
 #: src/service/plugins/runcommand.js:15
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
-msgstr ""
-"اجرای فرمان‌ها روی افزارهٔ جفت شده‌ةان یا اجازه به افزاره برای اجرای فرمان‌های "
-"از پیش تعریف شده روی این رایانه"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
+msgstr "اجرای فرمان‌ها روی افزارهٔ جفت شده‌ةان یا اجازه به افزاره برای اجرای فرمان‌های از پیش تعریف شده روی این رایانه"
 
 #: src/service/plugins/sftp.js:14
 msgid "SFTP"
@@ -1117,8 +1089,7 @@ msgid "PulseAudio not found"
 msgstr "پالس‌آدیو پیدا نشد"
 
 #: src/service/plugins/telephony.js:16
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
 msgstr "آگاه شدن از تماس‌ها و تنظیم حجم صدای سامانه در طول زنگ خوردن و تماس"
 
 #. TRANSLATORS: Silence the actively ringing call
@@ -1249,11 +1220,3 @@ msgstr "خدمت ناموجود"
 msgid "Open in Browser"
 msgstr "گشودن در مرورگر"
 
-#~ msgid "Camera"
-#~ msgstr "دوربین"
-
-#~ msgid "Photo"
-#~ msgstr "عکس"
-
-#~ msgid "Request the paired device to take a photo and transfer it to this PC"
-#~ msgstr "درخواست از افزارهٔ جفت شده برای نماگرفت و انتقالش به این رایانه"
