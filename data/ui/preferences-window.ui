@@ -818,7 +818,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <section>
       <item>
         <!-- TRANSLATORS: Open a dialog to connect to an IP or Bluez device -->
-        <attribute name="label" translatable="yes">Add device by IP...</attribute>
+        <attribute name="label" translatable="yes">Add device by IP…</attribute>
         <attribute name="action">win.connect</attribute>
       </item>
     </section>
