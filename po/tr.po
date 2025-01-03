@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-03 13:38-0500\n"
-"PO-Revision-Date: 2023-05-30 16:05\n"
+"PO-Revision-Date: 2025-01-03 22:06\n"
 "Last-Translator: \n"
 "Language-Team: Turkish\n"
 "Language: tr_TR\n"
@@ -14,8 +14,7 @@ msgstr ""
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: tr\n"
-"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org."
-"gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -33,23 +32,12 @@ msgid "GSConnect Team"
 msgstr "GSConnect Takımı"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
-"GSConnect, Nautilus, Chrome ve Firefox bütünleşmesi ile özellikle GNOME "
-"Kabuğu için eksiksiz bir KDE Connect uygulamasıdır. KDE Connect ekibinin "
-"Linux, BSD, Android, Sailfish, iOS, macOS ve Windows için uygulamaları "
-"vardır."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr "GSConnect, Nautilus, Chrome ve Firefox bütünleşmesi ile özellikle GNOME Kabuğu için eksiksiz bir KDE Connect uygulamasıdır. KDE Connect ekibinin Linux, BSD, Android, Sailfish, iOS, macOS ve Windows için uygulamaları vardır."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"GSConnect ile mobil cihazlara ve diğer masaüstlerine bağlanarak şunları "
-"yapabilirsiniz:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
+msgstr "GSConnect ile mobil cihazlara ve diğer masaüstlerine bağlanarak şunları yapabilirsiniz:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:48
 msgid "Share files, links and text"
@@ -192,18 +180,14 @@ msgid "Select or start a conversation"
 msgstr "Sohbet seç ya da başlat"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid ""
-"Touchpad.\n"
+msgid "Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n"
-"\n"
+"Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr ""
-"Dokunmatik yüzey.\n"
+msgstr "Dokunmatik yüzey.\n"
 "Fare imlecini hareket ettirmek için bu alanda sürükleyin.\n"
-"Fare imlecini bi yerden bi yere sürüklemek için uzun basın.\n"
-"\n"
+"Fare imlecini bi yerden bi yere sürüklemek için uzun basın.\n\n"
 "Eşleştirilmiş cihaza basit bir tıklama gönderilecektir.\n"
 "Sol, orta, sağ düğme ve imleç kaydırmaları."
 
@@ -279,7 +263,7 @@ msgstr "Düşük Batarya Bildirimi"
 
 #: data/ui/preferences-device-panel.ui:649
 msgid "Charged Up to Custom Level Notification"
-msgstr "Batarya Özel Seviyeye Ulaştı Bildirimi"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:729
 msgid "Fully Charged Notification"
@@ -476,8 +460,7 @@ msgstr "Ayarla"
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:80
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Klavye kısayolunu sıfırlamak için iptal, geri almak için ESC tuşuna bas."
+msgstr "Klavye kısayolunu sıfırlamak için iptal, geri almak için ESC tuşuna bas."
 
 #: data/ui/preferences-window.ui:24
 msgid "Device Name"
@@ -593,12 +576,8 @@ msgid "Something’s gone wrong"
 msgstr "Bir şeyler ters gitti"
 
 #: data/ui/service-error-dialog.ui:91
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
-"GSConnect beklenmedik bir hatayla karşılaştı. Lütfen sorunu bildirin ve "
-"yardımcı olabilecek tüm bilgileri ekleyin."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "GSConnect beklenmedik bir hatayla karşılaştı. Lütfen sorunu bildirin ve yardımcı olabilecek tüm bilgileri ekleyin."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
@@ -663,18 +642,13 @@ msgstr "GNOME için eksiksiz bir KDE Connect uygulaması"
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:370
 msgid "translator-credits"
-msgstr ""
-"Serdar Sağlam <teknomobil@yandex.com>\n"
+msgstr "Serdar Sağlam <teknomobil@yandex.com>\n"
 "Orhan Engin Okay <orhanenginokay@hotmail.com>\n"
 "A. Burak Tektaş <abtektas@gmail.com>"
 
 #: src/preferences/service.js:403
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Hata ayıklama mesajları kaydediliyor. Sorunu yeniden oluşturmak için gerekli "
-"adımları izleyin ve günlüğü inceleyin."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Hata ayıklama mesajları kaydediliyor. Sorunu yeniden oluşturmak için gerekli adımları izleyin ve günlüğü inceleyin."
 
 #: src/preferences/service.js:406
 msgid "Review Log"
@@ -820,8 +794,7 @@ msgid "Accept"
 msgstr "Kabul et"
 
 #: src/service/manager.js:145
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Bu ağdaki cihazların sayısı nedeniyle keşif devre dışı bırakıldı."
 
 #: src/service/backends/lan.js:177
@@ -834,7 +807,7 @@ msgstr "Bağlantı noktası zaten kullanılıyor"
 
 #: src/service/plugins/battery.js:15
 msgid "Exchange battery information"
-msgstr "Batarya bilgilerine erişin"
+msgstr ""
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:255
@@ -852,13 +825,13 @@ msgstr "Şarj Oldu"
 #: src/service/plugins/battery.js:284
 #, javascript-format
 msgid "%s: Battery has reached custom charge level"
-msgstr "%s: Batarya özel şarj seviyesine ulaştı"
+msgstr ""
 
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:286
 #, javascript-format
 msgid "%d%% Charged"
-msgstr "Şarjınız %d%%"
+msgstr ""
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:313
@@ -878,7 +851,7 @@ msgstr "Pano"
 
 #: src/service/plugins/clipboard.js:13
 msgid "Share the clipboard content"
-msgstr "Pano içeriğini paylaş"
+msgstr ""
 
 #: src/service/plugins/clipboard.js:25
 msgid "Clipboard Push"
@@ -890,7 +863,7 @@ msgstr "Panodan Al"
 
 #: src/service/plugins/contacts.js:28
 msgid "Access contacts of the paired device"
-msgstr "Eşleştirilen cihazın kişilerine eriş"
+msgstr ""
 
 #: src/service/plugins/findmyphone.js:15
 msgid "Find My Phone"
@@ -898,7 +871,7 @@ msgstr "Telefonumu Bul"
 
 #: src/service/plugins/findmyphone.js:16
 msgid "Ring your paired device"
-msgstr "Eşleştirilmiş cihazınızın zilini çaldırın"
+msgstr ""
 
 #: src/service/plugins/mousepad.js:14
 msgid "Mousepad"
@@ -906,7 +879,7 @@ msgstr "Fare Desteği"
 
 #: src/service/plugins/mousepad.js:15
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr "Eşleştirilen cihazın fare ve klavye görevi görmesine izin verin"
+msgstr ""
 
 #: src/service/plugins/mousepad.js:29 src/service/ui/mousepad.js:107
 msgid "Remote Input"
@@ -918,7 +891,7 @@ msgstr "MPRIS"
 
 #: src/service/plugins/mpris.js:18
 msgid "Bidirectional remote media playback control"
-msgstr "Çift yönlü uzaktan medya oynatma kontrolü"
+msgstr ""
 
 #: src/service/plugins/mpris.js:329
 msgid "Unknown"
@@ -926,7 +899,7 @@ msgstr "Bilinmeyen"
 
 #: src/service/plugins/notification.js:18
 msgid "Share notifications with the paired device"
-msgstr "Bildirimleri eşleşen cihazla paylaşın"
+msgstr ""
 
 #: src/service/plugins/notification.js:32
 msgid "Cancel Notification"
@@ -946,7 +919,7 @@ msgstr "Bildirimi Etkinleştir"
 
 #: src/service/plugins/ping.js:14
 msgid "Send and receive pings"
-msgstr "Yoklama gönder ve al"
+msgstr ""
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -961,19 +934,15 @@ msgstr "Sunum"
 
 #: src/service/plugins/presenter.js:13
 msgid "Use the paired device as a presenter"
-msgstr "Eşleştirilen cihazı sunum için kullanma"
+msgstr ""
 
 #: src/service/plugins/runcommand.js:13
 msgid "Run Commands"
 msgstr "Komutları Çalıştır"
 
 #: src/service/plugins/runcommand.js:15
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
 msgstr ""
-"Eşleştirilmiş cihazınızda komutları çalıştırın veya cihazın bu bilgisayarda "
-"önceden tanımlanmış komutları çalıştırmasına izin verin"
 
 #: src/service/plugins/sftp.js:14
 msgid "SFTP"
@@ -981,7 +950,7 @@ msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:16
 msgid "Browse the paired device filesystem"
-msgstr "Eşleştirilmiş cihazın dosya sistemine göz atın"
+msgstr ""
 
 #: src/service/plugins/sftp.js:21
 msgid "Mount"
@@ -1002,7 +971,7 @@ msgstr "Paylaş"
 
 #: src/service/plugins/share.js:18
 msgid "Share files and URLs between devices"
-msgstr "Cihazlar arasında dosya ve URL paylaş"
+msgstr ""
 
 #: src/service/plugins/share.js:130 src/service/plugins/share.js:209
 #: src/service/plugins/share.js:320
@@ -1096,8 +1065,6 @@ msgstr "SMS"
 #: src/service/plugins/sms.js:17
 msgid "Send and read SMS of the paired device and be notified of new SMS"
 msgstr ""
-"Eşleştirilmiş cihazdan SMS gönderin ve okuyun ayrıca yeni SMS'lerden "
-"haberdar olun"
 
 #: src/service/plugins/sms.js:38
 msgid "New SMS (URI)"
@@ -1117,18 +1084,15 @@ msgstr "Sistem Sesi"
 
 #: src/service/plugins/systemvolume.js:14
 msgid "Enable the paired device to control the system volume"
-msgstr "Eşleştirilmiş cihazın sistem sesini kontrol etmesini etkinleştirin"
+msgstr ""
 
 #: src/service/plugins/systemvolume.js:58
 msgid "PulseAudio not found"
 msgstr "PulseAudio bulunamadı"
 
 #: src/service/plugins/telephony.js:16
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
 msgstr ""
-"Aramalar hakkında bildirim alın ve zil sesi/devam eden aramalar sırasında "
-"sistem sesini ayarlayın"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:28
@@ -1258,13 +1222,3 @@ msgstr "Servis Mevcut Değil"
 msgid "Open in Browser"
 msgstr "Tarayıcıda Aç"
 
-#~ msgid "Camera"
-#~ msgstr "Kamera"
-
-#~ msgid "Photo"
-#~ msgstr "Fotoğraf"
-
-#~ msgid "Request the paired device to take a photo and transfer it to this PC"
-#~ msgstr ""
-#~ "Eşleştirilen cihazın fotoğraf çekmesini ve bu bilgisayara aktarmasını "
-#~ "isteyin"

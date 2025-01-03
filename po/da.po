@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-03 13:38-0500\n"
-"PO-Revision-Date: 2023-05-01 15:40\n"
+"PO-Revision-Date: 2025-01-03 22:06\n"
 "Last-Translator: \n"
 "Language-Team: Danish\n"
 "Language: da_DK\n"
@@ -14,8 +14,7 @@ msgstr ""
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: da\n"
-"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org."
-"gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -33,19 +32,12 @@ msgid "GSConnect Team"
 msgstr "GSConnect hold"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
 msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"Med GSConnect du kan tilslut sikkert til mobil enheder og andre stationær "
-"computer til:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
+msgstr "Med GSConnect du kan tilslut sikkert til mobil enheder og andre stationær computer til:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:48
 msgid "Share files, links and text"
@@ -188,11 +180,9 @@ msgid "Select or start a conversation"
 msgstr "Vælg eller start en samtale"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid ""
-"Touchpad.\n"
+msgid "Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n"
-"\n"
+"Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
 msgstr ""
@@ -466,9 +456,7 @@ msgstr "Indstil"
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:80
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Tryk på Esc at annullere eller backspace-nøgle for at nulstille "
-"tastaturgenvejen."
+msgstr "Tryk på Esc at annullere eller backspace-nøgle for at nulstille tastaturgenvejen."
 
 #: data/ui/preferences-window.ui:24
 msgid "Device Name"
@@ -584,9 +572,7 @@ msgid "Something’s gone wrong"
 msgstr ""
 
 #: data/ui/service-error-dialog.ui:91
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
 msgstr ""
 
 #: data/ui/service-error-dialog.ui:125
@@ -655,12 +641,8 @@ msgid "translator-credits"
 msgstr "oversætter-kreditter"
 
 #: src/preferences/service.js:403
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Fejlmeddelelser er logges. Tage de nødvendige skridt til at reproducere et "
-"problem, og gennemgå loggen."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Fejlmeddelelser er logges. Tage de nødvendige skridt til at reproducere et problem, og gennemgå loggen."
 
 #: src/preferences/service.js:406
 msgid "Review Log"
@@ -806,10 +788,8 @@ msgid "Accept"
 msgstr "Acceptere"
 
 #: src/service/manager.js:145
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
-msgstr ""
-"Opdagelse er deaktiveret på grund af antallet af enheder på dette netværk."
+msgid "Discovery has been disabled due to the number of devices on this network."
+msgstr "Opdagelse er deaktiveret på grund af antallet af enheder på dette netværk."
 
 #: src/service/backends/lan.js:177
 msgid "OpenSSL not found"
@@ -955,9 +935,7 @@ msgid "Run Commands"
 msgstr "Udføre Kommando"
 
 #: src/service/plugins/runcommand.js:15
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
 msgstr ""
 
 #: src/service/plugins/sftp.js:14
@@ -1107,8 +1085,7 @@ msgid "PulseAudio not found"
 msgstr "PulseAudio ikke fundet"
 
 #: src/service/plugins/telephony.js:16
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
 msgstr ""
 
 #. TRANSLATORS: Silence the actively ringing call
@@ -1239,8 +1216,3 @@ msgstr "Tjenesten er ikke tilgængelig"
 msgid "Open in Browser"
 msgstr "Åbn i browser"
 
-#~ msgid "Camera"
-#~ msgstr "Kamera"
-
-#~ msgid "Photo"
-#~ msgstr "Foto"

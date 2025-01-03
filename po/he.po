@@ -3,20 +3,18 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-03 13:38-0500\n"
-"PO-Revision-Date: 2024-01-28 20:23\n"
+"PO-Revision-Date: 2025-01-03 22:06\n"
 "Last-Translator: \n"
 "Language-Team: Hebrew\n"
 "Language: he_IL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || "
-"n%100==4 ? 2 : 3;\n"
+"Plural-Forms: nplurals=4; plural=n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3;\n"
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: he\n"
-"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org."
-"gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -34,22 +32,12 @@ msgid "GSConnect Team"
 msgstr "צוות GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
-"‏GSConnect הוא מימוש שלם של KDE Connect במיוחד עבור מעטפת GNOME עם שילוב "
-"קבצים, Chrome ו־Firefox. לצוות של KDE Connect יש יישומים ל־Linux, BSD, "
-"Android, Sailfish, iOS, macOS ו־Windows."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr "‏GSConnect הוא מימוש שלם של KDE Connect במיוחד עבור מעטפת GNOME עם שילוב קבצים, Chrome ו־Firefox. לצוות של KDE Connect יש יישומים ל־Linux, BSD, Android, Sailfish, iOS, macOS ו־Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"עם GSConnect באפשרותך להתחבר בצורה מאובטחת למכשירים הניידים שלך ולשלוחנות "
-"עבודה אחרים אל:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
+msgstr "עם GSConnect באפשרותך להתחבר בצורה מאובטחת למכשירים הניידים שלך ולשלוחנות עבודה אחרים אל:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:48
 msgid "Share files, links and text"
@@ -192,18 +180,14 @@ msgid "Select or start a conversation"
 msgstr "יש לבחור או להתחיל התכתבות"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid ""
-"Touchpad.\n"
+msgid "Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n"
-"\n"
+"Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr ""
-"משטח מגע.\n"
+msgstr "משטח מגע.\n"
 "יש לגרור על אזור זה להזזת סמן העכבר.\n"
-"נא ללחוץ לזמן ארוך על מנת לגרור ולשחרר את סמן העכבר.\n"
-"\n"
+"נא ללחוץ לזמן ארוך על מנת לגרור ולשחרר את סמן העכבר.\n\n"
 "לחיצה פשוטה תישלח למכשיר המצומד.\n"
 "כפתור שמאלי, אמצעי וימני, כמו גם גלילה."
 
@@ -592,11 +576,8 @@ msgid "Something’s gone wrong"
 msgstr "משהו השתבש"
 
 #: data/ui/service-error-dialog.ui:91
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
-"‏GSConnect חווה שגיאה בלתי צפויה. נא לדווח על הבעיה ולצרף כל מידע שעשוי לסייע."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "‏GSConnect חווה שגיאה בלתי צפויה. נא לדווח על הבעיה ולצרף כל מידע שעשוי לסייע."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
@@ -666,12 +647,8 @@ msgid "translator-credits"
 msgstr "יוסף אור בוצ׳קו <yoseforb@gmail.com>"
 
 #: src/preferences/service.js:403
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"החל רישום יומן הודעות לניפוי שגיאות. נא לבצע את הצעדים הנדרשים על מנת לשחזר "
-"את הבעיה ולאחר מכן לסקור את היומן."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "החל רישום יומן הודעות לניפוי שגיאות. נא לבצע את הצעדים הנדרשים על מנת לשחזר את הבעיה ולאחר מכן לסקור את היומן."
 
 #: src/preferences/service.js:406
 msgid "Review Log"
@@ -817,8 +794,7 @@ msgid "Accept"
 msgstr "אישור"
 
 #: src/service/manager.js:145
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "הגילוי הושבת עקב מספר המכשירים על הרשת."
 
 #: src/service/backends/lan.js:177
@@ -965,12 +941,8 @@ msgid "Run Commands"
 msgstr "הרצת פקודות"
 
 #: src/service/plugins/runcommand.js:15
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
-msgstr ""
-"הרצת פקודות על המכשיר המצומד שלך או לתת למכשר להריץ פקודות מוגדרות מראש על "
-"המחשב השולחני הזה"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
+msgstr "הרצת פקודות על המכשיר המצומד שלך או לתת למכשר להריץ פקודות מוגדרות מראש על המחשב השולחני הזה"
 
 #: src/service/plugins/sftp.js:14
 msgid "SFTP"
@@ -1119,10 +1091,8 @@ msgid "PulseAudio not found"
 msgstr "‏PulseAudio לא נמצא"
 
 #: src/service/plugins/telephony.js:16
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
-"לקבל התרעות על שיחות והתאמת עצמת השמע של המערכת בזמן צלצול או שיחה מתמשכת"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgstr "לקבל התרעות על שיחות והתאמת עצמת השמע של המערכת בזמן צלצול או שיחה מתמשכת"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:28
@@ -1255,3 +1225,4 @@ msgstr "שרת לא זמין"
 #: webextension/gettext.js:40
 msgid "Open in Browser"
 msgstr "פתיחה בדפדפן"
+

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-03 13:38-0500\n"
-"PO-Revision-Date: 2023-05-01 15:40\n"
+"PO-Revision-Date: 2025-01-03 22:06\n"
 "Last-Translator: \n"
 "Language-Team: Swedish\n"
 "Language: sv_SE\n"
@@ -14,8 +14,7 @@ msgstr ""
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: sv-SE\n"
-"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org."
-"gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -33,22 +32,12 @@ msgid "GSConnect Team"
 msgstr "GSConnect-gruppen"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
-"GSConnect är en komplett implementering av KDE Connect speciellt för GNOME "
-"Shell med Nautilus, Chrome och Firefox integration. KDE Connect-teamet har "
-"applikation för Linux, BSD, Android, Sailfish, iOS, macOS och Windows."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr "GSConnect är en komplett implementering av KDE Connect speciellt för GNOME Shell med Nautilus, Chrome och Firefox integration. KDE Connect-teamet har applikation för Linux, BSD, Android, Sailfish, iOS, macOS och Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"Med GSConnect kan du säkert ansluta till mobila enheter och andra skrivbord "
-"till:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
+msgstr "Med GSConnect kan du säkert ansluta till mobila enheter och andra skrivbord till:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:48
 msgid "Share files, links and text"
@@ -191,11 +180,9 @@ msgid "Select or start a conversation"
 msgstr "Välj eller starta en konversation"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid ""
-"Touchpad.\n"
+msgid "Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n"
-"\n"
+"Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
 msgstr ""
@@ -469,9 +456,7 @@ msgstr "Ange"
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:80
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Tryck på Esc för att avbryta eller Backspace för att återställa "
-"tangentbordsgenvägen."
+msgstr "Tryck på Esc för att avbryta eller Backspace för att återställa tangentbordsgenvägen."
 
 #: data/ui/preferences-window.ui:24
 msgid "Device Name"
@@ -587,12 +572,8 @@ msgid "Something’s gone wrong"
 msgstr "Något gick fel"
 
 #: data/ui/service-error-dialog.ui:91
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
-"GSConnect stötte på ett oväntat fel. Rapportera problemet och inkludera all "
-"information som kan hjälpa."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "GSConnect stötte på ett oväntat fel. Rapportera problemet och inkludera all information som kan hjälpa."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
@@ -660,12 +641,8 @@ msgid "translator-credits"
 msgstr "Morgan Antonsson <morgan.antonsson@gmail.com>"
 
 #: src/preferences/service.js:403
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Felsökningsmeddelanden loggas. Utför de åtgärder som krävs för att återskapa "
-"problemet och granska sedan loggen."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Felsökningsmeddelanden loggas. Utför de åtgärder som krävs för att återskapa problemet och granska sedan loggen."
 
 #: src/preferences/service.js:406
 msgid "Review Log"
@@ -811,10 +788,8 @@ msgid "Accept"
 msgstr "Acceptera"
 
 #: src/service/manager.js:145
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
-msgstr ""
-"Upptäckt har inaktiverats på grund av antalet enheter på detta nätverk."
+msgid "Discovery has been disabled due to the number of devices on this network."
+msgstr "Upptäckt har inaktiverats på grund av antalet enheter på detta nätverk."
 
 #: src/service/backends/lan.js:177
 msgid "OpenSSL not found"
@@ -898,9 +873,7 @@ msgstr "Musmatta"
 
 #: src/service/plugins/mousepad.js:15
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr ""
-"Gör det möjligt för den ihopparade enheten att fungera som en fjärrmus och "
-"tangentbord"
+msgstr "Gör det möjligt för den ihopparade enheten att fungera som en fjärrmus och tangentbord"
 
 #: src/service/plugins/mousepad.js:29 src/service/ui/mousepad.js:107
 msgid "Remote Input"
@@ -962,12 +935,8 @@ msgid "Run Commands"
 msgstr "Kör kommandon"
 
 #: src/service/plugins/runcommand.js:15
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
-msgstr ""
-"Kör kommandon på din ihopparade enhet eller låt enheten köra fördefinierade "
-"kommandon på den här datorn"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
+msgstr "Kör kommandon på din ihopparade enhet eller låt enheten köra fördefinierade kommandon på den här datorn"
 
 #: src/service/plugins/sftp.js:14
 msgid "SFTP"
@@ -1089,8 +1058,7 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:17
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
-"Skicka och läs SMS från den ihopparade enheten och bli meddelad om nya SMS"
+msgstr "Skicka och läs SMS från den ihopparade enheten och bli meddelad om nya SMS"
 
 #: src/service/plugins/sms.js:38
 msgid "New SMS (URI)"
@@ -1117,11 +1085,8 @@ msgid "PulseAudio not found"
 msgstr "PulseAudio kunde inte hittas"
 
 #: src/service/plugins/telephony.js:16
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
-"Få meddelande om samtal och justera systemets volym vid ringande/pågående "
-"samtal"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgstr "Få meddelande om samtal och justera systemets volym vid ringande/pågående samtal"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:28
@@ -1251,13 +1216,3 @@ msgstr "Tjänsten är inte tillgänglig"
 msgid "Open in Browser"
 msgstr "Öppna i webbläsare"
 
-#~ msgid "Camera"
-#~ msgstr "Kamera"
-
-#~ msgid "Photo"
-#~ msgstr "Foto"
-
-#~ msgid "Request the paired device to take a photo and transfer it to this PC"
-#~ msgstr ""
-#~ "Be den ihopparade enheten att ta ett foto och överföra det till den här "
-#~ "datorn"

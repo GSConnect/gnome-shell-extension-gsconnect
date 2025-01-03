@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-03 13:38-0500\n"
-"PO-Revision-Date: 2023-08-25 22:45\n"
+"PO-Revision-Date: 2025-01-03 22:06\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -14,8 +14,7 @@ msgstr ""
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: de\n"
-"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org."
-"gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -33,23 +32,12 @@ msgid "GSConnect Team"
 msgstr "GSConnect-Team"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
-"GSConnect ist eine vollständige Implementierung von KDE Connect für GNOME "
-"Shell, insbesondere mit Nautilus-, Chrome- und Firefox-Integration. Das KDE-"
-"Connect-Team stellt für Linux, BSD, Android, Sailfish, iOS, macOS und "
-"Windows Anwendungen bereit."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr "GSConnect ist eine vollständige Implementierung von KDE Connect für GNOME Shell, insbesondere mit Nautilus-, Chrome- und Firefox-Integration. Das KDE-Connect-Team stellt für Linux, BSD, Android, Sailfish, iOS, macOS und Windows Anwendungen bereit."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"Mit GSConnect können Sie mobile Geräte und andere Desktops sicher verbinden "
-"mit:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
+msgstr "Mit GSConnect können Sie mobile Geräte und andere Desktops sicher verbinden mit:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:48
 msgid "Share files, links and text"
@@ -192,18 +180,14 @@ msgid "Select or start a conversation"
 msgstr "Eine Unterhaltung auswählen oder starten"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid ""
-"Touchpad.\n"
+msgid "Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n"
-"\n"
+"Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr ""
-"Tastfeld.\n"
+msgstr "Tastfeld.\n"
 "Streichen Sie über diesen Bereich, um den Mauszeiger zu bewegen.\n"
-"Wenn Sie länger drücken, können Sie Objekte mit dem Mauszeiger bewegen.\n"
-"\n"
+"Wenn Sie länger drücken, können Sie Objekte mit dem Mauszeiger bewegen.\n\n"
 "Einfaches Klicken wird an das gekoppelte Gerät gesendet.\n"
 "Links-, Mittel-, Rechtsklick und Radrollen."
 
@@ -476,9 +460,7 @@ msgstr "Festlegen"
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:80
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Zum Abbrechen ESC oder die Rücktaste drücken, um das Tastenkürzel "
-"zurückzusetzen."
+msgstr "Zum Abbrechen ESC oder die Rücktaste drücken, um das Tastenkürzel zurückzusetzen."
 
 #: data/ui/preferences-window.ui:24
 msgid "Device Name"
@@ -594,12 +576,8 @@ msgid "Something’s gone wrong"
 msgstr "Etwas ist schiefgelaufen"
 
 #: data/ui/service-error-dialog.ui:91
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
-"GSConnect hatte ein unerwartetes Problem. Bitte melden Sie den Fehler und "
-"stellen Sie nützliche Informationen bereit."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "GSConnect hatte ein unerwartetes Problem. Bitte melden Sie den Fehler und stellen Sie nützliche Informationen bereit."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
@@ -664,19 +642,13 @@ msgstr "Eine vollständige KDE-Connect-Implementierung für GNOME"
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:370
 msgid "translator-credits"
-msgstr ""
-"taaem <taaem@mailbox.org>\n"
+msgstr "taaem <taaem@mailbox.org>\n"
 "Tobias Bannert <tobannert@gmail.com>\n"
 "Björn Daase (BjoernDaase)"
 
 #: src/preferences/service.js:403
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Debug-Meldungen werden protokolliert. Führen Sie alle erforderlichen "
-"Schritte aus, um ein Problem zu reproduzieren und überprüfen Sie dann das "
-"Protokoll."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Debug-Meldungen werden protokolliert. Führen Sie alle erforderlichen Schritte aus, um ein Problem zu reproduzieren und überprüfen Sie dann das Protokoll."
 
 #: src/preferences/service.js:406
 msgid "Review Log"
@@ -822,10 +794,8 @@ msgid "Accept"
 msgstr "Annehmen"
 
 #: src/service/manager.js:145
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
-msgstr ""
-"Erkennen wurde aufgrund der Anzahl an Geräten in diesem Netzwerk deaktiviert."
+msgid "Discovery has been disabled due to the number of devices on this network."
+msgstr "Erkennen wurde aufgrund der Anzahl an Geräten in diesem Netzwerk deaktiviert."
 
 #: src/service/backends/lan.js:177
 msgid "OpenSSL not found"
@@ -971,12 +941,8 @@ msgid "Run Commands"
 msgstr "Befehle ausführen"
 
 #: src/service/plugins/runcommand.js:15
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
-msgstr ""
-"Befehle auf dem verbundenen Gerät ausführen oder das Gerät vordefinierte "
-"Befehle auf diesem Rechner ausführen lassen"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
+msgstr "Befehle auf dem verbundenen Gerät ausführen oder das Gerät vordefinierte Befehle auf diesem Rechner ausführen lassen"
 
 #: src/service/plugins/sftp.js:14
 msgid "SFTP"
@@ -1098,9 +1064,7 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:17
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
-"SMS über das verbundene Gerät senden/empfangen und über neue SMS "
-"benachrichtigt werden"
+msgstr "SMS über das verbundene Gerät senden/empfangen und über neue SMS benachrichtigt werden"
 
 #: src/service/plugins/sms.js:38
 msgid "New SMS (URI)"
@@ -1127,11 +1091,8 @@ msgid "PulseAudio not found"
 msgstr "PulseAudio nicht gefunden"
 
 #: src/service/plugins/telephony.js:16
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
-"Über Anrufe benachrichtigt werden und Systemlautstärke während klingelnden/"
-"laufenden Anrufen anpassen"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgstr "Über Anrufe benachrichtigt werden und Systemlautstärke während klingelnden/laufenden Anrufen anpassen"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:28
@@ -1261,13 +1222,3 @@ msgstr "Dienst nicht verfügbar"
 msgid "Open in Browser"
 msgstr "Im Browser öffnen"
 
-#~ msgid "Camera"
-#~ msgstr "Kamera"
-
-#~ msgid "Photo"
-#~ msgstr "Foto"
-
-#~ msgid "Request the paired device to take a photo and transfer it to this PC"
-#~ msgstr ""
-#~ "Das verbundene Gerät anweisen, ein Foto schießen und es an diesen PC zu "
-#~ "übertragen"

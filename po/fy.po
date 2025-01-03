@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-03 13:38-0500\n"
-"PO-Revision-Date: 2023-05-01 15:40\n"
+"PO-Revision-Date: 2025-01-03 22:06\n"
 "Last-Translator: \n"
 "Language-Team: Frisian\n"
 "Language: fy_NL\n"
@@ -14,8 +14,7 @@ msgstr ""
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: fy-NL\n"
-"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org."
-"gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -33,19 +32,12 @@ msgid "GSConnect Team"
 msgstr "GSConnect Team"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
 msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"Mei GSConnect kinst feilich ferbine mei mobiele apperaten en oare kompûters "
-"om:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
+msgstr "Mei GSConnect kinst feilich ferbine mei mobiele apperaten en oare kompûters om:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:48
 msgid "Share files, links and text"
@@ -188,11 +180,9 @@ msgid "Select or start a conversation"
 msgstr "Selektear of begjin in petear"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid ""
-"Touchpad.\n"
+msgid "Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n"
-"\n"
+"Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
 msgstr ""
@@ -466,9 +456,7 @@ msgstr "Sette"
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:80
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Druk op Esc om ôf te brekken as Backspace om de fluchtoets opnij yn te "
-"stellen."
+msgstr "Druk op Esc om ôf te brekken as Backspace om de fluchtoets opnij yn te stellen."
 
 #: data/ui/preferences-window.ui:24
 msgid "Device Name"
@@ -584,12 +572,8 @@ msgid "Something’s gone wrong"
 msgstr "Der is wat mislearre"
 
 #: data/ui/service-error-dialog.ui:91
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
-"GSConnect is tsjin in probleem oanrûn. Jou dit graach oan mei alle "
-"informaasje dy't brûkber wéze kin."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "GSConnect is tsjin in probleem oanrûn. Jou dit graach oan mei alle informaasje dy't brûkber wéze kin."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
@@ -657,12 +641,8 @@ msgid "translator-credits"
 msgstr "Tjipke van der Heide <tjipkevdh@gmail.com>"
 
 #: src/preferences/service.js:403
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Debug berjochten wurde bewarre. Nim de nediche stappen om it probleem "
-"harrensels foardwaan te litten en besjoch don it loch."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Debug berjochten wurde bewarre. Nim de nediche stappen om it probleem harrensels foardwaan te litten en besjoch don it loch."
 
 #: src/preferences/service.js:406
 msgid "Review Log"
@@ -808,10 +788,8 @@ msgid "Accept"
 msgstr "Tastean"
 
 #: src/service/manager.js:145
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
-msgstr ""
-"Discovery is útskeakele troch it oantal mobiele apparaten op dit netwurk."
+msgid "Discovery has been disabled due to the number of devices on this network."
+msgstr "Discovery is útskeakele troch it oantal mobiele apparaten op dit netwurk."
 
 #: src/service/backends/lan.js:177
 msgid "OpenSSL not found"
@@ -957,9 +935,7 @@ msgid "Run Commands"
 msgstr "Komandos Útfiere"
 
 #: src/service/plugins/runcommand.js:15
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
 msgstr ""
 
 #: src/service/plugins/sftp.js:14
@@ -1109,8 +1085,7 @@ msgid "PulseAudio not found"
 msgstr "PulseAudio net fûn"
 
 #: src/service/plugins/telephony.js:16
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
 msgstr ""
 
 #. TRANSLATORS: Silence the actively ringing call
@@ -1229,8 +1204,7 @@ msgstr "Reagearje"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:32
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
-"Keppelingen mei GSConnect ferstjoere, direkt nei de browser of mei SMS."
+msgstr "Keppelingen mei GSConnect ferstjoere, direkt nei de browser of mei SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:36
@@ -1242,8 +1216,3 @@ msgstr "Tsjinst Ûnbeskikber"
 msgid "Open in Browser"
 msgstr "Yn Browser Iepenje"
 
-#~ msgid "Camera"
-#~ msgstr "Kamera"
-
-#~ msgid "Photo"
-#~ msgstr "Ôfbylding"
