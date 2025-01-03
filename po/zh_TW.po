@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-03 13:38-0500\n"
-"PO-Revision-Date: 2024-11-13 17:59\n"
+"PO-Revision-Date: 2025-01-03 22:06\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -14,8 +14,7 @@ msgstr ""
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: zh-TW\n"
-"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org."
-"gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -33,19 +32,11 @@ msgid "GSConnect Team"
 msgstr "GSConnect 團隊"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
-"GSConnect 是 KDE Con​​nect 的完整實現，特別是 GNOME Shell 與 Nautilus、Chrome、"
-"Firefox 三者的整合。 KDE Con​​nect 團隊擁有適用於 Linux、BSD、Android、"
-"Sailfish、iOS、macOS 和 Windows 的應用程式。"
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr "GSConnect 是 KDE Con​​nect 的完整實現，特別是 GNOME Shell 與 Nautilus、Chrome、Firefox 三者的整合。 KDE Con​​nect 團隊擁有適用於 Linux、BSD、Android、Sailfish、iOS、macOS 和 Windows 的應用程式。"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
 msgstr "借助 GSConnect，您可以安全地連至行動裝置和其他的桌上型電腦以："
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:48
@@ -112,7 +103,7 @@ msgstr "連結"
 
 #: data/ui/connect-dialog.ui:80
 msgid "IP Address"
-msgstr "IP 地址"
+msgstr "IP 位址"
 
 #: data/ui/contact-chooser.ui:56
 msgid "No contacts"
@@ -189,18 +180,14 @@ msgid "Select or start a conversation"
 msgstr "選擇或發起一個新的對話"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid ""
-"Touchpad.\n"
+msgid "Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n"
-"\n"
+"Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr ""
-"觸控板。\n"
+msgstr "觸控板。\n"
 "拖曳此區域可移動滑鼠游標。\n"
-"長按可拖曳滑鼠游標。\n"
-"\n"
+"長按可拖曳滑鼠游標。\n\n"
 "只需點擊一下即可傳送到配對的裝置。\n"
 "左、中、右按鈕和滾輪滾動。"
 
@@ -589,9 +576,7 @@ msgid "Something’s gone wrong"
 msgstr "出了點問題"
 
 #: data/ui/service-error-dialog.ui:91
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
 msgstr "GSConnect 遇到意外錯誤。請回報問題並包含任何可能有幫助的資訊。"
 
 #: data/ui/service-error-dialog.ui:125
@@ -659,9 +644,7 @@ msgid "translator-credits"
 msgstr "翻譯者銘謝"
 
 #: src/preferences/service.js:403
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
 msgstr "除錯訊息已被記入日誌中。請執行任何重現問題的必要動作，然後審核該日誌。"
 
 #: src/preferences/service.js:406
@@ -808,8 +791,7 @@ msgid "Accept"
 msgstr "接受"
 
 #: src/service/manager.js:145
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "因為此網域內的裝置數量，探索已停用"
 
 #: src/service/backends/lan.js:177
@@ -956,9 +938,7 @@ msgid "Run Commands"
 msgstr "執行命令"
 
 #: src/service/plugins/runcommand.js:15
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
 msgstr "在配對裝置上執行命令或讓裝置在此電腦上執行預定義命令"
 
 #: src/service/plugins/sftp.js:14
@@ -1108,8 +1088,7 @@ msgid "PulseAudio not found"
 msgstr "未找到 PulseAudio"
 
 #: src/service/plugins/telephony.js:16
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
 msgstr "在響鈴/通話過程中收到有關通話的通知並調整系統音量"
 
 #. TRANSLATORS: Silence the actively ringing call
@@ -1237,3 +1216,4 @@ msgstr "服務無法使用"
 #: webextension/gettext.js:40
 msgid "Open in Browser"
 msgstr "在瀏覽器中開啟"
+
