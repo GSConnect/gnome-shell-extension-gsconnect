@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-03 13:38-0500\n"
-"PO-Revision-Date: 2023-05-11 16:54\n"
+"PO-Revision-Date: 2025-01-03 22:06\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
 "Language: fi_FI\n"
@@ -14,8 +14,7 @@ msgstr ""
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: fi\n"
-"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org."
-"gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -33,19 +32,12 @@ msgid "GSConnect Team"
 msgstr "GSConnect-tiimi"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
 msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"GSConnectin avulla voit muodostaa turvallisen yhteyden mobiililaitteisiin ja "
-"muihin tietokoneisiin:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
+msgstr "GSConnectin avulla voit muodostaa turvallisen yhteyden mobiililaitteisiin ja muihin tietokoneisiin:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:48
 msgid "Share files, links and text"
@@ -188,11 +180,9 @@ msgid "Select or start a conversation"
 msgstr "Valitse tai aloita keskustelu"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid ""
-"Touchpad.\n"
+msgid "Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n"
-"\n"
+"Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
 msgstr ""
@@ -522,9 +512,7 @@ msgstr "Ota käyttöön"
 
 #: data/ui/preferences-window.ui:760
 msgid "This device is invisible to unpaired devices"
-msgstr ""
-"Tämä laite on näkymätön laitteille, joiden kanssa ei ole muodostettu "
-"laiteparia"
+msgstr "Tämä laite on näkymätön laitteille, joiden kanssa ei ole muodostettu laiteparia"
 
 #: data/ui/preferences-window.ui:772 src/service/manager.js:144
 msgid "Discovery Disabled"
@@ -584,12 +572,8 @@ msgid "Something’s gone wrong"
 msgstr "Jokin meni pieleen"
 
 #: data/ui/service-error-dialog.ui:91
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
-"GSConnect havaitsi odottamattoman virheen. Ilmoita ongelmasta ja liitä "
-"mukaan kaikki mahdolliset tiedot."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "GSConnect havaitsi odottamattoman virheen. Ilmoita ongelmasta ja liitä mukaan kaikki mahdolliset tiedot."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
@@ -654,17 +638,12 @@ msgstr "Täydellinen KDE Connect -toteutus Gnomea varten"
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:370
 msgid "translator-credits"
-msgstr ""
-"Jiri Grönroos <jiri.gronroos+l10n@iki.fi>\n"
+msgstr "Jiri Grönroos <jiri.gronroos+l10n@iki.fi>\n"
 "..."
 
 #: src/preferences/service.js:403
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Vianmääritysviestit kirjataan. Tee kaikki tarvittavat toimenpiteet ongelman "
-"toistamiseksi ja tarkista sitten loki."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Vianmääritysviestit kirjataan. Tee kaikki tarvittavat toimenpiteet ongelman toistamiseksi ja tarkista sitten loki."
 
 #: src/preferences/service.js:406
 msgid "Review Log"
@@ -810,11 +789,8 @@ msgid "Accept"
 msgstr "Hyväksy"
 
 #: src/service/manager.js:145
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
-msgstr ""
-"Laitehaku on poistettu käytöstä tässä verkossa olevien laitteiden lukumäärän "
-"vuoksi."
+msgid "Discovery has been disabled due to the number of devices on this network."
+msgstr "Laitehaku on poistettu käytöstä tässä verkossa olevien laitteiden lukumäärän vuoksi."
 
 #: src/service/backends/lan.js:177
 msgid "OpenSSL not found"
@@ -960,12 +936,8 @@ msgid "Run Commands"
 msgstr "Suorita komentoja"
 
 #: src/service/plugins/runcommand.js:15
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
-msgstr ""
-"Suorita komennot liitetyllä laitteellasi tai anna laitteen suorittaa "
-"etukäteen määriteltyjä komentoja tällä tietokoneella"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
+msgstr "Suorita komennot liitetyllä laitteellasi tai anna laitteen suorittaa etukäteen määriteltyjä komentoja tällä tietokoneella"
 
 #: src/service/plugins/sftp.js:14
 msgid "SFTP"
@@ -1087,9 +1059,7 @@ msgstr "Tekstiviesti"
 
 #: src/service/plugins/sms.js:17
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
-"Lähetä ja lue laiteparin tekstiviestejä ja vastaanota ilmoitus uusista "
-"tekstiviesteistä"
+msgstr "Lähetä ja lue laiteparin tekstiviestejä ja vastaanota ilmoitus uusista tekstiviesteistä"
 
 #: src/service/plugins/sms.js:38
 msgid "New SMS (URI)"
@@ -1116,11 +1086,8 @@ msgid "PulseAudio not found"
 msgstr "PulseAudiota ei löytynyt"
 
 #: src/service/plugins/telephony.js:16
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
-"Vastaanota ilmoitus puheluista ja säädä järjestelmän äänenvoimakkuutta "
-"saapuvien ja käynnissä olevien puhelujen aikana"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgstr "Vastaanota ilmoitus puheluista ja säädä järjestelmän äänenvoimakkuutta saapuvien ja käynnissä olevien puhelujen aikana"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:28
@@ -1250,12 +1217,3 @@ msgstr "Palvelu ei ole käytettävissä"
 msgid "Open in Browser"
 msgstr "Avaa selaimessa"
 
-#~ msgid "Camera"
-#~ msgstr "Kamera"
-
-#~ msgid "Photo"
-#~ msgstr "Kuva"
-
-#~ msgid "Request the paired device to take a photo and transfer it to this PC"
-#~ msgstr ""
-#~ "Pyydä laiteparia ottamaan valokuva ja siirtämään se tälle tietokoneelle"
