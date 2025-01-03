@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-03 13:38-0500\n"
-"PO-Revision-Date: 2023-05-30 21:24\n"
+"PO-Revision-Date: 2025-01-03 22:06\n"
 "Last-Translator: \n"
 "Language-Team: Czech\n"
 "Language: cs_CZ\n"
@@ -14,8 +14,7 @@ msgstr ""
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: cs\n"
-"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org."
-"gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -33,23 +32,12 @@ msgid "GSConnect Team"
 msgstr "Kolektiv GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
-"GSConnect je kompletní implementace nástroje KDE Connect, určená zejména pro "
-"prostředí GNOME Shell s napojením pro správce souborů Nautilus a dále pro "
-"webové prohlížeče Chrome a Firefox. Tým KDE Connect má aplikace pro systémy "
-"Linux, BSD, Android, Sailfish, iOS, macOS a Windows."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr "GSConnect je kompletní implementace nástroje KDE Connect, určená zejména pro prostředí GNOME Shell s napojením pro správce souborů Nautilus a dále pro webové prohlížeče Chrome a Firefox. Tým KDE Connect má aplikace pro systémy Linux, BSD, Android, Sailfish, iOS, macOS a Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"Pomocí GSConnect se můžete bezpečně připojit k mobilním zařízením a ostatním "
-"stolním počítačům a:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
+msgstr "Pomocí GSConnect se můžete bezpečně připojit k mobilním zařízením a ostatním stolním počítačům a:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:48
 msgid "Share files, links and text"
@@ -192,18 +180,14 @@ msgid "Select or start a conversation"
 msgstr "Vybrat nebo zahájit konverzaci"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid ""
-"Touchpad.\n"
+msgid "Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n"
-"\n"
+"Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr ""
-"Touchpad.\n"
+msgstr "Touchpad.\n"
 "Přetáhněte tuto oblast pro přesun kurzoru myši.\n"
-"Stiskněte dlouze pro přetažení kurzoru.\n"
-"\n"
+"Stiskněte dlouze pro přetažení kurzoru.\n\n"
 "Jednoduché kliknutí bude odesláno do spárovaného zařízení.\n"
 "Levé, prostřední, pravé a posouvací kolečko."
 
@@ -592,12 +576,8 @@ msgid "Something’s gone wrong"
 msgstr "Něco se pokazilo"
 
 #: data/ui/service-error-dialog.ui:91
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
-"GSConnect narazilo na neočekávanou chybu. Nahlaste prosím problém a přiložte "
-"veškeré informace, které mohou pomoci."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "GSConnect narazilo na neočekávanou chybu. Nahlaste prosím problém a přiložte veškeré informace, které mohou pomoci."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
@@ -667,12 +647,8 @@ msgid "translator-credits"
 msgstr "Pavel Borecki <pavel.borecki@gmail.com>"
 
 #: src/preferences/service.js:403
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Ladící zprávy jsou zaznamenávány. Podnikněte kroky, potřebné pro vyvolání "
-"problému a pak si záznam prohlédněte."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Ladící zprávy jsou zaznamenávány. Podnikněte kroky, potřebné pro vyvolání problému a pak si záznam prohlédněte."
 
 #: src/preferences/service.js:406
 msgid "Review Log"
@@ -818,8 +794,7 @@ msgid "Accept"
 msgstr "Přijmout"
 
 #: src/service/manager.js:145
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Kvůli velkému množství zařízení na této síti bylo objevování vypnuto."
 
 #: src/service/backends/lan.js:177
@@ -966,12 +941,8 @@ msgid "Run Commands"
 msgstr "Spustit příkazy"
 
 #: src/service/plugins/runcommand.js:15
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
-msgstr ""
-"Spustit příkazy na svém spárovaném zařízení nebo nechat zařízení spouštět "
-"předem určené příkazy na tomto počítači"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
+msgstr "Spustit příkazy na svém spárovaném zařízení nebo nechat zařízení spouštět předem určené příkazy na tomto počítači"
 
 #: src/service/plugins/sftp.js:14
 msgid "SFTP"
@@ -1093,8 +1064,7 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:17
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
-"Poslat a číst SMS zprávu ze spárovaného zařízení a být upozorněni na nové SMS"
+msgstr "Poslat a číst SMS zprávu ze spárovaného zařízení a být upozorněni na nové SMS"
 
 #: src/service/plugins/sms.js:38
 msgid "New SMS (URI)"
@@ -1121,11 +1091,8 @@ msgid "PulseAudio not found"
 msgstr "PulseAudio nenalezeno"
 
 #: src/service/plugins/telephony.js:16
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
-"Dostávejte upozornění na hovory a upravujte hlasitost počítači při "
-"vyzvánění / probíhajících hovorech"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgstr "Dostávejte upozornění na hovory a upravujte hlasitost počítači při vyzvánění / probíhajících hovorech"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:28
@@ -1247,8 +1214,7 @@ msgstr "Odpovědět"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:32
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
-"Sdílet odkazy pomocí GSConnect, přímo do prohlížeče nebo prostřednictvím SMS."
+msgstr "Sdílet odkazy pomocí GSConnect, přímo do prohlížeče nebo prostřednictvím SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:36
@@ -1260,13 +1226,3 @@ msgstr "Služba nedostupná"
 msgid "Open in Browser"
 msgstr "Otevřít v prohlížeči"
 
-#~ msgid "Camera"
-#~ msgstr "Fotoaparát"
-
-#~ msgid "Photo"
-#~ msgstr "Fotka"
-
-#~ msgid "Request the paired device to take a photo and transfer it to this PC"
-#~ msgstr ""
-#~ "Vyžádat si pořízení fotky spárovaným zařízením a přenést ji do tohoto "
-#~ "počítače"
