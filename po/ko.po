@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-03 13:38-0500\n"
-"PO-Revision-Date: 2024-07-14 11:43\n"
+"PO-Revision-Date: 2025-01-03 22:06\n"
 "Last-Translator: \n"
 "Language-Team: Korean\n"
 "Language: ko_KR\n"
@@ -14,8 +14,7 @@ msgstr ""
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: ko\n"
-"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org."
-"gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -33,19 +32,11 @@ msgid "GSConnect Team"
 msgstr "GSConnect 팀"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
-"GSConnect는 노틸러스, 크롬, 파이어폭스 연동과 함께 사용하는 그놈 셸을 위한 완"
-"전한 KDE Connect 구현체 입니다. KDE Connect 팀 에서는 리눅스, BSD, 안드로이"
-"드, Sailfish, iOS, macOS 및 Windows 용 앱을 제공하고 있습니다."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr "GSConnect는 노틸러스, 크롬, 파이어폭스 연동과 함께 사용하는 그놈 셸을 위한 완전한 KDE Connect 구현체 입니다. KDE Connect 팀 에서는 리눅스, BSD, 안드로이드, Sailfish, iOS, macOS 및 Windows 용 앱을 제공하고 있습니다."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
 msgstr "GSConnect로 모바일 기기와 다른 데스크탑을 안전하게 연결하기:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:48
@@ -189,18 +180,14 @@ msgid "Select or start a conversation"
 msgstr "대화를 선택하거나 시작"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid ""
-"Touchpad.\n"
+msgid "Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n"
-"\n"
+"Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr ""
-"터치패드.\n"
+msgstr "터치패드.\n"
 "마우스 커서를 움직이려면 이 영역을 드래그 하십시오.\n"
-"마우스 커서 드래그를 하려면 길게 누른 후 드래그 하십시오.\n"
-"\n"
+"마우스 커서 드래그를 하려면 길게 누른 후 드래그 하십시오.\n\n"
 "왼쪽 클릭, 중간 클릭, 오른쪽 클릭, 휠 스크롤 등.\n"
 "간단한 클릭 신호가 페어링 된 장치에 전달됩니다."
 
@@ -589,9 +576,7 @@ msgid "Something’s gone wrong"
 msgstr "무언가가 잘못된 거 같습니다"
 
 #: data/ui/service-error-dialog.ui:91
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
 msgstr "GSConnect에 예상치 못한 오류가 발생했습니다."
 
 #: data/ui/service-error-dialog.ui:125
@@ -659,9 +644,7 @@ msgid "translator-credits"
 msgstr "UtsushimiNeneka(네네카)"
 
 #: src/preferences/service.js:403
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
 msgstr "디버그 메시지가 로그에 기록됩니다."
 
 #: src/preferences/service.js:406
@@ -808,8 +791,7 @@ msgid "Accept"
 msgstr "동의"
 
 #: src/service/manager.js:145
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr ""
 
 #: src/service/backends/lan.js:177
@@ -956,9 +938,7 @@ msgid "Run Commands"
 msgstr "명령 실행"
 
 #: src/service/plugins/runcommand.js:15
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
 msgstr ""
 
 #: src/service/plugins/sftp.js:14
@@ -1108,8 +1088,7 @@ msgid "PulseAudio not found"
 msgstr "PulseAudio를 찾을 수 없음"
 
 #: src/service/plugins/telephony.js:16
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
 msgstr "전화 받거나 걸 때 전화나 시스템 볼륨 조정 알림 받기"
 
 #. TRANSLATORS: Silence the actively ringing call
@@ -1226,8 +1205,7 @@ msgstr "답장"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:32
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
-"GSConnect로 링크를 공유하여 웹 브라우저에서 열거나 메시지를 통해 공유합니다."
+msgstr "GSConnect로 링크를 공유하여 웹 브라우저에서 열거나 메시지를 통해 공유합니다."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:36
@@ -1238,3 +1216,4 @@ msgstr "서비스 안 됨"
 #: webextension/gettext.js:40
 msgid "Open in Browser"
 msgstr "웹 브라우저에서 열기"
+
