@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-03 13:38-0500\n"
-"PO-Revision-Date: 2025-01-03 22:06\n"
+"PO-Revision-Date: 2025-01-12 13:29\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
 "Language: fi_FI\n"
@@ -521,7 +521,7 @@ msgstr "Laitteiden löytö pois käytöstä"
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/preferences-window.ui:821
 msgid "Add device by IP…"
-msgstr ""
+msgstr "Lisää laite IP-osoitteella…"
 
 #: data/ui/preferences-window.ui:826
 msgid "Display Mode"

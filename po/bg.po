@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-03 13:38-0500\n"
-"PO-Revision-Date: 2025-01-06 16:06\n"
+"PO-Revision-Date: 2025-01-15 02:32\n"
 "Last-Translator: \n"
 "Language-Team: Bulgarian\n"
 "Language: bg_BG\n"
@@ -21,67 +21,67 @@ msgstr ""
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:12
 #: webextension/gettext.js:30
 msgid "GSConnect"
-msgstr ""
+msgstr "GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:13
 msgid "KDE Connect implementation for GNOME"
-msgstr ""
+msgstr "Реализация на KDE Connect за GNOME"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:24
 msgid "GSConnect Team"
-msgstr ""
+msgstr "Екип на GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
 msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
+msgstr "GSConnect е цялостна реализация на KDE Connect специално за GNOME Shell с интеграция на Nautilus, Chrome и Firefox. Екипът на KDE Connect има приложения за Linux, BSD, Android, Sailfish, iOS, macOS и Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
 msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
-msgstr ""
+msgstr "С GSConnect можете сигурно да се свързвате с мобилни устройства и други настолни компютри към:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:48
 msgid "Share files, links and text"
-msgstr ""
+msgstr "Споделяйте файлове, връзки и текст"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:49
 msgid "Send and receive messages"
-msgstr ""
+msgstr "Изпращане и получаване на съобщения"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:50
 msgid "Sync clipboard content"
-msgstr ""
+msgstr "Синхронизиране на съдържанието на клипборда"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:51
 msgid "Sync contacts"
-msgstr ""
+msgstr "Синхронизиране на контакти"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:52
 msgid "Sync notifications"
-msgstr ""
+msgstr "Синхронизиране на известията"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:53
 msgid "Control media players"
-msgstr ""
+msgstr "Контролирайте медийни плейъри"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:54
 msgid "Control system volume"
-msgstr ""
+msgstr "Контролирайте силата на звука на системата"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:55
 msgid "Execute predefined commands"
-msgstr ""
+msgstr "Изпълнение на предварително дефинирани команди"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:56
 msgid "And more…"
-msgstr ""
+msgstr "И още…"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:141
 msgid "GSConnect in GNOME Shell"
-msgstr ""
+msgstr "GSConnect в GNOME Shell"
 
 #: data/ui/connect-dialog.ui:20
 msgid "Connect to…"
-msgstr ""
+msgstr "Свързване към…"
 
 #: data/ui/connect-dialog.ui:26 data/ui/legacy-messaging-dialog.ui:20
 #: data/ui/legacy-messaging-dialog.ui:24
@@ -95,89 +95,89 @@ msgstr ""
 #: src/preferences/service.js:405 src/service/plugins/share.js:161
 #: src/service/plugins/share.js:297 src/service/plugins/share.js:428
 msgid "Cancel"
-msgstr ""
+msgstr "Отказ"
 
 #: data/ui/connect-dialog.ui:33
 msgid "Connect"
-msgstr ""
+msgstr "Свързване"
 
 #: data/ui/connect-dialog.ui:80
 msgid "IP Address"
-msgstr ""
+msgstr "IP адрес"
 
 #: data/ui/contact-chooser.ui:56
 msgid "No contacts"
-msgstr ""
+msgstr "Няма контакти"
 
 #: data/ui/contact-chooser.ui:68 data/ui/messaging-window.ui:103
 #: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:847
 msgid "Help"
-msgstr ""
+msgstr "Помощ"
 
 #: data/ui/contact-chooser.ui:109
 msgid "Type a phone number or name"
-msgstr ""
+msgstr "Въведете телефонен номер или име"
 
 #. TRANSLATORS: All other phone number types
 #: data/ui/contacts-address-row.ui:71 src/service/ui/contacts.js:149
 msgid "Other"
-msgstr ""
+msgstr "Други"
 
 #. TRANSLATORS: Share URL by SMS
 #: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:274
 #: src/service/daemon.js:388 src/service/plugins/sms.js:62
 #: webextension/gettext.js:42
 msgid "Send SMS"
-msgstr ""
+msgstr "Изпращане на SMS"
 
 #: data/ui/legacy-messaging-dialog.ui:32 data/ui/legacy-messaging-dialog.ui:36
 #: data/ui/notification-reply-dialog.ui:31
 #: data/ui/notification-reply-dialog.ui:35 src/service/plugins/share.js:429
 msgid "Send"
-msgstr ""
+msgstr "Изпращане"
 
 #: data/ui/legacy-messaging-dialog.ui:69 data/ui/messaging-window.ui:263
 #: data/ui/notification-reply-dialog.ui:68
 msgid "Device is disconnected"
-msgstr ""
+msgstr "Устройството е изключено"
 
 #: data/ui/messaging-conversation.ui:91 src/service/plugins/sms.js:54
 msgid "Send Message"
-msgstr ""
+msgstr "Изпращане на съобщение"
 
 #: data/ui/messaging-conversation.ui:92 src/shell/notification.js:84
 msgid "Type a message"
-msgstr ""
+msgstr "Въведете съобщение"
 
 #: data/ui/messaging-conversation.ui:99
 msgid "Message Entry"
-msgstr ""
+msgstr "Въвеждане на съобщение"
 
 #: data/ui/messaging-conversation.ui:100
 msgid "Type a message and press Enter to send"
-msgstr ""
+msgstr "Въведете съобщение и натиснете Enter, за изпращане"
 
 #: data/ui/messaging-window.ui:21 src/service/plugins/sms.js:30
 #: src/service/ui/messaging.js:1057
 msgid "Messaging"
-msgstr ""
+msgstr "Съобщения"
 
 #: data/ui/messaging-window.ui:30 data/ui/messaging-window.ui:43
 #: src/service/ui/messaging.js:1268
 msgid "New Conversation"
-msgstr ""
+msgstr "Нов разговор"
 
 #: data/ui/messaging-window.ui:120
 msgid "No Conversations"
-msgstr ""
+msgstr "Няма разговори"
 
 #: data/ui/messaging-window.ui:180
 msgid "No conversation selected"
-msgstr ""
+msgstr "Няма избран разговор"
 
 #: data/ui/messaging-window.ui:196
 msgid "Select or start a conversation"
-msgstr ""
+msgstr "Изберете или започнете разговор"
 
 #: data/ui/mousepad-input-dialog.ui:97
 msgid "Touchpad.\n"
@@ -185,23 +185,27 @@ msgid "Touchpad.\n"
 "Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr ""
+msgstr "Тъчпад.\n"
+"Плъзнете върху тази област, за да преместите курсора на мишката.\n"
+"Натиснете дълго, за да плъзнете, за да влачите курсора на мишката.\n\n"
+"Просто щракване ще бъде изпратено до сдвоеното устройство.\n"
+"Ляв, среден, десен бутон и колело за превъртане."
 
 #: data/ui/preferences-command-editor.ui:14
 msgid "Edit Command"
-msgstr ""
+msgstr "Редактиране на команда"
 
 #: data/ui/preferences-command-editor.ui:28
 msgid "Save"
-msgstr ""
+msgstr "Запазване"
 
 #: data/ui/preferences-command-editor.ui:61
 msgid "Name"
-msgstr ""
+msgstr "Име"
 
 #: data/ui/preferences-command-editor.ui:99
 msgid "Command Line"
-msgstr ""
+msgstr "Команден ред"
 
 #: data/ui/preferences-command-editor.ui:121
 #: data/ui/preferences-command-editor.ui:150
