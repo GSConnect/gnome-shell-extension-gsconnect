@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-03 13:38-0500\n"
-"PO-Revision-Date: 2025-01-15 02:32\n"
+"PO-Revision-Date: 2025-01-16 13:45\n"
 "Last-Translator: \n"
 "Language-Team: Bulgarian\n"
 "Language: bg_BG\n"
@@ -492,7 +492,7 @@ msgstr ""
 
 #: data/ui/preferences-window.ui:278
 msgid "Devices"
-msgstr ""
+msgstr "Устройства"
 
 #: data/ui/preferences-window.ui:328 src/preferences/service.js:644
 msgid "Searching for devices…"
@@ -699,7 +699,7 @@ msgstr ""
 #: src/service/daemon.js:286 src/service/daemon.js:475
 #: src/service/plugins/share.js:31
 msgid "Share File"
-msgstr ""
+msgstr "Споделяне на файл"
 
 #: src/service/daemon.js:337
 msgid "List available devices"
