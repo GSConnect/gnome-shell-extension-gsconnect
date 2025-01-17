@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-03 13:38-0500\n"
-"PO-Revision-Date: 2025-01-16 15:33\n"
+"PO-Revision-Date: 2025-01-17 05:32\n"
 "Last-Translator: \n"
 "Language-Team: Bulgarian\n"
 "Language: bg_BG\n"
@@ -370,7 +370,7 @@ msgstr "Кеш на устройството"
 
 #: data/ui/preferences-device-panel.ui:1969
 msgid "Clear Cache…"
-msgstr "Изчистване на кеша..."
+msgstr "Изчистване на кеша…"
 
 #: data/ui/preferences-device-panel.ui:2008
 msgid "Legacy SMS Support"
@@ -496,7 +496,7 @@ msgstr "Устройства"
 
 #: data/ui/preferences-window.ui:328 src/preferences/service.js:644
 msgid "Searching for devices…"
-msgstr "Търсене на устройства..."
+msgstr "Търсене на устройства…"
 
 #: data/ui/preferences-window.ui:353
 msgid "Extension Settings"
@@ -525,7 +525,7 @@ msgstr "Откриването е деактивирано"
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/preferences-window.ui:821
 msgid "Add device by IP…"
-msgstr "Добавяне на устройство по IP..."
+msgstr "Добавяне на устройство по IP…"
 
 #: data/ui/preferences-window.ui:826
 msgid "Display Mode"
