@@ -115,7 +115,7 @@ function generateIdentity(params = {}) {
             'deviceId': Device.generateId(),
             'deviceName': 'Test Device',
             'deviceType': getDeviceType(),
-            'protocolVersion': 7,
+            'protocolVersion': 8,
             'incomingCapabilities': [],
             'outgoingCapabilities': [],
         },
