@@ -745,6 +745,13 @@ var Channel = GObject.registerClass({
                 throw new Error(`invalid deviceName "${this.identity.body.deviceName}"`);
 
             this._connection = await this._encryptClient(connection);
+
+            // Starting with protocol version 8, the devices are expected to
+            // exchange identity packets again after TLS negotiation
+            if (this.identity.body.protocolVersion >= 8) {
+                await this.sendPacket(this.backend.identity);
+                this.identity = await this.readPacket();
+            }
         } catch (e) {
             this.close();
             throw e;
@@ -769,6 +776,13 @@ var Channel = GObject.registerClass({
                 this.cancellable);
 
             this._connection = await this._encryptServer(connection);
+
+            // Starting with protocol version 8, the devices are expected to
+            // exchange identity packets again after TLS negotiation
+            if (this.identity.body.protocolVersion >= 8) {
+                await this.sendPacket(this.backend.identity);
+                this.identity = await this.readPacket();
+            }
         } catch (e) {
             this.close();
             throw e;

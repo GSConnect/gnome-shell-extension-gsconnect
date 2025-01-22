@@ -283,7 +283,7 @@ var ChannelService = GObject.registerClass({
                 deviceId: this.id,
                 deviceName: this.name,
                 deviceType: 'desktop',
-                protocolVersion: 7,
+                protocolVersion: 8,
                 incomingCapabilities: [],
                 outgoingCapabilities: [],
                 tcpPort: this.port,
