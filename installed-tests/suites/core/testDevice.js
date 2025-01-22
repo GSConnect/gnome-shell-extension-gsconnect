@@ -34,7 +34,7 @@ describe('A device constructed from a packet', function () {
         expect(device.type).toBe(identity.body.deviceType);
 
         // expect(device.contacts).toBeTruthy();
-        expect(device.encryption_info).toBeTruthy();
+        expect(device.encryption_info).toBe('');
         expect(device.icon_name).toBeTruthy();
 
         expect(device.connected).toBeFalse();
@@ -69,7 +69,7 @@ describe('A device constructed from an ID', function () {
     let device, id;
 
     beforeAll(function () {
-        id = GLib.uuid_string_random();
+        id = Device.generateId();
         device = new Device.Device({body: {deviceId: id}});
     });
 
@@ -83,7 +83,7 @@ describe('A device constructed from an ID', function () {
         expect(device.type).toBe('smartphone');
 
         // expect(device.contacts).toBeTruthy();
-        expect(device.encryption_info).toBeTruthy();
+        expect(device.encryption_info).toBe('');
         expect(device.icon_name).toBeTruthy();
 
         expect(device.connected).toBeFalse();
