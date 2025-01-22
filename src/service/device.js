@@ -128,6 +128,10 @@ const Device = GObject.registerClass({
             this._loadPlugins();
     }
 
+    static validateId(id) {
+        return /^[a-zA-Z0-9_]{32,38}$/.test(id);
+    }
+
     get channel() {
         if (this._channel === undefined)
             this._channel = null;
