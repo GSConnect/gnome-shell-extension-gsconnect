@@ -8,6 +8,7 @@ import GObject from 'gi://GObject';
 
 import Config from '../../config.js';
 import * as Core from '../core.js';
+import Device from '../device.js';
 
 // Retain compatibility with GLib < 2.80, which lacks GioUnix
 let GioUnix;
@@ -366,6 +367,10 @@ export const ChannelService = GObject.registerClass({
             // Silently ignore our own broadcasts
             if (packet.body.deviceId === this.identity.body.deviceId)
                 return;
+
+            // Reject invalid device IDs
+            if (!Device.validateId(packet.body.deviceId))
+                throw new Error('invalid deviceId');
 
             debug(packet);
 
@@ -728,6 +733,10 @@ export const Channel = GObject.registerClass({
 
             if (!this.identity.body.deviceId)
                 throw new Error('missing deviceId');
+
+            // Reject invalid device IDs
+            if (!Device.validateId(this.identity.body.deviceId))
+                throw new Error('invalid deviceId');
 
             this._connection = await this._encryptClient(connection);
 
