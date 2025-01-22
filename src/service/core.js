@@ -416,7 +416,7 @@ var ChannelService = GObject.registerClass({
                 deviceId: this.id,
                 deviceName: this.name,
                 deviceType: _getDeviceType(),
-                protocolVersion: 7,
+                protocolVersion: 8,
                 incomingCapabilities: [],
                 outgoingCapabilities: [],
             },
