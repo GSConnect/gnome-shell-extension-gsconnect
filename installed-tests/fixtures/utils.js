@@ -147,7 +147,7 @@ export function generateIdentity(params = {}) {
             'deviceId': GLib.uuid_string_random(),
             'deviceName': 'Test Device',
             'deviceType': getDeviceType(),
-            'protocolVersion': 7,
+            'protocolVersion': 8,
             'incomingCapabilities': [],
             'outgoingCapabilities': [],
         },
