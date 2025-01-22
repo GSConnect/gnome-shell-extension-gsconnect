@@ -8,11 +8,13 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
+const Device = imports.service.device;
+
 
 /**
  * Get the local device type.
  *
- * @return {string} A device type string
+ * @returns {string} A device type string
  */
 function _getDeviceType() {
     try {
@@ -20,11 +22,14 @@ function _getDeviceType() {
 
         type = Number(new TextDecoder().decode(type));
 
-        if ([8, 9, 10, 14].includes(type))
+        if ([30, 32].includes(type))
+            return 'tablet';
+
+        if ([8, 9, 10, 14, 31].includes(type))
             return 'laptop';
 
         return 'desktop';
-    } catch (e) {
+    } catch {
         return 'desktop';
     }
 }
@@ -66,8 +71,8 @@ var Packet = class Packet {
     /**
      * Deserialize and return a new Packet from an Object or string.
      *
-     * @param {Object|string} data - A string or dictionary to deserialize
-     * @return {Core.Packet} A new packet object
+     * @param {object|string} data - A string or dictionary to deserialize
+     * @returns {Core.Packet} A new packet object
      */
     static deserialize(data) {
         return new Packet(data);
@@ -77,7 +82,7 @@ var Packet = class Packet {
      * Serialize the packet as a single line with a terminating new-line (`\n`)
      * character, ready to be written to a channel.
      *
-     * @return {string} A serialized packet
+     * @returns {string} A serialized packet
      */
     serialize() {
         this.id = Date.now();
@@ -87,7 +92,7 @@ var Packet = class Packet {
     /**
      * Update the packet from a dictionary or string of JSON
      *
-     * @param {Object|string} data - Source data
+     * @param {object|string} data - Source data
      */
     update(data) {
         try {
@@ -103,7 +108,7 @@ var Packet = class Packet {
     /**
      * Check if the packet has a payload.
      *
-     * @return {boolean} %true if @packet has a payload
+     * @returns {boolean} %true if @packet has a payload
      */
     hasPayload() {
         if (!this.hasOwnProperty('payloadSize'))
@@ -216,7 +221,7 @@ var Channel = GObject.registerClass({
      * Read a packet.
      *
      * @param {Gio.Cancellable} [cancellable] - A cancellable
-     * @return {Promise<Core.Packet>} The packet
+     * @returns {Promise<Core.Packet>} The packet
      */
     async readPacket(cancellable = null) {
         if (cancellable === null)
@@ -246,7 +251,7 @@ var Channel = GObject.registerClass({
      *
      * @param {Core.Packet} packet - The packet to send
      * @param {Gio.Cancellable} [cancellable] - A cancellable
-     * @return {Promise<boolean>} %true if successful
+     * @returns {Promise<boolean>} %true if successful
      */
     sendPacket(packet, cancellable = null) {
         if (cancellable === null)
@@ -362,7 +367,7 @@ var ChannelService = GObject.registerClass({
 
     get id() {
         if (this._id === undefined)
-            this._id = GLib.uuid_string_random();
+            this._id = Device.generateId();
 
         return this._id;
     }
@@ -403,7 +408,7 @@ var ChannelService = GObject.registerClass({
                 deviceId: this.id,
                 deviceName: this.name,
                 deviceType: _getDeviceType(),
-                protocolVersion: 7,
+                protocolVersion: 8,
                 incomingCapabilities: [],
                 outgoingCapabilities: [],
             },
@@ -543,7 +548,7 @@ var Transfer = GObject.registerClass({
     /**
      * Ensure there is a stream for the transfer item.
      *
-     * @param {Object} item - A transfer item
+     * @param {object} item - A transfer item
      * @param {Gio.Cancellable} [cancellable] - A cancellable
      */
     async _ensureStream(item, cancellable = null) {
@@ -695,4 +700,3 @@ var Transfer = GObject.registerClass({
             this._cancellable.cancel();
     }
 });
-
