@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 import Gio from 'gi://Gio';
-import GLib from 'gi://GLib';
 
 import * as Utils from '../fixtures/utils.js';
 
@@ -69,7 +68,7 @@ describe('A device constructed from an ID', function () {
     let device, id;
 
     beforeAll(function () {
-        id = GLib.uuid_string_random();
+        id = Device.generateId();
         device = new Device({body: {deviceId: id}});
     });
 

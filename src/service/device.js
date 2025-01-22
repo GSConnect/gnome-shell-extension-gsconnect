@@ -128,6 +128,10 @@ const Device = GObject.registerClass({
             this._loadPlugins();
     }
 
+    static generateId() {
+        return GLib.uuid_string_random().replaceAll('-', '_');
+    }
+
     static validateId(id) {
         return /^[a-zA-Z0-9_]{32,38}$/.test(id);
     }

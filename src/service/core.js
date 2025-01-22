@@ -6,6 +6,7 @@ import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 
+import Device from './device.js';
 import plugins from './plugins/index.js';
 
 
@@ -365,7 +366,7 @@ export const ChannelService = GObject.registerClass({
 
     get id() {
         if (this._id === undefined)
-            this._id = GLib.uuid_string_random();
+            this._id = Device.generateId();
 
         return this._id;
     }
