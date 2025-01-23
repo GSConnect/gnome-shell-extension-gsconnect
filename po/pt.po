@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-03 13:38-0500\n"
-"PO-Revision-Date: 2025-01-03 22:06\n"
+"PO-Revision-Date: 2025-01-14 14:52\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese\n"
 "Language: pt_PT\n"
@@ -525,7 +525,7 @@ msgstr "Detecção desativada"
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/preferences-window.ui:821
 msgid "Add device by IP…"
-msgstr ""
+msgstr "Adicionar dispositivo por IP…"
 
 #: data/ui/preferences-window.ui:826
 msgid "Display Mode"
