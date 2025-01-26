@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-03 13:38-0500\n"
-"PO-Revision-Date: 2025-01-03 22:05\n"
+"PO-Revision-Date: 2025-01-25 08:11\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Language: es_ES\n"
@@ -525,7 +525,7 @@ msgstr "Descubrimiento desactivado"
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/preferences-window.ui:821
 msgid "Add device by IP…"
-msgstr ""
+msgstr "Añadir dispositivo por IP…"
 
 #: data/ui/preferences-window.ui:826
 msgid "Display Mode"
@@ -932,7 +932,7 @@ msgstr "Presentación"
 
 #: src/service/plugins/presenter.js:13
 msgid "Use the paired device as a presenter"
-msgstr "Utilizar el dispositivo emparejado como presentador"
+msgstr "Usar el dispositivo emparejado como presentador"
 
 #: src/service/plugins/runcommand.js:13
 msgid "Run Commands"
@@ -1082,7 +1082,7 @@ msgstr "Volumen del sistema"
 
 #: src/service/plugins/systemvolume.js:14
 msgid "Enable the paired device to control the system volume"
-msgstr "Habilitar el dispositivo emparejado para controlar el volumen del sistema"
+msgstr "Activar el dispositivo emparejado para controlar el volumen del sistema"
 
 #: src/service/plugins/systemvolume.js:58
 msgid "PulseAudio not found"
