@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-03 13:38-0500\n"
-"PO-Revision-Date: 2025-01-17 05:32\n"
+"PO-Revision-Date: 2025-01-26 11:33\n"
 "Last-Translator: \n"
 "Language-Team: Bulgarian\n"
 "Language: bg_BG\n"
@@ -901,7 +901,7 @@ msgstr "Споделете известия със сдвоеното устро
 
 #: src/service/plugins/notification.js:32
 msgid "Cancel Notification"
-msgstr ""
+msgstr "Отмяна на известие"
 
 #: src/service/plugins/notification.js:40
 msgid "Close Notification"
@@ -909,193 +909,193 @@ msgstr "Затвори известието"
 
 #: src/service/plugins/notification.js:48
 msgid "Reply Notification"
-msgstr ""
+msgstr "Известие за отговор"
 
 #: src/service/plugins/notification.js:64
 msgid "Activate Notification"
-msgstr ""
+msgstr "Активирайте известие"
 
 #: src/service/plugins/ping.js:14
 msgid "Send and receive pings"
-msgstr ""
+msgstr "Изпращане и получаване на пингове"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
 #: src/service/plugins/ping.js:54
 #, javascript-format
 msgid "Ping: %s"
-msgstr ""
+msgstr "Пинг: %s"
 
 #: src/service/plugins/presenter.js:12
 msgid "Presentation"
-msgstr ""
+msgstr "Представяне"
 
 #: src/service/plugins/presenter.js:13
 msgid "Use the paired device as a presenter"
-msgstr ""
+msgstr "Използвайте сдвоеното устройство като водещ"
 
 #: src/service/plugins/runcommand.js:13
 msgid "Run Commands"
-msgstr ""
+msgstr "Изпълнение на команди"
 
 #: src/service/plugins/runcommand.js:15
 msgid "Run commands on your paired device or let the device run predefined commands on this PC"
-msgstr ""
+msgstr "Изпълнете команди на вашето сдвоено устройство или оставете устройството да изпълнява предварително зададени команди на този компютър"
 
 #: src/service/plugins/sftp.js:14
 msgid "SFTP"
-msgstr ""
+msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:16
 msgid "Browse the paired device filesystem"
-msgstr ""
+msgstr "Прегледайте файловата система на сдвоеното устройство"
 
 #: src/service/plugins/sftp.js:21
 msgid "Mount"
-msgstr ""
+msgstr "Монтиране"
 
 #: src/service/plugins/sftp.js:29
 msgid "Unmount"
-msgstr ""
+msgstr "Демонтиране"
 
 #: src/service/plugins/sftp.js:190
 #, javascript-format
 msgid "%s reported an error"
-msgstr ""
+msgstr "%s съобщава за грешка"
 
 #: src/service/plugins/share.js:16 src/service/plugins/share.js:23
 msgid "Share"
-msgstr ""
+msgstr "Споделяне"
 
 #: src/service/plugins/share.js:18
 msgid "Share files and URLs between devices"
-msgstr ""
+msgstr "Споделяйте файлове и URL адреси между устройства"
 
 #: src/service/plugins/share.js:130 src/service/plugins/share.js:209
 #: src/service/plugins/share.js:320
 msgid "Transfer Failed"
-msgstr ""
+msgstr "Прехвърлянето е неуспешно"
 
 #. TRANSLATORS: eg. Google Pixel is not allowed to upload files
 #: src/service/plugins/share.js:132
 #, javascript-format
 msgid "%s is not allowed to upload files"
-msgstr ""
+msgstr "%s не е позволено да качва файлове"
 
 #: src/service/plugins/share.js:154 src/service/plugins/share.js:290
 msgid "Transferring File"
-msgstr ""
+msgstr "Прехвърляне на файл"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:156
 #, javascript-format
 msgid "Receiving “%s” from %s"
-msgstr ""
+msgstr "Получаване “%s” от %s"
 
 #: src/service/plugins/share.js:175 src/service/plugins/share.js:310
 msgid "Transfer Successful"
-msgstr ""
+msgstr "Прехвърлянето е успешно"
 
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:177
 #, javascript-format
 msgid "Received “%s” from %s"
-msgstr ""
+msgstr "Получаване “%s” от %s"
 
 #: src/service/plugins/share.js:187
 msgid "Show File Location"
-msgstr ""
+msgstr "Показване на местоположението на файла"
 
 #: src/service/plugins/share.js:192
 msgid "Open File"
-msgstr ""
+msgstr "Отваряне на файл"
 
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:211
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
-msgstr ""
+msgstr "Неуспешно получаване “%s” от %s"
 
 #: src/service/plugins/share.js:242
 #, javascript-format
 msgid "Text Shared By %s"
-msgstr ""
+msgstr "Текст, споделен от %s"
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
 #: src/service/plugins/share.js:292
 #, javascript-format
 msgid "Sending “%s” to %s"
-msgstr ""
+msgstr "Изпращане “%s” към %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:312
 #, javascript-format
 msgid "Sent “%s” to %s"
-msgstr ""
+msgstr "Изпратено  “%s” до %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:322
 #, javascript-format
 msgid "Failed to send “%s” to %s"
-msgstr ""
+msgstr "Неуспешно изпращане “%s” до %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:380
 #, javascript-format
 msgid "Send files to %s"
-msgstr ""
+msgstr "Изпращане на файлове до %s"
 
 #. TRANSLATORS: Mark the file to be opened once completed
 #: src/service/plugins/share.js:384
 msgid "Open when done"
-msgstr ""
+msgstr "Отворете, когато сте готови"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
 #: src/service/plugins/share.js:423
 #, javascript-format
 msgid "Send a link to %s"
-msgstr ""
+msgstr "Изпратете връзка към %s"
 
 #: src/service/plugins/sms.js:16
 msgid "SMS"
-msgstr ""
+msgstr "SMS"
 
 #: src/service/plugins/sms.js:17
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
+msgstr "Изпращайте и четете SMS на сдвоеното устройство и получавайте известия за нов SMS"
 
 #: src/service/plugins/sms.js:38
 msgid "New SMS (URI)"
-msgstr ""
+msgstr "Нов SMS (URI)"
 
 #: src/service/plugins/sms.js:46
 msgid "Reply SMS"
-msgstr ""
+msgstr "Отговор на SMS"
 
 #: src/service/plugins/sms.js:70
 msgid "Share SMS"
-msgstr ""
+msgstr "Споделете SMS"
 
 #: src/service/plugins/systemvolume.js:13
 msgid "System Volume"
-msgstr ""
+msgstr "Сила на звука на системата"
 
 #: src/service/plugins/systemvolume.js:14
 msgid "Enable the paired device to control the system volume"
-msgstr ""
+msgstr "Активирайте сдвоеното устройство за контрол на силата на звука на системата"
 
 #: src/service/plugins/systemvolume.js:58
 msgid "PulseAudio not found"
-msgstr ""
+msgstr "PulseAudio не е намерен"
 
 #: src/service/plugins/telephony.js:16
 msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
+msgstr "Уведомяване за повиквания и регулиране на силата на звука на системата по време на звънене/текущи повиквания"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:28
 msgid "Mute Call"
-msgstr ""
+msgstr "Заглушаване на повикване"
 
 #. Ensure we have a sender
 #. TRANSLATORS: No name or phone number
@@ -1103,42 +1103,42 @@ msgstr ""
 #: src/service/plugins/telephony.js:155 src/service/plugins/telephony.js:174
 #: src/service/ui/contacts.js:611 src/service/ui/messaging.js:750
 msgid "Unknown Contact"
-msgstr ""
+msgstr "Неизвестен контакт"
 
 #. TRANSLATORS: The phone is ringing
 #: src/service/plugins/telephony.js:193
 msgid "Incoming call"
-msgstr ""
+msgstr "Входящо повикване"
 
 #. TRANSLATORS: A phone call is active
 #: src/service/plugins/telephony.js:208
 msgid "Ongoing call"
-msgstr ""
+msgstr "Текущо повикване"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:134
 msgid "Fax"
-msgstr ""
+msgstr "Fax"
 
 #. TRANSLATORS: A work or office phone number
 #: src/service/ui/contacts.js:138
 msgid "Work"
-msgstr ""
+msgstr "Работен"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:142
 msgid "Mobile"
-msgstr ""
+msgstr "Мобилен"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:146
 msgid "Home"
-msgstr ""
+msgstr "Домашен"
 
 #. TRANSLATORS: Less than a minute ago
 #: src/service/ui/messaging.js:105 src/service/ui/messaging.js:146
 msgid "Just now"
-msgstr ""
+msgstr "Току що"
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
 #: src/service/ui/messaging.js:114
