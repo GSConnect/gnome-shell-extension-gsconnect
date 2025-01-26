@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
 SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
 
 SPDX-License-Identifier: GPL-2.0-or-later
 -->
-
 <interface domain="org.gnome.Shell.Extensions.GSConnect">
-  <requires lib="gtk+" version="3.24"/>
+  <requires lib="gtk+" version="4.0"/>
   <object class="GtkPopover" id="rename-popover">
     <property name="can_focus">False</property>
     <child>
       <object class="GtkGrid" id="rename">
         <property name="visible">True</property>
-        <property name="margin">10</property>
         <property name="row_spacing">6</property>
         <property name="column_spacing">6</property>
         <child>
@@ -23,18 +20,10 @@ SPDX-License-Identifier: GPL-2.0-or-later
             <property name="halign">start</property>
             <property name="label" translatable="yes">Device Name</property>
             <property name="mnemonic_widget">rename-entry</property>
-            <accessibility>
-              <relation type="label-for" target="rename-entry"/>
-            </accessibility>
             <attributes>
               <attribute name="weight" value="bold"/>
             </attributes>
           </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">0</property>
-            <property name="width">2</property>
-          </packing>
         </child>
         <child>
           <object class="GtkEntry" id="rename-entry">
@@ -47,22 +36,13 @@ SPDX-License-Identifier: GPL-2.0-or-later
             <property name="input_purpose">name</property>
             <property name="width_chars">20</property>
             <signal name="activate" handler="_onSetServiceName" swapped="no"/>
-            <accessibility>
-              <relation type="labelled-by" target="rename-label"/>
-            </accessibility>
           </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">1</property>
-          </packing>
         </child>
         <child>
           <object class="GtkButton" id="rename-submit">
             <property name="label" translatable="yes">_Rename</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="can_default">False</property>
-            <property name="has_default">False</property>
             <property name="receives_default">False</property>
             <property name="use_underline">True</property>
             <signal name="clicked" handler="_onSetServiceName" swapped="no"/>
@@ -70,754 +50,567 @@ SPDX-License-Identifier: GPL-2.0-or-later
               <class name="suggested-action"/>
             </style>
           </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">1</property>
-          </packing>
         </child>
       </object>
     </child>
   </object>
-  <template class="GSConnectPreferencesWindow" parent="GtkApplicationWindow">
-    <property name="can_focus">False</property>
-    <property name="icon_name">org.gnome.Shell.Extensions.GSConnect-symbolic</property>
-    <property name="default_width">640</property>
-    <property name="default_height">460</property>
-    <child type="titlebar">
-      <object class="GtkHeaderBar" id="headerbar">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="title">Service Name</property>
-        <property name="has_subtitle">False</property>
-        <property name="show_close_button">True</property>
-        <child>
-          <object class="GtkButton" id="refresh-button">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Refresh</property>
-            <property name="valign">center</property>
-            <property name="action_name">app.refresh</property>
-            <child>
-              <object class="GtkImage">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">center</property>
-                <property name="valign">center</property>
-                <property name="icon_name">view-refresh-symbolic</property>
-              </object>
-            </child>
-            <child internal-child="accessible">
-              <object class="AtkObject" id="refresh-button-atkobject">
-                <property name="AtkObject::accessible-name" translatable="yes">Refresh</property>
-              </object>
-            </child>
-            <accelerator key="r" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
-          </object>
-        </child>
-        <child>
-          <object class="GtkButton" id="prev-button">
-            <property name="visible">False</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="valign">center</property>
-            <signal name="clicked" handler="_onPrevious" swapped="no"/>
-            <child>
-              <object class="GtkImage">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">center</property>
-                <property name="valign">center</property>
-                <property name="icon_name">go-previous-symbolic</property>
-              </object>
-            </child>
-            <accessibility>
-              <relation type="controller-for" target="stack"/>
-            </accessibility>
-            <child internal-child="accessible">
-              <object class="AtkObject" id="prev-button-atkobject">
-                <property name="AtkObject::accessible-name" translatable="yes">Mobile Settings</property>
-              </object>
-            </child>
-            <accelerator key="Escape" signal="clicked"/>
-            <accelerator key="Left" signal="clicked" modifiers="GDK_MOD1_MASK"/>
-          </object>
-          <packing>
-            <property name="position">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkMenuButton" id="service-menu">
-            <property name="menu_model">service-menu-ui</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="valign">center</property>
-            <child>
-              <object class="GtkImage">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="valign">center</property>
-                <property name="icon_name">open-menu-symbolic</property>
-              </object>
-            </child>
-            <child internal-child="accessible">
-              <object class="AtkObject" id="service-menu-atkobject">
-                <property name="AtkObject::accessible-name" translatable="yes">Service Menu</property>
-              </object>
-            </child>
-          </object>
-          <packing>
-            <property name="pack_type">end</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkMenuButton" id="device-menu">
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="valign">center</property>
-            <child>
-              <object class="GtkImage">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="icon_name">view-more-symbolic</property>
-              </object>
-            </child>
-            <child internal-child="accessible">
-              <object class="AtkObject" id="device-menu-atkobject">
-                <property name="AtkObject::accessible-name" translatable="yes">Device Menu</property>
-              </object>
-            </child>
-          </object>
-          <packing>
-            <property name="pack_type">end</property>
-            <property name="position">2</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkMenuButton" id="service-edit">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Edit Device Name</property>
-            <property name="halign">start</property>
-            <property name="valign">center</property>
-            <property name="hexpand">True</property>
-            <property name="popover">rename-popover</property>
-            <signal name="clicked" handler="_onEditServiceName" swapped="no"/>
-            <child>
-              <object class="GtkImage">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="icon_name">document-edit-symbolic</property>
-              </object>
-            </child>
-            <child internal-child="accessible">
-              <object class="AtkObject" id="service-edit-atkobject">
-                <property name="AtkObject::accessible-name" translatable="yes">Edit Device Name</property>
-              </object>
-            </child>
-            <style>
-              <class name="flat"/>
-            </style>
-          </object>
-          <packing>
-            <property name="pack_type">end</property>
-            <property name="position">3</property>
-          </packing>
-        </child>
-        <child internal-child="accessible">
-          <object class="AtkObject" id="headerbar-atkobject">
-            <property name="AtkObject::accessible-role">title-bar</property>
-          </object>
-        </child>
-      </object>
-    </child>
+  <template class="GSConnectPreferencesWindow" parent="AdwApplicationWindow">
+    <property name="width-request">360</property>
+    <property name="height-request">586</property>
+    <property name="default-width">640</property>
+    <property name="default-height">480</property>
     <child>
-      <object class="GtkStack" id="stack">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="transition_type">crossfade</property>
-        <child>
-          <object class="GtkGrid" id="service">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <child>
-              <object class="GtkScrolledWindow" id="service-window">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="hexpand">True</property>
-                <property name="vexpand">True</property>
-                <property name="hscrollbar_policy">never</property>
-                <child>
-                  <object class="GtkViewport">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="shadow_type">none</property>
-                    <child>
-                      <object class="GtkBox" id="service-box">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="margin_left">48</property>
-                        <property name="margin_right">48</property>
-                        <property name="margin_top">32</property>
-                        <property name="margin_bottom">32</property>
-                        <property name="orientation">vertical</property>
-                        <child>
-                          <object class="GtkGrid">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="margin_bottom">12</property>
-                            <property name="column_spacing">12</property>
-                            <child>
-                              <object class="GtkLabel" id="device-list-label">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="halign">start</property>
-                                <property name="label" translatable="yes">Devices</property>
-                                <attributes>
-                                  <attribute name="weight" value="bold"/>
-                                </attributes>
-                                <accessibility>
-                                  <relation type="label-for" target="device-list"/>
-                                </accessibility>
-                              </object>
-                              <packing>
-                                <property name="left_attach">0</property>
-                                <property name="top_attach">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkSpinner" id="device-list-spinner">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="halign">start</property>
-                              </object>
-                              <packing>
-                                <property name="left_attach">1</property>
-                                <property name="top_attach">0</property>
-                              </packing>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkFrame">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="margin_bottom">32</property>
-                            <property name="label_xalign">0</property>
-                            <child>
-                              <object class="GtkListBox" id="device-list">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="hexpand">True</property>
-                                <property name="selection_mode">none</property>
-                                <signal name="row-activated" handler="_onDeviceSelected" swapped="no"/>
-                                <child type="placeholder">
-                                  <object class="GtkLabel" id="device-list-placeholder">
-                                    <property name="height_request">52</property>
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="hexpand">True</property>
-                                    <property name="label" translatable="yes">Searching for devices…</property>
-                                    <style>
-                                      <class name="dim-label"/>
-                                    </style>
-                                  </object>
-                                </child>
-                                <accessibility>
-                                  <relation type="controller-for" target="stack"/>
-                                  <relation type="labelled-by" target="device-list-label"/>
-                                </accessibility>
-                              </object>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">2</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="extension-settings-label">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="halign">start</property>
-                            <property name="margin_bottom">12</property>
-                            <property name="label" translatable="yes">Extension Settings</property>
-                            <attributes>
-                              <attribute name="weight" value="bold"/>
-                            </attributes>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">3</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkBox" id="extension-settings-box">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="margin_left">12</property>
-                            <property name="margin_right">12</property>
-                            <property name="margin_bottom">20</property>
-                            <property name="spacing">24</property>
-                            <child>
-                              <object class="GtkSwitch" id="keep-alive-when-locked">
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="halign">start</property>
-                                <property name="margin_bottom">10</property>
-                                <property name="action_name">win.keep-alive-when-locked</property>
-                                <accessibility>
-                                  <relation type="labelled-by" target="keep-alive-when-locked-label"/>
-                                </accessibility>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="keep-alive-when-locked-label">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="halign">start</property>
-                                <property name="margin_bottom">12</property>
-                                <property name="label" translatable="yes">GSConnect remains active when GNOME Shell is locked</property>
-                                <accessibility>
-                                  <relation type="label-for" target="keep-alive-when-locked"/>
-                                </accessibility>
-                              </object>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">3</property>
-                          </packing>
-
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="webextension-label">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="halign">start</property>
-                            <property name="margin_bottom">12</property>
-                            <property name="label" translatable="yes">Browser Add-Ons</property>
-                            <attributes>
-                              <attribute name="weight" value="bold"/>
-                            </attributes>
-                            <accessibility>
-                              <relation type="label-for" target="webextension-list"/>
-                            </accessibility>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">4</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkBox" id="webextension-list">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="margin_left">12</property>
-                            <property name="margin_right">12</property>
-                            <property name="margin_bottom">32</property>
-                            <property name="spacing">24</property>
-                            <child>
-                              <object class="GtkLinkButton" id="webextension-button-firefox">
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="halign">center</property>
-                                <property name="valign">center</property>
-                                <property name="uri">https://addons.mozilla.org/firefox/addon/gsconnect/</property>
-                                <child>
-                                  <object class="GtkImage" id="webextension-image-firefox">
-                                    <property name="width_request">172</property>
-                                    <property name="height_request">60</property>
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="resource">/org/gnome/Shell/Extensions/GSConnect/images/firefox-badge.png</property>
-                                  </object>
-                                </child>
-                                <child internal-child="accessible">
-                                  <object class="AtkObject" id="webextension-button-firefox-atkobject">
-                                    <property name="AtkObject::accessible-name">Firefox Add-On</property>
-                                    <property name="AtkObject::accessible-role">link</property>
-                                  </object>
-                                </child>
-                                <style>
-                                  <class name="badge-button"/>
-                                </style>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkLinkButton" id="webextension-button-chrome">
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="halign">center</property>
-                                <property name="valign">center</property>
-                                <property name="uri">https://chrome.google.com/webstore/detail/gsconnect/jfnifeihccihocjbfcfhicmmgpjicaec</property>
-                                <child>
-                                  <object class="GtkImage" id="webextension-image-chrome">
-                                    <property name="width_request">206</property>
-                                    <property name="height_request">58</property>
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="resource">/org/gnome/Shell/Extensions/GSConnect/images/chrome-badge.png</property>
-                                  </object>
-                                </child>
-                                <child internal-child="accessible">
-                                  <object class="AtkObject" id="webextension-button-chrome-atkobject">
-                                    <property name="AtkObject::accessible-name">Chrome Extension</property>
-                                    <property name="AtkObject::accessible-role">link</property>
-                                  </object>
-                                </child>
-                                <style>
-                                  <class name="badge-button"/>
-                                </style>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                            <accessibility>
-                              <relation type="labelled-by" target="webextension-label"/>
-                            </accessibility>
-                            <child internal-child="accessible">
-                              <object class="AtkObject" id="webextension-list-atkobject">
-                                <property name="AtkObject::accessible-role">list</property>
-                              </object>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">5</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="kdeconnect-label">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="halign">start</property>
-                            <property name="valign">center</property>
-                            <property name="margin_bottom">12</property>
-                            <property name="label">KDE Connect</property>
-                            <attributes>
-                              <attribute name="weight" value="bold"/>
-                            </attributes>
-                            <accessibility>
-                              <relation type="label-for" target="kdeconnect-applications"/>
-                            </accessibility>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">6</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkGrid" id="kdeconnect-applications">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="margin_left">12</property>
-                            <property name="margin_right">12</property>
-                            <property name="column_spacing">6</property>
-                            <child>
-                              <object class="GtkLabel" id="kdeconnect-android">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="halign">end</property>
-                                <property name="label">Android:</property>
-                                <accessibility>
-                                  <relation type="label-for" target="kdeconnect-playstore"/>
-                                  <relation type="label-for" target="kdeconnect-fdroid"/>
-                                </accessibility>
-                              </object>
-                              <packing>
-                                <property name="left_attach">0</property>
-                                <property name="top_attach">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkLinkButton" id="kdeconnect-playstore">
-                                <property name="label">Play Store</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="halign">start</property>
-                                <property name="relief">none</property>
-                                <property name="uri">https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp</property>
-                                <accessibility>
-                                  <relation type="labelled-by" target="kdeconnect-android"/>
-                                </accessibility>
-                                <child internal-child="accessible">
-                                  <object class="AtkObject" id="kdeconnect-playstore-atkobject">
-                                    <property name="AtkObject::accessible-role">link</property>
-                                  </object>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="left_attach">1</property>
-                                <property name="top_attach">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkLinkButton" id="kdeconnect-fdroid">
-                                <property name="label">F-Droid</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="halign">start</property>
-                                <property name="relief">none</property>
-                                <property name="uri">https://f-droid.org/packages/org.kde.kdeconnect_tp/</property>
-                                <accessibility>
-                                  <relation type="labelled-by" target="kdeconnect-android"/>
-                                </accessibility>
-                                <child internal-child="accessible">
-                                  <object class="AtkObject" id="kdeconnect-fdroid-atkobject">
-                                    <property name="AtkObject::accessible-role">link</property>
-                                  </object>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="left_attach">2</property>
-                                <property name="top_attach">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkLinkButton" id="kdeconnect-openrepos">
-                                <property name="label">OpenRepos</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="halign">start</property>
-                                <property name="relief">none</property>
-                                <property name="uri">https://openrepos.net/content/r1tschy/sailfish-connect</property>
-                                <accessibility>
-                                  <relation type="labelled-by" target="kdeconnect-sailfish"/>
-                                </accessibility>
-                                <child internal-child="accessible">
-                                  <object class="AtkObject" id="kdeconnect-openrepos-atkobject">
-                                    <property name="AtkObject::accessible-role">link</property>
-                                  </object>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="left_attach">1</property>
-                                <property name="top_attach">1</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="kdeconnect-sailfish">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="halign">end</property>
-                                <property name="label">Sailfish OS:</property>
-                                <accessibility>
-                                  <relation type="label-for" target="kdeconnect-openrepos"/>
-                                </accessibility>
-                              </object>
-                              <packing>
-                                <property name="left_attach">0</property>
-                                <property name="top_attach">1</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="kdeconnect-ios">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="halign">end</property>
-                                <property name="label">iOS:</property>
-                                <accessibility>
-                                  <relation type="label-for" target="kdeconnect-appstore"/>
-                                </accessibility>
-                              </object>
-                              <packing>
-                                <property name="left_attach">0</property>
-                                <property name="top_attach">2</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkLinkButton" id="kdeconnect-appstore">
-                                <property name="label">App Store</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="halign">start</property>
-                                <property name="relief">none</property>
-                                <property name="uri">https://apps.apple.com/us/app/kde-connect/id1580245991</property>
-                                <accessibility>
-                                  <relation type="labelled-by" target="kdeconnect-ios"/>
-                                </accessibility>
-                                <child internal-child="accessible">
-                                  <object class="AtkObject" id="kdeconnect-appstore-atkobject">
-                                    <property name="AtkObject::accessible-role">link</property>
-                                  </object>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="left_attach">1</property>
-                                <property name="top_attach">2</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <placeholder/>
-                            </child>
-                            <accessibility>
-                              <relation type="labelled-by" target="kdeconnect-label"/>
-                            </accessibility>
-                            <child internal-child="accessible">
-                              <object class="AtkObject" id="kdeconnect-applications-atkobject">
-                                <property name="AtkObject::accessible-role">list</property>
-                              </object>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">7</property>
-                          </packing>
-                        </child>
-                      </object>
-                    </child>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkRevealer" id="infobar">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <child>
-                  <object class="GtkInfoBar">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <child internal-child="action_area">
-                      <object class="GtkButtonBox">
-                        <property name="can_focus">False</property>
-                        <property name="spacing">6</property>
-                        <property name="layout_style">end</property>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <object class="GtkButton">
-                            <property name="label" translatable="yes">Enable</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">False</property>
-                            <property name="action_name">win.discoverable</property>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">2</property>
-                          </packing>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child internal-child="content_area">
-                      <object class="GtkBox">
-                        <property name="can_focus">False</property>
-                        <property name="orientation">vertical</property>
-                        <property name="spacing">12</property>
-                        <child>
-                          <object class="GtkGrid">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <child>
-                              <object class="GtkLabel">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">This device is invisible to unpaired devices</property>
-                              </object>
-                              <packing>
-                                <property name="left_attach">0</property>
-                                <property name="top_attach">1</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkLabel">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="halign">start</property>
-                                <property name="label" translatable="yes">Discovery Disabled</property>
-                                <attributes>
-                                  <attribute name="weight" value="bold"/>
-                                </attributes>
-                              </object>
-                              <packing>
-                                <property name="left_attach">0</property>
-                                <property name="top_attach">0</property>
-                              </packing>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">0</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="name">service</property>
-          </packing>
-        </child>
-        <accessibility>
-          <relation type="controlled-by" target="prev-button"/>
-          <relation type="controlled-by" target="device-list"/>
-        </accessibility>
+      <object class="AdwBreakpoint">
+        <condition>max-width: 600sp</condition>
+        <setter object="split_view" property="collapsed">true</setter>
       </object>
     </child>
+    <property name="content">
+      <object class="AdwNavigationSplitView" id="split_view">
+        <property name="sidebar">
+          <object class="AdwNavigationPage">
+            <property name="title" translatable="yes">Sidebar</property>
+            <property name="tag">sidebar</property>
+            <property name="child">
+              <object class="AdwToolbarView">
+                <child type="top">
+                  <object class="AdwHeaderBar" id="headerbar">
+                    <property name="title-widget">
+                      <object class="AdwWindowTitle">
+                        <property name="title" translatable="yes">GSConnect</property>
+                        <property name="subtitle" translatable="yes">Scanning for devices..</property>
+                      </object>
+                    </property>
+                    <child type="end">
+                      <object class="GtkMenuButton" id="service-menu">
+                        <property name="menu_model">service-menu-ui</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="valign">center</property>
+                        <child>
+                          <object class="GtkImage">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="valign">center</property>
+                            <property name="icon_name">open-menu-symbolic</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child type="start">
+                      <object class="GtkButton" id="refresh-button">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="tooltip_text" translatable="yes">Refresh</property>
+                        <property name="valign">center</property>
+                        <property name="action_name">app.refresh</property>
+                        <child>
+                          <object class="GtkImage">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">center</property>
+                            <property name="valign">center</property>
+                            <property name="icon_name">view-refresh-symbolic</property>
+                          </object>
+                        </child>
+                        <accessibility>
+                          <property name="label" translatable="yes">Refresh</property>
+                        </accessibility>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <property name="content">
+                  <object class="GtkScrolledWindow">
+                    <property name="min-content-width">240</property>
+                    <property name="min-content-height">540</property>
+                    <child>
+                      <object class="GtkListBox" id="device-list">
+                        <property name="vexpand">True</property>
+                        <child>
+                          <object class="AdwActionRow">
+                            <property name="title">OnePlus Nord 2</property>
+                            <property name="subtitle">Online</property>
+                            <property name="activatable">True</property>
+                            <property name="action-name">navigation.push</property>
+                            <property name="action-target">'content'</property>
+                            <child type="prefix">
+                              <object class="GtkImage">
+                                <property name="icon-name">phone-symbolic</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <style>
+                          <class name="navigation-sidebar"/>
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+              </object>
+            </property>
+          </object>
+        </property>
+        <property name="content">
+          <object class="AdwNavigationPage">
+            <property name="title" translatable="yes">Content</property>
+            <property name="tag">content</property>
+            <property name="child">
+              <object class="AdwNavigationView">
+                <child>
+                  <object class="AdwNavigationPage">
+                    <property name="title" translatable="yes">Page 1</property>
+                    <property name="child">
+                      <object class="AdwToolbarView">
+                        <child type="top">
+                          <object class="AdwHeaderBar">
+                            <property name="title-widget">
+                              <object class="AdwWindowTitle">
+                                <property name="title" translatable="yes">OnePlus Nord 2</property>
+                                <property name="subtitle" translatable="yes">Online</property>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+                        <property name="content">
+                          <object class="AdwPreferencesPage">
+                            <child> 
+                              <object class="AdwPreferencesGroup">
+                                <child>
+                                  <object class="AdwActionRow">
+                                    <property name="title" translatable="yes">Sharing</property>
+                                    <property name="activatable">True</property>
+                                    <property name="action-name">navigation.push</property>
+                                    <property name="action-target">'sharing'</property>
+                                    <child type="prefix">
+                                      <object class="GtkImage">
+                                        <property name="icon-name">preferences-system-sharing-symbolic</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwActionRow">
+                                    <property name="title" translatable="yes">Battey</property>
+                                    <property name="activatable">True</property>
+                                    <property name="action-name">navigation.push</property>
+                                    <property name="action-target">'battery'</property>
+                                    <child type="prefix">
+                                      <object class="GtkImage">
+                                        <property name="icon-name">battery-symbolic</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwActionRow">
+                                    <property name="title" translatable="yes">Commands</property>
+                                    <property name="activatable">True</property>
+                                    <property name="action-name">navigation.push</property>
+                                    <property name="action-target">'commands'</property>
+                                    <child type="prefix">
+                                      <object class="GtkImage">
+                                        <property name="icon-name">utilities-terminal-symbolic</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwActionRow">
+                                    <property name="title" translatable="yes">Notifications</property>
+                                    <property name="activatable">True</property>
+                                    <property name="action-name">navigation.push</property>
+                                    <property name="action-target">'notifications'</property>
+                                    <child type="prefix">
+                                      <object class="GtkImage">
+                                        <property name="icon-name">preferences-system-notifications-symbolic</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwActionRow">
+                                    <property name="title" translatable="yes">Telephony</property>
+                                    <property name="activatable">True</property>
+                                    <property name="action-name">navigation.push</property>
+                                    <property name="action-target">'telephony'</property>
+                                    <child type="prefix">
+                                      <object class="GtkImage">
+                                        <property name="icon-name">phone-old-symbolic</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="AdwPreferencesGroup">
+                                <child>
+                                  <object class="AdwActionRow">
+                                    <property name="title" translatable="yes">Keyboard Shortcuts</property>
+                                    <property name="activatable">True</property>
+                                    <property name="action-name">navigation.push</property>
+                                    <property name="action-target">'keyboard_shurtcuts'</property>
+                                    <child type="prefix">
+                                      <object class="GtkImage">
+                                        <property name="icon-name">preferences-desktop-keyboard-shortcuts-symbolic</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwActionRow">
+                                    <property name="title" translatable="yes">Advanced</property>
+                                    <property name="activatable">True</property>
+                                    <property name="action-name">navigation.push</property>
+                                    <property name="action-target">'advanced'</property>
+                                    <child type="prefix">
+                                      <object class="GtkImage">
+                                        <property name="icon-name">preferences-system-symbolic</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </property>
+                      </object>  
+                    </property>
+                  </object>  
+                </child>
+                <child>
+                  <object class="AdwNavigationPage">
+                    <property name="title" translatable="yes">Sharing</property>
+                    <property name="tag">sharing</property>
+                    <property name="child">
+                      <object class="AdwToolbarView">
+                        <child type="top">
+                          <object class="AdwHeaderBar"/>
+                        </child>
+                        <property name="content">
+                          <object class="AdwPreferencesPage">
+                            <child>
+                              <object class="AdwPreferencesGroup">
+                                <property name="title" translatable="true">Desktop</property>
+                                <child>
+                                  <object class="AdwExpanderRow">
+                                    <property name="title" translatable="true">Clipboard Sync</property>
+                                    <property name="icon-name">network-transmit-receive-symbolic</property>
+                                    <child>
+                                      <object class="AdwSwitchRow">
+                                        <property name="title">To Device</property>
+                                        <property name="icon-name">network-transmit-symbolic</property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="AdwSwitchRow">
+                                        <property name="title">From Device</property>
+                                        <property name="icon-name">network-receive-symbolic</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwSwitchRow">
+                                    <property name="title" translatable="true">Media Players</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwSwitchRow">
+                                    <property name="title" translatable="true">Mouse and Keyboard</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwSwitchRow">
+                                    <property name="title" translatable="true">Volume Control</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="AdwPreferencesGroup">
+                                <property name="title" translatable="true">Files</property>
+                                <child>
+                                  <object class="AdwSwitchRow">
+                                    <property name="title">Receive Files</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwActionRow">
+                                    <property name="title">Save files to</property>
+                                    <child>
+                                      <object class="GtkButton">
+                                        <property name="margin-top">10</property>
+                                        <property name="margin-bottom">10</property>
+                                        <property name="child">
+                                          <object class="AdwButtonContent">
+                                            <property name="icon-name">folder-drag-accept-symbolic</property>
+                                            <property name="label" translatable="yes">_Open</property>
+                                            <property name="use-underline">True</property>
+                                          </object>
+                                        </property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwNavigationPage">
+                    <property name="title" translatable="yes">Battery</property>
+                    <property name="tag">battery</property>
+                    <property name="child">
+                      <object class="AdwToolbarView">
+                        <child type="top">
+                          <object class="AdwHeaderBar"/>
+                        </child>
+                        <property name="content">
+                          <object class="AdwPreferencesPage">
+                            <child>
+                              <object class="AdwPreferencesGroup">
+                                <property name="title" translatable="true">Device Battery</property>
+                                <child>
+                                  <object class="AdwSwitchRow">
+                                    <property name="title" translatable="true">Low Battery Notification</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwExpanderRow">
+                                    <property name="title" translatable="true">Charged up to custom level notification</property>
+                                    <property name="show-enable-switch">True</property>
+                                    <child>
+                                      <object class="AdwSpinRow">
+                                        <property name="title" translatable="true">Battery charge</property>
+                                      </object>        
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwSwitchRow">
+                                    <property name="title" translatable="true">Fully charged notification</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="AdwPreferencesGroup">
+                                <property name="title" translatable="true">System Battery</property>
+                                <child>
+                                  <object class="AdwSwitchRow">
+                                    <property name="title" translatable="true">Share Statistics</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwNavigationPage">
+                    <property name="title" translatable="yes">Commands</property>
+                    <property name="tag">commands</property>
+                    <property name="child">
+                      <object class="AdwToolbarView">
+                        <child type="top">
+                          <object class="AdwHeaderBar"/>
+                        </child>
+                        <property name="content">
+                          <object class="AdwPreferencesPage">
+                            <child>
+                              <object class="AdwPreferencesGroup">
+                                <property name="title" translatable="yes">Commands</property>
+                                <child>
+                                  <object class="AdwActionRow">
+                                    <property name="title">Lock</property>
+                                    <property name="subtitle">xdg-screensaver lock</property>
+                                    <child>
+                                      <object class="GtkButton">
+                                        <property name="margin-top">10</property>
+                                        <property name="margin-bottom">10</property>
+                                        <property name="child">
+                                          <object class="AdwButtonContent">
+                                            <property name="icon-name">document-edit-symbolic</property>
+                                          </object>
+                                        </property>
+                                        <style>
+                                          <class name="circular"/>
+                                        </style>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkButton">
+                                        <property name="margin-top">10</property>
+                                        <property name="margin-bottom">10</property>
+                                        <property name="child">
+                                          <object class="AdwButtonContent">
+                                            <property name="icon-name">user-trash-symbolic</property>
+                                          </object>
+                                        </property>
+                                        <style>
+                                          <class name="circular"/>
+                                          <class name="destructive-action"/>
+                                        </style>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwButtonRow">
+                                    <property name="title" translatable="yes">Add a command</property>
+                                    <property name="start-icon-name">list-add-symbolic</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwNavigationPage">
+                    <property name="title" translatable="yes">Notifications</property>
+                    <property name="tag">notifications</property>
+                    <property name="child">
+                      <object class="AdwToolbarView">
+                        <child type="top">
+                          <object class="AdwHeaderBar"/>
+                        </child>
+                        <property name="content">
+                          <object class="AdwPreferencesPage">
+                            <child>
+                              <object class="AdwPreferencesGroup">
+                                <child>
+                                  <object class="AdwSwitchRow">
+                                    <property name="title" translatable="yes">Share Notifications</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwSwitchRow">
+                                    <property name="title" translatable="yes">Share When Active</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="AdwPreferencesGroup">
+                                <property name="title">Applications</property>
+                              </object>
+                            </child>
+                          </object>
+                        </property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwNavigationPage">
+                    <property name="title" translatable="yes">Telephony</property>
+                    <property name="tag">telephony</property>
+                    <property name="child">
+                      <object class="AdwToolbarView">
+                        <child type="top">
+                          <object class="AdwHeaderBar"/>
+                        </child>
+                        <property name="content">
+                          <object class="AdwPreferencesPage">
+                            <child>
+                              <object class="AdwPreferencesGroup">
+                                <property name="title">Incoming Calls</property>
+                                <child>
+                                  <object class="AdwActionRow">
+                                    <property name="title">Volume</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwSwitchRow">
+                                    <property name="title">Pause Media</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="AdwPreferencesGroup">
+                                <property name="title">Outgoing Calls</property>
+                                <child>
+                                  <object class="AdwActionRow">
+                                    <property name="title">Volume</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwSwitchRow">
+                                    <property name="title">Pause Media</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwSwitchRow">
+                                    <property name="title">Mute Microphone</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwNavigationPage">
+                    <property name="title" translatable="yes">Advanced</property>
+                    <property name="tag">advanced</property>
+                    <property name="child">
+                      <object class="AdwToolbarView">
+                        <child type="top">
+                          <object class="AdwHeaderBar"/>
+                        </child>
+                        <property name="content">
+                          <object class="AdwPreferencesPage"/>
+                        </property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwNavigationPage">
+                    <property name="title" translatable="yes">Keyboard Shurtcuts</property>
+                    <property name="tag">keyboard_shurtcuts</property>
+                    <property name="child">
+                      <object class="AdwToolbarView">
+                        <child type="top">
+                          <object class="AdwHeaderBar"/>
+                        </child>
+                        <property name="content">
+                          <object class="AdwPreferencesPage"/>
+                        </property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </property>
+          </object>
+        </property>
+      </object>
+    </property>
   </template>
-
   <menu id="service-menu-ui">
     <section>
       <item>
-        <!-- TRANSLATORS: Open a dialog to connect to an IP or Bluez device -->
         <attribute name="label" translatable="yes">Add device by IP…</attribute>
         <attribute name="action">win.connect</attribute>
       </item>
@@ -825,13 +618,11 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <section>
       <attribute name="label" translatable="yes">Display Mode</attribute>
       <item>
-        <!-- TRANSLATORS: Show device indicators in the top bar -->
         <attribute name="label" translatable="yes">Panel</attribute>
         <attribute name="action">win.display-mode</attribute>
         <attribute name="target">panel</attribute>
       </item>
       <item>
-        <!-- TRANSLATORS: Show devices in the user menu like Bluetooth -->
         <attribute name="label" translatable="yes">User Menu</attribute>
         <attribute name="action">win.display-mode</attribute>
         <attribute name="target">user-menu</attribute>
@@ -839,7 +630,6 @@ SPDX-License-Identifier: GPL-2.0-or-later
     </section>
     <section>
       <item>
-        <!-- TRANSLATORS: Generate a support log -->
         <attribute name="label" translatable="yes">Generate Support Log</attribute>
         <attribute name="action">win.support-log</attribute>
       </item>

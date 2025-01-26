@@ -4,13 +4,13 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-import Gdk from 'gi://Gdk?version=3.0';
-import 'gi://GdkPixbuf?version=2.0';
-import Gio from 'gi://Gio?version=2.0';
-import 'gi://GIRepository?version=2.0';
-import GLib from 'gi://GLib?version=2.0';
-import GObject from 'gi://GObject?version=2.0';
-import Gtk from 'gi://Gtk?version=3.0';
+import Gdk from 'gi://Gdk?version=4.0';
+import 'gi://GdkPixbuf';
+import Gio from 'gi://Gio';
+import 'gi://GIRepository';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
+import Gtk from 'gi://Gtk?version=4.0';
 import 'gi://Pango?version=1.0';
 
 import system from 'system';
@@ -209,9 +209,9 @@ const Service = GObject.registerClass({
         super.vfunc_activate();
     }
 
-    vfunc_startup() {
-        super.vfunc_startup();
-
+    startup() {
+        super.startup();
+        print("Started")
         this.hold();
 
         // Watch *this* file and stop the service if it's updated/uninstalled
@@ -244,8 +244,8 @@ const Service = GObject.registerClass({
         this.manager.start();
     }
 
-    vfunc_dbus_register(connection, object_path) {
-        if (!super.vfunc_dbus_register(connection, object_path))
+    dbus_register(connection, object_path) {
+        if (!super.dbus_register(connection, object_path))
             return false;
 
         this.manager = new Manager({
@@ -256,14 +256,14 @@ const Service = GObject.registerClass({
         return true;
     }
 
-    vfunc_dbus_unregister(connection, object_path) {
+    dbus_unregister(connection, object_path) {
         this.manager.destroy();
 
-        super.vfunc_dbus_unregister(connection, object_path);
+        super.dbus_unregister(connection, object_path);
     }
 
-    vfunc_open(files, hint) {
-        super.vfunc_open(files, hint);
+    open(files, hint) {
+        super.open(files, hint);
 
         for (const file of files) {
             let action, parameter, title;
@@ -304,7 +304,7 @@ const Service = GObject.registerClass({
         }
     }
 
-    vfunc_shutdown() {
+    shutdown() {
         // Dispose GSettings
         if (this._settings !== undefined)
             this.settings.run_dispose();
@@ -319,7 +319,7 @@ const Service = GObject.registerClass({
 
         // Force a GC to prevent any more calls back into JS, then chain-up
         system.gc();
-        super.vfunc_shutdown();
+        super.shutdown();
     }
 
     /*
@@ -631,7 +631,7 @@ const Service = GObject.registerClass({
         this._cliAction(device, 'shareText', GLib.Variant.new_string(text));
     }
 
-    vfunc_handle_local_options(options) {
+    handle_local_options(options) {
         try {
             if (options.contains('version')) {
                 print(`GSConnect ${Config.PACKAGE_VERSION}`);

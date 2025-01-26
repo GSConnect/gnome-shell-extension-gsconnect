@@ -183,20 +183,32 @@ const Dialog = GObject.registerClass({
         if (this.plugin._player !== undefined)
             this.plugin._player.loopSound('phone-incoming-call', this.cancellable);
 
+        const keyController = new Gtk.EventControllerKey();
+        keyController.connect('key-pressed', this._onKeyPressed.bind(this));
+        this.add_controller(keyController);
+
+        // Crea un controller di eventi per il movimento del mouse
+        const motionController = new Gtk.EventControllerMotion();
+        motionController.connect('motion', this._onMotionNotify.bind(this));
+
+        // Aggiungi il controller al widget (ad esempio una finestra o un'area di disegno)
+        this.add_controller(motionController);
+
         // Show the dialog
         this.show_all();
     }
 
-    vfunc_key_press_event(event) {
+    _onKeyPressed(event) {
         this.response(Gtk.ResponseType.DELETE_EVENT);
 
         return Gdk.EVENT_STOP;
     }
 
-    vfunc_motion_notify_event(event) {
+    _onMotionNotify(event) {
+        // Simula la chiamata a `response` con DELETE_EVENT
         this.response(Gtk.ResponseType.DELETE_EVENT);
 
-        return Gdk.EVENT_STOP;
+        return Gdk.EVENT_STOP; // Interrompe la propagazione
     }
 
     vfunc_response(response_id) {

@@ -7,8 +7,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
 -->
 
 <interface domain="org.gnome.Shell.Extensions.GSConnect">
-  <requires lib="gtk+" version="3.24"/>
-  <template class="GSConnectContactChooser" parent="GtkGrid">
+  <requires lib="gtk+" version="4.0"/>  <template class="GSConnectContactChooser" parent="GtkGrid">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <child>

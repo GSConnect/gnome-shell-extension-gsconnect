@@ -49,6 +49,7 @@ export const DeviceChooser = GObject.registerClass({
     Children: ['device-list', 'cancel-button', 'select-button'],
 }, class DeviceChooser extends Gtk.Dialog {
 
+    
     _init(params = {}) {
         super._init({
             use_header_bar: true,

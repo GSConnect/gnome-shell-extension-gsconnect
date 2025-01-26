@@ -2,12 +2,13 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-import Gdk from 'gi://Gdk';
+import Gdk from 'gi://Gdk?version=4.0';
 import GdkPixbuf from 'gi://GdkPixbuf';
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
-import Gtk from 'gi://Gtk';
+import Gtk from 'gi://Gtk?version=4.0';
+import Adw from 'gi://Adw';
 
 import system from 'system';
 
@@ -94,40 +95,74 @@ async function generateSupportLog(time) {
 const ConnectDialog = GObject.registerClass({
     GTypeName: 'GSConnectConnectDialog',
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/connect-dialog.ui',
-    Children: [
-        'cancel-button', 'connect-button',
-        'lan-grid', 'lan-ip', 'lan-port',
+    InternalChildren: [
+        'cancel_button', 'connect_button',
+        'lan_grid', 'lan_ip', 'lan_port',
     ],
-}, class ConnectDialog extends Gtk.Dialog {
+}, class ConnectDialog extends Adw.Dialog {
 
-    _init(params = {}) {
-        super._init(Object.assign({
-            use_header_bar: true,
-        }, params));
+    _init() {
+        super._init();
+
+        this.set_title = _('Connect to...')
     }
 
-    vfunc_response(response_id) {
+    _onResponse(dialog, response_id) {
         if (response_id === Gtk.ResponseType.OK) {
             try {
                 let address;
 
-                // Lan host/port entered
-                if (this.lan_ip.text) {
-                    const host = this.lan_ip.text;
-                    const port = this.lan_port.value;
-                    address = GLib.Variant.new_string(`lan://${host}:${port}`);
-                } else {
-                    return false;
+                // Retrieve host and port from the input fields
+                const host = this.lan_ip.text.trim();
+                const port = this.lan_port.value;
+
+                // Validate host and port
+                if (!this._validateHostAndPort(host, port)) {
+                    this._showErrorMessage(_('Invalid host or port.'));
+                    return;
                 }
 
+                address = GLib.Variant.new_string(`lan://${host}:${port}`);
                 this.application.activate_action('connect', address);
             } catch (e) {
                 logError(e);
+                this._showErrorMessage(_('An unexpected error occurred.'));
             }
         }
 
-        this.destroy();
-        return false;
+        // Close the dialog
+        this.close();
+    }
+
+    _validateHostAndPort(host, port) {
+        // Ensure host is non-empty and port is within valid range
+        if (!host || port < 1 || port > 65535) {
+            return false;
+        }
+
+        try {
+            return GLib.InetAddress.new_from_string(host) !== null;
+        } catch {
+            return false;
+        }
+    }
+
+    _showErrorMessage(message) {
+        // Create a transient error dialog
+        const errorDialog = new Adw.MessageDialog({
+            transient_for: this,
+            modal: true,
+            body: message,
+        });
+
+        // Add a close button to dismiss the dialog
+        errorDialog.add_response('close', _('Close'));
+        errorDialog.set_response_appearance('close', Adw.ResponseAppearance.DESTRUCTIVE);
+
+        // Handle the response to close the dialog
+        errorDialog.connect('response', () => errorDialog.close());
+
+        errorDialog.show();
     }
 });
 
@@ -146,24 +181,16 @@ export const Window = GObject.registerClass({
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/preferences-window.ui',
     Children: [
         // HeaderBar
-        'headerbar', 'infobar', 'stack',
-        'service-menu', 'service-edit', 'refresh-button',
-        'device-menu', 'prev-button',
-
-        // Popover
-        'rename-popover', 'rename', 'rename-label', 'rename-entry', 'rename-submit',
-
-        // Focus Box
-        'service-window', 'service-box',
+        'headerbar', 'refresh-button',
 
         // Device List
-        'device-list', 'device-list-spinner', 'device-list-placeholder',
+        'device-list'
     ],
-}, class PreferencesWindow extends Gtk.ApplicationWindow {
+}, class PreferencesWindow extends Adw.ApplicationWindow {
 
     _init(params = {}) {
         super._init(params);
-
+        
         // Service Settings
         this.settings = new Gio.Settings({
             settings_schema: Config.GSCHEMA.lookup(
@@ -191,22 +218,24 @@ export const Window = GObject.registerClass({
         );
 
         // HeaderBar (Service Name)
-        this.headerbar.title = this.settings.get_string('name');
-        this.rename_entry.text = this.headerbar.title;
+        //this.headerbar.title = this.settings.get_string('name');
+        //this.rename_entry.text = this.headerbar.title;
 
         // Scroll with keyboard focus
-        this.service_box.set_focus_vadjustment(this.service_window.vadjustment);
+        //this.service_box.set_focus_vadjustment(this.service_window.vadjustment);
 
         // Device List
-        this.device_list.set_header_func(rowSeparators);
+        //this.device_list.set_header_func(rowSeparators);
 
         // Discoverable InfoBar
+        /*
         this.settings.bind(
             'discoverable',
             this.infobar,
             'reveal-child',
             Gio.SettingsBindFlags.INVERT_BOOLEAN
         );
+        */
         this.add_action(this.settings.create_action('discoverable'));
 
         // Application Menu
@@ -240,7 +269,7 @@ export const Window = GObject.registerClass({
         this.settings.set_boolean('show-indicators', (mode === 'panel'));
     }
 
-    vfunc_delete_event(event) {
+    delete_event(event) {
         if (this.service) {
             this.service.disconnect(this._deviceAddedId);
             this.service.disconnect(this._deviceRemovedId);
@@ -298,12 +327,11 @@ export const Window = GObject.registerClass({
 
     _refresh() {
         if (this.service.active && this.device_list.get_children().length < 1) {
-            this.device_list_spinner.active = true;
+            //this.device_list_spinner.active = true;
             this.service.activate_action('refresh', null);
         } else {
-            this.device_list_spinner.active = false;
+            //this.device_list_spinner.active = false;
         }
-
         return GLib.SOURCE_CONTINUE;
     }
 
@@ -387,12 +415,10 @@ export const Window = GObject.registerClass({
      * Connect to..." Dialog
      */
     _connectDialog() {
-        new ConnectDialog({
-            application: Gio.Application.get_default(),
-            modal: true,
-            transient_for: this,
-        });
+        const dialog = new ConnectDialog();
+        dialog.present(this)
     }
+    
 
     /*
      * "Generate Support Log" GAction
@@ -640,9 +666,10 @@ export const Window = GObject.registerClass({
     }
 
     _onServiceChanged(service, pspec) {
-        if (this.service.active)
+        /*if (this.service.active)
             this.device_list_placeholder.label = _('Searching for devices…');
         else
             this.device_list_placeholder.label = _('Waiting for service…');
+        */
     }
 });

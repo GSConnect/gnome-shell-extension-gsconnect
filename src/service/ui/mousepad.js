@@ -131,73 +131,93 @@ export const InputDialog = GObject.registerClass({
         // Scroll Input
         this.add_events(Gdk.EventMask.SCROLL_MASK);
 
+
+        this.connect('notify::has-keyboard-focus', this._onGrabBroken.bind(this));
+        this.connect('notify::is-active', this._onWindowStateChanged.bind(this));
+
+        let keyController = new Gtk.EventControllerKey();
+        keyController.connect('key-released', this._onKeyRelease.bind(this));
+        keyController.connect('key-pressed', this._onKeyPress.bind(this));
+        this.add_controller(keyController);
+
+        let scrollController = new Gtk.EventControllerScroll({
+            flags: Gtk.EventControllerScrollFlags.BOTH_AXES, // Ascolta scorrimenti su entrambi gli assi
+        });
+        scrollController.connect('scroll', this._onScroll.bind(this));
+        this.add_controller(scrollController);
+
+        const focusController = new Gtk.EventControllerFocus();
+        focusController.connect('enter', () => this._grab());
+        focusController.connect('leave', () => this._ungrab());
+    
+        this.add_controller(focusController);
+
         this.show_all();
     }
 
-    vfunc_delete_event(event) {
+    vfunc_close_request(event) {
         this._ungrab();
         return this.hide_on_delete();
     }
 
-    vfunc_grab_broken_event(event) {
-        if (event.keyboard)
-            this._ungrab();
-
-        return false;
+    _onGrabBroken(widget, param) {
+        if (!this.has_focus) {
+            this._ungrab(); // Chiamata alla tua funzione personalizzata
+        }
     }
-
-    vfunc_key_release_event(event) {
-        if (!this.plugin.state)
-            debug('ignoring remote keyboard state');
-
-        const keyvalLower = Gdk.keyval_to_lower(event.keyval);
-        const realMask = event.state & Gtk.accelerator_get_default_mod_mask();
-
+   
+    _onKeyRelease(controller, keyval, keycode, state) {
+        if (!this.plugin.state) {
+            debug('Ignoring remote keyboard state');
+            return false;    
+        }
+    
+        const keyvalLower = Gdk.keyval_to_lower(keyval); // keyval è fornito direttamente dal segnale
+        const realMask = state & Gtk.accelerator_get_default_mod_mask();
+    
+        // Aggiorna lo stato dei label come nell'implementazione originale
         this.alt_label.sensitive = !isAlt(keyvalLower) && (realMask & Gdk.ModifierType.MOD1_MASK);
         this.ctrl_label.sensitive = !isCtrl(keyvalLower) && (realMask & Gdk.ModifierType.CONTROL_MASK);
         this.shift_label.sensitive = !isShift(keyvalLower) && (realMask & Gdk.ModifierType.SHIFT_MASK);
         this.super_label.sensitive = !isSuper(keyvalLower) && (realMask & Gdk.ModifierType.SUPER_MASK);
-
-        return super.vfunc_key_release_event(event);
+    
+        return false; // Ritorna false per permettere ad altri gestori di trattare l'evento
     }
 
-    vfunc_key_press_event(event) {
-        if (!this.plugin.state)
-            debug('ignoring remote keyboard state');
+    _onKeyPress(controller, keyval, keycode, state) {
+        if (!this.plugin.state) {
+            debug('Ignoring remote keyboard state');
+            return false;
+        }
 
-        let keyvalLower = Gdk.keyval_to_lower(event.keyval);
-        let realMask = event.state & Gtk.accelerator_get_default_mod_mask();
+        let keyvalLower = Gdk.keyval_to_lower(keyval); // `keyval` è fornito direttamente dal segnale
+        let realMask = state & Gtk.accelerator_get_default_mod_mask();
 
+        // Aggiorna lo stato dei label come nell'implementazione originale
         this.alt_label.sensitive = isAlt(keyvalLower) || (realMask & Gdk.ModifierType.MOD1_MASK);
         this.ctrl_label.sensitive = isCtrl(keyvalLower) || (realMask & Gdk.ModifierType.CONTROL_MASK);
         this.shift_label.sensitive = isShift(keyvalLower) || (realMask & Gdk.ModifierType.SHIFT_MASK);
         this.super_label.sensitive = isSuper(keyvalLower) || (realMask & Gdk.ModifierType.SUPER_MASK);
 
-        // Wait for a real key before sending
-        if (MOD_KEYS.includes(keyvalLower))
-            return false;
+        // Aspetta un tasto reale prima di inviare
+        if (MOD_KEYS.includes(keyvalLower)) return false;
 
-        // Normalize Tab
-        if (keyvalLower === Gdk.KEY_ISO_Left_Tab)
-            keyvalLower = Gdk.KEY_Tab;
+        // Normalizza Tab
+        if (keyvalLower === Gdk.KEY_ISO_Left_Tab) keyvalLower = Gdk.KEY_Tab;
 
-        // Put shift back if it changed the case of the key, not otherwise.
-        if (keyvalLower !== event.keyval)
-            realMask |= Gdk.ModifierType.SHIFT_MASK;
+        // Aggiungi Shift se ha cambiato il caso del tasto
+        if (keyvalLower !== keyval) realMask |= Gdk.ModifierType.SHIFT_MASK;
 
-        // HACK: we don't want to use SysRq as a keybinding (but we do want
-        // Alt+Print), so we avoid translation from Alt+Print to SysRq
+        // Gestione speciale per Alt+Print
         if (keyvalLower === Gdk.KEY_Sys_Req && (realMask & Gdk.ModifierType.MOD1_MASK) !== 0)
             keyvalLower = Gdk.KEY_Print;
 
-        // CapsLock isn't supported as a keybinding modifier, so keep it from
-        // confusing us
+        // Ignora il CapsLock come modificatore
         realMask &= ~Gdk.ModifierType.LOCK_MASK;
 
-        if (keyvalLower === 0)
-            return false;
+        if (keyvalLower === 0) return false;
 
-        debug(`keyval: ${event.keyval}, mask: ${realMask}`);
+        debug(`keyval: ${keyval}, mask: ${realMask}`);
 
         const request = {
             alt: !!(realMask & Gdk.ModifierType.MOD1_MASK),
@@ -208,12 +228,11 @@ export const InputDialog = GObject.registerClass({
         };
 
         // specialKey
-        if (ReverseKeyMap.has(event.keyval)) {
-            request.specialKey = ReverseKeyMap.get(event.keyval);
-
-        // key
+        if (ReverseKeyMap.has(keyval)) {
+            request.specialKey = ReverseKeyMap.get(keyval);
         } else {
-            const codePoint = Gdk.keyval_to_unicode(event.keyval);
+            // key
+            const codePoint = Gdk.keyval_to_unicode(keyval);
             request.key = String.fromCodePoint(codePoint);
         }
 
@@ -222,38 +241,27 @@ export const InputDialog = GObject.registerClass({
             body: request,
         });
 
-        // Pass these key combinations rather than using the echo reply
-        if (request.alt || request.ctrl || request.super)
-            return super.vfunc_key_press_event(event);
+        // Passa queste combinazioni di tasti
+        if (request.alt || request.ctrl || request.super) return true;
 
         return false;
     }
 
-    vfunc_scroll_event(event) {
-        if (event.delta_x === 0 && event.delta_y === 0)
-            return true;
-
+    _onScroll(controller, dx, dy) {
+        // Ignora scorrimenti nulli
+        if (dx === 0 && dy === 0) return true;
+    
+        // Invia il pacchetto al dispositivo
         this.device.sendPacket({
             type: 'kdeconnect.mousepad.request',
             body: {
                 scroll: true,
-                dx: event.delta_x * 200,
-                dy: event.delta_y * 200,
+                dx: dx * 200,
+                dy: dy * 200,
             },
         });
-        return true;
-    }
-
-    vfunc_window_state_event(event) {
-        if (!this.plugin.state)
-            debug('ignoring remote keyboard state');
-
-        if (event.new_window_state & Gdk.WindowState.FOCUSED)
-            this._grab();
-        else
-            this._ungrab();
-
-        return super.vfunc_window_state_event(event);
+    
+        return true; // Evento gestito
     }
 
     _onInsertText(buffer, location, text, len) {

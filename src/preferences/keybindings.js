@@ -66,6 +66,12 @@ export const ShortcutChooserDialog = GObject.registerClass({
         this.summary = _('Enter a new shortcut to change <b>%s</b>').format(
             params.summary
         );
+        
+        const keyController = new Gtk.EventControllerKey();
+        keyController.connect('key-pressed', this._onKeyPressed.bind(this));
+
+        // Aggiungi il controller al widget
+        this.add_controller(keyController);
     }
 
     get accelerator() {
@@ -84,64 +90,67 @@ export const ShortcutChooserDialog = GObject.registerClass({
         this.summary_label.label = value;
     }
 
-    vfunc_key_press_event(event) {
+    _onKeyPressed(controller, event) {
+        // Convertiamo il valore del tasto in minuscolo
         let keyvalLower = Gdk.keyval_to_lower(event.keyval);
         let realMask = event.state & Gtk.accelerator_get_default_mod_mask();
-
-        // TODO: Critical: 'WIDGET_REALIZED_FOR_EVENT (widget, event)' failed
-        if (_MODIFIERS.includes(keyvalLower))
-            return true;
-
-        // Normalize Tab
-        if (keyvalLower === Gdk.KEY_ISO_Left_Tab)
+    
+        // Ignora i modificatori puri (es. Shift, Ctrl, Alt)
+        if (_MODIFIERS.includes(keyvalLower)) {
+            return Gdk.EVENT_STOP; // Interrompe la propagazione
+        }
+    
+        // Normalizziamo Tab
+        if (keyvalLower === Gdk.KEY_ISO_Left_Tab) {
             keyvalLower = Gdk.KEY_Tab;
-
-        // Put shift back if it changed the case of the key, not otherwise.
-        if (keyvalLower !== event.keyval)
+        }
+    
+        // Gestiamo Shift per riconoscere tasti maiuscoli
+        if (keyvalLower !== event.keyval) {
             realMask |= Gdk.ModifierType.SHIFT_MASK;
-
-        // HACK: we don't want to use SysRq as a keybinding (but we do want
-        // Alt+Print), so we avoid translation from Alt+Print to SysRq
-        if (keyvalLower === Gdk.KEY_Sys_Req && (realMask & Gdk.ModifierType.MOD1_MASK) !== 0)
+        }
+    
+        // Evita che Alt+Print venga interpretato come SysRq
+        if (keyvalLower === Gdk.KEY_Sys_Req && (realMask & Gdk.ModifierType.MOD1_MASK) !== 0) {
             keyvalLower = Gdk.KEY_Print;
-
-        // A single Escape press cancels the editing
+        }
+    
+        // Esc cancella l'editing
         if (realMask === 0 && keyvalLower === Gdk.KEY_Escape) {
-            this.response(ResponseType.CANCEL);
-            return false;
+            this.response(Gtk.ResponseType.CANCEL);
+            return Gdk.EVENT_STOP;
         }
-
-        // Backspace disables the current shortcut
+    
+        // Backspace disabilita il collegamento corrente
         if (realMask === 0 && keyvalLower === Gdk.KEY_BackSpace) {
-            this.response(ResponseType.UNSET);
-            return false;
+            this.response(Gtk.ResponseType.UNSET);
+            return Gdk.EVENT_STOP;
         }
-
-        // CapsLock isn't supported as a keybinding modifier, so keep it from
-        // confusing us
+    
+        // Ignoriamo CapsLock come modificatore
         realMask &= ~Gdk.ModifierType.LOCK_MASK;
-
+    
+        // Verifica se c'è una combinazione tasto-modificatore valida
         if (keyvalLower !== 0 && realMask !== 0) {
-            this._ungrab();
-
-            // Set the accelerator property/label
+            this._ungrab(); // Annulla la "presa" attuale
+    
+            // Configura l'acceleratore e aggiorna l'etichetta
             this.accelerator = Gtk.accelerator_name(keyvalLower, realMask);
-
-            // TRANSLATORS: When a keyboard shortcut is unavailable
-            // Example: [Ctrl]+[S] is already being used
-            this.conflict_label.label = _('%s is already being used').format(
+            this.conflict_label.label = _('%s è già in uso').format(
                 Gtk.accelerator_get_label(keyvalLower, realMask)
             );
-
-            // Show Cancel button and switch to confirm/conflict page
+    
+            // Mostra il pulsante "Annulla" e passa alla pagina di conferma
             this.cancel_button.visible = true;
             this.stack.visible_child_name = 'confirm';
-
+    
+            // Esegui eventuali controlli di conflitti
             this._check();
         }
-
-        return true;
+    
+        return Gdk.EVENT_STOP; // Interrompe la propagazione
     }
+    
 
     async _check() {
         try {

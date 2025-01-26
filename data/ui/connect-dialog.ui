@@ -7,18 +7,17 @@ SPDX-License-Identifier: GPL-2.0-or-later
 -->
 
 <interface>
-  <requires lib="gtk+" version="3.24"/>
+  <requires lib="gtk+" version="4.0"/>  
   <object class="GtkAdjustment" id="port-adjustment">
     <property name="lower">1716</property>
     <property name="upper">1764</property>
     <property name="step_increment">1</property>
     <property name="page_increment">1</property>
   </object>
-  <template class="GSConnectConnectDialog" parent="GtkDialog">
+  <template class="GSConnectConnectDialog" parent="AdwDialog">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Connect to…</property>
-    <property name="type_hint">dialog</property>
     <property name="visible">True</property>
     <child type="action">
       <object class="GtkButton" id="cancel-button">
@@ -29,7 +28,6 @@ SPDX-License-Identifier: GPL-2.0-or-later
     </child>
     <child type="action">
       <object class="GtkButton" id="connect-button">
-        <property name="can-default">True</property>
         <property name="label" translatable="yes">Connect</property>
         <property name="visible">True</property>
       </object>

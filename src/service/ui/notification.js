@@ -97,7 +97,7 @@ const ReplyDialog = GObject.registerClass({
         dialog.device.disconnect(dialog._connectedId);
     }
 
-    vfunc_delete_event() {
+    vfunc_close_request() {
         this.saveGeometry();
 
         return false;

@@ -187,6 +187,16 @@ export const Avatar = GObject.registerClass({
             visible: true,
         });
 
+        // Imposta l'area di disegno
+        this.drawingArea = new Gtk.DrawingArea();
+        this.drawingArea.set_content_width(100);  // Dimensioni di esempio
+        this.drawingArea.set_content_height(100); // Dimensioni di esempio
+
+        // Collega il segnale "draw" all'handler
+        this.drawingArea.connect('draw', this._onDraw.bind(this));
+
+        this.append(this.drawingArea);
+
         this.contact = contact;
     }
 
@@ -272,27 +282,27 @@ export const Avatar = GObject.registerClass({
         }
     }
 
-    vfunc_draw(cr) {
-        if (!this._surface)
+    _onDraw(drawingArea, cr) {
+        if (!this._surface) {
             this._loadSurface();
-
+        }
+    
         // Clip to a circle
-        const rad = this.width_request / 2;
+        const rad = drawingArea.get_allocated_width() / 2;
         cr.arc(rad, rad, rad, 0, 2 * Math.PI);
         cr.clipPreserve();
-
-        // Fill the background if the the surface is offset
+    
+        // Fill the background if the surface is offset
         if (this._offset > 0) {
             Gdk.cairo_set_source_rgba(cr, this.rgba);
             cr.fill();
         }
-
+    
         // Draw the avatar/icon
         cr.setSourceSurface(this._surface, this._offset, this._offset);
         cr.paint();
-
-        cr.$dispose();
-        return Gdk.EVENT_PROPAGATE;
+    
+        return false; // Propaga l'evento
     }
 });
 
