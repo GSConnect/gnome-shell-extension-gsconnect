@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-03 13:38-0500\n"
-"PO-Revision-Date: 2025-01-26 11:33\n"
+"PO-Revision-Date: 2025-01-26 12:40\n"
 "Last-Translator: \n"
 "Language-Team: Bulgarian\n"
 "Language: bg_BG\n"
@@ -723,19 +723,19 @@ msgstr "Изпращане на известие"
 
 #: src/service/daemon.js:418
 msgid "Notification App Name"
-msgstr "Име на приложение за известяване"
+msgstr "Име на приложение за известие"
 
 #: src/service/daemon.js:427
 msgid "Notification Body"
-msgstr "Съдържание за известяване"
+msgstr "Съдържание за известие"
 
 #: src/service/daemon.js:436
 msgid "Notification Icon"
-msgstr "Икона за известяване"
+msgstr "Икона за известие"
 
 #: src/service/daemon.js:445
 msgid "Notification ID"
-msgstr "Идент. № на известието"
+msgstr "Идент. № на известие"
 
 #: src/service/daemon.js:454 src/service/plugins/ping.js:13
 #: src/service/plugins/ping.js:20 src/service/plugins/ping.js:47
@@ -905,7 +905,7 @@ msgstr "Отмяна на известие"
 
 #: src/service/plugins/notification.js:40
 msgid "Close Notification"
-msgstr "Затвори известието"
+msgstr "Затвори известие"
 
 #: src/service/plugins/notification.js:48
 msgid "Reply Notification"
@@ -1144,79 +1144,79 @@ msgstr "Току що"
 #: src/service/ui/messaging.js:114
 #, javascript-format
 msgid "Yesterday・%s"
-msgstr ""
+msgstr "Вчера・%s"
 
 #: src/service/ui/messaging.js:151
 #, javascript-format
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d минута"
+msgstr[1] "%d минути"
 
 #: src/service/ui/messaging.js:401
 msgid "Not available"
-msgstr ""
+msgstr "Не е наличен"
 
 #: src/service/ui/messaging.js:758
 msgid "Group Message"
-msgstr ""
+msgstr "Групово съобщение"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:773
 #, javascript-format
 msgid "You: %s"
-msgstr ""
+msgstr "Вие: %s"
 
 #: src/service/ui/messaging.js:959
 #, javascript-format
 msgid "And %d other contact"
 msgid_plural "And %d others"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "И %d друг контакт"
+msgstr[1] "И %d други"
 
 #. TRANSLATORS: Displayed when the remote keyboard is not ready to accept input
 #: src/service/ui/mousepad.js:115
 #, javascript-format
 msgid "Remote keyboard on %s is not active"
-msgstr ""
+msgstr "Отдалечената клавиатура на %s не е активна"
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
 #: src/shell/device.js:124
 #, javascript-format
 msgid "%d%% (Estimating…)"
-msgstr ""
+msgstr "%d%% (Изчисляване...)"
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
 #: src/shell/device.js:133
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
-msgstr ""
+msgstr "%d%% (%d∶%02d До запълване)"
 
 #. TRANSLATORS: Estimated time until battery is empty
 #. EXAMPLE: 42% (12:15 Remaining)
 #: src/shell/device.js:141
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
-msgstr ""
+msgstr "%d%% (%d∶%02d Остава)"
 
 #: src/shell/notification.js:69
 msgid "Reply"
-msgstr ""
+msgstr "Отговор"
 
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:32
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
+msgstr "Споделете връзки с GSConnect, директно към браузъра или от SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:36
 msgid "Service Unavailable"
-msgstr ""
+msgstr "Услугата не е налична"
 
 #. TRANSLATORS: Open URL with the device's browser
 #: webextension/gettext.js:40
 msgid "Open in Browser"
-msgstr ""
+msgstr "Отвори в браузър"
 
