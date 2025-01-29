@@ -54,7 +54,7 @@ function toggleAction(tab = null) {
             browser.browserAction.disable(tab.id);
         else
             browser.browserAction.enable(tab.id);
-    } catch (e) {
+    } catch {
         browser.browserAction.disable();
     }
 }
@@ -87,9 +87,8 @@ async function postMessage(message) {
  *
  * @param {Object} message - A message from the NMH to forward
  * @param {*} sender - A message from the NMH to forward
- * @param {*} sendResponse - A message from the NMH to forward
  */
-async function onPopupMessage(message, sender, sendResponse) {
+async function onPopupMessage(message, sender) {
     try {
         if (sender.url.includes('/popup.html'))
             await postMessage(message);
@@ -117,9 +116,8 @@ async function forwardPortMessage(message) {
  * Context Menu Item Callback
  *
  * @param {menus.OnClickData} info - Information about the item and context
- * @param {tabs.Tab} tab - The details of the tab where the click took place
  */
-async function onContextItem(info, tab) {
+async function onContextItem(info) {
     try {
         const [id, action] = info.menuItemId.split(':');
 
@@ -302,10 +300,8 @@ async function onPortMessage(message) {
 
 /**
  * Callback for disconnection from the native-messaging-host
- *
- * @param {object} port - The port that is now invalid
  */
-async function onDisconnect(port) {
+async function onDisconnect() {
     try {
         State.connected = false;
         State.port = null;
