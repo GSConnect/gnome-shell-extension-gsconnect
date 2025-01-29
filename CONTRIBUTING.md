@@ -109,12 +109,12 @@ GSConnect can function properly when run (details in `meson_options.txt`). Below
 is a typical example for Fedora:
 
 ```sh
-$ meson --prefix=/usr \
+$ meson setup --prefix=/usr \
         --libdir=lib/ \
         -Dgnome_shell_libdir=/usr/lib64/ \
         -Dfirewalld=true \
         _build
-$ ninja -C _build install
+$ 
 ```
 
 ### Typical Workflow

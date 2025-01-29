@@ -370,7 +370,7 @@ const NotificationPlugin = GObject.registerClass({
      * @param {Gio.ThemedIcon} icon - The GIcon to upload
      */
     _uploadThemedIcon(packet, icon) {
-        const theme = Gtk.IconTheme.get_default();
+        const theme = Gtk.IconTheme.get_for_display(Gdk.Display.get_default());
         let file = null;
 
         for (const name of icon.names) {

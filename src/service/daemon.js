@@ -11,7 +11,7 @@ import 'gi://GIRepository';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk?version=4.0';
-import 'gi://Pango?version=1.0';
+//import 'gi://Pango?version=1.0';
 
 import system from 'system';
 
@@ -209,9 +209,9 @@ const Service = GObject.registerClass({
         super.vfunc_activate();
     }
 
-    startup() {
-        super.startup();
-        print("Started")
+    vfunc_startup() {
+        super.vfunc_startup();
+
         this.hold();
 
         // Watch *this* file and stop the service if it's updated/uninstalled
@@ -223,8 +223,8 @@ const Service = GObject.registerClass({
         // Init some resources
         const provider = new Gtk.CssProvider();
         provider.load_from_resource(`${Config.APP_PATH}/application.css`);
-        Gtk.StyleContext.add_provider_for_screen(
-            Gdk.Screen.get_default(),
+        Gtk.StyleContext.add_provider_for_display(
+            Gdk.Display.get_default(),
             provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         );
@@ -244,8 +244,8 @@ const Service = GObject.registerClass({
         this.manager.start();
     }
 
-    dbus_register(connection, object_path) {
-        if (!super.dbus_register(connection, object_path))
+    vfunc_dbus_register(connection, object_path) {
+        if (!super.vfunc_dbus_register(connection, object_path))
             return false;
 
         this.manager = new Manager({
@@ -256,14 +256,14 @@ const Service = GObject.registerClass({
         return true;
     }
 
-    dbus_unregister(connection, object_path) {
+    vfunc_dbus_unregister(connection, object_path) {
         this.manager.destroy();
 
-        super.dbus_unregister(connection, object_path);
+        super.vfunc_dbus_unregister(connection, object_path);
     }
 
-    open(files, hint) {
-        super.open(files, hint);
+    vfunc_open(files, hint) {
+        super.vfunc_open(files, hint);
 
         for (const file of files) {
             let action, parameter, title;
@@ -304,7 +304,7 @@ const Service = GObject.registerClass({
         }
     }
 
-    shutdown() {
+    vfunc_shutdown() {
         // Dispose GSettings
         if (this._settings !== undefined)
             this.settings.run_dispose();
@@ -319,7 +319,7 @@ const Service = GObject.registerClass({
 
         // Force a GC to prevent any more calls back into JS, then chain-up
         system.gc();
-        super.shutdown();
+        super.vfunc_shutdown();
     }
 
     /*
@@ -631,7 +631,7 @@ const Service = GObject.registerClass({
         this._cliAction(device, 'shareText', GLib.Variant.new_string(text));
     }
 
-    handle_local_options(options) {
+    vfunc_handle_local_options(options) {
         try {
             if (options.contains('version')) {
                 print(`GSConnect ${Config.PACKAGE_VERSION}`);
@@ -699,4 +699,3 @@ const Service = GObject.registerClass({
 });
 
 await (new Service()).runAsync([system.programInvocationName].concat(ARGV));
-

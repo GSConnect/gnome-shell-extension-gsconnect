@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 import Gdk from 'gi://Gdk?version=4.0';
-import GdkPixbuf from 'gi://GdkPixbuf';
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
@@ -13,8 +12,8 @@ import Adw from 'gi://Adw';
 import system from 'system';
 
 import Config from '../config.js';
-import {Panel, rowSeparators} from './device.js';
-import {Service} from '../utils/remote.js';
+import { DeviceNavigationPage } from './device.js';
+import { Service } from '../utils/remote.js';
 
 
 /*
@@ -88,16 +87,56 @@ async function generateSupportLog(time) {
     }
 }
 
+const DeviceRow = GObject.registerClass({
+    GTypeName: 'DeviceRow',
+}, class DeviceRow extends Adw.ActionRow {
+
+    _init(device) {
+        super._init();
+        this.device = device
+        // Keep status up to date
+        this.set_title(this.device.name);
+
+        const icon = new Gtk.Image({
+            icon_name : this.device.icon_name,
+            visible : true,
+        });
+        
+        this.add_prefix(icon);
+        
+        this.device.connect(
+            'notify::connected',
+            this._onDeviceChanged.bind(null, this.device)
+        );
+        this.device.connect(
+            'notify::paired',
+            this._onDeviceChanged.bind(null, this.device)
+        );
+        this._onDeviceChanged(this.device, null);
+    }
+
+    _onDeviceChanged(device, pspec) {
+        switch (false) {
+            case device.paired:
+                this.set_subtitle(_('Unpaired'));
+                break;
+            case device.connected:
+                this.set_subtitle(_('Disconnected'));
+                break;
+            default:
+                this.set_subtitle(_('Connected'));
+        }
+    }
+});
 
 /**
  * "Connect to..." Dialog
  */
 const ConnectDialog = GObject.registerClass({
     GTypeName: 'GSConnectConnectDialog',
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/connect-dialog.ui',
-    InternalChildren: [
-        'cancel_button', 'connect_button',
-        'lan_grid', 'lan_ip', 'lan_port',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/device-page.ui',
+    Children: [
+        'lan_ip', 'lan_port',
     ],
 }, class ConnectDialog extends Adw.Dialog {
 
@@ -180,11 +219,10 @@ export const Window = GObject.registerClass({
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/preferences-window.ui',
     Children: [
-        // HeaderBar
-        'headerbar', 'refresh-button',
-
-        // Device List
-        'device-list'
+        'window_title' ,
+        'split_view' ,
+        'refresh_button' , 
+        'device_list'
     ],
 }, class PreferencesWindow extends Adw.ApplicationWindow {
 
@@ -198,7 +236,8 @@ export const Window = GObject.registerClass({
                 true
             ),
         });
-
+        this.device_list.connect("row-selected", this._onDeviceSelected.bind(this));
+            
         // Service Proxy
         this.service = new Service();
 
@@ -217,26 +256,9 @@ export const Window = GObject.registerClass({
             this._onServiceChanged.bind(this)
         );
 
-        // HeaderBar (Service Name)
-        //this.headerbar.title = this.settings.get_string('name');
-        //this.rename_entry.text = this.headerbar.title;
-
-        // Scroll with keyboard focus
-        //this.service_box.set_focus_vadjustment(this.service_window.vadjustment);
-
-        // Device List
-        //this.device_list.set_header_func(rowSeparators);
-
-        // Discoverable InfoBar
-        /*
-        this.settings.bind(
-            'discoverable',
-            this.infobar,
-            'reveal-child',
-            Gio.SettingsBindFlags.INVERT_BOOLEAN
-        );
-        */
         this.add_action(this.settings.create_action('discoverable'));
+
+        this.refresh_button.connect("clicked", this._refresh.bind(this))
 
         // Application Menu
         this._initMenu();
@@ -326,11 +348,8 @@ export const Window = GObject.registerClass({
     }
 
     _refresh() {
-        if (this.service.active && this.device_list.get_children().length < 1) {
-            //this.device_list_spinner.active = true;
+        if (this.service.active) {
             this.service.activate_action('refresh', null);
-        } else {
-            //this.device_list_spinner.active = false;
         }
         return GLib.SOURCE_CONTINUE;
     }
@@ -379,43 +398,31 @@ export const Window = GObject.registerClass({
      */
     _aboutDialog() {
         if (this._about === undefined) {
-            this._about = new Gtk.AboutDialog({
-                application: Gio.Application.get_default(),
-                authors: [
-                    'Andy Holmes <andrew.g.r.holmes@gmail.com>',
-                    'Bertrand Lacoste <getzze@gmail.com>',
-                    'Frank Dana <ferdnyc@gmail.com>',
-                ],
+            this._about = new Adw.AboutDialog({
+                application_name :  _("GSConnect"),
+                application_icon : "org.gnome.Shell.Extensions.GSConnect",
                 comments: _('A complete KDE Connect implementation for GNOME'),
-                logo: GdkPixbuf.Pixbuf.new_from_resource_at_scale(
-                    '/org/gnome/Shell/Extensions/GSConnect/icons/org.gnome.Shell.Extensions.GSConnect.svg',
-                    128,
-                    128,
-                    true
-                ),
-                program_name: 'GSConnect',
-                // TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
-                translator_credits: _('translator-credits'),
-                version: Config.PACKAGE_VERSION.toString(),
-                website: Config.PACKAGE_URL,
+                version : Config.PACKAGE_VERSION.toString(),
                 license_type: Gtk.License.GPL_2_0,
-                modal: true,
-                transient_for: this,
+                website: Config.PACKAGE_URL,
+                translator_credits: _('translator-credits'),
+                developers: [
+                    "Andy Holmes <andrew.g.r.holmes@gmail.com>",
+                    "Bertrand Lacoste <getzze@gmail.com>",
+                    "Frank Dana <ferdnyc@gmail.com>"
+                ],
             });
-
-            // Persist
-            this._about.connect('response', (dialog) => dialog.hide_on_delete());
-            this._about.connect('delete-event', (dialog) => dialog.hide_on_delete());
+            this._about.present(this);
         }
-
-        this._about.present();
     }
 
     /**
      * Connect to..." Dialog
      */
     _connectDialog() {
-        const dialog = new ConnectDialog();
+        if (this.dialog == null) {
+            this.dialog = new ConnectDialog();
+        }
         dialog.present(this)
     }
     
@@ -424,12 +431,14 @@ export const Window = GObject.registerClass({
      * "Generate Support Log" GAction
      */
     _generateSupportLog() {
-        const dialog = new Gtk.MessageDialog({
-            text: _('Generate Support Log'),
-            secondary_text: _('Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log.'),
+        const dialog = new Adw.MessageDialog({
+            heading: _('Generate Support Log'),
+            body: _('Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log.'),
+            transient_for: this
         });
-        dialog.add_button(_('Cancel'), Gtk.ResponseType.CANCEL);
-        dialog.add_button(_('Review Log'), Gtk.ResponseType.OK);
+        
+        dialog.add_response("cancel",  _("_Cancel"));
+        dialog.add_response("review_log",  _("Review Log"));
 
         // Enable debug logging and mark the current time
         this.settings.set_boolean('debug', true);
@@ -439,13 +448,14 @@ export const Window = GObject.registerClass({
             // Disable debug logging and destroy the dialog
             this.settings.set_boolean('debug', false);
             dialog.destroy();
+            print(response_id);
 
             // Only generate a log if instructed
-            if (response_id === Gtk.ResponseType.OK)
+            if (response_id === "review_log")
                 generateSupportLog(now);
         });
 
-        dialog.show_all();
+        dialog.present();
     }
 
     /*
@@ -455,43 +465,9 @@ export const Window = GObject.registerClass({
         const uri = `${Config.PACKAGE_URL}/wiki/Help`;
         Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
     }
-
+    
     /*
-     * HeaderBar Callbacks
-     */
-    _onPrevious(button, event) {
-        // HeaderBar (Service)
-        this.prev_button.visible = false;
-        this.device_menu.visible = false;
-
-        this.refresh_button.visible = true;
-        this.service_edit.visible = true;
-        this.service_menu.visible = true;
-
-        this.headerbar.title = this.settings.get_string('name');
-        this.headerbar.subtitle = null;
-
-        // Panel
-        this.stack.visible_child_name = 'service';
-        this._setDeviceMenu();
-    }
-
-    _onEditServiceName(button, event) {
-        this.rename_entry.text = this.headerbar.title;
-        this.rename_entry.has_focus = true;
-    }
-
-    _onSetServiceName(widget) {
-        if (this.rename_entry.text.length) {
-            this.headerbar.title = this.rename_entry.text;
-            this.settings.set_string('name', this.rename_entry.text);
-        }
-
-        this.service_edit.active = false;
-        this.service_edit.grab_focus();
-    }
-
-    /*
+     *
      * Context Switcher
      */
     _getTypeLabel(device) {
@@ -522,97 +498,14 @@ export const Window = GObject.registerClass({
         this.device_menu.set_menu_model(panel.menu);
     }
 
-    _onDeviceChanged(statusLabel, device, pspec) {
-        switch (false) {
-            case device.paired:
-                statusLabel.label = _('Unpaired');
-                break;
-
-            case device.connected:
-                statusLabel.label = _('Disconnected');
-                break;
-
-            default:
-                statusLabel.label = _('Connected');
-        }
-    }
-
-    _createDeviceRow(device) {
-        const row = new Gtk.ListBoxRow({
-            height_request: 52,
-            selectable: false,
-            visible: true,
-        });
-        row.set_name(device.id);
-
-        const grid = new Gtk.Grid({
-            column_spacing: 12,
-            margin_left: 20,
-            margin_right: 20,
-            margin_bottom: 8,
-            margin_top: 8,
-            visible: true,
-        });
-        row.add(grid);
-
-        const icon = new Gtk.Image({
-            gicon: new Gio.ThemedIcon({name: device.icon_name}),
-            icon_size: Gtk.IconSize.BUTTON,
-            visible: true,
-        });
-        grid.attach(icon, 0, 0, 1, 1);
-
-        const title = new Gtk.Label({
-            halign: Gtk.Align.START,
-            hexpand: true,
-            valign: Gtk.Align.CENTER,
-            vexpand: true,
-            visible: true,
-        });
-        grid.attach(title, 1, 0, 1, 1);
-
-        const status = new Gtk.Label({
-            halign: Gtk.Align.END,
-            hexpand: true,
-            valign: Gtk.Align.CENTER,
-            vexpand: true,
-            visible: true,
-        });
-        grid.attach(status, 2, 0, 1, 1);
-
-        // Keep name up to date
-        device.bind_property(
-            'name',
-            title,
-            'label',
-            GObject.BindingFlags.SYNC_CREATE
-        );
-
-        // Keep status up to date
-        device.connect(
-            'notify::connected',
-            this._onDeviceChanged.bind(null, status)
-        );
-        device.connect(
-            'notify::paired',
-            this._onDeviceChanged.bind(null, status)
-        );
-        this._onDeviceChanged(status, device, null);
-
-        return row;
-    }
-
     _onDeviceAdded(service, device) {
         try {
-            if (!this.stack.get_child_by_name(device.id)) {
-                // Add the device preferences
-                const prefs = new Panel(device);
-                this.stack.add_titled(prefs, device.id, device.name);
-
-                // Add a row to the device list
-                prefs.row = this._createDeviceRow(device);
-                this.device_list.add(prefs.row);
+            const row = new DeviceRow(device);
+            if (this.rows == null) {
+                this.rows = {};
             }
+            this.rows[device.id] = row;
+            this.device_list.append(row);  
         } catch (e) {
             logError(e);
         }
@@ -620,19 +513,12 @@ export const Window = GObject.registerClass({
 
     _onDeviceRemoved(service, device) {
         try {
-            const prefs = this.stack.get_child_by_name(device.id);
-
-            if (prefs === null)
-                return;
-
-            if (prefs === this.stack.get_visible_child())
-                this._onPrevious();
-
-            prefs.row.destroy();
-            prefs.row = null;
-
-            prefs.dispose();
-            prefs.destroy();
+            const row = this.rows[device.id];
+            if (row != null) {
+                device_list.remove(row.destroy());
+                // TODO: Distruggere row
+                row = null;
+            }
         } catch (e) {
             logError(e);
         }
@@ -640,36 +526,19 @@ export const Window = GObject.registerClass({
 
     _onDeviceSelected(box, row) {
         try {
-            if (row === null)
-                return this._onPrevious();
-
-            // Transition the panel
-            const name = row.get_name();
-            const prefs = this.stack.get_child_by_name(name);
-
-            this.stack.visible_child = prefs;
-            this._setDeviceMenu(prefs);
-
-            // HeaderBar (Device)
-            this.refresh_button.visible = false;
-            this.service_edit.visible = false;
-            this.service_menu.visible = false;
-
-            this.prev_button.visible = true;
-            this.device_menu.visible = true;
-
-            this.headerbar.title = prefs.device.name;
-            this.headerbar.subtitle = this._getTypeLabel(prefs.device);
+            console.log(this.split_view);
+            const navigation_page = new DeviceNavigationPage(row.device);
+            this.split_view.set_content(navigation_page);
+            this.split_view.set_show_content(true);
         } catch (e) {
             logError(e);
         }
     }
 
     _onServiceChanged(service, pspec) {
-        /*if (this.service.active)
-            this.device_list_placeholder.label = _('Searching for devices…');
+        if (this.service.active)
+            this.window_title.set_subtitle(_('Searching for devices…'));
         else
-            this.device_list_placeholder.label = _('Waiting for service…');
-        */
+            this.window_title.set_subtitle(_('Waiting for service…'));
     }
 });

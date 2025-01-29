@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface domain="org.gnome.Shell.Extensions.GSConnect">
+  <requires lib="gtk+" version="4.0"/>
+  <template class="CommandActionRow" parent="AdwActionRow">
+    <child>
+      <object class="GtkButton">
+        <property name="margin-top">10</property>
+        <property name="margin-bottom">10</property>
+        <property name="child">
+          <object class="AdwButtonContent" id="edit_button">
+            <property name="icon-name">document-edit-symbolic</property>
+          </object>
+        </property>
+        <style>
+          <class name="circular" />
+        </style>
+      </object>
+    </child>
+    <child>
+      <object class="GtkButton" id="user_trash">
+        <property name="margin-top">10</property>
+        <property name="margin-bottom">10</property>
+        <property name="child">
+          <object class="AdwButtonContent" id="delete_button">
+            <property name="icon-name">user-trash-symbolic</property>
+          </object>
+        </property>
+        <style>
+          <class name="circular" />
+          <class name="destructive-action" />
+        </style>
+      </object>
+    </child>
+  </template>
+</interface>

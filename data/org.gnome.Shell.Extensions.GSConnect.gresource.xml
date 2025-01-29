@@ -10,6 +10,8 @@ SPDX-License-Identifier: GPL-2.0-or-later
   <gresource prefix="/org/gnome/Shell/Extensions/GSConnect">
     <!-- UI -->
     <file compressed="true">application.css</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/device-page.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/command-row.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/connect-dialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/contacts-address-row.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/contact-chooser.ui</file>
@@ -41,7 +43,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
 
     <!-- Device Icons (Fallback) c/o GNOME -->
     <file compressed="true" preprocess="xml-stripblanks">icons/computer-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">icons/smartphone-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">icons/phone-symbolic.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">icons/tv-symbolic.svg</file>
 
     <!-- Device Icons (Fallbacks) c/o Numix

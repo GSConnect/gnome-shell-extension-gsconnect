@@ -6,6 +6,7 @@ import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk';
+import Adw from 'gi://Adw';
 import Pango from 'gi://Pango';
 
 import Config from '../config.js';
@@ -1107,5 +1108,475 @@ export const Panel = GObject.registerClass({
         } catch (e) {
             logError(e);
         }
+    } 
+});
+
+export const DeviceNavigationPage = GObject.registerClass({
+    GTypeName: 'DeviceNavigationPage',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/device-page.ui',
+    Children: [
+        'window_title',
+        'notification_apps',
+        'receive_directory',
+        'command_list',
+        'battery_system',
+        'battery_custom_notification_value'
+    ],
+}, class DeviceNavigationPage extends Adw.NavigationPage {
+
+    _init(device) {
+        super._init();
+        this.device = device;
+        this.settings = new Gio.Settings({
+            settings_schema: Config.GSCHEMA.lookup(
+                'org.gnome.Shell.Extensions.GSConnect.Device',
+                true
+            ),
+            path: `/org/gnome/shell/extensions/gsconnect/device/${device.id}/`,
+        });
+        this.window_title.set_title(device.name);
+        this.device.connect(
+            'notify::connected',
+            this._onDeviceChanged.bind(null, this.device)
+        );
+        this._setupActions();
+
+        this._sharingSettings();
+        this._batterySettings();
+        this._runcommandSettings();
+        this._notificationSettings();
+        // --------------------------
+        //this._keybindingSettings();
+        //this._advancedSettings();
+        this._onDeviceChanged(device, null);
+        
     }
+    
+    _setupActions() {
+        this.actions = new Gio.SimpleActionGroup();
+        this.insert_action_group('settings', this.actions);
+
+        let settings = this.pluginSettings('battery');
+        this.actions.add_action(settings.create_action('send-statistics'));
+        this.actions.add_action(settings.create_action('low-battery-notification'));
+        this.actions.add_action(settings.create_action('custom-battery-notification'));
+        this.actions.add_action(settings.create_action('custom-battery-notification-value'));
+        this.actions.add_action(settings.create_action('full-battery-notification'));
+
+        settings = this.pluginSettings('clipboard');
+        this.actions.add_action(settings.create_action('send-content'));
+        this.actions.add_action(settings.create_action('receive-content'));
+
+        settings = this.pluginSettings('contacts');
+        this.actions.add_action(settings.create_action('contacts-source'));
+
+        settings = this.pluginSettings('mousepad');
+        this.actions.add_action(settings.create_action('share-control'));
+
+        settings = this.pluginSettings('mpris');
+        this.actions.add_action(settings.create_action('share-players'));
+
+        settings = this.pluginSettings('notification');
+        this.actions.add_action(settings.create_action('send-notifications'));
+        this.actions.add_action(settings.create_action('send-active'));
+
+        settings = this.pluginSettings('sftp');
+        this.actions.add_action(settings.create_action('automount'));
+
+        settings = this.pluginSettings('share');
+        this.actions.add_action(settings.create_action('receive-files'));
+
+        settings = this.pluginSettings('sms');
+        this.actions.add_action(settings.create_action('legacy-sms'));
+
+        settings = this.pluginSettings('systemvolume');
+        this.actions.add_action(settings.create_action('share-sinks'));
+
+        settings = this.pluginSettings('telephony');
+        this.actions.add_action(settings.create_action('ringing-volume'));
+        this.actions.add_action(settings.create_action('ringing-pause'));
+        this.actions.add_action(settings.create_action('talking-volume'));
+        this.actions.add_action(settings.create_action('talking-pause'));
+        this.actions.add_action(settings.create_action('talking-microphone'));
+
+    }
+
+    get_incoming_supported(type) {
+        const incoming = this.settings.get_strv('incoming-capabilities');
+        return incoming.includes(`kdeconnect.${type}`);
+    }
+
+    async _batterySettings() {
+        try {
+            const settings = this.pluginSettings('battery');
+            const oldLevel = settings.get_uint('custom-battery-notification-value');
+            this.battery_custom_notification_value.set_value(oldLevel);
+
+            // If the device can't handle statistics we're done
+            if (!this.get_incoming_supported('battery')) {
+                this.battery_system.visible = false;
+                return;
+            }
+
+            // Check UPower for a battery
+            const hasBattery = await new Promise((resolve, reject) => {
+                Gio.DBus.system.call(
+                    'org.freedesktop.UPower',
+                    '/org/freedesktop/UPower/devices/DisplayDevice',
+                    'org.freedesktop.DBus.Properties',
+                    'Get',
+                    new GLib.Variant('(ss)', [
+                        'org.freedesktop.UPower.Device',
+                        'IsPresent',
+                    ]),
+                    null,
+                    Gio.DBusCallFlags.NONE,
+                    -1,
+                    null,
+                    (connection, res) => {
+                        try {
+                            const variant = connection.call_finish(res);
+                            const value = variant.deepUnpack()[0];
+                            const isPresent = value.get_boolean();
+
+                            resolve(isPresent);
+                        } catch (e) {
+                            resolve(false);
+                        }
+                    }
+                );
+            });
+
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    /**
+     * Notification Settings
+     */
+    _notificationSettings() {
+        const settings = this.pluginSettings('notification');
+        this._populateApplications(settings);
+    }
+
+    /**
+     * RunCommand Page
+     */
+    _runcommandSettings() {
+        // Local Command List
+        const settings = this.pluginSettings('runcommand');
+        this._commands = settings.get_value('command-list').recursiveUnpack();
+
+        for (const uuid of Object.keys(this._commands))
+            this._insertCommand(uuid);
+    }
+    
+    /**
+     * Sharing Settings
+     */
+    _sharingSettings() {
+        // Share Plugin
+        const settings = this.pluginSettings('share');
+
+        settings.connect(
+            'changed::receive-directory',
+            this._onReceiveDirectoryChanged.bind(this)
+        );
+        this._onReceiveDirectoryChanged(settings, 'receive-directory');
+    }
+
+    /**
+     * Keyboard Shortcuts
+     */
+    _keybindingSettings() {
+        // Scroll with keyboard focus
+        const shortcuts_box = this.shortcuts_page.get_child().get_child();
+        shortcuts_box.set_focus_vadjustment(this.shortcuts_page.vadjustment);
+
+        // Filter & Sort
+        this.shortcuts_actions_list.set_filter_func(this._filterPluginKeybindings.bind(this));
+        this.shortcuts_actions_list.set_header_func(rowSeparators);
+        this.shortcuts_actions_list.set_sort_func(titleSortFunc);
+
+        // Init
+        for (const name in DEVICE_SHORTCUTS)
+            this._addPluginKeybinding(name);
+
+        this._setPluginKeybindings();
+
+        // Watch for GAction and Keybinding changes
+        this._actionAddedId = this.device.action_group.connect(
+            'action-added',
+            () => this.shortcuts_actions_list.invalidate_filter()
+        );
+        this._actionRemovedId = this.device.action_group.connect(
+            'action-removed',
+            () => this.shortcuts_actions_list.invalidate_filter()
+        );
+        this._keybindingsId = this.settings.connect(
+            'changed::keybindings',
+            this._setPluginKeybindings.bind(this)
+        );
+    }
+
+    _populateApplications(settings) {
+        const applications = this._queryApplications(settings);
+
+        for (const name in applications) {
+            const row = new Adw.SwitchRow({
+                title: name, 
+                icon_name: applications[name].iconName,
+                active: applications[name].enabled
+            });
+            row.connect('notify::active', this._toggleNotification.bind(this));
+            this.notification_apps.add(row);
+        }
+    }
+    
+    _onReceiveDirectoryChanged(settings, key) {
+        let receiveDir = settings.get_string(key);
+
+        if (receiveDir.length === 0) {
+            receiveDir = GLib.get_user_special_dir(
+                GLib.UserDirectory.DIRECTORY_DOWNLOAD
+            );
+
+            // Account for some corner cases with a fallback
+            const homeDir = GLib.get_home_dir();
+
+            if (!receiveDir || receiveDir === homeDir)
+                receiveDir = GLib.build_filenamev([homeDir, 'Downloads']);
+
+            settings.set_string(key, receiveDir);
+        }
+
+        if (this.receive_directory.get_subtitle() !== receiveDir)
+            this.receive_directory.set_subtitle();
+    }
+    
+    _toggleNotification(widget) {
+        try {
+            const row = widget.get_ancestor(Gtk.ListBoxRow.$gtype);
+            const settings = this.pluginSettings('notification');
+            let applications = {};
+            try {
+                applications = JSON.parse(settings.get_string('applications'));
+            } catch (e) {
+                applications = {};
+            }
+            applications[row.title].enabled = !applications[row.title].enabled;
+            row.set_active(applications[row.title].enabled);
+            settings.set_string('applications', JSON.stringify(applications));
+
+        } catch (e) {
+            logError(e);
+        }
+    }
+    
+    _queryApplications(settings) {
+        let applications = {};
+
+        try {
+            applications = JSON.parse(settings.get_string('applications'));
+        } catch (e) {
+            applications = {};
+        }
+
+        // Scan applications that statically declare to show notifications
+        const ignoreId = 'org.gnome.Shell.Extensions.GSConnect.desktop';
+
+        for (const appInfo of Gio.AppInfo.get_all()) {
+            if (appInfo.get_id() === ignoreId)
+                continue;
+
+            if (!appInfo.get_boolean('X-GNOME-UsesNotifications'))
+                continue;
+
+            const appName = appInfo.get_name();
+
+            if (appName === null || applications.hasOwnProperty(appName))
+                continue;
+
+            let icon = appInfo.get_icon();
+            icon = (icon) ? icon.to_string() : 'application-x-executable';
+
+            applications[appName] = {
+                iconName: icon,
+                enabled: true,
+            };
+        }
+
+        settings.set_string('applications', JSON.stringify(applications));
+
+        return applications;
+    }
+
+    _onEditCommand(widget) {
+        if (this._commandEditor === undefined) {
+            this._commandEditor = new CommandEditor({
+                modal: true,
+                transient_for: this.get_toplevel(),
+                use_header_bar: true,
+            });
+
+            this._commandEditor.connect(
+                'response',
+                this._onSaveCommand.bind(this)
+            );
+
+            this._commandEditor.resize(1, 1);
+        }
+
+        if (widget instanceof Gtk.Button) {
+            const row = widget.get_ancestor(Gtk.ListBoxRow.$gtype);
+            const uuid = row.get_name();
+
+            this._commandEditor.uuid = uuid;
+            this._commandEditor.command_name = this._commands[uuid].name;
+            this._commandEditor.command_line = this._commands[uuid].command;
+        } else {
+            this._commandEditor.uuid = GLib.uuid_string_random();
+            this._commandEditor.command_name = '';
+            this._commandEditor.command_line = '';
+        }
+
+        this._commandEditor.present();
+    }
+
+    _onDeviceChanged(device, pspec) {
+        switch (false) {
+            case device.paired:
+                this.window_title.set_subtitle(_('Unpaired'));
+                break;
+            case device.connected:
+                this.window_title.set_subtitle(_('Disconnected'));
+                break;
+            default:
+                this.window_title.set_subtitle(_('Connected'));
+        }
+    }
+
+    _onReceiveDirectoryChanged(settings, key) {
+        let receiveDir = settings.get_string(key);
+
+        if (receiveDir.length === 0) {
+            receiveDir = GLib.get_user_special_dir(
+                GLib.UserDirectory.DIRECTORY_DOWNLOAD
+            );
+
+            // Account for some corner cases with a fallback
+            const homeDir = GLib.get_home_dir();
+
+            if (!receiveDir || receiveDir === homeDir)
+                receiveDir = GLib.build_filenamev([homeDir, 'Downloads']);
+
+            settings.set_string(key, receiveDir);
+        }
+
+        if (this.receive_directory.get_subtitle() !== receiveDir)
+            this.receive_directory.set_subtitle(receiveDir);
+    }
+
+    pluginSettings(name) {
+        if (this._pluginSettings === undefined)
+            this._pluginSettings = {};
+
+        if (!this._pluginSettings.hasOwnProperty(name)) {
+            const meta = plugins[name].Metadata;
+
+            this._pluginSettings[name] = new Gio.Settings({
+                settings_schema: Config.GSCHEMA.lookup(meta.id, -1),
+                path: `${this.settings.path}plugin/${name}/`,
+            });
+        }
+
+        return this._pluginSettings[name];
+    }
+
+
+    _insertCommand(uuid) {
+        const row = new CommandActionRow({
+            title: this._commands[uuid].name,
+            subtitle: this._commands[uuid].command
+        });
+        row.get_edit_button().connect('clicked', this._onEditCommand.bind(this));
+        //row.get_delete_button().connect('clicked', this._onDeleteCommand.bind(this));
+        this.command_list.add(row);
+    }
+
+    _setCustomChargeLevel(spin) {
+        const settings = this.pluginSettings('battery');
+        settings.set_uint('custom-battery-notification-value', spin.get_value());
+    }
+
+
+    _onReceiveDirectorySet(button) {
+        const fileChooser = new Gtk.FileChooserDialog({
+            title: "Seleziona un file",
+            transient_for: Gtk.Application.get_default().get_active_window(),
+            modal: true,
+            action: Gtk.FileChooserAction.SELECT_FOLDER,
+        });
+    
+        // Pulsanti di azione
+        fileChooser.add_button("_Annulla", Gtk.ResponseType.CANCEL);
+        fileChooser.add_button("_Apri", Gtk.ResponseType.ACCEPT);
+    
+        fileChooser.connect("response", (dialog, response) => {
+            if (response === Gtk.ResponseType.ACCEPT) {
+                const filename = dialog.get_file();
+                const settings = this.pluginSettings('share');
+                const receiveDir = settings.get_string('receive-directory');
+                if (filename.get_path() !== receiveDir)
+                    settings.set_string('receive-directory', filename.get_path());
+    
+            }
+            dialog.destroy();
+        });
+    
+        fileChooser.show();
+    }
+
+    dispose() {
+        if (this._commandEditor !== undefined)
+            this._commandEditor.destroy();
+
+        // Device signals
+        this.device.action_group.disconnect(this._actionAddedId);
+        this.device.action_group.disconnect(this._actionRemovedId);
+
+        // GSettings
+        for (const settings of Object.values(this._pluginSettings))
+            settings.run_dispose();
+
+        this.settings.disconnect(this._keybindingsId);
+        this.settings.disconnect(this._disabledPluginsId);
+        this.settings.disconnect(this._supportedPluginsId);
+        this.settings.run_dispose();
+    }
+});
+
+
+export const CommandActionRow = GObject.registerClass({
+    GTypeName: 'CommandActionRow',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/command-row.ui',
+    Children: [
+        'edit_button',
+        'delete_button'
+    ]
+}, class CommandActionRow extends Adw.ActionRow {
+
+    _init(params = {}) {
+        super._init(params);
+    }
+
+    get_edit_button() {
+        return this.edit_button;
+    } 
+
+    get_delete_button() {
+        return this.delete_button;
+    } 
+
 });
