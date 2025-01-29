@@ -212,12 +212,12 @@ Gio.File.rm_rf = function (file) {
                 Gio.File.rm_rf(iter.get_child(info));
 
             iter.close(null);
-        } catch (e) {
+        } catch {
             // Silence errors
         }
 
         file.delete(null);
-    } catch (e) {
+    } catch {
         // Silence errors
     }
 };
@@ -310,7 +310,7 @@ function _full_unpack(obj) {
                         unpacked[key] = Gio.Icon.deserialize(value);
                     else
                         unpacked[key] = _full_unpack(value);
-                } catch (e) {
+                } catch {
                     unpacked[key] = _full_unpack(value);
                 }
             }

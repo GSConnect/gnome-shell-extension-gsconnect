@@ -127,7 +127,7 @@ export const Device = GObject.registerClass({
     _get(name, fallback = null) {
         try {
             return this.get_cached_property(name).unpack();
-        } catch (e) {
+        } catch {
             return fallback;
         }
     }

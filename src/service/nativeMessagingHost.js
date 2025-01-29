@@ -14,7 +14,7 @@ import system from 'system';
 let GioUnix;
 try {
     GioUnix = (await import('gi://GioUnix?version=2.0')).default;
-} catch (e) {
+} catch {
     GioUnix = {
         InputStream: Gio.UnixInputStream,
         OutputStream: Gio.UnixOutputStream,
@@ -142,7 +142,7 @@ const NativeMessagingHost = GObject.registerClass({
             }
 
             return GLib.SOURCE_CONTINUE;
-        } catch (e) {
+        } catch {
             this.quit();
         }
     }
@@ -152,7 +152,7 @@ const NativeMessagingHost = GObject.registerClass({
             const data = JSON.stringify(message);
             this._stdout.put_int32(data.length, null);
             this._stdout.put_string(data, null);
-        } catch (e) {
+        } catch {
             this.quit();
         }
     }
@@ -186,7 +186,7 @@ const NativeMessagingHost = GObject.registerClass({
     _proxyGetter(name) {
         try {
             return this.get_cached_property(name).unpack();
-        } catch (e) {
+        } catch {
             return null;
         }
     }
@@ -222,4 +222,3 @@ const NativeMessagingHost = GObject.registerClass({
 
 // NOTE: must not pass ARGV
 await (new NativeMessagingHost()).runAsync([system.programInvocationName]);
-

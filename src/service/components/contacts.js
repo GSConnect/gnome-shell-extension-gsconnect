@@ -17,7 +17,7 @@ try {
     EBook = (await import('gi://EBook')).default;
     EBookContacts = (await import('gi://EBookContacts')).default;
     EDataServer = (await import('gi://EDataServer')).default;
-} catch (e) {
+} catch {
     HAVE_EDS = false;
 }
 
@@ -610,4 +610,3 @@ const Store = GObject.registerClass({
 });
 
 export default Store;
-
