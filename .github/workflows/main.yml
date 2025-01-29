@@ -22,6 +22,10 @@ jobs:
       image: ghcr.io/gsconnect/gsconnect-ci:main
     steps:
       - uses: actions/checkout@v4
+
+      - name: Install node modules
+        run: npm install
+
       - name: Prepare
         run: |
           meson --prefix=/usr \
