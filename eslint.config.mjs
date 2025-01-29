@@ -16,6 +16,7 @@ export default [
         },
         languageOptions: {
             globals: {
+                ...globals["browser"],
                 ...globals["shared-node-browser"],
                 ARGV: "readonly",
                 Debugger: "readonly",
