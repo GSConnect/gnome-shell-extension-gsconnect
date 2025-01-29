@@ -51,7 +51,7 @@ const RemoteSession = GObject.registerClass({
     get session_id() {
         try {
             return this.get_cached_property('SessionId').unpack();
-        } catch (e) {
+        } catch {
             return null;
         }
     }

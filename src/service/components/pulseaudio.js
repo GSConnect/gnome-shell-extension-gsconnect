@@ -19,7 +19,7 @@ try {
     GIRepository.Repository.prepend_library_path(typelibDir);
 
     Gvc = (await import('gi://Gvc')).default;
-} catch (e) {}
+} catch {}
 
 
 /**
@@ -33,7 +33,7 @@ if (Gvc) {
                     return this.description;
 
                 return `${this.get_port().human_port} (${this.description})`;
-            } catch (e) {
+            } catch {
                 return this.description;
             }
         },

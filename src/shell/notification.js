@@ -147,7 +147,7 @@ const NotificationBanner = GObject.registerClass({
             (connection, res) => {
                 try {
                     connection.call_finish(res);
-                } catch (e) {
+                } catch {
                     // Silence errors
                 }
             }
@@ -198,7 +198,7 @@ const Source = GObject.registerClass({
             (connection, res) => {
                 try {
                     connection.call_finish(res);
-                } catch (e) {
+                } catch {
                     // If we fail, reset in case we can try again
                     notification._remoteClosed = false;
                 }
@@ -433,7 +433,7 @@ export function patchGtkNotificationSources() {
             (connection, res) => {
                 try {
                     connection.call_finish(res);
-                } catch (e) {
+                } catch {
                     // If we fail, reset in case we can try again
                     notification._remoteWithdrawn = false;
                 }

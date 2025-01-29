@@ -201,7 +201,7 @@ const Listener = GObject.registerClass({
             const appInfo = Gio.DesktopAppInfo.new(`${appId}.desktop`);
             this._names[appName] = appInfo.get_name();
             appName = appInfo.get_name();
-        } catch (e) {
+        } catch {
             // Silence errors
         }
 
