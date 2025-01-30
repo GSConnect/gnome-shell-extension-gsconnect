@@ -3,11 +3,11 @@
   <requires lib="gtk+" version="4.0"/>
   <template class="CommandActionRow" parent="AdwActionRow">
     <child>
-      <object class="GtkButton">
+      <object class="GtkButton" id="edit_button">
         <property name="margin-top">10</property>
         <property name="margin-bottom">10</property>
         <property name="child">
-          <object class="AdwButtonContent" id="edit_button">
+          <object class="AdwButtonContent">
             <property name="icon-name">document-edit-symbolic</property>
           </object>
         </property>
@@ -17,11 +17,11 @@
       </object>
     </child>
     <child>
-      <object class="GtkButton" id="user_trash">
+      <object class="GtkButton" id="delete_button">
         <property name="margin-top">10</property>
         <property name="margin-bottom">10</property>
         <property name="child">
-          <object class="AdwButtonContent" id="delete_button">
+          <object class="AdwButtonContent">
             <property name="icon-name">user-trash-symbolic</property>
           </object>
         </property>

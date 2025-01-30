@@ -134,7 +134,7 @@ const DeviceRow = GObject.registerClass({
  */
 const ConnectDialog = GObject.registerClass({
     GTypeName: 'GSConnectConnectDialog',
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/device-page.ui',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/connect-dialog.ui',
     Children: [
         'lan_ip', 'lan_port',
     ],
@@ -412,8 +412,9 @@ export const Window = GObject.registerClass({
                     "Frank Dana <ferdnyc@gmail.com>"
                 ],
             });
-            this._about.present(this);
         }
+        this._about.present(this);
+    
     }
 
     /**
@@ -423,7 +424,7 @@ export const Window = GObject.registerClass({
         if (this.dialog == null) {
             this.dialog = new ConnectDialog();
         }
-        dialog.present(this)
+        this.dialog.present(this)
     }
     
 
@@ -464,25 +465,6 @@ export const Window = GObject.registerClass({
     _help(action, parameter) {
         const uri = `${Config.PACKAGE_URL}/wiki/Help`;
         Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
-    }
-    
-    /*
-     *
-     * Context Switcher
-     */
-    _getTypeLabel(device) {
-        switch (device.type) {
-            case 'laptop':
-                return _('Laptop');
-            case 'phone':
-                return _('Smartphone');
-            case 'tablet':
-                return _('Tablet');
-            case 'tv':
-                return _('Television');
-            default:
-                return _('Desktop');
-        }
     }
 
     _setDeviceMenu(panel = null) {

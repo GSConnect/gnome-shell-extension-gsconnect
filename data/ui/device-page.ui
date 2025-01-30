@@ -31,6 +31,91 @@
                       <object class="AdwPreferencesGroup">
                         <child>
                           <object class="AdwActionRow">
+                            <property name="title" translatable="yes">Message</property>
+                            <property name="activatable">True</property>
+                            <child type="prefix">
+                              <object class="GtkImage">
+                                <property name="icon-name">user-available-symbolic</property>
+                              </object>
+                            </child>
+                            <child type="suffix">
+                              <object class="GtkImage">
+                                <property name="icon-name">go-next-symbolic</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwActionRow">
+                            <property name="title" translatable="yes">Remote Input</property>
+                            <property name="activatable">True</property>
+                            <child type="prefix">
+                              <object class="GtkImage">
+                                <property name="icon-name">org.gnome.Settings-mouse-symbolic</property>
+                              </object>
+                            </child>
+                            <child type="suffix">
+                              <object class="GtkImage">
+                                <property name="icon-name">go-next-symbolic</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwActionRow">
+                            <property name="title" translatable="yes">Share</property>
+                            <property name="activatable">True</property>
+                            <child type="prefix">
+                              <object class="GtkImage">
+                                <property name="icon-name">preferences-system-sharing-symbolic</property>
+                              </object>
+                            </child>
+                            <child type="suffix">
+                              <object class="GtkImage">
+                                <property name="icon-name">go-next-symbolic</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwActionRow">
+                            <property name="title" translatable="yes">Ring</property>
+                            <property name="activatable">True</property>
+                            <child type="prefix">
+                              <object class="GtkImage">
+                                <property name="icon-name">phonelink-ring-symbolic</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwActionRow">
+                            <property name="title" translatable="yes">Mount</property>
+                            <property name="activatable">True</property>
+                            <child type="prefix">
+                              <object class="GtkImage">
+                                <property name="icon-name">drive-harddisk-solidstate-symbolic</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwActionRow">
+                            <property name="title" translatable="yes">Encryption Info</property>
+                            <property name="activatable">True</property>
+                            <child type="prefix">
+                              <object class="GtkImage">
+                                <property name="icon-name">system-lock-screen-symbolic</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwPreferencesGroup">
+                        <child>
+                          <object class="AdwActionRow">
                             <property name="title" translatable="yes">Sharing</property>
                             <property name="activatable">True</property>
                             <property name="action-name">navigation.push</property>
@@ -122,6 +207,20 @@
                                 <property name="icon-name">preferences-system-symbolic</property>
                               </object>
                             </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwPreferencesGroup">
+                        <child>
+                          <object class="AdwButtonRow" id="unpair_device">
+                            <property name="title" translatable="yes">Unpair Device</property>
+                            <property name="activatable">True</property>
+                            <property name="start-icon-name">network-offline-symbolic</property>
+                            <style>
+                              <class name="destructive-action"/>
+                            </style>
                           </object>
                         </child>
                       </object>
@@ -300,12 +399,6 @@
                     <child>
                       <object class="AdwPreferencesGroup" id="command_list">
                         <property name="title" translatable="yes">Commands</property>
-                        <child>
-                          <object class="AdwButtonRow">
-                            <property name="title" translatable="yes">Add a command</property>
-                            <property name="start-icon-name">list-add-symbolic</property>
-                          </object>
-                        </child>
                       </object>
                     </child>
                   </object>
@@ -409,22 +502,6 @@
         </child>
         <child>
           <object class="AdwNavigationPage">
-            <property name="title" translatable="yes">Advanced</property>
-            <property name="tag">advanced</property>
-            <property name="child">
-              <object class="AdwToolbarView">
-                <child type="top">
-                  <object class="AdwHeaderBar" />
-                </child>
-                <property name="content">
-                  <object class="AdwPreferencesPage" />
-                </property>
-              </object>
-            </property>
-          </object>
-        </child>
-        <child>
-          <object class="AdwNavigationPage">
             <property name="title" translatable="yes">Keyboard Shurtcuts</property>
             <property name="tag">keyboard_shurtcuts</property>
             <property name="child">
@@ -433,7 +510,51 @@
                   <object class="AdwHeaderBar" />
                 </child>
                 <property name="content">
-                  <object class="AdwPreferencesPage" />
+                  <object class="AdwPreferencesPage">
+                    <child>
+                      <object class="AdwPreferencesGroup" id="shortcuts-actions-list">
+                        <property name="title">Action Shortcuts</property>
+                        <property name="header_suffix">
+                          <object class="GtkButton">
+                            <property name="child">
+                              <object class="AdwButtonContent">
+                                <property name="icon-name">view-refresh-symbolic</property>
+                                <property name="label" translatable="yes">Reset All...</property>
+                                <property name="use-underline">True</property>
+                              </object>
+                            </property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+              </object>
+            </property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwNavigationPage">
+            <property name="title" translatable="yes">Advanced</property>
+            <property name="tag">advanced</property>
+            <property name="child">
+              <object class="AdwToolbarView">
+                <child type="top">
+                  <object class="AdwHeaderBar" />
+                </child>
+                <property name="content">
+                  <object class="AdwPreferencesPage">
+                    <child>
+                      <object class="AdwPreferencesGroup" id="plugin-list">
+                        <property name="title">Plugins</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwPreferencesGroup" id="experimental-list">
+                        <property name="title">Experimental</property>
+                      </object>
+                    </child>
+                  </object>
                 </property>
               </object>
             </property>

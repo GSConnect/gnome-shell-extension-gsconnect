@@ -17,70 +17,87 @@ SPDX-License-Identifier: GPL-2.0-or-later
   <template class="GSConnectConnectDialog" parent="AdwDialog">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="title" translatable="yes">Connect to…</property>
     <child>
       <object class="AdwToolbarView">
         <child type="top">
           <object class="AdwHeaderBar" id="headerbar">
             <property name="title-widget">
               <object class="AdwWindowTitle">
-                <property name="title" translatable="yes">GSConnect</property>
-                <property name="subtitle" translatable="yes">Scanning for devices..</property>
+                <property name="title" translatable="yes">Connect to…</property>
               </object>
             </property>
           </object>
         </child>
         <child>
-          <object class="AdwClamp">
-            <property name="child">
-              <object class="GtkBox">
-                <property name="orientation">vertical</property>
-                <property name="margin-top">24</property>
-                <property name="margin-bottom">24</property>
-                <property name="margin-start">12</property>
-                <property name="margin-end">12</property>
-                <property name="spacing">24</property>
-                <child>
-                  <object class="GtkListBox">
-                    <property name="selection-mode">none</property>
-                    <style>
-                      <class name="boxed-list"/>
-                    </style>
-                    <child>
-                      <object class="AdwEntryRow" id="lan-ip">
-                        <property name="title">IP Address</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="AdwSpinRow" id="lan-port">
-                        <property name="title">Port</property>
-                      </object>
-                    </child>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkListBox">
-                    <property name="selection-mode">none</property>
-                    <style>
-                      <class name="boxed-list"/>
-                    </style>
-                    <child>
-                      <object class="AdwButtonRow" id="connect-button">
-                        <property name="title">Connect</property>
-                        <property name="start-icon-name">network-transmit-receive-symbolic</property>
-                        <style>
-                          <class name="suggested-action"/>
-                        </style>
-                      </object>
-                    </child>
-                  </object>
-                </child>
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
+            <property name="margin-top">24</property>
+            <property name="margin-bottom">24</property>
+            <property name="margin-start">12</property>
+            <property name="margin-end">12</property>
+            <property name="spacing">24</property>
+            <child>
+              <object class="GtkImage">
+                <property name="name">logo</property>
+                <property name="icon-name">org.gnome.Shell.Extensions.GSConnect-symbolic</property>
+                <property name="pixel-size">80</property>
+                <style>
+                  <class name="icon-dropshadow"/>
+                </style>
               </object>
-            </property>
+            </child>
+            <child>
+              <object class="AdwClamp">
+                <property name="child">
+                  <object class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <property name="margin-top">24</property>
+                    <property name="margin-bottom">24</property>
+                    <property name="margin-start">12</property>
+                    <property name="margin-end">12</property>
+                    <property name="spacing">24</property>
+                    <child>
+                      <object class="GtkListBox">
+                        <property name="selection-mode">none</property>
+                        <style>
+                          <class name="boxed-list"/>
+                        </style>
+                        <child>
+                          <object class="AdwEntryRow" id="lan_ip">
+                            <property name="title">IP Address</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwSpinRow" id="lan_port">
+                            <property name="title">Port</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkListBox">
+                        <property name="selection-mode">none</property>
+                        <style>
+                          <class name="boxed-list"/>
+                        </style>
+                        <child>
+                          <object class="AdwButtonRow" id="connect-button">
+                            <property name="title">Connect</property>
+                            <property name="start-icon-name">network-transmit-receive-symbolic</property>
+                            <style>
+                              <class name="suggested-action"/>
+                            </style>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+              </object>
+            </child>
           </object>
         </child>
       </object>
     </child>
   </template>
 </interface>
-

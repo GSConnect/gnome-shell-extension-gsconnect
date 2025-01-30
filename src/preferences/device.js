@@ -208,10 +208,13 @@ const CommandEditor = GObject.registerClass({
     GTypeName: 'GSConnectPreferencesCommandEditor',
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/preferences-command-editor.ui',
     Children: [
-        'cancel-button', 'save-button',
-        'command-entry', 'name-entry', 'command-chooser',
+        'command_entry', 'name_entry', 'save_button'
     ],
-}, class CommandEditor extends Gtk.Dialog {
+}, class CommandEditor extends Adw.Dialog {
+
+    _init(params = {}) {
+        super._init(params);
+    }
 
     _onBrowseCommand(entry, icon_pos, event) {
         this.command_chooser.present();
@@ -643,6 +646,7 @@ export const Panel = GObject.registerClass({
 
         for (const uuid of Object.keys(this._commands))
             this._insertCommand(uuid);
+
     }
 
     _sortCommands(row1, row2) {
@@ -938,26 +942,6 @@ export const Panel = GObject.registerClass({
         );
     }
 
-    _addPluginKeybinding(name) {
-        const [icon_name, label] = DEVICE_SHORTCUTS[name];
-
-        const widget = new Gtk.Label({
-            label: _('Disabled'),
-            visible: true,
-        });
-        widget.get_style_context().add_class('dim-label');
-
-        const row = new SectionRow({
-            height_request: 48,
-            icon_name: icon_name,
-            title: label,
-            widget: widget,
-        });
-        row.icon_image.pixel_size = 16;
-        row.action = name;
-        this.shortcuts_actions_list.add(row);
-    }
-
     _filterPluginKeybindings(row) {
         return this.device.action_group.has_action(row.action);
     }
@@ -1119,6 +1103,7 @@ export const DeviceNavigationPage = GObject.registerClass({
         'notification_apps',
         'receive_directory',
         'command_list',
+        'shortcuts-actions-list',
         'battery_system',
         'battery_custom_notification_value'
     ],
@@ -1127,6 +1112,7 @@ export const DeviceNavigationPage = GObject.registerClass({
     _init(device) {
         super._init();
         this.device = device;
+        this.shortcuts_actions_list_rows = [];
         this.settings = new Gio.Settings({
             settings_schema: Config.GSCHEMA.lookup(
                 'org.gnome.Shell.Extensions.GSConnect.Device',
@@ -1134,24 +1120,23 @@ export const DeviceNavigationPage = GObject.registerClass({
             ),
             path: `/org/gnome/shell/extensions/gsconnect/device/${device.id}/`,
         });
-        this.window_title.set_title(device.name);
-        this.device.connect(
-            'notify::connected',
-            this._onDeviceChanged.bind(null, this.device)
-        );
+        this._setWindowTitle()
         this._setupActions();
-
         this._sharingSettings();
         this._batterySettings();
         this._runcommandSettings();
         this._notificationSettings();
         // --------------------------
-        //this._keybindingSettings();
+        this._keybindingSettings();
         //this._advancedSettings();
-        this._onDeviceChanged(device, null);
         
     }
     
+    _setWindowTitle() {
+        this.window_title.set_title(device.name);
+        this.window_title.set_subtitle(this._getTypeLabel(device));
+    }
+
     _setupActions() {
         this.actions = new Gio.SimpleActionGroup();
         this.insert_action_group('settings', this.actions);
@@ -1267,9 +1252,15 @@ export const DeviceNavigationPage = GObject.registerClass({
         // Local Command List
         const settings = this.pluginSettings('runcommand');
         this._commands = settings.get_value('command-list').recursiveUnpack();
-
+        console.log(this._commands)
         for (const uuid of Object.keys(this._commands))
             this._insertCommand(uuid);
+        const row = new Adw.ButtonRow({
+            title : "Add command" ,
+            start_icon_name: "list-add-symbolic"
+        })
+        row.connect('activated', this._onEditCommand.bind(this));
+        this.command_list.add(row);
     }
     
     /**
@@ -1290,15 +1281,6 @@ export const DeviceNavigationPage = GObject.registerClass({
      * Keyboard Shortcuts
      */
     _keybindingSettings() {
-        // Scroll with keyboard focus
-        const shortcuts_box = this.shortcuts_page.get_child().get_child();
-        shortcuts_box.set_focus_vadjustment(this.shortcuts_page.vadjustment);
-
-        // Filter & Sort
-        this.shortcuts_actions_list.set_filter_func(this._filterPluginKeybindings.bind(this));
-        this.shortcuts_actions_list.set_header_func(rowSeparators);
-        this.shortcuts_actions_list.set_sort_func(titleSortFunc);
-
         // Init
         for (const name in DEVICE_SHORTCUTS)
             this._addPluginKeybinding(name);
@@ -1320,6 +1302,19 @@ export const DeviceNavigationPage = GObject.registerClass({
         );
     }
 
+    _setPluginKeybindings() {
+        const keybindings = this.settings.get_value('keybindings').deepUnpack();
+
+        this.shortcuts_actions_list_rows.forEach(row => {
+            if (keybindings[row.action]) {
+                const accel = Gtk.accelerator_parse(keybindings[row.action]);
+                row.label.set_label(labelGtk.accelerator_get_label(...accel));
+            } else {
+                row.label.set_label(_('Disabled'));
+            }
+        });
+    }
+
     _populateApplications(settings) {
         const applications = this._queryApplications(settings);
 
@@ -1334,6 +1329,25 @@ export const DeviceNavigationPage = GObject.registerClass({
         }
     }
     
+    /*
+     *
+     * Context Switcher
+     */
+    _getTypeLabel(device) {
+        switch (device.type) {
+            case 'laptop':
+                return _('Laptop');
+            case 'phone':
+                return _('Smartphone');
+            case 'tablet':
+                return _('Tablet');
+            case 'tv':
+                return _('Television');
+            default:
+                return _('Desktop');
+        }
+    }
+
     _onReceiveDirectoryChanged(settings, key) {
         let receiveDir = settings.get_string(key);
 
@@ -1355,7 +1369,7 @@ export const DeviceNavigationPage = GObject.registerClass({
             this.receive_directory.set_subtitle();
     }
     
-    _toggleNotification(widget) {
+    _toggleNotification(widgeclickedt) {
         try {
             const row = widget.get_ancestor(Gtk.ListBoxRow.$gtype);
             const settings = this.pluginSettings('notification');
@@ -1374,6 +1388,25 @@ export const DeviceNavigationPage = GObject.registerClass({
         }
     }
     
+    _addPluginKeybinding(name) {
+        const [icon_name, label] = DEVICE_SHORTCUTS[name];
+        const row = new Adw.ActionRow({
+            height_request: 48,
+            icon_name: icon_name,
+            title: label,
+        });
+        const acc_label = new Gtk.Label({
+            label: _('Disabled'),
+            visible: true,
+        })
+        row.add_suffix(acc_label);
+        row.action = name;
+        row.label = acc_label;
+        
+        this.shortcuts_actions_list.add(row);
+        this.shortcuts_actions_list_rows.push(row);
+    }
+
     _queryApplications(settings) {
         let applications = {};
 
@@ -1414,23 +1447,14 @@ export const DeviceNavigationPage = GObject.registerClass({
 
     _onEditCommand(widget) {
         if (this._commandEditor === undefined) {
-            this._commandEditor = new CommandEditor({
-                modal: true,
-                transient_for: this.get_toplevel(),
-                use_header_bar: true,
-            });
-
-            this._commandEditor.connect(
-                'response',
-                this._onSaveCommand.bind(this)
-            );
-
-            this._commandEditor.resize(1, 1);
+            this._commandEditor = new CommandEditor();
         }
 
         if (widget instanceof Gtk.Button) {
             const row = widget.get_ancestor(Gtk.ListBoxRow.$gtype);
-            const uuid = row.get_name();
+            const uuid = row.get_command_name();
+
+            console.log(uuid)
 
             this._commandEditor.uuid = uuid;
             this._commandEditor.command_name = this._commands[uuid].name;
@@ -1441,20 +1465,7 @@ export const DeviceNavigationPage = GObject.registerClass({
             this._commandEditor.command_line = '';
         }
 
-        this._commandEditor.present();
-    }
-
-    _onDeviceChanged(device, pspec) {
-        switch (false) {
-            case device.paired:
-                this.window_title.set_subtitle(_('Unpaired'));
-                break;
-            case device.connected:
-                this.window_title.set_subtitle(_('Disconnected'));
-                break;
-            default:
-                this.window_title.set_subtitle(_('Connected'));
-        }
+        this._commandEditor.present(Gtk.Application.get_default().get_active_window());
     }
 
     _onReceiveDirectoryChanged(settings, key) {
@@ -1494,14 +1505,21 @@ export const DeviceNavigationPage = GObject.registerClass({
         return this._pluginSettings[name];
     }
 
+    _onDeleteCommand(button) {
+        const row = button.get_ancestor(Gtk.ListBoxRow.$gtype);
+        delete this._commands[row.get_command_name()];
+        row.destroy();
+        this._storeCommands();
+    }
 
     _insertCommand(uuid) {
         const row = new CommandActionRow({
             title: this._commands[uuid].name,
-            subtitle: this._commands[uuid].command
+            subtitle: this._commands[uuid].command,
+            command_name: uuid
         });
         row.get_edit_button().connect('clicked', this._onEditCommand.bind(this));
-        //row.get_delete_button().connect('clicked', this._onDeleteCommand.bind(this));
+        row.get_delete_button().connect('clicked', this._onDeleteCommand.bind(this));
         this.command_list.add(row);
     }
 
@@ -1568,7 +1586,14 @@ export const CommandActionRow = GObject.registerClass({
 }, class CommandActionRow extends Adw.ActionRow {
 
     _init(params = {}) {
+        const command_name = params.command_name;
+        delete params.command_name;
         super._init(params);
+        this.command_name = command_name;
+    }
+
+    get_command_name() {
+        return this.command_name
     }
 
     get_edit_button() {

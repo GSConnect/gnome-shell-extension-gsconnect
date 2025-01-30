@@ -834,7 +834,7 @@ export const Window = GObject.registerClass({
 
     _init(params) {
         super._init(params);
-        this.headerbar.subtitle = this.device.name;
+        //this.headerbar.subtitle = this.device.name;
 
         this.insert_action_group('device', this.device);
 
