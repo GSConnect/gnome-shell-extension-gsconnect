@@ -15,7 +15,6 @@
       <object class="AdwNavigationView">
         <child>
           <object class="AdwNavigationPage">
-            <property name="title" translatable="yes">Page 1</property>
             <property name="child">
               <object class="AdwToolbarView">
                 <child type="top">
@@ -103,6 +102,7 @@
                           <object class="AdwActionRow">
                             <property name="title" translatable="yes">Encryption Info</property>
                             <property name="activatable">True</property>
+                            <property name="action-name">settings.encryption-info</property>
                             <child type="prefix">
                               <object class="GtkImage">
                                 <property name="icon-name">system-lock-screen-symbolic</property>
@@ -217,6 +217,7 @@
                           <object class="AdwButtonRow" id="unpair_device">
                             <property name="title" translatable="yes">Unpair Device</property>
                             <property name="activatable">True</property>
+                            <property name="action-name">settings.unpair</property>
                             <property name="start-icon-name">network-offline-symbolic</property>
                             <style>
                               <class name="destructive-action"/>
@@ -238,7 +239,9 @@
             <property name="child">
               <object class="AdwToolbarView">
                 <child type="top">
-                  <object class="AdwHeaderBar" />
+                  <object class="AdwHeaderBar">
+                    <property name="show-title">false</property>
+                  </object>
                 </child>
                 <property name="content">
                   <object class="AdwPreferencesPage">
@@ -304,7 +307,7 @@
                                 <property name="child">
                                   <object class="AdwButtonContent">
                                     <property name="icon-name">folder-drag-accept-symbolic</property>
-                                    <property name="label" translatable="yes">_Open</property>
+                                    <property name="label" translatable="yes">Select Folder</property>
                                     <property name="use-underline">True</property>
                                   </object>
                                 </property>
@@ -328,7 +331,9 @@
             <property name="child">
               <object class="AdwToolbarView">
                 <child type="top">
-                  <object class="AdwHeaderBar" />
+                  <object class="AdwHeaderBar">
+                    <property name="show-title">false</property>
+                  </object>
                 </child>
                 <property name="content">
                   <object class="AdwPreferencesPage">
@@ -392,7 +397,9 @@
             <property name="child">
               <object class="AdwToolbarView">
                 <child type="top">
-                  <object class="AdwHeaderBar"/>
+                  <object class="AdwHeaderBar">
+                    <property name="show-title">false</property>
+                  </object>
                 </child>
                 <property name="content">
                   <object class="AdwPreferencesPage">
@@ -414,7 +421,9 @@
             <property name="child">
               <object class="AdwToolbarView">
                 <child type="top">
-                  <object class="AdwHeaderBar" />
+                  <object class="AdwHeaderBar">
+                    <property name="show-title">false</property>
+                  </object>
                 </child>
                 <property name="content">
                   <object class="AdwPreferencesPage">
@@ -452,7 +461,9 @@
             <property name="child">
               <object class="AdwToolbarView">
                 <child type="top">
-                  <object class="AdwHeaderBar" />
+                  <object class="AdwHeaderBar">
+                    <property name="show-title">false</property>
+                  </object>
                 </child>
                 <property name="content">
                   <object class="AdwPreferencesPage">
@@ -507,7 +518,9 @@
             <property name="child">
               <object class="AdwToolbarView">
                 <child type="top">
-                  <object class="AdwHeaderBar" />
+                  <object class="AdwHeaderBar">
+                    <property name="show-title">false</property>
+                  </object>
                 </child>
                 <property name="content">
                   <object class="AdwPreferencesPage">
@@ -540,17 +553,19 @@
             <property name="child">
               <object class="AdwToolbarView">
                 <child type="top">
-                  <object class="AdwHeaderBar" />
+                  <object class="AdwHeaderBar">
+                    <property name="show-title">false</property>
+                  </object>
                 </child>
                 <property name="content">
                   <object class="AdwPreferencesPage">
                     <child>
-                      <object class="AdwPreferencesGroup" id="plugin-list">
+                      <object class="AdwPreferencesGroup" id="plugin_list">
                         <property name="title">Plugins</property>
                       </object>
                     </child>
                     <child>
-                      <object class="AdwPreferencesGroup" id="experimental-list">
+                      <object class="AdwPreferencesGroup" id="experimental_list">
                         <property name="title">Experimental</property>
                       </object>
                     </child>

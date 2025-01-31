@@ -12,7 +12,7 @@ import Adw from 'gi://Adw';
 import system from 'system';
 
 import Config from '../config.js';
-import { DeviceNavigationPage } from './device.js';
+import { DeviceNavigationPage, DevicePairPage } from './device.js';
 import { Service } from '../utils/remote.js';
 
 
@@ -86,48 +86,6 @@ async function generateSupportLog(time) {
         logError(e);
     }
 }
-
-const DeviceRow = GObject.registerClass({
-    GTypeName: 'DeviceRow',
-}, class DeviceRow extends Adw.ActionRow {
-
-    _init(device) {
-        super._init();
-        this.device = device
-        // Keep status up to date
-        this.set_title(this.device.name);
-
-        const icon = new Gtk.Image({
-            icon_name : this.device.icon_name,
-            visible : true,
-        });
-        
-        this.add_prefix(icon);
-        
-        this.device.connect(
-            'notify::connected',
-            this._onDeviceChanged.bind(null, this.device)
-        );
-        this.device.connect(
-            'notify::paired',
-            this._onDeviceChanged.bind(null, this.device)
-        );
-        this._onDeviceChanged(this.device, null);
-    }
-
-    _onDeviceChanged(device, pspec) {
-        switch (false) {
-            case device.paired:
-                this.set_subtitle(_('Unpaired'));
-                break;
-            case device.connected:
-                this.set_subtitle(_('Disconnected'));
-                break;
-            default:
-                this.set_subtitle(_('Connected'));
-        }
-    }
-});
 
 /**
  * "Connect to..." Dialog
@@ -255,7 +213,7 @@ export const Window = GObject.registerClass({
             'notify::active',
             this._onServiceChanged.bind(this)
         );
-
+        
         this.add_action(this.settings.create_action('discoverable'));
 
         this.refresh_button.connect("clicked", this._refresh.bind(this))
@@ -467,39 +425,58 @@ export const Window = GObject.registerClass({
         Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
     }
 
-    _setDeviceMenu(panel = null) {
-        this.device_menu.insert_action_group('device', null);
-        this.device_menu.insert_action_group('settings', null);
-        this.device_menu.set_menu_model(null);
-
-        if (panel === null)
-            return;
-
-        this.device_menu.insert_action_group('device', panel.device.action_group);
-        this.device_menu.insert_action_group('settings', panel.actions);
-        this.device_menu.set_menu_model(panel.menu);
-    }
-
     _onDeviceAdded(service, device) {
         try {
-            const row = new DeviceRow(device);
             if (this.rows == null) {
-                this.rows = {};
+                this.rows = [];
             }
+            let row = new Adw.ActionRow();
+            row.set_title(device.name);
+            row.add_prefix(new Gtk.Image({
+                icon_name : device.icon_name,
+                visible : true,
+            }));
+
+            device.connect(
+                'notify::connected',
+                this._onDeviceChanged.bind(this)
+            );
+            device.connect(
+                'notify::paired',
+                this._onDeviceChanged.bind(this)
+            );
+
+            row.device = device;
             this.rows[device.id] = row;
-            this.device_list.append(row);  
+            this.device_list.append(row);
+            this._onDeviceChanged(device, null);
         } catch (e) {
             logError(e);
         }
+    }
+
+    _onDeviceChanged(device, paramspec) {
+        switch (false) {
+            case device.paired:
+                this.rows[device.id].set_subtitle(_('Unpaired'));
+                break;
+            case device.connected:
+                this.rows[device.id].set_subtitle(_('Disconnected'));
+                break;
+            default:
+                this.rows[device.id].set_subtitle(_('Connected'));
+        }
+        if (this.device_list.get_selected_row() != null 
+            && this.device_list.get_selected_row().device.id == device.id)
+            this._onDeviceSelected(null, this.rows[device.id]);
     }
 
     _onDeviceRemoved(service, device) {
         try {
             const row = this.rows[device.id];
             if (row != null) {
-                device_list.remove(row.destroy());
-                // TODO: Distruggere row
-                row = null;
+                this.device_list.remove(row);
+                row.dispose();
             }
         } catch (e) {
             logError(e);
@@ -508,10 +485,15 @@ export const Window = GObject.registerClass({
 
     _onDeviceSelected(box, row) {
         try {
-            console.log(this.split_view);
-            const navigation_page = new DeviceNavigationPage(row.device);
-            this.split_view.set_content(navigation_page);
-            this.split_view.set_show_content(true);
+            if (row.device.paired) {
+                const navigation_page = new DeviceNavigationPage(row.device);
+                this.split_view.set_content(navigation_page);
+                this.split_view.set_show_content(true);
+            } else {
+                const navigation_page = new DevicePairPage(row.device);
+                this.split_view.set_content(navigation_page);
+                this.split_view.set_show_content(true);
+            }
         } catch (e) {
             logError(e);
         }

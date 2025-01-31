@@ -97,7 +97,9 @@ SPDX-License-Identifier: GPL-2.0-or-later
             <property name="child">
               <object class="AdwToolbarView">
                 <child type="top">
-                  <object class="AdwHeaderBar"/>
+                  <object class="AdwHeaderBar">
+                    <property name="show-title">false</property>
+                  </object>
                 </child>
                 <property name="content">
                   <object class="GtkBox" id="welcome">

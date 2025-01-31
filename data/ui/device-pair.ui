@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface domain="org.gnome.Shell.Extensions.GSConnect">
+  <requires lib="gtk+" version="4.0" />
+  <object class="GtkAdjustment" id="battery-custom-adjustment">
+    <property name="value">80</property>
+    <property name="upper">99</property>
+    <property name="lower">01</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <template class="DevicePairPage" parent="AdwNavigationPage">
+    <property name="title" translatable="yes">Content</property>
+    <property name="tag">content</property>
+    <property name="child">
+      <object class="AdwNavigationView">
+        <child>
+          <object class="AdwNavigationPage">
+            <property name="tag">unpaired</property>
+            <property name="child">
+              <object class="AdwToolbarView">
+                <child type="top">
+                  <object class="AdwHeaderBar">
+                    <property name="title-widget">
+                      <object class="AdwWindowTitle"/>
+                    </property>
+                  </object>
+                </child>
+                <property name="content">
+                  <object class="GtkBox" id="welcome">
+                    <property name="orientation">1</property>
+                    <property name="valign">3</property>
+                    <property name="halign">3</property>
+                    <child>
+                      <object class="GtkImage">
+                        <property name="name">logo</property>
+                        <property name="icon-name">network-wireless-hotspot-symbolic</property>
+                        <property name="pixel-size">196</property>
+                        <property name="margin-bottom">30</property>
+                        <style>
+                          <class name="icon-dropshadow"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label" translatable="yes">Pair with this device</property>
+                        <property name="margin-bottom">30</property>
+                        <style>
+                          <class name="title-1"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton">
+                        <property name="label" translatable="yes">Pair</property>
+                        <property name="action-name">settings.pair</property>
+                        <style>
+                          <class name="pill"/>
+                          <class name="suggested-action"/>
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+              </object>
+            </property>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+</interface>

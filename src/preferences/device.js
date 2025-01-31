@@ -34,28 +34,6 @@ for (const name in plugins) {
     }
 }
 
-
-/**
- * A Gtk.ListBoxHeaderFunc for sections that adds separators between each row.
- *
- * @param {Gtk.ListBoxRow} row - The current row
- * @param {Gtk.ListBoxRow} before - The previous row
- */
-export function rowSeparators(row, before) {
-    const header = row.get_header();
-
-    if (before === null) {
-        if (header !== null)
-            header.destroy();
-
-        return;
-    }
-
-    if (header === null)
-        row.set_header(new Gtk.Separator({visible: true}));
-}
-
-
 /**
  * A Gtk.ListBoxSortFunc for SectionRow rows
  *
@@ -64,142 +42,11 @@ export function rowSeparators(row, before) {
  * @return {number} -1, 0 or 1
  */
 export function titleSortFunc(row1, row2) {
-    if (!row1.title || !row2.title)
+    if (!row1.get_title() || !row2.get_title())
         return 0;
 
-    return row1.title.localeCompare(row2.title);
+    return row1.get_title().localeCompare(row2.title);
 }
-
-
-/**
- * A row for a section of settings
- */
-const SectionRow = GObject.registerClass({
-    GTypeName: 'GSConnectPreferencesSectionRow',
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/preferences-section-row.ui',
-    Children: ['icon-image', 'title-label', 'subtitle-label'],
-    Properties: {
-        'gicon': GObject.ParamSpec.object(
-            'gicon',
-            'GIcon',
-            'A GIcon for the row',
-            GObject.ParamFlags.READWRITE,
-            Gio.Icon.$gtype
-        ),
-        'icon-name': GObject.ParamSpec.string(
-            'icon-name',
-            'Icon Name',
-            'An icon name for the row',
-            GObject.ParamFlags.READWRITE,
-            null
-        ),
-        'subtitle': GObject.ParamSpec.string(
-            'subtitle',
-            'Subtitle',
-            'A subtitle for the row',
-            GObject.ParamFlags.READWRITE,
-            null
-        ),
-        'title': GObject.ParamSpec.string(
-            'title',
-            'Title',
-            'A title for the row',
-            GObject.ParamFlags.READWRITE,
-            null
-        ),
-        'widget': GObject.ParamSpec.object(
-            'widget',
-            'Widget',
-            'An action widget for the row',
-            GObject.ParamFlags.READWRITE,
-            Gtk.Widget.$gtype
-        ),
-    },
-}, class SectionRow extends Gtk.ListBoxRow {
-
-    _init(params = {}) {
-        super._init();
-
-        // NOTE: we can't pass construct properties to _init() because the
-        //       template children are not assigned until after it runs.
-        this.freeze_notify();
-        Object.assign(this, params);
-        this.thaw_notify();
-    }
-
-    get icon_name() {
-        return this.icon_image.icon_name;
-    }
-
-    set icon_name(icon_name) {
-        if (this.icon_name === icon_name)
-            return;
-
-        this.icon_image.visible = !!icon_name;
-        this.icon_image.icon_name = icon_name;
-        this.notify('icon-name');
-    }
-
-    get gicon() {
-        return this.icon_image.gicon;
-    }
-
-    set gicon(gicon) {
-        if (this.gicon === gicon)
-            return;
-
-        this.icon_image.visible = !!gicon;
-        this.icon_image.gicon = gicon;
-        this.notify('gicon');
-    }
-
-    get title() {
-        return this.title_label.label;
-    }
-
-    set title(text) {
-        if (this.title === text)
-            return;
-
-        this.title_label.visible = !!text;
-        this.title_label.label = text;
-        this.notify('title');
-    }
-
-    get subtitle() {
-        return this.subtitle_label.label;
-    }
-
-    set subtitle(text) {
-        if (this.subtitle === text)
-            return;
-
-        this.subtitle_label.visible = !!text;
-        this.subtitle_label.label = text;
-        this.notify('subtitle');
-    }
-
-    get widget() {
-        if (this._widget === undefined)
-            this._widget = null;
-
-        return this._widget;
-    }
-
-    set widget(widget) {
-        if (this.widget === widget)
-            return;
-
-        if (this.widget instanceof Gtk.Widget)
-            this.widget.destroy();
-
-        // Add the widget
-        this._widget = widget;
-        this.get_child().attach(widget, 2, 0, 1, 2);
-        this.notify('widget');
-    }
-});
-
 
 /**
  * Command Editor Dialog
@@ -832,8 +679,6 @@ export const Panel = GObject.registerClass({
         }
     }
 
-
-
     _populateApplications(settings) {
         const applications = this._queryApplications(settings);
 
@@ -1076,23 +921,6 @@ export const Panel = GObject.registerClass({
                 this[name].visible = row.widget.active;
         }
     }
-
-    _togglePlugin(widget) {
-        try {
-            const name = widget.get_ancestor(Gtk.ListBoxRow.$gtype).get_name();
-            const index = this._disabledPlugins.indexOf(name);
-
-            // Either add or remove the plugin from the disabled list
-            if (index > -1)
-                this._disabledPlugins.splice(index, 1);
-            else
-                this._disabledPlugins.push(name);
-
-            this.settings.set_strv('disabled-plugins', this._disabledPlugins);
-        } catch (e) {
-            logError(e);
-        }
-    } 
 });
 
 export const DeviceNavigationPage = GObject.registerClass({
@@ -1102,6 +930,7 @@ export const DeviceNavigationPage = GObject.registerClass({
         'window_title',
         'notification_apps',
         'receive_directory',
+        'plugin_list',
         'command_list',
         'shortcuts-actions-list',
         'battery_system',
@@ -1113,6 +942,7 @@ export const DeviceNavigationPage = GObject.registerClass({
         super._init();
         this.device = device;
         this.shortcuts_actions_list_rows = [];
+        this.plugin_list_rows = [];
         this.settings = new Gio.Settings({
             settings_schema: Config.GSCHEMA.lookup(
                 'org.gnome.Shell.Extensions.GSConnect.Device',
@@ -1120,7 +950,7 @@ export const DeviceNavigationPage = GObject.registerClass({
             ),
             path: `/org/gnome/shell/extensions/gsconnect/device/${device.id}/`,
         });
-        this._setWindowTitle()
+        this._setWindowTitle(device)
         this._setupActions();
         this._sharingSettings();
         this._batterySettings();
@@ -1128,13 +958,26 @@ export const DeviceNavigationPage = GObject.registerClass({
         this._notificationSettings();
         // --------------------------
         this._keybindingSettings();
-        //this._advancedSettings();
+        this._advancedSettings();
         
     }
     
-    _setWindowTitle() {
+    _setWindowTitle(device) {
         this.window_title.set_title(device.name);
-        this.window_title.set_subtitle(this._getTypeLabel(device));
+        let device_type = 'desktop'
+        switch (device.type) {
+            case 'laptop':
+                device_type = _('Laptop');
+            case 'phone':
+                device_type = _('Smartphone');
+            case 'tablet':
+                device_type = _('Tablet');
+            case 'tv':
+                device_type = _('Television');
+            default:
+                device_type = _('Desktop');
+        }
+        this.window_title.set_subtitle(device_type);
     }
 
     _setupActions() {
@@ -1184,6 +1027,16 @@ export const DeviceNavigationPage = GObject.registerClass({
         this.actions.add_action(settings.create_action('talking-pause'));
         this.actions.add_action(settings.create_action('talking-microphone'));
 
+        // Pair Actions
+        const encryption_info = new Gio.SimpleAction({name: 'encryption-info'});
+        encryption_info.connect('activate', this._onEncryptionInfo.bind(this));
+        this.actions.add_action(encryption_info);
+
+        const status_unpair = new Gio.SimpleAction({name: 'unpair'});
+        status_unpair.connect('activate', this._deviceAction.bind(this.device));
+        this.settings.bind('paired', status_unpair, 'enabled', 0);
+        this.actions.add_action(status_unpair);
+    
     }
 
     get_incoming_supported(type) {
@@ -1252,7 +1105,6 @@ export const DeviceNavigationPage = GObject.registerClass({
         // Local Command List
         const settings = this.pluginSettings('runcommand');
         this._commands = settings.get_value('command-list').recursiveUnpack();
-        console.log(this._commands)
         for (const uuid of Object.keys(this._commands))
             this._insertCommand(uuid);
         const row = new Adw.ButtonRow({
@@ -1302,6 +1154,91 @@ export const DeviceNavigationPage = GObject.registerClass({
         );
     }
 
+    /**
+     * Advanced Page
+     */
+    _advancedSettings() {
+        this._disabledPluginsId = this.settings.connect(
+            'changed::disabled-plugins',
+            this._onPluginsChanged.bind(this)
+        );
+        this._supportedPluginsId = this.settings.connect(
+            'changed::supported-plugins',
+            this._onPluginsChanged.bind(this)
+        );
+        this._onPluginsChanged(this.settings, null);
+
+        for (const name of DEVICE_PLUGINS)
+            this._addPlugin(name);
+    }
+
+    _onPluginsChanged(settings, key) {
+        if (key === 'disabled-plugins' || this._disabledPlugins === undefined)
+            this._disabledPlugins = settings.get_strv('disabled-plugins');
+
+        if (key === 'supported-plugins' || this._supportedPlugins === undefined)
+            this._supportedPlugins = settings.get_strv('supported-plugins');
+
+        this._enabledPlugins = this._supportedPlugins.filter(name => {
+            return !this._disabledPlugins.includes(name);
+        });
+
+        if (key !== null)
+            this._updatePlugins();
+    }
+
+    _addPlugin(name) {
+        const plugin = plugins[name];
+
+        const row = new Adw.SwitchRow({
+            title: plugin.Metadata.label,
+            subtitle: plugin.Metadata.description || '',
+            visible: this._supportedPlugins.includes(name),
+            active: this._enabledPlugins.includes(name)
+        });
+        row.connect('notify::active', this._togglePlugin.bind(this));
+        row.set_name(name);
+
+        this.plugin_list.add(row);
+        this.plugin_list_rows.push(row)
+    }
+
+    _togglePlugin(widget) {
+        try {
+            const name = widget.get_name();
+            const index = this._disabledPlugins.indexOf(name);
+
+            // Either add or remove the plugin from the disabled list
+            if (index > -1)
+                this._disabledPlugins.splice(index, 1);
+            else
+                this._disabledPlugins.push(name);
+
+            this.settings.set_strv('disabled-plugins', this._disabledPlugins);
+        } catch (e) {
+            logError(e);
+        }
+    } 
+
+
+    _onEncryptionInfo() {
+        const win = Gtk.Application.get_default().get_active_window();
+
+        const dialog = new Adw.MessageDialog({
+            heading: _('Encryption Info'),
+            body: this.device.encryption_info,
+            transient_for: win
+        });
+        
+        dialog.add_response("ok",  _("Ok"));
+
+        dialog.present();
+    }
+
+    _deviceAction(action, parameter) {
+        this.action_group.activate_action(action.name, parameter);
+    }
+
     _setPluginKeybindings() {
         const keybindings = this.settings.get_value('keybindings').deepUnpack();
 
@@ -1326,25 +1263,6 @@ export const DeviceNavigationPage = GObject.registerClass({
             });
             row.connect('notify::active', this._toggleNotification.bind(this));
             this.notification_apps.add(row);
-        }
-    }
-    
-    /*
-     *
-     * Context Switcher
-     */
-    _getTypeLabel(device) {
-        switch (device.type) {
-            case 'laptop':
-                return _('Laptop');
-            case 'phone':
-                return _('Smartphone');
-            case 'tablet':
-                return _('Tablet');
-            case 'tv':
-                return _('Television');
-            default:
-                return _('Desktop');
         }
     }
 
@@ -1453,9 +1371,6 @@ export const DeviceNavigationPage = GObject.registerClass({
         if (widget instanceof Gtk.Button) {
             const row = widget.get_ancestor(Gtk.ListBoxRow.$gtype);
             const uuid = row.get_command_name();
-
-            console.log(uuid)
-
             this._commandEditor.uuid = uuid;
             this._commandEditor.command_name = this._commands[uuid].name;
             this._commandEditor.command_line = this._commands[uuid].command;
@@ -1530,30 +1445,20 @@ export const DeviceNavigationPage = GObject.registerClass({
 
 
     _onReceiveDirectorySet(button) {
-        const fileChooser = new Gtk.FileChooserDialog({
+        const win = Gtk.Application.get_default().get_active_window();
+        const fileDialog = new Gtk.FileDialog({
             title: "Seleziona un file",
-            transient_for: Gtk.Application.get_default().get_active_window(),
-            modal: true,
-            action: Gtk.FileChooserAction.SELECT_FOLDER,
         });
     
-        // Pulsanti di azione
-        fileChooser.add_button("_Annulla", Gtk.ResponseType.CANCEL);
-        fileChooser.add_button("_Apri", Gtk.ResponseType.ACCEPT);
-    
-        fileChooser.connect("response", (dialog, response) => {
-            if (response === Gtk.ResponseType.ACCEPT) {
-                const filename = dialog.get_file();
-                const settings = this.pluginSettings('share');
-                const receiveDir = settings.get_string('receive-directory');
-                if (filename.get_path() !== receiveDir)
-                    settings.set_string('receive-directory', filename.get_path());
-    
-            }
-            dialog.destroy();
+        fileDialog.select_folder(win, null, (dialog, response) => {
+            const filename = fileDialog.select_folder_finish(response);
+            console.log(filename);
+            console.log(response);
+            const settings = this.pluginSettings('share');
+            const receiveDir = settings.get_string('receive-directory');
+            if (filename.get_path() !== receiveDir)
+                settings.set_string('receive-directory', filename.get_path());
         });
-    
-        fileChooser.show();
     }
 
     dispose() {
@@ -1572,6 +1477,15 @@ export const DeviceNavigationPage = GObject.registerClass({
         this.settings.disconnect(this._disabledPluginsId);
         this.settings.disconnect(this._supportedPluginsId);
         this.settings.run_dispose();
+    }
+
+    _updatePlugins(settings, key) {
+        for (const row of this.plugin_list_rows) {
+            const name = row.get_name();
+
+            row.visible = this._supportedPlugins.includes(name);
+            row.active = this._enabledPlugins.includes(name);
+        }
     }
 });
 
@@ -1604,4 +1518,50 @@ export const CommandActionRow = GObject.registerClass({
         return this.delete_button;
     } 
 
+});
+
+export const DevicePairPage = GObject.registerClass({
+    GTypeName: 'DevicePairPage',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/device-pair.ui'
+}, class DevicePairPage extends Adw.NavigationPage {
+
+    _init(device) {
+        super._init();
+        this.device = device;
+        this.actions = new Gio.SimpleActionGroup();
+        this.insert_action_group('settings', this.actions);
+
+        this.settings = new Gio.Settings({
+            settings_schema: Config.GSCHEMA.lookup(
+                'org.gnome.Shell.Extensions.GSConnect.Device',
+                true
+            ),
+            path: `/org/gnome/shell/extensions/gsconnect/device/${device.id}/`,
+        });
+        
+        const status_pair = new Gio.SimpleAction({name: 'pair'});
+        status_pair.connect('activate', this._deviceAction.bind(this.device));
+        this.settings.bind('paired', status_pair, 'enabled', 16);
+        this.actions.add_action(status_pair);
+    }
+
+    _deviceAction(action, parameter) {
+        this.action_group.activate_action(action.name, parameter);
+    }
+
+    pluginSettings(name) {
+        if (this._pluginSettings === undefined)
+            this._pluginSettings = {};
+
+        if (!this._pluginSettings.hasOwnProperty(name)) {
+            const meta = plugins[name].Metadata;
+
+            this._pluginSettings[name] = new Gio.Settings({
+                settings_schema: Config.GSCHEMA.lookup(meta.id, -1),
+                path: `${this.settings.path}plugin/${name}/`,
+            });
+        }
+
+        return this._pluginSettings[name];
+    }
 });

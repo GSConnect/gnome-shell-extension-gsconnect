@@ -10,6 +10,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
   <gresource prefix="/org/gnome/Shell/Extensions/GSConnect">
     <!-- UI -->
     <file compressed="true">application.css</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/device-pair.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/device-page.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/command-row.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/connect-dialog.ui</file>
