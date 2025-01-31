@@ -1522,12 +1522,16 @@ export const CommandActionRow = GObject.registerClass({
 
 export const DevicePairPage = GObject.registerClass({
     GTypeName: 'DevicePairPage',
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/device-pair.ui'
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/device-pair.ui',
+    Children: [
+        'pair_label'
+    ]
 }, class DevicePairPage extends Adw.NavigationPage {
 
     _init(device) {
         super._init();
         this.device = device;
+        this.pair_label.set_label(device.name);
         this.actions = new Gio.SimpleActionGroup();
         this.insert_action_group('settings', this.actions);
 

@@ -42,9 +42,20 @@
                       </object>
                     </child>
                     <child>
+                      <object class="GtkLabel" id="pair_label">
+                        <property name="margin-top">30</property>
+                        <property name="max-width-chars">10</property>
+                        <property name="ellipsize">PANGO_ELLIPSIZE_END</property>
+                        <style>
+                          <class name="title-1"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkLabel">
-                        <property name="label" translatable="yes">Pair with this device</property>
+                        <property name="label" translatable="yes">is still not paired!</property>
                         <property name="margin-bottom">30</property>
+                        <property name="justify">true</property>
                         <style>
                           <class name="title-1"/>
                         </style>
@@ -52,7 +63,7 @@
                     </child>
                     <child>
                       <object class="GtkButton">
-                        <property name="label" translatable="yes">Pair</property>
+                        <property name="label" translatable="yes">Pair!</property>
                         <property name="action-name">settings.pair</property>
                         <style>
                           <class name="pill"/>

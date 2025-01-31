@@ -432,6 +432,8 @@ export const Window = GObject.registerClass({
             }
             let row = new Adw.ActionRow();
             row.set_title(device.name);
+            row.set_title_lines(1);
+            row.set_subtitle_lines(1);
             row.add_prefix(new Gtk.Image({
                 icon_name : device.icon_name,
                 visible : true,
