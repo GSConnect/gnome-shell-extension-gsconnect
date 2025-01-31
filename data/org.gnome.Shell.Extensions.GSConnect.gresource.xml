@@ -42,19 +42,6 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <file compressed="true" preprocess="xml-stripblanks">icons/org.gnome.Shell.Extensions.GSConnect.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">icons/org.gnome.Shell.Extensions.GSConnect-symbolic.svg</file>
 
-    <!-- Device Icons (Fallback) c/o GNOME -->
-    <file compressed="true" preprocess="xml-stripblanks">icons/computer-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">icons/phone-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">icons/tv-symbolic.svg</file>
-
-    <!-- Device Icons (Fallbacks) c/o Numix
-
-         NOTE: GNOME currently doesn't have an icon for `laptop`
-               The stock icon for `tablet` is actually a wacom tablet
-    -->
-    <file compressed="true" preprocess="xml-stripblanks">icons/laptop-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">icons/tablet-symbolic.svg</file>
-
     <!-- Phonelink Icons c/o GNOME -->
     <file compressed="true" preprocess="xml-stripblanks">icons/phonelink-symbolic.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">icons/phonelink-delete-symbolic.svg</file>

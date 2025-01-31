@@ -82,7 +82,7 @@
                             <property name="activatable">True</property>
                             <child type="prefix">
                               <object class="GtkImage">
-                                <property name="icon-name">phonelink-ring-symbolic</property>
+                                <property name="icon-name">audio-volume-high-symbolic</property>
                               </object>
                             </child>
                           </object>
