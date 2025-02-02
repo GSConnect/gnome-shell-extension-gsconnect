@@ -19,8 +19,11 @@ const _MUTE = [
 ];
 
 
-// Simple error logging function
-// eslint-disable-next-line no-redeclare
+/**
+ * Simple error logging function
+ *
+ * @param {Error} error - A caught exception
+ */
 function logError(error) {
     if (!_MUTE.includes(error.message))
         console.error(error.message);
@@ -56,7 +59,7 @@ async function sendUrl(device, action, url) {
  * Create and return a device element for the popup menu
  *
  * @param {object} device - A JSON object describing a connected device
- * @return {HTMLElement} - A <div> element with icon, name and actions
+ * @returns {HTMLElement} - A <div> element with icon, name and actions
  */
 function getDeviceElement(device) {
     const deviceElement = document.createElement('div');
@@ -136,8 +139,8 @@ function setPopup() {
 /**
  * Callback for receiving a message forwarded by background.js
  *
- * @param {Object} message - A JSON message object
- * @param {runtime.MessageSender} sender - The sender of the message.
+ * @param {object} message - A JSON message object
+ * @param {browser.runtime.MessageSender} sender - The sender of the message.
  */
 function onPortMessage(message, sender) {
     try {
@@ -185,4 +188,3 @@ async function onPopup() {
  */
 browser.runtime.onMessage.addListener(onPortMessage);
 document.addEventListener('DOMContentLoaded', onPopup);
-
