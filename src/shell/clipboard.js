@@ -183,7 +183,7 @@ export const Clipboard = GObject.registerClass({
     /**
      * Get the available mimetypes of the current clipboard content
      *
-     * @return {Promise<string[]>} A list of mime-types
+     * @returns {Promise<string[]>} A list of mime-types
      */
     GetMimetypes() {
         return new Promise((resolve, reject) => {
@@ -202,7 +202,7 @@ export const Clipboard = GObject.registerClass({
     /**
      * Get the text content of the clipboard
      *
-     * @return {Promise<string>} Text content of the clipboard
+     * @returns {Promise<string>} Text content of the clipboard
      */
     GetText() {
         return new Promise((resolve, reject) => {
@@ -241,7 +241,7 @@ export const Clipboard = GObject.registerClass({
      * Set the text content of the clipboard
      *
      * @param {string} text - text content to set
-     * @return {Promise} A promise for the operation
+     * @returns {Promise} A promise for the operation
      */
     SetText(text) {
         return new Promise((resolve, reject) => {
@@ -270,7 +270,7 @@ export const Clipboard = GObject.registerClass({
      * Get the content of the clipboard with the type @mimetype.
      *
      * @param {string} mimetype - the mimetype to request
-     * @return {Promise<Uint8Array>} The content of the clipboard
+     * @returns {Promise<Uint8Array>} The content of the clipboard
      */
     GetValue(mimetype) {
         return new Promise((resolve, reject) => {
@@ -300,7 +300,7 @@ export const Clipboard = GObject.registerClass({
      *
      * @param {Uint8Array} value - the value to set
      * @param {string} mimetype - the mimetype of the value
-     * @return {Promise} - A promise for the operation
+     * @returns {Promise} - A promise for the operation
      */
     SetValue(value, mimetype) {
         return new Promise((resolve, reject) => {
@@ -377,4 +377,3 @@ export function unwatchService() {
         _portalId = 0;
     }
 }
-

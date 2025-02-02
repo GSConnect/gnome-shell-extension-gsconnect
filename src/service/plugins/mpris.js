@@ -8,6 +8,7 @@ import GObject from 'gi://GObject';
 
 import * as Components from '../components/index.js';
 import Config from '../../config.js';
+import * as Core from './core.js';
 import * as DBus from '../utils/dbus.js';
 import  {Player} from '../components/mpris.js';
 import Plugin from '../plugin.js';
@@ -144,7 +145,7 @@ const MPRISPlugin = GObject.registerClass({
     /**
      * Handle an update for a remote player.
      *
-     * @param {Object} packet - A `kdeconnect.mpris` packet
+     * @param {object} packet - A `kdeconnect.mpris` packet
      */
     _handlePlayerUpdate(packet) {
         const player = this._players.get(packet.body.player);
@@ -174,7 +175,7 @@ const MPRISPlugin = GObject.registerClass({
      * Handle a request for player information or action.
      *
      * @param {Core.Packet} packet - a `kdeconnect.mpris.request`
-     * @return {undefined} no return value
+     * @returns {undefined} no return value
      */
     _handleRequest(packet) {
         // A request for the list of players

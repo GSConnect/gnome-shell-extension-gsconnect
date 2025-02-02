@@ -206,7 +206,7 @@ const SMSPlugin = GObject.registerClass({
     /**
      * Handle a digest of threads.
      *
-     * @param {Object[]} messages - A list of message objects
+     * @param {object[]} messages - A list of message objects
      * @param {string[]} thread_ids - A list of thread IDs as strings
      */
     _handleDigest(messages, thread_ids) {
@@ -244,7 +244,7 @@ const SMSPlugin = GObject.registerClass({
     /**
      * Handle a new single message
      *
-     * @param {Object} message - A message object
+     * @param {object} message - A message object
      */
     _handleMessage(message) {
         let conversation = null;
@@ -261,7 +261,7 @@ const SMSPlugin = GObject.registerClass({
     /**
      * Parse a conversation (thread of messages) and sort them
      *
-     * @param {Object[]} thread - A list of sms message objects from a thread
+     * @param {object[]} thread - A list of sms message objects from a thread
      */
     _handleThread(thread) {
         // If there are no addresses this will cause major problems...
@@ -300,7 +300,7 @@ const SMSPlugin = GObject.registerClass({
     /**
      * Handle a response to telephony.request_conversation(s)
      *
-     * @param {Object[]} messages - A list of sms message objects
+     * @param {object[]} messages - A list of sms message objects
      */
     _handleMessages(messages) {
         try {
@@ -394,7 +394,7 @@ const SMSPlugin = GObject.registerClass({
     /**
      * Send a message
      *
-     * @param {Object[]} addresses - A list of address objects
+     * @param {object[]} addresses - A list of address objects
      * @param {string} messageBody - The message text
      * @param {number} [event] - An event bitmask
      * @param {boolean} [forceSms] - Whether to force SMS
@@ -508,8 +508,8 @@ const SMSPlugin = GObject.registerClass({
     /**
      * Try to find a thread_id in @smsPlugin for @addresses.
      *
-     * @param {Object[]} addresses - a list of address objects
-     * @return {string|null} a thread ID
+     * @param {object[]} addresses - a list of address objects
+     * @returns {string|null} a thread ID
      */
     getThreadIdForAddresses(addresses = []) {
         const threads = Object.values(this.threads);

@@ -384,7 +384,7 @@ const Device = GObject.registerClass({
      *
      * @param {string[]} args - process arguments
      * @param {Gio.Cancellable} [cancellable] - optional cancellable
-     * @return {Gio.Subprocess} The subprocess
+     * @returns {Gio.Subprocess} The subprocess
      */
     launchProcess(args, cancellable = null) {
         if (this._launcher === undefined) {
@@ -418,7 +418,7 @@ const Device = GObject.registerClass({
      * Handle a packet and pass it to the appropriate plugin.
      *
      * @param {Core.Packet} packet - The incoming packet object
-     * @return {undefined} no return value
+     * @returns {undefined} no return value
      */
     handlePacket(packet) {
         try {
@@ -443,7 +443,7 @@ const Device = GObject.registerClass({
     /**
      * Send a packet to the device.
      *
-     * @param {Object} packet - An object of packet data...
+     * @param {object} packet - An object of packet data...
      */
     async sendPacket(packet) {
         try {
@@ -524,7 +524,7 @@ const Device = GObject.registerClass({
      * device menu.
      *
      * @param {string} actionName - An action name with scope (eg. device.foo)
-     * @return {number} An 0-based index or -1 if not found
+     * @returns {number} An 0-based index or -1 if not found
      */
     getMenuAction(actionName) {
         for (let i = 0, len = this.menu.get_n_items(); i < len; i++) {
@@ -546,7 +546,7 @@ const Device = GObject.registerClass({
      *
      * @param {Gio.MenuItem} menuItem - A GMenuItem
      * @param {number} [index] - The position to place the item
-     * @return {number} The position the item was placed
+     * @returns {number} The position the item was placed
      */
     addMenuItem(menuItem, index = -1) {
         try {
@@ -570,7 +570,7 @@ const Device = GObject.registerClass({
      * @param {number} [index] - The position to place the item
      * @param {string} label - A label for the item
      * @param {string} icon_name - A themed icon name for the item
-     * @return {number} The position the item was placed
+     * @returns {number} The position the item was placed
      */
     addMenuAction(action, index = -1, label, icon_name) {
         try {
@@ -600,7 +600,7 @@ const Device = GObject.registerClass({
      * Remove a GAction from the top level of the device menu by action name
      *
      * @param {string} actionName - A GAction name, including scope
-     * @return {number} The position the item was removed from or -1
+     * @returns {number} The position the item was removed from or -1
      */
     removeMenuAction(actionName) {
         try {
@@ -631,7 +631,7 @@ const Device = GObject.registerClass({
     /**
      * Show a device notification.
      *
-     * @param {Object} params - A dictionary of notification parameters
+     * @param {object} params - A dictionary of notification parameters
      * @param {number} [params.id] - A UNIX epoch timestamp (ms)
      * @param {string} [params.title] - A title
      * @param {string} [params.body] - A body
@@ -728,7 +728,7 @@ const Device = GObject.registerClass({
     /**
      * Create a transfer object.
      *
-     * @return {Core.Transfer} A new transfer
+     * @returns {Core.Transfer} A new transfer
      */
     createTransfer() {
         const transfer = new Core.Transfer({device: this});
@@ -747,7 +747,7 @@ const Device = GObject.registerClass({
      * Reject the transfer payload described by @packet.
      *
      * @param {Core.Packet} packet - A packet
-     * @return {Promise} A promise for the operation
+     * @returns {void}
      */
     rejectTransfer(packet) {
         if (!packet || !packet.hasPayload())
