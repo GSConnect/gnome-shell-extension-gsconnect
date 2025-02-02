@@ -36,6 +36,13 @@ globalThis.HAVE_GNOME = true;
 /*
  * File Helpers
  */
+
+
+/**
+ * Find the path to the datadir via the import path.
+ *
+ * @returns {string} The absolute datadir path
+ */
 function get_datadir() {
     const thisFile = Gio.File.new_for_uri(import.meta.url);
 
@@ -45,21 +52,45 @@ function get_datadir() {
 const DATA_PATH = get_datadir();
 
 
+/**
+ * Convert a filename into a path within the datadir
+ *
+ * @param {string} filename - A filename
+ * @returns {string} An absolute path
+ */
 export function getDataPath(filename) {
     return GLib.build_filenamev([DATA_PATH, filename]);
 }
 
 
+/**
+ * Convert a filename into a URI within the datadir
+ *
+ * @param {string} filename - A filename
+ * @returns {string} An absolute-path URI
+ */
 export function getDataUri(filename) {
     return `file://${getDataPath(filename)}`;
 }
 
 
+/**
+ * Create a Gio.File object for a filename within the datadir
+ *
+ * @param {string} filename - A filename
+ * @returns {Gio.File} A File object representing the named file
+ */
 export function getDataFile(filename) {
     return Gio.File.new_for_path(getDataPath(filename));
 }
 
 
+/**
+ * Read the contents of a file
+ *
+ * @param {string} filename - The file to load
+ * @returns {string} The file's contents as a UTF-8 string
+ */
 export function loadDataContents(filename) {
     const path = getDataPath(filename);
     const bytes = GLib.file_get_contents(path)[1];
@@ -84,6 +115,12 @@ Promise.idle = function (priority = GLib.PRIORITY_DEFAULT_IDLE) {
 /*
  * Identity Helpers
  */
+
+/**
+ * Get a pseudo-random device type
+ *
+ * @returns {string} A GSConnect device type
+ */
 function getDeviceType() {
     const types = [
         'desktop',
@@ -99,8 +136,8 @@ function getDeviceType() {
 /**
  * Generate a pseudo-random device identity.
  *
- * @param {Object} params - Override parameters
- * @return {Object} A pseudo-random identity packet
+ * @param {object} params - Override parameters
+ * @returns {object} A pseudo-random identity packet
  */
 export function generateIdentity(params = {}) {
     const identity = {
@@ -130,9 +167,9 @@ export function generateIdentity(params = {}) {
 /**
  * Check if @subset is a subset of @obj.
  *
- * @param {Object} obj - The haystack to compare with
- * @param {Object} subset - The needle to search for
- * @return {boolean} %true if the object is a subset
+ * @param {object} obj - The haystack to compare with
+ * @param {object} subset - The needle to search for
+ * @returns {boolean} %true if the object is a subset
  */
 function isSubset(obj, subset) {
     for (const [key, val] of Object.entries(subset)) {
@@ -176,7 +213,7 @@ function isSubset(obj, subset) {
  * packet to handle. Note, the object must have an active jasmine spy.
  *
  * @param {string} type - A KDE Connect packet type
- * @param {Object} [body] - Packet body properties
+ * @param {object} [body] - Packet body properties
  */
 async function _awaitPacket(type, body = null) {
     while (true) {
@@ -202,7 +239,7 @@ Plugin.prototype.awaitPacket = _awaitPacket;
 /**
  * Create temporary directories used by GSConnect.
  *
- * @return {string} The root temporary directory
+ * @returns {string} The root temporary directory
  */
 function isolateDirectories() {
     const tmpdir = GLib.Dir.make_tmp('gsconnect.XXXXXX');
@@ -291,10 +328,10 @@ export class TestRig {
      * Connect the devices with `setConnected()`, pair them with `setPaired()`
      * and load their plugins with `loadPlugins()`.
      *
-     * @param {Object} [overrides] - Capability overrides
-     * @param {Object} overrides.localDevice - Local device overrides
-     * @param {Object} overrides.remoteDevice - Remote device overrides
-     * @return {Promise} A promise for the operation
+     * @param {object} [overrides] - Capability overrides
+     * @param {object} overrides.localDevice - Local device overrides
+     * @param {object} overrides.remoteDevice - Remote device overrides
+     * @returns {Promise} A promise for the operation
      */
     prepare(overrides = {}) {
         return new Promise((resolve, reject) => {
