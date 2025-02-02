@@ -750,10 +750,8 @@ const Device = GObject.registerClass({
      * @returns {void}
      */
     rejectTransfer(packet) {
-        if (!packet || !packet.hasPayload())
-            return;
-
-        return this.channel.rejectTransfer(packet);
+        if (packet?.hasPayload())
+            return this.channel.rejectTransfer(packet);
     }
 
     openPath(action, parameter) {
