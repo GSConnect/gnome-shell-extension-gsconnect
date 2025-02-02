@@ -7,6 +7,7 @@ import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 
 import * as Components from '../components/index.js';
+import * as Core from './core.js';
 import Plugin from '../plugin.js';
 
 

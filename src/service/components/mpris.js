@@ -472,6 +472,10 @@ const PlayerProxy = GObject.registerClass({
     GTypeName: 'GSConnectMPRISPlayer',
 }, class PlayerProxy extends Player {
 
+    /**
+     * @constructs GSConnectMPRISPlayer
+     * @param {string} name - The name of the player
+     */
     _init(name) {
         super._init();
 
@@ -914,7 +918,7 @@ const Manager = GObject.registerClass({
      * Check for a player by its Identity.
      *
      * @param {string} identity - A player name
-     * @return {boolean} %true if the player was found
+     * @returns {boolean} %true if the player was found
      */
     hasPlayer(identity) {
         for (const player of this._players.values()) {
@@ -929,7 +933,7 @@ const Manager = GObject.registerClass({
      * Get a player by its Identity.
      *
      * @param {string} identity - A player name
-     * @return {GSConnectMPRISPlayer|null} A player or %null
+     * @returns {GSConnectMPRISPlayer|null} A player or %null
      */
     getPlayer(identity) {
         for (const player of this._players.values()) {
@@ -943,7 +947,7 @@ const Manager = GObject.registerClass({
     /**
      * Get a list of player identities.
      *
-     * @return {string[]} A list of player identities
+     * @returns {string[]} A list of player identities
      */
     getIdentities() {
         const identities = [];

@@ -7,6 +7,7 @@ import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 
 import Config from '../../config.js';
+import * as Core from './core.js';
 import Plugin from '../plugin.js';
 
 
@@ -246,7 +247,7 @@ const SFTPPlugin = GObject.registerClass({
      * Add GSConnect's private key identity to the authentication agent so our
      * identity can be verified by Android during private key authentication.
      *
-     * @return {Promise} A promise for the operation
+     * @returns {Promise} A promise for the operation
      */
     async _addPrivateKey() {
         const ssh_add = this._launcher.spawnv([

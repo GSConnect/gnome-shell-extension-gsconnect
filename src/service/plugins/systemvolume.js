@@ -6,7 +6,9 @@ import GObject from 'gi://GObject';
 
 import * as Components from '../components/index.js';
 import Config from '../../config.js';
+import * as Core from './core.js';
 import Plugin from '../plugin.js';
+import {Gvc} from '../components/pulseaudio.js';
 
 
 export const Metadata = {
@@ -115,7 +117,7 @@ const SystemVolumePlugin = GObject.registerClass({
      * Update the cache for @stream
      *
      * @param {Gvc.MixerStream} stream - The stream to cache
-     * @return {Object} The updated cache object
+     * @returns {object} The updated cache object
      */
     _updateCache(stream) {
         const state = {
