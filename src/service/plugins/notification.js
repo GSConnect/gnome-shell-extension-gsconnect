@@ -8,7 +8,7 @@ import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk';
 
 import * as Components from '../components/index.js';
-import * as Core from './core.js';
+import * as Core from '../core.js';
 import Config from '../../config.js';
 import Plugin from '../plugin.js';
 import ReplyDialog from '../ui/notification.js';

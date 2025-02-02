@@ -7,7 +7,7 @@ import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 
 import Config from '../../config.js';
-import * as Core from './core.js';
+import * as Core from '../core.js';
 import Plugin from '../plugin.js';
 
 

@@ -7,7 +7,7 @@ import GObject from 'gi://GObject';
 
 import Plugin from '../plugin.js';
 import Contacts from '../components/contacts.js';
-import * as Core from './core.js';
+import * as Core from '../core.js';
 
 /*
  * We prefer libebook's vCard parser if it's available

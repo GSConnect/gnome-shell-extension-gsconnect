@@ -6,7 +6,7 @@ import GObject from 'gi://GObject';
 
 import * as Components from '../components/index.js';
 import Config from '../../config.js';
-import * as Core from './core.js';
+import * as Core from '../core.js';
 import Plugin from '../plugin.js';
 import {Gvc} from '../components/pulseaudio.js';
 
