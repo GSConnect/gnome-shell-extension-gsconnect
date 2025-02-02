@@ -5,6 +5,11 @@
 import * as Utils from '../fixtures/utils.js';
 
 
+/**
+ * Mocked packet handling for the test device
+ *
+ * @param {*} packet - a KDE Connect protocol packet
+ */
 function handlePacket(packet) {
     switch (packet.type) {
         case 'kdeconnect.systemvolume':
@@ -122,4 +127,3 @@ describe('The systemvolume plugin', function () {
         expect(localPlugin._mixer.lookup_sink(0).muted).toBeTrue();
     });
 });
-
