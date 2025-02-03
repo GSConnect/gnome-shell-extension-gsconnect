@@ -267,7 +267,7 @@ const Store = GObject.registerClass({
             this._ebooks = new Map();
 
             // Get the current EBooks
-            const registry = await this._getESourceRegistry();
+            const registry = await EDataServer.SourceRegistry.new(null);
 
             for (const source of registry.list_sources('Address Book'))
                 await this._onAppeared(null, source);
