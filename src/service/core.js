@@ -27,7 +27,7 @@ export function _getDeviceType() {
             return 'laptop';
 
         return 'desktop';
-    } catch (e) {
+    } catch {
         return 'desktop';
     }
 }

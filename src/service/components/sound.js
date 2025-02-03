@@ -9,7 +9,7 @@ import GLib from 'gi://GLib';
 let GSound = null;
 try {
     GSound = (await import('gi://GSound')).default;
-} catch (e) {}
+} catch {}
 
 
 const Player = class Player {
@@ -169,4 +169,3 @@ const Player = class Player {
  * The service class for this component
  */
 export default Player;
-

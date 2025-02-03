@@ -533,7 +533,7 @@ const Device = GObject.registerClass({
 
                 if (val.unpack() === actionName)
                     return i;
-            } catch (e) {
+            } catch {
                 continue;
             }
         }

@@ -11,7 +11,7 @@ import Config from '../config.js';
 let St = null; // St is not available for prefs.js importing this file.
 try {
     St = (await import('gi://St')).default;
-} catch (e) { }
+} catch { }
 
 
 /**

@@ -443,7 +443,7 @@ const FileChooserDialog = GObject.registerClass({
             chooser.preview_widget.pixbuf = pixbuf;
             chooser.preview_widget.visible = true;
             chooser.preview_widget_active = true;
-        } catch (e) {
+        } catch {
             chooser.preview_widget.visible = false;
             chooser.preview_widget_active = false;
         }
