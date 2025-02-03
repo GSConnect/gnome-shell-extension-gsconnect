@@ -1803,7 +1803,6 @@ SPDX-License-Identifier: GPL-2.0-or-later
                             <property name="can_focus">False</property>
                             <property name="hexpand">True</property>
                             <property name="selection_mode">none</property>
-                            <signal name="row-activated" handler="_onShortcutRowActivated" swapped="no"/>
                             <accessibility>
                               <relation type="labelled-by" target="action-shortcuts-label"/>
                             </accessibility>
