@@ -126,19 +126,6 @@ SPDX-License-Identifier: GPL-2.0-or-later
                         </style>
                       </object>
                     </child>
-                    <child>
-                      <object class="GtkBox" id="subtitle">
-                        <property name="orientation">1</property>
-                        <property name="halign">3</property>
-                        <property name="margin-bottom">30</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="label">Learn and prototype with GNOME technologies</property>
-                            <property name="justify">2</property>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
                     <!--
                     <child>
                       <object class="GtkBox" id="webextension-list">
