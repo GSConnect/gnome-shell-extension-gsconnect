@@ -141,7 +141,7 @@ export const Clipboard = GObject.registerClass(
                 invocation.return_value(retval);
 
                 // Without a response, the client will wait for timeout
-            } catch (e) {
+            } catch {
                 invocation.return_dbus_error(
                     'org.gnome.gjs.JSError.ValueError',
                     'Service implementation returned an incorrect value type'

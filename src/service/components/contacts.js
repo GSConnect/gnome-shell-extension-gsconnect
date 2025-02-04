@@ -17,7 +17,7 @@ try {
     EBook = (await import('gi://EBook')).default;
     EBookContacts = (await import('gi://EBookContacts')).default;
     EDataServer = (await import('gi://EDataServer')).default;
-} catch (e) {
+} catch {
     HAVE_EDS = false;
 }
 
@@ -267,7 +267,7 @@ const Store = GObject.registerClass({
             this._ebooks = new Map();
 
             // Get the current EBooks
-            const registry = await this._getESourceRegistry();
+            const registry = await EDataServer.SourceRegistry.new(null);
 
             for (const source of registry.list_sources('Address Book'))
                 await this._onAppeared(null, source);
@@ -610,4 +610,3 @@ const Store = GObject.registerClass({
 });
 
 export default Store;
-

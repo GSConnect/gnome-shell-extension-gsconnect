@@ -385,4 +385,128 @@ const SharePlugin = GObject.registerClass({
     }
 });
 
+/** A simple FileChooserDialog for sharing files */
+const FileChooserDialog = GObject.registerClass({
+    GTypeName: 'GSConnectShareFileChooserDialog',
+}, class FileChooserDialog extends Gtk.FileChooserDialog {
+
+    _init(device) {
+        super._init({
+            // TRANSLATORS: eg. Send files to Google Pixel
+            title: _('Send files to %s').format(device.name),
+            select_multiple: true,
+            extra_widget: new Gtk.CheckButton({
+                // TRANSLATORS: Mark the file to be opened once completed
+                label: _('Open when done'),
+                visible: true,
+            }),
+            use_preview_label: false,
+        });
+
+        this.device = device;
+
+        // Align checkbox with sidebar
+        const box = this.get_content_area().get_children()[0].get_children()[0];
+        const paned = box.get_children()[0];
+        paned.bind_property(
+            'position',
+            this.extra_widget,
+            'margin-left',
+            GObject.BindingFlags.SYNC_CREATE
+        );
+
+        // Preview Widget
+        this.preview_widget = new Gtk.Image();
+        this.preview_widget_active = false;
+        this.connect('update-preview', this._onUpdatePreview);
+
+        // URI entry
+        this._uriEntry = new Gtk.Entry({
+            placeholder_text: 'https://',
+            hexpand: true,
+            visible: true,
+        });
+        this._uriEntry.connect('activate', this._sendLink.bind(this));
+
+        // URI/File toggle
+        this._uriButton = new Gtk.ToggleButton({
+            image: new Gtk.Image({
+                icon_name: 'web-browser-symbolic',
+                pixel_size: 16,
+            }),
+            valign: Gtk.Align.CENTER,
+            // TRANSLATORS: eg. Send a link to Google Pixel
+            tooltip_text: _('Send a link to %s').format(device.name),
+            visible: true,
+        });
+        this._uriButton.connect('toggled', this._onUriButtonToggled.bind(this));
+
+        this.add_button(_('Cancel'), Gtk.ResponseType.CANCEL);
+        const sendButton = this.add_button(_('Send'), Gtk.ResponseType.OK);
+        sendButton.connect('clicked', this._sendLink.bind(this));
+
+        this.get_header_bar().pack_end(this._uriButton);
+        this.set_default_response(Gtk.ResponseType.OK);
+    }
+
+    _onUpdatePreview(chooser) {
+        try {
+            const pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
+                chooser.get_preview_filename(),
+                chooser.get_scale_factor() * 128,
+                -1
+            );
+            chooser.preview_widget.pixbuf = pixbuf;
+            chooser.preview_widget.visible = true;
+            chooser.preview_widget_active = true;
+        } catch {
+            chooser.preview_widget.visible = false;
+            chooser.preview_widget_active = false;
+        }
+    }
+
+    _onUriButtonToggled(button) {
+        const header = this.get_header_bar();
+
+        // Show and focus the URL entry
+        if (button.active) {
+            this.extra_widget.sensitive = false;
+            header.set_custom_title(this._uriEntry);
+            this._uriEntry.grab_focus();
+            this.set_response_sensitive(Gtk.ResponseType.OK, true);
+
+        // Hide the URL entry
+        } else {
+            header.set_custom_title(null);
+            this.set_response_sensitive(
+                Gtk.ResponseType.OK,
+                this.get_uris().length > 1
+            );
+            this.extra_widget.sensitive = true;
+        }
+    }
+
+    _sendLink(widget) {
+        if (this._uriButton.active && this._uriEntry.text.length)
+            this.response(1);
+    }
+
+    vfunc_response(response_id) {
+        if (response_id === Gtk.ResponseType.OK) {
+            for (const uri of this.get_uris()) {
+                const parameter = new GLib.Variant(
+                    '(sb)',
+                    [uri, this.extra_widget.active]
+                );
+                this.device.activate_action('shareFile', parameter);
+            }
+        } else if (response_id === 1) {
+            const parameter = new GLib.Variant('s', this._uriEntry.text);
+            this.device.activate_action('shareUri', parameter);
+        }
+
+        this.destroy();
+    }
+});
+
 export default SharePlugin;

@@ -254,11 +254,11 @@ function removeDirectory(file) {
                 removeDirectory(iter.get_child(info));
 
             iter.close(null);
-        } catch (e) {
+        } catch {
         }
 
         file.delete(null);
-    } catch (e) {
+    } catch {
     }
 }
 
@@ -394,4 +394,3 @@ export class TestRig {
             removeDirectory(this._tmpdir);
     }
 }
-

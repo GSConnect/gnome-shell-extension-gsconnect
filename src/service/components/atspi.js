@@ -62,7 +62,7 @@ export default class Controller {
 
             modifier = keymap.get_entries_for_keyval(Gdk.KEY_Super_L)[1][0];
             XKeycode.Super_L = modifier.keycode;
-        } catch (e) {
+        } catch {
             debug('using default modifier keycodes');
         }
     }
@@ -304,9 +304,8 @@ export default class Controller {
     destroy() {
         try {
             Atspi.exit();
-        } catch (e) {
+        } catch {
             // Silence errors
         }
     }
 }
-

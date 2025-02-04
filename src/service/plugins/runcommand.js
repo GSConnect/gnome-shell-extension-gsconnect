@@ -157,7 +157,7 @@ const RunCommandPlugin = GObject.registerClass({
         if (typeof commandList === 'string') {
             try {
                 commandList = JSON.parse(commandList);
-            } catch (e) {
+            } catch {
                 commandList = {};
             }
         }

@@ -18,7 +18,7 @@ export const setEBookContacts = (ebook) => { // This function is only for tests 
 
 try {
     EBookContacts = (await import('gi://EBookContacts')).default;
-} catch (e) {
+} catch {
     EBookContacts = null;
 }
 
@@ -215,7 +215,7 @@ const ContactsPlugin = GObject.registerClass({
             return output.join('');
 
         // Fallback to old unfaithful
-        } catch (e) {
+        } catch {
             try {
                 return decodeURIComponent(escape(input));
 

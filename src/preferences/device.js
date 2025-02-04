@@ -456,7 +456,7 @@ export const Panel = GObject.registerClass({
                             const isPresent = value.get_boolean();
 
                             resolve(isPresent);
-                        } catch (e) {
+                        } catch {
                             resolve(false);
                         }
                     }
@@ -465,7 +465,7 @@ export const Panel = GObject.registerClass({
 
             this.battery_system_label.visible = hasBattery;
             this.battery_system.visible = hasBattery;
-        } catch (e) {
+        } catch {
             this.battery_system_label.visible = false;
             this.battery_system.visible = false;
         }
@@ -665,7 +665,7 @@ export const Panel = GObject.registerClass({
 
             try {
                 applications = JSON.parse(settings.get_string('applications'));
-            } catch (e) {
+            } catch {
                 applications = {};
             }
 
@@ -707,7 +707,7 @@ export const Panel = GObject.registerClass({
 
         try {
             applications = JSON.parse(settings.get_string('applications'));
-        } catch (e) {
+        } catch {
             applications = {};
         }
 

@@ -539,7 +539,7 @@ const PlayerProxy = GObject.registerClass({
     _get(proxy, name, fallback = null) {
         try {
             return proxy.get_cached_property(name).recursiveUnpack();
-        } catch (e) {
+        } catch {
             return fallback;
         }
     }
@@ -707,7 +707,7 @@ const PlayerProxy = GObject.registerClass({
             );
 
             return reply.recursiveUnpack()[0];
-        } catch (e) {
+        } catch {
             return 0;
         }
     }
@@ -1000,4 +1000,3 @@ const Manager = GObject.registerClass({
  * The service class for this component
  */
 export default Manager;
-
