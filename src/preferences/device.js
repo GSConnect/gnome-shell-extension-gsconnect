@@ -1035,7 +1035,6 @@ export const DeviceNavigationPage = GObject.registerClass({
         status_unpair.connect('activate', this._deviceAction.bind(this.device));
         this.settings.bind('paired', status_unpair, 'enabled', 0);
         this.actions.add_action(status_unpair);
-    
     }
 
     get_incoming_supported(type) {

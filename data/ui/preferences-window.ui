@@ -126,7 +126,6 @@ SPDX-License-Identifier: GPL-2.0-or-later
                         </style>
                       </object>
                     </child>
-                    <!--
                     <child>
                       <object class="GtkBox" id="webextension-list">
                         <property name="visible">True</property>
@@ -145,8 +144,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                             <property name="uri">https://addons.mozilla.org/firefox/addon/gsconnect/</property>
                             <child>
                               <object class="GtkImage" id="webextension-image-firefox">
-                                <property name="width_request">172</property>
-                                <property name="height_request">60</property>
+                                <property name="pixel-size">196</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="resource">/org/gnome/Shell/Extensions/GSConnect/images/firefox-badge.png</property>
@@ -167,8 +165,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                             <property name="uri">https://chrome.google.com/webstore/detail/gsconnect/jfnifeihccihocjbfcfhicmmgpjicaec</property>
                             <child>
                               <object class="GtkImage" id="webextension-image-chrome">
-                                <property name="width_request">206</property>
-                                <property name="height_request">58</property>
+                                <property name="pixel-size">196</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="resource">/org/gnome/Shell/Extensions/GSConnect/images/chrome-badge.png</property>
@@ -230,6 +227,14 @@ SPDX-License-Identifier: GPL-2.0-or-later
                           </object>
                         </child>
                         <child>
+                          <object class="GtkLabel" id="kdeconnect-sailfish">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">end</property>
+                            <property name="label">Sailfish OS:</property>
+                          </object>
+                        </child>
+                        <child>
                           <object class="GtkLinkButton" id="kdeconnect-openrepos">
                             <property name="label">OpenRepos</property>
                             <property name="visible">True</property>
@@ -237,14 +242,6 @@ SPDX-License-Identifier: GPL-2.0-or-later
                             <property name="receives_default">True</property>
                             <property name="halign">start</property>
                             <property name="uri">https://openrepos.net/content/r1tschy/sailfish-connect</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="kdeconnect-sailfish">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="halign">end</property>
-                            <property name="label">Sailfish OS:</property>
                           </object>
                         </child>
                         <child>
@@ -267,7 +264,6 @@ SPDX-License-Identifier: GPL-2.0-or-later
                         </child>
                       </object>
                     </child>
-                    -->
                   </object>
                 </property>
               </object>

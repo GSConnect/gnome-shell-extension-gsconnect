@@ -216,8 +216,6 @@ export const Window = GObject.registerClass({
         
         this.add_action(this.settings.create_action('discoverable'));
 
-        this.refresh_button.connect("clicked", this._refresh.bind(this))
-
         // Application Menu
         this._initMenu();
 
