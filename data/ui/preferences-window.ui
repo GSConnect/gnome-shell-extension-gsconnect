@@ -102,164 +102,144 @@ SPDX-License-Identifier: GPL-2.0-or-later
                   </object>
                 </child>
                 <property name="content">
-                  <object class="GtkBox" id="welcome">
-                    <property name="orientation">1</property>
-                    <property name="valign">3</property>
-                    <property name="halign">3</property>
+                  <object class="GtkScrolledWindow">
                     <child>
-                      <object class="GtkImage">
-                        <property name="name">logo</property>
-                        <property name="icon-name">org.gnome.Shell.Extensions.GSConnect</property>
-                        <property name="pixel-size">196</property>
-                        <property name="margin-bottom">30</property>
-                        <style>
-                          <class name="icon-dropshadow"/>
-                        </style>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="label" translatable="yes">Welcome to GSconnect</property>
-                        <property name="margin-bottom">30</property>
-                        <style>
-                          <class name="title-1"/>
-                        </style>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkBox" id="webextension-list">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="margin-start">12</property>
-                        <property name="margin-end">12</property>
-                        <property name="margin_bottom">32</property>
-                        <property name="spacing">24</property>
+                      <object class="GtkBox" id="welcome">
+                        <property name="orientation">1</property>
+                        <property name="valign">3</property>
+                        <property name="halign">3</property>
                         <child>
-                          <object class="GtkLinkButton" id="webextension-button-firefox">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
-                            <property name="halign">center</property>
-                            <property name="valign">center</property>
-                            <property name="uri">https://addons.mozilla.org/firefox/addon/gsconnect/</property>
-                            <child>
-                              <object class="GtkImage" id="webextension-image-firefox">
-                                <property name="pixel-size">196</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="resource">/org/gnome/Shell/Extensions/GSConnect/images/firefox-badge.png</property>
-                              </object>
-                            </child>
+                          <object class="GtkImage">
+                            <property name="name">logo</property>
+                            <property name="icon-name">org.gnome.Shell.Extensions.GSConnect</property>
+                            <property name="pixel-size">196</property>
+                            <property name="margin-bottom">30</property>
                             <style>
-                              <class name="badge-button"/>
+                              <class name="icon-dropshadow"/>
                             </style>
                           </object>
                         </child>
                         <child>
-                          <object class="GtkLinkButton" id="webextension-button-chrome">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
-                            <property name="halign">center</property>
-                            <property name="valign">center</property>
-                            <property name="uri">https://chrome.google.com/webstore/detail/gsconnect/jfnifeihccihocjbfcfhicmmgpjicaec</property>
-                            <child>
-                              <object class="GtkImage" id="webextension-image-chrome">
-                                <property name="pixel-size">196</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="resource">/org/gnome/Shell/Extensions/GSConnect/images/chrome-badge.png</property>
-                              </object>
-                            </child>
+                          <object class="GtkLabel">
+                            <property name="label" translatable="yes">Welcome to GSconnect</property>
                             <style>
-                              <class name="badge-button"/>
+                              <class name="title-1"/>
                             </style>
                           </object>
                         </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="kdeconnect-label">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">start</property>
-                        <property name="valign">center</property>
-                        <property name="margin_bottom">12</property>
-                        <property name="label">KDE Connect</property>
-                        <attributes>
-                          <attribute name="weight" value="bold"/>
-                        </attributes>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkGrid" id="kdeconnect-applications">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="margin-start">12</property>
-                        <property name="margin-end">12</property>
-                        <property name="column_spacing">6</property>
                         <child>
-                          <object class="GtkLabel" id="kdeconnect-android">
+                          <object class="GtkBox" id="webextension-list">
+                            <property name="halign">center</property>
+                            <property name="valign">center</property>
+                            <property name="spacing">24</property>
+                            <child>
+                              <object class="GtkLinkButton">
+                                <property name="uri">https://addons.mozilla.org/firefox/addon/gsconnect/</property>
+                                <child>
+                                  <object class="GtkImage" id="webextension-image-firefox">
+                                    <property name="pixel-size">196</property>
+                                    <property name="resource">/org/gnome/Shell/Extensions/GSConnect/images/firefox-badge.png</property>
+                                  </object> 
+                                </child>
+                              </object> 
+                            </child>
+                            <child>
+                              <object class="GtkLinkButton">
+                                <property name="uri">https://chrome.google.com/webstore/detail/gsconnect/jfnifeihccihocjbfcfhicmmgpjicaec</property>
+                                <child>
+                                  <object class="GtkImage" id="webextension-image-chrome">
+                                    <property name="pixel-size">196</property>
+                                    <property name="resource">/org/gnome/Shell/Extensions/GSConnect/images/chrome-badge.png</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="kdeconnect-label">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="halign">end</property>
-                            <property name="label">Android:</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLinkButton" id="kdeconnect-playstore">
-                            <property name="label">Play Store</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
                             <property name="halign">start</property>
-                            <property name="uri">https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp</property>
+                            <property name="valign">center</property>
+                            <property name="margin_bottom">12</property>
+                            <property name="label">KDE Connect</property>
+                            <attributes>
+                              <attribute name="weight" value="bold"/>
+                            </attributes>
                           </object>
                         </child>
                         <child>
-                          <object class="GtkLinkButton" id="kdeconnect-fdroid">
-                            <property name="label">F-Droid</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
-                            <property name="halign">start</property>
-                            <property name="uri">https://f-droid.org/packages/org.kde.kdeconnect_tp/</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="kdeconnect-sailfish">
+                          <object class="GtkGrid" id="kdeconnect-applications">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="halign">end</property>
-                            <property name="label">Sailfish OS:</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLinkButton" id="kdeconnect-openrepos">
-                            <property name="label">OpenRepos</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
-                            <property name="halign">start</property>
-                            <property name="uri">https://openrepos.net/content/r1tschy/sailfish-connect</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="kdeconnect-ios">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="halign">end</property>
-                            <property name="label">iOS:</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLinkButton" id="kdeconnect-appstore">
-                            <property name="label">App Store</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
-                            <property name="halign">start</property>
-                            <property name="uri">https://apps.apple.com/us/app/kde-connect/id1580245991</property>
+                            <property name="margin-start">12</property>
+                            <property name="margin-end">12</property>
+                            <property name="column_spacing">6</property>
+                            <child>
+                              <object class="GtkLabel" id="kdeconnect-android">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="halign">end</property>
+                                <property name="label">Android:</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLinkButton" id="kdeconnect-playstore">
+                                <property name="label">Play Store</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="halign">start</property>
+                                <property name="uri">https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLinkButton" id="kdeconnect-fdroid">
+                                <property name="label">F-Droid</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="halign">start</property>
+                                <property name="uri">https://f-droid.org/packages/org.kde.kdeconnect_tp/</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="kdeconnect-sailfish">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="halign">end</property>
+                                <property name="label">Sailfish OS:</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLinkButton" id="kdeconnect-openrepos">
+                                <property name="label">OpenRepos</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="halign">start</property>
+                                <property name="uri">https://openrepos.net/content/r1tschy/sailfish-connect</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="kdeconnect-ios">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="halign">end</property>
+                                <property name="label">iOS:</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLinkButton" id="kdeconnect-appstore">
+                                <property name="label">App Store</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="halign">start</property>
+                                <property name="uri">https://apps.apple.com/us/app/kde-connect/id1580245991</property>
+                              </object>
+                            </child>
                           </object>
                         </child>
                       </object>

@@ -228,7 +228,16 @@ export const Window = GObject.registerClass({
             5,
             this._refresh.bind(this)
         );
-
+        
+        // Init some resources
+        const provider = new Gtk.CssProvider();
+        provider.load_from_resource(`${Config.APP_PATH}/application.css`);
+        Gtk.StyleContext.add_provider_for_display(
+            Gdk.Display.get_default(),
+            provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+        );
+        
         // Restore window size/maximized/position
         this._restoreGeometry();
 
