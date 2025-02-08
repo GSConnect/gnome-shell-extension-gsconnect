@@ -10,7 +10,7 @@ import GObject from 'gi://GObject';
 import AtspiController from './atspi.js';
 
 
-const SESSION_TIMEOUT = 300;
+const SESSION_TIMEOUT = 15;
 
 
 const RemoteSession = GObject.registerClass({
@@ -341,7 +341,7 @@ export default class Controller {
 
                 this._session = new AtspiController();
 
-            // Mutter is available and there isn't another session starting
+                // Mutter is available and there isn't another session starting
             } else if (this._sessionStarting === false) {
                 this._sessionStarting = true;
 
@@ -386,60 +386,60 @@ export default class Controller {
     /*
      * Pointer Events
      */
-    movePointer(dx, dy) {
+    async movePointer(dx, dy) {
         try {
             if (dx === 0 && dy === 0)
                 return;
 
-            this._ensureAdapter();
+            await this._ensureAdapter();
             this._session.movePointer(dx, dy);
         } catch (e) {
             debug(e);
         }
     }
 
-    pressPointer(button) {
+    async pressPointer(button) {
         try {
-            this._ensureAdapter();
+            await this._ensureAdapter();
             this._session.pressPointer(button);
         } catch (e) {
             debug(e);
         }
     }
 
-    releasePointer(button) {
+    async releasePointer(button) {
         try {
-            this._ensureAdapter();
+            await this._ensureAdapter();
             this._session.releasePointer(button);
         } catch (e) {
             debug(e);
         }
     }
 
-    clickPointer(button) {
+    async clickPointer(button) {
         try {
-            this._ensureAdapter();
+            await this._ensureAdapter();
             this._session.clickPointer(button);
         } catch (e) {
             debug(e);
         }
     }
 
-    doubleclickPointer(button) {
+    async doubleclickPointer(button) {
         try {
-            this._ensureAdapter();
+            await this._ensureAdapter();
             this._session.doubleclickPointer(button);
         } catch (e) {
             debug(e);
         }
     }
 
-    scrollPointer(dx, dy) {
+    async scrollPointer(dx, dy) {
         if (dx === 0 && dy === 0)
             return;
 
         try {
-            this._ensureAdapter();
+            await this._ensureAdapter();
             this._session.scrollPointer(dx, dy);
         } catch (e) {
             debug(e);
@@ -449,27 +449,27 @@ export default class Controller {
     /*
      * Keyboard Events
      */
-    pressKeysym(keysym) {
+    async pressKeysym(keysym) {
         try {
-            this._ensureAdapter();
+            await this._ensureAdapter();
             this._session.pressKeysym(keysym);
         } catch (e) {
             debug(e);
         }
     }
 
-    releaseKeysym(keysym) {
+    async releaseKeysym(keysym) {
         try {
-            this._ensureAdapter();
+            await this._ensureAdapter();
             this._session.releaseKeysym(keysym);
         } catch (e) {
             debug(e);
         }
     }
 
-    pressreleaseKeysym(keysym) {
+    async pressreleaseKeysym(keysym) {
         try {
-            this._ensureAdapter();
+            await this._ensureAdapter();
             this._session.pressreleaseKeysym(keysym);
         } catch (e) {
             debug(e);
@@ -479,9 +479,9 @@ export default class Controller {
     /*
      * High-level keyboard input
      */
-    pressKeys(input, modifiers) {
+    async pressKeys(input, modifiers) {
         try {
-            this._ensureAdapter();
+            await this._ensureAdapter();
 
             if (typeof input === 'string') {
                 for (let i = 0; i < input.length; i++)
