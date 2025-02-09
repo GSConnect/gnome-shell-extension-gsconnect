@@ -341,7 +341,7 @@ export default class Controller {
 
                 this._session = new AtspiController();
 
-                // Mutter is available and there isn't another session starting
+            // Mutter is available and there isn't another session starting
             } else if (this._sessionStarting === false) {
                 this._sessionStarting = true;
 
