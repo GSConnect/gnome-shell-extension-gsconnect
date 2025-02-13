@@ -10,6 +10,8 @@ const Components = imports.service.components;
 const Core = imports.service.core;
 
 
+const ALLOWED_TIMESTAMP_TIME_DIFFERENCE_SECONDS = 1800; // 30 min
+
 /**
  * An object representing a remote device.
  *
@@ -87,6 +89,7 @@ var Device = GObject.registerClass({
         // GLib.Source timeout id's for pairing requests
         this._incomingPairRequest = 0;
         this._outgoingPairRequest = 0;
+        this._pairingTimestamp = 0;
 
         // Maps of name->Plugin, packet->Plugin, uuid->Transfer
         this._plugins = new Map();
@@ -173,47 +176,34 @@ var Device = GObject.registerClass({
 
     // FIXME: backend should do this stuff
     get encryption_info() {
-        let localCert = null;
-        let remoteCert = null;
+        if (!this.channel)
+            return '';
 
         // Bluetooth connections have no certificate so we use the host address
         if (this.connection_type === 'bluetooth') {
             // TRANSLATORS: Bluetooth address for remote device
             return _('Bluetooth device at %s').format('???');
-
-        // If the device is connected use the certificate from the connection
-        } else if (this.connected) {
-            remoteCert = this.channel.peer_certificate;
-
-        // Otherwise pull it out of the settings
-        } else if (this.paired) {
-            remoteCert = Gio.TlsCertificate.new_from_pem(
-                this.settings.get_string('certificate-pem'),
-                -1
-            );
         }
 
         // FIXME: another ugly reach-around
-        let lanBackend;
+        const localCert = this.service.manager.backends.get('lan')?.certificate;
+        const remoteCert = this.channel?.peer_certificate;
+        if (!localCert || !remoteCert)
+            return '';
 
-        if (this.service !== null)
-            lanBackend = this.service.manager.backends.get('lan');
+        const checksum = new GLib.Checksum(GLib.ChecksumType.SHA256);
+        let [a, b] = [localCert.pubkey_der(), remoteCert.pubkey_der()];
+        if (a.compare(b) < 0)
+            [a, b] = [b, a]; // swap
+        checksum.update(a.toArray());
+        checksum.update(b.toArray());
 
-        if (lanBackend && lanBackend.certificate)
-            localCert = lanBackend.certificate;
+        if (this.channel?.identity.body.protocolVersion >= 8)
+            checksum.update(String(this._pairingTimestamp));
 
-
-        let verificationKey = '';
-        if (localCert && remoteCert) {
-            let a = localCert.pubkey_der();
-            let b = remoteCert.pubkey_der();
-            if (a.compare(b) < 0)
-                [a, b] = [b, a]; // swap
-            const checksum = new GLib.Checksum(GLib.ChecksumType.SHA256);
-            checksum.update(ByteArray.fromGBytes(a));
-            checksum.update(ByteArray.fromGBytes(b));
-            verificationKey = checksum.get_string();
-        }
+        const verificationKey = checksum.get_string()
+            .substring(0, 8)
+            .toUpperCase();
 
         // TRANSLATORS: Label for TLS connection verification key
         //
@@ -789,15 +779,19 @@ var Device = GObject.registerClass({
             // The device thinks we're unpaired
             } else if (this.paired) {
                 this._setPaired(true);
+                this._pairingTimestamp = Math.floor(Date.now() / 1000);
                 this.sendPacket({
                     type: 'kdeconnect.pair',
-                    body: {pair: true},
+                    body: {
+                        pair: true,
+                        timestamp: this._pairingTimestamp,
+                    },
                 });
                 this._triggerPlugins();
 
             // The device is requesting pairing
             } else {
-                this._notifyPairRequest();
+                this._notifyPairRequest(packet.body?.timestamp);
             }
         // Device is requesting unpairing/rejecting our request
         } else {
@@ -808,11 +802,14 @@ var Device = GObject.registerClass({
 
     /**
      * Notify the user of an incoming pair request and set a 30s timeout
+     *
+     * @param {number} [timestamp] - Timestamp for the pair request
      */
-    _notifyPairRequest() {
+    _notifyPairRequest(timestamp = 0) {
         // Reset any active request
         this._resetPairRequest();
 
+        this._pairingTimestamp = timestamp;
         this.showNotification({
             id: 'pair-request',
             // TRANSLATORS: eg. Pair Request from Google Pixel
@@ -857,6 +854,8 @@ var Device = GObject.registerClass({
             GLib.source_remove(this._outgoingPairRequest);
             this._outgoingPairRequest = 0;
         }
+
+        this._pairingTimestamp = 0;
     }
 
     /**
@@ -904,8 +903,24 @@ var Device = GObject.registerClass({
             // If we're accepting an incoming pair request, set the internal
             // paired state and send the confirmation before loading plugins.
             if (this._incomingPairRequest) {
-                this._setPaired(true);
+                if (this.identity?.body.protocolVersion >= 8) {
+                    const currentTimestamp = Math.floor(Date.now() / 1000);
+                    const diffTimestamp = Number.abs(this._pairingTimestamp - currentTimestamp);
+                    if (diffTimestamp > ALLOWED_TIMESTAMP_TIME_DIFFERENCE_SECONDS) {
+                        this._setPaired(false);
+                        this.showNotification({
+                            id: 'pair-request',
+                            // TRANSLATORS: eg. Pair Request from Google Pixel
+                            title: _('Failed to pair with %s').format(this.name),
+                            body: _('Device clocks are out of sync'),
+                            icon: new Gio.ThemedIcon({name: 'dialog-warning-symbolic'}),
+                            priority: Gio.NotificationPriority.URGENT,
+                        });
+                        return;
+                    }
+                }
 
+                this._setPaired(true);
                 this.sendPacket({
                     type: 'kdeconnect.pair',
                     body: {pair: true},
@@ -918,9 +933,13 @@ var Device = GObject.registerClass({
             } else if (!this.paired) {
                 this._resetPairRequest();
 
+                this._pairingTimestamp = Math.floor(Date.now() / 1000);
                 this.sendPacket({
                     type: 'kdeconnect.pair',
-                    body: {pair: true},
+                    body: {
+                        pair: true,
+                        timestamp: this._pairingTimestamp,
+                    },
                 });
 
                 this._outgoingPairRequest = GLib.timeout_add_seconds(
