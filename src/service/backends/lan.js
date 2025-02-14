@@ -596,7 +596,7 @@ export const Channel = GObject.registerClass({
      * Authenticate a TLS connection.
      *
      * @param {Gio.TlsConnection} connection - A TLS connection
-     * @return {Promise} A promise for the operation
+     * @returns {Promise} A promise for the operation
      */
     async _authenticate(connection) {
         // Standard TLS Handshake
@@ -668,7 +668,7 @@ export const Channel = GObject.registerClass({
      * Wrap the connection in Gio.TlsClientConnection and initiate handshake
      *
      * @param {Gio.TcpConnection} connection - The unauthenticated connection
-     * @return {Gio.TlsClientConnection} The authenticated connection
+     * @returns {Gio.TlsClientConnection} The authenticated connection
      */
     _encryptClient(connection) {
         _configureSocket(connection);
@@ -684,7 +684,7 @@ export const Channel = GObject.registerClass({
      * Wrap the connection in Gio.TlsServerConnection and initiate handshake
      *
      * @param {Gio.TcpConnection} connection - The unauthenticated connection
-     * @return {Gio.TlsServerConnection} The authenticated connection
+     * @returns {Gio.TlsServerConnection} The authenticated connection
      */
     _encryptServer(connection) {
         _configureSocket(connection);

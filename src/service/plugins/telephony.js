@@ -8,6 +8,7 @@ import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 
 import * as Components from '../components/index.js';
+import * as Core from '../core.js';
 import Plugin from '../plugin.js';
 
 
@@ -114,7 +115,7 @@ const TelephonyPlugin = GObject.registerClass({
      * Load a Gdk.Pixbuf from base64 encoded data
      *
      * @param {string} data - Base64 encoded JPEG data
-     * @return {Gdk.Pixbuf|null} A contact photo
+     * @returns {GdkPixbuf.Pixbuf|null} A contact photo
      */
     _getThumbnailPixbuf(data) {
         const loader = new GdkPixbuf.PixbufLoader();

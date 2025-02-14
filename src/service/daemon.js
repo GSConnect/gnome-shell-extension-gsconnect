@@ -154,7 +154,7 @@ const Service = GObject.registerClass({
     /**
      * Report a service-level error
      *
-     * @param {Object} error - An Error or object with name, message and stack
+     * @param {object} error - An Error or object with name, message and stack
      */
     notify_error(error) {
         try {
@@ -699,4 +699,3 @@ const Service = GObject.registerClass({
 });
 
 await (new Service()).runAsync([system.programInvocationName].concat(ARGV));
-

@@ -20,7 +20,7 @@ import Tooltip from './tooltip.js';
  *
  * @param {Gio.MenuModel} model - The menu model containing the item
  * @param {number} index - The index of the item in @model
- * @return {Object} A dictionary of the item's attributes
+ * @returns {object} A dictionary of the item's attributes
  */
 function getItemInfo(model, index) {
     const info = {
@@ -644,4 +644,3 @@ export class IconBox extends PopupMenu.PopupMenuSection {
         this._onItemsChanged(this.model, 0, 0, this.model.get_n_items());
     }
 }
-

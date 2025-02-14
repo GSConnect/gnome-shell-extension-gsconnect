@@ -18,7 +18,7 @@ try {
  * Get a themed icon, using fallbacks from GSConnect's GResource when necessary.
  *
  * @param {string} name - A themed icon name
- * @return {Gio.Icon} A themed icon
+ * @returns {Gio.Icon} A themed icon
  */
 export function getIcon(name) {
     if (getIcon._resource === undefined) {
@@ -71,7 +71,7 @@ export function getIcon(name) {
  * necessary.
  *
  * @param {string} relativePath - A path relative to GSConnect's resource path
- * @return {string} The file contents as a string
+ * @returns {string} The file contents as a string
  */
 function getResource(relativePath) {
     try {
@@ -96,7 +96,7 @@ function getResource(relativePath) {
  * @param {string} dirname - An absolute directory path
  * @param {string} basename - The file name
  * @param {string} contents - The file contents
- * @return {boolean} A success boolean
+ * @returns {boolean} A success boolean
  */
 function _installFile(dirname, basename, contents) {
     try {
@@ -116,7 +116,7 @@ function _installFile(dirname, basename, contents) {
  * @param {string} dirname - An absolute directory path
  * @param {string} basename - The file name
  * @param {string} relativePath - A path relative to GSConnect's resource path
- * @return {boolean} A success boolean
+ * @returns {boolean} A success boolean
  */
 function _installResource(dirname, basename, relativePath) {
     try {
