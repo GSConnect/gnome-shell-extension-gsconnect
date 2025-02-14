@@ -10,7 +10,7 @@ import GObject from 'gi://GObject';
 import AtspiController from './atspi.js';
 
 
-const SESSION_TIMEOUT = 15;
+const SESSION_TIMEOUT = 300;
 
 
 const RemoteSession = GObject.registerClass({
@@ -327,22 +327,24 @@ export default class Controller {
     }
 
     async _ensureAdapter() {
+        // Update the timestamp of the last event
+        this._sessionExpiry = Math.floor((Date.now() / 1000) + SESSION_TIMEOUT);
+
+        // Session is active
+        if (this._session !== null)
+            return this._session;
+
+        // Mutter's RemoteDesktop is not available, fall back to Atspi
+        if (this.connection === null) {
+            debug('Falling back to Atspi');
+
+            this._session = new AtspiController();
+            return this._session;
+        }
+
         try {
-            // Update the timestamp of the last event
-            this._sessionExpiry = Math.floor((Date.now() / 1000) + SESSION_TIMEOUT);
-
-            // Session is active
-            if (this._session !== null)
-                return;
-
-            // Mutter's RemoteDesktop is not available, fall back to Atspi
-            if (this.connection === null) {
-                debug('Falling back to Atspi');
-
-                this._session = new AtspiController();
-
             // Mutter is available and there isn't another session starting
-            } else if (this._sessionStarting === false) {
+            if (this._sessionStarting === false) {
                 this._sessionStarting = true;
 
                 debug('Creating Mutter RemoteDesktop session');
@@ -368,130 +370,99 @@ export default class Controller {
                         this._onSessionExpired.bind(this)
                     );
                 }
-
                 this._sessionStarting = false;
             }
+            return this._session;
         } catch (e) {
             logError(e);
-
             if (this._session !== null) {
                 this._session.destroy();
                 this._session = null;
             }
-
             this._sessionStarting = false;
+            throw e;
         }
     }
 
     /*
      * Pointer Events
      */
-    async movePointer(dx, dy) {
-        try {
-            if (dx === 0 && dy === 0)
-                return;
-
-            await this._ensureAdapter();
-            this._session.movePointer(dx, dy);
-        } catch (e) {
-            debug(e);
-        }
-    }
-
-    async pressPointer(button) {
-        try {
-            await this._ensureAdapter();
-            this._session.pressPointer(button);
-        } catch (e) {
-            debug(e);
-        }
-    }
-
-    async releasePointer(button) {
-        try {
-            await this._ensureAdapter();
-            this._session.releasePointer(button);
-        } catch (e) {
-            debug(e);
-        }
-    }
-
-    async clickPointer(button) {
-        try {
-            await this._ensureAdapter();
-            this._session.clickPointer(button);
-        } catch (e) {
-            debug(e);
-        }
-    }
-
-    async doubleclickPointer(button) {
-        try {
-            await this._ensureAdapter();
-            this._session.doubleclickPointer(button);
-        } catch (e) {
-            debug(e);
-        }
-    }
-
-    async scrollPointer(dx, dy) {
+    movePointer(dx, dy) {
         if (dx === 0 && dy === 0)
             return;
 
-        try {
-            await this._ensureAdapter();
-            this._session.scrollPointer(dx, dy);
-        } catch (e) {
-            debug(e);
-        }
+        this._ensureAdapter()
+        .then(session => session?.movePointer(dx, dy))
+        .catch(e => debug(e));
+    }
+
+    pressPointer(button) {
+        this._ensureAdapter()
+        .then(session => session?.pressPointer(button))
+        .catch(e => debug(e));
+    }
+
+    releasePointer(button) {
+        this._ensureAdapter()
+        .then(session => session?.releasePointer(button))
+        .catch(e => debug(e));
+    }
+
+    clickPointer(button) {
+        this._ensureAdapter()
+        .then(session => session?.clickPointer(button))
+        .catch(e => debug(e));
+    }
+
+    doubleclickPointer(button) {
+        this._ensureAdapter()
+        .then(session => session?.doubleclickPointer(button))
+        .catch(e => debug(e));
+    }
+
+    scrollPointer(dx, dy) {
+        if (dx === 0 && dy === 0)
+            return;
+
+        this._ensureAdapter()
+        .then(session => session?.scrollPointer(dx, dy))
+        .catch(e => debug(e));
     }
 
     /*
      * Keyboard Events
      */
-    async pressKeysym(keysym) {
-        try {
-            await this._ensureAdapter();
-            this._session.pressKeysym(keysym);
-        } catch (e) {
-            debug(e);
-        }
+    pressKeysym(keysym) {
+        this._ensureAdapter()
+        .then(session => session?.pressKeysym(keysym))
+        .catch(e => debug(e));
     }
 
-    async releaseKeysym(keysym) {
-        try {
-            await this._ensureAdapter();
-            this._session.releaseKeysym(keysym);
-        } catch (e) {
-            debug(e);
-        }
+    releaseKeysym(keysym) {
+        this._ensureAdapter()
+        .then(session => session?.releaseKeysym(keysym))
+        .catch(e => debug(e));
     }
 
-    async pressreleaseKeysym(keysym) {
-        try {
-            await this._ensureAdapter();
-            this._session.pressreleaseKeysym(keysym);
-        } catch (e) {
-            debug(e);
-        }
+    pressreleaseKeysym(keysym) {
+        this._ensureAdapter()
+        .then(session => session?.pressreleaseKeysym(keysym))
+        .catch(e => debug(e));
     }
 
     /*
      * High-level keyboard input
      */
-    async pressKeys(input, modifiers) {
-        try {
-            await this._ensureAdapter();
-
+    pressKeys(input, modifiers) {
+        this._ensureAdapter()
+        .then(session => {
             if (typeof input === 'string') {
                 for (let i = 0; i < input.length; i++)
-                    this._session.pressKey(input[i], modifiers);
+                    session?.pressKey(input[i], modifiers);
             } else {
-                this._session.pressKey(input, modifiers);
+                session?.pressKey(input, modifiers);
             }
-        } catch (e) {
-            debug(e);
-        }
+        }).catch(e => debug(e));
     }
 
     destroy() {
