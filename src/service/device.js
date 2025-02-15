@@ -943,7 +943,7 @@ const Device = GObject.registerClass({
                         this._setPaired(false);
                         this.showNotification({
                             id: 'pair-request',
-                            // TRANSLATORS: eg. Pair Request from Google Pixel
+                            // TRANSLATORS: eg. Failed to pair with Google Pixel
                             title: _('Failed to pair with %s').format(this.name),
                             body: _('Device clocks are out of sync'),
                             icon: new Gio.ThemedIcon({name: 'dialog-warning-symbolic'}),
