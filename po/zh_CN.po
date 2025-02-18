@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-03 13:38-0500\n"
-"PO-Revision-Date: 2025-01-03 22:06\n"
+"PO-Revision-Date: 2025-02-14 22:51\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -263,7 +263,7 @@ msgstr "低电量通知"
 
 #: data/ui/preferences-device-panel.ui:649
 msgid "Charged Up to Custom Level Notification"
-msgstr ""
+msgstr "充电至自定义电量通知"
 
 #: data/ui/preferences-device-panel.ui:729
 msgid "Fully Charged Notification"
@@ -525,7 +525,7 @@ msgstr "发现已禁用"
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/preferences-window.ui:821
 msgid "Add device by IP…"
-msgstr ""
+msgstr "通过IP添加设备…"
 
 #: data/ui/preferences-window.ui:826
 msgid "Display Mode"
@@ -804,7 +804,7 @@ msgstr "端口已被占用"
 
 #: src/service/plugins/battery.js:15
 msgid "Exchange battery information"
-msgstr ""
+msgstr "交换电池信息"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:255
@@ -822,13 +822,13 @@ msgstr "充满电"
 #: src/service/plugins/battery.js:284
 #, javascript-format
 msgid "%s: Battery has reached custom charge level"
-msgstr ""
+msgstr "%s：电池已达到自定义充电水平"
 
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:286
 #, javascript-format
 msgid "%d%% Charged"
-msgstr ""
+msgstr "已充电 %d%%"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:313
@@ -860,7 +860,7 @@ msgstr "获取剪贴板"
 
 #: src/service/plugins/contacts.js:28
 msgid "Access contacts of the paired device"
-msgstr ""
+msgstr "访问配对设备的联系人"
 
 #: src/service/plugins/findmyphone.js:15
 msgid "Find My Phone"
@@ -868,7 +868,7 @@ msgstr "查找我的手机"
 
 #: src/service/plugins/findmyphone.js:16
 msgid "Ring your paired device"
-msgstr ""
+msgstr "让配对的设备响铃"
 
 #: src/service/plugins/mousepad.js:14
 msgid "Mousepad"
@@ -876,7 +876,7 @@ msgstr "鼠标"
 
 #: src/service/plugins/mousepad.js:15
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr ""
+msgstr "使配对的设备能够充当远程鼠标和键盘"
 
 #: src/service/plugins/mousepad.js:29 src/service/ui/mousepad.js:107
 msgid "Remote Input"
@@ -888,7 +888,7 @@ msgstr "MPRIS"
 
 #: src/service/plugins/mpris.js:18
 msgid "Bidirectional remote media playback control"
-msgstr ""
+msgstr "双向远程媒体播放控制"
 
 #: src/service/plugins/mpris.js:329
 msgid "Unknown"
@@ -896,7 +896,7 @@ msgstr "未知"
 
 #: src/service/plugins/notification.js:18
 msgid "Share notifications with the paired device"
-msgstr ""
+msgstr "与配对设备共享通知"
 
 #: src/service/plugins/notification.js:32
 msgid "Cancel Notification"
@@ -931,7 +931,7 @@ msgstr "远程输入"
 
 #: src/service/plugins/presenter.js:13
 msgid "Use the paired device as a presenter"
-msgstr ""
+msgstr "将配对设备用作演示器"
 
 #: src/service/plugins/runcommand.js:13
 msgid "Run Commands"
@@ -939,7 +939,7 @@ msgstr "运行命令"
 
 #: src/service/plugins/runcommand.js:15
 msgid "Run commands on your paired device or let the device run predefined commands on this PC"
-msgstr ""
+msgstr "在配对的设备上运行命令，或让该设备在此PC上运行预定义的命令"
 
 #: src/service/plugins/sftp.js:14
 msgid "SFTP"
@@ -1061,7 +1061,7 @@ msgstr "短信"
 
 #: src/service/plugins/sms.js:17
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
+msgstr "发送和读取配对设备的短信，并接收新短信的通知"
 
 #: src/service/plugins/sms.js:38
 msgid "New SMS (URI)"
@@ -1081,7 +1081,7 @@ msgstr "系统音量"
 
 #: src/service/plugins/systemvolume.js:14
 msgid "Enable the paired device to control the system volume"
-msgstr ""
+msgstr "使配对的设备能够控制系统音量"
 
 #: src/service/plugins/systemvolume.js:58
 msgid "PulseAudio not found"
@@ -1089,7 +1089,7 @@ msgstr "未找到 PulseAudio"
 
 #: src/service/plugins/telephony.js:16
 msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
+msgstr "接收来电通知，并在响铃/通话期间调整系统音量"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:28
