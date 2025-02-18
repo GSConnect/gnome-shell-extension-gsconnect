@@ -285,6 +285,7 @@ export const Panel = GObject.registerClass({
         // Telephony
         'telephony', 'telephony-page',
         'ringing-list', 'ringing-volume', 'talking-list', 'talking-volume',
+        'ended-list',
 
         // Shortcuts
         'shortcuts-page',
@@ -480,6 +481,7 @@ export const Panel = GObject.registerClass({
         this.actions.add_action(settings.create_action('talking-volume'));
         this.actions.add_action(settings.create_action('talking-pause'));
         this.actions.add_action(settings.create_action('talking-microphone'));
+        this.actions.add_action(settings.create_action('ended-resume'));
 
         // Pair Actions
         const encryption_info = new Gio.SimpleAction({name: 'encryption-info'});
@@ -899,8 +901,12 @@ export const Panel = GObject.registerClass({
         this.ringing_list.next = this.talking_list;
         this.talking_list.prev = this.ringing_list;
 
+        this.talking_list.next = this.ended_list;
+        this.ended_list.prev = this.talking_list;
+
         this.ringing_list.set_header_func(rowSeparators);
         this.talking_list.set_header_func(rowSeparators);
+        this.ended_list.set_header_func(rowSeparators);
     }
 
     /**
