@@ -348,17 +348,18 @@ Gio.TlsCertificate.new_for_paths = function (certPath, keyPath, commonName = nul
     if (!certExists || !keyExists) {
         // If we weren't passed a common name, generate a random one
         if (!commonName)
-            commonName = GLib.uuid_string_random();
+            commonName = GLib.uuid_string_random().replaceAll('-', '_');
 
         const proc = new Gio.Subprocess({
             argv: [
                 Config.OPENSSL_PATH, 'req',
-                '-new', '-x509', '-sha256',
-                '-out', certPath,
-                '-newkey', 'rsa:4096', '-nodes',
+                '-newkey', 'ec',
+                '-pkeyopt', 'ec_paramgen_curve:prime256v1',
                 '-keyout', keyPath,
+                '-new', '-x509', '-nodes',
                 '-days', '3650',
                 '-subj', `/O=andyholmes.github.io/OU=GSConnect/CN=${commonName}`,
+                '-out', certPath,
             ],
             flags: (Gio.SubprocessFlags.STDOUT_SILENCE |
                     Gio.SubprocessFlags.STDERR_SILENCE),
