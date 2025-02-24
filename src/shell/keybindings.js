@@ -49,7 +49,7 @@ export class Manager {
      *
      * @param {string} accelerator - An accelerator in the form '<Control>q'
      * @param {Function} callback - A callback for the accelerator
-     * @return {number} A non-zero action id on success, or 0 on failure
+     * @returns {*} A non-zero action id on success, or 0 on failure
      */
     add(accelerator, callback) {
         try {
@@ -100,4 +100,3 @@ export class Manager {
         this.removeAll();
     }
 }
-

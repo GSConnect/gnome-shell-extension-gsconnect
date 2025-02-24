@@ -7,7 +7,6 @@
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 
-// eslint-disable-next-line no-redeclare
 const _ = (msgid) => GLib.dgettext('org.gnome.Shell.Extensions.GSConnect', msgid);
 
 // POT Patterns
@@ -122,4 +121,3 @@ while ((info = iter.next_file(null))) {
     json = `${JSON.stringify(json, null, 4)}\n\n`;
     jsonfile.replace_contents(json, null, false, 0, null);
 }
-

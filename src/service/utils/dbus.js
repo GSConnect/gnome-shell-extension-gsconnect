@@ -11,12 +11,26 @@ import GObject from 'gi://GObject';
 /*
  * Some utility methods
  */
+
+/**
+ * Convert a label from kebab-case to CamelCase.
+ * Will also remove snake_case separators (without capitalizing)
+ *
+ * @param {string} string - The label to reformat
+ * @returns {string} The CamelCased label
+ */
 function toDBusCase(string) {
     return string.replace(/(?:^\w|[A-Z]|\b\w)/g, (ltr, offset) => {
         return ltr.toUpperCase();
     }).replace(/[\s_-]+/g, '');
 }
 
+/**
+ * Convert a label from CamelCase to snake_case.
+ *
+ * @param {string} string - The label to reformat
+ * @returns {string} - The snake_cased label
+ */
 function toUnderscoreCase(string) {
     return string.replace(/(?:^\w|[A-Z]|_|\b\w)/g, (ltr, offset) => {
         if (ltr === '_')
@@ -95,7 +109,7 @@ export const Interface = GObject.registerClass({
      * Invoke an instance's method for a DBus method call.
      *
      * @param {Gio.DBusInterfaceInfo} info - The DBus interface
-     * @param {DBus.Interface} iface - The DBus interface
+     * @param {Gio.DBusInterface} iface - The DBus interface
      * @param {string} name - The DBus method name
      * @param {GLib.Variant} parameters - The method parameters
      * @param {Gio.DBusMethodInvocation} invocation - The method invocation info
@@ -231,7 +245,7 @@ export const Interface = GObject.registerClass({
  *
  * @param {Gio.BusType} [busType] - a Gio.BusType constant
  * @param {Gio.Cancellable} [cancellable] - an optional Gio.Cancellable
- * @return {Promise<Gio.DBusConnection>} A new DBus connection
+ * @returns {Promise<Gio.DBusConnection>} A new DBus connection
  */
 export function newConnection(busType = Gio.BusType.SESSION, cancellable = null) {
     return new Promise((resolve, reject) => {
@@ -252,4 +266,3 @@ export function newConnection(busType = Gio.BusType.SESSION, cancellable = null)
 
     });
 }
-

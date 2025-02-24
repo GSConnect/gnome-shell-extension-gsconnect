@@ -60,7 +60,7 @@ export function rowSeparators(row, before) {
  *
  * @param {Gtk.ListBoxRow} row1 - The first row
  * @param {Gtk.ListBoxRow} row2 - The second row
- * @return {number} -1, 0 or 1
+ * @returns {number} -1, 0 or 1
  */
 export function titleSortFunc(row1, row2) {
     if (!row1.title || !row2.title)
@@ -605,7 +605,7 @@ export const Panel = GObject.registerClass({
                             const isPresent = value.get_boolean();
 
                             resolve(isPresent);
-                        } catch (e) {
+                        } catch {
                             resolve(false);
                         }
                     }
@@ -614,7 +614,7 @@ export const Panel = GObject.registerClass({
 
             this.battery_system_label.visible = hasBattery;
             this.battery_system.visible = hasBattery;
-        } catch (e) {
+        } catch {
             this.battery_system_label.visible = false;
             this.battery_system.visible = false;
         }
@@ -814,7 +814,7 @@ export const Panel = GObject.registerClass({
 
             try {
                 applications = JSON.parse(settings.get_string('applications'));
-            } catch (e) {
+            } catch {
                 applications = {};
             }
 
@@ -858,7 +858,7 @@ export const Panel = GObject.registerClass({
 
         try {
             applications = JSON.parse(settings.get_string('applications'));
-        } catch (e) {
+        } catch {
             applications = {};
         }
 

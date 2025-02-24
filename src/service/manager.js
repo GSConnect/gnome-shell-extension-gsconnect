@@ -7,6 +7,7 @@ import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 
 import Config from '../config.js';
+import * as Core from './core.js';
 import * as DBus from './utils/dbus.js';
 import Device from './device.js';
 
@@ -33,6 +34,13 @@ const Manager = GObject.registerClass({
             'Active',
             'Whether the manager is active',
             GObject.ParamFlags.READABLE,
+            false
+        ),
+        'debug': GObject.ParamSpec.boolean(
+            'debug',
+            'Debug',
+            'Whether debug logging is enabled in GSConnect',
+            GObject.ParamFlags.READWRITE,
             false
         ),
         'discoverable': GObject.ParamSpec.boolean(
@@ -83,6 +91,21 @@ const Manager = GObject.registerClass({
             this._backends = new Map();
 
         return this._backends;
+    }
+
+    get debug() {
+        if (this._debug === undefined)
+            this._debug = this.settings.get_boolean('debug');
+
+        return this._debug;
+    }
+
+    set debug(value) {
+        if (this._debug === value)
+            return;
+
+        this._debug = value;
+        this._onDebugChanged(this._debug);
     }
 
     get devices() {
@@ -197,15 +220,24 @@ const Manager = GObject.registerClass({
     _initSettings() {
         // Initialize the ID and name of the service
         if (this.settings.get_string('id').length === 0)
-            this.settings.set_string('id', GLib.uuid_string_random());
+            this.settings.set_string('id', Device.generateId());
 
         if (this.settings.get_string('name').length === 0)
             this.settings.set_string('name', GLib.get_host_name());
 
         // Bound Properties
+        this.settings.bind('debug', this, 'debug', 0);
         this.settings.bind('discoverable', this, 'discoverable', 0);
         this.settings.bind('id', this, 'id', 0);
         this.settings.bind('name', this, 'name', 0);
+    }
+
+    _onDebugChanged(debug = false) {
+        // If debugging is disabled, install a no-op for speed
+        if (debug && globalThis._debugFunc !== undefined)
+            globalThis.debug = globalThis._debugFunc;
+        else
+            globalThis.debug = () => {};
     }
 
     /*
@@ -351,7 +383,7 @@ const Manager = GObject.registerClass({
      * of known devices if it doesn't exist.
      *
      * @param {Core.Packet} packet - An identity packet for the device
-     * @return {Device} A device object
+     * @returns {Device} A device object
      */
     _ensureDevice(packet) {
         let device = this.devices.get(packet.body.deviceId);
@@ -407,7 +439,7 @@ const Manager = GObject.registerClass({
      * A GSourceFunc that tries to reconnect to each paired device, while
      * pruning unpaired devices that have disconnected.
      *
-     * @return {boolean} Always %true
+     * @returns {boolean} Always %true
      */
     _reconnect() {
         for (const [id, device] of this.devices) {
@@ -512,4 +544,3 @@ const Manager = GObject.registerClass({
 });
 
 export default Manager;
-

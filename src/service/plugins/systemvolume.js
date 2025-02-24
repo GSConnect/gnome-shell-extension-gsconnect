@@ -2,11 +2,25 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+import GIRepository from 'gi://GIRepository';
+import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 
 import * as Components from '../components/index.js';
 import Config from '../../config.js';
+import * as Core from '../core.js';
 import Plugin from '../plugin.js';
+
+
+let Gvc = null;
+try {
+    // Add gnome-shell's typelib dir to the search path
+    const typelibDir = GLib.build_filenamev([Config.GNOME_SHELL_LIBDIR, 'gnome-shell']);
+    GIRepository.Repository.prepend_search_path(typelibDir);
+    GIRepository.Repository.prepend_library_path(typelibDir);
+
+    Gvc = (await import('gi://Gvc')).default;
+} catch {}
 
 
 export const Metadata = {
@@ -73,12 +87,6 @@ const SystemVolumePlugin = GObject.registerClass({
         }
     }
 
-    connected() {
-        super.connected();
-
-        this._sendSinkList();
-    }
-
     /**
      * Handle a request to change an output
      *
@@ -121,7 +129,7 @@ const SystemVolumePlugin = GObject.registerClass({
      * Update the cache for @stream
      *
      * @param {Gvc.MixerStream} stream - The stream to cache
-     * @return {Object} The updated cache object
+     * @returns {object} The updated cache object
      */
     _updateCache(stream) {
         const state = {

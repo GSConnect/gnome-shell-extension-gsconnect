@@ -443,7 +443,7 @@ const FileChooserDialog = GObject.registerClass({
             chooser.preview_widget.pixbuf = pixbuf;
             chooser.preview_widget.visible = true;
             chooser.preview_widget_active = true;
-        } catch (e) {
+        } catch {
             chooser.preview_widget.visible = false;
             chooser.preview_widget_active = false;
         }
@@ -452,10 +452,11 @@ const FileChooserDialog = GObject.registerClass({
     _onUriButtonToggled(button) {
         const header = this.get_header_bar();
 
-        // Show the URL entry
+        // Show and focus the URL entry
         if (button.active) {
             this.extra_widget.sensitive = false;
             header.set_custom_title(this._uriEntry);
+            this._uriEntry.grab_focus();
             this.set_response_sensitive(Gtk.ResponseType.OK, true);
 
         // Hide the URL entry

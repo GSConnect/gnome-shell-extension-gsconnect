@@ -5,6 +5,11 @@
 import * as Utils from '../fixtures/utils.js';
 
 
+/**
+ * Mocked packet handling for the test device
+ *
+ * @param {*} packet - a KDE Connect protocol packet
+ */
 function handlePacket(packet) {
     switch (packet.type) {
         case 'kdeconnect.systemvolume':
@@ -48,6 +53,7 @@ describe('The systemvolume plugin', function () {
             },
         });
         testRig.setPaired(true);
+        testRig.setConnected(true);
 
         remoteDevice = testRig.remoteDevice;
         remoteDevice.handlePacket = handlePacket.bind(remoteDevice);
@@ -68,14 +74,6 @@ describe('The systemvolume plugin', function () {
         localPlugin = testRig.localDevice._plugins.get('systemvolume');
 
         expect(localPlugin).toBeDefined();
-    });
-
-    it('sends streams when connected', function () {
-        spyOn(localPlugin, '_sendSinkList');
-
-        testRig.setConnected(true);
-
-        expect(localPlugin._sendSinkList).toHaveBeenCalled();
     });
 
     it('sends a list of streams when requested', async function () {
@@ -129,4 +127,3 @@ describe('The systemvolume plugin', function () {
         expect(localPlugin._mixer.lookup_sink(0).muted).toBeTrue();
     });
 });
-

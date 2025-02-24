@@ -8,12 +8,13 @@ import GObject from 'gi://GObject';
 
 import Config from '../../config.js';
 import * as Core from '../core.js';
+import Device from '../device.js';
 
 // Retain compatibility with GLib < 2.80, which lacks GioUnix
 let GioUnix;
 try {
     GioUnix = (await import('gi://GioUnix')).default;
-} catch (e) {
+} catch {
     GioUnix = {
         InputStream: Gio.UnixInputStream,
         OutputStream: Gio.UnixOutputStream,
@@ -42,7 +43,7 @@ try {
         Gio.SocketType.STREAM,
         Gio.SocketProtocol.TCP
     ).get_option(6, 5);
-} catch (e) {
+} catch {
     _LINUX_SOCKETS = false;
 }
 
@@ -282,7 +283,7 @@ export const ChannelService = GObject.registerClass({
             this._udp6_source = this._udp6.create_source(GLib.IOCondition.IN, null);
             this._udp6_source.set_callback(this._onIncomingIdentity.bind(this, this._udp6));
             this._udp6_source.attach(null);
-        } catch (e) {
+        } catch {
             this._udp6 = null;
         }
 
@@ -366,6 +367,10 @@ export const ChannelService = GObject.registerClass({
             // Silently ignore our own broadcasts
             if (packet.body.deviceId === this.identity.body.deviceId)
                 return;
+
+            // Reject invalid device IDs
+            if (!Device.validateId(packet.body.deviceId))
+                throw new Error('invalid deviceId');
 
             debug(packet);
 
@@ -596,7 +601,7 @@ export const Channel = GObject.registerClass({
      * Authenticate a TLS connection.
      *
      * @param {Gio.TlsConnection} connection - A TLS connection
-     * @return {Promise} A promise for the operation
+     * @returns {Promise} A promise for the operation
      */
     async _authenticate(connection) {
         // Standard TLS Handshake
@@ -668,7 +673,7 @@ export const Channel = GObject.registerClass({
      * Wrap the connection in Gio.TlsClientConnection and initiate handshake
      *
      * @param {Gio.TcpConnection} connection - The unauthenticated connection
-     * @return {Gio.TlsClientConnection} The authenticated connection
+     * @returns {Gio.TlsClientConnection} The authenticated connection
      */
     _encryptClient(connection) {
         _configureSocket(connection);
@@ -684,7 +689,7 @@ export const Channel = GObject.registerClass({
      * Wrap the connection in Gio.TlsServerConnection and initiate handshake
      *
      * @param {Gio.TcpConnection} connection - The unauthenticated connection
-     * @return {Gio.TlsServerConnection} The authenticated connection
+     * @returns {Gio.TlsServerConnection} The authenticated connection
      */
     _encryptServer(connection) {
         _configureSocket(connection);
@@ -729,7 +734,18 @@ export const Channel = GObject.registerClass({
             if (!this.identity.body.deviceId)
                 throw new Error('missing deviceId');
 
+            // Reject invalid device IDs
+            if (!Device.validateId(this.identity.body.deviceId))
+                throw new Error('invalid deviceId');
+
             this._connection = await this._encryptClient(connection);
+
+            // Starting with protocol version 8, the devices are expected to
+            // exchange identity packets again after TLS negotiation
+            if (this.identity.body.protocolVersion >= 8) {
+                await this.sendPacket(this.backend.identity);
+                this.identity = await this.readPacket();
+            }
         } catch (e) {
             this.close();
             throw e;
@@ -754,6 +770,13 @@ export const Channel = GObject.registerClass({
                 this.cancellable);
 
             this._connection = await this._encryptServer(connection);
+
+            // Starting with protocol version 8, the devices are expected to
+            // exchange identity packets again after TLS negotiation
+            if (this.identity.body.protocolVersion >= 8) {
+                await this.sendPacket(this.backend.identity);
+                this.identity = await this.readPacket();
+            }
         } catch (e) {
             this.close();
             throw e;
@@ -886,4 +909,3 @@ export const Channel = GObject.registerClass({
         }
     }
 });
-

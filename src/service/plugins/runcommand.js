@@ -150,14 +150,14 @@ const RunCommandPlugin = GObject.registerClass({
      * Parse the response to a request for the remote command list. Remove the
      * command menu if there are no commands, otherwise amend the menu.
      *
-     * @param {string|Object[]} commandList - A list of remote commands
+     * @param {string | object[]} commandList - A list of remote commands
      */
     _handleCommandList(commandList) {
         // See: https://github.com/GSConnect/gnome-shell-extension-gsconnect/issues/1051
         if (typeof commandList === 'string') {
             try {
                 commandList = JSON.parse(commandList);
-            } catch (e) {
+            } catch {
                 commandList = {};
             }
         }

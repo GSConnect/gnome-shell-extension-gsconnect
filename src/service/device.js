@@ -11,6 +11,8 @@ import * as Components from './components/index.js';
 import * as Core from './core.js';
 import plugins from './plugins/index.js';
 
+const ALLOWED_TIMESTAMP_TIME_DIFFERENCE_SECONDS = 1800; // 30 min
+
 /**
  * An object representing a remote device.
  *
@@ -88,6 +90,7 @@ const Device = GObject.registerClass({
         // GLib.Source timeout id's for pairing requests
         this._incomingPairRequest = 0;
         this._outgoingPairRequest = 0;
+        this._pairingTimestamp = 0;
 
         // Maps of name->Plugin, packet->Plugin, uuid->Transfer
         this._plugins = new Map();
@@ -128,6 +131,14 @@ const Device = GObject.registerClass({
             this._loadPlugins();
     }
 
+    static generateId() {
+        return GLib.uuid_string_random().replaceAll('-', '_');
+    }
+
+    static validateId(id) {
+        return /^[a-zA-Z0-9_]{32,38}$/.test(id);
+    }
+
     get channel() {
         if (this._channel === undefined)
             this._channel = null;
@@ -162,47 +173,34 @@ const Device = GObject.registerClass({
 
     // FIXME: backend should do this stuff
     get encryption_info() {
-        let localCert = null;
-        let remoteCert = null;
+        if (!this.channel)
+            return '';
 
         // Bluetooth connections have no certificate so we use the host address
         if (this.connection_type === 'bluetooth') {
             // TRANSLATORS: Bluetooth address for remote device
             return _('Bluetooth device at %s').format('???');
-
-        // If the device is connected use the certificate from the connection
-        } else if (this.connected) {
-            remoteCert = this.channel.peer_certificate;
-
-        // Otherwise pull it out of the settings
-        } else if (this.paired) {
-            remoteCert = Gio.TlsCertificate.new_from_pem(
-                this.settings.get_string('certificate-pem'),
-                -1
-            );
         }
 
         // FIXME: another ugly reach-around
-        let lanBackend;
+        const localCert = this.service.manager.backends.get('lan')?.certificate;
+        const remoteCert = this.channel?.peer_certificate;
+        if (!localCert || !remoteCert)
+            return '';
 
-        if (this.service !== null)
-            lanBackend = this.service.manager.backends.get('lan');
+        const checksum = new GLib.Checksum(GLib.ChecksumType.SHA256);
+        let [a, b] = [localCert.pubkey_der(), remoteCert.pubkey_der()];
+        if (a.compare(b) < 0)
+            [a, b] = [b, a]; // swap
+        checksum.update(a.toArray());
+        checksum.update(b.toArray());
 
-        if (lanBackend && lanBackend.certificate)
-            localCert = lanBackend.certificate;
+        if (this.channel?.identity.body.protocolVersion >= 8)
+            checksum.update(String(this._pairingTimestamp));
 
-
-        let verificationKey = '';
-        if (localCert && remoteCert) {
-            let a = localCert.pubkey_der();
-            let b = remoteCert.pubkey_der();
-            if (a.compare(b) < 0)
-                [a, b] = [b, a]; // swap
-            const checksum = new GLib.Checksum(GLib.ChecksumType.SHA256);
-            checksum.update(a.toArray());
-            checksum.update(b.toArray());
-            verificationKey = checksum.get_string();
-        }
+        const verificationKey = checksum.get_string()
+            .substring(0, 8)
+            .toUpperCase();
 
         // TRANSLATORS: Label for TLS connection verification key
         //
@@ -384,7 +382,7 @@ const Device = GObject.registerClass({
      *
      * @param {string[]} args - process arguments
      * @param {Gio.Cancellable} [cancellable] - optional cancellable
-     * @return {Gio.Subprocess} The subprocess
+     * @returns {Gio.Subprocess} The subprocess
      */
     launchProcess(args, cancellable = null) {
         if (this._launcher === undefined) {
@@ -418,7 +416,7 @@ const Device = GObject.registerClass({
      * Handle a packet and pass it to the appropriate plugin.
      *
      * @param {Core.Packet} packet - The incoming packet object
-     * @return {undefined} no return value
+     * @returns {undefined} no return value
      */
     handlePacket(packet) {
         try {
@@ -443,7 +441,7 @@ const Device = GObject.registerClass({
     /**
      * Send a packet to the device.
      *
-     * @param {Object} packet - An object of packet data...
+     * @param {object} packet - An object of packet data...
      */
     async sendPacket(packet) {
         try {
@@ -524,7 +522,7 @@ const Device = GObject.registerClass({
      * device menu.
      *
      * @param {string} actionName - An action name with scope (eg. device.foo)
-     * @return {number} An 0-based index or -1 if not found
+     * @returns {number} An 0-based index or -1 if not found
      */
     getMenuAction(actionName) {
         for (let i = 0, len = this.menu.get_n_items(); i < len; i++) {
@@ -533,7 +531,7 @@ const Device = GObject.registerClass({
 
                 if (val.unpack() === actionName)
                     return i;
-            } catch (e) {
+            } catch {
                 continue;
             }
         }
@@ -546,7 +544,7 @@ const Device = GObject.registerClass({
      *
      * @param {Gio.MenuItem} menuItem - A GMenuItem
      * @param {number} [index] - The position to place the item
-     * @return {number} The position the item was placed
+     * @returns {number} The position the item was placed
      */
     addMenuItem(menuItem, index = -1) {
         try {
@@ -570,7 +568,7 @@ const Device = GObject.registerClass({
      * @param {number} [index] - The position to place the item
      * @param {string} label - A label for the item
      * @param {string} icon_name - A themed icon name for the item
-     * @return {number} The position the item was placed
+     * @returns {number} The position the item was placed
      */
     addMenuAction(action, index = -1, label, icon_name) {
         try {
@@ -600,7 +598,7 @@ const Device = GObject.registerClass({
      * Remove a GAction from the top level of the device menu by action name
      *
      * @param {string} actionName - A GAction name, including scope
-     * @return {number} The position the item was removed from or -1
+     * @returns {number} The position the item was removed from or -1
      */
     removeMenuAction(actionName) {
         try {
@@ -631,7 +629,7 @@ const Device = GObject.registerClass({
     /**
      * Show a device notification.
      *
-     * @param {Object} params - A dictionary of notification parameters
+     * @param {object} params - A dictionary of notification parameters
      * @param {number} [params.id] - A UNIX epoch timestamp (ms)
      * @param {string} [params.title] - A title
      * @param {string} [params.body] - A body
@@ -728,7 +726,7 @@ const Device = GObject.registerClass({
     /**
      * Create a transfer object.
      *
-     * @return {Core.Transfer} A new transfer
+     * @returns {Core.Transfer} A new transfer
      */
     createTransfer() {
         const transfer = new Core.Transfer({device: this});
@@ -747,13 +745,11 @@ const Device = GObject.registerClass({
      * Reject the transfer payload described by @packet.
      *
      * @param {Core.Packet} packet - A packet
-     * @return {Promise} A promise for the operation
+     * @returns {void}
      */
     rejectTransfer(packet) {
-        if (!packet || !packet.hasPayload())
-            return;
-
-        return this.channel.rejectTransfer(packet);
+        if (packet?.hasPayload())
+            return this.channel.rejectTransfer(packet);
     }
 
     openPath(action, parameter) {
@@ -816,15 +812,19 @@ const Device = GObject.registerClass({
             // The device thinks we're unpaired
             } else if (this.paired) {
                 this._setPaired(true);
+                this._pairingTimestamp = Math.floor(Date.now() / 1000);
                 this.sendPacket({
                     type: 'kdeconnect.pair',
-                    body: {pair: true},
+                    body: {
+                        pair: true,
+                        timestamp: this._pairingTimestamp,
+                    },
                 });
                 this._triggerPlugins();
 
             // The device is requesting pairing
             } else {
-                this._notifyPairRequest();
+                this._notifyPairRequest(packet.body?.timestamp);
             }
         // Device is requesting unpairing/rejecting our request
         } else {
@@ -835,11 +835,14 @@ const Device = GObject.registerClass({
 
     /**
      * Notify the user of an incoming pair request and set a 30s timeout
+     *
+     * @param {number} [timestamp] - Timestamp for the pair request
      */
-    _notifyPairRequest() {
+    _notifyPairRequest(timestamp = 0) {
         // Reset any active request
         this._resetPairRequest();
 
+        this._pairingTimestamp = timestamp;
         this.showNotification({
             id: 'pair-request',
             // TRANSLATORS: eg. Pair Request from Google Pixel
@@ -884,6 +887,8 @@ const Device = GObject.registerClass({
             GLib.source_remove(this._outgoingPairRequest);
             this._outgoingPairRequest = 0;
         }
+
+        this._pairingTimestamp = 0;
     }
 
     /**
@@ -931,8 +936,24 @@ const Device = GObject.registerClass({
             // If we're accepting an incoming pair request, set the internal
             // paired state and send the confirmation before loading plugins.
             if (this._incomingPairRequest) {
-                this._setPaired(true);
+                if (this.identity?.body.protocolVersion >= 8) {
+                    const currentTimestamp = Math.floor(Date.now() / 1000);
+                    const diffTimestamp = Number.abs(this._pairingTimestamp - currentTimestamp);
+                    if (diffTimestamp > ALLOWED_TIMESTAMP_TIME_DIFFERENCE_SECONDS) {
+                        this._setPaired(false);
+                        this.showNotification({
+                            id: 'pair-request',
+                            // TRANSLATORS: eg. Failed to pair with Google Pixel
+                            title: _('Failed to pair with %s').format(this.name),
+                            body: _('Device clocks are out of sync'),
+                            icon: new Gio.ThemedIcon({name: 'dialog-warning-symbolic'}),
+                            priority: Gio.NotificationPriority.URGENT,
+                        });
+                        return;
+                    }
+                }
 
+                this._setPaired(true);
                 this.sendPacket({
                     type: 'kdeconnect.pair',
                     body: {pair: true},
@@ -945,9 +966,13 @@ const Device = GObject.registerClass({
             } else if (!this.paired) {
                 this._resetPairRequest();
 
+                this._pairingTimestamp = Math.floor(Date.now() / 1000);
                 this.sendPacket({
                     type: 'kdeconnect.pair',
-                    body: {pair: true},
+                    body: {
+                        pair: true,
+                        timestamp: this._pairingTimestamp,
+                    },
                 });
 
                 this._outgoingPairRequest = GLib.timeout_add_seconds(

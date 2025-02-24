@@ -16,7 +16,7 @@ import system from 'system';
  *
  * @param {*} [salt] - If not %null, will be used as salt for generating a color
  * @param {number} alpha - A value in the [0...1] range for the alpha channel
- * @return {Gdk.RGBA} A new Gdk.RGBA object generated from the input
+ * @returns {Gdk.RGBA} A new Gdk.RGBA object generated from the input
  */
 function randomRGBA(salt = null, alpha = 1.0) {
     let red, green, blue;
@@ -41,7 +41,7 @@ function randomRGBA(salt = null, alpha = 1.0) {
  * See: https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
  *
  * @param {Gdk.RGBA} rgba - A GdkRGBA object
- * @return {number} The relative luminance of the color
+ * @returns {number} The relative luminance of the color
  */
 function relativeLuminance(rgba) {
     const {red, green, blue} = rgba;
@@ -59,7 +59,7 @@ function relativeLuminance(rgba) {
  * See: https://www.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef
  *
  * @param {Gdk.RGBA} rgba - A GdkRGBA object for the background color
- * @return {Gdk.RGBA} A GdkRGBA object for the foreground color
+ * @returns {Gdk.RGBA} A GdkRGBA object for the foreground color
  */
 function getFgRGBA(rgba) {
     const bgLuminance = relativeLuminance(rgba);
@@ -78,7 +78,7 @@ function getFgRGBA(rgba) {
  * @param {string} path - A local file path
  * @param {number} size - Size in pixels
  * @param {scale} [scale] - Scale factor for the size
- * @return {Gdk.Pixbuf} A pixbuf
+ * @returns {Gdk.Pixbuf} A pixbuf
  */
 function getPixbufForPath(path, size, scale = 1.0) {
     let data, loader;
@@ -107,6 +107,15 @@ function getPixbufForPath(path, size, scale = 1.0) {
     return pixbuf.scale_simple(size, size, GdkPixbuf.InterpType.HYPER);
 }
 
+/**
+ * Retrieve the GdkPixbuf for a named icon
+ *
+ * @param {string} name - The icon name to load
+ * @param {number} size - The pixel size requested
+ * @param {number} scale - The scale multiplier
+ * @param {string} bgColor - The background color the icon will be used against
+ * @returns {GdkPixbuf.pixbuf|null} The icon image
+ */
 function getPixbufForIcon(name, size, scale, bgColor) {
     const color = getFgRGBA(bgColor);
     const theme = Gtk.IconTheme.get_default();
@@ -126,7 +135,7 @@ function getPixbufForIcon(name, size, scale, bgColor) {
  * See: http://www.ietf.org/rfc/rfc2426.txt
  *
  * @param {string} type - An RFC2426 phone number type
- * @return {string} A localized string like 'Mobile'
+ * @returns {string} A localized string like 'Mobile'
  */
 function getNumberTypeLabel(type) {
     if (type.includes('fax'))
@@ -152,9 +161,9 @@ function getNumberTypeLabel(type) {
 /**
  * Get a display number from @contact for @address.
  *
- * @param {Object} contact - A contact object
+ * @param {object} contact - A contact object
  * @param {string} address - A phone number
- * @return {string} A (possibly) better display number for the address
+ * @returns {string} A (possibly) better display number for the address
  */
 export function getDisplayNumber(contact, address) {
     const number = address.toPhoneNumber();
@@ -623,7 +632,7 @@ export const ContactChooser = GObject.registerClass({
     /**
      * Get a dictionary of number-contact pairs for each selected phone number.
      *
-     * @return {Object[]} A dictionary of contacts
+     * @returns {object[]} A dictionary of contacts
      */
     getSelected() {
         try {
@@ -639,4 +648,3 @@ export const ContactChooser = GObject.registerClass({
         }
     }
 });
-
