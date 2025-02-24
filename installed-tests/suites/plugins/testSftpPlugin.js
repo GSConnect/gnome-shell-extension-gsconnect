@@ -34,6 +34,11 @@ const Packets = {
 };
 
 
+/**
+ * Mocked packet handling for the test device
+ *
+ * @param {*} packet - a KDE Connect protocol packet
+ */
 function handlePacket(packet) {
     switch (packet.type) {
         case 'kdeconnect.sftp.request':
@@ -119,4 +124,3 @@ describe('The sftp plugin', function () {
         expect(localPlugin.device.get_action_enabled('unmount')).toBeFalse();
     });
 });
-

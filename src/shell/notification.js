@@ -29,6 +29,7 @@ const REPLY_REGEX = new RegExp(/^([^|]+)\|([\s\S]+)\|([0-9a-f]{8}-[0-9a-f]{4}-[1
 /**
  * Extracted from notificationDaemon.js, as it's no longer exported
  * https://gitlab.gnome.org/GNOME/gnome-shell/-/blob/main/js/ui/notificationDaemon.js#L556
+ *
  * @returns {{ 'desktop-startup-id': string }} Object with ID containing current time
  */
 function getPlatformData() {
@@ -384,11 +385,17 @@ const _ensureAppSource = function (appId) {
 };
 
 
+/**
+ * Update the prototype for {@link GtkNotificationDaemon}.
+ */
 export function patchGtkNotificationDaemon() {
     GtkNotificationDaemon.prototype._ensureAppSource = _ensureAppSource;
 }
 
 
+/**
+ * Restore the prototype for {@link GtkNotificationDaemon}.
+ */
 export function unpatchGtkNotificationDaemon() {
     GtkNotificationDaemon.prototype._ensureAppSource = __ensureAppSource;
 }
@@ -399,6 +406,9 @@ export function unpatchGtkNotificationDaemon() {
  */
 const _addNotification = NotificationDaemon.GtkNotificationDaemonAppSource.prototype.addNotification;
 
+/**
+ * Update the prototype for {@link NotificationDaemon.GtkNotificationDaemonAppSource}.
+ */
 export function patchGtkNotificationSources() {
     // eslint-disable-next-line func-style
     const _withdrawGSConnectNotification = function (id, notification, reason) {
@@ -445,8 +455,10 @@ export function patchGtkNotificationSources() {
 }
 
 
+/**
+ * Restore the prototype for {@link NotificationDaemon.GtkNotificationDaemonAppSource}.
+ */
 export function unpatchGtkNotificationSources() {
     NotificationDaemon.GtkNotificationDaemonAppSource.prototype.addNotification = _addNotification;
     delete NotificationDaemon.GtkNotificationDaemonAppSource.prototype._withdrawGSConnectNotification;
 }
-

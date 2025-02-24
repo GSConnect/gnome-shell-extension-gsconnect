@@ -150,11 +150,10 @@ export const Clipboard = GObject.registerClass(
         }
 
         /**
-     * Get the available mimetypes of the current clipboard content
-     *
-     * @return {Promise<string[]>} A list of mime-types
-     */
-
+         * Get the available mimetypes of the current clipboard content
+         *
+         * @returns {Promise<string[]>} A list of mime-types
+         */
         GetMimetypes() {
             return new Promise((resolve, reject) => {
                 const proc = launcher.spawnv([
@@ -179,10 +178,10 @@ export const Clipboard = GObject.registerClass(
         }
 
         /**
-     * Get the text content of the clipboard
-     *
-     * @return {Promise<string>} Text content of the clipboard
-     */
+         * Get the text content of the clipboard
+         *
+         * @returns {Promise<string>} Text content of the clipboard
+         */
         GetText() {
             return new Promise((resolve, reject) => {
                 this.GetMimetypes().then((mimetypes) => {
@@ -213,11 +212,11 @@ export const Clipboard = GObject.registerClass(
         }
 
         /**
-     * Set the text content of the clipboard
-     *
-     * @param {string} text - text content to set
-     * @return {Promise} A promise for the operation
-     */
+         * Set the text content of the clipboard
+         *
+         * @param {string} text - text content to set
+         * @returns {Promise} A promise for the operation
+         */
         SetText(text) {
             return new Promise((resolve, reject) => {
                 try {

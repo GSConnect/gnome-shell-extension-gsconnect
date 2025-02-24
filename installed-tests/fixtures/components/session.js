@@ -26,11 +26,10 @@ export default class MockSessionComponent {
     /**
      * Update the session with an object of properties and values.
      *
-     * @param {Object} obj - A dictionary of properties
+     * @param {object} obj - A dictionary of properties
      */
     update(obj) {
         for (const [propertyName, propertyValue] of Object.entries(obj))
             this[`_${propertyName}`] = propertyValue;
     }
 }
-

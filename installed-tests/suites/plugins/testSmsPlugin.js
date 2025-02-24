@@ -123,6 +123,11 @@ const Packets = {
 };
 
 
+/**
+ * Mocked packet handling for the test device
+ *
+ * @param {*} packet - a KDE Connect protocol packet
+ */
 function handlePacket(packet) {
     switch (packet.type) {
         case 'kdeconnect.sms.request_conversations':
@@ -275,4 +280,3 @@ describe('The sms plugin', function () {
             expect(localPlugin.device.get_action_enabled(action)).toBeFalse();
     });
 });
-

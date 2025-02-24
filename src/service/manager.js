@@ -7,6 +7,7 @@ import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 
 import Config from '../config.js';
+import * as Core from './core.js';
 import * as DBus from './utils/dbus.js';
 import Device from './device.js';
 
@@ -219,7 +220,7 @@ const Manager = GObject.registerClass({
     _initSettings() {
         // Initialize the ID and name of the service
         if (this.settings.get_string('id').length === 0)
-            this.settings.set_string('id', GLib.uuid_string_random());
+            this.settings.set_string('id', Device.generateId());
 
         if (this.settings.get_string('name').length === 0)
             this.settings.set_string('name', GLib.get_host_name());
@@ -382,7 +383,7 @@ const Manager = GObject.registerClass({
      * of known devices if it doesn't exist.
      *
      * @param {Core.Packet} packet - An identity packet for the device
-     * @return {Device} A device object
+     * @returns {Device} A device object
      */
     _ensureDevice(packet) {
         let device = this.devices.get(packet.body.deviceId);
@@ -438,7 +439,7 @@ const Manager = GObject.registerClass({
      * A GSourceFunc that tries to reconnect to each paired device, while
      * pruning unpaired devices that have disconnected.
      *
-     * @return {boolean} Always %true
+     * @returns {boolean} Always %true
      */
     _reconnect() {
         for (const [id, device] of this.devices) {

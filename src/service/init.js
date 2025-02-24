@@ -163,7 +163,7 @@ if (!globalThis.HAVE_GNOME) {
  * A simple (for now) pre-comparison sanitizer for phone numbers
  * See: https://github.com/KDE/kdeconnect-kde/blob/master/smsapp/conversationlistmodel.cpp#L200-L210
  *
- * @return {string} Return the string stripped of leading 0, and ' ()-+'
+ * @returns {string} Return the string stripped of leading 0, and ' ()-+'
  */
 String.prototype.toPhoneNumber = function () {
     const strippedNumber = this.replace(/^0*|[ ()+-]/g, '');
@@ -179,7 +179,7 @@ String.prototype.toPhoneNumber = function () {
  * A simple equality check for phone numbers based on `toPhoneNumber()`
  *
  * @param {string} number - A phone number string to compare
- * @return {boolean} If `this` and @number are equivalent phone numbers
+ * @returns {boolean} If `this` and @number are equivalent phone numbers
  */
 String.prototype.equalsPhoneNumber = function (number) {
     const a = this.toPhoneNumber();
@@ -227,7 +227,7 @@ Gio.File.rm_rf = function (file) {
  * Extend GLib.Variant with a static method to recursively pack a variant
  *
  * @param {*} [obj] - May be a GLib.Variant, Array, standard Object or literal.
- * @return {GLib.Variant} The resulting GVariant
+ * @returns {GLib.Variant} The resulting GVariant
  */
 function _full_pack(obj) {
     let packed;
@@ -283,7 +283,7 @@ GLib.Variant.full_pack = _full_pack;
  * Extend GLib.Variant with a method to recursively deepUnpack() a variant
  *
  * @param {*} [obj] - May be a GLib.Variant, Array, standard Object or literal.
- * @return {*} The resulting object
+ * @returns {*} The resulting object
  */
 function _full_unpack(obj) {
     obj = (obj === undefined) ? this : obj;
@@ -326,8 +326,8 @@ GLib.Variant.prototype.full_unpack = _full_unpack;
 
 
 /**
- * Creates a GTlsCertificate from the PEM-encoded data in @cert_path and
- * @key_path. If either are missing a new pair will be generated.
+ * Creates a GTlsCertificate from the PEM-encoded data in %cert_path and
+ * %key_path. If either are missing a new pair will be generated.
  *
  * Additionally, the private key will be added using ssh-add to allow sftp
  * connections using Gio.
@@ -337,7 +337,7 @@ GLib.Variant.prototype.full_unpack = _full_unpack;
  * @param {string} certPath - Absolute path to a x509 certificate in PEM format
  * @param {string} keyPath - Absolute path to a private key in PEM format
  * @param {string} commonName - A unique common name for the certificate
- * @return {Gio.TlsCertificate} A TLS certificate
+ * @returns {Gio.TlsCertificate} A TLS certificate
  */
 Gio.TlsCertificate.new_for_paths = function (certPath, keyPath, commonName = null) {
     // Check if the certificate/key pair already exists
@@ -348,17 +348,18 @@ Gio.TlsCertificate.new_for_paths = function (certPath, keyPath, commonName = nul
     if (!certExists || !keyExists) {
         // If we weren't passed a common name, generate a random one
         if (!commonName)
-            commonName = GLib.uuid_string_random();
+            commonName = GLib.uuid_string_random().replaceAll('-', '_');
 
         const proc = new Gio.Subprocess({
             argv: [
                 Config.OPENSSL_PATH, 'req',
-                '-new', '-x509', '-sha256',
-                '-out', certPath,
-                '-newkey', 'rsa:4096', '-nodes',
+                '-newkey', 'ec',
+                '-pkeyopt', 'ec_paramgen_curve:prime256v1',
                 '-keyout', keyPath,
+                '-new', '-x509', '-nodes',
                 '-days', '3650',
                 '-subj', `/O=andyholmes.github.io/OU=GSConnect/CN=${commonName}`,
+                '-out', certPath,
             ],
             flags: (Gio.SubprocessFlags.STDOUT_SILENCE |
                     Gio.SubprocessFlags.STDERR_SILENCE),
@@ -396,7 +397,7 @@ Object.defineProperties(Gio.TlsCertificate.prototype, {
     /**
      * Get just the pubkey as a DER ByteArray of a certificate.
      *
-     * @return {GLib.Bytes} The pubkey as DER of the certificate.
+     * @returns {GLib.Bytes} The pubkey as DER of the certificate.
      */
     'pubkey_der': {
         value: function () {
