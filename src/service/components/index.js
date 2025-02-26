@@ -41,7 +41,7 @@ const Default = new Map();
  * followed by a call to `release()`.
  *
  * @param {string} name - The module name
- * @return {*} The default instance of a component
+ * @returns {*} The default instance of a component
  */
 export function acquire(name) {
     if (functionOverrides.acquire)
@@ -78,7 +78,7 @@ export function acquire(name) {
  * holder, the component will be freed.
  *
  * @param {string} name - The module name
- * @return {null} A %null value, useful for overriding a traced variable
+ * @returns {null} A %null value, useful for overriding a traced variable
  */
 export function release(name) {
     if (functionOverrides.release)
@@ -99,4 +99,3 @@ export function release(name) {
 
     return null;
 }
-

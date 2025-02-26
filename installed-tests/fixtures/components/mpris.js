@@ -22,7 +22,7 @@ const MockMediaPlayer = GObject.registerClass({
     /**
      * Update the player with an object of properties and values.
      *
-     * @param {Object} obj - A dictionary of properties
+     * @param {object} obj - A dictionary of properties
      */
     update(obj) {
         for (const [propertyName, propertyValue] of Object.entries(obj))
@@ -184,4 +184,3 @@ const Component = GObject.registerClass({
 });
 
 export default Component;
-

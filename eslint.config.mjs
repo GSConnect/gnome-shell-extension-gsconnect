@@ -233,6 +233,8 @@ export default [
             '@stylistic/js/wrap-iife': ['error', 'inside'],
             '@stylistic/js/yield-star-spacing': 'error',
             yoda: 'error',
+
+            'jsdoc/tag-lines': ['error', 'any', {'startLines': 1}],
         },
     },
     {
