@@ -34,6 +34,7 @@ imports.config.PACKAGE_DATADIR = imports.searchPath[0];
 
 // Local Imports
 const Config = imports.config;
+const Device = imports.service.device;
 const Manager = imports.service.manager;
 const ServiceUI = imports.service.ui.service;
 
@@ -57,6 +58,49 @@ const Service = GObject.registerClass({
 
         // Command-line
         this._initOptions();
+    }
+
+    _migrateConfiguration() {
+        if (Device.validateId(this.settings.get_string('id')))
+            return;
+
+        // Remove the old certificate, serving as the single source of truth
+        // for the device ID
+        try {
+            Gio.File.new_build_filenamev([Config.CONFIGDIR, 'certificate.pem'])
+                .delete(null);
+            Gio.File.new_build_filenamev([Config.CONFIGDIR, 'private.pem'])
+                .delete(null);
+        } catch {
+            // Silence errors
+        }
+
+        // For each device, remove it entirely if it violates the device ID
+        // constraints, otherwise mark it unpaired to preserve the settings.
+        for (const deviceId of this.settings.get_strv('devices')) {
+            if (!Device.validateId(deviceId)) {
+                this._removeDevice(deviceId);
+            } else {
+                const settings = new Gio.Settings({
+                    settings_schema: Config.GSCHEMA.lookup(
+                        'org.gnome.Shell.Extensions.GSConnect.Device',
+                        true
+                    ),
+                    path: `/org/gnome/shell/extensions/gsconnect/device/${deviceId}/`,
+                });
+                settings.set_boolean('paired', false);
+            }
+        }
+
+        // Notify the user
+        const notification = Gio.Notification.new(_('Settings Migrated'));
+        notification.set_body(_('GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be repaired.'));
+        notification.set_icon(new Gio.ThemedIcon({name: 'dialog-warning'}));
+        notification.set_priority(Gio.NotificationPriority.HIGH);
+        this.send_notification('settings-migrated', notification);
+
+        // Finally, reset the service ID to trigger re-generation.
+        this.settings.reset('id');
     }
 
     get settings() {
@@ -168,7 +212,7 @@ const Service = GObject.registerClass({
     /**
      * Report a service-level error
      *
-     * @param {Object} error - An Error or object with name, message and stack
+     * @param {object} error - An Error or object with name, message and stack
      */
     notify_error(error) {
         try {
@@ -262,6 +306,8 @@ const Service = GObject.registerClass({
         if (!super.vfunc_dbus_register(connection, object_path))
             return false;
 
+        // TODO: remove after a reasonable period of time
+        this._migrateConfiguration();
         this.manager = new Manager.Manager({
             connection: connection,
             object_path: object_path,
