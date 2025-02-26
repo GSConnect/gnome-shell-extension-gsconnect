@@ -24,7 +24,6 @@ cp -pr ${DESTDIR}/${DATADIR}/gnome-shell/extensions/${UUID}/* ${ZIP_DIR}
 cp -pr ${DESTDIR}/${DATADIR}/nautilus-python/extensions/* ${ZIP_DIR}
 cp -pr ${DESTDIR}/${LOCALEDIR} ${ZIP_DIR}
 cp -pr ${DESTDIR}/${GSCHEMADIR} ${ZIP_DIR}
-glib-compile-schemas ${ZIP_DIR}/schemas
 
 # Stop without zipping dir, if requested
 if [ "$NOZIP" = true ]; then
