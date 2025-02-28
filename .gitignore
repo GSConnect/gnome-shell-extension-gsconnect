@@ -4,5 +4,5 @@
 
 _build
 *~
+/node_modules
 webextension/*.zip
-
