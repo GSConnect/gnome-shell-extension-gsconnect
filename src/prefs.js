@@ -6,10 +6,17 @@ const {Gio, GLib, Adw} = imports.gi;
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const Utils = Extension.imports.shell.utils;
 
+/**
+ *
+ */
 function init() {
     Utils.installService();
 }
 
+/**
+ *
+ * @param window
+ */
 function fillPreferencesWindow(window) {
     const widget = new Adw.PreferencesPage();
     window.add(widget);

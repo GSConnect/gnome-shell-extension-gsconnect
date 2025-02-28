@@ -203,7 +203,6 @@ var ShortcutChooserDialog = GObject.registerClass({
  * @param {string} accelerator - An accelerator
  * @param {number} [modeFlags] - Mode Flags
  * @param {number} [grabFlags] - Grab Flags
- * @param {boolean} %true if available, %false on error or unavailable
  */
 async function checkAccelerator(accelerator, modeFlags = 0, grabFlags = 0) {
     try {
@@ -270,7 +269,7 @@ async function checkAccelerator(accelerator, modeFlags = 0, grabFlags = 0) {
  *
  * @param {string} summary - A description of the keybinding's function
  * @param {string} accelerator - An accelerator as taken by Gtk.ShortcutLabel
- * @return {string} An accelerator or %null if it should be unset.
+ * @returns {string} An accelerator or %null if it should be unset.
  */
 async function getAccelerator(summary, accelerator = null) {
     try {

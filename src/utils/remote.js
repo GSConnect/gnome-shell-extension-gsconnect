@@ -21,6 +21,11 @@ const _PROPERTIES = {
 };
 
 
+/**
+ *
+ * @param proxy
+ * @param cancellable
+ */
 function _proxyInit(proxy, cancellable = null) {
     if (proxy.__initialized !== undefined)
         return Promise.resolve();
@@ -296,7 +301,7 @@ var Service = GObject.registerClass({
      * org.freedesktop.DBus.ObjectManager.InterfacesAdded
      *
      * @param {string} object_path - Path interfaces have been added to
-     * @param {Object} interfaces - A dictionary of interface objects
+     * @param {object} interfaces - A dictionary of interface objects
      */
     async _onInterfacesAdded(object_path, interfaces) {
         try {
@@ -513,4 +518,3 @@ var Service = GObject.registerClass({
         }
     }
 });
-

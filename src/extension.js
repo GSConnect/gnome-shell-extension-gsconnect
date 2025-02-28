@@ -337,6 +337,9 @@ class ServiceIndicator extends QuickSettings.SystemIndicator {
 
 var serviceIndicator = null;
 
+/**
+ *
+ */
 function init() {
     // If installed as a user extension, this will install the Desktop entry,
     // DBus and systemd service files necessary for DBus activation and
@@ -357,12 +360,18 @@ function init() {
 }
 
 
+/**
+ *
+ */
 function enable() {
     serviceIndicator = new ServiceIndicator();
     Notification.patchGtkNotificationSources();
 }
 
 
+/**
+ *
+ */
 function disable() {
     serviceIndicator.destroy();
     serviceIndicator = null;

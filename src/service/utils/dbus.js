@@ -9,18 +9,30 @@ const GObject = imports.gi.GObject;
 /*
  * Some utility methods
  */
+/**
+ *
+ * @param string
+ */
 function toDBusCase(string) {
     return string.replace(/(?:^\w|[A-Z]|\b\w)/g, (ltr, offset) => {
         return ltr.toUpperCase();
     }).replace(/[\s_-]+/g, '');
 }
 
+/**
+ *
+ * @param string
+ */
 function toHyphenCase(string) {
     return string.replace(/(?:[A-Z])/g, (ltr, offset) => {
         return (offset > 0) ? `-${ltr.toLowerCase()}` : ltr.toLowerCase();
     }).replace(/[\s_]+/g, '');
 }
 
+/**
+ *
+ * @param string
+ */
 function toUnderscoreCase(string) {
     return string.replace(/(?:^\w|[A-Z]|_|\b\w)/g, (ltr, offset) => {
         if (ltr === '_')
@@ -236,7 +248,7 @@ var Interface = GObject.registerClass({
  *
  * @param {Gio.BusType} [busType] - a Gio.BusType constant
  * @param {Gio.Cancellable} [cancellable] - an optional Gio.Cancellable
- * @return {Promise<Gio.DBusConnection>} A DBus connection
+ * @returns {Promise<Gio.DBusConnection>} A DBus connection
  */
 function getConnection(busType = Gio.BusType.SESSION, cancellable = null) {
     return new Promise((resolve, reject) => {
@@ -255,7 +267,7 @@ function getConnection(busType = Gio.BusType.SESSION, cancellable = null) {
  *
  * @param {Gio.BusType} [busType] - a Gio.BusType constant
  * @param {Gio.Cancellable} [cancellable] - an optional Gio.Cancellable
- * @return {Promise<Gio.DBusConnection>} A new DBus connection
+ * @returns {Promise<Gio.DBusConnection>} A new DBus connection
  */
 function newConnection(busType = Gio.BusType.SESSION, cancellable = null) {
     return new Promise((resolve, reject) => {

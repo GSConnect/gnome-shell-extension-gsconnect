@@ -142,7 +142,7 @@ var Plugin = GObject.registerClass({
     /**
      * Handle an update for a remote player.
      *
-     * @param {Object} packet - A `kdeconnect.mpris` packet
+     * @param {object} packet - A `kdeconnect.mpris` packet
      */
     _handlePlayerUpdate(packet) {
         const player = this._players.get(packet.body.player);
@@ -172,7 +172,7 @@ var Plugin = GObject.registerClass({
      * Handle a request for player information or action.
      *
      * @param {Core.Packet} packet - a `kdeconnect.mpris.request`
-     * @return {undefined} no return value
+     * @returns {undefined} no return value
      */
     _handleRequest(packet) {
         // A request for the list of players

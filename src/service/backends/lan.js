@@ -580,7 +580,7 @@ var Channel = GObject.registerClass({
      * Handshake Gio.TlsConnection
      *
      * @param {Gio.TlsConnection} connection - A TLS connection
-     * @return {Promise} A promise for the operation
+     * @returns {Promise} A promise for the operation
      */
     _handshake(connection) {
         return new Promise((resolve, reject) => {
@@ -605,7 +605,7 @@ var Channel = GObject.registerClass({
      * Authenticate a TLS connection.
      *
      * @param {Gio.TlsConnection} connection - A TLS connection
-     * @return {Promise} A promise for the operation
+     * @returns {Promise} A promise for the operation
      */
     async _authenticate(connection) {
         // Standard TLS Handshake
@@ -673,7 +673,7 @@ var Channel = GObject.registerClass({
      * Wrap the connection in Gio.TlsClientConnection and initiate handshake
      *
      * @param {Gio.TcpConnection} connection - The unauthenticated connection
-     * @return {Gio.TlsClientConnection} The authenticated connection
+     * @returns {Gio.TlsClientConnection} The authenticated connection
      */
     _encryptClient(connection) {
         _configureSocket(connection);
@@ -691,7 +691,7 @@ var Channel = GObject.registerClass({
      * Wrap the connection in Gio.TlsServerConnection and initiate handshake
      *
      * @param {Gio.TcpConnection} connection - The unauthenticated connection
-     * @return {Gio.TlsServerConnection} The authenticated connection
+     * @returns {Gio.TlsServerConnection} The authenticated connection
      */
     _encryptServer(connection) {
         _configureSocket(connection);
@@ -711,7 +711,7 @@ var Channel = GObject.registerClass({
      * Read the identity packet from the new connection
      *
      * @param {Gio.SocketConnection} connection - An unencrypted socket
-     * @return {Promise} A promise for the operation
+     * @returns {Promise} A promise for the operation
      */
     _receiveIdent(connection) {
         return new Promise((resolve, reject) => {
@@ -751,7 +751,7 @@ var Channel = GObject.registerClass({
      * Write our identity packet to the new connection
      *
      * @param {Gio.SocketConnection} connection - An unencrypted socket
-     * @return {Promise} A promise for the operation
+     * @returns {Promise} A promise for the operation
      */
     _sendIdent(connection) {
         return new Promise((resolve, reject) => {
@@ -982,4 +982,3 @@ var Channel = GObject.registerClass({
         }
     }
 });
-

@@ -128,6 +128,11 @@ var ConnectDialog = GObject.registerClass({
 });
 
 
+/**
+ *
+ * @param row
+ * @param before
+ */
 function rowSeparators(row, before) {
     const header = row.get_header();
 

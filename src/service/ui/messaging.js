@@ -87,7 +87,7 @@ const _cFormat = new Intl.DateTimeFormat('default', {
  * Return a human-readable timestamp, formatted for longer contexts.
  *
  * @param {number} time - Milliseconds since the epoch (local time)
- * @return {string} A localized timestamp similar to what Android Messages uses
+ * @returns {string} A localized timestamp similar to what Android Messages uses
  */
 function getTime(time) {
     const date = new Date(time);
@@ -129,7 +129,7 @@ function getTime(time) {
  * Return a human-readable timestamp, formatted for shorter contexts.
  *
  * @param {number} time - Milliseconds since the epoch (local time)
- * @return {string} A localized timestamp similar to what Android Messages uses
+ * @returns {string} A localized timestamp similar to what Android Messages uses
  */
 function getShortTime(time) {
     const date = new Date(time);
@@ -170,13 +170,18 @@ function getShortTime(time) {
  * Return a human-readable timestamp, similar to `strftime()` with `%c`.
  *
  * @param {number} time - Milliseconds since the epoch (local time)
- * @return {string} A localized timestamp
+ * @returns {string} A localized timestamp
  */
 function getDetailedTime(time) {
     return _cFormat.format(time);
 }
 
 
+/**
+ *
+ * @param row
+ * @param visible
+ */
 function setAvatarVisible(row, visible) {
     const incoming = row.message.type === Sms.MessageBox.INBOX;
 
@@ -541,8 +546,8 @@ const Conversation = GObject.registerClass({
      * Create a message row, ensuring a contact object has been retrieved or
      * generated for the message.
      *
-     * @param {Object} message - A dictionary of message data
-     * @return {ConversationMessage} A message row
+     * @param {object} message - A dictionary of message data
+     * @returns {ConversationMessage} A message row
      */
     _createMessageRow(message) {
         // Ensure we have a contact
@@ -650,7 +655,7 @@ const Conversation = GObject.registerClass({
     /**
      * Log the next message in the conversation.
      *
-     * @param {Object} message - A message object
+     * @param {object} message - A message object
      */
     logNext(message) {
         try {
@@ -1068,8 +1073,8 @@ var Window = GObject.registerClass({
     /**
      * Find the thread row for @contacts
      *
-     * @param {Object[]} contacts - A contact group
-     * @return {ConversationSummary|null} The thread row or %null
+     * @param {object[]} contacts - A contact group
+     * @returns {ConversationSummary|null} The thread row or %null
      */
     _getRowForContacts(contacts) {
         const addresses = Object.keys(contacts).map(address => {
@@ -1151,8 +1156,8 @@ var Window = GObject.registerClass({
     /**
      * Try and find an existing conversation widget for @message.
      *
-     * @param {Object} message - A message object
-     * @return {Conversation|null} A conversation widget or %null
+     * @param {object} message - A message object
+     * @returns {Conversation|null} A conversation widget or %null
      */
     getConversationForMessage(message) {
         // TODO: This shouldn't happen?

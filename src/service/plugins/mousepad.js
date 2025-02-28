@@ -146,7 +146,7 @@ var Plugin = GObject.registerClass({
     /**
      * Handle a input event.
      *
-     * @param {Object} input - The body of a `kdeconnect.mousepad.request`
+     * @param {object} input - The body of a `kdeconnect.mousepad.request`
      */
     _handleInput(input) {
         if (!this.settings.get_boolean('share-control'))
@@ -229,7 +229,7 @@ var Plugin = GObject.registerClass({
     /**
      * Handle an echo/ACK of a event we sent, displaying it the dialog entry.
      *
-     * @param {Object} input - The body of a `kdeconnect.mousepad.echo`
+     * @param {object} input - The body of a `kdeconnect.mousepad.echo`
      */
     _handleEcho(input) {
         if (!this._dialog || !this._dialog.visible)
@@ -252,7 +252,7 @@ var Plugin = GObject.registerClass({
      * Handle a state change from the remote keyboard. This is an indication
      * that the remote keyboard is ready to accept input.
      *
-     * @param {Object} packet - A `kdeconnect.mousepad.keyboardstate` packet
+     * @param {object} packet - A `kdeconnect.mousepad.keyboardstate` packet
      */
     _handleState(packet) {
         this._state = !!packet.body.state;
@@ -262,7 +262,7 @@ var Plugin = GObject.registerClass({
     /**
      * Send an echo/ACK of @input, if requested
      *
-     * @param {Object} input - The body of a 'kdeconnect.mousepad.request'
+     * @param {object} input - The body of a 'kdeconnect.mousepad.request'
      */
     _sendEcho(input) {
         if (!input.sendAck)

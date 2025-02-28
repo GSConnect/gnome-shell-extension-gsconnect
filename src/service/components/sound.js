@@ -182,4 +182,3 @@ var Player = class Player {
  * The service class for this component
  */
 var Component = Player;
-
