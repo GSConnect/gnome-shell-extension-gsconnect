@@ -160,7 +160,7 @@ const Listener = GObject.registerClass({
      *
      * @param {string} sender - A DBus unique name (eg. :1.2282)
      * @param {string} appName - @appName passed to Notify() (Optional)
-     * @return {string} A well-known name or %null
+     * @returns {string} A well-known name or %null
      */
     async _getAppId(sender, appName) {
         try {
@@ -205,7 +205,7 @@ const Listener = GObject.registerClass({
      *
      * @param {string} sender - A DBus unique name
      * @param {string} [appName] - `appName` supplied by Notify()
-     * @return {string} A well-known name or %null
+     * @returns {string} A well-known name or %null
      */
     async _getAppName(sender, appName = null) {
         // Check the cache first
@@ -272,7 +272,7 @@ const Listener = GObject.registerClass({
     /**
      * Export interfaces for proxying notifications and become a monitor
      *
-     * @return {Promise} A promise for the operation
+     * @returns {Promise} A promise for the operation
      */
     _monitorConnection() {
         return new Promise((resolve, reject) => {
@@ -437,4 +437,3 @@ const Listener = GObject.registerClass({
  * The service class for this component
  */
 var Component = Listener;
-

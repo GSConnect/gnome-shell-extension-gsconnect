@@ -145,7 +145,7 @@ var Plugin = GObject.registerClass({
      * See: https://github.com/mathiasbynens/quoted-printable/blob/master/src/quoted-printable.js
      *
      * @param {string} input - The QUOTED-PRINTABLE string
-     * @return {string} The decoded string
+     * @returns {string} The decoded string
      */
     _decodeQuotedPrintable(input) {
         return input
@@ -166,7 +166,7 @@ var Plugin = GObject.registerClass({
      * See: https://github.com/kvz/locutus/blob/master/src/php/xml/utf8_decode.js
      *
      * @param {string} input - The UTF-8 string
-     * @return {string} The decoded string
+     * @returns {string} The decoded string
      */
     _decodeUTF8(input) {
         try {
@@ -228,7 +228,7 @@ var Plugin = GObject.registerClass({
      * See: http://jsfiddle.net/ARTsinn/P2t2P/
      *
      * @param {string} vcard_data - The raw VCard data
-     * @return {Object} dictionary of vCard data
+     * @returns {object} dictionary of vCard data
      */
     _parseVCard21(vcard_data) {
         // vcard skeleton

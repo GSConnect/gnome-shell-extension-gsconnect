@@ -18,7 +18,7 @@ const Tooltip = Extension.imports.shell.tooltip;
  *
  * @param {Gio.MenuModel} model - The menu model containing the item
  * @param {number} index - The index of the item in @model
- * @return {Object} A dictionary of the item's attributes
+ * @returns {object} A dictionary of the item's attributes
  */
 function getItemInfo(model, index) {
     const info = {

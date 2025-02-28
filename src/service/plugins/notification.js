@@ -101,7 +101,7 @@ const SMS_APPS = [
  * Try to determine if an notification is from an SMS app
  *
  * @param {Core.Packet} packet - A `kdeconnect.notification`
- * @return {boolean} Whether the notification is from an SMS app
+ * @returns {boolean} Whether the notification is from an SMS app
  */
 function _isSmsNotification(packet) {
     const id = packet.body.id;
@@ -121,8 +121,8 @@ function _isSmsNotification(packet) {
 /**
  * Remove a local libnotify or Gtk notification.
  *
- * @param {String|Number} id - Gtk (string) or libnotify id (uint32)
- * @param {String|null} application - Application Id if Gtk or null
+ * @param {string | number} id - Gtk (string) or libnotify id (uint32)
+ * @param {string | null} application - Application Id if Gtk or null
  */
 function _removeNotification(id, application = null) {
     let name, path, method, variant;
@@ -437,7 +437,7 @@ var Plugin = GObject.registerClass({
      *
      * @param {Core.Packet} packet - A `kdeconnect.notification`
      * @param {Gio.Icon|string|null} icon - An icon or %null
-     * @return {Promise} A promise for the operation
+     * @returns {Promise} A promise for the operation
      */
     _uploadIcon(packet, icon = null) {
         // Normalize strings into GIcons
@@ -459,7 +459,7 @@ var Plugin = GObject.registerClass({
     /**
      * Send a local notification to the remote device.
      *
-     * @param {Object} notif - A dictionary of notification parameters
+     * @param {object} notif - A dictionary of notification parameters
      * @param {string} notif.appName - The notifying application
      * @param {string} notif.id - The notification ID
      * @param {string} notif.title - The notification title
@@ -652,7 +652,7 @@ var Plugin = GObject.registerClass({
      *
      * @param {string} uuid - The requestReplyId for the repliable notification
      * @param {string} message - The message to reply with
-     * @param {Object} notification - The original notification packet
+     * @param {object} notification - The original notification packet
      */
     replyNotification(uuid, message, notification) {
         // If this happens for some reason, things will explode

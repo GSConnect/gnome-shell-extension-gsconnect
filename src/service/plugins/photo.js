@@ -69,7 +69,7 @@ var Plugin = GObject.registerClass({
     /**
      * Ensure we have a directory set for storing files that exists.
      *
-     * @return {string} An absolute directory path
+     * @returns {string} An absolute directory path
      */
     _ensureReceiveDirectory() {
         if (this._receiveDir !== undefined)
@@ -104,7 +104,7 @@ var Plugin = GObject.registerClass({
      * file is unique.
      *
      * @param {string} filename - A filename (eg. `image.jpg`)
-     * @return {Gio.File} a file object
+     * @returns {Gio.File} a file object
      */
     _getFile(filename) {
         const dirpath = this._ensureReceiveDirectory();
@@ -154,7 +154,7 @@ var Plugin = GObject.registerClass({
      * Take a photo using the Webcam and return the path.
      *
      * @param {Core.Packet} packet - A `kdeconnect.photo.request`
-     * @return {Promise<string>} A file path
+     * @returns {Promise<string>} A file path
      */
     _takePhoto(packet) {
         return new Promise((resolve, reject) => {

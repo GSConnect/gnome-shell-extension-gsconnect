@@ -8,7 +8,7 @@ const GObject = imports.gi.GObject;
 /**
  * Get the local device type.
  *
- * @return {string} A device type string
+ * @returns {string} A device type string
  */
 function _getDeviceType() {
     try {
@@ -62,8 +62,8 @@ var Packet = class Packet {
     /**
      * Deserialize and return a new Packet from an Object or string.
      *
-     * @param {Object|string} data - A string or dictionary to deserialize
-     * @return {Core.Packet} A new packet object
+     * @param {object | string} data - A string or dictionary to deserialize
+     * @returns {Core.Packet} A new packet object
      */
     static deserialize(data) {
         return new Packet(data);
@@ -73,7 +73,7 @@ var Packet = class Packet {
      * Serialize the packet as a single line with a terminating new-line (`\n`)
      * character, ready to be written to a channel.
      *
-     * @return {string} A serialized packet
+     * @returns {string} A serialized packet
      */
     serialize() {
         this.id = Date.now();
@@ -83,7 +83,7 @@ var Packet = class Packet {
     /**
      * Update the packet from a dictionary or string of JSON
      *
-     * @param {Object|string} source - Source data
+     * @param {object | string} data - Source data
      */
     update(source) {
         try {
@@ -99,7 +99,7 @@ var Packet = class Packet {
     /**
      * Check if the packet has a payload.
      *
-     * @return {boolean} %true if @packet has a payload
+     * @returns {boolean} %true if @packet has a payload
      */
     hasPayload() {
         if (!this.hasOwnProperty('payloadSize'))
@@ -212,7 +212,7 @@ var Channel = GObject.registerClass({
      * Read a packet.
      *
      * @param {Gio.Cancellable} [cancellable] - A cancellable
-     * @return {Promise<Core.Packet>} The packet
+     * @returns {Promise<Core.Packet>} The packet
      */
     readPacket(cancellable = null) {
         if (cancellable === null)
@@ -253,7 +253,7 @@ var Channel = GObject.registerClass({
      *
      * @param {Core.Packet} packet - The packet to send
      * @param {Gio.Cancellable} [cancellable] - A cancellable
-     * @return {Promise<boolean>} %true if successful
+     * @returns {Promise<boolean>} %true if successful
      */
     sendPacket(packet, cancellable = null) {
         if (cancellable === null)
@@ -555,7 +555,7 @@ var Transfer = GObject.registerClass({
     /**
      * Ensure there is a stream for the transfer item.
      *
-     * @param {Object} item - A transfer item
+     * @param {object} item - A transfer item
      * @param {Gio.Cancellable} [cancellable] - A cancellable
      */
     async _ensureStream(item, cancellable = null) {
@@ -738,4 +738,3 @@ var Transfer = GObject.registerClass({
             this._cancellable.cancel();
     }
 });
-

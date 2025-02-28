@@ -119,7 +119,7 @@ var Plugin = GObject.registerClass({
      * Update the cache for @stream
      *
      * @param {Gvc.MixerStream} stream - The stream to cache
-     * @return {Object} The updated cache object
+     * @returns {object} The updated cache object
      */
     _updateCache(stream) {
         const state = {

@@ -8,10 +8,16 @@ const Gtk = imports.gi.Gtk;
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const Utils = Extension.imports.shell.utils;
 
+/**
+ *
+ */
 function init() {
     Utils.installService();
 }
 
+/**
+ *
+ */
 function buildPrefsWidget() {
     // Destroy the window once the mainloop starts
     const widget = new Gtk.Box();

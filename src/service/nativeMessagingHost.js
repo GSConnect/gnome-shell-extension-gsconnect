@@ -212,4 +212,3 @@ const NativeMessagingHost = GObject.registerClass({
 
 // NOTE: must not pass ARGV
 (new NativeMessagingHost()).run([System.programInvocationName]);
-

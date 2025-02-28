@@ -12,7 +12,7 @@ const Default = new Map();
  * followed by a call to `release()`.
  *
  * @param {string} name - The module name
- * @return {*} The default instance of a component
+ * @returns {*} The default instance of a component
  */
 function acquire(name) {
     let component;
@@ -46,7 +46,7 @@ function acquire(name) {
  * holder, the component will be freed.
  *
  * @param {string} name - The module name
- * @return {null} A %null value, useful for overriding a traced variable
+ * @returns {null} A %null value, useful for overriding a traced variable
  */
 function release(name) {
     try {
