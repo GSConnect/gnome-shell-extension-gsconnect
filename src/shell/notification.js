@@ -7,13 +7,17 @@ import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 import St from 'gi://St';
 
+import {PACKAGE_VERSION} from 'resource:///org/gnome/shell/misc/config.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as MessageTray from 'resource:///org/gnome/shell/ui/messageTray.js';
-import * as Calendar from 'resource:///org/gnome/shell/ui/calendar.js';
 import * as NotificationDaemon from 'resource:///org/gnome/shell/ui/notificationDaemon.js';
 
 import {gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
 import {getIcon} from './utils.js';
+
+const {NotificationMessage} = Number(PACKAGE_VERSION.split('.')[0]) >= 48
+    ? await import('resource:///org/gnome/shell/ui/messageList.js')  // GNOME 48
+    : await import('resource:///org/gnome/shell/ui/calendar.js');    // GNOME 46/47
 
 const APP_ID = 'org.gnome.Shell.Extensions.GSConnect';
 const APP_PATH = '/org/gnome/Shell/Extensions/GSConnect';
@@ -46,7 +50,7 @@ const GtkNotificationDaemon = Main.notificationDaemon._gtkNotificationDaemon.con
  */
 const NotificationBanner = GObject.registerClass({
     GTypeName: 'GSConnectNotificationBanner',
-}, class NotificationBanner extends Calendar.NotificationMessage {
+}, class NotificationBanner extends NotificationMessage {
 
     constructor(notification) {
         super(notification);
