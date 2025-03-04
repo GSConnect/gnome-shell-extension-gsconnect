@@ -42,7 +42,7 @@ module.exports = [
                 _N: false,
                 ngettext: false,
                 HAVE_WAYLAND: false,
-                HAVE_REMOTEINPUT: "writable",
+                HAVE_REMOTEINPUT: 'writable',
             },
         },
 
