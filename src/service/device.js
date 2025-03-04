@@ -903,7 +903,7 @@ var Device = GObject.registerClass({
             // If we're accepting an incoming pair request, set the internal
             // paired state and send the confirmation before loading plugins.
             if (this._incomingPairRequest) {
-                if (this.identity?.body.protocolVersion >= 8) {
+                if (this.identity && this.identity.body.protocolVersion >= 8) {
                     const currentTimestamp = Math.floor(Date.now() / 1000);
                     const diffTimestamp = Number.abs(this._pairingTimestamp - currentTimestamp);
                     if (diffTimestamp > ALLOWED_TIMESTAMP_TIME_DIFFERENCE_SECONDS) {
