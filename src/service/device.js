@@ -180,8 +180,13 @@ var Device = GObject.registerClass({
         }
 
         // FIXME: another ugly reach-around
-        const localCert = this.service.manager.backends.get('lan')?.certificate;
-        const remoteCert = this.channel?.peer_certificate;
+        let lanBackend;
+
+        if (this.service !== null)
+            lanBackend = this.service.manager.backends.get('lan');
+
+        const localCert = lanBackend ? lanBackend.certificate : null;
+        const remoteCert = this.channel.peer_certificate;
         if (!localCert || !remoteCert)
             return '';
 
@@ -192,7 +197,7 @@ var Device = GObject.registerClass({
         checksum.update(a.toArray());
         checksum.update(b.toArray());
 
-        if (this.channel?.identity.body.protocolVersion >= 8)
+        if (this.channel && this.channel.identity.body.protocolVersion >= 8)
             checksum.update(String(this._pairingTimestamp));
 
         const verificationKey = checksum.get_string()
