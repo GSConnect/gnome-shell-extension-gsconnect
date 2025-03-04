@@ -25,7 +25,7 @@ function _getDeviceType() {
             return 'laptop';
 
         return 'desktop';
-    } catch {
+    } catch (e) {
         return 'desktop';
     }
 }

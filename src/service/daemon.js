@@ -74,7 +74,7 @@ const Service = GObject.registerClass({
                 .delete(null);
             Gio.File.new_build_filenamev([Config.CONFIGDIR, 'private.pem'])
                 .delete(null);
-        } catch {
+        } catch (e) {
             // Silence errors
         }
 
@@ -774,4 +774,3 @@ const Service = GObject.registerClass({
 });
 
 (new Service()).run([imports.system.programInvocationName].concat(ARGV));
-

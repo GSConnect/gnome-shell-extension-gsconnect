@@ -29,7 +29,7 @@ try {
         Gio.SocketType.STREAM,
         Gio.SocketProtocol.TCP
     ).get_option(6, 5);
-} catch {
+} catch (e) {
     _LINUX_SOCKETS = false;
 }
 
@@ -252,7 +252,7 @@ var ChannelService = GObject.registerClass({
             this._udp6_source = this._udp6.create_source(GLib.IOCondition.IN, null);
             this._udp6_source.set_callback(this._onIncomingIdentity.bind(this, this._udp6));
             this._udp6_source.attach(null);
-        } catch {
+        } catch (e) {
             this._udp6 = null;
         }
 
