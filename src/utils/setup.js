@@ -23,6 +23,7 @@ function setupGettext() {
 
 /**
  * Initialise and setup Config, GResources and GSchema.
+ *
  * @param {string} extensionPath - The absolute path to the extension directory
  */
 function setup(extensionPath) {

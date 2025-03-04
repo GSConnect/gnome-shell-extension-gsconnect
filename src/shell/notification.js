@@ -28,6 +28,7 @@ const REPLY_REGEX = new RegExp(/^([^|]+)\|([\s\S]+)\|([0-9a-f]{8}-[0-9a-f]{4}-[1
 /**
  * Extracted from notificationDaemon.js, as it's no longer exported
  * https://gitlab.gnome.org/GNOME/gnome-shell/-/blob/main/js/ui/notificationDaemon.js#L556
+ *
  * @returns {{ 'desktop-startup-id': string }} Object with ID containing current time
  */
 function getPlatformData() {

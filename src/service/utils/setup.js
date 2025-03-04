@@ -334,8 +334,8 @@ GLib.Variant.prototype.full_unpack = _full_unpack;
 
 
 /**
- * Creates a GTlsCertificate from the PEM-encoded data in @cert_path and
- * @key_path. If either are missing a new pair will be generated.
+ * Creates a GTlsCertificate from the PEM-encoded data in @certPath
+ * and @keyPath. If either are missing a new pair will be generated.
  *
  * Additionally, the private key will be added using ssh-add to allow sftp
  * connections using Gio.
