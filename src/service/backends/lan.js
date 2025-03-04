@@ -342,7 +342,7 @@ var ChannelService = GObject.registerClass({
                 return;
 
             // Reject invalid device IDs
-            if (!Device.validateId(packet.body.deviceId))
+            if (!Device.Device.validateId(packet.body.deviceId))
                 throw new Error('invalid deviceId');
 
             debug(packet);

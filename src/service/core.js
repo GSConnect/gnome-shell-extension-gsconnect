@@ -379,7 +379,7 @@ var ChannelService = GObject.registerClass({
 
     get id() {
         if (this._id === undefined)
-            this._id = Device.generateId();
+            this._id = Device.Device.generateId();
 
         return this._id;
     }

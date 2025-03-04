@@ -65,7 +65,7 @@ describe('A device constructed from an ID', function () {
     let device, id;
 
     beforeAll(function () {
-        id = Device.generateId();
+        id = Device.Device.generateId();
         device = new Device.Device({body: {deviceId: id}});
     });
 
