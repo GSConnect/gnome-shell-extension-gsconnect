@@ -57,7 +57,7 @@ function rowSeparators(row, before) {
  *
  * @param {Gtk.ListBoxRow} row1 - The first row
  * @param {Gtk.ListBoxRow} row2 - The second row
- * @return {number} -1, 0 or 1
+ * @returns {number} -1, 0 or 1
  */
 function titleSortFunc(row1, row2) {
     if (!row1.title || !row2.title)

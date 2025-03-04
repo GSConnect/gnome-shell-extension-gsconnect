@@ -342,7 +342,7 @@ var Manager = GObject.registerClass({
      * of known devices if it doesn't exist.
      *
      * @param {Core.Packet} packet - An identity packet for the device
-     * @return {Device.Device} A device object
+     * @returns {Device.Device} A device object
      */
     _ensureDevice(packet) {
         let device = this.devices.get(packet.body.deviceId);
@@ -398,7 +398,7 @@ var Manager = GObject.registerClass({
      * A GSourceFunc that tries to reconnect to each paired device, while
      * pruning unpaired devices that have disconnected.
      *
-     * @return {boolean} Always %true
+     * @returns {boolean} Always %true
      */
     _reconnect() {
         for (const [id, device] of this.devices) {

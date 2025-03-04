@@ -262,4 +262,3 @@ const Mixer = GObject.registerClass({
  * The service class for this component
  */
 var Component = Mixer;
-

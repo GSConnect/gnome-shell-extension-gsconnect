@@ -23,6 +23,9 @@ const Gtk = imports.gi.Gtk;
 
 
 // Bootstrap
+/**
+ *
+ */
 function get_datadir() {
     const m = /@(.+):\d+/.exec((new Error()).stack.split('\n')[1]);
     return Gio.File.new_for_path(m[1]).get_parent().get_parent().get_path();

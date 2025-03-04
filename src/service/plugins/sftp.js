@@ -277,7 +277,7 @@ var Plugin = GObject.registerClass({
      * Add GSConnect's private key identity to the authentication agent so our
      * identity can be verified by Android during private key authentication.
      *
-     * @return {Promise} A promise for the operation
+     * @returns {Promise} A promise for the operation
      */
     _addPrivateKey() {
         const ssh_add = this._launcher.spawnv([

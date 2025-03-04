@@ -295,11 +295,11 @@ class Controller {
      *
      * FIXME: this is a super ugly hack that should go away
      *
-     * @return {boolean} %true if wayland is not supported
+     * @returns {boolean} %true if wayland is not supported
      */
     _checkWayland() {
         if (HAVE_WAYLAND) {
-            // eslint-disable-next-line no-global-assign
+
             HAVE_REMOTEINPUT = false;
             const service = Gio.Application.get_default();
 

@@ -22,6 +22,12 @@ cp -pr ${DESTDIR}/${LOCALEDIR} ${ZIP_DIR}
 cp -pr ${DESTDIR}/${GSCHEMADIR} ${ZIP_DIR}
 glib-compile-schemas ${ZIP_DIR}/schemas
 
+# Stop without zipping dir, if requested
+if [ "$NOZIP" = true ]; then
+    echo "Extension staged in ${ZIP_DIR}";
+    exit 0;
+fi
+
 # COMPRESS
 cd ${ZIP_DIR}
 zip -qr ${ZIP_FILE} .
@@ -38,4 +44,3 @@ if [ "$INSTALL" = true ]; then
 
     echo "Extension installed to ${INSTALL_DIR}"
 fi
-

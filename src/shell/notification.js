@@ -347,11 +347,17 @@ const _ensureAppSource = function (appId) {
 };
 
 
+/**
+ *
+ */
 function patchGtkNotificationDaemon() {
     NotificationDaemon.GtkNotificationDaemon.prototype._ensureAppSource = _ensureAppSource;
 }
 
 
+/**
+ *
+ */
 function unpatchGtkNotificationDaemon() {
     NotificationDaemon.GtkNotificationDaemon.prototype._ensureAppSource = __ensureAppSource;
 }
@@ -362,6 +368,9 @@ function unpatchGtkNotificationDaemon() {
  */
 const _addNotification = NotificationDaemon.GtkNotificationDaemonAppSource.prototype.addNotification;
 
+/**
+ *
+ */
 function patchGtkNotificationSources() {
     // This should diverge as little as possible from the original
     // eslint-disable-next-line func-style
@@ -432,8 +441,10 @@ function patchGtkNotificationSources() {
 }
 
 
+/**
+ *
+ */
 function unpatchGtkNotificationSources() {
     NotificationDaemon.GtkNotificationDaemonAppSource.prototype.addNotification = _addNotification;
     delete NotificationDaemon.GtkNotificationDaemonAppSource.prototype._withdrawGSConnectNotification;
 }
-

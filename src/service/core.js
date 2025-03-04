@@ -67,7 +67,7 @@ var Packet = class Packet {
     /**
      * Deserialize and return a new Packet from an Object or string.
      *
-     * @param {object|string} data - A string or dictionary to deserialize
+     * @param {object | string} data - A string or dictionary to deserialize
      * @returns {Core.Packet} A new packet object
      */
     static deserialize(data) {
@@ -88,7 +88,7 @@ var Packet = class Packet {
     /**
      * Update the packet from a dictionary or string of JSON
      *
-     * @param {object|string} data - Source data
+     * @param {object | string} data - Source data
      */
     update(data) {
         try {
