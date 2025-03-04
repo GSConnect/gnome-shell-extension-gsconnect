@@ -59,6 +59,19 @@ extconfig.set('SSHKEYGEN_PATH', get_option('sshkeygen_path'))
 env_util = find_program('env')
 
 run_target(
+  'make-pkgdir',
+  command: [
+    env_util,
+    'UUID=' + extuuid,
+    'DATADIR=' + datadir,
+    'LOCALEDIR=' + localedir,
+    'GSCHEMADIR=' + gschemadir,
+    'NOZIP=true',
+    join_paths(meson.project_source_root(), 'build-aux', 'ego', 'mkzip.sh')
+  ]
+)
+
+run_target(
   'make-zip',
   command: [
     env_util,
@@ -123,4 +136,3 @@ subdir('data')
 subdir('installed-tests')
 subdir('nautilus-extension')
 subdir('po')
-
