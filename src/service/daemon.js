@@ -53,6 +53,7 @@ const Service = GObject.registerClass({
         // Remove the old certificate, serving as the single source of truth
         // for the device ID
         try {
+            this.settings.set_string(Device.generateId());
             Gio.File.new_build_filenamev([Config.CONFIGDIR, 'certificate.pem'])
                 .delete(null);
             Gio.File.new_build_filenamev([Config.CONFIGDIR, 'private.pem'])
