@@ -112,7 +112,7 @@ function generateIdentity(params = {}) {
         'id': Date.now(),
         'type': 'kdeconnect.identity',
         'body': {
-            'deviceId': GLib.uuid_string_random(),
+            'deviceId': Device.generateId(),
             'deviceName': 'Test Device',
             'deviceType': getDeviceType(),
             'protocolVersion': 7,

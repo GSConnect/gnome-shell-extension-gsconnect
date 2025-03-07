@@ -8,6 +8,7 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
+const Device = imports.service.device;
 
 /**
  * Get the local device type.
@@ -362,7 +363,7 @@ var ChannelService = GObject.registerClass({
 
     get id() {
         if (this._id === undefined)
-            this._id = GLib.uuid_string_random();
+            this._id = Device.Device.generateId();
 
         return this._id;
     }

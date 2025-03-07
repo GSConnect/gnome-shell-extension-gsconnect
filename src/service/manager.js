@@ -192,7 +192,7 @@ var Manager = GObject.registerClass({
     _initSettings() {
         // Initialize the ID and name of the service
         if (this.settings.get_string('id').length === 0)
-            this.settings.set_string('id', GLib.uuid_string_random());
+            this.settings.set_string('id', Device.Device.generateId());
 
         if (this.settings.get_string('name').length === 0)
             this.settings.set_string('name', GLib.get_host_name());
