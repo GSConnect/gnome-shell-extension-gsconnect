@@ -10,6 +10,7 @@ const GObject = imports.gi.GObject;
 
 const Config = imports.config;
 const Core = imports.service.core;
+const Device = imports.service.device;
 
 
 /**
@@ -720,6 +721,10 @@ var Channel = GObject.registerClass({
 
             if (!this.identity.body.deviceId)
                 throw new Error('missing deviceId');
+
+            // Reject invalid device IDs
+            if (!Device.Device.validateId(this.identity.body.deviceId))
+                throw new Error('invalid deviceId');
 
             this._connection = await this._encryptClient(connection);
         } catch (e) {
