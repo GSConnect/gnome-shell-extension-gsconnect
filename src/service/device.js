@@ -130,6 +130,14 @@ var Device = GObject.registerClass({
             this._loadPlugins();
     }
 
+    static generateId() {
+        return GLib.uuid_string_random().replaceAll('-', '_');
+    }
+
+    static validateId(id) {
+        return /^[a-zA-Z0-9_]{32,38}$/.test(id);
+    }
+
     get channel() {
         if (this._channel === undefined)
             this._channel = null;
@@ -164,6 +172,9 @@ var Device = GObject.registerClass({
 
     // FIXME: backend should do this stuff
     get encryption_info() {
+        if (!this.channel)
+            return '';
+
         let localCert = null;
         let remoteCert = null;
 
