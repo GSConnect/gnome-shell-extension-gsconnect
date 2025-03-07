@@ -38,13 +38,6 @@ echo "Extension saved to ${ZIP_FILE}"
 
 # INSTALL
 if [ "$INSTALL" = true ]; then
-    EXTENSIONS_DIR="${HOME}/.local/share/gnome-shell/extensions"
-    INSTALL_DIR="${EXTENSIONS_DIR}/${UUID}"
-
-    mkdir -p ${EXTENSIONS_DIR}
-    rm -rf ${INSTALL_DIR}
-    unzip -q ${ZIP_FILE} -d ${INSTALL_DIR}
-
-    echo "Extension installed to ${INSTALL_DIR}"
+    gnome-extensions install --force ${ZIP_FILE}
 fi
 
