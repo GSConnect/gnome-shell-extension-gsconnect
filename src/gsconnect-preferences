@@ -1,12 +1,19 @@
 #!/usr/bin/sh
 
-// SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
-//
-// SPDX-License-Identifier: GPL-2.0-or-later
+# SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+
+fallback_dir=$HOME/.local/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/
+
 if [ ! -f "./gsconnect-preferences.js" ]; then
     # Try to find home path
-    extension_dir=$(dirname $(realpath $0))
-    cd $extension_dir
+    extension_dir="$(dirname "$(realpath "$(command -v "$0")")")"
+    # try even harder
+    if [ ! -d "$extension_dir" ]; then
+        extension_dir="$fallback_dir"
+    fi
+    cd "$extension_dir" || exit 1
 fi
 exec /usr/bin/env gjs -m gsconnect-preferences.js
 
