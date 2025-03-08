@@ -361,16 +361,16 @@ export const ChannelService = GObject.registerClass({
     async _onIdentity(packet) {
         try {
             // Bail if the deviceId is missing
-            if (!packet.body.hasOwnProperty('deviceId'))
-                return;
+            if (!this.identity.body.deviceId)
+                throw new Error('missing deviceId');
 
             // Silently ignore our own broadcasts
             if (packet.body.deviceId === this.identity.body.deviceId)
                 return;
 
             // Reject invalid device IDs
-            if (!Device.validateId(packet.body.deviceId))
-                throw new Error('invalid deviceId');
+            if (!Device.validateId(this.identity.body.deviceId))
+                throw new Error(`invalid deviceId "${this.identity.body.deviceId}"`);
 
             debug(packet);
 
@@ -736,7 +736,7 @@ export const Channel = GObject.registerClass({
 
             // Reject invalid device IDs
             if (!Device.validateId(this.identity.body.deviceId))
-                throw new Error('invalid deviceId');
+                throw new Error(`invalid deviceId "${this.identity.body.deviceId}"`);
 
             this._connection = await this._encryptClient(connection);
 
