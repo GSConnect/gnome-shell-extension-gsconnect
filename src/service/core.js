@@ -351,7 +351,7 @@ export const ChannelService = GObject.registerClass({
 
     get name() {
         if (this._name === undefined)
-            this._name = GLib.get_host_name();
+            this._name = GLib.get_host_name().slice(0, 32);
 
         return this._name;
     }

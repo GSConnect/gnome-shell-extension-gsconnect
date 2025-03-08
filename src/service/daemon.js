@@ -47,6 +47,9 @@ const Service = GObject.registerClass({
     }
 
     _migrateConfiguration() {
+        if (!Device.validateName(this.settings.get_string('name')))
+            this.settings.set('name', GLib.get_host_name().slice(0, 32));
+
         if (Device.validateId(this.settings.get_string('id')))
             return;
 
