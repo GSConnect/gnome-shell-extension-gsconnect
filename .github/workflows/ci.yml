@@ -67,6 +67,11 @@ jobs:
       - name: Installed Tests
         run: |
           ninja -C _build install
+          if [[ \
+            ${{ startsWith(env.TARGET_BRANCH, 'backports/gnome-42') && 1 || 0 }} == 1 \
+          ]]; then
+              glib-compile-schemas /usr/share/glib-2.0/schemas/
+          fi
           xvfb-run -a dbus-run-session -- \
           gnome-desktop-testing-runner gsconnect -L _build/meson-logs
 
