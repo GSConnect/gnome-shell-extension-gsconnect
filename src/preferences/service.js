@@ -422,6 +422,28 @@ var Window = GObject.registerClass({
         dialog.show_all();
     }
 
+    _validateName(name) {
+        // None of the forbidden characters and at least one non-whitespace
+        if (name.trim() && /^[^"',;:.!?()[\]<>]{1,32}$/.test(name))
+            return true;
+
+        const dialog = new Gtk.MessageDialog({
+            text: _('Invalid Device Name'),
+            // TRANSLATOR: %s is a list of forbidden characters
+            secondary_text: _('Device name must not contain any of %s ' +
+                              'and have a length of 1-32 characters')
+                .format('<b><tt>^"\',;:.!?()[]&lt;&gt;</tt></b>'),
+            secondary_use_markup: true,
+            buttons: Gtk.ButtonsType.OK,
+            modal: true,
+            transient_for: this,
+        });
+        dialog.connect('response', (dialog) => dialog.destroy());
+        dialog.show_all();
+
+        return false;
+    }
+
     /*
      * "Help" GAction
      */
@@ -456,7 +478,7 @@ var Window = GObject.registerClass({
     }
 
     _onSetServiceName(widget) {
-        if (this.rename_entry.text.length) {
+        if (this._validateName(this.rename_entry.text)) {
             this.headerbar.title = this.rename_entry.text;
             this.settings.set_string('name', this.rename_entry.text);
         }
