@@ -68,7 +68,7 @@ jobs:
         run: |
           ninja -C _build install
           if [[ \
-            ${{ startsWith(env.TARGET_BRANCH, 'backports/gnome-42') && 1 || 0 }} == 1 \
+            ${{ needs.select.outputs.image_id }} == gnome-42 \
           ]]; then
               glib-compile-schemas /usr/share/glib-2.0/schemas/
           fi
