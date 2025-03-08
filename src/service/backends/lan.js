@@ -372,6 +372,13 @@ export const ChannelService = GObject.registerClass({
             if (!Device.validateId(this.identity.body.deviceId))
                 throw new Error(`invalid deviceId "${this.identity.body.deviceId}"`);
 
+            if (!this.identity.body.deviceName)
+                throw new Error('missing deviceName');
+
+            // Reject invalid device names
+            if (!Device.validateName(this.identity.body.deviceName))
+                throw new Error(`invalid deviceName "${this.identity.body.deviceName}"`);
+
             debug(packet);
 
             // Create a new channel
@@ -737,6 +744,13 @@ export const Channel = GObject.registerClass({
             // Reject invalid device IDs
             if (!Device.validateId(this.identity.body.deviceId))
                 throw new Error(`invalid deviceId "${this.identity.body.deviceId}"`);
+
+            if (!this.identity.body.deviceName)
+                throw new Error('missing deviceName');
+
+            // Reject invalid device names
+            if (!Device.validateName(this.identity.body.deviceName))
+                throw new Error(`invalid deviceName "${this.identity.body.deviceName}"`);
 
             this._connection = await this._encryptClient(connection);
 
