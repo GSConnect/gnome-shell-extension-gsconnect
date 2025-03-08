@@ -353,13 +353,12 @@ Gio.TlsCertificate.new_for_paths = function (certPath, keyPath, commonName = nul
         const proc = new Gio.Subprocess({
             argv: [
                 Config.OPENSSL_PATH, 'req',
-                '-newkey', 'ec',
-                '-pkeyopt', 'ec_paramgen_curve:prime256v1',
+                '-new', '-x509', '-sha256',
+                '-out', certPath,
+                '-newkey', 'rsa:4096', '-nodes',
                 '-keyout', keyPath,
-                '-new', '-x509', '-nodes',
                 '-days', '3650',
                 '-subj', `/O=andyholmes.github.io/OU=GSConnect/CN=${commonName}`,
-                '-out', certPath,
             ],
             flags: (Gio.SubprocessFlags.STDOUT_SILENCE |
                     Gio.SubprocessFlags.STDERR_SILENCE),
