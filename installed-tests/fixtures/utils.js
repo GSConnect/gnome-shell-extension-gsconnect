@@ -147,7 +147,7 @@ export function generateIdentity(params = {}) {
             'deviceId': Device.generateId(),
             'deviceName': 'Test Device',
             'deviceType': getDeviceType(),
-            'protocolVersion': 8,
+            'protocolVersion': 7,
             'incomingCapabilities': [],
             'outgoingCapabilities': [],
         },

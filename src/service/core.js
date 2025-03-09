@@ -407,7 +407,7 @@ export const ChannelService = GObject.registerClass({
                 deviceId: this.id,
                 deviceName: this.name,
                 deviceType: _getDeviceType(),
-                protocolVersion: 8,
+                protocolVersion: 7,
                 incomingCapabilities: [],
                 outgoingCapabilities: [],
             },
