@@ -424,6 +424,28 @@ export const Window = GObject.registerClass({
         dialog.present();
     }
 
+    _validateName(name) {
+        // None of the forbidden characters and at least one non-whitespace
+        if (name.trim() && /^[^"',;:.!?()[\]<>]{1,32}$/.test(name))
+            return true;
+
+        const dialog = new Gtk.MessageDialog({
+            text: _('Invalid Device Name'),
+            // TRANSLATOR: %s is a list of forbidden characters
+            secondary_text: _('Device name must not contain any of %s ' +
+                              'and have a length of 1-32 characters')
+                .format('<b><tt>^"\',;:.!?()[]&lt;&gt;</tt></b>'),
+            secondary_use_markup: true,
+            buttons: Gtk.ButtonsType.OK,
+            modal: true,
+            transient_for: this,
+        });
+        dialog.connect('response', (dialog) => dialog.destroy());
+        dialog.show_all();
+
+        return false;
+    }
+
     /*
      * "Help" GAction
      */
@@ -431,6 +453,20 @@ export const Window = GObject.registerClass({
         const uri = `${Config.PACKAGE_URL}/wiki/Help`;
         Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
     }
+
+    _setDeviceMenu(panel = null) {
+        this.device_menu.insert_action_group('device', null);
+        this.device_menu.insert_action_group('settings', null);
+        this.device_menu.set_menu_model(null);
+
+        if (panel === null)
+            return;
+
+        this.device_menu.insert_action_group('device', panel.device.action_group);
+        this.device_menu.insert_action_group('settings', panel.actions);
+        this.device_menu.set_menu_model(panel.menu);
+    }
+
 
     _onDeviceAdded(service, device) {
         try {
