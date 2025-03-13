@@ -186,8 +186,8 @@ var Device = GObject.registerClass({
         }
 
         // FIXME: another ugly reach-around
-        const localCert = this.service.manager.backends.get('lan')?.certificate;
-        const remoteCert = this.channel?.peer_certificate;
+        const localCert = this.service.manager.backends.get('lan') && this.service.manager.backends.get('lan').certificate;
+        const remoteCert = this.channel && this.channel.peer_certificate;
         if (!localCert || !remoteCert)
             return '';
 
@@ -198,7 +198,7 @@ var Device = GObject.registerClass({
         checksum.update(a.toArray());
         checksum.update(b.toArray());
 
-        if (this.channel?.identity.body.protocolVersion >= 8)
+        if (this.channel && this.channel.identity.body.protocolVersion >= 8)
             checksum.update(String(this._pairingTimestamp));
 
         const verificationKey = checksum.get_string()
@@ -791,7 +791,7 @@ var Device = GObject.registerClass({
 
             // The device is requesting pairing
             } else {
-                this._notifyPairRequest(packet.body?.timestamp);
+                this._notifyPairRequest(packet.body && packet.body.timestamp);
             }
         // Device is requesting unpairing/rejecting our request
         } else {
@@ -903,7 +903,7 @@ var Device = GObject.registerClass({
             // If we're accepting an incoming pair request, set the internal
             // paired state and send the confirmation before loading plugins.
             if (this._incomingPairRequest) {
-                if (this.identity?.body.protocolVersion >= 8) {
+                if (this.identity && this.identity.body.protocolVersion >= 8) {
                     const currentTimestamp = Math.floor(Date.now() / 1000);
                     const diffTimestamp = Number.abs(this._pairingTimestamp - currentTimestamp);
                     if (diffTimestamp > ALLOWED_TIMESTAMP_TIME_DIFFERENCE_SECONDS) {
