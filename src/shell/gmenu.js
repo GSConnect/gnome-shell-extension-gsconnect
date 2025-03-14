@@ -8,6 +8,7 @@ import Gio from 'gi://Gio';
 import GObject from 'gi://GObject';
 import St from 'gi://St';
 
+import {PACKAGE_VERSION} from 'resource:///org/gnome/shell/misc/config.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 
 import {getIcon} from './utils.js';
@@ -92,12 +93,19 @@ export class ListBox extends PopupMenu.PopupMenuSection {
         this.actor.add_child(this.box);
 
         // Submenu Container
-        this.sub = new St.BoxLayout({
-            clip_to_allocation: true,
-            vertical: false,
-            visible: false,
-            x_expand: true,
-        });
+        this.sub = Number(PACKAGE_VERSION.split('.')[0]) >= 48
+            ? new St.BoxLayout({
+                clip_to_allocation: true,
+                orientation: Clutter.Orientation.HORIZONTAL,  // GNOME 48
+                visible: false,
+                x_expand: true,
+            })
+            : new St.BoxLayout({
+                clip_to_allocation: true,
+                vertical: false,  // GNOME 46/47
+                visible: false,
+                x_expand: true,
+            });
         this.sub.set_pivot_point(1, 1);
         this.sub._delegate = this;
         this.actor.add_child(this.sub);
@@ -464,24 +472,38 @@ export class IconBox extends PopupMenu.PopupMenuSection {
         Object.assign(this, params);
 
         // Main Actor
-        this.actor = new St.BoxLayout({
-            vertical: true,
-            x_expand: true,
-        });
+        this.actor = Number(PACKAGE_VERSION.split('.')[0]) >= 48
+            ? new St.BoxLayout({
+                orientation: Clutter.Orientation.VERTICAL,  // GNOME 48
+                x_expand: true,
+            })
+            : new St.BoxLayout({
+                vertical: true,  // GNOME 46/47
+                x_expand: true,
+            });
         this.actor._delegate = this;
 
         // Button Box
         this.box._delegate = this;
         this.box.style_class = 'gsconnect-icon-box';
-        this.box.vertical = false;
+        if (Number(PACKAGE_VERSION.split('.')[0]) >= 48)
+            this.box.orientation = Clutter.Orientation.HORIZONTAL;  // GNOME 48
+        else
+            this.box.vertical = false;  // GNOME 46/47
         this.actor.add_child(this.box);
 
         // Submenu Container
-        this.sub = new St.BoxLayout({
-            clip_to_allocation: true,
-            vertical: true,
-            x_expand: true,
-        });
+        this.sub = Number(PACKAGE_VERSION.split('.')[0]) >= 48
+            ? new St.BoxLayout({
+                clip_to_allocation: true,
+                orientation: Clutter.Orientation.VERTICAL,  // GNOME 48
+                x_expand: true,
+            })
+            : new St.BoxLayout({
+                clip_to_allocation: true,
+                vertical: true,  // GNOME 46/47
+                x_expand: true,
+            });
         this.sub.connect('transitions-completed', this._onTransitionsCompleted);
         this.sub._delegate = this;
         this.actor.add_child(this.sub);

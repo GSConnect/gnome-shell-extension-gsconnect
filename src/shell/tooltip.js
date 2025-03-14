@@ -8,6 +8,7 @@ import GLib from 'gi://GLib';
 import Pango from 'gi://Pango';
 import St from 'gi://St';
 
+import {PACKAGE_VERSION} from 'resource:///org/gnome/shell/misc/config.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
 
@@ -151,7 +152,15 @@ export default class Tooltip {
             if (this.custom) {
                 this._bin.child = this.custom;
             } else {
-                this._bin.child = new St.BoxLayout({vertical: false});
+                if (Number(PACKAGE_VERSION.split('.')[0]) >= 48) {
+                    // GNOME 48
+                    this._bin.child = new St.BoxLayout(
+                        {orientation: Clutter.Orientation.HORIZONTAL}
+                    );
+                } else {
+                    // GNOME 46/47
+                    this._bin.child = new St.BoxLayout({vertical: false});
+                }
 
                 if (this.gicon) {
                     this._bin.child.icon = new St.Icon({
