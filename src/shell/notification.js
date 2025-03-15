@@ -7,15 +7,14 @@ import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 import St from 'gi://St';
 
-import {PACKAGE_VERSION} from 'resource:///org/gnome/shell/misc/config.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as MessageTray from 'resource:///org/gnome/shell/ui/messageTray.js';
 import * as NotificationDaemon from 'resource:///org/gnome/shell/ui/notificationDaemon.js';
 
 import {gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
-import {getIcon} from './utils.js';
+import {HAS_MESSAGELIST_NOTIFICATIONMESSAGE, getIcon} from './utils.js';
 
-const {NotificationMessage} = Number(PACKAGE_VERSION.split('.')[0]) >= 48
+const {NotificationMessage} = HAS_MESSAGELIST_NOTIFICATIONMESSAGE
     ? await import('resource:///org/gnome/shell/ui/messageList.js')  // GNOME 48
     : await import('resource:///org/gnome/shell/ui/calendar.js');    // GNOME 46/47
 
