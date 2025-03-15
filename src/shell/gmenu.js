@@ -8,10 +8,9 @@ import Gio from 'gi://Gio';
 import GObject from 'gi://GObject';
 import St from 'gi://St';
 
-import {PACKAGE_VERSION} from 'resource:///org/gnome/shell/misc/config.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 
-import {getIcon} from './utils.js';
+import {HAS_ST_ORIENTATION, getIcon} from './utils.js';
 
 import Tooltip from './tooltip.js';
 
@@ -93,7 +92,7 @@ export class ListBox extends PopupMenu.PopupMenuSection {
         this.actor.add_child(this.box);
 
         // Submenu Container
-        this.sub = Number(PACKAGE_VERSION.split('.')[0]) >= 48
+        this.sub = HAS_ST_ORIENTATION
             ? new St.BoxLayout({
                 clip_to_allocation: true,
                 orientation: Clutter.Orientation.HORIZONTAL,  // GNOME 48
@@ -472,7 +471,7 @@ export class IconBox extends PopupMenu.PopupMenuSection {
         Object.assign(this, params);
 
         // Main Actor
-        this.actor = Number(PACKAGE_VERSION.split('.')[0]) >= 48
+        this.actor = HAS_ST_ORIENTATION
             ? new St.BoxLayout({
                 orientation: Clutter.Orientation.VERTICAL,  // GNOME 48
                 x_expand: true,
@@ -486,14 +485,14 @@ export class IconBox extends PopupMenu.PopupMenuSection {
         // Button Box
         this.box._delegate = this;
         this.box.style_class = 'gsconnect-icon-box';
-        if (Number(PACKAGE_VERSION.split('.')[0]) >= 48)
+        if (HAS_ST_ORIENTATION)
             this.box.orientation = Clutter.Orientation.HORIZONTAL;  // GNOME 48
         else
             this.box.vertical = false;  // GNOME 46/47
         this.actor.add_child(this.box);
 
         // Submenu Container
-        this.sub = Number(PACKAGE_VERSION.split('.')[0]) >= 48
+        this.sub = HAS_ST_ORIENTATION
             ? new St.BoxLayout({
                 clip_to_allocation: true,
                 orientation: Clutter.Orientation.VERTICAL,  // GNOME 48

@@ -8,9 +8,18 @@ import Gtk from 'gi://Gtk';
 
 import Config from '../config.js';
 
-let St = null; // St is not available for prefs.js importing this file.
+let St = null;
+export let SHELL_MAJOR_VERSION = -1;
+export let HAS_ST_ORIENTATION = false;
+export let HAS_MESSAGELIST_NOTIFICATIONMESSAGE = false;
+
+// St and PACKAGE_VERSION (from GNOME Shell) are not available for prefs.js importing this file
 try {
     St = (await import('gi://St')).default;
+    const {PACKAGE_VERSION} = await import('resource:///org/gnome/shell/misc/config.js');
+    SHELL_MAJOR_VERSION = Number(PACKAGE_VERSION.split('.')[0]);
+    HAS_ST_ORIENTATION = SHELL_MAJOR_VERSION >= 48;
+    HAS_MESSAGELIST_NOTIFICATIONMESSAGE = SHELL_MAJOR_VERSION >= 48;
 } catch { }
 
 

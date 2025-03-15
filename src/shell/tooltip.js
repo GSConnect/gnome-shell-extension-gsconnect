@@ -8,9 +8,9 @@ import GLib from 'gi://GLib';
 import Pango from 'gi://Pango';
 import St from 'gi://St';
 
-import {PACKAGE_VERSION} from 'resource:///org/gnome/shell/misc/config.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
+import {HAS_ST_ORIENTATION} from './utils.js';
 
 /**
  * An StTooltip for ClutterActors
@@ -152,7 +152,7 @@ export default class Tooltip {
             if (this.custom) {
                 this._bin.child = this.custom;
             } else {
-                if (Number(PACKAGE_VERSION.split('.')[0]) >= 48) {
+                if (HAS_ST_ORIENTATION) {
                     // GNOME 48
                     this._bin.child = new St.BoxLayout(
                         {orientation: Clutter.Orientation.HORIZONTAL}
