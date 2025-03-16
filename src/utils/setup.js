@@ -242,7 +242,7 @@ export function installService() {
  *
  * @param {string} extensionPath - The absolute path to the extension directory
  */
-export default function setup(extensionPath) {
+export function setup(extensionPath) {
     // Ensure config.js is setup properly
     Config.PACKAGE_DATADIR = extensionPath;
     const userDir = GLib.build_filenamev([GLib.get_user_data_dir(), 'gnome-shell']);
