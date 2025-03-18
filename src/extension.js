@@ -23,7 +23,7 @@ import * as Keybindings from './shell/keybindings.js';
 import * as Notification from './shell/notification.js';
 import * as Input from './shell/input.js';
 import * as Remote from './utils/remote.js';
-import setup, * as Setup from './utils/setup.js';
+import * as Setup from './utils/setup.js';
 
 const QuickSettingsMenu = Main.panel.statusArea.quickSettings;
 
@@ -357,7 +357,7 @@ export default class GSConnectExtension extends Extension {
 
     constructor(metadata) {
         super(metadata);
-        setup(this.path);
+        Setup.setup(this.path);
 
         // If installed as a user extension, this checks the permissions
         // on certain critical files in the extension directory
