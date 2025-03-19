@@ -141,6 +141,10 @@ var ChannelService = GObject.registerClass({
         return this._channels;
     }
 
+    get id() {
+        return this.certificate.common_name;
+    }
+
     get port() {
         if (this._port === undefined)
             this._port = PROTOCOL_PORT_DEFAULT;
@@ -176,12 +180,7 @@ var ChannelService = GObject.registerClass({
 
         // Ensure a certificate exists with our id as the common name
         this._certificate = Gio.TlsCertificate.new_for_paths(certPath, keyPath,
-            this.id);
-
-        // If the service ID doesn't match the common name, this is probably a
-        // certificate from an older version and we should amend ours to match
-        if (this.id !== this._certificate.common_name)
-            this._id = this._certificate.common_name;
+            null);
     }
 
     _initTcpListener() {
