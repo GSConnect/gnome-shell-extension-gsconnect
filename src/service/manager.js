@@ -30,6 +30,13 @@ var Manager = GObject.registerClass({
             GObject.ParamFlags.READABLE,
             false
         ),
+        'certificate': GObject.ParamSpec.object(
+            'certificate',
+            'Certificate',
+            'The local TLS certificate',
+            GObject.ParamFlags.READABLE,
+            Gio.TlsCertificate
+        ),
         'discoverable': GObject.ParamSpec.boolean(
             'discoverable',
             'Discoverable',
@@ -41,7 +48,7 @@ var Manager = GObject.registerClass({
             'id',
             'Id',
             'The hostname or other network unique id',
-            GObject.ParamFlags.READWRITE,
+            GObject.ParamFlags.READABLE,
             null
         ),
         'name': GObject.ParamSpec.string(
@@ -78,6 +85,17 @@ var Manager = GObject.registerClass({
             this._backends = new Map();
 
         return this._backends;
+    }
+
+    get certificate() {
+        if (this._certificate === undefined) {
+            this._certificate = Gio.TlsCertificate.new_for_paths(
+                GLib.build_filenamev([Config.CONFIGDIR, 'certificate.pem']),
+                GLib.build_filenamev([Config.CONFIGDIR, 'private.pem']),
+                null);
+        }
+
+        return this._certificate;
     }
 
     get devices() {
@@ -129,18 +147,7 @@ var Manager = GObject.registerClass({
     }
 
     get id() {
-        if (this._id === undefined)
-            this._id = this.settings.get_string('id');
-
-        return this._id;
-    }
-
-    set id(value) {
-        if (this.id === value)
-            return;
-
-        this._id = value;
-        this.notify('id');
+        return this.certificate.common_name;
     }
 
     get name() {
@@ -190,16 +197,11 @@ var Manager = GObject.registerClass({
      * GSettings
      */
     _initSettings() {
-        // Initialize the ID and name of the service
-        if (this.settings.get_string('id').length === 0)
-            this.settings.set_string('id', Device.Device.generateId());
-
         if (this.settings.get_string('name').length === 0)
             this.settings.set_string('name', GLib.get_host_name());
 
         // Bound Properties
         this.settings.bind('discoverable', this, 'discoverable', 0);
-        this.settings.bind('id', this, 'id', 0);
         this.settings.bind('name', this, 'name', 0);
     }
 
