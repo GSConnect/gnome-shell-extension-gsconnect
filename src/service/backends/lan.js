@@ -334,15 +334,15 @@ var ChannelService = GObject.registerClass({
                 return;
 
             // Reject invalid device IDs
-            if (!Device.Device.validateId(this.identity.body.deviceId))
-                throw new Error(`invalid deviceId "${this.identity.body.deviceId}"`);
+            if (!Device.Device.validateId(packet.body.deviceId))
+                throw new Error(`invalid deviceId "${packet.body.deviceId}"`);
 
-            if (!this.identity.body.deviceName)
+            if (!packet.body.deviceName)
                 throw new Error('missing deviceName');
 
             // Reject invalid device names
-            if (!Device.Device.validateName(this.identity.body.deviceName))
-                throw new Error(`invalid deviceName "${this.identity.body.deviceName}"`);
+            if (!Device.Device.validateName(packet.body.deviceName))
+                throw new Error(`invalid deviceName "${packet.body.deviceName}"`);
 
             debug(packet);
 
