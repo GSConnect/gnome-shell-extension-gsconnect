@@ -64,7 +64,14 @@ const Service = GObject.registerClass({
     }
 
     _migrateConfiguration() {
-        if (Device.Device.validateId(this.settings.get_string('id')))
+        const [certPath, keyPath] = [
+            GLib.build_filenamev([Config.CONFIGDIR, 'certificate.pem']),
+            GLib.build_filenamev([Config.CONFIGDIR, 'private.pem']),
+        ];
+        const certificate = Gio.TlsCertificate.new_for_paths(certPath, keyPath,
+            null);
+
+        if (Device.Device.validateId(certificate.common_name))
             return;
 
         if (!Device.Device.validateName(this.settings.get_string('name')))
@@ -73,30 +80,32 @@ const Service = GObject.registerClass({
         // Remove the old certificate, serving as the single source of truth
         // for the device ID
         try {
-            Gio.File.new_build_filenamev([Config.CONFIGDIR, 'certificate.pem'])
-                .delete(null);
-            Gio.File.new_build_filenamev([Config.CONFIGDIR, 'private.pem'])
-                .delete(null);
+            Gio.File.new_for_path(certPath).delete(null);
+            Gio.File.new_for_path(keyPath).delete(null);
         } catch (e) {
             // Silence errors
         }
 
         // For each device, remove it entirely if it violates the device ID
         // constraints, otherwise mark it unpaired to preserve the settings.
-        for (const deviceId of this.settings.get_strv('devices')) {
-            if (!Device.Device.validateId(deviceId)) {
-                this._removeDevice(deviceId);
-            } else {
-                const settings = new Gio.Settings({
-                    settings_schema: Config.GSCHEMA.lookup(
-                        'org.gnome.Shell.Extensions.GSConnect.Device',
-                        true
-                    ),
-                    path: `/org/gnome/shell/extensions/gsconnect/device/${deviceId}/`,
-                });
-                settings.set_boolean('paired', false);
+        const deviceList = this.settings.get_strv('devices').filter(id => {
+            const settingsPath = `/org/gnome/shell/extensions/gsconnect/device/${id}/`;
+            if (!Device.Device.validateId(id)) {
+                GLib.spawn_command_line_async(`dconf reset -f ${settingsPath}`);
+                Gio.File.rm_rf(GLib.build_filenamev([Config.CACHEDIR, id]));
+                debug(`Invalid device ID ${id} removed.`);
+                return false;
             }
-        }
+
+            const settings = new Gio.Settings({
+                settings_schema: Config.GSCHEMA.lookup(
+                    'org.gnome.Shell.Extensions.GSConnect.Device', true),
+                path: settingsPath,
+            });
+            settings.set_boolean('paired', false);
+            return true;
+        });
+        this.settings.set_strv('devices', deviceList);
 
         // Notify the user
         const notification = Gio.Notification.new(_('Settings Migrated'));
@@ -305,6 +314,9 @@ const Service = GObject.registerClass({
         // GActions & GSettings
         this._initActions();
 
+        // TODO: remove after a reasonable period of time
+        this._migrateConfiguration();
+
         this.manager.start();
     }
 
@@ -312,8 +324,6 @@ const Service = GObject.registerClass({
         if (!super.vfunc_dbus_register(connection, object_path))
             return false;
 
-        // TODO: remove after a reasonable period of time
-        this._migrateConfiguration();
         this.manager = new Manager.Manager({
             connection: connection,
             object_path: object_path,
