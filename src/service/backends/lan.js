@@ -158,13 +158,6 @@ var ChannelService = GObject.registerClass({
     }
 
     _initCertificate() {
-        if (GLib.find_program_in_path(Config.OPENSSL_PATH) === null) {
-            const error = new Error();
-            error.name = _('OpenSSL not found');
-            error.url = `${Config.PACKAGE_URL}/wiki/Error#openssl-not-found`;
-            throw error;
-        }
-
         const certPath = GLib.build_filenamev([
             Config.CONFIGDIR,
             'certificate.pem',
