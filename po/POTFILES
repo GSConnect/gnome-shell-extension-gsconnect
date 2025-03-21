@@ -23,6 +23,7 @@ src/preferences/keybindings.js
 src/preferences/service.js
 src/service/daemon.js
 src/service/device.js
+src/service/init.js
 src/service/manager.js
 src/service/backends/lan.js
 src/service/plugins/battery.js
