@@ -20,7 +20,6 @@ describe('A LAN channel service', function () {
         );
 
         local = new Lan.ChannelService({
-            id: localCert.common_name,
             certificate: localCert,
             port: 1717,
         });
@@ -31,7 +30,6 @@ describe('A LAN channel service', function () {
         );
 
         remote = new Lan.ChannelService({
-            id: remoteCert.common_name,
             certificate: remoteCert,
             port: 1718,
         });
