@@ -2,7 +2,7 @@
  * Return the index within filename from which the extension starts,
  * handling some common double extensions like .tar.gz, .<ext>.bak, etc
  *
- * @param {string} filename - The filaname to get extension index of
+ * @param {string} filename - The filename to get extension index of
  * @returns {number} the index from which extension starts
  */
 export function getExtensionIndex(filename) {
@@ -18,11 +18,11 @@ export function getExtensionIndex(filename) {
 }
 
 /**
- * Make a filename unique by adding a "(n)" after the name
+ * Make a filename unique by adding a " (1)" after the name.
  * Increment n if the name is already in the style "<basename> (n).<ext>"
  *
- * @param {string} filename - The filaname to make unique
- * @returns {number} the new filename with "(n)" added/incremented
+ * @param {string} filename - The filename to make unique
+ * @returns {number} the new filename with " (n)" added/incremented
  */
 export function makeUnique(filename) {
     let extension = '';
