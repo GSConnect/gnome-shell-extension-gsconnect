@@ -7,14 +7,16 @@
  */
 export function getExtensionIndex(filename) {
     const doubleExtensions = ['gz', 'xz', 'bz2', 'bak', 'in'];
+    let prev_i = -1;
     for (let i = filename.length - 1; i >= 0; i--) {
         if (filename[i] === '.') {
+            prev_i = i;
             const extension = filename.slice(i + 1);
             if (!doubleExtensions.includes(extension))
                 return i;
         }
     }
-    return -1;
+    return prev_i;
 }
 
 /**
