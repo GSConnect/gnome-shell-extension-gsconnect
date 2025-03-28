@@ -1,0 +1,35 @@
+# SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+labels: ["enhancement"]
+body:
+- type: textarea
+  id: proposal
+  attributes:
+    label: Add a description
+    placeholder: "Describe your idea"
+  validations:
+    required: true
+
+- type: markdown
+  attributes:
+    value: "# All device features must first exist in KDE Connect"
+- type: markdown
+  attributes:
+    value: >
+      GSConnect works in concert with the
+      [KDE Connect](https://community.kde.org/KDEConnect)
+      app on paired Android devices.
+      Communication between GSConnect and the device is controlled by **KDE Connect**,
+      _not_ GSConnect.
+
+
+      Any request that would require features not supported in KDE Connect,
+      or would require GSConnect to deviate from the KDE Connect protocols,
+      cannot be implemented and will not be considered.
+      
+      
+      All such requests should be made to the KDE Connect project.
+      The requested functionality can only be implemented in GSConnect
+      **after** support is added to KDE Connect.
+
