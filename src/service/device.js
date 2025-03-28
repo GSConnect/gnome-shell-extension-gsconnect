@@ -130,11 +130,11 @@ var Device = GObject.registerClass({
     }
 
     static generateId() {
-        return GLib.uuid_string_random().replaceAll('-', '_');
+        return GLib.uuid_string_random().replaceAll('-', '');
     }
 
     static validateId(id) {
-        return /^[a-zA-Z0-9_]{32,38}$/.test(id);
+        return /^[a-zA-Z0-9_-]{32,38}$/.test(id);
     }
 
     static validateName(name) {
