@@ -1,6 +1,6 @@
 project('gsconnect',
   'c',
-  version: '54',
+  version: '60',
   meson_version: '>= 0.59.0',
 )
 
