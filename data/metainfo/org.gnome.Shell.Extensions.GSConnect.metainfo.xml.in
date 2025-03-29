@@ -56,6 +56,9 @@ SPDX-License-Identifier: GPL-2.0-or-later
   </description>
 
   <releases>
+    <release version="61" date="2025-03-29">
+      <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v61</url>
+    </release>
     <release version="56" date="2023-11-05">
       <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v56</url>
     </release>
