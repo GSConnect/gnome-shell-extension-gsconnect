@@ -5,14 +5,24 @@ import globals from 'globals';
 import js from '@eslint/js';
 import stylisticJs from '@stylistic/eslint-plugin-js';
 import jsdoc from 'eslint-plugin-jsdoc';
+import {defineConfig, globalIgnores} from 'eslint/config';
 
-export default [
+export default defineConfig([
     js.configs.recommended,
     jsdoc.configs['flat/recommended'],
+    globalIgnores([
+        '**/*.js',
+	'!src/**/*.js',
+	'!installed-tests/**/*.js',
+	'!webextension/**/*.js',
+	'webextension/js/browser-polyfill*',
+    ]),
     {
-        ignores: ['webextension/js/browser-polyfill*'],
-    },
-    {
+	files: [
+	    'src/**/*.js',
+	    'installed-tests/**/*.js',
+	    'webextension/**/*.js',
+	],
         plugins: {
             '@stylistic/js': stylisticJs,
             jsdoc,
@@ -293,4 +303,4 @@ export default [
             }],
         },
     },
-];
+]);

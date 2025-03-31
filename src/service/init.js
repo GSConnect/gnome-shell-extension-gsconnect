@@ -9,7 +9,7 @@ import GIRepository from 'gi://GIRepository';
 import GLib from 'gi://GLib';
 
 import Config from '../config.js';
-import setup, {setupGettext} from '../utils/setup.js';
+import {setup, setupGettext} from '../utils/setup.js';
 
 
 // Promise Wrappers
@@ -340,6 +340,13 @@ GLib.Variant.prototype.full_unpack = _full_unpack;
  * @returns {Gio.TlsCertificate} A TLS certificate
  */
 Gio.TlsCertificate.new_for_paths = function (certPath, keyPath, commonName = null) {
+    if (GLib.find_program_in_path(Config.OPENSSL_PATH) === null) {
+        const error = new Error();
+        error.name = _('OpenSSL not found');
+        error.url = `${Config.PACKAGE_URL}/wiki/Error#openssl-not-found`;
+        throw error;
+    }
+
     // Check if the certificate/key pair already exists
     const certExists = GLib.file_test(certPath, GLib.FileTest.EXISTS);
     const keyExists = GLib.file_test(keyPath, GLib.FileTest.EXISTS);
@@ -348,7 +355,7 @@ Gio.TlsCertificate.new_for_paths = function (certPath, keyPath, commonName = nul
     if (!certExists || !keyExists) {
         // If we weren't passed a common name, generate a random one
         if (!commonName)
-            commonName = GLib.uuid_string_random().replaceAll('-', '_');
+            commonName = GLib.uuid_string_random().replaceAll('-', '');
 
         const proc = new Gio.Subprocess({
             argv: [

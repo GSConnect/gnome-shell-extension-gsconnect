@@ -7,15 +7,15 @@ import GLib from 'gi://GLib';
 import Adw from 'gi://Adw';
 
 // Bootstrap
-import * as Utils from './shell/utils.js';
-import setup from './utils/setup.js';
+import * as Setup from './utils/setup.js';
 import {ExtensionPreferences} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
 export default class GSConnectExtensionPreferences extends ExtensionPreferences {
     constructor(metadata) {
         super(metadata);
-        setup(this.path);
-        Utils.installService();
+        Setup.setup(this.path);
+        Setup.ensurePermissions();
+        Setup.installService();
     }
 
     fillPreferencesWindow(window) {
