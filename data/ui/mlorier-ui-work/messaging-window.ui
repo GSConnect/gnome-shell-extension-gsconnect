@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+
+SPDX-License-Identifier: GPL-2.0-or-later
+-->
+
+<interface domain="org.gnome.Shell.Extensions.GSConnect">
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+
+  <template class="GSConnectMessagingWindow" parent="AdwApplicationWindow">
+    <property name="title" translatable="yes">Messaging</property>
+    <property name="icon-name">org.gnome.Shell.Extensions.GSConnect-symbolic</property>
+    <property name="default-width">800</property>
+    <property name="default-height">700</property>
+    <property name="content">
+      <object class="AdwToolbarView">
+        <property name="visible">True</property>
+        <child type="top">
+          <object class="AdwHeaderBar" id="headerbar">
+            <property name="visible">True</property>
+            <child type="start">
+              <object class="GtkButton">
+                <property name="visible">True</property>
+                <property name="icon-name">list-add-symbolic</property>
+                <property name="tooltip-text" translatable="yes">New Conversation</property>
+                <signal name="clicked" handler="_onNewConversation" swapped="no"/>
+                <style>
+                  <class name="raised"/>
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child type="top">
+          <object class="AdwBanner" id="infobar">
+            <property name="revealed">True</property>
+            <property name="title" translatable="yes">Device is disconnected</property>
+          </object>
+        </child>
+        <property name="content">
+          <object class="AdwNavigationSplitView" id="split-view">
+            <property name="visible">True</property>
+            <property name="min-sidebar-width">350</property>
+            <property name="collapsed">False</property>
+            <property name="sidebar">
+              <object class="AdwNavigationPage">
+                <property name="visible">True</property>
+                <property name="title" translatable="yes">Conversations</property>
+                <child>
+                  <object class="GtkScrolledWindow">
+                    <property name="visible">True</property>
+                    <property name="hscrollbar-policy">never</property>
+                    <child>
+                      <object class="GtkListBox" id="thread-list">
+                        <property name="visible">True</property>
+                        <signal name="row-activated" handler="_onThreadSelected" swapped="no"/>
+
+                        <child type="placeholder">
+                          <object class="AdwStatusPage" id="thread-list-placeholder">
+                            <property name="visible">True</property>
+                            <property name="title" translatable="yes">No Conversations</property>
+                            <property name="icon-name">view-list-symbolic</property>
+                            <child>
+                              <object class="GtkLinkButton">
+                                <property name="label" translatable="yes">Help</property>
+                                <property name="visible">True</property>
+                                <property name="uri">https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Help#sms-messages-dont-sync</property>
+                              </object>
+                            </child>
+                            <style>
+                              <class name="compact"/>
+                            </style>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </property>
+            <property name="content">
+              <object class="AdwNavigationPage">
+                <property name="visible">True</property>
+                <property name="title" translatable="yes"> </property>
+                <child>
+                  <object class="GtkStack" id="stack">
+                    <property name="visible">True</property>
+                    <property name="transition-duration">250</property>
+                    <property name="transition-type">crossfade</property>
+                    <child>
+                      <object class="AdwStatusPage">
+                        <property name="visible">True</property>
+                        <property name="title" translatable="yes">No conversation selected</property>
+                        <property name="description" translatable="yes">Select or start a conversation to start</property>
+                        <property name="icon-name">sms-symbolic</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </property>
+          </object>
+        </property>
+      </object>
+    </property>
+  </template>
+</interface>
