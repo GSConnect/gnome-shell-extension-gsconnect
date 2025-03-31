@@ -2,14 +2,11 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-import Gdk from 'gi://Gdk';
 import Gio from 'gi://Gio';
 import GObject from 'gi://GObject';
-import Gtk from 'gi://Gtk';
 
 import * as Components from '../components/index.js';
 import Plugin from '../plugin.js';
-
 
 export const Metadata = {
     label: _('Find My Phone'),
@@ -21,7 +18,6 @@ export const Metadata = {
         ring: {
             label: _('Ring'),
             icon_name: 'phonelink-ring-symbolic',
-
             parameter_type: null,
             incoming: [],
             outgoing: ['kdeconnect.findmyphone.request'],
@@ -29,67 +25,95 @@ export const Metadata = {
     },
 };
 
-
-/**
- * FindMyPhone Plugin
- * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/findmyphone
+/*
+ * Used to ensure 'audible-bell' is enabled for fallback
  */
+const _WM_SETTINGS = new Gio.Settings({
+    schema_id: 'org.gnome.desktop.wm.preferences',
+    path: '/org/gnome/desktop/wm/preferences/',
+});
+
 const FindMyPhonePlugin = GObject.registerClass({
     GTypeName: 'GSConnectFindMyPhonePlugin',
 }, class FindMyPhonePlugin extends Plugin {
 
     _init(device) {
         super._init(device, 'findmyphone');
-
-        this._dialog = null;
         this._player = Components.acquire('sound');
         this._mixer = Components.acquire('pulseaudio');
+        this._notificationId = 'findmyphone-notification';
     }
 
     handlePacket(packet) {
-        switch (packet.type) {
-            case 'kdeconnect.findmyphone.request':
-                this._handleRequest();
-                break;
+        if (packet.type === 'kdeconnect.findmyphone.request') {
+            this._handleRequest();
         }
     }
 
-    /**
-     * Handle an incoming location request.
-     */
     _handleRequest() {
         try {
-            // If this is a second request, stop announcing and return
-            if (this._dialog !== null) {
-                this._dialog.response(Gtk.ResponseType.DELETE_EVENT);
-                return;
+            // Create a notification
+            const notification = Gio.Notification.new(_('Find My Phone'));
+            notification.set_body(_('GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be repaired.'));
+            notification.set_priority(Gio.NotificationPriority.HIGH);
+            
+            // Add action to cancel request when notification is clicked
+            notification.add_button(_('Stop Ringing'), `app.stop-ringing`);
+            notification.set_default_action('app.stop-ringing');
+
+            // Register action
+            const action = new Gio.SimpleAction({ name: 'stop-ringing' });
+            action.connect('activate', () => {
+                this._cancelRequest();
+            });
+            Gio.Application.get_default().add_action(action);
+            // Send notification
+            Gio.Application.get_default().send_notification(this._notificationId, notification);
+            
+            
+            // If an output stream is available start fading the volume up
+            if (this._mixer && this._mixer.output) {
+                this._stream = this._mixer.output;
+
+                this._previousMuted = this._stream.muted;
+                this._previousVolume = this._stream.volume;
+
+                this._stream.muted = false;
+                this._stream.fade(0.85, 15);
+
+            // Otherwise ensure audible-bell is enabled
+            } else {
+                this._previousBell = _WM_SETTINGS.get_boolean('audible-bell');
+                _WM_SETTINGS.set_boolean('audible-bell', true);
             }
 
-            this._dialog = new Dialog({
-                device: this.device,
-                plugin: this,
-            });
+            // Start the alarm
+            this._player.loopSound('phone-incoming-call', this.cancellable);
 
-            this._dialog.connect('response', () => {
-                this._dialog = null;
-            });
         } catch (e) {
             this._cancelRequest();
             logError(e, this.device.name);
         }
     }
 
-    /**
-     * Cancel any ongoing ringing and destroy the dialog.
-     */
     _cancelRequest() {
-        if (this._dialog !== null)
-            this._dialog.response(Gtk.ResponseType.DELETE_EVENT);
+
+        // Stop the alarm
+        this.cancellable.cancel();
+
+        // Restore the mixer level
+        if (this._stream) {
+            this._stream.muted = this._previousMuted;
+            this._stream.fade(this._previousVolume);
+
+        // Restore the audible-bell
+        } else {
+            _WM_SETTINGS.set_boolean('audible-bell', this._previousBell);
+        }
+
+        Gio.Application.get_default().withdraw_notification(this._notificationId);
     }
 
-    /**
-     * Request that the remote device announce it's location
-     */
     ring() {
         this.device.sendPacket({
             type: 'kdeconnect.findmyphone.request',
@@ -107,154 +131,6 @@ const FindMyPhonePlugin = GObject.registerClass({
             this._player = Components.release('sound');
 
         super.destroy();
-    }
-});
-
-
-/*
- * Used to ensure 'audible-bell' is enabled for fallback
- */
-const _WM_SETTINGS = new Gio.Settings({
-    schema_id: 'org.gnome.desktop.wm.preferences',
-    path: '/org/gnome/desktop/wm/preferences/',
-});
-
-
-/**
- * A custom GtkMessageDialog for alerting of incoming requests
- */
-const Dialog = GObject.registerClass({
-    GTypeName: 'GSConnectFindMyPhoneDialog',
-    Properties: {
-        'device': GObject.ParamSpec.object(
-            'device',
-            'Device',
-            'The device associated with this window',
-            GObject.ParamFlags.READWRITE,
-            GObject.Object
-        ),
-        'plugin': GObject.ParamSpec.object(
-            'plugin',
-            'Plugin',
-            'The plugin providing messages',
-            GObject.ParamFlags.READWRITE,
-            GObject.Object
-        ),
-    },
-}, class Dialog extends Gtk.MessageDialog {
-    _init(params) {
-        super._init({
-            buttons: Gtk.ButtonsType.CLOSE,
-            device: params.device,
-            image: new Gtk.Image({
-                icon_name: 'phonelink-ring-symbolic',
-                pixel_size: 512,
-                halign: Gtk.Align.CENTER,
-                hexpand: true,
-                valign: Gtk.Align.CENTER,
-                vexpand: true,
-                visible: true,
-            }),
-            plugin: params.plugin,
-            urgency_hint: true,
-        });
-
-        this.set_keep_above(true);
-        this.maximize();
-        this.message_area.destroy();
-
-        // If an output stream is available start fading the volume up
-        if (this.plugin._mixer && this.plugin._mixer.output) {
-            this._stream = this.plugin._mixer.output;
-
-            this._previousMuted = this._stream.muted;
-            this._previousVolume = this._stream.volume;
-
-            this._stream.muted = false;
-            this._stream.fade(0.85, 15);
-
-        // Otherwise ensure audible-bell is enabled
-        } else {
-            this._previousBell = _WM_SETTINGS.get_boolean('audible-bell');
-            _WM_SETTINGS.set_boolean('audible-bell', true);
-        }
-
-        // Start the alarm
-        if (this.plugin._player !== undefined)
-            this.plugin._player.loopSound('phone-incoming-call', this.cancellable);
-
-        const keyController = new Gtk.EventControllerKey();
-        keyController.connect('key-pressed', this._onKeyPressed.bind(this));
-        this.add_controller(keyController);
-
-        // Crea un controller di eventi per il movimento del mouse
-        const motionController = new Gtk.EventControllerMotion();
-        motionController.connect('motion', this._onMotionNotify.bind(this));
-
-        // Aggiungi il controller al widget (ad esempio una finestra o un'area di disegno)
-        this.add_controller(motionController);
-
-        // Show the dialog
-        this.show_all();
-    }
-
-    _onKeyPressed(event) {
-        this.response(Gtk.ResponseType.DELETE_EVENT);
-
-        return Gdk.EVENT_STOP;
-    }
-
-    _onMotionNotify(event) {
-        // Simula la chiamata a `response` con DELETE_EVENT
-        this.response(Gtk.ResponseType.DELETE_EVENT);
-
-        return Gdk.EVENT_STOP; // Interrompe la propagazione
-    }
-
-    vfunc_response(response_id) {
-        // Stop the alarm
-        this.cancellable.cancel();
-
-        // Restore the mixer level
-        if (this._stream) {
-            this._stream.muted = this._previousMuted;
-            this._stream.fade(this._previousVolume);
-
-        // Restore the audible-bell
-        } else {
-            _WM_SETTINGS.set_boolean('audible-bell', this._previousBell);
-        }
-
-        this.destroy();
-    }
-
-    get cancellable() {
-        if (this._cancellable === undefined)
-            this._cancellable = new Gio.Cancellable();
-
-        return this._cancellable;
-    }
-
-    get device() {
-        if (this._device === undefined)
-            this._device = null;
-
-        return this._device;
-    }
-
-    set device(device) {
-        this._device = device;
-    }
-
-    get plugin() {
-        if (this._plugin === undefined)
-            this._plugin = null;
-
-        return this._plugin;
-    }
-
-    set plugin(plugin) {
-        this._plugin = plugin;
     }
 });
 
