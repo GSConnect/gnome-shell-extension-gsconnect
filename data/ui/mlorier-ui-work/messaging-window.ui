@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
 SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
 
 SPDX-License-Identifier: GPL-2.0-or-later
 -->
-
 <interface domain="org.gnome.Shell.Extensions.GSConnect">
   <requires lib="gtk" version="4.0"/>
-  <requires lib="Adw" version="1.0"/>
 
   <!-- WARNING: I disabled the <signal> tags because they prevent CSS properties and AdwBreakPoint from working properly. You too? -->
   <template class="GSConnectMessagingWindow" parent="AdwApplicationWindow">
@@ -98,7 +95,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
               <object class="AdwToolbarView">
                 <property name="visible">True</property>
                 <child type="top">
-                  <object class="AdwHeaderBar">
+                  <object class="AdwHeaderBar" id="headerbar">
                     <property name="visible">True</property>
                     <property name="title-widget">
                       <object class="AdwWindowTitle" id="content-title">

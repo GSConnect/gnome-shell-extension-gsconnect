@@ -6,6 +6,7 @@ import Gdk from 'gi://Gdk';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk';
+import Adw from 'gi://Adw';
 import Pango from 'gi://Pango';
 
 import system from 'system';
@@ -831,12 +832,12 @@ export const Window = GObject.registerClass({
             ''
         ),
     },
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/messaging-window.ui',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/mlorier-ui-work/messaging-window.ui',
     Children: [
         'headerbar', 'infobar',
         'thread-list', 'stack',
     ],
-}, class MessagingWindow extends Gtk.ApplicationWindow {
+}, class MessagingWindow extends Adw.ApplicationWindow {
 
     _init(params) {
         super._init(params);
