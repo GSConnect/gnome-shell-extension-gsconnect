@@ -40,7 +40,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                         <property name="visible">True</property>
                         <property name="icon-name">list-add-symbolic</property>
                         <property name="tooltip-text" translatable="yes">New Conversation</property>
-                        <signal name="clicked" handler="_onNewConversation" swapped="no"/>
+                        <!-- <signal name="clicked" handler="_onNewConversation" swapped="no"/> -->
                       </object>
                     </child>
                     <property name="title-widget">
@@ -58,7 +58,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                     <child>
                       <object class="GtkListBox" id="thread-list">
                         <property name="visible">True</property>
-                        <signal name="row-activated" handler="_onThreadSelected" swapped="no"/>
+                        <!-- <signal name="row-activated" handler="_onThreadSelected" swapped="no"/> -->
                         <child type="placeholder">
                           <object class="AdwStatusPage" id="thread-list-placeholder">
                             <property name="visible">True</property>
