@@ -10,6 +10,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
   <requires lib="gtk" version="4.0"/>
   <requires lib="Adw" version="1.0"/>
 
+  <!-- WARNING: Same problem with signals tags -->
   <template class="GSConnectMousepadInputDialog" parent="AdwDialog">
     <property name="content-width">675</property>
     <property name="child">
@@ -39,9 +40,9 @@ SPDX-License-Identifier: GPL-2.0-or-later
           <object class="GtkBox">
             <property name="visible">True</property>
             <property name="orientation">vertical</property>
-            <!-- WARNING: Touchpad gestures must be created in JavaScript since Gtk4 -->
+            <!-- WARNING: Controllers must be added in JavaScript since Gtk4 -->
             <child>
-              <object class="GtkLabel">
+              <object class="GtkLabel" id="touchpad-zone">
                 <property name="visible">True</property>
                 <property name="margin-top">10</property>
                 <property name="margin-bottom">5</property>
@@ -151,4 +152,20 @@ Left, middle, right button, and wheel scrolls.</property>
       </object>
     </property>
   </template>
+
+  <!-- Touchpad Gestures -->
+  <object class="GtkGestureDrag" id="touchpad-drag">
+    <!-- <signal name="drag-begin" handler="_onTouchpadDragBegin"/> -->
+    <!-- <signal name="drag-update" handler="_onTouchpadDragUpdate"/> -->
+    <!-- <signal name="drag-end" handler="_onTouchpadDragEnd"/> -->
+  </object>
+
+  <object class="GtkGestureLongPress" id="touchpad-long-press">
+    <property name="button">0</property>
+    <!-- <signal name="cancelled" handler="_onTouchpadLongPressCancelled"/> -->
+    <!-- <signal name="pressed" handler="_onTouchpadLongPressPressed"/> -->
+    <!-- WARNING: This signal doesn't exists on Gtk4 -->
+    <!-- <signal name="end" handler="_onTouchpadLongPressEnd"/> -->
+  </object>
+
 </interface>
