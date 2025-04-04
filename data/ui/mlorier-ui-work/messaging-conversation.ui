@@ -57,40 +57,23 @@ SPDX-License-Identifier: GPL-2.0-or-later
       </object>
     </child>
     <child>
-      <object class="GtkBox">
+      <object class="GtkEntry" id="entry">
         <property name="visible">True</property>
         <property name="hexpand">True</property>
-        <property name="spacing">7</property>
-        <child>
-          <object class="GtkEntry" id="entry">
-            <property name="visible">True</property>
-            <property name="hexpand">True</property>
-            <property name="margin-top">7</property>
-            <property name="margin-bottom">7</property>
-            <property name="margin-start">7</property>
-            <property name="placeholder-text" translatable="yes">Write a message…</property>
-            <property name="enable-emoji-completion">True</property>
-            <!-- <signal name="activate" handler="_onSendMessage" swapped="no"/> -->
-            <!-- <signal name="changed" handler="_onEntryChanged" swapped="no"/> -->
-            <!-- WARNING: This signal doesn't exists with Gtk4, consider using GtkEventControllerKey instead -->
-            <!-- <signal name="key-release-event" handler="_onKeyPressEvent" swapped="no"/> -->
-          </object>
-        </child>
-        <child>
-          <object class="GtkButton" id="send-button">
-            <property name="visible">True</property>
-            <property name="margin-top">7</property>
-            <property name="margin-bottom">7</property>
-            <property name="margin-end">7</property>
-            <property name="icon-name">sms-send</property>
-            <property name="sensitive">False</property>
-            <property name="tooltip-text" translatable="yes">Send Message</property>
-            <!-- <signal name="clicked" handler="_onSendMessage" swapped="no"/> -->
-            <style>
-              <class name="suggested-action"/>
-            </style>
-          </object>
-        </child>
+        <property name="margin-top">7</property>
+        <property name="margin-bottom">7</property>
+        <property name="margin-start">7</property>
+        <property name="margin-end">7</property>
+        <property name="placeholder-text" translatable="yes">Write a message…</property>
+        <property name="enable-emoji-completion">True</property>
+        <property name="secondary-icon-name">sms-send</property>
+        <property name="secondary-icon-sensitive">False</property>
+        <property name="secondary-icon-tooltip-text" translatable="yes">Send Message</property>
+        <!-- <signal name="activate" handler="_onSendMessage" swapped="no"/> -->
+        <!-- <signal name="changed" handler="_onEntryChanged" swapped="no"/> -->
+        <!-- <signal name="icon-release" handler="_onSendMessage" swapped="no"/> -->
+        <!-- WARNING: This signal doesn't exists with Gtk4, consider using GtkEventControllerKey instead -->
+        <!-- <signal name="key-release-event" handler="_onKeyPressEvent" swapped="no"/> -->
       </object>
     </child>
   </template>
