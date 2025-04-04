@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+
+SPDX-License-Identifier: GPL-2.0-or-later
+-->
+
+<interface domain="org.gnome.Shell.Extensions.GSConnect">
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+
+  <template class="GSConnectMessagingConversationSummary" parent="AdwActionRow">
+    <property name="visible">True</property>
+    <!-- We don't need Gtk.Label anymore, consider using 'title' and 'subtitle' properties -->
+
+    <child type="prefix">
+      <object class="GSConnectContactAvatar" id="avatar">
+        <property name="visible">True</property>
+      </object>
+    </child>
+
+    <child>
+      <object class="GtkLabel" id="time-label">
+        <property name="visible">True</property>
+        <property name="valign">center</property>
+        <property name="ellipsize">end</property>
+        <property name="use-markup">True</property>
+        <style>
+          <class name="dimmed"/>
+        </style>
+      </object>
+    </child>
+
+  </template>
+</interface>
