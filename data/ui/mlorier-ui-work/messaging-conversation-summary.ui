@@ -12,14 +12,13 @@ SPDX-License-Identifier: GPL-2.0-or-later
 
   <template class="GSConnectMessagingConversationSummary" parent="AdwActionRow">
     <property name="visible">True</property>
+    <property name="subtitle-lines">1</property>
     <!-- We don't need Gtk.Label anymore, consider using 'title' and 'subtitle' properties -->
-
     <child type="prefix">
       <object class="GSConnectContactAvatar" id="avatar">
         <property name="visible">True</property>
       </object>
     </child>
-
     <child>
       <object class="GtkLabel" id="time-label">
         <property name="visible">True</property>
@@ -31,6 +30,5 @@ SPDX-License-Identifier: GPL-2.0-or-later
         </style>
       </object>
     </child>
-
   </template>
 </interface>
