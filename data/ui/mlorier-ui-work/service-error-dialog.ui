@@ -64,17 +64,17 @@ SPDX-License-Identifier: GPL-2.0-or-later
                         <child>
                           <object class="GtkTextView" id="error-stack">
                             <property name="visible">True</property>
-                            <property name="margin-top">15</property>
-                            <property name="margin-bottom">15</property>
-                            <property name="margin-start">15</property>
-                            <property name="margin-end">15</property>
+                            <property name="margin-top">8</property>
+                            <property name="margin-bottom">8</property>
+                            <property name="margin-start">8</property>
+                            <property name="margin-end">8</property>
                             <property name="top-margin">5</property>
                             <property name="bottom-margin">5</property>
                             <property name="left-margin">5</property>
                             <property name="right-margin">5</property>
                             <property name="monospace">True</property>
                             <property name="editable">False</property>
-                            <property name="wrap">True</property>
+                            <property name="cursor-visible">False</property>
                             <property name="wrap-mode">word</property>
                             <style>
                               <class name="card"/>
