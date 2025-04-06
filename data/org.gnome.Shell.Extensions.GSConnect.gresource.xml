@@ -20,7 +20,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <file compressed="true" preprocess="xml-stripblanks">ui/messaging-conversation-message.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/messaging-conversation-summary.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/messaging-conversation.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/mlorier-ui-work/messaging-window.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/messaging-window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/mousepad-input-dialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/notification-reply-dialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/preferences-command-editor.ui</file>

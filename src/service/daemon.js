@@ -11,7 +11,7 @@ import 'gi://GIRepository';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk?version=4.0';
-//import 'gi://Pango?version=1.0';
+import Adw from 'gi://Adw';
 
 import system from 'system';
 
@@ -30,7 +30,7 @@ import('gi://GioUnix?version=2.0').catch(() => {}); // Set version for optional 
  */
 const Service = GObject.registerClass({
     GTypeName: 'GSConnectService',
-}, class Service extends Gtk.Application {
+}, class Service extends Adw.Application {
 
     _init() {
         super._init({

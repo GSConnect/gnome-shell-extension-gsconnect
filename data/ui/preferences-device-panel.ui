@@ -7,7 +7,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
 -->
 
 <interface domain="org.gnome.Shell.Extensions.GSConnect">
-  <requires lib="gtk+" version="4.0"/>  
+  <requires lib="gtk" version="4.0"/>  
   <object class="GtkAdjustment" id="battery-custom-adjustment">
     <property name="value">80</property>
     <property name="upper">99</property>

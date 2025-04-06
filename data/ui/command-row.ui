@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface domain="org.gnome.Shell.Extensions.GSConnect">
-  <requires lib="gtk+" version="4.0"/>
+  <requires lib="gtk" version="4.0"/>
   <template class="CommandActionRow" parent="AdwActionRow">
     <child>
       <object class="GtkButton" id="edit_button">

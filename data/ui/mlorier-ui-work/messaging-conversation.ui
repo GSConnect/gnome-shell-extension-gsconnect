@@ -18,7 +18,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
       <object class="GtkScrolledWindow" id="scrolled">
         <property name="visible">True</property>
         <property name="hscrollbar-policy">never</property>
-        <!-- <signal name="edge-reached" handler="_onEdgeReached" swapped="no"/> -->
+        <signal name="edge-reached" handler="_onEdgeReached" swapped="no"/>
         <child>
           <object class="GtkListBox" id="list">
             <property name="visible">True</property>
@@ -26,7 +26,6 @@ SPDX-License-Identifier: GPL-2.0-or-later
             <property name="selection-mode">none</property>
             <property name="activate-on-single-click">False</property>
             <!-- WARNING: This signal doesn't exists with Gtk4 -->
-            <!-- <signal name="size-allocate" handler="_onSizeAllocate" swapped="no"/> -->
             <child>
               <object class="GtkListBoxRow" id="pending">
                 <property name="visible" bind-source="GSConnectMessagingConversation" bind-property="has-pending" bind-flags="sync-create"/>
@@ -69,9 +68,9 @@ SPDX-License-Identifier: GPL-2.0-or-later
         <property name="secondary-icon-name">sms-send</property>
         <property name="secondary-icon-sensitive">False</property>
         <property name="secondary-icon-tooltip-text" translatable="yes">Send Message</property>
-        <!-- <signal name="activate" handler="_onSendMessage" swapped="no"/> -->
-        <!-- <signal name="changed" handler="_onEntryChanged" swapped="no"/> -->
-        <!-- <signal name="icon-release" handler="_onSendMessage" swapped="no"/> -->
+        <signal name="activate" handler="_onSendMessage" swapped="no"/>
+        <signal name="changed" handler="_onEntryChanged" swapped="no"/>
+        <signal name="icon-release" handler="_onSendMessage" swapped="no"/>
         <!-- WARNING: This signal doesn't exists with Gtk4, consider using GtkEventControllerKey instead -->
         <!-- <signal name="key-release-event" handler="_onKeyPressEvent" swapped="no"/> -->
       </object>

@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-import 'gi://Gdk?version=3.0';
-import 'gi://Gtk?version=3.0';
+import 'gi://Gdk?version=4.0';
+import 'gi://Gtk?version=4.0';
 
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';

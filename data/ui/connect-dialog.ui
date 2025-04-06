@@ -7,7 +7,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
 -->
 
 <interface>
-  <requires lib="gtk+" version="4.0"/>  
+  <requires lib="gtk" version="4.0"/>  
   <object class="GtkAdjustment" id="port-adjustment">
     <property name="lower">1716</property>
     <property name="upper">1764</property>

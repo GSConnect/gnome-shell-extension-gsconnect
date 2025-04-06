@@ -5,7 +5,7 @@ SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
 SPDX-License-Identifier: GPL-2.0-or-later
 -->
 <interface domain="org.gnome.Shell.Extensions.GSConnect">
-  <requires lib="gtk+" version="4.0"/>
+  <requires lib="gtk" version="4.0"/>
   <template class="GSConnectPreferencesWindow" parent="AdwApplicationWindow">
     <property name="width-request">360</property>
     <property name="height-request">586</property>

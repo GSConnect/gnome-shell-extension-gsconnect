@@ -7,104 +7,72 @@ SPDX-License-Identifier: GPL-2.0-or-later
 -->
 
 <interface domain="org.gnome.Shell.Extensions.GSConnect">
-  <requires lib="gtk+" version="4.0"/>  
-  <template class="GSConnectMessagingConversation" parent="GtkGrid">
+  <requires lib="gtk" version="4.0"/>
+
+  <!-- WARNING: Same problem with signals tags -->
+  <template class="GSConnectMessagingConversation" parent="GtkBox">
     <property name="visible">True</property>
-    <property name="can_focus">False</property>
+    <property name="orientation">vertical</property>
     <child>
       <object class="GtkScrolledWindow" id="scrolled">
         <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="hexpand">True</property>
-        <property name="vexpand">True</property>
-        <property name="hscrollbar_policy">never</property>
+        <property name="hscrollbar-policy">never</property>
         <signal name="edge-reached" handler="_onEdgeReached" swapped="no"/>
         <child>
-          <object class="GtkViewport">
+          <object class="GtkListBox" id="list">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
+            <property name="vexpand">True</property>
+            <property name="selection-mode">none</property>
+            <property name="activate-on-single-click">False</property>
+            <!-- WARNING: This signal doesn't exists with Gtk4 -->
             <child>
-              <object class="GtkListBox" id="list">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="valign">end</property>
-                <property name="selection_mode">none</property>
-                <property name="activate_on_single_click">False</property>
-                <signal name="size-allocate" handler="_onSizeAllocate" swapped="no"/>
+              <object class="GtkListBoxRow" id="pending">
+                <property name="visible" bind-source="GSConnectMessagingConversation" bind-property="has-pending" bind-flags="sync-create"/>
+                <property name="hexpand">True</property>
+                <property name="activatable">False</property>
+                <property name="selectable">False</property>
                 <child>
-                  <object class="GtkListBoxRow" id="pending">
-                    <property name="can_focus">False</property>
-                    <property name="hexpand">True</property>
-                    <property name="activatable">False</property>
-                    <property name="selectable">False</property>
-                    <property name="visible" bind-source="GSConnectMessagingConversation" bind-property="has-pending" bind-flags="sync-create"/>
-                    <child>
-                      <object class="GtkBox" id="pending-box">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">end</property>
-                        <property name="margin_left">50</property>
-                        <property name="margin_right">6</property>
-                        <property name="margin_top">6</property>
-                        <property name="margin_bottom">6</property>
-                        <property name="orientation">vertical</property>
-                        <property name="spacing">3</property>
-                        <child>
-                          <placeholder/>
-                        </child>
-                      </object>
-                    </child>
-                    <style>
-                      <class name="message-pending"/>
-                    </style>
+                  <object class="GtkBox" id="pending-box">
+                    <property name="visible">True</property>
+                    <property name="margin-top">6</property>
+                    <property name="margin-bottom">6</property>
+                    <property name="margin-start">50</property>
+                    <property name="margin-end">6</property>
+                    <property name="spacing">3</property>
+                    <property name="orientation">vertical</property>
                   </object>
                 </child>
                 <style>
-                  <class name="message-list"/>
+                  <class name="message-pending"/>
                 </style>
               </object>
             </child>
+            <style>
+              <class name="message-list"/>
+            </style>
           </object>
         </child>
-        <style>
-          <class name="message-scrolled"/>
-          <class name="view"/>
-        </style>
       </object>
-      <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">0</property>
-      </packing>
     </child>
     <child>
       <object class="GtkEntry" id="entry">
         <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="enable_emoji_completion">True</property>
-        <property name="margin_left">6</property>
-        <property name="margin_right">6</property>
-        <property name="margin_top">6</property>
-        <property name="margin_bottom">6</property>
-        <property name="caps_lock_warning">False</property>
-        <property name="secondary_icon_name">sms-send</property>
-        <property name="secondary_icon_sensitive">False</property>
-        <property name="secondary_icon_tooltip_text" translatable="yes">Send Message</property>
-        <property name="placeholder_text" translatable="yes">Type a message</property>
+        <property name="hexpand">True</property>
+        <property name="margin-top">7</property>
+        <property name="margin-bottom">7</property>
+        <property name="margin-start">7</property>
+        <property name="margin-end">7</property>
+        <property name="placeholder-text" translatable="yes">Write a message…</property>
+        <property name="enable-emoji-completion">True</property>
+        <property name="secondary-icon-name">sms-send</property>
+        <property name="secondary-icon-sensitive">False</property>
+        <property name="secondary-icon-tooltip-text" translatable="yes">Send Message</property>
         <signal name="activate" handler="_onSendMessage" swapped="no"/>
         <signal name="changed" handler="_onEntryChanged" swapped="no"/>
         <signal name="icon-release" handler="_onSendMessage" swapped="no"/>
-        <signal name="key-release-event" handler="_onKeyPressEvent" swapped="no"/>
-        <child internal-child="accessible">
-          <object class="AtkObject">
-            <property name="AtkObject::accessible-name" translatable="yes">Message Entry</property>
-            <property name="AtkObject::accessible-description" translatable="yes">Type a message and press Enter to send</property>
-          </object>
-        </child>
+        <!-- WARNING: This signal doesn't exists with Gtk4, consider using GtkEventControllerKey instead -->
+        <!-- <signal name="key-release-event" handler="_onKeyPressEvent" swapped="no"/> -->
       </object>
-      <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">1</property>
-      </packing>
     </child>
   </template>
 </interface>

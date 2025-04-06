@@ -7,7 +7,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
 -->
 
 <interface>
-  <requires lib="gtk+" version="4.0"/>  
+  <requires lib="gtk" version="4.0"/>  
   <template class="GSConnectPreferencesCommandEditor" parent="AdwDialog">
     <property name="visible">True</property>
     <property name="can_focus">False</property>

@@ -130,3 +130,25 @@
   border-top-width: 0;
 }
 
+/*
+ * SMS Counter
+ */
+ .counter {
+  background: alpha(currentColor, .15);
+  border-radius: 999px;
+  padding: 2px;
+  margin-bottom: 4px;
+  font-size: smaller;
+  font-weight: bold;
+  min-width: 1rem;
+}
+
+.counter.long {
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+.counter.needs-attention {
+  background: @accent_bg_color;
+  color: @accent_fg_color;
+}

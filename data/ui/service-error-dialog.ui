@@ -7,7 +7,8 @@ SPDX-License-Identifier: GPL-2.0-or-later
 -->
 
 <interface>
-  <requires lib="gtk+" version="4.0"/>  <template class="GSConnectServiceErrorDialog" parent="GtkWindow">
+  <requires lib="gtk" version="4.0"/>
+  <template class="GSConnectServiceErrorDialog" parent="GtkWindow">
     <property name="default_width">600</property>
     <property name="default_height">400</property>
     <property name="type_hint">dialog</property>
@@ -173,4 +174,3 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <property name="exclusive">True</property>
   </object>
 </interface>
-

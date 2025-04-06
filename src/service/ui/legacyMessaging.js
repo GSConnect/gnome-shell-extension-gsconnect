@@ -4,7 +4,7 @@
 
 import Gio from 'gi://Gio';
 import GObject from 'gi://GObject';
-import Gtk from 'gi://Gtk';
+import Gtk from 'gi://Gtk?version=4.0';
 
 import * as Contacts from '../ui/contacts.js';
 import * as Messaging from '../ui/messaging.js';

@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 import Gio from 'gi://Gio';
-import Gtk from 'gi://Gtk';
+import Gtk from 'gi://Gtk?version=4.0';
 import St from 'gi://St';
 
 import {PACKAGE_VERSION} from 'resource:///org/gnome/shell/misc/config.js';

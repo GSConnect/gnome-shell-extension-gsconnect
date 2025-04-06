@@ -7,7 +7,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
 -->
 
 <interface>
-  <requires lib="gtk+" version="4.0"/>  <template class="GSConnectServiceDeviceChooser" parent="GtkDialog">
+  <requires lib="gtk" version="4.0"/>  <template class="GSConnectServiceDeviceChooser" parent="GtkDialog">
     <property name="can_focus">False</property>
     <property name="default_width">300</property>
     <property name="default_height">200</property>
@@ -127,4 +127,3 @@ SPDX-License-Identifier: GPL-2.0-or-later
     </child>
   </template>
 </interface>
-

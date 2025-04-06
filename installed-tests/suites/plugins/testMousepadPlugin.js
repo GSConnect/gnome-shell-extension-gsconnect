@@ -4,7 +4,7 @@
 
 import * as Utils from '../fixtures/utils.js';
 
-import Gdk from 'gi://Gdk';
+import Gdk from 'gi://Gdk?version=4.0';
 
 
 describe('The mousepad plugin', function () {

@@ -7,7 +7,8 @@ SPDX-License-Identifier: GPL-2.0-or-later
 -->
 
 <interface>
-  <requires lib="gtk+" version="4.0"/>  <template class="GSConnectMousepadInputDialog" parent="GtkDialog">
+  <requires lib="gtk" version="4.0"/>  
+  <template class="GSConnectMousepadInputDialog" parent="GtkDialog">
     <property name="can_focus">False</property>
     <property name="default_width">480</property>
     <property name="type_hint">dialog</property>

@@ -2,10 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-import Gdk from 'gi://Gdk';
+import Gdk from 'gi://Gdk?version=4.0';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
-import Gtk from 'gi://Gtk';
+import Gtk from 'gi://Gtk?version=4.0';
 import Adw from 'gi://Adw';
 import Pango from 'gi://Pango';
 
@@ -203,7 +203,7 @@ function setAvatarVisible(row, visible) {
 
     // Show hide the avatar
     if (incoming)
-        row.avatar.visible = visible;
+        row.avatar.set_visible(visible);
 }
 
 
@@ -213,7 +213,7 @@ function setAvatarVisible(row, visible) {
 const ConversationMessage = GObject.registerClass({
     GTypeName: 'GSConnectMessagingConversationMessage',
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/messaging-conversation-message.ui',
-    Children: ['grid', 'avatar', 'sender-label', 'message-label'],
+    Children: ['grid', 'message-label'],
 }, class ConversationMessage extends Gtk.ListBoxRow {
     _init(contact, message) {
         super._init();
@@ -230,13 +230,7 @@ const ConversationMessage = GObject.registerClass({
         if (message.type === Sms.MessageBox.INBOX) {
             this.grid.margin_end = 18;
             this.grid.halign = Gtk.Align.START;
-
-            this.avatar.contact = this.contact;
-            this.avatar.visible = true;
-
-            this.sender_label.label = contact.name;
-            this.sender_label.visible = true;
-
+            
             this.message_label.get_style_context().add_class('message-in');
             this.message_label.halign = Gtk.Align.START;
         } else {
@@ -315,7 +309,7 @@ const Conversation = GObject.registerClass({
         'entry', 'list', 'scrolled',
         'pending', 'pending-box',
     ],
-}, class MessagingConversation extends Gtk.Grid {
+}, class MessagingConversation extends Gtk.Box {
 
     _init(params) {
         super._init({
@@ -591,9 +585,6 @@ const Conversation = GObject.registerClass({
         if (row.get_name() === 'pending')
             return;
 
-        if (before === null)
-            return setAvatarVisible(row, true);
-
         // Add date header if the last message was more than an hour ago
         let header = row.get_header();
 
@@ -606,23 +597,16 @@ const Conversation = GObject.registerClass({
 
             header.label = getTime(row.message.date);
 
-            // Also show the avatar
-            setAvatarVisible(row, true);
-
             row.sender_label.visible = row.message.addresses.length > 1;
 
         // Or if the previous sender was the same, hide its avatar
         } else if (row.message.type === before.message.type &&
                    row.sender.equalsPhoneNumber(before.sender)) {
-            setAvatarVisible(before, false);
-            setAvatarVisible(row, true);
-
+            
             row.sender_label.visible = false;
 
         // otherwise show the avatar
-        } else {
-            setAvatarVisible(row, true);
-        }
+        } 
     }
 
     _holdPosition() {
@@ -728,8 +712,8 @@ const Conversation = GObject.registerClass({
 const ConversationSummary = GObject.registerClass({
     GTypeName: 'GSConnectMessagingConversationSummary',
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/messaging-conversation-summary.ui',
-    Children: ['avatar', 'name-label', 'time-label', 'body-label'],
-}, class ConversationSummary extends Gtk.ListBoxRow {
+    Children: ['avatar', 'time-label', 'counter-label'],
+}, class ConversationSummary extends Adw.ActionRow {
     _init(contacts, message) {
         super._init();
 
@@ -754,52 +738,52 @@ const ConversationSummary = GObject.registerClass({
         this._sender = message.addresses[0].address || 'unknown';
 
         // Contact Name
-        let nameLabel = _('Unknown Contact');
+        let name_label = _('Unknown Contact');
 
         // Update avatar for single-recipient messages
         if (message.addresses.length === 1) {
-            this.avatar.contact = this.contacts[this._sender];
-            nameLabel = GLib.markup_escape_text(this.avatar.contact.name, -1);
+            let contact = this.contacts[this._sender];
+            this.avatar.set_text(contact.name);
+            name_label = GLib.markup_escape_text(contact.name, -1);
         } else {
-            this.avatar.contact = null;
-            nameLabel = _('Group Message');
+            name_label = _('Group Message');
             const participants = [];
             message.addresses.forEach((address) => {
                 participants.push(this.contacts[address.address].name);
             });
-            this.name_label.tooltip_text = participants.join(', ');
+            //this.name_label.tooltip_text = participants.join(', ');
         }
 
         // Contact Name & Message body
-        let bodyLabel = message.body.split(/\r|\n/)[0];
-        bodyLabel = GLib.markup_escape_text(bodyLabel, -1);
-
+        let body_label = message.body.split(/\r|\n/)[0];
+        body_label = GLib.markup_escape_text(body_label, -1);
+        
         // Ignore the 'read' flag if it's an outgoing message
         if (message.type === Sms.MessageBox.SENT) {
             // TRANSLATORS: An outgoing message body in a conversation summary
-            bodyLabel = _('You: %s').format(bodyLabel);
+            body_label = _('You: %s').format(body_label);
 
         // Otherwise make it bold if it's unread
         } else if (message.read === Sms.MessageStatus.UNREAD) {
-            nameLabel = `<b>${nameLabel}</b>`;
-            bodyLabel = `<b>${bodyLabel}</b>`;
+            name_label = `<b>${name_label}</b>`;
+            body_label = `<b>${body_label}</b>`;
+            this.counter_label.set_visible(true);
+            this.counter_label.set_css_classes(['counter','needs-attention']);
         }
 
         // Set the labels, body always smaller
-        this.name_label.label = nameLabel;
-        this.body_label.label = `<small>${bodyLabel}</small>`;
+        this.set_title(name_label);
+        this.set_subtitle(`<small>${body_label}</small>`);
 
         // Time
-        const timeLabel = `<small>${getShortTime(message.date)}</small>`;
-        this.time_label.label = timeLabel;
+        this.time_label.set_label(`<small>${getShortTime(message.date)}</small>`);
     }
 
     /**
      * Update the relative time label.
      */
     update() {
-        const timeLabel = `<small>${getShortTime(this.message.date)}</small>`;
-        this.time_label.label = timeLabel;
+        this.time_label.set_label(`<small>${getShortTime(this.message.date)}</small>`);
     }
 });
 
@@ -832,9 +816,9 @@ export const Window = GObject.registerClass({
             ''
         ),
     },
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/mlorier-ui-work/messaging-window.ui',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/messaging-window.ui',
     Children: [
-        'headerbar', 'infobar',
+        'headerbar', 'split-view',
         'thread-list', 'stack',
     ],
 }, class MessagingWindow extends Adw.ApplicationWindow {
@@ -842,17 +826,18 @@ export const Window = GObject.registerClass({
     _init(params) {
         super._init(params);
         //this.headerbar.subtitle = this.device.name;
-
+        
+        this.internal_thread_list = [];
         this.insert_action_group('device', this.device);
 
         // Device Status
+        /*
         this.device.bind_property(
             'connected',
             this.infobar,
             'reveal-child',
             GObject.BindingFlags.INVERT_BOOLEAN
         );
-
         // Contacts
         this.contact_chooser = new Contacts.ContactChooser({
             device: this.device,
@@ -863,7 +848,8 @@ export const Window = GObject.registerClass({
             'number-selected',
             this._onNumberSelected.bind(this)
         );
-
+        */
+        
         // Threads
         this.thread_list.set_sort_func(this._sortThreads);
 
@@ -939,7 +925,7 @@ export const Window = GObject.registerClass({
 
         // Select the conversation and entry active
         this.stack.visible_child = conversation;
-        this.stack.visible_child.entry.has_focus = true;
+        //this.stack.visible_child.entry.has_focus = true;
 
         // There was a pending message waiting for a conversation to be chosen
         if (this._pendingShare) {
@@ -1008,7 +994,8 @@ export const Window = GObject.registerClass({
         }
 
         // Update existing summaries and destroy old ones
-        for (const row of this.thread_list.get_children()) {
+        
+        this.internal_thread_list.forEach((row) => {
             const message = messages[row.thread_id];
 
             // If it's an existing conversation, update it
@@ -1040,13 +1027,15 @@ export const Window = GObject.registerClass({
                 // HACK: temporary mitigator for mysterious GtkListBox leak
                 system.gc();
             }
-        }
+        });
 
         // What's left in the dictionary is new summaries
         for (const message of Object.values(messages)) {
             const contacts = this.device.contacts.lookupAddresses(message.addresses);
             const conversation = new ConversationSummary(contacts, message);
-            this.thread_list.add(conversation);
+            conversation.connect('activated', this._onThreadSelected.bind(this));
+            this.thread_list.append(conversation);
+            this.internal_thread_list.push(conversation);
         }
 
         // Re-sort the summaries
@@ -1056,9 +1045,10 @@ export const Window = GObject.registerClass({
     // GtkListBox::row-activated
     _onThreadSelected(box, row) {
         // Show the conversation for this number (if applicable)
+        print ("OK")
         if (row) {
             this.thread_id = row.thread_id;
-
+            this.split_view.set_show_content(true);
         // Show the placeholder
         } else {
             this.headerbar.title = _('Messaging');
@@ -1251,7 +1241,7 @@ export const ConversationChooser = GObject.registerClass({
             GObject.Object
         ),
     },
-}, class ConversationChooser extends Gtk.ApplicationWindow {
+}, class ConversationChooser extends Adw.ApplicationWindow {
 
     _init(params) {
         super._init(Object.assign({

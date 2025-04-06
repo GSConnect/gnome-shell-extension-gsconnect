@@ -5,7 +5,7 @@
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
-import Gtk from 'gi://Gtk';
+import Gtk from 'gi://Gtk?version=4.0';
 
 import * as Components from '../components/index.js';
 import * as Core from '../core.js';

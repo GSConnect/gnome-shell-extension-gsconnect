@@ -2,11 +2,11 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-import Gdk from 'gi://Gdk';
+import Gdk from 'gi://Gdk?version=4.0';
 import GdkPixbuf from 'gi://GdkPixbuf';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
-import Gtk from 'gi://Gtk';
+import Gtk from 'gi://Gtk?version=4.0';
 
 import system from 'system';
 
@@ -347,8 +347,8 @@ const AddressRow = GObject.registerClass({
         this._contact = contact;
 
         if (this._index === 0) {
-            this.avatar.contact = contact;
-            this.avatar.visible = true;
+            //this.avatar.contact = contact;
+            //this.avatar.visible = true;
 
             this.name_label.label = GLib.markup_escape_text(contact.name, -1);
             this.name_label.visible = true;
@@ -356,7 +356,7 @@ const AddressRow = GObject.registerClass({
             this.address_label.margin_start = 0;
             this.address_label.margin_end = 0;
         } else {
-            this.avatar.visible = false;
+            //this.avatar.visible = false;
             this.name_label.visible = false;
 
             // TODO: rtl inverts margin-start so the number don't align
