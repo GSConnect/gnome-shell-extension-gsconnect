@@ -24,7 +24,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
             <property name="vexpand">True</property>
             <property name="selection-mode">none</property>
             <property name="activate-on-single-click">False</property>
-            <!-- WARNING: This signal doesn't exists with Gtk4 -->
+            <signal name="notify::allocated-height" handler="_onSizeAllocate" swapped="no"/>
             <child>
               <object class="GtkListBoxRow" id="pending">
                 <property name="visible" bind-source="GSConnectMessagingConversation" bind-property="has-pending" bind-flags="sync-create"/>
@@ -55,23 +55,40 @@ SPDX-License-Identifier: GPL-2.0-or-later
       </object>
     </child>
     <child>
-      <object class="GtkEntry" id="entry">
-        <property name="visible">True</property>
-        <property name="hexpand">True</property>
-        <property name="margin-top">7</property>
-        <property name="margin-bottom">7</property>
-        <property name="margin-start">7</property>
-        <property name="margin-end">7</property>
-        <property name="placeholder-text" translatable="yes">Write a message…</property>
-        <property name="enable-emoji-completion">True</property>
-        <property name="secondary-icon-name">sms-send</property>
-        <property name="secondary-icon-sensitive">False</property>
-        <property name="secondary-icon-tooltip-text" translatable="yes">Send Message</property>
-        <signal name="activate" handler="_onSendMessage" swapped="no"/>
-        <signal name="changed" handler="_onEntryChanged" swapped="no"/>
-        <signal name="icon-release" handler="_onSendMessage" swapped="no"/>
-        <!-- WARNING: This signal doesn't exists with Gtk4, consider using GtkEventControllerKey instead -->
-        <!-- <signal name="key-release-event" handler="_onKeyPressEvent" swapped="no"/> -->
+      <object class="GtkBox">
+        <child>
+          <object class="GtkMenuButton">
+            <property name="icon-name">face-smile-symbolic</property>
+            <property name="valign">center</property>
+            <property name="margin-top">7</property>
+            <property name="margin-bottom">7</property>
+            <property name="margin-start">7</property>
+            <property name="margin-end">7</property>
+            <property name="popover">
+              <object class="GtkEmojiChooser" id="emoji_chooser">
+                <signal name="emoji-picked" handler="on_emoji_picked"/>
+              </object>
+            </property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkEntry" id="entry">
+            <property name="visible">True</property>
+            <property name="hexpand">True</property>
+            <property name="margin-top">7</property>
+            <property name="margin-bottom">7</property>
+            <property name="margin-start">7</property>
+            <property name="margin-end">7</property>
+            <property name="placeholder-text" translatable="yes">Write a message…</property>
+            <property name="enable-emoji-completion">True</property>
+            <property name="secondary-icon-name">sms-send</property>
+            <property name="secondary-icon-sensitive">False</property>
+            <property name="secondary-icon-tooltip-text" translatable="yes">Send Message</property>
+            <signal name="activate" handler="_onSendMessage" swapped="no"/>
+            <signal name="changed" handler="_onEntryChanged" swapped="no"/>
+            <signal name="icon-release" handler="_onSendMessage" swapped="no"/>
+          </object>
+        </child>
       </object>
     </child>
   </template>

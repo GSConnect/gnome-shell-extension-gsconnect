@@ -41,7 +41,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                           </object>
                         </child>
                         <property name="title-widget">
-                          <object class="AdwWindowTitle">
+                          <object class="AdwWindowTitle" id="sidebar-title">
                             <property name="visible">True</property>
                             <property name="title" translatable="yes">Conversations</property>
                           </object>
@@ -77,11 +77,9 @@ SPDX-License-Identifier: GPL-2.0-or-later
                                 -->
                               </object>
                             </child>
-                            <!--
                             <style>
                               <class name="navigation-sidebar"/>
                             </style>
-                            -->
                           </object>
                         </child>
                       </object>
@@ -98,12 +96,24 @@ SPDX-License-Identifier: GPL-2.0-or-later
                   <object class="AdwToolbarView">
                     <property name="visible">True</property>
                     <child type="top">
-                      <object class="AdwHeaderBar" id="headerbar">
+                      <object class="AdwHeaderBar">
                         <property name="visible">True</property>
                         <property name="title-widget">
-                          <object class="AdwWindowTitle" id="content-title">
-                            <property name="visible">True</property>
-                            <property name="title" translatable="yes">Messaging</property>
+                          <object class="GtkBox">
+                            <property name="orientation">horizontal</property>
+                            <child>
+                              <object class="AdwAvatar" id="avatar">
+                                <property name="size">30</property>
+                                <property name="visible">false</property>
+                                <property name="show-initials">true</property>
+                              </object>                            
+                            </child>
+                            <child>
+                              <object class="AdwWindowTitle" id="content-title">
+                                <property name="visible">True</property>
+                                <!-- <property name="title" translatable="yes">Messaging</property> -->
+                              </object>
+                            </child>
                           </object>
                         </property>
                       </object>

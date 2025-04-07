@@ -576,6 +576,7 @@ const Conversation = GObject.registerClass({
         // Make a copy of the thread and fill the window with messages
         if (this.plugin.threads[this.thread_id]) {
             this.__messages = this.plugin.threads[this.thread_id].slice(0);
+            print(this.__messages);
             this.logPrevious();
         }
     }
@@ -692,6 +693,10 @@ const Conversation = GObject.registerClass({
         } catch (e) {
             debug(e);
         }
+    }
+
+    on_emoji_picked(variable) {
+        print(variable);
     }
 
     /**
@@ -818,14 +823,14 @@ export const Window = GObject.registerClass({
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/messaging-window.ui',
     Children: [
-        'headerbar', 'split-view',
-        'thread-list', 'stack',
+        'sidebar-title', 'split-view',
+        'thread-list', 'stack', 'avatar', 'content-title'
     ],
 }, class MessagingWindow extends Adw.ApplicationWindow {
 
     _init(params) {
         super._init(params);
-        //this.headerbar.subtitle = this.device.name;
+        this.sidebar_title.set_subtitle(this.device.name);
         
         this.internal_thread_list = [];
         this.insert_action_group('device', this.device);
@@ -873,10 +878,10 @@ export const Window = GObject.registerClass({
         this.saveGeometry();
 
         GLib.source_remove(this._timestampThreadsId);
-        this.contact_chooser.disconnect(this._numberSelectedId);
+        //this.contact_chooser.disconnect(this._numberSelectedId);
         this.plugin.disconnect(this._threadsChangedId);
 
-        return false;
+        this.run_dispose();
     }
 
     get plugin() {
@@ -942,17 +947,17 @@ export const Window = GObject.registerClass({
         const contact = this.device.contacts.query({number: address});
 
         if (addresses.length === 1) {
-            this.headerbar.title = contact.name;
-            this.headerbar.subtitle = Contacts.getDisplayNumber(contact, address);
+            this.content_title.set_title(contact.name);
+            this.content_title.set_subtitle(Contacts.getDisplayNumber(contact, address));
+            this.avatar.set_text(contact.name);
         } else {
             const otherLength = addresses.length - 1;
-
-            this.headerbar.title = contact.name;
-            this.headerbar.subtitle = ngettext(
+            this.content_title.set_title(contact.name);
+            this.content_title.set_subtitle(ngettext(
                 'And %d other contact',
                 'And %d others',
                 otherLength
-            ).format(otherLength);
+            ).format(otherLength));
         }
     }
 
@@ -1033,7 +1038,6 @@ export const Window = GObject.registerClass({
         for (const message of Object.values(messages)) {
             const contacts = this.device.contacts.lookupAddresses(message.addresses);
             const conversation = new ConversationSummary(contacts, message);
-            conversation.connect('activated', this._onThreadSelected.bind(this));
             this.thread_list.append(conversation);
             this.internal_thread_list.push(conversation);
         }
@@ -1045,14 +1049,15 @@ export const Window = GObject.registerClass({
     // GtkListBox::row-activated
     _onThreadSelected(box, row) {
         // Show the conversation for this number (if applicable)
-        print ("OK")
         if (row) {
             this.thread_id = row.thread_id;
             this.split_view.set_show_content(true);
-        // Show the placeholder
+            this.avatar.set_visible(true);
+            // Show the placeholder
+            this._setHeaderBar(row.message.addresses)
         } else {
-            this.headerbar.title = _('Messaging');
-            this.headerbar.subtitle = this.device.name;
+            this.content_title.title = _('Messaging');
+            this.avatar.set_visible(false);
         }
     }
 

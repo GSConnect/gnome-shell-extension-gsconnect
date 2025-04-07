@@ -25,27 +25,23 @@ Gtk.Window.prototype.restoreGeometry = function (context = 'default') {
     // Size
     const [width, height] = this._windowState.get_value('window-size').deepUnpack();
 
-    if (width && height)
+    if (width > 0 && height > 0)
         this.set_default_size(width, height);
 
     // Maximized State
     if (this._windowState.get_boolean('window-maximized'))
-        this.maximize();
+        this.set_maximized(true);  // GTK 4 way to maximize
 };
 
 Gtk.Window.prototype.saveGeometry = function () {
-    const state = this.get_window().get_state();
-
-    // Maximized State
-    const maximized = (state & Gdk.WindowState.MAXIMIZED);
+    const maximized = this.is_maximized();  // GTK 4 method
     this._windowState.set_boolean('window-maximized', maximized);
 
-    // Leave the size at the value before maximizing
-    if (maximized || (state & Gdk.WindowState.FULLSCREEN))
+    if (maximized || this.is_fullscreen())
         return;
 
     // Size
-    const size = this.get_size();
-    this._windowState.set_value('window-size', new GLib.Variant('(ii)', size));
+    const width = this.get_allocated_width();
+    const height = this.get_allocated_height();
+    this._windowState.set_value('window-size', new GLib.Variant('(ii)', [width, height]));
 };
-

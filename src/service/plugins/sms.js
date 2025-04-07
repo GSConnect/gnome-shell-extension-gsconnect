@@ -198,7 +198,7 @@ const SMSPlugin = GObject.registerClass({
     handlePacket(packet) {
         switch (packet.type) {
             case 'kdeconnect.sms.messages':
-                this._handleMessages(packet.body.messages);
+                print(packet.body.messages);
                 break;
         }
     }
@@ -215,6 +215,8 @@ const SMSPlugin = GObject.registerClass({
             if (!thread_ids.includes(thread_id))
                 delete this.threads[thread_id];
         }
+
+        print(message.length);
 
         // Request each new or newer thread
         for (let i = 0, len = messages.length; i < len; i++) {
@@ -252,7 +254,7 @@ const SMSPlugin = GObject.registerClass({
         // If the window is open, try and find an active conversation
         if (this._window)
             conversation = this._window.getConversationForMessage(message);
-
+        
         // If there's an active conversation, we should log the message now
         if (conversation)
             conversation.logNext(message);
@@ -309,6 +311,8 @@ const SMSPlugin = GObject.registerClass({
                 return;
 
             const thread_ids = [];
+
+            print(messages.length)
 
             // Perform some modification of the messages
             for (let i = 0, len = messages.length; i < len; i++) {

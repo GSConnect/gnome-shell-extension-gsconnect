@@ -241,7 +241,7 @@ export const Channel = GObject.registerClass({
                 code: Gio.IOErrorEnum.CONNECTION_CLOSED,
             });
         }
-
+        print(data);
         return new Packet(data);
     }
 
