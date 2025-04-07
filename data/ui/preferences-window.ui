@@ -6,9 +6,11 @@ SPDX-License-Identifier: GPL-2.0-or-later
 -->
 <interface domain="org.gnome.Shell.Extensions.GSConnect">
   <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+
   <template class="GSConnectPreferencesWindow" parent="AdwApplicationWindow">
     <property name="width-request">360</property>
-    <property name="height-request">586</property>
+    <property name="height-request">600</property>
     <property name="default-width">640</property>
     <property name="default-height">480</property>
     <child>
@@ -19,66 +21,50 @@ SPDX-License-Identifier: GPL-2.0-or-later
     </child>
     <property name="content">
       <object class="AdwNavigationSplitView" id="split_view">
+        <property name="visible">True</property>
         <property name="sidebar">
           <object class="AdwNavigationPage">
-            <property name="title" translatable="yes">Sidebar</property>
+            <property name="visible">True</property>
+            <property name="title">Sidebar</property>
             <property name="tag">sidebar</property>
             <property name="child">
               <object class="AdwToolbarView">
+                <property name="visible">True</property>
                 <child type="top">
                   <object class="AdwHeaderBar">
+                    <property name="visible">True</property>
                     <property name="title-widget">
                       <object class="AdwWindowTitle" id="window_title">
-                        <property name="title" translatable="yes">GSConnect</property>
+                        <property name="visible">True</property>
+                        <property name="title">GSConnect</property>
                       </object>
                     </property>
                     <child type="end">
                       <object class="GtkMenuButton" id="service-menu">
-                        <property name="menu_model">service-menu-ui</property>
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="valign">center</property>
-                        <child>
-                          <object class="GtkImage">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="valign">center</property>
-                            <property name="icon_name">open-menu-symbolic</property>
-                          </object>
-                        </child>
+                        <property name="icon-name">open-menu-symbolic</property>
+                        <property name="tooltip-text" translatable="yes">Main Menu</property>
+                        <property name="menu-model">service-menu-ui</property>
                       </object>
                     </child>
                     <child type="start">
                       <object class="GtkButton" id="refresh_button">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="tooltip_text" translatable="yes">Refresh</property>
-                        <property name="valign">center</property>
-                        <property name="action_name">app.refresh</property>
-                        <child>
-                          <object class="GtkImage">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="halign">center</property>
-                            <property name="valign">center</property>
-                            <property name="icon_name">view-refresh-symbolic</property>
-                          </object>
-                        </child>
-                        <accessibility>
-                          <property name="label" translatable="yes">Refresh</property>
-                        </accessibility>
+                        <property name="icon-name">view-refresh-symbolic</property>
+                        <property name="tooltip-text" translatable="yes">Refresh</property>
+                        <property name="action-name">app.refresh</property>
                       </object>
                     </child>
                   </object>
                 </child>
                 <property name="content">
                   <object class="GtkScrolledWindow">
+                    <property name="visible">True</property>
                     <property name="min-content-width">240</property>
                     <property name="min-content-height">540</property>
                     <child>
                       <object class="GtkListBox" id="device_list">
+                        <property name="visible">True</property>
                         <property name="vexpand">True</property>
                         <style>
                           <class name="navigation-sidebar"/>
@@ -93,151 +79,133 @@ SPDX-License-Identifier: GPL-2.0-or-later
         </property>
         <property name="content">
           <object class="AdwNavigationPage">
+            <property name="visible">True</property>
+            <property name="title">Content</property>
             <property name="tag">content</property>
             <property name="child">
               <object class="AdwToolbarView">
+                <property name="visible">True</property>
                 <child type="top">
                   <object class="AdwHeaderBar">
-                    <property name="show-title">false</property>
+                    <property name="visible">True</property>
+                    <property name="show-title">False</property>
                   </object>
                 </child>
                 <property name="content">
                   <object class="GtkScrolledWindow">
+                    <property name="visible">True</property>
                     <child>
-                      <object class="GtkBox" id="welcome">
-                        <property name="orientation">1</property>
-                        <property name="valign">3</property>
-                        <property name="halign">3</property>
+                      <object class="AdwStatusPage" id="welcome">
+                        <property name="visible">True</property>
+                        <property name="title" translatable="yes">Welcome to GSConnect</property>
+                        <property name="icon-name">org.gnome.Shell.Extensions.GSConnect-symbolic</property>
                         <child>
-                          <object class="GtkImage">
-                            <property name="name">logo</property>
-                            <property name="icon-name">org.gnome.Shell.Extensions.GSConnect</property>
-                            <property name="pixel-size">196</property>
-                            <property name="margin-bottom">30</property>
-                            <style>
-                              <class name="icon-dropshadow"/>
-                            </style>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="label" translatable="yes">Welcome to GSconnect</property>
-                            <style>
-                              <class name="title-1"/>
-                            </style>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkBox" id="webextension-list">
-                            <property name="halign">center</property>
-                            <property name="valign">center</property>
-                            <property name="spacing">24</property>
+                          <!-- Why too much space on the top and the bottom of the GtkLinkButton? -->
+                          <object class="GtkBox">
+                            <property name="visible">True</property>
+                            <property name="orientation">vertical</property>
                             <child>
-                              <object class="GtkLinkButton">
-                                <property name="uri">https://addons.mozilla.org/firefox/addon/gsconnect/</property>
+                              <object class="GtkBox" id="webextension-list">
+                                <property name="visible">True</property>
+                                <property name="halign">center</property>
+                                <property name="spacing">20</property>
                                 <child>
-                                  <object class="GtkImage" id="webextension-image-firefox">
-                                    <property name="pixel-size">196</property>
-                                    <property name="resource">/org/gnome/Shell/Extensions/GSConnect/images/firefox-badge.png</property>
-                                  </object> 
+                                  <object class="GtkLinkButton">
+                                    <property name="visible">True</property>
+                                    <property name="uri">https://addons.mozilla.org/firefox/addon/gsconnect/</property>
+                                    <child>
+                                      <object class="GtkImage" id="webextension-image-firefox">
+                                        <property name="visible">True</property>
+                                        <property name="pixel-size">196</property>
+                                        <property name="resource">/org/gnome/Shell/Extensions/GSConnect/images/firefox-badge.png</property>
+                                      </object>
+                                    </child>
+                                  </object>
                                 </child>
-                              </object> 
-                            </child>
-                            <child>
-                              <object class="GtkLinkButton">
-                                <property name="uri">https://chrome.google.com/webstore/detail/gsconnect/jfnifeihccihocjbfcfhicmmgpjicaec</property>
                                 <child>
-                                  <object class="GtkImage" id="webextension-image-chrome">
-                                    <property name="pixel-size">196</property>
-                                    <property name="resource">/org/gnome/Shell/Extensions/GSConnect/images/chrome-badge.png</property>
+                                  <object class="GtkLinkButton">
+                                    <property name="visible">True</property>
+                                    <property name="uri">https://chrome.google.com/webstore/detail/gsconnect/jfnifeihccihocjbfcfhicmmgpjicaec</property>
+                                    <child>
+                                      <object class="GtkImage" id="webextension-image-chrome">
+                                        <property name="visible">True</property>
+                                        <property name="pixel-size">196</property>
+                                        <property name="resource">/org/gnome/Shell/Extensions/GSConnect/images/chrome-badge.png</property>
+                                      </object>
+                                    </child>
                                   </object>
                                 </child>
                               </object>
                             </child>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="kdeconnect-label">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="halign">start</property>
-                            <property name="valign">center</property>
-                            <property name="margin_bottom">12</property>
-                            <property name="label">KDE Connect</property>
-                            <attributes>
-                              <attribute name="weight" value="bold"/>
-                            </attributes>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkGrid" id="kdeconnect-applications">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="margin-start">12</property>
-                            <property name="margin-end">12</property>
-                            <property name="column_spacing">6</property>
                             <child>
-                              <object class="GtkLabel" id="kdeconnect-android">
+                              <object class="GtkLabel">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="halign">end</property>
-                                <property name="label">Android:</property>
+                                <property name="margin-bottom">15</property>
+                                <property name="label">&lt;b&gt;KDE Connect&lt;/b&gt;</property>
+                                <property name="use-markup">True</property>
                               </object>
                             </child>
                             <child>
-                              <object class="GtkLinkButton" id="kdeconnect-playstore">
-                                <property name="label">Play Store</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="halign">start</property>
-                                <property name="uri">https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp</property>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkLinkButton" id="kdeconnect-fdroid">
-                                <property name="label">F-Droid</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="halign">start</property>
-                                <property name="uri">https://f-droid.org/packages/org.kde.kdeconnect_tp/</property>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="kdeconnect-sailfish">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="halign">end</property>
-                                <property name="label">Sailfish OS:</property>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkLinkButton" id="kdeconnect-openrepos">
-                                <property name="label">OpenRepos</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="halign">start</property>
-                                <property name="uri">https://openrepos.net/content/r1tschy/sailfish-connect</property>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="kdeconnect-ios">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="halign">end</property>
-                                <property name="label">iOS:</property>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkLinkButton" id="kdeconnect-appstore">
-                                <property name="label">App Store</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="halign">start</property>
-                                <property name="uri">https://apps.apple.com/us/app/kde-connect/id1580245991</property>
+                              <object class="AdwClamp">
+                                <property name="maximum-size">450</property>
+                                <child>
+                                  <object class="AdwPreferencesGroup">
+                                    <property name="visible">True</property>
+                                    <child>
+                                      <object class="AdwActionRow">
+                                        <property name="visible">True</property>
+                                        <property name="title">Android</property>
+                                        <property name="activatable-widget">kdeconnect-playstore</property>
+                                        <child>
+                                          <object class="GtkLinkButton" id="kdeconnect-playstore">
+                                            <property name="visible">True</property>
+                                            <property name="valign">center</property>
+                                            <property name="label">Play Store</property>
+                                            <property name="uri">https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp</property>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLinkButton" id="kdeconnect-fdroid">
+                                            <property name="visible">True</property>
+                                            <property name="valign">center</property>
+                                            <property name="label">F-Droid</property>
+                                            <property name="uri">https://f-droid.org/packages/org.kde.kdeconnect_tp/</property>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="AdwActionRow">
+                                        <property name="visible">True</property>
+                                        <property name="title">Sailfish OS</property>
+                                        <property name="activatable-widget">kdeconnect-openrepos</property>
+                                        <child>
+                                          <object class="GtkLinkButton" id="kdeconnect-openrepos">
+                                            <property name="visible">True</property>
+                                            <property name="valign">center</property>
+                                            <property name="label">OpenRepos</property>
+                                            <property name="uri">https://openrepos.net/content/r1tschy/sailfish-connect</property>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="AdwActionRow">
+                                        <property name="visible">True</property>
+                                        <property name="title">IOS</property>
+                                        <property name="activatable-widget">kdeconnect-appstore</property>
+                                        <child>
+                                          <object class="GtkLinkButton" id="kdeconnect-appstore">
+                                            <property name="visible">True</property>
+                                            <property name="valign">center</property>
+                                            <property name="label">App Store</property>
+                                            <property name="uri">https://apps.apple.com/us/app/kde-connect/id1580245991</property>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
                               </object>
                             </child>
                           </object>
