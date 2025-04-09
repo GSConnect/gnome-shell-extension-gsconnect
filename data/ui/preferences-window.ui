@@ -15,7 +15,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <property name="default-height">480</property>
     <child>
       <object class="AdwBreakpoint">
-        <condition>max-width: 600sp</condition>
+        <condition>max-width: 750sp</condition>
         <setter object="split_view" property="collapsed">true</setter>
       </object>
     </child>
@@ -98,7 +98,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                       <object class="AdwStatusPage" id="welcome">
                         <property name="visible">True</property>
                         <property name="title" translatable="yes">Welcome to GSConnect</property>
-                        <property name="icon-name">org.gnome.Shell.Extensions.GSConnect-symbolic</property>
+                        <property name="icon-name">org.gnome.Shell.Extensions.GSConnect</property>
                         <child>
                           <!-- Why too much space on the top and the bottom of the GtkLinkButton? -->
                           <object class="GtkBox">

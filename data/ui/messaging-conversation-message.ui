@@ -40,12 +40,10 @@ SPDX-License-Identifier: GPL-2.0-or-later
         <child>
           <object class="GtkLabel" id="time-label">
             <property name="halign">start</property>
-            <property name="valign">start</property>
             <property name="margin-top">6</property>
             <property name="margin-bottom">6</property>
             <property name="margin-start">6</property>
             <property name="margin-end">6</property>
-            <property name="label">6:00</property>
             <attributes>
               <attribute name="weight" value="bold"/>
               <attribute name="scale" value="0.833333333"/>

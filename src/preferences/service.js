@@ -414,7 +414,6 @@ export const Window = GObject.registerClass({
             // Disable debug logging and destroy the dialog
             this.settings.set_boolean('debug', false);
             dialog.destroy();
-            print(response_id);
 
             // Only generate a log if instructed
             if (response_id === "review_log")

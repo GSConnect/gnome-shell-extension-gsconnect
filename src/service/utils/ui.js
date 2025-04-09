@@ -30,7 +30,7 @@ Gtk.Window.prototype.restoreGeometry = function (context = 'default') {
 
     // Maximized State
     if (this._windowState.get_boolean('window-maximized'))
-        this.set_maximized(true);  // GTK 4 way to maximize
+        this.maximize();  // GTK 4 way to maximize
 };
 
 Gtk.Window.prototype.saveGeometry = function () {

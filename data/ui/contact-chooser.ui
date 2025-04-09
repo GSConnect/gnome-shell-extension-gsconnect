@@ -10,88 +10,98 @@ SPDX-License-Identifier: GPL-2.0-or-later
   <requires lib="gtk" version="4.0"/>
   <template class="GSConnectContactChooser" parent="GtkGrid">
     <property name="visible">True</property>
+    <property name="orientation">vertical</property>
     <property name="can_focus">False</property>
     <child>
-      <object class="GtkScrolledWindow" id="scrolled">
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="hexpand">True</property>
-        <property name="vexpand">True</property>
-        <property name="hscrollbar_policy">never</property>
+      <object class="AdwClamp">
         <child>
-          <object class="GtkViewport">
+          <object class="GtkSearchEntry" id="entry">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <child>
-              <object class="GtkListBox" id="list">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="selection_mode">multiple</property>
-                <signal name="row-activated" handler="_onNumberSelected" swapped="no"/>
-                <child type="placeholder">
-                  <object class="GtkGrid" id="placeholder">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="halign">center</property>
-                    <property name="valign">center</property>
-                    <child>
-                      <object class="GtkImage">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="pixel_size">144</property>
-                        <property name="icon_name">avatar-default-symbolic</property>
-                        <style>
-                          <class name="placeholder-image"/>
-                        </style>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">No contacts</property>
-                        <style>
-                          <class name="placeholder-title"/>
-                        </style>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkLinkButton">
-                        <property name="label" translatable="yes">Help</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="uri">https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Help#contacts-dont-sync</property>
-                      </object>
-                    </child>
-                    <style>
-                      <class name="placeholder"/>
-                    </style>
-                  </object>
-                </child>
-                <style>
-                  <class name="contact-list"/>
-                </style>
-              </object>
-            </child>
+            <property name="can_focus">True</property>
+            <property name="margin_start">6</property>
+            <property name="margin_end">6</property>
+            <property name="margin_top">6</property>
+            <property name="margin_bottom">6</property>
+            <property name="placeholder_text" translatable="yes">Type a phone number or name</property>
+            <property name="input_purpose">phone</property>
+            <signal name="search-changed" handler="_onSearchChanged" swapped="no"/>
           </object>
         </child>
-        <style>
-          <class name="contact-window"/>
-        </style>
       </object>
     </child>
     <child>
-      <object class="GtkSearchEntry" id="entry">
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="margin_start">6</property>
-        <property name="margin_end">6</property>
-        <property name="margin_top">6</property>
-        <property name="margin_bottom">6</property>
-        <property name="placeholder_text" translatable="yes">Type a phone number or name</property>
-        <property name="input_purpose">phone</property>
-        <signal name="search-changed" handler="_onSearchChanged" swapped="no"/>
+      <object class="AdwClamp">
+        <child>
+          <object class="GtkScrolledWindow" id="scrolled">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="hexpand">True</property>
+            <property name="vexpand">True</property>
+            <property name="hscrollbar_policy">never</property>
+            <child>
+              <object class="GtkViewport">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkListBox" id="list">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="selection_mode">multiple</property>
+                    <signal name="row-activated" handler="_onNumberSelected" swapped="no"/>
+                    <child type="placeholder">
+                      <object class="GtkGrid" id="placeholder">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="orientation">vertical</property>
+                        <property name="halign">center</property>
+                        <property name="valign">center</property>
+                        <child>
+                          <object class="GtkImage">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="pixel_size">144</property>
+                            <property name="icon_name">avatar-default-symbolic</property>
+                            <style>
+                              <class name="placeholder-image"/>
+                            </style>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">No contacts</property>
+                            <style>
+                              <class name="placeholder-title"/>
+                            </style>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkLinkButton">
+                            <property name="label" translatable="yes">Help</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="uri">https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Help#contacts-dont-sync</property>
+                          </object>
+                        </child>
+                        <style>
+                          <class name="placeholder"/>
+                        </style>
+                      </object>
+                    </child>
+                    <style>
+                      <class name="contact-list"/>
+                    </style>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <style>
+              <class name="contact-window"/>
+            </style>
+          </object>
+        </child>
       </object>
     </child>
   </template>

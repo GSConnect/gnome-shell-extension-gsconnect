@@ -34,7 +34,6 @@ SPDX-License-Identifier: GPL-2.0-or-later
                 <style>
                   <class name="counter"/>
                   <class name="numeric"/>
-                  <class name="long"/>
                   <class name="needs-attention"/>
                 </style>
               </object>
@@ -45,6 +44,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
           <object class="GtkLabel" id="time-label">
             <property name="visible">True</property>
             <property name="valign">center</property>
+            <property name="halign">end</property>
             <property name="ellipsize">end</property>
             <property name="use-markup">True</property>
             <style>

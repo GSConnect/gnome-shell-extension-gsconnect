@@ -213,7 +213,7 @@ function setAvatarVisible(row, visible) {
 const ConversationMessage = GObject.registerClass({
     GTypeName: 'GSConnectMessagingConversationMessage',
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/messaging-conversation-message.ui',
-    Children: ['grid', 'message-label'],
+    Children: ['grid', 'message-label', 'time-label'],
 }, class ConversationMessage extends Gtk.ListBoxRow {
     _init(contact, message) {
         super._init();
@@ -235,7 +235,10 @@ const ConversationMessage = GObject.registerClass({
             this.message_label.halign = Gtk.Align.START;
         } else {
             this.message_label.get_style_context().add_class('message-out');
-        }
+            this.time_label.halign = Gtk.Align.END;
+        }        
+        this.time_label.set_label(getShortTime(message.date));
+
     }
 
     _onActivateLink(label, uri) {
@@ -338,6 +341,8 @@ const Conversation = GObject.registerClass({
             type: Sms.MessageBox.OUTBOX,
         };
 
+        this.pending_messages = [];
+
         // Auto-scrolling
         this._vadj = this.scrolled.get_vadjustment();
         this._scrolledId = this._vadj.connect(
@@ -415,10 +420,10 @@ const Conversation = GObject.registerClass({
     }
 
     get has_pending() {
-        if (this.pending_box === undefined)
+        if (this.pending_messages === undefined)
             return false;
 
-        return (this.pending_box.get_children().length > 0);
+        return (this.pending_messages.length > 0);
     }
 
     get plugin() {
@@ -451,7 +456,10 @@ const Conversation = GObject.registerClass({
 
     _onConnected(device) {
         if (device.connected)
-            this.pending_box.foreach(msg => msg.destroy());
+            this.pending_messsages.forEach(row =>  {
+                this.pending_box.remove(row);
+                row.run_dispose()
+            });
     }
 
     _onDestroy(conversation) {
@@ -463,16 +471,6 @@ const Conversation = GObject.registerClass({
             message.destroy();
             system.gc();
         });
-    }
-
-    _onEdgeReached(scrolled_window, pos) {
-        // Try to load more messages
-        if (pos === Gtk.PositionType.TOP)
-            this.logPrevious();
-
-        // Release any hold to resume auto-scrolling
-        else if (pos === Gtk.PositionType.BOTTOM)
-            this._releasePosition();
     }
 
     _onEntryChanged(entry) {
@@ -516,11 +514,32 @@ const Conversation = GObject.registerClass({
         message.type = Sms.MessageBox.SENT;
 
         // Notify to reveal the pending box
-        this.pending_box.add(message);
+        this.pending_messages.push(message);
+        this.pending_box.append(message);
         this.notify('has-pending');
 
         // Clear the entry
         this.entry.text = '';
+
+        GLib.timeout_add(GLib.PRIORITY_DEFAULT, 50, () => {
+            const animation = this._createScrollbarAnim(1);
+            animation.play();
+            return GLib.SOURCE_REMOVE;
+        });
+    }
+
+    _createScrollbarAnim(direction) {
+        const adjustment = this.scrolled.get_vadjustment();;
+        const target = Adw.PropertyAnimationTarget.new(adjustment, "value");
+        const animation = new Adw.TimedAnimation({
+          widget: this.scrolled,
+          value_from: adjustment.value,
+          value_to: direction ? adjustment.upper - adjustment.page_size : 0,
+          duration: 250,
+          easing: Adw.Easing["LINEAR"],
+          target: target,
+        });
+        return animation;
     }
 
     _onSizeAllocate(listbox, allocation) {
@@ -576,7 +595,6 @@ const Conversation = GObject.registerClass({
         // Make a copy of the thread and fill the window with messages
         if (this.plugin.threads[this.thread_id]) {
             this.__messages = this.plugin.threads[this.thread_id].slice(0);
-            print(this.__messages);
             this.logPrevious();
         }
     }
@@ -650,6 +668,7 @@ const Conversation = GObject.registerClass({
      * @param {object} message - A message object
      */
     logNext(message) {
+        print(JSON.stringify(message));
         try {
             // TODO: Unsupported MessageBox
             if (message.type !== Sms.MessageBox.INBOX &&
@@ -663,10 +682,13 @@ const Conversation = GObject.registerClass({
 
             // Remove the first pending message
             if (this.has_pending && message.type === Sms.MessageBox.SENT) {
-                this.pending_box.get_children()[0].destroy();
+                row = this.pending_messages.pop()
+                this.pending_box.remove(row);
+                row.run_dispose();
                 this.notify('has-pending');
             }
         } catch (e) {
+            print(JSON.stringify(e));
             debug(e);
         }
     }
@@ -696,7 +718,7 @@ const Conversation = GObject.registerClass({
     }
 
     on_emoji_picked(variable) {
-        print(variable);
+        print(JSON.stringify(variable));
     }
 
     /**
@@ -843,6 +865,7 @@ export const Window = GObject.registerClass({
             'reveal-child',
             GObject.BindingFlags.INVERT_BOOLEAN
         );
+        */
         // Contacts
         this.contact_chooser = new Contacts.ContactChooser({
             device: this.device,
@@ -853,7 +876,6 @@ export const Window = GObject.registerClass({
             'number-selected',
             this._onNumberSelected.bind(this)
         );
-        */
         
         // Threads
         this.thread_list.set_sort_func(this._sortThreads);
@@ -968,9 +990,10 @@ export const Window = GObject.registerClass({
 
     _onNewConversation() {
         this._sync();
+        this.split_view.set_show_content(true);
         this.stack.set_visible_child_name('contact-chooser');
         this.thread_list.select_row(null);
-        this.contact_chooser.entry.has_focus = true;
+        //this.contact_chooser.entry.has_focus = true;
     }
 
     _onNumberSelected(chooser, number) {
@@ -1023,14 +1046,11 @@ export const Window = GObject.registerClass({
                 const conversation = this.stack.get_child_by_name(`${row.thread_id}`);
 
                 if (conversation) {
-                    conversation.destroy();
-                    system.gc();
+                    this.stack.remove(conversation);
                 }
 
                 // Then the summary widget
-                row.destroy();
-                // HACK: temporary mitigator for mysterious GtkListBox leak
-                system.gc();
+                this.thread_list.remove(row);
             }
         });
 
@@ -1067,7 +1087,7 @@ export const Window = GObject.registerClass({
 
     _timestampThreads() {
         if (this.visible)
-            this.thread_list.foreach(row => row.update());
+            this.internal_thread_list.forEach(row => row.update());
 
         return GLib.SOURCE_CONTINUE;
     }
@@ -1254,6 +1274,7 @@ export const ConversationChooser = GObject.registerClass({
             default_width: 300,
             default_height: 200,
         }, params));
+        
         this.set_keep_above(true);
 
         // HeaderBar

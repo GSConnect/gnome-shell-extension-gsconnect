@@ -198,7 +198,7 @@ const SMSPlugin = GObject.registerClass({
     handlePacket(packet) {
         switch (packet.type) {
             case 'kdeconnect.sms.messages':
-                print(packet.body.messages);
+                this._handleMessages(packet.body.messages);
                 break;
         }
     }
@@ -215,8 +215,6 @@ const SMSPlugin = GObject.registerClass({
             if (!thread_ids.includes(thread_id))
                 delete this.threads[thread_id];
         }
-
-        print(message.length);
 
         // Request each new or newer thread
         for (let i = 0, len = messages.length; i < len; i++) {
@@ -311,8 +309,6 @@ const SMSPlugin = GObject.registerClass({
                 return;
 
             const thread_ids = [];
-
-            print(messages.length)
 
             // Perform some modification of the messages
             for (let i = 0, len = messages.length; i < len; i++) {
