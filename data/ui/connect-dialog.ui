@@ -7,96 +7,64 @@ SPDX-License-Identifier: GPL-2.0-or-later
 -->
 
 <interface>
-  <requires lib="gtk" version="4.0"/>  
-  <object class="GtkAdjustment" id="port-adjustment">
-    <property name="lower">1716</property>
-    <property name="upper">1764</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">1</property>
-  </object>
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+  
   <template class="GSConnectConnectDialog" parent="AdwDialog">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Connect to…</property>
+    <property name="content-width">400</property>
     <child>
       <object class="AdwToolbarView">
         <child type="top">
-          <object class="AdwHeaderBar" id="headerbar">
-            <property name="title-widget">
-              <object class="AdwWindowTitle">
-                <property name="title" translatable="yes">Connect to…</property>
-              </object>
-            </property>
-          </object>
+          <object class="AdwHeaderBar" id="headerbar"/>
         </child>
-        <child>
-          <object class="GtkBox">
-            <property name="orientation">vertical</property>
-            <property name="margin-top">24</property>
-            <property name="margin-bottom">24</property>
-            <property name="margin-start">12</property>
-            <property name="margin-end">12</property>
-            <property name="spacing">24</property>
+        <property name="content">
+          <object class="AdwPreferencesPage">
             <child>
-              <object class="GtkImage">
-                <property name="name">logo</property>
-                <property name="icon-name">org.gnome.Shell.Extensions.GSConnect-symbolic</property>
-                <property name="pixel-size">80</property>
-                <style>
-                  <class name="icon-dropshadow"/>
-                </style>
-              </object>
-            </child>
-            <child>
-              <object class="AdwClamp">
-                <property name="child">
-                  <object class="GtkBox">
-                    <property name="orientation">vertical</property>
-                    <property name="margin-top">24</property>
-                    <property name="margin-bottom">24</property>
-                    <property name="margin-start">12</property>
-                    <property name="margin-end">12</property>
-                    <property name="spacing">24</property>
-                    <child>
-                      <object class="GtkListBox">
-                        <property name="selection-mode">none</property>
-                        <style>
-                          <class name="boxed-list"/>
-                        </style>
-                        <child>
-                          <object class="AdwEntryRow" id="lan_ip">
-                            <property name="title">IP Address</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="AdwSpinRow" id="lan_port">
-                            <property name="title">Port</property>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkListBox">
-                        <property name="selection-mode">none</property>
-                        <style>
-                          <class name="boxed-list"/>
-                        </style>
-                        <child>
-                          <object class="AdwButtonRow" id="connect-button">
-                            <property name="title">Connect</property>
-                            <property name="start-icon-name">network-transmit-receive-symbolic</property>
-                            <style>
-                              <class name="suggested-action"/>
-                            </style>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
+              <object class="AdwPreferencesGroup">
+                <child>
+                  <object class="AdwEntryRow" id="lan_ip">
+                    <property name="title" translatable="yes">IP Address</property>
                   </object>
-                </property>
+                </child>
+                <child>
+                  <object class="AdwSpinRow" id="lan_port">
+                    <property name="title" translatable="yes">Port</property>
+                    <property name="adjustment">
+                      <object class="GtkAdjustment" id="port-adjustment">
+                        <property name="lower">1716</property>
+                        <property name="upper">1764</property>
+                        <property name="value">1716</property>
+                        <property name="step-increment">1</property>
+                        <property name="page-increment">1</property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkListBox">
+                <property name="selection-mode">none</property>
+                <property name="margin-bottom">24</property>
+                <property name="margin-start">12</property>
+                <property name="margin-end">12</property>
+                <style>
+                  <class name="boxed-list"/>
+                </style>
+                <child>
+                  <object class="AdwButtonRow" id="connect-button">
+                    <property name="title" translatable="yes">Connect</property>
+                    <property name="start-icon-name">network-transmit-receive-symbolic</property>
+                    <style>
+                      <class name="suggested-action"/>
+                    </style>
+                  </object>
+                </child>
               </object>
             </child>
           </object>
-        </child>
+        </property>
       </object>
     </child>
   </template>
