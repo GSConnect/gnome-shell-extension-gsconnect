@@ -17,7 +17,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
       </object>
     </child>
     <property name="content">
-      <object class="AdwToastOverlay">
+      <object class="AdwToastOverlay" id="toast-overlay">
         <property name="child">
           <object class="AdwNavigationSplitView" id="split-view">
             <property name="visible">True</property>
@@ -70,11 +70,9 @@ SPDX-License-Identifier: GPL-2.0-or-later
                                     </style>
                                   </object>
                                 </child>
-                                <!--
                                 <style>
                                   <class name="compact"/>
                                 </style>
-                                -->
                               </object>
                             </child>
                             <style>
@@ -111,7 +109,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                             <child>
                               <object class="AdwWindowTitle" id="content-title">
                                 <property name="visible">True</property>
-                                <!-- <property name="title" translatable="yes">Messaging</property> -->
+                                <property name="title" translatable="yes">Messaging</property>
                               </object>
                             </child>
                           </object>
@@ -119,24 +117,17 @@ SPDX-License-Identifier: GPL-2.0-or-later
                       </object>
                     </child>
                     <property name="content">
-                      <object class="GtkStack" id="stack">
+                      <object class="AdwStatusPage">
                         <property name="visible">True</property>
-                        <property name="transition-duration">250</property>
-                        <property name="transition-type">crossfade</property>
-                        <child>
-                          <object class="AdwStatusPage">
-                            <property name="visible">True</property>
-                            <property name="title" translatable="yes">No conversation selected</property>
-                            <property name="description" translatable="yes">Select or start a conversation to start</property>
-                            <property name="icon-name">sms-symbolic</property>
-                          </object>
-                        </child>
+                        <property name="title" translatable="yes">No conversation selected</property>
+                        <property name="description" translatable="yes">Select or start a conversation to start</property>
+                        <property name="icon-name">sms-symbolic</property>
                       </object>
                     </property>
                   </object>
                 </child>
               </object>
-            </property>
+            </property>  
           </object>
         </property>
       </object>

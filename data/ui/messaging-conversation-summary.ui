@@ -29,7 +29,6 @@ SPDX-License-Identifier: GPL-2.0-or-later
             <property name="halign">end</property>
             <child>
               <object class="GtkLabel" id="counter-label">
-                <property name="label">1</property>
                 <property name="visible">false</property>
                 <style>
                   <class name="counter"/>
@@ -49,6 +48,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
             <property name="use-markup">True</property>
             <style>
               <class name="dimmed"/>
+              <class name="time-row"/>
             </style>
           </object>
         </child>

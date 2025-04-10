@@ -137,6 +137,7 @@
   background: alpha(currentColor, .15);
   border-radius: 999px;
   padding: 2px;
+  margin-bottom:4px;
   font-size: smaller;
   font-weight: bold;
   min-width: 1rem;
@@ -145,4 +146,8 @@
 .counter.needs-attention {
   background: @accent_bg_color;
   color: @accent_fg_color;
+}
+
+.time-row {
+  margin-bottom: 4px;
 }

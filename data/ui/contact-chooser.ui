@@ -1,105 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<!--
-SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
-
-SPDX-License-Identifier: GPL-2.0-or-later
--->
-
 <interface domain="org.gnome.Shell.Extensions.GSConnect">
   <requires lib="gtk" version="4.0"/>
-  <template class="GSConnectContactChooser" parent="GtkGrid">
+  <template class="GSConnectContactChooser" parent="AdwNavigationPage">
     <property name="visible">True</property>
-    <property name="orientation">vertical</property>
-    <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Content</property>
     <child>
-      <object class="AdwClamp">
-        <child>
-          <object class="GtkSearchEntry" id="entry">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="margin_start">6</property>
-            <property name="margin_end">6</property>
-            <property name="margin_top">6</property>
-            <property name="margin_bottom">6</property>
-            <property name="placeholder_text" translatable="yes">Type a phone number or name</property>
-            <property name="input_purpose">phone</property>
-            <signal name="search-changed" handler="_onSearchChanged" swapped="no"/>
-          </object>
-        </child>
-      </object>
-    </child>
-    <child>
-      <object class="AdwClamp">
-        <child>
-          <object class="GtkScrolledWindow" id="scrolled">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="hexpand">True</property>
-            <property name="vexpand">True</property>
-            <property name="hscrollbar_policy">never</property>
+      <object class="AdwToolbarView">
+        <property name="visible">True</property>
+        <child type="top">
+          <object class="GtkBox" id="container">
+            <property name="orientation">1</property>
             <child>
-              <object class="GtkViewport">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <child>
-                  <object class="GtkListBox" id="list">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="selection_mode">multiple</property>
-                    <signal name="row-activated" handler="_onNumberSelected" swapped="no"/>
-                    <child type="placeholder">
-                      <object class="GtkGrid" id="placeholder">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="orientation">vertical</property>
-                        <property name="halign">center</property>
-                        <property name="valign">center</property>
-                        <child>
-                          <object class="GtkImage">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="pixel_size">144</property>
-                            <property name="icon_name">avatar-default-symbolic</property>
-                            <style>
-                              <class name="placeholder-image"/>
-                            </style>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">No contacts</property>
-                            <style>
-                              <class name="placeholder-title"/>
-                            </style>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLinkButton">
-                            <property name="label" translatable="yes">Help</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
-                            <property name="uri">https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Help#contacts-dont-sync</property>
-                          </object>
-                        </child>
-                        <style>
-                          <class name="placeholder"/>
-                        </style>
-                      </object>
-                    </child>
-                    <style>
-                      <class name="contact-list"/>
-                    </style>
+              <object class="AdwHeaderBar">
+                <child type="end">
+                  <object class="GtkToggleButton" id="button-search">
+                    <property name="icon-name">edit-find-symbolic</property>
                   </object>
                 </child>
               </object>
             </child>
-            <style>
-              <class name="contact-window"/>
-            </style>
+            <child>
+              <object class="AdwClamp">
+                <child>
+                  <object class="GtkSearchBar" id="search-bar">
+                    <property name="key-capture-widget">container</property>
+                    <child>
+                      <object class="GtkSearchEntry" id="search-entry">
+                        <property name="search-delay">100</property>
+                        <property name="hexpand">true</property>
+                        <property name="placeholder-text" translatable="yes">Search fruits</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkStack" id="stack">
+            <property name="transition-type">1</property>
+            <child>
+              <object class="GtkScrolledWindow" id="scrolled">
+                <child>
+                  <object class="AdwClamp">
+                    <property name="margin-top">24</property>
+                    <property name="margin-bottom">24</property>
+                    <child>
+                      <object class="GtkListBox" id="list">
+                        <property name="valign">1</property>
+                        <property name="hexpand">true</property>
+                        <property name="selection-mode">0</property>
+                        <style>
+                          <class name="boxed-list"/>
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwStatusPage" id="not-found-page">
+                <property name="title" translatable="yes">No Results Founds</property>
+                <property name="description" translatable="yes">Try a different search</property>
+                <property name="icon-name">edit-find-symbolic</property>
+                <property name="vexpand">true</property>
+              </object>
+            </child>
           </object>
         </child>
       </object>
