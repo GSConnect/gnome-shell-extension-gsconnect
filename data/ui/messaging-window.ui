@@ -17,7 +17,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
       </object>
     </child>
     <property name="content">
-      <object class="AdwToastOverlay">
+      <object class="AdwToastOverlay" id="toast-overlay">
         <property name="child">
           <object class="AdwNavigationSplitView" id="split-view">
             <property name="visible">True</property>
@@ -70,11 +70,9 @@ SPDX-License-Identifier: GPL-2.0-or-later
                                     </style>
                                   </object>
                                 </child>
-                                <!--
                                 <style>
                                   <class name="compact"/>
                                 </style>
-                                -->
                               </object>
                             </child>
                             <style>

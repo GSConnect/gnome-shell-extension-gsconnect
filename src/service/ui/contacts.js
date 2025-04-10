@@ -7,6 +7,7 @@ import GdkPixbuf from 'gi://GdkPixbuf';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk?version=4.0';
+import Adw from 'gi://Adw';
 
 import system from 'system';
 
@@ -178,152 +179,14 @@ export function getDisplayNumber(contact, address) {
     return GLib.markup_escape_text(address, -1);
 }
 
-
-/**
- * Contact Avatar
- */
-const AvatarCache = new WeakMap();
-
-export const Avatar = GObject.registerClass({
-    GTypeName: 'GSConnectContactAvatar',
-}, class ContactAvatar extends Gtk.DrawingArea {
-
-    _init(contact = null) {
-        super._init({
-            height_request: 32,
-            width_request: 32,
-            valign: Gtk.Align.CENTER,
-            visible: true,
-        });
-
-        // Imposta l'area di disegno
-        this.drawingArea = new Gtk.DrawingArea();
-        this.drawingArea.set_content_width(100);  // Dimensioni di esempio
-        this.drawingArea.set_content_height(100); // Dimensioni di esempio
-
-        // Collega il segnale "draw" all'handler
-        this.drawingArea.connect('draw', this._onDraw.bind(this));
-
-        this.append(this.drawingArea);
-
-        this.contact = contact;
-    }
-
-    get rgba() {
-        if (this._rgba === undefined) {
-            if (this.contact)
-                this._rgba = randomRGBA(this.contact.name);
-            else
-                this._rgba = randomRGBA(GLib.uuid_string_random());
-        }
-
-        return this._rgba;
-    }
-
-    get contact() {
-        if (this._contact === undefined)
-            this._contact = null;
-
-        return this._contact;
-    }
-
-    set contact(contact) {
-        if (this.contact === contact)
-            return;
-
-        this._contact = contact;
-        this._surface = undefined;
-        this._rgba = undefined;
-        this._offset = 0;
-    }
-
-    _loadSurface() {
-        // Get the monitor scale
-        const display = Gdk.Display.get_default();
-        const monitor = display.get_monitor_at_window(this.get_window());
-        const scale = monitor.get_scale_factor();
-
-        // If there's a contact with an avatar, try to load it
-        if (this.contact && this.contact.avatar) {
-            // Check the cache
-            this._surface = AvatarCache.get(this.contact);
-
-            // Try loading the pixbuf
-            if (!this._surface) {
-                const pixbuf = getPixbufForPath(
-                    this.contact.avatar,
-                    this.width_request,
-                    scale
-                );
-
-                if (pixbuf) {
-                    this._surface = Gdk.cairo_surface_create_from_pixbuf(
-                        pixbuf,
-                        0,
-                        this.get_window()
-                    );
-                    AvatarCache.set(this.contact, this._surface);
-                }
-            }
-        }
-
-        // If we still don't have a surface, load a fallback
-        if (!this._surface) {
-            let iconName;
-
-            // If we were given a contact, it's direct message otherwise group
-            if (this.contact)
-                iconName = 'avatar-default-symbolic';
-            else
-                iconName = 'group-avatar-symbolic';
-
-            // Center the icon
-            this._offset = (this.width_request - 24) / 2;
-
-            // Load the fallback
-            const pixbuf = getPixbufForIcon(iconName, 24, scale, this.rgba);
-
-            this._surface = Gdk.cairo_surface_create_from_pixbuf(
-                pixbuf,
-                0,
-                this.get_window()
-            );
-        }
-    }
-
-    _onDraw(drawingArea, cr) {
-        if (!this._surface) {
-            this._loadSurface();
-        }
-    
-        // Clip to a circle
-        const rad = drawingArea.get_allocated_width() / 2;
-        cr.arc(rad, rad, rad, 0, 2 * Math.PI);
-        cr.clipPreserve();
-    
-        // Fill the background if the surface is offset
-        if (this._offset > 0) {
-            Gdk.cairo_set_source_rgba(cr, this.rgba);
-            cr.fill();
-        }
-    
-        // Draw the avatar/icon
-        cr.setSourceSurface(this._surface, this._offset, this._offset);
-        cr.paint();
-    
-        return false; // Propaga l'evento
-    }
-});
-
-
 /**
  * A row for a contact address (usually a phone number).
  */
 const AddressRow = GObject.registerClass({
     GTypeName: 'GSConnectContactsAddressRow',
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/contacts-address-row.ui',
-    Children: ['avatar', 'name-label', 'address-label', 'type-label'],
-}, class AddressRow extends Gtk.ListBoxRow {
+    Children: ['avatar'],
+}, class AddressRow extends Adw.ActionRow {
 
     _init(contact, index = 0) {
         super._init();
@@ -347,27 +210,15 @@ const AddressRow = GObject.registerClass({
         this._contact = contact;
 
         if (this._index === 0) {
-            //this.avatar.contact = contact;
-            //this.avatar.visible = true;
-
-            this.name_label.label = GLib.markup_escape_text(contact.name, -1);
-            this.name_label.visible = true;
-
-            this.address_label.margin_start = 0;
-            this.address_label.margin_end = 0;
-        } else {
-            //this.avatar.visible = false;
-            this.name_label.visible = false;
-
-            // TODO: rtl inverts margin-start so the number don't align
-            this.address_label.margin_start = 38;
-            this.address_label.margin_end = 38;
+            this.avatar.text = contact.name
+            this.title = GLib.markup_escape_text(contact.name, -1);
         }
 
-        this.address_label.label = GLib.markup_escape_text(this.number.value, -1);
-
+        this.subtitle = GLib.markup_escape_text(this.number.value, -1);
+        /*
         if (this.number.type !== undefined)
             this.type_label.label = getNumberTypeLabel(this.number.type);
+        */
     }
 
     get number() {
@@ -407,15 +258,18 @@ export const ContactChooser = GObject.registerClass({
         },
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/contact-chooser.ui',
-    Children: ['entry', 'list', 'scrolled'],
-}, class ContactChooser extends Gtk.Grid {
+    Children: [
+        'button-search', 'search-bar', 'search-entry',
+        'stack', 'scrolled', 'not-found-page', 'list'
+    ],
+}, class ContactChooser extends Adw.NavigationPage {
 
     _init(params) {
         super._init(params);
 
         // Setup the contact list
-        this.list._entry = this.entry.text;
-        this.list.set_filter_func(this._filter);
+        this.list._entry = this.search_entry.text;
+        this.list.set_filter_func(this._filter.bind(this));
         this.list.set_sort_func(this._sort);
 
         // Make sure we're using the correct contacts store
@@ -425,9 +279,20 @@ export const ContactChooser = GObject.registerClass({
             'store',
             GObject.BindingFlags.SYNC_CREATE
         );
+        
+        this.button_search.connect("clicked", () => {
+            this.search_bar.search_mode_enabled = ! this.search_bar.search_mode_enabled;
+        });
 
         // Cleanup on ::destroy
         this.connect('destroy', this._onDestroy);
+        
+        this.search_entry.connect("search-changed", () => {
+            this.results_count = -1;
+            this.list.invalidate_filter();
+            if (this.results_count === -1) this.stack.visible_child = this.not_found_page;
+            else if (this.search_bar.search_mode_enabled) this.stack.visible_child = this.scrolled;
+        });
     }
 
     get store() {
@@ -529,7 +394,7 @@ export const ContactChooser = GObject.registerClass({
                     numbers: [{type: 'unknown', value: entry.text}],
                 });
                 dynamic.__tmp = true;
-                this.list.add(dynamic);
+                this.list.append(dynamic);
 
             // ...or if we already do, then update it
             } else {
@@ -563,39 +428,23 @@ export const ContactChooser = GObject.registerClass({
         this.emit('number-selected', address);
 
         // Reset the contact list
-        this.entry.text = '';
+        this.search_entry.text = '';
         this.list.select_row(null);
         this.scrolled.vadjustment.value = 0;
     }
 
     _filter(row) {
-        // Dynamic contact always shown
-        if (row.__tmp)
-            return true;
-
-        const query = row.get_parent()._entry;
-
-        // Show contact if text is substring of name
-        const queryName = query.toLocaleLowerCase();
-
-        if (row.contact.name.toLocaleLowerCase().includes(queryName))
-            return true;
-
-        // Show contact if text is substring of number
-        const queryNumber = query.toPhoneNumber();
-
-        if (queryNumber.length) {
-            for (const number of row.contact.numbers) {
-                if (number.value.toPhoneNumber().includes(queryNumber))
-                    return true;
-            }
-
-        // Query is effectively empty
-        } else if (/^0+/.test(query)) {
-            return true;
+        const re = new RegExp(this.search_entry.text, "i");
+        let match = re.test(row.title);
+        if (match) 
+            this.results_count++;
+        else {
+            match = re.test(row.subtitle)
+            if (match) 
+                this.results_count++;
+            
         }
-
-        return false;
+        return match;
     }
 
     _sort(row1, row2) {
@@ -618,7 +467,7 @@ export const ContactChooser = GObject.registerClass({
 
     _addContactNumber(contact, index) {
         const row = new AddressRow(contact, index);
-        this.list.add(row);
+        this.list.append(row);
 
         return row;
     }

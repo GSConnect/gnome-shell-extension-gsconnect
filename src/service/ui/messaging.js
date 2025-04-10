@@ -415,6 +415,7 @@ const Conversation = GObject.registerClass({
         );
 
         // Message List
+        this.internal_message_list = [];
         this.list.set_header_func(this._headerMessages);
         this.list.set_sort_func(this._sortMessages);
         this._populateMessages();
@@ -583,11 +584,13 @@ const Conversation = GObject.registerClass({
         conversation.device.disconnect(conversation._connectedId);
         conversation._vadj.disconnect(conversation._scrolledId);
 
-        conversation.list.foreach(message => {
-            // HACK: temporary mitigator for mysterious GtkListBox leak
-            message.destroy();
-            system.gc();
+        conversation.internal_message_list.forEach(message => {
+            print(JSON.stringify(message));
+            conversation.list.remove(message);
+            message.run_dispose();
         });
+
+        conversation.internal_message_list = [];
     }
 
     _onEntryChanged(entry) {
@@ -827,23 +830,25 @@ const Conversation = GObject.registerClass({
             
             // Insert the message in its sorted location
             this.list.append(row);
+            this.internal_message_list.push(row);
+
+            print(JSON.stringify(message));
+
+            if (message.read === Sms.MessageStatus.UNREAD) {
+                this.inbox_counter += 1;
+            }
 
             if (message.date > this.latest) {
                 this.latest = message.date;
                 // Remove the first pending message
                 if (this.has_pending && message.type === Sms.MessageBox.SENT) {
-                    this.inbox_counter = 0;
                     this.pending_messages.forEach(pending_row => {
                         this.pending_box.remove(pending_row);
                     })
                     this.pending_messages = [];
                     this.notify('has-pending');
                 } 
-                if (message.read === Sms.MessageStatus.UNREAD) {
-                    this.inbox_counter += 1;_setHeaderBar
-                } else if(message.read == Sms.MessageStatus.READ) {
-                    this.inbox_counter -= 1;
-                }
+               
             } 
 
             if (message.date < this.earliest || this.earliest < 0) {
@@ -1005,7 +1010,7 @@ export const Window = GObject.registerClass({
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/messaging-window.ui',
     Children: [
         'sidebar-title', 'split-view',
-        'thread-list'
+        'thread-list', 'toast-overlay'
     ],
 }, class MessagingWindow extends Adw.ApplicationWindow {
 
@@ -1019,24 +1024,27 @@ export const Window = GObject.registerClass({
         this.insert_action_group('device', this.device);
 
         // Device Status
-        /*
-        this.device.bind_property(
-            'connected',
-            this.infobar,
-            'reveal-child',
-            GObject.BindingFlags.INVERT_BOOLEAN
-        );
+        
+        this.device.connect('notify::connected', (device) => {
+            if(!device.connected) {
+                const toast = new Adw.Toast({
+                    title: _("Device is disconnected"),
+                    timeout: 5,
+                });
+                this.toast_overlay.add_toast(toast);
+            }
+        });
+
         // Contacts
         this.contact_chooser = new Contacts.ContactChooser({
             device: this.device,
         })
-        this.stack.add_named(this.contact_chooser, 'contact-chooser');
 
         this._numberSelectedId = this.contact_chooser.connect(
             'number-selected',
             this._onNumberSelected.bind(this)
         );
-        */
+
         // Threads
         this.thread_list.set_sort_func(this._sortThreads);
 
@@ -1060,7 +1068,7 @@ export const Window = GObject.registerClass({
         this.saveGeometry();
 
         GLib.source_remove(this._timestampThreadsId);
-        //this.contact_chooser.disconnect(this._numberSelectedId);
+        this.contact_chooser.disconnect(this._numberSelectedId);
         this.plugin.disconnect(this._threadsChangedId);
 
         this.run_dispose();
@@ -1103,7 +1111,7 @@ export const Window = GObject.registerClass({
                 message: message,
                 thread_id: thread_id,
             });
-            
+
             this.stack.set(thread_id, conversation);
         }
 
@@ -1128,10 +1136,9 @@ export const Window = GObject.registerClass({
 
     _onNewConversation() {
         this._sync();
+        this.split_view.set_content(this.contact_chooser);
         this.split_view.set_show_content(true);
-        //this.splut_view.push('contact-chooser');
         this.thread_list.select_row(null);
-        //this.contact_chooser.entry.has_focus = true;
     }
 
     _onNumberSelected(chooser, number) {
@@ -1268,7 +1275,7 @@ export const Window = GObject.registerClass({
         const timestamp = message.date;
 
         // Update existing summary or create new one
-        const row = this._getRowForThread(thread_id);
+        let row = this._getRowForThread(thread_id);
 
         // If it's a newer message for an existing conversation, update it
         if (row) {
@@ -1287,17 +1294,17 @@ export const Window = GObject.registerClass({
             }
         } else {
             const contacts = this.device.contacts.lookupAddresses(message.addresses);
-            const new_thread = new ConversationSummary(contacts, message);
-            new_thread.counter_label.set_label("1");
-            this.internal_thread_list.push(new_thread);
-            this.thread_list.append(new_thread);
+            row = new ConversationSummary(contacts, message);
+            row.counter_label.set_label("1");
+            this.internal_thread_list.push(row);
+            this.thread_list.append(row);
         }
 
         // If it's a message for the selected conversation, display it
         if (thread_id === this.thread_id) {
             const conversation = this.stack.get(`${thread_id}`);
-            print(`${conversation.inbox_counter}`);
             conversation.addMessage(message);
+            row.counter_label.set_label(`${conversation.inbox_counter}`);
         }
     }
 
@@ -1351,13 +1358,12 @@ export const Window = GObject.registerClass({
      * @param {string} message - The message to place in the entry
      * @param {boolean} pending - Wait for a conversation to be selected
      */
-    setMessage(message, pending = false) {
+    sendMessage(message, pending = false) {
         try {
             if (pending)
                 this._pendingShare = message;
             else
-                print(message);
-                //this.stack.visible_child.setMessage(message);
+                this.stack.get(this.thread_id).setMessage(message);
         } catch (e) {
             debug(e);
         }

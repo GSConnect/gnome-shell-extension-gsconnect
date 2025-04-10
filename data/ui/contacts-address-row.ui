@@ -8,61 +8,16 @@ SPDX-License-Identifier: GPL-2.0-or-later
 
 <interface domain="org.gnome.Shell.Extensions.GSConnect">
   <requires lib="gtk" version="4.0"/>
-  <template class="GSConnectContactsAddressRow" parent="GtkListBoxRow">
+  <template class="GSConnectContactsAddressRow" parent="AdwActionRow">
     <property name="activatable">True</property>
     <property name="selectable">True</property>
-    <property name="hexpand">True</property>
     <property name="can_focus">True</property>
     <property name="visible">True</property>
-    <child>
-      <object class="GtkGrid" id="grid">
-        <property name="can_focus">False</property>
-        <property name="hexpand">True</property>
-        <property name="margin_top">6</property>
-        <property name="margin_bottom">6</property>
-        <property name="margin_start">6</property>
-        <property name="margin_end">6</property>
-        <property name="column_spacing">6</property>
-        <property name="visible">True</property>
-        <!--
-        <child>
-          <object class="GSConnectContactAvatar" id="avatar">
-            <property name="valign">center</property>
-            <property name="visible">False</property>
-          </object>
-        </child>
-        -->
-        <child>
-          <object class="GtkLabel" id="name-label">
-            <property name="halign">start</property>
-            <property name="hexpand">True</property>
-            <property name="visible">False</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkLabel" id="address-label">
-            <property name="halign">start</property>
-            <property name="hexpand">True</property>
-            <property name="visible">True</property>
-            <style>
-              <class name="dim-label"/>
-            </style>
-          </object>
-        </child>
-        <child>
-          <object class="GtkLabel" id="type-label">
-            <property name="halign">end</property>
-            <property name="label" translatable="yes">Other</property>
-            <property name="visible">True</property>
-            <property name="xalign">1.0</property>
-            <style>
-              <class name="dim-label"/>
-            </style>
-          </object>
-        </child>
-        <style>
-          <class name="contacts-address-row"/>
-        </style>
+    <child type="prefix">
+      <object class="AdwAvatar" id="avatar">
+        <property name="valign">center</property>
+        <property name="size">40</property>
+        <property name="show-initials">true</property>
       </object>
     </child>
   </template>
