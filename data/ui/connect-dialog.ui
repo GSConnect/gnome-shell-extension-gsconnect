@@ -18,53 +18,77 @@ SPDX-License-Identifier: GPL-2.0-or-later
         <child type="top">
           <object class="AdwHeaderBar" id="headerbar"/>
         </child>
-        <property name="content">
-          <object class="AdwPreferencesPage">
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
+            <property name="margin-top">24</property>
+            <property name="margin-bottom">24</property>
+            <property name="margin-start">12</property>
+            <property name="margin-end">12</property>
+            <property name="spacing">24</property>
             <child>
-              <object class="AdwPreferencesGroup">
-                <child>
-                  <object class="AdwEntryRow" id="lan_ip">
-                    <property name="title" translatable="yes">IP Address</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="AdwSpinRow" id="lan_port">
-                    <property name="title" translatable="yes">Port</property>
-                    <property name="adjustment">
-                      <object class="GtkAdjustment" id="port-adjustment">
-                        <property name="lower">1716</property>
-                        <property name="upper">1764</property>
-                        <property name="value">1716</property>
-                        <property name="step-increment">1</property>
-                        <property name="page-increment">1</property>
+              <object class="AdwClamp">
+                <property name="child">
+                  <object class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <property name="margin-top">24</property>
+                    <property name="margin-bottom">24</property>
+                    <property name="margin-start">12</property>
+                    <property name="margin-end">12</property>
+                    <property name="spacing">24</property>
+                    <child>
+                      <object class="GtkListBox">
+                        <property name="selection-mode">none</property>
+                        <style>
+                          <class name="boxed-list"/>
+                        </style>
+                        <child>
+                          <object class="AdwEntryRow" id="lan_ip">
+                            <property name="title">IP Address</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwSpinRow" id="lan_port">
+                            <property name="title" translatable="yes">Port</property>
+                            <property name="adjustment">
+                              <object class="GtkAdjustment" id="port-adjustment">
+                                <property name="lower">1716</property>
+                                <property name="upper">1764</property>
+                                <property name="value">1716</property>
+                                <property name="step-increment">1</property>
+                                <property name="page-increment">1</property>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
                       </object>
-                    </property>
+                    </child>
+                    <child>
+                      <object class="GtkListBox">
+                        <property name="selection-mode">none</property>
+                        <property name="margin-bottom">24</property>
+                        <property name="margin-start">12</property>
+                        <property name="margin-end">12</property>
+                        <style>
+                          <class name="boxed-list"/>
+                        </style>
+                        <child>
+                          <object class="AdwButtonRow" id="connect-button">
+                            <property name="title" translatable="yes">Connect</property>
+                            <property name="start-icon-name">network-transmit-receive-symbolic</property>
+                            <style>
+                              <class name="suggested-action"/>
+                            </style>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
                   </object>
-                </child>
-              </object>
-            </child>
-            <child>
-              <object class="GtkListBox">
-                <property name="selection-mode">none</property>
-                <property name="margin-bottom">24</property>
-                <property name="margin-start">12</property>
-                <property name="margin-end">12</property>
-                <style>
-                  <class name="boxed-list"/>
-                </style>
-                <child>
-                  <object class="AdwButtonRow" id="connect-button">
-                    <property name="title" translatable="yes">Connect</property>
-                    <property name="start-icon-name">network-transmit-receive-symbolic</property>
-                    <style>
-                      <class name="suggested-action"/>
-                    </style>
-                  </object>
-                </child>
+                </property>
               </object>
             </child>
           </object>
-        </property>
+        </child>
       </object>
     </child>
   </template>
