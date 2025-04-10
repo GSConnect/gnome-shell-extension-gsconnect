@@ -10,94 +10,127 @@ SPDX-License-Identifier: GPL-2.0-or-later
   <requires lib="gtk" version="4.0"/>
 
   <!-- WARNING: Same problem with signals tags -->
-  <template class="GSConnectMessagingConversation" parent="GtkBox">
+  <template class="GSConnectMessagingConversation" parent="AdwNavigationPage">
     <property name="visible">True</property>
-    <property name="orientation">vertical</property>
+    <property name="title" translatable="yes">Content</property>
     <child>
-      <object class="GtkScrolledWindow" id="scrolled">
+      <object class="AdwToolbarView">
         <property name="visible">True</property>
-        <property name="hscrollbar-policy">never</property>
-        <child>
-          <object class="GtkListBox" id="list">
-            <property name="vexpand">true</property>
-            <property name="selection-mode">none</property>
-            <property name="activate-on-single-click">False</property>
-            <signal name="notify::allocated-height" handler="_onSizeAllocate" swapped="no"/>
-            <child>
-              <object class="GtkListBoxRow" id="pending">
-                <property name="visible" bind-source="GSConnectMessagingConversation" bind-property="has-pending" bind-flags="sync-create"/>
-                <property name="hexpand">True</property>
-                <property name="activatable">False</property>
-                <property name="selectable">False</property>
+        <child type="top">
+          <object class="AdwHeaderBar">
+            <property name="visible">True</property>
+            <property name="title-widget">
+              <object class="GtkBox">
+                <property name="orientation">horizontal</property>
                 <child>
-                  <object class="GtkBox" id="pending-box">
+                  <object class="AdwAvatar" id="avatar">
+                    <property name="size">30</property>
+                    <property name="show-initials">true</property>
+                  </object>                            
+                </child>
+                <child>
+                  <object class="AdwWindowTitle" id="content-title">
                     <property name="visible">True</property>
-                    <property name="margin-top">6</property>
-                    <property name="margin-bottom">6</property>
-                    <property name="margin-start">50</property>
-                    <property name="margin-end">6</property>
-                    <property name="spacing">3</property>
-                    <property name="orientation">vertical</property>
+                    <property name="title" translatable="yes">Messaging</property>
                   </object>
                 </child>
+              </object>
+            </property>
+          </object>
+        </child>
+        <property name="content">
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkScrolledWindow" id="scrolled">
+                <property name="visible">True</property>
+                <property name="hscrollbar-policy">never</property>
+                <child>
+                  <object class="GtkListBox" id="list">
+                    <property name="vexpand">true</property>
+                    <property name="selection-mode">none</property>
+                    <property name="activate-on-single-click">False</property>
+                    <signal name="notify::allocated-height" handler="_onSizeAllocate" swapped="no"/>
+                    <child>
+                      <object class="GtkListBoxRow" id="pending">
+                        <property name="visible" bind-source="GSConnectMessagingConversation" bind-property="has-pending" bind-flags="sync-create"/>
+                        <property name="hexpand">True</property>
+                        <property name="activatable">False</property>
+                        <property name="selectable">False</property>
+                        <child>
+                          <object class="GtkBox" id="pending-box">
+                            <property name="visible">True</property>
+                            <property name="margin-top">6</property>
+                            <property name="margin-bottom">6</property>
+                            <property name="margin-start">50</property>
+                            <property name="margin-end">6</property>
+                            <property name="spacing">3</property>
+                            <property name="orientation">vertical</property>
+                          </object>
+                        </child>
+                        <style>
+                          <class name="message-pending"/>
+                        </style>
+                      </object>
+                    </child>
+                    <style>
+                      <class name="message-list"/>
+                    </style>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkSeparator">
                 <style>
-                  <class name="message-pending"/>
+                  <class name="sidebar"/>
                 </style>
               </object>
             </child>
-            <style>
-              <class name="message-list"/>
-            </style>
-          </object>
-        </child>
-      </object>
-    </child>
-    <child>
-      <object class="GtkSeparator">
-        <style>
-          <class name="sidebar"/>
-        </style>
-      </object>
-    </child>
-    <child>
-      <object class="AdwClamp">
-        <child>
-          <object class="GtkBox">
             <child>
-              <object class="GtkMenuButton">
-                <property name="icon-name">face-smile-symbolic</property>
-                <property name="valign">center</property>
-                <property name="margin-top">7</property>
-                <property name="margin-bottom">7</property>
-                <property name="margin-start">7</property>
-                <property name="margin-end">7</property>
-                <property name="popover">
-                  <object class="GtkEmojiChooser" id="emoji_chooser">
-                    <signal name="emoji-picked" handler="on_emoji_picked"/>
+              <object class="AdwClamp">
+                <child>
+                  <object class="GtkBox">
+                    <child>
+                      <object class="GtkMenuButton">
+                        <property name="icon-name">face-smile-symbolic</property>
+                        <property name="valign">center</property>
+                        <property name="margin-top">7</property>
+                        <property name="margin-bottom">7</property>
+                        <property name="margin-start">7</property>
+                        <property name="margin-end">7</property>
+                        <property name="popover">
+                          <object class="GtkEmojiChooser" id="emoji_chooser">
+                            <signal name="emoji-picked" handler="on_emoji_picked"/>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkEntry" id="entry">
+                        <property name="visible">True</property>
+                        <property name="hexpand">True</property>
+                        <property name="margin-top">7</property>
+                        <property name="margin-bottom">7</property>
+                        <property name="margin-start">7</property>
+                        <property name="margin-end">7</property>
+                        <property name="placeholder-text" translatable="yes">Write a message…</property>
+                        <property name="enable-emoji-completion">True</property>
+                        <property name="secondary-icon-name">sms-send</property>
+                        <property name="secondary-icon-sensitive">False</property>
+                        <property name="secondary-icon-tooltip-text" translatable="yes">Send Message</property>
+                        <signal name="activate" handler="_onSendMessage" swapped="no"/>
+                        <signal name="changed" handler="_onEntryChanged" swapped="no"/>
+                        <signal name="icon-release" handler="_onSendMessage" swapped="no"/>
+                      </object>
+                    </child>
                   </object>
-                </property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkEntry" id="entry">
-                <property name="visible">True</property>
-                <property name="hexpand">True</property>
-                <property name="margin-top">7</property>
-                <property name="margin-bottom">7</property>
-                <property name="margin-start">7</property>
-                <property name="margin-end">7</property>
-                <property name="placeholder-text" translatable="yes">Write a message…</property>
-                <property name="enable-emoji-completion">True</property>
-                <property name="secondary-icon-name">sms-send</property>
-                <property name="secondary-icon-sensitive">False</property>
-                <property name="secondary-icon-tooltip-text" translatable="yes">Send Message</property>
-                <signal name="activate" handler="_onSendMessage" swapped="no"/>
-                <signal name="changed" handler="_onEntryChanged" swapped="no"/>
-                <signal name="icon-release" handler="_onSendMessage" swapped="no"/>
+                </child>
               </object>
             </child>
           </object>
-        </child>
+        </property>
       </object>
     </child>
   </template>

@@ -319,6 +319,13 @@ const Conversation = GObject.registerClass({
             GObject.ParamFlags.READWRITE,
             GObject.Object
         ),
+        'message': GObject.ParamSpec.object(
+            'message',
+            'Message',
+            'The last conversation message',
+            GObject.ParamFlags.READWRITE,
+            GObject.Object
+        ),
         'has-pending': GObject.ParamSpec.boolean(
             'has-pending',
             'Has Pending',
@@ -344,9 +351,10 @@ const Conversation = GObject.registerClass({
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/messaging-conversation.ui',
     Children: [
         'entry', 'list', 'scrolled',
-        'pending', 'pending-box', 
+        'pending', 'pending-box', 'avatar',
+        'content-title'
     ],
-}, class MessagingConversation extends Gtk.Box {
+}, class MessagingConversation extends Adw.NavigationPage {
 
     _init(params) {
         super._init({
@@ -364,6 +372,25 @@ const Conversation = GObject.registerClass({
 
         this.inbox_counter = 0;
 
+        const address = this.message.addresses[0].address;
+        const contact = this.device.contacts.query({number: address});
+    
+        if (this.message.addresses.length === 1) {
+            this.content_title.set_title(contact.name);
+            this.content_title.set_subtitle(Contacts.getDisplayNumber(contact, address));
+            this.avatar.set_text(contact.name);
+        } else {
+            const otherLength = this.message.addresses.length - 1;
+            this.content_title.set_title(contact.name);
+            this.content_title.set_subtitle(ngettext(
+                'And %d other contact',
+                'And %d others',
+                otherLength
+            ).format(otherLength));
+        }
+
+        this.addMessage(this.message);
+    
         // If we're disconnected pending messages might not succeed, but we'll
         // leave them until reconnect when we'll ask for an update
         this._connectedId = this.device.connect(
@@ -801,8 +828,6 @@ const Conversation = GObject.registerClass({
             // Insert the message in its sorted location
             this.list.append(row);
 
-            print(JSON.stringify(message));
-
             if (message.date > this.latest) {
                 this.latest = message.date;
                 // Remove the first pending message
@@ -815,7 +840,7 @@ const Conversation = GObject.registerClass({
                     this.notify('has-pending');
                 } 
                 if (message.read === Sms.MessageStatus.UNREAD) {
-                    this.inbox_counter += 1;
+                    this.inbox_counter += 1;_setHeaderBar
                 } else if(message.read == Sms.MessageStatus.READ) {
                     this.inbox_counter -= 1;
                 }
@@ -930,7 +955,7 @@ const ConversationSummary = GObject.registerClass({
             name_label = `<b>${name_label}</b>`;
             body_label = `<b>${body_label}</b>`;
             this.counter_label.set_visible(true);
-        }
+        }                    
 
         // Set the labels, body always smaller
         this.set_title(name_label);
@@ -980,15 +1005,17 @@ export const Window = GObject.registerClass({
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/messaging-window.ui',
     Children: [
         'sidebar-title', 'split-view',
-        'thread-list', 'stack', 'avatar', 'content-title'
+        'thread-list'
     ],
 }, class MessagingWindow extends Adw.ApplicationWindow {
 
     _init(params) {
         super._init(params);
-        this.sidebar_title.set_subtitle(this.device.name);
         
         this.internal_thread_list = [];
+        this.stack = new Map();
+        
+        this.sidebar_title.set_subtitle(this.device.name);
         this.insert_action_group('device', this.device);
 
         // Device Status
@@ -999,7 +1026,6 @@ export const Window = GObject.registerClass({
             'reveal-child',
             GObject.BindingFlags.INVERT_BOOLEAN
         );
-        */
         // Contacts
         this.contact_chooser = new Contacts.ContactChooser({
             device: this.device,
@@ -1010,7 +1036,7 @@ export const Window = GObject.registerClass({
             'number-selected',
             this._onNumberSelected.bind(this)
         );
-        
+        */
         // Threads
         this.thread_list.set_sort_func(this._sortThreads);
 
@@ -1049,7 +1075,7 @@ export const Window = GObject.registerClass({
     }
 
     get thread_id() {
-        return this.stack.visible_child_name;
+        return this.split_view.content.thread_id;
     }
 
     set thread_id(thread_id) {
@@ -1058,15 +1084,14 @@ export const Window = GObject.registerClass({
         // Reset to the empty placeholder
         if (!thread_id) {
             this.thread_list.select_row(null);
-            this.stack.set_visible_child_name('placeholder');
             return;
         }
 
         // Create a conversation widget if there isn't one
-        let conversation = this.stack.get_child_by_name(thread_id);
+        let conversation = this.stack.get(thread_id);
         const message = this.plugin.getThreadLatestMessage(thread_id);
 
-        if (conversation === null) {
+        if (conversation === undefined) {
             if (!message) {
                 debug(`Thread ID ${thread_id} not found`);
                 return;
@@ -1075,19 +1100,17 @@ export const Window = GObject.registerClass({
             conversation = new Conversation({
                 device: this.device,
                 plugin: this.plugin,
+                message: message,
                 thread_id: thread_id,
             });
-
-            this.stack.add_named(conversation, thread_id);
-            conversation.addMessage(message);
+            
+            this.stack.set(thread_id, conversation);
         }
 
-        // Figure out whether this is a multi-recipient thread
-        this._setHeaderBar(message.addresses);
 
         // Select the conversation and entry active
-        this.stack.visible_child = conversation;
-        //this.stack.visible_child.entry.has_focus = true;
+        this.split_view.set_content(conversation);
+        this.split_view.set_show_content(true);
 
         // There was a pending message waiting for a conversation to be chosen
         if (this._pendingShare) {
@@ -1098,26 +1121,6 @@ export const Window = GObject.registerClass({
         this._thread_id = thread_id;
         this.notify('thread_id');
     }
-
-    _setHeaderBar(addresses = []) {
-        const address = addresses[0].address;
-        const contact = this.device.contacts.query({number: address});
-
-        if (addresses.length === 1) {
-            this.content_title.set_title(contact.name);
-            this.content_title.set_subtitle(Contacts.getDisplayNumber(contact, address));
-            this.avatar.set_text(contact.name);
-        } else {
-            const otherLength = addresses.length - 1;
-            this.content_title.set_title(contact.name);
-            this.content_title.set_subtitle(ngettext(
-                'And %d other contact',
-                'And %d others',
-                otherLength
-            ).format(otherLength));
-        }
-    }
-
     _sync() {
         this.device.contacts.fetch();
         this.plugin.connected();
@@ -1126,7 +1129,7 @@ export const Window = GObject.registerClass({
     _onNewConversation() {
         this._sync();
         this.split_view.set_show_content(true);
-        this.stack.set_visible_child_name('contact-chooser');
+        //this.splut_view.push('contact-chooser');
         this.thread_list.select_row(null);
         //this.contact_chooser.entry.has_focus = true;
     }
@@ -1162,12 +1165,6 @@ export const Window = GObject.registerClass({
         if (row) {
             this.thread_id = row.thread_id;
             this.split_view.set_show_content(true);
-            this.avatar.set_visible(true);
-            // Show the placeholder
-            this._setHeaderBar(row.message.addresses)
-        } else {
-            this.content_title.title = _('Messaging');
-            this.avatar.set_visible(false);
         }
     }
 
@@ -1237,14 +1234,11 @@ export const Window = GObject.registerClass({
             addresses: addresses,
         });
 
-        // Set the headerbar
-        this._setHeaderBar(addresses);
-
         // Select the conversation and entry active
-        this.stack.add_named(conversation, thread_id);
-        this.stack.visible_child = conversation;
-        this.stack.visible_child.entry.has_focus = true;
-
+        this.stack.set(thread_id, conversation);
+        this.split_view.set_content(conversation);
+        this.split_view.set_show_content(true);
+        
         // There was a pending message waiting for a conversation to be chosen
         if (this._pendingShare) {
             conversation.setMessage(this._pendingShare);
@@ -1301,7 +1295,7 @@ export const Window = GObject.registerClass({
 
         // If it's a message for the selected conversation, display it
         if (thread_id === this.thread_id) {
-            const conversation = this.stack.get_child_by_name(`${thread_id}`);
+            const conversation = this.stack.get(`${thread_id}`);
             print(`${conversation.inbox_counter}`);
             conversation.addMessage(message);
         }
@@ -1320,33 +1314,33 @@ export const Window = GObject.registerClass({
 
         // First try to find a conversation by thread_id
         const thread_id = `${message.thread_id}`;
-        const conversation = this.stack.get_child_by_name(thread_id);
+        const conversation = this.stack.get(thread_id);
+        const old_thread_id = null;
 
-        if (conversation !== null)
-            return conversation;
+        if (conversation == null) {
+            // Try and find one by matching addresses, which is necessary if we've
+            // started a thread locally and haven't set the thread_id
+            const addresses = message.addresses;
 
-        // Try and find one by matching addresses, which is necessary if we've
-        // started a thread locally and haven't set the thread_id
-        const addresses = message.addresses;
+            for (const conversation of this.stack.values()) {
+                if (conversation.addresses === undefined ||
+                    conversation.addresses.length !== addresses.length)
+                    continue;
 
-        for (const conversation of this.stack.get_children()) {
-            if (conversation.addresses === undefined ||
-                conversation.addresses.length !== addresses.length)
-                continue;
+                const caddrs = conversation.addresses;
 
-            const caddrs = conversation.addresses;
-
-            // If we find a match, set `thread-id` on the conversation and the
-            // child property `name`.
-            if (addresses.every(addr => this._includesAddress(caddrs, addr))) {
-                conversation._thread_id = thread_id;
-                this.stack.child_set_property(conversation, 'name', thread_id);
-
-                return conversation;
+                // If we find a match, set `thread-id` on the conversation and the
+                // child property `name`.
+                if (addresses.every(addr => this._includesAddress(caddrs, addr))) {
+                    old_thread_id = conversation._thread_id;
+                    conversation._thread_id = thread_id;
+                }
             }
         }
+        this.stack.delete(old_thread_id);
+        this.stack.set(thread_id, conversation);
 
-        return null;
+        return conversation;
     }
 
     /**
@@ -1362,7 +1356,8 @@ export const Window = GObject.registerClass({
             if (pending)
                 this._pendingShare = message;
             else
-                this.stack.visible_child.setMessage(message);
+                print(message);
+                //this.stack.visible_child.setMessage(message);
         } catch (e) {
             debug(e);
         }
