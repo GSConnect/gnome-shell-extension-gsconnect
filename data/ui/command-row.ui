@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+
+SPDX-License-Identifier: GPL-2.0-or-later
+-->
+
 <interface domain="org.gnome.Shell.Extensions.GSConnect">
   <requires lib="gtk" version="4.0"/>
-  <template class="CommandActionRow" parent="AdwActionRow">
+  <requires lib="Adw" version="1.0"/>
+  
+  <!-- GSConnectCommandActionRow is more consistent with other files than CommandActionRow -->
+  <template class="GSConnectCommandActionRow" parent="AdwActionRow">
     <child>
       <object class="GtkButton" id="edit_button">
-        <property name="margin-top">10</property>
-        <property name="margin-bottom">10</property>
-        <property name="child">
-          <object class="AdwButtonContent">
-            <property name="icon-name">document-edit-symbolic</property>
-          </object>
-        </property>
+        <property name="valign">center</property>
+        <property name="icon-name">document-edit-symbolic</property>
         <style>
-          <class name="circular" />
+          <class name="circular"/>
         </style>
       </object>
     </child>
     <child>
       <object class="GtkButton" id="delete_button">
-        <property name="margin-top">10</property>
-        <property name="margin-bottom">10</property>
-        <property name="child">
-          <object class="AdwButtonContent">
-            <property name="icon-name">user-trash-symbolic</property>
-          </object>
-        </property>
+        <property name="valign">center</property>
+        <property name="icon-name">user-trash-symbolic</property>
         <style>
-          <class name="circular" />
-          <class name="destructive-action" />
+          <class name="circular"/>
+          <class name="destructive-action"/>
         </style>
       </object>
     </child>
