@@ -18,6 +18,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <property name="page-increment">1</property>
   </object>
   
+  <!-- TODO: Rename this template to GSConnectDevicePairPage (it's more consistent with other files) -->
   <template class="DevicePairPage" parent="AdwNavigationPage">
     <property name="title" translatable="no">Content</property>
     <property name="tag">content</property>
