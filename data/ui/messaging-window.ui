@@ -6,6 +6,8 @@ SPDX-License-Identifier: GPL-2.0-or-later
 -->
 <interface domain="org.gnome.Shell.Extensions.GSConnect">
   <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+  
   <template class="GSConnectMessagingWindow" parent="AdwApplicationWindow">
     <property name="icon-name">org.gnome.Shell.Extensions.GSConnect-symbolic</property>
     <property name="default-height">700</property>
@@ -18,6 +20,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
     </child>
     <property name="content">
       <object class="AdwToastOverlay" id="toast-overlay">
+        <property name="visible">True</property>
         <property name="child">
           <object class="AdwNavigationSplitView" id="split-view">
             <property name="visible">True</property>
@@ -25,7 +28,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
             <property name="sidebar">
               <object class="AdwNavigationPage">
                 <property name="visible">True</property>
-                <property name="title" translatable="yes">Sidebar</property>
+                <property name="title" translatable="no">Sidebar</property>
                 <child>
                   <object class="AdwToolbarView">
                     <property name="visible">True</property>
@@ -56,10 +59,16 @@ SPDX-License-Identifier: GPL-2.0-or-later
                           <object class="GtkListBox" id="thread-list">
                             <property name="visible">True</property>
                             <signal name="row-activated" handler="_onThreadSelected" swapped="no"/>
+                            <style>
+                              <class name="navigation-sidebar"/>
+                            </style>
                             <child type="placeholder">
                               <object class="AdwStatusPage" id="thread-list-placeholder">
                                 <property name="visible">True</property>
                                 <property name="title" translatable="yes">No Conversations</property>
+                                <style>
+                                  <class name="compact"/>
+                                </style>
                                 <child>
                                   <object class="GtkLinkButton">
                                     <property name="visible">True</property>
@@ -70,14 +79,8 @@ SPDX-License-Identifier: GPL-2.0-or-later
                                     </style>
                                   </object>
                                 </child>
-                                <style>
-                                  <class name="compact"/>
-                                </style>
                               </object>
                             </child>
-                            <style>
-                              <class name="navigation-sidebar"/>
-                            </style>
                           </object>
                         </child>
                       </object>
@@ -89,7 +92,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
             <property name="content">
               <object class="AdwNavigationPage">
                 <property name="visible">True</property>
-                <property name="title" translatable="yes">Content</property>
+                <property name="title" translatable="no">Content</property>
                 <child>
                   <object class="AdwToolbarView">
                     <property name="visible">True</property>
@@ -98,11 +101,12 @@ SPDX-License-Identifier: GPL-2.0-or-later
                         <property name="visible">True</property>
                         <property name="title-widget">
                           <object class="GtkBox">
+                            <property name="visible">True</property>
                             <property name="orientation">horizontal</property>
                             <child>
                               <object class="AdwAvatar" id="avatar">
+                                <property name="visible">False</property>
                                 <property name="size">30</property>
-                                <property name="visible">false</property>
                                 <property name="show-initials">true</property>
                               </object>                            
                             </child>
@@ -119,8 +123,8 @@ SPDX-License-Identifier: GPL-2.0-or-later
                     <property name="content">
                       <object class="AdwStatusPage">
                         <property name="visible">True</property>
-                        <property name="title" translatable="yes">No conversation selected</property>
-                        <property name="description" translatable="yes">Select or start a conversation to start</property>
+                        <property name="title" translatable="yes">No Conversation Selected</property>
+                        <property name="description" translatable="yes">Select or start a conversation</property>
                         <property name="icon-name">sms-symbolic</property>
                       </object>
                     </property>

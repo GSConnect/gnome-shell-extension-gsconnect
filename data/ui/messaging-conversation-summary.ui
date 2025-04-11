@@ -10,26 +10,30 @@ SPDX-License-Identifier: GPL-2.0-or-later
   <requires lib="gtk" version="4.0"/>
 
   <template class="GSConnectMessagingConversationSummary" parent="AdwActionRow">
+    <property name="visible">True</property>
+    <property name="activatable">True</property>
+    <property name="title-lines">1</property>
+    <property name="subtitle-lines">1</property>
     <child type="prefix">
       <object class="AdwAvatar" id="avatar">
+        <property name="visible">True</property>
         <property name="size">40</property>
         <property name="show-initials">true</property>
       </object>
     </child>
-    <property name="activatable">True</property>
-    <property name="title-lines">1</property>
-    <property name="subtitle-lines">1</property>
-    <child type="suffix">
+    <child>
       <object class="GtkBox">
+        <property name="visible">True</property>
         <property name="orientation">vertical</property>
         <property name="valign">end</property>
         <child>
           <object class="GtkBox">
-            <property name="hexpand">true</property>
+            <property name="visible">True</property>
+            <property name="hexpand">True</property>
             <property name="halign">end</property>
             <child>
               <object class="GtkLabel" id="counter-label">
-                <property name="visible">false</property>
+                <property name="visible">False</property>
                 <style>
                   <class name="counter"/>
                   <class name="numeric"/>
