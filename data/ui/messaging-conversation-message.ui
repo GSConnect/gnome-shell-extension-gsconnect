@@ -8,6 +8,8 @@ SPDX-License-Identifier: GPL-2.0-or-later
 
 <interface domain="org.gnome.Shell.Extensions.GSConnect">
   <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+  
   <template class="GSConnectMessagingConversationMessage" parent="GtkListBoxRow">
     <property name="visible">True</property>
     <property name="hexpand">True</property>
@@ -15,7 +17,8 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <property name="selectable">False</property>
     <child>
       <object class="GtkGrid" id="grid">
-        <property name="can_focus">False</property>
+        <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <property name="halign">end</property>
         <property name="hexpand">True</property>
         <property name="margin-top">6</property>
@@ -23,14 +26,12 @@ SPDX-License-Identifier: GPL-2.0-or-later
         <property name="margin-start">6</property>
         <property name="margin-end">6</property>
         <property name="column-spacing">6</property>
-        <property name="orientation">vertical</property>
-        <property name="visible">True</property>
         <child>
           <object class="GtkLabel" id="message-label">
+            <property name="visible">True</property>
             <property name="halign">end</property>
             <property name="selectable">True</property>
             <property name="use-markup">True</property>
-            <property name="visible">True</property>
             <property name="wrap">True</property>
             <property name="wrap-mode">word-char</property>
             <property name="xalign">0</property>
@@ -39,6 +40,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
         </child>
         <child>
           <object class="GtkLabel" id="time-label">
+            <property name="visible">True</property>
             <property name="halign">start</property>
             <property name="margin-top">6</property>
             <property name="margin-bottom">6</property>
