@@ -8,13 +8,15 @@ SPDX-License-Identifier: GPL-2.0-or-later
 
 <interface domain="org.gnome.Shell.Extensions.GSConnect">
   <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+  
   <template class="GSConnectContactsAddressRow" parent="AdwActionRow">
+    <property name="visible">True</property>
     <property name="activatable">True</property>
     <property name="selectable">True</property>
-    <property name="can_focus">True</property>
-    <property name="visible">True</property>
     <child type="prefix">
       <object class="AdwAvatar" id="avatar">
+        <property name="visible">True</property>
         <property name="valign">center</property>
         <property name="size">40</property>
         <property name="show-initials">true</property>
