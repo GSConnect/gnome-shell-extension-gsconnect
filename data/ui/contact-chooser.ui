@@ -1,19 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+
+SPDX-License-Identifier: GPL-2.0-or-later
+-->
+
 <interface domain="org.gnome.Shell.Extensions.GSConnect">
   <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+
   <template class="GSConnectContactChooser" parent="AdwNavigationPage">
-    <property name="visible">True</property>
-    <property name="title" translatable="yes">Content</property>
+    <property name="title" translatable="no">Content</property>
     <child>
       <object class="AdwToolbarView">
         <property name="visible">True</property>
         <child type="top">
           <object class="GtkBox" id="container">
-            <property name="orientation">1</property>
+            <property name="visible">True</property>
+            <property name="orientation">vertical</property>
             <child>
               <object class="AdwHeaderBar">
+                <property name="visible">True</property>
                 <child type="end">
                   <object class="GtkToggleButton" id="button-search">
+                    <property name="visible">True</property>
                     <property name="icon-name">edit-find-symbolic</property>
                   </object>
                 </child>
@@ -23,12 +34,14 @@
               <object class="AdwClamp">
                 <child>
                   <object class="GtkSearchBar" id="search-bar">
+                    <property name="visible">True</property>
                     <property name="key-capture-widget">container</property>
                     <child>
                       <object class="GtkSearchEntry" id="search-entry">
+                        <property name="visible">True</property>
+                        <property name="hexpand">True</property>
+                        <property name="placeholder-text" translatable="yes">Search for names or phone numbers</property>
                         <property name="search-delay">100</property>
-                        <property name="hexpand">true</property>
-                        <property name="placeholder-text" translatable="yes">Search fruits</property>
                       </object>
                     </child>
                   </object>
@@ -39,18 +52,21 @@
         </child>
         <child>
           <object class="GtkStack" id="stack">
-            <property name="transition-type">1</property>
+            <property name="visible">True</property>
+            <property name="transition-type">crossfade</property>
             <child>
               <object class="GtkScrolledWindow" id="scrolled">
+                <property name="visible">True</property>
                 <child>
                   <object class="AdwClamp">
                     <property name="margin-top">24</property>
                     <property name="margin-bottom">24</property>
                     <child>
                       <object class="GtkListBox" id="list">
-                        <property name="valign">1</property>
-                        <property name="hexpand">true</property>
-                        <property name="selection-mode">0</property>
+                        <property name="visible">True</property>
+                        <property name="hexpand">True</property>
+                        <property name="valign">start</property>
+                        <property name="selection-mode">none</property>
                         <style>
                           <class name="boxed-list"/>
                         </style>
@@ -62,10 +78,11 @@
             </child>
             <child>
               <object class="AdwStatusPage" id="not-found-page">
+                <property name="visible">True</property>
+                <property name="vexpand">True</property>
                 <property name="title" translatable="yes">No Results Founds</property>
                 <property name="description" translatable="yes">Try a different search</property>
                 <property name="icon-name">edit-find-symbolic</property>
-                <property name="vexpand">true</property>
               </object>
             </child>
           </object>
