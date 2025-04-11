@@ -10,8 +10,8 @@ SPDX-License-Identifier: GPL-2.0-or-later
   <requires lib="gtk" version="4.0"/>
   <requires lib="Adw" version="1.0"/>
   
-  <!-- GSConnectCommandActionRow is more consistent with other files than CommandActionRow -->
-  <template class="GSConnectCommandActionRow" parent="AdwActionRow">
+  <!-- TODO: Rename this template to GSConnectCommandActionRow (it's more consistent with other files) -->
+  <template class="CommandActionRow" parent="AdwActionRow">
     <child>
       <object class="GtkButton" id="edit_button">
         <property name="visible">True</property>
