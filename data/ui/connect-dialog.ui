@@ -9,17 +9,21 @@ SPDX-License-Identifier: GPL-2.0-or-later
 <interface>
   <requires lib="gtk" version="4.0"/>
   <requires lib="Adw" version="1.0"/>
-  
+
   <template class="GSConnectConnectDialog" parent="AdwDialog">
     <property name="title" translatable="yes">Connect to…</property>
-    <property name="content-width">400</property>
+    <property name="content-width">500</property>
     <child>
       <object class="AdwToolbarView">
+        <property name="visible">True</property>
         <child type="top">
-          <object class="AdwHeaderBar" id="headerbar"/>
+          <object class="AdwHeaderBar" id="headerbar">
+            <property name="visible">True</property>
+          </object>
         </child>
         <child>
           <object class="GtkBox">
+            <property name="visible">True</property>
             <property name="orientation">vertical</property>
             <property name="margin-top">24</property>
             <property name="margin-bottom">24</property>
@@ -30,25 +34,29 @@ SPDX-License-Identifier: GPL-2.0-or-later
               <object class="AdwClamp">
                 <property name="child">
                   <object class="GtkBox">
+                    <property name="visible">True</property>
                     <property name="orientation">vertical</property>
-                    <property name="margin-top">24</property>
+                    <property name="margin-top">12</property>
                     <property name="margin-bottom">24</property>
                     <property name="margin-start">12</property>
                     <property name="margin-end">12</property>
                     <property name="spacing">24</property>
                     <child>
                       <object class="GtkListBox">
+                        <property name="visible">True</property>
                         <property name="selection-mode">none</property>
                         <style>
                           <class name="boxed-list"/>
                         </style>
                         <child>
                           <object class="AdwEntryRow" id="lan_ip">
-                            <property name="title">IP Address</property>
+                            <property name="visible">True</property>
+                            <property name="title" translatable="yes">IP Address</property>
                           </object>
                         </child>
                         <child>
                           <object class="AdwSpinRow" id="lan_port">
+                            <property name="visible">True</property>
                             <property name="title" translatable="yes">Port</property>
                             <property name="adjustment">
                               <object class="GtkAdjustment" id="port-adjustment">
@@ -65,8 +73,8 @@ SPDX-License-Identifier: GPL-2.0-or-later
                     </child>
                     <child>
                       <object class="GtkListBox">
+                        <property name="visible">True</property>
                         <property name="selection-mode">none</property>
-                        <property name="margin-bottom">24</property>
                         <property name="margin-start">12</property>
                         <property name="margin-end">12</property>
                         <style>
@@ -74,6 +82,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                         </style>
                         <child>
                           <object class="AdwButtonRow" id="connect-button">
+                            <property name="visible">True</property>
                             <property name="title" translatable="yes">Connect</property>
                             <property name="start-icon-name">network-transmit-receive-symbolic</property>
                             <style>
