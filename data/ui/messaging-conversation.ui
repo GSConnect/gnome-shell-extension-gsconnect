@@ -8,11 +8,10 @@ SPDX-License-Identifier: GPL-2.0-or-later
 
 <interface domain="org.gnome.Shell.Extensions.GSConnect">
   <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
 
-  <!-- WARNING: Same problem with signals tags -->
   <template class="GSConnectMessagingConversation" parent="AdwNavigationPage">
-    <property name="visible">True</property>
-    <property name="title" translatable="yes">Content</property>
+    <property name="title" translatable="no">Content</property>
     <child>
       <object class="AdwToolbarView">
         <property name="visible">True</property>
@@ -21,17 +20,19 @@ SPDX-License-Identifier: GPL-2.0-or-later
             <property name="visible">True</property>
             <property name="title-widget">
               <object class="GtkBox">
+                <property name="visible">True</property>
                 <property name="orientation">horizontal</property>
                 <child>
                   <object class="AdwAvatar" id="avatar">
+                    <property name="visible">True</property>
                     <property name="size">30</property>
-                    <property name="show-initials">true</property>
+                    <property name="show-initials">True</property>
                   </object>                            
                 </child>
                 <child>
                   <object class="AdwWindowTitle" id="content-title">
                     <property name="visible">True</property>
-                    <property name="title" translatable="yes">Messaging</property>
+                    <property name="title" translatable="no">Contact Name</property>
                   </object>
                 </child>
               </object>
@@ -48,6 +49,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                 <property name="hscrollbar-policy">never</property>
                 <child>
                   <object class="GtkListBox" id="list">
+                    <property name="visible">True</property>
                     <property name="vexpand">true</property>
                     <property name="selection-mode">none</property>
                     <property name="activate-on-single-click">False</property>
@@ -61,12 +63,12 @@ SPDX-License-Identifier: GPL-2.0-or-later
                         <child>
                           <object class="GtkBox" id="pending-box">
                             <property name="visible">True</property>
+                            <property name="orientation">vertical</property>
                             <property name="margin-top">6</property>
                             <property name="margin-bottom">6</property>
                             <property name="margin-start">50</property>
                             <property name="margin-end">6</property>
                             <property name="spacing">3</property>
-                            <property name="orientation">vertical</property>
                           </object>
                         </child>
                         <style>
@@ -83,6 +85,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
             </child>
             <child>
               <object class="GtkSeparator">
+                <property name="visible">True</property>
                 <style>
                   <class name="sidebar"/>
                 </style>
@@ -92,14 +95,16 @@ SPDX-License-Identifier: GPL-2.0-or-later
               <object class="AdwClamp">
                 <child>
                   <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkMenuButton">
-                        <property name="icon-name">face-smile-symbolic</property>
-                        <property name="valign">center</property>
+                        <property name="visible">True</property>
                         <property name="margin-top">7</property>
                         <property name="margin-bottom">7</property>
                         <property name="margin-start">7</property>
                         <property name="margin-end">7</property>
+                        <property name="icon-name">face-smile-symbolic</property>
                         <property name="popover">
                           <object class="GtkEmojiChooser" id="emoji_chooser">
                             <signal name="emoji-picked" handler="on_emoji_picked"/>
