@@ -8,6 +8,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
 
 <interface domain="org.gnome.Shell.Extensions.GSConnect">
   <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
 
   <template class="GSConnectMessagingConversationSummary" parent="AdwActionRow">
     <property name="visible">True</property>
@@ -25,29 +26,23 @@ SPDX-License-Identifier: GPL-2.0-or-later
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="orientation">vertical</property>
-        <property name="valign">end</property>
+        <property name="valign">center</property>
         <child>
-          <object class="GtkBox">
-            <property name="visible">True</property>
-            <property name="hexpand">True</property>
-            <property name="halign">end</property>
-            <child>
-              <object class="GtkLabel" id="counter-label">
-                <property name="visible">False</property>
-                <style>
-                  <class name="counter"/>
-                  <class name="numeric"/>
-                  <class name="needs-attention"/>
-                </style>
-              </object>
-            </child>
+          <object class="GtkLabel" id="counter-label">
+            <property name="visible">False</property>
+            <property name="valign">start</property>
+            <property name="halign">center</property>
+            <style>
+              <class name="counter"/>
+              <class name="numeric"/>
+              <class name="needs-attention"/>
+            </style>
           </object>
         </child>
         <child>
           <object class="GtkLabel" id="time-label">
             <property name="visible">True</property>
-            <property name="valign">center</property>
-            <property name="halign">end</property>
+            <property name="valign">end</property>
             <property name="ellipsize">end</property>
             <property name="use-markup">True</property>
             <style>
