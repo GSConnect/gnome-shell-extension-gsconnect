@@ -15,7 +15,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <child>
       <object class="AdwBreakpoint">
         <condition>max-width: 800sp</condition>
-        <setter object="split-view" property="collapsed">true</setter>
+        <setter object="split-view" property="collapsed">True</setter>
       </object>
     </child>
     <property name="content">
@@ -24,7 +24,6 @@ SPDX-License-Identifier: GPL-2.0-or-later
         <property name="child">
           <object class="AdwNavigationSplitView" id="split-view">
             <property name="visible">True</property>
-            <property name="min-sidebar-width">300</property>
             <property name="sidebar">
               <object class="AdwNavigationPage">
                 <property name="visible">True</property>
@@ -107,7 +106,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                               <object class="AdwAvatar" id="avatar">
                                 <property name="visible">False</property>
                                 <property name="size">30</property>
-                                <property name="show-initials">true</property>
+                                <property name="show-initials">True</property>
                               </object>                            
                             </child>
                             <child>
