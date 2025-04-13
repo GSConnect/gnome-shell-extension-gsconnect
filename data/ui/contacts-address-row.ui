@@ -19,7 +19,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
         <property name="visible">True</property>
         <property name="valign">center</property>
         <property name="size">40</property>
-        <property name="show-initials">true</property>
+        <property name="show-initials">True</property>
       </object>
     </child>
   </template>

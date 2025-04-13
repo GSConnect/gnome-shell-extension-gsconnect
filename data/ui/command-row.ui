@@ -11,14 +11,12 @@ SPDX-License-Identifier: GPL-2.0-or-later
   <requires lib="Adw" version="1.0"/>
   
   <template class="GSConnectCommandActionRow" parent="AdwActionRow">
+    <property name="visible">True</property>
     <child>
       <object class="GtkButton" id="edit_button">
         <property name="visible">True</property>
         <property name="valign">center</property>
         <property name="icon-name">document-edit-symbolic</property>
-        <style>
-          <class name="circular"/>
-        </style>
       </object>
     </child>
     <child>
@@ -27,7 +25,6 @@ SPDX-License-Identifier: GPL-2.0-or-later
         <property name="valign">center</property>
         <property name="icon-name">user-trash-symbolic</property>
         <style>
-          <class name="circular"/>
           <class name="destructive-action"/>
         </style>
       </object>

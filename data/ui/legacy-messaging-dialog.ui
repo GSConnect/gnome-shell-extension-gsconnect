@@ -6,191 +6,100 @@ SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
 SPDX-License-Identifier: GPL-2.0-or-later
 -->
 
-<interface>
-  <requires lib="gtk" version="4.0"/>  
-  <template class="GSConnectLegacyMessagingDialog" parent="GtkDialog">
-    <property name="can_focus">False</property>
-    <property name="default_width">300</property>
-    <property name="default_height">300</property>
-    <property name="title" translatable="yes">Send SMS</property>
-    <property name="type_hint">dialog</property>
-    <child type="action">
-      <object class="GtkButton" id="cancel-button">
-        <property name="can_focus">True</property>
-        <property name="label" translatable="yes">Cancel</property>
+<interface domain="org.gnome.Shell.Extensions.GSConnect">
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+
+  <template class="GSConnectLegacyMessagingDialog" parent="AdwDialog">
+    <property name="title" translatable="yes">Send SMS…</property>
+    <property name="content-width">500</property>
+    <child>
+      <object class="AdwToolbarView">
         <property name="visible">True</property>
-        <child internal-child="accessible">
-          <object class="AtkObject" id="cancel-button-atkobject">
-            <property name="AtkObject::accessible-name" translatable="yes">Cancel</property>
-          </object>
-        </child>
-     </object>
-    </child>
-    <child type="action">
-      <object class="GtkButton" id="send-button">
-        <property name="can-default">True</property>
-        <property name="label" translatable="yes">Send</property>
-        <property name="visible">True</property>
-        <child internal-child="accessible">
-          <object class="AtkObject" id="send-button-atkobject">
-            <property name="AtkObject::accessible-name" translatable="yes">Send</property>
-          </object>
-        </child>
-        <accelerator key="Return" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
-      </object>
-    </child>
-    <action-widgets>
-      <action-widget response="cancel">cancel-button</action-widget>
-      <action-widget response="ok" default="true">send-button</action-widget>
-    </action-widgets>
-    <child internal-child="vbox">
-      <object class="GtkBox">
-        <property name="border_width">0</property>
-        <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
-        <child>
-          <object class="GtkRevealer" id="infobar">
+        <child type="top">
+          <object class="AdwHeaderBar">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
+          </object>
+        </child>
+        <child type="top">
+          <object class="AdwBanner" id="infobar">
+            <property name="revealed">True</property>
+            <property name="title" translatable="yes">Device Disconnected</property>
+          </object>
+        </child>
+        <property name="content">
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="orientation">vertical</property>
             <child>
-              <object class="GtkInfoBar">
+              <object class="GtkBox" id="message-box">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="message_type">warning</property>
-                <child internal-child="content_area">
-                  <object class="GtkBox">
-                    <property name="can_focus">False</property>
-                    <property name="spacing">6</property>
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">start</property>
-                        <property name="label" translatable="yes">Device is disconnected</property>
-                        <attributes>
-                          <attribute name="weight" value="bold"/>
-                        </attributes>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
+                <property name="orientation">horizontal</property>
+                <child>
+                  <object class="AdwAvatar" id="message-avatar">
+                    <property name="visible">True</property>
+                    <property name="margin-top">15</property>
+                    <property name="margin-bottom">15</property>
+                    <property name="margin-start">15</property>
+                    <property name="margin-end">10</property>
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                    <property name="size">40</property>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">0</property>
-                  </packing>
                 </child>
                 <child>
-                  <placeholder/>
+                  <object class="GtkLabel" id="message-label">
+                    <property name="visible">True</property>
+                    <property name="margin-top">15</property>
+                    <property name="margin-bottom">15</property>
+                    <property name="margin-start">10</property>
+                    <property name="margin-end">10</property>
+                    <property name="hexpand">True</property>
+                    <property name="use-markup">True</property>
+                    <property name="selectable">True</property>
+                    <property name="wrap">True</property>
+                    <property name="wrap-mode">word-char</property>
+                    <signal name="activate-link" handler="_onActivateLink" swapped="no"/>
+                  </object>
                 </child>
               </object>
             </child>
-            <style>
-              <class name="info"/>
-            </style>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkStack" id="stack">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="transition_duration">250</property>
-            <property name="transition_type">slide-up-down</property>
             <child>
-              <object class="GtkGrid">
+              <object class="GtkStack" id="stack">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="margin_left">6</property>
-                <property name="margin_right">6</property>
-                <property name="margin_top">6</property>
-                <property name="margin_bottom">6</property>
+                <property name="transition-type">crossfade</property>
+                <property name="transition-duration">100</property>
                 <child>
                   <object class="GtkScrolledWindow">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="hscrollbar_policy">never</property>
-                    <property name="shadow_type">in</property>
+                    <property name="min-content-height">300</property>
+                    <property name="hscrollbar-policy">never</property>
                     <child>
-                      <object class="GtkViewport">
+                      <object class="GtkTextView" id="entry">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <child>
-                          <object class="GtkTextView" id="entry">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="hexpand">True</property>
-                            <property name="vexpand">True</property>
-                            <property name="border_width">6</property>
-                            <property name="wrap_mode">word-char</property>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkBox" id="message-box">
-                    <property name="can_focus">False</property>
-                    <property name="margin_top">6</property>
-                    <property name="margin_bottom">12</property>
-                    <property name="margin_start">6</property>
-                    <property name="margin_end">6</property>
-                    <property name="spacing">6</property>
-                    <property name="orientation">horizontal</property>
-                    <property name="visible">False</property>
-                    <child>
-                      <object class="GSConnectContactAvatar" id="message-avatar">
-                        <property name="valign">start</property>
-                        <property name="visible">True</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="message-label">
                         <property name="hexpand">True</property>
-                        <property name="selectable">True</property>
-                        <property name="use_markup">True</property>
-                        <property name="valign">center</property>
-                        <property name="visible">True</property>
-                        <property name="wrap">True</property>
-                        <property name="wrap_mode">word-char</property>
-                        <property name="xalign">0</property>
-                        <signal name="activate-link" handler="_onActivateLink" swapped="no"/>
+                        <property name="vexpand">True</property>
+                        <property name="margin-top">0</property>
+                        <property name="margin-bottom">15</property>
+                        <property name="margin-start">15</property>
+                        <property name="margin-end">15</property>
+                        <property name="top-margin">5</property>
+                        <property name="bottom-margin">5</property>
+                        <property name="left-margin">5</property>
+                        <property name="right-margin">5</property>
+                        <property name="wrap-mode">word-char</property>
+                        <!-- TODO: Add placeholder text: "Write a message…" -->
                         <style>
-                          <class name="message-in"/>
+                          <class name="card"/>
                         </style>
                       </object>
                     </child>
                   </object>
-                  <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">0</property>
-                  </packing>
                 </child>
               </object>
-              <packing>
-                <property name="name">message-editor</property>
-              </packing>
             </child>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
+        </property>
       </object>
     </child>
   </template>

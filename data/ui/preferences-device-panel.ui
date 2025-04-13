@@ -7,73 +7,64 @@ SPDX-License-Identifier: GPL-2.0-or-later
 -->
 
 <interface domain="org.gnome.Shell.Extensions.GSConnect">
-  <requires lib="gtk" version="4.0"/>  
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+  
   <object class="GtkAdjustment" id="battery-custom-adjustment">
-    <property name="value">80</property>
     <property name="upper">99</property>
     <property name="lower">01</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">5</property>
+    <property name="value">80</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">1</property>
   </object>
+  
+  <!-- TODO: Switch GtkGrid to GtkBox -->
   <template class="GSConnectPreferencesDevicePanel" parent="GtkGrid">
     <property name="visible">True</property>
-    <property name="can_focus">False</property>
     <child>
       <object class="GtkStack" id="stack">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="hexpand">True</property>
-        <property name="vexpand">True</property>
-        <property name="transition_type">crossfade</property>
+        <property name="transition-type">crossfade</property>
+        <property name="transition-duration">100</property>
         <child>
           <object class="GtkScrolledWindow" id="sharing-page">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="hscrollbar_policy">never</property>
+            <property name="hscrollbar-policy">never</property>
             <child>
-              <object class="GtkViewport">
+              <object class="GtkBox">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="shadow_type">none</property>
+                <property name="margin-start">48</property>
+                <property name="margin-end">48</property>
+                <property name="margin-top">32</property>
+                <property name="margin-bottom">32</property>
+                <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkBox">
+                  <object class="GtkLabel" id="desktop-list-label">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="margin_start">48</property>
-                    <property name="margin_end">48</property>
-                    <property name="margin_top">32</property>
-                    <property name="margin_bottom">32</property>
-                    <property name="orientation">vertical</property>
-                    <child>
-                      <object class="GtkLabel" id="desktop-list-label">
+                    <property name="halign">start</property>
+                    <property name="margin_bottom">12</property>
+                    <property name="label" translatable="yes">Desktop</property>
+                    <attributes>
+                      <attribute name="weight" value="bold"/>
+                    </attributes>
+                    <accessibility>
+                      <relation type="label-for" target="desktop-list"/>
+                    </accessibility>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkFrame">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">start</property>
-                        <property name="margin_bottom">12</property>
-                        <property name="label" translatable="yes">Desktop</property>
-                        <attributes>
-                          <attribute name="weight" value="bold"/>
-                        </attributes>
-                        <accessibility>
-                          <relation type="label-for" target="desktop-list"/>
-                        </accessibility>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkFrame">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                         <property name="margin_bottom">32</property>
                         <property name="label_xalign">0</property>
                         <child>
                           <object class="GtkListBox" id="desktop-list">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <property name="hexpand">True</property>
                             <property name="selection_mode">none</property>
                             <signal name="row-activated" handler="_onToggleRowActivated" swapped="no"/>
@@ -82,19 +73,16 @@ SPDX-License-Identifier: GPL-2.0-or-later
                               <object class="GtkListBoxRow" id="clipboard">
                                 <property name="height_request">56</property>
                                 <property name="visible">True</property>
-                                <property name="can_focus">True</property>
                                 <property name="selectable">False</property>
                                 <child>
                                   <object class="GtkGrid">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
                                     <property name="margin_start">12</property>
                                     <property name="margin_end">12</property>
                                     <property name="column_spacing">12</property>
                                     <child>
                                       <object class="GtkLabel" id="clipboard-sync-label">
                                         <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
                                         <property name="halign">start</property>
                                         <property name="valign">center</property>
                                         <property name="hexpand">True</property>
@@ -113,17 +101,13 @@ SPDX-License-Identifier: GPL-2.0-or-later
                                     <child>
                                       <object class="GtkMenuButton" id="clipboard-sync">
                                         <property name="visible">True</property>
-                                        <property name="can_focus">True</property>
-                                        <property name="receives_default">True</property>
                                         <property name="halign">end</property>
                                         <property name="valign">center</property>
-                                        <property name="relief">none</property>
-                                        <property name="menu_model">clipboard-sync-menu</property>
+                                        <property name="menu-model">clipboard-sync-menu</property>
                                         <child>
                                           <object class="GtkImage">
                                             <property name="visible">True</property>
-                                            <property name="can_focus">False</property>
-                                            <property name="icon_name">network-transmit-receive-symbolic</property>
+                                            <property name="icon-name">network-transmit-receive-symbolic</property>
                                           </object>
                                         </child>
                                         <accessibility>
@@ -146,14 +130,12 @@ SPDX-License-Identifier: GPL-2.0-or-later
                             </child>
                             <child>
                               <object class="GtkListBoxRow" id="mpris">
-                                <property name="height_request">56</property>
                                 <property name="visible">True</property>
-                                <property name="can_focus">True</property>
                                 <property name="selectable">False</property>
+                                <property name="height_request">56</property>
                                 <child>
                                   <object class="GtkGrid">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
                                     <property name="margin_start">12</property>
                                     <property name="margin_end">12</property>
                                     <property name="column_spacing">12</property>
@@ -500,8 +482,6 @@ SPDX-License-Identifier: GPL-2.0-or-later
                     </child>
                   </object>
                 </child>
-              </object>
-            </child>
           </object>
           <packing>
             <property name="name">sharing</property>

@@ -6,13 +6,12 @@ SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
 SPDX-License-Identifier: GPL-2.0-or-later
 -->
 
-<interface>
+<interface domain="org.gnome.Shell.Extensions.GSConnect">
   <requires lib="gtk" version="4.0"/>
   <requires lib="Adw" version="1.0"/>
 
-  <!-- WARNING: Same problem with signals tags -->
   <template class="GSConnectMousepadInputDialog" parent="AdwDialog">
-    <property name="content-width">675</property>
+    <property name="content-width">625</property>
     <property name="child">
       <object class="AdwToolbarView">
         <property name="visible">True</property>
@@ -21,6 +20,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
             <property name="visible">True</property>
             <property name="title-widget">
               <object class="AdwWindowTitle" id="title-widget">
+                <property name="visible">True</property>
                 <property name="title" translatable="yes">Remote Input</property>
               </object>
             </property>
@@ -29,18 +29,18 @@ SPDX-License-Identifier: GPL-2.0-or-later
         <child type="top">
           <object class="AdwBanner" id="infobar">
             <property name="revealed">True</property>
-            <!-- Don't mark this as translatable, the title is updated on JavaScript -->
-            <property name="title">Remote keyboard on %s is not active</property>
+            <!-- Don't mark this as translatable, title is updated on JavaScript -->
+            <property name="title" translatable="no">Remote keyboard on %s is not active</property>
             <property name="button-label" translatable="yes">Help</property>
-            <!-- WARNING: The button must be connected from JavaScript since we now use AdwBanner component -->
-            <!-- <property name="uri">https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Help#remote-keyboard-not-active> -->
+            <!-- TODO: The button must be connected from JavaScript since we now use AdwBanner component -->
+            <!-- Link to connect: https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Help#remote-keyboard-not-active -->
           </object>
         </child>
         <property name="content">
           <object class="GtkBox">
             <property name="visible">True</property>
             <property name="orientation">vertical</property>
-            <!-- WARNING: Controllers must be added in JavaScript since Gtk4 -->
+            <!-- TODO: Controllers must be added in JavaScript since Gtk4 -->
             <child>
               <object class="GtkLabel" id="touchpad-zone">
                 <property name="visible">True</property>
@@ -155,15 +155,15 @@ Left, middle, right button, and wheel scrolls.</property>
 
   <!-- Touchpad Gestures -->
   <object class="GtkGestureDrag" id="touchpad-drag">
-    <!-- <signal name="drag-begin" handler="_onTouchpadDragBegin"/> -->
-    <!-- <signal name="drag-update" handler="_onTouchpadDragUpdate"/> -->
-    <!-- <signal name="drag-end" handler="_onTouchpadDragEnd"/> -->
+    <signal name="drag-begin" handler="_onTouchpadDragBegin"/>
+    <signal name="drag-update" handler="_onTouchpadDragUpdate"/>
+    <signal name="drag-end" handler="_onTouchpadDragEnd"/>
   </object>
 
   <object class="GtkGestureLongPress" id="touchpad-long-press">
     <property name="button">0</property>
-    <!-- <signal name="cancelled" handler="_onTouchpadLongPressCancelled"/> -->
-    <!-- <signal name="pressed" handler="_onTouchpadLongPressPressed"/> -->
+    <signal name="cancelled" handler="_onTouchpadLongPressCancelled"/>
+    <signal name="pressed" handler="_onTouchpadLongPressPressed"/>
     <!-- WARNING: This signal doesn't exists on Gtk4 -->
     <!-- <signal name="end" handler="_onTouchpadLongPressEnd"/> -->
   </object>

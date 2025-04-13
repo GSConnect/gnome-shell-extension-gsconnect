@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!--
 SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
 
 SPDX-License-Identifier: GPL-2.0-or-later
 -->
+
 <interface domain="org.gnome.Shell.Extensions.GSConnect">
   <requires lib="gtk" version="4.0"/>
   <requires lib="Adw" version="1.0"/>
 
   <template class="GSConnectPreferencesWindow" parent="AdwApplicationWindow">
-    <property name="width-request">360</property>
-    <property name="height-request">600</property>
-    <property name="default-width">640</property>
-    <property name="default-height">480</property>
+    <property name="default-height">550</property>
+    <property name="default-width">750</property>
     <child>
       <object class="AdwBreakpoint">
         <condition>max-width: 750sp</condition>
-        <setter object="split_view" property="collapsed">true</setter>
+        <setter object="split_view" property="collapsed">True</setter>
       </object>
     </child>
     <property name="content">
@@ -24,8 +24,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
         <property name="visible">True</property>
         <property name="sidebar">
           <object class="AdwNavigationPage">
-            <property name="visible">True</property>
-            <property name="title">Sidebar</property>
+            <property name="title" translatable="no">Sidebar</property>
             <property name="tag">sidebar</property>
             <property name="child">
               <object class="AdwToolbarView">
@@ -80,7 +79,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
         <property name="content">
           <object class="AdwNavigationPage">
             <property name="visible">True</property>
-            <property name="title">Content</property>
+            <property name="title" translatable="no">Content</property>
             <property name="tag">content</property>
             <property name="child">
               <object class="AdwToolbarView">
@@ -100,7 +99,6 @@ SPDX-License-Identifier: GPL-2.0-or-later
                         <property name="title" translatable="yes">Welcome to GSConnect</property>
                         <property name="icon-name">org.gnome.Shell.Extensions.GSConnect</property>
                         <child>
-                          <!-- Why too much space on the top and the bottom of the GtkLinkButton? -->
                           <object class="GtkBox">
                             <property name="visible">True</property>
                             <property name="orientation">vertical</property>
@@ -221,6 +219,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
       </object>
     </property>
   </template>
+  
   <menu id="service-menu-ui">
     <section>
       <item>
@@ -243,7 +242,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
     </section>
     <section>
       <item>
-        <attribute name="label" translatable="yes">Generate Support Log</attribute>
+        <attribute name="label" translatable="yes">Generate Support Log…</attribute>
         <attribute name="action">win.support-log</attribute>
       </item>
       <item>
@@ -256,4 +255,5 @@ SPDX-License-Identifier: GPL-2.0-or-later
       </item>
     </section>
   </menu>
+  
 </interface>

@@ -10,6 +10,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
   <requires lib="gtk" version="4.0"/>
   <requires lib="Adw" version="1.0"/>
   
+  <!-- TODO: Switch GtkGrid to GtkBox -->
   <template class="GSConnectMessagingConversationMessage" parent="GtkListBoxRow">
     <property name="visible">True</property>
     <property name="hexpand">True</property>
@@ -26,6 +27,9 @@ SPDX-License-Identifier: GPL-2.0-or-later
         <property name="margin-start">6</property>
         <property name="margin-end">6</property>
         <property name="column-spacing">6</property>
+        <style>
+          <class name="message-row"/>
+        </style>
         <child>
           <object class="GtkLabel" id="message-label">
             <property name="visible">True</property>
@@ -52,9 +56,6 @@ SPDX-License-Identifier: GPL-2.0-or-later
             </attributes>
           </object>
         </child>
-        <style>
-          <class name="message-row"/>
-        </style>
       </object>
     </child>
   </template>

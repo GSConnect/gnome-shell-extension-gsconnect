@@ -19,7 +19,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
       <object class="AdwAvatar" id="avatar">
         <property name="visible">True</property>
         <property name="size">40</property>
-        <property name="show-initials">true</property>
+        <property name="show-initials">True</property>
       </object>
     </child>
     <child>
@@ -27,7 +27,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
         <property name="visible">True</property>
         <property name="orientation">vertical</property>
         <property name="valign">start</property>
-        <property name="margin-top">4px</property>
+        <property name="margin-top">4</property>
         <child>
           <object class="GtkLabel" id="time-label">
             <property name="visible">True</property>
@@ -43,8 +43,8 @@ SPDX-License-Identifier: GPL-2.0-or-later
         <child>
           <object class="GtkBox">
             <property name="visible">True</property>
-            <property name="hexpand">True</property>
             <property name="halign">end</property>
+            <property name="hexpand">True</property>
             <child>
               <object class="GtkLabel" id="counter-label">
                 <property name="visible">False</property>

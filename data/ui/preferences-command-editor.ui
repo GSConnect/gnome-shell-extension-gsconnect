@@ -6,12 +6,12 @@ SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
 SPDX-License-Identifier: GPL-2.0-or-later
 -->
 
-<interface>
+<interface domain="org.gnome.Shell.Extensions.GSConnect">
   <requires lib="gtk" version="4.0"/>
   <requires lib="Adw" version="1.0"/>
   
   <template class="GSConnectPreferencesCommandEditor" parent="AdwDialog">
-    <property name="title" translatable="yes">Edit Command</property>
+    <property name="title" translatable="yes">Edit Command…</property>
     <property name="content-width">500</property>
     <child>
       <object class="AdwToolbarView">
@@ -68,6 +68,9 @@ SPDX-License-Identifier: GPL-2.0-or-later
                       <object class="GtkListBox">
                         <property name="visible">True</property>
                         <property name="selection-mode">none</property>
+                        <style>
+                          <class name="boxed-list"/>
+                        </style>
                         <child>
                           <object class="AdwButtonRow" id="save_button">
                             <property name="visible">True</property>
@@ -78,9 +81,6 @@ SPDX-License-Identifier: GPL-2.0-or-later
                             </style>
                           </object>
                         </child>
-                        <style>
-                          <class name="boxed-list"/>
-                        </style>
                       </object>
                     </child>
                   </object>

@@ -6,15 +6,14 @@ SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
 SPDX-License-Identifier: GPL-2.0-or-later
 -->
 
-<interface>
+<interface domain="org.gnome.Shell.Extensions.GSConnect">
   <requires lib="gtk" version="4.0"/>
   <requires lib="Adw" version="1.0"/>
 
-  <!-- WARNING: Same problem with signals tags -->
   <template class="GSConnectServiceErrorDialog" parent="AdwDialog">
-    <property name="title" translatable="yes">Error</property>
+    <property name="title" translatable="yes">An Error Occured…</property>
     <property name="content-height">550</property>
-    <property name="content-width">600</property>
+    <property name="content-width">500</property>
     <child>
       <object class="AdwToolbarView">
         <property name="visible">True</property>
@@ -26,14 +25,14 @@ SPDX-License-Identifier: GPL-2.0-or-later
                 <object class="GtkButton" id="cancel-button">
                   <property name="visible">True</property>
                   <property name="label" translatable="yes">Cancel</property>
-                  <!-- <signal name="clicked" handler="_onClicked" swapped="no"/> -->
+                  <signal name="clicked" handler="_onClicked" swapped="no"/>
                 </object>
               </child>
               <child type="end">
                 <object class="GtkButton" id="report-button">
                   <property name="visible">True</property>
                   <property name="label" translatable="yes">Report</property>
-                  <!-- <signal name="clicked" handler="_onClicked" swapped="no"/> -->
+                  <signal name="clicked" handler="_onClicked" swapped="no"/>
                   <style>
                     <class name="suggested-action"/>
                   </style>

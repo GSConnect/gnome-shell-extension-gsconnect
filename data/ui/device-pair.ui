@@ -37,7 +37,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                     <property name="title-widget">
                       <object class="AdwWindowTitle">
                         <property name="visible">True</property>
-                        <property name="title" translatable="yes">Pair a Device</property>
+                        <property name="title" translatable="yes">Pair Device…</property>
                       </object>
                     </property>
                   </object>

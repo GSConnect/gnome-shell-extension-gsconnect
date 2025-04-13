@@ -6,155 +6,92 @@ SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
 SPDX-License-Identifier: GPL-2.0-or-later
 -->
 
-<interface>
+<interface domain="org.gnome.Shell.Extensions.GSConnect">
   <requires lib="gtk" version="4.0"/>
-  <template class="GSConnectServiceErrorDialog" parent="GtkWindow">
-    <property name="default_width">600</property>
-    <property name="default_height">400</property>
-    <property name="type_hint">dialog</property>
-    <child type="titlebar">
-      <object class="GtkHeaderBar">
-        <property name="visible">True</property>
-        <child>
-          <object class="GtkButton" id="cancel-button">
-            <property name="label" translatable="yes">Cancel</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">False</property>
-            <signal name="clicked" handler="_onClicked" swapped="no"/>
-            <accelerator key="Escape" signal="activate"/>
-            <child internal-child="accessible">
-              <object class="AtkObject" id="cancel-button-atkobject">
-                <property name="AtkObject::accessible-name" translatable="yes">Cancel</property>
-              </object>
-            </child>
-          </object>
-          <packing>
-            <property name="pack_type">start</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton" id="report-button">
-            <property name="label" translatable="yes">Report</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <accelerator key="Return" signal="activate"/>
-            <signal name="clicked" handler="_onClicked" swapped="no"/>
-            <child internal-child="accessible">
-              <object class="AtkObject" id="report-button-atkobject">
-                <property name="AtkObject::accessible-name" translatable="yes">Report</property>
-              </object>
-            </child>
-            <style>
-              <class name="suggested-action"/>
-            </style>
-          </object>
-          <packing>
-            <property name="pack_type">end</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-      </object>
-    </child>
+  <requires lib="Adw" version="1.0"/>
+
+  <template class="GSConnectServiceErrorDialog" parent="AdwDialog">
+    <property name="title" translatable="yes">An Error Occured…</property>
+    <property name="content-height">550</property>
+    <property name="content-width">600</property>
     <child>
-      <object class="GtkScrolledWindow">
+      <object class="AdwToolbarView">
         <property name="visible">True</property>
-        <property name="hscrollbar_policy">never</property>
-        <property name="propagate_natural_height">True</property>
-        <child>
-          <object class="GtkViewport">
+        <child type="top">
+          <object class="AdwHeaderBar">
             <property name="visible">True</property>
+          </object>
+        </child>
+        <property name="content">
+          <object class="AdwStatusPage">
+            <property name="visible">True</property>
+            <property name="title" translatable="yes">Oops!</property>
+            <property name="description" translatable="yes">GSConnect encountered an unexpected error. Please report the problem.</property>
+            <property name="icon-name">sad-computer-symbolic</property>
             <child>
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="orientation">vertical</property>
-                <property name="margin">100</property>
-                <property name="margin_bottom">60</property>
-                <property name="spacing">12</property>
                 <child>
-                  <object class="GtkLabel">
+                  <object class="AdwPreferencesGroup">
                     <property name="visible">True</property>
-                    <property name="label" translatable="yes">Something’s gone wrong</property>
-                    <attributes>
-                      <attribute name="scale" value="1.44"/> <!-- x-large -->
-                    </attributes>
-                    <style>
-                      <class name="dim-label"/>
-                    </style>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="label" translatable="yes">GSConnect encountered an unexpected error. Please report the problem and include any information that may help.</property>
-                    <property name="justify">center</property>
-                    <property name="wrap">True</property>
-                    <property name="xalign">0.5</property>
-                    <property name="yalign">0.5</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkBox">
-                    <property name="visible">True</property>
-                    <property name="orientation">vertical</property>
-                    <property name="margin_top">12</property>
+                    <property name="halign">center</property>
+                    <property name="width-request">450</property>
                     <child>
-                      <object class="GtkFrame" id="expander">
+                      <object class="AdwExpanderRow">
                         <property name="visible">True</property>
-                        <property name="hexpand">True</property>
-                        <property name="shadow_type">in</property>
+                        <property name="title" translatable="yes">View Technical Details</property>
                         <child>
-                          <object class="GtkEventBox">
+                          <object class="GtkScrolledWindow">
                             <property name="visible">True</property>
+                            <property name="height-request">200</property>
+                            <property name="hscrollbar-policy">never</property>
                             <child>
-                              <object class="GtkBox">
+                              <object class="GtkTextView" id="error-stack">
                                 <property name="visible">True</property>
-                                <property name="margin">12</property>
-                                <property name="spacing">6</property>
-                                <child>
-                                  <object class="GtkImage" id="expander-arrow">
-                                    <property name="visible">True</property>
-                                    <property name="icon_name">pan-end-symbolic</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel">
-                                    <property name="visible">True</property>
-                                    <property name="label" translatable="yes">Technical Details</property>
-                                  </object>
-                                </child>
+                                <property name="margin-top">8</property>
+                                <property name="margin-bottom">8</property>
+                                <property name="margin-start">8</property>
+                                <property name="margin-end">8</property>
+                                <property name="top-margin">5</property>
+                                <property name="bottom-margin">5</property>
+                                <property name="left-margin">5</property>
+                                <property name="right-margin">5</property>
+                                <property name="monospace">True</property>
+                                <property name="editable">False</property>
+                                <property name="cursor-visible">False</property>
+                                <property name="wrap-mode">word</property>
+                                <style>
+                                  <class name="card"/>
+                                </style>
                               </object>
                             </child>
                           </object>
                         </child>
                       </object>
                     </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwClamp">
+                    <property name="maximum-size">425</property>
                     <child>
-                      <object class="GtkRevealer" id="revealer">
+                      <object class="GtkListBox">
                         <property name="visible">True</property>
-                        <signal name="notify::reveal-child" handler="_onRevealChild" swapped="no"/>
+                        <property name="selection-mode">none</property>
+                        <property name="margin-top">20</property>
+                        <property name="margin-bottom">20</property>
+                        <style>
+                          <class name="navigation-sidebar"/>
+                        </style>
                         <child>
-                          <object class="GtkFrame">
+                          <object class="AdwButtonRow" id="report-button">
                             <property name="visible">True</property>
-                            <property name="shadow_type">in</property>
+                            <property name="title" translatable="yes">Report</property>
+                            <signal name="activated" handler="_onClicked" swapped="no"/>
                             <style>
-                              <class name="error-stack-frame"/>
+                              <class name="suggested-action"/>
                             </style>
-                            <child>
-                              <object class="GtkTextView" id="error-stack">
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="monospace">True</property>
-                                <property name="editable">False</property>
-                                <property name="wrap_mode">word</property>
-                                <property name="left_margin">12</property>
-                                <property name="right_margin">12</property>
-                                <property name="top_margin">12</property>
-                                <property name="bottom_margin">12</property>
-                              </object>
-                            </child>
                           </object>
                         </child>
                       </object>
@@ -164,13 +101,8 @@ SPDX-License-Identifier: GPL-2.0-or-later
               </object>
             </child>
           </object>
-        </child>
+        </property>
       </object>
     </child>
   </template>
-  <object class="GtkGestureMultiPress" id="gesture">
-    <property name="widget">expander</property>
-    <property name="button">0</property>
-    <property name="exclusive">True</property>
-  </object>
 </interface>

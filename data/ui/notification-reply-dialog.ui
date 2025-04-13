@@ -8,172 +8,140 @@ SPDX-License-Identifier: GPL-2.0-or-later
 
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <template class="GSConnectNotificationReplyDialog" parent="GtkDialog">
-    <property name="can_focus">False</property>
-    <property name="default_width">320</property>
-    <property name="default_height">300</property>
-    <property name="type_hint">dialog</property>
-    <child type="action">
-      <object class="GtkButton" id="cancel-button">
-        <property name="can_focus">True</property>
-        <property name="label" translatable="yes">Cancel</property>
+  <requires lib="Adw" version="1.0"/>
+
+  <template class="GSConnectNotificationReplyDialog" parent="AdwDialog">
+    <property name="title" translatable="yes">Send SMS…</property>
+    <property name="content-width">625</property>
+    <property name="child">
+      <object class="AdwToolbarView">
         <property name="visible">True</property>
-        <child internal-child="accessible">
-          <object class="AtkObject" id="cancel-button-atkobject">
-            <property name="AtkObject::accessible-name" translatable="yes">Cancel</property>
-          </object>
-        </child>
-     </object>
-    </child>
-    <child type="action">
-      <object class="GtkButton" id="send-button">
-        <property name="can-default">True</property>
-        <property name="label" translatable="yes">Send</property>
-        <property name="visible">True</property>
-        <child internal-child="accessible">
-          <object class="AtkObject" id="send-button-atkobject">
-            <property name="AtkObject::accessible-name" translatable="yes">Send</property>
-          </object>
-        </child>
-        <accelerator key="Return" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
-      </object>
-    </child>
-    <action-widgets>
-      <action-widget response="cancel">cancel-button</action-widget>
-      <action-widget response="ok" default="true">send-button</action-widget>
-    </action-widgets>
-    <child internal-child="vbox">
-      <object class="GtkBox">
-        <property name="border_width">0</property>
-        <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
-        <child>
-          <object class="GtkRevealer" id="infobar">
+        <child type="top">
+          <object class="AdwHeaderBar">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
+          </object>
+        </child>
+        <child type="top">
+          <object class="AdwBanner" id="infobar">
+            <property name="revealed">True</property>
+            <property name="title" translatable="yes">Device Disconnected</property>
+          </object>
+        </child>
+        <property name="content">
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="orientation">vertical</property>
             <child>
-              <object class="GtkInfoBar">
+              <object class="GtkBox" id="message-box">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="message_type">warning</property>
-                <child internal-child="content_area">
+                <property name="orientation">horizontal</property>
+                <child>
+                  <object class="AdwAvatar" id="message-avatar">
+                    <property name="visible">True</property>
+                    <property name="margin-top">15</property>
+                    <property name="margin-bottom">15</property>
+                    <property name="margin-start">15</property>
+                    <property name="margin-end">10</property>
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                    <property name="size">40</property>
+                  </object>
+                </child>
+                <child>
                   <object class="GtkBox">
-                    <property name="can_focus">False</property>
-                    <property name="spacing">6</property>
+                    <property name="visible">True</property>
+                    <property name="orientation">vertical</property>
+                    <property name="vexpand">False</property>
+                    <property name="valign">center</property>
+                    <property name="spacing">7</property>
                     <child>
-                      <object class="GtkLabel">
+                      <object class="GtkLabel" id="notification-title">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                         <property name="halign">start</property>
-                        <property name="label" translatable="yes">Device is disconnected</property>
+                        <property name="margin-start">10</property>
+                        <property name="margin-end">10</property>
+                        <property name="label" translatable="no">Notification Title</property>
                         <attributes>
                           <attribute name="weight" value="bold"/>
                         </attributes>
                       </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
                     </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-              </object>
-            </child>
-            <style>
-              <class name="info"/>
-            </style>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkBox">
-            <property name="can_focus">False</property>
-            <property name="margin_left">6</property>
-            <property name="margin_right">6</property>
-            <property name="margin_top">6</property>
-            <property name="margin_bottom">6</property>
-            <property name="orientation">vertical</property>
-            <property name="spacing">12</property>
-            <property name="visible">True</property>
-            <child>
-              <object class="GtkLabel" id="notification-title">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">start</property>
-                <property name="label">Notification Title</property>
-                <attributes>
-                  <attribute name="weight" value="bold"/>
-                </attributes>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="notification-body">
-                <property name="hexpand">True</property>
-                <property name="selectable">True</property>
-                <property name="use_markup">True</property>
-                <property name="valign">center</property>
-                <property name="visible">True</property>
-                <property name="wrap">True</property>
-                <property name="wrap_mode">word-char</property>
-                <property name="xalign">0</property>
-                <signal name="activate-link" handler="_onActivateLink" swapped="no"/>
-                <style>
-                  <class name="message-out"/>
-                </style>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkScrolledWindow">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="hscrollbar_policy">never</property>
-                <property name="shadow_type">in</property>
-                <child>
-                  <object class="GtkViewport">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkTextView" id="entry">
+                      <object class="GtkLabel" id="notification-body">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
+                        <property name="margin-start">10</property>
+                        <property name="margin-end">10</property>
                         <property name="hexpand">True</property>
-                        <property name="vexpand">True</property>
-                        <property name="border_width">6</property>
-                        <property name="wrap_mode">word-char</property>
+                        <property name="halign">start</property>
+                        <property name="use-markup">True</property>
+                        <property name="selectable">True</property>
+                        <property name="wrap">True</property>
+                        <property name="wrap-mode">word-char</property>
+                        <property name="label" translatable="no">Message Body</property>
+                        <signal name="activate-link" handler="_onActivateLink" swapped="no"/>
                       </object>
                     </child>
                   </object>
                 </child>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">2</property>
-              </packing>
+            </child>
+            <child>
+              <object class="GtkScrolledWindow">
+                <property name="visible">True</property>
+                <property name="min-content-height">300</property>
+                <child>
+                  <object class="GtkTextView" id="entry">
+                    <property name="visible">True</property>
+                    <property name="margin-top">15</property>
+                    <property name="margin-bottom">15</property>
+                    <property name="margin-start">15</property>
+                    <property name="margin-end">15</property>
+                    <property name="hexpand">True</property>
+                    <property name="vexpand">True</property>
+                    <property name="top-margin">5</property>
+                    <property name="bottom-margin">5</property>
+                    <property name="left-margin">5</property>
+                    <property name="right-margin">5</property>
+                    <property name="wrap-mode">word-char</property>
+                    <style>
+                      <class name="card"/>
+                    </style>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwClamp">
+                <property name="maximum-size">425</property>
+                <child>
+                  <object class="GtkListBox">
+                    <property name="visible">True</property>
+                    <property name="selection-mode">none</property>
+                    <property name="margin-top">5</property>
+                    <property name="margin-bottom">15</property>
+                    <property name="margin-start">12</property>
+                    <property name="margin-end">12</property>
+                    <style>
+                      <class name="navigation-sidebar"/>
+                    </style>
+
+                    <child>
+                      <object class="AdwButtonRow" id="send-button">
+                        <property name="visible">True</property>
+                        <property name="title" translatable="yes">Send</property>
+                        <property name="start-icon-name">sms-send</property>
+                        <style>
+                          <class name="suggested-action"/>
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
             </child>
           </object>
-        </child>
+        </property>
       </object>
-    </child>
+    </property>
   </template>
 </interface>

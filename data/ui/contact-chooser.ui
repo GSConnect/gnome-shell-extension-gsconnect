@@ -22,7 +22,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
             <child>
               <object class="AdwHeaderBar">
                 <property name="visible">True</property>
-                <child type="end">
+                <child type="start">
                   <object class="GtkToggleButton" id="button-search">
                     <property name="visible">True</property>
                     <property name="icon-name">edit-find-symbolic</property>
@@ -54,6 +54,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
           <object class="GtkStack" id="stack">
             <property name="visible">True</property>
             <property name="transition-type">crossfade</property>
+            <property name="transition-duration">100</property>
             <child>
               <object class="GtkScrolledWindow" id="scrolled">
                 <property name="visible">True</property>

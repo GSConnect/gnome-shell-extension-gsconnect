@@ -54,12 +54,19 @@ SPDX-License-Identifier: GPL-2.0-or-later
                     <property name="selection-mode">none</property>
                     <property name="activate-on-single-click">False</property>
                     <signal name="notify::allocated-height" handler="_onSizeAllocate" swapped="no"/>
+                    <style>
+                      <class name="message-list"/>
+                      <class name="background"/>
+                    </style>
                     <child>
                       <object class="GtkListBoxRow" id="pending">
                         <property name="visible" bind-source="GSConnectMessagingConversation" bind-property="has-pending" bind-flags="sync-create"/>
                         <property name="hexpand">True</property>
                         <property name="activatable">False</property>
                         <property name="selectable">False</property>
+                        <style>
+                          <class name="message-pending"/>
+                        </style>
                         <child>
                           <object class="GtkBox" id="pending-box">
                             <property name="visible">True</property>
@@ -71,14 +78,8 @@ SPDX-License-Identifier: GPL-2.0-or-later
                             <property name="spacing">3</property>
                           </object>
                         </child>
-                        <style>
-                          <class name="message-pending"/>
-                        </style>
                       </object>
                     </child>
-                    <style>
-                      <class name="message-list"/>
-                    </style>
                   </object>
                 </child>
               </object>
@@ -118,7 +119,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                         <property name="hexpand">True</property>
                         <property name="margin-top">7</property>
                         <property name="margin-bottom">7</property>
-                        <property name="margin-start">7</property>
+                        <property name="margin-start">0</property>
                         <property name="margin-end">7</property>
                         <property name="placeholder-text" translatable="yes">Write a message…</property>
                         <property name="enable-emoji-completion">True</property>
