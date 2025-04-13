@@ -60,7 +60,6 @@ SPDX-License-Identifier: GPL-2.0-or-later
                   <object class="GtkScrolledWindow">
                     <property name="visible">True</property>
                     <property name="min-content-width">240</property>
-                    <property name="min-content-height">540</property>
                     <child>
                       <object class="GtkListBox" id="device_list">
                         <property name="visible">True</property>

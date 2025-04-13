@@ -279,11 +279,7 @@ export const ContactChooser = GObject.registerClass({
             GObject.BindingFlags.SYNC_CREATE
         );
         
-        this.search_entry.set_key_capture_widget(this);
-
-        this.button_search.connect("clicked", () => {
-            this.search_bar.search_mode_enabled = ! this.search_bar.search_mode_enabled;
-        });
+        this.button_search.connect("clicked", () => this._searchButtonClicked().bind(this));
 
         // Cleanup on ::destroy
         this.connect('destroy', this._onDestroy);
@@ -291,20 +287,11 @@ export const ContactChooser = GObject.registerClass({
         this.search_entry.connect("search-changed", () => {
             this.results_count = -1;
             this.list.invalidate_filter();
-            if (this.results_count === -1) this.stack.visible_child = this.not_found_page;
-            else if (this.search_bar.search_mode_enabled) this.stack.visible_child = this.scrolled;
+            if (this.results_count === -1) 
+                this.stack.visible_child = this.not_found_page;
+            else if (this.search_bar.search_mode_enabled) 
+                this.stack.visible_child = this.scrolled;
         });
-        /*
-        const keyController = new Gtk.EventControllerKey();
-        keyController.connect('key-pressed', () => {
-            print("ok");
-            return Gdk.EVENT_STOP;
-        });
-
-        this.add_controller(keyController);
-
-        this.grab_focus();
-        */
     }
 
     get store() {
@@ -501,6 +488,24 @@ export const ContactChooser = GObject.registerClass({
         } catch (e) {
             logError(e);
         }
+    }
+    
+    _searchButtonClicked() {
+        this.search_bar.search_mode_enabled = ! this.search_bar.search_mode_enabled;
+        if (!this.search_bar.search_mode_enabled) {
+            this.search_entry.set_key_capture_widget(null);
+        } else {
+            this.search_entry.set_key_capture_widget(this);
+        }
+    }
+
+    onKeyPress() {
+        this.button_search.set_active(true);
+        this.searchButtonClicked();
+        const char = String.fromCharCode(keyval);
+        if (/^[a-zA-Z0-9]$/.test(char)) 
+            this.search_entry.text = char;
+        this.search_entry.set_position(-1);
     }
 
     /**
