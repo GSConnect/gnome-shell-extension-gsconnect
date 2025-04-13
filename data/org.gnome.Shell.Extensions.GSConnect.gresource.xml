@@ -47,6 +47,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <file compressed="true" preprocess="xml-stripblanks">icons/phonelink-delete-symbolic.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">icons/phonelink-lock-symbolic.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">icons/phonelink-off-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">icons/people-symbolic.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">icons/phonelink-ring-symbolic.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">icons/phonelink-setup-symbolic.svg</file>
 

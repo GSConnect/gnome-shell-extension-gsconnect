@@ -206,6 +206,12 @@ function setAvatarVisible(row, visible) {
         row.avatar.set_visible(visible);
 }
 
+function formatPhoneNumber(phone) {
+    phone = phone.replace(/^\+39/, '');
+    phone = phone.replace(/[-\s]/g, '');
+    return phone;
+  }
+  
 
 /**
  * A ListBoxRow for each message of a conversation
@@ -319,10 +325,10 @@ const Conversation = GObject.registerClass({
             GObject.ParamFlags.READWRITE,
             GObject.Object
         ),
-        'message': GObject.ParamSpec.object(
-            'message',
-            'Message',
-            'The last conversation message',
+        'addresses': GObject.ParamSpec.object(
+            'addresses',
+            'Addresses',
+            'The contact addresses',
             GObject.ParamFlags.READWRITE,
             GObject.Object
         ),
@@ -357,10 +363,7 @@ const Conversation = GObject.registerClass({
 }, class MessagingConversation extends Adw.NavigationPage {
 
     _init(params) {
-        super._init({
-            device: params.device,
-            plugin: params.plugin,
-        });
+        super._init();
         Object.assign(this, params);
 
         this.device.bind_property(
@@ -372,15 +375,15 @@ const Conversation = GObject.registerClass({
 
         this.inbox_counter = 0;
 
-        const address = this.message.addresses[0].address;
+        const address = this.addresses[0].address;
         const contact = this.device.contacts.query({number: address});
     
-        if (this.message.addresses.length === 1) {
+        if (this.addresses.length === 1) {
             this.content_title.set_title(contact.name);
             this.content_title.set_subtitle(Contacts.getDisplayNumber(contact, address));
             this.avatar.set_text(contact.name);
         } else {
-            const otherLength = this.message.addresses.length - 1;
+            const otherLength = this.addresses.length - 1;
             this.content_title.set_title(contact.name);
             this.content_title.set_subtitle(ngettext(
                 'And %d other contact',
@@ -389,7 +392,7 @@ const Conversation = GObject.registerClass({
             ).format(otherLength));
         }
 
-        this.addMessage(this.message);
+        //this.addMessage(this.message);
     
         // If we're disconnected pending messages might not succeed, but we'll
         // leave them until reconnect when we'll ask for an update
@@ -440,7 +443,7 @@ const Conversation = GObject.registerClass({
 
         // Lookup a contact for each address object, then loop back to correct
         // each address carried by the message.
-        this._addresses = addresses;
+        this._addresses = addresses.filter((elemento, indice, self) => { return self.indexOf(elemento) === indice; });
 
         for (let i = 0, len = this.addresses.length; i < len; i++) {
             // Lookup the contact
@@ -574,7 +577,7 @@ const Conversation = GObject.registerClass({
 
     _onConnected(device) {
         if (device.connected)
-            this.pending_messsages.forEach(row =>  {
+            this.pending_messages.forEach(row =>  {
                 this.pending_box.remove(row);
                 row.run_dispose()
             });
@@ -585,7 +588,6 @@ const Conversation = GObject.registerClass({
         conversation._vadj.disconnect(conversation._scrolledId);
 
         conversation.internal_message_list.forEach(message => {
-            print(JSON.stringify(message));
             conversation.list.remove(message);
             message.run_dispose();
         });
@@ -832,8 +834,6 @@ const Conversation = GObject.registerClass({
             this.list.append(row);
             this.internal_message_list.push(row);
 
-            print(JSON.stringify(message));
-
             if (message.read === Sms.MessageStatus.UNREAD) {
                 this.inbox_counter += 1;
             }
@@ -911,7 +911,9 @@ const ConversationSummary = GObject.registerClass({
 
     set message(message) {
         this._message = message;
-        this._sender = message.addresses[0].address || 'unknown';
+
+        const addresses = message.addresses.map(item => item.address).filter((elemento, indice, self) => self.indexOf(elemento) === indice);
+        this._sender = addresses[0] || 'unknown';
 
         // TRANSLATORS: Shown as the summary when a text message contains
         // only image content (no text body)
@@ -926,22 +928,26 @@ const ConversationSummary = GObject.registerClass({
         const has_attachments = message['attachments'] !== undefined;
 
         // Update avatar for single-recipient messages
-        if (message.addresses.length === 1) {
+        if (addresses.length === 1) {
             let contact = this.contacts[this._sender];
             this.avatar.set_text(contact.name);
             name_label = GLib.markup_escape_text(contact.name, -1);
         } else {
             name_label = _('Group Message');
+            this.avatar.icon_name = 'people-symbolic';
             const participants = [];
-            message.addresses.forEach((address) => {
-                participants.push(this.contacts[address.address].name);
+            addresses.forEach(address => {
+                participants.push(this.contacts[address].name);
             });
             //this.name_label.tooltip_text = participants.join(', ');
         }
 
         // Contact Name & Message body
-        let body_label;
-        if (message.body.length) {
+        let body_label = '';
+        if (message.body == undefined) {
+            body_label = _('New conversation')
+            this.time_label.set_visible(false);
+        } else if (message.body.length) {
             body_label = message.body.split(/\r|\n/)[0];
             body_label = GLib.markup_escape_text(body_label, -1);
 
@@ -949,11 +955,11 @@ const ConversationSummary = GObject.registerClass({
                 // TRANSLATORS: An outgoing message body in a conversation summary
                 body_label = _('You: %s').format(body_label);
             }
+            this.time_label.set_visible(true);
         } else if (has_attachments) {
             body_label = image_placeholder;
-        } else {
-            body_label = '';
-        }
+            this.time_label.set_visible(true);
+        } 
 
         // Make it bold if it's unread
         if (unread) {
@@ -1017,7 +1023,6 @@ export const Window = GObject.registerClass({
     _init(params) {
         super._init(params);
         
-        this.internal_thread_list = [];
         this.stack = new Map();
         
         this.sidebar_title.set_subtitle(this.device.name);
@@ -1046,6 +1051,7 @@ export const Window = GObject.registerClass({
         );
 
         // Threads
+        this.internal_thread_list = [];
         this.thread_list.set_sort_func(this._sortThreads);
 
         this._threadsChangedId = this.plugin.connect(
@@ -1108,10 +1114,10 @@ export const Window = GObject.registerClass({
             conversation = new Conversation({
                 device: this.device,
                 plugin: this.plugin,
-                message: message,
+                addresses: message.addresses,
                 thread_id: thread_id,
             });
-
+            
             this.stack.set(thread_id, conversation);
         }
 
@@ -1143,12 +1149,28 @@ export const Window = GObject.registerClass({
 
     _onNumberSelected(chooser, number) {
         const contacts = chooser.getSelected();
-        const row = this._getRowForContacts(contacts);
+        let row = this._getRowForContacts(contacts);
 
-        if (row)
-            row.emit('activate');
-        else
+        if (row) {
+            row.emit('activated');
+            this._onThreadSelected(null, row);
+        }
+        else {
+            const message = {
+                addresses: [
+                  { address: number },
+                ],
+                type: Sms.MessageBox.SENT,
+                read: Sms.MessageStatus.READ,
+                attachments: [], 
+                date: new Date(),
+            };
+            const contacts = this.device.contacts.lookupAddresses(message.addresses);
+            row = new ConversationSummary(contacts, message);
+            this.internal_thread_list.push(row);
+            this.thread_list.prepend(row);
             this.setContacts(contacts);
+        }
     }
 
     /**
@@ -1171,8 +1193,7 @@ export const Window = GObject.registerClass({
         // Show the conversation for this number (if applicable)
         if (row) {
             this.thread_id = row.thread_id;
-            this.split_view.set_show_content(true);
-        }
+        } 
     }
 
     _sortThreads(row1, row2) {
@@ -1199,6 +1220,7 @@ export const Window = GObject.registerClass({
 
         // Try to find a thread_id
         const thread_id = this.plugin.getThreadIdForAddresses(addresses);
+
         return this._getRowForThread(thread_id);
     }
 
@@ -1243,6 +1265,7 @@ export const Window = GObject.registerClass({
 
         // Select the conversation and entry active
         this.stack.set(thread_id, conversation);
+
         this.split_view.set_content(conversation);
         this.split_view.set_show_content(true);
         
@@ -1273,15 +1296,16 @@ export const Window = GObject.registerClass({
     logMessage(message) {
         const thread_id = message.thread_id;
         const timestamp = message.date;
+        let addresses = message.addresses;
+        
 
         // Update existing summary or create new one
         let row = this._getRowForThread(thread_id);
-
         // If it's a newer message for an existing conversation, update it
         if (row) {
             if (row.date < timestamp) {
                 // Ensure there's a contact mapping
-                const sender = message.addresses[0].address || 'unknown';
+                const sender = addresses[0] || 'unknown';
 
                 if (row.contacts[sender] === undefined) {
                     row.contacts[sender] = this.device.contacts.query({
@@ -1292,19 +1316,41 @@ export const Window = GObject.registerClass({
                 // Re-sort the summaries
                 this.thread_list.invalidate_sort();
             }
-        } else {
-            const contacts = this.device.contacts.lookupAddresses(message.addresses);
-            row = new ConversationSummary(contacts, message);
-            row.counter_label.set_label("1");
-            this.internal_thread_list.push(row);
-            this.thread_list.append(row);
+        } 
+        addresses = addresses.map(item => formatPhoneNumber(item.address)).filter((item, index, self) => {return self.indexOf(item) === index;});
+        if (row === null) {
+            let need_row_init = true;
+            this.internal_thread_list.forEach(row_item => {
+                if (Object.keys(row_item.contacts).map(item => formatPhoneNumber(item)).every(item => addresses.includes(item))) {
+                    row_item.message = message;
+                    this.thread_list.invalidate_sort();
+                    need_row_init = false;
+                }
+                
+            });
+            if (need_row_init) {
+                const contacts = this.device.contacts.lookupAddresses(message.addresses);
+                row = new ConversationSummary(contacts, message);
+                row.counter_label.set_label("1");
+                this.internal_thread_list.push(row);
+                this.thread_list.append(row);
+            }
         }
-
         // If it's a message for the selected conversation, display it
         if (thread_id === this.thread_id) {
             const conversation = this.stack.get(`${thread_id}`);
             conversation.addMessage(message);
             row.counter_label.set_label(`${conversation.inbox_counter}`);
+        } else {
+            Array.from(this.stack.values()).forEach(conversation => {
+                const contacts = conversation.addresses.map(item => formatPhoneNumber(item.address)).filter((item, index, self) => {
+                    return self.indexOf(item) === index && addresses.includes(item);
+                });
+                if (contacts.length > 0) {
+                    conversation.thread_id = thread_id;
+                    conversation.addMessage(message);
+                }
+            });
         }
     }
 

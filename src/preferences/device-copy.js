@@ -923,7 +923,7 @@ export const Panel = GObject.registerClass({
 });
 
 export const DeviceNavigationPage = GObject.registerClass({
-    GTypeName: 'DeviceNavigationPage',
+    GTypeName: 'GSConnectDeviceNavigationPage',
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/device-page.ui',
     Children: [
         'window_title',
@@ -1489,7 +1489,7 @@ export const DeviceNavigationPage = GObject.registerClass({
 
 
 export const CommandActionRow = GObject.registerClass({
-    GTypeName: 'CommandActionRow',
+    GTypeName: 'GSConnectCommandActionRow',
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/command-row.ui',
     Children: [
         'edit_button',
@@ -1519,7 +1519,7 @@ export const CommandActionRow = GObject.registerClass({
 });
 
 export const DevicePairPage = GObject.registerClass({
-    GTypeName: 'DevicePairPage',
+    GTypeName: 'GSConnectDevicePairPage',
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/device-pair.ui',
     Children: [
         'pair_label'

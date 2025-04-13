@@ -8,13 +8,14 @@
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
-  <template class="DeviceNavigationPage" parent="AdwNavigationPage">
+  <template class="GSConnectDeviceNavigationPage" parent="AdwNavigationPage">
     <property name="title" translatable="yes">Content</property>
     <property name="tag">content</property>
     <property name="child">
       <object class="AdwNavigationView">
         <child>
           <object class="AdwNavigationPage">
+            <property name="title">Device Settings</property>
             <property name="child">
               <object class="AdwToolbarView">
                 <child type="top">

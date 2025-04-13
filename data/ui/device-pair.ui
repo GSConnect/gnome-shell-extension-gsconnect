@@ -18,8 +18,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <property name="page-increment">1</property>
   </object>
   
-  <!-- TODO: Rename this template to GSConnectDevicePairPage (it's more consistent with other files) -->
-  <template class="DevicePairPage" parent="AdwNavigationPage">
+  <template class="GSConnectDevicePairPage" parent="AdwNavigationPage">
     <property name="title" translatable="no">Content</property>
     <property name="tag">content</property>
     <property name="child">
@@ -100,6 +99,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                                 <property name="visible">True</property>
                                 <property name="title" translatable="yes">Pair Device</property>
                                 <property name="start-icon-name">network-transmit-receive-symbolic</property>
+                                <property name="action-name">settings.pair</property>
                                 <style>
                                   <class name="suggested-action"/>
                                 </style>

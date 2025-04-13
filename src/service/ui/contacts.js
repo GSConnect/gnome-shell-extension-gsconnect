@@ -9,9 +9,6 @@ import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk?version=4.0';
 import Adw from 'gi://Adw';
 
-import system from 'system';
-
-
 /**
  * Return a random color
  *
@@ -271,7 +268,9 @@ export const ContactChooser = GObject.registerClass({
         this.list._entry = this.search_entry.text;
         this.list.set_filter_func(this._filter.bind(this));
         this.list.set_sort_func(this._sort);
-
+        this.row_list = [];
+        this.selected_rows = {}
+        
         // Make sure we're using the correct contacts store
         this.device.bind_property(
             'contacts',
@@ -280,6 +279,8 @@ export const ContactChooser = GObject.registerClass({
             GObject.BindingFlags.SYNC_CREATE
         );
         
+        this.search_entry.set_key_capture_widget(this);
+
         this.button_search.connect("clicked", () => {
             this.search_bar.search_mode_enabled = ! this.search_bar.search_mode_enabled;
         });
@@ -293,6 +294,17 @@ export const ContactChooser = GObject.registerClass({
             if (this.results_count === -1) this.stack.visible_child = this.not_found_page;
             else if (this.search_bar.search_mode_enabled) this.stack.visible_child = this.scrolled;
         });
+        /*
+        const keyController = new Gtk.EventControllerKey();
+        keyController.connect('key-pressed', () => {
+            print("ok");
+            return Gdk.EVENT_STOP;
+        });
+
+        this.add_controller(keyController);
+
+        this.grab_focus();
+        */
     }
 
     get store() {
@@ -314,13 +326,11 @@ export const ContactChooser = GObject.registerClass({
             this._store.disconnect(this._contactChangedId);
 
             // Clear the contact list
-            const rows = this.list.get_children();
-
-            for (let i = 0, len = rows.length; i < len; i++) {
-                rows[i].destroy();
-                // HACK: temporary mitigator for mysterious GtkListBox leak
-                system.gc();
-            }
+            this.row_list.forEach(row => {
+                this.list.remove(row);
+                row.run_dispose();
+            });
+            this.row_list = [];
         }
 
         // Set the store
@@ -358,17 +368,18 @@ export const ContactChooser = GObject.registerClass({
     }
 
     _onContactRemoved(store, id) {
-        const rows = this.list.get_children();
-
-        for (let i = 0, len = rows.length; i < len; i++) {
-            const row = rows[i];
-
+        let removed_row = null;
+        let new_row_list = []
+        this.row_list.forEach(row => {
             if (row.contact.id === id) {
-                row.destroy();
-                // HACK: temporary mitigator for mysterious GtkListBox leak
-                system.gc();
+                removed_row = row;
+            } else {
+                new_row_list.push(row);
             }
-        }
+        });
+        this.list.remove(removed_row);
+        removed_row.run_dispose();
+        this.row_list = new_row_list;
     }
 
     _onContactChanged(store, id) {
@@ -395,6 +406,7 @@ export const ContactChooser = GObject.registerClass({
                 });
                 dynamic.__tmp = true;
                 this.list.append(dynamic);
+                this.row_list.push(dynamic);
 
             // ...or if we already do, then update it
             } else {
@@ -419,12 +431,14 @@ export const ContactChooser = GObject.registerClass({
     }
 
     // GtkListBox::row-activated
-    _onNumberSelected(box, row) {
-        if (row === null)
+    _onNumberSelected(row) {
+        if (row === undefined)
             return;
 
         // Emit the number
         const address = row.number.value;
+        this.selected_rows = {};
+        this.selected_rows[row.number.value] = address;
         this.emit('number-selected', address);
 
         // Reset the contact list
@@ -467,8 +481,9 @@ export const ContactChooser = GObject.registerClass({
 
     _addContactNumber(contact, index) {
         const row = new AddressRow(contact, index);
+        row.connect('activated', this._onNumberSelected.bind(this));
         this.list.append(row);
-
+        this.row_list.push(row);
         return row;
     }
 
@@ -495,12 +510,7 @@ export const ContactChooser = GObject.registerClass({
      */
     getSelected() {
         try {
-            const selected = {};
-
-            for (const row of this.list.get_selected_rows())
-                selected[row.number.value] = row.contact;
-
-            return selected;
+            return this.selected_rows;
         } catch (e) {
             logError(e);
             return {};
