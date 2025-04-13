@@ -50,7 +50,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                 <child>
                   <object class="GtkListBox" id="list">
                     <property name="visible">True</property>
-                    <property name="vexpand">true</property>
+                    <property name="vexpand">True</property>
                     <property name="selection-mode">none</property>
                     <property name="activate-on-single-click">False</property>
                     <signal name="notify::allocated-height" handler="_onSizeAllocate" swapped="no"/>

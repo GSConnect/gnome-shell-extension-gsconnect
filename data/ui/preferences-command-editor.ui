@@ -7,17 +7,23 @@ SPDX-License-Identifier: GPL-2.0-or-later
 -->
 
 <interface>
-  <requires lib="gtk" version="4.0"/>  
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+  
   <template class="GSConnectPreferencesCommandEditor" parent="AdwDialog">
     <property name="title" translatable="yes">Edit Command</property>
     <property name="content-width">500</property>
     <child>
       <object class="AdwToolbarView">
+        <property name="visible">True</property>
         <child type="top">
-          <object class="AdwHeaderBar" id="headerbar"/>
+          <object class="AdwHeaderBar" id="headerbar">
+            <property name="visible">True</property>
+          </object>
         </child>
         <child>
           <object class="GtkBox">
+            <property name="visible">True</property>
             <property name="orientation">vertical</property>
             <property name="margin-top">24</property>
             <property name="margin-bottom">24</property>
@@ -28,6 +34,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
               <object class="AdwClamp">
                 <property name="child">
                   <object class="GtkBox">
+                    <property name="visible">True</property>
                     <property name="orientation">vertical</property>
                     <property name="margin-top">12</property>
                     <property name="margin-bottom">24</property>
@@ -36,19 +43,22 @@ SPDX-License-Identifier: GPL-2.0-or-later
                     <property name="spacing">24</property>
                     <child>
                       <object class="GtkListBox">
+                        <property name="visible">True</property>
                         <property name="selection-mode">none</property>
                         <style>
                           <class name="boxed-list"/>
                         </style>
                         <child>
                           <object class="AdwEntryRow" id="name_entry">
-                            <property name="title">Name</property>
+                            <property name="visible">True</property>
+                            <property name="title" translatable="yes">Name</property>
                             <signal name="notify::text" handler="_onEntryChanged" swapped="no"/>
                           </object>
                         </child>
                         <child>
                           <object class="AdwEntryRow" id="command_entry">
-                            <property name="title">Command</property>
+                            <property name="visible">True</property>
+                            <property name="title" translatable="yes">Command</property>
                             <signal name="notify::text" handler="_onEntryChanged" swapped="no"/>
                           </object>
                         </child>
@@ -56,10 +66,12 @@ SPDX-License-Identifier: GPL-2.0-or-later
                     </child>
                     <child>
                       <object class="GtkListBox">
+                        <property name="visible">True</property>
                         <property name="selection-mode">none</property>
                         <child>
                           <object class="AdwButtonRow" id="save_button">
-                            <property name="title">Add command</property>
+                            <property name="visible">True</property>
+                            <property name="title" translatable="yes">Add Command</property>
                             <property name="start-icon-name">list-add-symbolic</property>
                             <style>
                               <class name="suggested-action"/>
