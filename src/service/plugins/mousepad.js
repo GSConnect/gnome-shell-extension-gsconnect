@@ -6,7 +6,7 @@ import Gdk from 'gi://Gdk?version=4.0';
 import GObject from 'gi://GObject';
 
 import * as Components from '../components/index.js';
-import {InputDialog} from '../ui/mousepad.js';
+import {InputWindow} from '../ui/mousepad.js';
 import Plugin from '../plugin.js';
 
 
@@ -350,7 +350,7 @@ const MousepadPlugin = GObject.registerClass({
      */
     keyboard() {
         if (this._dialog === undefined) {
-            this._dialog = new InputDialog({
+            this._dialog = new InputWindow({
                 device: this.device,
                 plugin: this,
             });

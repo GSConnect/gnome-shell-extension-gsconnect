@@ -10,133 +10,119 @@ SPDX-License-Identifier: GPL-2.0-or-later
   <requires lib="gtk" version="4.0"/>
   <requires lib="Adw" version="1.0"/>
 
-  <template class="GSConnectMousepadInputDialog" parent="AdwDialog">
-    <property name="content-width">625</property>
-    <property name="child">
-      <object class="AdwToolbarView">
-        <property name="visible">True</property>
-        <child type="top">
-          <object class="AdwHeaderBar">
-            <property name="visible">True</property>
-            <property name="title-widget">
-              <object class="AdwWindowTitle" id="title-widget">
-                <property name="visible">True</property>
-                <property name="title" translatable="yes">Remote Input</property>
-              </object>
-            </property>
-          </object>
-        </child>
-        <child type="top">
-          <object class="AdwBanner" id="infobar">
-            <property name="revealed">True</property>
-            <!-- Don't mark this as translatable, title is updated on JavaScript -->
-            <property name="title" translatable="no">Remote keyboard on %s is not active</property>
-            <property name="button-label" translatable="yes">Help</property>
-            <!-- TODO: The button must be connected from JavaScript since we now use AdwBanner component -->
-            <!-- Link to connect: https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Help#remote-keyboard-not-active -->
-          </object>
-        </child>
+  <template class="GSConnectMousepadInputWindow" parent="AdwApplicationWindow">
+    <property name="title">Test</property>
+    <child>
+      <object class="AdwBottomSheet" id="bottom_sheet">
         <property name="content">
-          <object class="GtkBox">
+          <object class="AdwToolbarView">
             <property name="visible">True</property>
-            <property name="orientation">vertical</property>
-            <!-- TODO: Controllers must be added in JavaScript since Gtk4 -->
-            <child>
-              <object class="GtkLabel" id="touchpad-zone">
+            <child type="top">
+              <object class="AdwHeaderBar">
                 <property name="visible">True</property>
-                <property name="margin-top">10</property>
-                <property name="margin-bottom">5</property>
-                <property name="margin-start">10</property>
-                <property name="margin-end">10</property>
-                <property name="height-request">300</property>
-                <property name="hexpand">True</property>
-                <property name="vexpand">True</property>
-                <property name="justify">center</property>
-                <property name="label" translatable="yes">Touchpad.
-Drag on this area to move mouse cursor.
-Press long to drag to drag mouse cursor.
-
-Simple click will be sent to paired device.
-Left, middle, right button, and wheel scrolls.</property>
-                <style>
-                  <class name="card"/>
-                  <class name="activatable"/>
-                </style>
+                <property name="title-widget">
+                  <object class="AdwWindowTitle" id="title-widget">
+                    <property name="visible">True</property>
+                    <property name="title" translatable="yes">Remote Input</property>
+                  </object>
+                </property>
+                <child type="end">
+                  <object class="GtkToggleButton">
+                    <property name="active" bind-source="bottom_sheet" bind-property="open" bind-flags="sync-create|bidirectional"/>
+                    <property name="icon-name">input-keyboard-symbolic</property>
+                  </object>
+                </child>
               </object>
             </child>
-            <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="orientation">horizontal</property>
-                <property name="hexpand">True</property>
-                <property name="vexpand">False</property>
+            <child type="top">
+              <object class="AdwBanner" id="infobar">
+                <property name="revealed">True</property>
+                <property name="button-label" translatable="yes">Help</property>
+                <!-- TODO: The button must be connected from JavaScript since we now use AdwBanner component -->
+                <!-- Link to connect: https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Help#remote-keyboard-not-active -->
+              </object>
+            </child>
+            <property name="content">
+              <object class="AdwClamp">
+                <property name="margin-top">10</property>
+                <property name="margin-bottom">10</property>
+                <property name="margin-start">10</property>
+                <property name="margin-end">10</property>
                 <child>
                   <object class="GtkBox">
                     <property name="visible">True</property>
                     <property name="orientation">vertical</property>
+                    <!-- TODO: Controllers must be added in JavaScript since Gtk4 -->
                     <child>
-                      <object class="GtkShortcutLabel" id="shift-label">
+                      <object class="GtkLabel" id="touchpad-zone">
                         <property name="visible">True</property>
-                        <property name="sensitive">False</property>
-                        <property name="margin-top">10</property>
-                        <property name="margin-bottom">10</property>
-                        <property name="margin-start">10</property>
-                        <property name="margin-end">5</property>
-                        <property name="accelerator">&lt;Shift&gt;</property>
+                        <property name="margin-bottom">5</property>
+                        <property name="hexpand">True</property>
+                        <property name="vexpand">True</property>
+                        <property name="justify">center</property>
+                        <property name="label" translatable="yes">Touchpad.
+        Drag on this area to move mouse cursor.
+        Press long to drag to drag mouse cursor.
+
+        Simple click will be sent to paired device.
+        Left, middle, right button, and wheel scrolls.</property>
+                        <style>
+                          <class name="card"/>
+                          <class name="activatable"/>
+                        </style>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkShortcutLabel" id="ctrl-label">
-                        <property name="visible">True</property>
-                        <property name="sensitive">False</property>
-                        <property name="margin-top">10</property>
-                        <property name="margin-bottom">10</property>
-                        <property name="margin-start">10</property>
-                        <property name="margin-end">5</property>
-                        <property name="accelerator">&lt;Ctrl&gt;</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkShortcutLabel" id="alt-label">
-                        <property name="visible">True</property>
-                        <property name="sensitive">False</property>
-                        <property name="margin-top">10</property>
-                        <property name="margin-bottom">10</property>
-                        <property name="margin-start">10</property>
-                        <property name="margin-end">5</property>
-                        <property name="accelerator">&lt;Alt&gt;</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkShortcutLabel" id="super-label">
-                        <property name="visible">True</property>
-                        <property name="sensitive">False</property>
-                        <property name="margin-top">10</property>
-                        <property name="margin-bottom">10</property>
-                        <property name="margin-start">10</property>
-                        <property name="margin-end">5</property>
-                        <property name="accelerator">&lt;Super&gt;</property>
+                      <object class="GtkBox">
+                        <property name="orientation">horizontal</property>
+                        <property name="margin-top">5</property>
+                        <child>
+                          <object class="GtkButton" id="mouse-right-button">
+                            <property name="hexpand">true</property>
+                            <property name="margin-end">2</property>
+                            <property name="icon-name">mouse-left-button-symbolic</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="mouse-middle-button">
+                            <property name="hexpand">true</property>
+                            <property name="margin-start">2</property>
+                            <property name="margin-end">2</property>
+                            <property name="icon-name">input-mouse-symbolic</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="mouse-left-button">
+                            <property name="hexpand">true</property>
+                            <property name="margin-start">2</property>
+                            <property name="icon-name">mouse-right-button-symbolic</property>
+                          </object>
+                        </child>
                       </object>
                     </child>
                   </object>
                 </child>
+              </object>
+            </property>
+          </object>
+        </property>
+        <property name="sheet">
+          <object class="AdwToolbarView">
+            <property name="visible">True</property>
+            <property name="height-request">300</property>
+            <property name="content">
+              <object class="AdwClamp">
+                <property name="margin-top">10</property>
+                <property name="margin-bottom">5</property>
+                <property name="margin-start">10</property>
+                <property name="margin-end">10</property>
                 <child>
                   <object class="GtkScrolledWindow">
                     <property name="visible">True</property>
-                    <property name="hexpand">True</property>
                     <property name="hscrollbar-policy">never</property>
                     <child>
                       <object class="GtkTextView" id="entry">
                         <property name="visible">True</property>
-                        <property name="height-request">150</property>
-                        <property name="margin-top">5</property>
-                        <property name="margin-bottom">10</property>
-                        <property name="margin-start">5</property>
-                        <property name="margin-end">10</property>
-                        <property name="top-margin">5</property>
-                        <property name="bottom-margin">5</property>
-                        <property name="left-margin">5</property>
-                        <property name="right-margin">5</property>
                         <property name="wrap-mode">word-char</property>
                         <style>
                           <class name="card"/>
@@ -146,11 +132,60 @@ Left, middle, right button, and wheel scrolls.</property>
                   </object>
                 </child>
               </object>
+            </property>
+            <child type="bottom">
+              <object class="AdwClamp">
+                <property name="margin-top">5</property>
+                <property name="margin-bottom">10</property>
+                <property name="margin-start">10</property>
+                <property name="margin-end">10</property>
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="orientation">horizontal</property>
+                    <child>
+                      <object class="GtkShortcutLabel" id="shift-label">
+                        <property name="visible">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="margin-end">5</property>
+                        <property name="accelerator">&lt;Shift&gt;</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkShortcutLabel" id="ctrl-label">
+                        <property name="visible">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="margin-start">5</property>
+                        <property name="margin-end">5</property>
+                        <property name="accelerator">&lt;Ctrl&gt;</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkShortcutLabel" id="alt-label">
+                        <property name="visible">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="margin-start">5</property>
+                        <property name="margin-end">5</property>
+                        <property name="accelerator">&lt;Alt&gt;</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkShortcutLabel" id="super-label">
+                        <property name="visible">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="margin-start">5</property>
+                        <property name="margin-end">10</property>
+                        <property name="accelerator">&lt;Super&gt;</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
             </child>
           </object>
         </property>
       </object>
-    </property>
+    </child>
   </template>
 
   <!-- Touchpad Gestures -->

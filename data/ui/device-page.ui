@@ -565,6 +565,41 @@ SPDX-License-Identifier: GPL-2.0-or-later
                           <object class="AdwActionRow">
                             <property name="visible">True</property>
                             <property name="title" translatable="yes">Volume</property>
+                            <child>
+                              <object class="AdwToggleGroup">
+                                <property name="active-name">picture</property>
+                                <property name="valign">center</property>
+                                <property name="vexpand">false</property>
+                                <child>
+                                  <object class="AdwToggle">
+                                    <property name="label" translatable="yes">Nothing</property>
+                                    <property name="tooltip" translatable="yes">Nothing</property>
+                                    <property name="name">nothing</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwToggle">
+                                    <property name="label" translatable="yes">Restore</property>
+                                    <property name="tooltip" translatable="yes">Restore</property>
+                                    <property name="name">restore</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwToggle">
+                                    <property name="label" translatable="yes">Lower</property>
+                                    <property name="tooltip" translatable="yes">Lower</property>
+                                    <property name="name">lower</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwToggle">
+                                    <property name="label" translatable="yes">Mute</property>
+                                    <property name="tooltip" translatable="yes">Mute</property>
+                                    <property name="name">mute</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
                           </object>
                         </child>
                         <child>
@@ -584,6 +619,41 @@ SPDX-License-Identifier: GPL-2.0-or-later
                           <object class="AdwActionRow">
                             <property name="visible">True</property>
                             <property name="title" translatable="yes">Volume</property>
+                            <child>
+                              <object class="AdwToggleGroup">
+                                <property name="active-name">picture</property>
+                                <property name="valign">center</property>
+                                <property name="vexpand">false</property>
+                                <child>
+                                  <object class="AdwToggle">
+                                    <property name="label" translatable="yes">Nothing</property>
+                                    <property name="tooltip" translatable="yes">Nothing</property>
+                                    <property name="name">nothing</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwToggle">
+                                    <property name="label" translatable="yes">Restore</property>
+                                    <property name="tooltip" translatable="yes">Restore</property>
+                                    <property name="name">restore</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwToggle">
+                                    <property name="label" translatable="yes">Lower</property>
+                                    <property name="tooltip" translatable="yes">Lower</property>
+                                    <property name="name">lower</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwToggle">
+                                    <property name="label" translatable="yes">Mute</property>
+                                    <property name="tooltip" translatable="yes">Mute</property>
+                                    <property name="name">mute</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
                           </object>
                         </child>
                         <child>

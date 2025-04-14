@@ -6,7 +6,7 @@ import GLib from 'gi://GLib';
 import Gdk from 'gi://Gdk?version=4.0';
 import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk?version=4.0';
-
+import Adw from 'gi://Adw';
 
 /**
  * A map of Gdk to "KDE Connect" keyvals
@@ -71,8 +71,8 @@ const isShift = (key) => [Gdk.KEY_Shift_L, Gdk.KEY_Shift_R].includes(key);
 const isSuper = (key) => [Gdk.KEY_Super_L, Gdk.KEY_Super_R].includes(key);
 
 
-export const InputDialog = GObject.registerClass({
-    GTypeName: 'GSConnectMousepadInputDialog',
+export const InputWindow = GObject.registerClass({
+    GTypeName: 'GSConnectMousepadInputWindow',
     Properties: {
         'device': GObject.ParamSpec.object(
             'device',
@@ -91,28 +91,26 @@ export const InputDialog = GObject.registerClass({
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/mousepad-input-dialog.ui',
     Children: [
-        'infobar', 'infobar-label',
-        'touchpad-eventbox', 'mouse-left-button', 'mouse-middle-button', 'mouse-right-button',
-        'touchpad-drag', 'touchpad-long-press',
-        'shift-label', 'ctrl-label', 'alt-label', 'super-label', 'entry',
+        'infobar','mouse-left-button', 'mouse-middle-button', 'mouse-right-button',
+        'touchpad-drag', 'touchpad-long-press', 'shift-label', 'ctrl-label', 
+        'alt-label', 'super-label', 'entry'
     ],
-}, class InputDialog extends Gtk.Dialog {
+}, class InputWindow extends Adw.ApplicationWindow {
 
     _init(params) {
-        super._init(Object.assign({
-            use_header_bar: true,
-        }, params));
+        super._init(params);
 
         const headerbar = this.get_titlebar();
         headerbar.title = _('Remote Input');
         headerbar.subtitle = this.device.name;
-
+        this.set_hide_on_close(true);
+        /*
         // Main Box
         const content = this.get_content_area();
         content.border_width = 0;
-
+        */
         // TRANSLATORS: Displayed when the remote keyboard is not ready to accept input
-        this.infobar_label.label = _('Remote keyboard on %s is not active').format(this.device.name);
+        this.infobar.title = _('Remote keyboard on %s is not active').format(this.device.name);
 
         // Text Input
         this.entry.buffer.connect(
@@ -120,6 +118,7 @@ export const InputDialog = GObject.registerClass({
             this._onInsertText.bind(this)
         );
 
+        /*
         this.infobar.connect('notify::reveal-child', this._onState.bind(this));
         this.plugin.bind_property('state', this.infobar, 'reveal-child', 6);
 
@@ -130,11 +129,12 @@ export const InputDialog = GObject.registerClass({
 
         // Scroll Input
         this.add_events(Gdk.EventMask.SCROLL_MASK);
+        */
 
-
+        /*
         this.connect('notify::has-keyboard-focus', this._onGrabBroken.bind(this));
         this.connect('notify::is-active', this._onWindowStateChanged.bind(this));
-
+        
         let keyController = new Gtk.EventControllerKey();
         keyController.connect('key-released', this._onKeyRelease.bind(this));
         keyController.connect('key-pressed', this._onKeyPress.bind(this));
@@ -151,15 +151,14 @@ export const InputDialog = GObject.registerClass({
         focusController.connect('leave', () => this._ungrab());
     
         this.add_controller(focusController);
-
-        this.show_all();
+        */
     }
-
+    /*
     vfunc_close_request(event) {
         this._ungrab();
-        return this.hide_on_delete();
+        return this.hide();
     }
-
+    */
     _onGrabBroken(widget, param) {
         if (!this.has_focus) {
             this._ungrab(); // Chiamata alla tua funzione personalizzata
