@@ -242,7 +242,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <section>
       <item>
         <attribute name="label" translatable="yes">Active when screen is locked</attribute>
-        <attribute name="action">win.support-log</attribute>
+        <attribute name="action">win.keep-alive-when-locked</attribute>
       </item>
     </section>
     <section>

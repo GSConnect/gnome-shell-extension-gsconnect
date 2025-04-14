@@ -503,7 +503,7 @@ msgid "Extension Settings"
 msgstr "擴充設定"
 
 #: data/ui/preferences-window.ui:390
-msgid "GSConnect remains active when GNOME Shell is locked"
+msgid "Active when screen is locked"
 msgstr "當 GNOME Shell 處於鎖定狀態時使 GSConnect 仍保持運作"
 
 #: data/ui/preferences-window.ui:410
