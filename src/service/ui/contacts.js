@@ -501,7 +501,7 @@ export const ContactChooser = GObject.registerClass({
 
     onKeyPress() {
         this.button_search.set_active(true);
-        this.searchButtonClicked();
+        this._searchButtonClicked();
         const char = String.fromCharCode(keyval);
         if (/^[a-zA-Z0-9]$/.test(char)) 
             this.search_entry.text = char;
