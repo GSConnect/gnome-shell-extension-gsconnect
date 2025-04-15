@@ -49,9 +49,10 @@ SPDX-License-Identifier: GPL-2.0-or-later
                     <child type="start">
                       <object class="GtkButton" id="refresh_button">
                         <property name="visible">True</property>
+                        <property name="sensitive">False</property>
                         <property name="icon-name">view-refresh-symbolic</property>
                         <property name="tooltip-text" translatable="yes">Refresh</property>
-                        <property name="action-name">app.refresh</property>
+                        <signal name="clicked" handler="_refresh" swapped="no"/>
                       </object>
                     </child>
                   </object>

@@ -163,7 +163,9 @@ const ConnectDialog = GObject.registerClass({
     }
 });
 
-
+/*
+ *  Preference Window
+ */
 export const Window = GObject.registerClass({
     GTypeName: 'GSConnectPreferencesWindow',
     Properties: {
@@ -198,6 +200,8 @@ export const Window = GObject.registerClass({
             
         // Service Proxy
         this.service = new Service();
+
+        this.pages = new Map();
 
         this._deviceAddedId = this.service.connect(
             'device-added',
@@ -256,8 +260,19 @@ export const Window = GObject.registerClass({
         this.settings.set_boolean('show-indicators', (mode === 'panel'));
     }
 
-    delete_event(event) {
+    /*
+     *  On dispose function
+     */
+    vfunc_close_request(event) {
         if (this.service) {
+            // Remove pages inside the Map
+            Array.from(this.pages.keys()).forEach(id => {
+                const page = this.pages.get(id)
+                this.pages.delete(id);
+                page.unparent();
+                page.run_dispose();
+            });;
+            // Disconnect signals
             this.service.disconnect(this._deviceAddedId);
             this.service.disconnect(this._deviceRemovedId);
             this.service.disconnect(this._serviceChangedId);
@@ -265,23 +280,29 @@ export const Window = GObject.registerClass({
             this.service = null;
         }
 
+        // Save the window geometry
         this._saveGeometry();
         GLib.source_remove(this._refreshSource);
 
         return false;
     }
 
+    /*
+     *
+     */
     async _initService() {
         try {
-            this.refresh_button.grab_focus();
-
             this._onServiceChanged(this.service, null);
+            this.refresh_button.grab_focus();
             await this.service.reload();
         } catch (e) {
             logError(e, 'GSConnect');
         }
     }
 
+    /*
+     *
+     */
     _initMenu() {
         // Panel/User Menu mode
         const displayMode = new Gio.PropertyAction({
@@ -342,20 +363,20 @@ export const Window = GObject.registerClass({
             this.maximize();
     }
 
+    /*
+     *
+     */
     _saveGeometry() {
-        const state = this.get_window().get_state();
-
-        // Maximized State
-        const maximized = (state & Gdk.WindowState.MAXIMIZED);
+        const maximized = this.is_maximized();  // GTK 4 method
         this._windowState.set_boolean('window-maximized', maximized);
-
-        // Leave the size at the value before maximizing
-        if (maximized || (state & Gdk.WindowState.FULLSCREEN))
+    
+        if (maximized || this.is_fullscreen())
             return;
-
+    
         // Size
-        const size = this.get_size();
-        this._windowState.set_value('window-size', new GLib.Variant('(ii)', size));
+        const width = this.get_allocated_width();
+        const height = this.get_allocated_height();
+        this._windowState.set_value('window-size', new GLib.Variant('(ii)', [width, height]));
     }
 
     /**
@@ -423,6 +444,9 @@ export const Window = GObject.registerClass({
         dialog.present();
     }
 
+    /*
+     *
+     */
     _validateName(name) {
         // None of the forbidden characters and at least one non-whitespace
         if (name.trim() && /^[^"',;:.!?()[\]<>]{1,32}$/.test(name))
@@ -453,6 +477,9 @@ export const Window = GObject.registerClass({
         Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
     }
 
+    /*
+     *
+     */
     _setDeviceMenu(panel = null) {
         this.device_menu.insert_action_group('device', null);
         this.device_menu.insert_action_group('settings', null);
@@ -467,6 +494,9 @@ export const Window = GObject.registerClass({
     }
 
 
+    /*
+     *
+     */
     _onDeviceAdded(service, device) {
         try {
             if (this.rows == null) {
@@ -499,6 +529,9 @@ export const Window = GObject.registerClass({
         }
     }
 
+    /*
+     *
+     */
     _onDeviceChanged(device, paramspec) {
         switch (false) {
             case device.paired:
@@ -515,38 +548,64 @@ export const Window = GObject.registerClass({
             this._onDeviceSelected(null, this.rows[device.id]);
     }
 
+    /*
+     *
+     */
     _onDeviceRemoved(service, device) {
         try {
             const row = this.rows[device.id];
             if (row != null) {
                 this.device_list.remove(row);
-                row.dispose();
+                row.run_dispose();
             }
         } catch (e) {
             logError(e);
         }
     }
 
+    /*
+     *
+     */
     _onDeviceSelected(box, row) {
         try {
+            let navigation_page = this.pages.get(row.device.id);
             if (row.device.paired) {
-                const navigation_page = new DeviceNavigationPage(row.device);
-                this.split_view.set_content(navigation_page);
-                this.split_view.set_show_content(true);
-            } else {
-                const navigation_page = new DevicePairPage(row.device);
-                this.split_view.set_content(navigation_page);
-                this.split_view.set_show_content(true);
+                if(!navigation_page) {
+                    navigation_page = new DeviceNavigationPage({ device: row.device });
+                } else if (navigation_page instanceof DevicePairPage) {
+                    this.pages.delete(row.device.id);
+                    navigation_page.unparent();
+                    navigation_page = new DeviceNavigationPage({ device: row.device });
+                }
+                
+            } 
+            else if (!row.device.paired) {
+                if(!navigation_page)
+                    navigation_page = new DevicePairPage({ device: row.device });
+                else if (navigation_page instanceof DeviceNavigationPage) {
+                    this.pages.delete(row.device.id);
+                    navigation_page.unparent();
+                    navigation_page = new DevicePairPage({ device: row.device });
+                }
             }
+            this.pages.set(row.device.id, navigation_page);
+            this.split_view.set_content(navigation_page);
+            this.split_view.set_show_content(true);
         } catch (e) {
             logError(e);
         }
     }
 
+    /*
+     * 
+     */
     _onServiceChanged(service, pspec) {
-        if (this.service.active)
+        if (this.service.active) {
             this.window_title.set_subtitle(_('Searching for devices…'));
-        else
+            this.refresh_button.set_sensitive(true);
+        } else {
             this.window_title.set_subtitle(_('Waiting for service…'));
+            this.refresh_button.set_sensitive(false);
+        }
     }
 });

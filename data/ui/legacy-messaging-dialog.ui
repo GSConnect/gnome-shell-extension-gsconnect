@@ -10,9 +10,9 @@ SPDX-License-Identifier: GPL-2.0-or-later
   <requires lib="gtk" version="4.0"/>
   <requires lib="Adw" version="1.0"/>
 
-  <template class="GSConnectLegacyMessagingDialog" parent="AdwDialog">
+  <template class="GSConnectLegacyMessagingDialog" parent="AdwApplicationWindow">
     <property name="title" translatable="yes">Send SMS…</property>
-    <property name="content-width">500</property>
+    <property name="width-request">500</property>
     <child>
       <object class="AdwToolbarView">
         <property name="visible">True</property>

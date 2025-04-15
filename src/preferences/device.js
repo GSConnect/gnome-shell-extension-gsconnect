@@ -11,7 +11,6 @@ import Adw from 'gi://Adw';
 import Config from '../config.js';
 import plugins from '../service/plugins/index.js';
 
-
 // Build a list of plugins and shortcuts for devices
 const DEVICE_PLUGINS = [];
 const DEVICE_SHORTCUTS = {};
@@ -45,6 +44,100 @@ export function titleSortFunc(row1, row2) {
 
     return row1.get_title().localeCompare(row2.title);
 }
+
+/**
+ *
+ */
+const ActionRowBox = GObject.registerClass({
+    GTypeName: 'GSConnectActionRowBox',
+}, class ActionRowBox extends Gtk.ListBox {
+
+    _init(params) {
+        super._init();
+        Object.assign(this, params);
+
+        this._menu_items = new Map();
+
+        // Watch the model for changes
+        this._itemsChangedId = this.model.connect(
+            'items-changed',
+            this._onItemsChanged.bind(this)
+        );
+        this._onItemsChanged();
+
+        // GActions
+        this._actionAddedId = this.action_group.connect(
+            'action-added',
+            this._onActionChanged.bind(this)
+        );
+        this._actionEnabledChangedId = this.action_group.connect(
+            'action-enabled-changed',
+            this._onActionChanged.bind(this)
+        );
+        this._actionRemovedId = this.action_group.connect(
+            'action-removed',
+            this._onActionChanged.bind(this)
+        );
+    }
+
+    
+    _onActionChanged(group, name, enabled) {
+        const menuItem = this._menu_items.get(name);
+
+        if (menuItem !== undefined)
+            menuItem.visible = group.get_action_enabled(name);
+    }
+
+    _onItemsChanged(model, position, removed, added) {
+        // Remove items
+        while (removed > 0) {
+            const row = this.get_child_at_index(position);
+            const action_name = button.action_name;
+            this.remove(row);
+            row.dispose();
+            this._menu_items.delete(action_name);
+            removed--;
+        }
+
+        // Add items
+        for (let i = 0; i < added; i++) {
+            const index = position + i;
+
+            // Create an iconic button
+            const row = new ActionRow({
+                action_group: this.action_group,
+                info: getItemInfo(model, index),
+                // NOTE: Because this doesn't derive from a PopupMenu class
+                //       it lacks some things its parent will expect from it
+                _parent: this,
+                _delegate: null,
+            });
+
+            // Set the visibility based on the enabled state
+            if (button.action_name !== undefined) {
+                button.visible = this.action_group.get_action_enabled(
+                    button.action_name
+                );
+            }
+
+            // If it has a submenu, add it as a sibling
+            if (button.submenu)
+                this.sub.add_child(button.submenu.actor);
+
+            // Track the item if it has an action
+            if (button.action_name !== undefined)
+                this._menu_items.set(button.action_name, button);
+
+            // Insert it in the box at the defined position
+            this.box.insert_child_at_index(button, index);
+        }
+    }
+
+    destroy() {
+        this.model.disconnect(this._itemsChangedId);
+        super.destroy();
+    }
+});
 
 /**
  * Command Editor Dialog
@@ -98,7 +191,7 @@ const CommandEditor = GObject.registerClass({
  */
 export const DeviceNavigationPage = GObject.registerClass({
     GTypeName: 'GSConnectDeviceNavigationPage',
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/device-page.ui',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/preferences-device-page.ui',
     Children: [
         'window_title',
         'notification_apps',
@@ -111,9 +204,9 @@ export const DeviceNavigationPage = GObject.registerClass({
     ],
 }, class DeviceNavigationPage extends Adw.NavigationPage {
 
-    _init(device) {
+    _init(params = {}) {
         super._init();
-        this.device = device;
+        Object.assign(this, params);
         this.shortcuts_actions_list_rows = [];
         this.plugin_list_rows = [];
         this.settings = new Gio.Settings({
@@ -121,9 +214,9 @@ export const DeviceNavigationPage = GObject.registerClass({
                 'org.gnome.Shell.Extensions.GSConnect.Device',
                 true
             ),
-            path: `/org/gnome/shell/extensions/gsconnect/device/${device.id}/`,
+            path: `/org/gnome/shell/extensions/gsconnect/device/${this.device.id}/`,
         });
-        this._setWindowTitle(device)
+        this._setWindowTitle()
         this._setupActions();
         this._sharingSettings();
         this._batterySettings();
@@ -132,13 +225,19 @@ export const DeviceNavigationPage = GObject.registerClass({
         // --------------------------
         this._keybindingSettings();
         this._advancedSettings();
-        
+        this.row_list = new ActionRowBox({
+            action_group: this.device.action_group,
+            model: this.device.menu,
+        });
     }
     
-    _setWindowTitle(device) {
-        this.window_title.set_title(device.name);
-        let device_type = 'desktop'
-        switch (device.type) {
+    /*
+     *
+     */
+    _setWindowTitle() {
+        this.window_title.set_title(this.device.name);
+        let device_type = _('Desktop');
+        switch (this.device.type) {
             case 'laptop':
                 device_type = _('Laptop');
             case 'phone':
@@ -147,12 +246,13 @@ export const DeviceNavigationPage = GObject.registerClass({
                 device_type = _('Tablet');
             case 'tv':
                 device_type = _('Television');
-            default:
-                device_type = _('Desktop');
         }
         this.window_title.set_subtitle(device_type);
     }
 
+    /*
+     *
+     */
     _setupActions() {
         this.actions = new Gio.SimpleActionGroup();
         this.insert_action_group('settings', this.actions);
@@ -204,18 +304,24 @@ export const DeviceNavigationPage = GObject.registerClass({
         const encryption_info = new Gio.SimpleAction({name: 'encryption-info'});
         encryption_info.connect('activate', this._onEncryptionInfo.bind(this));
         this.actions.add_action(encryption_info);
-
+        
         const status_unpair = new Gio.SimpleAction({name: 'unpair'});
         status_unpair.connect('activate', this._deviceAction.bind(this.device));
         this.settings.bind('paired', status_unpair, 'enabled', 0);
         this.actions.add_action(status_unpair);
     }
 
+    /*
+     *
+     */
     get_incoming_supported(type) {
         const incoming = this.settings.get_strv('incoming-capabilities');
         return incoming.includes(`kdeconnect.${type}`);
     }
 
+    /*
+     *
+     */
     async _batterySettings() {
         try {
             const settings = this.pluginSettings('battery');
@@ -344,6 +450,9 @@ export const DeviceNavigationPage = GObject.registerClass({
             this._addPlugin(name);
     }
 
+    /*
+     *
+     */
     _onPluginsChanged(settings, key) {
         if (key === 'disabled-plugins' || this._disabledPlugins === undefined)
             this._disabledPlugins = settings.get_strv('disabled-plugins');
@@ -359,6 +468,9 @@ export const DeviceNavigationPage = GObject.registerClass({
             this._updatePlugins();
     }
 
+    /*
+     *
+     */
     _addPlugin(name) {
         const plugin = plugins[name];
 
@@ -375,6 +487,9 @@ export const DeviceNavigationPage = GObject.registerClass({
         this.plugin_list_rows.push(row)
     }
 
+    /*
+     *
+     */
     _togglePlugin(widget) {
         try {
             const name = widget.get_name();
@@ -393,6 +508,9 @@ export const DeviceNavigationPage = GObject.registerClass({
     } 
 
 
+    /*
+     *
+     */
     _onEncryptionInfo() {
         const win = Gtk.Application.get_default().get_active_window();
 
@@ -407,10 +525,16 @@ export const DeviceNavigationPage = GObject.registerClass({
         dialog.present();
     }
 
+    /*
+     *
+     */
     _deviceAction(action, parameter) {
         this.action_group.activate_action(action.name, parameter);
     }
 
+    /*
+     *
+     */
     _setPluginKeybindings() {
         const keybindings = this.settings.get_value('keybindings').deepUnpack();
 
@@ -424,6 +548,9 @@ export const DeviceNavigationPage = GObject.registerClass({
         });
     }
 
+    /*
+     *
+     */
     _populateApplications(settings) {
         const applications = this._queryApplications(settings);
 
@@ -438,6 +565,9 @@ export const DeviceNavigationPage = GObject.registerClass({
         }
     }
 
+    /*
+     *
+     */
     _onReceiveDirectoryChanged(settings, key) {
         let receiveDir = settings.get_string(key);
 
@@ -458,7 +588,10 @@ export const DeviceNavigationPage = GObject.registerClass({
         if (this.receive_directory.get_subtitle() !== receiveDir)
             this.receive_directory.set_subtitle();
     }
-    
+   
+    /*
+     *
+     */ 
     _toggleNotification(widgeclickedt) {
         try {
             const row = widget.get_ancestor(Gtk.ListBoxRow.$gtype);
@@ -478,6 +611,9 @@ export const DeviceNavigationPage = GObject.registerClass({
         }
     }
     
+    /*
+     *
+     */
     _addPluginKeybinding(name) {
         const [icon_name, label] = DEVICE_SHORTCUTS[name];
         const row = new Adw.ActionRow({
@@ -497,6 +633,9 @@ export const DeviceNavigationPage = GObject.registerClass({
         this.shortcuts_actions_list_rows.push(row);
     }
 
+    /*
+     *
+     */
     _queryApplications(settings) {
         let applications = {};
 
@@ -535,6 +674,9 @@ export const DeviceNavigationPage = GObject.registerClass({
         return applications;
     }
 
+    /*
+     *
+     */
     _onEditCommand(widget) {
         if (this._commandEditor === undefined) {
             this._commandEditor = new CommandEditor();
@@ -555,6 +697,9 @@ export const DeviceNavigationPage = GObject.registerClass({
         this._commandEditor.present(Gtk.Application.get_default().get_active_window());
     }
 
+    /*
+     *
+     */
     _onReceiveDirectoryChanged(settings, key) {
         let receiveDir = settings.get_string(key);
 
@@ -576,6 +721,9 @@ export const DeviceNavigationPage = GObject.registerClass({
             this.receive_directory.set_subtitle(receiveDir);
     }
 
+    /*
+     *
+     */
     pluginSettings(name) {
         if (this._pluginSettings === undefined)
             this._pluginSettings = {};
@@ -592,6 +740,9 @@ export const DeviceNavigationPage = GObject.registerClass({
         return this._pluginSettings[name];
     }
 
+    /*
+     *
+     */
     _onDeleteCommand(button) {
         const row = button.get_ancestor(Gtk.ListBoxRow.$gtype);
         delete this._commands[row.get_command_name()];
@@ -599,6 +750,9 @@ export const DeviceNavigationPage = GObject.registerClass({
         this._storeCommands();
     }
 
+    /*
+     *
+     */
     _insertCommand(uuid) {
         const row = new CommandActionRow({
             title: this._commands[uuid].name,
@@ -610,12 +764,17 @@ export const DeviceNavigationPage = GObject.registerClass({
         this.command_list.add(row);
     }
 
+    /*
+     *
+     */
     _setCustomChargeLevel(spin) {
         const settings = this.pluginSettings('battery');
         settings.set_uint('custom-battery-notification-value', spin.get_value());
     }
 
-
+    /*
+     *
+     */
     _onReceiveDirectorySet(button) {
         const win = Gtk.Application.get_default().get_active_window();
         const fileDialog = new Gtk.FileDialog({
@@ -633,6 +792,9 @@ export const DeviceNavigationPage = GObject.registerClass({
         });
     }
 
+    /*
+     *
+     */
     dispose() {
         if (this._commandEditor !== undefined)
             this._commandEditor.destroy();
@@ -699,16 +861,16 @@ export const CommandActionRow = GObject.registerClass({
  */
 export const DevicePairPage = GObject.registerClass({
     GTypeName: 'GSConnectDevicePairPage',
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/device-pair.ui',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/preferences-device-pair.ui',
     Children: [
-        'pair_label'
+        'pair_label', 'spinner',  'pair-button'
     ]
 }, class DevicePairPage extends Adw.NavigationPage {
 
-    _init(device) {
+    _init(params = {}) {
         super._init();
-        this.device = device;
-        this.pair_label.set_label(device.name);
+        Object.assign(this, params);
+        this.pair_label.label = this.device.name;
         this.actions = new Gio.SimpleActionGroup();
         this.insert_action_group('settings', this.actions);
 
@@ -717,32 +879,30 @@ export const DevicePairPage = GObject.registerClass({
                 'org.gnome.Shell.Extensions.GSConnect.Device',
                 true
             ),
-            path: `/org/gnome/shell/extensions/gsconnect/device/${device.id}/`,
+            path: `/org/gnome/shell/extensions/gsconnect/device/${this.device.id}/`,
         });
         
         const status_pair = new Gio.SimpleAction({name: 'pair'});
-        status_pair.connect('activate', this._deviceAction.bind(this.device));
-        this.settings.bind('paired', status_pair, 'enabled', 16);
+        this.settings.bind('paired', status_pair, 'enabled', GObject.BindingFlags.SYNC_CREATE);
         this.actions.add_action(status_pair);
     }
 
-    _deviceAction(action, parameter) {
-        this.action_group.activate_action(action.name, parameter);
+    /*
+     *
+     */
+    _pairDevice() {
+        this.device.action_group.activate_action('pair', null);
+        this.spinner.set_visible(true);
+        this.pair_button.set_visible(false);
+        this._stopSpinner();
     }
 
-    pluginSettings(name) {
-        if (this._pluginSettings === undefined)
-            this._pluginSettings = {};
-
-        if (!this._pluginSettings.hasOwnProperty(name)) {
-            const meta = plugins[name].Metadata;
-
-            this._pluginSettings[name] = new Gio.Settings({
-                settings_schema: Config.GSCHEMA.lookup(meta.id, -1),
-                path: `${this.settings.path}plugin/${name}/`,
-            });
-        }
-
-        return this._pluginSettings[name];
+    _stopSpinner() {
+        GLib.timeout_add(GLib.PRIORITY_DEFAULT, 5000, () => {      
+            this.spinner.set_visible(false);
+            this.pair_button.set_visible(true);
+            return false;
+        });
     }
+    
 });

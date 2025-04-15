@@ -279,7 +279,7 @@ export const ContactChooser = GObject.registerClass({
             GObject.BindingFlags.SYNC_CREATE
         );
         
-        this.button_search.connect("clicked", () => this._searchButtonClicked().bind(this));
+        this.button_search.connect("clicked", this._searchButtonClicked.bind(this));
 
         // Cleanup on ::destroy
         this.connect('destroy', this._onDestroy);
@@ -499,13 +499,14 @@ export const ContactChooser = GObject.registerClass({
         }
     }
 
-    onKeyPress() {
+    onKeyPress(keyval) {
         this.button_search.set_active(true);
         this._searchButtonClicked();
         const char = String.fromCharCode(keyval);
-        if (/^[a-zA-Z0-9]$/.test(char)) 
+        if (/^[a-zA-Z0-9]$/.test(char)) { 
             this.search_entry.text = char;
-        this.search_entry.set_position(-1);
+            this.search_entry.set_position(-1);
+        }
     }
 
     /**

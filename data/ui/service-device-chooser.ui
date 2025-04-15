@@ -6,88 +6,63 @@ SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
 SPDX-License-Identifier: GPL-2.0-or-later
 -->
 
-<interface domain="org.gnome.Shell.Extensions.GSConnect">
+<interface>
   <requires lib="gtk" version="4.0"/>
   <requires lib="Adw" version="1.0"/>
-  
-  <!-- TODO: Port to AdwDialog -->
-  <template class="GSConnectServiceDeviceChooser" parent="GtkDialog">
-    <property name="title" translatable="yes">Select Device</property>
-    <!-- <property name="content-width">500</property> -->
-    <child type="action">
-      <object class="GtkButton" id="cancel-button">
+
+  <template class="GSConnectServiceDeviceChooser" parent="AdwDialog">
+    <property name="title" translatable="yes">Select a Device…</property>
+    <property name="content-height">450</property>
+    <property name="content-width">550</property>
+    <child>
+      <object class="AdwToolbarView">
         <property name="visible">True</property>
-        <property name="label" translatable="yes">Cancel</property>
-     </object>
-    </child>
-    <child type="action">
-      <object class="GtkButton" id="select-button">
-        <property name="visible">True</property>
-        <property name="label" translatable="yes">Select</property>
-        <property name="sensitive">False</property>
-      </object>
-    </child>
-    <child internal-child="vbox">
-      <object class="GtkBox">
-        <property name="border_width">0</property>
-        <property name="orientation">vertical</property>
-        <child>
+        <child type="top">
+          <object class="AdwHeaderBar">
+            <property name="visible">True</property>
+            <property name="show-end-title-buttons">False</property>
+            <child type="start">
+              <object class="GtkButton" id="cancel-button">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Cancel</property>
+              </object>
+            </child>
+            <child type="end">
+              <object class="GtkButton" id="select-button">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Select</property>
+                <property name="sensitive">False</property>
+                <style>
+                  <class name="suggested-action"/>
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
+        <property name="content">
           <object class="GtkScrolledWindow">
             <property name="visible">True</property>
-            <property name="hexpand">True</property>
-            <property name="vexpand">True</property>
             <property name="hscrollbar-policy">never</property>
             <child>
               <object class="GtkListBox" id="device-list">
                 <property name="visible">True</property>
-                <property name="hexpand">True</property>
-                <property name="vexpand">True</property>
-                <property name="border-width">6</property>
-                <property name="activate_on_single_click">True</property>
+                <property name="activate-on-single-click">True</property>
+                <style>
+                  <class name="navigation-sidebar"/>
+                </style>
                 <signal name="row-activated" handler="_onDeviceActivated" swapped="no"/>
                 <signal name="selected-rows-changed" handler="_onDeviceSelected" swapped="no"/>
                 <child type="placeholder">
-                  <object class="GtkGrid">
+                  <object class="AdwStatusPage">
                     <property name="visible">True</property>
-                    <property name="halign">center</property>
-                    <property name="valign">center</property>
-                    <child>
-                      <object class="GtkImage">
-                        <property name="visible">True</property>
-                        <property name="pixel_size">48</property>
-                        <property name="icon_name">org.gnome.Shell.Extensions.GSConnect-symbolic</property>
-                        <style>
-                          <class name="placeholder-image"/>
-                        </style>
-                      </object>
-                      <packing>
-                        <property name="left_attach">0</property>
-                        <property name="top_attach">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="visible">True</property>
-                        <property name="margin_top">12</property>
-                        <property name="label" translatable="yes">No Device Found</property>
-                        <style>
-                          <class name="placeholder-title"/>
-                        </style>
-                      </object>
-                      <packing>
-                        <property name="left_attach">0</property>
-                        <property name="top_attach">1</property>
-                      </packing>
-                    </child>
-                    <style>
-                      <class name="placeholder"/>
-                    </style>
+                    <property name="icon-name">org.gnome.Shell.Extensions.GSConnect-symbolic</property>
+                    <property name="title" translatable="yes">No Device Found</property>
                   </object>
                 </child>
               </object>
             </child>
           </object>
-        </child>
+        </property>
       </object>
     </child>
   </template>

@@ -11,7 +11,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
   <requires lib="Adw" version="1.0"/>
 
   <template class="GSConnectMessagingConversation" parent="AdwNavigationPage">
-    <property name="title" translatable="no">Content</property>
+    <property name="title" translatable="no">Messaging Conversation</property>
     <child>
       <object class="AdwToolbarView">
         <property name="visible">True</property>
@@ -19,20 +19,25 @@ SPDX-License-Identifier: GPL-2.0-or-later
           <object class="AdwHeaderBar">
             <property name="visible">True</property>
             <property name="title-widget">
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="orientation">horizontal</property>
+              <!-- TODO: Create an interface that shows contacts involved in the conversation-->
+              <object class="GtkButton">
                 <child>
-                  <object class="AdwAvatar" id="avatar">
+                  <object class="GtkBox">
                     <property name="visible">True</property>
-                    <property name="size">30</property>
-                    <property name="show-initials">True</property>
-                  </object>                            
-                </child>
-                <child>
-                  <object class="AdwWindowTitle" id="content-title">
-                    <property name="visible">True</property>
-                    <property name="title" translatable="no">Contact Name</property>
+                    <property name="orientation">horizontal</property>
+                    <child>
+                      <object class="AdwAvatar" id="avatar">
+                        <property name="visible">True</property>
+                        <property name="size">30</property>
+                        <property name="show-initials">True</property>
+                      </object>                            
+                    </child>
+                    <child>
+                      <object class="AdwWindowTitle" id="content-title">
+                        <property name="visible">True</property>
+                        <property name="title" translatable="no">Contact Name</property>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>

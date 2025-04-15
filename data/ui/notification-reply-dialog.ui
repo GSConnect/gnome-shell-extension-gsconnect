@@ -10,10 +10,10 @@ SPDX-License-Identifier: GPL-2.0-or-later
   <requires lib="gtk" version="4.0"/>
   <requires lib="Adw" version="1.0"/>
 
-  <template class="GSConnectNotificationReplyDialog" parent="AdwDialog">
+  <template class="GSConnectNotificationReplyDialog" parent="AdwApplicationWindow">
     <property name="title" translatable="yes">Send SMS…</property>
-    <property name="content-width">625</property>
-    <property name="child">
+    <property name="width-request">625</property>
+    <child>
       <object class="AdwToolbarView">
         <property name="visible">True</property>
         <child type="top">
@@ -142,6 +142,6 @@ SPDX-License-Identifier: GPL-2.0-or-later
           </object>
         </property>
       </object>
-    </property>
+    </child>
   </template>
 </interface>

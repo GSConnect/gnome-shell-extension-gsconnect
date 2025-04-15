@@ -1072,7 +1072,7 @@ export const Window = GObject.registerClass({
 
         controller.connect('key-pressed', (controller, keyval, keycode, state) => {
             if (this.split_view.get_content() === this.contact_chooser && !this.contact_chooser.button_search.get_active()) {
-                this.contact_chooser.onKeyPress();
+                this.contact_chooser.onKeyPress(keyval);
             }
             return Gdk.EVENT_STOP;
         });
