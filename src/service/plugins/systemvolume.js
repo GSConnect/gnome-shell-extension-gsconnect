@@ -138,7 +138,7 @@ const SystemVolumePlugin = GObject.registerClass({
             muted: stream.is_muted,
             volume: stream.volume,
             maxVolume: this._mixer.get_vol_max_norm(),
-            enabled:true,
+            enabled: true,
         };
 
         this._cache.set(stream, state);
