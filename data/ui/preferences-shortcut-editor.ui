@@ -1,127 +1,103 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
 SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
 
 SPDX-License-Identifier: GPL-2.0-or-later
 -->
-
 <interface domain="org.gnome.Shell.Extensions.GSConnect">
   <requires lib="gtk" version="4.0"/>
   <requires lib="Adw" version="1.0"/>
-  
-  <!-- TODO: Switch to AdwDialog -->
-  <template class="GSConnectPreferencesShortcutEditor" parent="GtkDialog">
+  <template class="GSConnectPreferencesShortcutEditor" parent="AdwDialog">
     <property name="title" translatable="yes">Set Shortcut…</property>
-    <child type="action">
-      <object class="GtkButton" id="cancel-button">
-        <property name="label" translatable="yes">Cancel</property>
-     </object>
-    </child>
-    <child type="action">
-      <object class="GtkButton" id="set-button">
-        <property name="label" translatable="yes">Set</property>
-      </object>
-    </child>
-    <child internal-child="vbox">
-      <object class="GtkBox">
-        <property name="spacing">18</property>
-        <property name="margin_top">12</property>
-        <property name="margin_bottom">12</property>
-        <property name="margin_start">12</property>
-        <property name="margin_end">12</property>
-        <property name="border_width">12</property>
-        <property name="orientation">vertical</property>
-        <child>
-          <object class="GtkLabel" id="summary-label">
-            <property name="use-markup">True</property>
-            <property name="visible">True</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkStack" id="stack">
-            <property name="visible">True</property>
-            <property name="transition-type">crossfade</property>
-            <property name="transition-duration">100</property>
-            <child>
-              <object class="GtkGrid">
-                <property name="row-spacing">18</property>
-                <property name="visible">True</property>
-                <child>
-                  <object class="GtkImage" id="edit-image">
-                    <property name="resource">/org/gnome/Shell/Extensions/GSConnect/images/enter-keyboard-shortcut.svg</property>
-                    <property name="visible">True</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="halign">center</property>
-                    <property name="hexpand">True</property>
-                    <property name="label" translatable="yes" comments="Keys for cancelling (␛) or resetting (␈) a shortcut">Press Esc to cancel or Backspace to reset the keyboard shortcut.</property>
-                    <property name="visible">True</property>
-                    <style>
-                      <class name="dimmed"/>
-                    </style>
-                  </object>
-                  <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">1</property>
-                  </packing>
-                </child>
+    <property name="can-close">False</property>
+    <child>
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="AdwHeaderBar">
+            <child type="start">
+              <object class="GtkButton" id="cancel-button">
+                <property name="label" translatable="yes">Cancel</property>
+                <style>
+                  <class name="destructive-action"/>
+                </style>
               </object>
-              <packing>
-                <property name="name">edit</property>
-                <property name="position">1</property>
-              </packing>
             </child>
-            <child>
-              <object class="GtkGrid">
-                <property name="row_spacing">18</property>
-                <property name="visible">True</property>
-                <child>
-                  <object class="GtkShortcutLabel" id="shortcut-label">
-                    <property name="halign">center</property>
-                    <property name="hexpand">True</property>
-                    <property name="visible">True</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="conflict-label">
-                    <property name="halign">center</property>
-                    <property name="hexpand">True</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">1</property>
-                  </packing>
-                </child>
+            <child type="end">
+              <object class="GtkButton" id="set-button">
+                <property name="label" translatable="yes">Set</property>
+                <style>
+                  <class name="suggested-action"/>
+                </style>
               </object>
-              <packing>
-                <property name="name">confirm</property>
-                <property name="position">2</property>
-              </packing>
             </child>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">2</property>
-          </packing>
         </child>
+        <property name="content">
+          <object class="GtkBox">
+            <property name="spacing">18</property>
+            <property name="margin_top">12</property>
+            <property name="margin_bottom">12</property>
+            <property name="margin_start">12</property>
+            <property name="margin_end">12</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkLabel" id="summary-label">
+                <property name="use-markup">True</property>
+                <property name="visible">True</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkStack" id="stack">
+                <property name="visible">True</property>
+                <property name="transition-type">crossfade</property>
+                <property name="transition-duration">100</property>
+                <child>
+                  <object class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <property name="visible">True</property>
+                    <child>
+                      <object class="GtkImage" id="edit-image">
+                        <property name="resource">/org/gnome/Shell/Extensions/GSConnect/images/enter-keyboard-shortcut.svg</property>
+                        <property name="visible">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="halign">center</property>
+                        <property name="hexpand">True</property>
+                        <property name="label" translatable="yes" comments="Keys for cancelling (␛) or resetting (␈) a shortcut">Press Esc to cancel or Backspace to reset the keyboard shortcut.</property>
+                        <property name="visible">True</property>
+                        <style>
+                          <class name="dimmed"/>
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <property name="visible">True</property>
+                    <child>
+                      <object class="GtkShortcutLabel" id="shortcut-label">
+                        <property name="halign">center</property>
+                        <property name="hexpand">True</property>
+                        <property name="visible">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="conflict-label">
+                        <property name="halign">center</property>
+                        <property name="hexpand">True</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </property>
       </object>
     </child>
   </template>
-</interface>
+</interface>                   

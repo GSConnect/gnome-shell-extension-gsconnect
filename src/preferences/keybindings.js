@@ -7,6 +7,7 @@ import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk?version=4.0';
+import Adw from 'gi://Adw';
 
 
 /*
@@ -48,7 +49,7 @@ export const ShortcutChooserDialog = GObject.registerClass({
         'stack', 'summary-label',
         'shortcut-label', 'conflict-label',
     ],
-}, class ShortcutChooserDialog extends Gtk.Dialog {
+}, class ShortcutChooserDialog extends Adw.Dialog {
 
     _init(params) {
         super._init({
