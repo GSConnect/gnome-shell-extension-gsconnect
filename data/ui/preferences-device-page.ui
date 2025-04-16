@@ -36,6 +36,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                   <object class="AdwPreferencesPage">
                     <property name="visible">True</property>
                     <child>
+                      <!-- This is for the device GMenuModel -->
                       <object class="AdwPreferencesGroup" id="action-row-box">
                         <property name="visible">True</property>
                       </object>
@@ -613,6 +614,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                           </object>
                         </property>
                         <child>
+                          <!-- this is needed for the shortcuts menu -->
                           <object class="GtkListBox" id="shortcuts-actions-list">
                             <style>
                               <class name="boxed-list"/>
