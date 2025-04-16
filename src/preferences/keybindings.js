@@ -46,21 +46,30 @@ export const ShortcutChooserDialog = GObject.registerClass({
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/preferences-shortcut-editor.ui',
     Children: [
         'cancel-button', 'set-button',
-        'stack', 'summary-label',
+        'stack', 'summary-label', 'confirm',
         'shortcut-label', 'conflict-label',
     ],
+    Properties: {
+        'accelerator': GObject.ParamSpec.string(
+            'accelerator',
+            'Accelerator',
+            'The accelerator key combination',
+            GObject.ParamFlags.READWRITE,
+            ''
+        ),
+    },
+    Signals: {
+        'response': {
+            param_types: [GObject.TYPE_STRING],
+        },
+    },
 }, class ShortcutChooserDialog extends Adw.Dialog {
 
     _init(params) {
-        super._init({
-            transient_for: Gio.Application.get_default().get_active_window(),
-            use_header_bar: true,
-        });
+        super._init();
+        Object.assign(params);
 
         this._seat = Gdk.Display.get_default().get_default_seat();
-
-        // Current accelerator or %null
-        this.accelerator = params.accelerator;
 
         // TRANSLATORS: Summary of a keyboard shortcut function
         // Example: Enter a new shortcut to change Messaging
@@ -92,6 +101,8 @@ export const ShortcutChooserDialog = GObject.registerClass({
     }
 
     _onKeyPressed(controller, event) {
+        print("ok1")
+        this.stack.visible_child = this.confirm;
         // Convertiamo il valore del tasto in minuscolo
         let keyvalLower = Gdk.keyval_to_lower(event.keyval);
         let realMask = event.state & Gtk.accelerator_get_default_mod_mask();
@@ -110,7 +121,7 @@ export const ShortcutChooserDialog = GObject.registerClass({
         if (keyvalLower !== event.keyval) {
             realMask |= Gdk.ModifierType.SHIFT_MASK;
         }
-    
+        print("ok2")
         // Evita che Alt+Print venga interpretato come SysRq
         if (keyvalLower === Gdk.KEY_Sys_Req && (realMask & Gdk.ModifierType.MOD1_MASK) !== 0) {
             keyvalLower = Gdk.KEY_Print;
@@ -131,6 +142,7 @@ export const ShortcutChooserDialog = GObject.registerClass({
         // Ignoriamo CapsLock come modificatore
         realMask &= ~Gdk.ModifierType.LOCK_MASK;
     
+        print("ok3")
         // Verifica se c'è una combinazione tasto-modificatore valida
         if (keyvalLower !== 0 && realMask !== 0) {
             this._ungrab(); // Annulla la "presa" attuale
@@ -143,7 +155,7 @@ export const ShortcutChooserDialog = GObject.registerClass({
     
             // Mostra il pulsante "Annulla" e passa alla pagina di conferma
             this.cancel_button.visible = true;
-            this.stack.visible_child_name = 'confirm';
+            this.stack.visible_child = this.confirm;
     
             // Esegui eventuali controlli di conflitti
             this._check();
@@ -287,11 +299,10 @@ export async function checkAccelerator(accelerator, modeFlags = 0, grabFlags = 0
 export async function getAccelerator(summary, accelerator = null) {
     try {
         const dialog = new ShortcutChooserDialog({
-            summary: summary,
             accelerator: accelerator,
         });
-
         accelerator = await new Promise((resolve, reject) => {
+
             dialog.connect('response', (dialog, response) => {
                 switch (response) {
                     case ResponseType.SET:
@@ -312,7 +323,7 @@ export async function getAccelerator(summary, accelerator = null) {
                 resolve(accelerator);
             });
 
-            dialog.run();
+            dialog.present(Gio.Application.get_default().get_active_window());
         });
 
         return accelerator;

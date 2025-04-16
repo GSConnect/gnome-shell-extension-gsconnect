@@ -616,6 +616,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                         <child>
                           <!-- this is needed for the shortcuts menu -->
                           <object class="GtkListBox" id="shortcuts-actions-list">
+                            <signal name="row-activated" handler="_onShortcutRowActivated" swapped="no"/>
                             <style>
                               <class name="boxed-list"/>
                             </style>

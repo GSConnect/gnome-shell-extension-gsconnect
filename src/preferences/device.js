@@ -11,6 +11,7 @@ import Adw from 'gi://Adw';
 
 import Config from '../config.js';
 import plugins from '../service/plugins/index.js';
+import * as Keybindings from './keybindings.js';
 
 // Build a list of plugins and shortcuts for devices
 const DEVICE_PLUGINS = [];
@@ -520,6 +521,27 @@ export const DeviceNavigationPage = GObject.registerClass({
         this.command_list.add(row);
     }
     
+    async _onShortcutRowActivated(box, row) {
+        try {
+            const keybindings = this.settings.get_value('keybindings').deepUnpack();
+            let accel = keybindings[row.action] || null;
+
+            accel = await Keybindings.getAccelerator(row.title, accel);
+
+            if (accel)
+                keybindings[row.action] = accel;
+            else
+                delete keybindings[row.action];
+
+            this.settings.set_value(
+                'keybindings',
+                new GLib.Variant('a{ss}', keybindings)
+            );
+        } catch (e) {
+            logError(e);
+        }
+    }
+    
     /**
      * Sharing Settings
      */
@@ -746,6 +768,8 @@ export const DeviceNavigationPage = GObject.registerClass({
         const row = new Adw.ActionRow({
             height_request: 48,
             icon_name: icon_name,
+            selectable: false,
+            activatable: true,
             title: label,
         });
         const acc_label = new Gtk.Label({

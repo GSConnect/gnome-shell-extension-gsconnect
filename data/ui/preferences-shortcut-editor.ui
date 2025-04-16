@@ -8,15 +8,16 @@ SPDX-License-Identifier: GPL-2.0-or-later
   <requires lib="gtk" version="4.0"/>
   <requires lib="Adw" version="1.0"/>
   <template class="GSConnectPreferencesShortcutEditor" parent="AdwDialog">
-    <property name="title" translatable="yes">Set Shortcut…</property>
-    <property name="can-close">False</property>
+    <property name="title" translatable="yes">Set Shortcut</property>
     <child>
       <object class="AdwToolbarView">
         <child type="top">
           <object class="AdwHeaderBar">
+            <property name="show-end-title-buttons">false</property>
             <child type="start">
               <object class="GtkButton" id="cancel-button">
                 <property name="label" translatable="yes">Cancel</property>
+                <property name="visible">False</property>
                 <style>
                   <class name="destructive-action"/>
                 </style>
@@ -25,6 +26,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
             <child type="end">
               <object class="GtkButton" id="set-button">
                 <property name="label" translatable="yes">Set</property>
+                <property name="visible">False</property>
                 <style>
                   <class name="suggested-action"/>
                 </style>
@@ -52,30 +54,14 @@ SPDX-License-Identifier: GPL-2.0-or-later
                 <property name="transition-type">crossfade</property>
                 <property name="transition-duration">100</property>
                 <child>
-                  <object class="GtkBox">
-                    <property name="orientation">vertical</property>
+                  <object class="AdwStatusPage">
+                    <property name="icon-name">preferences-desktop-keyboard-shortcuts-symbolic</property>
                     <property name="visible">True</property>
-                    <child>
-                      <object class="GtkImage" id="edit-image">
-                        <property name="resource">/org/gnome/Shell/Extensions/GSConnect/images/enter-keyboard-shortcut.svg</property>
-                        <property name="visible">True</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="halign">center</property>
-                        <property name="hexpand">True</property>
-                        <property name="label" translatable="yes" comments="Keys for cancelling (␛) or resetting (␈) a shortcut">Press Esc to cancel or Backspace to reset the keyboard shortcut.</property>
-                        <property name="visible">True</property>
-                        <style>
-                          <class name="dimmed"/>
-                        </style>
-                      </object>
-                    </child>
+                    <property name="description" translatable="yes" comments="Keys for cancelling (␛) or resetting (␈) a shortcut">Press Esc to cancel or Backspace to reset the keyboard shortcut.</property>
                   </object>
                 </child>
                 <child>
-                  <object class="GtkBox">
+                  <object class="GtkBox" id="confirm">
                     <property name="orientation">vertical</property>
                     <property name="visible">True</property>
                     <child>
