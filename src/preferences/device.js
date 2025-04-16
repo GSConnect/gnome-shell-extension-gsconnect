@@ -101,7 +101,6 @@ const ActionRowBox = GObject.registerClass({
         super._init();
         Object.assign(this, params);
 
-        this._row_list = new Map();
         this.get_style_context().add_class('boxed-list');
 
         // Watch the model for changes
@@ -114,37 +113,29 @@ const ActionRowBox = GObject.registerClass({
         // GActions
         this._actionAddedId = this.action_group.connect(
             'action-added',
-            this._onActionChanged.bind(this)
+            this._onItemsChanged.bind(this)
         );
         this._actionEnabledChangedId = this.action_group.connect(
             'action-enabled-changed',
-            this._onActionChanged.bind(this)
+            this._onItemsChanged.bind(this)
         );
         this._actionRemovedId = this.action_group.connect(
             'action-removed',
-            this._onActionChanged.bind(this)
+            this._onItemsChanged.bind(this)
         );
-    }
-
-    _onActionChanged(group, name, enabled) {
-        const row = this._row_list.get(name);
-
-        if (row !== undefined)
-            row.set_visible(group.get_action_enabled(name));
     }
 
     _onItemsChanged(model, position, removed, added) {
         // Clear the menu
         this.remove_all();
-        this.buildActionRowsFromMenuModel(this.model).forEach((child, key) => {
-            this._row_list.set(key, child);
-            this.append(child);
+        this.buildActionRowsFromMenuModel(this.model).forEach(row => {
+            this.append(row);
         });
         this.append(this._create_encription_row());
     }
     
     buildActionRowsFromMenuModel(menuModel) {
-        const rows = new Map();
+        const rows = [];
     
         const nItems = menuModel.get_n_items();
         for (let i = 0; i < nItems; i++) {
@@ -159,27 +150,35 @@ const ActionRowBox = GObject.registerClass({
                 icon = getIcon(icon.names[0]);
 
             if (!label) continue;
-
+        
             if (submenu) {
-                // Expander row con contenuto da submenu
-                const expander = new Adw.ExpanderRow({
-                    title: label,
-                    activatable: false,
-                });
-    
-                if (icon) {
-                    const icon_row = new Gtk.Image({
-                        gicon: icon,
-                        visible: true,
+                submenu.connect(
+                    'items-changed',
+                    this._onItemsChanged.bind(this)
+                );
+                if(submenu.get_n_items() > 0) {
+                
+                    // Expander row con contenuto da submenu
+                    const expander = new Adw.ExpanderRow({
+                        title: label,
+                        activatable: false,
+                        selectable: false,
                     });
-                    expander.add_prefix(icon_row);
+        
+                    if (icon) {
+                        const icon_row = new Gtk.Image({
+                            gicon: icon,
+                            visible: true,
+                        });
+                        expander.add_prefix(icon_row);
+                    }
+                    
+                    const childRows = this.buildActionRowsFromMenuModel(submenu);
+                    for (const row of childRows) {
+                        expander.add_row(row);
+                    }
+                    rows.push(expander);
                 }
-    
-                const childRows = this.buildActionRowsFromMenuModel(submenu);
-                for (const [key, child] of childRows)
-                    expander.add_row(child);
-                rows.set(actionName, expander);
-    
             } else {
                 const row = new Adw.ActionRow({
                     title: label,
@@ -196,7 +195,7 @@ const ActionRowBox = GObject.registerClass({
                 }
                 row.set_visible(this.action_group.get_action_enabled(actionName));
                 row.connect('activated',this._onRowActivated.bind(this, actionName, target));
-                rows.set(actionName, row);
+                rows.push(row);
             }
         }
     
@@ -288,11 +287,14 @@ export const DeviceNavigationPage = GObject.registerClass({
         'notification-apps',
         'receive-directory',
         'plugin-list',
+        'device-cache',
         'command-list',
         'shortcuts-actions-list',
         'battery-system',
         'battery-custom-notification-value',
-        'action-row-box'
+        'action-row-box',
+        'ringing-volume-toogle',
+        'talking-volume-toogle'
     ],
 }, class DeviceNavigationPage extends Adw.NavigationPage {
 
@@ -333,12 +335,16 @@ export const DeviceNavigationPage = GObject.registerClass({
         switch (this.device.type) {
             case 'laptop':
                 device_type = _('Laptop');
+                break;
             case 'phone':
                 device_type = _('Smartphone');
+                break;
             case 'tablet':
                 device_type = _('Tablet');
+                break;
             case 'tv':
                 device_type = _('Television');
+                break;
         }
         this.window_title.set_subtitle(device_type);
     }
@@ -387,12 +393,24 @@ export const DeviceNavigationPage = GObject.registerClass({
         this.actions.add_action(settings.create_action('share-sinks'));
 
         settings = this.pluginSettings('telephony');
-        this.actions.add_action(settings.create_action('ringing-volume'));
+        const ringing_action = settings.create_action('ringing-volume');
+        this.actions.add_action(ringing_action);
+        this._setupToggleGroup(this.ringing_volume_toogle, ringing_action)
         this.actions.add_action(settings.create_action('ringing-pause'));
-        this.actions.add_action(settings.create_action('talking-volume'));
+        const talking_action = settings.create_action('talking-volume');
+        this.actions.add_action(talking_action);
+        this._setupToggleGroup(this.talking_volume_toogle, talking_action) 
         this.actions.add_action(settings.create_action('talking-pause'));
         this.actions.add_action(settings.create_action('talking-microphone'));
 
+        if (this.device.action_group.get_action_enabled('clearCache')) {
+            this.device_cache.connect("clicked", () => {
+                this.device.action_group.activate_action('clearCache', null)
+            });
+        } else {
+            this.device_cache.sensitive = false;
+        }
+            
         // Pair Actions
         const encryption_info = new Gio.SimpleAction({name: 'encryption-info'});
         encryption_info.connect('activate', this._onEncryptionInfo.bind(this));
@@ -404,6 +422,22 @@ export const DeviceNavigationPage = GObject.registerClass({
         this.actions.add_action(status_unpair);
     }
 
+    /*
+     *
+     */
+    _setupToggleGroup(toggle, action) {
+        const state = action.get_state() ? action.get_state().deep_unpack() : null;
+        if (state) {
+            toggle.set_active_name(state);
+            toggle.connect('notify::active-name', () => {
+                const name = toggle.active_name;
+                if (name && action) {
+                    action.change_state(new GLib.Variant('s', name));
+                }
+            });
+        }
+    }
+    
     /*
      *
      */

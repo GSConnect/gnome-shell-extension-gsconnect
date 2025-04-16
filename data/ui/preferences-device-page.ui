@@ -470,7 +470,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                             <property name="visible">True</property>
                             <property name="title" translatable="yes">Volume</property>
                             <child>
-                              <object class="AdwToggleGroup">
+                              <object class="AdwToggleGroup" id ="ringing-volume-toogle">
                                 <property name="valign">center</property>
                                 <property name="vexpand">false</property>
                                 <child>
@@ -523,7 +523,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                             <property name="visible">True</property>
                             <property name="title" translatable="yes">Volume</property>
                             <child>
-                              <object class="AdwToggleGroup">
+                              <object class="AdwToggleGroup" id ="talking-volume-toogle">
                                 <property name="valign">center</property>
                                 <property name="vexpand">false</property>
                                 <child>
@@ -652,11 +652,11 @@ SPDX-License-Identifier: GPL-2.0-or-later
                       </object>
                     </child>
                     <child>
-                      <object class="AdwPreferencesGroup" id="experimental-list">
+                      <object class="AdwPreferencesGroup">
                         <property name="visible">True</property>
                         <property name="title" translatable="yes">Experimental</property>
                         <child>
-                          <object class="AdwActionRow" id="device-cache-row">
+                          <object class="AdwActionRow">
                             <property name="height-request">56</property>
                             <property name="visible">True</property>
                             <property name="selectable">False</property>
@@ -666,7 +666,6 @@ SPDX-License-Identifier: GPL-2.0-or-later
                                 <property name="visible">True</property>
                                 <property name="halign">end</property>
                                 <property name="valign">center</property>
-                                <property name="action-name">device.clearCache</property>
                                 <property name="label" translatable="yes">Clear Cache…</property>
                               </object>
                             </child>

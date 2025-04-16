@@ -43,35 +43,36 @@ SPDX-License-Identifier: GPL-2.0-or-later
               </object>
             </child>
             <property name="content">
-              <object class="AdwClamp">
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="orientation">vertical</property>
                 <property name="margin-top">10</property>
                 <property name="margin-bottom">10</property>
                 <property name="margin-start">10</property>
                 <property name="margin-end">10</property>
+                <!-- TODO: Controllers must be added in JavaScript since Gtk4 -->
                 <child>
-                  <object class="GtkBox">
+                  <object class="GtkLabel" id="touchpad-zone">
                     <property name="visible">True</property>
-                    <property name="orientation">vertical</property>
-                    <!-- TODO: Controllers must be added in JavaScript since Gtk4 -->
-                    <child>
-                      <object class="GtkLabel" id="touchpad-zone">
-                        <property name="visible">True</property>
-                        <property name="margin-bottom">5</property>
-                        <property name="hexpand">True</property>
-                        <property name="vexpand">True</property>
-                        <property name="justify">center</property>
-                        <property name="label" translatable="yes">Touchpad.
-        Drag on this area to move mouse cursor.
-        Press long to drag to drag mouse cursor.
+                    <property name="margin-bottom">5</property>
+                    <property name="hexpand">True</property>
+                    <property name="vexpand">True</property>
+                    <property name="justify">center</property>
+                    <property name="label" translatable="yes">Touchpad.
+    Drag on this area to move mouse cursor.
+    Press long to drag to drag mouse cursor.
 
-        Simple click will be sent to paired device.
-        Left, middle, right button, and wheel scrolls.</property>
-                        <style>
-                          <class name="card"/>
-                          <class name="activatable"/>
-                        </style>
-                      </object>
-                    </child>
+    Simple click will be sent to paired device.
+    Left, middle, right button, and wheel scrolls.</property>
+                    <style>
+                      <class name="card"/>
+                      <class name="activatable"/>
+                    </style>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwClamp">
+                    <property name="margin-top">5</property>
                     <child>
                       <object class="GtkBox">
                         <property name="orientation">horizontal</property>
