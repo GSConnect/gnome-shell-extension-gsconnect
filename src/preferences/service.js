@@ -179,10 +179,10 @@ export const Window = GObject.registerClass({
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/preferences-window.ui',
     Children: [
-        'window_title' ,
-        'split_view' ,
-        'refresh_button' , 
-        'device_list'
+        'window-title' ,
+        'split-view' ,
+        'refresh-button' , 
+        'device-list'
     ],
 }, class PreferencesWindow extends Adw.ApplicationWindow {
 

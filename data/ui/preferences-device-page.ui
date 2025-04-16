@@ -26,7 +26,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                   <object class="AdwHeaderBar">
                     <property name="visible">True</property>
                     <property name="title-widget">
-                      <object class="AdwWindowTitle" id="window_title">
+                      <object class="AdwWindowTitle" id="window-title">
                         <property name="visible">True</property>
                       </object>
                     </property>
@@ -36,105 +36,8 @@ SPDX-License-Identifier: GPL-2.0-or-later
                   <object class="AdwPreferencesPage">
                     <property name="visible">True</property>
                     <child>
-                      <object class="AdwPreferencesGroup">
+                      <object class="AdwPreferencesGroup" id="action-row-box">
                         <property name="visible">True</property>
-                        <child>
-                          <object class="AdwActionRow">
-                            <property name="visible">True</property>
-                            <property name="title" translatable="yes">Message</property>
-                            <property name="activatable">True</property>
-                            <child type="prefix">
-                              <object class="GtkImage">
-                                <property name="visible">True</property>
-                                <property name="icon-name">user-available-symbolic</property>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkImage">
-                                <property name="visible">True</property>
-                                <property name="icon-name">go-next-symbolic</property>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="AdwActionRow">
-                            <property name="visible">True</property>
-                            <property name="title" translatable="yes">Remote Input</property>
-                            <property name="activatable">True</property>
-                            <child type="prefix">
-                              <object class="GtkImage">
-                                <property name="visible">True</property>
-                                <property name="icon-name">org.gnome.Settings-mouse-symbolic</property>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkImage">
-                                <property name="visible">True</property>
-                                <property name="icon-name">go-next-symbolic</property>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="AdwActionRow">
-                            <property name="visible">True</property>
-                            <property name="title" translatable="yes">Share</property>
-                            <property name="activatable">True</property>
-                            <child type="prefix">
-                              <object class="GtkImage">
-                                <property name="visible">True</property>
-                                <property name="icon-name">preferences-system-sharing-symbolic</property>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkImage">
-                                <property name="visible">True</property>
-                                <property name="icon-name">go-next-symbolic</property>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="AdwActionRow">
-                            <property name="visible">True</property>
-                            <property name="title" translatable="yes">Ring</property>
-                            <property name="activatable">True</property>
-                            <child type="prefix">
-                              <object class="GtkImage">
-                                <property name="visible">True</property>
-                                <property name="icon-name">audio-volume-high-symbolic</property>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="AdwActionRow">
-                            <property name="visible">True</property>
-                            <property name="title" translatable="yes">Mount</property>
-                            <property name="activatable">True</property>
-                            <child type="prefix">
-                              <object class="GtkImage">
-                                <property name="visible">True</property>
-                                <property name="icon-name">drive-harddisk-solidstate-symbolic</property>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="AdwActionRow">
-                            <property name="visible">True</property>
-                            <property name="title" translatable="yes">Encryption Info</property>
-                            <property name="activatable">True</property>
-                            <property name="action-name">settings.encryption-info</property>
-                            <child type="prefix">
-                              <object class="GtkImage">
-                                <property name="visible">True</property>
-                                <property name="icon-name">system-lock-screen-symbolic</property>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
                       </object>
                     </child>
                     <child>
@@ -256,7 +159,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                       <object class="AdwPreferencesGroup">
                         <property name="visible">True</property>
                         <child>
-                          <object class="AdwButtonRow" id="unpair_device">
+                          <object class="AdwButtonRow" id="unpair-device">
                             <property name="visible">True</property>
                             <property name="title" translatable="yes">Unpair Device</property>
                             <property name="activatable">True</property>
@@ -353,7 +256,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                           </object>
                         </child>
                         <child>
-                          <object class="AdwActionRow" id="receive_directory">
+                          <object class="AdwActionRow" id="receive-directory">
                             <property name="visible">True</property>
                             <property name="title" translatable="yes">Save Files to</property>
                             <child>
@@ -399,7 +302,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                   <object class="AdwPreferencesPage">
                     <property name="visible">True</property>
                     <child>
-                      <object class="AdwPreferencesGroup" id="battery_system">
+                      <object class="AdwPreferencesGroup" id="battery-system">
                         <property name="visible">True</property>
                         <property name="title" translatable="yes">Device Battery</property>
                         <child>
@@ -422,7 +325,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                               </object>
                             </child>
                             <child>
-                              <object class="AdwSpinRow" id="battery_custom_notification_value">
+                              <object class="AdwSpinRow" id="battery-custom-notification-value">
                                 <property name="visible">True</property>
                                 <property name="adjustment">
                                   <object class="GtkAdjustment" id="battery-custom-adjustment">
@@ -483,7 +386,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                   <object class="AdwPreferencesPage">
                     <property name="visible">True</property>
                     <child>
-                      <object class="AdwPreferencesGroup" id="command_list">
+                      <object class="AdwPreferencesGroup" id="command-list">
                         <property name="visible">True</property>
                         <property name="title" translatable="yes">Commands</property>
                       </object>
@@ -530,7 +433,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                       </object>
                     </child>
                     <child>
-                      <object class="AdwPreferencesGroup" id="notification_apps">
+                      <object class="AdwPreferencesGroup" id="notification-apps">
                         <property name="visible">True</property>
                         <property name="title" translatable="yes">Applications</property>
                       </object>
@@ -693,7 +596,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                   <object class="AdwPreferencesPage">
                     <property name="visible">True</property>
                     <child>
-                      <object class="AdwPreferencesGroup" id="shortcuts-actions-list">
+                      <object class="AdwPreferencesGroup">
                         <property name="visible">True</property>
                         <property name="title" translatable="yes">Action Shortcuts</property>
                         <property name="header-suffix">
@@ -709,6 +612,13 @@ SPDX-License-Identifier: GPL-2.0-or-later
                             </property>
                           </object>
                         </property>
+                        <child>
+                          <object class="GtkListBox" id="shortcuts-actions-list">
+                            <style>
+                              <class name="boxed-list"/>
+                            </style>
+                          </object>
+                        </child>
                       </object>
                     </child>
                   </object>
@@ -734,13 +644,13 @@ SPDX-License-Identifier: GPL-2.0-or-later
                   <object class="AdwPreferencesPage">
                     <property name="visible">True</property>
                     <child>
-                      <object class="AdwPreferencesGroup" id="plugin_list">
+                      <object class="AdwPreferencesGroup" id="plugin-list">
                         <property name="visible">True</property>
                         <property name="title" translatable="yes">Plugins</property>
                       </object>
                     </child>
                     <child>
-                      <object class="AdwPreferencesGroup" id="experimental_list">
+                      <object class="AdwPreferencesGroup" id="experimental-list">
                         <property name="visible">True</property>
                         <property name="title" translatable="yes">Experimental</property>
                         <child>

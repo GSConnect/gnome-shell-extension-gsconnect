@@ -16,11 +16,11 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <child>
       <object class="AdwBreakpoint">
         <condition>max-width: 750sp</condition>
-        <setter object="split_view" property="collapsed">True</setter>
+        <setter object="split-view" property="collapsed">True</setter>
       </object>
     </child>
     <property name="content">
-      <object class="AdwNavigationSplitView" id="split_view">
+      <object class="AdwNavigationSplitView" id="split-view">
         <property name="visible">True</property>
         <property name="sidebar">
           <object class="AdwNavigationPage">
@@ -33,7 +33,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                   <object class="AdwHeaderBar">
                     <property name="visible">True</property>
                     <property name="title-widget">
-                      <object class="AdwWindowTitle" id="window_title">
+                      <object class="AdwWindowTitle" id="window-title">
                         <property name="visible">True</property>
                         <property name="title">GSConnect</property>
                       </object>
@@ -47,7 +47,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                       </object>
                     </child>
                     <child type="start">
-                      <object class="GtkButton" id="refresh_button">
+                      <object class="GtkButton" id="refresh-button">
                         <property name="visible">True</property>
                         <property name="sensitive">False</property>
                         <property name="icon-name">view-refresh-symbolic</property>
@@ -62,7 +62,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                     <property name="visible">True</property>
                     <property name="min-content-width">240</property>
                     <child>
-                      <object class="GtkListBox" id="device_list">
+                      <object class="GtkListBox" id="device-list">
                         <property name="visible">True</property>
                         <property name="vexpand">True</property>
                         <style>

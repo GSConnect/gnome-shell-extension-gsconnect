@@ -6,6 +6,7 @@ import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk?version=4.0';
+import Gdk from 'gi://Gdk?version=4.0';
 import Adw from 'gi://Adw';
 
 import Config from '../config.js';
@@ -29,6 +30,50 @@ for (const name in plugins) {
         if (action.parameter_type === null)
             DEVICE_SHORTCUTS[name] = [action.icon_name, action.label];
     }
+}
+
+function getIcon(name) {
+    if (getIcon._resource === undefined) {
+        getIcon._desktop = Gtk.IconTheme.get_for_display(Gdk.Display.get_default());
+        getIcon._resource = {};
+
+        const iconPath = 'resource://org/gnome/Shell/Extensions/GSConnect/icons';
+        const dirFile = Gio.File.new_for_uri(iconPath);
+
+        try {
+            const enumerator = dirFile.enumerate_children(
+                'standard::name',
+                Gio.FileQueryInfoFlags.NONE,
+                null
+            );
+
+            let info;
+            while ((info = enumerator.next_file(null)) !== null) {
+                const filename = info.get_name();
+
+                if (filename.endsWith('.svg')) {
+                    const iconName = filename.replace(/\.svg$/, '');
+                    getIcon._resource[iconName] = new Gio.FileIcon({
+                        file: dirFile.get_child(filename),
+                    });
+                }
+            }
+
+            enumerator.close(null);
+        } catch (e) {
+            logError(e);
+        }
+    }
+
+    if (getIcon._desktop.has_icon(name)) {
+        return new Gio.ThemedIcon({ name });
+    }
+
+    if (getIcon._resource[name] !== undefined) {
+        return getIcon._resource[name];
+    }
+
+    return new Gio.ThemedIcon({ name });
 }
 
 /**
@@ -56,7 +101,8 @@ const ActionRowBox = GObject.registerClass({
         super._init();
         Object.assign(this, params);
 
-        this._menu_items = new Map();
+        this._row_list = new Map();
+        this.get_style_context().add_class('boxed-list');
 
         // Watch the model for changes
         this._itemsChangedId = this.model.connect(
@@ -64,7 +110,7 @@ const ActionRowBox = GObject.registerClass({
             this._onItemsChanged.bind(this)
         );
         this._onItemsChanged();
-
+        
         // GActions
         this._actionAddedId = this.action_group.connect(
             'action-added',
@@ -80,57 +126,102 @@ const ActionRowBox = GObject.registerClass({
         );
     }
 
-    
     _onActionChanged(group, name, enabled) {
-        const menuItem = this._menu_items.get(name);
+        const row = this._row_list.get(name);
 
-        if (menuItem !== undefined)
-            menuItem.visible = group.get_action_enabled(name);
+        if (row !== undefined)
+            row.set_visible(group.get_action_enabled(name));
     }
 
     _onItemsChanged(model, position, removed, added) {
-        // Remove items
-        while (removed > 0) {
-            const row = this.get_child_at_index(position);
-            const action_name = button.action_name;
-            this.remove(row);
-            row.dispose();
-            this._menu_items.delete(action_name);
-            removed--;
-        }
+        // Clear the menu
+        this.remove_all();
+        this.buildActionRowsFromMenuModel(this.model).forEach((child, key) => {
+            this._row_list.set(key, child);
+            this.append(child);
+        });
+        this.append(this._create_encription_row());
+    }
+    
+    buildActionRowsFromMenuModel(menuModel) {
+        const rows = new Map();
+    
+        const nItems = menuModel.get_n_items();
+        for (let i = 0; i < nItems; i++) {
+            const label = menuModel.get_item_attribute_value(i, 'label', null).get_string()[0];
+            const iconName = menuModel.get_item_attribute_value(i, 'icon', null);
+            const actionName = menuModel.get_item_attribute_value(i, 'action', null).get_string()[0].split('.')[1];
+            const target = menuModel.get_item_attribute_value(i, 'target', null);
+            const submenu = menuModel.get_item_link(i, 'submenu');
 
-        // Add items
-        for (let i = 0; i < added; i++) {
-            const index = position + i;
+            let icon = Gio.Icon.deserialize(iconName);
+            if (icon instanceof Gio.ThemedIcon)
+                icon = getIcon(icon.names[0]);
 
-            // Create an iconic button
-            const row = new ActionRow({
-                action_group: this.action_group,
-                info: getItemInfo(model, index),
-                // NOTE: Because this doesn't derive from a PopupMenu class
-                //       it lacks some things its parent will expect from it
-                _parent: this,
-                _delegate: null,
-            });
+            if (!label) continue;
 
-            // Set the visibility based on the enabled state
-            if (button.action_name !== undefined) {
-                button.visible = this.action_group.get_action_enabled(
-                    button.action_name
-                );
+            if (submenu) {
+                // Expander row con contenuto da submenu
+                const expander = new Adw.ExpanderRow({
+                    title: label,
+                    activatable: false,
+                });
+    
+                if (icon) {
+                    const icon_row = new Gtk.Image({
+                        gicon: icon,
+                        visible: true,
+                    });
+                    expander.add_prefix(icon_row);
+                }
+    
+                const childRows = this.buildActionRowsFromMenuModel(submenu);
+                for (const [key, child] of childRows)
+                    expander.add_row(child);
+                rows.set(actionName, expander);
+    
+            } else {
+                const row = new Adw.ActionRow({
+                    title: label,
+                    activatable: !!actionName,
+                    selectable: false,
+                });
+    
+                if (iconName) {
+                    const icon_row = new Gtk.Image({
+                        gicon: icon,
+                        visible: true,
+                    });
+                    row.add_prefix(icon_row);
+                }
+                row.set_visible(this.action_group.get_action_enabled(actionName));
+                row.connect('activated',this._onRowActivated.bind(this, actionName, target));
+                rows.set(actionName, row);
             }
-
-            // If it has a submenu, add it as a sibling
-            if (button.submenu)
-                this.sub.add_child(button.submenu.actor);
-
-            // Track the item if it has an action
-            if (button.action_name !== undefined)
-                this._menu_items.set(button.action_name, button);
-
-            // Insert it in the box at the defined position
-            this.box.insert_child_at_index(button, index);
         }
+    
+        return rows;
+    }
+
+    _create_encription_row() {
+        const row = new Adw.ActionRow({
+            visible: true,
+            title: 'Encryption Info',
+            selectable: false,
+            activatable: true,
+            action_name: 'settings.encryption-info',
+        });
+        
+        const icon = new Gtk.Image({
+            visible: true,
+            icon_name: 'system-lock-screen-symbolic',
+        });
+        row.add_prefix(icon);
+        return row;
+    }
+
+    _onRowActivated(action_name, target) {
+        this.action_group.activate_action(action_name, target);
     }
 
     destroy() {
@@ -193,14 +284,15 @@ export const DeviceNavigationPage = GObject.registerClass({
     GTypeName: 'GSConnectDeviceNavigationPage',
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/preferences-device-page.ui',
     Children: [
-        'window_title',
-        'notification_apps',
-        'receive_directory',
-        'plugin_list',
-        'command_list',
+        'window-title',
+        'notification-apps',
+        'receive-directory',
+        'plugin-list',
+        'command-list',
         'shortcuts-actions-list',
-        'battery_system',
-        'battery_custom_notification_value'
+        'battery-system',
+        'battery-custom-notification-value',
+        'action-row-box'
     ],
 }, class DeviceNavigationPage extends Adw.NavigationPage {
 
@@ -225,10 +317,11 @@ export const DeviceNavigationPage = GObject.registerClass({
         // --------------------------
         this._keybindingSettings();
         this._advancedSettings();
-        this.row_list = new ActionRowBox({
+
+        this.action_row_box.add(new ActionRowBox({
             action_group: this.device.action_group,
             model: this.device.menu,
-        });
+        }));
     }
     
     /*
@@ -629,7 +722,7 @@ export const DeviceNavigationPage = GObject.registerClass({
         row.action = name;
         row.label = acc_label;
         
-        this.shortcuts_actions_list.add(row);
+        this.shortcuts_actions_list.append(row);
         this.shortcuts_actions_list_rows.push(row);
     }
 

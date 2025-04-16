@@ -378,7 +378,7 @@ const NotificationPlugin = GObject.registerClass({
         for (const name of icon.names) {
             // NOTE: kdeconnect-android doesn't support SVGs
             const size = Math.max.apply(null, theme.get_icon_sizes(name));
-            const info = theme.lookup_icon(name, size, Gtk.IconLookupFlags.NO_SVG);
+            const info = theme.lookup_icon(name, null, size, Gtk.IconLookupFlags.NO_SVG, null, null);
 
             // Send the first icon we find from the options
             if (info) {
