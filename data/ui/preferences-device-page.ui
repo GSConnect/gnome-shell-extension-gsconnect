@@ -11,7 +11,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
   <requires lib="Adw" version="1.0"/>
   
   <template class="GSConnectDeviceNavigationPage" parent="AdwNavigationPage">
-    <property name="title" translatable="no">Device Page</property>
+    <property name="title" translatable="yes">Device Page</property>
     <property name="tag">content</property>
     <property name="child">
       <object class="AdwNavigationView">
