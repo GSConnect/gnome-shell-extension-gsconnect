@@ -17,6 +17,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <file compressed="true" preprocess="xml-stripblanks">ui/find-my-phone.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/legacy-messaging-dialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/messaging-conversation-message.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/messaging-conversation-partecipants.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/messaging-conversation-summary.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/messaging-conversation.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/messaging-window.ui</file>

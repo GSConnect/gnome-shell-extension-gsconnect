@@ -20,7 +20,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
             <property name="visible">True</property>
             <property name="title-widget">
               <!-- TODO: Create an interface that shows contacts involved in the conversation-->
-              <object class="GtkButton">
+              <object class="GtkButton" id ="partecipants-button">
                 <child>
                   <object class="GtkBox">
                     <property name="visible">True</property>
@@ -52,17 +52,37 @@ SPDX-License-Identifier: GPL-2.0-or-later
               <object class="GtkScrolledWindow" id="scrolled">
                 <property name="visible">True</property>
                 <property name="hscrollbar-policy">never</property>
+                <!-- <signal name="notify::allocated-height" handler="_onSizeAllocate" swapped="no"/> -->
                 <child>
                   <object class="GtkListBox" id="list">
                     <property name="visible">True</property>
                     <property name="vexpand">True</property>
                     <property name="selection-mode">none</property>
                     <property name="activate-on-single-click">False</property>
-                    <signal name="notify::allocated-height" handler="_onSizeAllocate" swapped="no"/>
                     <style>
                       <class name="message-list"/>
                       <class name="background"/>
                     </style>
+                    <child>
+                      <object class="GtkListBoxRow" id="spinner">
+                        <property name="visible">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="hexpand">True</property>
+                        <property name="activatable">False</property>
+                        <property name="selectable">False</property>
+                        <child>
+                          <object class="AdwSpinner" id="spinner-anim">
+                            <property name="halign">center</property>
+                            <property name="valign">center</property>
+                            <property name="width-request">30</property>
+                            <property name="height-request">30</property>
+                          </object>
+                        </child>
+                        <style>
+                          <class name="messages-loading"/>
+                        </style>
+                      </object>
+                    </child>
                     <child>
                       <object class="GtkListBoxRow" id="pending">
                         <property name="visible" bind-source="GSConnectMessagingConversation" bind-property="has-pending" bind-flags="sync-create"/>

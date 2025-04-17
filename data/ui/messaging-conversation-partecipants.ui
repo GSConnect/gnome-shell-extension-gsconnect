@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+
+SPDX-License-Identifier: GPL-2.0-or-later
+-->
+
+<interface domain="org.gnome.Shell.Extensions.GSConnect">
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+  
+  <template class="GSConnectMessagingConversationPartecipants" parent="AdwDialog">
+    <property name="title" translatable="yes">Partecipants</property>
+    <property name="content-width">500</property>
+    <child>
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="AdwHeaderBar">
+            <!--<property name="show-title">False</property>-->
+          </object>
+        </child>
+        <property name="content">
+          <object class="AdwClamp">
+            <property name="margin-top">10</property>
+            <property name="margin-bottom">20</property>
+            <property name="margin-start">10</property>
+            <property name="margin-end">10</property>
+            <child>
+              <object class="GtkListBox" id="contacts-list">
+                <style>
+                  <class name="boxed-list"/>
+                </style>
+              </object>
+            </child>
+          </object>
+        </property>
+      </object>
+    </child>
+  </template>
+</interface>

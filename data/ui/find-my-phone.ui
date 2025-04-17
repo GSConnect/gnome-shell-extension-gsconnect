@@ -13,7 +13,6 @@ SPDX-License-Identifier: GPL-2.0-or-later
   <template class="GSConnectFindMyPhoneDialog" parent="AdwApplicationWindow">
     <property name="default-width">800</property>
     <property name="default-height">600</property>
-    <property name="title" translatable="yes">My App</property>
     <property name="content">
       <object class="AdwToolbarView">
         <child type="top">
