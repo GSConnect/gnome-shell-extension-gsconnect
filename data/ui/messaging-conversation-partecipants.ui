@@ -17,7 +17,6 @@ SPDX-License-Identifier: GPL-2.0-or-later
       <object class="AdwToolbarView">
         <child type="top">
           <object class="AdwHeaderBar">
-            <!--<property name="show-title">False</property>-->
           </object>
         </child>
         <property name="content">
