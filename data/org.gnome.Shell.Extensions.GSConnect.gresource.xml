@@ -12,8 +12,9 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <file compressed="true">application.css</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/command-row.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/connect-dialog.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/contacts-address-row.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/contact-chooser.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/contacts-address-row.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/find-my-phone.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/legacy-messaging-dialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/messaging-conversation-message.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/messaging-conversation-summary.ui</file>
@@ -48,6 +49,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <file compressed="true" preprocess="xml-stripblanks">icons/phonelink-off-symbolic.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">icons/people-symbolic.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">icons/phonelink-ring-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">icons/phone-vibrate-symbolic.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">icons/phonelink-setup-symbolic.svg</file>
 
     <!-- Misc Resources c/o GNOME -->
