@@ -57,10 +57,17 @@ export const ShortcutChooserDialog = GObject.registerClass({
             GObject.ParamFlags.READWRITE,
             ''
         ),
+        'summary': GObject.ParamSpec.string(
+            'summary',
+            'Summary',
+            'The summary of key combination',
+            GObject.ParamFlags.READWRITE,
+            ''
+        ),
     },
     Signals: {
         'response': {
-            param_types: [GObject.TYPE_STRING],
+            param_types: [GObject.TYPE_OBJECT, GObject.TYPE_INT],
         },
     },
 }, class ShortcutChooserDialog extends Adw.Dialog {
@@ -68,8 +75,6 @@ export const ShortcutChooserDialog = GObject.registerClass({
     _init(params) {
         super._init();
         Object.assign(params);
-
-        this._seat = Gdk.Display.get_default().get_default_seat();
 
         // TRANSLATORS: Summary of a keyboard shortcut function
         // Example: Enter a new shortcut to change Messaging
@@ -82,6 +87,10 @@ export const ShortcutChooserDialog = GObject.registerClass({
 
         // Aggiungi il controller al widget
         this.add_controller(keyController);
+
+        this.cancel_button.connect('clicked', () => {
+            this.emit('response', this, Gtk.ResponseType.CANCEL);
+        });
     }
 
     get accelerator() {
@@ -100,16 +109,16 @@ export const ShortcutChooserDialog = GObject.registerClass({
         this.summary_label.label = value;
     }
 
-    _onKeyPressed(controller, event) {
-        print("ok1")
-        this.stack.visible_child = this.confirm;
+    _onKeyPressed(controller, keyval, keycode, state) {
+    
         // Convertiamo il valore del tasto in minuscolo
-        let keyvalLower = Gdk.keyval_to_lower(event.keyval);
-        let realMask = event.state & Gtk.accelerator_get_default_mod_mask();
+        let keyvalLower = Gdk.keyval_to_lower(keyval);
+        // Usiamo il state fornito, mascherando solo i bit di modificatore validi
+        let realMask = state & Gtk.accelerator_get_default_mod_mask();
     
         // Ignora i modificatori puri (es. Shift, Ctrl, Alt)
         if (_MODIFIERS.includes(keyvalLower)) {
-            return Gdk.EVENT_STOP; // Interrompe la propagazione
+            return Gdk.EVENT_STOP;
         }
     
         // Normalizziamo Tab
@@ -117,54 +126,50 @@ export const ShortcutChooserDialog = GObject.registerClass({
             keyvalLower = Gdk.KEY_Tab;
         }
     
-        // Gestiamo Shift per riconoscere tasti maiuscoli
-        if (keyvalLower !== event.keyval) {
+        // Gestiamo lo Shift (maiuscole)
+        if (keyvalLower !== keyval) {
             realMask |= Gdk.ModifierType.SHIFT_MASK;
         }
-        print("ok2")
+        
         // Evita che Alt+Print venga interpretato come SysRq
-        if (keyvalLower === Gdk.KEY_Sys_Req && (realMask & Gdk.ModifierType.MOD1_MASK) !== 0) {
+        if (keyvalLower === Gdk.KEY_Sys_Req &&
+            (realMask & Gdk.ModifierType.MOD1_MASK) !== 0) {
             keyvalLower = Gdk.KEY_Print;
         }
     
         // Esc cancella l'editing
         if (realMask === 0 && keyvalLower === Gdk.KEY_Escape) {
-            this.response(Gtk.ResponseType.CANCEL);
+            this.emit('response', this, Gtk.ResponseType.CANCEL);
             return Gdk.EVENT_STOP;
         }
     
         // Backspace disabilita il collegamento corrente
         if (realMask === 0 && keyvalLower === Gdk.KEY_BackSpace) {
-            this.response(Gtk.ResponseType.UNSET);
+            this.emit('response', this, Gtk.ResponseType.UNSET);
             return Gdk.EVENT_STOP;
         }
     
-        // Ignoriamo CapsLock come modificatore
+        // Ignoriamo CapsLock
         realMask &= ~Gdk.ModifierType.LOCK_MASK;
     
-        print("ok3")
-        // Verifica se c'è una combinazione tasto-modificatore valida
+        // Se abbiamo un tasto + modificatore valido
         if (keyvalLower !== 0 && realMask !== 0) {
-            this._ungrab(); // Annulla la "presa" attuale
-    
-            // Configura l'acceleratore e aggiorna l'etichetta
+
+            // Imposta l'acceleratore e aggiorna l'etichetta
             this.accelerator = Gtk.accelerator_name(keyvalLower, realMask);
             this.conflict_label.label = _('%s è già in uso').format(
                 Gtk.accelerator_get_label(keyvalLower, realMask)
             );
     
-            // Mostra il pulsante "Annulla" e passa alla pagina di conferma
             this.cancel_button.visible = true;
             this.stack.visible_child = this.confirm;
     
-            // Esegui eventuali controlli di conflitti
             this._check();
         }
     
-        return Gdk.EVENT_STOP; // Interrompe la propagazione
+        return Gdk.EVENT_STOP;
     }
     
-
     async _check() {
         try {
             const available = await checkAccelerator(this.accelerator);
@@ -172,51 +177,8 @@ export const ShortcutChooserDialog = GObject.registerClass({
             this.conflict_label.visible = !available;
         } catch (e) {
             logError(e);
-            this.response(ResponseType.CANCEL);
+            this.emit('response', this, ResponseType.CANCEL);
         }
-    }
-
-    _grab() {
-        const success = this._seat.grab(
-            this.get_window(),
-            Gdk.SeatCapabilities.KEYBOARD,
-            true, // owner_events
-            null, // cursor
-            null, // event
-            null
-        );
-
-        if (success !== Gdk.GrabStatus.SUCCESS)
-            return this.response(ResponseType.CANCEL);
-
-        if (!this._seat.get_keyboard() && !this._seat.get_pointer())
-            return this.response(ResponseType.CANCEL);
-
-        this.grab_add();
-    }
-
-    _ungrab() {
-        this._seat.ungrab();
-        this.grab_remove();
-    }
-
-    // Override to use our own ungrab process
-    response(response_id) {
-        this.hide();
-        this._ungrab();
-
-        return super.response(response_id);
-    }
-
-    // Override with a non-blocking version of Gtk.Dialog.run()
-    run() {
-        this.show();
-
-        // Wait a bit before attempting grab
-        GLib.timeout_add(GLib.PRIORITY_DEFAULT, 100, () => {
-            this._grab();
-            return GLib.SOURCE_REMOVE;
-        });
     }
 });
 
@@ -299,6 +261,7 @@ export async function checkAccelerator(accelerator, modeFlags = 0, grabFlags = 0
 export async function getAccelerator(summary, accelerator = null) {
     try {
         const dialog = new ShortcutChooserDialog({
+            summary: summary,
             accelerator: accelerator,
         });
         accelerator = await new Promise((resolve, reject) => {
@@ -317,9 +280,7 @@ export async function getAccelerator(summary, accelerator = null) {
                         // leave the accelerator as passed in
                         break;
                 }
-
-                dialog.destroy();
-
+                dialog.close();
                 resolve(accelerator);
             });
 

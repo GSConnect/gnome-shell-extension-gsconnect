@@ -9,6 +9,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
   <requires lib="Adw" version="1.0"/>
   <template class="GSConnectPreferencesShortcutEditor" parent="AdwDialog">
     <property name="title" translatable="yes">Set Shortcut</property>
+    <property name="content-width">500</property>
     <child>
       <object class="AdwToolbarView">
         <child type="top">
@@ -61,20 +62,25 @@ SPDX-License-Identifier: GPL-2.0-or-later
                   </object>
                 </child>
                 <child>
-                  <object class="GtkBox" id="confirm">
-                    <property name="orientation">vertical</property>
-                    <property name="visible">True</property>
+                  <object class="AdwStatusPage" id="confirm">
                     <child>
-                      <object class="GtkShortcutLabel" id="shortcut-label">
-                        <property name="halign">center</property>
-                        <property name="hexpand">True</property>
-                        <property name="visible">True</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="conflict-label">
-                        <property name="halign">center</property>
-                        <property name="hexpand">True</property>
+                      <object class="GtkBox">
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkShortcutLabel" id="shortcut-label">
+                            <property name="halign">center</property>
+                            <property name="hexpand">True</property>
+                            <property name="visible">True</property>
+                            <property name="margin-bottom">10</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="conflict-label">
+                            <property name="margin-top">10</property>
+                            <property name="halign">center</property>
+                            <property name="hexpand">True</property>
+                          </object>
+                        </child>
                       </object>
                     </child>
                   </object>
