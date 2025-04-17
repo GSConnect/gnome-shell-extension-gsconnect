@@ -26,7 +26,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                     <property name="title" translatable="yes">Remote Input</property>
                   </object>
                 </property>
-                <child type="end">
+                <child>
                   <object class="GtkToggleButton">
                     <property name="active" bind-source="bottom_sheet" bind-property="open" bind-flags="sync-create|bidirectional"/>
                     <property name="icon-name">input-keyboard-symbolic</property>
@@ -38,8 +38,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
               <object class="AdwBanner" id="infobar">
                 <property name="revealed">True</property>
                 <property name="button-label" translatable="yes">Help</property>
-                <!-- TODO: The button must be connected from JavaScript since we now use AdwBanner component -->
-                <!-- Link to connect: https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Help#remote-keyboard-not-active -->
+                <property name="revealed">False</property>
               </object>
             </child>
             <property name="content">
@@ -82,6 +81,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                             <property name="hexpand">true</property>
                             <property name="margin-end">2</property>
                             <property name="icon-name">mouse-left-button-symbolic</property>
+                            <signal name="clicked" handler="_onMouseLeftButtonClicked" swapped="no"/>
                           </object>
                         </child>
                         <child>
@@ -90,6 +90,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                             <property name="margin-start">2</property>
                             <property name="margin-end">2</property>
                             <property name="icon-name">input-mouse-symbolic</property>
+                            <signal name="clicked" handler="_onMouseMiddleButtonClicked" swapped="no"/>
                           </object>
                         </child>
                         <child>
@@ -97,6 +98,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                             <property name="hexpand">true</property>
                             <property name="margin-start">2</property>
                             <property name="icon-name">mouse-right-button-symbolic</property>
+                            <signal name="clicked" handler="_onMouseRightButtonClicked" swapped="no"/>
                           </object>
                         </child>
                       </object>
@@ -188,20 +190,4 @@ SPDX-License-Identifier: GPL-2.0-or-later
       </object>
     </child>
   </template>
-
-  <!-- Touchpad Gestures -->
-  <object class="GtkGestureDrag" id="touchpad-drag">
-    <signal name="drag-begin" handler="_onTouchpadDragBegin"/>
-    <signal name="drag-update" handler="_onTouchpadDragUpdate"/>
-    <signal name="drag-end" handler="_onTouchpadDragEnd"/>
-  </object>
-
-  <object class="GtkGestureLongPress" id="touchpad-long-press">
-    <property name="button">0</property>
-    <signal name="cancelled" handler="_onTouchpadLongPressCancelled"/>
-    <signal name="pressed" handler="_onTouchpadLongPressPressed"/>
-    <!-- WARNING: This signal doesn't exists on Gtk4 -->
-    <!-- <signal name="end" handler="_onTouchpadLongPressEnd"/> -->
-  </object>
-
 </interface>

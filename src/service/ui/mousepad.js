@@ -92,77 +92,53 @@ export const InputWindow = GObject.registerClass({
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/mousepad-input-dialog.ui',
     Children: [
         'infobar','mouse-left-button', 'mouse-middle-button', 'mouse-right-button',
-        'touchpad-drag', 'touchpad-long-press', 'shift-label', 'ctrl-label', 
-        'alt-label', 'super-label', 'entry'
+        'touchpad-zone', 'shift-label', 'ctrl-label', 'alt-label', 'super-label', 
+        'entry', 'title-widget'
     ],
 }, class InputWindow extends Adw.ApplicationWindow {
 
     _init(params) {
         super._init(params);
 
-        const headerbar = this.get_titlebar();
-        headerbar.title = _('Remote Input');
-        headerbar.subtitle = this.device.name;
+        this.title_widget.subtitle = this.device.name;
         this.set_hide_on_close(true);
-        /*
-        // Main Box
-        const content = this.get_content_area();
-        content.border_width = 0;
-        */
+
         // TRANSLATORS: Displayed when the remote keyboard is not ready to accept input
         this.infobar.title = _('Remote keyboard on %s is not active').format(this.device.name);
-
+        this.plugin.bind_property('state', this.infobar, 'revealed', GObject.BindingFlags.INVERT_BOOLEAN);
+        
         // Text Input
         this.entry.buffer.connect(
             'insert-text',
             this._onInsertText.bind(this)
         );
-
-        /*
-        this.infobar.connect('notify::reveal-child', this._onState.bind(this));
-        this.plugin.bind_property('state', this.infobar, 'reveal-child', 6);
-
+        let keyController = new Gtk.EventControllerKey(); 
+        keyController.connect("key-pressed", this._onKeyPress.bind(this));
+        keyController.connect("key-released", this._onKeyRelease.bind(this));
+        this.entry.add_controller(keyController);
+        
         // Mouse Pad
         this._resetTouchpadMotion();
         this.touchpad_motion_timeout_id = 0;
         this.touchpad_holding = false;
 
-        // Scroll Input
-        this.add_events(Gdk.EventMask.SCROLL_MASK);
-        */
-
-        /*
-        this.connect('notify::has-keyboard-focus', this._onGrabBroken.bind(this));
-        this.connect('notify::is-active', this._onWindowStateChanged.bind(this));
+        let clickGesture = Gtk.GestureClick.new();
+        clickGesture.connect("pressed", this._onTouchpadLongPressPressed.bind(this));
+        clickGesture.connect("stopped", this._onTouchpadLongPressPressed.bind(this));
+        clickGesture.connect("released", this._onTouchpadLongPressEnd.bind(this));
         
-        let keyController = new Gtk.EventControllerKey();
-        keyController.connect('key-released', this._onKeyRelease.bind(this));
-        keyController.connect('key-pressed', this._onKeyPress.bind(this));
-        this.add_controller(keyController);
+        // Controller per il movimento
+        let motionController = Gtk.EventControllerMotion.new();
+        motionController.connect("enter", this._onTouchpadDragBegin.bind(this));
+        motionController.connect("motion", this._onTouchpadDragUpdate.bind(this));
+        motionController.connect("leave", this._onTouchpadDragEnd.bind(this));
+        
+        let scrollController = Gtk.EventControllerScroll.new(Gtk.EventControllerScrollFlags.VERTICAL);
+        scrollController.connect("scroll", this._onScroll.bind(this));
 
-        let scrollController = new Gtk.EventControllerScroll({
-            flags: Gtk.EventControllerScrollFlags.BOTH_AXES, // Ascolta scorrimenti su entrambi gli assi
-        });
-        scrollController.connect('scroll', this._onScroll.bind(this));
-        this.add_controller(scrollController);
-
-        const focusController = new Gtk.EventControllerFocus();
-        focusController.connect('enter', () => this._grab());
-        focusController.connect('leave', () => this._ungrab());
-    
-        this.add_controller(focusController);
-        */
-    }
-    /*
-    vfunc_close_request(event) {
-        this._ungrab();
-        return this.hide();
-    }
-    */
-    _onGrabBroken(widget, param) {
-        if (!this.has_focus) {
-            this._ungrab(); // Chiamata alla tua funzione personalizzata
-        }
+        this.touchpad_zone.add_controller(scrollController);
+        this.touchpad_zone.add_controller(motionController);
+        this.touchpad_zone.add_controller(clickGesture);
     }
    
     _onKeyRelease(controller, keyval, keycode, state) {
@@ -184,16 +160,18 @@ export const InputWindow = GObject.registerClass({
     }
 
     _onKeyPress(controller, keyval, keycode, state) {
+        print(this.plugin.state);
         if (!this.plugin.state) {
             debug('Ignoring remote keyboard state');
             return false;
         }
-
-        let keyvalLower = Gdk.keyval_to_lower(keyval); // `keyval` è fornito direttamente dal segnale
+        
+        const keyvalLower = Gdk.keyval_to_lower(keyval); // keyval è fornito direttamente dal segnale
+        // 1) maschera dei modificatori correnti
         let realMask = state & Gtk.accelerator_get_default_mod_mask();
 
         // Aggiorna lo stato dei label come nell'implementazione originale
-        this.alt_label.sensitive = isAlt(keyvalLower) || (realMask & Gdk.ModifierType.MOD1_MASK);
+        this.alt_label.sensitive = isAlt(keyvalLower) || (realMask & Gdk.ModifierType.ALT_MASK);
         this.ctrl_label.sensitive = isCtrl(keyvalLower) || (realMask & Gdk.ModifierType.CONTROL_MASK);
         this.shift_label.sensitive = isShift(keyvalLower) || (realMask & Gdk.ModifierType.SHIFT_MASK);
         this.super_label.sensitive = isSuper(keyvalLower) || (realMask & Gdk.ModifierType.SUPER_MASK);
@@ -208,7 +186,7 @@ export const InputWindow = GObject.registerClass({
         if (keyvalLower !== keyval) realMask |= Gdk.ModifierType.SHIFT_MASK;
 
         // Gestione speciale per Alt+Print
-        if (keyvalLower === Gdk.KEY_Sys_Req && (realMask & Gdk.ModifierType.MOD1_MASK) !== 0)
+        if (keyvalLower === Gdk.KEY_Sys_Req && (realMask & Gdk.ModifierType.ALT_MASK) !== 0)
             keyvalLower = Gdk.KEY_Print;
 
         // Ignora il CapsLock come modificatore
@@ -219,7 +197,7 @@ export const InputWindow = GObject.registerClass({
         debug(`keyval: ${keyval}, mask: ${realMask}`);
 
         const request = {
-            alt: !!(realMask & Gdk.ModifierType.MOD1_MASK),
+            alt: !!(realMask & Gdk.ModifierType.ALT_MASK),
             ctrl: !!(realMask & Gdk.ModifierType.CONTROL_MASK),
             shift: !!(realMask & Gdk.ModifierType.SHIFT_MASK),
             super: !!(realMask & Gdk.ModifierType.SUPER_MASK),
@@ -272,7 +250,6 @@ export const InputWindow = GObject.registerClass({
         for (const char of [...text]) {
             if (!char)
                 continue;
-
             // TODO: modifiers?
             this.device.sendPacket({
                 type: 'kdeconnect.mousepad.request',
@@ -286,50 +263,6 @@ export const InputWindow = GObject.registerClass({
                 },
             });
         }
-    }
-
-    _onState(widget) {
-        if (!this.plugin.state)
-            debug('ignoring remote keyboard state');
-
-        if (this.is_active)
-            this._grab();
-        else
-            this._ungrab();
-    }
-
-    _grab() {
-        if (!this.visible || this._keyboard)
-            return;
-
-        const seat = Gdk.Display.get_default().get_default_seat();
-        const status = seat.grab(
-            this.get_window(),
-            Gdk.SeatCapabilities.KEYBOARD,
-            false,
-            null,
-            null,
-            null
-        );
-
-        if (status !== Gdk.GrabStatus.SUCCESS) {
-            logError(new Error('Grabbing keyboard failed'));
-            return;
-        }
-
-        this._keyboard = seat.get_keyboard();
-        this.grab_add();
-        this.entry.has_focus = true;
-    }
-
-    _ungrab() {
-        if (this._keyboard) {
-            this._keyboard.get_seat().ungrab();
-            this._keyboard = null;
-            this.grab_remove();
-        }
-
-        this.entry.buffer.text = '';
     }
 
     _resetTouchpadMotion() {
@@ -366,9 +299,8 @@ export const InputWindow = GObject.registerClass({
         });
     }
 
-    _onTouchpadDragBegin(gesture) {
+    _onTouchpadDragBegin(gesture, offset_x, offset_y) {
         this._resetTouchpadMotion();
-
         this.touchpad_motion_timeout_id =
             GLib.timeout_add(GLib.PRIORITY_DEFAULT, 10,
                 this._onTouchpadMotionTimeout.bind(this));
@@ -379,9 +311,8 @@ export const InputWindow = GObject.registerClass({
         this.touchpad_motion_y = offset_y;
     }
 
-    _onTouchpadDragEnd(gesture) {
+    _onTouchpadDragEnd(gesture, offset_x, offset_y) {
         this._resetTouchpadMotion();
-
         GLib.Source.remove(this.touchpad_motion_timeout_id);
         this.touchpad_motion_timeout_id = 0;
     }
@@ -420,7 +351,7 @@ export const InputWindow = GObject.registerClass({
         }
     }
 
-    _onTouchpadLongPressPressed(gesture) {
+    _onTouchpadLongPressPressed(gesture, offset_x, offset_y) {
         const gesture_button = gesture.get_current_button();
 
         if (gesture_button !== 1) {
@@ -436,7 +367,7 @@ export const InputWindow = GObject.registerClass({
         }
     }
 
-    _onTouchpadLongPressEnd(gesture) {
+    _onTouchpadLongPressEnd(gesture, x, y) {
         if (this.touchpad_holding) {
             this.device.sendPacket({
                 type: 'kdeconnect.mousepad.request',
@@ -451,7 +382,6 @@ export const InputWindow = GObject.registerClass({
     _onTouchpadMotionTimeout() {
         const diff_x = this.touchpad_motion_x - this.touchpad_motion_prev_x;
         const diff_y = this.touchpad_motion_y - this.touchpad_motion_prev_y;
-
         this.device.sendPacket({
             type: 'kdeconnect.mousepad.request',
             body: {
