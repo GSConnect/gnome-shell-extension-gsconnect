@@ -6,6 +6,7 @@ import GLib from 'gi://GLib';
 import Gio from 'gi://Gio';
 import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk?version=4.0';
+import Adw from 'gi://Adw';
 
 import system from 'system';
 
@@ -46,23 +47,19 @@ export const DeviceChooser = GObject.registerClass({
         ),
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/service-device-chooser.ui',
-    Children: ['device-list', 'cancel-button', 'select-button'],
-}, class DeviceChooser extends Gtk.Dialog {
+    Singals : {
+        'response': {
+            param_types: [GObject.TYPE_OBJECT, GObject.TYPE_INT],
+        },
+    },
+    Children: ['title-widget', 'device-list', 'select-button'],
+}, class DeviceChooser extends Adw.ApplicationWindow {
 
     
     _init(params = {}) {
-        super._init({
-            use_header_bar: true,
-            application: Gio.Application.get_default(),
-        });
-        this.set_keep_above(true);
-
-        // HeaderBar
-        this.get_header_bar().subtitle = params.title;
-
-        // Dialog Action
-        this.action_name = params.action_name;
-        this.action_target = params.action_target;
+        super._init();
+        Object.assign(this, params);
+        this.title_widget.title = this.title;
 
         // Device List
         this.device_list.set_sort_func(this._sortDevices);
@@ -72,19 +69,6 @@ export const DeviceChooser = GObject.registerClass({
             this._onDevicesChanged.bind(this)
         );
         this._onDevicesChanged();
-    }
-
-    vfunc_response(response_id) {
-        if (response_id === Gtk.ResponseType.OK) {
-            try {
-                const device = this.device_list.get_selected_row().device;
-                device.activate_action(this.action_name, this.action_target);
-            } catch (e) {
-                logError(e);
-            }
-        }
-
-        this.destroy();
     }
 
     get action_name() {
@@ -109,15 +93,39 @@ export const DeviceChooser = GObject.registerClass({
         this._action_target = variant;
     }
 
-    _onDeviceActivated(box, row) {
-        this.response(Gtk.ResponseType.OK);
+    /**
+     * @param {Integer} response the integer value returned by Gtk.ResponseType 
+     */
+    set response(response) {
+        if (response === Gtk.ResponseType.OK) {
+            this._response = response;
+            try {
+                const device = this.device_list.get_selected_row().device;
+                device.activate_action(this.action_name, this.action_target);
+            } catch (e) {
+                logError(e);
+            }
+        }
+        this.emit('response', this, response);
+        this.close();
+    }
+
+    get response() {
+        if (this._response === undefined)
+            this._response = null;
+        return this._response;
+    }
+
+    _onSelectClicked(box, row) {
+        this.response = Gtk.ResponseType.OK;
+    }
+
+    _onCancelClicked(box, row) {
+        this.response = Gtk.ResponseType.CANCEL;
     }
 
     _onDeviceSelected(box) {
-        this.set_response_sensitive(
-            Gtk.ResponseType.OK,
-            (box.get_selected_row())
-        );
+        this.select_button.sensitive = true;
     }
 
     _onDevicesChanged() {
@@ -142,42 +150,23 @@ export const DeviceChooser = GObject.registerClass({
             if (action === null)
                 continue;
 
-            const row = new Gtk.ListBoxRow({
-                visible: action.enabled,
+            const row = new Adw.ActionRow({
+                title: device.id,
             });
-            row.set_name(device.id);
+            const icon = new Gtk.Image({
+                icon_name: device.icon_name,
+                pixel_size: 32,
+                visible: true,
+            });
             row.device = device;
-
             action.bind_property(
                 'enabled',
                 row,
                 'visible',
                 Gio.SettingsBindFlags.DEFAULT
             );
-
-            const grid = new Gtk.Grid({
-                column_spacing: 12,
-                margin: 6,
-                visible: true,
-            });
-            row.add(grid);
-
-            const icon = new Gtk.Image({
-                icon_name: device.icon_name,
-                pixel_size: 32,
-                visible: true,
-            });
-            grid.attach(icon, 0, 0, 1, 1);
-
-            const name = new Gtk.Label({
-                label: device.name,
-                halign: Gtk.Align.START,
-                hexpand: true,
-                visible: true,
-            });
-            grid.attach(name, 1, 0, 1, 1);
-
-            this.device_list.add(row);
+            row.add_prefix(icon);
+            this.device_list.append(row);
         }
 
         if (this.device_list.get_selected_row() === null)
@@ -203,17 +192,15 @@ export const ErrorDialog = GObject.registerClass({
         'report-button',
         'revealer',
     ],
-}, class ErrorDialog extends Gtk.Window {
+}, class ErrorDialog extends Adw.ApplicationWindow {
 
-    _init(error) {
-        super._init({
-            application: Gio.Application.get_default(),
-            title: `GSConnect: ${error.name}`,
-        });
-        this.set_keep_above(true);
+    _init(params) {
+        super._init();
+        Object.assign(this.params)
 
-        this.error = error;
-        this.error_stack.buffer.text = `${error.message}\n\n${error.stack}`;
+        this.title_widget.title = `GSConnect: ${error.name}`
+
+        this.error_stack.buffer.text = `${this.error.message}\n\n${this.error.stack}`;
         this.gesture.connect('released', this._onReleased.bind(this));
     }
 
@@ -222,19 +209,12 @@ export const ErrorDialog = GObject.registerClass({
             const uri = this._buildUri(this.error.message, this.error.stack);
             Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
         }
-
-        this.destroy();
+        this.close();
     }
 
     _onReleased(gesture, n_press) {
         if (n_press === 1)
             this.revealer.reveal_child = !this.revealer.reveal_child;
-    }
-
-    _onRevealChild(revealer, pspec) {
-        this.expander_arrow.icon_name = this.revealer.reveal_child
-            ? 'pan-down-symbolic'
-            : 'pan-end-symbolic';
     }
 
     _buildUri(message, stack) {
@@ -246,7 +226,6 @@ export const ErrorDialog = GObject.registerClass({
         // Reasonable URI length limit
         if (uri.length > 2000)
             return uri.substr(0, 2000);
-
         return uri;
     }
 });

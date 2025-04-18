@@ -180,7 +180,9 @@ const Service = GObject.registerClass({
                 return;
             }
 
-            const dialog = new ServiceUI.ErrorDialog(error);
+            const dialog = new ServiceUI.ErrorDialog({
+                error: error,
+            });
             dialog.present();
         } catch (e) {
             logError(e);

@@ -160,7 +160,6 @@ export const InputWindow = GObject.registerClass({
     }
 
     _onKeyPress(controller, keyval, keycode, state) {
-        print(this.plugin.state);
         if (!this.plugin.state) {
             debug('Ignoring remote keyboard state');
             return false;

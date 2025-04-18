@@ -41,9 +41,11 @@ export function getIcon(name) {
             'tablet-symbolic',
             'tv-symbolic',
             'phonelink-ring-symbolic',
+            'phone-vibrate-symbolic', 
+            'chat-bubbles-text-symbolic',
             'sms-symbolic',
         ];
-
+        
         getIcon._resource = {};
 
         for (const iconName of iconNames) {

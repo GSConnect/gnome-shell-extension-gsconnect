@@ -28,7 +28,7 @@ export const Metadata = {
         // SMS Actions
         sms: {
             label: _('Messaging'),
-            icon_name: 'sms-symbolic',
+            icon_name: 'chat-bubbles-text-symbolic',
 
             parameter_type: null,
             incoming: [],

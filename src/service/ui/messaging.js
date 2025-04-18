@@ -1478,54 +1478,20 @@ export const ConversationChooser = GObject.registerClass({
             GObject.Object
         ),
     },
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/messaging-conversation-message.ui',
+    Children: ['thread_list'],
 }, class ConversationChooser extends Adw.ApplicationWindow {
 
     _init(params) {
-        super._init(Object.assign({
-            title: _('Share Link'),
-            default_width: 300,
-            default_height: 200,
-        }, params));
-        
-        this.set_keep_above(true);
+        super._init();
+        Object.assign(this, params);
 
-        // HeaderBar
-        this.headerbar = new Gtk.HeaderBar({
-            title: _('Share Link'),
-            subtitle: this.message,
-            show_close_button: true,
-            tooltip_text: this.message,
-        });
-        this.set_titlebar(this.headerbar);
-
-        const newButton = new Gtk.Button({
-            image: new Gtk.Image({icon_name: 'list-add-symbolic'}),
-            tooltip_text: _('New Conversation'),
-            always_show_image: true,
-        });
-        newButton.connect('clicked', this._new.bind(this));
-        this.headerbar.pack_start(newButton);
-
-        // Threads
-        const scrolledWindow = new Gtk.ScrolledWindow({
-            can_focus: false,
-            hexpand: true,
-            vexpand: true,
-            hscrollbar_policy: Gtk.PolicyType.NEVER,
-        });
-        this.add(scrolledWindow);
-
-        this.thread_list = new Gtk.ListBox({
-            activate_on_single_click: false,
-        });
         this.thread_list.set_sort_func(Window.prototype._sortThreads);
         this.thread_list.connect('row-activated', this._select.bind(this));
         scrolledWindow.add(this.thread_list);
 
         // Filter Setup
         Window.prototype._onThreadsChanged.call(this);
-
-        this.show_all();
     }
 
     get plugin() {
@@ -1537,19 +1503,18 @@ export const ConversationChooser = GObject.registerClass({
     }
 
     _new(button) {
-        const message = this.message;
-        this.destroy();
-
+        this.close();
         this.plugin.sms();
         this.plugin.window._onNewConversation();
         this.plugin.window._pendingShare = message;
     }
 
     _select(box, row) {
+        const message = this.message;
+        const thread_id = row.message.thread_id.toString();
+        this.close();
         this.plugin.sms();
-        this.plugin.window.thread_id = row.message.thread_id.toString();
-        this.plugin.window.setMessage(this.message);
-
-        this.destroy();
+        this.plugin.window.thread_id = thread_id;
+        this.plugin.window.setMessage(message);
     }
 });

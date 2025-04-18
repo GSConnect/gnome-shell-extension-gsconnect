@@ -20,7 +20,7 @@ export const Metadata = {
     actions: {
         ring: {
             label: _('Ring'),
-            icon_name: 'phonelink-ring-symbolic',
+            icon_name: 'phone-vibrate-symbolic',
             parameter_type: null,
             incoming: [],
             outgoing: ['kdeconnect.findmyphone.request'],

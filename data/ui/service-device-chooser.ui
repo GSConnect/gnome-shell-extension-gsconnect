@@ -10,21 +10,27 @@ SPDX-License-Identifier: GPL-2.0-or-later
   <requires lib="gtk" version="4.0"/>
   <requires lib="Adw" version="1.0"/>
 
-  <template class="GSConnectServiceDeviceChooser" parent="AdwDialog">
-    <property name="title" translatable="yes">Select a Device…</property>
-    <property name="content-height">450</property>
-    <property name="content-width">550</property>
+  <template class="GSConnectServiceDeviceChooser" parent="AdwApplicationWindow">
+    <property name="title" translatable="yes">Select Device</property>
     <child>
       <object class="AdwToolbarView">
         <property name="visible">True</property>
         <child type="top">
           <object class="AdwHeaderBar">
             <property name="visible">True</property>
+            <property name="show-title">False</property>
             <property name="show-end-title-buttons">False</property>
+            <property name="title-widget">
+              <object class="AdwWindowTitle" id="title-widget"/>
+            </property>
             <child type="start">
-              <object class="GtkButton" id="cancel-button">
+              <object class="GtkButton">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Cancel</property>
+                <signal name="clicked" handler="_onCancelClicked" swapped="no"/>
+                <style>
+                  <class name="destructive-action"/>
+                </style>
               </object>
             </child>
             <child type="end">
@@ -32,6 +38,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Select</property>
                 <property name="sensitive">False</property>
+                <signal name="clicked" handler="_onSelectClicked" swapped="no"/>
                 <style>
                   <class name="suggested-action"/>
                 </style>
@@ -44,19 +51,26 @@ SPDX-License-Identifier: GPL-2.0-or-later
             <property name="visible">True</property>
             <property name="hscrollbar-policy">never</property>
             <child>
-              <object class="GtkListBox" id="device-list">
-                <property name="visible">True</property>
-                <property name="activate-on-single-click">True</property>
-                <style>
-                  <class name="navigation-sidebar"/>
-                </style>
-                <signal name="row-activated" handler="_onDeviceActivated" swapped="no"/>
-                <signal name="selected-rows-changed" handler="_onDeviceSelected" swapped="no"/>
-                <child type="placeholder">
-                  <object class="AdwStatusPage">
+              <object class="AdwClamp">
+                <property name="margin-top">10</property>
+                <property name="margin-bottom">10</property>
+                <property name="margin-start">10</property>
+                <property name="margin-end">10</property>
+                <child>
+                  <object class="GtkListBox" id="device-list">
                     <property name="visible">True</property>
-                    <property name="icon-name">org.gnome.Shell.Extensions.GSConnect-symbolic</property>
-                    <property name="title" translatable="yes">No Device Found</property>
+                    <property name="activate-on-single-click">True</property>
+                    <style>
+                      <class name="boxed-list"/>
+                    </style>
+                    <signal name="selected-rows-changed" handler="_onDeviceSelected" swapped="no"/>
+                    <child type="placeholder">
+                      <object class="AdwStatusPage">
+                        <property name="visible">True</property>
+                        <property name="icon-name">system-search-symbolic</property>
+                        <property name="title" translatable="yes">No Device Found</property>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>

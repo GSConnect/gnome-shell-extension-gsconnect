@@ -57,6 +57,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <file compressed="true" preprocess="xml-stripblanks">icons/group-avatar-symbolic.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">icons/sms-send.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">icons/sms-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">icons/chat-bubbles-text-symbolic.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">images/enter-keyboard-shortcut.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">icons/mouse-left-button-symbolic.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">icons/mouse-right-button-symbolic.svg</file>
