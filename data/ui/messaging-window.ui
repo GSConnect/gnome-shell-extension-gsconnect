@@ -123,7 +123,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                         <property name="visible">True</property>
                         <property name="title" translatable="yes">No Conversation Selected</property>
                         <property name="description" translatable="yes">Select or start a conversation</property>
-                        <property name="icon-name">sms-symbolic</property>
+                        <property name="icon-name">chat-bubbles-text-symbolic</property>
                       </object>
                     </property>
                   </object>
