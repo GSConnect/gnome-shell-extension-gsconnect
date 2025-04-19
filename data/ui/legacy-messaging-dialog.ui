@@ -19,11 +19,21 @@ SPDX-License-Identifier: GPL-2.0-or-later
         <child type="top">
           <object class="AdwHeaderBar">
             <property name="visible">True</property>
+            <property name="title-widget">
+              <object name="GtkBox">
+                <property name="orientation">orizontal</property>
+                <child>
+                  <object name="AdwAvatar" id="avatar"/>
+                </child>
+                <child>
+                  <object name="AdwWindowTitle" id="title-widget"/>
+                </child>
+              </object>
+            </property>
           </object>
         </child>
         <child type="top">
           <object class="AdwBanner" id="infobar">
-            <property name="revealed">True</property>
             <property name="title" translatable="yes">Device Disconnected</property>
           </object>
         </child>
@@ -32,36 +42,18 @@ SPDX-License-Identifier: GPL-2.0-or-later
             <property name="visible">True</property>
             <property name="orientation">vertical</property>
             <child>
-              <object class="GtkBox" id="message-box">
+              <object class="GtkLabel" id="message-label">
                 <property name="visible">True</property>
-                <property name="orientation">horizontal</property>
-                <child>
-                  <object class="AdwAvatar" id="message-avatar">
-                    <property name="visible">True</property>
-                    <property name="margin-top">15</property>
-                    <property name="margin-bottom">15</property>
-                    <property name="margin-start">15</property>
-                    <property name="margin-end">10</property>
-                    <property name="halign">center</property>
-                    <property name="valign">center</property>
-                    <property name="size">40</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="message-label">
-                    <property name="visible">True</property>
-                    <property name="margin-top">15</property>
-                    <property name="margin-bottom">15</property>
-                    <property name="margin-start">10</property>
-                    <property name="margin-end">10</property>
-                    <property name="hexpand">True</property>
-                    <property name="use-markup">True</property>
-                    <property name="selectable">True</property>
-                    <property name="wrap">True</property>
-                    <property name="wrap-mode">word-char</property>
-                    <signal name="activate-link" handler="_onActivateLink" swapped="no"/>
-                  </object>
-                </child>
+                <property name="margin-top">15</property>
+                <property name="margin-bottom">15</property>
+                <property name="margin-start">10</property>
+                <property name="margin-end">10</property>
+                <property name="hexpand">True</property>
+                <property name="use-markup">True</property>
+                <property name="selectable">True</property>
+                <property name="wrap">True</property>
+                <property name="wrap-mode">word-char</property>
+                <signal name="activate-link" handler="_onActivateLink" swapped="no"/>
               </object>
             </child>
             <child>

@@ -5,6 +5,7 @@
 import Gio from 'gi://Gio';
 import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk?version=4.0';
+import Adw from 'gi://Adw';
 
 import * as Contacts from '../ui/contacts.js';
 import * as Messaging from '../ui/messaging.js';
@@ -35,7 +36,7 @@ const Dialog = GObject.registerClass({
         'infobar', 'stack',
         'message-box', 'message-avatar', 'message-label', 'entry',
     ],
-}, class Dialog extends Gtk.Dialog {
+}, class Dialog extends Adw.ApplicationWindow {
 
     _init(params) {
         super._init({
@@ -48,14 +49,13 @@ const Dialog = GObject.registerClass({
         this.set_response_sensitive(Gtk.ResponseType.OK, false);
 
         // Dup some functions
-        this.headerbar = this.get_titlebar();
         this._setHeaderBar = Messaging.Window.prototype._setHeaderBar;
 
         // Info bar
         this.device.bind_property(
             'connected',
             this.infobar,
-            'reveal-child',
+            'revealed',
             GObject.BindingFlags.INVERT_BOOLEAN
         );
 
@@ -130,7 +130,7 @@ const Dialog = GObject.registerClass({
         return false;
     }
 
-    vfunc_response(response_id) {
+    response(response_id) {
         if (response_id === Gtk.ResponseType.OK) {
             // Refuse to send empty or whitespace only texts
             if (!this.entry.buffer.text.trim())

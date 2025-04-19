@@ -15,7 +15,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <property name="default-width">750</property>
     <child>
       <object class="AdwBreakpoint">
-        <condition>max-width: 750sp</condition>
+        <condition>max-width:600sp</condition>
         <setter object="split-view" property="collapsed">True</setter>
       </object>
     </child>
@@ -103,32 +103,64 @@ SPDX-License-Identifier: GPL-2.0-or-later
                             <property name="visible">True</property>
                             <property name="orientation">vertical</property>
                             <child>
-                              <object class="GtkBox" id="webextension-list">
-                                <property name="visible">True</property>
-                                <property name="halign">center</property>
-                                <property name="spacing">20</property>
+                              <object class="AdwClamp">
+                                <property name="maximum-size">470</property>
+                                <property name="margin-bottom">20</property>
+                                <property name="height-request">80</property>
                                 <child>
-                                  <object class="GtkLinkButton">
+                                  <object class="GtkBox" id="webextension-list">
                                     <property name="visible">True</property>
-                                    <property name="uri">https://addons.mozilla.org/firefox/addon/gsconnect/</property>
+                                    <property name="halign">center</property>
                                     <child>
-                                      <object class="GtkImage" id="webextension-image-firefox">
+                                      <object class="GtkLinkButton" id="linkbutton-firefox">
                                         <property name="visible">True</property>
-                                        <property name="pixel-size">196</property>
-                                        <property name="resource">/org/gnome/Shell/Extensions/GSConnect/images/firefox-badge.png</property>
+                                        <property name="uri">https://addons.mozilla.org/firefox/addon/gsconnect/</property>
+                                        <style>
+                                          <class name="linkbutton"/>
+                                        </style>
+                                        <child>
+                                          <object class="GtkOverlay">
+                                            <property name="visible">True</property>
+                                            <child>
+                                              <object class="GtkPicture">
+                                                <property name="visible">True</property>
+                                                <property name="file">resource:///org/gnome/Shell/Extensions/GSConnect/images/firefox-badge.png</property>
+                                                <property name="hexpand">True</property>
+                                                <property name="vexpand">True</property>
+                                                <property name="content-fit">cover</property>
+                                                <style>
+                                                  <class name="background"/>
+                                                </style>
+                                              </object>
+                                            </child>
+                                          </object>
+                                        </child>
                                       </object>
                                     </child>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLinkButton">
-                                    <property name="visible">True</property>
-                                    <property name="uri">https://chrome.google.com/webstore/detail/gsconnect/jfnifeihccihocjbfcfhicmmgpjicaec</property>
                                     <child>
-                                      <object class="GtkImage" id="webextension-image-chrome">
+                                      <object class="GtkLinkButton">
                                         <property name="visible">True</property>
-                                        <property name="pixel-size">196</property>
-                                        <property name="resource">/org/gnome/Shell/Extensions/GSConnect/images/chrome-badge.png</property>
+                                        <property name="uri">https://chrome.google.com/webstore/detail/gsconnect/jfnifeihccihocjbfcfhicmmgpjicaec</property>
+                                        <style>
+                                          <class name="linkbutton"/>
+                                        </style>
+                                        <child>
+                                          <object class="GtkOverlay">
+                                            <property name="visible">True</property>
+                                            <child>
+                                              <object class="GtkPicture">
+                                                <property name="visible">True</property>
+                                                <property name="file">resource:///org/gnome/Shell/Extensions/GSConnect/images/chrome-badge.png</property>
+                                                <property name="hexpand">True</property>
+                                                <property name="vexpand">True</property>
+                                                <property name="content-fit">cover</property>
+                                                <style>
+                                                  <class name="background"/>
+                                                </style>
+                                              </object>
+                                            </child>
+                                          </object>
+                                        </child>
                                       </object>
                                     </child>
                                   </object>
@@ -147,7 +179,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                               <object class="AdwClamp">
                                 <property name="maximum-size">450</property>
                                 <child>
-                                  <object class="AdwPreferencesGroup">
+                                  <object class="GtkListBox">
                                     <property name="visible">True</property>
                                     <child>
                                       <object class="AdwActionRow">
@@ -202,6 +234,9 @@ SPDX-License-Identifier: GPL-2.0-or-later
                                         </child>
                                       </object>
                                     </child>
+                                    <style>
+                                      <class name="boxed-list"/>
+                                    </style>
                                   </object>
                                 </child>
                               </object>
