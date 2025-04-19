@@ -257,7 +257,9 @@ export const ContactChooser = GObject.registerClass({
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/contact-chooser.ui',
     Children: [
         'button-search', 'search-bar', 'search-entry',
-        'stack', 'scrolled', 'not-found-page', 'list'
+        'stack', 'scrolled', 'not-found-page', 'list', 
+        'header-bar', 
+            
     ],
 }, class ContactChooser extends Adw.NavigationPage {
 
@@ -277,7 +279,15 @@ export const ContactChooser = GObject.registerClass({
             this,
             'store',
             GObject.BindingFlags.SYNC_CREATE
-        );
+        );    
+        
+        // Make sure we're using the correct contacts store
+        this.search_bar.bind_property(
+            'search-mode-enabled',
+            this.button_search,
+            'active',
+            GObject.BindingFlags.SYNC_CREATE
+        );            
         
         this.button_search.connect("clicked", this._searchButtonClicked.bind(this));
 
@@ -292,6 +302,17 @@ export const ContactChooser = GObject.registerClass({
             else if (this.search_bar.search_mode_enabled) 
                 this.stack.visible_child = this.scrolled;
         });
+
+        // Set the same controller for stack pages and header bar's button.
+        const button_controller = new Gtk.EventControllerKey();
+        const list_controller = new Gtk.EventControllerKey();
+        const not_found_controller = new Gtk.EventControllerKey(); 
+        not_found_controller.connect('key-pressed', this._onKeyPress.bind(this));
+        button_controller.connect('key-pressed', this._onKeyPress.bind(this));
+        list_controller.connect('key-pressed', this._onKeyPress.bind(this));
+        this.not_found_page.add_controller(not_found_controller);
+        this.button_search.add_controller(button_controller);
+        this.list.add_controller(list_controller);
     }
 
     get store() {
@@ -344,6 +365,14 @@ export const ContactChooser = GObject.registerClass({
             // Populate the list
             this._populate();
         }
+    }
+
+    get show_back_button() {
+        return this.header_bar.show_back_button;
+    }
+
+    set show_back_button(value) {
+        this.header_bar.show_back_button = value; 
     }
 
     /*
@@ -491,7 +520,7 @@ export const ContactChooser = GObject.registerClass({
     }
     
     _searchButtonClicked() {
-        this.search_bar.search_mode_enabled = ! this.search_bar.search_mode_enabled;
+        this.search_bar.search_mode_enabled = !this.search_bar.search_mode_enabled;
         if (!this.search_bar.search_mode_enabled) {
             this.search_entry.set_key_capture_widget(null);
         } else {
@@ -499,14 +528,14 @@ export const ContactChooser = GObject.registerClass({
         }
     }
 
-    onKeyPress(keyval) {
-        this.button_search.set_active(true);
+    _onKeyPress(controller, keyval, keycode, state)  {
         this._searchButtonClicked();
         const char = String.fromCharCode(keyval);
         if (/^[a-zA-Z0-9]$/.test(char)) { 
             this.search_entry.text = char;
             this.search_entry.set_position(-1);
         }
+        return Gdk.EVENT_STOP;
     }
 
     /**

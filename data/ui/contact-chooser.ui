@@ -12,6 +12,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
 
   <template class="GSConnectContactChooser" parent="AdwNavigationPage">
     <property name="title" translatable="no">Contact Chooser</property>
+    <property name="tag">contact-chooser</property>
     <child>
       <object class="AdwToolbarView">
         <property name="visible">True</property>
@@ -20,7 +21,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
             <property name="visible">True</property>
             <property name="orientation">vertical</property>
             <child>
-              <object class="AdwHeaderBar">
+              <object class="AdwHeaderBar" id="header-bar">
                 <property name="visible">True</property>
                 <child type="start">
                   <object class="GtkToggleButton" id="button-search">

@@ -40,18 +40,11 @@ const ReplyDialog = GObject.registerClass({
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/notification-reply-dialog.ui',
     Children: ['infobar', 'notification-title', 'notification-body', 'entry'],
-}, class ReplyDialog extends Gtk.Dialog {
+}, class ReplyDialog extends Adw.ApplicationWindow {
 
     _init(params) {
-        super._init({
-            application: Gio.Application.get_default(),
-            device: params.device,
-            plugin: params.plugin,
-            uuid: params.uuid,
-            use_header_bar: true,
-        });
-
-        this.set_response_sensitive(Gtk.ResponseType.OK, false);
+        super._init();
+        Object.assign(this, params);
 
         // Info bar
         this.device.bind_property(

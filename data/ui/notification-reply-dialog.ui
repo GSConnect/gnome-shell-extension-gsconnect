@@ -45,6 +45,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                     <property name="halign">center</property>
                     <property name="valign">center</property>
                     <property name="size">40</property>
+                    <property name="show-initials">True</property>
                   </object>
                 </child>
                 <child>
@@ -85,62 +86,68 @@ SPDX-License-Identifier: GPL-2.0-or-later
                 </child>
               </object>
             </child>
+          </object>
+        </property>
+        <child type="bottom">
+          <object class="AdwClamp">
+            <property name="margin-end">10</property>
+            <property name="margin-start">10</property>
+            <property name="margin-bottom">10</property>
             <child>
-              <object class="GtkScrolledWindow">
+              <object class="GtkBox">
                 <property name="visible">True</property>
-                <property name="min-content-height">300</property>
+                <property name="orientation">horizontal</property>
                 <child>
-                  <object class="GtkTextView" id="entry">
-                    <property name="visible">True</property>
-                    <property name="margin-top">15</property>
-                    <property name="margin-bottom">15</property>
-                    <property name="margin-start">15</property>
-                    <property name="margin-end">15</property>
-                    <property name="hexpand">True</property>
-                    <property name="vexpand">True</property>
-                    <property name="top-margin">5</property>
-                    <property name="bottom-margin">5</property>
-                    <property name="left-margin">5</property>
-                    <property name="right-margin">5</property>
-                    <property name="wrap-mode">word-char</property>
+                  <object class="GtkMenuButton">
+                    <property name="valign">center</property>
+                    <property name="icon-name">emoji-people-symbolic</property>
+                    <property name="margin-start">10</property>
+                    <property name="margin-end">10</property>
+                    <property name="popover">
+                      <object class="GtkEmojiChooser" id="emoji_chooser">
+                        <signal name="emoji-picked" handler="_on_emoji_picked"/>
+                      </object>
+                    </property>
                     <style>
-                      <class name="card"/>
+                      <class name="linked"/>
                     </style>
                   </object>
                 </child>
-              </object>
-            </child>
-            <child>
-              <object class="AdwClamp">
-                <property name="maximum-size">425</property>
                 <child>
-                  <object class="GtkListBox">
-                    <property name="visible">True</property>
-                    <property name="selection-mode">none</property>
-                    <property name="margin-top">5</property>
-                    <property name="margin-bottom">15</property>
-                    <property name="margin-start">12</property>
-                    <property name="margin-end">12</property>
-                    <style>
-                      <class name="navigation-sidebar"/>
-                    </style>
-
+                  <object class="GtkScrolledWindow">
                     <child>
-                      <object class="AdwButtonRow" id="send-button">
+                      <object class="GtkTextView" id="entry">
+                        <property name="height-request">32</property>
+                        <property name="valign">end</property>
                         <property name="visible">True</property>
-                        <property name="title" translatable="yes">Send</property>
-                        <property name="start-icon-name">sms-send</property>
+                        <property name="hexpand">True</property>
+                        <property name="wrap-mode">word-char</property>
                         <style>
-                          <class name="suggested-action"/>
+                          <class name="inline"/>
                         </style>
                       </object>
                     </child>
                   </object>
                 </child>
+                <child>
+                  <object class="GtkButton" id="send-button">
+                    <property name="icon-name">sms-send</property>
+                    <property name="valign">center</property>
+                    <property name="margin-start">10</property>
+                    <property name="margin-end">10</property>
+                    <signal name="clicked" handler="_sendMessage" swapped="no"/>
+                    <style>
+                      <class name="suggested-action"/>
+                    </style>
+                  </object>
+                </child>
+                <style>
+                  <class name="card"/>
+                </style>
               </object>
             </child>
           </object>
-        </property>
+        </child>
       </object>
     </child>
   </template>

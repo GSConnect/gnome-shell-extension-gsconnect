@@ -6,105 +6,115 @@
     <property name="title" translatable="yes">Send SMS…</property>
     <property name="width-request">500</property>
     <child>
-      <object class="GtkStack" id="stack">
-        <property name="visible">True</property>
-        <property name="transition-type">crossfade</property>
-        <property name="transition-duration">100</property>
+      <object class="AdwNavigationView" id="nav-view">
         <child>
-          <object class="AdwToolbarView" id="message-editor">
-            <property name="visible">True</property>
-            <child type="top">
-              <object class="AdwHeaderBar">
+          <object class="AdwNavigationPage">
+            <property name="title" translatable="yes">Message</property>
+            <property name="tag" translatable="yes">message</property>
+            <child>    
+              <object class="AdwToolbarView" id="message-editor">
                 <property name="visible">True</property>
-                <property name="title-widget">
-                  <object class="GtkBox">
-                    <property name="orientation">horizontal</property>
-                    <child>
-                      <object class="AdwAvatar" id="avatar">
-                        <property name="visible">True</property>
-                        <property name="size">40</property>
-                        <property name="show-initials">True</property>
+                <child type="top">
+                  <object class="AdwHeaderBar">
+                    <property name="visible">True</property>
+                    <property name="title-widget">
+                      <object class="GtkBox">
+                        <property name="orientation">horizontal</property>
+                        <child>
+                          <object class="AdwAvatar" id="message-avatar">
+                            <property name="visible">True</property>
+                            <property name="halign">center</property>
+                            <property name="valign">start</property>
+                            <property name="size">35</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwWindowTitle" id="title-widget"/>
+                        </child>
                       </object>
-                    </child>
+                    </property>
+                  </object>
+                </child>
+                <child type="top">
+                  <object class="AdwBanner" id="infobar">
+                    <property name="title" translatable="yes">Device Disconnected</property>
+                  </object>
+                </child>
+                <property name="content">
+                  <object class="AdwClamp">
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">10</property>
+                    <property name="margin-start">10</property>
+                    <property name="margin-end">10</property>
                     <child>
-                      <object class="AdwWindowTitle" id="title-widget"/>
+                      <object class="GtkLabel" id="message-label">
+                        <property name="visible">True</property>
+                        <property name="hexpand">True</property>
+                        <property name="use-markup">True</property>
+                        <property name="selectable">True</property>
+                        <property name="wrap">True</property>
+                        <property name="wrap-mode">word-char</property>
+                        <signal name="activate-link" handler="_onActivateLink" swapped="no"/>
+                      </object>
                     </child>
                   </object>
                 </property>
-              </object>
-            </child>
-            <child type="top">
-              <object class="AdwBanner" id="infobar">
-                <property name="title" translatable="yes">Device Disconnected</property>
-              </object>
-            </child>
-            <property name="content">
-              <object class="AdwClamp">
-                <child>
-                  <object class="GtkLabel" id="message-label">
-                    <property name="visible">True</property>
-                    <property name="margin-top">15</property>
-                    <property name="margin-bottom">15</property>
-                    <property name="margin-start">10</property>
+                <child type="bottom">
+                  <object class="AdwClamp">
                     <property name="margin-end">10</property>
-                    <property name="hexpand">True</property>
-                    <property name="use-markup">True</property>
-                    <property name="selectable">True</property>
-                    <property name="wrap">True</property>
-                    <property name="wrap-mode">word-char</property>
-                    <signal name="activate-link" handler="_onActivateLink" swapped="no"/>
-                    <style>
-                      <class name="card"/>
-                    </style>
-                  </object>
-                </child>
-              </object>
-            </property>
-            <child type="bottom">
-              <object class="AdwClamp">
-                <property name="margin-end">10</property>
-                <property name="margin-start">10</property>
-                <property name="margin-bottom">10</property>
-                <child>
-                  <object class="GtkBox">
-                    <property name="visible">True</property>
-                    <property name="orientation">horizontal</property>
-                    <property name="spacing">10</property>
+                    <property name="margin-start">10</property>
+                    <property name="margin-bottom">10</property>
                     <child>
-                      <object class="GtkMenuButton">
-                        <property name="valign">center</property>
-                        <property name="icon-name">emoji-people-symbolic</property>
-                        <property name="popover">
-                          <object class="GtkEmojiChooser" id="emoji_chooser">
-                            <signal name="emoji-picked" handler="_on_emoji_picked"/>
-                          </object>
-                        </property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkScrolledWindow">
+                      <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <property name="orientation">horizontal</property>
                         <child>
-                          <object class="GtkTextView" id="entry">
-                            <property name="visible">True</property>
-                            <property name="hexpand">True</property>
-                            <property name="vexpand">True</property>
-                            <property name="top-margin">5</property>
-                            <property name="bottom-margin">5</property>
-                            <property name="left-margin">5</property>
-                            <property name="right-margin">5</property>
-                            <property name="wrap-mode">word-char</property>
+                          <object class="GtkMenuButton">
+                            <property name="valign">center</property>
+                            <property name="icon-name">emoji-people-symbolic</property>
+                            <property name="margin-start">10</property>
+                            <property name="margin-end">10</property>
+                            <property name="popover">
+                              <object class="GtkEmojiChooser" id="emoji_chooser">
+                                <signal name="emoji-picked" handler="_on_emoji_picked"/>
+                              </object>
+                            </property>
                             <style>
-                              <class name="card"/>
+                              <class name="linked"/>
                             </style>
                           </object>
                         </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="send-text">
-                        <property name="icon-name">send-to-symbolic</property>
-                        <property name="valign">center</property>
-                        <signal name="clicked" handler="_sendMessage" swapped="no"/>
+                        <child>
+                          <object class="GtkScrolledWindow">
+                            <child>
+                              <object class="GtkTextView" id="entry">
+                                <property name="height-request">32</property>
+                                <property name="valign">end</property>
+                                <property name="visible">True</property>
+                                <property name="hexpand">True</property>
+                                <property name="wrap-mode">word-char</property>
+                                <style>
+                                  <class name="inline"/>
+                                </style>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="send-text">
+                            <property name="icon-name">send-to-symbolic</property>
+                            <property name="valign">center</property>
+                            <property name="margin-start">10</property>
+                            <property name="margin-end">10</property>
+                            <signal name="clicked" handler="_sendMessage" swapped="no"/>
+                            <style>
+                              <class name="suggested-action"/>
+                            </style>
+                          </object>
+                        </child>
+                        <style>
+                          <class name="card"/>
+                        </style>
                       </object>
                     </child>
                   </object>

@@ -1092,16 +1092,6 @@ export const Window = GObject.registerClass({
         this._sync();
         this._onThreadsChanged();
         this.restoreGeometry('messaging');
-        const controller = new Gtk.EventControllerKey();
-
-        controller.connect('key-pressed', (controller, keyval, keycode, state) => {
-            if (this.split_view.get_content() === this.contact_chooser && !this.contact_chooser.button_search.get_active()) {
-                this.contact_chooser.onKeyPress(keyval);
-            }
-            return Gdk.EVENT_STOP;
-        });
-
-        this.add_controller(controller);
     }
 
     vfunc_close_request(event) {

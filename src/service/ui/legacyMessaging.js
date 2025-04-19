@@ -31,7 +31,7 @@ const Dialog = GObject.registerClass({
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/legacy-messaging-dialog.ui',
     Children: [
-        'infobar', 'stack', 'avatar', 'message-editor',
+        'infobar', 'nav-view', 'message-avatar', 'message-editor',
         'message-label', 'entry', 'title-widget', 'send-text'
     ],
     Signals: {
@@ -74,22 +74,23 @@ const Dialog = GObject.registerClass({
         // Set the message if given
         if (this.message) {
             this.message_label.label = URI.linkify(this.message.body);
-        } 
+            this.message_avatar.visible = true;
+        } else {
+            this.message_avatar.visible = false;
+            this.title_widget.title = _('No conversation selected');
+        }
 
         // Load the contact list if we weren't supplied with an address
         if (this.addresses !== undefined && this.addresses.length === 0) {
             this.contact_chooser = new Contacts.ContactChooser({
                 device: this.device,
             });
-            this.stack.add_named(this.contact_chooser, 'contact-chooser');
-            //this.stack.child_set_property(this.contact_chooser, 'position', 0);
-
+            this.contact_chooser.show_back_button = false;
+            this.nav_view.push(this.contact_chooser);
             this._numberSelectedId = this.contact_chooser.connect(
                 'number-selected',
                 this._onNumberSelected.bind(this)
             );
-
-            this.stack.visible_child_name = 'contact-chooser';
         }
 
         this.restoreGeometry('legacy-messaging-dialog');
@@ -100,13 +101,9 @@ const Dialog = GObject.registerClass({
 
         if (this._numberSelectedId !== undefined) {
             this.contact_chooser.disconnect(this._numberSelectedId);
-            this.stack.remove(this.contact_chooser);
-            this.contact_chooser.run_dispose();
         }
-
         this.entry.buffer.disconnect(this._entryChangedId);
         this.device.disconnect(this._connectedId);
-        
         this.saveGeometry();
 
         return false;
@@ -122,7 +119,7 @@ const Dialog = GObject.registerClass({
                 this.addresses,
                 this.entry.buffer.text,
                 1,
-                true
+                truegetSelected
             );
         }
         this.emit('response', this, response_id);
@@ -145,11 +142,11 @@ const Dialog = GObject.registerClass({
         
         this.title_widget.title = contact.name,
         this.title_widget.subtitle = Contacts.getDisplayNumber(contact, addresses[0].address)
-        this.avatar.text = contact.name;
-        
+        this.message_avatar.text = contact.name;
+        this.message_avatar.visible = true;
 
         // Show the message editor
-        this.stack.visible_child = this.message_editor;
+        this.nav_view.pop();
         this._onStateChanged();
     }
 
@@ -196,7 +193,6 @@ const Dialog = GObject.registerClass({
 
     _onNumberSelected(chooser, number) {
         const contacts = chooser.getSelected();
-
         this.addresses = Object.keys(contacts).map(address => {
             return {address: address};
         });
