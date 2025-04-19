@@ -132,9 +132,9 @@ const SystemVolumePlugin = GObject.registerClass({
      * @returns {object} The updated cache object
      */
     _updateCache(stream) {
-        let defaultSinkId = this._mixer.output?.id;
-        let isDefault = stream.id === defaultSinkId;
-        if (defaultSinkId === undefined) {  
+        const defaultSinkId = this._mixer.output?.id;
+        const isDefault = stream.id === defaultSinkId;
+        if (defaultSinkId === undefined){  
             // Fallback for when the default sink is not set
             isDefault=true;
         }
@@ -146,7 +146,7 @@ const SystemVolumePlugin = GObject.registerClass({
             maxVolume: this._mixer.get_vol_max_norm(),
             enabled: isDefault,
         };
-
+        
         this._cache.set(stream, state);
         return state;
     }
