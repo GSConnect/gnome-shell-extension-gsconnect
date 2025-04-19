@@ -135,9 +135,8 @@ const SystemVolumePlugin = GObject.registerClass({
         const defaultSinkId = this._mixer.output?.id;
         const isDefault = stream.id === defaultSinkId;
         // Fallback for when the default sink is not set
-        if(defaultSinkId === undefined){  
-            isDefault = true;
-        }
+        if (defaultSinkId === undefined)
+            return true;
         const state = {
             name: stream.name,
             description: stream.display_name,
