@@ -20,7 +20,7 @@ try {
     GIRepository.Repository.prepend_library_path(typelibDir);
 
     Gvc = (await import('gi://Gvc')).default;
-} catch {}
+} catch { }
 
 
 export const Metadata = {
@@ -67,7 +67,7 @@ const SystemVolumePlugin = GObject.registerClass({
                 this._sendSinkList.bind(this)
             );
 
-        // Modify the error to redirect to the wiki
+            // Modify the error to redirect to the wiki
         } catch (e) {
             e.name = _('PulseAudio not found');
             e.url = `${Config.PACKAGE_URL}/wiki/Error#pulseaudio-not-found`;
@@ -132,17 +132,22 @@ const SystemVolumePlugin = GObject.registerClass({
      * @returns {object} The updated cache object
      */
     _updateCache(stream) {
+        let defaultSinkId = this._mixer.output?.id;
+        let isDefault = stream.id === defaultSinkId;
+        if (defaultSinkId === undefined) {  
+            // Fallback for when the default sink is not set
+            isDefault=true;
+        }
         const state = {
             name: stream.name,
             description: stream.display_name,
             muted: stream.is_muted,
             volume: stream.volume,
             maxVolume: this._mixer.get_vol_max_norm(),
-            enabled: true,
+            enabled: isDefault,
         };
 
         this._cache.set(stream, state);
-
         return state;
     }
 

@@ -91,7 +91,7 @@ it:
 
 ```sh
 $ meson _build
-$ ninja -C _build install-zip
+$ ninja -C _build install-zip 
 ```
 
 Use the `make-zip` target instead to simple build a distributable ZIP, which
