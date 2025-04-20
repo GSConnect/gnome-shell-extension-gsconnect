@@ -33,50 +33,6 @@ for (const name in plugins) {
     }
 }
 
-function getIcon(name) {
-    if (getIcon._resource === undefined) {
-        getIcon._desktop = Gtk.IconTheme.get_for_display(Gdk.Display.get_default());
-        getIcon._resource = {};
-
-        const iconPath = 'resource://org/gnome/Shell/Extensions/GSConnect/icons';
-        const dirFile = Gio.File.new_for_uri(iconPath);
-
-        try {
-            const enumerator = dirFile.enumerate_children(
-                'standard::name',
-                Gio.FileQueryInfoFlags.NONE,
-                null
-            );
-
-            let info;
-            while ((info = enumerator.next_file(null)) !== null) {
-                const filename = info.get_name();
-
-                if (filename.endsWith('.svg')) {
-                    const iconName = filename.replace(/\.svg$/, '');
-                    getIcon._resource[iconName] = new Gio.FileIcon({
-                        file: dirFile.get_child(filename),
-                    });
-                }
-            }
-
-            enumerator.close(null);
-        } catch (e) {
-            logError(e);
-        }
-    }
-
-    if (getIcon._desktop.has_icon(name)) {
-        return new Gio.ThemedIcon({ name });
-    }
-
-    if (getIcon._resource[name] !== undefined) {
-        return getIcon._resource[name];
-    }
-
-    return new Gio.ThemedIcon({ name });
-}
-
 /**
  * A Gtk.ListBoxSortFunc for SectionRow rows
  *
@@ -147,8 +103,6 @@ const ActionRowBox = GObject.registerClass({
             const submenu = menuModel.get_item_link(i, 'submenu');
 
             let icon = Gio.Icon.deserialize(iconName);
-            if (icon instanceof Gio.ThemedIcon)
-                icon = getIcon(icon.names[0]);
 
             if (!label) continue;
         

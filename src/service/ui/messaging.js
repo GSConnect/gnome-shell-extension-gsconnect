@@ -958,7 +958,7 @@ const ConversationSummary = GObject.registerClass({
             name_label = GLib.markup_escape_text(contact.name, -1);
         } else {
             name_label = _('Group Message');
-            this.avatar.icon_name = 'people-symbolic';
+            this.avatar.icon_name = 'system-users-symbolic';
             const participants = [];
             addresses.forEach(address => {
                 participants.push(this.contacts[address].name);
@@ -1046,7 +1046,11 @@ export const Window = GObject.registerClass({
 
     _init(params) {
         super._init(params);
-        
+        const iconTheme = Gtk.IconTheme.get_for_display(Gdk.Display.get_default());
+        // Aggiungi il tuo prefisso GResource in cui hai messo le SVG
+        iconTheme.add_resource_path(
+            '/org/gnome/Shell/Extensions/GSConnect/icons'
+        );
         this.stack = new Map();
         
         this.sidebar_title.set_subtitle(this.device.name);

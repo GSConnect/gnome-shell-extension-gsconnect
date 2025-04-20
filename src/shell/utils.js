@@ -31,7 +31,7 @@ export function getIcon(name) {
         });
 
         // Preload our fallbacks
-        const iconPath = 'resource://org/gnome/Shell/Extensions/GSConnect/icons';
+        const iconPath = 'resource://org/gnome/Shell/Extensions/GSConnect/icons/scalable/actions/';
         const iconNames = [
             'org.gnome.Shell.Extensions.GSConnect',
             'org.gnome.Shell.Extensions.GSConnect-symbolic',
@@ -43,7 +43,6 @@ export function getIcon(name) {
             'phonelink-ring-symbolic',
             'phone-vibrate-symbolic', 
             'chat-bubbles-text-symbolic',
-            'sms-symbolic',
         ];
         
         getIcon._resource = {};

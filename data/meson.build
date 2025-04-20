@@ -6,7 +6,6 @@ subdir('firewalld')
 subdir('metainfo')
 subdir('webextension')
 
-
 # metadata.json
 configure_file(
   input: 'metadata.json.in',
@@ -22,7 +21,6 @@ configure_file(
   configuration: extconfig,
   install_dir: extdatadir
 )
-
 
 # Desktop Entry
 desktop_file = configure_file(
@@ -52,14 +50,17 @@ if desktop_utils.found()
   )
 endif
 
-
-# Application Icon
-install_data([
-  join_paths('icons', app_id + '.svg'),
-  join_paths('icons', app_id + '-symbolic.svg')],
-  install_dir: join_paths(datadir, 'icons', 'hicolor', 'scalable', 'apps')
+scalable_dir = join_paths('icons', 'hicolor', 'scalable', 'apps')
+install_data(
+  join_paths(scalable_dir, ('@0@.svg').format(app_id)),
+  install_dir: join_paths(datadir, 'icons', scalable_dir)
 )
 
+symbolic_dir = join_paths('icons','hicolor', 'symbolic', 'apps')
+install_data(
+  join_paths(symbolic_dir, ('@0@-symbolic.svg').format(app_id)),
+  install_dir: join_paths(datadir, 'icons', symbolic_dir)
+)
 
 # DBus Service
 dbus = dependency('dbus-1', required: false)
@@ -83,13 +84,11 @@ dbus_service_file = configure_file(
   install_dir: dbus_dir
 )
 
-
 # GSettings
 install_data(
   app_id + '.gschema.xml',
   install_dir: gschemadir
 )
-
 
 # GResource
 gnome.compile_resources(
