@@ -105,7 +105,12 @@ export const InputWindow = GObject.registerClass({
 
         // TRANSLATORS: Displayed when the remote keyboard is not ready to accept input
         this.infobar.title = _('Remote keyboard on %s is not active').format(this.device.name);
-        this.plugin.bind_property('state', this.infobar, 'revealed', GObject.BindingFlags.INVERT_BOOLEAN);
+        this.plugin.bind_property(
+            'state', 
+            this.infobar, 
+            'revealed', 
+            GObject.BindingFlags.INVERT_BOOLEAN
+        );
         
         // Text Input
         this.entry.buffer.connect(

@@ -76,7 +76,7 @@
                             <property name="margin-end">10</property>
                             <property name="popover">
                               <object class="GtkEmojiChooser" id="emoji_chooser">
-                                <signal name="emoji-picked" handler="_on_emoji_picked"/>
+                                <signal name="emoji-picked" handler="_onEmojiPicked"/>
                               </object>
                             </property>
                             <style>
@@ -102,7 +102,7 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="send-text">
-                            <property name="icon-name">send-to-symbolic</property>
+                            <property name="icon-name">sms-send</property>
                             <property name="valign">center</property>
                             <property name="margin-start">10</property>
                             <property name="margin-end">10</property>

@@ -889,7 +889,7 @@ const Conversation = GObject.registerClass({
         }
     }
 
-    on_emoji_picked(widget, emoticon) {
+    _onEmojiPicked(widget, emoticon) {
         const text = this.entry.get_text();
         this.entry.set_text(text + emoticon);
     }

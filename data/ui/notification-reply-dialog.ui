@@ -108,7 +108,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                     <property name="margin-end">10</property>
                     <property name="popover">
                       <object class="GtkEmojiChooser" id="emoji_chooser">
-                        <signal name="emoji-picked" handler="_on_emoji_picked"/>
+                        <signal name="emoji-picked" handler="_onEmojiPicked"/>
                       </object>
                     </property>
                     <style>

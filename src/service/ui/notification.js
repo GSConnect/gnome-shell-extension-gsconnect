@@ -40,7 +40,7 @@ const ReplyDialog = GObject.registerClass({
         ),
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/notification-reply-dialog.ui',
-    Children: ['title-widget', 'infobar', 'notification-title', 'notification-body', 'entry'],
+    Children: ['title-widget', 'infobar', 'notification-title', 'notification-body', 'entry', 'send-button'],
     Signals: {
         'response': {
             param_types: [GObject.TYPE_OBJECT, GObject.TYPE_INT],
@@ -53,10 +53,11 @@ const ReplyDialog = GObject.registerClass({
         Object.assign(this, params);
 
         // Info bar
+        print(this.device.connected);
         this.device.bind_property(
             'connected',
             this.infobar,
-            'reveal-child',
+            'revealed',
             GObject.BindingFlags.INVERT_BOOLEAN
         );
 
@@ -161,6 +162,11 @@ const ReplyDialog = GObject.registerClass({
         );
 
         return true;
+    }
+
+    _onEmojiPicked(widget, emoticon) {
+        const text = this.entry.get_text();
+        this.entry.set_text(text + emoticon);
     }
 
     _onStateChanged() {

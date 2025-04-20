@@ -176,7 +176,7 @@ const Dialog = GObject.registerClass({
         this.response = Gtk.ResponseType.OK;
     }
 
-    _on_emoji_picked(widget, emoticon) {
+    _onEmojiPicked(widget, emoticon) {
         const text = this.entry.buffer.text;
         this.entry.buffer.text = text + emoticon;
     }
