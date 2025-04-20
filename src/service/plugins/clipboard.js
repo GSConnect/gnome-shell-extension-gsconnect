@@ -78,8 +78,6 @@ const ClipboardPlugin = GObject.registerClass({
         if (this._localBuffer === null && this._localTimestamp === 0)
             return;
 
-        print(this._localBuffer);
-        print(this._localTimestamp);
         this.device.sendPacket({
             type: 'kdeconnect.clipboard.connect',
             body: {
