@@ -5,6 +5,7 @@
 import Gio from 'gi://Gio';
 import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk?version=4.0';
+import Adw from 'gi://Adw';
 
 import * as URI from '../utils/uri.js';
 import '../utils/ui.js';
@@ -39,7 +40,12 @@ const ReplyDialog = GObject.registerClass({
         ),
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/notification-reply-dialog.ui',
-    Children: ['infobar', 'notification-title', 'notification-body', 'entry'],
+    Children: ['title-widget', 'infobar', 'notification-title', 'notification-body', 'entry'],
+    Signals: {
+        'response': {
+            param_types: [GObject.TYPE_OBJECT, GObject.TYPE_INT],
+        },
+    }
 }, class ReplyDialog extends Adw.ApplicationWindow {
 
     _init(params) {
@@ -55,17 +61,15 @@ const ReplyDialog = GObject.registerClass({
         );
 
         // Notification Data
-        const headerbar = this.get_titlebar();
-        headerbar.title = params.notification.appName;
-        headerbar.subtitle = this.device.name;
+        this.title_widget.title = this.notification.appName;
+        this.title_widget.subtitle = this.device.name;
 
-        this.notification_title.label = params.notification.title;
-        this.notification_body.label = URI.linkify(params.notification.text);
-
-        // Message Entry/Send Button
+        this.notification_title.label = this.notification.title;
+        this.notification_body.label = URI.linkify(this.notification.text);
+        
         this.device.bind_property(
             'connected',
-            this.entry,
+            this.send_button,
             'sensitive',
             GObject.BindingFlags.DEFAULT
         );
@@ -81,23 +85,18 @@ const ReplyDialog = GObject.registerClass({
         );
 
         this.restoreGeometry('notification-reply-dialog');
-
-        this.connect('destroy', this._onDestroy);
-    }
-
-    _onDestroy(dialog) {
-        dialog.entry.buffer.disconnect(dialog._entryChangedId);
-        dialog.device.disconnect(dialog._connectedId);
     }
 
     vfunc_close_request() {
+        this.entry.buffer.disconnect(dialog._entryChangedId);
+        this.device.disconnect(dialog._connectedId);
+        this.emit('response', this, Gtk.ResponseType.CANCEL);
         this.saveGeometry();
-
         return false;
     }
 
-    vfunc_response(response_id) {
-        if (response_id === Gtk.ResponseType.OK) {
+    response(response) {
+        if (response === Gtk.ResponseType.OK) {
             // Refuse to send empty or whitespace only messages
             if (!this.entry.buffer.text.trim())
                 return;
@@ -107,7 +106,7 @@ const ReplyDialog = GObject.registerClass({
                 this.entry.buffer.text
             );
         }
-
+        this.emit('response', this, response);
         this.destroy();
     }
 
@@ -150,6 +149,10 @@ const ReplyDialog = GObject.registerClass({
         }
     }
 
+    _sendMessage() {
+        this.response = Gtk.ResponseType.OK;
+    }
+
     _onActivateLink(label, uri) {
         Gtk.show_uri_on_window(
             this.get_toplevel(),
@@ -162,9 +165,9 @@ const ReplyDialog = GObject.registerClass({
 
     _onStateChanged() {
         if (this.device.connected && this.entry.buffer.text.trim())
-            this.set_response_sensitive(Gtk.ResponseType.OK, true);
+            this.send_button.sensitive = true;
         else
-            this.set_response_sensitive(Gtk.ResponseType.OK, false);
+            this.send_button.sensitive = false;
     }
 });
 

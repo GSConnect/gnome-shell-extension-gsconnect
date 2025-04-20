@@ -11,7 +11,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
   <requires lib="Adw" version="1.0"/>
 
   <template class="GSConnectNotificationReplyDialog" parent="AdwApplicationWindow">
-    <property name="title" translatable="yes">Send SMS…</property>
+    <property name="title" translatable="yes">Notifications</property>
     <property name="width-request">625</property>
     <child>
       <object class="AdwToolbarView">
@@ -19,6 +19,9 @@ SPDX-License-Identifier: GPL-2.0-or-later
         <child type="top">
           <object class="AdwHeaderBar">
             <property name="visible">True</property>
+            <property name="title-widget">
+              <object class="AdwWindowTitle" id="title-widget"/>
+            </property>
           </object>
         </child>
         <child type="top">
