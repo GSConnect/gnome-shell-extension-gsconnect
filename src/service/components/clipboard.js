@@ -4,7 +4,6 @@
 
 import Gdk from 'gi://Gdk?version=4.0';
 import GLib from 'gi://GLib';
-import Gtk from 'gi://Gtk?version=4.0';
 import Gio from 'gi://Gio';
 import GObject from 'gi://GObject';
 
@@ -31,7 +30,6 @@ const Clipboard = GObject.registerClass({
 
     _init() {
         super._init();
-
         this._cancellable = new Gio.Cancellable();
         this._clipboard = null;
 
@@ -48,7 +46,6 @@ const Clipboard = GObject.registerClass({
     get text() {
         if (this._text === undefined)
             this._text = '';
-
         return this._text;
     }
 
@@ -62,7 +59,7 @@ const Clipboard = GObject.registerClass({
         if (typeof content !== 'string')
             return;
 
-        if (this._clipboard instanceof Gtk.Clipboard)
+        if (this._clipboard instanceof Gdk.Clipboard)
             this._clipboard.set_text(content, -1);
 
         if (this._clipboard instanceof Gio.DBusProxy) {
@@ -118,13 +115,14 @@ const Clipboard = GObject.registerClass({
     }
 
     _onNameVanished(connection, name) {
+        print("_onNameVanished");
         if (this._clipboard && this._ownerChangeId > 0) {
             this._clipboard.disconnect(this._ownerChangeId);
             this._clipboardChangedId = 0;
         }
 
         const display = Gdk.Display.get_default();
-        this._clipboard = Gtk.Clipboard.get_default(display);
+        this._clipboard = Gdk.Clipboard.get_default(display);
 
         this._ownerChangeId = this._clipboard.connect('owner-change',
             this._onOwnerChange.bind(this));
@@ -134,7 +132,7 @@ const Clipboard = GObject.registerClass({
 
     async _onOwnerChange() {
         try {
-            if (this._clipboard instanceof Gtk.Clipboard)
+            if (this._clipboard instanceof Gdk.Clipboard)
                 await this._gtkUpdateText();
 
             else if (this._clipboard instanceof Gio.DBusProxy)
@@ -157,6 +155,7 @@ const Clipboard = GObject.registerClass({
      * Proxy Clipboard
      */
     async _proxyUpdateText() {
+        console.log("_proxyUpdateText");
         let reply = await this._clipboard.call('GetMimetypes', null,
             Gio.DBusCallFlags.NO_AUTO_START, -1, this._cancellable);
         const mimetypes = reply.deepUnpack()[0];

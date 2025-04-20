@@ -267,10 +267,10 @@ const SharePlugin = GObject.registerClass({
         fileDialog.open(win, null, (dialog, result) => {
             try {
                 let file = fileDialog.open_finish(result);
-                print("Selected file:", file.get_path());
+                console.log("Selected file:", file.get_path());
                 this.shareFile(file.get_path());
             } catch (e) {
-                print("No file selected");
+                console.log("No file selected");
             }
         });
     }

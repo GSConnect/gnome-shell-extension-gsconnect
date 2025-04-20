@@ -53,7 +53,6 @@ const ReplyDialog = GObject.registerClass({
         Object.assign(this, params);
 
         // Info bar
-        print(this.device.connected);
         this.device.bind_property(
             'connected',
             this.infobar,
@@ -89,8 +88,8 @@ const ReplyDialog = GObject.registerClass({
     }
 
     vfunc_close_request() {
-        this.entry.buffer.disconnect(dialog._entryChangedId);
-        this.device.disconnect(dialog._connectedId);
+        this.entry.buffer.disconnect(this._entryChangedId);
+        this.device.disconnect(this._connectedId);
         this.emit('response', this, Gtk.ResponseType.CANCEL);
         this.saveGeometry();
         return false;

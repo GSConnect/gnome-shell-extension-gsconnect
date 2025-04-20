@@ -76,7 +76,7 @@ const FindMyPhonePlugin = GObject.registerClass({
 
         } catch (e) {
             this._cancelRequest();
-            print(e + " - " + this.device.name);
+            console.log(e + " - " + this.device.name);
         }
     }
 

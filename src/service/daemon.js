@@ -610,9 +610,9 @@ const Service = GObject.registerClass({
             device = object['org.gnome.Shell.Extensions.GSConnect.Device'];
 
             if (full)
-                print(`${device.Id}\t${device.Name}\t${device.Connected}\t${device.Paired}`);
+                console.log(`${device.Id}\t${device.Name}\t${device.Connected}\t${device.Paired}`);
             else if (device.Connected && device.Paired)
-                print(device.Id);
+                console.log(device.Id);
         }
     }
 
@@ -695,7 +695,7 @@ const Service = GObject.registerClass({
     vfunc_handle_local_options(options) {
         try {
             if (options.contains('version')) {
-                print(`GSConnect ${Config.PACKAGE_VERSION}`);
+                console.log(`GSConnect ${Config.PACKAGE_VERSION}`);
                 return 0;
             }
 

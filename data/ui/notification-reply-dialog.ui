@@ -26,7 +26,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
         </child>
         <child type="top">
           <object class="AdwBanner" id="infobar">
-            <property name="revealed">True</property>
+            <property name="revealed">False</property>
             <property name="title" translatable="yes">Device Disconnected</property>
           </object>
         </child>

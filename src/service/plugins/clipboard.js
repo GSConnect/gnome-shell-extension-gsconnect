@@ -90,7 +90,6 @@ const ClipboardPlugin = GObject.registerClass({
     }
 
     handlePacket(packet) {
-        print(packet);
         if (!packet.body.hasOwnProperty('content'))
             return;
 
@@ -106,6 +105,7 @@ const ClipboardPlugin = GObject.registerClass({
     }
 
     _handleContent(packet) {
+        print(JSON.stringify(packet))
         this._onRemoteClipboardChanged(packet.body.content);
     }
 

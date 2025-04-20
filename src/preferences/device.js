@@ -492,7 +492,7 @@ export const DeviceNavigationPage = GObject.registerClass({
             });
 
         } catch (e) {
-            console.log(e)
+            console.log(e + " - " + this.device.name);
         }
     }
 
@@ -934,8 +934,6 @@ export const DeviceNavigationPage = GObject.registerClass({
     
         fileDialog.select_folder(win, null, (dialog, response) => {
             const filename = fileDialog.select_folder_finish(response);
-            console.log(filename);
-            console.log(response);
             const settings = this.pluginSettings('share');
             const receiveDir = settings.get_string('receive-directory');
             if (filename.get_path() !== receiveDir)
