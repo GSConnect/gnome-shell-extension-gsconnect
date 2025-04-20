@@ -115,7 +115,6 @@ const Clipboard = GObject.registerClass({
     }
 
     _onNameVanished(connection, name) {
-        print("_onNameVanished");
         if (this._clipboard && this._ownerChangeId > 0) {
             this._clipboard.disconnect(this._ownerChangeId);
             this._clipboardChangedId = 0;
@@ -155,7 +154,6 @@ const Clipboard = GObject.registerClass({
      * Proxy Clipboard
      */
     async _proxyUpdateText() {
-        console.log("_proxyUpdateText");
         let reply = await this._clipboard.call('GetMimetypes', null,
             Gio.DBusCallFlags.NO_AUTO_START, -1, this._cancellable);
         const mimetypes = reply.deepUnpack()[0];
