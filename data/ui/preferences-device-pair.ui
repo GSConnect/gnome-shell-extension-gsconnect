@@ -27,12 +27,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
         <child type="top">
           <object class="AdwHeaderBar">
             <property name="visible">True</property>
-            <property name="title-widget">
-              <object class="AdwWindowTitle">
-                <property name="visible">True</property>
-                <property name="title" translatable="yes">Pair Device…</property>
-              </object>
-            </property>
+            <property name="show-title">False</property>
           </object>
         </child>
         <property name="content">

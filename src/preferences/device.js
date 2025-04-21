@@ -160,7 +160,7 @@ const ActionRowBox = GObject.registerClass({
     _create_encription_row() {
         const row = new Adw.ActionRow({
             visible: true,
-            title: 'Encryption Info',
+            title: _('Encryption Info'),
             selectable: false,
             activatable: true,
             action_name: 'settings.encryption-info',

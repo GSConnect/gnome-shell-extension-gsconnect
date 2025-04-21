@@ -47,7 +47,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                         <property name="title-widget">
                           <object class="AdwWindowTitle" id="sidebar-title">
                             <property name="visible">True</property>
-                            <property name="title" translatable="yes">Conversations</property>
+                            <property name="title" translatable="yes">Messaging</property>
                           </object>
                         </property>
                       </object>
@@ -111,7 +111,6 @@ SPDX-License-Identifier: GPL-2.0-or-later
                             <child>
                               <object class="AdwWindowTitle" id="content-title">
                                 <property name="visible">True</property>
-                                <property name="title" translatable="yes">Messaging</property>
                               </object>
                             </child>
                           </object>
@@ -121,7 +120,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                     <property name="content">
                       <object class="AdwStatusPage">
                         <property name="visible">True</property>
-                        <property name="title" translatable="yes">No Conversation Selected</property>
+                        <property name="title" translatable="yes">No conversation selected</property>
                         <property name="description" translatable="yes">Select or start a conversation</property>
                         <property name="icon-name">chat-bubbles-text-symbolic</property>
                       </object>

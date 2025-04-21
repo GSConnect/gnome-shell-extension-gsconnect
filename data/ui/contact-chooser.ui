@@ -11,7 +11,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
   <requires lib="Adw" version="1.0"/>
 
   <template class="GSConnectContactChooser" parent="AdwNavigationPage">
-    <property name="title" translatable="no">Contact Chooser</property>
+    <property name="title" translatable="yes">Contacts</property>
     <property name="tag">contact-chooser</property>
     <child>
       <object class="AdwToolbarView">

@@ -23,8 +23,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
         </child>
         <child>
           <object class="AdwStatusPage">
-            <property name="title" translatable="yes">Find My Phone</property>
-            <property name="description" translatable="yes">You found me!</property>
+            <property name="title" translatable="yes">You found me!</property>
             <property name="icon-name">phone-vibrate-symbolic</property>
           </object>
         </child>

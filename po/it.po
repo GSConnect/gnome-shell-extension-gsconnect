@@ -157,6 +157,10 @@ msgstr "Campo Messaggio"
 msgid "Type a message and press Enter to send"
 msgstr "Digitare un messaggio e premere Invio per inviarlo"
 
+#: data/ui/messaging-conversation-partecipants.ui:100
+msgid "Partecipants"
+msgstr "Partecipanti"
+
 #: data/ui/messaging-window.ui:21 src/service/plugins/sms.js:30
 #: src/service/ui/messaging.js:1057
 msgid "Messaging"
@@ -244,9 +248,13 @@ msgstr "File"
 msgid "Receive Files"
 msgstr "Ricezione file"
 
-#: data/ui/preferences-device-panel.ui:447
+#: data/ui/preferences-device-page.ui:262
 msgid "Save files to"
 msgstr "Salva i file su"
+
+#: data/ui/preferences-device-page.ui:272
+msgid "Select Folder"
+msgstr "Seleziona Cartella"
 
 #: data/ui/preferences-device-panel.ui:508
 #: data/ui/preferences-device-panel.ui:2170
@@ -462,6 +470,10 @@ msgstr "Imposta"
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
 msgstr "Premi ESC per annullare o Backspace per ripristinare la scorciatoia."
 
+#: data/ui/preferences-shortcut-editor.ui:11
+msgid "Set Shortcut"
+msgstr "Imposta scorciatoia da tastiera"
+
 #: data/ui/preferences-window.ui:24
 msgid "Device Name"
 msgstr "Nome del dispositivo"
@@ -549,6 +561,18 @@ msgstr "Genera log di supporto"
 #: data/ui/preferences-window.ui:851
 msgid "About GSConnect"
 msgstr "Informazioni su GSConnect"
+
+#: data/ui/preference-device-pair.ui:74
+msgid "Unpair Device"
+msgstr "Disccoppia il dispositivo"
+
+#: data/ui/preference-device-pair.ui:74
+msgid "is not paired"
+msgstr "non accopiato"
+
+#: data/ui/preference-device-pair.ui:74
+msgid "Pair Device"
+msgstr "Accoppia il dispositivo"
 
 #: data/ui/service-device-chooser.ui:15
 msgid "Select a Device"
@@ -866,6 +890,10 @@ msgstr "Accedere ai contatti del dispositivo"
 #: src/service/plugins/findmyphone.js:15
 msgid "Find My Phone"
 msgstr "Trova il mio telefono"
+
+#: data/ui/find-my-phone.ui
+msgid "You found me!"
+msgstr "Mi hai trovato!"
 
 #: src/service/plugins/findmyphone.js:16
 msgid "Ring your paired device"

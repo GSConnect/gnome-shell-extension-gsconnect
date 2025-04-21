@@ -259,7 +259,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                         <child>
                           <object class="AdwActionRow" id="receive-directory">
                             <property name="visible">True</property>
-                            <property name="title" translatable="yes">Save Files to</property>
+                            <property name="title" translatable="yes">Save files to</property>
                             <child>
                               <object class="GtkButton">
                                 <property name="visible">True</property>
@@ -316,7 +316,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                         <child>
                           <object class="AdwExpanderRow">
                             <property name="visible">True</property>
-                            <property name="title" translatable="yes">Charged up to custom level notification</property>
+                            <property name="title" translatable="yes">Charged Up to Custom Level Notification</property>
                             <property name="action-name">settings.custom-battery-notification</property>
                             <child type="suffix">
                               <object class="GtkSwitch">
