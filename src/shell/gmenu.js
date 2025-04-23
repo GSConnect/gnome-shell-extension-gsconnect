@@ -10,7 +10,7 @@ import St from 'gi://St';
 
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 
-import {getIcon} from './utils.js';
+import {HAS_ST_ORIENTATION, getIcon} from './utils.js';
 
 import Tooltip from './tooltip.js';
 
@@ -92,12 +92,19 @@ export class ListBox extends PopupMenu.PopupMenuSection {
         this.actor.add_child(this.box);
 
         // Submenu Container
-        this.sub = new St.BoxLayout({
-            clip_to_allocation: true,
-            vertical: false,
-            visible: false,
-            x_expand: true,
-        });
+        this.sub = HAS_ST_ORIENTATION
+            ? new St.BoxLayout({
+                clip_to_allocation: true,
+                orientation: Clutter.Orientation.HORIZONTAL,  // GNOME 48
+                visible: false,
+                x_expand: true,
+            })
+            : new St.BoxLayout({
+                clip_to_allocation: true,
+                vertical: false,  // GNOME 46/47
+                visible: false,
+                x_expand: true,
+            });
         this.sub.set_pivot_point(1, 1);
         this.sub._delegate = this;
         this.actor.add_child(this.sub);
@@ -464,24 +471,38 @@ export class IconBox extends PopupMenu.PopupMenuSection {
         Object.assign(this, params);
 
         // Main Actor
-        this.actor = new St.BoxLayout({
-            vertical: true,
-            x_expand: true,
-        });
+        this.actor = HAS_ST_ORIENTATION
+            ? new St.BoxLayout({
+                orientation: Clutter.Orientation.VERTICAL,  // GNOME 48
+                x_expand: true,
+            })
+            : new St.BoxLayout({
+                vertical: true,  // GNOME 46/47
+                x_expand: true,
+            });
         this.actor._delegate = this;
 
         // Button Box
         this.box._delegate = this;
         this.box.style_class = 'gsconnect-icon-box';
-        this.box.vertical = false;
+        if (HAS_ST_ORIENTATION)
+            this.box.orientation = Clutter.Orientation.HORIZONTAL;  // GNOME 48
+        else
+            this.box.vertical = false;  // GNOME 46/47
         this.actor.add_child(this.box);
 
         // Submenu Container
-        this.sub = new St.BoxLayout({
-            clip_to_allocation: true,
-            vertical: true,
-            x_expand: true,
-        });
+        this.sub = HAS_ST_ORIENTATION
+            ? new St.BoxLayout({
+                clip_to_allocation: true,
+                orientation: Clutter.Orientation.VERTICAL,  // GNOME 48
+                x_expand: true,
+            })
+            : new St.BoxLayout({
+                clip_to_allocation: true,
+                vertical: true,  // GNOME 46/47
+                x_expand: true,
+            });
         this.sub.connect('transitions-completed', this._onTransitionsCompleted);
         this.sub._delegate = this;
         this.actor.add_child(this.sub);

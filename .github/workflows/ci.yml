@@ -8,18 +8,43 @@ on:
   push:
     branches:
       - main
-      - gnome-43
+      - 'backports/gnome-*'
   pull_request:
     branches:
       - main
-      - gnome-43
+      - 'backports/gnome-*'
   workflow_dispatch:
 
 jobs:
+  select:
+    runs-on: ubuntu-latest
+    outputs:
+      image_id: ${{ steps.select-image.outputs.image_id }}
+    steps:
+      - id: step1
+        if: ${{ ! startsWith(github.event_name, 'pull_request') }}
+        run: echo "target=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+      - id: step2
+        if: ${{ startsWith(github.event_name, 'pull_request') }}
+        run: echo "target=${{ github.base_ref }}" >> $GITHUB_OUTPUT
+      - id: select-image
+        env:
+          TARGET_BRANCH: ${{ steps.step1.outputs.target || steps.step2.outputs.target }}
+        run: |
+          if [[ \
+            ${{ startsWith(env.TARGET_BRANCH, 'backports/') && 1 || 0 }} == 1 \
+          ]]; then
+            IMAGE_ID=$(echo "$TARGET_BRANCH" | sed -e 's,^backports/,,')
+            echo "image_id=$IMAGE_ID" >> $GITHUB_OUTPUT
+          else
+            echo "image_id=latest" >> $GITHUB_OUTPUT
+          fi
+
   test:
+    needs: select
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/gsconnect/gsconnect-ci:main
+      image: ghcr.io/gsconnect/gsconnect-ci:${{ needs.select.outputs.image_id }}
     steps:
       - uses: actions/checkout@v4
 
@@ -42,6 +67,11 @@ jobs:
       - name: Installed Tests
         run: |
           ninja -C _build install
+          if [[ \
+            ${{ startsWith(env.TARGET_BRANCH, 'backports/gnome-42') && 1 || 0 }} == 1 \
+          ]]; then
+              glib-compile-schemas /usr/share/glib-2.0/schemas/
+          fi
           xvfb-run -a dbus-run-session -- \
           gnome-desktop-testing-runner gsconnect -L _build/meson-logs
 

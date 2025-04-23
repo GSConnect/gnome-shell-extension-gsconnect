@@ -8,6 +8,7 @@ import GObject from 'gi://GObject';
 
 import Config from '../../config.js';
 import * as Core from '../core.js';
+import Device from '../device.js';
 
 // Retain compatibility with GLib < 2.80, which lacks GioUnix
 let GioUnix;
@@ -148,6 +149,10 @@ export const ChannelService = GObject.registerClass({
         return this._channels;
     }
 
+    get id() {
+        return this.certificate.common_name;
+    }
+
     get port() {
         if (this._port === undefined)
             this._port = PROTOCOL_PORT_DEFAULT;
@@ -172,13 +177,6 @@ export const ChannelService = GObject.registerClass({
     }
 
     _initCertificate() {
-        if (GLib.find_program_in_path(Config.OPENSSL_PATH) === null) {
-            const error = new Error();
-            error.name = _('OpenSSL not found');
-            error.url = `${Config.PACKAGE_URL}/wiki/Error#openssl-not-found`;
-            throw error;
-        }
-
         const certPath = GLib.build_filenamev([
             Config.CONFIGDIR,
             'certificate.pem',
@@ -190,12 +188,7 @@ export const ChannelService = GObject.registerClass({
 
         // Ensure a certificate exists with our id as the common name
         this._certificate = Gio.TlsCertificate.new_for_paths(certPath, keyPath,
-            this.id);
-
-        // If the service ID doesn't match the common name, this is probably a
-        // certificate from an older version and we should amend ours to match
-        if (this.id !== this._certificate.common_name)
-            this._id = this._certificate.common_name;
+            null);
     }
 
     _initTcpListener() {
@@ -360,12 +353,23 @@ export const ChannelService = GObject.registerClass({
     async _onIdentity(packet) {
         try {
             // Bail if the deviceId is missing
-            if (!packet.body.hasOwnProperty('deviceId'))
-                return;
+            if (!this.identity.body.deviceId)
+                throw new Error('missing deviceId');
 
             // Silently ignore our own broadcasts
             if (packet.body.deviceId === this.identity.body.deviceId)
                 return;
+
+            // Reject invalid device IDs
+            if (!Device.validateId(packet.body.deviceId))
+                throw new Error(`invalid deviceId "${packet.body.deviceId}"`);
+
+            if (!packet.body.deviceName)
+                throw new Error('missing deviceName');
+
+            // Reject invalid device names
+            if (!Device.validateName(packet.body.deviceName))
+                throw new Error(`invalid deviceName "${packet.body.deviceName}"`);
 
             debug(packet);
 
@@ -729,7 +733,25 @@ export const Channel = GObject.registerClass({
             if (!this.identity.body.deviceId)
                 throw new Error('missing deviceId');
 
+            // Reject invalid device IDs
+            if (!Device.validateId(this.identity.body.deviceId))
+                throw new Error(`invalid deviceId "${this.identity.body.deviceId}"`);
+
+            if (!this.identity.body.deviceName)
+                throw new Error('missing deviceName');
+
+            // Reject invalid device names
+            if (!Device.validateName(this.identity.body.deviceName))
+                throw new Error(`invalid deviceName "${this.identity.body.deviceName}"`);
+
             this._connection = await this._encryptClient(connection);
+
+            // Starting with protocol version 8, the devices are expected to
+            // exchange identity packets again after TLS negotiation
+            if (this.identity.body.protocolVersion >= 8) {
+                await this.sendPacket(this.backend.identity);
+                this.identity = await this.readPacket();
+            }
         } catch (e) {
             this.close();
             throw e;
@@ -754,6 +776,13 @@ export const Channel = GObject.registerClass({
                 this.cancellable);
 
             this._connection = await this._encryptServer(connection);
+
+            // Starting with protocol version 8, the devices are expected to
+            // exchange identity packets again after TLS negotiation
+            if (this.identity.body.protocolVersion >= 8) {
+                await this.sendPacket(this.backend.identity);
+                this.identity = await this.readPacket();
+            }
         } catch (e) {
             this.close();
             throw e;
