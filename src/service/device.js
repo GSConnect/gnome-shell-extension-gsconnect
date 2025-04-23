@@ -144,6 +144,14 @@ const Device = GObject.registerClass({
         return name.trim() && /^[^"',;:.!?()[\]<>]{1,32}$/.test(name);
     }
 
+    static sanitizeName(name) {
+        // Remove all prohibited characters
+        const sanitized = name.replaceAll(/["',;:.!?()[\]<>]/g, '');
+        if (sanitized.length < 1)
+            throw new Error('No valid characters in device name!');
+        return sanitized;
+    }
+
     get channel() {
         if (this._channel === undefined)
             this._channel = null;
