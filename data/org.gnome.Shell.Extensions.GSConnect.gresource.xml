@@ -45,20 +45,28 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <file compressed="true">images/chrome-badge.png</file>
     <file compressed="true">images/firefox-badge.png</file>
   </gresource>
-  <gresource prefix="/org/gnome/Shell/Extensions/GSConnect/icons/scalable/actions/">
-    <!-- Phonelink Icons c/o GNOME -->
-    <file compressed="true" preprocess="xml-stripblanks" alias="phonelink-symbolic.svg">icons/hicolor/scalable/actions/phonelink-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks" alias="phonelink-delete-symbolic.svg">icons/hicolor/scalable/actions/phonelink-delete-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks" alias="phonelink-lock-symbolic.svg">icons/hicolor/scalable/actions/phonelink-lock-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks" alias="phonelink-off-symbolic.svg">icons/hicolor/scalable/actions/phonelink-off-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks" alias="phone-vibrate-symbolic.svg">icons/hicolor/scalable/actions/phone-vibrate-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks" alias="phonelink-setup-symbolic.svg">icons/hicolor/scalable/actions/phonelink-setup-symbolic.svg</file>
-    <!-- Misc Resources c/o GNOME -->
-    <file compressed="true" preprocess="xml-stripblanks" alias="group-avatar-symbolic.svg">icons/hicolor/scalable/actions/group-avatar-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks" alias="sms-send.svg">icons/hicolor/scalable/actions/sms-send.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks" alias="chat-bubbles-text-symbolic.svg">icons/hicolor/scalable/actions/chat-bubbles-text-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks" alias="mouse-left-button-symbolic.svg">icons/hicolor/scalable/actions/mouse-left-button-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks" alias="mouse-right-button-symbolic.svg">icons/hicolor/scalable/actions/mouse-right-button-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks" alias="mouse-with-smaller-scrollwheel-symbolic.svg">icons/hicolor/scalable/actions/mouse-with-smaller-scrollwheel-symbolic.svg</file>
+  <gresource prefix="/org/gnome/Shell/Extensions/GSConnect/icons/scalable/apps">
+    <file compressed="true" preprocess="xml-stripblanks">icons/org.gnome.Shell.Extensions.GSConnect.svg</file>
+  </gresource>
+  <gresource prefix="/org/gnome/Shell/Extensions/GSConnect/icons/symbolic/apps">
+      <file compressed="true" preprocess="xml-stripblanks">icons/org.gnome.Shell.Extensions.GSConnect-symbolic.svg</file>
+  </gresource>
+  <gresource prefix="/org/gnome/Shell/Extensions/GSConnect/icons/scalable/actions">
+    <file compressed="true" preprocess="xml-stripblanks" alias="phonelink-symbolic.svg">icons/phonelink-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="phonelink-delete-symbolic.svg">icons/phonelink-delete-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="phonelink-lock-symbolic.svg">icons/phonelink-lock-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="phonelink-off-symbolic.svg">icons/phonelink-off-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="phone-vibrate-symbolic.svg">icons/phone-vibrate-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="phonelink-setup-symbolic.svg">icons/phonelink-setup-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="group-avatar-symbolic.svg">icons/group-avatar-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="paper-plane-symbolic.svg">icons/paper-plane-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="chat-bubbles-text-symbolic.svg">icons/chat-bubbles-text-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="mouse-left-button-symbolic.svg">icons/mouse-left-button-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="mouse-right-button-symbolic.svg">icons/mouse-right-button-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="mouse-with-smaller-scrollwheel-symbolic.svg">icons/mouse-with-smaller-scrollwheel-symbolic.svg</file>
+  </gresource>
+  <gresource prefix="/org/gnome/Shell/Extensions/GSConnect/icons/symbolic/actions">
+    <file compressed="true" preprocess="xml-stripblanks" alias="phone-vibrate-symbolic.svg">icons/phone-vibrate-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="chat-bubbles-text-symbolic.svg">icons/chat-bubbles-text-symbolic.svg</file>
   </gresource>
 </gresources>

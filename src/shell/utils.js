@@ -31,7 +31,7 @@ export function getIcon(name) {
         });
 
         // Preload our fallbacks
-        const iconPath = 'resource://org/gnome/Shell/Extensions/GSConnect/icons/scalable/actions/';
+        const iconPath = 'resource://org/gnome/Shell/Extensions/GSConnect/icons/symbolic/actions/';
         const iconNames = [
             'org.gnome.Shell.Extensions.GSConnect',
             'org.gnome.Shell.Extensions.GSConnect-symbolic',

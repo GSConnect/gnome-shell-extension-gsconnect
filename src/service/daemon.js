@@ -300,7 +300,12 @@ const Service = GObject.registerClass({
         this._initActions();
 
         // TODO: remove after a reasonable period of time
-        this._migrateConfiguration();
+        try {
+            this._migrateConfiguration();            
+        } catch (e) {
+            if (!e.message === 'OpenSSL not found')
+                throw e;
+        }
 
         this.manager.start();
     }
