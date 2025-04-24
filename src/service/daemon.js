@@ -64,6 +64,9 @@ const Service = GObject.registerClass({
     }
 
     _migrateConfiguration() {
+        if (!Device.Device.validateName(this.settings.get_string('name')))
+            this.settings.set_string('name', GLib.get_host_name().slice(0, 32));
+
         const [certPath, keyPath] = [
             GLib.build_filenamev([Config.CONFIGDIR, 'certificate.pem']),
             GLib.build_filenamev([Config.CONFIGDIR, 'private.pem']),
@@ -73,9 +76,6 @@ const Service = GObject.registerClass({
 
         if (Device.Device.validateId(certificate.common_name))
             return;
-
-        if (!Device.Device.validateName(this.settings.get_string('name')))
-            this.settings.set('name', GLib.get_host_name().slice(0, 32));
 
         // Remove the old certificate, serving as the single source of truth
         // for the device ID
