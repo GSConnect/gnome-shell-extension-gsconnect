@@ -48,7 +48,7 @@ const Service = GObject.registerClass({
 
     _migrateConfiguration() {
         if (!Device.validateName(this.settings.get_string('name')))
-            this.settings.set('name', GLib.get_host_name().slice(0, 32));
+            this.settings.set_string('name', GLib.get_host_name().slice(0, 32));
 
         const [certPath, keyPath] = [
             GLib.build_filenamev([Config.CONFIGDIR, 'certificate.pem']),
