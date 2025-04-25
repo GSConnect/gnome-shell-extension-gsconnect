@@ -560,11 +560,11 @@ const NotificationPlugin = GObject.registerClass({
                 body = packet.body.text;
                 action = {
                     name: 'replySms',
-                    parameter: new GLib.Variant('s', packet.body.title),
+                    parameter: GLib.Variant.new('(ss)', [title, body]),
                 };
 
                 if (icon === null)
-                    icon = new Gio.ThemedIcon({name: 'sms-symbolic'});
+                    icon = new Gio.ThemedIcon({name: 'chat-bubbles-text-symbolic'});
 
             // Special case where 'appName' is the same as 'title'
             } else if (packet.body.appName === packet.body.title) {

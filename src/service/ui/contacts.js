@@ -63,7 +63,7 @@ export function getDisplayNumber(contact, address) {
 const AddressRow = GObject.registerClass({
     GTypeName: 'GSConnectContactsAddressRow',
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/contacts-address-row.ui',
-    Children: ['avatar'],
+    Children: ['avatar', 'type-label'],
 }, class AddressRow extends Adw.ActionRow {
 
     _init(contact, index = 0) {
@@ -93,10 +93,9 @@ const AddressRow = GObject.registerClass({
         }
 
         this.subtitle = GLib.markup_escape_text(this.number.value, -1);
-        /*
+        
         if (this.number.type !== undefined)
             this.type_label.label = getNumberTypeLabel(this.number.type);
-        */
     }
 
     get number() {

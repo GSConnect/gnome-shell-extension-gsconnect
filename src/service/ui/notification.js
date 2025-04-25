@@ -40,7 +40,7 @@ const ReplyDialog = GObject.registerClass({
         ),
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/notification-reply-dialog.ui',
-    Children: ['title-widget', 'infobar', 'notification-title', 'notification-body', 'entry', 'send-button'],
+    Children: ['title-widget', 'infobar', 'notification-title', 'notification-body', 'entry', 'send-text'],
     Signals: {
         'response': {
             param_types: [GObject.TYPE_OBJECT, GObject.TYPE_INT],
@@ -69,7 +69,7 @@ const ReplyDialog = GObject.registerClass({
         
         this.device.bind_property(
             'connected',
-            this.send_button,
+            this.send_text,
             'sensitive',
             GObject.BindingFlags.DEFAULT
         );
@@ -80,7 +80,11 @@ const ReplyDialog = GObject.registerClass({
         );
 
         this._entryChangedId = this.entry.buffer.connect(
-            'changed',
+            'inserted-text',
+            this._onStateChanged.bind(this)
+        );
+        this._entryChangedId = this.entry.buffer.connect(
+            'deleted-text',
             this._onStateChanged.bind(this)
         );
 
@@ -95,7 +99,7 @@ const ReplyDialog = GObject.registerClass({
         return false;
     }
 
-    response(response) {
+    set response(response) {
         if (response === Gtk.ResponseType.OK) {
             // Refuse to send empty or whitespace only messages
             if (!this.entry.buffer.text.trim())
@@ -170,9 +174,9 @@ const ReplyDialog = GObject.registerClass({
 
     _onStateChanged() {
         if (this.device.connected && this.entry.buffer.text.trim())
-            this.send_button.sensitive = true;
+            this.send_text.sensitive = true;
         else
-            this.send_button.sensitive = false;
+            this.send_text.sensitive = false;
     }
 });
 

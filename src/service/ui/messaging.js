@@ -226,8 +226,7 @@ const ConversationMessage = GObject.registerClass({
 
         this.contact = contact;
         this.message = message;
-        this.sender = message.addresses[0].address || 'unknown';
-
+        
         const has_attachments = (message['attachments'] !== undefined);
 
         const empty_placeholder = _('<i>(Empty or unsupported)</i>');
@@ -954,8 +953,13 @@ const ConversationSummary = GObject.registerClass({
         // Update avatar for single-recipient messages
         if (addresses.length === 1) {
             let contact = this.contacts[this._sender];
-            this.avatar.set_text(contact.name);
-            name_label = GLib.markup_escape_text(contact.name, -1);
+            if (contact) {
+                this.avatar.set_text(contact.name);
+                name_label = GLib.markup_escape_text(contact.name, -1);
+            } else {
+                this.avatar.set_text(this._sender);
+                name_label = GLib.markup_escape_text(this._sender, -1);
+            }
         } else {
             name_label = _('Group Message');
             this.avatar.icon_name = 'system-users-symbolic';
@@ -1105,7 +1109,7 @@ export const Window = GObject.registerClass({
         this.contact_chooser.disconnect(this._numberSelectedId);
         this.plugin.disconnect(this._threadsChangedId);
 
-        this.run_dispose();
+        this.destroy();
     }
 
     get plugin() {

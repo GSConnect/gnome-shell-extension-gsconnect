@@ -67,32 +67,24 @@ const Dialog = GObject.registerClass({
         );
 
         this._entryChangedId = this.entry.buffer.connect(
-            'changed',
+            'inserted-text',
             this._onStateChanged.bind(this)
         );
-
-        // Set the message if given
-        if (this.message) {
-            this.message_label.label = URI.linkify(this.message.body);
-            this.message_avatar.visible = true;
-        } else {
-            this.message_avatar.visible = false;
-            this.title_widget.title = _('No conversation selected');
-        }
-
-        // Load the contact list if we weren't supplied with an address
-        if (this.addresses !== undefined && this.addresses.length === 0) {
-            this.contact_chooser = new Contacts.ContactChooser({
-                device: this.device,
-            });
-            this.contact_chooser.show_back_button = false;
-            this.nav_view.push(this.contact_chooser);
-            this._numberSelectedId = this.contact_chooser.connect(
-                'number-selected',
-                this._onNumberSelected.bind(this)
-            );
-        }
-
+        this._entryChangedId = this.entry.buffer.connect(
+            'deleted-text',
+            this._onStateChanged.bind(this)
+        );
+    
+        this.contact_chooser = new Contacts.ContactChooser({
+            device: this.device,
+        });
+        this.contact_chooser.show_back_button = false;
+        this.nav_view.push(this.contact_chooser);
+        this._numberSelectedId = this.contact_chooser.connect(
+            'number-selected',
+            this._onNumberSelected.bind(this)
+        );
+        
         this.restoreGeometry('legacy-messaging-dialog');
     }
 
@@ -118,12 +110,27 @@ const Dialog = GObject.registerClass({
             this.plugin.sendMessage(
                 this.addresses,
                 this.entry.buffer.text,
-                1,
-                truegetSelected
+                1
             );
         }
         this.emit('response', this, response_id);
-        this.close();
+        this.destroy();
+    }
+ 
+    set message(message) {
+        this.message_label.label = URI.linkify(message.body);
+        this.message_avatar.visible = true;
+        
+        const sender = message.title || 'unknown';
+        const contact = this.device.contacts.query({
+            name: sender,
+        });
+        if(contact) {
+            this.addresses = [{ address :contact.numbers[0].value }];  
+        } else {
+            this.title_widget.title = sender;  
+        }
+        this.nav_view.pop();
     }
 
     get addresses() {
@@ -145,8 +152,6 @@ const Dialog = GObject.registerClass({
         this.message_avatar.text = contact.name;
         this.message_avatar.visible = true;
 
-        // Show the message editor
-        this.nav_view.pop();
         this._onStateChanged();
     }
 
@@ -196,14 +201,21 @@ const Dialog = GObject.registerClass({
         this.addresses = Object.keys(contacts).map(address => {
             return {address: address};
         });
+        this.nav_view.pop();
     }
 
     _onStateChanged() {
-        if (this.device.connected &&
-            this.entry.buffer.text.trim())
-            this.send_text.sensitive = true;
-        else
+        if (this.device.connected) {
+            this.entry.sensitive = true;
+            if (this.entry.buffer.text.trim().length > 1) {
+                this.send_text.sensitive = true;
+            } else {
+                this.send_text.sensitive = false;
+            }
+        } else {
+            this.entry.sensitive = false;
             this.send_text.sensitive = false;
+        }
     }
 
     /**

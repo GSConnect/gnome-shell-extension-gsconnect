@@ -40,6 +40,9 @@ SPDX-License-Identifier: GPL-2.0-or-later
                     </child>
                   </object>
                 </child>
+                <style>
+                  <class name="flat"/>
+                </style>
               </object>
             </property>
           </object>
@@ -70,12 +73,13 @@ SPDX-License-Identifier: GPL-2.0-or-later
                         <property name="hexpand">True</property>
                         <property name="activatable">False</property>
                         <property name="selectable">False</property>
+                        <property name="height-request">40</property>
                         <child>
                           <object class="AdwSpinner" id="spinner-anim">
                             <property name="halign">center</property>
                             <property name="valign">center</property>
-                            <property name="width-request">30</property>
-                            <property name="height-request">30</property>
+                            <property name="width-request">20</property>
+                            <property name="height-request">20</property>
                           </object>
                         </child>
                         <style>

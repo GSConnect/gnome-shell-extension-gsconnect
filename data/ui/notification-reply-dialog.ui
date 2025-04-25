@@ -31,60 +31,39 @@ SPDX-License-Identifier: GPL-2.0-or-later
           </object>
         </child>
         <property name="content">
-          <object class="GtkBox">
-            <property name="visible">True</property>
-            <property name="orientation">vertical</property>
+          <object class="AdwClamp">
             <child>
-              <object class="GtkBox" id="message-box">
+              <object class="GtkBox">
                 <property name="visible">True</property>
-                <property name="orientation">horizontal</property>
+                <property name="orientation">vertical</property>
+                <property name="vexpand">False</property>
+                <property name="valign">center</property>
+                <property name="spacing">7</property>
                 <child>
-                  <object class="AdwAvatar" id="message-avatar">
+                  <object class="GtkLabel" id="notification-title">
                     <property name="visible">True</property>
-                    <property name="margin-top">15</property>
-                    <property name="margin-bottom">15</property>
-                    <property name="margin-start">15</property>
+                    <property name="halign">start</property>
+                    <property name="margin-start">10</property>
                     <property name="margin-end">10</property>
-                    <property name="halign">center</property>
-                    <property name="valign">center</property>
-                    <property name="size">40</property>
-                    <property name="show-initials">True</property>
+                    <property name="label" translatable="no">Notification Title</property>
+                    <attributes>
+                      <attribute name="weight" value="bold"/>
+                    </attributes>
                   </object>
                 </child>
                 <child>
-                  <object class="GtkBox">
+                  <object class="GtkLabel" id="notification-body">
                     <property name="visible">True</property>
-                    <property name="orientation">vertical</property>
-                    <property name="vexpand">False</property>
-                    <property name="valign">center</property>
-                    <property name="spacing">7</property>
-                    <child>
-                      <object class="GtkLabel" id="notification-title">
-                        <property name="visible">True</property>
-                        <property name="halign">start</property>
-                        <property name="margin-start">10</property>
-                        <property name="margin-end">10</property>
-                        <property name="label" translatable="no">Notification Title</property>
-                        <attributes>
-                          <attribute name="weight" value="bold"/>
-                        </attributes>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="notification-body">
-                        <property name="visible">True</property>
-                        <property name="margin-start">10</property>
-                        <property name="margin-end">10</property>
-                        <property name="hexpand">True</property>
-                        <property name="halign">start</property>
-                        <property name="use-markup">True</property>
-                        <property name="selectable">True</property>
-                        <property name="wrap">True</property>
-                        <property name="wrap-mode">word-char</property>
-                        <property name="label" translatable="no">Message Body</property>
-                        <signal name="activate-link" handler="_onActivateLink" swapped="no"/>
-                      </object>
-                    </child>
+                    <property name="margin-start">10</property>
+                    <property name="margin-end">10</property>
+                    <property name="hexpand">True</property>
+                    <property name="halign">start</property>
+                    <property name="use-markup">True</property>
+                    <property name="selectable">True</property>
+                    <property name="wrap">True</property>
+                    <property name="wrap-mode">word-char</property>
+                    <property name="label" translatable="no">Message Body</property>
+                    <signal name="activate-link" handler="_onActivateLink" swapped="no"/>
                   </object>
                 </child>
               </object>
@@ -112,41 +91,34 @@ SPDX-License-Identifier: GPL-2.0-or-later
                       </object>
                     </property>
                     <style>
-                      <class name="linked"/>
+                      <class name="flat"/>
                     </style>
                   </object>
                 </child>
                 <child>
-                  <object class="GtkScrolledWindow">
-                    <child>
-                      <object class="GtkTextView" id="entry">
-                        <property name="height-request">32</property>
-                        <property name="valign">end</property>
-                        <property name="visible">True</property>
-                        <property name="hexpand">True</property>
-                        <property name="wrap-mode">word-char</property>
-                        <style>
-                          <class name="inline"/>
-                        </style>
-                      </object>
-                    </child>
+                  <object class="GtkEntry" id="entry">
+                    <property name="height-request">32</property>
+                    <property name="valign">end</property>
+                    <property name="visible">True</property>
+                    <property name="hexpand">True</property>
+                    <style>
+                      <class name="inline"/>
+                    </style>
                   </object>
                 </child>
                 <child>
-                  <object class="GtkButton" id="send-button">
-                    <property name="icon-name">sms-send</property>
+                  <object class="GtkButton" id="send-text">
+                    <property name="icon-name">paper-plane-symbolic</property>
                     <property name="valign">center</property>
                     <property name="margin-start">10</property>
                     <property name="margin-end">10</property>
                     <signal name="clicked" handler="_sendMessage" swapped="no"/>
                     <style>
                       <class name="suggested-action"/>
+                      <class name="circular"/>
                     </style>
                   </object>
                 </child>
-                <style>
-                  <class name="card"/>
-                </style>
               </object>
             </child>
           </object>

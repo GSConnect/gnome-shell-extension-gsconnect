@@ -22,5 +22,18 @@ SPDX-License-Identifier: GPL-2.0-or-later
         <property name="show-initials">True</property>
       </object>
     </child>
+    <child>
+      <object class="GtkBox">
+        <property name="valign">end</property>
+        <property name="margin-bottom">5</property>
+        <child>
+          <object class="GtkLabel" id="type-label">
+            <style>
+              <class name="caption"/>
+            </style>
+          </object>
+        </child>
+      </object>
+    </child>
   </template>
 </interface>

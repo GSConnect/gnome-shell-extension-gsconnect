@@ -80,41 +80,34 @@
                               </object>
                             </property>
                             <style>
-                              <class name="linked"/>
+                              <class name="flat"/>
                             </style>
                           </object>
                         </child>
                         <child>
-                          <object class="GtkScrolledWindow">
-                            <child>
-                              <object class="GtkTextView" id="entry">
-                                <property name="height-request">32</property>
-                                <property name="valign">end</property>
-                                <property name="visible">True</property>
-                                <property name="hexpand">True</property>
-                                <property name="wrap-mode">word-char</property>
-                                <style>
-                                  <class name="inline"/>
-                                </style>
-                              </object>
-                            </child>
+                          <object class="GtkEntry" id="entry">
+                            <property name="height-request">32</property>
+                            <property name="valign">end</property>
+                            <property name="visible">True</property>
+                            <property name="hexpand">True</property>
+                            <style>
+                              <class name="inline"/>
+                            </style>
                           </object>
                         </child>
                         <child>
                           <object class="GtkButton" id="send-text">
-                            <property name="icon-name">sms-send</property>
+                            <property name="icon-name">paper-plane-symbolic</property>
                             <property name="valign">center</property>
                             <property name="margin-start">10</property>
                             <property name="margin-end">10</property>
                             <signal name="clicked" handler="_sendMessage" swapped="no"/>
                             <style>
                               <class name="suggested-action"/>
+                              <class name="circular"/>
                             </style>
                           </object>
                         </child>
-                        <style>
-                          <class name="card"/>
-                        </style>
                       </object>
                     </child>
                   </object>

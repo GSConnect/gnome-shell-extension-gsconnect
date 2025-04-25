@@ -36,7 +36,7 @@ export const Metadata = {
         },
         uriSms: {
             label: _('New SMS (URI)'),
-            icon_name: 'sms-symbolic',
+            icon_name: 'chat-bubbles-text-symbolic',
 
             parameter_type: new GLib.VariantType('s'),
             incoming: [],
@@ -44,15 +44,15 @@ export const Metadata = {
         },
         replySms: {
             label: _('Reply SMS'),
-            icon_name: 'sms-symbolic',
+            icon_name: 'chat-bubbles-text-symbolic',
 
-            parameter_type: new GLib.VariantType('s'),
+            parameter_type: new GLib.VariantType('(ss)'),
             incoming: [],
             outgoing: ['kdeconnect.sms.request'],
         },
         sendMessage: {
             label: _('Send Message'),
-            icon_name: 'sms-send',
+            icon_name: 'paper-plane-symbolic',
 
             parameter_type: new GLib.VariantType('(aa{sv})'),
             incoming: [],
@@ -60,7 +60,7 @@ export const Metadata = {
         },
         sendSms: {
             label: _('Send SMS'),
-            icon_name: 'sms-send',
+            icon_name: 'paper-plane-symbolic',
 
             parameter_type: new GLib.VariantType('(ss)'),
             incoming: [],
@@ -68,7 +68,7 @@ export const Metadata = {
         },
         shareSms: {
             label: _('Share SMS'),
-            icon_name: 'sms-send',
+            icon_name: 'paper-plane-symbolic',
 
             parameter_type: new GLib.VariantType('s'),
             incoming: [],
@@ -159,21 +159,22 @@ const SMSPlugin = GObject.registerClass({
     }
 
     get window() {
-        if (this.settings.get_boolean('legacy-sms')) {
-            return new LegacyMessagingDialog({
-                device: this.device,
-                plugin: this,
-            });
-        }
-
         if (this._window === undefined) {
-            this._window = new Messaging.Window({
-                application: Gio.Application.get_default(),
-                device: this.device,
-                plugin: this,
-            });
+            if (this.settings.get_boolean('legacy-sms')) {
+                this._window = new LegacyMessagingDialog({
+                    application: Gio.Application.get_default(),
+                    device: this.device,
+                    plugin: this,
+                });
+            } else {
+                this._window = new Messaging.Window({
+                    application: Gio.Application.get_default(),
+                    device: this.device,
+                    plugin: this,
+                });
+            }
 
-            this._window.connect('destroy', () => {
+            this._window.connect('unrealize', () => {
                 this._window = undefined;
             });
         }
@@ -332,7 +333,11 @@ const SMSPlugin = GObject.registerClass({
      *
      * @param {string} hint - Could be either a contact name or phone number
      */
-    replySms(hint) {
+    replySms(sender, body) {
+        this.window.message = {
+            title : sender,
+            body : body
+        }
         this.window.present();
         // FIXME: causes problems now that non-numeric addresses are allowed
         // this.window.address = hint.toPhoneNumber();
