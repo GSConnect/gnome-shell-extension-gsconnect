@@ -90,6 +90,42 @@ async function generateSupportLog(time) {
 /**
  * "Connect to..." Dialog
  */
+const SettingsDialog = GObject.registerClass({
+    GTypeName: 'GSConnectSettingsDialog',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/preferences-settings.ui',
+    Children: [
+        'display-mode-toggle',
+    ]
+}, class SettingsDialog extends Adw.PreferencesDialog {
+
+
+    _init(params = {}) {
+        super._init();
+        Object.assign(this, params);
+
+        this.display_mode_toggle.set_active_name(this.display_mode);
+        this.display_mode_toggle.connect('notify::active-name', () => {
+            const name = this.display_mode_toggle.active_name;
+            if (name) {
+                this.display_mode = name;
+            }
+        });
+    }
+
+    get display_mode() {
+        if (this.settings.get_boolean('show-indicators'))
+            return 'panel';
+
+        return 'user-menu';
+    }
+
+    set display_mode(mode) {
+        this.settings.set_boolean('show-indicators', (mode === 'panel'));
+    }
+});
+/**
+ * "Connect to..." Dialog
+ */
 const ConnectDialog = GObject.registerClass({
     GTypeName: 'GSConnectConnectDialog',
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/connect-dialog.ui',
@@ -249,17 +285,6 @@ export const Window = GObject.registerClass({
         this._initService();
     }
 
-    get display_mode() {
-        if (this.settings.get_boolean('show-indicators'))
-            return 'panel';
-
-        return 'user-menu';
-    }
-
-    set display_mode(mode) {
-        this.settings.set_boolean('show-indicators', (mode === 'panel'));
-    }
-
     /*
      *  On dispose function
      */
@@ -321,6 +346,10 @@ export const Window = GObject.registerClass({
         const connectDialog = new Gio.SimpleAction({name: 'connect'});
         connectDialog.connect('activate', this._connectDialog.bind(this));
         this.add_action(connectDialog);
+
+        const settingsDialog = new Gio.SimpleAction({name: 'settings'});
+        settingsDialog.connect('activate', this._settingsDialog.bind(this));
+        this.add_action(settingsDialog);
 
         // "Generate Support Log" GAction
         const generateSupportLog = new Gio.SimpleAction({name: 'support-log'});
@@ -413,6 +442,14 @@ export const Window = GObject.registerClass({
         this.dialog.present(this)
     }
     
+    _settingsDialog() {
+        if (this._settings_dialog == null) {
+            this._settings_dialog = new SettingsDialog({ 
+                settings: this.settings,
+            });
+        }
+        this._settings_dialog.present(this);
+    }
 
     /*
      * "Generate Support Log" GAction

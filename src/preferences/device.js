@@ -348,10 +348,12 @@ export const DeviceNavigationPage = GObject.registerClass({
         this.actions.add_action(settings.create_action('share-sinks'));
 
         settings = this.pluginSettings('telephony');
+        
         const ringing_action = settings.create_action('ringing-volume');
         this.actions.add_action(ringing_action);
         this._setupToggleGroup(this.ringing_volume_toogle, ringing_action)
         this.actions.add_action(settings.create_action('ringing-pause'));
+
         const talking_action = settings.create_action('talking-volume');
         this.actions.add_action(talking_action);
         this._setupToggleGroup(this.talking_volume_toogle, talking_action) 

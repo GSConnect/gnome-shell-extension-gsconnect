@@ -263,28 +263,9 @@ SPDX-License-Identifier: GPL-2.0-or-later
       </item>
     </section>
     <section>
-      <attribute name="label" translatable="yes">Display Mode</attribute>
       <item>
-        <attribute name="label" translatable="yes">Panel</attribute>
-        <attribute name="action">win.display-mode</attribute>
-        <attribute name="target">panel</attribute>
-      </item>
-      <item>
-        <attribute name="label" translatable="yes">User Menu</attribute>
-        <attribute name="action">win.display-mode</attribute>
-        <attribute name="target">user-menu</attribute>
-      </item>
-    </section>
-    <section>
-      <item>
-        <attribute name="label" translatable="yes">Active when screen is locked</attribute>
-        <attribute name="action">win.keep-alive-when-locked</attribute>
-      </item>
-    </section>
-    <section>
-      <item>
-        <attribute name="label" translatable="yes">Generate Support Log…</attribute>
-        <attribute name="action">win.support-log</attribute>
+        <attribute name="label" translatable="yes">Settings</attribute>
+        <attribute name="action">win.settings</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">Help</attribute>
@@ -296,5 +277,4 @@ SPDX-License-Identifier: GPL-2.0-or-later
       </item>
     </section>
   </menu>
-  
 </interface>

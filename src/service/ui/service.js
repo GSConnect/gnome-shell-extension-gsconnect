@@ -57,11 +57,12 @@ export const DeviceChooser = GObject.registerClass({
 
     
     _init(params = {}) {
-        super._init();
+        super._init(params);
         Object.assign(this, params);
         this.title_widget.title = this.title;
 
         // Device List
+        this._internal_device_list = [];
         this.device_list.set_sort_func(this._sortDevices);
 
         this._devicesChangedId = this.application.settings.connect(
@@ -136,10 +137,11 @@ export const DeviceChooser = GObject.registerClass({
             devices[id] = device;
 
         // Prune device rows
-        this.device_list.foreach(row => {
-            if (!devices.hasOwnProperty(row.name))
+        this._internal_device_list.forEach(row => {
+            if (!devices.hasOwnProperty(row.name)) {
+                this.device_list.remove(row);
                 row.destroy();
-            else
+            } else
                 delete devices[row.name];
         });
 
@@ -166,6 +168,7 @@ export const DeviceChooser = GObject.registerClass({
                 Gio.SettingsBindFlags.DEFAULT
             );
             row.add_prefix(icon);
+            this._internal_device_list.push(row);
             this.device_list.append(row);
         }
 

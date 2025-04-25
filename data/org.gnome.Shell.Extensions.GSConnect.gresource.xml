@@ -27,6 +27,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <file compressed="true" preprocess="xml-stripblanks">ui/preferences-device-page.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/preferences-command-editor.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/preferences-section-row.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/preferences-settings.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/preferences-shortcut-editor.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/preferences-window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/service-device-chooser.ui</file>
@@ -46,10 +47,10 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <file compressed="true">images/firefox-badge.png</file>
   </gresource>
   <gresource prefix="/org/gnome/Shell/Extensions/GSConnect/icons/scalable/apps">
-    <file compressed="true" preprocess="xml-stripblanks">icons/org.gnome.Shell.Extensions.GSConnect.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="org.gnome.Shell.Extensions.GSConnect.svg">icons/org.gnome.Shell.Extensions.GSConnect.svg</file>
   </gresource>
   <gresource prefix="/org/gnome/Shell/Extensions/GSConnect/icons/symbolic/apps">
-      <file compressed="true" preprocess="xml-stripblanks">icons/org.gnome.Shell.Extensions.GSConnect-symbolic.svg</file>
+      <file compressed="true" preprocess="xml-stripblanks" alias="org.gnome.Shell.Extensions.GSConnect-symbolic.svg">icons/org.gnome.Shell.Extensions.GSConnect-symbolic.svg</file>
   </gresource>
   <gresource prefix="/org/gnome/Shell/Extensions/GSConnect/icons/scalable/actions">
     <file compressed="true" preprocess="xml-stripblanks" alias="phonelink-symbolic.svg">icons/phonelink-symbolic.svg</file>
