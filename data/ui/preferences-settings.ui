@@ -11,14 +11,17 @@ SPDX-License-Identifier: GPL-2.0-or-later
   <requires lib="Adw" version="1.0"/>
 
   <template class="GSConnectSettingsDialog" parent="AdwPreferencesDialog">
+    <property name="title" translatable="yes">Settings</property>
     <child>
       <object class="AdwPreferencesPage">
         <child>
           <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">This Device</property>
             <child>
-              <object class="AdwEntryRow">
+              <object class="AdwEntryRow" id="rename-entry">
                 <property name="title" translatable="yes">Hostname</property>
+                <property name="show-apply-button">True</property>
+                <signal name="apply" handler="_onSetServiceName" swapped="no"/>
               </object>
             </child>
             <child>

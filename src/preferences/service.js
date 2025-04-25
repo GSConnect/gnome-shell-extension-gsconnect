@@ -94,7 +94,7 @@ const SettingsDialog = GObject.registerClass({
     GTypeName: 'GSConnectSettingsDialog',
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/preferences-settings.ui',
     Children: [
-        'display-mode-toggle',
+        'display-mode-toggle', 'rename-entry',
     ]
 }, class SettingsDialog extends Adw.PreferencesDialog {
 
@@ -103,6 +103,7 @@ const SettingsDialog = GObject.registerClass({
         super._init();
         Object.assign(this, params);
 
+        this.rename_entry.text = this.settings.get_string('name');
         this.display_mode_toggle.set_active_name(this.display_mode);
         this.display_mode_toggle.connect('notify::active-name', () => {
             const name = this.display_mode_toggle.active_name;
@@ -121,6 +122,34 @@ const SettingsDialog = GObject.registerClass({
 
     set display_mode(mode) {
         this.settings.set_boolean('show-indicators', (mode === 'panel'));
+    }
+
+    _onSetServiceName(widget) {
+        if (this._validateName(this.rename_entry.text)) {
+            this.settings.set_string('name', this.rename_entry.text);
+        }
+    }
+
+    _validateName(name) {
+        // None of the forbidden characters and at least one non-whitespace
+        if (name.trim() && /^[^"',;:.!?()[\]<>]{1,32}$/.test(name))
+            return true;
+
+        const dialog = new Gtk.MessageDialog({
+            text: _('Invalid Device Name'),
+            // TRANSLATOR: %s is a list of forbidden characters
+            secondary_text: _('Device name must not contain any of %s ' +
+                              'and have a length of 1-32 characters')
+                .format('<b><tt>^"\',;:.!?()[]&lt;&gt;</tt></b>'),
+            secondary_use_markup: true,
+            buttons: Gtk.ButtonsType.OK,
+            modal: true,
+            transient_for: this,
+        });
+        dialog.connect('response', (dialog) => dialog.destroy());
+        dialog.show_all();
+
+        return false;
     }
 });
 /**
