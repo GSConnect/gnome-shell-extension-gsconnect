@@ -28,18 +28,13 @@ const _MODIFIERS = [
     Gdk.KEY_Super_R,
 ];
 
-/**
- * Response enum for ShortcutChooserDialog
- */
-export const ResponseType = {
-    CANCEL: Gtk.ResponseType.CANCEL,
-    SET: Gtk.ResponseType.APPLY,
-    UNSET: 2,
-};
-
 
 /**
- * A simplified version of the shortcut editor from GNOME Control Center
+ * A simplified version of the shortcut editor from GNOME Control Center.
+ * This dialog allows the user to set a keyboard shortcut and handles key press events.
+ *
+ * @class ShortcutChooserDialog
+ * @extends {Adw.Dialog}
  */
 export const ShortcutChooserDialog = GObject.registerClass({
     GTypeName: 'GSConnectPreferencesShortcutEditor',
@@ -89,10 +84,29 @@ export const ShortcutChooserDialog = GObject.registerClass({
         this.add_controller(keyController);
 
         this.cancel_button.connect('clicked', () => {
-            this.emit('response', this, Gtk.ResponseType.CANCEL);
+            this.response = Gtk.ResponseType.CANCEL;
         });
     }
 
+    /**
+     * Sets the response and emits the 'response' signal, then closes the dialog.
+     *
+     * @type {number} response - The response type (e.g., Gtk.ResponseType.OK).
+     */
+    set response(response) {
+        this.emit('response', this, response);
+        this.close();
+    }
+
+    /**
+     * Gets or sets the accelerator for the shortcut.
+     *
+     * The `accelerator` represents the keyboard shortcut assigned to the current action. The getter retrieves the
+     * current accelerator value, while the setter updates the accelerator and applies it to the corresponding 
+     * shortcut label in the UI.
+     *
+     * @type {string}
+     */
     get accelerator() {
         return this.shortcut_label.accelerator;
     }
@@ -100,7 +114,14 @@ export const ShortcutChooserDialog = GObject.registerClass({
     set accelerator(value) {
         this.shortcut_label.accelerator = value;
     }
-
+    /**
+     * Gets or sets the summary description for the shortcut.
+     *
+     * The `summary` provides a textual description of the shortcut's function. The getter retrieves the current
+     * summary, while the setter updates the summary label in the UI to reflect the new description.
+     *
+     * @type {string}
+     */
     get summary() {
         return this.summary_label.label;
     }
@@ -109,6 +130,22 @@ export const ShortcutChooserDialog = GObject.registerClass({
         this.summary_label.label = value;
     }
 
+    /**
+     * Handles key press events and processes the key combination to set an accelerator.
+     * 
+     * This function is triggered when a key press event occurs. It converts the key value to a lowercase 
+     * representation, processes the key combination, and checks for conflicts with existing accelerators. 
+     * It also handles special cases like the Escape key for canceling, Backspace for unsetting, 
+     * and modifiers such as Shift for capitalization. Additionally, it ensures that common key combinations 
+     * like Alt+Print are handled correctly and provides feedback if a key is already in use.
+     *
+     * @param {object} controller - The controller instance managing the UI or actions.
+     * @param {number} keyval - The key value representing the pressed key.
+     * @param {number} keycode - The hardware key code for the pressed key.
+     * @param {number} state - The state of the key modifiers (e.g., Shift, Ctrl, Alt).
+     * 
+     * @returns {number} `Gdk.EVENT_STOP` to indicate the event is processed and should not propagate further.
+     */
     _onKeyPressed(controller, keyval, keycode, state) {
     
         // Convertiamo il valore del tasto in minuscolo
@@ -139,13 +176,13 @@ export const ShortcutChooserDialog = GObject.registerClass({
     
         // Esc cancella l'editing
         if (realMask === 0 && keyvalLower === Gdk.KEY_Escape) {
-            this.emit('response', this, Gtk.ResponseType.CANCEL);
+            this.response = Gtk.ResponseType.CANCEL;
             return Gdk.EVENT_STOP;
         }
     
         // Backspace disabilita il collegamento corrente
         if (realMask === 0 && keyvalLower === Gdk.KEY_BackSpace) {
-            this.emit('response', this, Gtk.ResponseType.UNSET);
+            this.response = Gtk.ResponseType.REJECT;
             return Gdk.EVENT_STOP;
         }
     
@@ -169,7 +206,17 @@ export const ShortcutChooserDialog = GObject.registerClass({
     
         return Gdk.EVENT_STOP;
     }
-    
+
+    /**
+     * Checks the availability of the current accelerator and updates the UI accordingly.
+     *
+     * This function verifies if the currently set accelerator is available using the `checkAccelerator` function. 
+     * If the accelerator is available, the "set" button is displayed, and the conflict label is hidden. 
+     * If the accelerator is not available, the conflict label is shown to inform the user. In case of any error
+     * during the check process, the function logs the error and emits a cancel response.
+     *
+     * @returns {Promise<void>} A promise that resolves once the availability check is completed.
+     */
     async _check() {
         try {
             const available = await checkAccelerator(this.accelerator);
@@ -177,19 +224,27 @@ export const ShortcutChooserDialog = GObject.registerClass({
             this.conflict_label.visible = !available;
         } catch (e) {
             logError(e);
-            this.emit('response', this, ResponseType.CANCEL);
+            this.response = Gtk.ResponseType.CANCEL;
         }
     }
 });
 
 
 /**
- * Check the availability of an accelerator using GNOME Shell's DBus interface.
- *
- * @param {string} accelerator - An accelerator
- * @param {number} [modeFlags] - Mode Flags
- * @param {number} [grabFlags] - Grab Flags
- * @returns {boolean} %true if available, %false on error or unavailable
+ * Checks the availability of a specified keyboard accelerator using GNOME Shell's DBus interface.
+ * 
+ * This function attempts to grab the specified accelerator (keybinding) and checks whether it is 
+ * available for use in the GNOME Shell environment. If successful, it ungrabs the accelerator 
+ * immediately after checking its availability. This is typically used to verify if a keybinding 
+ * can be used or if it is already in use by another action.
+ * 
+ * @param {string} accelerator - The accelerator (keybinding) to check, as a string 
+ *                                (e.g., 'Ctrl+Alt+T').
+ * @param {number} [modeFlags=0] - Mode flags that modify how the accelerator is handled.
+ * @param {number} [grabFlags=0] - Grab flags that control the behavior of the grab operation.
+ * 
+ * @returns {boolean} Returns `true` if the accelerator is available, and `false` if 
+ *                   it is either unavailable or an error occurs.
  */
 export async function checkAccelerator(accelerator, modeFlags = 0, grabFlags = 0) {
     try {
@@ -252,11 +307,23 @@ export async function checkAccelerator(accelerator, modeFlags = 0, grabFlags = 0
 
 
 /**
- * Show a dialog to get a keyboard shortcut from a user.
- *
- * @param {string} summary - A description of the keybinding's function
- * @param {string} accelerator - An accelerator as taken by Gtk.ShortcutLabel
- * @returns {string} An accelerator or %null if it should be unset.
+ * Opens a dialog to allow the user to set or unset a keyboard shortcut.
+ * 
+ * This function presents a dialog where the user can define a keyboard shortcut 
+ * for a specific action, or choose to unset the existing one. The dialog will 
+ * display a description of the keybinding's function, and the user can either 
+ * assign a new shortcut, leave it unchanged, or reset it to null.
+ * 
+ * @param {string} summary - A description of the function for which the shortcut 
+ *                            is being set (e.g., "Open file", "Save document").
+ * @param {string|null} accelerator - The current shortcut (if any) to be shown 
+ *                                     in the dialog, or `null` if no shortcut 
+ *                                     is set.
+ * 
+ * @returns {Promise<string|null>} A promise that resolves to the new keyboard 
+ *                                shortcut (as a string) or `null` if the shortcut 
+ *                                is unset. If the dialog is canceled, it 
+ *                                resolves to the initial value of `accelerator`.
  */
 export async function getAccelerator(summary, accelerator = null) {
     try {
@@ -268,19 +335,18 @@ export async function getAccelerator(summary, accelerator = null) {
 
             dialog.connect('response', (dialog, response) => {
                 switch (response) {
-                    case ResponseType.SET:
+                    case Gtk.ResponseType.OK:
                         accelerator = dialog.accelerator;
                         break;
 
-                    case ResponseType.UNSET:
+                    case Gtk.ResponseType.REJECT:
                         accelerator = null;
                         break;
 
-                    case ResponseType.CANCEL:
+                    case Gtk.ResponseType.CANCEL:
                         // leave the accelerator as passed in
                         break;
                 }
-                dialog.close();
                 resolve(accelerator);
             });
 

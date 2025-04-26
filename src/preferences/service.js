@@ -29,9 +29,15 @@ OS:        ${GLib.get_os_info('PRETTY_NAME')}
 
 
 /**
- * Generate a support log.
+ * Generate a support log by fetching system journal logs since a specified start time.
  *
- * @param {string} time - Start time as a string (24-hour notation)
+ * This function creates a temporary log file and writes a predefined log header to it.
+ * It then executes `journalctl` to retrieve logs from the system journal since the specified start time
+ * and appends the logs to the temporary file. Finally, it opens the generated log file for review.
+ *
+ * @param {string} time - Start time as a string (24-hour notation, e.g., "2025-04-26 14:00:00").
+ * 
+ * @returns {Promise<void>} Resolves when the log generation is complete.
  */
 async function generateSupportLog(time) {
     try {
@@ -88,7 +94,15 @@ async function generateSupportLog(time) {
 }
 
 /**
- * "Connect to..." Dialog
+ * Settings dialog for GSConnect, allowing users to configure device settings.
+ * 
+ * This dialog enables the user to modify the device's display mode (either as a panel or a user menu) and rename the device. 
+ * It validates the device name input and ensures it does not contain any forbidden characters or exceed the character limit.
+ * The dialog also reflects the current settings, and updates the device's settings based on user interactions.
+ * 
+ * The dialog's interface is defined using a UI template, and it includes the following controls:
+ * - `rename-entry`: An entry field for the device's name.
+ * - `display-mode-toggle`: A toggle to select between panel or user-menu display modes.
  */
 const SettingsDialog = GObject.registerClass({
     GTypeName: 'GSConnectSettingsDialog',
@@ -113,6 +127,12 @@ const SettingsDialog = GObject.registerClass({
         });
     }
 
+    /**
+     * Gets or sets the display mode for the settings.
+     * If 'show-indicators' is enabled, the mode will be 'panel'; otherwise, 'user-menu'.
+     *
+     * @type {string} - The display mode, either 'panel' or 'user-menu'.
+     */
     get display_mode() {
         if (this.settings.get_boolean('show-indicators'))
             return 'panel';
@@ -124,12 +144,30 @@ const SettingsDialog = GObject.registerClass({
         this.settings.set_boolean('show-indicators', (mode === 'panel'));
     }
 
+    /**
+     * Handles setting the service name when the user confirms their input.
+     * Validates the input name and updates the service name in settings if valid.
+     *
+     * @param {Gtk.Widget} widget - The widget that triggered the event (e.g., a button or entry).
+     */
     _onSetServiceName(widget) {
         if (this._validateName(this.rename_entry.text)) {
             this.settings.set_string('name', this.rename_entry.text);
         }
     }
 
+    /**
+     * Validates the device name to ensure it meets specific criteria:
+     * - The name must not contain any forbidden characters.
+     * - The name must not be empty (it must have at least one non-whitespace character).
+     * - The name must be between 1 and 32 characters in length.
+     * 
+     * If the validation fails, an error message is shown to the user, specifying the invalid characters
+     * and the acceptable length constraints.
+     * 
+     * @param {string} name - The device name to validate.
+     * @returns {boolean} True if the name is valid, false otherwise.
+     */
     _validateName(name) {
         // None of the forbidden characters and at least one non-whitespace
         if (name.trim() && /^[^"',;:.!?()[\]<>]{1,32}$/.test(name))
@@ -152,6 +190,7 @@ const SettingsDialog = GObject.registerClass({
         return false;
     }
 });
+
 /**
  * "Connect to..." Dialog
  */
@@ -161,19 +200,28 @@ const ConnectDialog = GObject.registerClass({
     Children: [
         'lan_ip', 'lan_port',
     ],
+    Signals: {
+        'response': {
+            param_types: [GObject.TYPE_OBJECT, GObject.TYPE_INT],
+        },
+    },
 }, class ConnectDialog extends Adw.Dialog {
 
     _init() {
         super._init();
-
         this.set_title = _('Connect to...')
+        this.connect("destroy", () => {
+            this.response = Gtk.ResponseType.CANCEL;
+        })
     }
 
-    _onResponse(dialog, response_id) {
-        if (response_id === Gtk.ResponseType.OK) {
-            try {
-                let address;
+    _onConnectButton() {
+        this.response = Gtk.ResponseType.OK;
+    }
 
+    set response(response) {
+        if (response === Gtk.ResponseType.OK) {
+            try {
                 // Retrieve host and port from the input fields
                 const host = this.lan_ip.text.trim();
                 const port = this.lan_port.value;
@@ -184,7 +232,7 @@ const ConnectDialog = GObject.registerClass({
                     return;
                 }
 
-                address = GLib.Variant.new_string(`lan://${host}:${port}`);
+                const address = GLib.Variant.new_string(`lan://${host}:${port}`);
                 this.application.activate_action('connect', address);
             } catch (e) {
                 logError(e);
@@ -193,6 +241,7 @@ const ConnectDialog = GObject.registerClass({
         }
 
         // Close the dialog
+        this.emit('response', response)
         this.close();
     }
 
@@ -210,11 +259,13 @@ const ConnectDialog = GObject.registerClass({
     }
 
     _showErrorMessage(message) {
+        const win = Gtk.Application.get_default().get_active_window();
+        
         // Create a transient error dialog
         const errorDialog = new Adw.MessageDialog({
-            transient_for: this,
-            modal: true,
+            heading: _('Oops! An error occurred…'),
             body: message,
+            transient_for: win,
         });
 
         // Add a close button to dismiss the dialog
@@ -224,7 +275,7 @@ const ConnectDialog = GObject.registerClass({
         // Handle the response to close the dialog
         errorDialog.connect('response', () => errorDialog.close());
 
-        errorDialog.show();
+        errorDialog.present();
     }
 });
 

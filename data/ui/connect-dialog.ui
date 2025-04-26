@@ -83,6 +83,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                             <property name="visible">True</property>
                             <property name="title" translatable="yes">Connect</property>
                             <property name="start-icon-name">network-transmit-receive-symbolic</property>
+                            <signal name="activated" handler="_onConnectButton" swapped="no"/>
                             <style>
                               <class name="suggested-action"/>
                             </style>

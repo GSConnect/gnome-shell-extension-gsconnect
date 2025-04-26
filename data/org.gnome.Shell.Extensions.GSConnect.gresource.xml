@@ -46,6 +46,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <file compressed="true">images/chrome-badge.png</file>
     <file compressed="true">images/firefox-badge.png</file>
   </gresource>
+  <!-- Icon Theme -->
   <gresource prefix="/org/gnome/Shell/Extensions/GSConnect/icons/scalable/apps">
     <file compressed="true" preprocess="xml-stripblanks" alias="org.gnome.Shell.Extensions.GSConnect.svg">icons/org.gnome.Shell.Extensions.GSConnect.svg</file>
   </gresource>
