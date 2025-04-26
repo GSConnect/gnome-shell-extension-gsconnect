@@ -38,6 +38,7 @@
                 <child type="top">
                   <object class="AdwBanner" id="infobar">
                     <property name="title" translatable="yes">Device Disconnected</property>
+                    <property name="revealed">False</property>
                   </object>
                 </child>
                 <property name="content">

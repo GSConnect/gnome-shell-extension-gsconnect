@@ -207,7 +207,6 @@ function setAvatarVisible(row, visible) {
 }
 
 function formatPhoneNumber(phone) {
-    phone = phone.replace(/^\+39/, '');
     phone = phone.replace(/[-\s]/g, '');
     return phone;
   }
@@ -1110,6 +1109,13 @@ export const Window = GObject.registerClass({
         this.plugin.disconnect(this._threadsChangedId);
 
         this.destroy();
+    }
+
+    set message(message) {
+        this.internal_thread_list.forEach(row => {
+            if(row.title == message.title);         
+                this.thread_list.select_row(row);
+        });
     }
 
     get plugin() {

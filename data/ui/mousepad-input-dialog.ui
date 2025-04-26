@@ -38,7 +38,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
               <object class="AdwBanner" id="infobar">
                 <property name="revealed">True</property>
                 <property name="button-label" translatable="yes">Help</property>
-                <property name="revealed">False</property>
+                <property name="revealed">True</property>
               </object>
             </child>
             <property name="content">
