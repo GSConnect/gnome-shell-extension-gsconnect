@@ -40,7 +40,11 @@ SPDX-License-Identifier: GPL-2.0-or-later
                           <object class="GtkButton">
                             <property name="visible">True</property>
                             <property name="icon-name">list-add-symbolic</property>
+                            <property name="has-tooltip">True</property>
                             <property name="tooltip-text" translatable="yes">New Conversation</property>
+                            <accessibility>
+                              <property name="label" translatable="yes">New Conversation</property>
+                            </accessibility>
                             <signal name="clicked" handler="_onNewConversation" swapped="no"/>
                           </object>
                         </child>

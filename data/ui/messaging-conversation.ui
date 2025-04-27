@@ -19,8 +19,12 @@ SPDX-License-Identifier: GPL-2.0-or-later
           <object class="AdwHeaderBar">
             <property name="visible">True</property>
             <property name="title-widget">
-              <!-- TODO: Create an interface that shows contacts involved in the conversation-->
               <object class="GtkButton" id ="partecipants-button">
+                <property name="has-tooltip">True</property>
+                <property name="tooltip-text" translatable="yes">Show partecipants</property>
+                <accessibility>
+                  <property name="label" translatable="yes">Show partecipants</property>
+                </accessibility>
                 <child>
                   <object class="GtkBox">
                     <property name="visible">True</property>
@@ -144,6 +148,12 @@ SPDX-License-Identifier: GPL-2.0-or-later
                     <property name="placeholder-text" translatable="yes">Write a message…</property>
                     <signal name="activate" handler="_onSendMessage" swapped="no"/>
                     <signal name="changed" handler="_onEntryChanged" swapped="no"/>
+                    <property name="has-tooltip">True</property>
+                    <property name="tooltip-text">Type a message and press Enter to send</property>
+                    <accessibility>
+                      <property name="label" translatable="yes">Message Entry</property>
+                      <property name="description" translatable="yes"> Type a message and press Enter to send </property>
+                    </accessibility>
                   </object>
                 </child>
                 <child>
@@ -151,6 +161,11 @@ SPDX-License-Identifier: GPL-2.0-or-later
                     <property name="icon-name">paper-plane-symbolic</property>
                     <property name="valign">center</property>
                     <signal name="clicked" handler="_onSendMessage" swapped="no"/>
+                    <property name="has-tooltip">True</property>
+                    <property name="tooltip-text" translatable="yes">Send</property>
+                    <accessibility>
+                      <property name="label" translatable="yes">Send</property>
+                    </accessibility>
                     <style>
                       <class name="suggested-action"/>
                       <class name="circular"/>

@@ -28,6 +28,11 @@ SPDX-License-Identifier: GPL-2.0-or-later
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Cancel</property>
                 <signal name="clicked" handler="_onCancelClicked" swapped="no"/>
+                <property name="has-tooltip">True</property>
+                <property name="tooltip-text" translatable="yes">Cancel</property>
+                <accessibility>
+                  <property name="label" translatable="yes">Cancel</property>
+                </accessibility>
                 <style>
                   <class name="destructive-action"/>
                 </style>
@@ -38,6 +43,14 @@ SPDX-License-Identifier: GPL-2.0-or-later
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Select</property>
                 <property name="sensitive">False</property>
+                <property name="has-tooltip">True</property>
+                <property name="tooltip-text" translatable="yes">Select</property>
+                <accessibility>
+                  <property name="label" translatable="yes">Select</property>
+                </accessibility>
+                <style>
+                  <class name="suggested-action"/>
+                </style>
                 <signal name="clicked" handler="_onSelectClicked" swapped="no"/>
                 <style>
                   <class name="suggested-action"/>

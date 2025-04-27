@@ -196,8 +196,13 @@ msgstr "Touchpad.\n"
 "Sinistra, centrale, tasto destro e rotelle della ruota."
 
 #: data/ui/preferences-command-editor.ui:14
+#: data/ui/preferences-command-row.ui:21
 msgid "Edit Command"
-msgstr "Comando Modifica"
+msgstr "Modifica Comando"
+
+#: data/ui/preferences-command-row.ui:33
+msgid "Delete Command"
+msgstr "Elimina Comando"
 
 #: data/ui/preferences-command-editor.ui:28
 msgid "Save"
@@ -501,6 +506,10 @@ msgstr "Menu Servizio"
 #: data/ui/preferences-window.ui:189
 msgid "Device Menu"
 msgstr "Menu Dispositivo"
+
+#: data/ui/preferences-window.ui:189
+msgid "Main Menu"
+msgstr "Menu Principale"
 
 #: data/ui/preferences-window.ui:203 data/ui/preferences-window.ui:218
 msgid "Edit Device Name"

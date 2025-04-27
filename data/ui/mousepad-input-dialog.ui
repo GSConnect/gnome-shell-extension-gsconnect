@@ -76,6 +76,11 @@ SPDX-License-Identifier: GPL-2.0-or-later
                             <property name="hexpand">true</property>
                             <property name="margin-end">2</property>
                             <property name="icon-name">mouse-left-button-symbolic</property>
+                            <property name="has-tooltip">True</property>
+                            <property name="tooltip-text" translatable="yes">Mouse left button</property>
+                            <accessibility>
+                              <property name="label" translatable="yes">Mouse left button</property>
+                            </accessibility>
                             <signal name="clicked" handler="_onMouseLeftButtonClicked" swapped="no"/>
                           </object>
                         </child>
@@ -85,6 +90,11 @@ SPDX-License-Identifier: GPL-2.0-or-later
                             <property name="margin-start">2</property>
                             <property name="margin-end">2</property>
                             <property name="icon-name">input-mouse-symbolic</property>
+                            <property name="has-tooltip">True</property>
+                            <property name="tooltip-text" translatable="yes">Mouse middle button</property>
+                            <accessibility>
+                              <property name="label" translatable="yes">Mouse middle button</property>
+                            </accessibility>
                             <signal name="clicked" handler="_onMouseMiddleButtonClicked" swapped="no"/>
                           </object>
                         </child>
@@ -93,6 +103,11 @@ SPDX-License-Identifier: GPL-2.0-or-later
                             <property name="hexpand">true</property>
                             <property name="margin-start">2</property>
                             <property name="icon-name">mouse-right-button-symbolic</property>
+                            <property name="has-tooltip">True</property>
+                            <property name="tooltip-text" translatable="yes">Mouse right button</property>
+                            <accessibility>
+                              <property name="label" translatable="yes">Mouse right button</property>
+                            </accessibility>
                             <signal name="clicked" handler="_onMouseRightButtonClicked" swapped="no"/>
                           </object>
                         </child>

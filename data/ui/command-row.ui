@@ -17,6 +17,11 @@ SPDX-License-Identifier: GPL-2.0-or-later
         <property name="visible">True</property>
         <property name="valign">center</property>
         <property name="icon-name">document-edit-symbolic</property>
+        <property name="has-tooltip">True</property>
+        <property name="tooltip-text" translatable="yes">Edit Command</property>
+        <accessibility>
+          <property name="label" translatable="yes">Edit Command</property>
+        </accessibility>
       </object>
     </child>
     <child>
@@ -24,6 +29,11 @@ SPDX-License-Identifier: GPL-2.0-or-later
         <property name="visible">True</property>
         <property name="valign">center</property>
         <property name="icon-name">user-trash-symbolic</property>
+        <property name="has-tooltip">True</property>
+        <property name="tooltip-text" translatable="yes">Delete Command</property>
+        <accessibility>
+          <property name="label" translatable="yes">Delete Command</property>
+        </accessibility>
         <style>
           <class name="destructive-action"/>
         </style>

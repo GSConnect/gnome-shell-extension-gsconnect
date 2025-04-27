@@ -29,6 +29,11 @@ SPDX-License-Identifier: GPL-2.0-or-later
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Cancel</property>
                 <signal name="clicked" handler="_onClicked" swapped="no"/>
+                <property name="has-tooltip">True</property>
+                <property name="tooltip-text" translatable="yes">Cancel</property>
+                <accessibility>
+                  <property name="label" translatable="yes">Cancel</property>
+                </accessibility>
               </object>
               <style>
                 <class name="destructive-action"/>
@@ -39,6 +44,11 @@ SPDX-License-Identifier: GPL-2.0-or-later
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Report</property>
                 <signal name="clicked" handler="_onClicked" swapped="no"/>
+                <property name="has-tooltip">True</property>
+                <property name="tooltip-text" translatable="yes">Report</property>
+                <accessibility>
+                  <property name="label" translatable="yes">Report</property>
+                </accessibility>
                 <style>
                   <class name="suggested-action"/>
                 </style>

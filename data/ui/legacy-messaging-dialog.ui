@@ -87,6 +87,11 @@ SPDX-License-Identifier: GPL-2.0-or-later
                                 <signal name="emoji-picked" handler="_onEmojiPicked"/>
                               </object>
                             </property>
+                            <property name="has-tooltip">True</property>
+                            <property name="tooltip-text" translatable="yes">Emoji</property>
+                            <accessibility>
+                              <property name="label" translatable="yes">>Emoji</property>
+                            </accessibility>
                             <style>
                               <class name="flat"/>
                             </style>
@@ -98,6 +103,13 @@ SPDX-License-Identifier: GPL-2.0-or-later
                             <property name="valign">end</property>
                             <property name="visible">True</property>
                             <property name="hexpand">True</property>
+                            <property name="has-tooltip">True</property>
+                            <property name="tooltip-text">Type a message and press Enter to send</property>
+                            <signal name="activate" handler="_sendMessage" swapped="no"/>
+                            <accessibility>
+                              <property name="label" translatable="yes">Message Entry</property>
+                              <property name="description" translatable="yes"> Type a message and press Enter to send </property>
+                            </accessibility>
                             <style>
                               <class name="inline"/>
                             </style>
@@ -110,6 +122,11 @@ SPDX-License-Identifier: GPL-2.0-or-later
                             <property name="margin-start">10</property>
                             <property name="margin-end">10</property>
                             <signal name="clicked" handler="_sendMessage" swapped="no"/>
+                            <property name="has-tooltip">True</property>
+                            <property name="tooltip-text" translatable="yes">Send</property>
+                            <accessibility>
+                              <property name="label" translatable="yes">Send</property>
+                            </accessibility>
                             <style>
                               <class name="suggested-action"/>
                               <class name="circular"/>

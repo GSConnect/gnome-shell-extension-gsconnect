@@ -21,6 +21,11 @@ SPDX-License-Identifier: GPL-2.0-or-later
               <object class="GtkButton" id="cancel-button">
                 <property name="label" translatable="yes">Cancel</property>
                 <property name="visible">False</property>
+                <property name="has-tooltip">True</property>
+                <property name="tooltip-text" translatable="yes">Cancel</property>
+                <accessibility>
+                  <property name="label" translatable="yes">Cancel</property>
+                </accessibility>
                 <style>
                   <class name="destructive-action"/>
                 </style>
@@ -30,6 +35,11 @@ SPDX-License-Identifier: GPL-2.0-or-later
               <object class="GtkButton" id="set-button">
                 <property name="label" translatable="yes">Set</property>
                 <property name="visible">False</property>
+                <property name="has-tooltip">True</property>
+                <property name="tooltip-text" translatable="yes">Set</property>
+                <accessibility>
+                  <property name="label" translatable="yes">Set</property>
+                </accessibility>
                 <style>
                   <class name="suggested-action"/>
                 </style>
