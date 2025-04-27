@@ -7,10 +7,10 @@
 // -*- mode: js; -*-
 
 import Gdk from 'gi://Gdk?version=4.0';
-import 'gi://GdkPixbuf';
-import Gio from 'gi://Gio';
-import GLib from 'gi://GLib';
-import GObject from 'gi://GObject';
+import 'gi://GdkPixbuf?version=2.0';
+import Gio from 'gi://Gio?version=2.0';
+import GLib from 'gi://GLib?version=2.0';
+import GObject from 'gi://GObject?version=2.0';
 import Gtk from 'gi://Gtk?version=4.0';
 import Adw from 'gi://Adw';
 
@@ -20,7 +20,7 @@ import './preferences/init.js';
 import {Window} from './preferences/service.js';
 import Config from './config.js';
 
-import('gi://GioUnix').catch(() => {}); // Set version for optional dependency
+import('gi://GioUnix?version=2.0').catch(() => {}); // Set version for optional dependency
 
 
 /**
@@ -56,7 +56,7 @@ const Preferences = GObject.registerClass({
         const provider = new Gtk.CssProvider();
         provider.load_from_resource(`${Config.APP_PATH}/application.css`);
         Gtk.StyleContext.add_provider_for_screen(
-            Gdk.Screen.get_default(),
+            Gdk.Screen.get_defaulvfunc_activatet(),
             provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         );

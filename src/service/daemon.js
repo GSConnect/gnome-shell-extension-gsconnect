@@ -5,12 +5,13 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 import Gdk from 'gi://Gdk?version=4.0';
-import 'gi://GdkPixbuf';
-import Gio from 'gi://Gio';
-import 'gi://GIRepository';
-import GLib from 'gi://GLib';
-import GObject from 'gi://GObject';
+import 'gi://GdkPixbuf?version=2.0';
+import Gio from 'gi://Gio?version=2.0';
+import 'gi://GIRepository?version=2.0';
+import GLib from 'gi://GLib?version=2.0';
+import GObject from 'gi://GObject?version=2.0';
 import Gtk from 'gi://Gtk?version=4.0';
+import 'gi://Pango?version=1.0';
 import Adw from 'gi://Adw';
 
 import system from 'system';
