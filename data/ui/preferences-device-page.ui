@@ -165,7 +165,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                             <property name="title" translatable="yes">Unpair Device</property>
                             <property name="activatable">True</property>
                             <property name="action-name">settings.unpair</property>
-                            <property name="start-icon-name">network-offline-symbolic</property>
+                            <property name="start-icon-name">phonelink-off-symbolic</property>
                             <style>
                               <class name="destructive-action"/>
                             </style>

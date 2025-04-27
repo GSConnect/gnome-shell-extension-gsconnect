@@ -40,7 +40,6 @@ export function getIcon(name) {
             'smartphone-symbolic',
             'tablet-symbolic',
             'tv-symbolic',
-            'phonelink-ring-symbolic',
             'phone-vibrate-symbolic', 
             'chat-bubbles-text-symbolic',
         ];

@@ -230,7 +230,7 @@ const Device = GObject.registerClass({
     get icon_name() {
         switch (this.type) {
             case 'laptop':
-                return 'computer-symbolic';
+                return 'laptop-symbolic';
             case 'phone':
                 return 'phone-symbolic';
             case 'tablet':

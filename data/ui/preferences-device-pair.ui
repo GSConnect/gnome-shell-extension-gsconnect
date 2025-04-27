@@ -95,7 +95,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                       <object class="AdwButtonRow">
                         <property name="visible">True</property>
                         <property name="title" translatable="yes">Pair Device</property>
-                        <property name="start-icon-name">network-transmit-receive-symbolic</property>
+                        <property name="start-icon-name">phonelink-symbolic</property>
                         <signal name="activated" handler="_pairDevice" swapped="no"/>
                         <style>
                           <class name="suggested-action"/>

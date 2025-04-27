@@ -564,7 +564,7 @@ msgstr "Informazioni su GSConnect"
 
 #: data/ui/preference-device-pair.ui:74
 msgid "Unpair Device"
-msgstr "Disccoppia il dispositivo"
+msgstr "Disaccoppia il dispositivo"
 
 #: data/ui/preference-device-pair.ui:74
 msgid "is not paired"

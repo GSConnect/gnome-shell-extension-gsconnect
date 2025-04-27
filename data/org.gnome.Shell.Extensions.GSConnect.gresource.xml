@@ -60,14 +60,24 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <file compressed="true" preprocess="xml-stripblanks" alias="phonelink-off-symbolic.svg">icons/phonelink-off-symbolic.svg</file>
     <file compressed="true" preprocess="xml-stripblanks" alias="phone-vibrate-symbolic.svg">icons/phone-vibrate-symbolic.svg</file>
     <file compressed="true" preprocess="xml-stripblanks" alias="phonelink-setup-symbolic.svg">icons/phonelink-setup-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks" alias="group-avatar-symbolic.svg">icons/group-avatar-symbolic.svg</file>
     <file compressed="true" preprocess="xml-stripblanks" alias="paper-plane-symbolic.svg">icons/paper-plane-symbolic.svg</file>
     <file compressed="true" preprocess="xml-stripblanks" alias="chat-bubbles-text-symbolic.svg">icons/chat-bubbles-text-symbolic.svg</file>
     <file compressed="true" preprocess="xml-stripblanks" alias="mouse-left-button-symbolic.svg">icons/mouse-left-button-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks" alias="mouse-right-button-symbolic.svg">icons/mouse-right-button-symbolic.svg</file>
     <file compressed="true" preprocess="xml-stripblanks" alias="mouse-with-smaller-scrollwheel-symbolic.svg">icons/mouse-with-smaller-scrollwheel-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="mouse-right-button-symbolic.svg">icons/mouse-right-button-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="people-symbolic.svg">icons/people-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="tablet-symbolic.svg">icons/tablet-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="computer-symbolic.svg">icons/computer-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="laptop-symbolic.svg">icons/laptop-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="tv-symbolic.svg">icons/tv-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="phone-symbolic.svg">icons/phone-symbolic.svg</file>
   </gresource>
   <gresource prefix="/org/gnome/Shell/Extensions/GSConnect/icons/symbolic/actions">
+    <file compressed="true" preprocess="xml-stripblanks" alias="computer-symbolic.svg">icons/computer-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="laptop-symbolic.svg">icons/laptop-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="tablet-symbolic.svg">icons/tablet-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="tv-symbolic.svg">icons/tv-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="phone-symbolic.svg">icons/phone-symbolic.svg</file>
     <file compressed="true" preprocess="xml-stripblanks" alias="phone-vibrate-symbolic.svg">icons/phone-vibrate-symbolic.svg</file>
     <file compressed="true" preprocess="xml-stripblanks" alias="chat-bubbles-text-symbolic.svg">icons/chat-bubbles-text-symbolic.svg</file>
   </gresource>

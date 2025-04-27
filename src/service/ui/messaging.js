@@ -961,7 +961,7 @@ const ConversationSummary = GObject.registerClass({
             }
         } else {
             name_label = _('Group Message');
-            this.avatar.icon_name = 'system-users-symbolic';
+            this.avatar.icon_name = 'phonelink-off-symbolic';
             const participants = [];
             addresses.forEach(address => {
                 participants.push(this.contacts[address].name);
