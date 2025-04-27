@@ -165,3 +165,7 @@
 .overlay-button {
   border-radius: 8px;
 }
+
+.keyboard-text-view {
+  padding: 10px;
+}

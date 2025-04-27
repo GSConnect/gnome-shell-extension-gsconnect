@@ -27,6 +27,11 @@ SPDX-License-Identifier: GPL-2.0-or-later
                   <object class="GtkToggleButton" id="button-search">
                     <property name="visible">True</property>
                     <property name="icon-name">edit-find-symbolic</property>
+                    <property name="has-tooltip">True</property>
+                    <property name="tooltip-text" translatable="yes">Search contact</property>
+                    <accessibility>
+                      <property name="label" translatable="yes">Search contact</property>
+                    </accessibility>
                   </object>
                 </child>
               </object>
@@ -43,6 +48,11 @@ SPDX-License-Identifier: GPL-2.0-or-later
                         <property name="hexpand">True</property>
                         <property name="placeholder-text" translatable="yes">Search for names or phone numbers</property>
                         <property name="search-delay">100</property>
+                        <property name="has-tooltip">True</property>
+                        <property name="tooltip-text" translatable="yes">Search contacts from names or phone numbers</property>
+                        <accessibility>
+                          <property name="label" translatable="yes">Search contacts from names or phone numbers</property>
+                        </accessibility>
                       </object>
                     </child>
                   </object>

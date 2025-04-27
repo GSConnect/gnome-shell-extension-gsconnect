@@ -131,6 +131,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                 <child>
                   <object class="GtkScrolledWindow">
                     <property name="visible">True</property>
+                    <property name="height-request">100</property>
                     <property name="hscrollbar-policy">never</property>
                     <child>
                       <object class="GtkTextView" id="entry">
@@ -138,6 +139,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                         <property name="wrap-mode">word-char</property>
                         <style>
                           <class name="card"/>
+                          <class name="keyboard-text-view"/>
                         </style>
                       </object>
                     </child>
