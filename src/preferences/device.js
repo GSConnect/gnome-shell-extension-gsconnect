@@ -676,7 +676,7 @@ export const DeviceNavigationPage = GObject.registerClass({
         for (const uuid of Object.keys(this._commands))
             this._insertCommand(uuid);
         const row = new Adw.ButtonRow({
-            title : "Add command" ,
+            title : _("Add Command") ,
             start_icon_name: "list-add-symbolic"
         })
         row.connect('activated', this._onEditCommand.bind(this));

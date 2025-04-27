@@ -11,7 +11,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
   <requires lib="Adw" version="1.0"/>
   
   <template class="GSConnectPreferencesCommandEditor" parent="AdwDialog">
-    <property name="title" translatable="yes">Edit Command…</property>
+    <property name="title" translatable="yes">Edit Command</property>
     <property name="content-width">500</property>
     <child>
       <object class="AdwToolbarView">

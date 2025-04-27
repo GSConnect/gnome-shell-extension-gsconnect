@@ -124,17 +124,4 @@ StBin.gsconnect-tooltip (inherits from .osd-window)
 .gsconnect-tooltip StLabel:rtl {
     text-align: right;
 }
-
-/*
-TODO
-*/
-.linkbutton {
-    padding: 0;
-    border: none;
-    background: none;
-}
-
-.background {
-    border-radius: 8px;
-}
   

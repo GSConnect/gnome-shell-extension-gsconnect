@@ -111,7 +111,7 @@ export const InputWindow = GObject.registerClass({
             'revealed', 
             GObject.BindingFlags.INVERT_BOOLEAN
         );
-        
+        this.touchpad_zone.label = _('Touchpad.\nDrag on this area to move mouse cursor.\nPress long to drag to drag mouse cursor.\n\nSimple click will be sent to paired device.\nLeft, middle, right button, and wheel scrolls.')
         // Text Input
         this.entry.buffer.connect(
             'insert-text',

@@ -129,7 +129,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                                                 <property name="vexpand">True</property>
                                                 <property name="content-fit">cover</property>
                                                 <style>
-                                                  <class name="background"/>
+                                                  <class name="overlay-button"/>
                                                 </style>
                                               </object>
                                             </child>
@@ -155,7 +155,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                                                 <property name="vexpand">True</property>
                                                 <property name="content-fit">cover</property>
                                                 <style>
-                                                  <class name="background"/>
+                                                  <class name="overlay-button"/>
                                                 </style>
                                               </object>
                                             </child>

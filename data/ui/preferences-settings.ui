@@ -16,7 +16,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
       <object class="AdwPreferencesPage">
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title" translatable="yes">This Device</property>
+            <property name="title" translatable="yes">This device</property>
             <child>
               <object class="AdwEntryRow" id="rename-entry">
                 <property name="title" translatable="yes">Hostname</property>
@@ -34,7 +34,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
         </child>
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title" translatable="yes">Appearence</property>
+            <property name="title" translatable="yes">Apparence</property>
             <child>
               <object class="AdwActionRow">
                 <property name="title" translatable="yes">Display Mode</property>
@@ -43,15 +43,15 @@ SPDX-License-Identifier: GPL-2.0-or-later
                     <property name="valign">center</property>
                     <child>
                       <object class="AdwToggle">
-                        <property name="label">Panel</property>
-                        <property name="tooltip" translatable="yes">Panel</property>
+                        <property name="label" translatable="yes">Panel</property>
+                        <property name="tooltip">Panel</property>
                         <property name="name">panel</property>
                       </object>
                     </child>
                     <child>
                       <object class="AdwToggle">
-                        <property name="label">User Menu</property>
-                        <property name="tooltip" translatable="yes">User Menu</property>
+                        <property name="label" translatable="yes">User Menu</property>
+                        <property name="tooltip">User Menu</property>
                         <property name="name">user-menu</property>
                       </object>
                     </child>
@@ -66,7 +66,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
             <property name="title" translatable="yes">Support</property>
             <child>
               <object class="AdwButtonRow">
-                <property name="title" translatable="yes">Generate Support Log…</property>
+                <property name="title" translatable="yes">Generate a support Log</property>
                 <property name="action-name">win.support-log</property>
               </object>
             </child>  

@@ -298,9 +298,13 @@ msgstr "Batteria"
 msgid "Commands"
 msgstr "Comandi"
 
+#: src/service/plugins/runcommand.js:194
+msgid "Command"
+msgstr "Comando"
+
 #: data/ui/preferences-device-panel.ui:975
 msgid "Add Command"
-msgstr "Aggiungere comando"
+msgstr "Aggiungi comando"
 
 #. TRANSLATORS: 'Share' is a verb here; this refers to the action of sharing
 #: data/ui/preferences-device-panel.ui:1063
@@ -548,6 +552,27 @@ msgstr "Modalità di visualizzazione"
 msgid "Panel"
 msgstr "Pannello"
 
+#: data/ui/preferences-window.ui:99
+msgid "Welcome to GSConnect"
+msgstr "Benvenuto su GSConnect"
+
+#: data/ui/preferences-window.ui:267
+#: data/ui/preferences-settings.ui:14
+msgid "Settings"
+msgstr "Impostazioni"
+
+#: data/ui/preferences-settings.ui:19
+msgid "This device"
+msgstr "Questo dispositivo"
+
+#: data/ui/preferences-settings.ui:37
+msgid "Apparence"
+msgstr "Aspetto"
+
+#: data/ui/preferences-settings.ui:66
+msgid "Support"
+msgstr "Supporto"
+
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
 #: data/ui/preferences-window.ui:835
 msgid "User Menu"
@@ -555,7 +580,7 @@ msgstr "Menu utente"
 
 #. TRANSLATORS: Generate a support log
 #: data/ui/preferences-window.ui:843 src/preferences/service.js:402
-msgid "Generate Support Log"
+msgid "Generate a support Log"
 msgstr "Genera log di supporto"
 
 #: data/ui/preferences-window.ui:851

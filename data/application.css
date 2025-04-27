@@ -151,3 +151,17 @@
 .time-row {
   margin-bottom: 4px;
 }
+
+/*
+ * Extension's LinkButton style
+ */
+.linkbutton {
+  padding-left: 5px;
+  padding-right: 5px;
+  border: none;
+  background: none;
+}
+
+.overlay-button {
+  border-radius: 8px;
+}
