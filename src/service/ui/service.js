@@ -212,7 +212,7 @@ export const ErrorDialog = GObject.registerClass({
             const uri = this._buildUri(this.error.message, this.error.stack);
             Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
         }
-        this.close();
+        this.destroy();
     }
 
     _onReleased(gesture, n_press) {

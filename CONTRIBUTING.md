@@ -114,7 +114,7 @@ $ meson setup --prefix=/usr \
         -Dgnome_shell_libdir=/usr/lib64/ \
         -Dfirewalld=true \
         _build
-$ 
+$ ninja -C _build install
 ```
 
 ### Typical Workflow

@@ -104,7 +104,7 @@ const FindMyPhonePlugin = GObject.registerClass({
         if (this._player !== undefined)
             this._player = Components.release('sound');
         
-        this.run_dispose();
+        super.destroy();
     }
 });
 

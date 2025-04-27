@@ -515,8 +515,8 @@ msgid "Extension Settings"
 msgstr "Impostazioni estensione"
 
 #: data/ui/preferences-window.ui:390
-msgid "Active when screen is locked"
-msgstr "Attivo quando lo schermo è bloccato"
+msgid "GSConnect remains active when GNOME Shell is locked"
+msgstr "GSConnect rimane attivo quando GNOME Shell è bloccato"
 
 #: data/ui/preferences-window.ui:410
 msgid "Browser Add-Ons"

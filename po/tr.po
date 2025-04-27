@@ -503,7 +503,7 @@ msgid "Extension Settings"
 msgstr "Eklenti Ayarları"
 
 #: data/ui/preferences-window.ui:390
-msgid "Active when screen is locked"
+msgid "GSConnect remains active when GNOME Shell is locked"
 msgstr "GNOME kabuğu kilitlendiğinde GSConnect etkin kalır"
 
 #: data/ui/preferences-window.ui:410
