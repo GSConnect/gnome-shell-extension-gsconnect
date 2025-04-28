@@ -146,7 +146,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                     <signal name="activate" handler="_onSendMessage" swapped="no"/>
                     <signal name="changed" handler="_onEntryChanged" swapped="no"/>
                     <property name="has-tooltip">True</property>
-                    <property name="tooltip-text">Type a message and press Enter to send</property>
+                    <property name="tooltip-text" translatable="yes">Type a message and press Enter to send</property>
                     <accessibility>
                       <property name="label" translatable="yes">Message Entry</property>
                       <property name="description" translatable="yes"> Type a message and press Enter to send </property>
