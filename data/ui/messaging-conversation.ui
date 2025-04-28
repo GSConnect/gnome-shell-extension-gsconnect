@@ -56,58 +56,55 @@ SPDX-License-Identifier: GPL-2.0-or-later
             <property name="visible">True</property>
             <property name="hscrollbar-policy">never</property>
             <child>
-              <object class="AdwClamp">
+              <object class="GtkListBox" id="list">
+                <property name="visible">True</property>
+                <property name="vexpand">True</property>
+                <property name="hexpand">True</property>
+                <property name="selection-mode">none</property>
+                <property name="activate-on-single-click">False</property>
+                <style>
+                  <class name="message-list"/>
+                  <class name="background"/>
+                </style>
                 <child>
-                  <object class="GtkListBox" id="list">
+                  <object class="GtkListBoxRow" id="spinner">
                     <property name="visible">True</property>
-                    <property name="vexpand">True</property>
-                    <property name="selection-mode">none</property>
-                    <property name="activate-on-single-click">False</property>
-                    <style>
-                      <class name="message-list"/>
-                      <class name="background"/>
-                    </style>
+                    <property name="can-focus">True</property>
+                    <property name="hexpand">True</property>
+                    <property name="activatable">False</property>
+                    <property name="selectable">False</property>
+                    <property name="height-request">40</property>
                     <child>
-                      <object class="GtkListBoxRow" id="spinner">
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="hexpand">True</property>
-                        <property name="activatable">False</property>
-                        <property name="selectable">False</property>
-                        <property name="height-request">40</property>
-                        <child>
-                          <object class="AdwSpinner" id="spinner-anim">
-                            <property name="halign">center</property>
-                            <property name="valign">center</property>
-                            <property name="width-request">20</property>
-                            <property name="height-request">20</property>
-                          </object>
-                        </child>
-                        <style>
-                          <class name="messages-loading"/>
-                        </style>
+                      <object class="AdwSpinner" id="spinner-anim">
+                        <property name="halign">center</property>
+                        <property name="valign">center</property>
+                        <property name="width-request">20</property>
+                        <property name="height-request">20</property>
                       </object>
                     </child>
+                    <style>
+                      <class name="messages-loading"/>
+                    </style>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkListBoxRow" id="pending">
+                    <property name="visible" bind-source="GSConnectMessagingConversation" bind-property="has-pending" bind-flags="sync-create"/>
+                    <property name="hexpand">True</property>
+                    <property name="activatable">False</property>
+                    <property name="selectable">False</property>
+                    <style>
+                      <class name="message-pending"/>
+                    </style>
                     <child>
-                      <object class="GtkListBoxRow" id="pending">
-                        <property name="visible" bind-source="GSConnectMessagingConversation" bind-property="has-pending" bind-flags="sync-create"/>
-                        <property name="hexpand">True</property>
-                        <property name="activatable">False</property>
-                        <property name="selectable">False</property>
-                        <style>
-                          <class name="message-pending"/>
-                        </style>
-                        <child>
-                          <object class="GtkBox" id="pending-box">
-                            <property name="visible">True</property>
-                            <property name="orientation">vertical</property>
-                            <property name="margin-top">6</property>
-                            <property name="margin-bottom">6</property>
-                            <property name="margin-start">50</property>
-                            <property name="margin-end">6</property>
-                            <property name="spacing">3</property>
-                          </object>
-                        </child>
+                      <object class="GtkBox" id="pending-box">
+                        <property name="visible">True</property>
+                        <property name="orientation">vertical</property>
+                        <property name="margin-top">6</property>
+                        <property name="margin-bottom">6</property>
+                        <property name="margin-start">50</property>
+                        <property name="margin-end">6</property>
+                        <property name="spacing">3</property>
                       </object>
                     </child>
                   </object>
