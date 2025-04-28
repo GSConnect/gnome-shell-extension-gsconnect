@@ -5,5 +5,5 @@
     "version": @PACKAGE_VERSION@,
     "shell-version": [ "48" ],
     "url": "@PACKAGE_URL@/wiki",
-    "gettext-domain": "gsconnect@andyholmes.github.io"
+    "gettext-domain": "org.gnome.Shell.Extensions.GSConnect"
 }
