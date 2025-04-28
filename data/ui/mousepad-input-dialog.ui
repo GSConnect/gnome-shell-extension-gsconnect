@@ -12,7 +12,8 @@ SPDX-License-Identifier: GPL-2.0-or-later
 
   <template class="GSConnectMousepadInputWindow" parent="AdwApplicationWindow">
     <property name="title">Test</property>
-    <property name="height-request">350</property>
+    <property name="height-request">650</property>
+    <property name="width-request">650</property>
     <child>
       <object class="AdwBottomSheet" id="bottom_sheet">
         <property name="content">
@@ -131,8 +132,9 @@ SPDX-License-Identifier: GPL-2.0-or-later
                 <child>
                   <object class="GtkScrolledWindow">
                     <property name="visible">True</property>
-                    <property name="height-request">100</property>
+                    <property name="height-request">200</property>
                     <property name="hscrollbar-policy">never</property>
+                    <property name="hexpand">True</property>
                     <child>
                       <object class="GtkTextView" id="entry">
                         <property name="visible">True</property>
