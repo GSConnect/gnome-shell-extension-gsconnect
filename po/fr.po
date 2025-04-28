@@ -1,12 +1,15 @@
+#
+# Matthieu Lorier <loriermatthieu@gmail.com>, 2025.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-03 13:38-0500\n"
-"PO-Revision-Date: 2025-01-03 22:05\n"
-"Last-Translator: \n"
+"PO-Revision-Date: 2025-04-28 08:26+0200\n"
+"Last-Translator: Matthieu Lorier <loriermatthieu@gmail.com>\n"
 "Language-Team: French\n"
-"Language: fr_FR\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,8 +17,10 @@ msgstr ""
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: fr\n"
-"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org."
+"gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
+"X-Generator: Gtranslator 48.0\n"
 
 #. TRANSLATORS: Extension name
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:12
@@ -32,12 +37,23 @@ msgid "GSConnect Team"
 msgstr "L'équipe de GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
-msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr "GSConnect est une implémentation complète de KDE Connect, en particulier pour GNOME Shell avec l'intégration de Nautilus, Chrome et Firefox. L'équipe KDE Connect à des applications pour Linux, BSD, Android, Sailfish, iOS, macOS et Windows."
+msgid ""
+"GSConnect is a complete implementation of KDE Connect especially for GNOME "
+"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
+"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr ""
+"GSConnect est une implémentation complète de KDE Connect, en particulier "
+"pour GNOME Shell avec l'intégration de Nautilus, Chrome et Firefox. L'équipe "
+"KDE Connect à des applications pour Linux, BSD, Android, Sailfish, iOS, "
+"macOS et Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
-msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
-msgstr "Avec GSConnect, vous pouvez vous connecter en toute sécurité à des appareils mobiles et à d'autres ordinateurs de bureau à :"
+msgid ""
+"With GSConnect you can securely connect to mobile devices and other desktops "
+"to:"
+msgstr ""
+"Avec GSConnect, vous pouvez vous connecter en toute sécurité à des appareils "
+"mobiles et à d'autres ordinateurs de bureau à :"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:48
 msgid "Share files, links and text"
@@ -65,7 +81,7 @@ msgstr "Contrôler les lecteurs de médias"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:54
 msgid "Control system volume"
-msgstr "Contrôle le volume du système"
+msgstr "Contrôler le volume du système"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:55
 msgid "Execute predefined commands"
@@ -107,7 +123,7 @@ msgstr "Adresse IP"
 
 #: data/ui/contact-chooser.ui:56
 msgid "No contacts"
-msgstr "\"Aucun contact\""
+msgstr "Aucun contact"
 
 #: data/ui/contact-chooser.ui:68 data/ui/messaging-window.ui:103
 #: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:847
@@ -177,17 +193,21 @@ msgstr "Aucune conversation sélectionnée"
 
 #: data/ui/messaging-window.ui:196
 msgid "Select or start a conversation"
-msgstr "Choisir ou commencer une discussion"
+msgstr "Sélectionner ou commencer une discussion"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid "Touchpad.\n"
+msgid ""
+"Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n\n"
+"Press long to drag to drag mouse cursor.\n"
+"\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr "Touchpad.\n"
+msgstr ""
+"Touchpad.\n"
 "Faites glisser cette zone pour déplacer le curseur de la souris.\n"
-"Appuyez sur long pour faire glisser le curseur de la souris.\n\n"
+"Appuyez sur long pour faire glisser le curseur de la souris.\n"
+"\n"
 "Un simple clic sera envoyé à un appareil apparié.\n"
 "À gauche, au milieu, à droite et à roue."
 
@@ -205,7 +225,7 @@ msgstr "Nom"
 
 #: data/ui/preferences-command-editor.ui:99
 msgid "Command Line"
-msgstr "Commande"
+msgstr "Ligne de commande"
 
 #: data/ui/preferences-command-editor.ui:121
 #: data/ui/preferences-command-editor.ui:150
@@ -460,7 +480,9 @@ msgstr "Définir"
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:80
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr "Appuyez sur Echap pour annuler ou sur Retour Arrière pour réinitialiser le raccourci clavier."
+msgstr ""
+"Appuyez sur Echap pour annuler ou sur Retour Arrière pour réinitialiser le "
+"raccourci clavier."
 
 #: data/ui/preferences-window.ui:24
 msgid "Device Name"
@@ -525,7 +547,7 @@ msgstr "Découverte désactivée"
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/preferences-window.ui:821
 msgid "Add device by IP…"
-msgstr ""
+msgstr "Ajouter un appareil par adresse IP…"
 
 #: data/ui/preferences-window.ui:826
 msgid "Display Mode"
@@ -576,8 +598,12 @@ msgid "Something’s gone wrong"
 msgstr "Un problème est survenu"
 
 #: data/ui/service-error-dialog.ui:91
-msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
-msgstr "GSConnect a rencontré une erreur inattendue. Veuillez signaler le problème et inclure toutes les informations qui pourraient nous aider."
+msgid ""
+"GSConnect encountered an unexpected error. Please report the problem and "
+"include any information that may help."
+msgstr ""
+"GSConnect a rencontré une erreur inattendue. Veuillez signaler le problème "
+"et inclure toutes les informations qui pourraient nous aider."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
@@ -645,8 +671,12 @@ msgid "translator-credits"
 msgstr "Mickaël Coiraton <mickael.coiraton@gmail.com>"
 
 #: src/preferences/service.js:403
-msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
-msgstr "Les messages de dépannage sont enregistrés. Faites le nécessaire pour reproduire le problème puis vérifiez le fichier de log."
+msgid ""
+"Debug messages are being logged. Take any steps necessary to reproduce a "
+"problem then review the log."
+msgstr ""
+"Les messages de dépannage sont enregistrés. Faites le nécessaire pour "
+"reproduire le problème puis vérifiez le fichier de log."
 
 #: src/preferences/service.js:406
 msgid "Review Log"
@@ -792,8 +822,11 @@ msgid "Accept"
 msgstr "Accepter"
 
 #: src/service/manager.js:145
-msgid "Discovery has been disabled due to the number of devices on this network."
-msgstr "La découverte a été désactivée en raison du nombre de périphériques sur ce réseau."
+msgid ""
+"Discovery has been disabled due to the number of devices on this network."
+msgstr ""
+"La découverte a été désactivée en raison du nombre de périphériques sur ce "
+"réseau."
 
 #: src/service/backends/lan.js:177
 msgid "OpenSSL not found"
@@ -877,7 +910,8 @@ msgstr "Pavé tactile"
 
 #: src/service/plugins/mousepad.js:15
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr "Permet à l'appareil appairé d'agir comme une souris et un clavier à distance"
+msgstr ""
+"Permet à l'appareil appairé d'agir comme une souris et un clavier à distance"
 
 #: src/service/plugins/mousepad.js:29 src/service/ui/mousepad.js:107
 msgid "Remote Input"
@@ -939,8 +973,12 @@ msgid "Run Commands"
 msgstr "Exécuter des commandes"
 
 #: src/service/plugins/runcommand.js:15
-msgid "Run commands on your paired device or let the device run predefined commands on this PC"
-msgstr "Exécutez des commandes sur votre périphérique appairé ou laissez le périphérique exécuter des commandes prédéfinies sur ce PC"
+msgid ""
+"Run commands on your paired device or let the device run predefined commands "
+"on this PC"
+msgstr ""
+"Exécutez des commandes sur votre périphérique appairé ou laissez le "
+"périphérique exécuter des commandes prédéfinies sur ce PC"
 
 #: src/service/plugins/sftp.js:14
 msgid "SFTP"
@@ -1062,7 +1100,9 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:17
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr "Envoyer et lire les SMS de l'appareil appairé et être informé des nouveaux SMS"
+msgstr ""
+"Envoyer et lire les SMS de l'appareil appairé et être informé des nouveaux "
+"SMS"
 
 #: src/service/plugins/sms.js:38
 msgid "New SMS (URI)"
@@ -1089,8 +1129,11 @@ msgid "PulseAudio not found"
 msgstr "PulseAudio introuvable"
 
 #: src/service/plugins/telephony.js:16
-msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr "Être notifié des appels et régler le volume du système pendant la sonnerie/les appels en cours"
+msgid ""
+"Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgstr ""
+"Être notifié des appels et régler le volume du système pendant la sonnerie/"
+"les appels en cours"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:28
@@ -1208,7 +1251,8 @@ msgstr "Répondre"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:32
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr "Partagez des liens avec GSConnect, directement vers le navigateur ou par SMS."
+msgstr ""
+"Partagez des liens avec GSConnect, directement vers le navigateur ou par SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:36
@@ -1219,4 +1263,3 @@ msgstr "Service indisponible"
 #: webextension/gettext.js:40
 msgid "Open in Browser"
 msgstr "Ouvrir dans le navigateur"
-
