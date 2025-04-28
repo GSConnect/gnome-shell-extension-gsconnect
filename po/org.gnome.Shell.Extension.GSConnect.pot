@@ -1,0 +1,1415 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-04-28 11:00+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: src/preferences/device.js:219 src/preferences/device.js:893
+#: _build/installed-tests/src/preferences/device.js:219
+#: _build/installed-tests/src/preferences/device.js:893
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/preferences/device.js:219
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/preferences/device.js:893
+#: _build/gsconnect@andyholmes.github.io/preferences/device.js:219
+#: _build/gsconnect@andyholmes.github.io/preferences/device.js:893
+msgid "Encryption Info"
+msgstr ""
+
+#: src/preferences/device.js:444
+#: _build/installed-tests/src/preferences/device.js:444
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/preferences/device.js:444
+#: _build/gsconnect@andyholmes.github.io/preferences/device.js:444
+msgid "Desktop"
+msgstr ""
+
+#: src/preferences/device.js:447
+#: _build/installed-tests/src/preferences/device.js:447
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/preferences/device.js:447
+#: _build/gsconnect@andyholmes.github.io/preferences/device.js:447
+msgid "Laptop"
+msgstr ""
+
+#: src/preferences/device.js:450
+#: _build/installed-tests/src/preferences/device.js:450
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/preferences/device.js:450
+#: _build/gsconnect@andyholmes.github.io/preferences/device.js:450
+msgid "Smartphone"
+msgstr ""
+
+#: src/preferences/device.js:453
+#: _build/installed-tests/src/preferences/device.js:453
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/preferences/device.js:453
+#: _build/gsconnect@andyholmes.github.io/preferences/device.js:453
+msgid "Tablet"
+msgstr ""
+
+#: src/preferences/device.js:456
+#: _build/installed-tests/src/preferences/device.js:456
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/preferences/device.js:456
+#: _build/gsconnect@andyholmes.github.io/preferences/device.js:456
+msgid "Television"
+msgstr ""
+
+#: src/preferences/device.js:679
+#: _build/installed-tests/src/preferences/device.js:679
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/preferences/device.js:679
+#: _build/gsconnect@andyholmes.github.io/preferences/device.js:679
+msgid "Add Command"
+msgstr ""
+
+#: src/preferences/device.js:898
+#: _build/installed-tests/src/preferences/device.js:898
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/preferences/device.js:898
+#: _build/gsconnect@andyholmes.github.io/preferences/device.js:898
+msgid "Ok"
+msgstr ""
+
+#: src/preferences/device.js:938 src/preferences/device.js:1049
+#: _build/installed-tests/src/preferences/device.js:938
+#: _build/installed-tests/src/preferences/device.js:1049
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/preferences/device.js:938
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/preferences/device.js:1049
+#: _build/gsconnect@andyholmes.github.io/preferences/device.js:938
+#: _build/gsconnect@andyholmes.github.io/preferences/device.js:1049
+msgid "Disabled"
+msgstr ""
+
+#: src/preferences/keybindings.js:76
+#: _build/installed-tests/src/preferences/keybindings.js:76
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/preferences/keybindings.js:76
+#: _build/gsconnect@andyholmes.github.io/preferences/keybindings.js:76
+#, javascript-format
+msgid "Enter a new shortcut to change <b>%s</b>"
+msgstr ""
+
+#: src/preferences/keybindings.js:197
+#: _build/installed-tests/src/preferences/keybindings.js:197
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/preferences/keybindings.js:197
+#: _build/gsconnect@andyholmes.github.io/preferences/keybindings.js:197
+#, javascript-format
+msgid "%s è già in uso"
+msgstr ""
+
+#: src/preferences/service.js:176 src/preferences/service.js:661
+#: _build/installed-tests/src/preferences/service.js:176
+#: _build/installed-tests/src/preferences/service.js:661
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/preferences/service.js:176
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/preferences/service.js:661
+#: _build/gsconnect@andyholmes.github.io/preferences/service.js:176
+#: _build/gsconnect@andyholmes.github.io/preferences/service.js:661
+msgid "Invalid Device Name"
+msgstr ""
+
+#: src/preferences/service.js:178 src/preferences/service.js:663
+#: _build/installed-tests/src/preferences/service.js:178
+#: _build/installed-tests/src/preferences/service.js:663
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/preferences/service.js:178
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/preferences/service.js:663
+#: _build/gsconnect@andyholmes.github.io/preferences/service.js:178
+#: _build/gsconnect@andyholmes.github.io/preferences/service.js:663
+#, javascript-format
+msgid ""
+"Device name must not contain any of %s and have a length of 1-32 characters"
+msgstr ""
+
+#: src/preferences/service.js:216
+#: _build/installed-tests/src/preferences/service.js:216
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/preferences/service.js:216
+#: _build/gsconnect@andyholmes.github.io/preferences/service.js:216
+msgid "Connect to..."
+msgstr ""
+
+#: src/preferences/service.js:249
+#: _build/installed-tests/src/preferences/service.js:249
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/preferences/service.js:249
+#: _build/gsconnect@andyholmes.github.io/preferences/service.js:249
+msgid "Invalid host or port."
+msgstr ""
+
+#: src/preferences/service.js:257
+#: _build/installed-tests/src/preferences/service.js:257
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/preferences/service.js:257
+#: _build/gsconnect@andyholmes.github.io/preferences/service.js:257
+msgid "An unexpected error occurred."
+msgstr ""
+
+#: src/preferences/service.js:300
+#: _build/installed-tests/src/preferences/service.js:300
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/preferences/service.js:300
+#: _build/gsconnect@andyholmes.github.io/preferences/service.js:300
+msgid "Oops! An error occurred…"
+msgstr ""
+
+#: src/preferences/service.js:306
+#: _build/installed-tests/src/preferences/service.js:306
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/preferences/service.js:306
+#: _build/gsconnect@andyholmes.github.io/preferences/service.js:306
+msgid "Close"
+msgstr ""
+
+#: src/preferences/service.js:566 webextension/gettext.js:29
+#: _build/installed-tests/src/preferences/service.js:566
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/preferences/service.js:566
+#: _build/gsconnect@andyholmes.github.io/preferences/service.js:566
+msgid "GSConnect"
+msgstr ""
+
+#: src/preferences/service.js:568
+#: _build/installed-tests/src/preferences/service.js:568
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/preferences/service.js:568
+#: _build/gsconnect@andyholmes.github.io/preferences/service.js:568
+msgid "A complete KDE Connect implementation for GNOME"
+msgstr ""
+
+#: src/preferences/service.js:572
+#: _build/installed-tests/src/preferences/service.js:572
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/preferences/service.js:572
+#: _build/gsconnect@andyholmes.github.io/preferences/service.js:572
+msgid "translator-credits"
+msgstr ""
+
+#: src/preferences/service.js:621
+#: _build/installed-tests/src/preferences/service.js:621
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/preferences/service.js:621
+#: _build/gsconnect@andyholmes.github.io/preferences/service.js:621
+msgid "Generate Support Log"
+msgstr ""
+
+#: src/preferences/service.js:622
+#: _build/installed-tests/src/preferences/service.js:622
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/preferences/service.js:622
+#: _build/gsconnect@andyholmes.github.io/preferences/service.js:622
+msgid ""
+"Debug messages are being logged. Take any steps necessary to reproduce a "
+"problem then review the log."
+msgstr ""
+
+#: src/preferences/service.js:626 src/service/plugins/share.js:162
+#: src/service/plugins/share.js:314 src/service/plugins/share.js:444
+#: _build/installed-tests/src/preferences/service.js:626
+#: _build/installed-tests/src/service/plugins/share.js:162
+#: _build/installed-tests/src/service/plugins/share.js:314
+#: _build/installed-tests/src/service/plugins/share.js:444
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/preferences/service.js:626
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/share.js:162
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/share.js:314
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/share.js:444
+#: _build/gsconnect@andyholmes.github.io/preferences/service.js:626
+#: _build/gsconnect@andyholmes.github.io/service/plugins/share.js:162
+#: _build/gsconnect@andyholmes.github.io/service/plugins/share.js:314
+#: _build/gsconnect@andyholmes.github.io/service/plugins/share.js:444
+msgid "Cancel"
+msgstr ""
+
+#: src/preferences/service.js:627
+#: _build/installed-tests/src/preferences/service.js:627
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/preferences/service.js:627
+#: _build/gsconnect@andyholmes.github.io/preferences/service.js:627
+msgid "Review Log"
+msgstr ""
+
+#: src/preferences/service.js:761
+#: _build/installed-tests/src/preferences/service.js:761
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/preferences/service.js:761
+#: _build/gsconnect@andyholmes.github.io/preferences/service.js:761
+msgid "Unpaired"
+msgstr ""
+
+#: src/preferences/service.js:764
+#: _build/installed-tests/src/preferences/service.js:764
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/preferences/service.js:764
+#: _build/gsconnect@andyholmes.github.io/preferences/service.js:764
+msgid "Disconnected"
+msgstr ""
+
+#: src/preferences/service.js:767
+#: _build/installed-tests/src/preferences/service.js:767
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/preferences/service.js:767
+#: _build/gsconnect@andyholmes.github.io/preferences/service.js:767
+msgid "Connected"
+msgstr ""
+
+#: src/preferences/service.js:850
+#: _build/installed-tests/src/preferences/service.js:850
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/preferences/service.js:850
+#: _build/gsconnect@andyholmes.github.io/preferences/service.js:850
+msgid "Searching for devices…"
+msgstr ""
+
+#: src/preferences/service.js:853
+#: _build/installed-tests/src/preferences/service.js:853
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/preferences/service.js:853
+#: _build/gsconnect@andyholmes.github.io/preferences/service.js:853
+msgid "Waiting for service…"
+msgstr ""
+
+#: src/service/backends/lan.js:477
+#: _build/installed-tests/src/service/backends/lan.js:477
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/backends/lan.js:477
+#: _build/gsconnect@andyholmes.github.io/service/backends/lan.js:477
+msgid "Port already in use"
+msgstr ""
+
+#: src/service/components/mpris.js:353 src/service/components/mpris.js:354
+#: src/service/components/mpris.js:355 src/service/components/mpris.js:620
+#: src/service/components/mpris.js:681 src/service/components/mpris.js:682
+#: src/service/components/mpris.js:683 src/service/plugins/mpris.js:355
+#: _build/installed-tests/src/service/components/mpris.js:353
+#: _build/installed-tests/src/service/components/mpris.js:354
+#: _build/installed-tests/src/service/components/mpris.js:355
+#: _build/installed-tests/src/service/components/mpris.js:620
+#: _build/installed-tests/src/service/components/mpris.js:681
+#: _build/installed-tests/src/service/components/mpris.js:682
+#: _build/installed-tests/src/service/components/mpris.js:683
+#: _build/installed-tests/src/service/plugins/mpris.js:355
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/components/mpris.js:353
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/components/mpris.js:354
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/components/mpris.js:355
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/components/mpris.js:620
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/components/mpris.js:681
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/components/mpris.js:682
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/components/mpris.js:683
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/mpris.js:355
+#: _build/gsconnect@andyholmes.github.io/service/components/mpris.js:353
+#: _build/gsconnect@andyholmes.github.io/service/components/mpris.js:354
+#: _build/gsconnect@andyholmes.github.io/service/components/mpris.js:355
+#: _build/gsconnect@andyholmes.github.io/service/components/mpris.js:620
+#: _build/gsconnect@andyholmes.github.io/service/components/mpris.js:681
+#: _build/gsconnect@andyholmes.github.io/service/components/mpris.js:682
+#: _build/gsconnect@andyholmes.github.io/service/components/mpris.js:683
+#: _build/gsconnect@andyholmes.github.io/service/plugins/mpris.js:355
+msgid "Unknown"
+msgstr ""
+
+#: src/service/components/contacts.js:74 src/service/plugins/contacts.js:242
+#: src/service/plugins/contacts.js:362 src/service/plugins/telephony.js:156
+#: src/service/plugins/telephony.js:175 src/service/ui/contacts.js:486
+#: src/service/ui/messaging.js:945
+#: _build/installed-tests/src/service/components/contacts.js:74
+#: _build/installed-tests/src/service/plugins/contacts.js:242
+#: _build/installed-tests/src/service/plugins/contacts.js:362
+#: _build/installed-tests/src/service/plugins/telephony.js:156
+#: _build/installed-tests/src/service/plugins/telephony.js:175
+#: _build/installed-tests/src/service/ui/contacts.js:486
+#: _build/installed-tests/src/service/ui/messaging.js:945
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/components/contacts.js:74
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/contacts.js:242
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/contacts.js:362
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/telephony.js:156
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/telephony.js:175
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/ui/contacts.js:486
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/ui/messaging.js:945
+#: _build/gsconnect@andyholmes.github.io/service/components/contacts.js:74
+#: _build/gsconnect@andyholmes.github.io/service/plugins/contacts.js:242
+#: _build/gsconnect@andyholmes.github.io/service/plugins/contacts.js:362
+#: _build/gsconnect@andyholmes.github.io/service/plugins/telephony.js:156
+#: _build/gsconnect@andyholmes.github.io/service/plugins/telephony.js:175
+#: _build/gsconnect@andyholmes.github.io/service/ui/contacts.js:486
+#: _build/gsconnect@andyholmes.github.io/service/ui/messaging.js:945
+msgid "Unknown Contact"
+msgstr ""
+
+#: src/service/plugins/ping.js:13 src/service/plugins/ping.js:20
+#: src/service/plugins/ping.js:47 src/service/daemon.js:521
+#: _build/installed-tests/src/service/plugins/ping.js:13
+#: _build/installed-tests/src/service/plugins/ping.js:20
+#: _build/installed-tests/src/service/plugins/ping.js:47
+#: _build/installed-tests/src/service/daemon.js:521
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/ping.js:13
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/ping.js:20
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/ping.js:47
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/daemon.js:521
+#: _build/gsconnect@andyholmes.github.io/service/plugins/ping.js:13
+#: _build/gsconnect@andyholmes.github.io/service/plugins/ping.js:20
+#: _build/gsconnect@andyholmes.github.io/service/plugins/ping.js:47
+#: _build/gsconnect@andyholmes.github.io/service/daemon.js:521
+msgid "Ping"
+msgstr ""
+
+#: src/service/plugins/ping.js:14
+#: _build/installed-tests/src/service/plugins/ping.js:14
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/ping.js:14
+#: _build/gsconnect@andyholmes.github.io/service/plugins/ping.js:14
+msgid "Send and receive pings"
+msgstr ""
+
+#: src/service/plugins/ping.js:54
+#: _build/installed-tests/src/service/plugins/ping.js:54
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/ping.js:54
+#: _build/gsconnect@andyholmes.github.io/service/plugins/ping.js:54
+#, javascript-format
+msgid "Ping: %s"
+msgstr ""
+
+#: src/service/plugins/presenter.js:12
+#: _build/installed-tests/src/service/plugins/presenter.js:12
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/presenter.js:12
+#: _build/gsconnect@andyholmes.github.io/service/plugins/presenter.js:12
+msgid "Presentation"
+msgstr ""
+
+#: src/service/plugins/presenter.js:13
+#: _build/installed-tests/src/service/plugins/presenter.js:13
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/presenter.js:13
+#: _build/gsconnect@andyholmes.github.io/service/plugins/presenter.js:13
+msgid "Use the paired device as a presenter"
+msgstr ""
+
+#: src/service/plugins/battery.js:15
+#: _build/installed-tests/src/service/plugins/battery.js:15
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/battery.js:15
+#: _build/gsconnect@andyholmes.github.io/service/plugins/battery.js:15
+msgid "Battery"
+msgstr ""
+
+#: src/service/plugins/battery.js:16
+#: _build/installed-tests/src/service/plugins/battery.js:16
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/battery.js:16
+#: _build/gsconnect@andyholmes.github.io/service/plugins/battery.js:16
+msgid "Exchange battery information"
+msgstr ""
+
+#: src/service/plugins/battery.js:247 src/service/plugins/battery.js:276
+#: src/service/plugins/battery.js:305 src/service/plugins/findmyphone.js:22
+#: src/service/daemon.js:530
+#: _build/installed-tests/src/service/plugins/battery.js:247
+#: _build/installed-tests/src/service/plugins/battery.js:276
+#: _build/installed-tests/src/service/plugins/battery.js:305
+#: _build/installed-tests/src/service/plugins/findmyphone.js:22
+#: _build/installed-tests/src/service/daemon.js:530
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/battery.js:247
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/battery.js:276
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/battery.js:305
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/findmyphone.js:22
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/daemon.js:530
+#: _build/gsconnect@andyholmes.github.io/service/plugins/battery.js:247
+#: _build/gsconnect@andyholmes.github.io/service/plugins/battery.js:276
+#: _build/gsconnect@andyholmes.github.io/service/plugins/battery.js:305
+#: _build/gsconnect@andyholmes.github.io/service/plugins/findmyphone.js:22
+#: _build/gsconnect@andyholmes.github.io/service/daemon.js:530
+msgid "Ring"
+msgstr ""
+
+#: src/service/plugins/battery.js:256
+#: _build/installed-tests/src/service/plugins/battery.js:256
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/battery.js:256
+#: _build/gsconnect@andyholmes.github.io/service/plugins/battery.js:256
+#, javascript-format
+msgid "%s: Battery is full"
+msgstr ""
+
+#: src/service/plugins/battery.js:258 src/shell/device.js:119
+#: _build/installed-tests/src/service/plugins/battery.js:258
+#: _build/installed-tests/src/shell/device.js:119
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/battery.js:258
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/shell/device.js:119
+#: _build/gsconnect@andyholmes.github.io/service/plugins/battery.js:258
+#: _build/gsconnect@andyholmes.github.io/shell/device.js:119
+msgid "Fully Charged"
+msgstr ""
+
+#: src/service/plugins/battery.js:285
+#: _build/installed-tests/src/service/plugins/battery.js:285
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/battery.js:285
+#: _build/gsconnect@andyholmes.github.io/service/plugins/battery.js:285
+#, javascript-format
+msgid "%s: Battery has reached custom charge level"
+msgstr ""
+
+#: src/service/plugins/battery.js:287
+#: _build/installed-tests/src/service/plugins/battery.js:287
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/battery.js:287
+#: _build/gsconnect@andyholmes.github.io/service/plugins/battery.js:287
+#, javascript-format
+msgid "%d%% Charged"
+msgstr ""
+
+#: src/service/plugins/battery.js:314
+#: _build/installed-tests/src/service/plugins/battery.js:314
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/battery.js:314
+#: _build/gsconnect@andyholmes.github.io/service/plugins/battery.js:314
+#, javascript-format
+msgid "%s: Battery is low"
+msgstr ""
+
+#: src/service/plugins/battery.js:316
+#: _build/installed-tests/src/service/plugins/battery.js:316
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/battery.js:316
+#: _build/gsconnect@andyholmes.github.io/service/plugins/battery.js:316
+#, javascript-format
+msgid "%d%% remaining"
+msgstr ""
+
+#: src/service/plugins/connectivity_report.js:14
+#: _build/installed-tests/src/service/plugins/connectivity_report.js:14
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/connectivity_report.js:14
+#: _build/gsconnect@andyholmes.github.io/service/plugins/connectivity_report.js:14
+msgid "Connectivity Report"
+msgstr ""
+
+#: src/service/plugins/connectivity_report.js:15
+#: _build/installed-tests/src/service/plugins/connectivity_report.js:15
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/connectivity_report.js:15
+#: _build/gsconnect@andyholmes.github.io/service/plugins/connectivity_report.js:15
+msgid "Display connectivity status"
+msgstr ""
+
+#: src/service/plugins/contacts.js:28
+#: _build/installed-tests/src/service/plugins/contacts.js:28
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/contacts.js:28
+#: _build/gsconnect@andyholmes.github.io/service/plugins/contacts.js:28
+msgid "Contacts"
+msgstr ""
+
+#: src/service/plugins/contacts.js:29
+#: _build/installed-tests/src/service/plugins/contacts.js:29
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/contacts.js:29
+#: _build/gsconnect@andyholmes.github.io/service/plugins/contacts.js:29
+msgid "Access contacts of the paired device"
+msgstr ""
+
+#: src/service/plugins/runcommand.js:13
+#: _build/installed-tests/src/service/plugins/runcommand.js:13
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/runcommand.js:13
+#: _build/gsconnect@andyholmes.github.io/service/plugins/runcommand.js:13
+msgid "Run Commands"
+msgstr ""
+
+#: src/service/plugins/runcommand.js:15
+#: _build/installed-tests/src/service/plugins/runcommand.js:15
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/runcommand.js:15
+#: _build/gsconnect@andyholmes.github.io/service/plugins/runcommand.js:15
+msgid ""
+"Run commands on your paired device or let the device run predefined commands "
+"on this PC"
+msgstr ""
+
+#: src/service/plugins/runcommand.js:26 src/service/plugins/runcommand.js:34
+#: src/service/plugins/runcommand.js:194
+#: _build/installed-tests/src/service/plugins/runcommand.js:26
+#: _build/installed-tests/src/service/plugins/runcommand.js:34
+#: _build/installed-tests/src/service/plugins/runcommand.js:194
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/runcommand.js:26
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/runcommand.js:34
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/runcommand.js:194
+#: _build/gsconnect@andyholmes.github.io/service/plugins/runcommand.js:26
+#: _build/gsconnect@andyholmes.github.io/service/plugins/runcommand.js:34
+#: _build/gsconnect@andyholmes.github.io/service/plugins/runcommand.js:194
+msgid "Commands"
+msgstr ""
+
+#: src/service/plugins/sftp.js:15
+#: _build/installed-tests/src/service/plugins/sftp.js:15
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/sftp.js:15
+#: _build/gsconnect@andyholmes.github.io/service/plugins/sftp.js:15
+msgid "SFTP"
+msgstr ""
+
+#: src/service/plugins/sftp.js:17
+#: _build/installed-tests/src/service/plugins/sftp.js:17
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/sftp.js:17
+#: _build/gsconnect@andyholmes.github.io/service/plugins/sftp.js:17
+msgid "Browse the paired device filesystem"
+msgstr ""
+
+#: src/service/plugins/sftp.js:22
+#: _build/installed-tests/src/service/plugins/sftp.js:22
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/sftp.js:22
+#: _build/gsconnect@andyholmes.github.io/service/plugins/sftp.js:22
+msgid "Mount"
+msgstr ""
+
+#: src/service/plugins/sftp.js:30
+#: _build/installed-tests/src/service/plugins/sftp.js:30
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/sftp.js:30
+#: _build/gsconnect@andyholmes.github.io/service/plugins/sftp.js:30
+msgid "Unmount"
+msgstr ""
+
+#: src/service/plugins/sftp.js:191
+#: _build/installed-tests/src/service/plugins/sftp.js:191
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/sftp.js:191
+#: _build/gsconnect@andyholmes.github.io/service/plugins/sftp.js:191
+#, javascript-format
+msgid "%s reported an error"
+msgstr ""
+
+#: src/service/plugins/sftp.js:332
+#: _build/installed-tests/src/service/plugins/sftp.js:332
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/sftp.js:332
+#: _build/gsconnect@andyholmes.github.io/service/plugins/sftp.js:332
+msgid "Files"
+msgstr ""
+
+#: src/service/plugins/systemvolume.js:27
+#: _build/installed-tests/src/service/plugins/systemvolume.js:27
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/systemvolume.js:27
+#: _build/gsconnect@andyholmes.github.io/service/plugins/systemvolume.js:27
+msgid "System Volume"
+msgstr ""
+
+#: src/service/plugins/systemvolume.js:28
+#: _build/installed-tests/src/service/plugins/systemvolume.js:28
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/systemvolume.js:28
+#: _build/gsconnect@andyholmes.github.io/service/plugins/systemvolume.js:28
+msgid "Enable the paired device to control the system volume"
+msgstr ""
+
+#: src/service/plugins/systemvolume.js:72
+#: _build/installed-tests/src/service/plugins/systemvolume.js:72
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/systemvolume.js:72
+#: _build/gsconnect@andyholmes.github.io/service/plugins/systemvolume.js:72
+msgid "PulseAudio not found"
+msgstr ""
+
+#: src/service/plugins/telephony.js:16
+#: _build/installed-tests/src/service/plugins/telephony.js:16
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/telephony.js:16
+#: _build/gsconnect@andyholmes.github.io/service/plugins/telephony.js:16
+msgid "Telephony"
+msgstr ""
+
+#: src/service/plugins/telephony.js:17
+#: _build/installed-tests/src/service/plugins/telephony.js:17
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/telephony.js:17
+#: _build/gsconnect@andyholmes.github.io/service/plugins/telephony.js:17
+msgid ""
+"Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgstr ""
+
+#: src/service/plugins/telephony.js:29
+#: _build/installed-tests/src/service/plugins/telephony.js:29
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/telephony.js:29
+#: _build/gsconnect@andyholmes.github.io/service/plugins/telephony.js:29
+msgid "Mute Call"
+msgstr ""
+
+#: src/service/plugins/telephony.js:194
+#: _build/installed-tests/src/service/plugins/telephony.js:194
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/telephony.js:194
+#: _build/gsconnect@andyholmes.github.io/service/plugins/telephony.js:194
+msgid "Incoming call"
+msgstr ""
+
+#: src/service/plugins/telephony.js:198
+#: _build/installed-tests/src/service/plugins/telephony.js:198
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/telephony.js:198
+#: _build/gsconnect@andyholmes.github.io/service/plugins/telephony.js:198
+msgid "Mute"
+msgstr ""
+
+#: src/service/plugins/telephony.js:209
+#: _build/installed-tests/src/service/plugins/telephony.js:209
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/telephony.js:209
+#: _build/gsconnect@andyholmes.github.io/service/plugins/telephony.js:209
+msgid "Ongoing call"
+msgstr ""
+
+#: src/service/plugins/mpris.js:18
+#: _build/installed-tests/src/service/plugins/mpris.js:18
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/mpris.js:18
+#: _build/gsconnect@andyholmes.github.io/service/plugins/mpris.js:18
+msgid "MPRIS"
+msgstr ""
+
+#: src/service/plugins/mpris.js:19
+#: _build/installed-tests/src/service/plugins/mpris.js:19
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/mpris.js:19
+#: _build/gsconnect@andyholmes.github.io/service/plugins/mpris.js:19
+msgid "Bidirectional remote media playback control"
+msgstr ""
+
+#: src/service/plugins/clipboard.js:12
+#: _build/installed-tests/src/service/plugins/clipboard.js:12
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/clipboard.js:12
+#: _build/gsconnect@andyholmes.github.io/service/plugins/clipboard.js:12
+msgid "Clipboard"
+msgstr ""
+
+#: src/service/plugins/clipboard.js:13
+#: _build/installed-tests/src/service/plugins/clipboard.js:13
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/clipboard.js:13
+#: _build/gsconnect@andyholmes.github.io/service/plugins/clipboard.js:13
+msgid "Share the clipboard content"
+msgstr ""
+
+#: src/service/plugins/clipboard.js:25
+#: _build/installed-tests/src/service/plugins/clipboard.js:25
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/clipboard.js:25
+#: _build/gsconnect@andyholmes.github.io/service/plugins/clipboard.js:25
+msgid "Clipboard Push"
+msgstr ""
+
+#: src/service/plugins/clipboard.js:33
+#: _build/installed-tests/src/service/plugins/clipboard.js:33
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/clipboard.js:33
+#: _build/gsconnect@andyholmes.github.io/service/plugins/clipboard.js:33
+msgid "Clipboard Pull"
+msgstr ""
+
+#: src/service/plugins/findmyphone.js:15 src/service/plugins/findmyphone.js:193
+#: _build/installed-tests/src/service/plugins/findmyphone.js:15
+#: _build/installed-tests/src/service/plugins/findmyphone.js:193
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/findmyphone.js:15
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/findmyphone.js:193
+#: _build/gsconnect@andyholmes.github.io/service/plugins/findmyphone.js:15
+#: _build/gsconnect@andyholmes.github.io/service/plugins/findmyphone.js:193
+msgid "Find My Phone"
+msgstr ""
+
+#: src/service/plugins/findmyphone.js:16
+#: _build/installed-tests/src/service/plugins/findmyphone.js:16
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/findmyphone.js:16
+#: _build/gsconnect@andyholmes.github.io/service/plugins/findmyphone.js:16
+msgid "Ring your paired device"
+msgstr ""
+
+#: src/service/plugins/findmyphone.js:194
+#: _build/installed-tests/src/service/plugins/findmyphone.js:194
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/findmyphone.js:194
+#: _build/gsconnect@andyholmes.github.io/service/plugins/findmyphone.js:194
+msgid "You found me!"
+msgstr ""
+
+#: src/service/plugins/findmyphone.js:198
+#: _build/installed-tests/src/service/plugins/findmyphone.js:198
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/findmyphone.js:198
+#: _build/gsconnect@andyholmes.github.io/service/plugins/findmyphone.js:198
+msgid "Stop Ringing"
+msgstr ""
+
+#: src/service/plugins/mousepad.js:14
+#: _build/installed-tests/src/service/plugins/mousepad.js:14
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/mousepad.js:14
+#: _build/gsconnect@andyholmes.github.io/service/plugins/mousepad.js:14
+msgid "Mousepad"
+msgstr ""
+
+#: src/service/plugins/mousepad.js:15
+#: _build/installed-tests/src/service/plugins/mousepad.js:15
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/mousepad.js:15
+#: _build/gsconnect@andyholmes.github.io/service/plugins/mousepad.js:15
+msgid "Enables the paired device to act as a remote mouse and keyboard"
+msgstr ""
+
+#: src/service/plugins/mousepad.js:29
+#: _build/installed-tests/src/service/plugins/mousepad.js:29
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/mousepad.js:29
+#: _build/gsconnect@andyholmes.github.io/service/plugins/mousepad.js:29
+msgid "Remote Input"
+msgstr ""
+
+#: src/service/plugins/notification.js:19
+#: _build/installed-tests/src/service/plugins/notification.js:19
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/notification.js:19
+#: _build/gsconnect@andyholmes.github.io/service/plugins/notification.js:19
+msgid "Notifications"
+msgstr ""
+
+#: src/service/plugins/notification.js:20
+#: _build/installed-tests/src/service/plugins/notification.js:20
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/notification.js:20
+#: _build/gsconnect@andyholmes.github.io/service/plugins/notification.js:20
+msgid "Share notifications with the paired device"
+msgstr ""
+
+#: src/service/plugins/notification.js:34
+#: _build/installed-tests/src/service/plugins/notification.js:34
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/notification.js:34
+#: _build/gsconnect@andyholmes.github.io/service/plugins/notification.js:34
+msgid "Cancel Notification"
+msgstr ""
+
+#: src/service/plugins/notification.js:42
+#: _build/installed-tests/src/service/plugins/notification.js:42
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/notification.js:42
+#: _build/gsconnect@andyholmes.github.io/service/plugins/notification.js:42
+msgid "Close Notification"
+msgstr ""
+
+#: src/service/plugins/notification.js:50
+#: _build/installed-tests/src/service/plugins/notification.js:50
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/notification.js:50
+#: _build/gsconnect@andyholmes.github.io/service/plugins/notification.js:50
+msgid "Reply Notification"
+msgstr ""
+
+#: src/service/plugins/notification.js:58 src/service/daemon.js:476
+#: _build/installed-tests/src/service/plugins/notification.js:58
+#: _build/installed-tests/src/service/daemon.js:476
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/notification.js:58
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/daemon.js:476
+#: _build/gsconnect@andyholmes.github.io/service/plugins/notification.js:58
+#: _build/gsconnect@andyholmes.github.io/service/daemon.js:476
+msgid "Send Notification"
+msgstr ""
+
+#: src/service/plugins/notification.js:66
+#: _build/installed-tests/src/service/plugins/notification.js:66
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/notification.js:66
+#: _build/gsconnect@andyholmes.github.io/service/plugins/notification.js:66
+msgid "Activate Notification"
+msgstr ""
+
+#: src/service/plugins/share.js:17 src/service/plugins/share.js:24
+#: _build/installed-tests/src/service/plugins/share.js:17
+#: _build/installed-tests/src/service/plugins/share.js:24
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/share.js:17
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/share.js:24
+#: _build/gsconnect@andyholmes.github.io/service/plugins/share.js:17
+#: _build/gsconnect@andyholmes.github.io/service/plugins/share.js:24
+msgid "Share"
+msgstr ""
+
+#: src/service/plugins/share.js:19
+#: _build/installed-tests/src/service/plugins/share.js:19
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/share.js:19
+#: _build/gsconnect@andyholmes.github.io/service/plugins/share.js:19
+msgid "Share files and URLs between devices"
+msgstr ""
+
+#: src/service/plugins/share.js:32 src/service/daemon.js:353
+#: src/service/daemon.js:542
+#: _build/installed-tests/src/service/plugins/share.js:32
+#: _build/installed-tests/src/service/daemon.js:353
+#: _build/installed-tests/src/service/daemon.js:542
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/share.js:32
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/daemon.js:353
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/daemon.js:542
+#: _build/gsconnect@andyholmes.github.io/service/plugins/share.js:32
+#: _build/gsconnect@andyholmes.github.io/service/daemon.js:353
+#: _build/gsconnect@andyholmes.github.io/service/daemon.js:542
+msgid "Share File"
+msgstr ""
+
+#: src/service/plugins/share.js:40 src/service/daemon.js:560
+#: _build/installed-tests/src/service/plugins/share.js:40
+#: _build/installed-tests/src/service/daemon.js:560
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/share.js:40
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/daemon.js:560
+#: _build/gsconnect@andyholmes.github.io/service/plugins/share.js:40
+#: _build/gsconnect@andyholmes.github.io/service/daemon.js:560
+msgid "Share Text"
+msgstr ""
+
+#: src/service/plugins/share.js:48 src/service/daemon.js:551
+#: _build/installed-tests/src/service/plugins/share.js:48
+#: _build/installed-tests/src/service/daemon.js:551
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/share.js:48
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/daemon.js:551
+#: _build/gsconnect@andyholmes.github.io/service/plugins/share.js:48
+#: _build/gsconnect@andyholmes.github.io/service/daemon.js:551
+msgid "Share Link"
+msgstr ""
+
+#: src/service/plugins/share.js:131 src/service/plugins/share.js:210
+#: src/service/plugins/share.js:337
+#: _build/installed-tests/src/service/plugins/share.js:131
+#: _build/installed-tests/src/service/plugins/share.js:210
+#: _build/installed-tests/src/service/plugins/share.js:337
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/share.js:131
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/share.js:210
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/share.js:337
+#: _build/gsconnect@andyholmes.github.io/service/plugins/share.js:131
+#: _build/gsconnect@andyholmes.github.io/service/plugins/share.js:210
+#: _build/gsconnect@andyholmes.github.io/service/plugins/share.js:337
+msgid "Transfer Failed"
+msgstr ""
+
+#: src/service/plugins/share.js:133
+#: _build/installed-tests/src/service/plugins/share.js:133
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/share.js:133
+#: _build/gsconnect@andyholmes.github.io/service/plugins/share.js:133
+#, javascript-format
+msgid "%s is not allowed to upload files"
+msgstr ""
+
+#: src/service/plugins/share.js:155 src/service/plugins/share.js:307
+#: _build/installed-tests/src/service/plugins/share.js:155
+#: _build/installed-tests/src/service/plugins/share.js:307
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/share.js:155
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/share.js:307
+#: _build/gsconnect@andyholmes.github.io/service/plugins/share.js:155
+#: _build/gsconnect@andyholmes.github.io/service/plugins/share.js:307
+msgid "Transferring File"
+msgstr ""
+
+#: src/service/plugins/share.js:157
+#: _build/installed-tests/src/service/plugins/share.js:157
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/share.js:157
+#: _build/gsconnect@andyholmes.github.io/service/plugins/share.js:157
+#, javascript-format
+msgid "Receiving “%s” from %s"
+msgstr ""
+
+#: src/service/plugins/share.js:176 src/service/plugins/share.js:327
+#: _build/installed-tests/src/service/plugins/share.js:176
+#: _build/installed-tests/src/service/plugins/share.js:327
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/share.js:176
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/share.js:327
+#: _build/gsconnect@andyholmes.github.io/service/plugins/share.js:176
+#: _build/gsconnect@andyholmes.github.io/service/plugins/share.js:327
+msgid "Transfer Successful"
+msgstr ""
+
+#: src/service/plugins/share.js:178
+#: _build/installed-tests/src/service/plugins/share.js:178
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/share.js:178
+#: _build/gsconnect@andyholmes.github.io/service/plugins/share.js:178
+#, javascript-format
+msgid "Received “%s” from %s"
+msgstr ""
+
+#: src/service/plugins/share.js:188
+#: _build/installed-tests/src/service/plugins/share.js:188
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/share.js:188
+#: _build/gsconnect@andyholmes.github.io/service/plugins/share.js:188
+msgid "Show File Location"
+msgstr ""
+
+#: src/service/plugins/share.js:193
+#: _build/installed-tests/src/service/plugins/share.js:193
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/share.js:193
+#: _build/gsconnect@andyholmes.github.io/service/plugins/share.js:193
+msgid "Open File"
+msgstr ""
+
+#: src/service/plugins/share.js:212
+#: _build/installed-tests/src/service/plugins/share.js:212
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/share.js:212
+#: _build/gsconnect@andyholmes.github.io/service/plugins/share.js:212
+#, javascript-format
+msgid "Failed to receive “%s” from %s"
+msgstr ""
+
+#: src/service/plugins/share.js:243
+#: _build/installed-tests/src/service/plugins/share.js:243
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/share.js:243
+#: _build/gsconnect@andyholmes.github.io/service/plugins/share.js:243
+#, javascript-format
+msgid "Text Shared By %s"
+msgstr ""
+
+#: src/service/plugins/share.js:309
+#: _build/installed-tests/src/service/plugins/share.js:309
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/share.js:309
+#: _build/gsconnect@andyholmes.github.io/service/plugins/share.js:309
+#, javascript-format
+msgid "Sending “%s” to %s"
+msgstr ""
+
+#: src/service/plugins/share.js:329
+#: _build/installed-tests/src/service/plugins/share.js:329
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/share.js:329
+#: _build/gsconnect@andyholmes.github.io/service/plugins/share.js:329
+#, javascript-format
+msgid "Sent “%s” to %s"
+msgstr ""
+
+#: src/service/plugins/share.js:339
+#: _build/installed-tests/src/service/plugins/share.js:339
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/share.js:339
+#: _build/gsconnect@andyholmes.github.io/service/plugins/share.js:339
+#, javascript-format
+msgid "Failed to send “%s” to %s"
+msgstr ""
+
+#: src/service/plugins/share.js:396
+#: _build/installed-tests/src/service/plugins/share.js:396
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/share.js:396
+#: _build/gsconnect@andyholmes.github.io/service/plugins/share.js:396
+#, javascript-format
+msgid "Send files to %s"
+msgstr ""
+
+#: src/service/plugins/share.js:400
+#: _build/installed-tests/src/service/plugins/share.js:400
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/share.js:400
+#: _build/gsconnect@andyholmes.github.io/service/plugins/share.js:400
+msgid "Open when done"
+msgstr ""
+
+#: src/service/plugins/share.js:439
+#: _build/installed-tests/src/service/plugins/share.js:439
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/share.js:439
+#: _build/gsconnect@andyholmes.github.io/service/plugins/share.js:439
+#, javascript-format
+msgid "Send a link to %s"
+msgstr ""
+
+#: src/service/plugins/share.js:445
+#: _build/installed-tests/src/service/plugins/share.js:445
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/share.js:445
+#: _build/gsconnect@andyholmes.github.io/service/plugins/share.js:445
+msgid "Send"
+msgstr ""
+
+#: src/service/plugins/sms.js:16
+#: _build/installed-tests/src/service/plugins/sms.js:16
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/sms.js:16
+#: _build/gsconnect@andyholmes.github.io/service/plugins/sms.js:16
+msgid "SMS"
+msgstr ""
+
+#: src/service/plugins/sms.js:17
+#: _build/installed-tests/src/service/plugins/sms.js:17
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/sms.js:17
+#: _build/gsconnect@andyholmes.github.io/service/plugins/sms.js:17
+msgid "Send and read SMS of the paired device and be notified of new SMS"
+msgstr ""
+
+#: src/service/plugins/sms.js:30
+#: _build/installed-tests/src/service/plugins/sms.js:30
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/sms.js:30
+#: _build/gsconnect@andyholmes.github.io/service/plugins/sms.js:30
+msgid "Messaging"
+msgstr ""
+
+#: src/service/plugins/sms.js:38
+#: _build/installed-tests/src/service/plugins/sms.js:38
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/sms.js:38
+#: _build/gsconnect@andyholmes.github.io/service/plugins/sms.js:38
+msgid "New SMS (URI)"
+msgstr ""
+
+#: src/service/plugins/sms.js:46
+#: _build/installed-tests/src/service/plugins/sms.js:46
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/sms.js:46
+#: _build/gsconnect@andyholmes.github.io/service/plugins/sms.js:46
+msgid "Reply SMS"
+msgstr ""
+
+#: src/service/plugins/sms.js:54
+#: _build/installed-tests/src/service/plugins/sms.js:54
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/sms.js:54
+#: _build/gsconnect@andyholmes.github.io/service/plugins/sms.js:54
+msgid "Send Message"
+msgstr ""
+
+#: src/service/plugins/sms.js:62 src/service/daemon.js:341
+#: src/service/daemon.js:455 webextension/gettext.js:41
+#: _build/installed-tests/src/service/plugins/sms.js:62
+#: _build/installed-tests/src/service/daemon.js:341
+#: _build/installed-tests/src/service/daemon.js:455
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/sms.js:62
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/daemon.js:341
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/daemon.js:455
+#: _build/gsconnect@andyholmes.github.io/service/plugins/sms.js:62
+#: _build/gsconnect@andyholmes.github.io/service/daemon.js:341
+#: _build/gsconnect@andyholmes.github.io/service/daemon.js:455
+msgid "Send SMS"
+msgstr ""
+
+#: src/service/plugins/sms.js:70
+#: _build/installed-tests/src/service/plugins/sms.js:70
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/plugins/sms.js:70
+#: _build/gsconnect@andyholmes.github.io/service/plugins/sms.js:70
+msgid "Share SMS"
+msgstr ""
+
+#: src/service/ui/contacts.js:21
+#: _build/installed-tests/src/service/ui/contacts.js:21
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/ui/contacts.js:21
+#: _build/gsconnect@andyholmes.github.io/service/ui/contacts.js:21
+msgid "Fax"
+msgstr ""
+
+#: src/service/ui/contacts.js:25
+#: _build/installed-tests/src/service/ui/contacts.js:25
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/ui/contacts.js:25
+#: _build/gsconnect@andyholmes.github.io/service/ui/contacts.js:25
+msgid "Work"
+msgstr ""
+
+#: src/service/ui/contacts.js:29
+#: _build/installed-tests/src/service/ui/contacts.js:29
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/ui/contacts.js:29
+#: _build/gsconnect@andyholmes.github.io/service/ui/contacts.js:29
+msgid "Mobile"
+msgstr ""
+
+#: src/service/ui/contacts.js:33
+#: _build/installed-tests/src/service/ui/contacts.js:33
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/ui/contacts.js:33
+#: _build/gsconnect@andyholmes.github.io/service/ui/contacts.js:33
+msgid "Home"
+msgstr ""
+
+#: src/service/ui/contacts.js:36
+#: _build/installed-tests/src/service/ui/contacts.js:36
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/ui/contacts.js:36
+#: _build/gsconnect@andyholmes.github.io/service/ui/contacts.js:36
+msgid "Other"
+msgstr ""
+
+#: src/service/ui/contacts.js:357 src/service/ui/contacts.js:373
+#: _build/installed-tests/src/service/ui/contacts.js:357
+#: _build/installed-tests/src/service/ui/contacts.js:373
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/ui/contacts.js:357
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/ui/contacts.js:373
+#: _build/gsconnect@andyholmes.github.io/service/ui/contacts.js:357
+#: _build/gsconnect@andyholmes.github.io/service/ui/contacts.js:373
+#, javascript-format
+msgid "Send to %s"
+msgstr ""
+
+#: src/service/ui/messaging.js:106 src/service/ui/messaging.js:147
+#: _build/installed-tests/src/service/ui/messaging.js:106
+#: _build/installed-tests/src/service/ui/messaging.js:147
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/ui/messaging.js:106
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/ui/messaging.js:147
+#: _build/gsconnect@andyholmes.github.io/service/ui/messaging.js:106
+#: _build/gsconnect@andyholmes.github.io/service/ui/messaging.js:147
+msgid "Just now"
+msgstr ""
+
+#: src/service/ui/messaging.js:115
+#: _build/installed-tests/src/service/ui/messaging.js:115
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/ui/messaging.js:115
+#: _build/gsconnect@andyholmes.github.io/service/ui/messaging.js:115
+#, javascript-format
+msgid "Yesterday・%s"
+msgstr ""
+
+#: src/service/ui/messaging.js:152
+#: _build/installed-tests/src/service/ui/messaging.js:152
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/ui/messaging.js:152
+#: _build/gsconnect@andyholmes.github.io/service/ui/messaging.js:152
+#, javascript-format
+msgid "%d minute"
+msgid_plural "%d minutes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/service/ui/messaging.js:231
+#: _build/installed-tests/src/service/ui/messaging.js:231
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/ui/messaging.js:231
+#: _build/gsconnect@andyholmes.github.io/service/ui/messaging.js:231
+msgid "<i>(Empty or unsupported)</i>"
+msgstr ""
+
+#: src/service/ui/messaging.js:444
+#: _build/installed-tests/src/service/ui/messaging.js:444
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/ui/messaging.js:444
+#: _build/gsconnect@andyholmes.github.io/service/ui/messaging.js:444
+#, javascript-format
+msgid "And %d other contact"
+msgid_plural "And %d others"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/service/ui/messaging.js:530
+#: _build/installed-tests/src/service/ui/messaging.js:530
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/ui/messaging.js:530
+#: _build/gsconnect@andyholmes.github.io/service/ui/messaging.js:530
+msgid "Not available"
+msgstr ""
+
+#: src/service/ui/messaging.js:942
+#: _build/installed-tests/src/service/ui/messaging.js:942
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/ui/messaging.js:942
+#: _build/gsconnect@andyholmes.github.io/service/ui/messaging.js:942
+msgid "<i>image</i>"
+msgstr ""
+
+#: src/service/ui/messaging.js:963
+#: _build/installed-tests/src/service/ui/messaging.js:963
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/ui/messaging.js:963
+#: _build/gsconnect@andyholmes.github.io/service/ui/messaging.js:963
+msgid "Group Message"
+msgstr ""
+
+#: src/service/ui/messaging.js:975
+#: _build/installed-tests/src/service/ui/messaging.js:975
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/ui/messaging.js:975
+#: _build/gsconnect@andyholmes.github.io/service/ui/messaging.js:975
+msgid "New conversation"
+msgstr ""
+
+#: src/service/ui/messaging.js:983
+#: _build/installed-tests/src/service/ui/messaging.js:983
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/ui/messaging.js:983
+#: _build/gsconnect@andyholmes.github.io/service/ui/messaging.js:983
+#, javascript-format
+msgid "You: %s"
+msgstr ""
+
+#: src/service/ui/messaging.js:1067
+#: _build/installed-tests/src/service/ui/messaging.js:1067
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/ui/messaging.js:1067
+#: _build/gsconnect@andyholmes.github.io/service/ui/messaging.js:1067
+msgid "Device is disconnected"
+msgstr ""
+
+#: src/service/ui/mousepad.js:107
+#: _build/installed-tests/src/service/ui/mousepad.js:107
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/ui/mousepad.js:107
+#: _build/gsconnect@andyholmes.github.io/service/ui/mousepad.js:107
+#, javascript-format
+msgid "Remote keyboard on %s is not active"
+msgstr ""
+
+#: src/service/ui/mousepad.js:114
+#: _build/installed-tests/src/service/ui/mousepad.js:114
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/ui/mousepad.js:114
+#: _build/gsconnect@andyholmes.github.io/service/ui/mousepad.js:114
+msgid ""
+"Touchpad.\n"
+"Drag on this area to move mouse cursor.\n"
+"Press long to drag to drag mouse cursor.\n"
+"\n"
+"Simple click will be sent to paired device.\n"
+"Left, middle, right button, and wheel scrolls."
+msgstr ""
+
+#: src/service/manager.js:163 _build/installed-tests/src/service/manager.js:163
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/manager.js:163
+#: _build/gsconnect@andyholmes.github.io/service/manager.js:163
+msgid "Discovery Disabled"
+msgstr ""
+
+#: src/service/manager.js:164 _build/installed-tests/src/service/manager.js:164
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/manager.js:164
+#: _build/gsconnect@andyholmes.github.io/service/manager.js:164
+msgid ""
+"Discovery has been disabled due to the number of devices on this network."
+msgstr ""
+
+#: src/service/init.js:347 _build/installed-tests/src/service/init.js:347
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/init.js:347
+#: _build/gsconnect@andyholmes.github.io/service/init.js:347
+msgid "OpenSSL not found"
+msgstr ""
+
+#: src/service/daemon.js:95 _build/installed-tests/src/service/daemon.js:95
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/daemon.js:95
+#: _build/gsconnect@andyholmes.github.io/service/daemon.js:95
+msgid "Settings Migrated"
+msgstr ""
+
+#: src/service/daemon.js:96 _build/installed-tests/src/service/daemon.js:96
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/daemon.js:96
+#: _build/gsconnect@andyholmes.github.io/service/daemon.js:96
+msgid ""
+"GSConnect has updated to support changes to the KDE Connect protocol. Some "
+"devices may need to be repaired."
+msgstr ""
+
+#: src/service/daemon.js:234 _build/installed-tests/src/service/daemon.js:234
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/daemon.js:234
+#: _build/gsconnect@andyholmes.github.io/service/daemon.js:234
+msgid "Click for help troubleshooting"
+msgstr ""
+
+#: src/service/daemon.js:245 _build/installed-tests/src/service/daemon.js:245
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/daemon.js:245
+#: _build/gsconnect@andyholmes.github.io/service/daemon.js:245
+msgid "Click for more information"
+msgstr ""
+
+#: src/service/daemon.js:347 _build/installed-tests/src/service/daemon.js:347
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/daemon.js:347
+#: _build/gsconnect@andyholmes.github.io/service/daemon.js:347
+msgid "Dial Number"
+msgstr ""
+
+#: src/service/daemon.js:404 _build/installed-tests/src/service/daemon.js:404
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/daemon.js:404
+#: _build/gsconnect@andyholmes.github.io/service/daemon.js:404
+msgid "List available devices"
+msgstr ""
+
+#: src/service/daemon.js:413 _build/installed-tests/src/service/daemon.js:413
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/daemon.js:413
+#: _build/gsconnect@andyholmes.github.io/service/daemon.js:413
+msgid "List all devices"
+msgstr ""
+
+#: src/service/daemon.js:422 _build/installed-tests/src/service/daemon.js:422
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/daemon.js:422
+#: _build/gsconnect@andyholmes.github.io/service/daemon.js:422
+msgid "Target Device"
+msgstr ""
+
+#: src/service/daemon.js:434 _build/installed-tests/src/service/daemon.js:434
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/daemon.js:434
+#: _build/gsconnect@andyholmes.github.io/service/daemon.js:434
+msgid "Pair"
+msgstr ""
+
+#: src/service/daemon.js:443 _build/installed-tests/src/service/daemon.js:443
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/daemon.js:443
+#: _build/gsconnect@andyholmes.github.io/service/daemon.js:443
+msgid "Unpair"
+msgstr ""
+
+#: src/service/daemon.js:464 _build/installed-tests/src/service/daemon.js:464
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/daemon.js:464
+#: _build/gsconnect@andyholmes.github.io/service/daemon.js:464
+msgid "Message Body"
+msgstr ""
+
+#: src/service/daemon.js:485 _build/installed-tests/src/service/daemon.js:485
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/daemon.js:485
+#: _build/gsconnect@andyholmes.github.io/service/daemon.js:485
+msgid "Notification App Name"
+msgstr ""
+
+#: src/service/daemon.js:494 _build/installed-tests/src/service/daemon.js:494
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/daemon.js:494
+#: _build/gsconnect@andyholmes.github.io/service/daemon.js:494
+msgid "Notification Body"
+msgstr ""
+
+#: src/service/daemon.js:503 _build/installed-tests/src/service/daemon.js:503
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/daemon.js:503
+#: _build/gsconnect@andyholmes.github.io/service/daemon.js:503
+msgid "Notification Icon"
+msgstr ""
+
+#: src/service/daemon.js:512 _build/installed-tests/src/service/daemon.js:512
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/daemon.js:512
+#: _build/gsconnect@andyholmes.github.io/service/daemon.js:512
+msgid "Notification ID"
+msgstr ""
+
+#: src/service/daemon.js:572 _build/installed-tests/src/service/daemon.js:572
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/daemon.js:572
+#: _build/gsconnect@andyholmes.github.io/service/daemon.js:572
+msgid "Show release version"
+msgstr ""
+
+#: src/service/device.js:195 _build/installed-tests/src/service/device.js:195
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/device.js:195
+#: _build/gsconnect@andyholmes.github.io/service/device.js:195
+#, javascript-format
+msgid "Bluetooth device at %s"
+msgstr ""
+
+#: src/service/device.js:223 _build/installed-tests/src/service/device.js:223
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/device.js:223
+#: _build/gsconnect@andyholmes.github.io/service/device.js:223
+#, javascript-format
+msgid "Verification key: %s"
+msgstr ""
+
+#: src/service/device.js:862 _build/installed-tests/src/service/device.js:862
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/device.js:862
+#: _build/gsconnect@andyholmes.github.io/service/device.js:862
+#, javascript-format
+msgid "Pair Request from %s"
+msgstr ""
+
+#: src/service/device.js:869 _build/installed-tests/src/service/device.js:869
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/device.js:869
+#: _build/gsconnect@andyholmes.github.io/service/device.js:869
+msgid "Reject"
+msgstr ""
+
+#: src/service/device.js:874 _build/installed-tests/src/service/device.js:874
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/device.js:874
+#: _build/gsconnect@andyholmes.github.io/service/device.js:874
+msgid "Accept"
+msgstr ""
+
+#: src/service/device.js:960 _build/installed-tests/src/service/device.js:960
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/device.js:960
+#: _build/gsconnect@andyholmes.github.io/service/device.js:960
+#, javascript-format
+msgid "Failed to pair with %s"
+msgstr ""
+
+#: src/service/device.js:961 _build/installed-tests/src/service/device.js:961
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/device.js:961
+#: _build/gsconnect@andyholmes.github.io/service/device.js:961
+msgid "Device clocks are out of sync"
+msgstr ""
+
+#: src/shell/device.js:124 _build/installed-tests/src/shell/device.js:124
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/shell/device.js:124
+#: _build/gsconnect@andyholmes.github.io/shell/device.js:124
+#, javascript-format
+msgid "%d%% (Estimating…)"
+msgstr ""
+
+#: src/shell/device.js:133 _build/installed-tests/src/shell/device.js:133
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/shell/device.js:133
+#: _build/gsconnect@andyholmes.github.io/shell/device.js:133
+#, javascript-format
+msgid "%d%% (%d∶%02d Until Full)"
+msgstr ""
+
+#: src/shell/device.js:141 _build/installed-tests/src/shell/device.js:141
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/shell/device.js:141
+#: _build/gsconnect@andyholmes.github.io/shell/device.js:141
+#, javascript-format
+msgid "%d%% (%d∶%02d Remaining)"
+msgstr ""
+
+#: src/shell/notification.js:73
+#: _build/installed-tests/src/shell/notification.js:73
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/shell/notification.js:73
+#: _build/gsconnect@andyholmes.github.io/shell/notification.js:73
+msgid "Reply"
+msgstr ""
+
+#: src/shell/notification.js:88
+#: _build/installed-tests/src/shell/notification.js:88
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/shell/notification.js:88
+#: _build/gsconnect@andyholmes.github.io/shell/notification.js:88
+msgid "Type a message"
+msgstr ""
+
+#: src/extension.js:49 _build/installed-tests/src/extension.js:49
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/extension.js:49
+#: _build/gsconnect@andyholmes.github.io/extension.js:49
+msgid "Sync between your devices"
+msgstr ""
+
+#: src/extension.js:113 _build/installed-tests/src/extension.js:113
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/extension.js:113
+#: _build/gsconnect@andyholmes.github.io/extension.js:113
+msgid "Mobile Settings"
+msgstr ""
+
+#: src/extension.js:158 _build/installed-tests/src/extension.js:158
+#: _build/_zip/usr/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/extension.js:158
+#: _build/gsconnect@andyholmes.github.io/extension.js:158
+#, javascript-format
+msgid "%d Connected"
+msgid_plural "%d Connected"
+msgstr[0] ""
+msgstr[1] ""
+
+#: webextension/gettext.js:31
+msgid "Share links with GSConnect, direct to the browser or by SMS."
+msgstr ""
+
+#: webextension/gettext.js:33
+msgid "Send To Mobile Device"
+msgstr ""
+
+#: webextension/gettext.js:35
+msgid "Service Unavailable"
+msgstr ""
+
+#: webextension/gettext.js:37
+msgid "No Device Found"
+msgstr ""
+
+#: webextension/gettext.js:39
+msgid "Open in Browser"
+msgstr ""

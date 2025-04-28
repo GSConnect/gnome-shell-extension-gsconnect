@@ -623,7 +623,7 @@ export const Window = GObject.registerClass({
             transient_for: this
         });
         
-        dialog.add_response("cancel",  _("_Cancel"));
+        dialog.add_response("cancel",  _("Cancel"));
         dialog.add_response("review_log",  _("Review Log"));
 
         // Enable debug logging and mark the current time
