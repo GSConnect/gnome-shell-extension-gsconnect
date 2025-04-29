@@ -23,7 +23,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
             <child>
               <object class="AdwHeaderBar" id="header-bar">
                 <property name="visible">True</property>
-                <child type="start">
+                <child type="end">
                   <object class="GtkToggleButton" id="button-search">
                     <property name="visible">True</property>
                     <property name="icon-name">edit-find-symbolic</property>
@@ -62,39 +62,23 @@ SPDX-License-Identifier: GPL-2.0-or-later
           </object>
         </child>
         <child>
-          <object class="GtkStack" id="stack">
+          <object class="GtkScrolledWindow" id="scrolled">
             <property name="visible">True</property>
-            <property name="transition-type">crossfade</property>
-            <property name="transition-duration">100</property>
             <child>
-              <object class="GtkScrolledWindow" id="scrolled">
-                <property name="visible">True</property>
+              <object class="AdwClamp">
+                <property name="margin-top">24</property>
+                <property name="margin-bottom">24</property>
                 <child>
-                  <object class="AdwClamp">
-                    <property name="margin-top">24</property>
-                    <property name="margin-bottom">24</property>
-                    <child>
-                      <object class="GtkListBox" id="list">
-                        <property name="visible">True</property>
-                        <property name="hexpand">True</property>
-                        <property name="valign">start</property>
-                        <property name="selection-mode">none</property>
-                        <style>
-                          <class name="boxed-list"/>
-                        </style>
-                      </object>
-                    </child>
+                  <object class="GtkListBox" id="list">
+                    <property name="visible">True</property>
+                    <property name="hexpand">True</property>
+                    <property name="valign">start</property>
+                    <property name="selection-mode">none</property>
+                    <style>
+                      <class name="boxed-list"/>
+                    </style>
                   </object>
                 </child>
-              </object>
-            </child>
-            <child>
-              <object class="AdwStatusPage" id="not-found-page">
-                <property name="visible">True</property>
-                <property name="vexpand">True</property>
-                <property name="title" translatable="yes">No Results Founds</property>
-                <property name="description" translatable="yes">Try a different search</property>
-                <property name="icon-name">edit-find-symbolic</property>
               </object>
             </child>
           </object>

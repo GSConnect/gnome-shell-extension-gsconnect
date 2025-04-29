@@ -1034,20 +1034,14 @@ export const Window = GObject.registerClass({
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/messaging-window.ui',
     Children: [
-        'sidebar-title', 'split-view',
-        'thread-list', 'toast-overlay'
+        'sidebar-title', 'split-view', 'button-search', 'search-entry',
+        'thread-list', 'toast-overlay', 'search-bar'
     ],
 }, class MessagingWindow extends Adw.ApplicationWindow {
 
     _init(params) {
         super._init(params);
-        const iconTheme = Gtk.IconTheme.get_for_display(Gdk.Display.get_default());
-        // Aggiungi il tuo prefisso GResource in cui hai messo le SVG
-        iconTheme.add_resource_path(
-            '/org/gnome/Shell/Extensions/GSConnect/icons'
-        );
         this.stack = new Map();
-        
         this.sidebar_title.set_subtitle(this.device.name);
         this.insert_action_group('device', this.device);
 
@@ -1068,6 +1062,41 @@ export const Window = GObject.registerClass({
             device: this.device,
         })
 
+        const contact_chooser_controller = new Gtk.EventControllerKey(); 
+        contact_chooser_controller.connect('key-pressed', (controller, keyval, keycode, state) => {
+            if (this.split_view.get_content() === this.contact_chooser) {
+                this.contact_chooser.onKeyPress(controller, keyval, keycode, state);
+            } else {
+                const char = String.fromCharCode(keyval);
+                if (/^[a-zA-Z0-9]$/.test(char)) { 
+                    this.button_search.active = true;
+                    this.search_entry.text = char;
+                    this.search_entry.set_position(-1);
+                }
+            }
+            return Gdk.EVENT_STOP;
+        });
+        this.add_controller(contact_chooser_controller);
+
+        // Make sure we're using the correct contacts store
+        this.button_search.bind_property(
+            'active',
+            this.search_bar,
+            'search-mode-enabled',
+            GObject.BindingFlags.SYNC_CREATE
+        );
+
+        this.search_entry.connect('search-changed', () => {
+            this.thread_list.invalidate_filter();
+        })
+
+        const search_esc_controller = new Gtk.EventControllerKey(); 
+        search_esc_controller.connect('key-pressed', (controller, keyval, keycode, state) => {
+            if (keyval === Gdk.KEY_Escape)
+                this.button_search.active = false;
+        });
+        this.search_entry.add_controller(search_esc_controller);
+
         this._numberSelectedId = this.contact_chooser.connect(
             'number-selected',
             this._onNumberSelected.bind(this)
@@ -1075,6 +1104,7 @@ export const Window = GObject.registerClass({
 
         // Threads
         this.internal_thread_list = [];
+        this.thread_list.set_filter_func(this._filter.bind(this));
         this.thread_list.set_sort_func(this._sortThreads);
 
         this._threadsChangedId = this.plugin.connect(
@@ -1173,6 +1203,8 @@ export const Window = GObject.registerClass({
     _onNewConversation() {
         this._sync();
         this.split_view.set_content(this.contact_chooser);
+        this.search_entry.set_key_capture_widget(null);
+        this.button_search.active = false;
         this.split_view.set_show_content(true);
         this.thread_list.select_row(null);
     }
@@ -1224,6 +1256,20 @@ export const Window = GObject.registerClass({
         if (row) {
             this.thread_id = row.thread_id;
         } 
+    }
+
+    /**
+     * Filters the contacts based on the current search entry text.
+     *
+     * @param {AddressRow} row - A row in the contact list.
+     * @returns {boolean} Whether the row matches the filter.
+     */
+    _filter(row) {
+        const re = new RegExp(this.search_entry.text, "i");
+        let match = re.test(row.title);
+        if (!match) 
+            match = re.test(row.subtitle);
+        return match;
     }
 
     _sortThreads(row1, row2) {

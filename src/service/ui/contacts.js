@@ -160,8 +160,7 @@ export const ContactChooser = GObject.registerClass({
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/contact-chooser.ui',
     Children: [
         'button-search', 'search-bar', 'search-entry',
-        'stack', 'scrolled', 'not-found-page', 'list', 
-        'header-bar', 
+        'scrolled', 'list', 'header-bar', 
             
     ],
 }, class ContactChooser extends Adw.NavigationPage {
@@ -185,38 +184,26 @@ export const ContactChooser = GObject.registerClass({
         );    
         
         // Make sure we're using the correct contacts store
-        this.search_bar.bind_property(
-            'search-mode-enabled',
-            this.button_search,
+        this.button_search.bind_property(
             'active',
+            this.search_bar,
+            'search-mode-enabled',
             GObject.BindingFlags.SYNC_CREATE
-        );            
+        );
         
-        this.button_search.connect("clicked", this._searchButtonClicked.bind(this));
-
         // Cleanup on ::destroy
         this.connect('destroy', this._onDestroy);
-        
-        this.search_entry.connect("search-changed", () => {
-            this.results_count = -1;
-            this.list.invalidate_filter();
-            if (this.results_count === -1) 
-                this.stack.visible_child = this.not_found_page;
-            else if (this.search_bar.search_mode_enabled) 
-                this.stack.visible_child = this.scrolled;
-        });
 
-        // Set the same controller for stack pages and header bar's button.
-        const button_controller = new Gtk.EventControllerKey();
-        const list_controller = new Gtk.EventControllerKey();
-        const not_found_controller = new Gtk.EventControllerKey(); 
-        not_found_controller.connect('key-pressed', this._onKeyPress.bind(this));
-        button_controller.connect('key-pressed', this._onKeyPress.bind(this));
-        list_controller.connect('key-pressed', this._onKeyPress.bind(this));
-        this.not_found_page.add_controller(not_found_controller);
-        this.button_search.add_controller(button_controller);
-        this.list.add_controller(list_controller);
+        const search_esc_controller = new Gtk.EventControllerKey(); 
+        search_esc_controller.connect('key-pressed', (controller, keyval, keycode, state) => {
+            if (keyval === Gdk.KEY_Escape)
+                this.button_search.active = false;
+        });
+        this.search_entry.add_controller(search_esc_controller);
+
+        this.search_entry.connect("search-changed", this._onSearchChanged.bind(this));
     }
+
     /**
      * Getter and Setter for the contact store.
      *
@@ -357,6 +344,7 @@ export const ContactChooser = GObject.registerClass({
                     name: _('Send to %s').format(entry.text),
                     numbers: [{type: 'unknown', value: entry.text}],
                 });
+                dynamic.connect('activated', this._onNumberSelected.bind(this));
                 dynamic.__tmp = true;
                 this.list.append(dynamic);
                 this.row_list.push(dynamic);
@@ -370,13 +358,13 @@ export const ContactChooser = GObject.registerClass({
                 dynamic.contact.numbers[0].value = address;
 
                 // Update UI
-                dynamic.name_label.label = _('Send to %s').format(address);
-                dynamic.address_label.label = address;
+                dynamic.title = _('Send to %s').format(address);
+                dynamic.subtitle = address;
             }
 
         // ...otherwise remove any dynamic contact that's been created
         } else if (dynamic && dynamic.__tmp) {
-            dynamic.destroy();
+            this.list.remove(dynamic);
         }
 
         this.list.invalidate_filter();
@@ -415,14 +403,8 @@ export const ContactChooser = GObject.registerClass({
     _filter(row) {
         const re = new RegExp(this.search_entry.text, "i");
         let match = re.test(row.title);
-        if (match) 
-            this.results_count++;
-        else {
-            match = re.test(row.subtitle)
-            if (match) 
-                this.results_count++;
-            
-        }
+        if (!match) 
+            match = re.test(row.subtitle);
         return match;
     }
 
@@ -494,20 +476,6 @@ export const ContactChooser = GObject.registerClass({
             logError(e);
         }
     }
-
-    /**
-     * Handles click events on the search button.
-     * 
-     * @returns {void}
-     */
-    _searchButtonClicked() {
-        this.search_bar.search_mode_enabled = !this.search_bar.search_mode_enabled;
-        if (!this.search_bar.search_mode_enabled) {
-            this.search_entry.set_key_capture_widget(null);
-        } else {
-            this.search_entry.set_key_capture_widget(this);
-        }
-    }
     
     /**
      * Handles key press events in the search entry field.
@@ -519,10 +487,10 @@ export const ContactChooser = GObject.registerClass({
      *
      * @returns {Gdk.EventSequence} Whether to stop handling other event handlers for this event sequence.
      */
-    _onKeyPress(controller, keyval, keycode, state)  {
-        this._searchButtonClicked();
+    onKeyPress(controller, keyval, keycode, state)  {
         const char = String.fromCharCode(keyval);
         if (/^[a-zA-Z0-9]$/.test(char)) { 
+            this.button_search.active = true;
             this.search_entry.text = char;
             this.search_entry.set_position(-1);
         }
