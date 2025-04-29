@@ -87,6 +87,13 @@ const Dialog = GObject.registerClass({
             this._onNumberSelected.bind(this)
         );
         
+        const contact_chooser_controller = new Gtk.EventControllerKey(); 
+        contact_chooser_controller.connect('key-pressed', (controller, keyval, keycode, state) => {
+            if (this.nav_view.get_visible_page() === this.contact_chooser)
+                this.contact_chooser.onKeyPress(controller, keyval, keycode, state);
+        });
+        this.add_controller(contact_chooser_controller);
+
         this.restoreGeometry('legacy-messaging-dialog');
     }
 

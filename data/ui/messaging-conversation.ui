@@ -57,6 +57,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
             <property name="hscrollbar-policy">never</property>
             <child>
               <object class="AdwClamp">
+                <property name="maximum-size">800</property>
                 <child>
                   <object class="GtkListBox" id="list">
                     <property name="visible">True</property>
@@ -119,6 +120,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
         </property>
         <child type="bottom">
           <object class="AdwClamp">
+            <property name="maximum-size">800</property>
             <child>
               <object class="GSConnectMessagingTextInput" id="message-text-input"/>
             </child>
