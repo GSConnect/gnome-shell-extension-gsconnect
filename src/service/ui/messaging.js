@@ -9,6 +9,7 @@ import Gtk from 'gi://Gtk?version=4.0';
 import Adw from 'gi://Adw';
 import Pango from 'gi://Pango';
 import Gio from 'gi://Gio';
+import { MessagingInputText } from './components.js'; // this dependency is needed for template build
 
 import * as Contacts from './contacts.js';
 import * as Sms from '../plugins/sms.js';
@@ -400,7 +401,7 @@ const Conversation = GObject.registerClass({
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/messaging-conversation.ui',
     Children: [
-        'entry', 'list', 'scrolled',
+        'message-text-input', 'list', 'scrolled',
         'pending', 'pending-box', 'avatar',
         'content-title', 'spinner', 'spinner-anim',
         'partecipants-button'
@@ -413,7 +414,7 @@ const Conversation = GObject.registerClass({
 
         this.device.bind_property(
             'connected',
-            this.entry,
+            this.message_text_input,
             'sensitive',
             GObject.BindingFlags.SYNC_CREATE
         );
@@ -477,6 +478,7 @@ const Conversation = GObject.registerClass({
         this.list.set_header_func(this._headerMessages);
         this.list.set_sort_func(this._sortMessages);
         this._populateMessages();
+        this.message_text_input.connect('message-send', this._onSendMessage.bind(this));
 
         // Cleanup on ::destroy
         this.connect('destroy', this._onDestroy);
@@ -527,11 +529,7 @@ const Conversation = GObject.registerClass({
 
         // TODO: Mark the entry as insensitive for group messages
         if (this.addresses.length > 1) {
-            this.entry.placeholder_text = _('Not available');
-            this.entry.secondary_icon_name = null;
-            this.entry.secondary_icon_tooltip_text = null;
-            this.entry.sensitive = false;
-            this.entry.tooltip_text = null;
+            this.message_text_input.sensitive = false;
         }
     }
 
@@ -667,17 +665,17 @@ const Conversation = GObject.registerClass({
         return false;
     }
 
-    _onSendMessage(entry, signal_id, event) {
+    _onSendMessage() {
         // Don't send empty texts
-        if (!this.entry.text.trim())
+        if (!this.message_text_input.text.trim())
             return;
 
         // Send the message
-        this.plugin.sendMessage(this.addresses, this.entry.text);
+        this.plugin.sendMessage(this.addresses, this.message_text_input.text);
 
         // Add a phony message in the pending box
         const message = new Gtk.Label({
-            label: URI.linkify(this.entry.text),
+            label: URI.linkify(this.message_text_input.text),
             halign: Gtk.Align.END,
             selectable: true,
             use_markup: true,
@@ -696,7 +694,7 @@ const Conversation = GObject.registerClass({
         this.notify('has-pending');
 
         // Clear the entry
-        this.entry.text = '';
+        this.message_text_input.text = '';
 
         GLib.timeout_add(GLib.PRIORITY_DEFAULT, 50, () => {
             const animation = this._createScrollbarAnim(1);
@@ -887,19 +885,13 @@ const Conversation = GObject.registerClass({
         }
     }
 
-    _onEmojiPicked(widget, emoticon) {
-        const text = this.entry.get_text();
-        this.entry.set_text(text + emoticon);
-    }
-
     /**
      * Set the contents of the message entry
      *
      * @param {string} text - The message to place in the entry
      */
     setMessage(text) {
-        this.entry.text = text;
-        this.entry.emit('move-cursor', 0, text.length, false);
+        this.message_text_input.text = text;
     }
 });
 

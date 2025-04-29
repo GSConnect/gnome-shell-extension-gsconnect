@@ -5,6 +5,7 @@
 import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk?version=4.0';
 import Adw from 'gi://Adw';
+import { MessagingInputText } from './components.js'; // this dependency is needed for template build
 
 import * as Contacts from '../ui/contacts.js';
 import * as URI from '../utils/uri.js';
@@ -45,7 +46,7 @@ const Dialog = GObject.registerClass({
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/legacy-messaging-dialog.ui',
     Children: [
         'infobar', 'nav-view', 'message-avatar', 'message-editor',
-        'message-label', 'entry', 'title-widget', 'send-text'
+        'message-label', 'message-text-input', 'title-widget',
     ],
     Signals: {
         'response': {
@@ -66,31 +67,19 @@ const Dialog = GObject.registerClass({
             GObject.BindingFlags.INVERT_BOOLEAN
         );
 
-        // Message Entry/Send Button
-        this.device.bind_property(
-            'connected',
-            this.entry,
-            'sensitive',
-            GObject.BindingFlags.DEFAULT
-        );
-
         this._connectedId = this.device.connect(
             'notify::connected',
             this._onStateChanged.bind(this)
         );
-
-        this._entryChangedId = this.entry.buffer.connect(
-            'inserted-text',
-            this._onStateChanged.bind(this)
-        );
-        this._entryChangedId = this.entry.buffer.connect(
-            'deleted-text',
-            this._onStateChanged.bind(this)
-        );
+        
+        this.message_text_input.connect('message-send',  () => {
+            this.response = Gtk.ResponseType.OK;
+        });
     
         this.contact_chooser = new Contacts.ContactChooser({
             device: this.device,
         });
+
         this.contact_chooser.show_back_button = false;
         this.nav_view.push(this.contact_chooser);
         this._numberSelectedId = this.contact_chooser.connect(
@@ -112,7 +101,6 @@ const Dialog = GObject.registerClass({
         if (this._numberSelectedId !== undefined) {
             this.contact_chooser.disconnect(this._numberSelectedId);
         }
-        this.entry.buffer.disconnect(this._entryChangedId);
         this.device.disconnect(this._connectedId);
         this.saveGeometry();
 
@@ -127,12 +115,12 @@ const Dialog = GObject.registerClass({
     set response(response_id) {
         if (response_id === Gtk.ResponseType.OK) {
             // Refuse to send empty or whitespace only texts
-            if (!this.entry.buffer.text.trim())
+            if (!this.message_text_input.text.trim())
                 return;
 
             this.plugin.sendMessage(
                 this.addresses,
-                this.entry.buffer.text,
+                this.message_text_input.text,
                 1
             );
         }
@@ -220,26 +208,6 @@ const Dialog = GObject.registerClass({
     set plugin(plugin) {
         this._plugin = plugin;
     }
-    /**
-     * Trigger sending the current message.
-     *
-     * @private
-     */
-    _sendMessage() {
-        this.response = Gtk.ResponseType.OK;
-    }
-
-    /**
-     * Handle emoji selection and insert into message.
-     *
-     * @private
-     * @param {Gtk.Widget} widget - The widget triggering the event.
-     * @param {string} emoticon - The selected emoji/emoticon.
-     */
-    _onEmojiPicked(widget, emoticon) {
-        const text = this.entry.buffer.text;
-        this.entry.buffer.text = text + emoticon;
-    }
 
     /**
      * Handle activation of a hyperlink inside the message.
@@ -280,17 +248,8 @@ const Dialog = GObject.registerClass({
      * @private
      */
     _onStateChanged() {
-        if (this.device.connected) {
-            this.entry.sensitive = true;
-            if (this.entry.buffer.text.trim().length > 1) {
-                this.send_text.sensitive = true;
-            } else {
-                this.send_text.sensitive = false;
-            }
-        } else {
-            this.entry.sensitive = false;
-            this.send_text.sensitive = false;
-        }
+        if (!this.device.connected)
+            this.message_text_input.sensitive = false;
     }
 
     /**
@@ -299,7 +258,7 @@ const Dialog = GObject.registerClass({
      * @param {string} text - The message text to set.
      */
     setMessage(text) {
-        this.entry.buffer.text = text;
+        this.message_text_input.text = text;
     }
 });
 

@@ -2,10 +2,11 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-import Gio from 'gi://Gio';
 import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk?version=4.0';
 import Adw from 'gi://Adw';
+import { MessagingInputText } from './components.js'; // this dependency is needed for template build
+
 
 import * as URI from '../utils/uri.js';
 import '../utils/ui.js';
@@ -40,7 +41,7 @@ const ReplyDialog = GObject.registerClass({
         ),
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/notification-reply-dialog.ui',
-    Children: ['title-widget', 'infobar', 'notification-title', 'notification-body', 'entry', 'send-text'],
+    Children: ['title-widget', 'infobar', 'notification-title', 'notification-body', 'message-text-input'],
     Signals: {
         'response': {
             param_types: [GObject.TYPE_OBJECT, GObject.TYPE_INT],
@@ -60,6 +61,14 @@ const ReplyDialog = GObject.registerClass({
             GObject.BindingFlags.INVERT_BOOLEAN
         );
 
+        // Message text input
+        this.device.bind_property(
+            'connected',
+            this.message_text_input,
+            'sensitive',
+            GObject.BindingFlags.INVERT_BOOLEAN
+        );
+
         // Notification Data
         this.title_widget.title = this.notification.appName;
         this.title_widget.subtitle = this.device.name;
@@ -69,24 +78,14 @@ const ReplyDialog = GObject.registerClass({
         
         this.device.bind_property(
             'connected',
-            this.send_text,
+            this.message_text_input,
             'sensitive',
             GObject.BindingFlags.DEFAULT
         );
 
-        this._connectedId = this.device.connect(
-            'notify::connected',
-            this._onStateChanged.bind(this)
-        );
-
-        this._entryChangedId = this.entry.buffer.connect(
-            'inserted-text',
-            this._onStateChanged.bind(this)
-        );
-        this._entryChangedId = this.entry.buffer.connect(
-            'deleted-text',
-            this._onStateChanged.bind(this)
-        );
+        this.message_text_input.connect('message-send', () => {
+            this.response = Gtk.ResponseType.OK;
+        });
 
         this.restoreGeometry('notification-reply-dialog');
     }
@@ -102,12 +101,12 @@ const ReplyDialog = GObject.registerClass({
     set response(response) {
         if (response === Gtk.ResponseType.OK) {
             // Refuse to send empty or whitespace only messages
-            if (!this.entry.buffer.text.trim())
+            if (!this.message_text_input.text.trim())
                 return;
 
             this.plugin.replyNotification(
                 this.uuid,
-                this.entry.buffer.text
+                this.message_text_input.text
             );
         }
         this.emit('response', this, response);
@@ -153,10 +152,6 @@ const ReplyDialog = GObject.registerClass({
         }
     }
 
-    _sendMessage() {
-        this.response = Gtk.ResponseType.OK;
-    }
-
     _onActivateLink(label, uri) {
         Gtk.show_uri_on_window(
             this.get_toplevel(),
@@ -167,17 +162,6 @@ const ReplyDialog = GObject.registerClass({
         return true;
     }
 
-    _onEmojiPicked(widget, emoticon) {
-        const text = this.entry.get_text();
-        this.entry.set_text(text + emoticon);
-    }
-
-    _onStateChanged() {
-        if (this.device.connected && this.entry.buffer.text.trim())
-            this.send_text.sensitive = true;
-        else
-            this.send_text.sensitive = false;
-    }
 });
 
 export default ReplyDialog;

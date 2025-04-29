@@ -56,55 +56,59 @@ SPDX-License-Identifier: GPL-2.0-or-later
             <property name="visible">True</property>
             <property name="hscrollbar-policy">never</property>
             <child>
-              <object class="GtkListBox" id="list">
-                <property name="visible">True</property>
-                <property name="vexpand">True</property>
-                <property name="hexpand">True</property>
-                <property name="selection-mode">none</property>
-                <property name="activate-on-single-click">False</property>
-                <style>
-                  <class name="message-list"/>
-                  <class name="background"/>
-                </style>
+              <object class="AdwClamp">
                 <child>
-                  <object class="GtkListBoxRow" id="spinner">
+                  <object class="GtkListBox" id="list">
                     <property name="visible">True</property>
-                    <property name="can-focus">True</property>
+                    <property name="vexpand">True</property>
                     <property name="hexpand">True</property>
-                    <property name="activatable">False</property>
-                    <property name="selectable">False</property>
-                    <property name="height-request">40</property>
+                    <property name="selection-mode">none</property>
+                    <property name="activate-on-single-click">False</property>
+                    <style>
+                      <class name="message-list"/>
+                      <class name="background"/>
+                    </style>
                     <child>
-                      <object class="AdwSpinner" id="spinner-anim">
-                        <property name="halign">center</property>
-                        <property name="valign">center</property>
-                        <property name="width-request">20</property>
-                        <property name="height-request">20</property>
+                      <object class="GtkListBoxRow" id="spinner">
+                        <property name="visible">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="hexpand">True</property>
+                        <property name="activatable">False</property>
+                        <property name="selectable">False</property>
+                        <property name="height-request">40</property>
+                        <child>
+                          <object class="AdwSpinner" id="spinner-anim">
+                            <property name="halign">center</property>
+                            <property name="valign">center</property>
+                            <property name="width-request">20</property>
+                            <property name="height-request">20</property>
+                          </object>
+                        </child>
+                        <style>
+                          <class name="messages-loading"/>
+                        </style>
                       </object>
                     </child>
-                    <style>
-                      <class name="messages-loading"/>
-                    </style>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkListBoxRow" id="pending">
-                    <property name="visible" bind-source="GSConnectMessagingConversation" bind-property="has-pending" bind-flags="sync-create"/>
-                    <property name="hexpand">True</property>
-                    <property name="activatable">False</property>
-                    <property name="selectable">False</property>
-                    <style>
-                      <class name="message-pending"/>
-                    </style>
                     <child>
-                      <object class="GtkBox" id="pending-box">
-                        <property name="visible">True</property>
-                        <property name="orientation">vertical</property>
-                        <property name="margin-top">6</property>
-                        <property name="margin-bottom">6</property>
-                        <property name="margin-start">50</property>
-                        <property name="margin-end">6</property>
-                        <property name="spacing">3</property>
+                      <object class="GtkListBoxRow" id="pending">
+                        <property name="visible" bind-source="GSConnectMessagingConversation" bind-property="has-pending" bind-flags="sync-create"/>
+                        <property name="hexpand">True</property>
+                        <property name="activatable">False</property>
+                        <property name="selectable">False</property>
+                        <style>
+                          <class name="message-pending"/>
+                        </style>
+                        <child>
+                          <object class="GtkBox" id="pending-box">
+                            <property name="visible">True</property>
+                            <property name="orientation">vertical</property>
+                            <property name="margin-top">6</property>
+                            <property name="margin-bottom">6</property>
+                            <property name="margin-start">50</property>
+                            <property name="margin-end">6</property>
+                            <property name="spacing">3</property>
+                          </object>
+                        </child>
                       </object>
                     </child>
                   </object>
@@ -116,60 +120,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
         <child type="bottom">
           <object class="AdwClamp">
             <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="orientation">horizontal</property>
-                <property name="margin-end">10</property>
-                <property name="margin-start">10</property>
-                <property name="margin-top">10</property>
-                <property name="margin-bottom">10</property>
-                <property name="spacing">10</property>
-                <child>
-                  <object class="GtkMenuButton">
-                    <property name="visible">True</property>
-                    <property name="icon-name">emoji-people-symbolic</property>
-                    <property name="popover">
-                      <object class="GtkEmojiChooser" id="emoji_chooser">
-                        <signal name="emoji-picked" handler="_onEmojiPicked"/>
-                      </object>
-                    </property>
-                    <style>
-                      <class name="flat"/>
-                    </style>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkEntry" id="entry">
-                    <property name="visible">True</property>
-                    <property name="hexpand">True</property>
-                    <property name="placeholder-text" translatable="yes">Write a message…</property>
-                    <signal name="activate" handler="_onSendMessage" swapped="no"/>
-                    <signal name="changed" handler="_onEntryChanged" swapped="no"/>
-                    <property name="has-tooltip">True</property>
-                    <property name="tooltip-text" translatable="yes">Type a message and press Enter to send</property>
-                    <accessibility>
-                      <property name="label" translatable="yes">Message Entry</property>
-                      <property name="description" translatable="yes"> Type a message and press Enter to send </property>
-                    </accessibility>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkButton" id="send-text">
-                    <property name="icon-name">paper-plane-symbolic</property>
-                    <property name="valign">center</property>
-                    <signal name="clicked" handler="_onSendMessage" swapped="no"/>
-                    <property name="has-tooltip">True</property>
-                    <property name="tooltip-text" translatable="yes">Send</property>
-                    <accessibility>
-                      <property name="label" translatable="yes">Send</property>
-                    </accessibility>
-                    <style>
-                      <class name="suggested-action"/>
-                      <class name="circular"/>
-                    </style>
-                  </object>
-                </child>
-              </object>
+              <object class="GSConnectMessagingTextInput" id="message-text-input"/>
             </child>
           </object>
         </child>
