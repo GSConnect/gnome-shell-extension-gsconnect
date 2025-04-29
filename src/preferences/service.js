@@ -561,23 +561,25 @@ export const Window = GObject.registerClass({
      * @returns {void}
      */
     _aboutDialog() {
-        if (this._about === undefined) {
-            this._about = new Adw.AboutDialog({
-                application_name :  _("GSConnect"),
-                application_icon : "org.gnome.Shell.Extensions.GSConnect",
-                comments: _('A complete KDE Connect implementation for GNOME'),
-                version : Config.PACKAGE_VERSION.toString(),
-                license_type: Gtk.License.GPL_2_0,
-                website: Config.PACKAGE_URL,
-                translator_credits: _('translator-credits'),
-                developers: [
-                    "Andy Holmes <andrew.g.r.holmes@gmail.com>",
-                    "Bertrand Lacoste <getzze@gmail.com>",
-                    "Frank Dana <ferdnyc@gmail.com>"
-                ],
-            });
-        }
-        this._about.present(this);
+        const about = new Adw.AboutDialog({
+            application_name :  _("GSConnect"),
+            application_icon : "org.gnome.Shell.Extensions.GSConnect",
+            comments: _('A complete KDE Connect implementation for GNOME'),
+            version : Config.PACKAGE_VERSION.toString(),
+            license_type: Gtk.License.GPL_2_0,
+            website: Config.PACKAGE_URL,
+            translator_credits: _('translator-credits'),
+            designers: [
+                "Giorgio Dramis <dramisgiorgio@outlook.com>",
+                "Matthieu Lorier <loriermatthieu@gmail.com>",
+            ],
+            developers: [
+                "Andy Holmes <andrew.g.r.holmes@gmail.com>",
+                "Bertrand Lacoste <getzze@gmail.com>",
+                "Frank Dana <ferdnyc@gmail.com>",
+            ],
+        });
+        about.present(this);
     
     }
 
