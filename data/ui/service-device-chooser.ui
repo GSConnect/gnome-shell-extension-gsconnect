@@ -12,6 +12,8 @@ SPDX-License-Identifier: GPL-2.0-or-later
 
   <template class="GSConnectServiceDeviceChooser" parent="AdwApplicationWindow">
     <property name="title" translatable="yes">Select Device</property>
+    <property name="width-request">360</property>
+    <property name="height-request">640</property>
     <child>
       <object class="AdwToolbarView">
         <property name="visible">True</property>

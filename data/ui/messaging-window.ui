@@ -14,6 +14,8 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <property name="icon-name">org.gnome.Shell.Extensions.GSConnect-symbolic</property>
     <property name="default-height">700</property>
     <property name="default-width">1150</property>
+    <property name="width-request">360</property>
+    <property name="height-request">640</property>
     <child>
       <object class="AdwBreakpoint">
         <condition>max-width: 800sp</condition>

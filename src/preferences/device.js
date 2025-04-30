@@ -120,10 +120,15 @@ const ActionRowBox = GObject.registerClass({
     _onItemsChanged(model, position, removed, added) {
         // Clear the menu
         this.remove_all();
-        this.buildActionRowsFromMenuModel(this.model).forEach(row => {
+        const rows = this.buildActionRowsFromMenuModel(this.model);
+        this.visible = false;
+        rows.forEach(row => {
+            if (row.visible)
+                this.visible = true;
             this.append(row);
         });
-        this.append(this._create_encription_row());
+        if (this.visible)
+            this.append(this._create_encription_row());
     }
     
     /**
@@ -179,7 +184,8 @@ const ActionRowBox = GObject.registerClass({
                     for (const row of childRows) {
                         expander.add_row(row);
                     }
-                    rows.push(expander);
+                    if (childRows.length > 0)
+                        rows.push(expander);
                 }
             } else {
                 const row = new Adw.ActionRow({
@@ -424,10 +430,18 @@ export const DeviceNavigationPage = GObject.registerClass({
         this._advancedSettings();
 
         // Add device's action rows
-        this.action_row_box.add(new ActionRowBox({
+        const action_list_box = new ActionRowBox({
             action_group: this.device.action_group,
             model: this.device.menu,
-        }));
+        });
+        action_list_box.bind_property(
+            'visible',
+            this.action_row_box,
+            'visible',
+            GObject.BindingFlags.SYNC_CREATE
+            
+        )
+        this.action_row_box.child = action_list_box;
     }
     
     /**
@@ -680,7 +694,7 @@ export const DeviceNavigationPage = GObject.registerClass({
             start_icon_name: "list-add-symbolic"
         })
         row.connect('activated', this._onEditCommand.bind(this));
-        this.command_list.add(row);
+        this.command_list.append(row);
     }
 
     /**
@@ -1006,7 +1020,7 @@ export const DeviceNavigationPage = GObject.registerClass({
      * @param {Gtk.Widget} widget - The widget that was clicked to toggle the notification setting.
      * @returns {void}
      */
-    _toggleNotification(widgeclickedt) {
+    _toggleNotification(widget) {
         try {
             const row = widget.get_ancestor(Gtk.ListBoxRow.$gtype);
             const settings = this._pluginSettings('notification');
@@ -1226,7 +1240,7 @@ export const DeviceNavigationPage = GObject.registerClass({
         });
         row.edit_button.connect('clicked', this._onEditCommand.bind(this));
         row.delete_button.connect('clicked', this._onDeleteCommand.bind(this));
-        this.command_list.add(row);
+        this.command_list.append(row);
     }
 
     /**

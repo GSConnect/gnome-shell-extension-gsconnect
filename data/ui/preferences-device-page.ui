@@ -9,7 +9,6 @@ SPDX-License-Identifier: GPL-2.0-or-later
 <interface domain="org.gnome.Shell.Extensions.GSConnect">
   <requires lib="gtk" version="4.0"/>
   <requires lib="Adw" version="1.0"/>
-  
   <template class="GSConnectDeviceNavigationPage" parent="AdwNavigationPage">
     <property name="title" translatable="yes">Device Page</property>
     <property name="tag">content</property>
@@ -33,142 +32,183 @@ SPDX-License-Identifier: GPL-2.0-or-later
                   </object>
                 </child>
                 <property name="content">
-                  <object class="AdwPreferencesPage">
-                    <property name="visible">True</property>
+                  <object class="GtkScrolledWindow">
                     <child>
-                      <!-- This is for the device GMenuModel -->
-                      <object class="AdwPreferencesGroup" id="action-row-box">
+                      <object class="GtkBox">
                         <property name="visible">True</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="AdwPreferencesGroup">
-                        <property name="visible">True</property>
+                        <property name="orientation">vertical</property>
                         <child>
-                          <object class="AdwActionRow">
+                          <object class="AdwClamp" id="action-row-box">
                             <property name="visible">True</property>
-                            <property name="title" translatable="yes">Sharing</property>
-                            <property name="activatable">True</property>
-                            <property name="action-name">navigation.push</property>
-                            <property name="action-target">'sharing'</property>
-                            <child type="prefix">
-                              <object class="GtkImage">
-                                <property name="visible">True</property>
-                                <property name="icon-name">preferences-system-sharing-symbolic</property>
+                            <property name="margin-top">20</property>
+                            <property name="margin-bottom">20</property>
+                            <property name="margin-start">12</property>
+                            <property name="margin-end">12</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwClamp">
+                            <property name="visible">True</property>
+                            <property name="margin-top">20</property>
+                            <property name="margin-bottom">20</property>
+                            <property name="margin-start">12</property>
+                            <property name="margin-end">12</property>
+                            <child>
+                              <object class="GtkListBox">
+                                <child>
+                                  <object class="AdwActionRow">
+                                    <property name="visible">True</property>
+                                    <property name="title" translatable="yes">Sharing</property>
+                                    <property name="activatable">True</property>
+                                    <property name="action-name">navigation.push</property>
+                                    <property name="action-target">'sharing'</property>
+                                    <child type="prefix">
+                                      <object class="GtkImage">
+                                        <property name="visible">True</property>
+                                        <property name="icon-name">preferences-system-sharing-symbolic</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwActionRow">
+                                    <property name="visible">True</property>
+                                    <property name="title" translatable="yes">Battery</property>
+                                    <property name="activatable">True</property>
+                                    <property name="action-name">navigation.push</property>
+                                    <property name="action-target">'battery'</property>
+                                    <child type="prefix">
+                                      <object class="GtkImage">
+                                        <property name="visible">True</property>
+                                        <property name="icon-name">battery-symbolic</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwActionRow">
+                                    <property name="visible">True</property>
+                                    <property name="title" translatable="yes">Commands</property>
+                                    <property name="activatable">True</property>
+                                    <property name="action-name">navigation.push</property>
+                                    <property name="action-target">'commands'</property>
+                                    <child type="prefix">
+                                      <object class="GtkImage">
+                                        <property name="visible">True</property>
+                                        <property name="icon-name">utilities-terminal-symbolic</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwActionRow">
+                                    <property name="visible">True</property>
+                                    <property name="title" translatable="yes">Notifications</property>
+                                    <property name="activatable">True</property>
+                                    <property name="action-name">navigation.push</property>
+                                    <property name="action-target">'notifications'</property>
+                                    <child type="prefix">
+                                      <object class="GtkImage">
+                                        <property name="visible">True</property>
+                                        <property name="icon-name">preferences-system-notifications-symbolic</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwActionRow">
+                                    <property name="visible">True</property>
+                                    <property name="title" translatable="yes">Telephony</property>
+                                    <property name="activatable">True</property>
+                                    <property name="action-name">navigation.push</property>
+                                    <property name="action-target">'telephony'</property>
+                                    <child type="prefix">
+                                      <object class="GtkImage">
+                                        <property name="visible">True</property>
+                                        <property name="icon-name">phone-old-symbolic</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <style>
+                                  <class name="boxed-list"/>
+                                </style>
                               </object>
                             </child>
                           </object>
                         </child>
                         <child>
-                          <object class="AdwActionRow">
+                          <object class="AdwClamp">
                             <property name="visible">True</property>
-                            <property name="title" translatable="yes">Battery</property>
-                            <property name="activatable">True</property>
-                            <property name="action-name">navigation.push</property>
-                            <property name="action-target">'battery'</property>
-                            <child type="prefix">
-                              <object class="GtkImage">
-                                <property name="visible">True</property>
-                                <property name="icon-name">battery-symbolic</property>
+                            <property name="margin-top">20</property>
+                            <property name="margin-bottom">20</property>
+                            <property name="margin-start">12</property>
+                            <property name="margin-end">12</property>
+                            <child>
+                              <object class="GtkListBox">
+                                <child>
+                                  <object class="AdwActionRow">
+                                    <property name="visible">True</property>
+                                    <property name="title" translatable="yes">Keyboard Shortcuts</property>
+                                    <property name="activatable">True</property>
+                                    <property name="action-name">navigation.push</property>
+                                    <property name="action-target">'keyboard_shurtcuts'</property>
+                                    <child type="prefix">
+                                      <object class="GtkImage">
+                                        <property name="visible">True</property>
+                                        <property name="icon-name">preferences-desktop-keyboard-shortcuts-symbolic</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwActionRow">
+                                    <property name="visible">True</property>
+                                    <property name="title" translatable="yes">Advanced</property>
+                                    <property name="activatable">True</property>
+                                    <property name="action-name">navigation.push</property>
+                                    <property name="action-target">'advanced'</property>
+                                    <child type="prefix">
+                                      <object class="GtkImage">
+                                        <property name="visible">True</property>
+                                        <property name="icon-name">preferences-system-symbolic</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <style>
+                                  <class name="boxed-list"/>
+                                </style>
                               </object>
                             </child>
                           </object>
                         </child>
                         <child>
-                          <object class="AdwActionRow">
+                          <object class="AdwClamp">
                             <property name="visible">True</property>
-                            <property name="title" translatable="yes">Commands</property>
-                            <property name="activatable">True</property>
-                            <property name="action-name">navigation.push</property>
-                            <property name="action-target">'commands'</property>
-                            <child type="prefix">
-                              <object class="GtkImage">
-                                <property name="visible">True</property>
-                                <property name="icon-name">utilities-terminal-symbolic</property>
+                            <property name="margin-top">20</property>
+                            <property name="margin-bottom">20</property>
+                            <property name="margin-start">12</property>
+                            <property name="margin-end">12</property>
+                            <child>
+                              <object class="GtkListBox">
+                                <child>
+                                  <object class="AdwButtonRow" id="unpair-device">
+                                    <property name="visible">True</property>
+                                    <property name="title" translatable="yes">Unpair Device</property>
+                                    <property name="activatable">True</property>
+                                    <property name="action-name">settings.unpair</property>
+                                    <property name="start-icon-name">phonelink-off-symbolic</property>
+                                    <style>
+                                      <class name="destructive-action"/>
+                                    </style>
+                                  </object>
+                                </child>
+                                <style>
+                                  <class name="boxed-list"/>
+                                </style>
                               </object>
                             </child>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="AdwActionRow">
-                            <property name="visible">True</property>
-                            <property name="title" translatable="yes">Notifications</property>
-                            <property name="activatable">True</property>
-                            <property name="action-name">navigation.push</property>
-                            <property name="action-target">'notifications'</property>
-                            <child type="prefix">
-                              <object class="GtkImage">
-                                <property name="visible">True</property>
-                                <property name="icon-name">preferences-system-notifications-symbolic</property>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="AdwActionRow">
-                            <property name="visible">True</property>
-                            <property name="title" translatable="yes">Telephony</property>
-                            <property name="activatable">True</property>
-                            <property name="action-name">navigation.push</property>
-                            <property name="action-target">'telephony'</property>
-                            <child type="prefix">
-                              <object class="GtkImage">
-                                <property name="visible">True</property>
-                                <property name="icon-name">phone-old-symbolic</property>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="AdwPreferencesGroup">
-                        <property name="visible">True</property>
-                        <child>
-                          <object class="AdwActionRow">
-                            <property name="visible">True</property>
-                            <property name="title" translatable="yes">Keyboard Shortcuts</property>
-                            <property name="activatable">True</property>
-                            <property name="action-name">navigation.push</property>
-                            <property name="action-target">'keyboard_shurtcuts'</property>
-                            <child type="prefix">
-                              <object class="GtkImage">
-                                <property name="visible">True</property>
-                                <property name="icon-name">preferences-desktop-keyboard-shortcuts-symbolic</property>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="AdwActionRow">
-                            <property name="visible">True</property>
-                            <property name="title" translatable="yes">Advanced</property>
-                            <property name="activatable">True</property>
-                            <property name="action-name">navigation.push</property>
-                            <property name="action-target">'advanced'</property>
-                            <child type="prefix">
-                              <object class="GtkImage">
-                                <property name="visible">True</property>
-                                <property name="icon-name">preferences-system-symbolic</property>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="AdwPreferencesGroup">
-                        <property name="visible">True</property>
-                        <child>
-                          <object class="AdwButtonRow" id="unpair-device">
-                            <property name="visible">True</property>
-                            <property name="title" translatable="yes">Unpair Device</property>
-                            <property name="activatable">True</property>
-                            <property name="action-name">settings.unpair</property>
-                            <property name="start-icon-name">phonelink-off-symbolic</property>
-                            <style>
-                              <class name="destructive-action"/>
-                            </style>
                           </object>
                         </child>
                       </object>
@@ -189,7 +229,21 @@ SPDX-License-Identifier: GPL-2.0-or-later
                 <child type="top">
                   <object class="AdwHeaderBar">
                     <property name="visible">True</property>
-                    <property name="show-title">False</property>
+                    <property name="title-widget">
+                      <object class="GtkBox">
+                        <property name="orientation">orizontal</property>
+                        <child>
+                          <object class="GtkImage">
+                            <property name="icon-name">preferences-system-sharing-symbolic</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwWindowTitle">
+                            <property name="title" translatable="yes">Sharing</property>
+                          </object>
+                        </child>
+                      </object>
+                    </property>
                   </object>
                 </child>
                 <property name="content">
@@ -296,7 +350,21 @@ SPDX-License-Identifier: GPL-2.0-or-later
                 <child type="top">
                   <object class="AdwHeaderBar">
                     <property name="visible">True</property>
-                    <property name="show-title">False</property>
+                    <property name="title-widget">
+                      <object class="GtkBox">
+                        <property name="orientation">orizontal</property>
+                        <child>
+                          <object class="GtkImage">
+                            <property name="icon-name">battery-symbolic</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwWindowTitle">
+                            <property name="title" translatable="yes">Battery</property>
+                          </object>
+                        </child>
+                      </object>
+                    </property>
                   </object>
                 </child>
                 <property name="content">
@@ -380,16 +448,41 @@ SPDX-License-Identifier: GPL-2.0-or-later
                 <child type="top">
                   <object class="AdwHeaderBar">
                     <property name="visible">True</property>
-                    <property name="show-title">False</property>
+                    <property name="title-widget">
+                      <object class="GtkBox">
+                        <property name="orientation">orizontal</property>
+                        <child>
+                          <object class="GtkImage">
+                            <property name="icon-name">utilities-terminal-symbolic</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwWindowTitle">
+                            <property name="title" translatable="yes">Commands</property>
+                          </object>
+                        </child>
+                      </object>
+                    </property>
                   </object>
                 </child>
                 <property name="content">
-                  <object class="AdwPreferencesPage">
+                  <object class="GtkBox">
                     <property name="visible">True</property>
+                    <property name="orientation">vertical</property>
                     <child>
-                      <object class="AdwPreferencesGroup" id="command-list">
-                        <property name="visible">True</property>
-                        <property name="title" translatable="yes">Commands</property>
+                      <object class="AdwClamp">
+                        <property name="margin-top">20</property>
+                        <property name="margin-bottom">20</property>
+                        <property name="margin-start">12</property>
+                        <property name="margin-end">12</property>
+                        <child>
+                          <object class="GtkListBox" id="command-list">
+                            <property name="visible">True</property>
+                            <style>
+                              <class name="boxed-list"/>
+                            </style>
+                          </object>
+                        </child>
                       </object>
                     </child>
                   </object>
@@ -408,7 +501,21 @@ SPDX-License-Identifier: GPL-2.0-or-later
                 <child type="top">
                   <object class="AdwHeaderBar">
                     <property name="visible">True</property>
-                    <property name="show-title">False</property>
+                    <property name="title-widget">
+                      <object class="GtkBox">
+                        <property name="orientation">orizontal</property>
+                        <child>
+                          <object class="GtkImage">
+                            <property name="icon-name">preferences-system-notifications-symbolic</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwWindowTitle">
+                            <property name="title" translatable="yes">Notifications</property>
+                          </object>
+                        </child>
+                      </object>
+                    </property>
                   </object>
                 </child>
                 <property name="content">
@@ -455,7 +562,21 @@ SPDX-License-Identifier: GPL-2.0-or-later
                 <child type="top">
                   <object class="AdwHeaderBar">
                     <property name="visible">True</property>
-                    <property name="show-title">False</property>
+                    <property name="title-widget">
+                      <object class="GtkBox">
+                        <property name="orientation">orizontal</property>
+                        <child>
+                          <object class="GtkImage">
+                            <property name="icon-name">phone-old-symbolic</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwWindowTitle">
+                            <property name="title" translatable="yes">Telephony</property>
+                          </object>
+                        </child>
+                      </object>
+                    </property>
                   </object>
                 </child>
                 <property name="content">
@@ -582,7 +703,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
         </child>
         <child>
           <object class="AdwNavigationPage">
-            <property name="title" translatable="yes">Keyboard Shurtcuts</property>
+            <property name="title" translatable="yes">Keyboard Shortcuts</property>
             <property name="tag">keyboard_shurtcuts</property>
             <property name="child">
               <object class="AdwToolbarView">
@@ -590,7 +711,21 @@ SPDX-License-Identifier: GPL-2.0-or-later
                 <child type="top">
                   <object class="AdwHeaderBar">
                     <property name="visible">True</property>
-                    <property name="show-title">False</property>
+                    <property name="title-widget">
+                      <object class="GtkBox">
+                        <property name="orientation">orizontal</property>
+                        <child>
+                          <object class="GtkImage">
+                            <property name="icon-name">preferences-desktop-keyboard-shortcuts-symbolic</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwWindowTitle">
+                            <property name="title" translatable="yes">Keyboard Shortcuts</property>
+                          </object>
+                        </child>
+                      </object>
+                    </property>
                   </object>
                 </child>
                 <property name="content">
@@ -614,7 +749,6 @@ SPDX-License-Identifier: GPL-2.0-or-later
                           </object>
                         </property>
                         <child>
-                          <!-- this is needed for the shortcuts menu -->
                           <object class="GtkListBox" id="shortcuts-actions-list">
                             <signal name="row-activated" handler="_onShortcutRowActivated" swapped="no"/>
                             <style>
@@ -640,7 +774,21 @@ SPDX-License-Identifier: GPL-2.0-or-later
                 <child type="top">
                   <object class="AdwHeaderBar">
                     <property name="visible">True</property>
-                    <property name="show-title">False</property>
+                    <property name="title-widget">
+                      <object class="GtkBox">
+                        <property name="orientation">orizontal</property>
+                        <child>
+                          <object class="GtkImage">
+                            <property name="icon-name">preferences-system-symbolic</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwWindowTitle">
+                            <property name="title" translatable="yes">Advanced</property>
+                          </object>
+                        </child>
+                      </object>
+                    </property>
                   </object>
                 </child>
                 <property name="content">
@@ -650,12 +798,24 @@ SPDX-License-Identifier: GPL-2.0-or-later
                       <object class="AdwPreferencesGroup" id="plugin-list">
                         <property name="visible">True</property>
                         <property name="title" translatable="yes">Plugins</property>
+                        <property name="header-suffix">
+                          <object class="GtkSwitch" id="disable_all_plugins">
+                            <property name="valign">center</property>
+                            <property name="tooltip-text">Disable all plugin</property>
+                          </object>
+                        </property>
                       </object>
                     </child>
                     <child>
                       <object class="AdwPreferencesGroup">
                         <property name="visible">True</property>
                         <property name="title" translatable="yes">Experimental</property>
+                        <property name="header-suffix">
+                          <object class="GtkSwitch" id="disable_all_experimental">
+                            <property name="valign">center</property>
+                            <property name="tooltip-text">Disable all experimental plugin</property>
+                          </object>
+                        </property>
                         <child>
                           <object class="AdwActionRow">
                             <property name="height-request">56</property>

@@ -334,10 +334,8 @@ export const Window = GObject.registerClass({
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/preferences-window.ui',
     Children: [
-        'window-title' ,
-        'split-view' ,
-        'refresh-button' , 
-        'device-list'
+        'window-title', 'split-view', 'refresh-button', 'refresh-spinner',
+        'refresh-stack', 'device-list',
     ],
 }, class PreferencesWindow extends Adw.ApplicationWindow {
 
@@ -499,7 +497,13 @@ export const Window = GObject.registerClass({
      *
      * @returns {number} GLib.SOURCE_CONTINUE to continue the main loop
      */
-    _refresh() {
+    _refresh(widget) {
+        if (widget) {
+            this.refresh_stack.set_visible_child(this.refresh_spinner);
+            GLib.timeout_add(GLib.PRIORITY_DEFAULT, 3000, () => {
+                this.refresh_stack.set_visible_child(this.refresh_button);
+            });
+        }
         if (this.service.active) {
             this.service.activate_action('refresh', null);
         }

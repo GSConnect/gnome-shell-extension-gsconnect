@@ -66,8 +66,10 @@ SPDX-License-Identifier: GPL-2.0-or-later
             <property name="visible">True</property>
             <child>
               <object class="AdwClamp">
-                <property name="margin-top">24</property>
-                <property name="margin-bottom">24</property>
+                <property name="margin-top">20</property>
+                <property name="margin-bottom">20</property>
+                <property name="margin-start">12</property>
+                <property name="margin-end">12</property>
                 <child>
                   <object class="GtkListBox" id="list">
                     <property name="visible">True</property>

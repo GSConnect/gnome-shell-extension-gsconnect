@@ -12,8 +12,8 @@ SPDX-License-Identifier: GPL-2.0-or-later
 
   <template class="GSConnectMousepadInputWindow" parent="AdwApplicationWindow">
     <property name="title">Test</property>
-    <property name="height-request">650</property>
-    <property name="width-request">650</property>
+    <property name="width-request">360</property>
+    <property name="height-request">640</property>
     <child>
       <object class="AdwBottomSheet" id="bottom_sheet">
         <property name="content">
@@ -51,14 +51,15 @@ SPDX-License-Identifier: GPL-2.0-or-later
                 <property name="margin-bottom">10</property>
                 <property name="margin-start">10</property>
                 <property name="margin-end">10</property>
-                <!-- TODO: Controllers must be added in JavaScript since Gtk4 -->
+                <property name="spacing">10</property>
                 <child>
                   <object class="GtkLabel" id="touchpad-zone">
                     <property name="visible">True</property>
-                    <property name="margin-bottom">5</property>
                     <property name="hexpand">True</property>
                     <property name="vexpand">True</property>
                     <property name="justify">center</property>
+                    <property name="wrap">True</property>
+                    <property name="wrap-mode">word_char</property>
                     <style>
                       <class name="card"/>
                       <class name="activatable"/>
@@ -71,7 +72,6 @@ SPDX-License-Identifier: GPL-2.0-or-later
                     <child>
                       <object class="GtkBox">
                         <property name="orientation">horizontal</property>
-                        <property name="margin-top">5</property>
                         <child>
                           <object class="GtkButton" id="mouse-right-button">
                             <property name="hexpand">true</property>
