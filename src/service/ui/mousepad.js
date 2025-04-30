@@ -270,8 +270,6 @@ export const InputWindow = GObject.registerClass({
     }
 
     _resetTouchpadMotion() {
-        this.touchpad_motion_prev_x = 0;
-        this.touchpad_motion_prev_y = 0;
         this.touchpad_motion_x = 0;
         this.touchpad_motion_y = 0;
     }
@@ -304,7 +302,8 @@ export const InputWindow = GObject.registerClass({
     }
 
     _onTouchpadDragBegin(gesture, offset_x, offset_y) {
-        this._resetTouchpadMotion();
+        this.touchpad_motion_prev_x = offset_x;
+        this.touchpad_motion_prev_y = offset_y;
         this.touchpad_motion_timeout_id =
             GLib.timeout_add(GLib.PRIORITY_DEFAULT, 10,
                 this._onTouchpadMotionTimeout.bind(this));
@@ -316,7 +315,6 @@ export const InputWindow = GObject.registerClass({
     }
 
     _onTouchpadDragEnd(gesture, offset_x, offset_y) {
-        this._resetTouchpadMotion();
         GLib.Source.remove(this.touchpad_motion_timeout_id);
         this.touchpad_motion_timeout_id = 0;
     }
@@ -384,6 +382,7 @@ export const InputWindow = GObject.registerClass({
     }
 
     _onTouchpadMotionTimeout() {
+
         const diff_x = this.touchpad_motion_x - this.touchpad_motion_prev_x;
         const diff_y = this.touchpad_motion_y - this.touchpad_motion_prev_y;
         this.device.sendPacket({
@@ -393,7 +392,9 @@ export const InputWindow = GObject.registerClass({
                 dy: diff_y,
             },
         });
-
+        print("dx:" + this.touchpad_motion_x);
+        print("dy:" + this.touchpad_motion_y);
+ 
         this.touchpad_motion_prev_x = this.touchpad_motion_x;
         this.touchpad_motion_prev_y = this.touchpad_motion_y;
         return true;
