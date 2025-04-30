@@ -59,7 +59,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                     <property name="vexpand">True</property>
                     <property name="justify">center</property>
                     <property name="wrap">True</property>
-                    <property name="wrap-mode">word_char</property>
+                    <property name="wrap-mode">word</property>
                     <style>
                       <class name="card"/>
                       <class name="activatable"/>
@@ -138,7 +138,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                     <child>
                       <object class="GtkTextView" id="entry">
                         <property name="visible">True</property>
-                        <property name="wrap-mode">word-char</property>
+                        <property name="wrap-mode">word</property>
                         <style>
                           <class name="card"/>
                           <class name="keyboard-text-view"/>

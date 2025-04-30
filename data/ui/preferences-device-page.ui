@@ -231,7 +231,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                     <property name="visible">True</property>
                     <property name="title-widget">
                       <object class="GtkBox">
-                        <property name="orientation">orizontal</property>
+                        <property name="orientation">horizontal</property>
                         <child>
                           <object class="GtkImage">
                             <property name="icon-name">preferences-system-sharing-symbolic</property>
@@ -352,7 +352,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                     <property name="visible">True</property>
                     <property name="title-widget">
                       <object class="GtkBox">
-                        <property name="orientation">orizontal</property>
+                        <property name="orientation">horizontal</property>
                         <child>
                           <object class="GtkImage">
                             <property name="icon-name">battery-symbolic</property>
@@ -450,7 +450,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                     <property name="visible">True</property>
                     <property name="title-widget">
                       <object class="GtkBox">
-                        <property name="orientation">orizontal</property>
+                        <property name="orientation">horizontal</property>
                         <child>
                           <object class="GtkImage">
                             <property name="icon-name">utilities-terminal-symbolic</property>
@@ -503,7 +503,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                     <property name="visible">True</property>
                     <property name="title-widget">
                       <object class="GtkBox">
-                        <property name="orientation">orizontal</property>
+                        <property name="orientation">horizontal</property>
                         <child>
                           <object class="GtkImage">
                             <property name="icon-name">preferences-system-notifications-symbolic</property>
@@ -564,7 +564,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                     <property name="visible">True</property>
                     <property name="title-widget">
                       <object class="GtkBox">
-                        <property name="orientation">orizontal</property>
+                        <property name="orientation">horizontal</property>
                         <child>
                           <object class="GtkImage">
                             <property name="icon-name">phone-old-symbolic</property>
@@ -713,7 +713,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                     <property name="visible">True</property>
                     <property name="title-widget">
                       <object class="GtkBox">
-                        <property name="orientation">orizontal</property>
+                        <property name="orientation">horizontal</property>
                         <child>
                           <object class="GtkImage">
                             <property name="icon-name">preferences-desktop-keyboard-shortcuts-symbolic</property>
@@ -776,7 +776,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                     <property name="visible">True</property>
                     <property name="title-widget">
                       <object class="GtkBox">
-                        <property name="orientation">orizontal</property>
+                        <property name="orientation">horizontal</property>
                         <child>
                           <object class="GtkImage">
                             <property name="icon-name">preferences-system-symbolic</property>

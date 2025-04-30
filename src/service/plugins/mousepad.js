@@ -171,6 +171,7 @@ const MousepadPlugin = GObject.registerClass({
                 break;
 
             case 'kdeconnect.mousepad.echo':
+                print(JSON.stringify(packet));
                 this._handleEcho(packet.body);
                 break;
 
@@ -290,15 +291,11 @@ const MousepadPlugin = GObject.registerClass({
     _handleEcho(input) {
         if (!this._dialog || !this._dialog.visible)
             return;
-
         // Skip modifiers
         if (input.alt || input.ctrl || input.super)
             return;
-
         if (input.key) {
-            this._dialog._isAck = true;
             this._dialog.entry.buffer.text += input.key;
-            this._dialog._isAck = false;
         } else if (KeyMap.get(input.specialKey) === Gdk.KEY_BackSpace) {
             this._dialog.entry.emit('backspace');
         }
