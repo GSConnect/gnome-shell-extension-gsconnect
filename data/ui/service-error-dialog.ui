@@ -12,8 +12,8 @@ SPDX-License-Identifier: GPL-2.0-or-later
 
   <template class="GSConnectServiceErrorDialog" parent="AdwApplicationWindow">
     <property name="title" translatable="yes">An Error Occured…</property>
-    <property name="content-height">550</property>
-    <property name="content-width">500</property>
+    <property name="height-request">550</property>
+    <property name="width-request">500</property>
     <child>
       <object class="AdwToolbarView">
         <property name="visible">True</property>
@@ -34,10 +34,10 @@ SPDX-License-Identifier: GPL-2.0-or-later
                 <accessibility>
                   <property name="label" translatable="yes">Cancel</property>
                 </accessibility>
+                <style>
+                  <class name="destructive-action"/>
+                </style>
               </object>
-              <style>
-                <class name="destructive-action"/>
-              </style>
             </child>
             <child type="end">
               <object class="GtkButton" id ="report-button">
@@ -68,7 +68,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                   <class name="boxed-list"/>
                 </style>
                 <child>
-                  <object class="AdwExpanderRow">
+                  <object class="AdwExpanderRow" id="expander-arrow">
                     <property name="visible">True</property>
                     <property name="selectable">False</property>
                     <property name="title" translatable="yes">View Technical Details</property>

@@ -48,9 +48,9 @@ const FindMyPhonePlugin = GObject.registerClass({
     }
 
     handlePacket(packet) {
-        if (packet.type === 'kdeconnect.findmyphone.request') {
+        if (packet.type === 'kdeconnect.findmyphone.request')
             this._handleRequest();
-        }
+
     }
 
     /**
@@ -69,14 +69,14 @@ const FindMyPhonePlugin = GObject.registerClass({
                 });
                 this._dialog.present();
             }
-            
+
             this._dialog.connect('response', () => {
-                this._dialog.hide();   
+                this._dialog.hide();
             });
 
         } catch (e) {
             this._cancelRequest();
-            console.log(e + " - " + this.device.name);
+            console.log(e + ' - ' + this.device.name);
         }
     }
 
@@ -103,7 +103,7 @@ const FindMyPhonePlugin = GObject.registerClass({
 
         if (this._player !== undefined)
             this._player = Components.release('sound');
-        
+
         super.destroy();
     }
 });
@@ -135,15 +135,15 @@ const Dialog = GObject.registerClass({
             param_types: [GObject.TYPE_OBJECT, GObject.TYPE_INT],
         },
     },
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/find-my-phone.ui'
-    
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/find-my-phone.ui',
+
 }, class Dialog extends Adw.ApplicationWindow {
     _init(params) {
         super._init();
 
         Object.assign(this, params);
         this._notificationId = 'findmyphone-notification';
-        
+
         const motionController = new Gtk.EventControllerMotion();
         motionController.connect('motion', (controller, x, y) => {
             this.response(Gtk.ResponseType.DELETE_EVENT);
@@ -185,21 +185,21 @@ const Dialog = GObject.registerClass({
             this.plugin._player.loopSound('phone-incoming-call', this._cancellable);
 
         this.emitNotification();
-        super.present()
+        super.present();
     }
 
     // Create a notification
-    emitNotification(){
+    emitNotification() {
         const notification = Gio.Notification.new(_('Find My Phone'));
         notification.set_body(_('You found me!'));
         notification.set_priority(Gio.NotificationPriority.HIGH);
-        
+
         // Add action to cancel request when notification is clicked
-        notification.add_button(_('Stop Ringing'), `app.stop-ringing`);
+        notification.add_button(_('Stop Ringing'), 'app.stop-ringing');
         notification.set_default_action('app.stop-ringing');
 
         // Register action
-        const action = new Gio.SimpleAction({ name: 'stop-ringing' });
+        const action = new Gio.SimpleAction({name: 'stop-ringing'});
         action.connect('activate', () => {
             this.response(Gtk.ResponseType.DELETE_EVENT);
             return Gdk.EVENT_STOP;

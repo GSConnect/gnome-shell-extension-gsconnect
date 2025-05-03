@@ -119,11 +119,8 @@ SPDX-License-Identifier: GPL-2.0-or-later
           </object>
         </property>
         <child type="bottom">
-          <object class="AdwClamp">
+          <object class="AdwClamp" id="bottom-bar">
             <property name="maximum-size">800</property>
-            <child>
-              <object class="GSConnectMessagingTextInput" id="message-text-input"/>
-            </child>
           </object>
         </child>
       </object>

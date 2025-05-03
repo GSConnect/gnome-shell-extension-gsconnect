@@ -12,8 +12,8 @@ import Adw from 'gi://Adw';
 import system from 'system';
 
 import Config from '../config.js';
-import { DeviceNavigationPage, DevicePairPage } from './device.js';
-import { Service } from '../utils/remote.js';
+import {DeviceNavigationPage, DevicePairPage} from './device.js';
+import {Service} from '../utils/remote.js';
 
 
 /*
@@ -36,7 +36,7 @@ OS:        ${GLib.get_os_info('PRETTY_NAME')}
  * and appends the logs to the temporary file. Finally, it opens the generated log file for review.
  *
  * @param {string} time - Start time as a string (24-hour notation, e.g., "2025-04-26 14:00:00").
- * 
+ *
  * @returns {Promise<void>} Resolves when the log generation is complete.
  */
 async function generateSupportLog(time) {
@@ -95,20 +95,20 @@ async function generateSupportLog(time) {
 
 /**
  * Settings dialog for GSConnect, allowing users to configure device settings.
- * 
- * This dialog enables the user to modify the device's display mode (either as a panel or a user menu) and rename the device. 
+ *
+ * This dialog enables the user to modify the device's display mode (either as a panel or a user menu) and rename the device.
  * It validates the device name input and ensures it does not contain any forbidden characters or exceed the character limit.
  * The dialog also reflects the current settings, and updates the device's settings based on user interactions.
- * 
+ *
  * @class SettingsDialog
- * @extends Adw.PreferencesDialog
+ * @augments Adw.PreferencesDialog
  */
 const SettingsDialog = GObject.registerClass({
     GTypeName: 'GSConnectSettingsDialog',
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/preferences-settings.ui',
     Children: [
         'display-mode-toggle', 'rename-entry',
-    ]
+    ],
 }, class SettingsDialog extends Adw.PreferencesDialog {
 
 
@@ -120,9 +120,9 @@ const SettingsDialog = GObject.registerClass({
         this.display_mode_toggle.set_active_name(this.display_mode);
         this.display_mode_toggle.connect('notify::active-name', () => {
             const name = this.display_mode_toggle.active_name;
-            if (name) {
+            if (name)
                 this.display_mode = name;
-            }
+
         });
     }
 
@@ -150,9 +150,9 @@ const SettingsDialog = GObject.registerClass({
      * @param {Gtk.Widget} widget - The widget that triggered the event (e.g., a button or entry).
      */
     _onSetServiceName(widget) {
-        if (this._validateName(this.rename_entry.text)) {
+        if (this._validateName(this.rename_entry.text))
             this.settings.set_string('name', this.rename_entry.text);
-        }
+
     }
 
     /**
@@ -160,10 +160,10 @@ const SettingsDialog = GObject.registerClass({
      * - The name must not contain any forbidden characters.
      * - The name must not be empty (it must have at least one non-whitespace character).
      * - The name must be between 1 and 32 characters in length.
-     * 
+     *
      * If the validation fails, an error message is shown to the user, specifying the invalid characters
      * and the acceptable length constraints.
-     * 
+     *
      * @param {string} name - The device name to validate.
      * @returns {boolean} True if the name is valid, false otherwise.
      */
@@ -194,9 +194,9 @@ const SettingsDialog = GObject.registerClass({
  * ConnectDialog class extends `Adw.Dialog` and allows the user to input a LAN IP and port.
  * It validates the inputs and triggers a connection action, displaying an error message if the validation fails.
  * Emits a 'response' signal on dialog closure with the response type (OK or CANCEL).
- * 
+ *
  * @class ConnectDialog
- * @extends Adw.Dialog
+ * @augments Adw.Dialog
  */
 const ConnectDialog = GObject.registerClass({
     GTypeName: 'GSConnectConnectDialog',
@@ -213,16 +213,16 @@ const ConnectDialog = GObject.registerClass({
 
     _init() {
         super._init();
-        this.set_title = _('Connect to...')
-        this.connect("destroy", () => {
+        this.set_title = _('Connect to...');
+        this.connect('destroy', () => {
             this.response = Gtk.ResponseType.CANCEL;
-        })
+        });
     }
 
     /**
      * Handles the connect button action.
      * Sets the response type to `Gtk.ResponseType.OK` when the button is clicked.
-     * 
+     *
      * @returns {void} - This function does not return any value.
      */
     _onConnectButton() {
@@ -230,11 +230,11 @@ const ConnectDialog = GObject.registerClass({
     }
 
     /**
-     * Handles the response when the dialog is closed. If the response is OK, it validates the host and port, 
+     * Handles the response when the dialog is closed. If the response is OK, it validates the host and port,
      * and attempts to trigger the 'connect' action. If validation fails or an error occurs, an error message is displayed.
-     * 
+     *
      * @param {Gtk.ResponseType} response - The response type from the dialog interaction (OK or others).
-     * 
+     *
      * @returns {void} - No return value. Closes the dialog after processing.
      */
     set response(response) {
@@ -259,7 +259,7 @@ const ConnectDialog = GObject.registerClass({
         }
 
         // Close the dialog
-        this.emit('response', response)
+        this.emit('response', response);
         this.close();
     }
 
@@ -267,16 +267,16 @@ const ConnectDialog = GObject.registerClass({
      * Validates the provided host and port.
      * Ensures the host is non-empty and the port is within the valid range (1-65535).
      * Checks if the host is a valid IP address.
-     * 
+     *
      * @param {string} host - The host to validate.
      * @param {number} port - The port to validate.
      * @returns {boolean} - Returns true if the host is valid and the port is in range, false otherwise.
      */
     _validateHostAndPort(host, port) {
         // Ensure host is non-empty and port is within valid range
-        if (!host || port < 1 || port > 65535) {
+        if (!host || port < 1 || port > 65535)
             return false;
-        }
+
 
         try {
             return GLib.InetAddress.new_from_string(host) !== null;
@@ -284,17 +284,17 @@ const ConnectDialog = GObject.registerClass({
             return false;
         }
     }
-    
+
     /**
      * Displays an error dialog with a custom message.
      * The dialog is transient and includes a close button to dismiss it.
-     * 
+     *
      * @param {string} message - The error message to display in the dialog.
      * @returns {void} - No return value.
      */
     _showErrorMessage(message) {
         const win = Gtk.Application.get_default().get_active_window();
-        
+
         // Create a transient error dialog
         const errorDialog = new Adw.MessageDialog({
             heading: _('Oops! An error occurred…'),
@@ -313,15 +313,15 @@ const ConnectDialog = GObject.registerClass({
     }
 });
 
-/** 
+/**
  * Subclass of Adw.ApplicationWindow that provides the preferences window for the GSConnect GNOME extension.
  * It manages device connections, display modes, settings dialogs, and automatic device refresh.
  * Handles window geometry restoration and integrates service state changes for device management.
- * 
+ *
  * @class SettingsDialog
- * @extends Adw.PreferencesDialog
+ * @augments Adw.PreferencesDialog
  */
-export const Window = GObject.registerClass({
+export const PreferencesWindow = GObject.registerClass({
     GTypeName: 'GSConnectPreferencesWindow',
     Properties: {
         'display-mode': GObject.ParamSpec.string(
@@ -329,7 +329,7 @@ export const Window = GObject.registerClass({
             'Display Mode',
             'Display devices in either the Panel or User Menu',
             GObject.ParamFlags.READWRITE,
-            null
+            ''
         ),
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/preferences-window.ui',
@@ -341,7 +341,7 @@ export const Window = GObject.registerClass({
 
     _init(params = {}) {
         super._init(params);
-        
+
         // Service Settings
         this.settings = new Gio.Settings({
             settings_schema: Config.GSCHEMA.lookup(
@@ -349,8 +349,8 @@ export const Window = GObject.registerClass({
                 true
             ),
         });
-        this.device_list.connect("row-selected", this._onDeviceSelected.bind(this));
-            
+        this.device_list.connect('row-selected', this._onDeviceSelected.bind(this));
+
         // Service Proxy
         this.service = new Service();
 
@@ -370,7 +370,7 @@ export const Window = GObject.registerClass({
             'notify::active',
             this._onServiceChanged.bind(this)
         );
-        
+
         this.add_action(this.settings.create_action('discoverable'));
 
         // Application Menu
@@ -385,7 +385,7 @@ export const Window = GObject.registerClass({
             5,
             this._refresh.bind(this)
         );
-        
+
         // Init some resources
         const provider = new Gtk.CssProvider();
         provider.load_from_resource(`${Config.APP_PATH}/application.css`);
@@ -394,7 +394,7 @@ export const Window = GObject.registerClass({
             provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         );
-        
+
         // Restore window size/maximized/position
         this._restoreGeometry();
 
@@ -407,7 +407,7 @@ export const Window = GObject.registerClass({
      * - Removes and disposes pages.
      * - Disconnects service signals and destroys the service.
      * - Saves window geometry and removes the refresh source.
-     * 
+     *
      * @param {Gdk.Event} event - The close request event.
      * @returns {boolean} - Returns false to allow window close.
      */
@@ -415,16 +415,14 @@ export const Window = GObject.registerClass({
         if (this.service) {
             // Remove pages inside the Map
             Array.from(this.pages.keys()).forEach(id => {
-                const page = this.pages.get(id)
+                const page = this.pages.get(id);
                 this.pages.delete(id);
                 page.unparent();
-                page.run_dispose();
-            });;
+            }); ;
             // Disconnect signals
             this.service.disconnect(this._deviceAddedId);
             this.service.disconnect(this._deviceRemovedId);
             this.service.disconnect(this._serviceChangedId);
-            this.service.destroy();
             this.service = null;
         }
 
@@ -438,7 +436,7 @@ export const Window = GObject.registerClass({
     /**
      * Initializes the service by updating the service state, focusing the refresh button, and reloading the service.
      * If an error occurs during initialization, it is logged.
-     * 
+     *
      * @returns {void}
      */
     async _initService() {
@@ -451,7 +449,7 @@ export const Window = GObject.registerClass({
         }
     }
 
-     /**
+    /**
      * Initializes the menu with actions for various dialogs and functionalities.
      * - Adds actions for display mode, about dialog, connection, settings, support log, and help.
      *
@@ -495,6 +493,7 @@ export const Window = GObject.registerClass({
      * Triggers a refresh action if the service is active.
      * Calls the 'refresh' action on the service.
      *
+     * @param {Gtk.Widget} widget - The widget that invoke the callback
      * @returns {number} GLib.SOURCE_CONTINUE to continue the main loop
      */
     _refresh(widget) {
@@ -504,9 +503,9 @@ export const Window = GObject.registerClass({
                 this.refresh_stack.set_visible_child(this.refresh_button);
             });
         }
-        if (this.service.active) {
+        if (this.service.active)
             this.service.activate_action('refresh', null);
-        }
+
         return GLib.SOURCE_CONTINUE;
     }
 
@@ -547,10 +546,10 @@ export const Window = GObject.registerClass({
     _saveGeometry() {
         const maximized = this.is_maximized();  // GTK 4 method
         this._windowState.set_boolean('window-maximized', maximized);
-    
+
         if (maximized || this.is_fullscreen())
             return;
-    
+
         // Size
         const width = this.get_allocated_width();
         const height = this.get_allocated_height();
@@ -559,56 +558,56 @@ export const Window = GObject.registerClass({
 
     /**
      * Displays the About Dialog with application details.
-     * If it doesn't already exist, creates a new Adw.AboutDialog 
+     * If it doesn't already exist, creates a new Adw.AboutDialog
      * with information such as version, license, website, and developer credits.
      *
      * @returns {void}
      */
     _aboutDialog() {
         const about = new Adw.AboutDialog({
-            application_name :  _("GSConnect"),
-            application_icon : "org.gnome.Shell.Extensions.GSConnect",
+            application_name: _('GSConnect'),
+            application_icon: 'org.gnome.Shell.Extensions.GSConnect',
             comments: _('A complete KDE Connect implementation for GNOME'),
-            version : Config.PACKAGE_VERSION.toString(),
+            version: Config.PACKAGE_VERSION.toString(),
             license_type: Gtk.License.GPL_2_0,
             website: Config.PACKAGE_URL,
             translator_credits: _('translator-credits'),
             designers: [
-                "Giorgio Dramis <dramisgiorgio@outlook.com>",
-                "Matthieu Lorier <loriermatthieu@gmail.com>",
+                'Giorgio Dramis <dramisgiorgio@outlook.com>',
+                'Matthieu Lorier <loriermatthieu@gmail.com>',
             ],
             developers: [
-                "Andy Holmes <andrew.g.r.holmes@gmail.com>",
-                "Bertrand Lacoste <getzze@gmail.com>",
-                "Frank Dana <ferdnyc@gmail.com>",
+                'Andy Holmes <andrew.g.r.holmes@gmail.com>',
+                'Bertrand Lacoste <getzze@gmail.com>',
+                'Frank Dana <ferdnyc@gmail.com>',
             ],
         });
         about.present(this);
-    
+
     }
 
     /**
-     * Displays the connection dialog. If it doesn't already exist, 
+     * Displays the connection dialog. If it doesn't already exist,
      * it creates a new ConnectDialog instance and presents it.
      *
      * @returns {void}
      */
     _connectDialog() {
-        if (this.dialog == null) {
+        if (this.dialog === null)
             this.dialog = new ConnectDialog();
-        }
-        this.dialog.present(this)
+
+        this.dialog.present(this);
     }
-    
+
     /**
-     * Displays the settings dialog. If it doesn't already exist, 
+     * Displays the settings dialog. If it doesn't already exist,
      * it creates a new SettingsDialog instance and presents it.
      *
      * @returns {void}
      */
     _settingsDialog() {
-        if (this._settings_dialog == null) {
-            this._settings_dialog = new SettingsDialog({ 
+        if (this._settings_dialog === undefined) {
+            this._settings_dialog = new SettingsDialog({
                 settings: this.settings,
             });
         }
@@ -616,8 +615,8 @@ export const Window = GObject.registerClass({
     }
 
     /**
-     * Prompts the user to generate a support log by displaying a message dialog. 
-     * It enables debug logging, waits for user input, and either generates 
+     * Prompts the user to generate a support log by displaying a message dialog.
+     * It enables debug logging, waits for user input, and either generates
      * the log or cancels the operation based on the response.
      *
      * @returns {void}
@@ -626,11 +625,11 @@ export const Window = GObject.registerClass({
         const dialog = new Adw.MessageDialog({
             heading: _('Generate Support Log'),
             body: _('Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log.'),
-            transient_for: this
+            transient_for: this,
         });
-        
-        dialog.add_response("cancel",  _("Cancel"));
-        dialog.add_response("review_log",  _("Review Log"));
+
+        dialog.add_response('cancel',  _('Cancel'));
+        dialog.add_response('review_log',  _('Review Log'));
 
         // Enable debug logging and mark the current time
         this.settings.set_boolean('debug', true);
@@ -642,7 +641,7 @@ export const Window = GObject.registerClass({
             dialog.destroy();
 
             // Only generate a log if instructed
-            if (response_id === "review_log")
+            if (response_id === 'review_log')
                 generateSupportLog(now);
         });
 
@@ -655,7 +654,7 @@ export const Window = GObject.registerClass({
      * an error dialog listing the forbidden characters.
      *
      * @param {string} name - The device name to validate.
-     * 
+     *
      * @returns {boolean} - Returns true if the name is valid, otherwise false.
      */
     _validateName(name) {
@@ -690,11 +689,11 @@ export const Window = GObject.registerClass({
 
     /**
      * Sets the device menu by inserting action groups and updating the menu model.
-     * If no panel is provided, it clears the menu. Otherwise, it configures the menu 
+     * If no panel is provided, it clears the menu. Otherwise, it configures the menu
      * with the panel's device actions and menu model.
      *
      * @param {object|null} panel - The panel containing device actions and menu model, or null to reset.
-     * 
+     *
      * @returns {void}
      */
     _setDeviceMenu(panel = null) {
@@ -717,21 +716,21 @@ export const Window = GObject.registerClass({
      *
      * @param {object} service - The service that triggered the addition.
      * @param {object} device - The device being added to the list.
-     * 
+     *
      * @returns {void}
      */
     _onDeviceAdded(service, device) {
         try {
-            if (this.rows == null) {
+            if (this.rows === undefined)
                 this.rows = [];
-            }
-            let row = new Adw.ActionRow();
+
+            const row = new Adw.ActionRow();
             row.set_title(device.name);
             row.set_title_lines(1);
             row.set_subtitle_lines(1);
             row.add_prefix(new Gtk.Image({
-                icon_name : device.icon_name,
-                visible : true,
+                icon_name: device.icon_name,
+                visible: true,
             }));
 
             device.connect(
@@ -758,7 +757,7 @@ export const Window = GObject.registerClass({
      *
      * @param {object} device - The updated device.
      * @param {object} paramspec - The parameters associated with the change.
-     * 
+     *
      * @returns {void}
      */
     _onDeviceChanged(device, paramspec) {
@@ -772,28 +771,22 @@ export const Window = GObject.registerClass({
             default:
                 this.rows[device.id].set_subtitle(_('Connected'));
         }
-        if (this.device_list.get_selected_row() != null 
-            && this.device_list.get_selected_row().device.id == device.id)
+        if (this.device_list.get_selected_row() !== null &&
+            this.device_list.get_selected_row().device.id === device.id)
             this._onDeviceSelected(null, this.rows[device.id]);
     }
 
     /**
-     * Handles the selection of a device. Depending on whether the device is paired or not,
-     * it creates or updates the corresponding navigation page (either DeviceNavigationPage or DevicePairPage).
-     * The page is then set as the content of the split view.
-     *
-     * @param {object} box - The container holding the device.
-     * @param {object} row - The row representing the selected device.
-     * 
+     * @param {GObject.Object} service - The service object
+     * @param {GObject.Object} device - The device object
      * @returns {void}
      */
     _onDeviceRemoved(service, device) {
         try {
             const row = this.rows[device.id];
-            if (row != null) {
+            if (row !== null)
                 this.device_list.remove(row);
-                row.run_dispose();
-            }
+
         } catch (e) {
             logError(e);
         }
@@ -801,35 +794,34 @@ export const Window = GObject.registerClass({
 
     /**
      * Handles the selection of a device row. It creates or updates the corresponding
-     * navigation page based on whether the device is paired or not. If the device is 
+     * navigation page based on whether the device is paired or not. If the device is
      * paired, it shows a DeviceNavigationPage; otherwise, it shows a DevicePairPage.
      * It also ensures proper handling of switching between pages if necessary.
      *
      * @param {object} box - The container widget.
      * @param {object} row - The selected device row.
-     * 
+     *
      * @returns {void}
      */
     _onDeviceSelected(box, row) {
         try {
             let navigation_page = this.pages.get(row.device.id);
             if (row.device.paired) {
-                if(!navigation_page) {
-                    navigation_page = new DeviceNavigationPage({ device: row.device });
+                if (!navigation_page) {
+                    navigation_page = new DeviceNavigationPage({device: row.device});
                 } else if (navigation_page instanceof DevicePairPage) {
                     this.pages.delete(row.device.id);
                     navigation_page.unparent();
-                    navigation_page = new DeviceNavigationPage({ device: row.device });
+                    navigation_page = new DeviceNavigationPage({device: row.device});
                 }
-                
-            } 
-            else if (!row.device.paired) {
-                if(!navigation_page)
-                    navigation_page = new DevicePairPage({ device: row.device });
-                else if (navigation_page instanceof DeviceNavigationPage) {
+
+            } else if (!row.device.paired) {
+                if (!navigation_page) {
+                    navigation_page = new DevicePairPage({device: row.device});
+                } else if (navigation_page instanceof DeviceNavigationPage) {
                     this.pages.delete(row.device.id);
                     navigation_page.unparent();
-                    navigation_page = new DevicePairPage({ device: row.device });
+                    navigation_page = new DevicePairPage({device: row.device});
                 }
             }
             this.pages.set(row.device.id, navigation_page);
@@ -848,7 +840,7 @@ export const Window = GObject.registerClass({
      *
      * @param {object} service - The service object whose state changed.
      * @param {object} pspec - The property specification object.
-     * 
+     *
      * @returns {void}
      */
     _onServiceChanged(service, pspec) {

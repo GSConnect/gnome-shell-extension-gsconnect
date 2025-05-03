@@ -292,8 +292,8 @@ const ServiceToggle = GObject.registerClass({
             logError(e, 'GSConnect');
         }
     }
-
-    destroy() {
+/*
+    vfunc_finalize() {
         // Unhook from Remote.Service
         if (this.service) {
             this.service.disconnect(this._serviceChangedId);
@@ -314,13 +314,14 @@ const ServiceToggle = GObject.registerClass({
         // Disconnect from any GSettings changes
         this.settings.disconnect(this._enabledId);
         this.settings.disconnect(this._panelModeId);
-        this.settings.run_dispose();
+        this.settings.destroy();
 
         // Destroy the PanelMenu.SystemIndicator actors
         this.menu.destroy();
 
-        super.destroy();
+        super.vfunc_finalize();
     }
+*/
 });
 
 const ServiceIndicator = GObject.registerClass(

@@ -311,8 +311,7 @@ export const ChannelService = GObject.registerClass({
         if (this._udp4 === null && this._udp6 === null)
             this._initUdpListener();
 
-        this._active = true;
-        this.notify('active');
+        this.active = true;
     }
 
     stop() {
@@ -339,17 +338,18 @@ export const ChannelService = GObject.registerClass({
         for (const channel of this.channels.values())
             channel.close();
 
-        this._active = false;
-        this.notify('active');
+        this.active = false;
     }
 
-    destroy() {
+    /*
+    vfunnc_finalize() {
         try {
             this.stop();
         } catch (e) {
             logError(e);
         }
     }
+        */
 });
 
 

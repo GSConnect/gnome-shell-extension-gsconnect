@@ -63,7 +63,7 @@ export function getDisplayNumber(contact, address) {
  * inside an Adw.ActionRow for use in lists or forms.
  *
  * @class AddressRow
- * @extends Adw.ActionRow
+ * @augments Adw.ActionRow
  * @param {object} contact - The contact object
  * @param {number} [index=0] - The index of the phone number in the contact's numbers array
  */
@@ -84,7 +84,7 @@ const AddressRow = GObject.registerClass({
     /**
      * Getter and setter for contact object associated with this row.
      *
-     * @type {Object} The contact object or null if not set.
+     * @type {object} The contact object or null if not set.
      */
     get contact() {
         if (this._contact === undefined)
@@ -100,12 +100,12 @@ const AddressRow = GObject.registerClass({
         this._contact = contact;
 
         if (this._index === 0) {
-            this.avatar.text = contact.name
+            this.avatar.text = contact.name;
             this.title = GLib.markup_escape_text(contact.name, -1);
         }
 
         this.subtitle = GLib.markup_escape_text(this.number.value, -1);
-        
+
         if (this.number.type !== undefined)
             this.type_label.label = getNumberTypeLabel(this.number.type);
     }
@@ -128,10 +128,10 @@ const AddressRow = GObject.registerClass({
  * A contact chooser dialog for selecting phone numbers from contacts.
  *
  * @class ContactChooser
- * @extends Adw.NavigationPage
- * @emits number-selected
- * @property {Object} device - The device associated with this contact chooser.
- * @property {Object} store - The contacts store used to retrieve and manage contacts.
+ * @augments Adw.NavigationPage
+ *
+ * @property {object} device - The device associated with this contact chooser.
+ * @property {object} store - The contacts store used to retrieve and manage contacts.
  */
 export const ContactChooser = GObject.registerClass({
     GTypeName: 'GSConnectContactChooser',
@@ -160,8 +160,8 @@ export const ContactChooser = GObject.registerClass({
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/contact-chooser.ui',
     Children: [
         'button-search', 'search-bar', 'search-entry',
-        'scrolled', 'list', 'header-bar', 
-            
+        'scrolled', 'list', 'header-bar',
+
     ],
 }, class ContactChooser extends Adw.NavigationPage {
 
@@ -173,16 +173,16 @@ export const ContactChooser = GObject.registerClass({
         this.list.set_filter_func(this._filter.bind(this));
         this.list.set_sort_func(this._sort);
         this.row_list = [];
-        this.selected_rows = {}
-        
+        this.selected_rows = {};
+
         // Make sure we're using the correct contacts store
         this.device.bind_property(
             'contacts',
             this,
             'store',
             GObject.BindingFlags.SYNC_CREATE
-        );    
-        
+        );
+
         // Make sure we're using the correct contacts store
         this.button_search.bind_property(
             'active',
@@ -190,24 +190,24 @@ export const ContactChooser = GObject.registerClass({
             'search-mode-enabled',
             GObject.BindingFlags.SYNC_CREATE
         );
-        
+
         // Cleanup on ::destroy
         this.connect('destroy', this._onDestroy);
 
-        const search_esc_controller = new Gtk.EventControllerKey(); 
+        const search_esc_controller = new Gtk.EventControllerKey();
         search_esc_controller.connect('key-pressed', (controller, keyval, keycode, state) => {
             if (keyval === Gdk.KEY_Escape)
                 this.button_search.active = false;
         });
         this.search_entry.add_controller(search_esc_controller);
 
-        this.search_entry.connect("search-changed", this._onSearchChanged.bind(this));
+        this.search_entry.connect('search-changed', this._onSearchChanged.bind(this));
     }
 
     /**
      * Getter and Setter for the contact store.
      *
-     * @type {Object} The current contact store.
+     * @type {object} The current contact store.
      */
     get store() {
         if (this._store === undefined)
@@ -222,15 +222,10 @@ export const ContactChooser = GObject.registerClass({
 
         // Unbind the old store
         if (this._store) {
-            // Disconnect from the store
-            this._store.disconnect(this._contactAddedId);
-            this._store.disconnect(this._contactRemovedId);
-            this._store.disconnect(this._contactChangedId);
 
             // Clear the contact list
             this.row_list.forEach(row => {
                 this.list.remove(row);
-                row.run_dispose();
             });
             this.row_list = [];
         }
@@ -260,24 +255,24 @@ export const ContactChooser = GObject.registerClass({
             this._populate();
         }
     }
-    
+
     /**
      * Getter and Setter for the back button visibility.
      *
-     * @type {Object} store - The new contact store.
+     * @type {object} store - The new contact store.
      */
     get show_back_button() {
         return this.header_bar.show_back_button;
     }
 
     set show_back_button(value) {
-        this.header_bar.show_back_button = value; 
+        this.header_bar.show_back_button = value;
     }
 
     /**
      * Handles when a new contact is added to the store.
      *
-     * @param {Object} store - The contact store.
+     * @param {object} store - The contact store.
      * @param {string} id - The ID of the added contact.
      */
     _onContactAdded(store, id) {
@@ -288,35 +283,34 @@ export const ContactChooser = GObject.registerClass({
     /**
      * Handles when a contact is removed from the store.
      *
-     * @param {Object} store - The contact store.
+     * @param {object} store - The contact store.
      * @param {string} id - The ID of the removed contact.
      */
     _onContactRemoved(store, id) {
         let removed_row = null;
-        let new_row_list = []
+        const new_row_list = [];
         this.row_list.forEach(row => {
-            if (row.contact.id === id) {
+            if (row.contact.id === id)
                 removed_row = row;
-            } else {
+            else
                 new_row_list.push(row);
-            }
+
         });
         this.list.remove(removed_row);
-        removed_row.run_dispose();
         this.row_list = new_row_list;
     }
 
     /**
      * Handles when a contact is updated in the store.
      *
-     * @param {Object} store - The contact store.
+     * @param {object} store - The contact store.
      * @param {string} id - The ID of the changed contact.
      */
     _onContactChanged(store, id) {
         this._onContactRemoved(store, id);
         this._onContactAdded(store, id);
     }
-    
+
     /**
      * Cleans up the store when the dialog is destroyed.
      *
@@ -375,7 +369,7 @@ export const ContactChooser = GObject.registerClass({
      * Emits the number-selected signal when a row is activated.
      *
      * @param {AddressRow} row - The activated row.
-     * 
+     *
      * @returns {void}
      */
     _onNumberSelected(row) {
@@ -401,9 +395,9 @@ export const ContactChooser = GObject.registerClass({
      * @returns {boolean} Whether the row matches the filter.
      */
     _filter(row) {
-        const re = new RegExp(this.search_entry.text, "i");
+        const re = new RegExp(this.search_entry.text, 'i');
         let match = re.test(row.title);
-        if (!match) 
+        if (!match)
             match = re.test(row.subtitle);
         return match;
     }
@@ -427,7 +421,7 @@ export const ContactChooser = GObject.registerClass({
 
     /**
      * Populates the contact list with entries from the store.
-     * 
+     *
      * @returns {void}
      */
     _populate() {
@@ -441,7 +435,7 @@ export const ContactChooser = GObject.registerClass({
     /**
      * Adds a new contact number to the address book.
      *
-     * @param {Object} contact The contact object containing the phone numbers.
+     * @param {object} contact The contact object containing the phone numbers.
      * @param {number} index The index of the phone number in the `contact.numbers` array.
      *
      * @returns {AddressRow} The newly created row for the contact number.
@@ -457,8 +451,8 @@ export const ContactChooser = GObject.registerClass({
     /**
      * Adds a new contact to the address book.
      *
-     * @param {Object} contact The contact object to add.
-     * 
+     * @param {object} contact The contact object to add.
+     *
      * @returns {void}
      */
     _addContact(contact) {
@@ -475,26 +469,6 @@ export const ContactChooser = GObject.registerClass({
         } catch (e) {
             logError(e);
         }
-    }
-    
-    /**
-     * Handles key press events in the search entry field.
-     *
-     * @param {Gtk.EventController} controller The event controller that triggered this event.
-     * @param {number} keyval The key value of the pressed key.
-     * @param {number} keycode The key code of the pressed key.
-     * @param {number} state The state of the modifier keys (Shift, Control, Alt).
-     *
-     * @returns {Gdk.EventSequence} Whether to stop handling other event handlers for this event sequence.
-     */
-    onKeyPress(controller, keyval, keycode, state)  {
-        const char = String.fromCharCode(keyval);
-        if (/^[a-zA-Z0-9]$/.test(char)) { 
-            this.button_search.active = true;
-            this.search_entry.text = char;
-            this.search_entry.set_position(-1);
-        }
-        return Gdk.EVENT_STOP;
     }
 
     /**

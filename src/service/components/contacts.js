@@ -368,27 +368,28 @@ const Store = GObject.registerClass({
         let qname = null;
         if (query.name)
             qname = query.name;
-            
+
         for (let i = 0, len = contacts.length; i < len; i++) {
-            
+
             const contact = contacts[i];
-            if (qname == contact.name)
+            if (qname === contact.name)
                 return contact;
-            
-            if (qnumber)
+
+            if (qnumber) {
                 for (const num of contact.numbers) {
                     const cnumber = num.value.toPhoneNumber();
 
                     if (qnumber.endsWith(cnumber) || cnumber.endsWith(qnumber)) {
-                        // If no query name or exact match, return immediately
+                    // If no query name or exact match, return immediately
                         if (!qname)
                             return contact;
 
                         // Otherwise we might find an exact name match that shares
                         // the number with another contact
                         matches.push(contact);
-                    }  
+                    }
                 }
+            }
         }
 
         // Return the first match (pretty much what Android does)

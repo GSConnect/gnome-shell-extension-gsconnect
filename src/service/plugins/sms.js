@@ -8,7 +8,7 @@ import GObject from 'gi://GObject';
 
 import Plugin from '../plugin.js';
 import LegacyMessagingDialog from '../ui/legacyMessaging.js';
-import * as Messaging from '../ui/messaging.js';
+import {MessagingWindow, ConversationChooser} from '../ui/messaging.js';
 import SmsURI from '../utils/uri.js';
 
 
@@ -167,7 +167,7 @@ const SMSPlugin = GObject.registerClass({
                     plugin: this,
                 });
             } else {
-                this._window = new Messaging.Window({
+                this._window = new MessagingWindow({
                     application: Gio.Application.get_default(),
                     device: this.device,
                     plugin: this,
@@ -286,10 +286,8 @@ const SMSPlugin = GObject.registerClass({
             if (thread_ids.some(id => id !== thread_ids[0])) {
                 for (let i = 0, len = messages.length; i < len; i++)
                     this._handleThread([messages[i]]);
-            }
-
             // Otherwise, handle as a thread chunk.
-            else {
+            } else {
                 this._handleThread(messages);
             }
         } catch (e) {
@@ -301,15 +299,17 @@ const SMSPlugin = GObject.registerClass({
      * Request a list of messages from a single thread.
      *
      * @param {number} thread_id - The id of the thread to request
+     * @param {number} numberToGet - The messages remaining
+     * @param {number} earliestTimestamp - The timestamp of the earliest message
      */
     _requestConversation(thread_id, numberToGet = -1, earliestTimestamp = -1) {
-        let pkt_body = {threadID: thread_id};
+        const pkt_body = {threadID: thread_id};
 
         if (numberToGet > 0)
             pkt_body['numberToRequest'] = numberToGet;
-        if (earliestTimestamp > 0) {
+        if (earliestTimestamp > 0)
             pkt_body['rangeStartTimestamp'] = earliestTimestamp;
-        }
+
         this.device.sendPacket({
             type: 'kdeconnect.sms.request_conversation',
             body: pkt_body,
@@ -319,6 +319,7 @@ const SMSPlugin = GObject.registerClass({
     requestMore(thread_id, earliestTimestamp) {
         this._requestConversation(thread_id, 10, earliestTimestamp);
     }
+
     /**
      * Request a list of the last message in each unarchived thread.
      */
@@ -331,13 +332,14 @@ const SMSPlugin = GObject.registerClass({
     /**
      * A notification action for replying to SMS messages (or missed calls).
      *
-     * @param {string} hint - Could be either a contact name or phone number
+     * @param {string} sender - The message sender's name
+     * @param {string} body - The message body
      */
     replySms(sender, body) {
         this.window.message = {
-            title : sender,
-            body : body
-        }
+            title: sender,
+            body: body,
+        };
         this.window.present();
         // FIXME: causes problems now that non-numeric addresses are allowed
         // this.window.address = hint.toPhoneNumber();
@@ -410,7 +412,7 @@ const SMSPlugin = GObject.registerClass({
 
         // If there are active threads, show the chooser dialog
         } else if (Object.values(this.threads).length > 0) {
-            const window = new Messaging.ConversationChooser({
+            const window = new ConversationChooser({
                 application: Gio.Application.get_default(),
                 device: this.device,
                 message: url,
@@ -498,7 +500,7 @@ const SMSPlugin = GObject.registerClass({
      * Retrieve the cached latest-message for a thread.
      *
      * @param {string} thread_id a thread ID
-     * @return {Object} a message object
+     * @returns {object} a message object
      */
     getThreadLatestMessage(thread_id) {
         const message = this.threads[thread_id];
@@ -512,9 +514,9 @@ const SMSPlugin = GObject.registerClass({
     getLatestMessagePerThread() {
         const messages = {};
 
-        for (const [thread_id, message] of Object.entries(this.threads)) {
+        for (const [thread_id, message] of Object.entries(this.threads))
             messages[thread_id] = message;
-        }
+
         return messages;
     }
 

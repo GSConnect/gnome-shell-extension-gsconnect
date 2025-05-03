@@ -20,6 +20,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <file compressed="true" preprocess="xml-stripblanks">ui/messaging-conversation-message.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/messaging-conversation-partecipants.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/messaging-conversation-summary.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/messaging-conversation-sharesms.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/messaging-conversation.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/messaging-window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/mousepad-input-dialog.ui</file>
@@ -60,6 +61,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <file compressed="true" preprocess="xml-stripblanks" alias="phonelink-lock-symbolic.svg">icons/phonelink-lock-symbolic.svg</file>
     <file compressed="true" preprocess="xml-stripblanks" alias="phonelink-off-symbolic.svg">icons/phonelink-off-symbolic.svg</file>
     <file compressed="true" preprocess="xml-stripblanks" alias="phone-vibrate-symbolic.svg">icons/phone-vibrate-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="sad-computer-symbolic.svg">icons/sad-computer-symbolic.svg</file>
     <file compressed="true" preprocess="xml-stripblanks" alias="phonelink-setup-symbolic.svg">icons/phonelink-setup-symbolic.svg</file>
     <file compressed="true" preprocess="xml-stripblanks" alias="paper-plane-symbolic.svg">icons/paper-plane-symbolic.svg</file>
     <file compressed="true" preprocess="xml-stripblanks" alias="chat-bubbles-text-symbolic.svg">icons/chat-bubbles-text-symbolic.svg</file>

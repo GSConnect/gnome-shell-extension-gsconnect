@@ -45,6 +45,15 @@ const Service = GObject.registerClass({
 
         // Command-line
         this._initOptions();
+        this.connect('shutdown', () => {
+            this.manager.stop();
+            // Exhaust the event loop to ensure any pending operations complete
+            const context = GLib.MainContext.default();
+            while (context.iteration(false))
+                continue;
+            // Force a GC to prevent any more calls back into JS, then chain-up
+            system.gc();
+        });
     }
 
     _migrateConfiguration() {
@@ -302,7 +311,7 @@ const Service = GObject.registerClass({
 
         // TODO: remove after a reasonable period of time
         try {
-            this._migrateConfiguration();            
+            this._migrateConfiguration();
         } catch (e) {
             if (!e.message === 'OpenSSL not found')
                 throw e;
@@ -369,24 +378,6 @@ const Service = GObject.registerClass({
                 logError(e, `GSConnect: Opening ${file.get_uri()}`);
             }
         }
-    }
-
-    vfunc_shutdown() {
-        // Dispose GSettings
-        if (this._settings !== undefined)
-            this.settings.run_dispose();
-
-        this.manager.stop();
-
-        // Exhaust the event loop to ensure any pending operations complete
-        const context = GLib.MainContext.default();
-
-        while (context.iteration(false))
-            continue;
-
-        // Force a GC to prevent any more calls back into JS, then chain-up
-        system.gc();
-        super.vfunc_shutdown();
     }
 
     /*

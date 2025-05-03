@@ -421,14 +421,15 @@ const BatteryPlugin = GObject.registerClass({
             logError(e, this.device.name);
         }
     }
-
-    destroy() {
+/*
+    vfunc_finalize() {
         this.device.remove_action('battery');
         this.settings.disconnect(this._sendStatisticsId);
         this._unmonitorState();
 
-        super.destroy();
+        super.vfunc_finalize();
     }
+*/
 });
 
 export default BatteryPlugin;

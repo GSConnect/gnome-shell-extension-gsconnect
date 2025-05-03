@@ -488,8 +488,7 @@ export const ChannelService = GObject.registerClass({
                 'network-changed', this._onNetworkChanged.bind(this));
         }
 
-        this._active = true;
-        this.notify('active');
+        this.active = true;
     }
 
     stop() {
@@ -522,8 +521,7 @@ export const ChannelService = GObject.registerClass({
         for (const channel of this.channels.values())
             channel.close();
 
-        this._active = false;
-        this.notify('active');
+        this.active = false;
     }
 
     destroy() {

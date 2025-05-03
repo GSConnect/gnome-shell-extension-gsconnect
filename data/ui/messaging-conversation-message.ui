@@ -17,7 +17,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <property name="activatable">False</property>
     <property name="selectable">False</property>
     <child>
-      <object class="GtkGrid" id="grid">
+      <object class="GtkBox" id="message-box">
         <property name="visible">True</property>
         <property name="orientation">vertical</property>
         <property name="halign">end</property>
@@ -26,7 +26,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
         <property name="margin-bottom">6</property>
         <property name="margin-start">6</property>
         <property name="margin-end">6</property>
-        <property name="column-spacing">6</property>
+        <property name="spacing">6</property>
         <style>
           <class name="message-row"/>
         </style>

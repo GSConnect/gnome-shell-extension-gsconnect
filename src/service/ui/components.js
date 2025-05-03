@@ -10,24 +10,23 @@ export const MessagingInputText = GObject.registerClass({
     GTypeName: 'GSConnectMessagingTextInput',
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/messaging-conversation-input-text.ui',
     Children: [
-        'message-entry', 'send-text', 'emoji-button'
+        'message-entry', 'send-text', 'emoji-button',
     ],
     Signals: {
-        'message-send' : {
-            param_types: [GObject.TYPE_STRING]
+        'message-send': {
+            param_types: [GObject.TYPE_STRING],
         },
     },
 }, class MessagingInputText extends Gtk.Box {
 
     _init(params) {
         super._init();
-        Object.assign(params);
-        
+        Object.assign(this, params);
+
         const keyController = new Gtk.EventControllerKey();
         keyController.connect('key-pressed', (controller, keyval, keycode, state) => {
             this._onStateChanged();
             if (keyval === Gdk.KEY_Return) {
-                print("ok");
                 if (state & Gdk.ModifierType.SHIFT_MASK) {
                     const text = this.message_entry.buffer.text;
                     this.message_entry.buffer.text = text + '\n';
@@ -39,17 +38,6 @@ export const MessagingInputText = GObject.registerClass({
         });
         this.message_entry.add_controller(keyController);
     }
-    
-    /**
-     * Handle window close request.
-     *
-     * @returns {boolean} False to allow the window to close.
-     */
-    destroy() {
-        this.message_entry.buffer.disconnect(this._entryInsertedId);
-        this.message_entry.buffer.disconnect(this._entryDeletedId);
-        return false;
-    }
 
     get text() {
         return this.message_entry.buffer.text;
@@ -58,7 +46,7 @@ export const MessagingInputText = GObject.registerClass({
     set text(text) {
         this.message_entry.buffer.text = text;
     }
-    
+
     get sensitive() {
         return this.message_entry.sensitive || this.send_text.sensitive || this.emoji_button.sensitive;
     }
@@ -67,10 +55,10 @@ export const MessagingInputText = GObject.registerClass({
         this.message_entry.sensitive = sensitive;
         this.send_text.sensitive = sensitive;
         this.emoji_button.sensitive = sensitive;
-        if (sensitive == true)
+        if (sensitive === true)
             this._onStateChanged();
     }
-    
+
     /**
      * Handle emoji selection and insert into message.
      *
@@ -96,11 +84,11 @@ export const MessagingInputText = GObject.registerClass({
      * @private
      */
     _onStateChanged() {
-        if (this.message_entry.buffer.text.trim().length) {
+        if (this.message_entry.buffer.text.trim().length)
             this.send_text.sensitive = true;
-        } else {
+        else
             this.send_text.sensitive = false;
-        }
+
     }
 
 });

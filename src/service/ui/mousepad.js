@@ -77,13 +77,12 @@ var RightClickGesture = GObject.registerClass({
     },
 }, class RightClickGesture extends Gtk.Gesture {
     _init() {
-        super._init({ n_points: 2 });
+        super._init({n_points: 2});
 
         this.connect('end', (gesture, sequence) => {
-            const [enabled, offset_x, offset_y] = this.get_point(sequence);
-            if (enabled) {
+            const enabled = this.get_point(sequence)[0];
+            if (enabled)
                 this.emit('two-finger-tap');
-            }
         });
     }
 });
@@ -108,9 +107,9 @@ export const InputWindow = GObject.registerClass({
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/mousepad-input-dialog.ui',
     Children: [
-        'infobar','mouse-left-button', 'mouse-middle-button', 'mouse-right-button',
-        'touchpad-zone', 'shift-label', 'ctrl-label', 'alt-label', 'super-label', 
-        'entry', 'title-widget'
+        'infobar', 'mouse-left-button', 'mouse-middle-button', 'mouse-right-button',
+        'touchpad-zone', 'shift-label', 'ctrl-label', 'alt-label', 'super-label',
+        'entry', 'title-widget',
     ],
 }, class InputWindow extends Adw.ApplicationWindow {
 
@@ -123,39 +122,39 @@ export const InputWindow = GObject.registerClass({
         // TRANSLATORS: Displayed when the remote keyboard is not ready to accept input
         this.infobar.title = _('Remote keyboard on %s is not active').format(this.device.name);
         this.plugin.bind_property(
-            'state', 
-            this.infobar, 
-            'revealed', 
+            'state',
+            this.infobar,
+            'revealed',
             GObject.BindingFlags.INVERT_BOOLEAN
         );
-        this.touchpad_zone.label = _('Touchpad.\nDrag on this area to move mouse cursor.\nPress long to drag to drag mouse cursor.\n\nSimple click will be sent to paired device.\nLeft, middle, right button, and wheel scrolls.')
-        
-        let keyController = new Gtk.EventControllerKey(); 
-        keyController.connect("key-pressed", this._onKeyPress.bind(this));
-        keyController.connect("key-released", this._onKeyRelease.bind(this));
+        this.touchpad_zone.label = _('Touchpad.\nDrag on this area to move mouse cursor.\nPress long to drag to drag mouse cursor.\n\nSimple click will be sent to paired device.\nLeft, middle, right button, and wheel scrolls.');
+
+        const keyController = new Gtk.EventControllerKey();
+        keyController.connect('key-pressed', this._onKeyPress.bind(this));
+        keyController.connect('key-released', this._onKeyRelease.bind(this));
         this.entry.add_controller(keyController);
-        
+
         // Mouse Pad
         this._resetTouchpadMotion();
         this.touchpad_motion_timeout_id = 0;
         this.touchpad_holding = false;
-        
-        let clickController = new Gtk.GestureClick();
-        clickController.connect("pressed", this._onTouchpadLongPressPressed.bind(this));
-        clickController.connect("stopped", this._onTouchpadLongPressPressed.bind(this));
-        clickController.connect("released", this._onTouchpadLongPressEnd.bind(this));
-        
-        
-        // Controller per il movimento
-        let motionController = new Gtk.EventControllerMotion();
-        motionController.connect("enter", this._onTouchpadDragBegin.bind(this));
-        motionController.connect("motion", this._onTouchpadDragUpdate.bind(this));
-        motionController.connect("leave", this._onTouchpadDragEnd.bind(this));
-        
-        let scrollController = new Gtk.EventControllerScroll({ flags : Gtk.EventControllerScrollFlags.VERTICAL});
-        scrollController.connect("scroll", this._onScroll.bind(this));
 
-        let rightClickGesture = new RightClickGesture();
+        const clickController = new Gtk.GestureClick();
+        clickController.connect('pressed', this._onTouchpadLongPressPressed.bind(this));
+        clickController.connect('stopped', this._onTouchpadLongPressPressed.bind(this));
+        clickController.connect('released', this._onTouchpadLongPressEnd.bind(this));
+
+
+        // Controller per il movimento
+        const motionController = new Gtk.EventControllerMotion();
+        motionController.connect('enter', this._onTouchpadDragBegin.bind(this));
+        motionController.connect('motion', this._onTouchpadDragUpdate.bind(this));
+        motionController.connect('leave', this._onTouchpadDragEnd.bind(this));
+
+        const scrollController = new Gtk.EventControllerScroll({flags: Gtk.EventControllerScrollFlags.VERTICAL});
+        scrollController.connect('scroll', this._onScroll.bind(this));
+
+        const rightClickGesture = new RightClickGesture();
         rightClickGesture.connect('two-finger-tap', () => {
             this._onMouseRightButtonClicked();
         });
@@ -164,21 +163,21 @@ export const InputWindow = GObject.registerClass({
         this.touchpad_zone.add_controller(motionController);
         this.touchpad_zone.add_controller(clickController);
     }
-   
+
     _onKeyRelease(controller, keyval, keycode, state) {
         if (!this.plugin.state) {
             debug('Ignoring remote keyboard state');
-            return false;    
+            return false;
         }
-    
+
         const keyvalLower = Gdk.keyval_to_lower(keyval);
         const realMask = state & Gtk.accelerator_get_default_mod_mask();
-    
+
         this.alt_label.sensitive = !isAlt(keyvalLower) && (realMask & Gdk.ModifierType.MOD1_MASK);
         this.ctrl_label.sensitive = !isCtrl(keyvalLower) && (realMask & Gdk.ModifierType.CONTROL_MASK);
         this.shift_label.sensitive = !isShift(keyvalLower) && (realMask & Gdk.ModifierType.SHIFT_MASK);
         this.super_label.sensitive = !isSuper(keyvalLower) && (realMask & Gdk.ModifierType.SUPER_MASK);
-    
+
         return false;
     }
 
@@ -187,8 +186,8 @@ export const InputWindow = GObject.registerClass({
             debug('Ignoring remote keyboard state');
             return false;
         }
-        
-        const keyvalLower = Gdk.keyval_to_lower(keyval); 
+
+        let keyvalLower = Gdk.keyval_to_lower(keyval);
         let realMask = state & Gtk.accelerator_get_default_mod_mask();
 
         this.alt_label.sensitive = isAlt(keyvalLower) || (realMask & Gdk.ModifierType.ALT_MASK);
@@ -196,18 +195,22 @@ export const InputWindow = GObject.registerClass({
         this.shift_label.sensitive = isShift(keyvalLower) || (realMask & Gdk.ModifierType.SHIFT_MASK);
         this.super_label.sensitive = isSuper(keyvalLower) || (realMask & Gdk.ModifierType.SUPER_MASK);
 
-        if (MOD_KEYS.includes(keyvalLower)) return false;
+        if (MOD_KEYS.includes(keyvalLower))
+            return false;
 
-        if (keyvalLower === Gdk.KEY_ISO_Left_Tab) keyvalLower = Gdk.KEY_Tab;
+        if (keyvalLower === Gdk.KEY_ISO_Left_Tab)
+            keyvalLower = Gdk.KEY_Tab;
 
-        if (keyvalLower !== keyval) realMask |= Gdk.ModifierType.SHIFT_MASK;
+        if (keyvalLower !== keyval)
+            realMask |= Gdk.ModifierType.SHIFT_MASK;
 
         if (keyvalLower === Gdk.KEY_Sys_Req && (realMask & Gdk.ModifierType.ALT_MASK) !== 0)
             keyvalLower = Gdk.KEY_Print;
 
         realMask &= ~Gdk.ModifierType.LOCK_MASK;
 
-        if (keyvalLower === 0) return false;
+        if (keyvalLower === 0)
+            return false;
 
         debug(`keyval: ${keyval}, mask: ${realMask}`);
 
@@ -231,18 +234,19 @@ export const InputWindow = GObject.registerClass({
         const pack = {
             type: 'kdeconnect.mousepad.request',
             body: request,
-        }
-        print(JSON.stringify(pack));
+        };
         this.device.sendPacket(pack);
 
-        if (request.alt || request.ctrl || request.super) return true;
+        if (request.alt || request.ctrl || request.super)
+            return true;
 
         return Gdk.EVENT_STOP;
     }
 
     _onScroll(controller, dx, dy) {
-        if (dx === 0 && dy === 0) return true;
-    
+        if (dx === 0 && dy === 0)
+            return true;
+
         this.device.sendPacket({
             type: 'kdeconnect.mousepad.request',
             body: {
@@ -251,7 +255,7 @@ export const InputWindow = GObject.registerClass({
                 dy: dy * 200,
             },
         });
-    
+
         return true;
     }
 
@@ -378,7 +382,7 @@ export const InputWindow = GObject.registerClass({
                 dy: diff_y,
             },
         });
- 
+
         this.touchpad_motion_prev_x = this.touchpad_motion_x;
         this.touchpad_motion_prev_y = this.touchpad_motion_y;
         return true;

@@ -5,7 +5,7 @@
 import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk?version=4.0';
 import Adw from 'gi://Adw';
-import { MessagingInputText } from './components.js'; // this dependency is needed for template build
+import {MessagingInputText} from './components.js'; // this dependency is needed for template build
 
 import * as Contacts from '../ui/contacts.js';
 import * as URI from '../utils/uri.js';
@@ -18,7 +18,7 @@ import '../utils/ui.js';
  * select a contact, compose messages, and manage the sending flow.
  *
  * @class GSConnectLegacyMessagingDialog
- * @extends Adw.ApplicationWindow
+ * @augments Adw.ApplicationWindow
  * @property {object} device - The device associated with this dialog.
  * @property {object} plugin - The plugin providing messaging features.
  * @event response
@@ -46,7 +46,7 @@ const Dialog = GObject.registerClass({
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/legacy-messaging-dialog.ui',
     Children: [
         'infobar', 'nav-view', 'message-avatar', 'message-editor',
-        'message-label', 'message-text-input', 'title-widget',
+        'message-label', 'title-widget', 'bottom-bar',
     ],
     Signals: {
         'response': {
@@ -58,7 +58,7 @@ const Dialog = GObject.registerClass({
     _init(params) {
         super._init();
         Object.assign(this, params);
-        
+
         // Info bar
         this.device.bind_property(
             'connected',
@@ -71,11 +71,13 @@ const Dialog = GObject.registerClass({
             'notify::connected',
             this._onStateChanged.bind(this)
         );
-        
-        this.message_text_input.connect('message-send',  () => {
+
+        this.message_bar = new MessagingInputText();
+        this.message_bar.connect('message-send',  () => {
             this.response = Gtk.ResponseType.OK;
         });
-    
+        this.bottom_bar.child = this.message_bar;
+
         this.contact_chooser = new Contacts.ContactChooser({
             device: this.device,
         });
@@ -86,8 +88,8 @@ const Dialog = GObject.registerClass({
             'number-selected',
             this._onNumberSelected.bind(this)
         );
-        
-        const contact_chooser_controller = new Gtk.EventControllerKey(); 
+
+        const contact_chooser_controller = new Gtk.EventControllerKey();
         contact_chooser_controller.connect('key-pressed', (controller, keyval, keycode, state) => {
             if (this.nav_view.get_visible_page() === this.contact_chooser)
                 this.contact_chooser.onKeyPress(controller, keyval, keycode, state);
@@ -104,13 +106,7 @@ const Dialog = GObject.registerClass({
      */
     vfunc_close_request() {
         this.response = Gtk.ResponseType.CANCEL;
-
-        if (this._numberSelectedId !== undefined) {
-            this.contact_chooser.disconnect(this._numberSelectedId);
-        }
-        this.device.disconnect(this._connectedId);
         this.saveGeometry();
-
         return false;
     }
 
@@ -122,19 +118,19 @@ const Dialog = GObject.registerClass({
     set response(response_id) {
         if (response_id === Gtk.ResponseType.OK) {
             // Refuse to send empty or whitespace only texts
-            if (!this.message_text_input.text.trim())
+            if (!this.message_bar.text.trim())
                 return;
 
             this.plugin.sendMessage(
                 this.addresses,
-                this.message_text_input.text,
+                this.message_bar.text,
                 1
             );
         }
         this.emit('response', this, response_id);
         this.destroy();
     }
- 
+
     /**
      * Set a new incoming message to display in the dialog.
      *
@@ -143,16 +139,16 @@ const Dialog = GObject.registerClass({
     set message(message) {
         this.message_label.label = URI.linkify(message.body);
         this.message_avatar.visible = true;
-        
+
         const sender = message.title || 'unknown';
         const contact = this.device.contacts.query({
             name: sender,
         });
-        if(contact) {
-            this.addresses = [{ address :contact.numbers[0].value }];  
-        } else {
-            this.title_widget.title = sender;  
-        }
+        if (contact)
+            this.addresses = [{address: contact.numbers[0].value}];
+        else
+            this.title_widget.title = sender;
+
         this.nav_view.pop();
     }
 
@@ -170,13 +166,13 @@ const Dialog = GObject.registerClass({
 
     set addresses(addresses = []) {
         this._addresses = addresses;
-        
+
         const contact = this.device.contacts.query({
             number: addresses[0].address,
         });
-        
-        this.title_widget.title = contact.name,
-        this.title_widget.subtitle = Contacts.getDisplayNumber(contact, addresses[0].address)
+
+        this.title_widget.title = contact.name;
+        this.title_widget.subtitle = Contacts.getDisplayNumber(contact, addresses[0].address);
         this.message_avatar.text = contact.name;
         this.message_avatar.visible = true;
 
@@ -256,7 +252,7 @@ const Dialog = GObject.registerClass({
      */
     _onStateChanged() {
         if (!this.device.connected)
-            this.message_text_input.sensitive = false;
+            this.message_bar.sensitive = false;
     }
 
     /**
@@ -265,7 +261,7 @@ const Dialog = GObject.registerClass({
      * @param {string} text - The message text to set.
      */
     setMessage(text) {
-        this.message_text_input.text = text;
+        this.message_bar.text = text;
     }
 });
 

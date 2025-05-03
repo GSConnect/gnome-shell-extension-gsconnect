@@ -24,7 +24,7 @@ OS:        ${GLib.get_os_info('PRETTY_NAME')}
 `;
 
 
-/**
+/*
  * A dialog for selecting a device
  */
 export const DeviceChooser = GObject.registerClass({
@@ -47,7 +47,7 @@ export const DeviceChooser = GObject.registerClass({
         ),
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/service-device-chooser.ui',
-    Singals : {
+    Singals: {
         'response': {
             param_types: [GObject.TYPE_OBJECT, GObject.TYPE_INT],
         },
@@ -55,7 +55,7 @@ export const DeviceChooser = GObject.registerClass({
     Children: ['title-widget', 'device-list', 'select-button'],
 }, class DeviceChooser extends Adw.ApplicationWindow {
 
-    
+
     _init(params = {}) {
         super._init(params);
         Object.assign(this, params);
@@ -95,8 +95,14 @@ export const DeviceChooser = GObject.registerClass({
     }
 
     /**
-     * @param {Integer} response the integer value returned by Gtk.ResponseType 
+     * @returns {number} response the integer value returned by Gtk.ResponseType
      */
+    get response() {
+        if (this._response === undefined)
+            this._response = null;
+        return this._response;
+    }
+
     set response(response) {
         if (response === Gtk.ResponseType.OK) {
             this._response = response;
@@ -109,12 +115,6 @@ export const DeviceChooser = GObject.registerClass({
         }
         this.emit('response', this, response);
         this.close();
-    }
-
-    get response() {
-        if (this._response === undefined)
-            this._response = null;
-        return this._response;
     }
 
     _onSelectClicked(box, row) {
@@ -141,8 +141,9 @@ export const DeviceChooser = GObject.registerClass({
             if (!devices.hasOwnProperty(row.name)) {
                 this.device_list.remove(row);
                 row.destroy();
-            } else
+            } else {
                 delete devices[row.name];
+            }
         });
 
         // Add new devices
@@ -189,22 +190,20 @@ export const ErrorDialog = GObject.registerClass({
     GTypeName: 'GSConnectServiceErrorDialog',
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/service-error-dialog.ui',
     Children: [
+        'title-widget',
         'error-stack',
         'expander-arrow',
-        'gesture',
         'report-button',
-        'revealer',
     ],
 }, class ErrorDialog extends Adw.ApplicationWindow {
 
     _init(params) {
         super._init();
-        Object.assign(this.params)
+        Object.assign(this, params);
 
-        this.title_widget.title = `GSConnect: ${error.name}`
+        this.title_widget.title = `GSConnect: ${this.error.name}`;
 
         this.error_stack.buffer.text = `${this.error.message}\n\n${this.error.stack}`;
-        this.gesture.connect('released', this._onReleased.bind(this));
     }
 
     _onClicked(button) {
@@ -212,12 +211,7 @@ export const ErrorDialog = GObject.registerClass({
             const uri = this._buildUri(this.error.message, this.error.stack);
             Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
         }
-        this.destroy();
-    }
-
-    _onReleased(gesture, n_press) {
-        if (n_press === 1)
-            this.revealer.reveal_child = !this.revealer.reveal_child;
+        this.close();
     }
 
     _buildUri(message, stack) {

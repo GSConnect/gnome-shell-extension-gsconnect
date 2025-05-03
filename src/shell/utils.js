@@ -40,10 +40,10 @@ export function getIcon(name) {
             'smartphone-symbolic',
             'tablet-symbolic',
             'tv-symbolic',
-            'phone-vibrate-symbolic', 
+            'phone-vibrate-symbolic',
             'chat-bubbles-text-symbolic',
         ];
-        
+
         getIcon._resource = {};
 
         for (const iconName of iconNames) {

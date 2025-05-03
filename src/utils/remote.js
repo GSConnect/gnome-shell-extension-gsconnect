@@ -217,9 +217,11 @@ export const Device = GObject.registerClass({
         }
     }
 
-    destroy() {
+    vfunnc_finalize() {
         GObject.signal_handlers_destroy(this);
+        super.vfunnc_finalize();
     }
+
 });
 
 
@@ -272,6 +274,13 @@ export const Service = GObject.registerClass({
 
     get active() {
         return this._active;
+    }
+
+    set active(active) {
+        if (this._active === active)
+            return;
+        this._active = active;
+        this.notify('active');
     }
 
     get devices() {
@@ -350,8 +359,8 @@ export const Service = GObject.registerClass({
             this._devices.delete(object_path);
             this.emit('device-removed', device);
 
-            // Destroy the device and force disposal
-            device.destroy();
+            this.device = null;
+
         } catch (e) {
             logError(e, object_path);
         }
@@ -385,7 +394,6 @@ export const Service = GObject.registerClass({
         for (const [object_path, device] of this._devices) {
             this._devices.delete(object_path);
             this.emit('device-removed', device);
-            device.destroy();
         }
     }
 
@@ -395,13 +403,11 @@ export const Service = GObject.registerClass({
             if (this.g_name_owner === null) {
                 this._clearDevices();
 
-                this._active = false;
-                this.notify('active');
+                this.active = false;
 
             // If the service started, mark it active and add each device
             } else {
-                this._active = true;
-                this.notify('active');
+                this.active = true;
 
                 await this._addDevices();
             }
@@ -509,7 +515,7 @@ export const Service = GObject.registerClass({
         }
     }
 
-    destroy() {
+    vfunnc_finalize() {
         if (this._nameOwnerChangedId > 0) {
             this.disconnect(this._nameOwnerChangedId);
             this._nameOwnerChangedId = 0;
@@ -518,6 +524,7 @@ export const Service = GObject.registerClass({
             this._active = false;
 
             GObject.signal_handlers_destroy(this);
+            super.vfunnc_finalize();
         }
     }
 });

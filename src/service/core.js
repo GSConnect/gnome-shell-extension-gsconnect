@@ -341,6 +341,14 @@ export const ChannelService = GObject.registerClass({
         return this._active;
     }
 
+    set active(active) {
+        if (this._active === active)
+            return;
+        this._active = active;
+        this.notify('active');
+    }
+
+
     get cancellable() {
         if (this._cancellable === undefined)
             this._cancellable = new Gio.Cancellable();

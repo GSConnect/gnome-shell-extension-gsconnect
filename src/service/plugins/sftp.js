@@ -116,11 +116,15 @@ const SFTPPlugin = GObject.registerClass({
     handlePacket(packet) {
         switch (packet.type) {
             case 'kdeconnect.sftp':
-                if (packet.body.hasOwnProperty('errorMessage'))
+                if (packet.body.hasOwnProperty('errorMessage')) {
                     this._handleError(packet);
-                else
-                    this._handleMount(packet);
-
+                } else {
+                    try {
+                        this._handleMount(packet);
+                    } catch (e) {
+                        console.log('Error during mount: ' + e);
+                    }
+                }
                 break;
         }
     }
@@ -473,16 +477,16 @@ const SFTPPlugin = GObject.registerClass({
             debug(e, this.device.name);
         }
     }
-
-    destroy() {
+    /*
+    vfunc_finalize() {
         if (this._volumeMonitor) {
             this._volumeMonitor.disconnect(this._mountAddedId);
             this._volumeMonitor.disconnect(this._mountRemovedId);
             this._volumeMonitor = null;
         }
-
-        super.destroy();
+        super.vfunc_finalize();
     }
+        */
 });
 
 export default SFTPPlugin;
