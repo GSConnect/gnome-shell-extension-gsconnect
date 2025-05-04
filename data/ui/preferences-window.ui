@@ -64,6 +64,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                     <child type="end">
                       <object class="GtkMenuButton" id="service-menu">
                         <property name="visible">True</property>
+                        <property name="primary">True</property>
                         <property name="icon-name">open-menu-symbolic</property>
                         <property name="has-tooltip">True</property>
                         <property name="tooltip-text" translatable="yes">Main Menu</property>
