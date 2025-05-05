@@ -29,7 +29,7 @@ OS:        ${GLib.get_os_info('PRETTY_NAME')}
 
 
 /**
- * Generate a support log by fetching system journal logs since a specified start time.
+ * Generate Support Log by fetching system journal logs since a specified start time.
  *
  * This function creates a temporary log file and writes a predefined log header to it.
  * It then executes `journalctl` to retrieve logs from the system journal since the specified start time
@@ -615,7 +615,7 @@ export const PreferencesWindow = GObject.registerClass({
     }
 
     /**
-     * Prompts the user to generate a support log by displaying a message dialog.
+     * Prompts the user to Generate Support Log by displaying a message dialog.
      * It enables debug logging, waits for user input, and either generates
      * the log or cancels the operation based on the response.
      *

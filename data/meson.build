@@ -6,6 +6,7 @@ subdir('firewalld')
 subdir('metainfo')
 subdir('webextension')
 
+
 # metadata.json
 configure_file(
   input: 'metadata.json.in',
@@ -21,6 +22,7 @@ configure_file(
   configuration: extconfig,
   install_dir: extdatadir
 )
+
 
 # Desktop Entry
 desktop_file = configure_file(
@@ -72,11 +74,13 @@ dbus_service_file = configure_file(
   install_dir: dbus_dir
 )
 
+
 # GSettings
 install_data(
   app_id + '.gschema.xml',
   install_dir: gschemadir
 )
+
 
 # GResource
 gnome.compile_resources(

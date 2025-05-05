@@ -1121,7 +1121,7 @@ export const DeviceNavigationPage = GObject.registerClass({
      * it initializes the command editor with the command's details (UUID, name, and command line). If the button is for
      * creating a new command, it prepares the editor with empty fields. The editor is then presented to the user in a dialog window.
      *
-     * @param {Gio.Avtion} settings - THe plugin
+     * @param {Gio.ActionGroup} settings - The settings action group
      * @param {string} key - The param key
      */
     _onReceiveDirectoryChanged(settings, key) {
@@ -1237,7 +1237,7 @@ export const DeviceNavigationPage = GObject.registerClass({
     _onReceiveDirectorySet(button) {
         const win = Gtk.Application.get_default().get_active_window();
         const fileDialog = new Gtk.FileDialog({
-            title: 'Seleziona un file',
+            title: _('Select Folder'),
         });
 
         fileDialog.select_folder(win, null, (dialog, response) => {

@@ -20,7 +20,7 @@ describe('The Clipboard component', function () {
         Gtk.init(null);
 
         const display = Gdk.Display.get_default();
-        gtkClipboard = Gtk.Clipboard.get_default(display);
+        gtkClipboard = Gdk.Clipboard.get_default(display);
 
         clipboard = new Clipboard();
     });

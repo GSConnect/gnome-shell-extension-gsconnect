@@ -341,15 +341,13 @@ export const ChannelService = GObject.registerClass({
         this.active = false;
     }
 
-    /*
-    vfunnc_finalize() {
+    destroy() {
         try {
             this.stop();
         } catch (e) {
             logError(e);
         }
     }
-        */
 });
 
 

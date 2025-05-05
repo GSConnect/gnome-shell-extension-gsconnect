@@ -691,7 +691,7 @@ getJasmineRequireObj().Spec = function(j$) {
 
     /**
      * @typedef SpecResult
-     * @property {Number} id - The unique id of this spec.
+     * @property {Int} id - The unique id of this spec.
      * @property {String} description - The description passed to the {@link it} that created this spec.
      * @property {String} fullName - The full description including all ancestors of this spec.
      * @property {Expectation[]} failedExpectations - The list of expectations that failed during execution of this spec.
@@ -1701,7 +1701,7 @@ getJasmineRequireObj().Env = function(j$) {
       /**
        * Information passed to the {@link Reporter#jasmineStarted} event.
        * @typedef JasmineStartedInfo
-       * @property {Number} totalSpecsDefined - The total number of specs defined in this suite.
+       * @property {Int} totalSpecsDefined - The total number of specs defined in this suite.
        * @property {Order} order - Information about the ordering (random or not) of this execution of the suite.
        */
       reporter.jasmineStarted(
@@ -1733,7 +1733,7 @@ getJasmineRequireObj().Env = function(j$) {
              * Information passed to the {@link Reporter#jasmineDone} event.
              * @typedef JasmineDoneInfo
              * @property {OverallStatus} overallStatus - The overall result of the suite: 'passed', 'failed', or 'incomplete'.
-             * @property {Number} totalTime - The total time (in ms) that it took to execute the suite
+             * @property {Int} totalTime - The total time (in ms) that it took to execute the suite
              * @property {IncompleteReason} incompleteReason - Explanation of why the suite was incomplete.
              * @property {Order} order - Information about the ordering (random or not) of this execution of the suite.
              * @property {Expectation[]} failedExpectations - List of expectations that failed in an {@link afterAll} at the global level.
@@ -2859,7 +2859,7 @@ getJasmineRequireObj().CallTracker = function(j$) {
      * @name Spy#calls#count
      * @since 2.0.0
      * @function
-     * @return {Number}
+     * @return {Integer}
      */
     this.count = function() {
       return calls.length;
@@ -2870,7 +2870,7 @@ getJasmineRequireObj().CallTracker = function(j$) {
      * @name Spy#calls#argsFor
      * @since 2.0.0
      * @function
-     * @param {Number} index The 0-based invocation index.
+     * @param {Integer} index The 0-based invocation index.
      * @return {Array}
      */
     this.argsFor = function(index) {
@@ -3145,7 +3145,7 @@ getJasmineRequireObj().Clock = function() {
      * @name Clock#tick
      * @since 1.3.0
      * @function
-     * @param {Number} millis The number of milliseconds to tick.
+     * @param {int} millis The number of milliseconds to tick.
      */
     self.tick = function(millis) {
       if (installed) {
@@ -7253,7 +7253,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @global
      * @param {String} description Textual description of what this spec is checking
      * @param {implementationCallback} [testFunction] Function that contains the code of your test. If not provided the test will be `pending`.
-     * @param {Number} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async spec.
+     * @param {Int} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async spec.
      * @see async
      */
     it: function() {
@@ -7285,7 +7285,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @global
      * @param {String} description Textual description of what this spec is checking.
      * @param {implementationCallback} testFunction Function that contains the code of your test.
-     * @param {Number} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async spec.
+     * @param {Int} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async spec.
      * @see async
      */
     fit: function() {
@@ -7299,7 +7299,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @function
      * @global
      * @param {implementationCallback} [function] Function that contains the code to setup your specs.
-     * @param {Number} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async beforeEach.
+     * @param {Int} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async beforeEach.
      * @see async
      */
     beforeEach: function() {
@@ -7313,7 +7313,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @function
      * @global
      * @param {implementationCallback} [function] Function that contains the code to teardown your specs.
-     * @param {Number} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async afterEach.
+     * @param {Int} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async afterEach.
      * @see async
      */
     afterEach: function() {
@@ -7329,7 +7329,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @function
      * @global
      * @param {implementationCallback} [function] Function that contains the code to setup your specs.
-     * @param {Number} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async beforeAll.
+     * @param {Int} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async beforeAll.
      * @see async
      */
     beforeAll: function() {
@@ -7345,7 +7345,7 @@ getJasmineRequireObj().interface = function(jasmine, env) {
      * @function
      * @global
      * @param {implementationCallback} [function] Function that contains the code to teardown your specs.
-     * @param {Number} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async afterAll.
+     * @param {Int} [timeout={@link jasmine.DEFAULT_TIMEOUT_INTERVAL}] Custom timeout for an async afterAll.
      * @see async
      */
     afterAll: function() {
@@ -8465,7 +8465,7 @@ getJasmineRequireObj().Suite = function(j$) {
 
     /**
      * @typedef SuiteResult
-     * @property {Number} id - The unique id of this suite.
+     * @property {Int} id - The unique id of this suite.
      * @property {String} description - The description text passed to the {@link describe} that made this suite.
      * @property {String} fullName - The full description including all ancestors of this suite.
      * @property {Expectation[]} failedExpectations - The list of expectations that failed in an {@link afterAll} for this suite.
