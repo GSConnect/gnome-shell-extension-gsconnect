@@ -387,8 +387,10 @@ const Listener = GObject.registerClass({
                 this._gtkNotifications.unexport();
             }
 
-            if (this._settings)
+            if (this._settings) {
                 this._settings.disconnect(this._settingsId);
+                this._settings.run_dispose();
+            }
 
 
             // TODO: Gio.IOErrorEnum: The connection is closed

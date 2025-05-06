@@ -17,7 +17,7 @@ import Adw from 'gi://Adw';
 import system from 'system';
 
 import './preferences/init.js';
-import {PreferencesWindow} from './preferences/service.js';
+import {Window} from './preferences/service.js';
 import Config from './config.js';
 
 import('gi://GioUnix?version=2.0').catch(() => {}); // Set version for optional dependency
@@ -42,7 +42,7 @@ const Preferences = GObject.registerClass({
 
     vfunc_activate() {
         if (this._window === undefined) {
-            this._window = new PreferencesWindow({
+            this._window = new Window({
                 application: this,
             });
         }

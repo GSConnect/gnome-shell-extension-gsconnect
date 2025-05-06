@@ -135,7 +135,7 @@
  */
 .counter {
   background: alpha(currentColor, .15);
-  border-radius: 999px;
+  border-radius: 50%;
   padding: 2px;
   margin-bottom:4px;
   font-size: smaller;

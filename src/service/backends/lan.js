@@ -506,14 +506,14 @@ export const ChannelService = GObject.registerClass({
         }
 
         if (this._udp6 !== null) {
-            this._udp6_source.run_dispose();
+            this._udp6_source.destroy();
             this._udp6_stream.close(null);
             this._udp6.close();
             this._udp6 = null;
         }
 
         if (this._udp4 !== null) {
-            this._udp4_source.run_dispose();
+            this._udp4_source.destroy();
             this._udp4_stream.close(null);
             this._udp4.close();
             this._udp4 = null;
@@ -522,16 +522,8 @@ export const ChannelService = GObject.registerClass({
         for (const channel of this.channels.values())
             channel.close();
 
-        this._active = true;
+        this._active = false;
         this.notify('active');
-    }
-
-    destroy() {
-        try {
-            this.stop();
-        } catch (e) {
-            debug(e);
-        }
     }
 });
 

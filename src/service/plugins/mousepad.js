@@ -295,13 +295,13 @@ const MousepadPlugin = GObject.registerClass({
         if (input.alt || input.ctrl || input.super)
             return;
 
-        if (input.key) {
-        
+        if (input.key)
+
             this._dialog.entry.buffer.text += input.key;
-        
-        } else if (KeyMap.get(input.specialKey) === Gdk.KEY_BackSpace) {
+
+        else if (KeyMap.get(input.specialKey) === Gdk.KEY_BackSpace)
             this._dialog.entry.emit('backspace');
-        }
+
     }
 
     /**

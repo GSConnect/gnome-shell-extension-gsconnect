@@ -1065,7 +1065,7 @@ const Device = GObject.registerClass({
             }
         } catch (e) {
             if (plugin !== undefined)
-                this._plugins.pop(plugin);
+                plugin.destroy();
 
             if (this.service !== null)
                 this.service.notify_error(e);
@@ -1084,26 +1084,31 @@ const Device = GObject.registerClass({
     }
 
     _unloadPlugin(name) {
-        let handler;
+        let handler, plugin;
 
         try {
             if (this._plugins.has(name)) {
                 // Unregister packet handlers
                 handler = plugins[name];
+
                 for (const type of handler.Metadata.incomingCapabilities)
                     this._handlers.delete(type);
 
                 // Unregister plugin
+                plugin = this._plugins.get(name);
                 this._plugins.delete(name);
+                plugin.destroy();
             }
         } catch (e) {
             logError(e, this.name);
         }
     }
+
     async _unloadPlugins() {
         for (const name of this._plugins.keys())
             await this._unloadPlugin(name);
     }
+
     _triggerPlugins() {
         for (const plugin of this._plugins.values()) {
             if (this.connected)
@@ -1123,11 +1128,13 @@ const Device = GObject.registerClass({
             this.channel.close();
 
         // Synchronously destroy plugins
+        this._plugins.forEach(plugin => plugin.destroy());
         this._plugins.clear();
 
         // Dispose GSettings
         this.settings.disconnect(this._disabledPluginsChangedId);
         this.settings.disconnect(this._supportedPluginsChangedId);
+        this.settings.run_dispose();
 
         GObject.signal_handlers_destroy(this);
     }

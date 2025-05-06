@@ -115,6 +115,15 @@ const FindMyPhonePlugin = GObject.registerClass({
 
 
 /**
+ * Used to ensure 'audible-bell' is enabled for fallback
+ */
+const _WM_SETTINGS = new Gio.Settings({
+    schema_id: 'org.gnome.desktop.wm.preferences',
+    path: '/org/gnome/desktop/wm/preferences/',
+});
+
+
+/**
  * A custom GtkMessageDialog for alerting of incoming requests
  */
 const Dialog = GObject.registerClass({
@@ -221,7 +230,7 @@ const Dialog = GObject.registerClass({
     }
 
     set response(response) {
-        this._response = response
+        this._response = response;
 
         // Stop the alarm
         this._cancellable.cancel();

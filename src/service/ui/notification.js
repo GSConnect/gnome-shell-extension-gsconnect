@@ -5,7 +5,7 @@
 import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk?version=4.0';
 import Adw from 'gi://Adw';
-import {MessagingInputText} from './components.js'; // this dependency is needed for template build
+import {MessagingInputText} from './components.js';
 
 
 import * as URI from '../utils/uri.js';

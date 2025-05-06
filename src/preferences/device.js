@@ -277,24 +277,15 @@ const CommandEditor = GObject.registerClass({
         'command_entry', 'name_entry', 'save_button',
     ],
     Signals: {
-        'response' : {
-            param_types: [GObject.TYPE_OBJECT, GObject.TYPE_INT],
+        'response': {
+            param_types: [GObject.TYPE_INT],
         },
-    }
+    },
 }, class CommandEditor extends Adw.Dialog {
 
-    _init(params = {}) {
-        super._init(params);
-    }
     /**
      * Updates the state of the save button based on the changes in the entries.
      *
-     * This method is triggered when there are changes in the command name or command line entries.
-     * It updates the sensitivity of the save button, enabling it only when both the command name
-     * and command line are non-empty.
-     *
-     * @param {Gtk.Entry} entry - The entry widget that was modified.
-     * @param {GObject.ParamSpec} pspec - The parameter specification that triggered the change.
      * @returns {void}
      */
     _onAddCommand() {
@@ -306,14 +297,14 @@ const CommandEditor = GObject.registerClass({
     }
 
     get response() {
-        if (this._response == null)
+        if (this._response === undefined)
             return Gtk.ResponseType.CANCEL;
         return this._response;
     }
 
     set response(response) {
         this._response = response;
-        this.emit('response', this.uuid);
+        this.emit('response', response);
     }
 
     get command_line() {
@@ -498,7 +489,7 @@ export const DeviceNavigationPage = GObject.registerClass({
 
         return this._pluginSettings[name];
     }
-    
+
     _setupActions() {
         this.actions = new Gio.SimpleActionGroup();
         this.insert_action_group('settings', this.actions);
@@ -620,7 +611,7 @@ export const DeviceNavigationPage = GObject.registerClass({
                 settings.set_string('receive-directory', filename.get_path());
         });
     }
-    
+
     /**
      * Battery Settings
      */
@@ -689,10 +680,10 @@ export const DeviceNavigationPage = GObject.registerClass({
             start_icon_name: 'list-add-symbolic',
         });
         row.connect('activated', this._onEditCommand.bind(this));
-        this.command_list.set_sort_func(this._sortCommands)
+        this.command_list.set_sort_func(this._sortCommands);
         this.command_list.append(row);
     }
-    
+
     _sortCommands(row1, row2) {
         if (!row1.title || !row2.title)
             return 1;
@@ -785,14 +776,14 @@ export const DeviceNavigationPage = GObject.registerClass({
      */
     _notificationSettings() {
         const settings = this.pluginSettings('notification');
-        
+
         settings.bind(
             'send-notifications',
             this.notification_apps,
             'sensitive',
             Gio.SettingsBindFlags.DEFAULT
         );
-        
+
         this.notification_apps.set_sort_func(titleSortFunc);
 
         this._populateApplications(settings);
@@ -965,7 +956,7 @@ export const DeviceNavigationPage = GObject.registerClass({
     }
 
     /**
-     * Advanced Page 
+     * Advanced Page
      */
     _advancedSettings() {
         this._disabledPluginsId = this.settings.connect(
@@ -1029,7 +1020,7 @@ export const DeviceNavigationPage = GObject.registerClass({
             logError(e);
         }
     }
-    
+
     _updatePlugins(settings, key) {
         for (const row of this.plugin_list_rows) {
             const name = row.get_name();

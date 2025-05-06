@@ -124,7 +124,7 @@ const SFTPPlugin = GObject.registerClass({
                 break;
         }
     }
-    
+
     _onMountAdded(monitor, mount) {
         if (this._gmount !== null || !this.device.connected)
             return;
@@ -473,13 +473,14 @@ const SFTPPlugin = GObject.registerClass({
             debug(e, this.device.name);
         }
     }
-    
+
     destroy() {
         if (this._volumeMonitor) {
             this._volumeMonitor.disconnect(this._mountAddedId);
             this._volumeMonitor.disconnect(this._mountRemovedId);
             this._volumeMonitor = null;
         }
+
         super.destroy();
     }
 });

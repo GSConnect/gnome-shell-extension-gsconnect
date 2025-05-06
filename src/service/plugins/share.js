@@ -243,7 +243,7 @@ const SharePlugin = GObject.registerClass({
             body: URI.linkify(packet.body.text),
             default_response: 'close',
         });
-        dialog.add_response('close', _('Close'))
+        dialog.add_response('close', _('Close'));
         dialog.present(Gio.Application.get_default().get_active_window());
     }
 

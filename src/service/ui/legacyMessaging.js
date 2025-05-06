@@ -11,20 +11,6 @@ import * as Contacts from '../ui/contacts.js';
 import * as URI from '../utils/uri.js';
 import '../utils/ui.js';
 
-/**
- * Dialog - A legacy messaging window for GSConnect.
- *
- * This dialog allows the user to send SMS messages via a connected device,
- * select a contact, compose messages, and manage the sending flow.
- *
- * @class GSConnectLegacyMessagingDialog
- * @augments Adw.ApplicationWindow
- * @property {object} device - The device associated with this dialog.
- * @property {object} plugin - The plugin providing messaging features.
- * @event response
- * @param {object} dialog - The Dialog instance emitting the signal.
- * @param {number} responseId - The response identifier (e.g., OK or CANCEL).
- */
 const Dialog = GObject.registerClass({
     GTypeName: 'GSConnectLegacyMessagingDialog',
     Properties: {
@@ -99,22 +85,13 @@ const Dialog = GObject.registerClass({
         this.restoreGeometry('legacy-messaging-dialog');
     }
 
-    /**
-     * Handle window close request.
-     *
-     * @returns {boolean} False to allow the window to close.
-     */
     vfunc_close_request() {
         this.response = Gtk.ResponseType.CANCEL;
         this.saveGeometry();
+        
         return false;
     }
 
-    /**
-     * Set the response to close or confirm the dialog.
-     *
-     * @type {number} response_id - The Gtk.ResponseType.
-     */
     set response(response_id) {
         if (response_id === Gtk.ResponseType.OK) {
             // Refuse to send empty or whitespace only texts
@@ -131,11 +108,6 @@ const Dialog = GObject.registerClass({
         this.close();
     }
 
-    /**
-     * Set a new incoming message to display in the dialog.
-     *
-     * @type {object} message - The message object with body and title.
-     */
     set message(message) {
         this.message_label.label = URI.linkify(message.body);
         this.message_avatar.visible = true;
@@ -152,11 +124,6 @@ const Dialog = GObject.registerClass({
         this.nav_view.pop();
     }
 
-    /**
-     * Getter and Setter for currently selected addresses.
-     *
-     * @type {Array<{address: string}>} List of selected addresses.
-     */
     get addresses() {
         if (this._addresses === undefined)
             this._addresses = [];
@@ -179,11 +146,6 @@ const Dialog = GObject.registerClass({
         this._onStateChanged();
     }
 
-    /**
-     * Getter and Setter the associated device.
-     *
-     * @type {object} The device object.
-     */
     get device() {
         if (this._device === undefined)
             this._device = null;
@@ -195,12 +157,6 @@ const Dialog = GObject.registerClass({
         this._device = device;
     }
 
-
-    /**
-     * Getter and Setter the associated plugin.
-     *
-     * @type {object} The plugin object.
-     */
     get plugin() {
         if (this._plugin === undefined)
             this._plugin = null;
@@ -212,14 +168,6 @@ const Dialog = GObject.registerClass({
         this._plugin = plugin;
     }
 
-    /**
-     * Handle activation of a hyperlink inside the message.
-     *
-     * @private
-     * @param {Gtk.Label} label - The label widget.
-     * @param {string} uri - The URI to open.
-     * @returns {boolean} True if handled.
-     */
     _onActivateLink(label, uri) {
         Gtk.show_uri_on_window(
             this.get_toplevel(),
@@ -230,13 +178,6 @@ const Dialog = GObject.registerClass({
         return true;
     }
 
-    /**
-     * Handle selection of a number from the contact chooser.
-     *
-     * @private
-     * @param {object} chooser - The ContactChooser instance.
-     * @param {object} number - The selected number.
-     */
     _onNumberSelected(chooser, number) {
         const contacts = chooser.getSelected();
         this.addresses = Object.keys(contacts).map(address => {
@@ -245,20 +186,15 @@ const Dialog = GObject.registerClass({
         this.nav_view.pop();
     }
 
-    /**
-     * Update the state of the entry and send button based on connection and input.
-     *
-     * @private
-     */
     _onStateChanged() {
         if (!this.device.connected)
             this.message_bar.sensitive = false;
     }
 
     /**
-     * Set the contents of the message entry manually.
+     * Set the contents of the message entry
      *
-     * @param {string} text - The message text to set.
+     * @param {string} text - The message to place in the entry
      */
     setMessage(text) {
         this.message_bar.text = text;

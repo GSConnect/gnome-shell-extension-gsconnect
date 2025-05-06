@@ -47,7 +47,7 @@ const Clipboard = GObject.registerClass({
     get text() {
         if (this._text === undefined)
             this._text = '';
-        
+
         return this._text;
     }
 

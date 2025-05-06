@@ -45,15 +45,7 @@ const Service = GObject.registerClass({
 
         // Command-line
         this._initOptions();
-        this.connect('shutdown', () => {
-            this.manager.stop();
-            // Exhaust the event loop to ensure any pending operations complete
-            const context = GLib.MainContext.default();
-            while (context.iteration(false))
-                continue;
-            // Force a GC to prevent any more calls back into JS, then chain-up
-            system.gc();
-        });
+
     }
 
     _migrateConfiguration() {
@@ -333,8 +325,8 @@ const Service = GObject.registerClass({
     }
 
     vfunc_dbus_unregister(connection, object_path) {
-        this.manager.stop();
-        this.manager = null;
+        this.manager.destroy();
+
         super.vfunc_dbus_unregister(connection, object_path);
     }
 
@@ -379,7 +371,7 @@ const Service = GObject.registerClass({
             }
         }
     }
-    
+
     vfunc_shutdown() {
         // Dispose GSettings
         if (this._settings !== undefined)

@@ -9,9 +9,7 @@ import Gtk from 'gi://Gtk?version=4.0';
 import Adw from 'gi://Adw';
 import Pango from 'gi://Pango';
 import Gio from 'gi://Gio';
-import system from 'system';
-import GdkPixbuf from 'gi://GdkPixbuf';
-import {MessagingInputText} from './components.js'; // this dependency is needed for template build
+import {MessagingInputText} from './components.js';
 
 import * as Contacts from './contacts.js';
 import * as Sms from '../plugins/sms.js';
@@ -257,20 +255,6 @@ const ConversationMessage = GObject.registerClass({
         }
         this.time_label.set_label(getShortTime(message.date));
     }
-
-    _add_thumb(base64_image) {
-        try {
-            const image_bytes = GLib.base64_decode(base64_image)[0];
-            const loader = GdkPixbuf.PixbufLoader();
-            loader.write(image_bytes);
-            loader.close();
-            const pixbuf = loader.get_pixbuf();
-            const widget = Gtk.Image.new_from_pixbuf(pixbuf);
-            this.attachment_box.add(widget);
-        } catch (e) {
-            logError(e);
-        }
-    }
 });
 
 /**
@@ -338,24 +322,10 @@ const MessagingConversation = GObject.registerClass({
             GObject.ParamFlags.READWRITE,
             GObject.Object
         ),
-        'addresses': GObject.ParamSpec.object(
-            'addresses',
-            'Addresses',
-            'The contact addresses',
-            GObject.ParamFlags.READWRITE,
-            GObject.Object
-        ),
         'has-pending': GObject.ParamSpec.boolean(
             'has-pending',
             'Has Pending',
             'Whether there are sent messages pending confirmation',
-            GObject.ParamFlags.READABLE,
-            false
-        ),
-        'is-loading': GObject.ParamSpec.boolean(
-            'is-loading',
-            'Is Loading',
-            'Whether the list is awaiting additional conversation history',
             GObject.ParamFlags.READABLE,
             false
         ),
@@ -529,16 +499,6 @@ const MessagingConversation = GObject.registerClass({
             return false;
 
         return (this.pending_messages.length > 0);
-    }
-
-    get is_loading() {
-        if (this._loading === undefined)
-            this._loading = false;
-        return this._loading;
-    }
-
-    set is_loading(value) {
-        this._loading = value;
     }
 
     get next_request() {
@@ -736,6 +696,7 @@ const MessagingConversation = GObject.registerClass({
     _start_loading_spinner() {
         this.spinner_anim.active = true;
         this.spinner.visible = true;
+        this._loading = true;
         if (this._spinnerTimeoutID && this._spinnerTimeoutID > 0)
             GLib.Source.remove(this._spinnerTimeoutID);
 
@@ -757,10 +718,10 @@ const MessagingConversation = GObject.registerClass({
      * Disable the loading spinner and/or expiration timer, if running
      */
     _stop_loading_spinner() {
-        this._hide_spinner();
+        this._loading = false;
         if (this._spinnerTimeoutID === undefined || !this._spinnerTimeoutID)
             this._spinnerTimeoutID = 0;
-
+        this._hide_spinner();
     }
 
     _hide_spinner() {
@@ -847,8 +808,8 @@ const MessagingConversation = GObject.registerClass({
                 this.earliest = message.date;
 
 
-            if (message.date < this.earliest_requested && this.is_loading)
-                this._end_loading_spinner();
+            if (message.date < this.earliest_requested && this._loading)
+                this._stop_loading_spinner();
 
 
             this.list.invalidate_headers();
@@ -1095,7 +1056,7 @@ export const MessagingWindow = GObject.registerClass({
     }
 
     vfunc_close_request(event) {
-        
+
         Array.from(this.stack.values()).forEach(conversation => {
             this.stack.delete(conversation.thread_id);
             conversation.destroy();

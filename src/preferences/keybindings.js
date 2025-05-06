@@ -30,11 +30,7 @@ const _MODIFIERS = [
 
 
 /**
- * A simplified version of the shortcut editor from GNOME Control Center.
- * This dialog allows the user to set a keyboard shortcut and handles key press events.
- *
- * @class ShortcutChooserDialog
- * @augments {Adw.Dialog}
+ * A simplified version of the shortcut editor from GNOME Control Center
  */
 export const ShortcutChooserDialog = GObject.registerClass({
     GTypeName: 'GSConnectPreferencesShortcutEditor',
@@ -44,22 +40,6 @@ export const ShortcutChooserDialog = GObject.registerClass({
         'stack', 'summary-label', 'confirm',
         'shortcut-label', 'conflict-label',
     ],
-    Properties: {
-        'accelerator': GObject.ParamSpec.string(
-            'accelerator',
-            'Accelerator',
-            'The accelerator key combination',
-            GObject.ParamFlags.READWRITE,
-            ''
-        ),
-        'summary': GObject.ParamSpec.string(
-            'summary',
-            'Summary',
-            'The summary of key combination',
-            GObject.ParamFlags.READWRITE,
-            ''
-        ),
-    },
     Signals: {
         'response': {
             param_types: [GObject.TYPE_OBJECT, GObject.TYPE_INT],
@@ -69,7 +49,7 @@ export const ShortcutChooserDialog = GObject.registerClass({
 
     _init(params) {
         super._init();
-        Object.assign(params);
+        Object.assign(this, params);
 
         // TRANSLATORS: Summary of a keyboard shortcut function
         // Example: Enter a new shortcut to change Messaging
@@ -88,25 +68,11 @@ export const ShortcutChooserDialog = GObject.registerClass({
         });
     }
 
-    /**
-     * Sets the response and emits the 'response' signal, then closes the dialog.
-     *
-     * @type {number} response - The response type (e.g., Gtk.ResponseType.OK).
-     */
     set response(response) {
         this.emit('response', this, response);
         this.close();
     }
 
-    /**
-     * Gets or sets the accelerator for the shortcut.
-     *
-     * The `accelerator` represents the keyboard shortcut assigned to the current action. The getter retrieves the
-     * current accelerator value, while the setter updates the accelerator and applies it to the corresponding
-     * shortcut label in the UI.
-     *
-     * @type {string}
-     */
     get accelerator() {
         return this.shortcut_label.accelerator;
     }
@@ -115,14 +81,6 @@ export const ShortcutChooserDialog = GObject.registerClass({
         this.shortcut_label.accelerator = value;
     }
 
-    /**
-     * Gets or sets the summary description for the shortcut.
-     *
-     * The `summary` provides a textual description of the shortcut's function. The getter retrieves the current
-     * summary, while the setter updates the summary label in the UI to reflect the new description.
-     *
-     * @type {string}
-     */
     get summary() {
         return this.summary_label.label;
     }
@@ -131,22 +89,6 @@ export const ShortcutChooserDialog = GObject.registerClass({
         this.summary_label.label = value;
     }
 
-    /**
-     * Handles key press events and processes the key combination to set an accelerator.
-     *
-     * This function is triggered when a key press event occurs. It converts the key value to a lowercase
-     * representation, processes the key combination, and checks for conflicts with existing accelerators.
-     * It also handles special cases like the Escape key for canceling, Backspace for unsetting,
-     * and modifiers such as Shift for capitalization. Additionally, it ensures that common key combinations
-     * like Alt+Print are handled correctly and provides feedback if a key is already in use.
-     *
-     * @param {object} controller - The controller instance managing the UI or actions.
-     * @param {number} keyval - The key value representing the pressed key.
-     * @param {number} keycode - The hardware key code for the pressed key.
-     * @param {number} state - The state of the key modifiers (e.g., Shift, Ctrl, Alt).
-     *
-     * @returns {number} `Gdk.EVENT_STOP` to indicate the event is processed and should not propagate further.
-     */
     _onKeyPressed(controller, keyval, keycode, state) {
 
         // Convertiamo il valore del tasto in minuscolo
@@ -208,16 +150,6 @@ export const ShortcutChooserDialog = GObject.registerClass({
         return Gdk.EVENT_STOP;
     }
 
-    /**
-     * Checks the availability of the current accelerator and updates the UI accordingly.
-     *
-     * This function verifies if the currently set accelerator is available using the `checkAccelerator` function.
-     * If the accelerator is available, the "set" button is displayed, and the conflict label is hidden.
-     * If the accelerator is not available, the conflict label is shown to inform the user. In case of any error
-     * during the check process, the function logs the error and emits a cancel response.
-     *
-     * @returns {Promise<void>} A promise that resolves once the availability check is completed.
-     */
     async _check() {
         try {
             const available = await checkAccelerator(this.accelerator);
@@ -313,7 +245,6 @@ export async function getAccelerator(summary, accelerator = null) {
             accelerator: accelerator,
         });
         accelerator = await new Promise((resolve, reject) => {
-
             dialog.connect('response', (dialog, response) => {
                 switch (response) {
                     case Gtk.ResponseType.OK:

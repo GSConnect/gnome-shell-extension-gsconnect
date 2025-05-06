@@ -26,6 +26,8 @@ OS:        ${GLib.get_os_info('PRETTY_NAME')}
 
 /*
  * A dialog for selecting a device
+ *
+ * TODO: Verificare se funziona in qualche modo
  */
 export const DeviceChooser = GObject.registerClass({
     GTypeName: 'GSConnectServiceDeviceChooser',
@@ -138,11 +140,11 @@ export const DeviceChooser = GObject.registerClass({
 
         // Prune device rows
         this._internal_device_list.forEach(row => {
-            if (!devices.hasOwnProperty(row.name)) {
+            if (!devices.hasOwnProperty(row.name))
                 this.device_list.remove(row);
-            } else {
+            else
                 delete devices[row.name];
-            }
+
         });
 
         // Add new devices

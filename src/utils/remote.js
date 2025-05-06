@@ -219,7 +219,6 @@ export const Device = GObject.registerClass({
 
     destroy() {
         GObject.signal_handlers_destroy(this);
-        super.run_dispose();
     }
 
 });
@@ -274,13 +273,6 @@ export const Service = GObject.registerClass({
 
     get active() {
         return this._active;
-    }
-
-    set active(active) {
-        if (this._active === active)
-            return;
-        this._active = active;
-        this.notify('active');
     }
 
     get devices() {
@@ -404,11 +396,13 @@ export const Service = GObject.registerClass({
             if (this.g_name_owner === null) {
                 this._clearDevices();
 
-                this.active = false;
+                this._active = false;
+                this.notify('active');
 
             // If the service started, mark it active and add each device
             } else {
-                this.active = true;
+                this._active = true;
+                this.notify('active');
 
                 await this._addDevices();
             }
@@ -526,6 +520,5 @@ export const Service = GObject.registerClass({
 
             GObject.signal_handlers_destroy(this);
         }
-        super.run_dispose();
     }
 });

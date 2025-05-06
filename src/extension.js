@@ -302,12 +302,12 @@ const ServiceToggle = GObject.registerClass({
 
             for (const device of this.service.devices)
                 this._onDeviceRemoved(this.service, device, false);
-            
+
             if (!this.settings.get_boolean('keep-alive-when-locked'))
                 this.service.stop();
             this.service.destroy();
         }
-        
+
         // Disconnect any keybindings
         this._keybindings.destroy();
 
@@ -318,7 +318,7 @@ const ServiceToggle = GObject.registerClass({
 
         // Destroy the PanelMenu.SystemIndicator actors
         this.menu.destroy();
-        
+
         super.destroy();
     }
 });

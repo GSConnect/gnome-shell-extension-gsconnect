@@ -94,6 +94,7 @@ PanelMenu.Button.gsconnect-device-indicator
     icon-size: 1em;
 }
 
+
 /* Tooltip
 
 StBin.gsconnect-tooltip (inherits from .osd-window)
@@ -124,4 +125,3 @@ StBin.gsconnect-tooltip (inherits from .osd-window)
 .gsconnect-tooltip StLabel:rtl {
     text-align: right;
 }
-  
