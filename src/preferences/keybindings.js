@@ -232,20 +232,12 @@ export const ShortcutChooserDialog = GObject.registerClass({
 
 
 /**
- * Checks the availability of a specified keyboard accelerator using GNOME Shell's DBus interface.
+ * Check the availability of an accelerator using GNOME Shell's DBus interface.
  *
- * This function attempts to grab the specified accelerator (keybinding) and checks whether it is
- * available for use in the GNOME Shell environment. If successful, it ungrabs the accelerator
- * immediately after checking its availability. This is typically used to verify if a keybinding
- * can be used or if it is already in use by another action.
- *
- * @param {string} accelerator - The accelerator (keybinding) to check, as a string
- *                                (e.g., 'Ctrl+Alt+T').
- * @param {number} [modeFlags] - Mode flags that modify how the accelerator is handled.
- * @param {number} [grabFlags] - Grab flags that control the behavior of the grab operation.
- *
- * @returns {boolean} Returns `true` if the accelerator is available, and `false` if
- *                   it is either unavailable or an error occurs.
+ * @param {string} accelerator - An accelerator
+ * @param {number} [modeFlags] - Mode Flags
+ * @param {number} [grabFlags] - Grab Flags
+ * @returns {boolean} %true if available, %false on error or unavailable
  */
 export async function checkAccelerator(accelerator, modeFlags = 0, grabFlags = 0) {
     try {
@@ -308,23 +300,11 @@ export async function checkAccelerator(accelerator, modeFlags = 0, grabFlags = 0
 
 
 /**
- * Opens a dialog to allow the user to set or unset a keyboard shortcut.
+ * Show a dialog to get a keyboard shortcut from a user.
  *
- * This function presents a dialog where the user can define a keyboard shortcut
- * for a specific action, or choose to unset the existing one. The dialog will
- * display a description of the keybinding's function, and the user can either
- * assign a new shortcut, leave it unchanged, or reset it to null.
- *
- * @param {string} summary - A description of the function for which the shortcut
- *                            is being set (e.g., "Open file", "Save document").
- * @param {string|null} accelerator - The current shortcut (if any) to be shown
- *                                     in the dialog, or `null` if no shortcut
- *                                     is set.
- *
- * @returns {Promise<string|null>} A promise that resolves to the new keyboard
- *                                shortcut (as a string) or `null` if the shortcut
- *                                is unset. If the dialog is canceled, it
- *                                resolves to the initial value of `accelerator`.
+ * @param {string} summary - A description of the keybinding's function
+ * @param {string} accelerator - An accelerator as taken by Gtk.ShortcutLabel
+ * @returns {string} An accelerator or %null if it should be unset.
  */
 export async function getAccelerator(summary, accelerator = null) {
     try {

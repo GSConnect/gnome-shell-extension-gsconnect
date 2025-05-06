@@ -2,14 +2,15 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+import Gdk from 'gi://Gdk?version=4.0';
 import Gio from 'gi://Gio';
 import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk?version=4.0';
-import Gdk from 'gi://Gdk?version=4.0';
 import Adw from 'gi://Adw';
 
 import * as Components from '../components/index.js';
 import Plugin from '../plugin.js';
+
 
 export const Metadata = {
     label: _('Find My Phone'),
@@ -28,28 +29,28 @@ export const Metadata = {
     },
 };
 
-/*
- * Used to ensure 'audible-bell' is enabled for fallback
+/**
+ * FindMyPhone Plugin
+ * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/findmyphone
  */
-const _WM_SETTINGS = new Gio.Settings({
-    schema_id: 'org.gnome.desktop.wm.preferences',
-    path: '/org/gnome/desktop/wm/preferences/',
-});
-
 const FindMyPhonePlugin = GObject.registerClass({
     GTypeName: 'GSConnectFindMyPhonePlugin',
 }, class FindMyPhonePlugin extends Plugin {
 
     _init(device) {
         super._init(device, 'findmyphone');
+
+        this._dialog = null;
         this._player = Components.acquire('sound');
         this._mixer = Components.acquire('pulseaudio');
-        this._dialog = null;
     }
 
     handlePacket(packet) {
-        if (packet.type === 'kdeconnect.findmyphone.request')
-            this._handleRequest();
+        switch (packet.type) {
+            case 'kdeconnect.findmyphone.request':
+                this._handleRequest();
+                break;
+        }
 
     }
 
@@ -66,6 +67,7 @@ const FindMyPhonePlugin = GObject.registerClass({
                 this._dialog = new Dialog({
                     device: this.device,
                     plugin: this,
+                    hide_on_close: true,
                 });
                 this._dialog.present();
             }
@@ -76,7 +78,7 @@ const FindMyPhonePlugin = GObject.registerClass({
 
         } catch (e) {
             this._cancelRequest();
-            console.log(e + ' - ' + this.device.name);
+            logError(e, this.device.name);
         }
     }
 
@@ -85,9 +87,12 @@ const FindMyPhonePlugin = GObject.registerClass({
      */
     _cancelRequest() {
         if (this._dialog !== null)
-            this._dialog.response(Gtk.ResponseType.DELETE_EVENT);
+            this._dialog.response = Gtk.ResponseType.DELETE_EVENT;
     }
 
+    /**
+     * Request that the remote device announce it's location
+     */
     ring() {
         this.device.sendPacket({
             type: 'kdeconnect.findmyphone.request',
@@ -201,7 +206,7 @@ const Dialog = GObject.registerClass({
         // Register action
         const action = new Gio.SimpleAction({name: 'stop-ringing'});
         action.connect('activate', () => {
-            this.response(Gtk.ResponseType.DELETE_EVENT);
+            this.response = Gtk.ResponseType.DELETE_EVENT;
             return Gdk.EVENT_STOP;
         });
 
@@ -211,7 +216,13 @@ const Dialog = GObject.registerClass({
 
     }
 
-    response(response) {
+    get response() {
+        return this._response;
+    }
+
+    set response(response) {
+        this._response = response
+
         // Stop the alarm
         this._cancellable.cancel();
 

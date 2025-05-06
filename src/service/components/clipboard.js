@@ -30,6 +30,7 @@ const Clipboard = GObject.registerClass({
 
     _init() {
         super._init();
+
         this._cancellable = new Gio.Cancellable();
         this._clipboard = null;
 
@@ -46,6 +47,7 @@ const Clipboard = GObject.registerClass({
     get text() {
         if (this._text === undefined)
             this._text = '';
+        
         return this._text;
     }
 

@@ -455,6 +455,7 @@ const Manager = GObject.registerClass({
 
             this._unexportDevice(device);
             this._removeDevice(id);
+            delete this.devices[id];
             device.destroy();
         }
 

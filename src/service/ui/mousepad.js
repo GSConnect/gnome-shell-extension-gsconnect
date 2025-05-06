@@ -87,8 +87,8 @@ var RightClickGesture = GObject.registerClass({
     }
 });
 
-export const InputWindow = GObject.registerClass({
-    GTypeName: 'GSConnectMousepadInputWindow',
+export const InputDialog = GObject.registerClass({
+    GTypeName: 'GSConnectMousepadInputDialog',
     Properties: {
         'device': GObject.ParamSpec.object(
             'device',
@@ -111,7 +111,7 @@ export const InputWindow = GObject.registerClass({
         'touchpad-zone', 'shift-label', 'ctrl-label', 'alt-label', 'super-label',
         'entry', 'title-widget',
     ],
-}, class InputWindow extends Adw.ApplicationWindow {
+}, class InputDialog extends Adw.ApplicationWindow {
 
     _init(params) {
         super._init(params);
@@ -343,7 +343,7 @@ export const InputWindow = GObject.registerClass({
         }
     }
 
-    _onTouchpadLongPressPressed(gesture, offset_x, offset_y) {
+    _onTouchpadLongPressPressed(gesture) {
         const gesture_button = gesture.get_current_button();
 
         if (gesture_button !== 1) {
@@ -359,7 +359,7 @@ export const InputWindow = GObject.registerClass({
         }
     }
 
-    _onTouchpadLongPressEnd(gesture, x, y) {
+    _onTouchpadLongPressEnd(gesture) {
         if (this.touchpad_holding) {
             this.device.sendPacket({
                 type: 'kdeconnect.mousepad.request',
@@ -375,6 +375,7 @@ export const InputWindow = GObject.registerClass({
 
         const diff_x = this.touchpad_motion_x - this.touchpad_motion_prev_x;
         const diff_y = this.touchpad_motion_y - this.touchpad_motion_prev_y;
+
         this.device.sendPacket({
             type: 'kdeconnect.mousepad.request',
             body: {

@@ -10,7 +10,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
   <requires lib="gtk" version="4.0"/>
   <requires lib="Adw" version="1.0"/>
 
-  <template class="GSConnectMousepadInputWindow" parent="AdwApplicationWindow">
+  <template class="GSConnectMousepadInputDialog" parent="AdwApplicationWindow">
     <property name="title">Test</property>
     <property name="width-request">360</property>
     <property name="height-request">640</property>

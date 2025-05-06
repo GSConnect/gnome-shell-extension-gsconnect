@@ -1064,7 +1064,6 @@ const Device = GObject.registerClass({
                     plugin.disconnected();
             }
         } catch (e) {
-            print('ok');
             if (plugin !== undefined)
                 this._plugins.pop(plugin);
 
@@ -1091,7 +1090,6 @@ const Device = GObject.registerClass({
             if (this._plugins.has(name)) {
                 // Unregister packet handlers
                 handler = plugins[name];
-
                 for (const type of handler.Metadata.incomingCapabilities)
                     this._handlers.delete(type);
 
@@ -1102,12 +1100,10 @@ const Device = GObject.registerClass({
             logError(e, this.name);
         }
     }
-
     async _unloadPlugins() {
         for (const name of this._plugins.keys())
             await this._unloadPlugin(name);
     }
-
     _triggerPlugins() {
         for (const plugin of this._plugins.values()) {
             if (this.connected)

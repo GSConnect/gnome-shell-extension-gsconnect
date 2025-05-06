@@ -174,7 +174,7 @@ const SMSPlugin = GObject.registerClass({
                 });
             }
 
-            this._window.connect('unrealize', () => {
+            this._windowId = this._window.connect('close-request', () => {
                 this._window = undefined;
             });
         }
@@ -521,9 +521,11 @@ const SMSPlugin = GObject.registerClass({
     }
 
     destroy() {
-        if (this._window !== undefined)
-            this._window.destroy();
-
+        if (this._window !== undefined) {
+            const window = this._window;
+            window.close();
+            window.disconnect(this._windowId);
+        }
         super.destroy();
     }
 });

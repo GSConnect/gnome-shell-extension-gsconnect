@@ -17,7 +17,7 @@ import Adw from 'gi://Adw';
 import system from 'system';
 
 import './preferences/init.js';
-import { PreferencesWindow } from './preferences/service.js';
+import {PreferencesWindow} from './preferences/service.js';
 import Config from './config.js';
 
 import('gi://GioUnix?version=2.0').catch(() => {}); // Set version for optional dependency
@@ -49,14 +49,14 @@ const Preferences = GObject.registerClass({
         this._window.present();
     }
 
-    startup() {
-        super.startup();
+    vfunc_startup() {
+        super.vfunc_startup();
 
         // Init some resources
         const provider = new Gtk.CssProvider();
         provider.load_from_resource(`${Config.APP_PATH}/application.css`);
-        Gtk.StyleContext.add_provider_for_screen(
-            Gdk.Screen.get_defaulvfunc_activatet(),
+        Gtk.StyleContext.add_provider_for_display(
+            Gdk.Display.get_default(),
             provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         );
@@ -74,6 +74,7 @@ const Preferences = GObject.registerClass({
             this.add_action(action);
         }
     }
+    
     activate_action(action_name, parameter) {
         try {
             const paramArray = [];

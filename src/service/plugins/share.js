@@ -238,16 +238,13 @@ const SharePlugin = GObject.registerClass({
     }
 
     _handleText(packet) {
-        const dialog = new Gtk.MessageDialog({
-            text: _('Text Shared By %s').format(this.device.name),
-            secondary_text: URI.linkify(packet.body.text),
-            secondary_use_markup: true,
-            buttons: Gtk.ButtonsType.CLOSE,
+        const dialog = new Adw.AlertDialog({
+            heading: _('Text Shared By %s').format(this.device.name),
+            body: URI.linkify(packet.body.text),
+            default_response: 'close',
         });
-        dialog.message_area.get_children()[1].selectable = true;
-        dialog.set_keep_above(true);
-        dialog.connect('response', (dialog) => dialog.destroy());
-        dialog.show();
+        dialog.add_response('close', _('Close'))
+        dialog.present(Gio.Application.get_default().get_active_window());
     }
 
     /**

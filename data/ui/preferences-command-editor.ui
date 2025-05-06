@@ -76,6 +76,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                             <property name="visible">True</property>
                             <property name="title" translatable="yes">Add Command</property>
                             <property name="start-icon-name">list-add-symbolic</property>
+                            <signal name="activated" handler="_onAddCommand" swapped="no"/> 
                             <style>
                               <class name="suggested-action"/>
                             </style>

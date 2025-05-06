@@ -217,9 +217,9 @@ export const Device = GObject.registerClass({
         }
     }
 
-    vfunnc_finalize() {
+    destroy() {
         GObject.signal_handlers_destroy(this);
-        super.vfunnc_finalize();
+        super.run_dispose();
     }
 
 });
@@ -359,6 +359,7 @@ export const Service = GObject.registerClass({
             this._devices.delete(object_path);
             this.emit('device-removed', device);
 
+            // Destroy the device and force disposal
             this.device = null;
 
         } catch (e) {
@@ -515,7 +516,7 @@ export const Service = GObject.registerClass({
         }
     }
 
-    vfunnc_finalize() {
+    destroy() {
         if (this._nameOwnerChangedId > 0) {
             this.disconnect(this._nameOwnerChangedId);
             this._nameOwnerChangedId = 0;
@@ -524,7 +525,7 @@ export const Service = GObject.registerClass({
             this._active = false;
 
             GObject.signal_handlers_destroy(this);
-            super.vfunnc_finalize();
         }
+        super.run_dispose();
     }
 });

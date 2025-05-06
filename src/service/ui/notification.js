@@ -63,11 +63,11 @@ const ReplyDialog = GObject.registerClass({
 
         // Message text input
         this.message_bar = new MessagingInputText();
-        this.message_bar.connect('message-send', () => {
+        this._entryChangedId = this.message_bar.connect('message-send', () => {
             this.response = Gtk.ResponseType.OK;
         });
         this.bottom_bar.child = this.message_bar;
-        this.device.bind_property(
+        this.deviceBinding = this.device.bind_property(
             'connected',
             this.message_bar,
             'sensitive',
@@ -87,8 +87,9 @@ const ReplyDialog = GObject.registerClass({
     }
 
     vfunc_close_request() {
-        this.entry.buffer.disconnect(this._entryChangedId);
+        this.message_bar.disconnect(this._entryChangedId);
         this.device.disconnect(this._connectedId);
+        this.deviceBinding.unbind();
         this.emit('response', this, Gtk.ResponseType.CANCEL);
         this.saveGeometry();
         return false;
@@ -143,8 +144,8 @@ const ReplyDialog = GObject.registerClass({
 
         // We must have a UUID
         if (!uuid) {
-            this.destroy();
             debug('no uuid for repliable notification');
+            this.close();
         }
     }
 

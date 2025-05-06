@@ -6,7 +6,7 @@ import Gdk from 'gi://Gdk?version=4.0';
 import GObject from 'gi://GObject';
 
 import * as Components from '../components/index.js';
-import {InputWindow} from '../ui/mousepad.js';
+import {InputDialog} from '../ui/mousepad.js';
 import Plugin from '../plugin.js';
 
 
@@ -290,14 +290,18 @@ const MousepadPlugin = GObject.registerClass({
     _handleEcho(input) {
         if (!this._dialog || !this._dialog.visible)
             return;
+
         // Skip modifiers
         if (input.alt || input.ctrl || input.super)
             return;
-        if (input.key)
-            this._dialog.entry.buffer.text += input.key;
-        else if (KeyMap.get(input.specialKey) === Gdk.KEY_BackSpace)
-            this._dialog.entry.emit('backspace');
 
+        if (input.key) {
+        
+            this._dialog.entry.buffer.text += input.key;
+        
+        } else if (KeyMap.get(input.specialKey) === Gdk.KEY_BackSpace) {
+            this._dialog.entry.emit('backspace');
+        }
     }
 
     /**
@@ -346,7 +350,7 @@ const MousepadPlugin = GObject.registerClass({
      */
     keyboard() {
         if (this._dialog === undefined) {
-            this._dialog = new InputWindow({
+            this._dialog = new InputDialog({
                 device: this.device,
                 plugin: this,
             });

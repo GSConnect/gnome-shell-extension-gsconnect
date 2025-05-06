@@ -488,7 +488,8 @@ export const ChannelService = GObject.registerClass({
                 'network-changed', this._onNetworkChanged.bind(this));
         }
 
-        this.active = true;
+        this._active = true;
+        this.notify('active');
     }
 
     stop() {
@@ -505,14 +506,14 @@ export const ChannelService = GObject.registerClass({
         }
 
         if (this._udp6 !== null) {
-            this._udp6_source.destroy();
+            this._udp6_source.run_dispose();
             this._udp6_stream.close(null);
             this._udp6.close();
             this._udp6 = null;
         }
 
         if (this._udp4 !== null) {
-            this._udp4_source.destroy();
+            this._udp4_source.run_dispose();
             this._udp4_stream.close(null);
             this._udp4.close();
             this._udp4 = null;
@@ -521,7 +522,8 @@ export const ChannelService = GObject.registerClass({
         for (const channel of this.channels.values())
             channel.close();
 
-        this.active = false;
+        this._active = true;
+        this.notify('active');
     }
 
     destroy() {
@@ -916,6 +918,14 @@ export const Channel = GObject.registerClass({
             connection.close_async(GLib.PRIORITY_DEFAULT, null, null);
         } catch (e) {
             debug(e, this.device.name);
+        }
+    }
+
+    destroy() {
+        try {
+            this.close();
+        } catch (e) {
+            debug(e);
         }
     }
 });

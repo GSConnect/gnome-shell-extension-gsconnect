@@ -140,7 +140,6 @@ export const DeviceChooser = GObject.registerClass({
         this._internal_device_list.forEach(row => {
             if (!devices.hasOwnProperty(row.name)) {
                 this.device_list.remove(row);
-                row.destroy();
             } else {
                 delete devices[row.name];
             }

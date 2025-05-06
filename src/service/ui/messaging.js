@@ -381,12 +381,12 @@ const MessagingConversation = GObject.registerClass({
         });
         Object.assign(this, params);
 
-        this._sendmessage_id = this.message_bar.connect(
+        this._sendmessageId = this.message_bar.connect(
             'message-send',
             this._onSendMessage.bind(this)
         );
 
-        this.device.bind_property(
+        this._deviceBinding = this.device.bind_property(
             'connected',
             this.message_bar,
             'sensitive',
@@ -400,7 +400,7 @@ const MessagingConversation = GObject.registerClass({
         const address = this.addresses[0].address;
         const contact = this.device.contacts.query({number: address});
 
-        this._partecipants_id = this.partecipants_button.connect('clicked', () => {
+        this._partecipantsId = this.partecipants_button.connect('clicked', () => {
             if (this._partecipants_dialog === undefined) {
                 this._partecipants_dialog = new ConversationPartecipants({
                     device: this.device,
@@ -620,13 +620,6 @@ const MessagingConversation = GObject.registerClass({
         }
     }
 
-    vfunc_unmap() {
-        this.list.set_header_func(null);
-        // Force a GC to prevent any more calls back into JS, then chain-up
-        system.gc();
-        return false;
-    }
-
     _onEntryChanged(entry) {
         entry.secondary_icon_sensitive = (entry.text.length);
     }
@@ -744,7 +737,7 @@ const MessagingConversation = GObject.registerClass({
         this.spinner_anim.active = true;
         this.spinner.visible = true;
         if (this._spinnerTimeoutID && this._spinnerTimeoutID > 0)
-            this._spinnerTimeoutID.destroy();
+            GLib.Source.remove(this._spinnerTimeoutID);
 
         this._spinnerTimeoutID = GLib.timeout_add_seconds(
             GLib.PRIORITY_DEFAULT_IDLE,
@@ -871,6 +864,15 @@ const MessagingConversation = GObject.registerClass({
      */
     setMessage(text) {
         this.message_bar.text = text;
+    }
+
+    destroy() {
+        this.list.set_header_func(null);
+        this.message_bar.disconnect(this._sendmessageId);
+        this.partecipants_button.disconnect(this._partecipantsId);
+        this.device.disconnect(this._connectedId);
+        this._vadj.disconnect(this._scrolledId);
+        this._deviceBinding.unbind();
     }
 });
 
@@ -1032,7 +1034,7 @@ export const MessagingWindow = GObject.registerClass({
 
         // Device Status
 
-        this.device.connect('notify::connected', (device) => {
+        this._deviceConnectedId = this.device.connect('notify::connected', (device) => {
             if (!device.connected) {
                 const toast = new Adw.Toast({
                     title: _('Device is disconnected'),
@@ -1048,14 +1050,14 @@ export const MessagingWindow = GObject.registerClass({
         });
 
         // Make sure we're using the correct contacts store
-        this.button_search.bind_property(
+        this._searchBinding = this.button_search.bind_property(
             'active',
             this.search_bar,
             'search-mode-enabled',
             GObject.BindingFlags.SYNC_CREATE
         );
 
-        this.search_entry.connect('search-changed', () => {
+        this._searchEntryId = this.search_entry.connect('search-changed', () => {
             this.thread_list.invalidate_filter();
         });
 
@@ -1093,9 +1095,24 @@ export const MessagingWindow = GObject.registerClass({
     }
 
     vfunc_close_request(event) {
-        this.saveGeometry();
+        
+        Array.from(this.stack.values()).forEach(conversation => {
+            this.stack.delete(conversation.thread_id);
+            conversation.destroy();
+        });
+        this.internal_thread_list.forEach(row => {
+            this.thread_list.remove(row);
+        });
+        this.internal_thread_list = [];
 
-        GLib.source_remove(this._timestampThreadsId);
+        GLib.Source.remove(this._timestampThreadsId);
+        this.device.disconnect(this._deviceConnectedId);
+        this.search_entry.disconnect(this._searchEntryId);
+        this.contact_chooser.disconnect(this._numberSelectedId);
+        this.plugin.disconnect(this._threadsChangedId);
+        this._searchBinding.unbind();
+
+        this.saveGeometry();
 
         return false;
     }
@@ -1226,7 +1243,6 @@ export const MessagingWindow = GObject.registerClass({
         // Show the conversation for this number (if applicable)
         if (row)
             this.thread_id = row.thread_id;
-
     }
 
     /**
@@ -1506,10 +1522,15 @@ export const ConversationChooser = GObject.registerClass({
         super._init(params);
 
         this.thread_list.set_sort_func(MessagingWindow.prototype._sortThreads);
-        this.thread_list.connect('row-activated', this._select.bind(this));
+        this._threadListId = this.thread_list.connect('row-activated', this._select.bind(this));
 
         // Filter Setup
         MessagingWindow.prototype._onThreadsChanged.call(this);
+    }
+
+    vfunc_close_request() {
+        this.thread_list.disconnect(this._threadListId);
+        return false;
     }
 
     get plugin() {

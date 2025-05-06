@@ -96,7 +96,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
           </object>
         </property>
         <property name="content">
-          <object class="AdwNavigationPage">
+          <object class="AdwNavigationPage" id="welcome">
             <property name="visible">True</property>
             <property name="title" translatable="no">Content</property>
             <property name="tag">content</property>
@@ -113,7 +113,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                   <object class="GtkScrolledWindow">
                     <property name="visible">True</property>
                     <child>
-                      <object class="AdwStatusPage" id="welcome">
+                      <object class="AdwStatusPage">
                         <property name="visible">True</property>
                         <property name="title" translatable="yes">Welcome to GSConnect</property>
                         <property name="icon-name">org.gnome.Shell.Extensions.GSConnect</property>

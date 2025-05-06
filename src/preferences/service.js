@@ -172,19 +172,17 @@ const SettingsDialog = GObject.registerClass({
         if (name.trim() && /^[^"',;:.!?()[\]<>]{1,32}$/.test(name))
             return true;
 
-        const dialog = new Gtk.MessageDialog({
-            text: _('Invalid Device Name'),
+        const dialog = new Adw.AlertDialog({
+            heading: _('Invalid Device Name'),
             // TRANSLATOR: %s is a list of forbidden characters
-            secondary_text: _('Device name must not contain any of %s ' +
-                              'and have a length of 1-32 characters')
-                .format('<b><tt>^"\',;:.!?()[]&lt;&gt;</tt></b>'),
-            secondary_use_markup: true,
-            buttons: Gtk.ButtonsType.OK,
-            modal: true,
-            transient_for: this,
+            body: _('Device name must not contain any of %s ' +
+                    'and have a length of 1-32 characters')
+                .format('^"\',;:.!?()[]&lt;&gt;'),
+            default_response: 'close',
         });
-        dialog.connect('response', (dialog) => dialog.destroy());
-        dialog.show_all();
+        dialog.add_response('close', _('Close'));
+
+        dialog.present(Gio.Application.get_default().get_active_window());
 
         return false;
     }
@@ -335,7 +333,7 @@ export const PreferencesWindow = GObject.registerClass({
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/preferences-window.ui',
     Children: [
         'window-title', 'split-view', 'refresh-button', 'refresh-spinner',
-        'refresh-stack', 'device-list',
+        'refresh-stack', 'device-list', 'welcome',
     ],
 }, class PreferencesWindow extends Adw.ApplicationWindow {
 
@@ -349,7 +347,7 @@ export const PreferencesWindow = GObject.registerClass({
                 true
             ),
         });
-        this.device_list.connect('row-selected', this._onDeviceSelected.bind(this));
+        this._deviceListId = this.device_list.connect('row-selected', this._onDeviceSelected.bind(this));
 
         // Service Proxy
         this.service = new Service();
@@ -386,15 +384,6 @@ export const PreferencesWindow = GObject.registerClass({
             this._refresh.bind(this)
         );
 
-        // Init some resources
-        const provider = new Gtk.CssProvider();
-        provider.load_from_resource(`${Config.APP_PATH}/application.css`);
-        Gtk.StyleContext.add_provider_for_display(
-            Gdk.Display.get_default(),
-            provider,
-            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-        );
-
         // Restore window size/maximized/position
         this._restoreGeometry();
 
@@ -412,14 +401,23 @@ export const PreferencesWindow = GObject.registerClass({
      * @returns {boolean} - Returns false to allow window close.
      */
     vfunc_close_request(event) {
+        this.device_list.disconnect(this._deviceListId);
+        // Remove row inside the list
+        this.rows.forEach(element => {
+            if(row.device._connectedId)
+                row.device.disconnect(row.device._connectedId);
+            if(row.device._pairedId)
+                row.device.disconnect(row.device._pairedId);
+            this.device_list.remove(row);
+        });
+        // Remove pages inside the Map
+        Array.from(this.pages.keys()).forEach(id => {
+            const page = this.pages.get(id);
+            this.pages.delete(id);
+        });
+
+        // Disconnect signals
         if (this.service) {
-            // Remove pages inside the Map
-            Array.from(this.pages.keys()).forEach(id => {
-                const page = this.pages.get(id);
-                this.pages.delete(id);
-                page.unparent();
-            }); ;
-            // Disconnect signals
             this.service.disconnect(this._deviceAddedId);
             this.service.disconnect(this._deviceRemovedId);
             this.service.disconnect(this._serviceChangedId);
@@ -428,7 +426,8 @@ export const PreferencesWindow = GObject.registerClass({
 
         // Save the window geometry
         this._saveGeometry();
-        GLib.source_remove(this._refreshSource);
+
+        GLib.Source.remove(this._refreshSource);
 
         return false;
     }
@@ -509,12 +508,9 @@ export const PreferencesWindow = GObject.registerClass({
         return GLib.SOURCE_CONTINUE;
     }
 
-    /**
-     * Restores the window geometry (size and maximized state) from the saved settings.
-     * If a stored size is found, it sets the window size.
-     * If the window was maximized previously, it restores the maximized state.
-     *
-     * @returns {void}
+    
+    /*
+     * Window State
      */
     _restoreGeometry() {
         this._windowState = new Gio.Settings({
@@ -593,10 +589,9 @@ export const PreferencesWindow = GObject.registerClass({
      * @returns {void}
      */
     _connectDialog() {
-        if (this.dialog === null)
-            this.dialog = new ConnectDialog();
-
-        this.dialog.present(this);
+        if (this._dialog === undefined)
+            this._dialog = new ConnectDialog();
+        this._dialog.present(this);
     }
 
     /**
@@ -622,13 +617,13 @@ export const PreferencesWindow = GObject.registerClass({
      * @returns {void}
      */
     _generateSupportLog() {
-        const dialog = new Adw.MessageDialog({
+        const dialog = new Adw.AlertDialog({
             heading: _('Generate Support Log'),
             body: _('Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log.'),
-            transient_for: this,
+            default_response: 'close',
         });
-
-        dialog.add_response('cancel',  _('Cancel'));
+        
+        dialog.add_response('close',  _('Cancel'));
         dialog.add_response('review_log',  _('Review Log'));
 
         // Enable debug logging and mark the current time
@@ -638,14 +633,13 @@ export const PreferencesWindow = GObject.registerClass({
         dialog.connect('response', (dialog, response_id) => {
             // Disable debug logging and destroy the dialog
             this.settings.set_boolean('debug', false);
-            dialog.destroy();
 
             // Only generate a log if instructed
-            if (response_id === 'review_log')
+            if (response_id !== 'review_log')
                 generateSupportLog(now);
         });
 
-        dialog.present();
+        dialog.present(Gio.Application.get_default().get_active_window());
     }
 
     /**
@@ -662,19 +656,16 @@ export const PreferencesWindow = GObject.registerClass({
         if (name.trim() && /^[^"',;:.!?()[\]<>]{1,32}$/.test(name))
             return true;
 
-        const dialog = new Gtk.MessageDialog({
-            text: _('Invalid Device Name'),
+        const dialog = new Adw.AlertDialog({
+            heading: _('Invalid Device Name'),
             // TRANSLATOR: %s is a list of forbidden characters
-            secondary_text: _('Device name must not contain any of %s ' +
+            body: _('Device name must not contain any of %s ' +
                               'and have a length of 1-32 characters')
                 .format('<b><tt>^"\',;:.!?()[]&lt;&gt;</tt></b>'),
-            secondary_use_markup: true,
-            buttons: Gtk.ButtonsType.OK,
-            modal: true,
-            transient_for: this,
+            default_response: 'close',
         });
-        dialog.connect('response', (dialog) => dialog.destroy());
-        dialog.show_all();
+        dialog.add_response('close', _('Close'))
+        dialog.present(Gio.Application.get_default().get_active_window());
 
         return false;
     }
@@ -709,6 +700,32 @@ export const PreferencesWindow = GObject.registerClass({
         this.device_menu.set_menu_model(panel.menu);
     }
 
+    /**
+     * Updates the subtitle of the device row based on its pairing and connection status.
+     * If the updated device is currently selected, it triggers the device selection handler.
+     *
+     * @param {object} device - The updated device.
+     * @param {object} paramspec - The parameters associated with the change.
+     *
+     * @returns {void}
+     */
+    _onDeviceChanged(device, paramspec) {
+        const row = this.rows[device.id];
+        switch (false) {
+            case device.paired:
+                row.set_subtitle(_('Unpaired'));
+                break;
+            case device.connected:
+                row.set_subtitle(_('Disconnected'));
+                break;
+            default:
+                row.set_subtitle(_('Connected'));
+        }
+
+        if (this.device_list.get_selected_row() !== null &&
+            this.device_list.get_selected_row().device.id === device.id)
+            this._onDeviceSelected(null, this.rows[device.id]);
+    }
 
     /**
      * Adds a new device to the device list, creates a corresponding row, and sets up event listeners
@@ -733,11 +750,11 @@ export const PreferencesWindow = GObject.registerClass({
                 visible: true,
             }));
 
-            device.connect(
+            device._connectedId = device.connect(
                 'notify::connected',
                 this._onDeviceChanged.bind(this)
             );
-            device.connect(
+            device._pairedId = device.connect(
                 'notify::paired',
                 this._onDeviceChanged.bind(this)
             );
@@ -752,31 +769,6 @@ export const PreferencesWindow = GObject.registerClass({
     }
 
     /**
-     * Updates the subtitle of the device row based on its pairing and connection status.
-     * If the updated device is currently selected, it triggers the device selection handler.
-     *
-     * @param {object} device - The updated device.
-     * @param {object} paramspec - The parameters associated with the change.
-     *
-     * @returns {void}
-     */
-    _onDeviceChanged(device, paramspec) {
-        switch (false) {
-            case device.paired:
-                this.rows[device.id].set_subtitle(_('Unpaired'));
-                break;
-            case device.connected:
-                this.rows[device.id].set_subtitle(_('Disconnected'));
-                break;
-            default:
-                this.rows[device.id].set_subtitle(_('Connected'));
-        }
-        if (this.device_list.get_selected_row() !== null &&
-            this.device_list.get_selected_row().device.id === device.id)
-            this._onDeviceSelected(null, this.rows[device.id]);
-    }
-
-    /**
      * @param {GObject.Object} service - The service object
      * @param {GObject.Object} device - The device object
      * @returns {void}
@@ -784,9 +776,11 @@ export const PreferencesWindow = GObject.registerClass({
     _onDeviceRemoved(service, device) {
         try {
             const row = this.rows[device.id];
-            if (row !== null)
+            if (row !== null) {
+                row.device.disconnect(row.device._connectedId);
+                row.device.disconnect(row.device._pairedId);
                 this.device_list.remove(row);
-
+            }
         } catch (e) {
             logError(e);
         }
@@ -805,28 +799,33 @@ export const PreferencesWindow = GObject.registerClass({
      */
     _onDeviceSelected(box, row) {
         try {
-            let navigation_page = this.pages.get(row.device.id);
-            if (row.device.paired) {
-                if (!navigation_page) {
-                    navigation_page = new DeviceNavigationPage({device: row.device});
-                } else if (navigation_page instanceof DevicePairPage) {
-                    this.pages.delete(row.device.id);
-                    navigation_page.unparent();
-                    navigation_page = new DeviceNavigationPage({device: row.device});
-                }
+            if (!row) {
+                this.split_view.set_content(this.welcome);
+                this.split_view.set_show_content(true);
+            } else { 
+                let navigation_page = this.pages.get(row.device.id);
+                if (row.device.paired) {
+                    if (!navigation_page) {
+                        navigation_page = new DeviceNavigationPage({device: row.device});
+                    } else if (navigation_page instanceof DevicePairPage) {
+                        this.pages.delete(row.device.id);
+                        navigation_page.unparent();
+                        navigation_page = new DeviceNavigationPage({device: row.device});
+                    }
 
-            } else if (!row.device.paired) {
-                if (!navigation_page) {
-                    navigation_page = new DevicePairPage({device: row.device});
-                } else if (navigation_page instanceof DeviceNavigationPage) {
-                    this.pages.delete(row.device.id);
-                    navigation_page.unparent();
-                    navigation_page = new DevicePairPage({device: row.device});
+                } else if (!row.device.paired) {
+                    if (!navigation_page) {
+                        navigation_page = new DevicePairPage({device: row.device});
+                    } else if (navigation_page instanceof DeviceNavigationPage) {
+                        this.pages.delete(row.device.id);
+                        navigation_page.unparent();
+                        navigation_page = new DevicePairPage({device: row.device});
+                    }
                 }
+                this.pages.set(row.device.id, navigation_page);
+                this.split_view.set_content(navigation_page);
+                this.split_view.set_show_content(true);
             }
-            this.pages.set(row.device.id, navigation_page);
-            this.split_view.set_content(navigation_page);
-            this.split_view.set_show_content(true);
         } catch (e) {
             logError(e);
         }
@@ -844,7 +843,7 @@ export const PreferencesWindow = GObject.registerClass({
      * @returns {void}
      */
     _onServiceChanged(service, pspec) {
-        if (this.service.active) {
+        if (service.active) {
             this.window_title.set_subtitle(_('Searching for devices…'));
             this.refresh_button.set_sensitive(true);
         } else {

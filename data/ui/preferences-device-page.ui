@@ -541,9 +541,16 @@ SPDX-License-Identifier: GPL-2.0-or-later
                       </object>
                     </child>
                     <child>
-                      <object class="AdwPreferencesGroup" id="notification-apps">
+                      <object class="AdwPreferencesGroup">
                         <property name="visible">True</property>
                         <property name="title" translatable="yes">Applications</property>
+                        <child>
+                          <object class="GtkListBox" id="notification-apps">
+                            <style>
+                              <class name="boxed-list"/>
+                            </style>
+                          </object>
+                        </child>
                       </object>
                     </child>
                   </object>

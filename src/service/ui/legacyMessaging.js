@@ -128,7 +128,7 @@ const Dialog = GObject.registerClass({
             );
         }
         this.emit('response', this, response_id);
-        this.destroy();
+        this.close();
     }
 
     /**

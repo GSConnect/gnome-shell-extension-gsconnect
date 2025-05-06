@@ -166,8 +166,8 @@ const Plugin = GObject.registerClass({
      * to store the properties and values.
      *
      * Calling cacheProperties() opens a JSON cache file and reads any stored
-     * properties and values onto the current instance. When destroy()
-     * is called the properties are automatically stored in the same file.
+     * properties and values onto the current instance. When widget is destroyed
+     * the properties are automatically stored in the same file.
      *
      * @param {Array} names - A list of this object's property names to cache
      */
@@ -213,8 +213,8 @@ const Plugin = GObject.registerClass({
      * Unregister plugin actions, write the cache (if applicable) and destroy
      * any dangling signal handlers.
      */
-    /*
-    vfunc_finalize() {
+
+    destroy() {
         // Cancel any pending plugin operations
         if (this._cancellable !== undefined)
             this._cancellable.cancel();
@@ -244,11 +244,9 @@ const Plugin = GObject.registerClass({
                 debug(e.message, `${this.device.name}: ${this.name}`);
             }
         }
-
-        GObject.signal_handlers_destroy(this);
-        super.vfunc_finalize();
+        GObject.signal_handlers_destroy(this);       
+        super.run_dispose();
     }
-    */
 });
 
 export default Plugin;

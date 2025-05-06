@@ -292,8 +292,8 @@ const ServiceToggle = GObject.registerClass({
             logError(e, 'GSConnect');
         }
     }
-/*
-    vfunc_finalize() {
+
+    destroy() {
         // Unhook from Remote.Service
         if (this.service) {
             this.service.disconnect(this._serviceChangedId);
@@ -302,26 +302,25 @@ const ServiceToggle = GObject.registerClass({
 
             for (const device of this.service.devices)
                 this._onDeviceRemoved(this.service, device, false);
-
+            
             if (!this.settings.get_boolean('keep-alive-when-locked'))
                 this.service.stop();
             this.service.destroy();
         }
-
+        
         // Disconnect any keybindings
         this._keybindings.destroy();
 
         // Disconnect from any GSettings changes
         this.settings.disconnect(this._enabledId);
         this.settings.disconnect(this._panelModeId);
-        this.settings.destroy();
+        this.settings.run_dispose();
 
         // Destroy the PanelMenu.SystemIndicator actors
         this.menu.destroy();
-
-        super.vfunc_finalize();
+        
+        super.destroy();
     }
-*/
 });
 
 const ServiceIndicator = GObject.registerClass(

@@ -333,8 +333,8 @@ const Service = GObject.registerClass({
     }
 
     vfunc_dbus_unregister(connection, object_path) {
-        this.manager.destroy();
-
+        this.manager.stop();
+        this.manager = null;
         super.vfunc_dbus_unregister(connection, object_path);
     }
 
@@ -378,6 +378,24 @@ const Service = GObject.registerClass({
                 logError(e, `GSConnect: Opening ${file.get_uri()}`);
             }
         }
+    }
+    
+    vfunc_shutdown() {
+        // Dispose GSettings
+        if (this._settings !== undefined)
+            this.settings.run_dispose();
+
+        this.manager.stop();
+
+        // Exhaust the event loop to ensure any pending operations complete
+        const context = GLib.MainContext.default();
+
+        while (context.iteration(false))
+            continue;
+
+        // Force a GC to prevent any more calls back into JS, then chain-up
+        system.gc();
+        super.vfunc_shutdown();
     }
 
     /*
@@ -607,9 +625,9 @@ const Service = GObject.registerClass({
             device = object['org.gnome.Shell.Extensions.GSConnect.Device'];
 
             if (full)
-                console.log(`${device.Id}\t${device.Name}\t${device.Connected}\t${device.Paired}`);
+                print(`${device.Id}\t${device.Name}\t${device.Connected}\t${device.Paired}`);
             else if (device.Connected && device.Paired)
-                console.log(device.Id);
+                print(device.Id);
         }
     }
 
@@ -692,7 +710,7 @@ const Service = GObject.registerClass({
     vfunc_handle_local_options(options) {
         try {
             if (options.contains('version')) {
-                console.log(`GSConnect ${Config.PACKAGE_VERSION}`);
+                print(`GSConnect ${Config.PACKAGE_VERSION}`);
                 return 0;
             }
 
