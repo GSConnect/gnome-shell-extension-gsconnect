@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 import Gio from 'gi://Gio';
-import Gtk from 'gi://Gtk';
+import Gtk from 'gi://Gtk?version=4.0';
 import St from 'gi://St';
 
 import {PACKAGE_VERSION} from 'resource:///org/gnome/shell/misc/config.js';
@@ -31,7 +31,7 @@ export function getIcon(name) {
         });
 
         // Preload our fallbacks
-        const iconPath = 'resource://org/gnome/Shell/Extensions/GSConnect/icons';
+        const iconPath = 'resource://org/gnome/Shell/Extensions/GSConnect/icons/symbolic/actions/';
         const iconNames = [
             'org.gnome.Shell.Extensions.GSConnect',
             'org.gnome.Shell.Extensions.GSConnect-symbolic',
@@ -40,8 +40,8 @@ export function getIcon(name) {
             'smartphone-symbolic',
             'tablet-symbolic',
             'tv-symbolic',
-            'phonelink-ring-symbolic',
-            'sms-symbolic',
+            'phone-vibrate-symbolic',
+            'chat-bubbles-text-symbolic',
         ];
 
         getIcon._resource = {};

@@ -5,7 +5,8 @@
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
-import Gtk from 'gi://Gtk';
+import Gtk from 'gi://Gtk?version=4.0';
+import Gdk from 'gi://Gdk?version=4.0';
 
 import * as Components from '../components/index.js';
 import * as Core from '../core.js';
@@ -371,13 +372,13 @@ const NotificationPlugin = GObject.registerClass({
      * @param {Gio.ThemedIcon} icon - The GIcon to upload
      */
     _uploadThemedIcon(packet, icon) {
-        const theme = Gtk.IconTheme.get_default();
+        const theme = Gtk.IconTheme.get_for_display(Gdk.Display.get_default());
         let file = null;
 
         for (const name of icon.names) {
             // NOTE: kdeconnect-android doesn't support SVGs
             const size = Math.max.apply(null, theme.get_icon_sizes(name));
-            const info = theme.lookup_icon(name, size, Gtk.IconLookupFlags.NO_SVG);
+            const info = theme.lookup_icon(name, null, size, Gtk.IconLookupFlags.NO_SVG, null, null);
 
             // Send the first icon we find from the options
             if (info) {
@@ -559,11 +560,11 @@ const NotificationPlugin = GObject.registerClass({
                 body = packet.body.text;
                 action = {
                     name: 'replySms',
-                    parameter: new GLib.Variant('s', packet.body.title),
+                    parameter: GLib.Variant.new('(ss)', [title, body]),
                 };
 
                 if (icon === null)
-                    icon = new Gio.ThemedIcon({name: 'sms-symbolic'});
+                    icon = new Gio.ThemedIcon({name: 'chat-bubbles-text-symbolic'});
 
             // Special case where 'appName' is the same as 'title'
             } else if (packet.body.appName === packet.body.title) {
