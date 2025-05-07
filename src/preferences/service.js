@@ -563,17 +563,15 @@ export const Window = GObject.registerClass({
 
     /**
      * Generate a support log.
-     *
-     * @param {string} time - Start time as a string (24-hour notation)
      */
     _generateSupportLog() {
         const dialog = new Adw.AlertDialog({
             heading: _('Generate Support Log'),
             body: _('Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log.'),
-            default_response: 'close',
+            default_response: 'cancel',
         });
 
-        dialog.add_response('close',  _('Cancel'));
+        dialog.add_response('cancel',  _('Cancel'));
         dialog.add_response('review_log',  _('Review Log'));
 
         // Enable debug logging and mark the current time
@@ -585,7 +583,7 @@ export const Window = GObject.registerClass({
             this.settings.set_boolean('debug', false);
 
             // Only generate a log if instructed
-            if (response_id !== 'review_log')
+            if (response_id !== 'cancel')
                 generateSupportLog(now);
         });
 

@@ -38,22 +38,22 @@ describe('The Clipboard component', function () {
             expect(clipboard.text).toBe(text);
             done();
         });
-        
-        let provider = Gdk.ContentProvider.new_for_value(new GLib.Variant('s', text));
+
+        const provider = Gdk.ContentProvider.new_for_value(new GLib.Variant('s', text));
         gtkClipboard.set_content(provider);
     });
 
-    it('pushes changes to the session clipboard', async function (done) {
+    it('pushes changes to the session clipboard', function (done) {
         const text = GLib.uuid_string_random();
-    
+
         const id = gtkClipboard.connect('changed', async (gtkClipboard) => {
             gtkClipboard.disconnect(id);
-    
-            let value = await gtkClipboard.read_text_async(null);
+
+            const value = await gtkClipboard.read_text_async(null);
             expect(value).toBe(text);
             done();
         });
-    
+
         clipboard.text = text;
     });
 });

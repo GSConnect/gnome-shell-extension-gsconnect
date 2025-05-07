@@ -62,7 +62,7 @@ const Clipboard = GObject.registerClass({
             return;
 
         if (this._clipboard instanceof Gdk.Clipboard) {
-            let provider = Gdk.ContentProvider.new_for_value(new GLib.Variant('s', text));
+            const provider = Gdk.ContentProvider.new_for_value(new GLib.Variant('s', content));
             this._clipboard.set_content(provider);
         }
 
