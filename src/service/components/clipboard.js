@@ -61,8 +61,10 @@ const Clipboard = GObject.registerClass({
         if (typeof content !== 'string')
             return;
 
-        if (this._clipboard instanceof Gdk.Clipboard)
-            this._clipboard.set_text(content, -1);
+        if (this._clipboard instanceof Gdk.Clipboard) {
+            let provider = Gdk.ContentProvider.new_for_value(new GLib.Variant('s', text));
+            this._clipboard.set_content(provider);
+        }
 
         if (this._clipboard instanceof Gio.DBusProxy) {
             this._clipboard.call('SetText', new GLib.Variant('(s)', [content]),
@@ -123,9 +125,9 @@ const Clipboard = GObject.registerClass({
         }
 
         const display = Gdk.Display.get_default();
-        this._clipboard = Gdk.Clipboard.get_default(display);
+        this._clipboard = display.get_clipboard();
 
-        this._ownerChangeId = this._clipboard.connect('owner-change',
+        this._ownerChangeId = this._clipboard.connect('changed',
             this._onOwnerChange.bind(this));
 
         this._onOwnerChange();
