@@ -392,7 +392,6 @@ const Listener = GObject.registerClass({
                 this._settings.run_dispose();
             }
 
-
             // TODO: Gio.IOErrorEnum: The connection is closed
             // this._monitor.close_sync(null);
 

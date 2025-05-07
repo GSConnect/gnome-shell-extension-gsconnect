@@ -339,7 +339,7 @@ export const ChannelService = GObject.registerClass({
         for (const channel of this.channels.values())
             channel.close();
 
-        this._active = true;
+        this._active = false;
         this.notify('active');
     }
 

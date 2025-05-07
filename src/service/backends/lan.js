@@ -525,10 +525,10 @@ export const ChannelService = GObject.registerClass({
         this._active = false;
         this.notify('active');
     }
-    
+
     destroy() {
         try {
-            this.close();
+            this.stop();
         } catch (e) {
             debug(e);
         }

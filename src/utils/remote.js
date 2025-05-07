@@ -352,7 +352,6 @@ export const Service = GObject.registerClass({
 
             // Destroy the device and force disposal
             device.destroy();
-
         } catch (e) {
             logError(e, object_path);
         }
