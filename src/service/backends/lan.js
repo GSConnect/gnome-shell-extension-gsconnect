@@ -525,6 +525,14 @@ export const ChannelService = GObject.registerClass({
         this._active = false;
         this.notify('active');
     }
+    
+    destroy() {
+        try {
+            this.close();
+        } catch (e) {
+            debug(e);
+        }
+    }
 });
 
 
@@ -910,14 +918,6 @@ export const Channel = GObject.registerClass({
             connection.close_async(GLib.PRIORITY_DEFAULT, null, null);
         } catch (e) {
             debug(e, this.device.name);
-        }
-    }
-
-    destroy() {
-        try {
-            this.close();
-        } catch (e) {
-            debug(e);
         }
     }
 });

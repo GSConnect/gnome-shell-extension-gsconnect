@@ -88,7 +88,7 @@ const Dialog = GObject.registerClass({
     vfunc_close_request() {
         this.response = Gtk.ResponseType.CANCEL;
         this.saveGeometry();
-        
+
         return false;
     }
 

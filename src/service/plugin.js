@@ -213,7 +213,6 @@ const Plugin = GObject.registerClass({
      * Unregister plugin actions, write the cache (if applicable) and destroy
      * any dangling signal handlers.
      */
-
     destroy() {
         // Cancel any pending plugin operations
         if (this._cancellable !== undefined)

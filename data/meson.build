@@ -52,6 +52,15 @@ if desktop_utils.found()
   )
 endif
 
+
+# Application Icon
+install_data([
+  join_paths('icons', app_id + '.svg'),
+  join_paths('icons', app_id + '-symbolic.svg')],
+  install_dir: join_paths(datadir, 'icons', 'hicolor', 'scalable', 'apps')
+)
+
+
 # DBus Service
 dbus = dependency('dbus-1', required: false)
 

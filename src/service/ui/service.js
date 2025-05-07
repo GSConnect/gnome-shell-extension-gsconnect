@@ -26,8 +26,6 @@ OS:        ${GLib.get_os_info('PRETTY_NAME')}
 
 /*
  * A dialog for selecting a device
- *
- * TODO: Verificare se funziona in qualche modo
  */
 export const DeviceChooser = GObject.registerClass({
     GTypeName: 'GSConnectServiceDeviceChooser',
@@ -224,6 +222,7 @@ export const ErrorDialog = GObject.registerClass({
         // Reasonable URI length limit
         if (uri.length > 2000)
             return uri.substr(0, 2000);
+
         return uri;
     }
 });

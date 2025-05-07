@@ -205,7 +205,7 @@ export const ContactChooser = GObject.registerClass({
             this._store.disconnect(this._contactAddedId);
             this._store.disconnect(this._contactRemovedId);
             this._store.disconnect(this._contactChangedId);
-            
+
             // Clear the contact list
             this.row_list.forEach(row => {
                 this.list.remove(row);

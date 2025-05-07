@@ -289,7 +289,7 @@ const ConnectDialog = GObject.registerClass({
         const win = Gtk.Application.get_default().get_active_window();
 
         // Create a transient error dialog
-        const errorDialog = new Adw.MessageDialog({
+        const errorDialog = new Adw.AlertDialog({
             heading: _('Oops! An error occurred…'),
             body: message,
             transient_for: win,
@@ -461,7 +461,7 @@ export const Window = GObject.registerClass({
         help.connect('activate', this._help);
         this.add_action(help);
     }
-    
+
     _refresh(widget) {
         if (widget) {
             this.refresh_stack.set_visible_child(this.refresh_spinner);
@@ -561,7 +561,7 @@ export const Window = GObject.registerClass({
         this._settings_dialog.present(this);
     }
 
-   /**
+    /**
      * Generate a support log.
      *
      * @param {string} time - Start time as a string (24-hour notation)

@@ -436,7 +436,7 @@ export const DeviceNavigationPage = GObject.registerClass({
     _onEncryptionInfo() {
         const win = Gtk.Application.get_default().get_active_window();
 
-        const dialog = new Adw.MessageDialog({
+        const dialog = new Adw.AlertDialog({
             heading: _('Encryption Info'),
             body: this.device.encryption_info,
             transient_for: win,

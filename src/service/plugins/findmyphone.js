@@ -124,7 +124,7 @@ const _WM_SETTINGS = new Gio.Settings({
 
 
 /**
- * A custom GtkMessageDialog for alerting of incoming requests
+ * A custom AdwApplicationWindow for alerting of incoming requests
  */
 const Dialog = GObject.registerClass({
     GTypeName: 'GSConnectFindMyPhoneDialog',

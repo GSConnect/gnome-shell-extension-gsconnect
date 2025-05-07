@@ -220,7 +220,6 @@ export const Device = GObject.registerClass({
     destroy() {
         GObject.signal_handlers_destroy(this);
     }
-
 });
 
 
@@ -352,7 +351,7 @@ export const Service = GObject.registerClass({
             this.emit('device-removed', device);
 
             // Destroy the device and force disposal
-            this.device = null;
+            device.destroy();
 
         } catch (e) {
             logError(e, object_path);
@@ -387,6 +386,7 @@ export const Service = GObject.registerClass({
         for (const [object_path, device] of this._devices) {
             this._devices.delete(object_path);
             this.emit('device-removed', device);
+            device.destroy();
         }
     }
 
