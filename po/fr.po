@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-03 13:38-0500\n"
-"PO-Revision-Date: 2025-04-28 08:26+0200\n"
+"PO-Revision-Date: 2025-05-20 19:29+0200\n"
 "Last-Translator: Matthieu Lorier <loriermatthieu@gmail.com>\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -185,7 +185,7 @@ msgstr "Nouvelle conversation"
 
 #: data/ui/messaging-window.ui:120
 msgid "No Conversations"
-msgstr "Aucune discussion"
+msgstr "Aucune conversation"
 
 #: data/ui/messaging-window.ui:180
 msgid "No conversation selected"
@@ -193,7 +193,7 @@ msgstr "Aucune conversation sélectionnée"
 
 #: data/ui/messaging-window.ui:196
 msgid "Select or start a conversation"
-msgstr "Sélectionner ou commencer une discussion"
+msgstr "Sélectionner ou commencer une conversation"
 
 #: data/ui/mousepad-input-dialog.ui:97
 msgid ""
@@ -204,7 +204,7 @@ msgid ""
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
 msgstr ""
-"Touchpad.\n"
+"Pavé tactile.\n"
 "Faites glisser cette zone pour déplacer le curseur de la souris.\n"
 "Appuyez sur long pour faire glisser le curseur de la souris.\n"
 "\n"
@@ -1208,7 +1208,7 @@ msgstr "Message de groupe"
 #: src/service/ui/messaging.js:773
 #, javascript-format
 msgid "You: %s"
-msgstr "Vous: %s"
+msgstr "Vous : %s"
 
 #: src/service/ui/messaging.js:959
 #, javascript-format
