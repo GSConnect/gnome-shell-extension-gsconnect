@@ -258,7 +258,10 @@ const SharePlugin = GObject.registerClass({
 
         win.connect('destroy', () => Gtk.main_quit());
 
-        const fileDialog = new Gtk.FileDialog();
+        const fileDialog = new Gtk.FileDialog({
+            // TRANSLATORS: eg. Send files to Google Pixel
+            title: _('Send files to %s').format(this.device.name),
+        });
 
         fileDialog.open(win, null, (dialog, result) => {
             try {

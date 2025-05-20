@@ -996,7 +996,7 @@ msgstr "%s ha segnalato un errore"
 
 #: src/service/plugins/share.js:16 src/service/plugins/share.js:23
 msgid "Share"
-msgstr "Invia file"
+msgstr "Condividi"
 
 #: src/service/plugins/share.js:18
 msgid "Share files and URLs between devices"

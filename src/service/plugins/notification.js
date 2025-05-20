@@ -556,8 +556,8 @@ const NotificationPlugin = GObject.registerClass({
 
             // Special case for SMS notifications
             } else if (_isSmsNotification(packet)) {
-                title = packet.body.title;
-                body = packet.body.text;
+                title = packet.body.title ? packet.body.title : '';
+                body = packet.body.text ? packet.body.text : '';
                 action = {
                     name: 'replySms',
                     parameter: GLib.Variant.new('(ss)', [title, body]),
