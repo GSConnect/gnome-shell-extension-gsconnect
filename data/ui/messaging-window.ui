@@ -41,7 +41,18 @@ SPDX-License-Identifier: GPL-2.0-or-later
                         <child>
                           <object class="AdwHeaderBar">
                             <property name="visible">True</property>
-                            <child>
+                            <child type="start">
+                              <object class="GtkToggleButton" id="button-search">
+                                <property name="visible">True</property>
+                                <property name="icon-name">edit-find-symbolic</property>
+                                <property name="has-tooltip">True</property>
+                                <property name="tooltip-text" translatable="yes">Search contact</property>
+                                <accessibility>
+                                  <property name="label" translatable="yes">Search contact</property>
+                                </accessibility>
+                              </object>
+                            </child>
+                            <child type="end">
                               <object class="GtkButton">
                                 <property name="visible">True</property>
                                 <property name="icon-name">list-add-symbolic</property>
@@ -51,17 +62,6 @@ SPDX-License-Identifier: GPL-2.0-or-later
                                   <property name="label" translatable="yes">New Conversation</property>
                                 </accessibility>
                                 <signal name="clicked" handler="_onNewConversation" swapped="no"/>
-                              </object>
-                            </child>
-                            <child type="end">
-                              <object class="GtkToggleButton" id="button-search">
-                                <property name="visible">True</property>
-                                <property name="icon-name">edit-find-symbolic</property>
-                                <property name="has-tooltip">True</property>
-                                <property name="tooltip-text" translatable="yes">Search contact</property>
-                                <accessibility>
-                                  <property name="label" translatable="yes">Search contact</property>
-                                </accessibility>
                               </object>
                             </child>
                             <property name="title-widget">

@@ -23,7 +23,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
             <child>
               <object class="AdwHeaderBar" id="header-bar">
                 <property name="visible">True</property>
-                <child type="end">
+                <child type="start">
                   <object class="GtkToggleButton" id="button-search">
                     <property name="visible">True</property>
                     <property name="icon-name">edit-find-symbolic</property>
