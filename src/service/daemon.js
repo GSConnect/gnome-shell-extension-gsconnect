@@ -4,14 +4,15 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-import Gdk from 'gi://Gdk?version=3.0';
+import Gdk from 'gi://Gdk?version=4.0';
 import 'gi://GdkPixbuf?version=2.0';
 import Gio from 'gi://Gio?version=2.0';
 import 'gi://GIRepository?version=2.0';
 import GLib from 'gi://GLib?version=2.0';
 import GObject from 'gi://GObject?version=2.0';
-import Gtk from 'gi://Gtk?version=3.0';
+import Gtk from 'gi://Gtk?version=4.0';
 import 'gi://Pango?version=1.0';
+import Adw from 'gi://Adw';
 
 import system from 'system';
 
@@ -30,7 +31,7 @@ import('gi://GioUnix?version=2.0').catch(() => {}); // Set version for optional 
  */
 const Service = GObject.registerClass({
     GTypeName: 'GSConnectService',
-}, class Service extends Gtk.Application {
+}, class Service extends Adw.Application {
 
     _init() {
         super._init({
@@ -44,6 +45,7 @@ const Service = GObject.registerClass({
 
         // Command-line
         this._initOptions();
+
     }
 
     _migrateConfiguration() {
@@ -180,7 +182,9 @@ const Service = GObject.registerClass({
                 return;
             }
 
-            const dialog = new ServiceUI.ErrorDialog(error);
+            const dialog = new ServiceUI.ErrorDialog({
+                error: error,
+            });
             dialog.present();
         } catch (e) {
             logError(e);
@@ -279,8 +283,8 @@ const Service = GObject.registerClass({
         // Init some resources
         const provider = new Gtk.CssProvider();
         provider.load_from_resource(`${Config.APP_PATH}/application.css`);
-        Gtk.StyleContext.add_provider_for_screen(
-            Gdk.Screen.get_default(),
+        Gtk.StyleContext.add_provider_for_display(
+            Gdk.Display.get_default(),
             provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         );
@@ -298,7 +302,12 @@ const Service = GObject.registerClass({
         this._initActions();
 
         // TODO: remove after a reasonable period of time
-        this._migrateConfiguration();
+        try {
+            this._migrateConfiguration();
+        } catch (e) {
+            if (!e.message === 'OpenSSL not found')
+                throw e;
+        }
 
         this.manager.start();
     }
