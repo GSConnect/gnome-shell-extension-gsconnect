@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-03 13:38-0500\n"
-"PO-Revision-Date: 2025-04-17 10:06\n"
-"Last-Translator: Albano Battistella <albanobattistella@gmal.com>\n"
+"PO-Revision-Date: 2025-06-12 21:20\n"
+"Last-Translator: \n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
 "MIME-Version: 1.0\n"
@@ -189,7 +189,7 @@ msgstr "Touchpad.\n"
 "Trascina su questa area per spostare il cursore del mouse.\n"
 "Premi a lungo per trascinare il cursore del mouse.\n\n"
 "Un semplice clic verrà inviato al dispositivo accoppiato.\n"
-"Pulsante sinistro, centrale, destro e rotellina di scorrimento."
+"Sinistra, centrale, tasto destro e rotelle della ruota."
 
 #: data/ui/preferences-command-editor.ui:14
 msgid "Edit Command"
@@ -525,7 +525,7 @@ msgstr "Ricerca disattiva"
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/preferences-window.ui:821
 msgid "Add device by IP…"
-msgstr "Aggiungi dispositivo per IP…"
+msgstr "Aggiungi dispositivo tramite IP…"
 
 #: data/ui/preferences-window.ui:826
 msgid "Display Mode"
