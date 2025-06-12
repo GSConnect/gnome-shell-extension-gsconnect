@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+
+SPDX-License-Identifier: CC0-1.0
+-->
+
 <component type="desktop-application">
   <id>org.gnome.Shell.Extensions.GSConnect</id>
 
@@ -49,8 +56,35 @@
   </description>
 
   <releases>
+    <release version="64" date="2025-06-12">
+      <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v64</url>
+    </release>
+    <release version="63" date="2025-06-12">
+      <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v63</url>
+    </release>
+    <release version="62" date="2025-03-29">
+      <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v62</url>
+    </release>
+    <release version="61" date="2025-03-29">
+      <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v61</url>
+    </release>
     <release version="60" date="2025-03-29">
       <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v60</url>
+    </release>
+    <release version="59" date="2025-03-29">
+      <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v59</url>
+    </release>
+    <release version="58" date="2024-10-24">
+      <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v58</url>
+    </release>
+    <release version="57" date="2023-11-05">
+      <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v57</url>
+    </release>
+    <release version="56" date="2023-11-05">
+      <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v56</url>
+    </release>
+    <release version="55" date="2023-03-26">
+      <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v55</url>
     </release>
     <release version="54" date="2022-10-17">
       <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v54</url>
