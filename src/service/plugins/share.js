@@ -84,9 +84,9 @@ const SharePlugin = GObject.registerClass({
         }
         const message = text || url;
         if (message === undefined)
-            throw new Error("Share request has invalid payload, ignoring.");
+            throw new Error('Share request has invalid payload, ignoring.');
 
-        const url_start = message.toLowerCase().lastIndexOf("http");
+        const url_start = message.toLowerCase().lastIndexOf('http');
         if (this.settings.get_boolean('launch-urls') && url_start >= 0) {
             const shared_url = message.slice(url_start);
             debug(`Launching shared URL "${shared_url}".`);
@@ -94,7 +94,7 @@ const SharePlugin = GObject.registerClass({
             return;
         }
 
-        debug("Displaying shared message.");
+        debug('Displaying shared message.');
         this._handleText(message);
     }
 
