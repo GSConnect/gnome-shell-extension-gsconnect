@@ -75,25 +75,29 @@ const SharePlugin = GObject.registerClass({
 
         // TODO: composite jobs (lastModified, numberOfFiles, totalPayloadSize)
         if (filename !== undefined) {
-            debug(`Remote wants to share file "${filename}"`);
+            debug(`Remote wants to share file "${filename}".`);
             if (this.settings.get_boolean('receive-files'))
                 this._handleFile(packet);
             else
                 this._refuseFile(packet);
             return;
         }
-        const message = text || url;
-        if (message === undefined)
+        if (text === undefined && url === undefined)
             throw new Error('Share request has invalid payload, ignoring.');
 
-        const url_start = message.toLowerCase().lastIndexOf('http');
-        if (this.settings.get_boolean('launch-urls') && url_start >= 0) {
-            const shared_url = message.slice(url_start);
-            debug(`Launching shared URL "${shared_url}".`);
-            this._handleUri(shared_url);
-            return;
+        if (this.settings.get_boolean('launch-urls')) {
+            let shared_url = url;
+            if (url === undefined) {
+                const urls = URI.findUrls(text);
+                if (urls.length === 1)
+                    shared_url = urls[0].url;
+            }
+            if (shared_url !== undefined) {
+                debug(`Launching shared URL "${shared_url}".`);
+                return this._handleUri(shared_url);
+            }
         }
-
+        const message = text || url;
         debug('Displaying shared message.');
         this._handleText(message);
     }
