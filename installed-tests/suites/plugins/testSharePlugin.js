@@ -85,7 +85,20 @@ describe('The share plugin', function () {
         expect(remotePlugin._handleText).toHaveBeenCalled();
     });
 
-    it('can send and receive URIs', async function () {
+    it('treats URIs as text by default', async function () {
+        spyOn(remotePlugin, '_handleText');
+
+        localPlugin.shareUri('https://www.gnome.org/');
+
+        await remotePlugin.awaitPacket('kdeconnect.share.request', {
+            url: 'https://www.gnome.org/',
+        });
+
+        expect(remotePlugin._handleText).toHaveBeenCalled();
+    });
+
+    it('launches URIs directly when configured to do so', async function () {
+        remotePlugin.settings.set_boolean('launch-urls', true);
         spyOn(remotePlugin, '_handleUri');
 
         localPlugin.shareUri('https://www.gnome.org/');
@@ -95,6 +108,21 @@ describe('The share plugin', function () {
         });
 
         expect(remotePlugin._handleUri).toHaveBeenCalled();
+        remotePlugin.settings.set_boolean('launch-urls', false);
+    });
+
+    it('also detects and launches URIs in text shares', async function () {
+        remotePlugin.settings.set_boolean('launch-urls', true);
+        spyOn(remotePlugin, '_handleUri');
+
+        localPlugin.shareText('GTK Documentation https://docs.gtk.org/');
+
+        await remotePlugin.awaitPacket('kdeconnect.share.request', {
+            text: 'GTK Documentation https://docs.gtk.org/',
+        });
+
+        expect(remotePlugin._handleUri).toHaveBeenCalled();
+        remotePlugin.settings.set_boolean('launch-urls', false);
     });
 
     xit('interprets file URIs as file shares', async function () {
@@ -119,4 +147,3 @@ describe('The share plugin', function () {
             expect(remotePlugin.device.get_action_enabled(action)).toBeFalse();
     });
 });
-
