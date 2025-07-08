@@ -58,6 +58,18 @@ SPDX-License-Identifier: CC0-1.0
   </description>
 
   <releases>
+    <release version="66" date="2025-06-12">
+      <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v66</url>
+    </release>
+    <release version="65" date="2025-06-12">
+      <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v65</url>
+    </release>
+    <release version="64" date="2025-06-12">
+      <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v64</url>
+    </release>
+    <release version="63" date="2025-06-12">
+      <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v63</url>
+    </release>
     <release version="62" date="2025-03-29">
       <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v62</url>
     </release>
