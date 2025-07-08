@@ -478,6 +478,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                         <child>
                           <object class="GtkListBox" id="command-list">
                             <property name="visible">True</property>
+                            <property name="selection-mode">none</property>
                             <style>
                               <class name="boxed-list"/>
                             </style>

@@ -439,12 +439,11 @@ export const DeviceNavigationPage = GObject.registerClass({
         const dialog = new Adw.AlertDialog({
             heading: _('Encryption Info'),
             body: this.device.encryption_info,
-            transient_for: win,
         });
 
         dialog.add_response('ok',  _('Ok'));
 
-        dialog.present();
+        dialog.present(win);
     }
 
     get_incoming_supported(type) {
@@ -680,14 +679,15 @@ export const DeviceNavigationPage = GObject.registerClass({
             start_icon_name: 'list-add-symbolic',
         });
         row.connect('activated', this._onEditCommand.bind(this));
+        this.command_list.prepend(row);
         this.command_list.set_sort_func(this._sortCommands);
-        this.command_list.append(row);
     }
 
     _sortCommands(row1, row2) {
-        if (!row1.title || !row2.title)
+        if (!row1.title || row1.title === _('Add Command'))
             return 1;
-
+        if (!row2.title || row2.title === _('Add Command'))
+            return 0;
         return row1.title.localeCompare(row2.title);
     }
 
