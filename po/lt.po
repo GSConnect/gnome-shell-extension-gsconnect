@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-03 13:38-0500\n"
-"PO-Revision-Date: 2025-01-03 22:06\n"
+"POT-Creation-Date: 2025-07-11 13:49-0400\n"
+"PO-Revision-Date: 2025-07-11 19:08\n"
 "Last-Translator: \n"
 "Language-Team: Lithuanian\n"
 "Language: lt_LT\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #. TRANSLATORS: Extension name
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:12
-#: webextension/gettext.js:30
+#: webextension/gettext.js:29
 msgid "GSConnect"
 msgstr "GSConnect"
 
@@ -75,7 +75,7 @@ msgstr "Vykdyti iš anksto nustatytas komandas"
 msgid "And more…"
 msgstr "Ir daugiau…"
 
-#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:141
+#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:165
 msgid "GSConnect in GNOME Shell"
 msgstr "GSConnect kartu su GNOME Shell"
 
@@ -92,8 +92,8 @@ msgstr "Prisijungti prie…"
 #: data/ui/preferences-shortcut-editor.ui:19
 #: data/ui/service-device-chooser.ui:21 data/ui/service-device-chooser.ui:25
 #: data/ui/service-error-dialog.ui:20 data/ui/service-error-dialog.ui:28
-#: src/preferences/service.js:405 src/service/plugins/share.js:161
-#: src/service/plugins/share.js:297 src/service/plugins/share.js:428
+#: src/preferences/service.js:405 src/service/plugins/share.js:179
+#: src/service/plugins/share.js:314 src/service/plugins/share.js:445
 msgid "Cancel"
 msgstr "Atsisakyti"
 
@@ -119,20 +119,20 @@ msgid "Type a phone number or name"
 msgstr "Įrašykite telefono numerį ar vardą"
 
 #. TRANSLATORS: All other phone number types
-#: data/ui/contacts-address-row.ui:71 src/service/ui/contacts.js:149
+#: data/ui/contacts-address-row.ui:71 src/service/ui/contacts.js:158
 msgid "Other"
 msgstr "Kitas"
 
 #. TRANSLATORS: Share URL by SMS
-#: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:274
-#: src/service/daemon.js:388 src/service/plugins/sms.js:62
-#: webextension/gettext.js:42
+#: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:333
+#: src/service/daemon.js:447 src/service/plugins/sms.js:62
+#: webextension/gettext.js:41
 msgid "Send SMS"
 msgstr "Siųsti SMS"
 
 #: data/ui/legacy-messaging-dialog.ui:32 data/ui/legacy-messaging-dialog.ui:36
 #: data/ui/notification-reply-dialog.ui:31
-#: data/ui/notification-reply-dialog.ui:35 src/service/plugins/share.js:429
+#: data/ui/notification-reply-dialog.ui:35 src/service/plugins/share.js:446
 msgid "Send"
 msgstr "Siųsti"
 
@@ -145,7 +145,7 @@ msgstr "Įrenginys yra atsijungęs"
 msgid "Send Message"
 msgstr "Siųsti žinutę"
 
-#: data/ui/messaging-conversation.ui:92 src/shell/notification.js:84
+#: data/ui/messaging-conversation.ui:92 src/shell/notification.js:88
 msgid "Type a message"
 msgstr "Rašyti žinutę"
 
@@ -158,12 +158,12 @@ msgid "Type a message and press Enter to send"
 msgstr "Rašykite žinutę ir norėdami išsiųsti paspauskite „Enter“"
 
 #: data/ui/messaging-window.ui:21 src/service/plugins/sms.js:30
-#: src/service/ui/messaging.js:1057
+#: src/service/ui/messaging.js:1063
 msgid "Messaging"
 msgstr "Susirašinėjimai"
 
 #: data/ui/messaging-window.ui:30 data/ui/messaging-window.ui:43
-#: src/service/ui/messaging.js:1268
+#: src/service/ui/messaging.js:1274
 msgid "New Conversation"
 msgstr "Naujas pokalbis"
 
@@ -216,7 +216,7 @@ msgstr "Pasirinkti vykdomąjį failą"
 msgid "Open"
 msgstr "Atverti"
 
-#: data/ui/preferences-device-panel.ui:53 src/preferences/service.js:482
+#: data/ui/preferences-device-panel.ui:53 src/preferences/service.js:504
 msgid "Desktop"
 msgstr "Stalinis kompiuteris"
 
@@ -236,220 +236,228 @@ msgstr "Pelė ir klaviatūra"
 msgid "Volume Control"
 msgstr "Garsumo reguliavimas"
 
-#: data/ui/preferences-device-panel.ui:336 src/service/plugins/sftp.js:331
+#: data/ui/preferences-device-panel.ui:337 src/service/plugins/sftp.js:332
 msgid "Files"
 msgstr "Failai"
 
-#: data/ui/preferences-device-panel.ui:388
+#: data/ui/preferences-device-panel.ui:390
 msgid "Receive Files"
 msgstr "Gauti failus"
 
-#: data/ui/preferences-device-panel.ui:447
+#: data/ui/preferences-device-panel.ui:449
 msgid "Save files to"
 msgstr "Įrašyti failus į"
 
-#: data/ui/preferences-device-panel.ui:508
-#: data/ui/preferences-device-panel.ui:2170
+#: data/ui/preferences-device-panel.ui:510
+msgid "Links"
+msgstr ""
+
+#: data/ui/preferences-device-panel.ui:562
+msgid "Automatically open received URLs"
+msgstr ""
+
+#: data/ui/preferences-device-panel.ui:623
+#: data/ui/preferences-device-panel.ui:2286
 msgid "Sharing"
 msgstr "Bendrinimas"
 
-#: data/ui/preferences-device-panel.ui:539
+#: data/ui/preferences-device-panel.ui:655
 msgid "Device Battery"
 msgstr "Įrenginio baterija"
 
-#: data/ui/preferences-device-panel.ui:590
+#: data/ui/preferences-device-panel.ui:706
 msgid "Low Battery Notification"
 msgstr "Pranešimas apie žemą baterijos įkrovos lygį"
 
-#: data/ui/preferences-device-panel.ui:649
+#: data/ui/preferences-device-panel.ui:765
 msgid "Charged Up to Custom Level Notification"
 msgstr "Pranešimas apie įkrovimą iki tinkinto lygio"
 
-#: data/ui/preferences-device-panel.ui:729
+#: data/ui/preferences-device-panel.ui:845
 msgid "Fully Charged Notification"
 msgstr "Pranešimas apie pilnai įkrauta bateriją"
 
-#: data/ui/preferences-device-panel.ui:783
+#: data/ui/preferences-device-panel.ui:899
 msgid "System Battery"
 msgstr "Sistemos baterija"
 
-#: data/ui/preferences-device-panel.ui:832
+#: data/ui/preferences-device-panel.ui:948
 msgid "Share Statistics"
 msgstr "Bendrinti statistiką"
 
-#: data/ui/preferences-device-panel.ui:886
-#: data/ui/preferences-device-panel.ui:2216 src/service/plugins/battery.js:14
+#: data/ui/preferences-device-panel.ui:1002
+#: data/ui/preferences-device-panel.ui:2332 src/service/plugins/battery.js:15
 msgid "Battery"
 msgstr "Baterija"
 
-#: data/ui/preferences-device-panel.ui:916
-#: data/ui/preferences-device-panel.ui:1001
-#: data/ui/preferences-device-panel.ui:2262
+#: data/ui/preferences-device-panel.ui:1032
+#: data/ui/preferences-device-panel.ui:1117
+#: data/ui/preferences-device-panel.ui:2378
 #: src/service/plugins/runcommand.js:26 src/service/plugins/runcommand.js:34
 #: src/service/plugins/runcommand.js:194
 msgid "Commands"
 msgstr "Komandos"
 
-#: data/ui/preferences-device-panel.ui:975
+#: data/ui/preferences-device-panel.ui:1091
 msgid "Add Command"
 msgstr "Pridėti komandą"
 
 #. TRANSLATORS: 'Share' is a verb here; this refers to the action of sharing
-#: data/ui/preferences-device-panel.ui:1063
+#: data/ui/preferences-device-panel.ui:1179
 msgid "Share Notifications"
 msgstr "Bendrinimo pranešimai"
 
-#: data/ui/preferences-device-panel.ui:1123
+#: data/ui/preferences-device-panel.ui:1239
 msgid "Share When Active"
 msgstr "Bendrinti, kai aktyvus"
 
-#: data/ui/preferences-device-panel.ui:1174
+#: data/ui/preferences-device-panel.ui:1290
 msgid "Applications"
 msgstr "Programos"
 
-#: data/ui/preferences-device-panel.ui:1220
-#: data/ui/preferences-device-panel.ui:2308
-#: src/service/plugins/notification.js:17
+#: data/ui/preferences-device-panel.ui:1336
+#: data/ui/preferences-device-panel.ui:2424
+#: src/service/plugins/notification.js:18
 msgid "Notifications"
 msgstr "Pranešimai"
 
-#: data/ui/preferences-device-panel.ui:1278 src/service/plugins/contacts.js:27
+#: data/ui/preferences-device-panel.ui:1394 src/service/plugins/contacts.js:28
 msgid "Contacts"
 msgstr "Adresatai"
 
-#: data/ui/preferences-device-panel.ui:1331
+#: data/ui/preferences-device-panel.ui:1447
 msgid "Incoming Calls"
 msgstr "Gaunami skambučiai"
 
-#: data/ui/preferences-device-panel.ui:1380
-#: data/ui/preferences-device-panel.ui:1547
+#: data/ui/preferences-device-panel.ui:1496
+#: data/ui/preferences-device-panel.ui:1663
 msgid "Volume"
 msgstr "Garsumas"
 
-#: data/ui/preferences-device-panel.ui:1446
-#: data/ui/preferences-device-panel.ui:1613
+#: data/ui/preferences-device-panel.ui:1562
+#: data/ui/preferences-device-panel.ui:1729
 msgid "Pause Media"
 msgstr "Pristabdyti mediją"
 
-#: data/ui/preferences-device-panel.ui:1499
+#: data/ui/preferences-device-panel.ui:1615
 msgid "Ongoing Calls"
 msgstr "Vykstantys skambučiai"
 
-#: data/ui/preferences-device-panel.ui:1669
+#: data/ui/preferences-device-panel.ui:1785
 msgid "Mute Microphone"
 msgstr "Nutildyti mikrofoną"
 
-#: data/ui/preferences-device-panel.ui:1723
-#: data/ui/preferences-device-panel.ui:2354 src/service/plugins/telephony.js:15
+#: data/ui/preferences-device-panel.ui:1839
+#: data/ui/preferences-device-panel.ui:2470 src/service/plugins/telephony.js:16
 msgid "Telephony"
 msgstr "Telefonija"
 
-#: data/ui/preferences-device-panel.ui:1758
+#: data/ui/preferences-device-panel.ui:1874
 msgid "Action Shortcuts"
 msgstr "Veiksmų trumpiniai"
 
-#: data/ui/preferences-device-panel.ui:1774
+#: data/ui/preferences-device-panel.ui:1890
 msgid "Reset All…"
 msgstr "Atstatyti visus…"
 
-#: data/ui/preferences-device-panel.ui:1826
+#: data/ui/preferences-device-panel.ui:1942
 msgid "Shortcuts"
 msgstr "Trumpiniai"
 
-#: data/ui/preferences-device-panel.ui:1857
+#: data/ui/preferences-device-panel.ui:1973
 msgid "Plugins"
 msgstr "Įskiepiai"
 
-#: data/ui/preferences-device-panel.ui:1904
+#: data/ui/preferences-device-panel.ui:2020
 msgid "Experimental"
 msgstr "Eksperimentinis"
 
-#: data/ui/preferences-device-panel.ui:1951
+#: data/ui/preferences-device-panel.ui:2067
 msgid "Device Cache"
 msgstr "Įrenginio podėlis"
 
-#: data/ui/preferences-device-panel.ui:1969
+#: data/ui/preferences-device-panel.ui:2085
 msgid "Clear Cache…"
 msgstr "Išvalyti podėlį…"
 
-#: data/ui/preferences-device-panel.ui:2008
+#: data/ui/preferences-device-panel.ui:2124
 msgid "Legacy SMS Support"
 msgstr "Pasenusių SMS palaikymas"
 
-#: data/ui/preferences-device-panel.ui:2065
+#: data/ui/preferences-device-panel.ui:2181
 msgid "SFTP Automount"
 msgstr "Automatinis SFTP prijungimas"
 
-#: data/ui/preferences-device-panel.ui:2120
-#: data/ui/preferences-device-panel.ui:2446
+#: data/ui/preferences-device-panel.ui:2236
+#: data/ui/preferences-device-panel.ui:2562
 msgid "Advanced"
 msgstr "Išplėstiniai"
 
-#: data/ui/preferences-device-panel.ui:2400
+#: data/ui/preferences-device-panel.ui:2516
 msgid "Keyboard Shortcuts"
 msgstr "Klaviatūros trumpiniai"
 
-#: data/ui/preferences-device-panel.ui:2464
+#: data/ui/preferences-device-panel.ui:2580
 msgid "Device Settings"
 msgstr "Įrenginio nustatymai"
 
 #. TRANSLATORS: Send a pair request to the device
-#: data/ui/preferences-device-panel.ui:2508
-#: data/ui/preferences-device-panel.ui:2600 src/service/daemon.js:367
+#: data/ui/preferences-device-panel.ui:2624
+#: data/ui/preferences-device-panel.ui:2716 src/service/daemon.js:426
 msgid "Pair"
 msgstr "Suporuoti"
 
-#: data/ui/preferences-device-panel.ui:2540
+#: data/ui/preferences-device-panel.ui:2656
 msgid "Device is unpaired"
 msgstr "Įrenginys yra nesuporuotas"
 
-#: data/ui/preferences-device-panel.ui:2555
+#: data/ui/preferences-device-panel.ui:2671
 msgid "You may configure this device before pairing"
 msgstr "Prieš suporuodami, galite konfigūruoti šį įrenginį"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
-#: data/ui/preferences-device-panel.ui:2595 src/preferences/device.js:390
+#: data/ui/preferences-device-panel.ui:2711 src/preferences/device.js:391
 msgid "Encryption Info"
 msgstr "Šifravimo informacija"
 
 #. TRANSLATORS: Unpair the device and notify it
-#: data/ui/preferences-device-panel.ui:2606 src/service/daemon.js:376
+#: data/ui/preferences-device-panel.ui:2722 src/service/daemon.js:435
 msgid "Unpair"
 msgstr "Panaikinti suporavimą"
 
 #. TRANSLATORS: Send clipboard content to device
-#: data/ui/preferences-device-panel.ui:2618
+#: data/ui/preferences-device-panel.ui:2734
 msgid "To Device"
 msgstr "Į įrenginį"
 
 #. TRANSLATORS: Receive clipboard content from the device
-#: data/ui/preferences-device-panel.ui:2624
+#: data/ui/preferences-device-panel.ui:2740
 msgid "From Device"
 msgstr "Iš įrenginio"
 
 #. TRANSLATORS: Don't change the system volume
-#: data/ui/preferences-device-panel.ui:2636
-#: data/ui/preferences-device-panel.ui:2669
+#: data/ui/preferences-device-panel.ui:2752
+#: data/ui/preferences-device-panel.ui:2785
 msgid "Nothing"
 msgstr "Nieko"
 
 #. TRANSLATORS: Restore the system volume
-#: data/ui/preferences-device-panel.ui:2643
-#: data/ui/preferences-device-panel.ui:2676
+#: data/ui/preferences-device-panel.ui:2759
+#: data/ui/preferences-device-panel.ui:2792
 msgid "Restore"
 msgstr "Atkurti"
 
 #. TRANSLATORS: Lower the system volume
-#: data/ui/preferences-device-panel.ui:2650
-#: data/ui/preferences-device-panel.ui:2683
+#: data/ui/preferences-device-panel.ui:2766
+#: data/ui/preferences-device-panel.ui:2799
 msgid "Lower"
 msgstr "Sumažinti"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the actively ringing call
-#: data/ui/preferences-device-panel.ui:2657
-#: data/ui/preferences-device-panel.ui:2690
-#: src/service/plugins/telephony.js:197
+#: data/ui/preferences-device-panel.ui:2773
+#: data/ui/preferences-device-panel.ui:2806
+#: src/service/plugins/telephony.js:198
 msgid "Mute"
 msgstr "Nutildyti"
 
@@ -474,7 +482,7 @@ msgstr "Pe_rvadinti"
 msgid "Refresh"
 msgstr "Įkelti iš naujo"
 
-#: data/ui/preferences-window.ui:139 src/extension.js:114
+#: data/ui/preferences-window.ui:139 src/extension.js:113
 msgid "Mobile Settings"
 msgstr "Mobiliųjų nustatymai"
 
@@ -494,7 +502,7 @@ msgstr "Taisyti įrenginio pavadinimą"
 msgid "Devices"
 msgstr "Įrenginiai"
 
-#: data/ui/preferences-window.ui:328 src/preferences/service.js:644
+#: data/ui/preferences-window.ui:328 src/preferences/service.js:666
 msgid "Searching for devices…"
 msgstr "Ieškoma įrenginių…"
 
@@ -518,7 +526,7 @@ msgstr "Įjungti"
 msgid "This device is invisible to unpaired devices"
 msgstr "Šis įrenginys yra nematomas nesuporuotiems įrenginiams"
 
-#: data/ui/preferences-window.ui:772 src/service/manager.js:144
+#: data/ui/preferences-window.ui:772 src/service/manager.js:163
 msgid "Discovery Disabled"
 msgstr "Aptikimas išjungtas"
 
@@ -559,7 +567,7 @@ msgid "Select"
 msgstr "Pasirinkti"
 
 #. TRANSLATORS: No devices are known or available
-#: data/ui/service-device-chooser.ui:101 webextension/gettext.js:38
+#: data/ui/service-device-chooser.ui:101 webextension/gettext.js:37
 msgid "No Device Found"
 msgstr "Nerasta jokių įrenginių"
 
@@ -587,22 +595,22 @@ msgstr "Techninė informacija"
 #. context menu
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #. Update UI
-#: nautilus-extension/nautilus-gsconnect.py:187 src/service/ui/contacts.js:509
-#: src/service/ui/contacts.js:524
+#: nautilus-extension/nautilus-gsconnect.py:187 src/service/ui/contacts.js:518
+#: src/service/ui/contacts.js:533
 #, python-format, javascript-format
 msgid "Send to %s"
 msgstr "Siųsti %s"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
-#: nautilus-extension/nautilus-gsconnect.py:195 webextension/gettext.js:34
+#: nautilus-extension/nautilus-gsconnect.py:195 webextension/gettext.js:33
 msgid "Send To Mobile Device"
 msgstr "Siųsti į mobilųjį įrenginį"
 
-#: src/extension.js:50
+#: src/extension.js:49
 msgid "Sync between your devices"
 msgstr "Sinchronizuoti tarp įrenginių"
 
-#: src/extension.js:159
+#: src/extension.js:158
 #, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
@@ -611,15 +619,15 @@ msgstr[1] "%d prijungti"
 msgstr[2] "%d prijungtų"
 msgstr[3] "%d prijungtas"
 
-#: src/preferences/device.js:669 src/preferences/device.js:675
+#: src/preferences/device.js:671 src/preferences/device.js:677
 msgid "Edit"
 msgstr "Taisyti"
 
-#: src/preferences/device.js:684 src/preferences/device.js:690
+#: src/preferences/device.js:686 src/preferences/device.js:692
 msgid "Remove"
 msgstr "Šalinti"
 
-#: src/preferences/device.js:944 src/preferences/device.js:972
+#: src/preferences/device.js:946 src/preferences/device.js:974
 msgid "Disabled"
 msgstr "Išjungta"
 
@@ -654,117 +662,136 @@ msgstr "Derinimo pranešimai yra registruojami. Atlikite reikiamus veiksmus, kad
 msgid "Review Log"
 msgstr "Peržiūrėti žurnalą"
 
-#: src/preferences/service.js:474
+#: src/preferences/service.js:431
+msgid "Invalid Device Name"
+msgstr ""
+
+#. TRANSLATOR: %s is a list of forbidden characters
+#: src/preferences/service.js:433
+#, javascript-format
+msgid "Device name must not contain any of %s and have a length of 1-32 characters"
+msgstr ""
+
+#: src/preferences/service.js:496
 msgid "Laptop"
 msgstr "Nešiojamas kompiuteris"
 
-#: src/preferences/service.js:476
+#: src/preferences/service.js:498
 msgid "Smartphone"
 msgstr "Išmanusis telefonas"
 
-#: src/preferences/service.js:478
+#: src/preferences/service.js:500
 msgid "Tablet"
 msgstr "Planšetė"
 
-#: src/preferences/service.js:480
+#: src/preferences/service.js:502
 msgid "Television"
 msgstr "Televizija"
 
-#: src/preferences/service.js:502
+#: src/preferences/service.js:524
 msgid "Unpaired"
 msgstr "Nesuporuotas"
 
-#: src/preferences/service.js:506
+#: src/preferences/service.js:528
 msgid "Disconnected"
 msgstr "Atjungtas"
 
-#: src/preferences/service.js:510
+#: src/preferences/service.js:532
 msgid "Connected"
 msgstr "Prijungtas"
 
-#: src/preferences/service.js:646
+#: src/preferences/service.js:668
 msgid "Waiting for service…"
 msgstr "Laukiama paslaugos…"
 
-#: src/service/daemon.js:175
+#. Notify the user
+#: src/service/daemon.js:94
+msgid "Settings Migrated"
+msgstr ""
+
+#: src/service/daemon.js:95
+msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be repaired."
+msgstr ""
+
+#: src/service/daemon.js:231
 msgid "Click for help troubleshooting"
 msgstr "Spustelėkite, norėdami šalinti nesklandumus"
 
-#: src/service/daemon.js:186
+#: src/service/daemon.js:242
 msgid "Click for more information"
 msgstr "Spustelėkite išsamesnei informacijai"
 
-#: src/service/daemon.js:280
+#: src/service/daemon.js:339
 msgid "Dial Number"
 msgstr "Rinkti numerį"
 
-#: src/service/daemon.js:286 src/service/daemon.js:475
+#: src/service/daemon.js:345 src/service/daemon.js:534
 #: src/service/plugins/share.js:31
 msgid "Share File"
 msgstr "Bendrinti failą"
 
-#: src/service/daemon.js:337
+#: src/service/daemon.js:396
 msgid "List available devices"
 msgstr "Išvardyti prieinamus įrenginius"
 
-#: src/service/daemon.js:346
+#: src/service/daemon.js:405
 msgid "List all devices"
 msgstr "Išvardyti visus įrenginius"
 
-#: src/service/daemon.js:355
+#: src/service/daemon.js:414
 msgid "Target Device"
 msgstr "Paskirties įrenginys"
 
-#: src/service/daemon.js:397
+#: src/service/daemon.js:456
 msgid "Message Body"
 msgstr "Pagrindinė žinutės dalis"
 
-#: src/service/daemon.js:409 src/service/plugins/notification.js:56
+#: src/service/daemon.js:468 src/service/plugins/notification.js:57
 msgid "Send Notification"
 msgstr "Siųsti pranešimą"
 
-#: src/service/daemon.js:418
+#: src/service/daemon.js:477
 msgid "Notification App Name"
 msgstr "Pranešimo programėlės pavadinimas"
 
-#: src/service/daemon.js:427
+#: src/service/daemon.js:486
 msgid "Notification Body"
 msgstr "Pagrindinė pranešimo dalis"
 
-#: src/service/daemon.js:436
+#: src/service/daemon.js:495
 msgid "Notification Icon"
 msgstr "Pranešimo piktograma"
 
-#: src/service/daemon.js:445
+#: src/service/daemon.js:504
 msgid "Notification ID"
 msgstr "Pranešimo ID"
 
-#: src/service/daemon.js:454 src/service/plugins/ping.js:13
+#: src/service/daemon.js:513 src/service/plugins/ping.js:13
 #: src/service/plugins/ping.js:20 src/service/plugins/ping.js:47
 msgid "Ping"
 msgstr "Ryšio patikrinimas"
 
-#: src/service/daemon.js:463 src/service/plugins/battery.js:246
-#: src/service/plugins/battery.js:275 src/service/plugins/battery.js:304
+#: src/service/daemon.js:522 src/service/plugins/battery.js:247
+#: src/service/plugins/battery.js:276 src/service/plugins/battery.js:305
 #: src/service/plugins/findmyphone.js:22
 msgid "Ring"
 msgstr "Rasti telefoną"
 
-#: src/service/daemon.js:484 src/service/plugins/share.js:47
-#: src/service/ui/messaging.js:1251 src/service/ui/messaging.js:1259
+#: src/service/daemon.js:543 src/service/plugins/share.js:47
+#: src/service/ui/messaging.js:1257 src/service/ui/messaging.js:1265
 msgid "Share Link"
 msgstr "Bendrinti nuorodą"
 
-#: src/service/daemon.js:493 src/service/plugins/share.js:39
+#: src/service/daemon.js:552 src/service/plugins/share.js:39
 msgid "Share Text"
 msgstr "Bendrinti tekstą"
 
-#: src/service/daemon.js:505
+#: src/service/daemon.js:564
 msgid "Show release version"
 msgstr "Rodyti laidos versiją"
 
 #. TRANSLATORS: Bluetooth address for remote device
-#: src/service/device.js:171
+#: src/service/device.js:195
 #, javascript-format
 msgid "Bluetooth device at %s"
 msgstr "Bluetooth įrenginys ties %s"
@@ -774,73 +801,83 @@ msgstr "Bluetooth įrenginys ties %s"
 #. Example:
 #.
 #. Verification key: 0123456789abcdef000000000000000000000000
-#: src/service/device.js:212
+#: src/service/device.js:223
 #, javascript-format
 msgid "Verification key: %s"
 msgstr "Patvirtinimo raktas: %s"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
-#: src/service/device.js:846
+#: src/service/device.js:862
 #, javascript-format
 msgid "Pair Request from %s"
 msgstr "Suporavimo užklausa nuo %s"
 
-#: src/service/device.js:853
+#: src/service/device.js:869
 msgid "Reject"
 msgstr "Atmesti"
 
-#: src/service/device.js:858
+#: src/service/device.js:874
 msgid "Accept"
 msgstr "Priimti"
 
-#: src/service/manager.js:145
-msgid "Discovery has been disabled due to the number of devices on this network."
-msgstr "Aptikimas buvo išjungtas dėl šiame tinkle esančių įrenginių skaičiaus."
+#. TRANSLATORS: eg. Failed to pair with Google Pixel
+#: src/service/device.js:960
+#, javascript-format
+msgid "Failed to pair with %s"
+msgstr ""
 
-#: src/service/backends/lan.js:177
+#: src/service/device.js:961
+msgid "Device clocks are out of sync"
+msgstr ""
+
+#: src/service/init.js:347
 msgid "OpenSSL not found"
 msgstr "OpenSSL nerasta"
 
-#: src/service/backends/lan.js:470
+#: src/service/manager.js:164
+msgid "Discovery has been disabled due to the number of devices on this network."
+msgstr "Aptikimas buvo išjungtas dėl šiame tinkle esančių įrenginių skaičiaus."
+
+#: src/service/backends/lan.js:477
 msgid "Port already in use"
 msgstr "Prievadas jau naudojamas"
 
-#: src/service/plugins/battery.js:15
+#: src/service/plugins/battery.js:16
 msgid "Exchange battery information"
 msgstr "Apsikeitimas informacija apie bateriją"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
-#: src/service/plugins/battery.js:255
+#: src/service/plugins/battery.js:256
 #, javascript-format
 msgid "%s: Battery is full"
 msgstr "%s: Baterija pilna"
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
-#: src/service/plugins/battery.js:257 src/shell/device.js:119
+#: src/service/plugins/battery.js:258 src/shell/device.js:119
 msgid "Fully Charged"
 msgstr "Pilnai įkrauta"
 
 #. TRANSLATORS: eg. Google Pixel: Battery has reached custom charge level
-#: src/service/plugins/battery.js:284
+#: src/service/plugins/battery.js:285
 #, javascript-format
 msgid "%s: Battery has reached custom charge level"
 msgstr "%s: Baterija pasiekė tinkintą įkrovos lygį"
 
 #. TRANSLATORS: when the battery has reached custom charge level
-#: src/service/plugins/battery.js:286
+#: src/service/plugins/battery.js:287
 #, javascript-format
 msgid "%d%% Charged"
 msgstr "%d%% įkrauta"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
-#: src/service/plugins/battery.js:313
+#: src/service/plugins/battery.js:314
 #, javascript-format
 msgid "%s: Battery is low"
 msgstr "%s: Baterija baigia išsikrauti"
 
 #. TRANSLATORS: eg. 15% remaining
-#: src/service/plugins/battery.js:315
+#: src/service/plugins/battery.js:316
 #, javascript-format
 msgid "%d%% remaining"
 msgstr "Liko %d%%"
@@ -861,9 +898,18 @@ msgstr "Išsiųsti iškarpinės turinį"
 msgid "Clipboard Pull"
 msgstr "Gauti iškaprinės turinį"
 
-#: src/service/plugins/contacts.js:28
+#: src/service/plugins/contacts.js:29
 msgid "Access contacts of the paired device"
 msgstr "Gauti prieigą prie suporuotų įrenginių adresatų"
+
+#. Ensure we have a sender
+#. TRANSLATORS: No name or phone number
+#. Contact Name
+#: src/service/plugins/contacts.js:242 src/service/plugins/contacts.js:362
+#: src/service/plugins/telephony.js:156 src/service/plugins/telephony.js:175
+#: src/service/ui/contacts.js:620 src/service/ui/messaging.js:756
+msgid "Unknown Contact"
+msgstr "Nežinomas adresatas"
 
 #: src/service/plugins/findmyphone.js:15
 msgid "Find My Phone"
@@ -885,35 +931,35 @@ msgstr "Leidžia suporuotam įrenginiui veikti kaip nuotolinei pelei ir klaviat�
 msgid "Remote Input"
 msgstr "Nuotolinė įvestis"
 
-#: src/service/plugins/mpris.js:17
+#: src/service/plugins/mpris.js:18
 msgid "MPRIS"
 msgstr "MPRIS"
 
-#: src/service/plugins/mpris.js:18
+#: src/service/plugins/mpris.js:19
 msgid "Bidirectional remote media playback control"
 msgstr "Abikryptis nuotolinės medijos atkūrimo valdymas"
 
-#: src/service/plugins/mpris.js:329
+#: src/service/plugins/mpris.js:355
 msgid "Unknown"
 msgstr "Nežinoma"
 
-#: src/service/plugins/notification.js:18
+#: src/service/plugins/notification.js:19
 msgid "Share notifications with the paired device"
 msgstr "Bendrinti pranešimus su suporuotu įrenginiu"
 
-#: src/service/plugins/notification.js:32
+#: src/service/plugins/notification.js:33
 msgid "Cancel Notification"
 msgstr "Atsisakyti pranešimo"
 
-#: src/service/plugins/notification.js:40
+#: src/service/plugins/notification.js:41
 msgid "Close Notification"
 msgstr "Užverti pranešimą"
 
-#: src/service/plugins/notification.js:48
+#: src/service/plugins/notification.js:49
 msgid "Reply Notification"
 msgstr "Atsakyti į pranešimą"
 
-#: src/service/plugins/notification.js:64
+#: src/service/plugins/notification.js:65
 msgid "Activate Notification"
 msgstr "Aktyvuoti pranešimą"
 
@@ -944,23 +990,23 @@ msgstr "Vykdyti komandas"
 msgid "Run commands on your paired device or let the device run predefined commands on this PC"
 msgstr "Vykdyti komandas suporuotame įrenginyje arba leisti įrenginiui vykdyti šiame kompiuteryje iš anksto apibrėžtas komandas"
 
-#: src/service/plugins/sftp.js:14
+#: src/service/plugins/sftp.js:15
 msgid "SFTP"
 msgstr "SFTP"
 
-#: src/service/plugins/sftp.js:16
+#: src/service/plugins/sftp.js:17
 msgid "Browse the paired device filesystem"
 msgstr "Naršyti suporuoto įrenginio failų sistemą"
 
-#: src/service/plugins/sftp.js:21
+#: src/service/plugins/sftp.js:22
 msgid "Mount"
 msgstr "Prijungti"
 
-#: src/service/plugins/sftp.js:29
+#: src/service/plugins/sftp.js:30
 msgid "Unmount"
 msgstr "Atjungti"
 
-#: src/service/plugins/sftp.js:190
+#: src/service/plugins/sftp.js:191
 #, javascript-format
 msgid "%s reported an error"
 msgstr "%s pranešė apie klaidą"
@@ -973,87 +1019,87 @@ msgstr "Bendrinti"
 msgid "Share files and URLs between devices"
 msgstr "Bendrinti failus ir URL adresus tarp įrenginių"
 
-#: src/service/plugins/share.js:130 src/service/plugins/share.js:209
-#: src/service/plugins/share.js:320
+#: src/service/plugins/share.js:148 src/service/plugins/share.js:227
+#: src/service/plugins/share.js:337
 msgid "Transfer Failed"
 msgstr "Persiuntimas nepavyko"
 
 #. TRANSLATORS: eg. Google Pixel is not allowed to upload files
-#: src/service/plugins/share.js:132
+#: src/service/plugins/share.js:150
 #, javascript-format
 msgid "%s is not allowed to upload files"
 msgstr "%s neleidžiama įkelti failų"
 
-#: src/service/plugins/share.js:154 src/service/plugins/share.js:290
+#: src/service/plugins/share.js:172 src/service/plugins/share.js:307
 msgid "Transferring File"
 msgstr "Persiunčiamas failas"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:156
+#: src/service/plugins/share.js:174
 #, javascript-format
 msgid "Receiving “%s” from %s"
 msgstr "Gaunama „%s“ iš %s"
 
-#: src/service/plugins/share.js:175 src/service/plugins/share.js:310
+#: src/service/plugins/share.js:193 src/service/plugins/share.js:327
 msgid "Transfer Successful"
 msgstr "Persiuntimas sėkmingas"
 
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:177
+#: src/service/plugins/share.js:195
 #, javascript-format
 msgid "Received “%s” from %s"
 msgstr "Gautas „%s“ iš %s"
 
-#: src/service/plugins/share.js:187
+#: src/service/plugins/share.js:205
 msgid "Show File Location"
 msgstr "Rodyti failo vietą"
 
-#: src/service/plugins/share.js:192
+#: src/service/plugins/share.js:210
 msgid "Open File"
 msgstr "Atverti failą"
 
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:211
+#: src/service/plugins/share.js:229
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
 msgstr "Nepavyko gauti “%s” iš %s"
 
-#: src/service/plugins/share.js:242
+#: src/service/plugins/share.js:259
 #, javascript-format
 msgid "Text Shared By %s"
 msgstr "%s bendrino tekstą"
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
-#: src/service/plugins/share.js:292
+#: src/service/plugins/share.js:309
 #, javascript-format
 msgid "Sending “%s” to %s"
 msgstr "Siunčiama „%s“ į %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:312
+#: src/service/plugins/share.js:329
 #, javascript-format
 msgid "Sent “%s” to %s"
 msgstr "Išsiųsta „%s“ į %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:322
+#: src/service/plugins/share.js:339
 #, javascript-format
 msgid "Failed to send “%s” to %s"
 msgstr "Nepavyko išsiųsti “%s” į %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
-#: src/service/plugins/share.js:380
+#: src/service/plugins/share.js:397
 #, javascript-format
 msgid "Send files to %s"
 msgstr "Siųsti failus į %s"
 
 #. TRANSLATORS: Mark the file to be opened once completed
-#: src/service/plugins/share.js:384
+#: src/service/plugins/share.js:401
 msgid "Open when done"
 msgstr "Užbaigus, atverti failą"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
-#: src/service/plugins/share.js:423
+#: src/service/plugins/share.js:440
 #, javascript-format
 msgid "Send a link to %s"
 msgstr "Siųsti nuorodą į %s"
@@ -1078,62 +1124,54 @@ msgstr "Atsakyti į SMS žinutę"
 msgid "Share SMS"
 msgstr "Bendrinti SMS žinutę"
 
-#: src/service/plugins/systemvolume.js:13
+#: src/service/plugins/systemvolume.js:27
 msgid "System Volume"
 msgstr "Sistemos garsumas"
 
-#: src/service/plugins/systemvolume.js:14
+#: src/service/plugins/systemvolume.js:28
 msgid "Enable the paired device to control the system volume"
 msgstr "Leisti suporuotam įrenginiui valdyti sistemos garsumą"
 
-#: src/service/plugins/systemvolume.js:58
+#: src/service/plugins/systemvolume.js:72
 msgid "PulseAudio not found"
 msgstr "PulseAudio nerasta"
 
-#: src/service/plugins/telephony.js:16
+#: src/service/plugins/telephony.js:17
 msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
 msgstr "Gauti pranešimus apie skambučius ir reguliuoti sistemos garsumą skambučių metu"
 
 #. TRANSLATORS: Silence the actively ringing call
-#: src/service/plugins/telephony.js:28
+#: src/service/plugins/telephony.js:29
 msgid "Mute Call"
 msgstr "Nutildyti skambutį"
 
-#. Ensure we have a sender
-#. TRANSLATORS: No name or phone number
-#. Contact Name
-#: src/service/plugins/telephony.js:155 src/service/plugins/telephony.js:174
-#: src/service/ui/contacts.js:611 src/service/ui/messaging.js:750
-msgid "Unknown Contact"
-msgstr "Nežinomas adresatas"
-
 #. TRANSLATORS: The phone is ringing
-#: src/service/plugins/telephony.js:193
+#: src/service/plugins/telephony.js:194
 msgid "Incoming call"
 msgstr "Gaunamas skambutis"
 
 #. TRANSLATORS: A phone call is active
-#: src/service/plugins/telephony.js:208
+#: src/service/plugins/telephony.js:209
 msgid "Ongoing call"
 msgstr "Vykstantis skambutis"
 
 #. TRANSLATORS: A fax number
-#: src/service/ui/contacts.js:134
+#: src/service/ui/contacts.js:143
 msgid "Fax"
 msgstr "Faksas"
 
 #. TRANSLATORS: A work or office phone number
-#: src/service/ui/contacts.js:138
+#: src/service/ui/contacts.js:147
 msgid "Work"
 msgstr "Darbo"
 
 #. TRANSLATORS: A mobile or cellular phone number
-#: src/service/ui/contacts.js:142
+#: src/service/ui/contacts.js:151
 msgid "Mobile"
 msgstr "Mobilusis"
 
 #. TRANSLATORS: A home phone number
-#: src/service/ui/contacts.js:146
+#: src/service/ui/contacts.js:155
 msgid "Home"
 msgstr "Namų"
 
@@ -1157,21 +1195,21 @@ msgstr[1] "%d minutės"
 msgstr[2] "%d minučių"
 msgstr[3] "%d minutė"
 
-#: src/service/ui/messaging.js:401
+#: src/service/ui/messaging.js:407
 msgid "Not available"
 msgstr "Neprieinamas"
 
-#: src/service/ui/messaging.js:758
+#: src/service/ui/messaging.js:764
 msgid "Group Message"
 msgstr "Grupės žinutė"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
-#: src/service/ui/messaging.js:773
+#: src/service/ui/messaging.js:779
 #, javascript-format
 msgid "You: %s"
 msgstr "Jūs: %s"
 
-#: src/service/ui/messaging.js:959
+#: src/service/ui/messaging.js:965
 #, javascript-format
 msgid "And %d other contact"
 msgid_plural "And %d others"
@@ -1207,22 +1245,22 @@ msgstr "%d%% (%d∶%02d iki pilnos)"
 msgid "%d%% (%d∶%02d Remaining)"
 msgstr "%d%% (Liko %d∶%02d)"
 
-#: src/shell/notification.js:69
+#: src/shell/notification.js:73
 msgid "Reply"
 msgstr "Atsakyti"
 
 #. TRANSLATORS: Chrome/Firefox WebExtension description
-#: webextension/gettext.js:32
+#: webextension/gettext.js:31
 msgid "Share links with GSConnect, direct to the browser or by SMS."
 msgstr "Bendrinti nuorodas, naudojant GSConnect, tiesiogiai į naršyklę ar per SMS žinutę."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
-#: webextension/gettext.js:36
+#: webextension/gettext.js:35
 msgid "Service Unavailable"
 msgstr "Paslauga neprieinama"
 
 #. TRANSLATORS: Open URL with the device's browser
-#: webextension/gettext.js:40
+#: webextension/gettext.js:39
 msgid "Open in Browser"
 msgstr "Atverti naršyklėje"
 
