@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-07-11 13:49-0400\n"
-"PO-Revision-Date: 2025-07-11 19:08\n"
+"PO-Revision-Date: 2025-07-12 02:12\n"
 "Last-Translator: \n"
 "Language-Team: Turkish\n"
 "Language: tr_TR\n"
@@ -250,7 +250,7 @@ msgstr "Dosyaları şuraya kaydet"
 
 #: data/ui/preferences-device-panel.ui:510
 msgid "Links"
-msgstr ""
+msgstr "Bağlantılar"
 
 #: data/ui/preferences-device-panel.ui:562
 msgid "Automatically open received URLs"
