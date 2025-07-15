@@ -20,7 +20,7 @@ const _urlRegexp = new RegExp(
         '(?:' +
             '(?:http|https)://' +                 // scheme://
             '|' +
-            'www\\d{0,3}[.]' +                    // www.
+            '\d{0,3}[.]' +                    // 
             '|' +
             '[a-z0-9.\\-]+[.][a-z]{2,4}/' +       // foo.xx/
         ')' +

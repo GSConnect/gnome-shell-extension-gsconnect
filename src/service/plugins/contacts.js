@@ -215,12 +215,12 @@ const ContactsPlugin = GObject.registerClass({
 
             return output.join('');
 
-        // Fallback to old unfaithful
+            // Fallback to old unfaithful
         } catch {
             try {
                 return decodeURIComponent(escape(input));
 
-            // Say "chowdah" frenchie!
+                // Say "chowdah" frenchie!
             } catch (e) {
                 debug(e, `Failed to decode UTF-8 VCard field ${input}`);
                 return input;
@@ -231,7 +231,7 @@ const ContactsPlugin = GObject.registerClass({
     /**
      * Parse a vCard (v2.1 only) and return a dictionary of the fields
      *
-     * See: http://jsfiddle.net/ARTsinn/P2t2P/
+     * See: http://jsfiddle.net/ARTsinn/P2t2P
      *
      * @param {string} vcard_data - The raw VCard data
      * @returns {object} dictionary of vCard data
@@ -301,7 +301,7 @@ const ContactsPlugin = GObject.registerClass({
                 if (key === 'fn')
                     vcard[key] = value[0];
                 else
-                    vcard[key].push({meta: meta, value: value});
+                    vcard[key].push({ meta: meta, value: value });
             }
         }
 
@@ -334,7 +334,7 @@ const ContactsPlugin = GObject.registerClass({
                 if (entry.meta && entry.meta.type)
                     type = entry.meta.type;
 
-                return {type: type, value: entry.value[0]};
+                return { type: type, value: entry.value[0] };
             });
 
             // Avatar
@@ -378,7 +378,7 @@ const ContactsPlugin = GObject.registerClass({
                         break;
 
                     case 'tel':
-                        number = {value: attr.get_value(), type: 'unknown'};
+                        number = { value: attr.get_value(), type: 'unknown' };
 
                         if (attr.has_type('CELL'))
                             number.type = 'cell';

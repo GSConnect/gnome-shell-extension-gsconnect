@@ -15,7 +15,7 @@ SPDX-License-Identifier: CC0-1.0
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-2.0-or-later</project_license>
 
-  <url type="homepage">https://github.com/GSConnect/gnome-shell-extension-gsconnect/</url>
+  <url type="homepage">https://github.com/GSConnect/gnome-shell-extension-gsconnect</url>
   <url type="bugtracker">https://github.com/GSConnect/gnome-shell-extension-gsconnect/issues/new</url>
   <url type="faq">https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Help</url>
   <url type="translate">https://crwd.in/gsconnect</url>

@@ -88,10 +88,10 @@ describe('The share plugin', function () {
     it('can send and receive URIs', async function () {
         spyOn(remotePlugin, '_handleUri');
 
-        localPlugin.shareUri('https://www.gnome.org/');
+        localPlugin.shareUri('https://gnome.org');
 
         await remotePlugin.awaitPacket('kdeconnect.share.request', {
-            url: 'https://www.gnome.org/',
+            url: 'https://gnome.org',
         });
 
         expect(remotePlugin._handleUri).toHaveBeenCalled();

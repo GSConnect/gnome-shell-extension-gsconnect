@@ -129,7 +129,7 @@ export const MessageBox = {
 /**
  * SMS Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/sms
- * https://github.com/KDE/kdeconnect-android/tree/master/src/org/kde/kdeconnect/Plugins/SMSPlugin/
+ * https://github.com/KDE/kdeconnect-android/tree/master/src/org/kde/kdeconnect/Plugins/SMSPlugin
  */
 const SMSPlugin = GObject.registerClass({
     GTypeName: 'GSConnectSMSPlugin',
@@ -439,7 +439,7 @@ const SMSPlugin = GObject.registerClass({
             window.present();
             window.setMessage(url);
 
-        // If there are active threads, show the chooser dialog
+            // If there are active threads, show the chooser dialog
         } else if (Object.values(this.threads).length > 0) {
             const window = new Messaging.ConversationChooser({
                 application: Gio.Application.get_default(),
@@ -450,7 +450,7 @@ const SMSPlugin = GObject.registerClass({
 
             window.present();
 
-        // Otherwise show the window and wait for a contact to be chosen
+            // Otherwise show the window and wait for a contact to be chosen
         } else {
             this.window.present();
             this.window.setMessage(url, true);
@@ -475,7 +475,7 @@ const SMSPlugin = GObject.registerClass({
 
             // Lookup contacts
             const addresses = uri.recipients.map(number => {
-                return {address: number.toPhoneNumber()};
+                return { address: number.toPhoneNumber() };
             });
             const contacts = this.device.contacts.lookupAddresses(addresses);
 

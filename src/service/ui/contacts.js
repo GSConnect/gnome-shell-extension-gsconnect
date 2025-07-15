@@ -38,7 +38,7 @@ function randomRGBA(salt = null, alpha = 1.0) {
 
 /**
  * Get the relative luminance of a RGB set
- * See: https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
+ * See: https://w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
  *
  * @param {Gdk.RGBA} rgba - A GdkRGBA object
  * @returns {number} The relative luminance of the color
@@ -56,7 +56,7 @@ function relativeLuminance(rgba) {
 
 /**
  * Get a GdkRGBA contrasted for the input
- * See: https://www.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef
+ * See: https://w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef
  *
  * @param {Gdk.RGBA} rgba - A GdkRGBA object for the background color
  * @returns {Gdk.RGBA} A GdkRGBA object for the foreground color
@@ -132,7 +132,7 @@ function getPixbufForIcon(name, size, scale, bgColor) {
 
 /**
  * Return a localized string for a phone number type
- * See: http://www.ietf.org/rfc/rfc2426.txt
+ * See: http://ietf.org/rfc/rfc2426.txt
  *
  * @param {string} type - An RFC2426 phone number type
  * @returns {string} A localized string like 'Mobile'

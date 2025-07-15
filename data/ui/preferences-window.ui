@@ -436,7 +436,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                                 <property name="receives_default">True</property>
                                 <property name="halign">center</property>
                                 <property name="valign">center</property>
-                                <property name="uri">https://addons.mozilla.org/firefox/addon/gsconnect/</property>
+                                <property name="uri">https://addons.mozilla.org/firefox/addon/gsconnect</property>
                                 <child>
                                   <object class="GtkImage" id="webextension-image-firefox">
                                     <property name="width_request">172</property>
@@ -585,7 +585,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                                 <property name="receives_default">True</property>
                                 <property name="halign">start</property>
                                 <property name="relief">none</property>
-                                <property name="uri">https://f-droid.org/packages/org.kde.kdeconnect_tp/</property>
+                                <property name="uri">https://f-droid.org/packages/org.kde.kdeconnect_tp</property>
                                 <accessibility>
                                   <relation type="labelled-by" target="kdeconnect-android"/>
                                 </accessibility>

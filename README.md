@@ -51,11 +51,11 @@ For early updaters of GNOME Shell and those that wish to test the upcoming versi
 of GSConnect, there are automated builds available for [download][nightly-build].
 See [Installing from Nightly Build][nightly-install] for installation instructions.
 
-[ego]: https://extensions.gnome.org/extension/1319/gsconnect/
+[ego]: https://extensions.gnome.org/extension/1319/gsconnect
 [chrome]: https://chrome.google.com/webstore/detail/gsconnect/jfnifeihccihocjbfcfhicmmgpjicaec
-[firefox]: https://addons.mozilla.org/firefox/addon/gsconnect/
+[firefox]: https://addons.mozilla.org/firefox/addon/gsconnect
 [kdeconnect]: https://userbase.kde.org/KDEConnect
-[wiki]: https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/
+[wiki]: https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki
 [features]: https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Features
 [help]: https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Help
 

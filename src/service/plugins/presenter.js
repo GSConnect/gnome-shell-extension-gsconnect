@@ -21,7 +21,7 @@ export const Metadata = {
 /**
  * Presenter Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/presenter
- * https://github.com/KDE/kdeconnect-android/tree/master/src/org/kde/kdeconnect/Plugins/PresenterPlugin/
+ * https://github.com/KDE/kdeconnect-android/tree/master/src/org/kde/kdeconnect/Plugins/PresenterPlugin
  */
 const PresenterPlugin = GObject.registerClass({
     GTypeName: 'GSConnectPresenterPlugin',

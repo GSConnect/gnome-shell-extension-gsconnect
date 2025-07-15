@@ -20,7 +20,7 @@ try {
     GIRepository.Repository.prepend_library_path(typelibDir);
 
     Gvc = (await import('gi://Gvc')).default;
-} catch {}
+} catch { }
 
 
 export const Metadata = {
@@ -36,7 +36,7 @@ export const Metadata = {
 /**
  * SystemVolume Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/systemvolume
- * https://github.com/KDE/kdeconnect-android/tree/master/src/org/kde/kdeconnect/Plugins/SystemvolumePlugin/
+ * https://github.com/KDE/kdeconnect-android/tree/master/src/org/kde/kdeconnect/Plugins/SystemvolumePlugin
  */
 const SystemVolumePlugin = GObject.registerClass({
     GTypeName: 'GSConnectSystemVolumePlugin',
@@ -67,7 +67,7 @@ const SystemVolumePlugin = GObject.registerClass({
                 this._sendSinkList.bind(this)
             );
 
-        // Modify the error to redirect to the wiki
+            // Modify the error to redirect to the wiki
         } catch (e) {
             e.name = _('PulseAudio not found');
             e.url = `${Config.PACKAGE_URL}/wiki/Error#pulseaudio-not-found`;

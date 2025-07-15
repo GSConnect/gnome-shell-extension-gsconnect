@@ -176,7 +176,7 @@ If that's not convenient, discussion can happen in the comments to your
 discussion and mark the Pull Request as a fix for it.
 
 [design]: https://wiki.gnome.org/Projects/GnomeShell/Design/Principles
-[hig]: https://developer.gnome.org/hig/stable/
+[hig]: https://developer.gnome.org/hig/stable
 [translating]: https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Translating
 [packaging]: https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Packaging
 [theming]: https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Theming
@@ -184,5 +184,4 @@ discussion and mark the Pull Request as a fix for it.
 [pr]: https://github.com/GNOME/gnome-shell/pulls
 [gjs]: https://gitlab.gnome.org/GNOME/gjs/wikis/home
 
-[meson]: https://mesonbuild.com/
-
+[meson]: https://mesonbuild.com

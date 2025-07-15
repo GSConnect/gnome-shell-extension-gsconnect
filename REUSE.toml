@@ -17,11 +17,11 @@ SPDX-License-Identifier = "GPL-2.0-or-later"
 [[annotations]]
 path = "data/images/chrome-badge.png"
 precedence = "aggregate"
-SPDX-FileCopyrightText = "Google <https://developers.google.com/>"
+SPDX-FileCopyrightText = "Google <https://developers.google.com>"
 SPDX-License-Identifier = "CC-BY-4.0"
 
 # According to
-# https://extensionworkshop.com/documentation/publish/promoting-your-extension/
+# https://extensionworkshop.com/documentation/publish/promoting-your-extension
 [[annotations]]
 path = "data/images/firefox-badge.png"
 precedence = "aggregate"

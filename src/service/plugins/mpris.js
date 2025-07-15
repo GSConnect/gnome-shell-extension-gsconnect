@@ -10,7 +10,7 @@ import * as Components from '../components/index.js';
 import Config from '../../config.js';
 import * as Core from '../core.js';
 import * as DBus from '../utils/dbus.js';
-import  {Player} from '../components/mpris.js';
+import { Player } from '../components/mpris.js';
 import Plugin from '../plugin.js';
 
 
@@ -29,7 +29,7 @@ export const Metadata = {
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/mpriscontrol
  *
  * See also:
- *     https://specifications.freedesktop.org/mpris-spec/latest/
+ *     https://specifications.freedesktop.org/mpris-spec/latest
  *     https://github.com/GNOME/gnome-shell/blob/master/js/ui/mpris.js
  */
 const MPRISPlugin = GObject.registerClass({
