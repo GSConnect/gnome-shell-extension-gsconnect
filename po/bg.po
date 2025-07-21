@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-07-11 13:49-0400\n"
-"PO-Revision-Date: 2025-07-11 19:08\n"
+"PO-Revision-Date: 2025-07-21 13:36\n"
 "Last-Translator: \n"
 "Language-Team: Bulgarian\n"
 "Language: bg_BG\n"
@@ -250,11 +250,11 @@ msgstr "Запазване на файлове в"
 
 #: data/ui/preferences-device-panel.ui:510
 msgid "Links"
-msgstr ""
+msgstr "Връзки"
 
 #: data/ui/preferences-device-panel.ui:562
 msgid "Automatically open received URLs"
-msgstr ""
+msgstr "Автоматично отваряне на получени URL адреси"
 
 #: data/ui/preferences-device-panel.ui:623
 #: data/ui/preferences-device-panel.ui:2286
@@ -662,13 +662,13 @@ msgstr "Преглед на регистъра"
 
 #: src/preferences/service.js:431
 msgid "Invalid Device Name"
-msgstr ""
+msgstr "Невалидно име на устройство"
 
 #. TRANSLATOR: %s is a list of forbidden characters
 #: src/preferences/service.js:433
 #, javascript-format
 msgid "Device name must not contain any of %s and have a length of 1-32 characters"
-msgstr ""
+msgstr "Името на устройството не трябва да съдържа %s и да е с дължина от 1 до 32 символа."
 
 #: src/preferences/service.js:496
 msgid "Laptop"
@@ -705,11 +705,11 @@ msgstr "В очакване на обслужване…"
 #. Notify the user
 #: src/service/daemon.js:94
 msgid "Settings Migrated"
-msgstr ""
+msgstr "Мигрирани настройки"
 
 #: src/service/daemon.js:95
 msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be repaired."
-msgstr ""
+msgstr "GSConnect е актуализиран, за да поддържа промените в протокола KDE Connect. Може да се наложи някои устройства да бъдат коригирани."
 
 #: src/service/daemon.js:231
 msgid "Click for help troubleshooting"
@@ -822,11 +822,11 @@ msgstr "Приеми"
 #: src/service/device.js:960
 #, javascript-format
 msgid "Failed to pair with %s"
-msgstr ""
+msgstr "Неуспешно сдвояване с %s"
 
 #: src/service/device.js:961
 msgid "Device clocks are out of sync"
-msgstr ""
+msgstr "Часовниците на устройството не са синхронизирани"
 
 #: src/service/init.js:347
 msgid "OpenSSL not found"
