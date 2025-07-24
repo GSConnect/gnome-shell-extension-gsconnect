@@ -92,7 +92,7 @@ const Service = GObject.registerClass({
 
         // Notify the user
         const notification = Gio.Notification.new(_('Settings Migrated'));
-        notification.set_body(_('GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be repaired.'));
+        notification.set_body(_('GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired.'));
         notification.set_icon(new Gio.ThemedIcon({name: 'dialog-warning'}));
         notification.set_priority(Gio.NotificationPriority.HIGH);
         this.send_notification('settings-migrated', notification);
