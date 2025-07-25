@@ -522,6 +522,7 @@ export const DeviceNavigationPage = GObject.registerClass({
 
         settings = this.pluginSettings('share');
         this.actions.add_action(settings.create_action('receive-files'));
+        this.actions.add_action(settings.create_action('launch-urls'));
 
         settings = this.pluginSettings('sms');
         this.actions.add_action(settings.create_action('legacy-sms'));
