@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-11 13:49-0400\n"
+"POT-Creation-Date: 2025-07-27 10:35+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -469,8 +469,14 @@ msgstr ""
 msgid "Set"
 msgstr ""
 
+#: data/ui/preferences-shortcut-editor.ui:59
+msgid ""
+"Note that you have to first disable any conflicting shortucts in GNOME "
+"Settings."
+msgstr ""
+
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
-#: data/ui/preferences-shortcut-editor.ui:80
+#: data/ui/preferences-shortcut-editor.ui:94
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
 msgstr ""
 
@@ -640,13 +646,6 @@ msgstr ""
 #: src/preferences/keybindings.js:66
 #, javascript-format
 msgid "Enter a new shortcut to change <b>%s</b>"
-msgstr ""
-
-#. TRANSLATORS: When a keyboard shortcut is unavailable
-#. Example: [Ctrl]+[S] is already being used
-#: src/preferences/keybindings.js:132
-#, javascript-format
-msgid "%s is already being used"
 msgstr ""
 
 #: src/preferences/service.js:361
