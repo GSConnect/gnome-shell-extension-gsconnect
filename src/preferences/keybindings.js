@@ -122,8 +122,6 @@ export const ShortcutChooserDialog = GObject.registerClass({
         realMask &= ~Gdk.ModifierType.LOCK_MASK;
 
         if (keyvalLower !== 0 && realMask !== 0) {
-            this._ungrab();
-
             // Set the accelerator property/label
             this.accelerator = Gtk.accelerator_name(keyvalLower, realMask);
 
@@ -145,7 +143,9 @@ export const ShortcutChooserDialog = GObject.registerClass({
 
     async _check() {
         try {
-            const available = await checkAccelerator(this.accelerator);
+            // No known way to check availability, so don't. Don't grab input,
+            // so we don't accidentally overload accelerators as easily
+            const available = true;
             this.set_button.visible = available;
             this.conflict_label.visible = !available;
         } catch (e) {
@@ -154,117 +154,11 @@ export const ShortcutChooserDialog = GObject.registerClass({
         }
     }
 
-    _grab() {
-        const success = this._seat.grab(
-            this.get_window(),
-            Gdk.SeatCapabilities.KEYBOARD,
-            true, // owner_events
-            null, // cursor
-            null, // event
-            null
-        );
-
-        if (success !== Gdk.GrabStatus.SUCCESS)
-            return this.response(ResponseType.CANCEL);
-
-        if (!this._seat.get_keyboard() && !this._seat.get_pointer())
-            return this.response(ResponseType.CANCEL);
-
-        this.grab_add();
-    }
-
-    _ungrab() {
-        this._seat.ungrab();
-        this.grab_remove();
-    }
-
-    // Override to use our own ungrab process
-    response(response_id) {
-        this.hide();
-        this._ungrab();
-
-        return super.response(response_id);
-    }
-
     // Override with a non-blocking version of Gtk.Dialog.run()
     run() {
         this.show();
-
-        // Wait a bit before attempting grab
-        GLib.timeout_add(GLib.PRIORITY_DEFAULT, 100, () => {
-            this._grab();
-            return GLib.SOURCE_REMOVE;
-        });
     }
 });
-
-
-/**
- * Check the availability of an accelerator using GNOME Shell's DBus interface.
- *
- * @param {string} accelerator - An accelerator
- * @param {number} [modeFlags] - Mode Flags
- * @param {number} [grabFlags] - Grab Flags
- * @returns {boolean} %true if available, %false on error or unavailable
- */
-export async function checkAccelerator(accelerator, modeFlags = 0, grabFlags = 0) {
-    try {
-        let result = false;
-
-        // Try to grab the accelerator
-        const action = await new Promise((resolve, reject) => {
-            Gio.DBus.session.call(
-                'org.gnome.Shell',
-                '/org/gnome/Shell',
-                'org.gnome.Shell',
-                'GrabAccelerator',
-                new GLib.Variant('(suu)', [accelerator, modeFlags, grabFlags]),
-                null,
-                Gio.DBusCallFlags.NONE,
-                -1,
-                null,
-                (connection, res) => {
-                    try {
-                        res = connection.call_finish(res);
-                        resolve(res.deepUnpack()[0]);
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
-            );
-        });
-
-        // If successful, use the result of ungrabbing as our return
-        if (action !== 0) {
-            result = await new Promise((resolve, reject) => {
-                Gio.DBus.session.call(
-                    'org.gnome.Shell',
-                    '/org/gnome/Shell',
-                    'org.gnome.Shell',
-                    'UngrabAccelerator',
-                    new GLib.Variant('(u)', [action]),
-                    null,
-                    Gio.DBusCallFlags.NONE,
-                    -1,
-                    null,
-                    (connection, res) => {
-                        try {
-                            res = connection.call_finish(res);
-                            resolve(res.deepUnpack()[0]);
-                        } catch (e) {
-                            reject(e);
-                        }
-                    }
-                );
-            });
-        }
-
-        return result;
-    } catch (e) {
-        logError(e);
-        return false;
-    }
-}
 
 
 /**
