@@ -111,17 +111,6 @@ SPDX-License-Identifier: GPL-2.0-or-later
                     <property name="top_attach">0</property>
                   </packing>
                 </child>
-                <child>
-                  <object class="GtkLabel" id="conflict-label">
-                    <property name="can_focus">False</property>
-                    <property name="halign">center</property>
-                    <property name="hexpand">True</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">1</property>
-                  </packing>
-                </child>
               </object>
               <packing>
                 <property name="name">confirm</property>

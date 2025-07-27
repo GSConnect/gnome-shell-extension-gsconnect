@@ -46,7 +46,7 @@ export const ShortcutChooserDialog = GObject.registerClass({
     Children: [
         'cancel-button', 'set-button',
         'stack', 'summary-label',
-        'shortcut-label', 'conflict-label',
+        'shortcut-label',
     ],
 }, class ShortcutChooserDialog extends Gtk.Dialog {
 
@@ -125,13 +125,7 @@ export const ShortcutChooserDialog = GObject.registerClass({
             // Set the accelerator property/label
             this.accelerator = Gtk.accelerator_name(keyvalLower, realMask);
 
-            // TRANSLATORS: When a keyboard shortcut is unavailable
-            // Example: [Ctrl]+[S] is already being used
-            this.conflict_label.label = _('%s is already being used').format(
-                Gtk.accelerator_get_label(keyvalLower, realMask)
-            );
-
-            // Show Cancel button and switch to confirm/conflict page
+            // Show Cancel button and switch to confirm page
             this.cancel_button.visible = true;
             this.stack.visible_child_name = 'confirm';
 
@@ -147,7 +141,6 @@ export const ShortcutChooserDialog = GObject.registerClass({
             // so we don't accidentally overload accelerators as easily
             const available = true;
             this.set_button.visible = available;
-            this.conflict_label.visible = !available;
         } catch (e) {
             logError(e);
             this.response(ResponseType.CANCEL);
