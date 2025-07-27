@@ -52,6 +52,20 @@ SPDX-License-Identifier: GPL-2.0-or-later
           </packing>
         </child>
         <child>
+          <object class="GtkLabel">
+            <property name="can_focus">False</property>
+            <property name="halign">center</property>
+            <property name="hexpand">True</property>
+            <property name="label" translatable="yes">Note that you have to first disable any conflicting shortucts in GNOME Settings.</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkStack" id="stack">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
@@ -111,17 +125,6 @@ SPDX-License-Identifier: GPL-2.0-or-later
                     <property name="top_attach">0</property>
                   </packing>
                 </child>
-                <child>
-                  <object class="GtkLabel" id="conflict-label">
-                    <property name="can_focus">False</property>
-                    <property name="halign">center</property>
-                    <property name="hexpand">True</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">1</property>
-                  </packing>
-                </child>
               </object>
               <packing>
                 <property name="name">confirm</property>
@@ -132,11 +135,10 @@ SPDX-License-Identifier: GPL-2.0-or-later
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">2</property>
+            <property name="position">3</property>
           </packing>
         </child>
       </object>
     </child>
   </template>
 </interface>
-
