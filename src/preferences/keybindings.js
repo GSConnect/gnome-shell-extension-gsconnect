@@ -135,7 +135,7 @@ export const ShortcutChooserDialog = GObject.registerClass({
         return true;
     }
 
-    async _check() {
+    _check() {
         try {
             // No known way to check availability, so don't. Don't grab input,
             // so we don't accidentally overload accelerators as easily
