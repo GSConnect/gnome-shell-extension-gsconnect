@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-11 13:49-0400\n"
-"PO-Revision-Date: 2025-07-24 19:29\n"
+"POT-Creation-Date: 2025-07-24 16:26-0400\n"
+"PO-Revision-Date: 2025-07-30 22:42\n"
 "Last-Translator: \n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
@@ -708,8 +708,8 @@ msgid "Settings Migrated"
 msgstr "Impostazioni migrate"
 
 #: src/service/daemon.js:95
-msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be repaired."
-msgstr "GSConnect è stato aggiornato per supportare le modifiche al protocollo KDE Connect. Potrebbe essere necessario riparare alcuni dispositivi."
+msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
+msgstr ""
 
 #: src/service/daemon.js:231
 msgid "Click for help troubleshooting"
