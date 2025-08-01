@@ -27,6 +27,7 @@ import Config from '../config.js';
 import Device from './device.js';
 import Manager from './manager.js';
 import * as ServiceUI from './ui/service.js';
+import {DependencyError} from '../utils/exceptions.js';
 
 
 /**
@@ -58,8 +59,8 @@ const Service = GObject.registerClass({
             GLib.build_filenamev([Config.CONFIGDIR, 'certificate.pem']),
             GLib.build_filenamev([Config.CONFIGDIR, 'private.pem']),
         ];
-        const certificate = Gio.TlsCertificate.new_for_paths(certPath, keyPath,
-            null);
+
+        const certificate = Gio.TlsCertificate.new_for_paths(certPath, keyPath, null);
 
         if (Device.validateId(certificate.common_name))
             return;
@@ -302,7 +303,14 @@ const Service = GObject.registerClass({
         this._initActions();
 
         // TODO: remove after a reasonable period of time
-        this._migrateConfiguration();
+        try {
+            this._migrateConfiguration();
+            this.settings.set_boolean('missing-openssl', false);
+        } catch (e) {
+            if (e instanceof DependencyError && e.dependency === 'openssl')
+                this.settings.set_boolean('missing-openssl', true);
+            throw e;
+        }
 
         this.manager.start();
     }
