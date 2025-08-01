@@ -17,6 +17,14 @@ import {Service} from '../utils/remote.js';
 
 
 /*
+ * Translatable markup for missing-openssl infobar
+ */
+const OPENSSL_MESSAGE = _(
+    'The <tt>openssl</tt> command-line tool does not appear to be installed.\nUse your distro\'s package manager to install it, then restart or log out and back in.\nFor more information, visit <a href="https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found">the GSConnect wiki</a>'
+);
+
+
+/*
  * Header for support logs
  */
 const LOG_HEADER = new GLib.Bytes(`
@@ -146,7 +154,8 @@ export const Window = GObject.registerClass({
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/preferences-window.ui',
     Children: [
         // HeaderBar
-        'headerbar', 'infobar', 'stack',
+        'headerbar', 'stack',
+        'infobar_discoverable', 'infobar_openssl', 'openssl_message',
         'service-menu', 'service-edit', 'refresh-button',
         'device-menu', 'prev-button',
 
@@ -203,11 +212,21 @@ export const Window = GObject.registerClass({
         // Discoverable InfoBar
         this.settings.bind(
             'discoverable',
-            this.infobar,
+            this.infobar_discoverable,
             'reveal-child',
             Gio.SettingsBindFlags.INVERT_BOOLEAN
         );
         this.add_action(this.settings.create_action('discoverable'));
+
+        // OpenSSL-missing infobar
+        this.openssl_message.set_markup(OPENSSL_MESSAGE);
+        this.settings.bind(
+            'missing-openssl',
+            this.infobar_openssl,
+            'reveal-child',
+            Gio.SettingsBindFlags.DEFAULT
+        );
+        this.add_action(this.settings.create_action('missing-openssl'));
 
         // Application Menu
         this._initMenu();
@@ -297,7 +316,9 @@ export const Window = GObject.registerClass({
     }
 
     _refresh() {
-        if (this.service.active && this.device_list.get_children().length < 1) {
+        const missing_openssl = this.settings.get_boolean('missing-openssl');
+        const no_devices = this.service.active && this.device_list.get_children().length < 1;
+        if (missing_openssl || no_devices) {
             this.device_list_spinner.active = true;
             this.service.activate_action('refresh', null);
         } else {

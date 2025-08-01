@@ -10,6 +10,7 @@ import GLib from 'gi://GLib';
 
 import Config from '../config.js';
 import {setup, setupGettext} from '../utils/setup.js';
+import {DependencyError} from '../utils/exceptions.js';
 
 
 // Promise Wrappers
@@ -340,10 +341,11 @@ GLib.Variant.prototype.full_unpack = _full_unpack;
  * @param {string} keyPath - Absolute path to a private key in PEM format
  * @param {string} commonName - A unique common name for the certificate
  * @returns {Gio.TlsCertificate} A TLS certificate
+ * @throws DependencyError on missing openssl tool
  */
 Gio.TlsCertificate.new_for_paths = function (certPath, keyPath, commonName = null) {
     if (GLib.find_program_in_path(Config.OPENSSL_PATH) === null) {
-        const error = new Error();
+        const error = new DependencyError('openssl');
         error.name = _('OpenSSL not found');
         error.url = `${Config.PACKAGE_URL}/wiki/Error#openssl-not-found`;
         throw error;

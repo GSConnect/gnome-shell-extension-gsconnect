@@ -13,6 +13,8 @@ import Device from './device.js';
 
 import * as LanBackend from './backends/lan.js';
 
+import {DependencyError} from '../utils/exceptions.js';
+
 const DEVICE_NAME = 'org.gnome.Shell.Extensions.GSConnect.Device';
 const DEVICE_PATH = '/org/gnome/Shell/Extensions/GSConnect/Device';
 const DEVICE_IFACE = Config.DBUS.lookup_interface(DEVICE_NAME);
@@ -102,10 +104,17 @@ const Manager = GObject.registerClass({
 
     get certificate() {
         if (this._certificate === undefined) {
-            this._certificate = Gio.TlsCertificate.new_for_paths(
-                GLib.build_filenamev([Config.CONFIGDIR, 'certificate.pem']),
-                GLib.build_filenamev([Config.CONFIGDIR, 'private.pem']),
-                null);
+            try {
+                this._certificate = Gio.TlsCertificate.new_for_paths(
+                    GLib.build_filenamev([Config.CONFIGDIR, 'certificate.pem']),
+                    GLib.build_filenamev([Config.CONFIGDIR, 'private.pem']),
+                    null);
+                this.settings.set_boolean('missing-openssl', false);
+            } catch (e) {
+                if (e instanceof DependencyError && e.dependency === 'openssl')
+                    this.settings.set_boolean('missing-openssl', true);
+                throw e;
+            }
         }
 
         return this._certificate;
