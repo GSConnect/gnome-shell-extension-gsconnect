@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-11 13:49-0400\n"
-"PO-Revision-Date: 2025-07-11 19:08\n"
+"POT-Creation-Date: 2025-07-24 16:26-0400\n"
+"PO-Revision-Date: 2025-07-30 22:42\n"
 "Last-Translator: \n"
 "Language-Team: Ukrainian\n"
 "Language: uk_UA\n"
@@ -250,11 +250,11 @@ msgstr "Зберігати файли до"
 
 #: data/ui/preferences-device-panel.ui:510
 msgid "Links"
-msgstr ""
+msgstr "Посилання"
 
 #: data/ui/preferences-device-panel.ui:562
 msgid "Automatically open received URLs"
-msgstr ""
+msgstr "Автоматично відкривати отримані URL-адреси"
 
 #: data/ui/preferences-device-panel.ui:623
 #: data/ui/preferences-device-panel.ui:2286
@@ -664,13 +664,13 @@ msgstr "Переглянути журнал"
 
 #: src/preferences/service.js:431
 msgid "Invalid Device Name"
-msgstr ""
+msgstr "Неприпустима назва пристрою"
 
 #. TRANSLATOR: %s is a list of forbidden characters
 #: src/preferences/service.js:433
 #, javascript-format
 msgid "Device name must not contain any of %s and have a length of 1-32 characters"
-msgstr ""
+msgstr "Назва пристрою не може містити символів %s і має довжину 1-32 символів"
 
 #: src/preferences/service.js:496
 msgid "Laptop"
@@ -707,10 +707,10 @@ msgstr "Очікування служби…"
 #. Notify the user
 #: src/service/daemon.js:94
 msgid "Settings Migrated"
-msgstr ""
+msgstr "Налаштування переміщено"
 
 #: src/service/daemon.js:95
-msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be repaired."
+msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
 msgstr ""
 
 #: src/service/daemon.js:231
@@ -824,11 +824,11 @@ msgstr "Прийняти"
 #: src/service/device.js:960
 #, javascript-format
 msgid "Failed to pair with %s"
-msgstr ""
+msgstr "Не вдалося створити пару з %s"
 
 #: src/service/device.js:961
 msgid "Device clocks are out of sync"
-msgstr ""
+msgstr "Годинники не синхронізуються"
 
 #: src/service/init.js:347
 msgid "OpenSSL not found"
