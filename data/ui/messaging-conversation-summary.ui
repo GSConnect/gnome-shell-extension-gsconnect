@@ -7,81 +7,56 @@ SPDX-License-Identifier: GPL-2.0-or-later
 -->
 
 <interface domain="org.gnome.Shell.Extensions.GSConnect">
-  <requires lib="gtk+" version="3.24"/>
-  <template class="GSConnectMessagingConversationSummary" parent="GtkListBoxRow">
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+
+  <template class="GSConnectMessagingConversationSummary" parent="AdwActionRow">
     <property name="visible">True</property>
-    <property name="can_focus">True</property>
-    <child>
-      <object class="GtkGrid">
-        <property name="margin_top">6</property>
-        <property name="margin_bottom">6</property>
-        <property name="margin_start">8</property>
-        <property name="margin_end">8</property>
-        <property name="column_spacing">8</property>
+    <property name="activatable">True</property>
+    <property name="title-lines">1</property>
+    <property name="subtitle-lines">1</property>
+    <child type="prefix">
+      <object class="AdwAvatar" id="avatar">
         <property name="visible">True</property>
-        <child>
-          <object class="GSConnectContactAvatar" id="avatar">
-            <property name="visible">True</property>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">0</property>
-            <property name="width">1</property>
-            <property name="height">3</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="name-label">
-            <property name="halign">start</property>
-            <property name="hexpand">True</property>
-            <property name="ellipsize">end</property>
-            <property name="use_markup">True</property>
-            <property name="xalign">0</property>
-            <property name="visible">True</property>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">0</property>
-            <property name="width">1</property>
-            <property name="height">1</property>
-          </packing>
-        </child>
+        <property name="size">40</property>
+        <property name="show-initials">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="orientation">vertical</property>
+        <property name="valign">start</property>
+        <property name="margin-top">4</property>
         <child>
           <object class="GtkLabel" id="time-label">
+            <property name="visible">True</property>
             <property name="halign">end</property>
             <property name="ellipsize">end</property>
-            <property name="use_markup">True</property>
-            <property name="xalign">0</property>
-            <property name="visible">True</property>
+            <property name="use-markup">True</property>
             <style>
-              <class name="dim-label"/>
+              <class name="dimmed"/>
+              <class name="time-row"/>
             </style>
           </object>
-          <packing>
-            <property name="left_attach">2</property>
-            <property name="top_attach">0</property>
-            <property name="width">1</property>
-            <property name="height">1</property>
-          </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="body-label">
-            <property name="halign">start</property>
-            <property name="ellipsize">end</property>
-            <property name="use_markup">True</property>
-            <property name="xalign">0</property>
+          <object class="GtkBox">
             <property name="visible">True</property>
+            <property name="halign">end</property>
+            <property name="hexpand">True</property>
+            <child>
+              <object class="GtkLabel" id="counter-label">
+                <property name="visible">False</property>
+                <style>
+                  <class name="counter"/>
+                  <class name="numeric"/>
+                  <class name="needs-attention"/>
+                </style>
+              </object>
+            </child>
           </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">1</property>
-            <property name="width">2</property>
-            <property name="height">1</property>
-          </packing>
         </child>
-        <style>
-          <class name="conversation-row"/>
-        </style>
       </object>
     </child>
   </template>
