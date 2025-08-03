@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-07-24 16:26-0400\n"
-"PO-Revision-Date: 2025-07-30 22:43\n"
+"PO-Revision-Date: 2025-08-03 18:31\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese\n"
 "Language: pt_PT\n"
@@ -250,11 +250,11 @@ msgstr "Guardar ficheiros para"
 
 #: data/ui/preferences-device-panel.ui:510
 msgid "Links"
-msgstr ""
+msgstr "Ligações"
 
 #: data/ui/preferences-device-panel.ui:562
 msgid "Automatically open received URLs"
-msgstr ""
+msgstr "Abrir automaticamente URLs recebidos"
 
 #: data/ui/preferences-device-panel.ui:623
 #: data/ui/preferences-device-panel.ui:2286
@@ -666,13 +666,13 @@ msgstr "Registo de revisão"
 
 #: src/preferences/service.js:431
 msgid "Invalid Device Name"
-msgstr ""
+msgstr "Nome de dispositivo inválido"
 
 #. TRANSLATOR: %s is a list of forbidden characters
 #: src/preferences/service.js:433
 #, javascript-format
 msgid "Device name must not contain any of %s and have a length of 1-32 characters"
-msgstr ""
+msgstr "O nome do dispositivo não deve conter nenhum dos caracteres %s e ter tamanho de 1-32 caracteres"
 
 #: src/preferences/service.js:496
 msgid "Laptop"
@@ -709,11 +709,11 @@ msgstr "À espera de serviço…"
 #. Notify the user
 #: src/service/daemon.js:94
 msgid "Settings Migrated"
-msgstr ""
+msgstr "Definições migradas"
 
 #: src/service/daemon.js:95
 msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
-msgstr ""
+msgstr "O GSConnect foi atualizado para suportar alterações no protocolo KDE Connect. Alguns dispositivos podem precisar de ser emparelhados novamente."
 
 #: src/service/daemon.js:231
 msgid "Click for help troubleshooting"
@@ -826,11 +826,11 @@ msgstr "Aceitar"
 #: src/service/device.js:960
 #, javascript-format
 msgid "Failed to pair with %s"
-msgstr ""
+msgstr "Falha ao emparelhar com %s"
 
 #: src/service/device.js:961
 msgid "Device clocks are out of sync"
-msgstr ""
+msgstr "Os relógios dos dispositivos estão desincronizados"
 
 #: src/service/init.js:347
 msgid "OpenSSL not found"
