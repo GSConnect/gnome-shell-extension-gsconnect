@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-07-24 16:26-0400\n"
-"PO-Revision-Date: 2025-07-30 22:42\n"
+"PO-Revision-Date: 2025-08-25 08:59\n"
 "Last-Translator: \n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
@@ -246,7 +246,7 @@ msgstr "Ricezione file"
 
 #: data/ui/preferences-device-panel.ui:449
 msgid "Save files to"
-msgstr "Salva i file su"
+msgstr "Salvare i file in"
 
 #: data/ui/preferences-device-panel.ui:510
 msgid "Links"
@@ -271,7 +271,7 @@ msgstr "Notifica di batteria scarica"
 
 #: data/ui/preferences-device-panel.ui:765
 msgid "Charged Up to Custom Level Notification"
-msgstr "Notificare il raggiungimento del livello personalizzato di carica"
+msgstr "Notifica al raggiungimento del livello personalizzato di carica"
 
 #: data/ui/preferences-device-panel.ui:845
 msgid "Fully Charged Notification"
@@ -709,7 +709,7 @@ msgstr "Impostazioni migrate"
 
 #: src/service/daemon.js:95
 msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
-msgstr ""
+msgstr "GSConnect è stato aggiornato per supportare le modifiche al protocollo KDE Connect. Potrebbe essere necessario riaccoppiare alcuni dispositivi."
 
 #: src/service/daemon.js:231
 msgid "Click for help troubleshooting"

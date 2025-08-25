@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-07-24 16:26-0400\n"
-"PO-Revision-Date: 2025-07-30 22:43\n"
+"PO-Revision-Date: 2025-08-17 13:52\n"
 "Last-Translator: \n"
 "Language-Team: Persian\n"
 "Language: fa_IR\n"
@@ -250,11 +250,11 @@ msgstr "ذخیرهٔ پرونده‌ها در"
 
 #: data/ui/preferences-device-panel.ui:510
 msgid "Links"
-msgstr ""
+msgstr "پیوند‌ها"
 
 #: data/ui/preferences-device-panel.ui:562
 msgid "Automatically open received URLs"
-msgstr ""
+msgstr "گشودن خودکار نشانی‌های دریافتی"
 
 #: data/ui/preferences-device-panel.ui:623
 #: data/ui/preferences-device-panel.ui:2286
@@ -662,13 +662,13 @@ msgstr "بازبینی گزارش"
 
 #: src/preferences/service.js:431
 msgid "Invalid Device Name"
-msgstr ""
+msgstr "نام افزارهٔ نامعتبر"
 
 #. TRANSLATOR: %s is a list of forbidden characters
 #: src/preferences/service.js:433
 #, javascript-format
 msgid "Device name must not contain any of %s and have a length of 1-32 characters"
-msgstr ""
+msgstr "نام افزاره باید دارای %s نبوده و درازایش بین ۱ تا ۳۲ نویسه باشد"
 
 #: src/preferences/service.js:496
 msgid "Laptop"
@@ -705,11 +705,11 @@ msgstr "در انتظار خدمت…"
 #. Notify the user
 #: src/service/daemon.js:94
 msgid "Settings Migrated"
-msgstr ""
+msgstr "تنظمیات مهاجرت داده شدند"
 
 #: src/service/daemon.js:95
 msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
-msgstr ""
+msgstr "جی‌اس‌کانکت برا یپشتیبانی از تغییرات در شیوه‌نامهٔ کی‌دی‌ای کانکت به‌روز شد. شاید برخی افزاره‌ها نیاز به جفت شدن دوباره داشته باشند."
 
 #: src/service/daemon.js:231
 msgid "Click for help troubleshooting"
@@ -822,11 +822,11 @@ msgstr "پذیرش"
 #: src/service/device.js:960
 #, javascript-format
 msgid "Failed to pair with %s"
-msgstr ""
+msgstr "شکست در جفت شدن با %s"
 
 #: src/service/device.js:961
 msgid "Device clocks are out of sync"
-msgstr ""
+msgstr "ساعت‌های افزاره‌ها ناهمگامند"
 
 #: src/service/init.js:347
 msgid "OpenSSL not found"
