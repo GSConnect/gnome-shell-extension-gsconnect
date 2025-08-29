@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-29 15:28-0400\n"
+"POT-Creation-Date: 2025-08-29 15:54-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -534,8 +534,8 @@ msgstr ""
 msgid "Discovery Disabled"
 msgstr ""
 
-#: data/ui/preferences-window.ui:858
-msgid "OpenSSL Missing"
+#: data/ui/preferences-window.ui:858 src/service/init.js:349
+msgid "OpenSSL not found"
 msgstr ""
 
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
@@ -851,10 +851,6 @@ msgstr ""
 
 #: src/service/device.js:961
 msgid "Device clocks are out of sync"
-msgstr ""
-
-#: src/service/init.js:349
-msgid "OpenSSL not found"
 msgstr ""
 
 #: src/service/manager.js:173
