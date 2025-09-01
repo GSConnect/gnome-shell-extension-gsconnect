@@ -27,7 +27,7 @@ import Config from '../config.js';
 import Device from './device.js';
 import Manager from './manager.js';
 import * as ServiceUI from './ui/service.js';
-import {DependencyError} from '../utils/exceptions.js';
+import {MissingOpensslError} from '../utils/exceptions.js';
 
 
 /**
@@ -307,7 +307,7 @@ const Service = GObject.registerClass({
             this._migrateConfiguration();
             this.settings.set_boolean('missing-openssl', false);
         } catch (e) {
-            if (e instanceof DependencyError && e.dependency === 'openssl')
+            if (e instanceof MissingOpensslError)
                 this.settings.set_boolean('missing-openssl', true);
             throw e;
         }
