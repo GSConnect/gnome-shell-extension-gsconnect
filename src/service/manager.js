@@ -13,7 +13,7 @@ import Device from './device.js';
 
 import * as LanBackend from './backends/lan.js';
 
-import {DependencyError} from '../utils/exceptions.js';
+import {MissingOpensslError} from '../utils/exceptions.js';
 
 const DEVICE_NAME = 'org.gnome.Shell.Extensions.GSConnect.Device';
 const DEVICE_PATH = '/org/gnome/Shell/Extensions/GSConnect/Device';
@@ -111,7 +111,7 @@ const Manager = GObject.registerClass({
                     null);
                 this.settings.set_boolean('missing-openssl', false);
             } catch (e) {
-                if (e instanceof DependencyError && e.dependency === 'openssl')
+                if (e instanceof MissingOpensslError)
                     this.settings.set_boolean('missing-openssl', true);
                 throw e;
             }
