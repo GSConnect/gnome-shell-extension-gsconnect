@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-07-24 16:26-0400\n"
-"PO-Revision-Date: 2025-07-30 22:42\n"
+"PO-Revision-Date: 2025-08-13 23:57\n"
 "Last-Translator: \n"
 "Language-Team: Ukrainian\n"
 "Language: uk_UA\n"
@@ -711,7 +711,7 @@ msgstr "Налаштування переміщено"
 
 #: src/service/daemon.js:95
 msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
-msgstr ""
+msgstr "GSConnect оновлено, щоб підтримати зміни в протоколі KDE Connect. Можливо доведеться повторно пов'язати деякі пристрої."
 
 #: src/service/daemon.js:231
 msgid "Click for help troubleshooting"
