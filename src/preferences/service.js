@@ -17,14 +17,6 @@ import {Service} from '../utils/remote.js';
 
 
 /*
- * Translatable markup for missing-openssl infobar
- */
-const OPENSSL_MESSAGE = _(
-    'The <tt>openssl</tt> command-line tool does not appear to be installed.\nUse your distro\'s package manager to install it, then restart or log out and back in.\nFor more information, visit <a href="https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found">the GSConnect wiki</a>'
-);
-
-
-/*
  * Header for support logs
  */
 const LOG_HEADER = new GLib.Bytes(`
@@ -155,7 +147,7 @@ export const Window = GObject.registerClass({
     Children: [
         // HeaderBar
         'headerbar', 'stack',
-        'infobar_discoverable', 'infobar_openssl', 'openssl_message',
+        'infobar_discoverable', 'infobar_openssl',
         'service-menu', 'service-edit', 'refresh-button',
         'device-menu', 'prev-button',
 
@@ -219,7 +211,6 @@ export const Window = GObject.registerClass({
         this.add_action(this.settings.create_action('discoverable'));
 
         // OpenSSL-missing infobar
-        this.openssl_message.set_markup(OPENSSL_MESSAGE);
         this.settings.bind(
             'missing-openssl',
             this.infobar_openssl,

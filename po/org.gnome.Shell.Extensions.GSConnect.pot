@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-29 15:54-0400\n"
+"POT-Creation-Date: 2025-09-01 00:55-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -98,7 +98,7 @@ msgstr ""
 #: data/ui/preferences-shortcut-editor.ui:19
 #: data/ui/service-device-chooser.ui:21 data/ui/service-device-chooser.ui:25
 #: data/ui/service-error-dialog.ui:20 data/ui/service-error-dialog.ui:28
-#: src/preferences/service.js:426 src/service/plugins/share.js:179
+#: src/preferences/service.js:417 src/service/plugins/share.js:179
 #: src/service/plugins/share.js:314 src/service/plugins/share.js:445
 msgid "Cancel"
 msgstr ""
@@ -116,7 +116,7 @@ msgid "No contacts"
 msgstr ""
 
 #: data/ui/contact-chooser.ui:68 data/ui/messaging-window.ui:103
-#: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:933
+#: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:935
 msgid "Help"
 msgstr ""
 
@@ -220,7 +220,7 @@ msgstr ""
 msgid "Open"
 msgstr ""
 
-#: data/ui/preferences-device-panel.ui:53 src/preferences/service.js:525
+#: data/ui/preferences-device-panel.ui:53 src/preferences/service.js:516
 msgid "Desktop"
 msgstr ""
 
@@ -506,7 +506,7 @@ msgstr ""
 msgid "Devices"
 msgstr ""
 
-#: data/ui/preferences-window.ui:328 src/preferences/service.js:687
+#: data/ui/preferences-window.ui:328 src/preferences/service.js:678
 msgid "Searching for devices…"
 msgstr ""
 
@@ -534,35 +534,44 @@ msgstr ""
 msgid "Discovery Disabled"
 msgstr ""
 
-#: data/ui/preferences-window.ui:858 src/service/init.js:349
+#: data/ui/preferences-window.ui:844
+msgid ""
+"The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
+"Use your distro's package manager to install it, then restart or log out and "
+"back in.\n"
+"For more information, visit <a href=\"https://github.com/gsconect/gnome-"
+"shell-extension-gsconnect/wiki/Error#OpenSSL\">the GSConnect wiki</a>."
+msgstr ""
+
+#: data/ui/preferences-window.ui:860 src/service/init.js:349
 msgid "OpenSSL not found"
 msgstr ""
 
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
-#: data/ui/preferences-window.ui:907
+#: data/ui/preferences-window.ui:909
 msgid "Add device by IP…"
 msgstr ""
 
-#: data/ui/preferences-window.ui:912
+#: data/ui/preferences-window.ui:914
 msgid "Display Mode"
 msgstr ""
 
 #. TRANSLATORS: Show device indicators in the top bar
-#: data/ui/preferences-window.ui:915
+#: data/ui/preferences-window.ui:917
 msgid "Panel"
 msgstr ""
 
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
-#: data/ui/preferences-window.ui:921
+#: data/ui/preferences-window.ui:923
 msgid "User Menu"
 msgstr ""
 
 #. TRANSLATORS: Generate a support log
-#: data/ui/preferences-window.ui:929 src/preferences/service.js:423
+#: data/ui/preferences-window.ui:931 src/preferences/service.js:414
 msgid "Generate Support Log"
 msgstr ""
 
-#: data/ui/preferences-window.ui:937
+#: data/ui/preferences-window.ui:939
 msgid "About GSConnect"
 msgstr ""
 
@@ -653,75 +662,65 @@ msgstr ""
 msgid "%s is already being used"
 msgstr ""
 
-#: src/preferences/service.js:23
-msgid ""
-"The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
-"Use your distro's package manager to install it, then restart or log out and "
-"back in.\n"
-"For more information, visit <a href=\"https://github.com/gsconnect/gnome-"
-"shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</"
-"a>"
-msgstr ""
-
-#: src/preferences/service.js:382
+#: src/preferences/service.js:373
 msgid "A complete KDE Connect implementation for GNOME"
 msgstr ""
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
-#: src/preferences/service.js:391
+#: src/preferences/service.js:382
 msgid "translator-credits"
 msgstr ""
 
-#: src/preferences/service.js:424
+#: src/preferences/service.js:415
 msgid ""
 "Debug messages are being logged. Take any steps necessary to reproduce a "
 "problem then review the log."
 msgstr ""
 
-#: src/preferences/service.js:427
+#: src/preferences/service.js:418
 msgid "Review Log"
 msgstr ""
 
-#: src/preferences/service.js:452
+#: src/preferences/service.js:443
 msgid "Invalid Device Name"
 msgstr ""
 
 #. TRANSLATOR: %s is a list of forbidden characters
-#: src/preferences/service.js:454
+#: src/preferences/service.js:445
 #, javascript-format
 msgid ""
 "Device name must not contain any of %s and have a length of 1-32 characters"
 msgstr ""
 
-#: src/preferences/service.js:517
+#: src/preferences/service.js:508
 msgid "Laptop"
 msgstr ""
 
-#: src/preferences/service.js:519
+#: src/preferences/service.js:510
 msgid "Smartphone"
 msgstr ""
 
-#: src/preferences/service.js:521
+#: src/preferences/service.js:512
 msgid "Tablet"
 msgstr ""
 
-#: src/preferences/service.js:523
+#: src/preferences/service.js:514
 msgid "Television"
 msgstr ""
 
-#: src/preferences/service.js:545
+#: src/preferences/service.js:536
 msgid "Unpaired"
 msgstr ""
 
-#: src/preferences/service.js:549
+#: src/preferences/service.js:540
 msgid "Disconnected"
 msgstr ""
 
-#: src/preferences/service.js:553
+#: src/preferences/service.js:544
 msgid "Connected"
 msgstr ""
 
-#: src/preferences/service.js:689
+#: src/preferences/service.js:680
 msgid "Waiting for service…"
 msgstr ""
 
