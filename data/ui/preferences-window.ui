@@ -838,11 +838,13 @@ SPDX-License-Identifier: GPL-2.0-or-later
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
-                              <object class="GtkLabel" id="openssl_message">
+                              <object class="GtkLabel">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
-                                <property name="wrap">True</property>
-                                <property name="max-width-chars">100</property>
+                                <property name="label" translatable="yes">The &lt;tt&gt;openssl&lt;/tt&gt; command-line tool does not appear to be installed.
+Use your distro's package manager to install it, then restart or log out and back in.
+For more information, visit &lt;a href="https://github.com/gsconect/gnome-shell-extension-gsconnect/wiki/Error#OpenSSL"&gt;the GSConnect wiki&lt;/a&gt;.</property>
+                                <property name="use-markup">True</property>
                                 <property name="track-visited-links">True</property>
                               </object>
                               <packing>
