@@ -174,8 +174,7 @@ const Manager = GObject.registerClass({
             notif.set_icon(new Gio.ThemedIcon({name: 'dialog-warning'}));
             notif.set_priority(Gio.NotificationPriority.HIGH);
             notif.set_default_action('app.preferences');
-
-            Gio.Application.prototype.withdraw_notification.call(
+            Gio.Application.prototype.send_notification.call(
                 application,
                 'discovery-warning',
                 notif
