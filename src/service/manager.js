@@ -111,8 +111,11 @@ const Manager = GObject.registerClass({
                     null);
                 this.settings.set_boolean('missing-openssl', false);
             } catch (e) {
-                if (e instanceof MissingOpensslError)
+                if (e instanceof MissingOpensslError) {
                     this.settings.set_boolean('missing-openssl', true);
+                    const app = Gio.Application.get_default();
+                    app?.notify_error(e);
+                }
                 throw e;
             }
         }
