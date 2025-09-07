@@ -367,9 +367,12 @@ export const ChannelService = GObject.registerClass({
             if (!packet.body.deviceName)
                 throw new Error('missing deviceName');
 
-            // Reject invalid device names
-            if (!Device.validateName(packet.body.deviceName))
-                throw new Error(`invalid deviceName "${packet.body.deviceName}"`);
+            // Sanitize invalid device names
+            if (!Device.validateName(packet.body.deviceName)) {
+                const sanitized = Device.sanitizeName(packet.body.deviceName);
+                debug(`Sanitized invalid device name "${packet.body.deviceName}" to "${sanitized}"`);
+                packet.body.deviceName = sanitized;
+            }
 
             debug(packet);
 
@@ -740,9 +743,12 @@ export const Channel = GObject.registerClass({
             if (!this.identity.body.deviceName)
                 throw new Error('missing deviceName');
 
-            // Reject invalid device names
-            if (!Device.validateName(this.identity.body.deviceName))
-                throw new Error(`invalid deviceName "${this.identity.body.deviceName}"`);
+            // Sanitize invalid device names
+            if (!Device.validateName(this.identity.body.deviceName)) {
+                const sanitized = Device.sanitizeName(this.identity.body.deviceName);
+                debug(`Sanitized invalid device name "${this.identity.body.deviceName}" to "${sanitized}"`);
+                this.identity.body.deviceName = sanitized;
+            }
 
             this._connection = await this._encryptClient(connection);
 

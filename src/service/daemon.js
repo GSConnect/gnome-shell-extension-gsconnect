@@ -7,11 +7,17 @@
 import Gdk from 'gi://Gdk?version=3.0';
 import 'gi://GdkPixbuf?version=2.0';
 import Gio from 'gi://Gio?version=2.0';
-import 'gi://GIRepository?version=2.0';
 import GLib from 'gi://GLib?version=2.0';
 import GObject from 'gi://GObject?version=2.0';
 import Gtk from 'gi://Gtk?version=3.0';
 import 'gi://Pango?version=1.0';
+
+// GNOME 49 uses GIRepository 3.0
+import('gi://GIRepository?version=3.0').catch(() => {
+    import('gi://GIRepository?version=2.0').catch(() => {});
+});
+
+import('gi://GioUnix?version=2.0').catch(() => {}); // Set version for optional dependency
 
 import system from 'system';
 
@@ -21,8 +27,6 @@ import Config from '../config.js';
 import Device from './device.js';
 import Manager from './manager.js';
 import * as ServiceUI from './ui/service.js';
-
-import('gi://GioUnix?version=2.0').catch(() => {}); // Set version for optional dependency
 
 
 /**
@@ -48,7 +52,7 @@ const Service = GObject.registerClass({
 
     _migrateConfiguration() {
         if (!Device.validateName(this.settings.get_string('name')))
-            this.settings.set('name', GLib.get_host_name().slice(0, 32));
+            this.settings.set_string('name', GLib.get_host_name().slice(0, 32));
 
         const [certPath, keyPath] = [
             GLib.build_filenamev([Config.CONFIGDIR, 'certificate.pem']),
@@ -92,7 +96,7 @@ const Service = GObject.registerClass({
 
         // Notify the user
         const notification = Gio.Notification.new(_('Settings Migrated'));
-        notification.set_body(_('GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be repaired.'));
+        notification.set_body(_('GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired.'));
         notification.set_icon(new Gio.ThemedIcon({name: 'dialog-warning'}));
         notification.set_priority(Gio.NotificationPriority.HIGH);
         this.send_notification('settings-migrated', notification);
