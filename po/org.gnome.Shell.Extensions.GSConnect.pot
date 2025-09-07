@@ -718,7 +718,7 @@ msgstr ""
 #: src/service/daemon.js:95
 msgid ""
 "GSConnect has updated to support changes to the KDE Connect protocol. Some "
-"devices may need to be repaired."
+"devices may need to be re-paired."
 msgstr ""
 
 #: src/service/daemon.js:231

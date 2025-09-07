@@ -15,8 +15,17 @@ let Gvc = null;
 try {
     // Add gnome-shell's typelib dir to the search path
     const typelibDir = GLib.build_filenamev([Config.GNOME_SHELL_LIBDIR, 'gnome-shell']);
-    GIRepository.Repository.prepend_search_path(typelibDir);
-    GIRepository.Repository.prepend_library_path(typelibDir);
+
+    if (GIRepository.Repository.hasOwnProperty('prepend_search_path')) {
+        // GNOME <= 48 / GIRepository 2.0
+        GIRepository.Repository.prepend_search_path(typelibDir);
+        GIRepository.Repository.prepend_library_path(typelibDir);
+    } else {
+        // GNOME 49+ / GIRepository 3.0
+        const repo = GIRepository.Repository.dup_default();
+        repo.prepend_search_path(typelibDir);
+        repo.prepend_library_path(typelibDir);
+    }
 
     Gvc = (await import('gi://Gvc')).default;
 } catch {}
