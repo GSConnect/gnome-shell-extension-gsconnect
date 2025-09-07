@@ -284,8 +284,10 @@ const MPRISPlugin = GObject.registerClass({
     _getUpdate(identity, packet) {
 
         const player = this._mpris?.getPlayer(identity);
-        if (!player)
+        if (!player) {
+            debug(`Can't generate update, no such player ID '${identity}'`);
             return;
+        }
 
         const response = {
             type: 'kdeconnect.mpris',
@@ -386,7 +388,7 @@ const MPRISPlugin = GObject.registerClass({
                     requestNowPlaying: true,
                     requestVolume: true,
                 },
-            }, false);
+            });
         }
         this.device.sendPacket(packet);
 
@@ -406,7 +408,7 @@ const MPRISPlugin = GObject.registerClass({
 
         const timer_id = GLib.timeout_add(
             GLib.PRIORITY_DEFAULT,
-            250,  // ms (0.25 seconds)
+            500,  // ms (0.5 seconds)
             this._sendUpdate.bind(this, player)
         );
         this._queueTimers.set(player.Identity, timer_id);
