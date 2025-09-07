@@ -7,11 +7,17 @@
 import Gdk from 'gi://Gdk?version=3.0';
 import 'gi://GdkPixbuf?version=2.0';
 import Gio from 'gi://Gio?version=2.0';
-import 'gi://GIRepository?version=2.0';
 import GLib from 'gi://GLib?version=2.0';
 import GObject from 'gi://GObject?version=2.0';
 import Gtk from 'gi://Gtk?version=3.0';
 import 'gi://Pango?version=1.0';
+
+// GNOME 49 uses GIRepository 3.0
+import('gi://GIRepository?version=3.0').catch(() => {
+    import('gi://GIRepository?version=2.0').catch(() => {});
+});
+
+import('gi://GioUnix?version=2.0').catch(() => {}); // Set version for optional dependency
 
 import system from 'system';
 
@@ -22,8 +28,6 @@ import Device from './device.js';
 import Manager from './manager.js';
 import * as ServiceUI from './ui/service.js';
 import {MissingOpensslError} from '../utils/exceptions.js';
-
-import('gi://GioUnix?version=2.0').catch(() => {}); // Set version for optional dependency
 
 
 /**

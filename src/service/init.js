@@ -63,10 +63,22 @@ const extensionFolder = GLib.path_get_dirname(serviceFolder);
 setup(extensionFolder);
 setupGettext();
 
+
 if (Config.IS_USER) {
     // Infer libdir by assuming gnome-shell shares a common prefix with gjs;
     // assume the parent directory if it's not there
-    let libdir = GIRepository.Repository.get_search_path().find(path => {
+    let gir_paths;
+
+    if (GIRepository.Repository.hasOwnProperty('get_search_path')) {
+        // GNOME <= 48 / GIRepository 2.0
+        gir_paths = GIRepository.Repository.get_search_path();
+    } else {
+        // GNOME 49+ / GIRepository 3.0
+        const repo = GIRepository.Repository.dup_default();
+        gir_paths = repo.get_search_path();
+    }
+
+    let libdir = gir_paths.find(path => {
         return path.endsWith('/gjs/girepository-1.0');
     }).replace('/gjs/girepository-1.0', '');
 
