@@ -216,8 +216,9 @@ const Service = GObject.registerClass({
      * Report a service-level error
      *
      * @param {object} error - An Error or object with name, message and stack
+     * @param {string} [notification_id] - An optional id for the notification
      */
-    notify_error(error) {
+    notify_error(error, notification_id) {
         try {
             // Always log the error
             logError(error);
@@ -231,8 +232,12 @@ const Service = GObject.registerClass({
             if (error.name === undefined)
                 error.name = 'Error';
 
+            if (notification_id !== undefined)
+                id = notification_id;
+            else
+                id = error.url || error.message.trim();
+
             if (error.url !== undefined) {
-                id = error.url;
                 body = _('Click for help troubleshooting');
                 priority = Gio.NotificationPriority.URGENT;
 
@@ -243,7 +248,6 @@ const Service = GObject.registerClass({
                     url: error.url,
                 });
             } else {
-                id = error.message.trim();
                 body = _('Click for more information');
                 priority = Gio.NotificationPriority.HIGH;
 
@@ -305,11 +309,13 @@ const Service = GObject.registerClass({
         // TODO: remove after a reasonable period of time
         try {
             this._migrateConfiguration();
+            if (this.settings.get_boolean('missing-openssl'))
+                this.withdraw_notification('gsconnect-missing-openssl');
             this.settings.set_boolean('missing-openssl', false);
         } catch (e) {
             if (e instanceof MissingOpensslError) {
                 this.settings.set_boolean('missing-openssl', true);
-                this.notify_error(e);
+                this.notify_error(e, 'gsconnect-missing-openssl');
             }
             throw e;
         }

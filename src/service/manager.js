@@ -104,17 +104,19 @@ const Manager = GObject.registerClass({
 
     get certificate() {
         if (this._certificate === undefined) {
+            const app = Gio.Application.get_default();
             try {
                 this._certificate = Gio.TlsCertificate.new_for_paths(
                     GLib.build_filenamev([Config.CONFIGDIR, 'certificate.pem']),
                     GLib.build_filenamev([Config.CONFIGDIR, 'private.pem']),
                     null);
+                if (this.settings.get_boolean('missing-openssl'))
+                    app?.withdraw_notification('gsconnect-missing-openssl');
                 this.settings.set_boolean('missing-openssl', false);
             } catch (e) {
                 if (e instanceof MissingOpensslError) {
                     this.settings.set_boolean('missing-openssl', true);
-                    const app = Gio.Application.get_default();
-                    app?.notify_error(e);
+                    app?.notify_error(e, 'gsconnect-missing-openssl');
                 }
                 throw e;
             }
