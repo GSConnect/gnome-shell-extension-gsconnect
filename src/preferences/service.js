@@ -499,6 +499,14 @@ export const Window = GObject.registerClass({
         this.service_edit.grab_focus();
     }
 
+    _onRetryOpenssl(button, event) {
+        this.settings.set_boolean('enabled', false);
+        GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT_IDLE, 2, () => {
+            this.settings.set_boolean('enabled', true);
+            return GLib.SOURCE_REMOVE;
+        });
+    }
+
     /*
      * Context Switcher
      */
