@@ -723,7 +723,21 @@ SPDX-License-Identifier: GPL-2.0-or-later
                         <child>
                           <placeholder/>
                         </child>
-                       </object>
+                        <child>
+                          <object class="GtkButton">
+                            <property name="label" translatable="yes">Enable</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">False</property>
+                            <property name="action_name">win.discoverable</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                      </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
