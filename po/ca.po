@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-24 16:26-0400\n"
-"PO-Revision-Date: 2025-07-30 22:42\n"
+"POT-Creation-Date: 2025-09-01 00:55-0400\n"
+"PO-Revision-Date: 2025-09-08 15:16\n"
 "Last-Translator: \n"
 "Language-Team: Catalan\n"
 "Language: ca_ES\n"
@@ -92,7 +92,7 @@ msgstr "Connecta amb…"
 #: data/ui/preferences-shortcut-editor.ui:19
 #: data/ui/service-device-chooser.ui:21 data/ui/service-device-chooser.ui:25
 #: data/ui/service-error-dialog.ui:20 data/ui/service-error-dialog.ui:28
-#: src/preferences/service.js:405 src/service/plugins/share.js:179
+#: src/preferences/service.js:417 src/service/plugins/share.js:179
 #: src/service/plugins/share.js:314 src/service/plugins/share.js:445
 msgid "Cancel"
 msgstr "Cancel·la"
@@ -110,7 +110,7 @@ msgid "No contacts"
 msgstr "No hi ha cap contacte"
 
 #: data/ui/contact-chooser.ui:68 data/ui/messaging-window.ui:103
-#: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:847
+#: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:935
 msgid "Help"
 msgstr "Ajuda"
 
@@ -124,8 +124,8 @@ msgid "Other"
 msgstr "Altres"
 
 #. TRANSLATORS: Share URL by SMS
-#: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:333
-#: src/service/daemon.js:447 src/service/plugins/sms.js:62
+#: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:341
+#: src/service/daemon.js:455 src/service/plugins/sms.js:62
 #: webextension/gettext.js:41
 msgid "Send SMS"
 msgstr "Envia un SMS"
@@ -212,7 +212,7 @@ msgstr "Trieu un executable"
 msgid "Open"
 msgstr "Obre"
 
-#: data/ui/preferences-device-panel.ui:53 src/preferences/service.js:504
+#: data/ui/preferences-device-panel.ui:53 src/preferences/service.js:516
 msgid "Desktop"
 msgstr "Ordinador d’escriptori"
 
@@ -399,7 +399,7 @@ msgstr "Paràmetres del dispositiu"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/ui/preferences-device-panel.ui:2624
-#: data/ui/preferences-device-panel.ui:2716 src/service/daemon.js:426
+#: data/ui/preferences-device-panel.ui:2716 src/service/daemon.js:434
 msgid "Pair"
 msgstr "Aparella"
 
@@ -417,7 +417,7 @@ msgid "Encryption Info"
 msgstr "Informació de xifratge"
 
 #. TRANSLATORS: Unpair the device and notify it
-#: data/ui/preferences-device-panel.ui:2722 src/service/daemon.js:435
+#: data/ui/preferences-device-panel.ui:2722 src/service/daemon.js:443
 msgid "Unpair"
 msgstr "Desaparella"
 
@@ -498,7 +498,7 @@ msgstr "Edita el nom del dispositiu"
 msgid "Devices"
 msgstr "Dispositius"
 
-#: data/ui/preferences-window.ui:328 src/preferences/service.js:666
+#: data/ui/preferences-window.ui:328 src/preferences/service.js:678
 msgid "Searching for devices…"
 msgstr "S’estan cercant dispositius…"
 
@@ -522,35 +522,45 @@ msgstr "Activa"
 msgid "This device is invisible to unpaired devices"
 msgstr "Aquest dispositiu és invisible als dispositius no aparellats"
 
-#: data/ui/preferences-window.ui:772 src/service/manager.js:163
+#: data/ui/preferences-window.ui:772 src/service/manager.js:172
 msgid "Discovery Disabled"
 msgstr "Descobriment deshabilitat"
 
+#: data/ui/preferences-window.ui:844
+msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
+"Use your distro's package manager to install it, then restart or log out and back in.\n"
+"For more information, visit <a href=\"https://github.com/gsconect/gnome-shell-extension-gsconnect/wiki/Error#OpenSSL\">the GSConnect wiki</a>."
+msgstr ""
+
+#: data/ui/preferences-window.ui:860 src/service/init.js:349
+msgid "OpenSSL not found"
+msgstr "No s’ha trobat l’OpenSSL"
+
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
-#: data/ui/preferences-window.ui:821
+#: data/ui/preferences-window.ui:909
 msgid "Add device by IP…"
 msgstr ""
 
-#: data/ui/preferences-window.ui:826
+#: data/ui/preferences-window.ui:914
 msgid "Display Mode"
 msgstr "Mode de visualització"
 
 #. TRANSLATORS: Show device indicators in the top bar
-#: data/ui/preferences-window.ui:829
+#: data/ui/preferences-window.ui:917
 msgid "Panel"
 msgstr "Plafó"
 
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
-#: data/ui/preferences-window.ui:835
+#: data/ui/preferences-window.ui:923
 msgid "User Menu"
 msgstr "Menú d’usuari"
 
 #. TRANSLATORS: Generate a support log
-#: data/ui/preferences-window.ui:843 src/preferences/service.js:402
+#: data/ui/preferences-window.ui:931 src/preferences/service.js:414
 msgid "Generate Support Log"
 msgstr "Genera un registre d'assistència"
 
-#: data/ui/preferences-window.ui:851
+#: data/ui/preferences-window.ui:939
 msgid "About GSConnect"
 msgstr "Quant al GSConnect"
 
@@ -639,149 +649,149 @@ msgstr ""
 msgid "%s is already being used"
 msgstr "%s ja s’està fent servir"
 
-#: src/preferences/service.js:361
+#: src/preferences/service.js:373
 msgid "A complete KDE Connect implementation for GNOME"
 msgstr "Una implementació completa de KDE Connect per al GNOME"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
-#: src/preferences/service.js:370
+#: src/preferences/service.js:382
 msgid "translator-credits"
 msgstr "Adolfo Jayme Barrientos <fitojb@ubuntu.com>, 2019-2020\n"
 "Marc Riera Irigoyen <marcriera@softcatala.org>, 2019"
 
-#: src/preferences/service.js:403
+#: src/preferences/service.js:415
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
 msgstr "S’estan registrant els missatges de depuració. Efectueu els passos necessaris per a reproduir un problema i, tot seguit, reviseu el registre."
 
-#: src/preferences/service.js:406
+#: src/preferences/service.js:418
 msgid "Review Log"
 msgstr "Mostra el registre"
 
-#: src/preferences/service.js:431
+#: src/preferences/service.js:443
 msgid "Invalid Device Name"
 msgstr ""
 
 #. TRANSLATOR: %s is a list of forbidden characters
-#: src/preferences/service.js:433
+#: src/preferences/service.js:445
 #, javascript-format
 msgid "Device name must not contain any of %s and have a length of 1-32 characters"
 msgstr ""
 
-#: src/preferences/service.js:496
+#: src/preferences/service.js:508
 msgid "Laptop"
 msgstr "Ordinador portàtil"
 
-#: src/preferences/service.js:498
+#: src/preferences/service.js:510
 msgid "Smartphone"
 msgstr "Telèfon intel·ligent"
 
-#: src/preferences/service.js:500
+#: src/preferences/service.js:512
 msgid "Tablet"
 msgstr "Tauleta"
 
-#: src/preferences/service.js:502
+#: src/preferences/service.js:514
 msgid "Television"
 msgstr "Televisió"
 
-#: src/preferences/service.js:524
+#: src/preferences/service.js:536
 msgid "Unpaired"
 msgstr "Desaparellat"
 
-#: src/preferences/service.js:528
+#: src/preferences/service.js:540
 msgid "Disconnected"
 msgstr "Desconnectat"
 
-#: src/preferences/service.js:532
+#: src/preferences/service.js:544
 msgid "Connected"
 msgstr "Connectat"
 
-#: src/preferences/service.js:668
+#: src/preferences/service.js:680
 msgid "Waiting for service…"
 msgstr "S’està esperant el servei…"
 
 #. Notify the user
-#: src/service/daemon.js:94
+#: src/service/daemon.js:95
 msgid "Settings Migrated"
 msgstr ""
 
-#: src/service/daemon.js:95
+#: src/service/daemon.js:96
 msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
 msgstr ""
 
-#: src/service/daemon.js:231
+#: src/service/daemon.js:232
 msgid "Click for help troubleshooting"
 msgstr "Ajuda per a resoldre el problema"
 
-#: src/service/daemon.js:242
+#: src/service/daemon.js:243
 msgid "Click for more information"
 msgstr "Més informació"
 
-#: src/service/daemon.js:339
+#: src/service/daemon.js:347
 msgid "Dial Number"
 msgstr ""
 
-#: src/service/daemon.js:345 src/service/daemon.js:534
+#: src/service/daemon.js:353 src/service/daemon.js:542
 #: src/service/plugins/share.js:31
 msgid "Share File"
 msgstr "Comparteix un fitxer"
 
-#: src/service/daemon.js:396
+#: src/service/daemon.js:404
 msgid "List available devices"
 msgstr "Enumera els dispositius disponibles"
 
-#: src/service/daemon.js:405
+#: src/service/daemon.js:413
 msgid "List all devices"
 msgstr "Enumera tots els dispositius"
 
-#: src/service/daemon.js:414
+#: src/service/daemon.js:422
 msgid "Target Device"
 msgstr "Dispositiu de destinació"
 
-#: src/service/daemon.js:456
+#: src/service/daemon.js:464
 msgid "Message Body"
 msgstr "Cos del missatge"
 
-#: src/service/daemon.js:468 src/service/plugins/notification.js:57
+#: src/service/daemon.js:476 src/service/plugins/notification.js:57
 msgid "Send Notification"
 msgstr "Envia una notificació"
 
-#: src/service/daemon.js:477
+#: src/service/daemon.js:485
 msgid "Notification App Name"
 msgstr "Nom d’aplicació de la notificació"
 
-#: src/service/daemon.js:486
+#: src/service/daemon.js:494
 msgid "Notification Body"
 msgstr "Corps de la notificació"
 
-#: src/service/daemon.js:495
+#: src/service/daemon.js:503
 msgid "Notification Icon"
 msgstr "Icona de notificació"
 
-#: src/service/daemon.js:504
+#: src/service/daemon.js:512
 msgid "Notification ID"
 msgstr "Identificador de la notificació"
 
-#: src/service/daemon.js:513 src/service/plugins/ping.js:13
+#: src/service/daemon.js:521 src/service/plugins/ping.js:13
 #: src/service/plugins/ping.js:20 src/service/plugins/ping.js:47
 msgid "Ping"
 msgstr "Comprovació de connectivitat"
 
-#: src/service/daemon.js:522 src/service/plugins/battery.js:247
+#: src/service/daemon.js:530 src/service/plugins/battery.js:247
 #: src/service/plugins/battery.js:276 src/service/plugins/battery.js:305
 #: src/service/plugins/findmyphone.js:22
 msgid "Ring"
 msgstr "Truca"
 
-#: src/service/daemon.js:543 src/service/plugins/share.js:47
+#: src/service/daemon.js:551 src/service/plugins/share.js:47
 #: src/service/ui/messaging.js:1257 src/service/ui/messaging.js:1265
 msgid "Share Link"
 msgstr "Comparteix un enllaç"
 
-#: src/service/daemon.js:552 src/service/plugins/share.js:39
+#: src/service/daemon.js:560 src/service/plugins/share.js:39
 msgid "Share Text"
 msgstr "Comparteix text"
 
-#: src/service/daemon.js:564
+#: src/service/daemon.js:572
 msgid "Show release version"
 msgstr ""
 
@@ -825,11 +835,7 @@ msgstr ""
 msgid "Device clocks are out of sync"
 msgstr ""
 
-#: src/service/init.js:347
-msgid "OpenSSL not found"
-msgstr "No s’ha trobat l’OpenSSL"
-
-#: src/service/manager.js:164
+#: src/service/manager.js:173
 msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr ""
 
