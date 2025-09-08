@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-24 16:26-0400\n"
-"PO-Revision-Date: 2025-07-30 22:43\n"
+"POT-Creation-Date: 2025-09-01 00:55-0400\n"
+"PO-Revision-Date: 2025-09-08 15:16\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -92,7 +92,7 @@ msgstr "连接到..."
 #: data/ui/preferences-shortcut-editor.ui:19
 #: data/ui/service-device-chooser.ui:21 data/ui/service-device-chooser.ui:25
 #: data/ui/service-error-dialog.ui:20 data/ui/service-error-dialog.ui:28
-#: src/preferences/service.js:405 src/service/plugins/share.js:179
+#: src/preferences/service.js:417 src/service/plugins/share.js:179
 #: src/service/plugins/share.js:314 src/service/plugins/share.js:445
 msgid "Cancel"
 msgstr "取消"
@@ -110,7 +110,7 @@ msgid "No contacts"
 msgstr "没有联系人"
 
 #: data/ui/contact-chooser.ui:68 data/ui/messaging-window.ui:103
-#: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:847
+#: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:935
 msgid "Help"
 msgstr "帮助"
 
@@ -124,8 +124,8 @@ msgid "Other"
 msgstr "其他"
 
 #. TRANSLATORS: Share URL by SMS
-#: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:333
-#: src/service/daemon.js:447 src/service/plugins/sms.js:62
+#: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:341
+#: src/service/daemon.js:455 src/service/plugins/sms.js:62
 #: webextension/gettext.js:41
 msgid "Send SMS"
 msgstr "发送短信"
@@ -216,7 +216,7 @@ msgstr "选择可执行文件"
 msgid "Open"
 msgstr "打开"
 
-#: data/ui/preferences-device-panel.ui:53 src/preferences/service.js:504
+#: data/ui/preferences-device-panel.ui:53 src/preferences/service.js:516
 msgid "Desktop"
 msgstr "桌面"
 
@@ -403,7 +403,7 @@ msgstr "设备设置"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/ui/preferences-device-panel.ui:2624
-#: data/ui/preferences-device-panel.ui:2716 src/service/daemon.js:426
+#: data/ui/preferences-device-panel.ui:2716 src/service/daemon.js:434
 msgid "Pair"
 msgstr "配对"
 
@@ -421,7 +421,7 @@ msgid "Encryption Info"
 msgstr "加密信息"
 
 #. TRANSLATORS: Unpair the device and notify it
-#: data/ui/preferences-device-panel.ui:2722 src/service/daemon.js:435
+#: data/ui/preferences-device-panel.ui:2722 src/service/daemon.js:443
 msgid "Unpair"
 msgstr "取消配对"
 
@@ -502,7 +502,7 @@ msgstr "编辑设备名称"
 msgid "Devices"
 msgstr "设备"
 
-#: data/ui/preferences-window.ui:328 src/preferences/service.js:666
+#: data/ui/preferences-window.ui:328 src/preferences/service.js:678
 msgid "Searching for devices…"
 msgstr "正在搜索设备…"
 
@@ -526,35 +526,45 @@ msgstr "启用"
 msgid "This device is invisible to unpaired devices"
 msgstr "此设备对未配对的设备不可见"
 
-#: data/ui/preferences-window.ui:772 src/service/manager.js:163
+#: data/ui/preferences-window.ui:772 src/service/manager.js:172
 msgid "Discovery Disabled"
 msgstr "发现已禁用"
 
+#: data/ui/preferences-window.ui:844
+msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
+"Use your distro's package manager to install it, then restart or log out and back in.\n"
+"For more information, visit <a href=\"https://github.com/gsconect/gnome-shell-extension-gsconnect/wiki/Error#OpenSSL\">the GSConnect wiki</a>."
+msgstr ""
+
+#: data/ui/preferences-window.ui:860 src/service/init.js:349
+msgid "OpenSSL not found"
+msgstr "无法找到 OpenSSL（OpenSSL not found）"
+
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
-#: data/ui/preferences-window.ui:821
+#: data/ui/preferences-window.ui:909
 msgid "Add device by IP…"
 msgstr "通过IP添加设备…"
 
-#: data/ui/preferences-window.ui:826
+#: data/ui/preferences-window.ui:914
 msgid "Display Mode"
 msgstr "显示模式"
 
 #. TRANSLATORS: Show device indicators in the top bar
-#: data/ui/preferences-window.ui:829
+#: data/ui/preferences-window.ui:917
 msgid "Panel"
 msgstr "面板"
 
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
-#: data/ui/preferences-window.ui:835
+#: data/ui/preferences-window.ui:923
 msgid "User Menu"
 msgstr "用户菜单"
 
 #. TRANSLATORS: Generate a support log
-#: data/ui/preferences-window.ui:843 src/preferences/service.js:402
+#: data/ui/preferences-window.ui:931 src/preferences/service.js:414
 msgid "Generate Support Log"
 msgstr "生成支持日志"
 
-#: data/ui/preferences-window.ui:851
+#: data/ui/preferences-window.ui:939
 msgid "About GSConnect"
 msgstr "关于 GSConnect"
 
@@ -642,148 +652,148 @@ msgstr "输入新的快捷方式 <b>%s</b>"
 msgid "%s is already being used"
 msgstr "%s 已在使用中"
 
-#: src/preferences/service.js:361
+#: src/preferences/service.js:373
 msgid "A complete KDE Connect implementation for GNOME"
 msgstr "KDE Connect 在 GNOME 的完整实现"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
-#: src/preferences/service.js:370
+#: src/preferences/service.js:382
 msgid "translator-credits"
 msgstr "翻译贡献"
 
-#: src/preferences/service.js:403
+#: src/preferences/service.js:415
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
 msgstr "正在记录调试日志。请采取任何必要的步骤来重现问题，然后即可查看日志。"
 
-#: src/preferences/service.js:406
+#: src/preferences/service.js:418
 msgid "Review Log"
 msgstr "查看日志"
 
-#: src/preferences/service.js:431
+#: src/preferences/service.js:443
 msgid "Invalid Device Name"
 msgstr ""
 
 #. TRANSLATOR: %s is a list of forbidden characters
-#: src/preferences/service.js:433
+#: src/preferences/service.js:445
 #, javascript-format
 msgid "Device name must not contain any of %s and have a length of 1-32 characters"
 msgstr ""
 
-#: src/preferences/service.js:496
+#: src/preferences/service.js:508
 msgid "Laptop"
 msgstr "笔记本电脑"
 
-#: src/preferences/service.js:498
+#: src/preferences/service.js:510
 msgid "Smartphone"
 msgstr "智能手机"
 
-#: src/preferences/service.js:500
+#: src/preferences/service.js:512
 msgid "Tablet"
 msgstr "平板电脑"
 
-#: src/preferences/service.js:502
+#: src/preferences/service.js:514
 msgid "Television"
 msgstr "电视"
 
-#: src/preferences/service.js:524
+#: src/preferences/service.js:536
 msgid "Unpaired"
 msgstr "未配对"
 
-#: src/preferences/service.js:528
+#: src/preferences/service.js:540
 msgid "Disconnected"
 msgstr "已断开"
 
-#: src/preferences/service.js:532
+#: src/preferences/service.js:544
 msgid "Connected"
 msgstr "已连接"
 
-#: src/preferences/service.js:668
+#: src/preferences/service.js:680
 msgid "Waiting for service…"
 msgstr "等待服务响应..."
 
 #. Notify the user
-#: src/service/daemon.js:94
+#: src/service/daemon.js:95
 msgid "Settings Migrated"
 msgstr ""
 
-#: src/service/daemon.js:95
+#: src/service/daemon.js:96
 msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
 msgstr ""
 
-#: src/service/daemon.js:231
+#: src/service/daemon.js:232
 msgid "Click for help troubleshooting"
 msgstr "单击以获取疑难解答帮助"
 
-#: src/service/daemon.js:242
+#: src/service/daemon.js:243
 msgid "Click for more information"
 msgstr "单击以获取详细信息"
 
-#: src/service/daemon.js:339
+#: src/service/daemon.js:347
 msgid "Dial Number"
 msgstr "拨打号码"
 
-#: src/service/daemon.js:345 src/service/daemon.js:534
+#: src/service/daemon.js:353 src/service/daemon.js:542
 #: src/service/plugins/share.js:31
 msgid "Share File"
 msgstr "共享文件"
 
-#: src/service/daemon.js:396
+#: src/service/daemon.js:404
 msgid "List available devices"
 msgstr "可用设备列表"
 
-#: src/service/daemon.js:405
+#: src/service/daemon.js:413
 msgid "List all devices"
 msgstr "所有可用设备"
 
-#: src/service/daemon.js:414
+#: src/service/daemon.js:422
 msgid "Target Device"
 msgstr "目标设备"
 
-#: src/service/daemon.js:456
+#: src/service/daemon.js:464
 msgid "Message Body"
 msgstr "消息正文"
 
-#: src/service/daemon.js:468 src/service/plugins/notification.js:57
+#: src/service/daemon.js:476 src/service/plugins/notification.js:57
 msgid "Send Notification"
 msgstr "发送通知"
 
-#: src/service/daemon.js:477
+#: src/service/daemon.js:485
 msgid "Notification App Name"
 msgstr "通知的应用名称"
 
-#: src/service/daemon.js:486
+#: src/service/daemon.js:494
 msgid "Notification Body"
 msgstr "通知的信息正文"
 
-#: src/service/daemon.js:495
+#: src/service/daemon.js:503
 msgid "Notification Icon"
 msgstr "通知的图标"
 
-#: src/service/daemon.js:504
+#: src/service/daemon.js:512
 msgid "Notification ID"
 msgstr "通知的ID"
 
-#: src/service/daemon.js:513 src/service/plugins/ping.js:13
+#: src/service/daemon.js:521 src/service/plugins/ping.js:13
 #: src/service/plugins/ping.js:20 src/service/plugins/ping.js:47
 msgid "Ping"
 msgstr "Ping"
 
-#: src/service/daemon.js:522 src/service/plugins/battery.js:247
+#: src/service/daemon.js:530 src/service/plugins/battery.js:247
 #: src/service/plugins/battery.js:276 src/service/plugins/battery.js:305
 #: src/service/plugins/findmyphone.js:22
 msgid "Ring"
 msgstr "响铃"
 
-#: src/service/daemon.js:543 src/service/plugins/share.js:47
+#: src/service/daemon.js:551 src/service/plugins/share.js:47
 #: src/service/ui/messaging.js:1257 src/service/ui/messaging.js:1265
 msgid "Share Link"
 msgstr "共享链接"
 
-#: src/service/daemon.js:552 src/service/plugins/share.js:39
+#: src/service/daemon.js:560 src/service/plugins/share.js:39
 msgid "Share Text"
 msgstr "共享文本"
 
-#: src/service/daemon.js:564
+#: src/service/daemon.js:572
 msgid "Show release version"
 msgstr "显示版本信息"
 
@@ -827,11 +837,7 @@ msgstr ""
 msgid "Device clocks are out of sync"
 msgstr ""
 
-#: src/service/init.js:347
-msgid "OpenSSL not found"
-msgstr "无法找到 OpenSSL（OpenSSL not found）"
-
-#: src/service/manager.js:164
+#: src/service/manager.js:173
 msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "由于这个网络上的设备数量过多，发现已被禁用。"
 
