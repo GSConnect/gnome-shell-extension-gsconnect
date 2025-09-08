@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-01 00:55-0400\n"
-"PO-Revision-Date: 2025-09-08 15:16\n"
+"POT-Creation-Date: 2025-09-08 11:28-0400\n"
+"PO-Revision-Date: 2025-09-08 16:33\n"
 "Last-Translator: \n"
 "Language-Team: Danish\n"
 "Language: da_DK\n"
@@ -110,7 +110,7 @@ msgid "No contacts"
 msgstr "Ingen kontakter"
 
 #: data/ui/contact-chooser.ui:68 data/ui/messaging-window.ui:103
-#: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:935
+#: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:949
 msgid "Help"
 msgstr "Hjælp"
 
@@ -124,8 +124,8 @@ msgid "Other"
 msgstr "Andre"
 
 #. TRANSLATORS: Share URL by SMS
-#: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:341
-#: src/service/daemon.js:455 src/service/plugins/sms.js:62
+#: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:353
+#: src/service/daemon.js:467 src/service/plugins/sms.js:62
 #: webextension/gettext.js:41
 msgid "Send SMS"
 msgstr "Send SMS"
@@ -212,7 +212,7 @@ msgstr "Vælg en eksekverbar"
 msgid "Open"
 msgstr "Åbn"
 
-#: data/ui/preferences-device-panel.ui:53 src/preferences/service.js:516
+#: data/ui/preferences-device-panel.ui:53 src/preferences/service.js:524
 msgid "Desktop"
 msgstr "Stationær Computer"
 
@@ -399,7 +399,7 @@ msgstr "Enhed Indstillinger"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/ui/preferences-device-panel.ui:2624
-#: data/ui/preferences-device-panel.ui:2716 src/service/daemon.js:434
+#: data/ui/preferences-device-panel.ui:2716 src/service/daemon.js:446
 msgid "Pair"
 msgstr "Par"
 
@@ -417,7 +417,7 @@ msgid "Encryption Info"
 msgstr "Kryptering Info"
 
 #. TRANSLATORS: Unpair the device and notify it
-#: data/ui/preferences-device-panel.ui:2722 src/service/daemon.js:443
+#: data/ui/preferences-device-panel.ui:2722 src/service/daemon.js:455
 msgid "Unpair"
 msgstr "Koble fra en enhed"
 
@@ -498,7 +498,7 @@ msgstr "Rediger Enheds Navn"
 msgid "Devices"
 msgstr "Enheder"
 
-#: data/ui/preferences-window.ui:328 src/preferences/service.js:678
+#: data/ui/preferences-window.ui:328 src/preferences/service.js:686
 msgid "Searching for devices…"
 msgstr "Søger efter enheder…"
 
@@ -522,45 +522,49 @@ msgstr "Aktiver"
 msgid "This device is invisible to unpaired devices"
 msgstr "Denne enhed er usynlig til ikke parret enheder"
 
-#: data/ui/preferences-window.ui:772 src/service/manager.js:172
+#: data/ui/preferences-window.ui:772 src/service/manager.js:177
 msgid "Discovery Disabled"
 msgstr "Discovery Deaktiveret"
 
-#: data/ui/preferences-window.ui:844
+#: data/ui/preferences-window.ui:826
+msgid "Retry"
+msgstr ""
+
+#: data/ui/preferences-window.ui:858
 msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
-"Use your distro's package manager to install it, then restart or log out and back in.\n"
+"Use your distro's package manager to install it.\n"
 "For more information, visit <a href=\"https://github.com/gsconect/gnome-shell-extension-gsconnect/wiki/Error#OpenSSL\">the GSConnect wiki</a>."
 msgstr ""
 
-#: data/ui/preferences-window.ui:860 src/service/init.js:349
+#: data/ui/preferences-window.ui:874 src/service/init.js:361
 msgid "OpenSSL not found"
 msgstr "OpenSSL ikke fundet"
 
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
-#: data/ui/preferences-window.ui:909
+#: data/ui/preferences-window.ui:923
 msgid "Add device by IP…"
 msgstr ""
 
-#: data/ui/preferences-window.ui:914
+#: data/ui/preferences-window.ui:928
 msgid "Display Mode"
 msgstr "Visningstilstand"
 
 #. TRANSLATORS: Show device indicators in the top bar
-#: data/ui/preferences-window.ui:917
+#: data/ui/preferences-window.ui:931
 msgid "Panel"
 msgstr "Panel"
 
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
-#: data/ui/preferences-window.ui:923
+#: data/ui/preferences-window.ui:937
 msgid "User Menu"
 msgstr "Bruger Menu"
 
 #. TRANSLATORS: Generate a support log
-#: data/ui/preferences-window.ui:931 src/preferences/service.js:414
+#: data/ui/preferences-window.ui:945 src/preferences/service.js:414
 msgid "Generate Support Log"
 msgstr "Generere Underbygge Log"
 
-#: data/ui/preferences-window.ui:939
+#: data/ui/preferences-window.ui:953
 msgid "About GSConnect"
 msgstr "Om GSConnect"
 
@@ -676,121 +680,121 @@ msgstr ""
 msgid "Device name must not contain any of %s and have a length of 1-32 characters"
 msgstr ""
 
-#: src/preferences/service.js:508
+#: src/preferences/service.js:516
 msgid "Laptop"
 msgstr "Bærbar"
 
-#: src/preferences/service.js:510
+#: src/preferences/service.js:518
 msgid "Smartphone"
 msgstr "Smartphone"
 
-#: src/preferences/service.js:512
+#: src/preferences/service.js:520
 msgid "Tablet"
 msgstr "Tablet"
 
-#: src/preferences/service.js:514
+#: src/preferences/service.js:522
 msgid "Television"
 msgstr "Fjernsyn"
 
-#: src/preferences/service.js:536
+#: src/preferences/service.js:544
 msgid "Unpaired"
 msgstr "Ikke parret"
 
-#: src/preferences/service.js:540
+#: src/preferences/service.js:548
 msgid "Disconnected"
 msgstr "Frakoblet"
 
-#: src/preferences/service.js:544
+#: src/preferences/service.js:552
 msgid "Connected"
 msgstr "Tilsluttet"
 
-#: src/preferences/service.js:680
+#: src/preferences/service.js:688
 msgid "Waiting for service…"
 msgstr "Venter på service…"
 
 #. Notify the user
-#: src/service/daemon.js:95
+#: src/service/daemon.js:99
 msgid "Settings Migrated"
 msgstr ""
 
-#: src/service/daemon.js:96
+#: src/service/daemon.js:100
 msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
 msgstr ""
 
-#: src/service/daemon.js:232
+#: src/service/daemon.js:241
 msgid "Click for help troubleshooting"
 msgstr "Klik for hjælp fejlfinding"
 
-#: src/service/daemon.js:243
+#: src/service/daemon.js:251
 msgid "Click for more information"
 msgstr "Klik for mere information"
 
-#: src/service/daemon.js:347
+#: src/service/daemon.js:359
 msgid "Dial Number"
 msgstr "Opkaldsnummer"
 
-#: src/service/daemon.js:353 src/service/daemon.js:542
+#: src/service/daemon.js:365 src/service/daemon.js:554
 #: src/service/plugins/share.js:31
 msgid "Share File"
 msgstr "Del Fil"
 
-#: src/service/daemon.js:404
+#: src/service/daemon.js:416
 msgid "List available devices"
 msgstr "Liste over tilgængelige enheder"
 
-#: src/service/daemon.js:413
+#: src/service/daemon.js:425
 msgid "List all devices"
 msgstr "Liste alle enheder"
 
-#: src/service/daemon.js:422
+#: src/service/daemon.js:434
 msgid "Target Device"
 msgstr "Målet Enhed"
 
-#: src/service/daemon.js:464
+#: src/service/daemon.js:476
 msgid "Message Body"
 msgstr "Beskedkrop"
 
-#: src/service/daemon.js:476 src/service/plugins/notification.js:57
+#: src/service/daemon.js:488 src/service/plugins/notification.js:57
 msgid "Send Notification"
 msgstr "Send Notifikation"
 
-#: src/service/daemon.js:485
+#: src/service/daemon.js:497
 msgid "Notification App Name"
 msgstr ""
 
-#: src/service/daemon.js:494
+#: src/service/daemon.js:506
 msgid "Notification Body"
 msgstr ""
 
-#: src/service/daemon.js:503
+#: src/service/daemon.js:515
 msgid "Notification Icon"
 msgstr "Notifikation Ikon"
 
-#: src/service/daemon.js:512
+#: src/service/daemon.js:524
 msgid "Notification ID"
 msgstr "Notifikation ID"
 
-#: src/service/daemon.js:521 src/service/plugins/ping.js:13
+#: src/service/daemon.js:533 src/service/plugins/ping.js:13
 #: src/service/plugins/ping.js:20 src/service/plugins/ping.js:47
 msgid "Ping"
 msgstr "Ping"
 
-#: src/service/daemon.js:530 src/service/plugins/battery.js:247
+#: src/service/daemon.js:542 src/service/plugins/battery.js:247
 #: src/service/plugins/battery.js:276 src/service/plugins/battery.js:305
 #: src/service/plugins/findmyphone.js:22
 msgid "Ring"
 msgstr "Ring"
 
-#: src/service/daemon.js:551 src/service/plugins/share.js:47
+#: src/service/daemon.js:563 src/service/plugins/share.js:47
 #: src/service/ui/messaging.js:1257 src/service/ui/messaging.js:1265
 msgid "Share Link"
 msgstr "Del Link"
 
-#: src/service/daemon.js:560 src/service/plugins/share.js:39
+#: src/service/daemon.js:572 src/service/plugins/share.js:39
 msgid "Share Text"
 msgstr "Del tekst"
 
-#: src/service/daemon.js:572
+#: src/service/daemon.js:584
 msgid "Show release version"
 msgstr ""
 
@@ -834,7 +838,7 @@ msgstr ""
 msgid "Device clocks are out of sync"
 msgstr ""
 
-#: src/service/manager.js:173
+#: src/service/manager.js:178
 msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Opdagelse er deaktiveret på grund af antallet af enheder på dette netværk."
 
@@ -939,7 +943,7 @@ msgstr "MPRIS"
 msgid "Bidirectional remote media playback control"
 msgstr ""
 
-#: src/service/plugins/mpris.js:355
+#: src/service/plugins/mpris.js:357
 msgid "Unknown"
 msgstr "Ukendt"
 
@@ -1124,15 +1128,15 @@ msgstr "Besvar SMS"
 msgid "Share SMS"
 msgstr "Del SMS"
 
-#: src/service/plugins/systemvolume.js:27
+#: src/service/plugins/systemvolume.js:36
 msgid "System Volume"
 msgstr "Systemlydstyrke"
 
-#: src/service/plugins/systemvolume.js:28
+#: src/service/plugins/systemvolume.js:37
 msgid "Enable the paired device to control the system volume"
 msgstr ""
 
-#: src/service/plugins/systemvolume.js:72
+#: src/service/plugins/systemvolume.js:81
 msgid "PulseAudio not found"
 msgstr "PulseAudio ikke fundet"
 
