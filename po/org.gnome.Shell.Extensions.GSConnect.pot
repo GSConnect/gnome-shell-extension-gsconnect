@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-08 11:18-0400\n"
+"POT-Creation-Date: 2025-09-08 11:28-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -116,7 +116,7 @@ msgid "No contacts"
 msgstr ""
 
 #: data/ui/contact-chooser.ui:68 data/ui/messaging-window.ui:103
-#: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:935
+#: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:949
 msgid "Help"
 msgstr ""
 
@@ -522,19 +522,23 @@ msgstr ""
 msgid "Browser Add-Ons"
 msgstr ""
 
-#: data/ui/preferences-window.ui:746
+#: data/ui/preferences-window.ui:728
+msgid "Enable"
+msgstr ""
+
+#: data/ui/preferences-window.ui:760
 msgid "This device is invisible to unpaired devices"
 msgstr ""
 
-#: data/ui/preferences-window.ui:758 src/service/manager.js:177
+#: data/ui/preferences-window.ui:772 src/service/manager.js:177
 msgid "Discovery Disabled"
 msgstr ""
 
-#: data/ui/preferences-window.ui:812
+#: data/ui/preferences-window.ui:826
 msgid "Retry"
 msgstr ""
 
-#: data/ui/preferences-window.ui:844
+#: data/ui/preferences-window.ui:858
 msgid ""
 "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
 "Use your distro's package manager to install it.\n"
@@ -542,35 +546,35 @@ msgid ""
 "shell-extension-gsconnect/wiki/Error#OpenSSL\">the GSConnect wiki</a>."
 msgstr ""
 
-#: data/ui/preferences-window.ui:860 src/service/init.js:361
+#: data/ui/preferences-window.ui:874 src/service/init.js:361
 msgid "OpenSSL not found"
 msgstr ""
 
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
-#: data/ui/preferences-window.ui:909
+#: data/ui/preferences-window.ui:923
 msgid "Add device by IP…"
 msgstr ""
 
-#: data/ui/preferences-window.ui:914
+#: data/ui/preferences-window.ui:928
 msgid "Display Mode"
 msgstr ""
 
 #. TRANSLATORS: Show device indicators in the top bar
-#: data/ui/preferences-window.ui:917
+#: data/ui/preferences-window.ui:931
 msgid "Panel"
 msgstr ""
 
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
-#: data/ui/preferences-window.ui:923
+#: data/ui/preferences-window.ui:937
 msgid "User Menu"
 msgstr ""
 
 #. TRANSLATORS: Generate a support log
-#: data/ui/preferences-window.ui:931 src/preferences/service.js:414
+#: data/ui/preferences-window.ui:945 src/preferences/service.js:414
 msgid "Generate Support Log"
 msgstr ""
 
-#: data/ui/preferences-window.ui:939
+#: data/ui/preferences-window.ui:953
 msgid "About GSConnect"
 msgstr ""
 
