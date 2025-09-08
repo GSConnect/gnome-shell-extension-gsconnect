@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-24 16:26-0400\n"
-"PO-Revision-Date: 2025-07-30 22:42\n"
+"POT-Creation-Date: 2025-09-01 00:55-0400\n"
+"PO-Revision-Date: 2025-09-08 15:16\n"
 "Last-Translator: \n"
 "Language-Team: Hungarian\n"
 "Language: hu_HU\n"
@@ -92,7 +92,7 @@ msgstr "Kapcsolódás egy eszközhöz…"
 #: data/ui/preferences-shortcut-editor.ui:19
 #: data/ui/service-device-chooser.ui:21 data/ui/service-device-chooser.ui:25
 #: data/ui/service-error-dialog.ui:20 data/ui/service-error-dialog.ui:28
-#: src/preferences/service.js:405 src/service/plugins/share.js:179
+#: src/preferences/service.js:417 src/service/plugins/share.js:179
 #: src/service/plugins/share.js:314 src/service/plugins/share.js:445
 msgid "Cancel"
 msgstr "Mégsem"
@@ -110,7 +110,7 @@ msgid "No contacts"
 msgstr "Nincsenek névjegyek"
 
 #: data/ui/contact-chooser.ui:68 data/ui/messaging-window.ui:103
-#: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:847
+#: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:935
 msgid "Help"
 msgstr "Súgó"
 
@@ -124,8 +124,8 @@ msgid "Other"
 msgstr "Egyéb"
 
 #. TRANSLATORS: Share URL by SMS
-#: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:333
-#: src/service/daemon.js:447 src/service/plugins/sms.js:62
+#: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:341
+#: src/service/daemon.js:455 src/service/plugins/sms.js:62
 #: webextension/gettext.js:41
 msgid "Send SMS"
 msgstr "SMS küldése"
@@ -216,7 +216,7 @@ msgstr "Válasszon egy programot"
 msgid "Open"
 msgstr "Megnyitás"
 
-#: data/ui/preferences-device-panel.ui:53 src/preferences/service.js:504
+#: data/ui/preferences-device-panel.ui:53 src/preferences/service.js:516
 msgid "Desktop"
 msgstr "Asztali gép"
 
@@ -403,7 +403,7 @@ msgstr "Eszköz beállításai"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/ui/preferences-device-panel.ui:2624
-#: data/ui/preferences-device-panel.ui:2716 src/service/daemon.js:426
+#: data/ui/preferences-device-panel.ui:2716 src/service/daemon.js:434
 msgid "Pair"
 msgstr "Párosítás"
 
@@ -421,7 +421,7 @@ msgid "Encryption Info"
 msgstr "Titkosítási információ"
 
 #. TRANSLATORS: Unpair the device and notify it
-#: data/ui/preferences-device-panel.ui:2722 src/service/daemon.js:435
+#: data/ui/preferences-device-panel.ui:2722 src/service/daemon.js:443
 msgid "Unpair"
 msgstr "Párosítás megszűntetése"
 
@@ -502,7 +502,7 @@ msgstr "Eszköz nevének szerkesztése"
 msgid "Devices"
 msgstr "Eszközök"
 
-#: data/ui/preferences-window.ui:328 src/preferences/service.js:666
+#: data/ui/preferences-window.ui:328 src/preferences/service.js:678
 msgid "Searching for devices…"
 msgstr "Eszközök keresése…"
 
@@ -526,35 +526,45 @@ msgstr "Engedélyez"
 msgid "This device is invisible to unpaired devices"
 msgstr "Ez az eszköz nem látható a párosítatlan eszközök számára"
 
-#: data/ui/preferences-window.ui:772 src/service/manager.js:163
+#: data/ui/preferences-window.ui:772 src/service/manager.js:172
 msgid "Discovery Disabled"
 msgstr "Felderítés letiltva"
 
+#: data/ui/preferences-window.ui:844
+msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
+"Use your distro's package manager to install it, then restart or log out and back in.\n"
+"For more information, visit <a href=\"https://github.com/gsconect/gnome-shell-extension-gsconnect/wiki/Error#OpenSSL\">the GSConnect wiki</a>."
+msgstr ""
+
+#: data/ui/preferences-window.ui:860 src/service/init.js:349
+msgid "OpenSSL not found"
+msgstr "Az OpenSSL nem található"
+
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
-#: data/ui/preferences-window.ui:821
+#: data/ui/preferences-window.ui:909
 msgid "Add device by IP…"
 msgstr "Eszköz hozzáadása IP szerint…"
 
-#: data/ui/preferences-window.ui:826
+#: data/ui/preferences-window.ui:914
 msgid "Display Mode"
 msgstr "Megjelenítési mód"
 
 #. TRANSLATORS: Show device indicators in the top bar
-#: data/ui/preferences-window.ui:829
+#: data/ui/preferences-window.ui:917
 msgid "Panel"
 msgstr "Panel"
 
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
-#: data/ui/preferences-window.ui:835
+#: data/ui/preferences-window.ui:923
 msgid "User Menu"
 msgstr "Felhasználói menü"
 
 #. TRANSLATORS: Generate a support log
-#: data/ui/preferences-window.ui:843 src/preferences/service.js:402
+#: data/ui/preferences-window.ui:931 src/preferences/service.js:414
 msgid "Generate Support Log"
 msgstr "Naplófájl készítése terméktámogatáshoz"
 
-#: data/ui/preferences-window.ui:851
+#: data/ui/preferences-window.ui:939
 msgid "About GSConnect"
 msgstr "A GSConnect névjegye"
 
@@ -643,148 +653,148 @@ msgstr "<b>%s</b> módosításához adjon meg egy új gyorsbillentyűt"
 msgid "%s is already being used"
 msgstr "%s már használatban van"
 
-#: src/preferences/service.js:361
+#: src/preferences/service.js:373
 msgid "A complete KDE Connect implementation for GNOME"
 msgstr "Teljes KDE Connect implementáció GNOME-hoz"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
-#: src/preferences/service.js:370
+#: src/preferences/service.js:382
 msgid "translator-credits"
 msgstr "Báthory Péter <bathory86p@gmail.com>"
 
-#: src/preferences/service.js:403
+#: src/preferences/service.js:415
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
 msgstr "A hibakeresési üzenetek naplózásra kerülnek. Tegye meg a hiba reprodukálásához szükséges lépést, majd nézze át a naplót."
 
-#: src/preferences/service.js:406
+#: src/preferences/service.js:418
 msgid "Review Log"
 msgstr "Napló átnézése"
 
-#: src/preferences/service.js:431
+#: src/preferences/service.js:443
 msgid "Invalid Device Name"
 msgstr ""
 
 #. TRANSLATOR: %s is a list of forbidden characters
-#: src/preferences/service.js:433
+#: src/preferences/service.js:445
 #, javascript-format
 msgid "Device name must not contain any of %s and have a length of 1-32 characters"
 msgstr ""
 
-#: src/preferences/service.js:496
+#: src/preferences/service.js:508
 msgid "Laptop"
 msgstr "Laptop"
 
-#: src/preferences/service.js:498
+#: src/preferences/service.js:510
 msgid "Smartphone"
 msgstr "Okostelefon"
 
-#: src/preferences/service.js:500
+#: src/preferences/service.js:512
 msgid "Tablet"
 msgstr "Táblagép"
 
-#: src/preferences/service.js:502
+#: src/preferences/service.js:514
 msgid "Television"
 msgstr "TV"
 
-#: src/preferences/service.js:524
+#: src/preferences/service.js:536
 msgid "Unpaired"
 msgstr "Nincs párosítva"
 
-#: src/preferences/service.js:528
+#: src/preferences/service.js:540
 msgid "Disconnected"
 msgstr "Nincs csatlakoztatva"
 
-#: src/preferences/service.js:532
+#: src/preferences/service.js:544
 msgid "Connected"
 msgstr "Csatlakoztatva"
 
-#: src/preferences/service.js:668
+#: src/preferences/service.js:680
 msgid "Waiting for service…"
 msgstr "Várakozás a szolgáltatásra…"
 
 #. Notify the user
-#: src/service/daemon.js:94
+#: src/service/daemon.js:95
 msgid "Settings Migrated"
 msgstr ""
 
-#: src/service/daemon.js:95
+#: src/service/daemon.js:96
 msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
 msgstr ""
 
-#: src/service/daemon.js:231
+#: src/service/daemon.js:232
 msgid "Click for help troubleshooting"
 msgstr "Kattintson ide, hogy segítséget kapjon a hibaelhárításhoz"
 
-#: src/service/daemon.js:242
+#: src/service/daemon.js:243
 msgid "Click for more information"
 msgstr "További információért kattintson ide"
 
-#: src/service/daemon.js:339
+#: src/service/daemon.js:347
 msgid "Dial Number"
 msgstr "Telefonszám hívása"
 
-#: src/service/daemon.js:345 src/service/daemon.js:534
+#: src/service/daemon.js:353 src/service/daemon.js:542
 #: src/service/plugins/share.js:31
 msgid "Share File"
 msgstr "Fájl megosztása"
 
-#: src/service/daemon.js:396
+#: src/service/daemon.js:404
 msgid "List available devices"
 msgstr "Elérhető eszközök listázása"
 
-#: src/service/daemon.js:405
+#: src/service/daemon.js:413
 msgid "List all devices"
 msgstr "Összes eszköz listázása"
 
-#: src/service/daemon.js:414
+#: src/service/daemon.js:422
 msgid "Target Device"
 msgstr "Céleszköz"
 
-#: src/service/daemon.js:456
+#: src/service/daemon.js:464
 msgid "Message Body"
 msgstr "Üzenet szövege"
 
-#: src/service/daemon.js:468 src/service/plugins/notification.js:57
+#: src/service/daemon.js:476 src/service/plugins/notification.js:57
 msgid "Send Notification"
 msgstr "Értesítés küldése"
 
-#: src/service/daemon.js:477
+#: src/service/daemon.js:485
 msgid "Notification App Name"
 msgstr "Értesítés alkalmazásnév"
 
-#: src/service/daemon.js:486
+#: src/service/daemon.js:494
 msgid "Notification Body"
 msgstr "Értesítés törzs"
 
-#: src/service/daemon.js:495
+#: src/service/daemon.js:503
 msgid "Notification Icon"
 msgstr "Értesítés ikon"
 
-#: src/service/daemon.js:504
+#: src/service/daemon.js:512
 msgid "Notification ID"
 msgstr "Értesítés ID"
 
-#: src/service/daemon.js:513 src/service/plugins/ping.js:13
+#: src/service/daemon.js:521 src/service/plugins/ping.js:13
 #: src/service/plugins/ping.js:20 src/service/plugins/ping.js:47
 msgid "Ping"
 msgstr "Ping"
 
-#: src/service/daemon.js:522 src/service/plugins/battery.js:247
+#: src/service/daemon.js:530 src/service/plugins/battery.js:247
 #: src/service/plugins/battery.js:276 src/service/plugins/battery.js:305
 #: src/service/plugins/findmyphone.js:22
 msgid "Ring"
 msgstr "Csörgetés"
 
-#: src/service/daemon.js:543 src/service/plugins/share.js:47
+#: src/service/daemon.js:551 src/service/plugins/share.js:47
 #: src/service/ui/messaging.js:1257 src/service/ui/messaging.js:1265
 msgid "Share Link"
 msgstr "Hivatkozás megosztása"
 
-#: src/service/daemon.js:552 src/service/plugins/share.js:39
+#: src/service/daemon.js:560 src/service/plugins/share.js:39
 msgid "Share Text"
 msgstr "Szöveg megosztása"
 
-#: src/service/daemon.js:564
+#: src/service/daemon.js:572
 msgid "Show release version"
 msgstr "Kiadás verziószámának megjelenítése"
 
@@ -828,11 +838,7 @@ msgstr ""
 msgid "Device clocks are out of sync"
 msgstr ""
 
-#: src/service/init.js:347
-msgid "OpenSSL not found"
-msgstr "Az OpenSSL nem található"
-
-#: src/service/manager.js:164
+#: src/service/manager.js:173
 msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "A felderítés le lett tiltva a hálózaton lévő eszközök száma miatt."
 
