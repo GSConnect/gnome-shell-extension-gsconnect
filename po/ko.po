@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-24 16:26-0400\n"
-"PO-Revision-Date: 2025-07-30 22:42\n"
+"POT-Creation-Date: 2025-09-01 00:55-0400\n"
+"PO-Revision-Date: 2025-09-08 15:16\n"
 "Last-Translator: \n"
 "Language-Team: Korean\n"
 "Language: ko_KR\n"
@@ -92,7 +92,7 @@ msgstr "연결"
 #: data/ui/preferences-shortcut-editor.ui:19
 #: data/ui/service-device-chooser.ui:21 data/ui/service-device-chooser.ui:25
 #: data/ui/service-error-dialog.ui:20 data/ui/service-error-dialog.ui:28
-#: src/preferences/service.js:405 src/service/plugins/share.js:179
+#: src/preferences/service.js:417 src/service/plugins/share.js:179
 #: src/service/plugins/share.js:314 src/service/plugins/share.js:445
 msgid "Cancel"
 msgstr "취소"
@@ -110,7 +110,7 @@ msgid "No contacts"
 msgstr "연락처 없음"
 
 #: data/ui/contact-chooser.ui:68 data/ui/messaging-window.ui:103
-#: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:847
+#: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:935
 msgid "Help"
 msgstr "도움말"
 
@@ -124,8 +124,8 @@ msgid "Other"
 msgstr "기타"
 
 #. TRANSLATORS: Share URL by SMS
-#: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:333
-#: src/service/daemon.js:447 src/service/plugins/sms.js:62
+#: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:341
+#: src/service/daemon.js:455 src/service/plugins/sms.js:62
 #: webextension/gettext.js:41
 msgid "Send SMS"
 msgstr "메시지 보내기"
@@ -216,7 +216,7 @@ msgstr "실행할 파일 선택"
 msgid "Open"
 msgstr "열기"
 
-#: data/ui/preferences-device-panel.ui:53 src/preferences/service.js:504
+#: data/ui/preferences-device-panel.ui:53 src/preferences/service.js:516
 msgid "Desktop"
 msgstr "데스크톱"
 
@@ -403,7 +403,7 @@ msgstr "장치 설정"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/ui/preferences-device-panel.ui:2624
-#: data/ui/preferences-device-panel.ui:2716 src/service/daemon.js:426
+#: data/ui/preferences-device-panel.ui:2716 src/service/daemon.js:434
 msgid "Pair"
 msgstr "페어링"
 
@@ -421,7 +421,7 @@ msgid "Encryption Info"
 msgstr "암호화 정보"
 
 #. TRANSLATORS: Unpair the device and notify it
-#: data/ui/preferences-device-panel.ui:2722 src/service/daemon.js:435
+#: data/ui/preferences-device-panel.ui:2722 src/service/daemon.js:443
 msgid "Unpair"
 msgstr "페어링 해제"
 
@@ -502,7 +502,7 @@ msgstr "장치 이름 바꾸기"
 msgid "Devices"
 msgstr "장치"
 
-#: data/ui/preferences-window.ui:328 src/preferences/service.js:666
+#: data/ui/preferences-window.ui:328 src/preferences/service.js:678
 msgid "Searching for devices…"
 msgstr "장치를 찾는 중…"
 
@@ -526,35 +526,45 @@ msgstr "사용"
 msgid "This device is invisible to unpaired devices"
 msgstr "이 기기는 페어링되지 않았으므로 보이지 않습니다"
 
-#: data/ui/preferences-window.ui:772 src/service/manager.js:163
+#: data/ui/preferences-window.ui:772 src/service/manager.js:172
 msgid "Discovery Disabled"
 msgstr "Discovery 비활성화"
 
+#: data/ui/preferences-window.ui:844
+msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
+"Use your distro's package manager to install it, then restart or log out and back in.\n"
+"For more information, visit <a href=\"https://github.com/gsconect/gnome-shell-extension-gsconnect/wiki/Error#OpenSSL\">the GSConnect wiki</a>."
+msgstr ""
+
+#: data/ui/preferences-window.ui:860 src/service/init.js:349
+msgid "OpenSSL not found"
+msgstr "OpenSSL을 찾을 수 없음"
+
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
-#: data/ui/preferences-window.ui:821
+#: data/ui/preferences-window.ui:909
 msgid "Add device by IP…"
 msgstr ""
 
-#: data/ui/preferences-window.ui:826
+#: data/ui/preferences-window.ui:914
 msgid "Display Mode"
 msgstr "보기 모드"
 
 #. TRANSLATORS: Show device indicators in the top bar
-#: data/ui/preferences-window.ui:829
+#: data/ui/preferences-window.ui:917
 msgid "Panel"
 msgstr "패널"
 
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
-#: data/ui/preferences-window.ui:835
+#: data/ui/preferences-window.ui:923
 msgid "User Menu"
 msgstr "사용자 메뉴"
 
 #. TRANSLATORS: Generate a support log
-#: data/ui/preferences-window.ui:843 src/preferences/service.js:402
+#: data/ui/preferences-window.ui:931 src/preferences/service.js:414
 msgid "Generate Support Log"
 msgstr "지원 로그 생성"
 
-#: data/ui/preferences-window.ui:851
+#: data/ui/preferences-window.ui:939
 msgid "About GSConnect"
 msgstr "GSConnect 정보"
 
@@ -642,148 +652,148 @@ msgstr "<b>%s</b> 바로가기를 대체할 새로운 바로가기를 입력하�
 msgid "%s is already being used"
 msgstr "%s(은)는 이미 사용 중입니다"
 
-#: src/preferences/service.js:361
+#: src/preferences/service.js:373
 msgid "A complete KDE Connect implementation for GNOME"
 msgstr "그놈을 위한 KDE Connect의 호환 기능"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
-#: src/preferences/service.js:370
+#: src/preferences/service.js:382
 msgid "translator-credits"
 msgstr "UtsushimiNeneka(네네카)"
 
-#: src/preferences/service.js:403
+#: src/preferences/service.js:415
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
 msgstr "디버그 메시지가 로그에 기록됩니다."
 
-#: src/preferences/service.js:406
+#: src/preferences/service.js:418
 msgid "Review Log"
 msgstr "로그 확인"
 
-#: src/preferences/service.js:431
+#: src/preferences/service.js:443
 msgid "Invalid Device Name"
 msgstr ""
 
 #. TRANSLATOR: %s is a list of forbidden characters
-#: src/preferences/service.js:433
+#: src/preferences/service.js:445
 #, javascript-format
 msgid "Device name must not contain any of %s and have a length of 1-32 characters"
 msgstr ""
 
-#: src/preferences/service.js:496
+#: src/preferences/service.js:508
 msgid "Laptop"
 msgstr "노트북"
 
-#: src/preferences/service.js:498
+#: src/preferences/service.js:510
 msgid "Smartphone"
 msgstr "스마트폰"
 
-#: src/preferences/service.js:500
+#: src/preferences/service.js:512
 msgid "Tablet"
 msgstr "태블릿"
 
-#: src/preferences/service.js:502
+#: src/preferences/service.js:514
 msgid "Television"
 msgstr "TV"
 
-#: src/preferences/service.js:524
+#: src/preferences/service.js:536
 msgid "Unpaired"
 msgstr "페어링 해제됨"
 
-#: src/preferences/service.js:528
+#: src/preferences/service.js:540
 msgid "Disconnected"
 msgstr "연결되지 않음"
 
-#: src/preferences/service.js:532
+#: src/preferences/service.js:544
 msgid "Connected"
 msgstr "연결됨"
 
-#: src/preferences/service.js:668
+#: src/preferences/service.js:680
 msgid "Waiting for service…"
 msgstr "서비스를 기다리는 중"
 
 #. Notify the user
-#: src/service/daemon.js:94
+#: src/service/daemon.js:95
 msgid "Settings Migrated"
 msgstr ""
 
-#: src/service/daemon.js:95
+#: src/service/daemon.js:96
 msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
 msgstr ""
 
-#: src/service/daemon.js:231
+#: src/service/daemon.js:232
 msgid "Click for help troubleshooting"
 msgstr "클릭하여 문제해결 도움 받기"
 
-#: src/service/daemon.js:242
+#: src/service/daemon.js:243
 msgid "Click for more information"
 msgstr "자세한 내용을 보려면 여기를 클릭하십시오."
 
-#: src/service/daemon.js:339
+#: src/service/daemon.js:347
 msgid "Dial Number"
 msgstr "전화번호"
 
-#: src/service/daemon.js:345 src/service/daemon.js:534
+#: src/service/daemon.js:353 src/service/daemon.js:542
 #: src/service/plugins/share.js:31
 msgid "Share File"
 msgstr "파일 공유"
 
-#: src/service/daemon.js:396
+#: src/service/daemon.js:404
 msgid "List available devices"
 msgstr "사용 가능한 장치 목록"
 
-#: src/service/daemon.js:405
+#: src/service/daemon.js:413
 msgid "List all devices"
 msgstr "모든 장치 보기"
 
-#: src/service/daemon.js:414
+#: src/service/daemon.js:422
 msgid "Target Device"
 msgstr "대상 기기"
 
-#: src/service/daemon.js:456
+#: src/service/daemon.js:464
 msgid "Message Body"
 msgstr "메시지 내용"
 
-#: src/service/daemon.js:468 src/service/plugins/notification.js:57
+#: src/service/daemon.js:476 src/service/plugins/notification.js:57
 msgid "Send Notification"
 msgstr "알림 보내기"
 
-#: src/service/daemon.js:477
+#: src/service/daemon.js:485
 msgid "Notification App Name"
 msgstr "알림 앱 이름"
 
-#: src/service/daemon.js:486
+#: src/service/daemon.js:494
 msgid "Notification Body"
 msgstr "알림 내용"
 
-#: src/service/daemon.js:495
+#: src/service/daemon.js:503
 msgid "Notification Icon"
 msgstr "알림 아이콘"
 
-#: src/service/daemon.js:504
+#: src/service/daemon.js:512
 msgid "Notification ID"
 msgstr "알림 ID"
 
-#: src/service/daemon.js:513 src/service/plugins/ping.js:13
+#: src/service/daemon.js:521 src/service/plugins/ping.js:13
 #: src/service/plugins/ping.js:20 src/service/plugins/ping.js:47
 msgid "Ping"
 msgstr "핑"
 
-#: src/service/daemon.js:522 src/service/plugins/battery.js:247
+#: src/service/daemon.js:530 src/service/plugins/battery.js:247
 #: src/service/plugins/battery.js:276 src/service/plugins/battery.js:305
 #: src/service/plugins/findmyphone.js:22
 msgid "Ring"
 msgstr "벨"
 
-#: src/service/daemon.js:543 src/service/plugins/share.js:47
+#: src/service/daemon.js:551 src/service/plugins/share.js:47
 #: src/service/ui/messaging.js:1257 src/service/ui/messaging.js:1265
 msgid "Share Link"
 msgstr "링크 공유"
 
-#: src/service/daemon.js:552 src/service/plugins/share.js:39
+#: src/service/daemon.js:560 src/service/plugins/share.js:39
 msgid "Share Text"
 msgstr "텍스트 공유"
 
-#: src/service/daemon.js:564
+#: src/service/daemon.js:572
 msgid "Show release version"
 msgstr "릴리즈 버전 보기"
 
@@ -827,11 +837,7 @@ msgstr ""
 msgid "Device clocks are out of sync"
 msgstr ""
 
-#: src/service/init.js:347
-msgid "OpenSSL not found"
-msgstr "OpenSSL을 찾을 수 없음"
-
-#: src/service/manager.js:164
+#: src/service/manager.js:173
 msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr ""
 
