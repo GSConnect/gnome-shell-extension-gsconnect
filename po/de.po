@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-08 11:28-0400\n"
-"PO-Revision-Date: 2025-09-08 16:33\n"
+"PO-Revision-Date: 2025-09-10 21:51\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -250,11 +250,11 @@ msgstr "Dateien speichern unter"
 
 #: data/ui/preferences-device-panel.ui:510
 msgid "Links"
-msgstr ""
+msgstr "Verknüpfunden"
 
 #: data/ui/preferences-device-panel.ui:562
 msgid "Automatically open received URLs"
-msgstr ""
+msgstr "Empfangene Adressen automatisch öffnen"
 
 #: data/ui/preferences-device-panel.ui:623
 #: data/ui/preferences-device-panel.ui:2286
@@ -532,13 +532,15 @@ msgstr "Erkennen deaktiviert"
 
 #: data/ui/preferences-window.ui:826
 msgid "Retry"
-msgstr ""
+msgstr "Wiederholen"
 
 #: data/ui/preferences-window.ui:858
 msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
 "Use your distro's package manager to install it.\n"
 "For more information, visit <a href=\"https://github.com/gsconect/gnome-shell-extension-gsconnect/wiki/Error#OpenSSL\">the GSConnect wiki</a>."
-msgstr ""
+msgstr "Das <tt>openssl</tt>-Befehlszeilenwerkzeug scheint nicht installiert zu sein.\n"
+"Verwenden Sie die Paketverwaltung Ihrer Distribution.\n"
+"Weitere Informationen finden Sie unter <a href=\"https://github.com/gsconect/gnome-shell-extension-gsconnect/wiki/Error#OpenSSL\">im GSConnect-Wiki</a>."
 
 #: data/ui/preferences-window.ui:874 src/service/init.js:361
 msgid "OpenSSL not found"
@@ -678,13 +680,13 @@ msgstr "Protokoll überprüfen"
 
 #: src/preferences/service.js:443
 msgid "Invalid Device Name"
-msgstr ""
+msgstr "Ungültiger Gerätename"
 
 #. TRANSLATOR: %s is a list of forbidden characters
 #: src/preferences/service.js:445
 #, javascript-format
 msgid "Device name must not contain any of %s and have a length of 1-32 characters"
-msgstr ""
+msgstr "Gerätename darf keine »%s« enthalten und eine Länge von 1-32 Zeichen haben"
 
 #: src/preferences/service.js:516
 msgid "Laptop"
@@ -721,11 +723,11 @@ msgstr "Auf Dienst wird gewartet …"
 #. Notify the user
 #: src/service/daemon.js:99
 msgid "Settings Migrated"
-msgstr ""
+msgstr "Einstellungen migriert"
 
 #: src/service/daemon.js:100
 msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
-msgstr ""
+msgstr "GSConnect wurde aktualisiert, um Änderungen am KDE-Verbindungsprotokoll zu unterstützen. Einige Geräte müssen eventuell neu gekoppelt werden."
 
 #: src/service/daemon.js:241
 msgid "Click for help troubleshooting"
@@ -838,11 +840,11 @@ msgstr "Annehmen"
 #: src/service/device.js:960
 #, javascript-format
 msgid "Failed to pair with %s"
-msgstr ""
+msgstr "Kopplung mit %s fehlgeschlagen"
 
 #: src/service/device.js:961
 msgid "Device clocks are out of sync"
-msgstr ""
+msgstr "Geräteuhren sind nicht synchronisiert"
 
 #: src/service/manager.js:178
 msgid "Discovery has been disabled due to the number of devices on this network."
