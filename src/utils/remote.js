@@ -22,6 +22,13 @@ const _PROPERTIES = {
 };
 
 
+/**
+ * Initialize a Gio.DBusProxy in an awaitable manner
+ *
+ * @param {Gio.DBusProxy} proxy - The proxy object to initialize
+ * @param {Gio.Cancellable} [cancellable] - An optional cancellable object
+ * @returns {Promise} An awaitable Promise
+ */
 function _proxyInit(proxy, cancellable = null) {
     if (proxy.__initialized !== undefined)
         return Promise.resolve();
@@ -127,7 +134,7 @@ export const Device = GObject.registerClass({
     _get(name, fallback = null) {
         try {
             return this.get_cached_property(name).unpack();
-        } catch (e) {
+        } catch {
             return fallback;
         }
     }
@@ -297,7 +304,7 @@ export const Service = GObject.registerClass({
      * org.freedesktop.DBus.ObjectManager.InterfacesAdded
      *
      * @param {string} object_path - Path interfaces have been added to
-     * @param {Object} interfaces - A dictionary of interface objects
+     * @param {object} interfaces - A dictionary of interface objects
      */
     async _onInterfacesAdded(object_path, interfaces) {
         try {

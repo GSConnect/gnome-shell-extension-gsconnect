@@ -17,7 +17,7 @@ try {
     EBook = (await import('gi://EBook')).default;
     EBookContacts = (await import('gi://EBookContacts')).default;
     EDataServer = (await import('gi://EDataServer')).default;
-} catch (e) {
+} catch {
     HAVE_EDS = false;
 }
 
@@ -267,7 +267,7 @@ const Store = GObject.registerClass({
             this._ebooks = new Map();
 
             // Get the current EBooks
-            const registry = await this._getESourceRegistry();
+            const registry = await EDataServer.SourceRegistry.new(null);
 
             for (const source of registry.list_sources('Address Book'))
                 await this._onAppeared(null, source);
@@ -329,7 +329,7 @@ const Store = GObject.registerClass({
      * Save a Uint8Array to file and return the path
      *
      * @param {Uint8Array} contents - An image byte array
-     * @return {string|undefined} File path or %undefined on failure
+     * @returns {string|undefined} File path or %undefined on failure
      */
     async storeAvatar(contents) {
         const md5 = GLib.compute_checksum_for_data(GLib.ChecksumType.MD5,
@@ -353,10 +353,10 @@ const Store = GObject.registerClass({
     /**
      * Query the Store for a contact by name and/or number.
      *
-     * @param {Object} query - A query object
+     * @param {object} query - A query object
      * @param {string} [query.name] - The contact's name
      * @param {string} query.number - The contact's number
-     * @return {Object} A contact object
+     * @returns {object} A contact object
      */
     query(query) {
         // First look for an existing contact by number
@@ -410,7 +410,7 @@ const Store = GObject.registerClass({
     /**
      * Add a contact, checking for validity
      *
-     * @param {Object} contact - A contact object
+     * @param {object} contact - A contact object
      * @param {boolean} write - Write to disk
      */
     add(contact, write = true) {
@@ -468,8 +468,8 @@ const Store = GObject.registerClass({
      *
      * { "555-5555": { "name": "...", "numbers": [], ... } }
      *
-     * @param {Object[]} addresses - A list of address objects
-     * @return {Object} A dictionary of phone numbers and contacts
+     * @param {object[]} addresses - A list of address objects
+     * @returns {object} A dictionary of phone numbers and contacts
      */
     lookupAddresses(addresses) {
         const contacts = {};
@@ -502,7 +502,7 @@ const Store = GObject.registerClass({
     /**
      * Update the contact store from a dictionary of our custom contact objects.
      *
-     * @param {Object} json - an Object of contact Objects
+     * @param {object} json - an Object of contact Objects
      */
     async update(json = {}) {
         try {
@@ -610,4 +610,3 @@ const Store = GObject.registerClass({
 });
 
 export default Store;
-

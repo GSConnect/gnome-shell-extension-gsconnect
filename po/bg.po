@@ -5,15 +5,15 @@ msgstr ""
 "POT-Creation-Date: 2025-09-08 11:28-0400\n"
 "PO-Revision-Date: 2025-09-08 16:33\n"
 "Last-Translator: \n"
-"Language-Team: Korean\n"
-"Language: ko_KR\n"
+"Language-Team: Bulgarian\n"
+"Language: bg_BG\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
-"X-Crowdin-Language: ko\n"
+"X-Crowdin-Language: bg\n"
 "X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
@@ -25,63 +25,63 @@ msgstr "GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:13
 msgid "KDE Connect implementation for GNOME"
-msgstr "GNOME을 위한 KDE Connect의 호환 기능"
+msgstr "Реализация на KDE Connect за GNOME"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:24
 msgid "GSConnect Team"
-msgstr "GSConnect 팀"
+msgstr "Екип на GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
 msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr "GSConnect는 노틸러스, 크롬, 파이어폭스 연동과 함께 사용하는 그놈 셸을 위한 완전한 KDE Connect 구현체 입니다. KDE Connect 팀 에서는 리눅스, BSD, 안드로이드, Sailfish, iOS, macOS 및 Windows 용 앱을 제공하고 있습니다."
+msgstr "GSConnect е цялостна реализация на KDE Connect специално за GNOME Shell с интеграция на Nautilus, Chrome и Firefox. Екипът на KDE Connect има приложения за Linux, BSD, Android, Sailfish, iOS, macOS и Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
 msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
-msgstr "GSConnect로 모바일 기기와 다른 데스크탑을 안전하게 연결하기:"
+msgstr "С GSConnect можете сигурно да се свързвате с мобилни устройства и други настолни компютри към:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:48
 msgid "Share files, links and text"
-msgstr "파일과 링크, 텍스트 등을 공유합니다"
+msgstr "Споделяйте файлове, връзки и текст"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:49
 msgid "Send and receive messages"
-msgstr "메시지를 주고 받기"
+msgstr "Изпращане и получаване на съобщения"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:50
 msgid "Sync clipboard content"
-msgstr "클립보드 내역 동기화"
+msgstr "Синхронизиране на съдържанието на клипборда"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:51
 msgid "Sync contacts"
-msgstr "연락처 동기화"
+msgstr "Синхронизиране на контакти"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:52
 msgid "Sync notifications"
-msgstr "알림 동기화"
+msgstr "Синхронизиране на известията"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:53
 msgid "Control media players"
-msgstr "미디어 플레이어 제어"
+msgstr "Контролирайте медийни плейъри"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:54
 msgid "Control system volume"
-msgstr "시스템 볼륨 제어"
+msgstr "Контролирайте силата на звука на системата"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:55
 msgid "Execute predefined commands"
-msgstr "정의된 명령 실행"
+msgstr "Изпълнение на предварително дефинирани команди"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:56
 msgid "And more…"
-msgstr "더 보기…"
+msgstr "И още…"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:165
 msgid "GSConnect in GNOME Shell"
-msgstr "GNOME Shell의 GSConnect"
+msgstr "GSConnect в GNOME Shell"
 
 #: data/ui/connect-dialog.ui:20
 msgid "Connect to…"
-msgstr "연결"
+msgstr "Свързване към…"
 
 #: data/ui/connect-dialog.ui:26 data/ui/legacy-messaging-dialog.ui:20
 #: data/ui/legacy-messaging-dialog.ui:24
@@ -95,89 +95,89 @@ msgstr "연결"
 #: src/preferences/service.js:417 src/service/plugins/share.js:179
 #: src/service/plugins/share.js:314 src/service/plugins/share.js:445
 msgid "Cancel"
-msgstr "취소"
+msgstr "Отказ"
 
 #: data/ui/connect-dialog.ui:33
 msgid "Connect"
-msgstr "연결"
+msgstr "Свързване"
 
 #: data/ui/connect-dialog.ui:80
 msgid "IP Address"
-msgstr "IP 주소"
+msgstr "IP адрес"
 
 #: data/ui/contact-chooser.ui:56
 msgid "No contacts"
-msgstr "연락처 없음"
+msgstr "Няма контакти"
 
 #: data/ui/contact-chooser.ui:68 data/ui/messaging-window.ui:103
 #: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:949
 msgid "Help"
-msgstr "도움말"
+msgstr "Помощ"
 
 #: data/ui/contact-chooser.ui:109
 msgid "Type a phone number or name"
-msgstr "전화번호나 이름을 입력"
+msgstr "Въведете телефонен номер или име"
 
 #. TRANSLATORS: All other phone number types
 #: data/ui/contacts-address-row.ui:71 src/service/ui/contacts.js:158
 msgid "Other"
-msgstr "기타"
+msgstr "Други"
 
 #. TRANSLATORS: Share URL by SMS
 #: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:353
 #: src/service/daemon.js:467 src/service/plugins/sms.js:62
 #: webextension/gettext.js:41
 msgid "Send SMS"
-msgstr "메시지 보내기"
+msgstr "Изпращане на SMS"
 
 #: data/ui/legacy-messaging-dialog.ui:32 data/ui/legacy-messaging-dialog.ui:36
 #: data/ui/notification-reply-dialog.ui:31
 #: data/ui/notification-reply-dialog.ui:35 src/service/plugins/share.js:446
 msgid "Send"
-msgstr "보내기"
+msgstr "Изпращане"
 
 #: data/ui/legacy-messaging-dialog.ui:69 data/ui/messaging-window.ui:263
 #: data/ui/notification-reply-dialog.ui:68
 msgid "Device is disconnected"
-msgstr "디바이스의 연결이 끊겼습니다"
+msgstr "Устройството е изключено"
 
 #: data/ui/messaging-conversation.ui:91 src/service/plugins/sms.js:54
 msgid "Send Message"
-msgstr "메시지 보내기"
+msgstr "Изпращане на съобщение"
 
 #: data/ui/messaging-conversation.ui:92 src/shell/notification.js:88
 msgid "Type a message"
-msgstr "메시지 입력"
+msgstr "Въведете съобщение"
 
 #: data/ui/messaging-conversation.ui:99
 msgid "Message Entry"
-msgstr "메시지 목록"
+msgstr "Въвеждане на съобщение"
 
 #: data/ui/messaging-conversation.ui:100
 msgid "Type a message and press Enter to send"
-msgstr "메시지를 입력한 후 전송하려면 Enter 키를 누르십시오"
+msgstr "Въведете съобщение и натиснете Enter, за изпращане"
 
 #: data/ui/messaging-window.ui:21 src/service/plugins/sms.js:30
 #: src/service/ui/messaging.js:1063
 msgid "Messaging"
-msgstr "메시지"
+msgstr "Съобщения"
 
 #: data/ui/messaging-window.ui:30 data/ui/messaging-window.ui:43
 #: src/service/ui/messaging.js:1274
 msgid "New Conversation"
-msgstr "새 대화"
+msgstr "Нов разговор"
 
 #: data/ui/messaging-window.ui:120
 msgid "No Conversations"
-msgstr "대화 없음"
+msgstr "Няма разговори"
 
 #: data/ui/messaging-window.ui:180
 msgid "No conversation selected"
-msgstr "선택된 대화 없음"
+msgstr "Няма избран разговор"
 
 #: data/ui/messaging-window.ui:196
 msgid "Select or start a conversation"
-msgstr "대화를 선택하거나 시작"
+msgstr "Изберете или започнете разговор"
 
 #: data/ui/mousepad-input-dialog.ui:97
 msgid "Touchpad.\n"
@@ -185,110 +185,110 @@ msgid "Touchpad.\n"
 "Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr "터치패드.\n"
-"마우스 커서를 움직이려면 이 영역을 드래그 하십시오.\n"
-"마우스 커서 드래그를 하려면 길게 누른 후 드래그 하십시오.\n\n"
-"왼쪽 클릭, 중간 클릭, 오른쪽 클릭, 휠 스크롤 등.\n"
-"간단한 클릭 신호가 페어링 된 장치에 전달됩니다."
+msgstr "Тъчпад.\n"
+"Плъзнете върху тази област, за да преместите курсора на мишката.\n"
+"Натиснете дълго, за да плъзнете, за да влачите курсора на мишката.\n\n"
+"Просто щракване ще бъде изпратено до сдвоеното устройство.\n"
+"Ляв, среден, десен бутон и колело за превъртане."
 
 #: data/ui/preferences-command-editor.ui:14
 msgid "Edit Command"
-msgstr "명령 편집"
+msgstr "Редактиране на команда"
 
 #: data/ui/preferences-command-editor.ui:28
 msgid "Save"
-msgstr "저장"
+msgstr "Запазване"
 
 #: data/ui/preferences-command-editor.ui:61
 msgid "Name"
-msgstr "이름"
+msgstr "Име"
 
 #: data/ui/preferences-command-editor.ui:99
 msgid "Command Line"
-msgstr "커맨드 라인"
+msgstr "Команден ред"
 
 #: data/ui/preferences-command-editor.ui:121
 #: data/ui/preferences-command-editor.ui:150
 msgid "Choose an executable"
-msgstr "실행할 파일 선택"
+msgstr "Изберете изпълним файл"
 
 #: data/ui/preferences-command-editor.ui:164
 msgid "Open"
-msgstr "열기"
+msgstr "Отворете"
 
 #: data/ui/preferences-device-panel.ui:53 src/preferences/service.js:524
 msgid "Desktop"
-msgstr "데스크톱"
+msgstr "Работен плот"
 
 #: data/ui/preferences-device-panel.ui:102
 msgid "Clipboard Sync"
-msgstr "클립보드 동기화"
+msgstr "Синхронизиране на клипборда"
 
 #: data/ui/preferences-device-panel.ui:168
 msgid "Media Players"
-msgstr "미디어 플레이어"
+msgstr "Медийни плейъри"
 
 #: data/ui/preferences-device-panel.ui:225
 msgid "Mouse & Keyboard"
-msgstr "마우스와 키보드"
+msgstr "Мишка и клавиатура"
 
 #: data/ui/preferences-device-panel.ui:282
 msgid "Volume Control"
-msgstr "음량 제어"
+msgstr "Контрол на звука"
 
 #: data/ui/preferences-device-panel.ui:337 src/service/plugins/sftp.js:332
 msgid "Files"
-msgstr "파일"
+msgstr "Файлове"
 
 #: data/ui/preferences-device-panel.ui:390
 msgid "Receive Files"
-msgstr "파일 받기"
+msgstr "Получаване на файлове"
 
 #: data/ui/preferences-device-panel.ui:449
 msgid "Save files to"
-msgstr "파일로 저장"
+msgstr "Запазване на файлове в"
 
 #: data/ui/preferences-device-panel.ui:510
 msgid "Links"
-msgstr ""
+msgstr "Връзки"
 
 #: data/ui/preferences-device-panel.ui:562
 msgid "Automatically open received URLs"
-msgstr ""
+msgstr "Автоматично отваряне на получени URL адреси"
 
 #: data/ui/preferences-device-panel.ui:623
 #: data/ui/preferences-device-panel.ui:2286
 msgid "Sharing"
-msgstr "공유 중"
+msgstr "Споделяне"
 
 #: data/ui/preferences-device-panel.ui:655
 msgid "Device Battery"
-msgstr "장치 배터리"
+msgstr "Батерия на устройството"
 
 #: data/ui/preferences-device-panel.ui:706
 msgid "Low Battery Notification"
-msgstr "배터리 부족 알림"
+msgstr "Известие за ниска батерия"
 
 #: data/ui/preferences-device-panel.ui:765
 msgid "Charged Up to Custom Level Notification"
-msgstr "설정된 배터리 충전 수준을 초과함"
+msgstr "Известие за зареждане до персонализирано ниво"
 
 #: data/ui/preferences-device-panel.ui:845
 msgid "Fully Charged Notification"
-msgstr "충전 완료 알림"
+msgstr "Известие за пълно зареждане"
 
 #: data/ui/preferences-device-panel.ui:899
 msgid "System Battery"
-msgstr "시스템 배터리"
+msgstr "Системна батерия"
 
 #: data/ui/preferences-device-panel.ui:948
 msgid "Share Statistics"
-msgstr "통계 공유"
+msgstr "Споделете статистика"
 
 #: data/ui/preferences-device-panel.ui:1002
 #: data/ui/preferences-device-panel.ui:2332 src/service/plugins/battery.js:15
 msgid "Battery"
-msgstr "배터리"
+msgstr "Батерия"
 
 #: data/ui/preferences-device-panel.ui:1032
 #: data/ui/preferences-device-panel.ui:1117
@@ -296,162 +296,162 @@ msgstr "배터리"
 #: src/service/plugins/runcommand.js:26 src/service/plugins/runcommand.js:34
 #: src/service/plugins/runcommand.js:194
 msgid "Commands"
-msgstr "명령"
+msgstr "Команди"
 
 #: data/ui/preferences-device-panel.ui:1091
 msgid "Add Command"
-msgstr "명령 추가"
+msgstr "Добавяне на команда"
 
 #. TRANSLATORS: 'Share' is a verb here; this refers to the action of sharing
 #: data/ui/preferences-device-panel.ui:1179
 msgid "Share Notifications"
-msgstr "알림 공유"
+msgstr "Известия за споделяне"
 
 #: data/ui/preferences-device-panel.ui:1239
 msgid "Share When Active"
-msgstr "활성화될 때 공유"
+msgstr "Споделяне, когато е активно"
 
 #: data/ui/preferences-device-panel.ui:1290
 msgid "Applications"
-msgstr "프로그램"
+msgstr "Приложения"
 
 #: data/ui/preferences-device-panel.ui:1336
 #: data/ui/preferences-device-panel.ui:2424
 #: src/service/plugins/notification.js:18
 msgid "Notifications"
-msgstr "알림"
+msgstr "Известия"
 
 #: data/ui/preferences-device-panel.ui:1394 src/service/plugins/contacts.js:28
 msgid "Contacts"
-msgstr "연락처"
+msgstr "Контакти"
 
 #: data/ui/preferences-device-panel.ui:1447
 msgid "Incoming Calls"
-msgstr "수신 전화"
+msgstr "Входящи повиквания"
 
 #: data/ui/preferences-device-panel.ui:1496
 #: data/ui/preferences-device-panel.ui:1663
 msgid "Volume"
-msgstr "볼륨"
+msgstr "Сила на звука"
 
 #: data/ui/preferences-device-panel.ui:1562
 #: data/ui/preferences-device-panel.ui:1729
 msgid "Pause Media"
-msgstr "미디어 일시정지"
+msgstr "Пауза на медия"
 
 #: data/ui/preferences-device-panel.ui:1615
 msgid "Ongoing Calls"
-msgstr "발신 전화"
+msgstr "Текущи повиквания"
 
 #: data/ui/preferences-device-panel.ui:1785
 msgid "Mute Microphone"
-msgstr "마이크 음소거"
+msgstr "Заглушаване на микрофона"
 
 #: data/ui/preferences-device-panel.ui:1839
 #: data/ui/preferences-device-panel.ui:2470 src/service/plugins/telephony.js:16
 msgid "Telephony"
-msgstr "전화"
+msgstr "Телефония"
 
 #: data/ui/preferences-device-panel.ui:1874
 msgid "Action Shortcuts"
-msgstr "동작 바로가기"
+msgstr "Преки пътища за действие"
 
 #: data/ui/preferences-device-panel.ui:1890
 msgid "Reset All…"
-msgstr "모든 설정 초기화"
+msgstr "Нулиране на всички..."
 
 #: data/ui/preferences-device-panel.ui:1942
 msgid "Shortcuts"
-msgstr "바로가기"
+msgstr "Преки пътища"
 
 #: data/ui/preferences-device-panel.ui:1973
 msgid "Plugins"
-msgstr "플러그인"
+msgstr "Плъгини"
 
 #: data/ui/preferences-device-panel.ui:2020
 msgid "Experimental"
-msgstr "실험적 기능"
+msgstr "Експериментално"
 
 #: data/ui/preferences-device-panel.ui:2067
 msgid "Device Cache"
-msgstr "장치 캐시"
+msgstr "Кеш на устройството"
 
 #: data/ui/preferences-device-panel.ui:2085
 msgid "Clear Cache…"
-msgstr "캐시 삭제"
+msgstr "Изчистване на кеша…"
 
 #: data/ui/preferences-device-panel.ui:2124
 msgid "Legacy SMS Support"
-msgstr "레거시 SMS 지원"
+msgstr "Поддръжка на наследени SMS"
 
 #: data/ui/preferences-device-panel.ui:2181
 msgid "SFTP Automount"
-msgstr "SFTP 자동 마운트"
+msgstr "Автоматично монтиране на SFTP"
 
 #: data/ui/preferences-device-panel.ui:2236
 #: data/ui/preferences-device-panel.ui:2562
 msgid "Advanced"
-msgstr "고급"
+msgstr "Разширено"
 
 #: data/ui/preferences-device-panel.ui:2516
 msgid "Keyboard Shortcuts"
-msgstr "단축 키"
+msgstr "Клавишни комбинации"
 
 #: data/ui/preferences-device-panel.ui:2580
 msgid "Device Settings"
-msgstr "장치 설정"
+msgstr "Настройки на устройството"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/ui/preferences-device-panel.ui:2624
 #: data/ui/preferences-device-panel.ui:2716 src/service/daemon.js:446
 msgid "Pair"
-msgstr "페어링"
+msgstr "Сдвояване"
 
 #: data/ui/preferences-device-panel.ui:2656
 msgid "Device is unpaired"
-msgstr "디바이스의 페어링이 해제되었습니다"
+msgstr "Устройството не е сдвоено"
 
 #: data/ui/preferences-device-panel.ui:2671
 msgid "You may configure this device before pairing"
-msgstr "페어링 전에 디바이스를 설정해야 합니다"
+msgstr "Можете да конфигурирате това устройство преди сдвояване"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
 #: data/ui/preferences-device-panel.ui:2711 src/preferences/device.js:391
 msgid "Encryption Info"
-msgstr "암호화 정보"
+msgstr "Информация за криптиране"
 
 #. TRANSLATORS: Unpair the device and notify it
 #: data/ui/preferences-device-panel.ui:2722 src/service/daemon.js:455
 msgid "Unpair"
-msgstr "페어링 해제"
+msgstr "Раздвояване"
 
 #. TRANSLATORS: Send clipboard content to device
 #: data/ui/preferences-device-panel.ui:2734
 msgid "To Device"
-msgstr "내 기기로 전송"
+msgstr "Към устройството"
 
 #. TRANSLATORS: Receive clipboard content from the device
 #: data/ui/preferences-device-panel.ui:2740
 msgid "From Device"
-msgstr "내 기기에서 받아오기"
+msgstr "От устройството"
 
 #. TRANSLATORS: Don't change the system volume
 #: data/ui/preferences-device-panel.ui:2752
 #: data/ui/preferences-device-panel.ui:2785
 msgid "Nothing"
-msgstr "없음"
+msgstr "Нищо"
 
 #. TRANSLATORS: Restore the system volume
 #: data/ui/preferences-device-panel.ui:2759
 #: data/ui/preferences-device-panel.ui:2792
 msgid "Restore"
-msgstr "복원"
+msgstr "Възстановяване"
 
 #. TRANSLATORS: Lower the system volume
 #: data/ui/preferences-device-panel.ui:2766
 #: data/ui/preferences-device-panel.ui:2799
 msgid "Lower"
-msgstr "낮게"
+msgstr "По-ниско"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the actively ringing call
@@ -459,76 +459,76 @@ msgstr "낮게"
 #: data/ui/preferences-device-panel.ui:2806
 #: src/service/plugins/telephony.js:198
 msgid "Mute"
-msgstr "무음"
+msgstr "Без звук"
 
 #: data/ui/preferences-shortcut-editor.ui:25
 msgid "Set"
-msgstr "설정"
+msgstr "Задаване"
 
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:80
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr "Esc를 눌러 취소하거나 백스페이스 키를 눌러 단축 키를 초기화합니다."
+msgstr "Натиснете Esc за отмяна или Backspace за нулиране на клавишната комбинация."
 
 #: data/ui/preferences-window.ui:24
 msgid "Device Name"
-msgstr "디바이스 이름"
+msgstr "Име на устройството"
 
 #: data/ui/preferences-window.ui:61
 msgid "_Rename"
-msgstr "이름 변경"
+msgstr "_Преименуване"
 
 #: data/ui/preferences-window.ui:98 data/ui/preferences-window.ui:112
 msgid "Refresh"
-msgstr "새로고침"
+msgstr "Опресняване"
 
 #: data/ui/preferences-window.ui:139 src/extension.js:113
 msgid "Mobile Settings"
-msgstr "모바일 설정"
+msgstr "Мобилни настройки"
 
 #: data/ui/preferences-window.ui:166
 msgid "Service Menu"
-msgstr "서비스 메뉴"
+msgstr "Сервизно меню"
 
 #: data/ui/preferences-window.ui:189
 msgid "Device Menu"
-msgstr "장치 메뉴"
+msgstr "Меню на устройството"
 
 #: data/ui/preferences-window.ui:203 data/ui/preferences-window.ui:218
 msgid "Edit Device Name"
-msgstr "장치 이름 바꾸기"
+msgstr "Редактиране на името на устройството"
 
 #: data/ui/preferences-window.ui:278
 msgid "Devices"
-msgstr "장치"
+msgstr "Устройства"
 
 #: data/ui/preferences-window.ui:328 src/preferences/service.js:686
 msgid "Searching for devices…"
-msgstr "장치를 찾는 중…"
+msgstr "Търсене на устройства…"
 
 #: data/ui/preferences-window.ui:353
 msgid "Extension Settings"
-msgstr "확장 설정"
+msgstr "Настройки на разширението"
 
 #: data/ui/preferences-window.ui:390
 msgid "GSConnect remains active when GNOME Shell is locked"
-msgstr "GSConnect는 그놈 쉘이 잠겨있을 때에도 동작합니다"
+msgstr "GSConnect остава активен, когато GNOME Shell е заключен"
 
 #: data/ui/preferences-window.ui:410
 msgid "Browser Add-Ons"
-msgstr "브라우저 확장 기능"
+msgstr "Добавки за браузър"
 
 #: data/ui/preferences-window.ui:728
 msgid "Enable"
-msgstr "사용"
+msgstr "Разрешено"
 
 #: data/ui/preferences-window.ui:760
 msgid "This device is invisible to unpaired devices"
-msgstr "이 기기는 페어링되지 않았으므로 보이지 않습니다"
+msgstr "Това устройство е невидимо за несдвоени устройства"
 
 #: data/ui/preferences-window.ui:772 src/service/manager.js:177
 msgid "Discovery Disabled"
-msgstr "Discovery 비활성화"
+msgstr "Откриването е деактивирано"
 
 #: data/ui/preferences-window.ui:826
 msgid "Retry"
@@ -542,68 +542,68 @@ msgstr ""
 
 #: data/ui/preferences-window.ui:874 src/service/init.js:361
 msgid "OpenSSL not found"
-msgstr "OpenSSL을 찾을 수 없음"
+msgstr "OpenSSL не е намерен"
 
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/preferences-window.ui:923
 msgid "Add device by IP…"
-msgstr ""
+msgstr "Добавяне на устройство по IP…"
 
 #: data/ui/preferences-window.ui:928
 msgid "Display Mode"
-msgstr "보기 모드"
+msgstr "Режим на показване"
 
 #. TRANSLATORS: Show device indicators in the top bar
 #: data/ui/preferences-window.ui:931
 msgid "Panel"
-msgstr "패널"
+msgstr "Панел"
 
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
 #: data/ui/preferences-window.ui:937
 msgid "User Menu"
-msgstr "사용자 메뉴"
+msgstr "Потребителско меню"
 
 #. TRANSLATORS: Generate a support log
 #: data/ui/preferences-window.ui:945 src/preferences/service.js:414
 msgid "Generate Support Log"
-msgstr "지원 로그 생성"
+msgstr "Генериране на регистър на поддръжка"
 
 #: data/ui/preferences-window.ui:953
 msgid "About GSConnect"
-msgstr "GSConnect 정보"
+msgstr "Относно GSConnect"
 
 #: data/ui/service-device-chooser.ui:15
 msgid "Select a Device"
-msgstr "장치 선택"
+msgstr "Изберете устройство"
 
 #: data/ui/service-device-chooser.ui:33 data/ui/service-device-chooser.ui:38
 msgid "Select"
-msgstr "선택"
+msgstr "Изберете"
 
 #. TRANSLATORS: No devices are known or available
 #: data/ui/service-device-chooser.ui:101 webextension/gettext.js:37
 msgid "No Device Found"
-msgstr "장치를 찾을 수 없음"
+msgstr "Няма намерено устройство"
 
 #: data/ui/service-device-chooser.ui:118
 msgid "Device List"
-msgstr "장치 목록"
+msgstr "Списък с устройства"
 
 #: data/ui/service-error-dialog.ui:39 data/ui/service-error-dialog.ui:47
 msgid "Report"
-msgstr "기록"
+msgstr "Докладвай"
 
 #: data/ui/service-error-dialog.ui:79
 msgid "Something’s gone wrong"
-msgstr "무언가가 잘못된 거 같습니다"
+msgstr "Нещо се е обърка"
 
 #: data/ui/service-error-dialog.ui:91
 msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
-msgstr "GSConnect에 예상치 못한 오류가 발생했습니다."
+msgstr "GSConnect се натъкна на неочаквана грешка. Моля, докладвайте за проблема и включете всяка информация, която може да помогне."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
-msgstr "자세히 보기"
+msgstr "Технически подробности"
 
 #. TRANSLATORS: Send to <device_name>, for file manager
 #. context menu
@@ -613,199 +613,200 @@ msgstr "자세히 보기"
 #: src/service/ui/contacts.js:533
 #, python-format, javascript-format
 msgid "Send to %s"
-msgstr "%s로 보내기"
+msgstr "Изпрати до %s"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: nautilus-extension/nautilus-gsconnect.py:195 webextension/gettext.js:33
 msgid "Send To Mobile Device"
-msgstr "모바일 기기로 전송"
+msgstr "Изпращане до мобилно устройство"
 
 #: src/extension.js:49
 msgid "Sync between your devices"
-msgstr "기기 동기화"
+msgstr "Синхронизиране между вашите устройства"
 
 #: src/extension.js:158
 #, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
-msgstr[0] "%d 연결됨"
+msgstr[0] "%d Свързан"
+msgstr[1] "%d Свързан"
 
 #: src/preferences/device.js:671 src/preferences/device.js:677
 msgid "Edit"
-msgstr "편집"
+msgstr "Редактиране"
 
 #: src/preferences/device.js:686 src/preferences/device.js:692
 msgid "Remove"
-msgstr "제거"
+msgstr "Премахнете"
 
 #: src/preferences/device.js:946 src/preferences/device.js:974
 msgid "Disabled"
-msgstr "사용 안 함"
+msgstr "Забранено"
 
 #. TRANSLATORS: Summary of a keyboard shortcut function
 #. Example: Enter a new shortcut to change Messaging
 #: src/preferences/keybindings.js:66
 #, javascript-format
 msgid "Enter a new shortcut to change <b>%s</b>"
-msgstr "<b>%s</b> 바로가기를 대체할 새로운 바로가기를 입력하십시오"
+msgstr "Въведете нов пряк път, за да промените <b>%s</b>"
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
 #: src/preferences/keybindings.js:132
 #, javascript-format
 msgid "%s is already being used"
-msgstr "%s(은)는 이미 사용 중입니다"
+msgstr "%s вече се използва"
 
 #: src/preferences/service.js:373
 msgid "A complete KDE Connect implementation for GNOME"
-msgstr "그놈을 위한 KDE Connect의 호환 기능"
+msgstr "Пълна реализация на KDE Connect за GNOME"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:382
 msgid "translator-credits"
-msgstr "UtsushimiNeneka(네네카)"
+msgstr "trunars"
 
 #: src/preferences/service.js:415
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
-msgstr "디버그 메시지가 로그에 기록됩니다."
+msgstr "Съобщенията за отстраняване на грешки се регистрират. Предприемете всички необходими стъпки за възпроизвеждане на проблем, след което прегледайте регистрационния файл."
 
 #: src/preferences/service.js:418
 msgid "Review Log"
-msgstr "로그 확인"
+msgstr "Преглед на регистъра"
 
 #: src/preferences/service.js:443
 msgid "Invalid Device Name"
-msgstr ""
+msgstr "Невалидно име на устройство"
 
 #. TRANSLATOR: %s is a list of forbidden characters
 #: src/preferences/service.js:445
 #, javascript-format
 msgid "Device name must not contain any of %s and have a length of 1-32 characters"
-msgstr ""
+msgstr "Името на устройството не трябва да съдържа %s и да е с дължина от 1 до 32 символа."
 
 #: src/preferences/service.js:516
 msgid "Laptop"
-msgstr "노트북"
+msgstr "Лаптоп"
 
 #: src/preferences/service.js:518
 msgid "Smartphone"
-msgstr "스마트폰"
+msgstr "Смартфон"
 
 #: src/preferences/service.js:520
 msgid "Tablet"
-msgstr "태블릿"
+msgstr "Таблет"
 
 #: src/preferences/service.js:522
 msgid "Television"
-msgstr "TV"
+msgstr "Телевизор"
 
 #: src/preferences/service.js:544
 msgid "Unpaired"
-msgstr "페어링 해제됨"
+msgstr "Несдвоено"
 
 #: src/preferences/service.js:548
 msgid "Disconnected"
-msgstr "연결되지 않음"
+msgstr "Прекъсната връзка"
 
 #: src/preferences/service.js:552
 msgid "Connected"
-msgstr "연결됨"
+msgstr "Свързан"
 
 #: src/preferences/service.js:688
 msgid "Waiting for service…"
-msgstr "서비스를 기다리는 중"
+msgstr "В очакване на обслужване…"
 
 #. Notify the user
 #: src/service/daemon.js:99
 msgid "Settings Migrated"
-msgstr ""
+msgstr "Мигрирани настройки"
 
 #: src/service/daemon.js:100
 msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
-msgstr ""
+msgstr "GSConnect е актуализиран, за да поддържа промени в протокола KDE Connect. Някои устройства може да се нуждаят от повторно сдвояване."
 
 #: src/service/daemon.js:241
 msgid "Click for help troubleshooting"
-msgstr "클릭하여 문제해결 도움 받기"
+msgstr "Кликнете за помощ при отстраняване на неизправности"
 
 #: src/service/daemon.js:251
 msgid "Click for more information"
-msgstr "자세한 내용을 보려면 여기를 클릭하십시오."
+msgstr "Кликнете за повече информация"
 
 #: src/service/daemon.js:359
 msgid "Dial Number"
-msgstr "전화번호"
+msgstr "Набиране на номер"
 
 #: src/service/daemon.js:365 src/service/daemon.js:554
 #: src/service/plugins/share.js:31
 msgid "Share File"
-msgstr "파일 공유"
+msgstr "Споделяне на файл"
 
 #: src/service/daemon.js:416
 msgid "List available devices"
-msgstr "사용 가능한 장치 목록"
+msgstr "Избройте наличните устройства"
 
 #: src/service/daemon.js:425
 msgid "List all devices"
-msgstr "모든 장치 보기"
+msgstr "Избройте всички устройства"
 
 #: src/service/daemon.js:434
 msgid "Target Device"
-msgstr "대상 기기"
+msgstr "Целево устройство"
 
 #: src/service/daemon.js:476
 msgid "Message Body"
-msgstr "메시지 내용"
+msgstr "Съдържание на съобщението"
 
 #: src/service/daemon.js:488 src/service/plugins/notification.js:57
 msgid "Send Notification"
-msgstr "알림 보내기"
+msgstr "Изпращане на известие"
 
 #: src/service/daemon.js:497
 msgid "Notification App Name"
-msgstr "알림 앱 이름"
+msgstr "Име на приложение за известие"
 
 #: src/service/daemon.js:506
 msgid "Notification Body"
-msgstr "알림 내용"
+msgstr "Съдържание за известие"
 
 #: src/service/daemon.js:515
 msgid "Notification Icon"
-msgstr "알림 아이콘"
+msgstr "Икона за известие"
 
 #: src/service/daemon.js:524
 msgid "Notification ID"
-msgstr "알림 ID"
+msgstr "Идент. № на известие"
 
 #: src/service/daemon.js:533 src/service/plugins/ping.js:13
 #: src/service/plugins/ping.js:20 src/service/plugins/ping.js:47
 msgid "Ping"
-msgstr "핑"
+msgstr "Пинг"
 
 #: src/service/daemon.js:542 src/service/plugins/battery.js:247
 #: src/service/plugins/battery.js:276 src/service/plugins/battery.js:305
 #: src/service/plugins/findmyphone.js:22
 msgid "Ring"
-msgstr "벨"
+msgstr "Звънене"
 
 #: src/service/daemon.js:563 src/service/plugins/share.js:47
 #: src/service/ui/messaging.js:1257 src/service/ui/messaging.js:1265
 msgid "Share Link"
-msgstr "링크 공유"
+msgstr "Споделете връзка"
 
 #: src/service/daemon.js:572 src/service/plugins/share.js:39
 msgid "Share Text"
-msgstr "텍스트 공유"
+msgstr "Споделяне на текст"
 
 #: src/service/daemon.js:584
 msgid "Show release version"
-msgstr "릴리즈 버전 보기"
+msgstr "Показване на версията на изданието"
 
 #. TRANSLATORS: Bluetooth address for remote device
 #: src/service/device.js:195
 #, javascript-format
 msgid "Bluetooth device at %s"
-msgstr ""
+msgstr "Bluetooth устройство в %s"
 
 #. TRANSLATORS: Label for TLS connection verification key
 #.
@@ -815,99 +816,99 @@ msgstr ""
 #: src/service/device.js:223
 #, javascript-format
 msgid "Verification key: %s"
-msgstr "인증 키: %s"
+msgstr "Ключ за потвърждение: %s"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:862
 #, javascript-format
 msgid "Pair Request from %s"
-msgstr "%s(으)로부터 연결 요청됨"
+msgstr "Заявка за сдвояване от %s"
 
 #: src/service/device.js:869
 msgid "Reject"
-msgstr "거부"
+msgstr "Отхвърли"
 
 #: src/service/device.js:874
 msgid "Accept"
-msgstr "동의"
+msgstr "Приеми"
 
 #. TRANSLATORS: eg. Failed to pair with Google Pixel
 #: src/service/device.js:960
 #, javascript-format
 msgid "Failed to pair with %s"
-msgstr ""
+msgstr "Неуспешно сдвояване с %s"
 
 #: src/service/device.js:961
 msgid "Device clocks are out of sync"
-msgstr ""
+msgstr "Часовниците на устройството не са синхронизирани"
 
 #: src/service/manager.js:178
 msgid "Discovery has been disabled due to the number of devices on this network."
-msgstr ""
+msgstr "Откриването е деактивирано поради броя на устройствата в тази мрежа."
 
 #: src/service/backends/lan.js:477
 msgid "Port already in use"
-msgstr "포트가 사용 중입니다"
+msgstr "Портът вече се използва"
 
 #: src/service/plugins/battery.js:16
 msgid "Exchange battery information"
-msgstr "배터리 정보 교환"
+msgstr "Обменете информация за батерията"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:256
 #, javascript-format
 msgid "%s: Battery is full"
-msgstr "%s: 충전이 완료되었습니다"
+msgstr "%s: Батерията е пълна"
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
 #: src/service/plugins/battery.js:258 src/shell/device.js:119
 msgid "Fully Charged"
-msgstr "충전 완료"
+msgstr "Напълно заредена"
 
 #. TRANSLATORS: eg. Google Pixel: Battery has reached custom charge level
 #: src/service/plugins/battery.js:285
 #, javascript-format
 msgid "%s: Battery has reached custom charge level"
-msgstr "%s: 설정된 배터리 충전 수준에 도달하였습니다"
+msgstr "%s: Батерията достигна персонализирано ниво на зареждане"
 
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:287
 #, javascript-format
 msgid "%d%% Charged"
-msgstr "%d%% 충전됨"
+msgstr "%d%% Заредено"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:314
 #, javascript-format
 msgid "%s: Battery is low"
-msgstr "%s: 배터리가 부족합니다"
+msgstr "%s: Батерията е изтощена"
 
 #. TRANSLATORS: eg. 15% remaining
 #: src/service/plugins/battery.js:316
 #, javascript-format
 msgid "%d%% remaining"
-msgstr "%d%% 남음"
+msgstr "%d%% остават"
 
 #: src/service/plugins/clipboard.js:12
 msgid "Clipboard"
-msgstr "클립보드"
+msgstr "Клипборд"
 
 #: src/service/plugins/clipboard.js:13
 msgid "Share the clipboard content"
-msgstr "클립보드 내용 동기화"
+msgstr "Споделете съдържанието на клипборда"
 
 #: src/service/plugins/clipboard.js:25
 msgid "Clipboard Push"
-msgstr "클립보드 보내기"
+msgstr "Натискане на клипборда"
 
 #: src/service/plugins/clipboard.js:33
 msgid "Clipboard Pull"
-msgstr "클립보드 받기"
+msgstr "Издърпване на клипборда"
 
 #: src/service/plugins/contacts.js:29
 msgid "Access contacts of the paired device"
-msgstr "페어링된 장치의 연락처 보기"
+msgstr "Достъп до контактите на сдвоеното устройство"
 
 #. Ensure we have a sender
 #. TRANSLATORS: No name or phone number
@@ -916,27 +917,27 @@ msgstr "페어링된 장치의 연락처 보기"
 #: src/service/plugins/telephony.js:156 src/service/plugins/telephony.js:175
 #: src/service/ui/contacts.js:620 src/service/ui/messaging.js:756
 msgid "Unknown Contact"
-msgstr "알 수 없는 연락처"
+msgstr "Неизвестен контакт"
 
 #: src/service/plugins/findmyphone.js:15
 msgid "Find My Phone"
-msgstr "내 휴대전화 찾기"
+msgstr "Намерете моя телефон"
 
 #: src/service/plugins/findmyphone.js:16
 msgid "Ring your paired device"
-msgstr "페어링된 장치 벨소리 울리기"
+msgstr "Позвънете на вашето сдвоено устройство"
 
 #: src/service/plugins/mousepad.js:14
 msgid "Mousepad"
-msgstr "트랙패드"
+msgstr "Мауспад"
 
 #: src/service/plugins/mousepad.js:15
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr "페어링한 장치를 원격 마우스 및 키보드로 사용할 수 있도록 함"
+msgstr "Позволява на сдвоеното устройство да действа като отдалечена мишка и клавиатура"
 
 #: src/service/plugins/mousepad.js:29 src/service/ui/mousepad.js:107
 msgid "Remote Input"
-msgstr "원격 입력"
+msgstr "Дистанционен вход"
 
 #: src/service/plugins/mpris.js:18
 msgid "MPRIS"
@@ -944,58 +945,58 @@ msgstr "MPRIS"
 
 #: src/service/plugins/mpris.js:19
 msgid "Bidirectional remote media playback control"
-msgstr ""
+msgstr "Двупосочно дистанционно управление на възпроизвеждането на мултимедия"
 
 #: src/service/plugins/mpris.js:357
 msgid "Unknown"
-msgstr "알 수 없음"
+msgstr "Непознато"
 
 #: src/service/plugins/notification.js:19
 msgid "Share notifications with the paired device"
-msgstr "페어링한 장치와 알림 공유"
+msgstr "Споделете известия със сдвоеното устройство"
 
 #: src/service/plugins/notification.js:33
 msgid "Cancel Notification"
-msgstr "알림 취소"
+msgstr "Отмяна на известие"
 
 #: src/service/plugins/notification.js:41
 msgid "Close Notification"
-msgstr "알림 닫기"
+msgstr "Затвори известие"
 
 #: src/service/plugins/notification.js:49
 msgid "Reply Notification"
-msgstr "알림 답장"
+msgstr "Известие за отговор"
 
 #: src/service/plugins/notification.js:65
 msgid "Activate Notification"
-msgstr "알림 활성화"
+msgstr "Активирайте известие"
 
 #: src/service/plugins/ping.js:14
 msgid "Send and receive pings"
-msgstr "핑 주고 받기"
+msgstr "Изпращане и получаване на пингове"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
 #: src/service/plugins/ping.js:54
 #, javascript-format
 msgid "Ping: %s"
-msgstr "연락: %s"
+msgstr "Пинг: %s"
 
 #: src/service/plugins/presenter.js:12
 msgid "Presentation"
-msgstr "프레젠테이션"
+msgstr "Представяне"
 
 #: src/service/plugins/presenter.js:13
 msgid "Use the paired device as a presenter"
-msgstr "페어링한 장치를 프레젠터로 사용"
+msgstr "Използвайте сдвоеното устройство като водещ"
 
 #: src/service/plugins/runcommand.js:13
 msgid "Run Commands"
-msgstr "명령 실행"
+msgstr "Изпълнение на команди"
 
 #: src/service/plugins/runcommand.js:15
 msgid "Run commands on your paired device or let the device run predefined commands on this PC"
-msgstr ""
+msgstr "Изпълнете команди на вашето сдвоено устройство или оставете устройството да изпълнява предварително зададени команди на този компютър"
 
 #: src/service/plugins/sftp.js:15
 msgid "SFTP"
@@ -1003,265 +1004,267 @@ msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:17
 msgid "Browse the paired device filesystem"
-msgstr "페어링한 장치 파일시스템 탐색"
+msgstr "Прегледайте файловата система на сдвоеното устройство"
 
 #: src/service/plugins/sftp.js:22
 msgid "Mount"
-msgstr "마운트"
+msgstr "Монтиране"
 
 #: src/service/plugins/sftp.js:30
 msgid "Unmount"
-msgstr "마운트 해제"
+msgstr "Демонтиране"
 
 #: src/service/plugins/sftp.js:191
 #, javascript-format
 msgid "%s reported an error"
-msgstr ""
+msgstr "%s съобщава за грешка"
 
 #: src/service/plugins/share.js:16 src/service/plugins/share.js:23
 msgid "Share"
-msgstr "공유"
+msgstr "Споделяне"
 
 #: src/service/plugins/share.js:18
 msgid "Share files and URLs between devices"
-msgstr "장치간 파일과 URL 공유"
+msgstr "Споделяйте файлове и URL адреси между устройства"
 
 #: src/service/plugins/share.js:148 src/service/plugins/share.js:227
 #: src/service/plugins/share.js:337
 msgid "Transfer Failed"
-msgstr "전송 실패"
+msgstr "Прехвърлянето е неуспешно"
 
 #. TRANSLATORS: eg. Google Pixel is not allowed to upload files
 #: src/service/plugins/share.js:150
 #, javascript-format
 msgid "%s is not allowed to upload files"
-msgstr "%s로 파일을 올릴 수 없습니다."
+msgstr "%s не е позволено да качва файлове"
 
 #: src/service/plugins/share.js:172 src/service/plugins/share.js:307
 msgid "Transferring File"
-msgstr "파일 전송 중"
+msgstr "Прехвърляне на файл"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:174
 #, javascript-format
 msgid "Receiving “%s” from %s"
-msgstr "\"%s\"를 %s에서 받는 중"
+msgstr "Получаване “%s” от %s"
 
 #: src/service/plugins/share.js:193 src/service/plugins/share.js:327
 msgid "Transfer Successful"
-msgstr "전송 성공"
+msgstr "Прехвърлянето е успешно"
 
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:195
 #, javascript-format
 msgid "Received “%s” from %s"
-msgstr "\"%s\"를 %s에서 받았습니다."
+msgstr "Получаване “%s” от %s"
 
 #: src/service/plugins/share.js:205
 msgid "Show File Location"
-msgstr "파일 위치 표시"
+msgstr "Показване на местоположението на файла"
 
 #: src/service/plugins/share.js:210
 msgid "Open File"
-msgstr "파일 열기"
+msgstr "Отваряне на файл"
 
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:229
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
-msgstr "\"%s\"를 %s에서 받아오는 데 실패했습니다."
+msgstr "Неуспешно получаване “%s” от %s"
 
 #: src/service/plugins/share.js:259
 #, javascript-format
 msgid "Text Shared By %s"
-msgstr "%s(으)로부터 텍스트가 공유됨"
+msgstr "Текст, споделен от %s"
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
 #: src/service/plugins/share.js:309
 #, javascript-format
 msgid "Sending “%s” to %s"
-msgstr "\"%s\" 파일을 %s(으)로 보내는 중"
+msgstr "Изпращане “%s” към %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:329
 #, javascript-format
 msgid "Sent “%s” to %s"
-msgstr "\"%s\" 파일을 %s(으)로 보냈습니다."
+msgstr "Изпратено  “%s” до %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:339
 #, javascript-format
 msgid "Failed to send “%s” to %s"
-msgstr "\"%s\"를 %s에 보내는 데 실패했습니다."
+msgstr "Неуспешно изпращане “%s” до %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:397
 #, javascript-format
 msgid "Send files to %s"
-msgstr "%s로 파일 보내기"
+msgstr "Изпращане на файлове до %s"
 
 #. TRANSLATORS: Mark the file to be opened once completed
 #: src/service/plugins/share.js:401
 msgid "Open when done"
-msgstr "완료되면 열기"
+msgstr "Отворете, когато сте готови"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
 #: src/service/plugins/share.js:440
 #, javascript-format
 msgid "Send a link to %s"
-msgstr "%s로 링크 보내기"
+msgstr "Изпратете връзка към %s"
 
 #: src/service/plugins/sms.js:16
 msgid "SMS"
-msgstr "메시지"
+msgstr "SMS"
 
 #: src/service/plugins/sms.js:17
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr "페어링한 장치로 SMS를 읽거나 보내고 새 SMS가 오면 알림받기"
+msgstr "Изпращайте и четете SMS на сдвоеното устройство и получавайте известия за нов SMS"
 
 #: src/service/plugins/sms.js:38
 msgid "New SMS (URI)"
-msgstr "새 메시지"
+msgstr "Нов SMS (URI)"
 
 #: src/service/plugins/sms.js:46
 msgid "Reply SMS"
-msgstr "메시지 답장"
+msgstr "Отговор на SMS"
 
 #: src/service/plugins/sms.js:70
 msgid "Share SMS"
-msgstr "메시지 공유"
+msgstr "Споделете SMS"
 
 #: src/service/plugins/systemvolume.js:36
 msgid "System Volume"
-msgstr "시스템 볼륨"
+msgstr "Сила на звука на системата"
 
 #: src/service/plugins/systemvolume.js:37
 msgid "Enable the paired device to control the system volume"
-msgstr "페어링된 장치의 시스템 볼륨 제어 활성화"
+msgstr "Активирайте сдвоеното устройство за контрол на силата на звука на системата"
 
 #: src/service/plugins/systemvolume.js:81
 msgid "PulseAudio not found"
-msgstr "PulseAudio를 찾을 수 없음"
+msgstr "PulseAudio не е намерен"
 
 #: src/service/plugins/telephony.js:17
 msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr "전화 받거나 걸 때 전화나 시스템 볼륨 조정 알림 받기"
+msgstr "Уведомяване за повиквания и регулиране на силата на звука на системата по време на звънене/текущи повиквания"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:29
 msgid "Mute Call"
-msgstr "무음 통화"
+msgstr "Заглушаване на повикване"
 
 #. TRANSLATORS: The phone is ringing
 #: src/service/plugins/telephony.js:194
 msgid "Incoming call"
-msgstr "수신 전화"
+msgstr "Входящо повикване"
 
 #. TRANSLATORS: A phone call is active
 #: src/service/plugins/telephony.js:209
 msgid "Ongoing call"
-msgstr "발신 전화"
+msgstr "Текущо повикване"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:143
 msgid "Fax"
-msgstr "팩스"
+msgstr "Fax"
 
 #. TRANSLATORS: A work or office phone number
 #: src/service/ui/contacts.js:147
 msgid "Work"
-msgstr "직장"
+msgstr "Работен"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:151
 msgid "Mobile"
-msgstr "휴대전화"
+msgstr "Мобилен"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:155
 msgid "Home"
-msgstr "홈"
+msgstr "Домашен"
 
 #. TRANSLATORS: Less than a minute ago
 #: src/service/ui/messaging.js:105 src/service/ui/messaging.js:146
 msgid "Just now"
-msgstr "방금"
+msgstr "Току що"
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
 #: src/service/ui/messaging.js:114
 #, javascript-format
 msgid "Yesterday・%s"
-msgstr "어제 %s"
+msgstr "Вчера・%s"
 
 #: src/service/ui/messaging.js:151
 #, javascript-format
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] "%d분"
+msgstr[0] "%d минута"
+msgstr[1] "%d минути"
 
 #: src/service/ui/messaging.js:407
 msgid "Not available"
-msgstr "사용할 수 없음"
+msgstr "Не е наличен"
 
 #: src/service/ui/messaging.js:764
 msgid "Group Message"
-msgstr "그룹 메시지"
+msgstr "Групово съобщение"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:779
 #, javascript-format
 msgid "You: %s"
-msgstr "%s"
+msgstr "Вие: %s"
 
 #: src/service/ui/messaging.js:965
 #, javascript-format
 msgid "And %d other contact"
 msgid_plural "And %d others"
-msgstr[0] "외 %d명"
+msgstr[0] "И %d друг контакт"
+msgstr[1] "И %d други"
 
 #. TRANSLATORS: Displayed when the remote keyboard is not ready to accept input
 #: src/service/ui/mousepad.js:115
 #, javascript-format
 msgid "Remote keyboard on %s is not active"
-msgstr "%s의 원격 키보드가 활성화되지 않음"
+msgstr "Отдалечената клавиатура на %s не е активна"
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
 #: src/shell/device.js:124
 #, javascript-format
 msgid "%d%% (Estimating…)"
-msgstr "%d%% (측정 중…)"
+msgstr "%d%% (Изчисляване...)"
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
 #: src/shell/device.js:133
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
-msgstr "%d%% (충전될 때까지 %d : %02d)"
+msgstr "%d%% (%d∶%02d До запълване)"
 
 #. TRANSLATORS: Estimated time until battery is empty
 #. EXAMPLE: 42% (12:15 Remaining)
 #: src/shell/device.js:141
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
-msgstr "%d%% (%d : %02d 남음)"
+msgstr "%d%% (%d∶%02d Остава)"
 
 #: src/shell/notification.js:73
 msgid "Reply"
-msgstr "답장"
+msgstr "Отговор"
 
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:31
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr "GSConnect로 링크를 공유하여 웹 브라우저에서 열거나 메시지를 통해 공유합니다."
+msgstr "Споделете връзки с GSConnect, директно към браузъра или от SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:35
 msgid "Service Unavailable"
-msgstr "서비스 안 됨"
+msgstr "Услугата не е налична"
 
 #. TRANSLATORS: Open URL with the device's browser
 #: webextension/gettext.js:39
 msgid "Open in Browser"
-msgstr "웹 브라우저에서 열기"
+msgstr "Отвори в браузър"
 

@@ -35,6 +35,11 @@ const Packets = {
 };
 
 
+/**
+ * Mocked packet handling for the test device
+ *
+ * @param {*} packet - a KDE Connect protocol packet
+ */
 function handlePacket(packet) {
     if (packet.type === 'kdeconnect.contacts.request_all_uids_timestamps') {
         this.sendPacket(Packets.uidsResponse);
@@ -145,4 +150,3 @@ describe('The contacts plugin', function () {
         expect(localPlugin._store.get_contact('valid')).toBeDefined();
     });
 });
-

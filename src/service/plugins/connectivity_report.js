@@ -6,6 +6,7 @@ import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 
+import * as Core from '../core.js';
 import Plugin from '../plugin.js';
 
 

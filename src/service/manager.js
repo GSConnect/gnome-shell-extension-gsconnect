@@ -7,10 +7,13 @@ import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 
 import Config from '../config.js';
+import * as Core from './core.js';
 import * as DBus from './utils/dbus.js';
 import Device from './device.js';
 
 import * as LanBackend from './backends/lan.js';
+
+import {MissingOpensslError} from '../utils/exceptions.js';
 
 const DEVICE_NAME = 'org.gnome.Shell.Extensions.GSConnect.Device';
 const DEVICE_PATH = '/org/gnome/Shell/Extensions/GSConnect/Device';
@@ -35,6 +38,20 @@ const Manager = GObject.registerClass({
             GObject.ParamFlags.READABLE,
             false
         ),
+        'debug': GObject.ParamSpec.boolean(
+            'debug',
+            'Debug',
+            'Whether debug logging is enabled in GSConnect',
+            GObject.ParamFlags.READWRITE,
+            false
+        ),
+        'certificate': GObject.ParamSpec.object(
+            'certificate',
+            'Certificate',
+            'The local TLS certificate',
+            GObject.ParamFlags.READABLE,
+            Gio.TlsCertificate
+        ),
         'discoverable': GObject.ParamSpec.boolean(
             'discoverable',
             'Discoverable',
@@ -46,7 +63,7 @@ const Manager = GObject.registerClass({
             'id',
             'Id',
             'The hostname or other network unique id',
-            GObject.ParamFlags.READWRITE,
+            GObject.ParamFlags.READABLE,
             null
         ),
         'name': GObject.ParamSpec.string(
@@ -83,6 +100,44 @@ const Manager = GObject.registerClass({
             this._backends = new Map();
 
         return this._backends;
+    }
+
+    get certificate() {
+        if (this._certificate === undefined) {
+            const app = Gio.Application.get_default();
+            try {
+                this._certificate = Gio.TlsCertificate.new_for_paths(
+                    GLib.build_filenamev([Config.CONFIGDIR, 'certificate.pem']),
+                    GLib.build_filenamev([Config.CONFIGDIR, 'private.pem']),
+                    null);
+                if (this.settings.get_boolean('missing-openssl'))
+                    app?.withdraw_notification('gsconnect-missing-openssl');
+                this.settings.set_boolean('missing-openssl', false);
+            } catch (e) {
+                if (e instanceof MissingOpensslError) {
+                    this.settings.set_boolean('missing-openssl', true);
+                    app?.notify_error(e, 'gsconnect-missing-openssl');
+                }
+                throw e;
+            }
+        }
+
+        return this._certificate;
+    }
+
+    get debug() {
+        if (this._debug === undefined)
+            this._debug = this.settings.get_boolean('debug');
+
+        return this._debug;
+    }
+
+    set debug(value) {
+        if (this._debug === value)
+            return;
+
+        this._debug = value;
+        this._onDebugChanged(this._debug);
     }
 
     get devices() {
@@ -124,8 +179,7 @@ const Manager = GObject.registerClass({
             notif.set_icon(new Gio.ThemedIcon({name: 'dialog-warning'}));
             notif.set_priority(Gio.NotificationPriority.HIGH);
             notif.set_default_action('app.preferences');
-
-            Gio.Application.prototype.withdraw_notification.call(
+            Gio.Application.prototype.send_notification.call(
                 application,
                 'discovery-warning',
                 notif
@@ -134,18 +188,7 @@ const Manager = GObject.registerClass({
     }
 
     get id() {
-        if (this._id === undefined)
-            this._id = this.settings.get_string('id');
-
-        return this._id;
-    }
-
-    set id(value) {
-        if (this.id === value)
-            return;
-
-        this._id = value;
-        this.notify('id');
+        return this.certificate.common_name;
     }
 
     get name() {
@@ -195,17 +238,21 @@ const Manager = GObject.registerClass({
      * GSettings
      */
     _initSettings() {
-        // Initialize the ID and name of the service
-        if (this.settings.get_string('id').length === 0)
-            this.settings.set_string('id', GLib.uuid_string_random());
-
         if (this.settings.get_string('name').length === 0)
             this.settings.set_string('name', GLib.get_host_name());
 
         // Bound Properties
+        this.settings.bind('debug', this, 'debug', 0);
         this.settings.bind('discoverable', this, 'discoverable', 0);
-        this.settings.bind('id', this, 'id', 0);
         this.settings.bind('name', this, 'name', 0);
+    }
+
+    _onDebugChanged(debug = false) {
+        // If debugging is disabled, install a no-op for speed
+        if (debug && globalThis._debugFunc !== undefined)
+            globalThis.debug = globalThis._debugFunc;
+        else
+            globalThis.debug = () => {};
     }
 
     /*
@@ -351,7 +398,7 @@ const Manager = GObject.registerClass({
      * of known devices if it doesn't exist.
      *
      * @param {Core.Packet} packet - An identity packet for the device
-     * @return {Device} A device object
+     * @returns {Device} A device object
      */
     _ensureDevice(packet) {
         let device = this.devices.get(packet.body.deviceId);
@@ -391,7 +438,7 @@ const Manager = GObject.registerClass({
      */
     _removeDevice(id) {
         // Delete all GSettings
-        const settings_path = `/org/gnome/shell/extensions/gsconnect/${id}/`;
+        const settings_path = `/org/gnome/shell/extensions/gsconnect/device/${id}/`;
         GLib.spawn_command_line_async(`dconf reset -f ${settings_path}`);
 
         // Delete the cache
@@ -407,7 +454,7 @@ const Manager = GObject.registerClass({
      * A GSourceFunc that tries to reconnect to each paired device, while
      * pruning unpaired devices that have disconnected.
      *
-     * @return {boolean} Always %true
+     * @returns {boolean} Always %true
      */
     _reconnect() {
         for (const [id, device] of this.devices) {
@@ -512,4 +559,3 @@ const Manager = GObject.registerClass({
 });
 
 export default Manager;
-

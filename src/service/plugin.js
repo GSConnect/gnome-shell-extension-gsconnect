@@ -7,6 +7,7 @@ import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 
 import Config from '../config.js';
+import * as Core from './core.js';
 import plugins from './plugins/index.js';
 
 
@@ -248,4 +249,3 @@ const Plugin = GObject.registerClass({
 });
 
 export default Plugin;
-

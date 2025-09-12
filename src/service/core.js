@@ -6,13 +6,14 @@ import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 
+import Device from './device.js';
 import plugins from './plugins/index.js';
 
 
 /**
  * Get the local device type.
  *
- * @return {string} A device type string
+ * @returns {string} A device type string
  */
 export function _getDeviceType() {
     try {
@@ -20,11 +21,14 @@ export function _getDeviceType() {
 
         type = Number(new TextDecoder().decode(type));
 
-        if ([8, 9, 10, 14].includes(type))
+        if ([30, 32].includes(type))
+            return 'tablet';
+
+        if ([8, 9, 10, 14, 31].includes(type))
             return 'laptop';
 
         return 'desktop';
-    } catch (e) {
+    } catch {
         return 'desktop';
     }
 }
@@ -66,8 +70,8 @@ export class Packet {
     /**
      * Deserialize and return a new Packet from an Object or string.
      *
-     * @param {Object|string} data - A string or dictionary to deserialize
-     * @return {Core.Packet} A new packet object
+     * @param {object|string} data - A string or dictionary to deserialize
+     * @returns {Packet} A new packet object
      */
     static deserialize(data) {
         return new Packet(data);
@@ -77,7 +81,7 @@ export class Packet {
      * Serialize the packet as a single line with a terminating new-line (`\n`)
      * character, ready to be written to a channel.
      *
-     * @return {string} A serialized packet
+     * @returns {string} A serialized packet
      */
     serialize() {
         this.id = Date.now();
@@ -87,7 +91,7 @@ export class Packet {
     /**
      * Update the packet from a dictionary or string of JSON
      *
-     * @param {Object|string} data - Source data
+     * @param {object|string} data - Source data
      */
     update(data) {
         try {
@@ -103,7 +107,7 @@ export class Packet {
     /**
      * Check if the packet has a payload.
      *
-     * @return {boolean} %true if @packet has a payload
+     * @returns {boolean} %true if @packet has a payload
      */
     hasPayload() {
         if (!this.hasOwnProperty('payloadSize'))
@@ -216,7 +220,7 @@ export const Channel = GObject.registerClass({
      * Read a packet.
      *
      * @param {Gio.Cancellable} [cancellable] - A cancellable
-     * @return {Promise<Core.Packet>} The packet
+     * @returns {Promise<Packet>} The packet
      */
     async readPacket(cancellable = null) {
         if (cancellable === null)
@@ -244,9 +248,9 @@ export const Channel = GObject.registerClass({
     /**
      * Send a packet.
      *
-     * @param {Core.Packet} packet - The packet to send
+     * @param {Packet} packet - The packet to send
      * @param {Gio.Cancellable} [cancellable] - A cancellable
-     * @return {Promise<boolean>} %true if successful
+     * @returns {Promise<boolean>} %true if successful
      */
     sendPacket(packet, cancellable = null) {
         if (cancellable === null)
@@ -259,7 +263,7 @@ export const Channel = GObject.registerClass({
     /**
      * Reject a transfer.
      *
-     * @param {Core.Packet} packet - A packet with payload info
+     * @param {Packet} packet - A packet with payload info
      */
     rejectTransfer(packet) {
         throw new GObject.NotImplementedError();
@@ -269,7 +273,7 @@ export const Channel = GObject.registerClass({
      * Download a payload from a device. Typically implementations will override
      * this with an async function.
      *
-     * @param {Core.Packet} packet - A packet
+     * @param {Packet} packet - A packet
      * @param {Gio.OutputStream} target - The target stream
      * @param {Gio.Cancellable} [cancellable] - A cancellable for the upload
      */
@@ -282,7 +286,7 @@ export const Channel = GObject.registerClass({
      * Upload a payload to a device. Typically implementations will override
      * this with an async function.
      *
-     * @param {Core.Packet} packet - The packet describing the transfer
+     * @param {Packet} packet - The packet describing the transfer
      * @param {Gio.InputStream} source - The source stream
      * @param {number} size - The payload size
      * @param {Gio.Cancellable} [cancellable] - A cancellable for the upload
@@ -347,7 +351,7 @@ export const ChannelService = GObject.registerClass({
 
     get name() {
         if (this._name === undefined)
-            this._name = GLib.get_host_name();
+            this._name = GLib.get_host_name().slice(0, 32);
 
         return this._name;
     }
@@ -362,7 +366,7 @@ export const ChannelService = GObject.registerClass({
 
     get id() {
         if (this._id === undefined)
-            this._id = GLib.uuid_string_random();
+            this._id = Device.generateId();
 
         return this._id;
     }
@@ -403,7 +407,7 @@ export const ChannelService = GObject.registerClass({
                 deviceId: this.id,
                 deviceName: this.name,
                 deviceType: _getDeviceType(),
-                protocolVersion: 7,
+                protocolVersion: 8,
                 incomingCapabilities: [],
                 outgoingCapabilities: [],
             },
@@ -426,7 +430,7 @@ export const ChannelService = GObject.registerClass({
     /**
      * Emit Core.ChannelService::channel
      *
-     * @param {Core.Channel} channel - The new channel
+     * @param {Channel} channel - The new channel
      */
     channel(channel) {
         if (!this.emit('channel', channel))
@@ -539,7 +543,7 @@ export const Transfer = GObject.registerClass({
     /**
      * Ensure there is a stream for the transfer item.
      *
-     * @param {Object} item - A transfer item
+     * @param {object} item - A transfer item
      * @param {Gio.Cancellable} [cancellable] - A cancellable
      */
     async _ensureStream(item, cancellable = null) {
@@ -580,7 +584,7 @@ export const Transfer = GObject.registerClass({
     /**
      * Add a file to the transfer.
      *
-     * @param {Core.Packet} packet - A packet
+     * @param {Packet} packet - A packet
      * @param {Gio.File} file - A file to transfer
      */
     addFile(packet, file) {
@@ -597,7 +601,7 @@ export const Transfer = GObject.registerClass({
     /**
      * Add a filepath to the transfer.
      *
-     * @param {Core.Packet} packet - A packet
+     * @param {Packet} packet - A packet
      * @param {string} path - A filepath to transfer
      */
     addPath(packet, path) {
@@ -614,7 +618,7 @@ export const Transfer = GObject.registerClass({
     /**
      * Add a stream to the transfer.
      *
-     * @param {Core.Packet} packet - A packet
+     * @param {Packet} packet - A packet
      * @param {Gio.InputStream|Gio.OutputStream} stream - A stream to transfer
      * @param {number} [size] - Payload size
      */
@@ -691,4 +695,3 @@ export const Transfer = GObject.registerClass({
             this._cancellable.cancel();
     }
 });
-

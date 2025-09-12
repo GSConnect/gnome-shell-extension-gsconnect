@@ -13,7 +13,7 @@ const Core = await import(`file://${Config.PACKAGE_DATADIR}/service/core.js`);
 let GioUnix;
 try {
     GioUnix = (await import('gi://GioUnix')).default;
-} catch (e) {
+} catch {
     GioUnix = {
         InputStream: Gio.UnixInputStream,
         OutputStream: Gio.UnixOutputStream,
@@ -89,7 +89,7 @@ export const ChannelService = GObject.registerClass({
             try {
                 this._tcp.add_inet_port(this.port, null);
                 break;
-            } catch (e) {
+            } catch {
                 this._port++;
             }
         }
@@ -146,7 +146,7 @@ export const ChannelService = GObject.registerClass({
             this._udp6_source = this._udp6.create_source(GLib.IOCondition.IN, null);
             this._udp6_source.set_callback(this._onIncomingIdentity.bind(this, this._udp6));
             this._udp6_source.attach(null);
-        } catch (e) {
+        } catch {
             this._udp6 = null;
         }
 
@@ -292,7 +292,7 @@ export const ChannelService = GObject.registerClass({
                 deviceId: this.id,
                 deviceName: this.name,
                 deviceType: 'desktop',
-                protocolVersion: 7,
+                protocolVersion: 8,
                 incomingCapabilities: [],
                 outgoingCapabilities: [],
                 tcpPort: this.port,
@@ -547,4 +547,3 @@ export const Channel = GObject.registerClass({
         }
     }
 });
-

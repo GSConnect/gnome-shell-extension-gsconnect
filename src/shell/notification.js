@@ -9,11 +9,14 @@ import St from 'gi://St';
 
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as MessageTray from 'resource:///org/gnome/shell/ui/messageTray.js';
-import * as Calendar from 'resource:///org/gnome/shell/ui/calendar.js';
 import * as NotificationDaemon from 'resource:///org/gnome/shell/ui/notificationDaemon.js';
 
 import {gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
-import {getIcon} from './utils.js';
+import {HAS_MESSAGELIST_NOTIFICATIONMESSAGE, getIcon} from './utils.js';
+
+const {NotificationMessage} = HAS_MESSAGELIST_NOTIFICATIONMESSAGE
+    ? await import('resource:///org/gnome/shell/ui/messageList.js')  // GNOME 48
+    : await import('resource:///org/gnome/shell/ui/calendar.js');    // GNOME 46/47
 
 const APP_ID = 'org.gnome.Shell.Extensions.GSConnect';
 const APP_PATH = '/org/gnome/Shell/Extensions/GSConnect';
@@ -29,6 +32,7 @@ const REPLY_REGEX = new RegExp(/^([^|]+)\|([\s\S]+)\|([0-9a-f]{8}-[0-9a-f]{4}-[1
 /**
  * Extracted from notificationDaemon.js, as it's no longer exported
  * https://gitlab.gnome.org/GNOME/gnome-shell/-/blob/main/js/ui/notificationDaemon.js#L556
+ *
  * @returns {{ 'desktop-startup-id': string }} Object with ID containing current time
  */
 function getPlatformData() {
@@ -45,7 +49,7 @@ const GtkNotificationDaemon = Main.notificationDaemon._gtkNotificationDaemon.con
  */
 const NotificationBanner = GObject.registerClass({
     GTypeName: 'GSConnectNotificationBanner',
-}, class NotificationBanner extends Calendar.NotificationMessage {
+}, class NotificationBanner extends NotificationMessage {
 
     constructor(notification) {
         super(notification);
@@ -147,7 +151,7 @@ const NotificationBanner = GObject.registerClass({
             (connection, res) => {
                 try {
                     connection.call_finish(res);
-                } catch (e) {
+                } catch {
                     // Silence errors
                 }
             }
@@ -198,7 +202,7 @@ const Source = GObject.registerClass({
             (connection, res) => {
                 try {
                     connection.call_finish(res);
-                } catch (e) {
+                } catch {
                     // If we fail, reset in case we can try again
                     notification._remoteClosed = false;
                 }
@@ -239,19 +243,20 @@ const Source = GObject.registerClass({
         if (cachedNotification) {
             cachedNotification.requestReplyId = requestReplyId;
 
-            // Bail early If @notificationParams represents an exact repeat
             const title = notification.title;
             const body = notification.body
                 ? notification.body
                 : null;
 
+            // Bail early If @notification represents an exact repeat
             if (cachedNotification.title === title &&
                 cachedNotification.body === body)
                 return cachedNotification;
 
+            // If the details have changed, flag as an update
             cachedNotification.title = title;
             cachedNotification.body = body;
-
+            cachedNotification.acknowledged = false;
             return cachedNotification;
         }
 
@@ -304,10 +309,8 @@ const Source = GObject.registerClass({
      * notification limit (3)
      */
     _addNotificationToMessageTray(notification) {
-        if (this.notifications.includes(notification)) {
-            notification.acknowledged = false;
+        if (this.notifications.includes(notification))
             return;
-        }
 
         while (this.notifications.length >= 10) {
             const [oldest] = this.notifications;
@@ -385,11 +388,17 @@ const _ensureAppSource = function (appId) {
 };
 
 
+/**
+ * Update the prototype for {@link GtkNotificationDaemon}.
+ */
 export function patchGtkNotificationDaemon() {
     GtkNotificationDaemon.prototype._ensureAppSource = _ensureAppSource;
 }
 
 
+/**
+ * Restore the prototype for {@link GtkNotificationDaemon}.
+ */
 export function unpatchGtkNotificationDaemon() {
     GtkNotificationDaemon.prototype._ensureAppSource = __ensureAppSource;
 }
@@ -400,6 +409,9 @@ export function unpatchGtkNotificationDaemon() {
  */
 const _addNotification = NotificationDaemon.GtkNotificationDaemonAppSource.prototype.addNotification;
 
+/**
+ * Update the prototype for {@link NotificationDaemon.GtkNotificationDaemonAppSource}.
+ */
 export function patchGtkNotificationSources() {
     // eslint-disable-next-line func-style
     const _withdrawGSConnectNotification = function (id, notification, reason) {
@@ -434,7 +446,7 @@ export function patchGtkNotificationSources() {
             (connection, res) => {
                 try {
                     connection.call_finish(res);
-                } catch (e) {
+                } catch {
                     // If we fail, reset in case we can try again
                     notification._remoteWithdrawn = false;
                 }
@@ -446,8 +458,10 @@ export function patchGtkNotificationSources() {
 }
 
 
+/**
+ * Restore the prototype for {@link NotificationDaemon.GtkNotificationDaemonAppSource}.
+ */
 export function unpatchGtkNotificationSources() {
     NotificationDaemon.GtkNotificationDaemonAppSource.prototype.addNotification = _addNotification;
     delete NotificationDaemon.GtkNotificationDaemonAppSource.prototype._withdrawGSConnectNotification;
 }
-

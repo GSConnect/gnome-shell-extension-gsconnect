@@ -9,7 +9,8 @@ import GIRepository from 'gi://GIRepository';
 import GLib from 'gi://GLib';
 
 import Config from '../config.js';
-import setup, {setupGettext} from '../utils/setup.js';
+import {setup, setupGettext} from '../utils/setup.js';
+import {MissingOpensslError} from '../utils/exceptions.js';
 
 
 // Promise Wrappers
@@ -62,10 +63,22 @@ const extensionFolder = GLib.path_get_dirname(serviceFolder);
 setup(extensionFolder);
 setupGettext();
 
+
 if (Config.IS_USER) {
     // Infer libdir by assuming gnome-shell shares a common prefix with gjs;
     // assume the parent directory if it's not there
-    let libdir = GIRepository.Repository.get_search_path().find(path => {
+    let gir_paths;
+
+    if (GIRepository.Repository.hasOwnProperty('get_search_path')) {
+        // GNOME <= 48 / GIRepository 2.0
+        gir_paths = GIRepository.Repository.get_search_path();
+    } else {
+        // GNOME 49+ / GIRepository 3.0
+        const repo = GIRepository.Repository.dup_default();
+        gir_paths = repo.get_search_path();
+    }
+
+    let libdir = gir_paths.find(path => {
         return path.endsWith('/gjs/girepository-1.0');
     }).replace('/gjs/girepository-1.0', '');
 
@@ -110,7 +123,7 @@ globalThis.HAVE_GNOME = GLib.getenv('GSCONNECT_MODE')?.toLowerCase() !== 'cli' &
  * @param {Error|string} message - A string or Error to log
  * @param {string} [prefix] - An optional prefix for the warning
  */
-const _debugCallerMatch = new RegExp(/([^@]*)@([^:]*):([^:]*)/);
+const _debugCallerMatch = new RegExp(/^([^@]+)@(.*):(\d+):(\d+)$/);
 // eslint-disable-next-line func-style
 const _debugFunc = function (error, prefix = null) {
     let caller, message;
@@ -127,7 +140,9 @@ const _debugFunc = function (error, prefix = null) {
         message = `${prefix}: ${message}`;
 
     const [, func, file, line] = _debugCallerMatch.exec(caller);
-    const script = file.replace(Config.PACKAGE_DATADIR, '');
+    let script = file.replace(Config.PACKAGE_DATADIR, '');
+    if (script.startsWith('file:///'))
+        script = script.slice(8);
 
     GLib.log_structured('GSConnect', GLib.LogLevelFlags.LEVEL_MESSAGE, {
         'MESSAGE': `[${script}:${func}:${line}]: ${message}`,
@@ -138,20 +153,17 @@ const _debugFunc = function (error, prefix = null) {
     });
 };
 
-// Swap the function out for a no-op anonymous function for speed
+globalThis._debugFunc = _debugFunc;
+
 const settings = new Gio.Settings({
     settings_schema: Config.GSCHEMA.lookup(Config.APP_ID, true),
 });
-
-settings.connect('changed::debug', (settings, key) => {
-    globalThis.debug = settings.get_boolean(key) ? _debugFunc : () => {};
-});
-
-if (settings.get_boolean('debug'))
-    globalThis.debug = _debugFunc;
-else
+if (settings.get_boolean('debug')) {
+    globalThis.debug = globalThis._debugFunc;
+} else {
+    // Swap the function out for a no-op anonymous function for speed
     globalThis.debug = () => {};
-
+}
 
 /**
  * Start wl_clipboard if not under Gnome
@@ -166,7 +178,7 @@ if (!globalThis.HAVE_GNOME) {
  * A simple (for now) pre-comparison sanitizer for phone numbers
  * See: https://github.com/KDE/kdeconnect-kde/blob/master/smsapp/conversationlistmodel.cpp#L200-L210
  *
- * @return {string} Return the string stripped of leading 0, and ' ()-+'
+ * @returns {string} Return the string stripped of leading 0, and ' ()-+'
  */
 String.prototype.toPhoneNumber = function () {
     const strippedNumber = this.replace(/^0*|[ ()+-]/g, '');
@@ -182,7 +194,7 @@ String.prototype.toPhoneNumber = function () {
  * A simple equality check for phone numbers based on `toPhoneNumber()`
  *
  * @param {string} number - A phone number string to compare
- * @return {boolean} If `this` and @number are equivalent phone numbers
+ * @returns {boolean} If `this` and @number are equivalent phone numbers
  */
 String.prototype.equalsPhoneNumber = function (number) {
     const a = this.toPhoneNumber();
@@ -215,12 +227,12 @@ Gio.File.rm_rf = function (file) {
                 Gio.File.rm_rf(iter.get_child(info));
 
             iter.close(null);
-        } catch (e) {
+        } catch {
             // Silence errors
         }
 
         file.delete(null);
-    } catch (e) {
+    } catch {
         // Silence errors
     }
 };
@@ -230,7 +242,7 @@ Gio.File.rm_rf = function (file) {
  * Extend GLib.Variant with a static method to recursively pack a variant
  *
  * @param {*} [obj] - May be a GLib.Variant, Array, standard Object or literal.
- * @return {GLib.Variant} The resulting GVariant
+ * @returns {GLib.Variant} The resulting GVariant
  */
 function _full_pack(obj) {
     let packed;
@@ -286,7 +298,7 @@ GLib.Variant.full_pack = _full_pack;
  * Extend GLib.Variant with a method to recursively deepUnpack() a variant
  *
  * @param {*} [obj] - May be a GLib.Variant, Array, standard Object or literal.
- * @return {*} The resulting object
+ * @returns {*} The resulting object
  */
 function _full_unpack(obj) {
     obj = (obj === undefined) ? this : obj;
@@ -313,7 +325,7 @@ function _full_unpack(obj) {
                         unpacked[key] = Gio.Icon.deserialize(value);
                     else
                         unpacked[key] = _full_unpack(value);
-                } catch (e) {
+                } catch {
                     unpacked[key] = _full_unpack(value);
                 }
             }
@@ -329,8 +341,8 @@ GLib.Variant.prototype.full_unpack = _full_unpack;
 
 
 /**
- * Creates a GTlsCertificate from the PEM-encoded data in @cert_path and
- * @key_path. If either are missing a new pair will be generated.
+ * Creates a GTlsCertificate from the PEM-encoded data in %cert_path and
+ * %key_path. If either are missing a new pair will be generated.
  *
  * Additionally, the private key will be added using ssh-add to allow sftp
  * connections using Gio.
@@ -340,9 +352,17 @@ GLib.Variant.prototype.full_unpack = _full_unpack;
  * @param {string} certPath - Absolute path to a x509 certificate in PEM format
  * @param {string} keyPath - Absolute path to a private key in PEM format
  * @param {string} commonName - A unique common name for the certificate
- * @return {Gio.TlsCertificate} A TLS certificate
+ * @returns {Gio.TlsCertificate} A TLS certificate
+ * @throws MissingOpensslError on missing openssl binary
  */
 Gio.TlsCertificate.new_for_paths = function (certPath, keyPath, commonName = null) {
+    if (GLib.find_program_in_path(Config.OPENSSL_PATH) === null) {
+        const error = new MissingOpensslError();
+        error.name = _('OpenSSL not found');
+        error.url = `${Config.PACKAGE_URL}/wiki/Error#openssl-not-found`;
+        throw error;
+    }
+
     // Check if the certificate/key pair already exists
     const certExists = GLib.file_test(certPath, GLib.FileTest.EXISTS);
     const keyExists = GLib.file_test(keyPath, GLib.FileTest.EXISTS);
@@ -351,17 +371,18 @@ Gio.TlsCertificate.new_for_paths = function (certPath, keyPath, commonName = nul
     if (!certExists || !keyExists) {
         // If we weren't passed a common name, generate a random one
         if (!commonName)
-            commonName = GLib.uuid_string_random();
+            commonName = GLib.uuid_string_random().replaceAll('-', '');
 
         const proc = new Gio.Subprocess({
             argv: [
                 Config.OPENSSL_PATH, 'req',
-                '-new', '-x509', '-sha256',
-                '-out', certPath,
-                '-newkey', 'rsa:4096', '-nodes',
+                '-newkey', 'ec',
+                '-pkeyopt', 'ec_paramgen_curve:prime256v1',
                 '-keyout', keyPath,
+                '-new', '-x509', '-nodes',
                 '-days', '3650',
                 '-subj', `/O=andyholmes.github.io/OU=GSConnect/CN=${commonName}`,
+                '-out', certPath,
             ],
             flags: (Gio.SubprocessFlags.STDOUT_SILENCE |
                     Gio.SubprocessFlags.STDERR_SILENCE),
@@ -399,7 +420,7 @@ Object.defineProperties(Gio.TlsCertificate.prototype, {
     /**
      * Get just the pubkey as a DER ByteArray of a certificate.
      *
-     * @return {GLib.Bytes} The pubkey as DER of the certificate.
+     * @returns {GLib.Bytes} The pubkey as DER of the certificate.
      */
     'pubkey_der': {
         value: function () {

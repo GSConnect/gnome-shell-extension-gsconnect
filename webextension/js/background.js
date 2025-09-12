@@ -39,14 +39,22 @@ var reconnectTimer = null;
 var reconnectResetTimer = null;
 
 
-// Simple error logging function
-// eslint-disable-next-line no-redeclare
+/**
+ * Simple error logging function
+ *
+ * @param {Error} error - A caught exception
+ */
 function logError(error) {
     if (!_MUTE.includes(error.message))
         console.error(error.message);
 }
 
 
+/**
+ * Callback for activation of the extension toolbar icon
+ *
+ * @param {browser.tabs.Tab} tab - the current tab
+ */
 function toggleAction(tab = null) {
     try {
         // Disable on "about:" pages
@@ -54,7 +62,7 @@ function toggleAction(tab = null) {
             browser.browserAction.disable(tab.id);
         else
             browser.browserAction.enable(tab.id);
-    } catch (e) {
+    } catch {
         browser.browserAction.disable();
     }
 }
@@ -63,9 +71,8 @@ function toggleAction(tab = null) {
 /**
  * Send a message to the native-messaging-host
  *
- * @param {Object} message - The message to forward
+ * @param {object} message - The message to forward
  */
-// eslint-disable-next-line no-redeclare
 async function postMessage(message) {
     try {
         // console.log(`WebExtension SEND: ${JSON.stringify(message)}`);
@@ -85,11 +92,10 @@ async function postMessage(message) {
 /**
  * Forward a message from the browserAction popup to the NMH
  *
- * @param {Object} message - A message from the NMH to forward
+ * @param {object} message - A message from the NMH to forward
  * @param {*} sender - A message from the NMH to forward
- * @param {*} sendResponse - A message from the NMH to forward
  */
-async function onPopupMessage(message, sender, sendResponse) {
+async function onPopupMessage(message, sender) {
     try {
         if (sender.url.includes('/popup.html'))
             await postMessage(message);
@@ -102,7 +108,7 @@ async function onPopupMessage(message, sender, sendResponse) {
 /**
  * Forward a message from the NMH to the browserAction popup
  *
- * @param {Object} message - A message from the NMH to forward
+ * @param {object} message - A message from the NMH to forward
  */
 async function forwardPortMessage(message) {
     try {
@@ -116,10 +122,9 @@ async function forwardPortMessage(message) {
 /**
  * Context Menu Item Callback
  *
- * @param {menus.OnClickData} info - Information about the item and context
- * @param {tabs.Tab} tab - The details of the tab where the click took place
+ * @param {browser.menus.OnClickData} info - Information about the item and context
  */
-async function onContextItem(info, tab) {
+async function onContextItem(info) {
     try {
         const [id, action] = info.menuItemId.split(':');
 
@@ -140,7 +145,7 @@ async function onContextItem(info, tab) {
 /**
  * Populate the context menu
  *
- * @param {tabs.Tab} tab - The current tab
+ * @param {browser.tabs.Tab} tab - The current tab
  */
 async function createContextMenu(tab) {
     try {
@@ -263,7 +268,7 @@ async function createContextMenu(tab) {
 /**
  * Message Handling
  *
- * @param {Object} message - A message received from the NMH
+ * @param {object} message - A message received from the NMH
  */
 async function onPortMessage(message) {
     try {
@@ -302,10 +307,8 @@ async function onPortMessage(message) {
 
 /**
  * Callback for disconnection from the native-messaging-host
- *
- * @param {object} port - The port that is now invalid
  */
-async function onDisconnect(port) {
+async function onDisconnect() {
     try {
         State.connected = false;
         State.port = null;
@@ -398,4 +401,3 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
  */
 toggleAction();
 connect();
-

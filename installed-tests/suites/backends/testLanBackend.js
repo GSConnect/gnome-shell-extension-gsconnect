@@ -23,7 +23,6 @@ describe('A LAN channel service', function () {
         );
 
         local = new Lan.ChannelService({
-            id: GLib.uuid_string_random(),
             certificate: localCert,
             port: 1717,
         });
@@ -34,7 +33,6 @@ describe('A LAN channel service', function () {
         );
 
         remote = new Lan.ChannelService({
-            id: GLib.uuid_string_random(),
             certificate: remoteCert,
             port: 1718,
         });

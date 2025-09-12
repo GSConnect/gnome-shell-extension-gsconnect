@@ -10,6 +10,7 @@ import St from 'gi://St';
 
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
+import {HAS_ST_ORIENTATION} from './utils.js';
 
 /**
  * An StTooltip for ClutterActors
@@ -151,7 +152,15 @@ export default class Tooltip {
             if (this.custom) {
                 this._bin.child = this.custom;
             } else {
-                this._bin.child = new St.BoxLayout({vertical: false});
+                if (HAS_ST_ORIENTATION) {
+                    // GNOME 48
+                    this._bin.child = new St.BoxLayout(
+                        {orientation: Clutter.Orientation.HORIZONTAL}
+                    );
+                } else {
+                    // GNOME 46/47
+                    this._bin.child = new St.BoxLayout({vertical: false});
+                }
 
                 if (this.gicon) {
                     this._bin.child.icon = new St.Icon({
@@ -170,8 +179,7 @@ export default class Tooltip {
                 this._bin.child.add_child(this.label);
             }
 
-            Main.layoutManager.uiGroup.add_child(this._bin);
-            Main.layoutManager.uiGroup.set_child_above_sibling(this._bin, null);
+            Main.layoutManager.addTopChrome(this._bin);
         } else if (this.custom) {
             this._bin.child = this.custom;
         } else {
@@ -234,7 +242,7 @@ export default class Tooltip {
                 time: 0.10,
                 transition: Clutter.AnimationMode.EASE_OUT_QUAD,
                 onComplete: () => {
-                    Main.layoutManager.uiGroup.remove_actor(this._bin);
+                    Main.layoutManager.removeChrome(this._bin);
 
                     if (this.custom)
                         this._bin.remove_child(this.custom);
@@ -291,7 +299,7 @@ export default class Tooltip {
             this.custom.destroy();
 
         if (this._bin) {
-            Main.layoutManager.uiGroup.remove_actor(this._bin);
+            Main.layoutManager.removeChrome(this._bin);
             this._bin.destroy();
         }
 
@@ -306,4 +314,3 @@ export default class Tooltip {
         }
     }
 }
-
