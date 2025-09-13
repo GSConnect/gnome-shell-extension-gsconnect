@@ -64,7 +64,7 @@ const Store = GObject.registerClass({
     /**
      * Parse an EContact and add it to the store.
      *
-     * @param {EBookContacts.Contact} econtact - an EContact to parse
+     * @param {"EBookContacts.Contact"} econtact - an EContact to parse
      * @param {string} [origin] - an optional origin string
      */
     async _parseEContact(econtact, origin = 'desktop') {
