@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-08 11:28-0400\n"
-"PO-Revision-Date: 2025-09-08 16:33\n"
+"PO-Revision-Date: 2025-09-13 15:52\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
 "Language: fi_FI\n"
@@ -246,11 +246,11 @@ msgstr "Tallenna tiedostot nimellä"
 
 #: data/ui/preferences-device-panel.ui:510
 msgid "Links"
-msgstr ""
+msgstr "Linkit"
 
 #: data/ui/preferences-device-panel.ui:562
 msgid "Automatically open received URLs"
-msgstr ""
+msgstr "Avaa vastaanotetut URL-osoitteet automaattisesti"
 
 #: data/ui/preferences-device-panel.ui:623
 #: data/ui/preferences-device-panel.ui:2286
@@ -528,13 +528,15 @@ msgstr "Laitteiden löytö pois käytöstä"
 
 #: data/ui/preferences-window.ui:826
 msgid "Retry"
-msgstr ""
+msgstr "Yritä uudelleen"
 
 #: data/ui/preferences-window.ui:858
 msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
 "Use your distro's package manager to install it.\n"
 "For more information, visit <a href=\"https://github.com/gsconect/gnome-shell-extension-gsconnect/wiki/Error#OpenSSL\">the GSConnect wiki</a>."
-msgstr ""
+msgstr "Komentorivityökalu <tt>openssl</tt> ei vaikuta olevan asennettu.\n"
+"Käytä jakelusi paketinhallintaa asentaaksesi sen.\n"
+"Lisätietoja on saatavilla <a href=\"https://github.com/gsconect/gnome-shell-extension-gsconnect/wiki/Error#OpenSSL\">GSConnectin wikissä</a>."
 
 #: data/ui/preferences-window.ui:874 src/service/init.js:361
 msgid "OpenSSL not found"
@@ -673,7 +675,7 @@ msgstr "Tarkista loki"
 
 #: src/preferences/service.js:443
 msgid "Invalid Device Name"
-msgstr ""
+msgstr "Virheellinen laitteen nimi"
 
 #. TRANSLATOR: %s is a list of forbidden characters
 #: src/preferences/service.js:445
@@ -833,11 +835,11 @@ msgstr "Hyväksy"
 #: src/service/device.js:960
 #, javascript-format
 msgid "Failed to pair with %s"
-msgstr ""
+msgstr "Parin muodostaminen laitteen %s kanssa epäonnistui"
 
 #: src/service/device.js:961
 msgid "Device clocks are out of sync"
-msgstr ""
+msgstr "Laitteen kellot eivät ole synkronoituna"
 
 #: src/service/manager.js:178
 msgid "Discovery has been disabled due to the number of devices on this network."
