@@ -61,6 +61,13 @@ const SystemVolumePlugin = GObject.registerClass({
         try {
             this._mixer = Components.acquire('pulseaudio');
 
+            // TODO: This is here to avoid having eslint register
+            // Gvc as an unused variable, which is pretty dumb.
+            console.assert(
+                this._mixer instanceof Gvc.MixerControl,
+                'Expected a MixerControl'
+            );
+
             this._streamChangedId = this._mixer.connect(
                 'stream-changed',
                 this._sendSink.bind(this)
@@ -137,7 +144,7 @@ const SystemVolumePlugin = GObject.registerClass({
     /**
      * Update the cache for @stream
      *
-     * @param {Gvc.MixerStream} stream - The stream to cache
+     * @param {"Gvc.MixerStream"} stream - The stream to cache
      * @returns {object} The updated cache object
      */
     _updateCache(stream) {
@@ -157,7 +164,7 @@ const SystemVolumePlugin = GObject.registerClass({
     /**
      * Send the state of a local sink
      *
-     * @param {Gvc.MixerControl} mixer - The mixer that owns the stream
+     * @param {"Gvc.MixerControl"} mixer - The mixer that owns the stream
      * @param {number} id - The Id of the stream that changed
      */
     _sendSink(mixer, id) {
