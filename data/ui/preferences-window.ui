@@ -857,7 +857,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">The &lt;tt&gt;openssl&lt;/tt&gt; command-line tool does not appear to be installed.
 Use your distro's package manager to install it.
-For more information, visit &lt;a href="https://github.com/gsconect/gnome-shell-extension-gsconnect/wiki/Error#OpenSSL"&gt;the GSConnect wiki&lt;/a&gt;.</property>
+For more information, visit &lt;a href="https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found"&gt;the GSConnect wiki&lt;/a&gt;.</property>
                                 <property name="use-markup">True</property>
                                 <property name="track-visited-links">True</property>
                               </object>
