@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-13 14:44-0400\n"
-"PO-Revision-Date: 2025-09-13 18:59\n"
+"PO-Revision-Date: 2025-09-15 23:26\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Language: ru_RU\n"
@@ -249,11 +249,11 @@ msgstr "Сохранить файлы в"
 
 #: data/ui/preferences-device-panel.ui:510
 msgid "Links"
-msgstr ""
+msgstr "Ссылки"
 
 #: data/ui/preferences-device-panel.ui:562
 msgid "Automatically open received URLs"
-msgstr ""
+msgstr "Автоматически открывать полученные ссылки"
 
 #: data/ui/preferences-device-panel.ui:623
 #: data/ui/preferences-device-panel.ui:2286
@@ -531,13 +531,15 @@ msgstr "Обнаружение выключено"
 
 #: data/ui/preferences-window.ui:826
 msgid "Retry"
-msgstr ""
+msgstr "Повторить попытку"
 
 #: data/ui/preferences-window.ui:858
 msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
 "Use your distro's package manager to install it.\n"
 "For more information, visit <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</a>."
-msgstr ""
+msgstr "Утилита командной строки <tt>openssl</tt> не установлена.\n"
+"Воспользуйтесь диспетчером пакетов вашего дистрибутива для её установки.\n"
+"Дополнительные сведения доступны на <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">вики GSConnect</a>."
 
 #: data/ui/preferences-window.ui:874 src/service/init.js:361
 msgid "OpenSSL not found"
@@ -546,7 +548,7 @@ msgstr "OpenSSL не найден"
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/preferences-window.ui:923
 msgid "Add device by IP…"
-msgstr ""
+msgstr "Добавить устройство по IP-адресу…"
 
 #: data/ui/preferences-window.ui:928
 msgid "Display Mode"
@@ -621,7 +623,7 @@ msgstr "Отправить на устройство"
 
 #: src/extension.js:49
 msgid "Sync between your devices"
-msgstr "Синхронизируйтесь между своими устройствами"
+msgstr "Синхронизация между вашими устройствами"
 
 #: src/extension.js:158
 #, javascript-format
@@ -665,7 +667,8 @@ msgstr "Полная реализация KDE Connect для GNOME"
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:382
 msgid "translator-credits"
-msgstr "'Losted' <losted@wants.dicksinhisan.us>"
+msgstr "'Losted' <lulzette@cock.li>\n"
+"Olesya Gerasimenko <goa@altlinux.org>"
 
 #: src/preferences/service.js:415
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
@@ -677,13 +680,13 @@ msgstr "Посмотреть журнал"
 
 #: src/preferences/service.js:443
 msgid "Invalid Device Name"
-msgstr ""
+msgstr "Недопустимое название устройства"
 
 #. TRANSLATOR: %s is a list of forbidden characters
 #: src/preferences/service.js:445
 #, javascript-format
 msgid "Device name must not contain any of %s and have a length of 1-32 characters"
-msgstr ""
+msgstr "Название устройства не может содержать следующие символы: %s. Длина названия должна составлять от 1 до 32 символов."
 
 #: src/preferences/service.js:516
 msgid "Laptop"
@@ -720,11 +723,11 @@ msgstr "Ожидание службы…"
 #. Notify the user
 #: src/service/daemon.js:99
 msgid "Settings Migrated"
-msgstr ""
+msgstr "Настройки перенесены"
 
 #: src/service/daemon.js:100
 msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
-msgstr ""
+msgstr "Программа GSConnect была обновлена для обеспечения поддержки изменений в протоколе KDE Connect. Может потребоваться заново выполнить сопряжение некоторых устройств."
 
 #: src/service/daemon.js:241
 msgid "Click for help troubleshooting"
@@ -837,11 +840,11 @@ msgstr "Принять"
 #: src/service/device.js:960
 #, javascript-format
 msgid "Failed to pair with %s"
-msgstr ""
+msgstr "Не удалось выполнить сопряжение с %s"
 
 #: src/service/device.js:961
 msgid "Device clocks are out of sync"
-msgstr ""
+msgstr "Часы устройств не синхронизированы"
 
 #: src/service/manager.js:178
 msgid "Discovery has been disabled due to the number of devices on this network."
