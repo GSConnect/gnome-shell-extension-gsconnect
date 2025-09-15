@@ -1,21 +1,26 @@
+# SPDX-FileCopyrightText: 2025 Olesya Gerasimenko <goa@altlinux.org>
 msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-13 14:44-0400\n"
-"PO-Revision-Date: 2025-09-13 18:59\n"
-"Last-Translator: \n"
-"Language-Team: Russian\n"
+"PO-Revision-Date: 2025-09-15 11:14+0300\n"
+"Last-Translator: Olesya Gerasimenko <goa@altlinux.org>\n"
+"Language-Team: Basealt Translation Team\n"
 "Language: ru_RU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 &&"
+" n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n"
+"%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: ru\n"
-"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect]"
+" main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
+"X-Generator: Lokalize 23.08.5\n"
 
 #. TRANSLATORS: Extension name
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:12
@@ -32,12 +37,22 @@ msgid "GSConnect Team"
 msgstr "Команда GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
-msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr "GSConnect - это полная реализация KDE Connect для GNOME Shell с интеграцией в Nautilus, Chrome и Firefox. Команда KDE Connect также имеет приложения для Linux, BSD, Android, Sailfish, iOS, macOS и Windows."
+msgid ""
+"GSConnect is a complete implementation of KDE Connect especially for GNOME"
+" Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team"
+" has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr ""
+"GSConnect - это полная реализация KDE Connect для GNOME Shell с интеграцией в"
+" Nautilus, Chrome и Firefox. Команда KDE Connect также имеет приложения для"
+" Linux, BSD, Android, Sailfish, iOS, macOS и Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
-msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
-msgstr "С помощью GSConnect вы можете безопасно подключиться к мобильным устройствам и другим компьютерам:"
+msgid ""
+"With GSConnect you can securely connect to mobile devices and other desktops"
+" to:"
+msgstr ""
+"С помощью GSConnect вы можете безопасно подключиться к мобильным устройствам"
+" и другим компьютерам:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:48
 msgid "Share files, links and text"
@@ -180,12 +195,14 @@ msgid "Select or start a conversation"
 msgstr "Выберите или начните диалог"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid "Touchpad.\n"
+msgid ""
+"Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
 "Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr "Тачпад\n"
+msgstr ""
+"Тачпад\n"
 "Для управления курсором удерживайте ЛКМ и перемещайте мышь.\n\n"
 "Одинарный клик будет отправлен на сопряжённое устройство.\n"
 "Используйте левую, среднюю и правую кнопку мыши, а также колесо прокрутки."
@@ -249,11 +266,11 @@ msgstr "Сохранить файлы в"
 
 #: data/ui/preferences-device-panel.ui:510
 msgid "Links"
-msgstr ""
+msgstr "Ссылки"
 
 #: data/ui/preferences-device-panel.ui:562
 msgid "Automatically open received URLs"
-msgstr ""
+msgstr "Автоматически открывать полученные ссылки"
 
 #: data/ui/preferences-device-panel.ui:623
 #: data/ui/preferences-device-panel.ui:2286
@@ -531,13 +548,20 @@ msgstr "Обнаружение выключено"
 
 #: data/ui/preferences-window.ui:826
 msgid "Retry"
-msgstr ""
+msgstr "Повторить попытку"
 
 #: data/ui/preferences-window.ui:858
-msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
+msgid ""
+"The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
 "Use your distro's package manager to install it.\n"
-"For more information, visit <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</a>."
+"For more information, visit <a href=\"https://github.com/gsconnect/gnome-shell"
+"-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</a>."
 msgstr ""
+"Утилита командной строки <tt>openssl</tt> не установлена.\n"
+"Воспользуйтесь диспетчером пакетов вашего дистрибутива для её установки.\n"
+"Дополнительные сведения доступны на <a href=\"https://github.com/gsconnect/gno"
+"me-shell-extension-gsconnect/wiki/Error#openssl-not-found\">вики GSConnect</a"
+">."
 
 #: data/ui/preferences-window.ui:874 src/service/init.js:361
 msgid "OpenSSL not found"
@@ -546,7 +570,7 @@ msgstr "OpenSSL не найден"
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/preferences-window.ui:923
 msgid "Add device by IP…"
-msgstr ""
+msgstr "Добавить устройство по IP-адресу…"
 
 #: data/ui/preferences-window.ui:928
 msgid "Display Mode"
@@ -597,8 +621,12 @@ msgid "Something’s gone wrong"
 msgstr "Что-то пошло не так"
 
 #: data/ui/service-error-dialog.ui:91
-msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
-msgstr "Возникла непредвиденная ошибка. Пожалуйста, сообщите о проблеме, по возможности предоставьте дополнительную информацию."
+msgid ""
+"GSConnect encountered an unexpected error. Please report the problem and"
+" include any information that may help."
+msgstr ""
+"Возникла непредвиденная ошибка. Пожалуйста, сообщите о проблеме, по"
+" возможности предоставьте дополнительную информацию."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
@@ -621,7 +649,7 @@ msgstr "Отправить на устройство"
 
 #: src/extension.js:49
 msgid "Sync between your devices"
-msgstr "Синхронизируйтесь между своими устройствами"
+msgstr "Синхронизация между вашими устройствами"
 
 #: src/extension.js:158
 #, javascript-format
@@ -668,8 +696,12 @@ msgid "translator-credits"
 msgstr "'Losted' <losted@wants.dicksinhisan.us>"
 
 #: src/preferences/service.js:415
-msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
-msgstr "Отладочные сообщения будут записаны. Произведите действия при которых произошла проблема, затем посмотрите журнал."
+msgid ""
+"Debug messages are being logged. Take any steps necessary to reproduce a"
+" problem then review the log."
+msgstr ""
+"Отладочные сообщения будут записаны. Произведите действия при которых"
+" произошла проблема, затем посмотрите журнал."
 
 #: src/preferences/service.js:418
 msgid "Review Log"
@@ -677,13 +709,16 @@ msgstr "Посмотреть журнал"
 
 #: src/preferences/service.js:443
 msgid "Invalid Device Name"
-msgstr ""
+msgstr "Недопустимое название устройства"
 
 #. TRANSLATOR: %s is a list of forbidden characters
 #: src/preferences/service.js:445
 #, javascript-format
-msgid "Device name must not contain any of %s and have a length of 1-32 characters"
+msgid ""
+"Device name must not contain any of %s and have a length of 1-32 characters"
 msgstr ""
+"Название устройства не может содержать следующие символы: %s. Длина названия"
+" должна составлять от 1 до 32 символов."
 
 #: src/preferences/service.js:516
 msgid "Laptop"
@@ -703,7 +738,7 @@ msgstr "Телевидение"
 
 #: src/preferences/service.js:544
 msgid "Unpaired"
-msgstr "Не сопряжен"
+msgstr "Не сопряжено"
 
 #: src/preferences/service.js:548
 msgid "Disconnected"
@@ -720,11 +755,16 @@ msgstr "Ожидание службы…"
 #. Notify the user
 #: src/service/daemon.js:99
 msgid "Settings Migrated"
-msgstr ""
+msgstr "Настройки перенесены"
 
 #: src/service/daemon.js:100
-msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
+msgid ""
+"GSConnect has updated to support changes to the KDE Connect protocol. Some"
+" devices may need to be re-paired."
 msgstr ""
+"Программа GSConnect была обновлена для обеспечения поддержки изменений в"
+" протоколе KDE Connect. Может потребоваться заново выполнить сопряжение"
+" некоторых устройств."
 
 #: src/service/daemon.js:241
 msgid "Click for help troubleshooting"
@@ -837,14 +877,15 @@ msgstr "Принять"
 #: src/service/device.js:960
 #, javascript-format
 msgid "Failed to pair with %s"
-msgstr ""
+msgstr "Не удалось выполнить сопряжение с %s"
 
 #: src/service/device.js:961
 msgid "Device clocks are out of sync"
-msgstr ""
+msgstr "Часы устройств не синхронизированы"
 
 #: src/service/manager.js:178
-msgid "Discovery has been disabled due to the number of devices on this network."
+msgid ""
+"Discovery has been disabled due to the number of devices on this network."
 msgstr "Обнаружение было выключено из-за количества устройств в этой сети."
 
 #: src/service/backends/lan.js:477
@@ -934,7 +975,8 @@ msgstr "Тачпад"
 
 #: src/service/plugins/mousepad.js:15
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr "Позволяет сопряжённому устройству удалённо работать мышью и клавиатурой"
+msgstr ""
+"Позволяет сопряжённому устройству удалённо работать мышью и клавиатурой"
 
 #: src/service/plugins/mousepad.js:29 src/service/ui/mousepad.js:107
 msgid "Remote Input"
@@ -996,8 +1038,12 @@ msgid "Run Commands"
 msgstr "Отправить Команду"
 
 #: src/service/plugins/runcommand.js:15
-msgid "Run commands on your paired device or let the device run predefined commands on this PC"
-msgstr "Выполнить команды на сопряжённом устройстве или позволить ему запустить определённые команды на этом ПК"
+msgid ""
+"Run commands on your paired device or let the device run predefined commands"
+" on this PC"
+msgstr ""
+"Выполнить команды на сопряжённом устройстве или позволить ему запустить"
+" определённые команды на этом ПК"
 
 #: src/service/plugins/sftp.js:15
 msgid "SFTP"
@@ -1146,7 +1192,8 @@ msgid "PulseAudio not found"
 msgstr "PulseAudio не найден"
 
 #: src/service/plugins/telephony.js:17
-msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgid ""
+"Be notified about calls and adjust system volume during ringing/ongoing calls"
 msgstr "Уведомлять о звонках и регулировать громкость системы во время звонков"
 
 #. TRANSLATORS: Silence the actively ringing call
@@ -1272,4 +1319,5 @@ msgstr "Сервис недоступен"
 #: webextension/gettext.js:39
 msgid "Open in Browser"
 msgstr "Открыть в браузере"
+
 
