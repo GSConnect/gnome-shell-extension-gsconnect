@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-13 14:44-0400\n"
-"PO-Revision-Date: 2025-09-13 18:59\n"
+"PO-Revision-Date: 2025-09-16 21:12\n"
 "Last-Translator: \n"
 "Language-Team: Ukrainian\n"
 "Language: uk_UA\n"
@@ -532,13 +532,15 @@ msgstr "Видимість вимкнено"
 
 #: data/ui/preferences-window.ui:826
 msgid "Retry"
-msgstr ""
+msgstr "Повторити спробу"
 
 #: data/ui/preferences-window.ui:858
 msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
 "Use your distro's package manager to install it.\n"
 "For more information, visit <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</a>."
-msgstr ""
+msgstr "Інструмент командного рядка <tt>openssl</tt> не встановлений.\n"
+"Використовуйте менеджер пакунків вашого дистрибутива, щоб встановити його.\n"
+"Докладніше у <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">вікі GSConnect</a>."
 
 #: data/ui/preferences-window.ui:874 src/service/init.js:361
 msgid "OpenSSL not found"
