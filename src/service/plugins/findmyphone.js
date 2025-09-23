@@ -157,10 +157,10 @@ const Dialog = GObject.registerClass({
             }),
             plugin: params.plugin,
             urgency_hint: true,
+            window_position: Gtk.WindowPosition.CENTER_ALWAYS,
         });
 
         this.set_keep_above(true);
-        this.maximize();
         this.message_area.destroy();
 
         // If an output stream is available start fading the volume up
