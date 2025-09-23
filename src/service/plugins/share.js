@@ -10,6 +10,7 @@ import Gtk from 'gi://Gtk';
 
 import Plugin from '../plugin.js';
 import * as URI from '../utils/uri.js';
+import * as Filename from '../utils/filename.js';
 
 
 export const Metadata = {
@@ -131,10 +132,9 @@ const SharePlugin = GObject.registerClass({
         const dirpath = this._ensureReceiveDirectory();
         const basepath = GLib.build_filenamev([dirpath, filename]);
         let filepath = basepath;
-        let copyNum = 0;
 
         while (GLib.file_test(filepath, GLib.FileTest.EXISTS))
-            filepath = `${basepath} (${++copyNum})`;
+            filepath = Filename.makeUnique(filepath);
 
         return Gio.File.new_for_path(filepath);
     }
