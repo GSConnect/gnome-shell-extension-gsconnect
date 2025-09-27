@@ -904,7 +904,10 @@ const ConversationSummary = GObject.registerClass({
             this.avatar.icon_name = 'people-symbolic';
             const participants = [];
             addresses.forEach(address => {
-                participants.push(this.contacts[address].name);
+                if (this.contacts[address] != null && this.contacts[address] != undefined)
+                    participants.push(this.contacts[address].name);
+                else 
+                    participants.push(address);
             });
             // this.name_label.tooltip_text = participants.join(', ');
         }
