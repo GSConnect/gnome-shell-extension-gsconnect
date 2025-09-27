@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-24 16:26-0400\n"
-"PO-Revision-Date: 2025-07-30 22:43\n"
+"POT-Creation-Date: 2025-09-13 14:44-0400\n"
+"PO-Revision-Date: 2025-09-15 23:26\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Language: ru_RU\n"
@@ -92,7 +92,7 @@ msgstr "Подключиться к…"
 #: data/ui/preferences-shortcut-editor.ui:19
 #: data/ui/service-device-chooser.ui:21 data/ui/service-device-chooser.ui:25
 #: data/ui/service-error-dialog.ui:20 data/ui/service-error-dialog.ui:28
-#: src/preferences/service.js:405 src/service/plugins/share.js:179
+#: src/preferences/service.js:417 src/service/plugins/share.js:179
 #: src/service/plugins/share.js:314 src/service/plugins/share.js:445
 msgid "Cancel"
 msgstr "Отмена"
@@ -110,7 +110,7 @@ msgid "No contacts"
 msgstr "Нет контактов"
 
 #: data/ui/contact-chooser.ui:68 data/ui/messaging-window.ui:103
-#: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:847
+#: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:949
 msgid "Help"
 msgstr "Помощь"
 
@@ -124,8 +124,8 @@ msgid "Other"
 msgstr "Другие"
 
 #. TRANSLATORS: Share URL by SMS
-#: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:333
-#: src/service/daemon.js:447 src/service/plugins/sms.js:62
+#: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:353
+#: src/service/daemon.js:467 src/service/plugins/sms.js:62
 #: webextension/gettext.js:41
 msgid "Send SMS"
 msgstr "Отправить СМС"
@@ -215,7 +215,7 @@ msgstr "Выберите исполняемый файл"
 msgid "Open"
 msgstr "Открыть"
 
-#: data/ui/preferences-device-panel.ui:53 src/preferences/service.js:504
+#: data/ui/preferences-device-panel.ui:53 src/preferences/service.js:524
 msgid "Desktop"
 msgstr "Компьютер"
 
@@ -249,11 +249,11 @@ msgstr "Сохранить файлы в"
 
 #: data/ui/preferences-device-panel.ui:510
 msgid "Links"
-msgstr ""
+msgstr "Ссылки"
 
 #: data/ui/preferences-device-panel.ui:562
 msgid "Automatically open received URLs"
-msgstr ""
+msgstr "Автоматически открывать полученные ссылки"
 
 #: data/ui/preferences-device-panel.ui:623
 #: data/ui/preferences-device-panel.ui:2286
@@ -402,7 +402,7 @@ msgstr "Настройки устройства"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/ui/preferences-device-panel.ui:2624
-#: data/ui/preferences-device-panel.ui:2716 src/service/daemon.js:426
+#: data/ui/preferences-device-panel.ui:2716 src/service/daemon.js:446
 msgid "Pair"
 msgstr "Сопряжение"
 
@@ -420,7 +420,7 @@ msgid "Encryption Info"
 msgstr "Информация о шифровании"
 
 #. TRANSLATORS: Unpair the device and notify it
-#: data/ui/preferences-device-panel.ui:2722 src/service/daemon.js:435
+#: data/ui/preferences-device-panel.ui:2722 src/service/daemon.js:455
 msgid "Unpair"
 msgstr "Забыть"
 
@@ -501,7 +501,7 @@ msgstr "Редактировать название устройства"
 msgid "Devices"
 msgstr "Устройства"
 
-#: data/ui/preferences-window.ui:328 src/preferences/service.js:666
+#: data/ui/preferences-window.ui:328 src/preferences/service.js:686
 msgid "Searching for devices…"
 msgstr "Поиск устройств…"
 
@@ -525,35 +525,51 @@ msgstr "Включить"
 msgid "This device is invisible to unpaired devices"
 msgstr "Это устройство является невидимым для неспаренных устройств"
 
-#: data/ui/preferences-window.ui:772 src/service/manager.js:163
+#: data/ui/preferences-window.ui:772 src/service/manager.js:177
 msgid "Discovery Disabled"
 msgstr "Обнаружение выключено"
 
-#. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
-#: data/ui/preferences-window.ui:821
-msgid "Add device by IP…"
-msgstr ""
-
 #: data/ui/preferences-window.ui:826
+msgid "Retry"
+msgstr "Повторить попытку"
+
+#: data/ui/preferences-window.ui:858
+msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
+"Use your distro's package manager to install it.\n"
+"For more information, visit <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</a>."
+msgstr "Утилита командной строки <tt>openssl</tt> не установлена.\n"
+"Воспользуйтесь диспетчером пакетов вашего дистрибутива для её установки.\n"
+"Дополнительные сведения доступны на <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">вики GSConnect</a>."
+
+#: data/ui/preferences-window.ui:874 src/service/init.js:361
+msgid "OpenSSL not found"
+msgstr "OpenSSL не найден"
+
+#. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
+#: data/ui/preferences-window.ui:923
+msgid "Add device by IP…"
+msgstr "Добавить устройство по IP-адресу…"
+
+#: data/ui/preferences-window.ui:928
 msgid "Display Mode"
 msgstr "Режим отображения"
 
 #. TRANSLATORS: Show device indicators in the top bar
-#: data/ui/preferences-window.ui:829
+#: data/ui/preferences-window.ui:931
 msgid "Panel"
 msgstr "Панель"
 
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
-#: data/ui/preferences-window.ui:835
+#: data/ui/preferences-window.ui:937
 msgid "User Menu"
 msgstr "Меню пользователя"
 
 #. TRANSLATORS: Generate a support log
-#: data/ui/preferences-window.ui:843 src/preferences/service.js:402
+#: data/ui/preferences-window.ui:945 src/preferences/service.js:414
 msgid "Generate Support Log"
 msgstr "Сгенерировать журнал"
 
-#: data/ui/preferences-window.ui:851
+#: data/ui/preferences-window.ui:953
 msgid "About GSConnect"
 msgstr "О GSConnect"
 
@@ -607,7 +623,7 @@ msgstr "Отправить на устройство"
 
 #: src/extension.js:49
 msgid "Sync between your devices"
-msgstr "Синхронизируйтесь между своими устройствами"
+msgstr "Синхронизация между вашими устройствами"
 
 #: src/extension.js:158
 #, javascript-format
@@ -644,148 +660,149 @@ msgstr "Введите новую комбинацию клавиш для <b>%s
 msgid "%s is already being used"
 msgstr "%s уже используется"
 
-#: src/preferences/service.js:361
+#: src/preferences/service.js:373
 msgid "A complete KDE Connect implementation for GNOME"
 msgstr "Полная реализация KDE Connect для GNOME"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
-#: src/preferences/service.js:370
+#: src/preferences/service.js:382
 msgid "translator-credits"
-msgstr "'Losted' <losted@wants.dicksinhisan.us>"
+msgstr "'Losted' <lulzette@cock.li>\n"
+"Olesya Gerasimenko <goa@altlinux.org>"
 
-#: src/preferences/service.js:403
+#: src/preferences/service.js:415
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
 msgstr "Отладочные сообщения будут записаны. Произведите действия при которых произошла проблема, затем посмотрите журнал."
 
-#: src/preferences/service.js:406
+#: src/preferences/service.js:418
 msgid "Review Log"
 msgstr "Посмотреть журнал"
 
-#: src/preferences/service.js:431
+#: src/preferences/service.js:443
 msgid "Invalid Device Name"
-msgstr ""
+msgstr "Недопустимое название устройства"
 
 #. TRANSLATOR: %s is a list of forbidden characters
-#: src/preferences/service.js:433
+#: src/preferences/service.js:445
 #, javascript-format
 msgid "Device name must not contain any of %s and have a length of 1-32 characters"
-msgstr ""
+msgstr "Название устройства не может содержать следующие символы: %s. Длина названия должна составлять от 1 до 32 символов."
 
-#: src/preferences/service.js:496
+#: src/preferences/service.js:516
 msgid "Laptop"
 msgstr "Ноутбук"
 
-#: src/preferences/service.js:498
+#: src/preferences/service.js:518
 msgid "Smartphone"
 msgstr "Смартфон"
 
-#: src/preferences/service.js:500
+#: src/preferences/service.js:520
 msgid "Tablet"
 msgstr "Планшет"
 
-#: src/preferences/service.js:502
+#: src/preferences/service.js:522
 msgid "Television"
 msgstr "Телевидение"
 
-#: src/preferences/service.js:524
+#: src/preferences/service.js:544
 msgid "Unpaired"
 msgstr "Не сопряжен"
 
-#: src/preferences/service.js:528
+#: src/preferences/service.js:548
 msgid "Disconnected"
 msgstr "Отключено"
 
-#: src/preferences/service.js:532
+#: src/preferences/service.js:552
 msgid "Connected"
 msgstr "Подключено"
 
-#: src/preferences/service.js:668
+#: src/preferences/service.js:688
 msgid "Waiting for service…"
 msgstr "Ожидание службы…"
 
 #. Notify the user
-#: src/service/daemon.js:94
+#: src/service/daemon.js:99
 msgid "Settings Migrated"
-msgstr ""
+msgstr "Настройки перенесены"
 
-#: src/service/daemon.js:95
+#: src/service/daemon.js:100
 msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
-msgstr ""
+msgstr "Программа GSConnect была обновлена для обеспечения поддержки изменений в протоколе KDE Connect. Может потребоваться заново выполнить сопряжение некоторых устройств."
 
-#: src/service/daemon.js:231
+#: src/service/daemon.js:241
 msgid "Click for help troubleshooting"
 msgstr "Нажмите для решения проблем"
 
-#: src/service/daemon.js:242
+#: src/service/daemon.js:251
 msgid "Click for more information"
 msgstr "Нажмите для получения информации"
 
-#: src/service/daemon.js:339
+#: src/service/daemon.js:359
 msgid "Dial Number"
 msgstr "Вызвать номер"
 
-#: src/service/daemon.js:345 src/service/daemon.js:534
+#: src/service/daemon.js:365 src/service/daemon.js:554
 #: src/service/plugins/share.js:31
 msgid "Share File"
 msgstr "Поделиться файлом"
 
-#: src/service/daemon.js:396
+#: src/service/daemon.js:416
 msgid "List available devices"
 msgstr "Список доступных устройств"
 
-#: src/service/daemon.js:405
+#: src/service/daemon.js:425
 msgid "List all devices"
 msgstr "Список всех устройств"
 
-#: src/service/daemon.js:414
+#: src/service/daemon.js:434
 msgid "Target Device"
 msgstr "Целевое устройство"
 
-#: src/service/daemon.js:456
+#: src/service/daemon.js:476
 msgid "Message Body"
 msgstr "Текст сообщения"
 
-#: src/service/daemon.js:468 src/service/plugins/notification.js:57
+#: src/service/daemon.js:488 src/service/plugins/notification.js:57
 msgid "Send Notification"
 msgstr "Отправить"
 
-#: src/service/daemon.js:477
+#: src/service/daemon.js:497
 msgid "Notification App Name"
 msgstr "Имя приложения"
 
-#: src/service/daemon.js:486
+#: src/service/daemon.js:506
 msgid "Notification Body"
 msgstr "Текст уведомления"
 
-#: src/service/daemon.js:495
+#: src/service/daemon.js:515
 msgid "Notification Icon"
 msgstr "Иконка уведомления"
 
-#: src/service/daemon.js:504
+#: src/service/daemon.js:524
 msgid "Notification ID"
 msgstr "ID уведомления"
 
-#: src/service/daemon.js:513 src/service/plugins/ping.js:13
+#: src/service/daemon.js:533 src/service/plugins/ping.js:13
 #: src/service/plugins/ping.js:20 src/service/plugins/ping.js:47
 msgid "Ping"
 msgstr "Пинг"
 
-#: src/service/daemon.js:522 src/service/plugins/battery.js:247
+#: src/service/daemon.js:542 src/service/plugins/battery.js:247
 #: src/service/plugins/battery.js:276 src/service/plugins/battery.js:305
 #: src/service/plugins/findmyphone.js:22
 msgid "Ring"
 msgstr "Найти"
 
-#: src/service/daemon.js:543 src/service/plugins/share.js:47
+#: src/service/daemon.js:563 src/service/plugins/share.js:47
 #: src/service/ui/messaging.js:1257 src/service/ui/messaging.js:1265
 msgid "Share Link"
 msgstr "Поделиться ссылкой"
 
-#: src/service/daemon.js:552 src/service/plugins/share.js:39
+#: src/service/daemon.js:572 src/service/plugins/share.js:39
 msgid "Share Text"
 msgstr "Поделиться текстом"
 
-#: src/service/daemon.js:564
+#: src/service/daemon.js:584
 msgid "Show release version"
 msgstr "Показать версию программы"
 
@@ -823,17 +840,13 @@ msgstr "Принять"
 #: src/service/device.js:960
 #, javascript-format
 msgid "Failed to pair with %s"
-msgstr ""
+msgstr "Не удалось выполнить сопряжение с %s"
 
 #: src/service/device.js:961
 msgid "Device clocks are out of sync"
-msgstr ""
+msgstr "Часы устройств не синхронизированы"
 
-#: src/service/init.js:347
-msgid "OpenSSL not found"
-msgstr "OpenSSL не найден"
-
-#: src/service/manager.js:164
+#: src/service/manager.js:178
 msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Обнаружение было выключено из-за количества устройств в этой сети."
 
@@ -938,7 +951,7 @@ msgstr "MPRIS"
 msgid "Bidirectional remote media playback control"
 msgstr "Двунаправлённое управление воспроизведением"
 
-#: src/service/plugins/mpris.js:355
+#: src/service/plugins/mpris.js:357
 msgid "Unknown"
 msgstr "Неизвестно"
 
@@ -1123,15 +1136,15 @@ msgstr "Ответить на SMS"
 msgid "Share SMS"
 msgstr "Отправить SMS"
 
-#: src/service/plugins/systemvolume.js:27
+#: src/service/plugins/systemvolume.js:36
 msgid "System Volume"
 msgstr "Громкость"
 
-#: src/service/plugins/systemvolume.js:28
+#: src/service/plugins/systemvolume.js:37
 msgid "Enable the paired device to control the system volume"
 msgstr "Разрешить сопряжённому устройству управлять громкостью системы"
 
-#: src/service/plugins/systemvolume.js:72
+#: src/service/plugins/systemvolume.js:81
 msgid "PulseAudio not found"
 msgstr "PulseAudio не найден"
 

@@ -13,6 +13,8 @@ import Device from './device.js';
 
 import * as LanBackend from './backends/lan.js';
 
+import {MissingOpensslError} from '../utils/exceptions.js';
+
 const DEVICE_NAME = 'org.gnome.Shell.Extensions.GSConnect.Device';
 const DEVICE_PATH = '/org/gnome/Shell/Extensions/GSConnect/Device';
 const DEVICE_IFACE = Config.DBUS.lookup_interface(DEVICE_NAME);
@@ -102,10 +104,22 @@ const Manager = GObject.registerClass({
 
     get certificate() {
         if (this._certificate === undefined) {
-            this._certificate = Gio.TlsCertificate.new_for_paths(
-                GLib.build_filenamev([Config.CONFIGDIR, 'certificate.pem']),
-                GLib.build_filenamev([Config.CONFIGDIR, 'private.pem']),
-                null);
+            const app = Gio.Application.get_default();
+            try {
+                this._certificate = Gio.TlsCertificate.new_for_paths(
+                    GLib.build_filenamev([Config.CONFIGDIR, 'certificate.pem']),
+                    GLib.build_filenamev([Config.CONFIGDIR, 'private.pem']),
+                    null);
+                if (this.settings.get_boolean('missing-openssl'))
+                    app?.withdraw_notification('gsconnect-missing-openssl');
+                this.settings.set_boolean('missing-openssl', false);
+            } catch (e) {
+                if (e instanceof MissingOpensslError) {
+                    this.settings.set_boolean('missing-openssl', true);
+                    app?.notify_error(e, 'gsconnect-missing-openssl');
+                }
+                throw e;
+            }
         }
 
         return this._certificate;
@@ -165,8 +179,7 @@ const Manager = GObject.registerClass({
             notif.set_icon(new Gio.ThemedIcon({name: 'dialog-warning'}));
             notif.set_priority(Gio.NotificationPriority.HIGH);
             notif.set_default_action('app.preferences');
-
-            Gio.Application.prototype.withdraw_notification.call(
+            Gio.Application.prototype.send_notification.call(
                 application,
                 'discovery-warning',
                 notif

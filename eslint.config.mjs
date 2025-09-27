@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 import globals from 'globals';
 import js from '@eslint/js';
-import stylisticJs from '@stylistic/eslint-plugin-js';
+import stylistic from '@stylistic/eslint-plugin';
 import jsdoc from 'eslint-plugin-jsdoc';
 import {defineConfig, globalIgnores} from 'eslint/config';
 
@@ -24,7 +24,7 @@ export default defineConfig([
 	    'webextension/**/*.js',
 	],
         plugins: {
-            '@stylistic/js': stylisticJs,
+            '@stylistic': stylistic,
             jsdoc,
         },
         languageOptions: {
@@ -53,32 +53,32 @@ export default defineConfig([
         },
 
         rules: {
-            '@stylistic/js/array-bracket-newline': ['error', 'consistent'],
-            '@stylistic/js/array-bracket-spacing': ['error', 'never'],
+            '@stylistic/array-bracket-newline': ['error', 'consistent'],
+            '@stylistic/array-bracket-spacing': ['error', 'never'],
             'array-callback-return': 'error',
-            '@stylistic/js/arrow-spacing': 'error',
+            '@stylistic/arrow-spacing': 'error',
             'block-scoped-var': 'error',
-            '@stylistic/js/block-spacing': 'error',
-            '@stylistic/js/brace-style': 'error',
+            '@stylistic/block-spacing': 'error',
+            '@stylistic/brace-style': 'error',
 
-            '@stylistic/js/comma-dangle': ['error', {
+            '@stylistic/comma-dangle': ['error', {
                 arrays: 'always-multiline',
                 objects: 'always-multiline',
                 functions: 'never',
             }],
 
-            '@stylistic/js/comma-spacing': ['error', {
+            '@stylistic/comma-spacing': ['error', {
                 before: false,
                 after: true,
             }],
 
-            '@stylistic/js/comma-style': ['error', 'last'],
-            '@stylistic/js/computed-property-spacing': 'error',
+            '@stylistic/comma-style': ['error', 'last'],
+            '@stylistic/computed-property-spacing': 'error',
             curly: ['error', 'multi-or-nest', 'consistent'],
-            '@stylistic/js/dot-location': ['error', 'property'],
-            '@stylistic/js/eol-last': 'error',
+            '@stylistic/dot-location': ['error', 'property'],
+            '@stylistic/eol-last': 'error',
             eqeqeq: 'error',
-            '@stylistic/js/func-call-spacing': 'error',
+            '@stylistic/function-call-spacing': 'error',
             'func-name-matching': 'error',
 
             'func-style': ['error', 'declaration', {
@@ -87,7 +87,7 @@ export default defineConfig([
 
             'grouped-accessor-pairs': ['error', 'getBeforeSet'],
 
-            '@stylistic/js/indent': ['error', 4, {
+            '@stylistic/indent': ['error', 4, {
                 ignoredNodes: [
                     'CallExpression[callee.object.name=GObject][callee.property.name=registerClass] > ClassExpression:first-child',
                 ],
@@ -96,25 +96,25 @@ export default defineConfig([
                 SwitchCase: 1,
             }],
 
-            '@stylistic/js/key-spacing': ['error', {
+            '@stylistic/key-spacing': ['error', {
                 beforeColon: false,
                 afterColon: true,
             }],
 
-            '@stylistic/js/keyword-spacing': ['error', {
+            '@stylistic/keyword-spacing': ['error', {
                 before: true,
                 after: true,
             }],
 
-            '@stylistic/js/linebreak-style': ['error', 'unix'],
-            '@stylistic/js/lines-between-class-members': 'error',
+            '@stylistic/linebreak-style': ['error', 'unix'],
+            '@stylistic/lines-between-class-members': 'error',
 
             'max-nested-callbacks': ['error', {
                 max: 5,
             }],
 
-            '@stylistic/js/max-statements-per-line': 'error',
-            '@stylistic/js/new-parens': 'error',
+            '@stylistic/max-statements-per-line': 'error',
+            '@stylistic/new-parens': 'error',
             'no-array-constructor': 'error',
             'no-caller': 'error',
 
@@ -168,10 +168,10 @@ export default defineConfig([
             'no-return-assign': 'error',
             'no-self-compare': 'error',
             'no-shadow-restricted-names': 'error',
-            '@stylistic/js/no-tabs': 'error',
+            '@stylistic/no-tabs': 'error',
             'no-template-curly-in-string': 'error',
             'no-throw-literal': 'error',
-            '@stylistic/js/no-trailing-spaces': 'error',
+            '@stylistic/no-trailing-spaces': 'error',
             'no-undef-init': 'error',
             'no-unneeded-ternary': 'error',
             'no-unused-expressions': 'error',
@@ -187,61 +187,61 @@ export default defineConfig([
             'no-useless-constructor': 'error',
             'no-useless-rename': 'error',
             'no-useless-return': 'error',
-            '@stylistic/js/no-whitespace-before-property': 'error',
+            '@stylistic/no-whitespace-before-property': 'error',
             'no-with': 'error',
-            '@stylistic/js/nonblock-statement-body-position': ['error', 'below'],
+            '@stylistic/nonblock-statement-body-position': ['error', 'below'],
 
-            '@stylistic/js/object-curly-newline': ['error', {
+            '@stylistic/object-curly-newline': ['error', {
                 consistent: true,
             }],
 
-            '@stylistic/js/object-curly-spacing': 'error',
+            '@stylistic/object-curly-spacing': 'error',
             'operator-assignment': 'error',
-            '@stylistic/js/operator-linebreak': 'error',
+            '@stylistic/operator-linebreak': 'error',
             'prefer-const': 'error',
             'prefer-numeric-literals': 'error',
             'prefer-promise-reject-errors': 'error',
             'prefer-rest-params': 'error',
             'prefer-spread': 'error',
 
-            '@stylistic/js/quotes': ['error', 'single', {
+            '@stylistic/quotes': ['error', 'single', {
                 avoidEscape: true,
             }],
 
             'require-await': 'error',
-            '@stylistic/js/rest-spread-spacing': 'error',
-            '@stylistic/js/semi': ['error', 'always'],
+            '@stylistic/rest-spread-spacing': 'error',
+            '@stylistic/semi': ['error', 'always'],
 
-            '@stylistic/js/semi-spacing': ['error', {
+            '@stylistic/semi-spacing': ['error', {
                 before: false,
                 after: true,
             }],
 
-            '@stylistic/js/semi-style': 'error',
-            '@stylistic/js/space-before-blocks': 'error',
+            '@stylistic/semi-style': 'error',
+            '@stylistic/space-before-blocks': 'error',
 
-            '@stylistic/js/space-before-function-paren': ['error', {
+            '@stylistic/space-before-function-paren': ['error', {
                 named: 'never',
                 anonymous: 'always',
                 asyncArrow: 'always',
             }],
 
-            '@stylistic/js/space-in-parens': 'error',
+            '@stylistic/space-in-parens': 'error',
 
-            '@stylistic/js/space-infix-ops': ['error', {
+            '@stylistic/space-infix-ops': ['error', {
                 int32Hint: false,
             }],
 
-            '@stylistic/js/space-unary-ops': 'error',
-            '@stylistic/js/spaced-comment': 'error',
-            '@stylistic/js/switch-colon-spacing': 'error',
+            '@stylistic/space-unary-ops': 'error',
+            '@stylistic/spaced-comment': 'error',
+            '@stylistic/switch-colon-spacing': 'error',
             'symbol-description': 'error',
-            '@stylistic/js/template-curly-spacing': 'error',
-            '@stylistic/js/template-tag-spacing': 'error',
+            '@stylistic/template-curly-spacing': 'error',
+            '@stylistic/template-tag-spacing': 'error',
             'unicode-bom': 'error',
 
-            '@stylistic/js/wrap-iife': ['error', 'inside'],
-            '@stylistic/js/yield-star-spacing': 'error',
+            '@stylistic/wrap-iife': ['error', 'inside'],
+            '@stylistic/yield-star-spacing': 'error',
             yoda: 'error',
 
             'jsdoc/tag-lines': ['error', 'any', {'startLines': 1}],

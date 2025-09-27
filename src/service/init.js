@@ -10,6 +10,7 @@ import GLib from 'gi://GLib';
 
 import Config from '../config.js';
 import {setup, setupGettext} from '../utils/setup.js';
+import {MissingOpensslError} from '../utils/exceptions.js';
 
 
 // Promise Wrappers
@@ -62,10 +63,22 @@ const extensionFolder = GLib.path_get_dirname(serviceFolder);
 setup(extensionFolder);
 setupGettext();
 
+
 if (Config.IS_USER) {
     // Infer libdir by assuming gnome-shell shares a common prefix with gjs;
     // assume the parent directory if it's not there
-    let libdir = GIRepository.Repository.get_search_path().find(path => {
+    let gir_paths;
+
+    if (GIRepository.Repository.hasOwnProperty('get_search_path')) {
+        // GNOME <= 48 / GIRepository 2.0
+        gir_paths = GIRepository.Repository.get_search_path();
+    } else {
+        // GNOME 49+ / GIRepository 3.0
+        const repo = GIRepository.Repository.dup_default();
+        gir_paths = repo.get_search_path();
+    }
+
+    let libdir = gir_paths.find(path => {
         return path.endsWith('/gjs/girepository-1.0');
     }).replace('/gjs/girepository-1.0', '');
 
@@ -340,10 +353,11 @@ GLib.Variant.prototype.full_unpack = _full_unpack;
  * @param {string} keyPath - Absolute path to a private key in PEM format
  * @param {string} commonName - A unique common name for the certificate
  * @returns {Gio.TlsCertificate} A TLS certificate
+ * @throws MissingOpensslError on missing openssl binary
  */
 Gio.TlsCertificate.new_for_paths = function (certPath, keyPath, commonName = null) {
     if (GLib.find_program_in_path(Config.OPENSSL_PATH) === null) {
-        const error = new Error();
+        const error = new MissingOpensslError();
         error.name = _('OpenSSL not found');
         error.url = `${Config.PACKAGE_URL}/wiki/Error#openssl-not-found`;
         throw error;

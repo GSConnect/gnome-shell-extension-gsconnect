@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-24 16:26-0400\n"
-"PO-Revision-Date: 2025-07-30 22:43\n"
+"POT-Creation-Date: 2025-09-13 14:44-0400\n"
+"PO-Revision-Date: 2025-09-13 18:59\n"
 "Last-Translator: \n"
 "Language-Team: Estonian\n"
 "Language: et_EE\n"
@@ -92,7 +92,7 @@ msgstr "Ühendu…"
 #: data/ui/preferences-shortcut-editor.ui:19
 #: data/ui/service-device-chooser.ui:21 data/ui/service-device-chooser.ui:25
 #: data/ui/service-error-dialog.ui:20 data/ui/service-error-dialog.ui:28
-#: src/preferences/service.js:405 src/service/plugins/share.js:179
+#: src/preferences/service.js:417 src/service/plugins/share.js:179
 #: src/service/plugins/share.js:314 src/service/plugins/share.js:445
 msgid "Cancel"
 msgstr "Loobu"
@@ -110,7 +110,7 @@ msgid "No contacts"
 msgstr "Kontakte pole"
 
 #: data/ui/contact-chooser.ui:68 data/ui/messaging-window.ui:103
-#: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:847
+#: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:949
 msgid "Help"
 msgstr "Abi"
 
@@ -124,8 +124,8 @@ msgid "Other"
 msgstr "Muu"
 
 #. TRANSLATORS: Share URL by SMS
-#: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:333
-#: src/service/daemon.js:447 src/service/plugins/sms.js:62
+#: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:353
+#: src/service/daemon.js:467 src/service/plugins/sms.js:62
 #: webextension/gettext.js:41
 msgid "Send SMS"
 msgstr "Saada SMS"
@@ -212,7 +212,7 @@ msgstr "Vali käivitatav"
 msgid "Open"
 msgstr "Ava"
 
-#: data/ui/preferences-device-panel.ui:53 src/preferences/service.js:504
+#: data/ui/preferences-device-panel.ui:53 src/preferences/service.js:524
 msgid "Desktop"
 msgstr "Lauaarvuti"
 
@@ -399,7 +399,7 @@ msgstr "Seadme seaded"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/ui/preferences-device-panel.ui:2624
-#: data/ui/preferences-device-panel.ui:2716 src/service/daemon.js:426
+#: data/ui/preferences-device-panel.ui:2716 src/service/daemon.js:446
 msgid "Pair"
 msgstr "Paarita"
 
@@ -417,7 +417,7 @@ msgid "Encryption Info"
 msgstr "Krüpteeringu teave"
 
 #. TRANSLATORS: Unpair the device and notify it
-#: data/ui/preferences-device-panel.ui:2722 src/service/daemon.js:435
+#: data/ui/preferences-device-panel.ui:2722 src/service/daemon.js:455
 msgid "Unpair"
 msgstr "Eemalda paardumine"
 
@@ -498,7 +498,7 @@ msgstr "Muuda seadme nime"
 msgid "Devices"
 msgstr "Seadmed"
 
-#: data/ui/preferences-window.ui:328 src/preferences/service.js:666
+#: data/ui/preferences-window.ui:328 src/preferences/service.js:686
 msgid "Searching for devices…"
 msgstr "Seadmete otsimine…"
 
@@ -522,35 +522,49 @@ msgstr "Luba"
 msgid "This device is invisible to unpaired devices"
 msgstr "See seade on paardumata seadmetele nähtamatu"
 
-#: data/ui/preferences-window.ui:772 src/service/manager.js:163
+#: data/ui/preferences-window.ui:772 src/service/manager.js:177
 msgid "Discovery Disabled"
 msgstr "Avastamine keelatud"
 
+#: data/ui/preferences-window.ui:826
+msgid "Retry"
+msgstr ""
+
+#: data/ui/preferences-window.ui:858
+msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
+"Use your distro's package manager to install it.\n"
+"For more information, visit <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</a>."
+msgstr ""
+
+#: data/ui/preferences-window.ui:874 src/service/init.js:361
+msgid "OpenSSL not found"
+msgstr "OpenSSLi ei leitud"
+
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
-#: data/ui/preferences-window.ui:821
+#: data/ui/preferences-window.ui:923
 msgid "Add device by IP…"
 msgstr ""
 
-#: data/ui/preferences-window.ui:826
+#: data/ui/preferences-window.ui:928
 msgid "Display Mode"
 msgstr "Ekraanirežiim"
 
 #. TRANSLATORS: Show device indicators in the top bar
-#: data/ui/preferences-window.ui:829
+#: data/ui/preferences-window.ui:931
 msgid "Panel"
 msgstr "Paneel"
 
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
-#: data/ui/preferences-window.ui:835
+#: data/ui/preferences-window.ui:937
 msgid "User Menu"
 msgstr "Kasutajamenüü"
 
 #. TRANSLATORS: Generate a support log
-#: data/ui/preferences-window.ui:843 src/preferences/service.js:402
+#: data/ui/preferences-window.ui:945 src/preferences/service.js:414
 msgid "Generate Support Log"
 msgstr "Genereeri tugiteenusele logi"
 
-#: data/ui/preferences-window.ui:851
+#: data/ui/preferences-window.ui:953
 msgid "About GSConnect"
 msgstr "GSConnecti teave"
 
@@ -639,148 +653,148 @@ msgstr "Sisesta <b>%s</b> muutmiseks uus otsetee"
 msgid "%s is already being used"
 msgstr "%s on juba kasutusel"
 
-#: src/preferences/service.js:361
+#: src/preferences/service.js:373
 msgid "A complete KDE Connect implementation for GNOME"
 msgstr "Täielik KDE Connect'i teostus GNOMEle"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
-#: src/preferences/service.js:370
+#: src/preferences/service.js:382
 msgid "translator-credits"
 msgstr "Madis O, 2018."
 
-#: src/preferences/service.js:403
+#: src/preferences/service.js:415
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
 msgstr "Silumissõnumid logitakse. Teosta mistahes vajalikud sammud probleemi taasloomiseks, seejärel vaata logi üle."
 
-#: src/preferences/service.js:406
+#: src/preferences/service.js:418
 msgid "Review Log"
 msgstr "Vaata logi üle"
 
-#: src/preferences/service.js:431
+#: src/preferences/service.js:443
 msgid "Invalid Device Name"
 msgstr ""
 
 #. TRANSLATOR: %s is a list of forbidden characters
-#: src/preferences/service.js:433
+#: src/preferences/service.js:445
 #, javascript-format
 msgid "Device name must not contain any of %s and have a length of 1-32 characters"
 msgstr ""
 
-#: src/preferences/service.js:496
+#: src/preferences/service.js:516
 msgid "Laptop"
 msgstr "Sülearvuti"
 
-#: src/preferences/service.js:498
+#: src/preferences/service.js:518
 msgid "Smartphone"
 msgstr "Nutitelefon"
 
-#: src/preferences/service.js:500
+#: src/preferences/service.js:520
 msgid "Tablet"
 msgstr "Tahvelarvuti"
 
-#: src/preferences/service.js:502
+#: src/preferences/service.js:522
 msgid "Television"
 msgstr "Televisioon"
 
-#: src/preferences/service.js:524
+#: src/preferences/service.js:544
 msgid "Unpaired"
 msgstr "Paaritamata"
 
-#: src/preferences/service.js:528
+#: src/preferences/service.js:548
 msgid "Disconnected"
 msgstr "Ühendus katkestatud"
 
-#: src/preferences/service.js:532
+#: src/preferences/service.js:552
 msgid "Connected"
 msgstr "Ühendatud"
 
-#: src/preferences/service.js:668
+#: src/preferences/service.js:688
 msgid "Waiting for service…"
 msgstr "Teenuse ootamine…"
 
 #. Notify the user
-#: src/service/daemon.js:94
+#: src/service/daemon.js:99
 msgid "Settings Migrated"
 msgstr ""
 
-#: src/service/daemon.js:95
+#: src/service/daemon.js:100
 msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
 msgstr ""
 
-#: src/service/daemon.js:231
+#: src/service/daemon.js:241
 msgid "Click for help troubleshooting"
 msgstr "Klõpsa, et saada veaotsingul abi"
 
-#: src/service/daemon.js:242
+#: src/service/daemon.js:251
 msgid "Click for more information"
 msgstr "Klõpsa rohkema teabe saamiseks"
 
-#: src/service/daemon.js:339
+#: src/service/daemon.js:359
 msgid "Dial Number"
 msgstr "Helista telefoninumbrile"
 
-#: src/service/daemon.js:345 src/service/daemon.js:534
+#: src/service/daemon.js:365 src/service/daemon.js:554
 #: src/service/plugins/share.js:31
 msgid "Share File"
 msgstr "Jaga faili"
 
-#: src/service/daemon.js:396
+#: src/service/daemon.js:416
 msgid "List available devices"
 msgstr "Kuva saadaolevad seadmed"
 
-#: src/service/daemon.js:405
+#: src/service/daemon.js:425
 msgid "List all devices"
 msgstr "Kuva kõik seadmed"
 
-#: src/service/daemon.js:414
+#: src/service/daemon.js:434
 msgid "Target Device"
 msgstr "Sihtseade"
 
-#: src/service/daemon.js:456
+#: src/service/daemon.js:476
 msgid "Message Body"
 msgstr "Sõnumi sisu"
 
-#: src/service/daemon.js:468 src/service/plugins/notification.js:57
+#: src/service/daemon.js:488 src/service/plugins/notification.js:57
 msgid "Send Notification"
 msgstr "Saada teade"
 
-#: src/service/daemon.js:477
+#: src/service/daemon.js:497
 msgid "Notification App Name"
 msgstr "Teavitava rakenduse nimi"
 
-#: src/service/daemon.js:486
+#: src/service/daemon.js:506
 msgid "Notification Body"
 msgstr "Teate sisu"
 
-#: src/service/daemon.js:495
+#: src/service/daemon.js:515
 msgid "Notification Icon"
 msgstr "Teate ikoon"
 
-#: src/service/daemon.js:504
+#: src/service/daemon.js:524
 msgid "Notification ID"
 msgstr "Teate ID"
 
-#: src/service/daemon.js:513 src/service/plugins/ping.js:13
+#: src/service/daemon.js:533 src/service/plugins/ping.js:13
 #: src/service/plugins/ping.js:20 src/service/plugins/ping.js:47
 msgid "Ping"
 msgstr "Ping"
 
-#: src/service/daemon.js:522 src/service/plugins/battery.js:247
+#: src/service/daemon.js:542 src/service/plugins/battery.js:247
 #: src/service/plugins/battery.js:276 src/service/plugins/battery.js:305
 #: src/service/plugins/findmyphone.js:22
 msgid "Ring"
 msgstr "Helise"
 
-#: src/service/daemon.js:543 src/service/plugins/share.js:47
+#: src/service/daemon.js:563 src/service/plugins/share.js:47
 #: src/service/ui/messaging.js:1257 src/service/ui/messaging.js:1265
 msgid "Share Link"
 msgstr "Jaga linki"
 
-#: src/service/daemon.js:552 src/service/plugins/share.js:39
+#: src/service/daemon.js:572 src/service/plugins/share.js:39
 msgid "Share Text"
 msgstr "Jaga teksti"
 
-#: src/service/daemon.js:564
+#: src/service/daemon.js:584
 msgid "Show release version"
 msgstr "Kuva väljalaskeversiooni"
 
@@ -824,11 +838,7 @@ msgstr ""
 msgid "Device clocks are out of sync"
 msgstr ""
 
-#: src/service/init.js:347
-msgid "OpenSSL not found"
-msgstr "OpenSSLi ei leitud"
-
-#: src/service/manager.js:164
+#: src/service/manager.js:178
 msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Avastamine on keelatud selles võrgus olevate seadmete arvu tõttu."
 
@@ -933,7 +943,7 @@ msgstr "MPRIS"
 msgid "Bidirectional remote media playback control"
 msgstr "Kahesuunaline meediumi kaugjuhtimine"
 
-#: src/service/plugins/mpris.js:355
+#: src/service/plugins/mpris.js:357
 msgid "Unknown"
 msgstr "Teadmata"
 
@@ -1118,15 +1128,15 @@ msgstr "Vasta SMSile"
 msgid "Share SMS"
 msgstr "Jaga SMSi"
 
-#: src/service/plugins/systemvolume.js:27
+#: src/service/plugins/systemvolume.js:36
 msgid "System Volume"
 msgstr "Süsteemi helitugevus"
 
-#: src/service/plugins/systemvolume.js:28
+#: src/service/plugins/systemvolume.js:37
 msgid "Enable the paired device to control the system volume"
 msgstr "Luba ühendatud seadmel juhtida süsteemi helitugevust"
 
-#: src/service/plugins/systemvolume.js:72
+#: src/service/plugins/systemvolume.js:81
 msgid "PulseAudio not found"
 msgstr "PulseAudiot ei leitud"
 

@@ -358,6 +358,15 @@ export const Window = GObject.registerClass({
 
         this.add_action(this.settings.create_action('discoverable'));
 
+        // OpenSSL-missing infobar
+        this.settings.bind(
+            'missing-openssl',
+            this.infobar_openssl,
+            'reveal-child',
+            Gio.SettingsBindFlags.DEFAULT
+        );
+        this.add_action(this.settings.create_action('missing-openssl'));
+
         // Application Menu
         this._initMenu();
 

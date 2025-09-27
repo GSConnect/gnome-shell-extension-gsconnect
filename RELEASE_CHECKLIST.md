@@ -52,4 +52,4 @@ Once the release is published to GitHub,
 the attached zip file can also be submitted to extensions.gnome.org
 by the designated extension author (currently @daniellandau).
 
-[New Release template]: https://github.com/GSConnect/gnome-shell-extensions-gsconnect/releases/new
+[New Release template]: https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/new

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-24 16:26-0400\n"
-"PO-Revision-Date: 2025-07-30 22:43\n"
+"POT-Creation-Date: 2025-09-13 14:44-0400\n"
+"PO-Revision-Date: 2025-09-13 18:59\n"
 "Last-Translator: \n"
 "Language-Team: Persian\n"
 "Language: fa_IR\n"
@@ -92,7 +92,7 @@ msgstr "وصل شدن به…"
 #: data/ui/preferences-shortcut-editor.ui:19
 #: data/ui/service-device-chooser.ui:21 data/ui/service-device-chooser.ui:25
 #: data/ui/service-error-dialog.ui:20 data/ui/service-error-dialog.ui:28
-#: src/preferences/service.js:405 src/service/plugins/share.js:179
+#: src/preferences/service.js:417 src/service/plugins/share.js:179
 #: src/service/plugins/share.js:314 src/service/plugins/share.js:445
 msgid "Cancel"
 msgstr "لغو"
@@ -110,7 +110,7 @@ msgid "No contacts"
 msgstr "بدون آشنا"
 
 #: data/ui/contact-chooser.ui:68 data/ui/messaging-window.ui:103
-#: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:847
+#: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:949
 msgid "Help"
 msgstr "راهنما"
 
@@ -124,8 +124,8 @@ msgid "Other"
 msgstr "دیگر"
 
 #. TRANSLATORS: Share URL by SMS
-#: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:333
-#: src/service/daemon.js:447 src/service/plugins/sms.js:62
+#: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:353
+#: src/service/daemon.js:467 src/service/plugins/sms.js:62
 #: webextension/gettext.js:41
 msgid "Send SMS"
 msgstr "فرستادن پیامک"
@@ -216,7 +216,7 @@ msgstr "پروندهٔ اجرایی‌ای برگزینید"
 msgid "Open"
 msgstr "گشودن"
 
-#: data/ui/preferences-device-panel.ui:53 src/preferences/service.js:504
+#: data/ui/preferences-device-panel.ui:53 src/preferences/service.js:524
 msgid "Desktop"
 msgstr "میزکار"
 
@@ -250,11 +250,11 @@ msgstr "ذخیرهٔ پرونده‌ها در"
 
 #: data/ui/preferences-device-panel.ui:510
 msgid "Links"
-msgstr ""
+msgstr "پیوند‌ها"
 
 #: data/ui/preferences-device-panel.ui:562
 msgid "Automatically open received URLs"
-msgstr ""
+msgstr "گشودن خودکار نشانی‌های دریافتی"
 
 #: data/ui/preferences-device-panel.ui:623
 #: data/ui/preferences-device-panel.ui:2286
@@ -403,7 +403,7 @@ msgstr "تنظیمات افزاره"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/ui/preferences-device-panel.ui:2624
-#: data/ui/preferences-device-panel.ui:2716 src/service/daemon.js:426
+#: data/ui/preferences-device-panel.ui:2716 src/service/daemon.js:446
 msgid "Pair"
 msgstr "جفت کردن"
 
@@ -421,7 +421,7 @@ msgid "Encryption Info"
 msgstr "اطّلاعات رمزنگاری"
 
 #. TRANSLATORS: Unpair the device and notify it
-#: data/ui/preferences-device-panel.ui:2722 src/service/daemon.js:435
+#: data/ui/preferences-device-panel.ui:2722 src/service/daemon.js:455
 msgid "Unpair"
 msgstr "جدا سازی"
 
@@ -502,7 +502,7 @@ msgstr "ویرایش نام افزاره"
 msgid "Devices"
 msgstr "افزاره‌ها"
 
-#: data/ui/preferences-window.ui:328 src/preferences/service.js:666
+#: data/ui/preferences-window.ui:328 src/preferences/service.js:686
 msgid "Searching for devices…"
 msgstr "در جست‌وجوی افزاره‌ها…"
 
@@ -526,35 +526,49 @@ msgstr "به کار انداختن"
 msgid "This device is invisible to unpaired devices"
 msgstr "این افزاره برای افزاره‌های جفت نشده، نامریی است"
 
-#: data/ui/preferences-window.ui:772 src/service/manager.js:163
+#: data/ui/preferences-window.ui:772 src/service/manager.js:177
 msgid "Discovery Disabled"
 msgstr "کشف از کار افتاد"
 
+#: data/ui/preferences-window.ui:826
+msgid "Retry"
+msgstr ""
+
+#: data/ui/preferences-window.ui:858
+msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
+"Use your distro's package manager to install it.\n"
+"For more information, visit <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</a>."
+msgstr ""
+
+#: data/ui/preferences-window.ui:874 src/service/init.js:361
+msgid "OpenSSL not found"
+msgstr "اوپن‌اس‌اس‌ال پیدا نشد"
+
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
-#: data/ui/preferences-window.ui:821
+#: data/ui/preferences-window.ui:923
 msgid "Add device by IP…"
 msgstr "افزودن افزاره با آی‌پی…"
 
-#: data/ui/preferences-window.ui:826
+#: data/ui/preferences-window.ui:928
 msgid "Display Mode"
 msgstr "حالت نمایش"
 
 #. TRANSLATORS: Show device indicators in the top bar
-#: data/ui/preferences-window.ui:829
+#: data/ui/preferences-window.ui:931
 msgid "Panel"
 msgstr "تابلو"
 
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
-#: data/ui/preferences-window.ui:835
+#: data/ui/preferences-window.ui:937
 msgid "User Menu"
 msgstr "فهرست کاربر"
 
 #. TRANSLATORS: Generate a support log
-#: data/ui/preferences-window.ui:843 src/preferences/service.js:402
+#: data/ui/preferences-window.ui:945 src/preferences/service.js:414
 msgid "Generate Support Log"
 msgstr "ایجاد گزارش پشتیبانی"
 
-#: data/ui/preferences-window.ui:851
+#: data/ui/preferences-window.ui:953
 msgid "About GSConnect"
 msgstr "دربارهٔ جی‌اس‌کانکت"
 
@@ -643,148 +657,148 @@ msgstr "برای تغییر <b>%s</b> میان‌بر جدیدی وارد کنی
 msgid "%s is already being used"
 msgstr "%s از پیش در حال استفاده است"
 
-#: src/preferences/service.js:361
+#: src/preferences/service.js:373
 msgid "A complete KDE Connect implementation for GNOME"
 msgstr "پیاده‌سازی کامل کی‌دی‌ای کانکت برای گنوم"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
-#: src/preferences/service.js:370
+#: src/preferences/service.js:382
 msgid "translator-credits"
 msgstr "دانیال بهزادی <dani.behzi@ubuntu.com>"
 
-#: src/preferences/service.js:403
+#: src/preferences/service.js:415
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
 msgstr "پیام‌های رفع اشکال ثبت شده‌اند. هر اقدامی که برای بازتولید مشکل لازم است را انجام داده، سپس گزارش را بررسی کنید."
 
-#: src/preferences/service.js:406
+#: src/preferences/service.js:418
 msgid "Review Log"
 msgstr "بازبینی گزارش"
 
-#: src/preferences/service.js:431
+#: src/preferences/service.js:443
 msgid "Invalid Device Name"
-msgstr ""
+msgstr "نام افزارهٔ نامعتبر"
 
 #. TRANSLATOR: %s is a list of forbidden characters
-#: src/preferences/service.js:433
+#: src/preferences/service.js:445
 #, javascript-format
 msgid "Device name must not contain any of %s and have a length of 1-32 characters"
-msgstr ""
+msgstr "نام افزاره باید دارای %s نبوده و درازایش بین ۱ تا ۳۲ نویسه باشد"
 
-#: src/preferences/service.js:496
+#: src/preferences/service.js:516
 msgid "Laptop"
 msgstr "لپ‌تاپ"
 
-#: src/preferences/service.js:498
+#: src/preferences/service.js:518
 msgid "Smartphone"
 msgstr "تلفن هوشمند"
 
-#: src/preferences/service.js:500
+#: src/preferences/service.js:520
 msgid "Tablet"
 msgstr "رایانک"
 
-#: src/preferences/service.js:502
+#: src/preferences/service.js:522
 msgid "Television"
 msgstr "تلویزیون"
 
-#: src/preferences/service.js:524
+#: src/preferences/service.js:544
 msgid "Unpaired"
 msgstr "جدا شده"
 
-#: src/preferences/service.js:528
+#: src/preferences/service.js:548
 msgid "Disconnected"
 msgstr "قطع شده"
 
-#: src/preferences/service.js:532
+#: src/preferences/service.js:552
 msgid "Connected"
 msgstr "وصل شده"
 
-#: src/preferences/service.js:668
+#: src/preferences/service.js:688
 msgid "Waiting for service…"
 msgstr "در انتظار خدمت…"
 
 #. Notify the user
-#: src/service/daemon.js:94
+#: src/service/daemon.js:99
 msgid "Settings Migrated"
-msgstr ""
+msgstr "تنظمیات مهاجرت داده شدند"
 
-#: src/service/daemon.js:95
+#: src/service/daemon.js:100
 msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
-msgstr ""
+msgstr "جی‌اس‌کانکت برا یپشتیبانی از تغییرات در شیوه‌نامهٔ کی‌دی‌ای کانکت به‌روز شد. شاید برخی افزاره‌ها نیاز به جفت شدن دوباره داشته باشند."
 
-#: src/service/daemon.js:231
+#: src/service/daemon.js:241
 msgid "Click for help troubleshooting"
 msgstr "برای راهنمایی برای عیب‌یابی کلیک کنید"
 
-#: src/service/daemon.js:242
+#: src/service/daemon.js:251
 msgid "Click for more information"
 msgstr "برای اطّلاعات بیشتر کلیک کنید"
 
-#: src/service/daemon.js:339
+#: src/service/daemon.js:359
 msgid "Dial Number"
 msgstr "شماره‌گیری"
 
-#: src/service/daemon.js:345 src/service/daemon.js:534
+#: src/service/daemon.js:365 src/service/daemon.js:554
 #: src/service/plugins/share.js:31
 msgid "Share File"
 msgstr "هم رسانی پرونده"
 
-#: src/service/daemon.js:396
+#: src/service/daemon.js:416
 msgid "List available devices"
 msgstr "فهرست افزاره‌های موجود"
 
-#: src/service/daemon.js:405
+#: src/service/daemon.js:425
 msgid "List all devices"
 msgstr "فهرست تمامی افزاره‌ها"
 
-#: src/service/daemon.js:414
+#: src/service/daemon.js:434
 msgid "Target Device"
 msgstr "افزارهٔ هدف"
 
-#: src/service/daemon.js:456
+#: src/service/daemon.js:476
 msgid "Message Body"
 msgstr "متن پیام"
 
-#: src/service/daemon.js:468 src/service/plugins/notification.js:57
+#: src/service/daemon.js:488 src/service/plugins/notification.js:57
 msgid "Send Notification"
 msgstr "فرستادن آگاهی"
 
-#: src/service/daemon.js:477
+#: src/service/daemon.js:497
 msgid "Notification App Name"
 msgstr "نام کارهٔ آگاهی"
 
-#: src/service/daemon.js:486
+#: src/service/daemon.js:506
 msgid "Notification Body"
 msgstr "متن آگاهی"
 
-#: src/service/daemon.js:495
+#: src/service/daemon.js:515
 msgid "Notification Icon"
 msgstr "نقشک آگاهی"
 
-#: src/service/daemon.js:504
+#: src/service/daemon.js:524
 msgid "Notification ID"
 msgstr "شناسهٔ آگاهی"
 
-#: src/service/daemon.js:513 src/service/plugins/ping.js:13
+#: src/service/daemon.js:533 src/service/plugins/ping.js:13
 #: src/service/plugins/ping.js:20 src/service/plugins/ping.js:47
 msgid "Ping"
 msgstr "پینگ"
 
-#: src/service/daemon.js:522 src/service/plugins/battery.js:247
+#: src/service/daemon.js:542 src/service/plugins/battery.js:247
 #: src/service/plugins/battery.js:276 src/service/plugins/battery.js:305
 #: src/service/plugins/findmyphone.js:22
 msgid "Ring"
 msgstr "زنگ"
 
-#: src/service/daemon.js:543 src/service/plugins/share.js:47
+#: src/service/daemon.js:563 src/service/plugins/share.js:47
 #: src/service/ui/messaging.js:1257 src/service/ui/messaging.js:1265
 msgid "Share Link"
 msgstr "هم‌رسانی پیوند"
 
-#: src/service/daemon.js:552 src/service/plugins/share.js:39
+#: src/service/daemon.js:572 src/service/plugins/share.js:39
 msgid "Share Text"
 msgstr "هم‌رسانی متن"
 
-#: src/service/daemon.js:564
+#: src/service/daemon.js:584
 msgid "Show release version"
 msgstr "نمایش نگارش ارائه"
 
@@ -822,17 +836,13 @@ msgstr "پذیرش"
 #: src/service/device.js:960
 #, javascript-format
 msgid "Failed to pair with %s"
-msgstr ""
+msgstr "شکست در جفت شدن با %s"
 
 #: src/service/device.js:961
 msgid "Device clocks are out of sync"
-msgstr ""
+msgstr "ساعت‌های افزاره‌ها ناهمگامند"
 
-#: src/service/init.js:347
-msgid "OpenSSL not found"
-msgstr "اوپن‌اس‌اس‌ال پیدا نشد"
-
-#: src/service/manager.js:164
+#: src/service/manager.js:178
 msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "به خاطر تعداد افزاره‌های روی این شبکه، کشف از کار افتاد."
 
@@ -937,7 +947,7 @@ msgstr "MPRIS"
 msgid "Bidirectional remote media playback control"
 msgstr "واپایش پخش رسانهٔ دوردست دوطرفه"
 
-#: src/service/plugins/mpris.js:355
+#: src/service/plugins/mpris.js:357
 msgid "Unknown"
 msgstr "ناشناخته"
 
@@ -1122,15 +1132,15 @@ msgstr "پاسخ به پیامک"
 msgid "Share SMS"
 msgstr "هم‌رسانی پیامک"
 
-#: src/service/plugins/systemvolume.js:27
+#: src/service/plugins/systemvolume.js:36
 msgid "System Volume"
 msgstr "حجم صدای سامانه"
 
-#: src/service/plugins/systemvolume.js:28
+#: src/service/plugins/systemvolume.js:37
 msgid "Enable the paired device to control the system volume"
 msgstr "قادر کردن افزارهٔ جفت شده برای واپایش حجم صدای سامانه"
 
-#: src/service/plugins/systemvolume.js:72
+#: src/service/plugins/systemvolume.js:81
 msgid "PulseAudio not found"
 msgstr "پالس‌آدیو پیدا نشد"
 
