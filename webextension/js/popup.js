@@ -84,7 +84,7 @@ function getDeviceElement(device) {
         shareButton.appendChild(shareImage);
         shareButton.addEventListener(
             'click',
-            () => sendUrl(device.id, 'share', URL)
+            () => sendUrl(device.id, 'share', TARGET_URL)
         );
         deviceElement.appendChild(shareButton);
     }
@@ -98,7 +98,7 @@ function getDeviceElement(device) {
         telephonyButton.appendChild(telephonyImage);
         telephonyButton.addEventListener(
             'click',
-            () => sendUrl(device.id, 'telephony', URL)
+            () => sendUrl(device.id, 'telephony', TARGET_URL)
         );
         deviceElement.appendChild(telephonyButton);
     }
