@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-13 14:44-0400\n"
-"PO-Revision-Date: 2025-09-13 18:59\n"
+"PO-Revision-Date: 2025-10-06 21:17\n"
 "Last-Translator: \n"
 "Language-Team: Hungarian\n"
 "Language: hu_HU\n"
@@ -33,7 +33,7 @@ msgstr "A GSConnect csapata"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
 msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr "A GSConnect egy teljes KDE Connect implementáció, főként a GNOME Shell-hez, Nautilus, Chrome és Firefox integrációval. A KDE Connect csapatának alkalmazásai elérhetőek Linux, BSD, Android, Sailfish, iOS, macOS és Windows rendszereken."
+msgstr "A GSConnect egy teljes KDE Connect implementáció, főként a GNOME Shellhez, Nautilus, Chrome és Firefox integrációval. A KDE Connect csapatának alkalmazásai elérhetőek Linux, BSD, Android, Sailfish, iOS, macOS és Windows rendszereken."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
 msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
@@ -250,11 +250,11 @@ msgstr "Fájlok mentése ide"
 
 #: data/ui/preferences-device-panel.ui:510
 msgid "Links"
-msgstr ""
+msgstr "Hivatkozások"
 
 #: data/ui/preferences-device-panel.ui:562
 msgid "Automatically open received URLs"
-msgstr ""
+msgstr "A beérkezett URL-ek automatikus megnyitása"
 
 #: data/ui/preferences-device-panel.ui:623
 #: data/ui/preferences-device-panel.ui:2286
@@ -386,7 +386,7 @@ msgstr "Régi fajta SMS támogatás"
 
 #: data/ui/preferences-device-panel.ui:2181
 msgid "SFTP Automount"
-msgstr "SFPT automatikus csatolása"
+msgstr "SFTP automatikus csatolása"
 
 #: data/ui/preferences-device-panel.ui:2236
 #: data/ui/preferences-device-panel.ui:2562
@@ -532,13 +532,15 @@ msgstr "Felderítés letiltva"
 
 #: data/ui/preferences-window.ui:826
 msgid "Retry"
-msgstr ""
+msgstr "Újrapróbálkozás"
 
 #: data/ui/preferences-window.ui:858
 msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
 "Use your distro's package manager to install it.\n"
 "For more information, visit <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</a>."
-msgstr ""
+msgstr "Úgy tűnik, hogy a parancssoros <tt>openssl</tt> program nincsen telepítve.\n"
+"A telepítéséhez használja a disztribúció csomagtelepítőjét.\n"
+"További információkért tekintse meg <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">a GSConnect wikit</a>."
 
 #: data/ui/preferences-window.ui:874 src/service/init.js:361
 msgid "OpenSSL not found"
@@ -676,13 +678,13 @@ msgstr "Napló átnézése"
 
 #: src/preferences/service.js:443
 msgid "Invalid Device Name"
-msgstr ""
+msgstr "Érvénytelen eszköznév"
 
 #. TRANSLATOR: %s is a list of forbidden characters
 #: src/preferences/service.js:445
 #, javascript-format
 msgid "Device name must not contain any of %s and have a length of 1-32 characters"
-msgstr ""
+msgstr "Az eszköz neve nem tartalmazhatja a(z) %s karaktereket, és 1-32 karakter hosszú kell legyen"
 
 #: src/preferences/service.js:516
 msgid "Laptop"
@@ -719,11 +721,11 @@ msgstr "Várakozás a szolgáltatásra…"
 #. Notify the user
 #: src/service/daemon.js:99
 msgid "Settings Migrated"
-msgstr ""
+msgstr "Beállítások átmigrálva"
 
 #: src/service/daemon.js:100
 msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
-msgstr ""
+msgstr "A GSConnect frissült, hogy támogassa a KDE Connect protokoll változásait. Egyes eszközöket újra kellhet párosítani."
 
 #: src/service/daemon.js:241
 msgid "Click for help troubleshooting"
@@ -836,11 +838,11 @@ msgstr "Elfogadás"
 #: src/service/device.js:960
 #, javascript-format
 msgid "Failed to pair with %s"
-msgstr ""
+msgstr "Nem sikerült párosítani ezzel: %s"
 
 #: src/service/device.js:961
 msgid "Device clocks are out of sync"
-msgstr ""
+msgstr "Az eszközök órái nincsenek szinkronban"
 
 #: src/service/manager.js:178
 msgid "Discovery has been disabled due to the number of devices on this network."
