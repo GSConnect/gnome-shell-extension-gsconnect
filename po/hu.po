@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-13 14:44-0400\n"
-"PO-Revision-Date: 2025-10-06 21:17\n"
+"PO-Revision-Date: 2025-10-07 06:43\n"
 "Last-Translator: \n"
 "Language-Team: Hungarian\n"
 "Language: hu_HU\n"
@@ -766,19 +766,19 @@ msgstr "Értesítés küldése"
 
 #: src/service/daemon.js:497
 msgid "Notification App Name"
-msgstr "Értesítés alkalmazásnév"
+msgstr "Értesítési alkalmazásnév"
 
 #: src/service/daemon.js:506
 msgid "Notification Body"
-msgstr "Értesítés törzs"
+msgstr "Értesítés törzse"
 
 #: src/service/daemon.js:515
 msgid "Notification Icon"
-msgstr "Értesítés ikon"
+msgstr "Értesítési ikon"
 
 #: src/service/daemon.js:524
 msgid "Notification ID"
-msgstr "Értesítés ID"
+msgstr "Értesítés ID-je"
 
 #: src/service/daemon.js:533 src/service/plugins/ping.js:13
 #: src/service/plugins/ping.js:20 src/service/plugins/ping.js:47
