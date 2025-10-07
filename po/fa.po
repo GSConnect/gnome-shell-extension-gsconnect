@@ -32,8 +32,8 @@ msgid "GSConnect Team"
 msgstr "گروه جی‌اس‌کانکت"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
-جی‌اس‌کانکت، پیاده‌سازی کاملی از کی‌دی‌ای کانکت است که به‌طور ویژه برای پوستهٔ گنوم طراحی شده و با ناتیلوس، کروم و فایرفاکس یکپارچه می‌شود. تیم کی‌دی‌ای کانکت برنامه‌هایی برای گنو/لینوکس، بی‌اس‌دی، اندروید، سیل‌فیmsgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr "ش، آی‌اواس، مک‌او‌اس و ویندوز ارائه کرده است."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr "GSConnect یک پیاده‌سازی کامل از KDE Connect است که به‌طور ویژه برای GNOME Shell طراحی شده و با Nautilus، Chrome و Firefox یکپارچه‌سازی شده است. تیم KDE Connect برای سیستم‌عامل‌های Linux، BSD، Android، Sailfish، iOS، macOS و Windows اپلیکیشن‌هایی ارائه کرده‌اند."
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
 msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
 msgstr "با جی‌اس‌کانکت می‌توانید به صورت امن به موبایل و دیگر میزکارهایتان وصل شوید تا:"
