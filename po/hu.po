@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-13 14:44-0400\n"
-"PO-Revision-Date: 2025-10-07 06:43\n"
+"PO-Revision-Date: 2025-10-07 08:51\n"
 "Last-Translator: \n"
 "Language-Team: Hungarian\n"
 "Language: hu_HU\n"
@@ -1038,7 +1038,7 @@ msgstr "Sikertelen átvitel"
 #: src/service/plugins/share.js:150
 #, javascript-format
 msgid "%s is not allowed to upload files"
-msgstr "%s zámára nem engedélyezett a fájlok feltöltése"
+msgstr "%s számára nem engedélyezett a fájlok feltöltése"
 
 #: src/service/plugins/share.js:172 src/service/plugins/share.js:307
 msgid "Transferring File"
@@ -1120,7 +1120,7 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:17
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr "Értesítés új SMS-ekről, és a párosított eszköz SMS-einek olvasása és SMS-ek küldése"
+msgstr "SMS-ek küldése és fogadása a párosított eszközről, és értesítés az érkező SMS-ekről"
 
 #: src/service/plugins/sms.js:38
 msgid "New SMS (URI)"
@@ -1140,7 +1140,7 @@ msgstr "Rendszerhangerő"
 
 #: src/service/plugins/systemvolume.js:37
 msgid "Enable the paired device to control the system volume"
-msgstr "A rendszerhangerő állításának egedélyezése a párosított eszköz számára"
+msgstr "A rendszerhangerő állításának engedélyezése a párosított eszköz számára"
 
 #: src/service/plugins/systemvolume.js:81
 msgid "PulseAudio not found"
@@ -1148,7 +1148,7 @@ msgstr "PulseAudio nem található"
 
 #: src/service/plugins/telephony.js:17
 msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr "Értesítés a hívásokról és a rendszerhangerő állítása csörgés/folyamatban lévő hívások közben"
+msgstr "Értesítés a hívásokról, és a rendszerhangerő állítása csörgés és folyamatban lévő hívások közben"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:29
@@ -1200,7 +1200,7 @@ msgstr "Tegnap・%s"
 #, javascript-format
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] "%d perc"
+msgstr[0] "%d perce"
 msgstr[1] "%d perc"
 
 #: src/service/ui/messaging.js:407
@@ -1228,7 +1228,7 @@ msgstr[1] "És további %d"
 #: src/service/ui/mousepad.js:115
 #, javascript-format
 msgid "Remote keyboard on %s is not active"
-msgstr "A távoli billentyűzet %s eszközön nem aktív"
+msgstr "A távoli billentyűzet a(z) %s eszközön nem aktív"
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
