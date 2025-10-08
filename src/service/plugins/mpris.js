@@ -43,8 +43,6 @@ const MPRISPlugin = GObject.registerClass({
         this._transferring = new WeakSet();
         this._updating = new WeakSet();
 
-        this._queueTimers = new Map();
-
         this._mpris = Components.acquire('mpris');
 
         this._playerAddedId = this._mpris.connect(
@@ -77,12 +75,6 @@ const MPRISPlugin = GObject.registerClass({
 
     disconnected() {
         super.disconnected();
-
-        for (const [identity, timer] of this._queueTimers) {
-            if (timer)
-                GLib.source_remove(timer);
-            this._queueTimers.delete(identity);
-        }
 
         for (const [identity, player] of this._players) {
             this._players.delete(identity);
@@ -267,37 +259,18 @@ const MPRISPlugin = GObject.registerClass({
                 }
             }
 
-            if (packet.body.hasOwnProperty('requestNowPlaying') ||
-                packet.body.hasOwnProperty('requestVolume')) {
-                const response = this._getUpdate(player.Identity, packet);
-                this._sendUpdate(player, response);
-            }
+            // Information Request
+            let hasResponse = false;
 
-        } catch (e) {
-            debug(e, this.device.name);
-        } finally {
-            this._updating.delete(player);
-        }
-    }
+            const response = {
+                type: 'kdeconnect.mpris',
+                body: {
+                    player: packet.body.player,
+                },
+            };
 
-    // Respond to information request (or push updated information)
-    _getUpdate(identity, packet) {
-
-        const player = this._mpris?.getPlayer(identity);
-        if (!player) {
-            debug(`Can't generate update, no such player ID '${identity}'`);
-            return;
-        }
-
-        const response = {
-            type: 'kdeconnect.mpris',
-            body: {
-                player: player.Identity,
-            },
-        };
-
-        try {
             if (packet.body.hasOwnProperty('requestNowPlaying')) {
+                hasResponse = true;
 
                 Object.assign(response.body, {
                     pos: Math.floor(player.Position / 1000),
@@ -358,61 +331,31 @@ const MPRISPlugin = GObject.registerClass({
                 }
             }
 
-            if (packet.body.hasOwnProperty('requestVolume'))
+            if (packet.body.hasOwnProperty('requestVolume')) {
+                hasResponse = true;
                 response.body.volume = Math.floor(player.Volume * 100);
+            }
 
-            return response;
+            if (hasResponse)
+                this.device.sendPacket(response);
         } catch (e) {
             debug(e, this.device.name);
+        } finally {
+            this._updating.delete(player);
         }
-    }
-
-    _sendUpdate(player, packet = null) {
-        if (!player || (!packet && this._updating.has(player)))
-            return GLib.SOURCE_REMOVE;
-
-        debug(`Sending update for ${player.Identity}`);
-        this._updating.add(player);
-
-        if (this._queueTimers.has(player.Identity)) {
-            const timer_id = this._queueTimers.get(player.Identity);
-            if (timer_id) {
-                debug(`Stopping timer id ${timer_id}`);
-                GLib.source_remove(timer_id);
-            }
-            this._queueTimers.delete(player.Identity);
-        }
-        if (!packet) {
-            packet = this._getUpdate(player.Identity, {
-                body: {
-                    requestNowPlaying: true,
-                    requestVolume: true,
-                },
-            });
-        }
-        this.device.sendPacket(packet);
-
-        this._updating.delete(player);
-        return GLib.SOURCE_REMOVE;
     }
 
     _onPlayerChanged(mpris, player) {
         if (!this.settings.get_boolean('share-players'))
             return;
 
-        // Set a timer to send the updated state after a short delay.
-        // Allows further state changes to be bundled into a single packet.
-        if (this._queueTimers.has(player.Identity))
-            return;
-        this._queueTimers.set(player.Identity, 0);
-
-        const timer_id = GLib.timeout_add(
-            GLib.PRIORITY_DEFAULT,
-            500,  // ms (0.5 seconds)
-            this._sendUpdate.bind(this, player)
-        );
-        this._queueTimers.set(player.Identity, timer_id);
-        debug(`Set update timer id ${timer_id} for ${player.Identity}`);
+        this._handleCommand({
+            body: {
+                player: player.Identity,
+                requestNowPlaying: true,
+                requestVolume: true,
+            },
+        });
     }
 
     _onPlayerSeeked(mpris, player, offset) {
@@ -492,11 +435,6 @@ const MPRISPlugin = GObject.registerClass({
     }
 
     destroy() {
-        for (const [identity, timer] of this._queueTimers) {
-            this._queueTimers.delete(identity);
-            GLib.source_remove(timer);
-        }
-
         if (this._mpris !== undefined) {
             this._mpris.disconnect(this._playerAddedId);
             this._mpris.disconnect(this._playerRemovedId);
