@@ -2246,9 +2246,10 @@ SPDX-License-Identifier: GPL-2.0-or-later
                                     <child>
                                       <object class="GtkSwitch" id="debug-packets">
                                         <property name="visible">True</property>
-                                        <property name="can-focus">True</property>
+                                        <property name="can_focus">True</property>
                                         <property name="halign">end</property>
                                         <property name="valign">center</property>
+                                        <property name="action_name">settings.debug-packets</property>
                                       </object>
                                       <packing>
                                         <property name="left-attach">1</property>

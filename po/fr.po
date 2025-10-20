@@ -388,6 +388,9 @@ msgstr "Ancienne gestion des SMS"
 msgid "SFTP Automount"
 msgstr "Montage automatique SFTP"
 
+msgid "Log exchanges"
+msgstr "Tracer les paquets échangés"
+
 #: data/ui/preferences-device-panel.ui:2236
 #: data/ui/preferences-device-panel.ui:2562
 msgid "Advanced"

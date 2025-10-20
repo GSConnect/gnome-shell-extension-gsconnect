@@ -497,6 +497,13 @@ export const Panel = GObject.registerClass({
         status_unpair.connect('activate', this._deviceAction.bind(this.device));
         this.settings.bind('paired', status_unpair, 'enabled', 0);
         this.actions.add_action(status_unpair);
+
+        this.actions.add_action(this.settings.create_action('debug-packets'));
+        /*const debug_packets_on = new Gio.SimpleAction({name: 'debugpackets'});
+        debug_packets_on.connect('activate', this._deviceAction.bind(this.device));
+        this.settings.bind('debug-packets', debug_packets_on, 'enabled', 1);
+        this.actions.add_action(debug_packets_on); */
+
     }
 
     /**
