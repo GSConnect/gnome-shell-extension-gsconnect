@@ -23,7 +23,7 @@ libexecdir = join_paths(prefix, get_option('libexecdir'))
 localedir = join_paths(prefix, get_option('localedir'))
 sysconfdir = get_option('sysconfdir')
 
-gschemadir = join_paths(datadir, 'glib-2.0', 'schemas')
+gschemadir = join_paths(extdatadir, 'schemas')
 
 
 # GNOME Shell LIBDIR
