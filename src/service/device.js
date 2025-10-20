@@ -125,6 +125,10 @@ const Device = GObject.registerClass({
         try {
             // Bind settings to enable or disable packets logs
             this._debugPackets = this.settings.get_boolean('debug-packets');
+            this._debugPacketsChangedId = this.settings.connect(
+                'changed::debug-packets',
+                this._onDebugPacketChanged.bind(this)
+            );
         }
         catch(err)
         {
@@ -1051,6 +1055,11 @@ const Device = GObject.registerClass({
         // Load allowed plugins
         for (const name of allowed)
             this._loadPlugin(name);
+
+    }
+
+    _onDebugPacketChanged(settings) {
+        this._debugPackets = this.settings.get_boolean('debug-packets');
     }
 
     _loadPlugin(name) {
