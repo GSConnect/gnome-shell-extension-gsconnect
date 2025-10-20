@@ -88,6 +88,9 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <key name="last-connection" type="s">
       <default>""</default>
     </key>
+    <key name="debug-packets" type="b">
+      <default>false</default>
+    </key>
   </schema>
 
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Battery">

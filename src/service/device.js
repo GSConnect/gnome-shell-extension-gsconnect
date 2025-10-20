@@ -91,6 +91,7 @@ const Device = GObject.registerClass({
         this._incomingPairRequest = 0;
         this._outgoingPairRequest = 0;
         this._pairingTimestamp = 0;
+        this._debugPackets = 0;
 
         // Maps of name->Plugin, packet->Plugin, uuid->Transfer
         this._plugins = new Map();
@@ -121,6 +122,17 @@ const Device = GObject.registerClass({
             this._onAllowedPluginsChanged.bind(this)
         );
 
+        try {
+            // Bind settings to enable or disable packets logs
+            this._debugPackets = this.settings.get_boolean('debug-packets');
+        }
+        catch(err)
+        {
+            debug("could not read debug-packets setting.", this.name);
+            debug("schema: " + this.settings.settings_schema.get_id(), this.name)
+            const keys = this.settings.settings_schema.list_keys().join(', ');
+            debug("keys: " + keys, this.name);
+        }
         this._registerActions();
         this.menu = new Gio.Menu();
 
@@ -366,7 +378,7 @@ const Device = GObject.registerClass({
             let packet = null;
 
             while ((packet = await this.channel.readPacket())) {
-                debug(packet, this.name);
+                if (this._debugPackets) debug(packet, this.name);
                 this.handlePacket(packet);
             }
         } catch (e) {
@@ -474,7 +486,7 @@ const Device = GObject.registerClass({
 
             while ((next = this._outputQueue.shift())) {
                 await this.channel.sendPacket(next);
-                debug(next, this.name);
+                if (this._debugPackets) debug(next, this.name);
             }
 
             this._outputLock = false;
