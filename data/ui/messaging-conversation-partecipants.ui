@@ -10,8 +10,8 @@ SPDX-License-Identifier: GPL-2.0-or-later
   <requires lib="gtk" version="4.0"/>
   <requires lib="Adw" version="1.0"/>
   
-  <template class="GSConnectMessagingConversationPartecipants" parent="AdwDialog">
-    <property name="title" translatable="yes">Partecipants</property>
+  <template class="GSConnectMessagingConversationParticipants" parent="AdwDialog">
+    <property name="title" translatable="yes">Participants</property>
     <property name="content-width">500</property>
     <child>
       <object class="AdwToolbarView">
