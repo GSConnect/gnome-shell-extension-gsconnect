@@ -240,7 +240,7 @@ const Device = GObject.registerClass({
             case 'laptop':
                 return 'laptop-symbolic';
             case 'phone':
-                return 'smartphone-symbolic';
+                return 'phone-symbolic';
             case 'tablet':
                 return 'tablet-symbolic';
             case 'tv':

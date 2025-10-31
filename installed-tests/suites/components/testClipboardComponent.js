@@ -17,10 +17,10 @@ describe('The Clipboard component', function () {
     let gtkClipboard;
 
     beforeAll(function () {
-        Gtk.init(null);
+        Gtk.init();
 
         const display = Gdk.Display.get_default();
-        gtkClipboard = Gtk.Clipboard.get_default(display);
+        gtkClipboard = display.get_clipboard();
 
         clipboard = new Clipboard();
     });
@@ -39,16 +39,18 @@ describe('The Clipboard component', function () {
             done();
         });
 
-        gtkClipboard.set_text(text, -1);
+        const provider = Gdk.ContentProvider.new_for_value(new GLib.Variant('s', text));
+        gtkClipboard.set_content(provider);
     });
 
     it('pushes changes to the session clipboard', function (done) {
         const text = GLib.uuid_string_random();
 
-        const id = gtkClipboard.connect('owner-change', (gtkClipboard) => {
+        const id = gtkClipboard.connect('changed', async (gtkClipboard) => {
             gtkClipboard.disconnect(id);
 
-            expect(gtkClipboard.wait_for_text()).toBe(text);
+            const value = await gtkClipboard.read_text_async(null);
+            expect(value).toBe(text);
             done();
         });
 

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+
+SPDX-License-Identifier: GPL-2.0-or-later
+-->
+
+<interface domain="org.gnome.Shell.Extensions.GSConnect">
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+
+  <object class="GtkAdjustment" id="battery-custom-adjustment">
+    <property name="upper">99</property>
+    <property name="lower">01</property>
+    <property name="value">80</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">1</property>
+  </object>
+  
+  <template class="GSConnectDevicePairPage" parent="AdwNavigationPage">
+    <property name="title" translatable="no">Device Pair Page</property>
+    <property name="tag">content</property>
+    <property name="child">
+      <object class="AdwToolbarView">
+        <property name="visible">True</property>
+        <child type="top">
+          <object class="AdwHeaderBar">
+            <property name="visible">True</property>
+            <property name="show-title">False</property>
+          </object>
+        </child>
+        <property name="content">
+          <object class="GtkBox" id="welcome">
+            <property name="visible">True</property>
+            <property name="orientation">vertical</property>
+            <property name="valign">center</property>
+            <child>
+              <object class="GtkImage">
+                <property name="visible">True</property>
+                <property name="valign">center</property>
+                <property name="halign">center</property>
+                <property name="margin-bottom">30</property>
+                <property name="icon-name">network-wireless-hotspot-symbolic</property>
+                <property name="pixel-size">170</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="pair_label">
+                <property name="visible">True</property>
+                <property name="valign">center</property>
+                <property name="halign">center</property>
+                <property name="margin-top">30</property>
+                <property name="max-width-chars">20</property>
+                <property name="ellipsize">end</property>
+                <style>
+                  <class name="title-1"/>
+                </style>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="valign">center</property>
+                <property name="halign">center</property>
+                <property name="margin-top">10</property>
+                <property name="margin-bottom">30</property>
+                <!-- Translators: This text appears just after the name of a device to connect -->
+                <property name="label" translatable="yes">is not paired</property>
+                <style>
+                  <class name="title-2"/>
+                </style>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSpinner" id="spinner">
+                <property name="visible">False</property>
+                <property name="halign">center</property>
+                <property name="valign">center</property>
+                <property name="width-request">48</property>
+                <property name="height-request">48</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwClamp" id="pair-button">
+                <property name="maximum-size">275</property>
+                <child>
+                  <object class="GtkListBox">
+                    <property name="visible">True</property>
+                    <property name="selection-mode">none</property>
+                    <style>
+                      <class name="boxed-list"/>
+                    </style>
+                    <child>
+                      <object class="AdwButtonRow">
+                        <property name="visible">True</property>
+                        <property name="title" translatable="yes">Pair Device</property>
+                        <property name="start-icon-name">phonelink-symbolic</property>
+                        <signal name="activated" handler="_pairDevice" swapped="no"/>
+                        <style>
+                          <class name="suggested-action"/>
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </property>
+      </object>
+    </property>
+  </template>
+</interface>
