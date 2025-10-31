@@ -206,10 +206,11 @@ const Service = GObject.registerClass({
     }
 
     _preferences() {
-        Gio.Subprocess.new(
-            [`${Config.PACKAGE_DATADIR}/gsconnect-preferences`],
-            Gio.SubprocessFlags.NONE
+        const _launcher = Gio.SubprocessLauncher.new(
+            {flags: Gio.SubprocessFlags.NONE}
         );
+        _launcher.set_cwd(Config.PACKAGE_DATADIR);
+        _launcher.spawnv(['gjs', '-m', 'gsconnect-preferences.js']);
     }
 
     /**
