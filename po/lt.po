@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-13 14:44-0400\n"
-"PO-Revision-Date: 2025-09-13 18:59\n"
+"PO-Revision-Date: 2025-11-07 21:11\n"
 "Last-Translator: \n"
 "Language-Team: Lithuanian\n"
 "Language: lt_LT\n"
@@ -250,11 +250,11 @@ msgstr "Įrašyti failus į"
 
 #: data/ui/preferences-device-panel.ui:510
 msgid "Links"
-msgstr ""
+msgstr "Nuorodos"
 
 #: data/ui/preferences-device-panel.ui:562
 msgid "Automatically open received URLs"
-msgstr ""
+msgstr "Automatiškai atverti gautus URL adresus"
 
 #: data/ui/preferences-device-panel.ui:623
 #: data/ui/preferences-device-panel.ui:2286
@@ -532,13 +532,15 @@ msgstr "Aptikimas išjungtas"
 
 #: data/ui/preferences-window.ui:826
 msgid "Retry"
-msgstr ""
+msgstr "Bandyti dar kartą"
 
 #: data/ui/preferences-window.ui:858
 msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
 "Use your distro's package manager to install it.\n"
 "For more information, visit <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</a>."
-msgstr ""
+msgstr "Atrodo, kad nėra įdiegtas <tt>openssl</tt> komandų eilutės įrankis.\n"
+"Norėdami jį įdiegti, naudokite savo platinamojo paketo paketų tvarkytuvę.\n"
+"Išsamesnei informacijai apsilankykite <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">GSConnect vikyje</a>."
 
 #: data/ui/preferences-window.ui:874 src/service/init.js:361
 msgid "OpenSSL not found"
@@ -547,7 +549,7 @@ msgstr "OpenSSL nerasta"
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/preferences-window.ui:923
 msgid "Add device by IP…"
-msgstr ""
+msgstr "Pridėti įrenginį pagal IP adresą…"
 
 #: data/ui/preferences-window.ui:928
 msgid "Display Mode"
@@ -678,13 +680,13 @@ msgstr "Peržiūrėti žurnalą"
 
 #: src/preferences/service.js:443
 msgid "Invalid Device Name"
-msgstr ""
+msgstr "Neteisingas įrenginio pavadinimas"
 
 #. TRANSLATOR: %s is a list of forbidden characters
 #: src/preferences/service.js:445
 #, javascript-format
 msgid "Device name must not contain any of %s and have a length of 1-32 characters"
-msgstr ""
+msgstr "Įrenginio pavadinime negali būti nei vieno iš šių simbolių %s, be to, pavadinimas turi būti 1–32 simbolių ilgio"
 
 #: src/preferences/service.js:516
 msgid "Laptop"
@@ -721,11 +723,11 @@ msgstr "Laukiama paslaugos…"
 #. Notify the user
 #: src/service/daemon.js:99
 msgid "Settings Migrated"
-msgstr ""
+msgstr "Nustatymai perkelti"
 
 #: src/service/daemon.js:100
 msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
-msgstr ""
+msgstr "GSConnect atsinaujino, kad palaikytų KDE Connect protokolui atliktus pakeitimus. Kai kuriuos įrenginius gali prireikti suporuoti iš naujo."
 
 #: src/service/daemon.js:241
 msgid "Click for help troubleshooting"
@@ -838,11 +840,11 @@ msgstr "Priimti"
 #: src/service/device.js:960
 #, javascript-format
 msgid "Failed to pair with %s"
-msgstr ""
+msgstr "Nepavyko suporuoti su %s"
 
 #: src/service/device.js:961
 msgid "Device clocks are out of sync"
-msgstr ""
+msgstr "Įrenginių laikrodžiai nėra sinchronizuoti"
 
 #: src/service/manager.js:178
 msgid "Discovery has been disabled due to the number of devices on this network."
