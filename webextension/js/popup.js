@@ -76,25 +76,29 @@ function getDeviceElement(device) {
     deviceElement.appendChild(deviceName);
 
     if (device.share) {
-        const shareButton = document.createElement('img');
+        const shareButton = document.createElement('button');
         shareButton.className = 'plugin-button';
-        shareButton.src = 'images/open-in-browser.svg';
-        shareButton.title = browser.i18n.getMessage('shareMessage');
+        const shareImage = document.createElement('img');
+        shareImage.src = 'images/open-in-browser.svg';
+        shareImage.title = browser.i18n.getMessage('shareMessage');
+        shareButton.appendChild(shareImage);
         shareButton.addEventListener(
             'click',
-            () => sendUrl(device.id, 'share', URL)
+            () => sendUrl(device.id, 'share', TARGET_URL)
         );
         deviceElement.appendChild(shareButton);
     }
 
     if (device.telephony) {
-        const telephonyButton = document.createElement('img');
+        const telephonyButton = document.createElement('button');
         telephonyButton.className = 'plugin-button';
-        telephonyButton.src = 'images/message.svg';
-        telephonyButton.title = browser.i18n.getMessage('smsMessage');
+        const telephonyImage = document.createElement('img');
+        telephonyImage.src = 'images/message.svg';
+        telephonyImage.title = browser.i18n.getMessage('smsMessage');
+        telephonyButton.appendChild(telephonyImage);
         telephonyButton.addEventListener(
             'click',
-            () => sendUrl(device.id, 'telephony', URL)
+            () => sendUrl(device.id, 'telephony', TARGET_URL)
         );
         deviceElement.appendChild(telephonyButton);
     }
