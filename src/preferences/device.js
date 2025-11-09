@@ -558,7 +558,7 @@ export const DeviceNavigationPage = GObject.registerClass({
 
         const status_unpair = new Gio.SimpleAction({name: 'unpair'});
         status_unpair.connect('activate', this._deviceAction.bind(this.device));
-        this.settings.bind('paired', status_unpair, 'enabled', 0);
+        this.settings.bind('paired', status_unpair, 'enabled', GObject.BindingFlags.DEFAULT);
         this.actions.add_action(status_unpair);
     }
 
@@ -1095,7 +1095,7 @@ export const DevicePairPage = GObject.registerClass({
         });
 
         const status_pair = new Gio.SimpleAction({name: 'pair'});
-        this.settings.bind('paired', status_pair, 'enabled', GObject.BindingFlags.SYNC_CREATE);
+        this.settings.bind('paired', status_pair, 'enabled', GObject.BindingFlags.INVERT_BOOLEAN);
         this.actions.add_action(status_pair);
     }
 
