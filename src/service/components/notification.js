@@ -100,7 +100,7 @@ const Listener = GObject.registerClass({
                 path: `/org/gnome/desktop/notifications/application/${app}/`,
             });
 
-            const appInfo = Gio.DesktopAppInfo.new(
+            const appInfo = GioUnix.DesktopAppInfo.new(
                 appSettings.get_string('application-id')
             );
 
@@ -198,7 +198,7 @@ const Listener = GObject.registerClass({
 
         try {
             const appId = await this._getAppId(sender, appName);
-            const appInfo = Gio.DesktopAppInfo.new(`${appId}.desktop`);
+            const appInfo = GioUnix.DesktopAppInfo.new(`${appId}.desktop`);
             this._names[appName] = appInfo.get_name();
             appName = appInfo.get_name();
         } catch {
@@ -357,7 +357,7 @@ const Listener = GObject.registerClass({
         if (application === 'org.gnome.Shell.Extensions.GSConnect')
             return;
 
-        const appInfo = Gio.DesktopAppInfo.new(`${application}.desktop`);
+        const appInfo = GioUnix.DesktopAppInfo.new(`${application}.desktop`);
 
         // Try to get an icon for the notification
         if (!notification.hasOwnProperty('icon'))
