@@ -27,7 +27,6 @@ OS:        ${GLib.get_os_info('PRETTY_NAME')}
 --------------------------------------------------------------------------------
 `);
 
-
 /**
  * Generate Support Log by fetching system journal logs since a specified start time.
  *
@@ -92,6 +91,15 @@ async function generateSupportLog(time) {
         logError(e);
     }
 }
+
+
+/**
+ * "Connect to..." Dialog
+ */
+const OpenSSLAlertDialog = GObject.registerClass({
+    GTypeName: 'GSConnectOpenSSLAlertDialog',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/openssl-dialog.ui',
+}, class OpenSSLAlertDialog extends Adw.AlertDialog {});
 
 /**
  * Settings dialog for GSConnect, allowing users to configure device settings.
@@ -358,15 +366,12 @@ export const Window = GObject.registerClass({
 
         this.add_action(this.settings.create_action('discoverable'));
 
-        /*
-        * TODO: OpenSSL-missing infobar
-        * this.settings.bind(
-        *     'missing-openssl',
-        *     this.infobar_openssl,
-        *     'reveal-child',
-        *     Gio.SettingsBindFlags.DEFAULT
-        * );
-        */
+        if (this.settings.get_boolean('missing-openssl')) {
+            const dialog = new OpenSSLAlertDialog();
+            dialog.connect('response', this._onRetryOpenssl.bind(this));
+            dialog.present(this);
+        }
+        
         this.add_action(this.settings.create_action('missing-openssl'));
 
         // Application Menu
@@ -745,6 +750,16 @@ export const Window = GObject.registerClass({
         } else {
             this.window_title.set_subtitle(_('Waiting for service…'));
             this.refresh_button.set_sensitive(false);
+        }
+    }
+
+    _onRetryOpenssl(widget, event) {
+        if (event == 'retry') {
+            this.settings.set_boolean('enabled', false);
+            GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT_IDLE, 2, () => {
+                this.settings.set_boolean('enabled', true);
+                return GLib.SOURCE_REMOVE;
+            });
         }
     }
 });
