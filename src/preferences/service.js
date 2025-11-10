@@ -138,7 +138,7 @@ export const Window = GObject.registerClass({
         'display-mode': GObject.ParamSpec.string(
             'display-mode',
             'Display Mode',
-            'Display devices in either the Panel or User Menu',
+            'Display devices in either the Panel or User Mene or, diplay in User Menu with hidden icon',
             GObject.ParamFlags.READWRITE,
             null
         ),
@@ -240,14 +240,14 @@ export const Window = GObject.registerClass({
     }
 
     get display_mode() {
-        if (this.settings.get_boolean('show-indicators'))
-            return 'panel';
-
-        return 'user-menu';
+        return this.settings.get_string('display-mode')
     }
 
     set display_mode(mode) {
-        this.settings.set_boolean('show-indicators', (mode === 'panel'));
+        if (['panel', 'user-menu', 'hidden'].includes(mode))
+            this.settings.set_string('display-mode', mode)
+
+        // Do nothing if invalid
     }
 
     vfunc_delete_event(event) {
