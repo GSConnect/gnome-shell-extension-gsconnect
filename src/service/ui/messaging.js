@@ -260,8 +260,8 @@ const ConversationMessage = GObject.registerClass({
 /**
  * A widget for displaying a conversation thread, with an entry for responding.
  */
-const ConversationPartecipants = GObject.registerClass({
-    GTypeName: 'GSConnectMessagingConversationPartecipants',
+const ConversationParticipants = GObject.registerClass({
+    GTypeName: 'GSConnectMessagingConversationParticipants',
     Properties: {
         'device': GObject.ParamSpec.object(
             'device',
@@ -282,7 +282,7 @@ const ConversationPartecipants = GObject.registerClass({
     Children: [
         'contacts-list',
     ],
-}, class MessagingConversationPartecipants extends Adw.Dialog {
+}, class MessagingConversationParticipants extends Adw.Dialog {
 
     _init(params) {
         super._init({device: params.device});
@@ -372,7 +372,7 @@ const MessagingConversation = GObject.registerClass({
 
         this._partecipantsId = this.partecipants_button.connect('clicked', () => {
             if (this._partecipants_dialog === undefined) {
-                this._partecipants_dialog = new ConversationPartecipants({
+                this._partecipants_dialog = new ConversationParticipants({
                     device: this.device,
                     addresses: this.addresses,
                 });
