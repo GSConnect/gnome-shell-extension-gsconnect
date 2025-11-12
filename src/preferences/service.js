@@ -138,7 +138,7 @@ export const Window = GObject.registerClass({
         'display-mode': GObject.ParamSpec.string(
             'display-mode',
             'Display Mode',
-            'Display devices in either the Panel or User Mene or, diplay in User Menu with hidden icon',
+            'Display devices in either the Panel or User Menu or, display in User Menu with hidden icon',
             GObject.ParamFlags.READWRITE,
             null
         ),
