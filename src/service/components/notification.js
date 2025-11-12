@@ -9,6 +9,16 @@ import GObject from 'gi://GObject';
 
 import * as DBus from '../utils/dbus.js';
 
+let GioUnix;
+try {
+    GioUnix = (await import('gi://GioUnix?version=2.0')).default;
+} catch {
+    GioUnix = {
+        InputStream: Gio.UnixInputStream,
+        OutputStream: Gio.UnixOutputStream,
+    };
+}
+
 
 const _nodeInfo = Gio.DBusNodeInfo.new_for_xml(`
 <node>
