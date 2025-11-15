@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-13 14:44-0400\n"
-"PO-Revision-Date: 2025-11-15 16:58\n"
+"PO-Revision-Date: 2025-11-15 18:25\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
 "Language: ro_RO\n"
@@ -41,47 +41,47 @@ msgstr "Cu GSConnect te poți conecta în siguranță la telefoane mobile și ca
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:48
 msgid "Share files, links and text"
-msgstr ""
+msgstr "Trimiterea și primirea de fișiere, adrese de internet și text"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:49
 msgid "Send and receive messages"
-msgstr ""
+msgstr "Trimiterea și primirea de mesaje"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:50
 msgid "Sync clipboard content"
-msgstr ""
+msgstr "Sincronizarea conținutului copiat"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:51
 msgid "Sync contacts"
-msgstr ""
+msgstr "Sincronizarea contactelor"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:52
 msgid "Sync notifications"
-msgstr ""
+msgstr "Sincronizarea notificărilor"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:53
 msgid "Control media players"
-msgstr ""
+msgstr "Controlul conținutului multimedia"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:54
 msgid "Control system volume"
-msgstr ""
+msgstr "Controlul sunetului sistemului"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:55
 msgid "Execute predefined commands"
-msgstr ""
+msgstr "Executarea comenzilor predefinite"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:56
 msgid "And more…"
-msgstr ""
+msgstr "Și altele…"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:165
 msgid "GSConnect in GNOME Shell"
-msgstr ""
+msgstr "GSConnect în interfața GNOME"
 
 #: data/ui/connect-dialog.ui:20
 msgid "Connect to…"
-msgstr ""
+msgstr "Conectează la…"
 
 #: data/ui/connect-dialog.ui:26 data/ui/legacy-messaging-dialog.ui:20
 #: data/ui/legacy-messaging-dialog.ui:24
@@ -95,89 +95,89 @@ msgstr ""
 #: src/preferences/service.js:417 src/service/plugins/share.js:179
 #: src/service/plugins/share.js:314 src/service/plugins/share.js:445
 msgid "Cancel"
-msgstr ""
+msgstr "Anulează"
 
 #: data/ui/connect-dialog.ui:33
 msgid "Connect"
-msgstr ""
+msgstr "Conectează"
 
 #: data/ui/connect-dialog.ui:80
 msgid "IP Address"
-msgstr ""
+msgstr "Adresa IP"
 
 #: data/ui/contact-chooser.ui:56
 msgid "No contacts"
-msgstr ""
+msgstr "Niciun contact"
 
 #: data/ui/contact-chooser.ui:68 data/ui/messaging-window.ui:103
 #: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:949
 msgid "Help"
-msgstr ""
+msgstr "Ajutor"
 
 #: data/ui/contact-chooser.ui:109
 msgid "Type a phone number or name"
-msgstr ""
+msgstr "Introdu un număr de telefon sau un nume"
 
 #. TRANSLATORS: All other phone number types
 #: data/ui/contacts-address-row.ui:71 src/service/ui/contacts.js:158
 msgid "Other"
-msgstr ""
+msgstr "Altul"
 
 #. TRANSLATORS: Share URL by SMS
 #: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:353
 #: src/service/daemon.js:467 src/service/plugins/sms.js:62
 #: webextension/gettext.js:41
 msgid "Send SMS"
-msgstr ""
+msgstr "Trimite SMS"
 
 #: data/ui/legacy-messaging-dialog.ui:32 data/ui/legacy-messaging-dialog.ui:36
 #: data/ui/notification-reply-dialog.ui:31
 #: data/ui/notification-reply-dialog.ui:35 src/service/plugins/share.js:446
 msgid "Send"
-msgstr ""
+msgstr "Trimite"
 
 #: data/ui/legacy-messaging-dialog.ui:69 data/ui/messaging-window.ui:263
 #: data/ui/notification-reply-dialog.ui:68
 msgid "Device is disconnected"
-msgstr ""
+msgstr "Aparatul este deconectat"
 
 #: data/ui/messaging-conversation.ui:91 src/service/plugins/sms.js:54
 msgid "Send Message"
-msgstr ""
+msgstr "Trimite un mesaj"
 
 #: data/ui/messaging-conversation.ui:92 src/shell/notification.js:88
 msgid "Type a message"
-msgstr ""
+msgstr "Scrie un mesaj"
 
 #: data/ui/messaging-conversation.ui:99
 msgid "Message Entry"
-msgstr ""
+msgstr "Conținutul mesajului"
 
 #: data/ui/messaging-conversation.ui:100
 msgid "Type a message and press Enter to send"
-msgstr ""
+msgstr "Scrie un mesaj și apasă Enter pentru a trimite"
 
 #: data/ui/messaging-window.ui:21 src/service/plugins/sms.js:30
 #: src/service/ui/messaging.js:1063
 msgid "Messaging"
-msgstr ""
+msgstr "Mesaje"
 
 #: data/ui/messaging-window.ui:30 data/ui/messaging-window.ui:43
 #: src/service/ui/messaging.js:1274
 msgid "New Conversation"
-msgstr ""
+msgstr "Conversație nouă"
 
 #: data/ui/messaging-window.ui:120
 msgid "No Conversations"
-msgstr ""
+msgstr "Nicio conversație"
 
 #: data/ui/messaging-window.ui:180
 msgid "No conversation selected"
-msgstr ""
+msgstr "Nicio conversație aleasă"
 
 #: data/ui/messaging-window.ui:196
 msgid "Select or start a conversation"
-msgstr ""
+msgstr "Alege sau începe o conversație"
 
 #: data/ui/mousepad-input-dialog.ui:97
 msgid "Touchpad.\n"
@@ -185,19 +185,23 @@ msgid "Touchpad.\n"
 "Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr ""
+msgstr "Panoul tactil.\n"
+"Trage în această zonă pentru a muta cursorul mausului.\n"
+"Apasă lung pentru a muta cursorul mausului.\n\n"
+"Un clic simplu va fi trimis la aparatul asociat.\n"
+"Stânga, mijloc, butonul din dreapta și rotița."
 
 #: data/ui/preferences-command-editor.ui:14
 msgid "Edit Command"
-msgstr ""
+msgstr "Schimbă comanda"
 
 #: data/ui/preferences-command-editor.ui:28
 msgid "Save"
-msgstr ""
+msgstr "Salvează"
 
 #: data/ui/preferences-command-editor.ui:61
 msgid "Name"
-msgstr ""
+msgstr "Nume"
 
 #: data/ui/preferences-command-editor.ui:99
 msgid "Command Line"
