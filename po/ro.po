@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-13 14:44-0400\n"
-"PO-Revision-Date: 2025-11-13 16:35\n"
+"PO-Revision-Date: 2025-11-15 16:58\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
 "Language: ro_RO\n"
@@ -21,23 +21,23 @@ msgstr ""
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:12
 #: webextension/gettext.js:29
 msgid "GSConnect"
-msgstr ""
+msgstr "GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:13
 msgid "KDE Connect implementation for GNOME"
-msgstr ""
+msgstr "Implementarea KDE Connect pentru GNOME"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:24
 msgid "GSConnect Team"
-msgstr ""
+msgstr "Echipa GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
 msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
+msgstr "GSConnect este o implementare completă a KDE Connect în special pentru GNOME Shell. Se integrează cu Nautilus, Chrome și Firefox. Echipa KDE Connect are aplicații pentru Linux, BSD, Android, Sailfish, iOS, macOS și Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
 msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
-msgstr ""
+msgstr "Cu GSConnect te poți conecta în siguranță la telefoane mobile și calculatoare pentru:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:48
 msgid "Share files, links and text"
