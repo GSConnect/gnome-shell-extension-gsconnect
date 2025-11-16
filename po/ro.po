@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-13 14:44-0400\n"
-"PO-Revision-Date: 2025-11-15 18:25\n"
+"PO-Revision-Date: 2025-11-16 10:59\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
 "Language: ro_RO\n"
@@ -205,24 +205,24 @@ msgstr "Nume"
 
 #: data/ui/preferences-command-editor.ui:99
 msgid "Command Line"
-msgstr ""
+msgstr "Terminal"
 
 #: data/ui/preferences-command-editor.ui:121
 #: data/ui/preferences-command-editor.ui:150
 msgid "Choose an executable"
-msgstr ""
+msgstr "Alege un executabil"
 
 #: data/ui/preferences-command-editor.ui:164
 msgid "Open"
-msgstr ""
+msgstr "Deschide"
 
 #: data/ui/preferences-device-panel.ui:53 src/preferences/service.js:524
 msgid "Desktop"
-msgstr ""
+msgstr "Birou"
 
 #: data/ui/preferences-device-panel.ui:102
 msgid "Clipboard Sync"
-msgstr ""
+msgstr "Sincronizare Copiate"
 
 #: data/ui/preferences-device-panel.ui:168
 msgid "Media Players"
