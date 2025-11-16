@@ -714,6 +714,25 @@ var Channel = GObject.registerClass({
         return this._authenticate(connection);
     }
 
+    async _exchangeIdentities() {
+        await this.sendPacket(this.backend.identity);
+        const identity = await this.readPacket();
+
+        if (this.identity.body.protocolVersion !== identity.body.protocolVersion) {
+            this.identity = null;
+            throw new Error(`Unexpected protocol version ${identity.protocolVersion}; ` +
+                            `handshake started with protocol version ${this.identity.protocolVersion}`);
+        }
+
+        if (this.identity.body.deviceId !== identity.body.deviceId) {
+            this.identity = null;
+            throw new Error(`Unexpected device ID "${identity.body.deviceId}"; ` +
+                            `handshake started with device ID "${this.identity.body.deviceId}"`);
+        }
+
+        this.identity = identity;
+    }
+
     /**
      * Read the identity packet from the new connection
      *
@@ -809,8 +828,7 @@ var Channel = GObject.registerClass({
             // Starting with protocol version 8, the devices are expected to
             // exchange identity packets again after TLS negotiation
             if (this.identity.body.protocolVersion >= 8) {
-                await this.sendPacket(this.backend.identity);
-                this.identity = await this.readPacket();
+                await this._exchangeIdentities();
             }
         } catch (e) {
             this.close();
@@ -836,8 +854,7 @@ var Channel = GObject.registerClass({
             // Starting with protocol version 8, the devices are expected to
             // exchange identity packets again after TLS negotiation
             if (this.identity.body.protocolVersion >= 8) {
-                await this.sendPacket(this.backend.identity);
-                this.identity = await this.readPacket();
+                await this._exchangeIdentities();
             }
         } catch (e) {
             this.close();
