@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-13 14:44-0400\n"
-"PO-Revision-Date: 2025-11-16 14:44\n"
+"PO-Revision-Date: 2025-11-16 15:43\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
 "Language: ro_RO\n"
@@ -313,93 +313,93 @@ msgstr "Distribuie când este activ"
 
 #: data/ui/preferences-device-panel.ui:1290
 msgid "Applications"
-msgstr ""
+msgstr "Aplicații"
 
 #: data/ui/preferences-device-panel.ui:1336
 #: data/ui/preferences-device-panel.ui:2424
 #: src/service/plugins/notification.js:18
 msgid "Notifications"
-msgstr ""
+msgstr "Notificări"
 
 #: data/ui/preferences-device-panel.ui:1394 src/service/plugins/contacts.js:28
 msgid "Contacts"
-msgstr ""
+msgstr "Contacte"
 
 #: data/ui/preferences-device-panel.ui:1447
 msgid "Incoming Calls"
-msgstr ""
+msgstr "Apeluri primite"
 
 #: data/ui/preferences-device-panel.ui:1496
 #: data/ui/preferences-device-panel.ui:1663
 msgid "Volume"
-msgstr ""
+msgstr "Volum"
 
 #: data/ui/preferences-device-panel.ui:1562
 #: data/ui/preferences-device-panel.ui:1729
 msgid "Pause Media"
-msgstr ""
+msgstr "Multimedia în pauză"
 
 #: data/ui/preferences-device-panel.ui:1615
 msgid "Ongoing Calls"
-msgstr ""
+msgstr "Apeluri în curs"
 
 #: data/ui/preferences-device-panel.ui:1785
 msgid "Mute Microphone"
-msgstr ""
+msgstr "Dezactivează microfonul"
 
 #: data/ui/preferences-device-panel.ui:1839
 #: data/ui/preferences-device-panel.ui:2470 src/service/plugins/telephony.js:16
 msgid "Telephony"
-msgstr ""
+msgstr "Telefonie"
 
 #: data/ui/preferences-device-panel.ui:1874
 msgid "Action Shortcuts"
-msgstr ""
+msgstr "Acțiunea scurtăturii"
 
 #: data/ui/preferences-device-panel.ui:1890
 msgid "Reset All…"
-msgstr ""
+msgstr "Ca la început…"
 
 #: data/ui/preferences-device-panel.ui:1942
 msgid "Shortcuts"
-msgstr ""
+msgstr "Scurtături"
 
 #: data/ui/preferences-device-panel.ui:1973
 msgid "Plugins"
-msgstr ""
+msgstr "Module"
 
 #: data/ui/preferences-device-panel.ui:2020
 msgid "Experimental"
-msgstr ""
+msgstr "Experimentale"
 
 #: data/ui/preferences-device-panel.ui:2067
 msgid "Device Cache"
-msgstr ""
+msgstr "Cache Aparat"
 
 #: data/ui/preferences-device-panel.ui:2085
 msgid "Clear Cache…"
-msgstr ""
+msgstr "Șterge Cache…"
 
 #: data/ui/preferences-device-panel.ui:2124
 msgid "Legacy SMS Support"
-msgstr ""
+msgstr "Vechea gestionare pentru SMS"
 
 #: data/ui/preferences-device-panel.ui:2181
 msgid "SFTP Automount"
-msgstr ""
+msgstr "Montare automată SFTP"
 
 #: data/ui/preferences-device-panel.ui:2236
 #: data/ui/preferences-device-panel.ui:2562
 msgid "Advanced"
-msgstr ""
+msgstr "Avansate"
 
 #: data/ui/preferences-device-panel.ui:2516
 msgid "Keyboard Shortcuts"
-msgstr ""
+msgstr "Scurtături"
 
 #: data/ui/preferences-device-panel.ui:2580
 msgid "Device Settings"
-msgstr ""
+msgstr "Preferințe Aparat"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/ui/preferences-device-panel.ui:2624
@@ -409,21 +409,21 @@ msgstr "Asociază"
 
 #: data/ui/preferences-device-panel.ui:2656
 msgid "Device is unpaired"
-msgstr ""
+msgstr "Aparat neasociat"
 
 #: data/ui/preferences-device-panel.ui:2671
 msgid "You may configure this device before pairing"
-msgstr ""
+msgstr "Acest aparat poate fi configurat înainte de asociere"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
 #: data/ui/preferences-device-panel.ui:2711 src/preferences/device.js:391
 msgid "Encryption Info"
-msgstr ""
+msgstr "Informații Cifrare"
 
 #. TRANSLATORS: Unpair the device and notify it
 #: data/ui/preferences-device-panel.ui:2722 src/service/daemon.js:455
 msgid "Unpair"
-msgstr ""
+msgstr "Disociază"
 
 #. TRANSLATORS: Send clipboard content to device
 #: data/ui/preferences-device-panel.ui:2734
@@ -433,25 +433,25 @@ msgstr "La aparat"
 #. TRANSLATORS: Receive clipboard content from the device
 #: data/ui/preferences-device-panel.ui:2740
 msgid "From Device"
-msgstr ""
+msgstr "De la aparat"
 
 #. TRANSLATORS: Don't change the system volume
 #: data/ui/preferences-device-panel.ui:2752
 #: data/ui/preferences-device-panel.ui:2785
 msgid "Nothing"
-msgstr ""
+msgstr "Sistem"
 
 #. TRANSLATORS: Restore the system volume
 #: data/ui/preferences-device-panel.ui:2759
 #: data/ui/preferences-device-panel.ui:2792
 msgid "Restore"
-msgstr ""
+msgstr "Sistem"
 
 #. TRANSLATORS: Lower the system volume
 #: data/ui/preferences-device-panel.ui:2766
 #: data/ui/preferences-device-panel.ui:2799
 msgid "Lower"
-msgstr ""
+msgstr "Mai încet"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the actively ringing call
@@ -459,28 +459,28 @@ msgstr ""
 #: data/ui/preferences-device-panel.ui:2806
 #: src/service/plugins/telephony.js:198
 msgid "Mute"
-msgstr ""
+msgstr "Mut"
 
 #: data/ui/preferences-shortcut-editor.ui:25
 msgid "Set"
-msgstr ""
+msgstr "Stabilește"
 
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:80
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
+msgstr "Apasă Esc pentru a anula sau Backspace pentru a restabili scurtătura de la început."
 
 #: data/ui/preferences-window.ui:24
 msgid "Device Name"
-msgstr ""
+msgstr "Numele aparatului"
 
 #: data/ui/preferences-window.ui:61
 msgid "_Rename"
-msgstr ""
+msgstr "_Redenumește"
 
 #: data/ui/preferences-window.ui:98 data/ui/preferences-window.ui:112
 msgid "Refresh"
-msgstr ""
+msgstr "Actualizează"
 
 #: data/ui/preferences-window.ui:139 src/extension.js:113
 msgid "Mobile Settings"
@@ -1005,7 +1005,7 @@ msgstr ""
 
 #: src/service/plugins/sftp.js:17
 msgid "Browse the paired device filesystem"
-msgstr ""
+msgstr "Răsfoiește sistemul de fișiere al aparatului asociat"
 
 #: src/service/plugins/sftp.js:22
 msgid "Mount"
@@ -1119,7 +1119,7 @@ msgstr ""
 
 #: src/service/plugins/sms.js:17
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
+msgstr "Trimite și citește SMS-uri de pe aparatul asociat și primește notificări pentru SMS-uri noi"
 
 #: src/service/plugins/sms.js:38
 msgid "New SMS (URI)"
