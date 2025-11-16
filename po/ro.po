@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-13 14:44-0400\n"
-"PO-Revision-Date: 2025-11-16 12:10\n"
+"PO-Revision-Date: 2025-11-16 13:24\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
 "Language: ro_RO\n"
@@ -296,20 +296,20 @@ msgstr "Bateria"
 #: src/service/plugins/runcommand.js:26 src/service/plugins/runcommand.js:34
 #: src/service/plugins/runcommand.js:194
 msgid "Commands"
-msgstr ""
+msgstr "Comenzi"
 
 #: data/ui/preferences-device-panel.ui:1091
 msgid "Add Command"
-msgstr ""
+msgstr "Adăugă o comandă"
 
 #. TRANSLATORS: 'Share' is a verb here; this refers to the action of sharing
 #: data/ui/preferences-device-panel.ui:1179
 msgid "Share Notifications"
-msgstr ""
+msgstr "Distribuie notificări"
 
 #: data/ui/preferences-device-panel.ui:1239
 msgid "Share When Active"
-msgstr ""
+msgstr "Distribuie când este activ"
 
 #: data/ui/preferences-device-panel.ui:1290
 msgid "Applications"
@@ -897,7 +897,7 @@ msgstr ""
 
 #: src/service/plugins/clipboard.js:13
 msgid "Share the clipboard content"
-msgstr ""
+msgstr "Distribuie conținutul copiat"
 
 #: src/service/plugins/clipboard.js:25
 msgid "Clipboard Push"
@@ -954,7 +954,7 @@ msgstr ""
 
 #: src/service/plugins/notification.js:19
 msgid "Share notifications with the paired device"
-msgstr ""
+msgstr "Distribuie notificări aparatului asociat"
 
 #: src/service/plugins/notification.js:33
 msgid "Cancel Notification"
@@ -1022,22 +1022,22 @@ msgstr ""
 
 #: src/service/plugins/share.js:16 src/service/plugins/share.js:23
 msgid "Share"
-msgstr ""
+msgstr "Distribuie"
 
 #: src/service/plugins/share.js:18
 msgid "Share files and URLs between devices"
-msgstr ""
+msgstr "Trimite fișiere și adrese URL altor aparate"
 
 #: src/service/plugins/share.js:148 src/service/plugins/share.js:227
 #: src/service/plugins/share.js:337
 msgid "Transfer Failed"
-msgstr ""
+msgstr "Transfer nereușit"
 
 #. TRANSLATORS: eg. Google Pixel is not allowed to upload files
 #: src/service/plugins/share.js:150
 #, javascript-format
 msgid "%s is not allowed to upload files"
-msgstr ""
+msgstr "%s nu are permisiunea să trimită fișiere"
 
 #: src/service/plugins/share.js:172 src/service/plugins/share.js:307
 msgid "Transferring File"
