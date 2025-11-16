@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-13 14:44-0400\n"
-"PO-Revision-Date: 2025-11-16 13:24\n"
+"PO-Revision-Date: 2025-11-16 14:44\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
 "Language: ro_RO\n"
@@ -405,7 +405,7 @@ msgstr ""
 #: data/ui/preferences-device-panel.ui:2624
 #: data/ui/preferences-device-panel.ui:2716 src/service/daemon.js:446
 msgid "Pair"
-msgstr ""
+msgstr "Asociază"
 
 #: data/ui/preferences-device-panel.ui:2656
 msgid "Device is unpaired"
@@ -428,7 +428,7 @@ msgstr ""
 #. TRANSLATORS: Send clipboard content to device
 #: data/ui/preferences-device-panel.ui:2734
 msgid "To Device"
-msgstr ""
+msgstr "La aparat"
 
 #. TRANSLATORS: Receive clipboard content from the device
 #: data/ui/preferences-device-panel.ui:2740
@@ -613,12 +613,12 @@ msgstr ""
 #: src/service/ui/contacts.js:533
 #, python-format, javascript-format
 msgid "Send to %s"
-msgstr ""
+msgstr "Trimite la %s"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: nautilus-extension/nautilus-gsconnect.py:195 webextension/gettext.js:33
 msgid "Send To Mobile Device"
-msgstr ""
+msgstr "Trimite la telefonul mobil"
 
 #: src/extension.js:49
 msgid "Sync between your devices"
@@ -741,7 +741,7 @@ msgstr ""
 #: src/service/daemon.js:365 src/service/daemon.js:554
 #: src/service/plugins/share.js:31
 msgid "Share File"
-msgstr ""
+msgstr "Trimite fișiere"
 
 #: src/service/daemon.js:416
 msgid "List available devices"
@@ -761,7 +761,7 @@ msgstr ""
 
 #: src/service/daemon.js:488 src/service/plugins/notification.js:57
 msgid "Send Notification"
-msgstr ""
+msgstr "Trimite o notificare"
 
 #: src/service/daemon.js:497
 msgid "Notification App Name"
@@ -793,11 +793,11 @@ msgstr ""
 #: src/service/daemon.js:563 src/service/plugins/share.js:47
 #: src/service/ui/messaging.js:1257 src/service/ui/messaging.js:1265
 msgid "Share Link"
-msgstr ""
+msgstr "Trimite legături"
 
 #: src/service/daemon.js:572 src/service/plugins/share.js:39
 msgid "Share Text"
-msgstr ""
+msgstr "Trimite text"
 
 #: src/service/daemon.js:584
 msgid "Show release version"
@@ -918,7 +918,7 @@ msgstr ""
 #: src/service/plugins/telephony.js:156 src/service/plugins/telephony.js:175
 #: src/service/ui/contacts.js:620 src/service/ui/messaging.js:756
 msgid "Unknown Contact"
-msgstr ""
+msgstr "Contact necunoscut"
 
 #: src/service/plugins/findmyphone.js:15
 msgid "Find My Phone"
@@ -974,7 +974,7 @@ msgstr ""
 
 #: src/service/plugins/ping.js:14
 msgid "Send and receive pings"
-msgstr ""
+msgstr "Trimite și primește ping-uri"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -1041,77 +1041,77 @@ msgstr "%s nu are permisiunea să trimită fișiere"
 
 #: src/service/plugins/share.js:172 src/service/plugins/share.js:307
 msgid "Transferring File"
-msgstr ""
+msgstr "Transfer de fișiere"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:174
 #, javascript-format
 msgid "Receiving “%s” from %s"
-msgstr ""
+msgstr "Se primește „%s” de la %s"
 
 #: src/service/plugins/share.js:193 src/service/plugins/share.js:327
 msgid "Transfer Successful"
-msgstr ""
+msgstr "Transfer efectuat cu succes"
 
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:195
 #, javascript-format
 msgid "Received “%s” from %s"
-msgstr ""
+msgstr "S-a primit „%s” de la %s"
 
 #: src/service/plugins/share.js:205
 msgid "Show File Location"
-msgstr ""
+msgstr "Arată locul fișierului"
 
 #: src/service/plugins/share.js:210
 msgid "Open File"
-msgstr ""
+msgstr "Deschide fișierul"
 
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:229
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
-msgstr ""
+msgstr "Nu s-a putut primi „%s” de la %s"
 
 #: src/service/plugins/share.js:259
 #, javascript-format
 msgid "Text Shared By %s"
-msgstr ""
+msgstr "Text trimis de %s"
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
 #: src/service/plugins/share.js:309
 #, javascript-format
 msgid "Sending “%s” to %s"
-msgstr ""
+msgstr "Se trimite „%s” la %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:329
 #, javascript-format
 msgid "Sent “%s” to %s"
-msgstr ""
+msgstr "S-a trimis „%s” la %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:339
 #, javascript-format
 msgid "Failed to send “%s” to %s"
-msgstr ""
+msgstr "Nu s-a putut trimite „%s” la %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:397
 #, javascript-format
 msgid "Send files to %s"
-msgstr ""
+msgstr "Trimite fișiere la %s"
 
 #. TRANSLATORS: Mark the file to be opened once completed
 #: src/service/plugins/share.js:401
 msgid "Open when done"
-msgstr ""
+msgstr "Deschide când e gata"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
 #: src/service/plugins/share.js:440
 #, javascript-format
 msgid "Send a link to %s"
-msgstr ""
+msgstr "Trimite o legătură la %s"
 
 #: src/service/plugins/sms.js:16
 msgid "SMS"
@@ -1131,7 +1131,7 @@ msgstr ""
 
 #: src/service/plugins/sms.js:70
 msgid "Share SMS"
-msgstr ""
+msgstr "Distribuie SMS"
 
 #: src/service/plugins/systemvolume.js:36
 msgid "System Volume"
@@ -1259,7 +1259,7 @@ msgstr ""
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:31
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
+msgstr "Trimite adrese de internet prin GSConnect, direct din navigatorul web sau prin SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:35
