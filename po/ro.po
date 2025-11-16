@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-13 14:44-0400\n"
-"PO-Revision-Date: 2025-11-16 16:54\n"
+"PO-Revision-Date: 2025-11-16 17:54\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
 "Language: ro_RO\n"
@@ -630,26 +630,26 @@ msgid "%d Connected"
 msgid_plural "%d Connected"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
+msgstr[2] "%d conectate"
 
 #: src/preferences/device.js:671 src/preferences/device.js:677
 msgid "Edit"
-msgstr ""
+msgstr "Modifică"
 
 #: src/preferences/device.js:686 src/preferences/device.js:692
 msgid "Remove"
-msgstr ""
+msgstr "Elimină"
 
 #: src/preferences/device.js:946 src/preferences/device.js:974
 msgid "Disabled"
-msgstr ""
+msgstr "Dezactivată"
 
 #. TRANSLATORS: Summary of a keyboard shortcut function
 #. Example: Enter a new shortcut to change Messaging
 #: src/preferences/keybindings.js:66
 #, javascript-format
 msgid "Enter a new shortcut to change <b>%s</b>"
-msgstr ""
+msgstr "Introdu o scurtătură nouă pentru <b>%s</b>"
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -865,35 +865,35 @@ msgstr ""
 #. TRANSLATORS: When the battery level is 100%
 #: src/service/plugins/battery.js:258 src/shell/device.js:119
 msgid "Fully Charged"
-msgstr ""
+msgstr "Încărcată complet"
 
 #. TRANSLATORS: eg. Google Pixel: Battery has reached custom charge level
 #: src/service/plugins/battery.js:285
 #, javascript-format
 msgid "%s: Battery has reached custom charge level"
-msgstr ""
+msgstr "%s: Bateria a atins nivelul de încărcare prestabilit"
 
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:287
 #, javascript-format
 msgid "%d%% Charged"
-msgstr ""
+msgstr "Încărcată %d%%"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:314
 #, javascript-format
 msgid "%s: Battery is low"
-msgstr ""
+msgstr "%s: Bateria este descărcată"
 
 #. TRANSLATORS: eg. 15% remaining
 #: src/service/plugins/battery.js:316
 #, javascript-format
 msgid "%d%% remaining"
-msgstr ""
+msgstr "A rămas %d%%"
 
 #: src/service/plugins/clipboard.js:12
 msgid "Clipboard"
-msgstr ""
+msgstr "Copiate"
 
 #: src/service/plugins/clipboard.js:13
 msgid "Share the clipboard content"
@@ -901,15 +901,15 @@ msgstr "Distribuie conținutul copiat"
 
 #: src/service/plugins/clipboard.js:25
 msgid "Clipboard Push"
-msgstr ""
+msgstr "Trimite Copiate"
 
 #: src/service/plugins/clipboard.js:33
 msgid "Clipboard Pull"
-msgstr ""
+msgstr "Primește Copiate"
 
 #: src/service/plugins/contacts.js:29
 msgid "Access contacts of the paired device"
-msgstr ""
+msgstr "Acces la contactele aparatului asociat"
 
 #. Ensure we have a sender
 #. TRANSLATORS: No name or phone number
@@ -922,27 +922,27 @@ msgstr "Contact necunoscut"
 
 #: src/service/plugins/findmyphone.js:15
 msgid "Find My Phone"
-msgstr ""
+msgstr "Găsește-mi telefonul"
 
 #: src/service/plugins/findmyphone.js:16
 msgid "Ring your paired device"
-msgstr ""
+msgstr "Face să sune aparatul asociat"
 
 #: src/service/plugins/mousepad.js:14
 msgid "Mousepad"
-msgstr ""
+msgstr "Panou tactil"
 
 #: src/service/plugins/mousepad.js:15
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr ""
+msgstr "Permite folosirea aparatului asociat ca maus și tastatură"
 
 #: src/service/plugins/mousepad.js:29 src/service/ui/mousepad.js:107
 msgid "Remote Input"
-msgstr ""
+msgstr "Introducere de la distanță"
 
 #: src/service/plugins/mpris.js:18
 msgid "MPRIS"
-msgstr ""
+msgstr "MPRIS"
 
 #: src/service/plugins/mpris.js:19
 msgid "Bidirectional remote media playback control"
