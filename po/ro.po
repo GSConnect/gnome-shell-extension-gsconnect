@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-13 14:44-0400\n"
-"PO-Revision-Date: 2025-11-16 10:59\n"
+"PO-Revision-Date: 2025-11-16 12:10\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
 "Language: ro_RO\n"
@@ -226,69 +226,69 @@ msgstr "Sincronizare Copiate"
 
 #: data/ui/preferences-device-panel.ui:168
 msgid "Media Players"
-msgstr ""
+msgstr "Redare multimedia"
 
 #: data/ui/preferences-device-panel.ui:225
 msgid "Mouse & Keyboard"
-msgstr ""
+msgstr "Maus și tastatură"
 
 #: data/ui/preferences-device-panel.ui:282
 msgid "Volume Control"
-msgstr ""
+msgstr "Volumul sunetului"
 
 #: data/ui/preferences-device-panel.ui:337 src/service/plugins/sftp.js:332
 msgid "Files"
-msgstr ""
+msgstr "Fișiere"
 
 #: data/ui/preferences-device-panel.ui:390
 msgid "Receive Files"
-msgstr ""
+msgstr "Primește fișiere"
 
 #: data/ui/preferences-device-panel.ui:449
 msgid "Save files to"
-msgstr ""
+msgstr "Salvează fișierele în"
 
 #: data/ui/preferences-device-panel.ui:510
 msgid "Links"
-msgstr ""
+msgstr "Adrese internet"
 
 #: data/ui/preferences-device-panel.ui:562
 msgid "Automatically open received URLs"
-msgstr ""
+msgstr "Deschide automat adresele URL primite"
 
 #: data/ui/preferences-device-panel.ui:623
 #: data/ui/preferences-device-panel.ui:2286
 msgid "Sharing"
-msgstr ""
+msgstr "Distribuie"
 
 #: data/ui/preferences-device-panel.ui:655
 msgid "Device Battery"
-msgstr ""
+msgstr "Bateria aparatului"
 
 #: data/ui/preferences-device-panel.ui:706
 msgid "Low Battery Notification"
-msgstr ""
+msgstr "Notificare Baterie descărcată"
 
 #: data/ui/preferences-device-panel.ui:765
 msgid "Charged Up to Custom Level Notification"
-msgstr ""
+msgstr "Notificare la atingerea nivelului personalizat de încărcare"
 
 #: data/ui/preferences-device-panel.ui:845
 msgid "Fully Charged Notification"
-msgstr ""
+msgstr "Notificare la încărcarea completă"
 
 #: data/ui/preferences-device-panel.ui:899
 msgid "System Battery"
-msgstr ""
+msgstr "Bateria sistemului"
 
 #: data/ui/preferences-device-panel.ui:948
 msgid "Share Statistics"
-msgstr ""
+msgstr "Distribuie statistici"
 
 #: data/ui/preferences-device-panel.ui:1002
 #: data/ui/preferences-device-panel.ui:2332 src/service/plugins/battery.js:15
 msgid "Battery"
-msgstr ""
+msgstr "Bateria"
 
 #: data/ui/preferences-device-panel.ui:1032
 #: data/ui/preferences-device-panel.ui:1117
