@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-13 14:44-0400\n"
-"PO-Revision-Date: 2025-11-16 15:43\n"
+"PO-Revision-Date: 2025-11-16 16:54\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
 "Language: ro_RO\n"
@@ -484,55 +484,55 @@ msgstr "Actualizează"
 
 #: data/ui/preferences-window.ui:139 src/extension.js:113
 msgid "Mobile Settings"
-msgstr ""
+msgstr "Preferințe"
 
 #: data/ui/preferences-window.ui:166
 msgid "Service Menu"
-msgstr ""
+msgstr "Opțiuni Serviciu"
 
 #: data/ui/preferences-window.ui:189
 msgid "Device Menu"
-msgstr ""
+msgstr "Opțiuni Aparat"
 
 #: data/ui/preferences-window.ui:203 data/ui/preferences-window.ui:218
 msgid "Edit Device Name"
-msgstr ""
+msgstr "Schimbă numele aparatului"
 
 #: data/ui/preferences-window.ui:278
 msgid "Devices"
-msgstr ""
+msgstr "Aparate"
 
 #: data/ui/preferences-window.ui:328 src/preferences/service.js:686
 msgid "Searching for devices…"
-msgstr ""
+msgstr "Se caută aparate…"
 
 #: data/ui/preferences-window.ui:353
 msgid "Extension Settings"
-msgstr ""
+msgstr "Opțiuni pentru extensie"
 
 #: data/ui/preferences-window.ui:390
 msgid "GSConnect remains active when GNOME Shell is locked"
-msgstr ""
+msgstr "GSConnect rămâne activă când interfața GNOME este blocată"
 
 #: data/ui/preferences-window.ui:410
 msgid "Browser Add-Ons"
-msgstr ""
+msgstr "Extensii pentru navigator"
 
 #: data/ui/preferences-window.ui:728
 msgid "Enable"
-msgstr ""
+msgstr "Activează"
 
 #: data/ui/preferences-window.ui:760
 msgid "This device is invisible to unpaired devices"
-msgstr ""
+msgstr "Acest aparat este invizibil pentru aparatele neasociate"
 
 #: data/ui/preferences-window.ui:772 src/service/manager.js:177
 msgid "Discovery Disabled"
-msgstr ""
+msgstr "Descoperire dezactivată"
 
 #: data/ui/preferences-window.ui:826
 msgid "Retry"
-msgstr ""
+msgstr "Încearcă din nou"
 
 #: data/ui/preferences-window.ui:858
 msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
@@ -570,40 +570,40 @@ msgstr ""
 
 #: data/ui/preferences-window.ui:953
 msgid "About GSConnect"
-msgstr ""
+msgstr "Despre GSConnect"
 
 #: data/ui/service-device-chooser.ui:15
 msgid "Select a Device"
-msgstr ""
+msgstr "Alege un aparat"
 
 #: data/ui/service-device-chooser.ui:33 data/ui/service-device-chooser.ui:38
 msgid "Select"
-msgstr ""
+msgstr "Alege"
 
 #. TRANSLATORS: No devices are known or available
 #: data/ui/service-device-chooser.ui:101 webextension/gettext.js:37
 msgid "No Device Found"
-msgstr ""
+msgstr "Niciun aparat"
 
 #: data/ui/service-device-chooser.ui:118
 msgid "Device List"
-msgstr ""
+msgstr "Lista aparatelor"
 
 #: data/ui/service-error-dialog.ui:39 data/ui/service-error-dialog.ui:47
 msgid "Report"
-msgstr ""
+msgstr "Raportează"
 
 #: data/ui/service-error-dialog.ui:79
 msgid "Something’s gone wrong"
-msgstr ""
+msgstr "Ceva nu a mers bine"
 
 #: data/ui/service-error-dialog.ui:91
 msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
-msgstr ""
+msgstr "GSConnect a avut o problemă. Raportează problema și include orice informație care ar putea ajuta."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
-msgstr ""
+msgstr "Detalii tehnice"
 
 #. TRANSLATORS: Send to <device_name>, for file manager
 #. context menu
@@ -622,7 +622,7 @@ msgstr "Trimite la telefonul mobil"
 
 #: src/extension.js:49
 msgid "Sync between your devices"
-msgstr ""
+msgstr "Sincronizează între aparatele asociate"
 
 #: src/extension.js:158
 #, javascript-format
