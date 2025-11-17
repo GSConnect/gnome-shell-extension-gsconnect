@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-13 14:44-0400\n"
-"PO-Revision-Date: 2025-11-17 14:45\n"
+"PO-Revision-Date: 2025-11-17 16:08\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
 "Language: ro_RO\n"
@@ -1211,52 +1211,52 @@ msgstr "Indisponibil"
 
 #: src/service/ui/messaging.js:764
 msgid "Group Message"
-msgstr ""
+msgstr "Mesaj de grup"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:779
 #, javascript-format
 msgid "You: %s"
-msgstr ""
+msgstr "Tu: %s"
 
 #: src/service/ui/messaging.js:965
 #, javascript-format
 msgid "And %d other contact"
 msgid_plural "And %d others"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Și %d alt contact"
+msgstr[1] "Și alte %d"
+msgstr[2] "Și alte %d"
 
 #. TRANSLATORS: Displayed when the remote keyboard is not ready to accept input
 #: src/service/ui/mousepad.js:115
 #, javascript-format
 msgid "Remote keyboard on %s is not active"
-msgstr ""
+msgstr "Tastatura de la distanță pe %s nu este activă"
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
 #: src/shell/device.js:124
 #, javascript-format
 msgid "%d%% (Estimating…)"
-msgstr ""
+msgstr "%d%% (Estimare…)"
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
 #: src/shell/device.js:133
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
-msgstr ""
+msgstr "%d%% (%d∶%02d Până la încărcarea completă)"
 
 #. TRANSLATORS: Estimated time until battery is empty
 #. EXAMPLE: 42% (12:15 Remaining)
 #: src/shell/device.js:141
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
-msgstr ""
+msgstr "%d%% (%d∶%02d Rămase)"
 
 #: src/shell/notification.js:73
 msgid "Reply"
-msgstr ""
+msgstr "Răspunde"
 
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:31
@@ -1266,10 +1266,10 @@ msgstr "Trimite adrese de internet prin GSConnect, direct din navigatorul web sa
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:35
 msgid "Service Unavailable"
-msgstr ""
+msgstr "Serviciu indisponibil"
 
 #. TRANSLATORS: Open URL with the device's browser
 #: webextension/gettext.js:39
 msgid "Open in Browser"
-msgstr ""
+msgstr "Deschide în navigator"
 
