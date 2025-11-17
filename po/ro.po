@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-13 14:44-0400\n"
-"PO-Revision-Date: 2025-11-17 10:25\n"
+"PO-Revision-Date: 2025-11-17 13:00\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
 "Language: ro_RO\n"
@@ -667,78 +667,78 @@ msgstr "O implementare completă a KDE Connect pentru GNOME"
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:382
 msgid "translator-credits"
-msgstr ""
+msgstr "Antonio Marin <gnmer.6qxyg@slmail.me>"
 
 #: src/preferences/service.js:415
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
-msgstr ""
+msgstr "Mesajele de depanare sunt înregistrate. Trebuie făcuți pașii necesari pentru a reproduce o problemă și apoi verificat jurnalul."
 
 #: src/preferences/service.js:418
 msgid "Review Log"
-msgstr ""
+msgstr "Verifică jurnalul"
 
 #: src/preferences/service.js:443
 msgid "Invalid Device Name"
-msgstr ""
+msgstr "Nume incorect"
 
 #. TRANSLATOR: %s is a list of forbidden characters
 #: src/preferences/service.js:445
 #, javascript-format
 msgid "Device name must not contain any of %s and have a length of 1-32 characters"
-msgstr ""
+msgstr "Numele aparatului nu trebuie să conțină %s și să aibă lungimea între 1-32 de caractere"
 
 #: src/preferences/service.js:516
 msgid "Laptop"
-msgstr ""
+msgstr "Calculator"
 
 #: src/preferences/service.js:518
 msgid "Smartphone"
-msgstr ""
+msgstr "Telefon"
 
 #: src/preferences/service.js:520
 msgid "Tablet"
-msgstr ""
+msgstr "Tabletă"
 
 #: src/preferences/service.js:522
 msgid "Television"
-msgstr ""
+msgstr "Televizor"
 
 #: src/preferences/service.js:544
 msgid "Unpaired"
-msgstr ""
+msgstr "Neasociat"
 
 #: src/preferences/service.js:548
 msgid "Disconnected"
-msgstr ""
+msgstr "Deconectat"
 
 #: src/preferences/service.js:552
 msgid "Connected"
-msgstr ""
+msgstr "Conectat"
 
 #: src/preferences/service.js:688
 msgid "Waiting for service…"
-msgstr ""
+msgstr "Se așteaptă serviciul…"
 
 #. Notify the user
 #: src/service/daemon.js:99
 msgid "Settings Migrated"
-msgstr ""
+msgstr "Preferințe migrate"
 
 #: src/service/daemon.js:100
 msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
-msgstr ""
+msgstr "GSConnect a fost actualizat pentru a fi compatibil cu modificările aduse protocolului KDE Connect. Poate că unele aparate trebuie reasociate."
 
 #: src/service/daemon.js:241
 msgid "Click for help troubleshooting"
-msgstr ""
+msgstr "Apasă pentru depanare"
 
 #: src/service/daemon.js:251
 msgid "Click for more information"
-msgstr ""
+msgstr "Apasă pentru mai multe informații"
 
 #: src/service/daemon.js:359
 msgid "Dial Number"
-msgstr ""
+msgstr "Formează numărul"
 
 #: src/service/daemon.js:365 src/service/daemon.js:554
 #: src/service/plugins/share.js:31
@@ -747,19 +747,19 @@ msgstr "Trimite fișiere"
 
 #: src/service/daemon.js:416
 msgid "List available devices"
-msgstr ""
+msgstr "Lista aparatelor disponibile"
 
 #: src/service/daemon.js:425
 msgid "List all devices"
-msgstr ""
+msgstr "Lista tuturor aparatelor"
 
 #: src/service/daemon.js:434
 msgid "Target Device"
-msgstr ""
+msgstr "Aparatul de destinație"
 
 #: src/service/daemon.js:476
 msgid "Message Body"
-msgstr ""
+msgstr "Conținutul mesajului"
 
 #: src/service/daemon.js:488 src/service/plugins/notification.js:57
 msgid "Send Notification"
@@ -767,30 +767,30 @@ msgstr "Trimite o notificare"
 
 #: src/service/daemon.js:497
 msgid "Notification App Name"
-msgstr ""
+msgstr "Numele aplicației de notificare"
 
 #: src/service/daemon.js:506
 msgid "Notification Body"
-msgstr ""
+msgstr "Conținutul notificării"
 
 #: src/service/daemon.js:515
 msgid "Notification Icon"
-msgstr ""
+msgstr "Simbolul notificării"
 
 #: src/service/daemon.js:524
 msgid "Notification ID"
-msgstr ""
+msgstr "ID-ul notificării"
 
 #: src/service/daemon.js:533 src/service/plugins/ping.js:13
 #: src/service/plugins/ping.js:20 src/service/plugins/ping.js:47
 msgid "Ping"
-msgstr ""
+msgstr "Probă de conectare"
 
 #: src/service/daemon.js:542 src/service/plugins/battery.js:247
 #: src/service/plugins/battery.js:276 src/service/plugins/battery.js:305
 #: src/service/plugins/findmyphone.js:22
 msgid "Ring"
-msgstr ""
+msgstr "Sună"
 
 #: src/service/daemon.js:563 src/service/plugins/share.js:47
 #: src/service/ui/messaging.js:1257 src/service/ui/messaging.js:1265
@@ -803,13 +803,13 @@ msgstr "Trimite text"
 
 #: src/service/daemon.js:584
 msgid "Show release version"
-msgstr ""
+msgstr "Arată versiunea"
 
 #. TRANSLATORS: Bluetooth address for remote device
 #: src/service/device.js:195
 #, javascript-format
 msgid "Bluetooth device at %s"
-msgstr ""
+msgstr "Aparat Bluetooth la %s"
 
 #. TRANSLATORS: Label for TLS connection verification key
 #.
@@ -819,35 +819,35 @@ msgstr ""
 #: src/service/device.js:223
 #, javascript-format
 msgid "Verification key: %s"
-msgstr ""
+msgstr "Cheie de verificare: %s"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:862
 #, javascript-format
 msgid "Pair Request from %s"
-msgstr ""
+msgstr "Cerere de asociere de la %s"
 
 #: src/service/device.js:869
 msgid "Reject"
-msgstr ""
+msgstr "Refuză"
 
 #: src/service/device.js:874
 msgid "Accept"
-msgstr ""
+msgstr "Acceptă"
 
 #. TRANSLATORS: eg. Failed to pair with Google Pixel
 #: src/service/device.js:960
 #, javascript-format
 msgid "Failed to pair with %s"
-msgstr ""
+msgstr "Nu s-a reușit asocierea cu %s"
 
 #: src/service/device.js:961
 msgid "Device clocks are out of sync"
-msgstr ""
+msgstr "Ceasurile aparatului nu sunt sincronizate"
 
 #: src/service/manager.js:178
 msgid "Discovery has been disabled due to the number of devices on this network."
-msgstr ""
+msgstr "Descoperirea a fost dezactivată din cauza numărului mare de aparate din această rețea."
 
 #: src/service/backends/lan.js:477
 msgid "Port already in use"
