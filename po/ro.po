@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-13 14:44-0400\n"
-"PO-Revision-Date: 2025-11-17 13:00\n"
+"PO-Revision-Date: 2025-11-17 14:45\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
 "Language: ro_RO\n"
@@ -843,7 +843,7 @@ msgstr "Nu s-a reușit asocierea cu %s"
 
 #: src/service/device.js:961
 msgid "Device clocks are out of sync"
-msgstr "Ceasurile aparatului nu sunt sincronizate"
+msgstr "Ceasurile aparatelor nu sunt sincronizate"
 
 #: src/service/manager.js:178
 msgid "Discovery has been disabled due to the number of devices on this network."
@@ -851,17 +851,17 @@ msgstr "Descoperirea a fost dezactivată din cauza numărului mare de aparate di
 
 #: src/service/backends/lan.js:477
 msgid "Port already in use"
-msgstr ""
+msgstr "Portul este deja utilizat"
 
 #: src/service/plugins/battery.js:16
 msgid "Exchange battery information"
-msgstr ""
+msgstr "Obține informații despre baterie"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:256
 #, javascript-format
 msgid "%s: Battery is full"
-msgstr ""
+msgstr "%s: Bateria e încărcată"
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
@@ -948,11 +948,11 @@ msgstr "MPRIS"
 
 #: src/service/plugins/mpris.js:19
 msgid "Bidirectional remote media playback control"
-msgstr ""
+msgstr "Control bidirecțional de redare multimedia"
 
 #: src/service/plugins/mpris.js:357
 msgid "Unknown"
-msgstr ""
+msgstr "Necunoscut"
 
 #: src/service/plugins/notification.js:19
 msgid "Share notifications with the paired device"
@@ -960,19 +960,19 @@ msgstr "Distribuie notificări aparatului asociat"
 
 #: src/service/plugins/notification.js:33
 msgid "Cancel Notification"
-msgstr ""
+msgstr "Anulează notificarea"
 
 #: src/service/plugins/notification.js:41
 msgid "Close Notification"
-msgstr ""
+msgstr "Închide notificarea"
 
 #: src/service/plugins/notification.js:49
 msgid "Reply Notification"
-msgstr ""
+msgstr "Răspunde la notificare"
 
 #: src/service/plugins/notification.js:65
 msgid "Activate Notification"
-msgstr ""
+msgstr "Activează notificările"
 
 #: src/service/plugins/ping.js:14
 msgid "Send and receive pings"
@@ -983,27 +983,27 @@ msgstr "Trimite și primește ping-uri"
 #: src/service/plugins/ping.js:54
 #, javascript-format
 msgid "Ping: %s"
-msgstr ""
+msgstr "Ping: %s"
 
 #: src/service/plugins/presenter.js:12
 msgid "Presentation"
-msgstr ""
+msgstr "Prezentare"
 
 #: src/service/plugins/presenter.js:13
 msgid "Use the paired device as a presenter"
-msgstr ""
+msgstr "Folosește aparatul asociat ca prezentator"
 
 #: src/service/plugins/runcommand.js:13
 msgid "Run Commands"
-msgstr ""
+msgstr "Execută comenzi"
 
 #: src/service/plugins/runcommand.js:15
 msgid "Run commands on your paired device or let the device run predefined commands on this PC"
-msgstr ""
+msgstr "Execută comenzi pentru aparatul tău asociat sau permite aparatului asociat să execute comenzi pentru acest computer"
 
 #: src/service/plugins/sftp.js:15
 msgid "SFTP"
-msgstr ""
+msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:17
 msgid "Browse the paired device filesystem"
@@ -1011,16 +1011,16 @@ msgstr "Răsfoiește sistemul de fișiere al aparatului asociat"
 
 #: src/service/plugins/sftp.js:22
 msgid "Mount"
-msgstr ""
+msgstr "Montează"
 
 #: src/service/plugins/sftp.js:30
 msgid "Unmount"
-msgstr ""
+msgstr "Demontează"
 
 #: src/service/plugins/sftp.js:191
 #, javascript-format
 msgid "%s reported an error"
-msgstr ""
+msgstr "%s a raportat o eroare"
 
 #: src/service/plugins/share.js:16 src/service/plugins/share.js:23
 msgid "Share"
@@ -1117,7 +1117,7 @@ msgstr "Trimite o legătură la %s"
 
 #: src/service/plugins/sms.js:16
 msgid "SMS"
-msgstr ""
+msgstr "SMS"
 
 #: src/service/plugins/sms.js:17
 msgid "Send and read SMS of the paired device and be notified of new SMS"
@@ -1125,11 +1125,11 @@ msgstr "Trimite și citește SMS-uri de pe aparatul asociat și primește notifi
 
 #: src/service/plugins/sms.js:38
 msgid "New SMS (URI)"
-msgstr ""
+msgstr "SMS nou (URI)"
 
 #: src/service/plugins/sms.js:46
 msgid "Reply SMS"
-msgstr ""
+msgstr "Răspunde la SMS"
 
 #: src/service/plugins/sms.js:70
 msgid "Share SMS"
@@ -1137,77 +1137,77 @@ msgstr "Distribuie SMS"
 
 #: src/service/plugins/systemvolume.js:36
 msgid "System Volume"
-msgstr ""
+msgstr "Volumul sistemului"
 
 #: src/service/plugins/systemvolume.js:37
 msgid "Enable the paired device to control the system volume"
-msgstr ""
+msgstr "Permite aparatului asociat să controleze volumul sistemului"
 
 #: src/service/plugins/systemvolume.js:81
 msgid "PulseAudio not found"
-msgstr ""
+msgstr "PulseAudio nu a fost găsit"
 
 #: src/service/plugins/telephony.js:17
 msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
+msgstr "Primește notificări despre apeluri și reglează volumul sistemului în timpul apelurilor"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:29
 msgid "Mute Call"
-msgstr ""
+msgstr "Apel silențios"
 
 #. TRANSLATORS: The phone is ringing
 #: src/service/plugins/telephony.js:194
 msgid "Incoming call"
-msgstr ""
+msgstr "Sună telefonul"
 
 #. TRANSLATORS: A phone call is active
 #: src/service/plugins/telephony.js:209
 msgid "Ongoing call"
-msgstr ""
+msgstr "Apel în curs"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:143
 msgid "Fax"
-msgstr ""
+msgstr "Fax"
 
 #. TRANSLATORS: A work or office phone number
 #: src/service/ui/contacts.js:147
 msgid "Work"
-msgstr ""
+msgstr "Serviciu"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:151
 msgid "Mobile"
-msgstr ""
+msgstr "Mobil"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:155
 msgid "Home"
-msgstr ""
+msgstr "De casă"
 
 #. TRANSLATORS: Less than a minute ago
 #: src/service/ui/messaging.js:105 src/service/ui/messaging.js:146
 msgid "Just now"
-msgstr ""
+msgstr "Chiar acum"
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
 #: src/service/ui/messaging.js:114
 #, javascript-format
 msgid "Yesterday・%s"
-msgstr ""
+msgstr "Ieri・%s"
 
 #: src/service/ui/messaging.js:151
 #, javascript-format
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%d minut"
+msgstr[1] "%d minute"
+msgstr[2] "%d de minute"
 
 #: src/service/ui/messaging.js:407
 msgid "Not available"
-msgstr ""
+msgstr "Indisponibil"
 
 #: src/service/ui/messaging.js:764
 msgid "Group Message"
