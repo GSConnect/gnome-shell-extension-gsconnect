@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-13 14:44-0400\n"
-"PO-Revision-Date: 2025-11-16 17:54\n"
+"PO-Revision-Date: 2025-11-17 10:25\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
 "Language: ro_RO\n"
@@ -538,35 +538,37 @@ msgstr "Încearcă din nou"
 msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
 "Use your distro's package manager to install it.\n"
 "For more information, visit <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</a>."
-msgstr ""
+msgstr "Instrumentul de comandă <tt>openssl</tt> nu pare a fi instalat.\n"
+"Poate fi instalat folosind administratorul de pachete.\n"
+"Pentru mai multe informații, vezi <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">GSConnect wiki</a>."
 
 #: data/ui/preferences-window.ui:874 src/service/init.js:361
 msgid "OpenSSL not found"
-msgstr ""
+msgstr "OpenSSL nu a fost găsit"
 
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/preferences-window.ui:923
 msgid "Add device by IP…"
-msgstr ""
+msgstr "Adaugă IP-ul aparatului…"
 
 #: data/ui/preferences-window.ui:928
 msgid "Display Mode"
-msgstr ""
+msgstr "Modul de afișare"
 
 #. TRANSLATORS: Show device indicators in the top bar
 #: data/ui/preferences-window.ui:931
 msgid "Panel"
-msgstr ""
+msgstr "Panou"
 
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
 #: data/ui/preferences-window.ui:937
 msgid "User Menu"
-msgstr ""
+msgstr "Opțiuni"
 
 #. TRANSLATORS: Generate a support log
 #: data/ui/preferences-window.ui:945 src/preferences/service.js:414
 msgid "Generate Support Log"
-msgstr ""
+msgstr "Generează jurnalul"
 
 #: data/ui/preferences-window.ui:953
 msgid "About GSConnect"
@@ -628,8 +630,8 @@ msgstr "Sincronizează între aparatele asociate"
 #, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d conectat"
+msgstr[1] "%d conectate"
 msgstr[2] "%d conectate"
 
 #: src/preferences/device.js:671 src/preferences/device.js:677
@@ -656,11 +658,11 @@ msgstr "Introdu o scurtătură nouă pentru <b>%s</b>"
 #: src/preferences/keybindings.js:132
 #, javascript-format
 msgid "%s is already being used"
-msgstr ""
+msgstr "%s este deja folosită"
 
 #: src/preferences/service.js:373
 msgid "A complete KDE Connect implementation for GNOME"
-msgstr ""
+msgstr "O implementare completă a KDE Connect pentru GNOME"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:382
