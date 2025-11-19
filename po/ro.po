@@ -3,17 +3,17 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-13 14:44-0400\n"
-"PO-Revision-Date: 2025-11-07 21:11\n"
+"PO-Revision-Date: 2025-11-17 16:08\n"
 "Last-Translator: \n"
-"Language-Team: Lithuanian\n"
-"Language: lt_LT\n"
+"Language-Team: Romanian\n"
+"Language: ro_RO\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && (n%100>19 || n%100<11) ? 0 : (n%10>=2 && n%10<=9) && (n%100>19 || n%100<11) ? 1 : n%1!=0 ? 2: 3);\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100>0 && n%100<20)) ? 1 : 2);\n"
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
-"X-Crowdin-Language: lt\n"
+"X-Crowdin-Language: ro\n"
 "X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
@@ -25,63 +25,63 @@ msgstr "GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:13
 msgid "KDE Connect implementation for GNOME"
-msgstr "KDE Connect įgyvendinimas, skirtas GNOME"
+msgstr "Implementarea KDE Connect pentru GNOME"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:24
 msgid "GSConnect Team"
-msgstr "GSConnect komanda"
+msgstr "Echipa GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
 msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr "GSConnect yra pilnas KDE Connect įgyvendinimas, ypatingai skirtas integracijai su GNOME Shell ir Nautilus, Chrome bei Firefox. KDE Connect komanda turi programas, skirtas Linux, BSD, Android, Sailfish, iOS, macOS ir Windows sistemoms."
+msgstr "GSConnect este o implementare completă a KDE Connect în special pentru GNOME Shell. Se integrează cu Nautilus, Chrome și Firefox. Echipa KDE Connect are aplicații pentru Linux, BSD, Android, Sailfish, iOS, macOS și Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
 msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
-msgstr "Naudodami GSConnect galite saugiai prisijungti prie mobiliųjų įrenginių ir kitų stalinių kompiuterių norėdami:"
+msgstr "Cu GSConnect te poți conecta în siguranță la telefoane mobile și calculatoare pentru:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:48
 msgid "Share files, links and text"
-msgstr "Bendrinti failus, nuorodas ir tekstą"
+msgstr "Trimiterea și primirea de fișiere, adrese de internet și text"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:49
 msgid "Send and receive messages"
-msgstr "Siųsti ir gauti žinutes"
+msgstr "Trimiterea și primirea de mesaje"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:50
 msgid "Sync clipboard content"
-msgstr "Sinchronizuoti iškarpinės turinį"
+msgstr "Sincronizarea conținutului copiat"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:51
 msgid "Sync contacts"
-msgstr "Sinchronizuoti adresatus"
+msgstr "Sincronizarea contactelor"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:52
 msgid "Sync notifications"
-msgstr "Sinchronizuoti pranešimus"
+msgstr "Sincronizarea notificărilor"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:53
 msgid "Control media players"
-msgstr "Valdyti medijos leistuves"
+msgstr "Controlul conținutului multimedia"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:54
 msgid "Control system volume"
-msgstr "Valdyti sistemos garsį"
+msgstr "Controlul sunetului sistemului"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:55
 msgid "Execute predefined commands"
-msgstr "Vykdyti iš anksto nustatytas komandas"
+msgstr "Executarea comenzilor predefinite"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:56
 msgid "And more…"
-msgstr "Ir daugiau…"
+msgstr "Și altele…"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:165
 msgid "GSConnect in GNOME Shell"
-msgstr "GSConnect kartu su GNOME Shell"
+msgstr "GSConnect în interfața GNOME"
 
 #: data/ui/connect-dialog.ui:20
 msgid "Connect to…"
-msgstr "Prisijungti prie…"
+msgstr "Conectează la…"
 
 #: data/ui/connect-dialog.ui:26 data/ui/legacy-messaging-dialog.ui:20
 #: data/ui/legacy-messaging-dialog.ui:24
@@ -95,89 +95,89 @@ msgstr "Prisijungti prie…"
 #: src/preferences/service.js:417 src/service/plugins/share.js:179
 #: src/service/plugins/share.js:314 src/service/plugins/share.js:445
 msgid "Cancel"
-msgstr "Atsisakyti"
+msgstr "Anulează"
 
 #: data/ui/connect-dialog.ui:33
 msgid "Connect"
-msgstr "Prisijungti"
+msgstr "Conectează"
 
 #: data/ui/connect-dialog.ui:80
 msgid "IP Address"
-msgstr "IP adresas"
+msgstr "Adresa IP"
 
 #: data/ui/contact-chooser.ui:56
 msgid "No contacts"
-msgstr "Adresatų nėra"
+msgstr "Niciun contact"
 
 #: data/ui/contact-chooser.ui:68 data/ui/messaging-window.ui:103
 #: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:949
 msgid "Help"
-msgstr "Žinynas"
+msgstr "Ajutor"
 
 #: data/ui/contact-chooser.ui:109
 msgid "Type a phone number or name"
-msgstr "Įrašykite telefono numerį ar vardą"
+msgstr "Introdu un număr de telefon sau un nume"
 
 #. TRANSLATORS: All other phone number types
 #: data/ui/contacts-address-row.ui:71 src/service/ui/contacts.js:158
 msgid "Other"
-msgstr "Kitas"
+msgstr "Altul"
 
 #. TRANSLATORS: Share URL by SMS
 #: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:353
 #: src/service/daemon.js:467 src/service/plugins/sms.js:62
 #: webextension/gettext.js:41
 msgid "Send SMS"
-msgstr "Siųsti SMS"
+msgstr "Trimite SMS"
 
 #: data/ui/legacy-messaging-dialog.ui:32 data/ui/legacy-messaging-dialog.ui:36
 #: data/ui/notification-reply-dialog.ui:31
 #: data/ui/notification-reply-dialog.ui:35 src/service/plugins/share.js:446
 msgid "Send"
-msgstr "Siųsti"
+msgstr "Trimite"
 
 #: data/ui/legacy-messaging-dialog.ui:69 data/ui/messaging-window.ui:263
 #: data/ui/notification-reply-dialog.ui:68
 msgid "Device is disconnected"
-msgstr "Įrenginys yra atsijungęs"
+msgstr "Aparatul este deconectat"
 
 #: data/ui/messaging-conversation.ui:91 src/service/plugins/sms.js:54
 msgid "Send Message"
-msgstr "Siųsti žinutę"
+msgstr "Trimite un mesaj"
 
 #: data/ui/messaging-conversation.ui:92 src/shell/notification.js:88
 msgid "Type a message"
-msgstr "Rašyti žinutę"
+msgstr "Scrie un mesaj"
 
 #: data/ui/messaging-conversation.ui:99
 msgid "Message Entry"
-msgstr "Žinutės įvedimas"
+msgstr "Conținutul mesajului"
 
 #: data/ui/messaging-conversation.ui:100
 msgid "Type a message and press Enter to send"
-msgstr "Rašykite žinutę ir norėdami išsiųsti paspauskite „Enter“"
+msgstr "Scrie un mesaj și apasă Enter pentru a trimite"
 
 #: data/ui/messaging-window.ui:21 src/service/plugins/sms.js:30
 #: src/service/ui/messaging.js:1063
 msgid "Messaging"
-msgstr "Susirašinėjimai"
+msgstr "Mesaje"
 
 #: data/ui/messaging-window.ui:30 data/ui/messaging-window.ui:43
 #: src/service/ui/messaging.js:1274
 msgid "New Conversation"
-msgstr "Naujas pokalbis"
+msgstr "Conversație nouă"
 
 #: data/ui/messaging-window.ui:120
 msgid "No Conversations"
-msgstr "Pokalbių nėra"
+msgstr "Nicio conversație"
 
 #: data/ui/messaging-window.ui:180
 msgid "No conversation selected"
-msgstr "Nepasirinktas joks pokalbis"
+msgstr "Nicio conversație aleasă"
 
 #: data/ui/messaging-window.ui:196
 msgid "Select or start a conversation"
-msgstr "Pasirinkite arba pradėkite pokalbį"
+msgstr "Alege sau începe o conversație"
 
 #: data/ui/mousepad-input-dialog.ui:97
 msgid "Touchpad.\n"
@@ -185,110 +185,110 @@ msgid "Touchpad.\n"
 "Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr "Jutiklinis kilimėlis.\n"
-"Braukite per šią sritį, kad perkeltumėte pelės žymeklį.\n"
-"Palaikykite nuspaudę, kad perkeltumėte elementus pelės žymekliu.\n\n"
-"Paprastas spustelėjimas bus siunčiamas į suporuotą įrenginį.\n"
-"Kairysis, vidurinysis, dešinysis mygtukai ir slinkimas ratuku."
+msgstr "Panoul tactil.\n"
+"Trage în această zonă pentru a muta cursorul mausului.\n"
+"Apasă lung pentru a muta cursorul mausului.\n\n"
+"Un clic simplu va fi trimis la aparatul asociat.\n"
+"Stânga, mijloc, butonul din dreapta și rotița."
 
 #: data/ui/preferences-command-editor.ui:14
 msgid "Edit Command"
-msgstr "Taisyti komandą"
+msgstr "Schimbă comanda"
 
 #: data/ui/preferences-command-editor.ui:28
 msgid "Save"
-msgstr "Įrašyti"
+msgstr "Salvează"
 
 #: data/ui/preferences-command-editor.ui:61
 msgid "Name"
-msgstr "Pavadinimas"
+msgstr "Nume"
 
 #: data/ui/preferences-command-editor.ui:99
 msgid "Command Line"
-msgstr "Komandų eilutė"
+msgstr "Terminal"
 
 #: data/ui/preferences-command-editor.ui:121
 #: data/ui/preferences-command-editor.ui:150
 msgid "Choose an executable"
-msgstr "Pasirinkti vykdomąjį failą"
+msgstr "Alege un executabil"
 
 #: data/ui/preferences-command-editor.ui:164
 msgid "Open"
-msgstr "Atverti"
+msgstr "Deschide"
 
 #: data/ui/preferences-device-panel.ui:53 src/preferences/service.js:524
 msgid "Desktop"
-msgstr "Stalinis kompiuteris"
+msgstr "Birou"
 
 #: data/ui/preferences-device-panel.ui:102
 msgid "Clipboard Sync"
-msgstr "Iškarpinės sinchronizavimas"
+msgstr "Sincronizare Copiate"
 
 #: data/ui/preferences-device-panel.ui:168
 msgid "Media Players"
-msgstr "Medijos leistuvės"
+msgstr "Redare multimedia"
 
 #: data/ui/preferences-device-panel.ui:225
 msgid "Mouse & Keyboard"
-msgstr "Pelė ir klaviatūra"
+msgstr "Maus și tastatură"
 
 #: data/ui/preferences-device-panel.ui:282
 msgid "Volume Control"
-msgstr "Garsumo reguliavimas"
+msgstr "Volumul sunetului"
 
 #: data/ui/preferences-device-panel.ui:337 src/service/plugins/sftp.js:332
 msgid "Files"
-msgstr "Failai"
+msgstr "Fișiere"
 
 #: data/ui/preferences-device-panel.ui:390
 msgid "Receive Files"
-msgstr "Gauti failus"
+msgstr "Primește fișiere"
 
 #: data/ui/preferences-device-panel.ui:449
 msgid "Save files to"
-msgstr "Įrašyti failus į"
+msgstr "Salvează fișierele în"
 
 #: data/ui/preferences-device-panel.ui:510
 msgid "Links"
-msgstr "Nuorodos"
+msgstr "Adrese internet"
 
 #: data/ui/preferences-device-panel.ui:562
 msgid "Automatically open received URLs"
-msgstr "Automatiškai atverti gautus URL adresus"
+msgstr "Deschide automat adresele URL primite"
 
 #: data/ui/preferences-device-panel.ui:623
 #: data/ui/preferences-device-panel.ui:2286
 msgid "Sharing"
-msgstr "Bendrinimas"
+msgstr "Distribuie"
 
 #: data/ui/preferences-device-panel.ui:655
 msgid "Device Battery"
-msgstr "Įrenginio baterija"
+msgstr "Bateria aparatului"
 
 #: data/ui/preferences-device-panel.ui:706
 msgid "Low Battery Notification"
-msgstr "Pranešimas apie žemą baterijos įkrovos lygį"
+msgstr "Notificare Baterie descărcată"
 
 #: data/ui/preferences-device-panel.ui:765
 msgid "Charged Up to Custom Level Notification"
-msgstr "Pranešimas apie įkrovimą iki tinkinto lygio"
+msgstr "Notificare la atingerea nivelului personalizat de încărcare"
 
 #: data/ui/preferences-device-panel.ui:845
 msgid "Fully Charged Notification"
-msgstr "Pranešimas apie pilnai įkrauta bateriją"
+msgstr "Notificare la încărcarea completă"
 
 #: data/ui/preferences-device-panel.ui:899
 msgid "System Battery"
-msgstr "Sistemos baterija"
+msgstr "Bateria sistemului"
 
 #: data/ui/preferences-device-panel.ui:948
 msgid "Share Statistics"
-msgstr "Bendrinti statistiką"
+msgstr "Distribuie statistici"
 
 #: data/ui/preferences-device-panel.ui:1002
 #: data/ui/preferences-device-panel.ui:2332 src/service/plugins/battery.js:15
 msgid "Battery"
-msgstr "Baterija"
+msgstr "Bateria"
 
 #: data/ui/preferences-device-panel.ui:1032
 #: data/ui/preferences-device-panel.ui:1117
@@ -296,162 +296,162 @@ msgstr "Baterija"
 #: src/service/plugins/runcommand.js:26 src/service/plugins/runcommand.js:34
 #: src/service/plugins/runcommand.js:194
 msgid "Commands"
-msgstr "Komandos"
+msgstr "Comenzi"
 
 #: data/ui/preferences-device-panel.ui:1091
 msgid "Add Command"
-msgstr "Pridėti komandą"
+msgstr "Adăugă o comandă"
 
 #. TRANSLATORS: 'Share' is a verb here; this refers to the action of sharing
 #: data/ui/preferences-device-panel.ui:1179
 msgid "Share Notifications"
-msgstr "Bendrinimo pranešimai"
+msgstr "Distribuie notificări"
 
 #: data/ui/preferences-device-panel.ui:1239
 msgid "Share When Active"
-msgstr "Bendrinti, kai aktyvus"
+msgstr "Distribuie când este activ"
 
 #: data/ui/preferences-device-panel.ui:1290
 msgid "Applications"
-msgstr "Programos"
+msgstr "Aplicații"
 
 #: data/ui/preferences-device-panel.ui:1336
 #: data/ui/preferences-device-panel.ui:2424
 #: src/service/plugins/notification.js:18
 msgid "Notifications"
-msgstr "Pranešimai"
+msgstr "Notificări"
 
 #: data/ui/preferences-device-panel.ui:1394 src/service/plugins/contacts.js:28
 msgid "Contacts"
-msgstr "Adresatai"
+msgstr "Contacte"
 
 #: data/ui/preferences-device-panel.ui:1447
 msgid "Incoming Calls"
-msgstr "Gaunami skambučiai"
+msgstr "Apeluri primite"
 
 #: data/ui/preferences-device-panel.ui:1496
 #: data/ui/preferences-device-panel.ui:1663
 msgid "Volume"
-msgstr "Garsumas"
+msgstr "Volum"
 
 #: data/ui/preferences-device-panel.ui:1562
 #: data/ui/preferences-device-panel.ui:1729
 msgid "Pause Media"
-msgstr "Pristabdyti mediją"
+msgstr "Multimedia în pauză"
 
 #: data/ui/preferences-device-panel.ui:1615
 msgid "Ongoing Calls"
-msgstr "Vykstantys skambučiai"
+msgstr "Apeluri în curs"
 
 #: data/ui/preferences-device-panel.ui:1785
 msgid "Mute Microphone"
-msgstr "Nutildyti mikrofoną"
+msgstr "Dezactivează microfonul"
 
 #: data/ui/preferences-device-panel.ui:1839
 #: data/ui/preferences-device-panel.ui:2470 src/service/plugins/telephony.js:16
 msgid "Telephony"
-msgstr "Telefonija"
+msgstr "Telefonie"
 
 #: data/ui/preferences-device-panel.ui:1874
 msgid "Action Shortcuts"
-msgstr "Veiksmų trumpiniai"
+msgstr "Acțiunea scurtăturii"
 
 #: data/ui/preferences-device-panel.ui:1890
 msgid "Reset All…"
-msgstr "Atstatyti visus…"
+msgstr "Ca la început…"
 
 #: data/ui/preferences-device-panel.ui:1942
 msgid "Shortcuts"
-msgstr "Trumpiniai"
+msgstr "Scurtături"
 
 #: data/ui/preferences-device-panel.ui:1973
 msgid "Plugins"
-msgstr "Įskiepiai"
+msgstr "Module"
 
 #: data/ui/preferences-device-panel.ui:2020
 msgid "Experimental"
-msgstr "Eksperimentinis"
+msgstr "Experimentale"
 
 #: data/ui/preferences-device-panel.ui:2067
 msgid "Device Cache"
-msgstr "Įrenginio podėlis"
+msgstr "Cache Aparat"
 
 #: data/ui/preferences-device-panel.ui:2085
 msgid "Clear Cache…"
-msgstr "Išvalyti podėlį…"
+msgstr "Șterge Cache…"
 
 #: data/ui/preferences-device-panel.ui:2124
 msgid "Legacy SMS Support"
-msgstr "Pasenusių SMS palaikymas"
+msgstr "Vechea gestionare pentru SMS"
 
 #: data/ui/preferences-device-panel.ui:2181
 msgid "SFTP Automount"
-msgstr "Automatinis SFTP prijungimas"
+msgstr "Montare automată SFTP"
 
 #: data/ui/preferences-device-panel.ui:2236
 #: data/ui/preferences-device-panel.ui:2562
 msgid "Advanced"
-msgstr "Išplėstiniai"
+msgstr "Avansate"
 
 #: data/ui/preferences-device-panel.ui:2516
 msgid "Keyboard Shortcuts"
-msgstr "Klaviatūros trumpiniai"
+msgstr "Scurtături"
 
 #: data/ui/preferences-device-panel.ui:2580
 msgid "Device Settings"
-msgstr "Įrenginio nustatymai"
+msgstr "Preferințe Aparat"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/ui/preferences-device-panel.ui:2624
 #: data/ui/preferences-device-panel.ui:2716 src/service/daemon.js:446
 msgid "Pair"
-msgstr "Suporuoti"
+msgstr "Asociază"
 
 #: data/ui/preferences-device-panel.ui:2656
 msgid "Device is unpaired"
-msgstr "Įrenginys yra nesuporuotas"
+msgstr "Aparat neasociat"
 
 #: data/ui/preferences-device-panel.ui:2671
 msgid "You may configure this device before pairing"
-msgstr "Prieš suporuodami, galite konfigūruoti šį įrenginį"
+msgstr "Acest aparat poate fi configurat înainte de asociere"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
 #: data/ui/preferences-device-panel.ui:2711 src/preferences/device.js:391
 msgid "Encryption Info"
-msgstr "Šifravimo informacija"
+msgstr "Informații Cifrare"
 
 #. TRANSLATORS: Unpair the device and notify it
 #: data/ui/preferences-device-panel.ui:2722 src/service/daemon.js:455
 msgid "Unpair"
-msgstr "Panaikinti suporavimą"
+msgstr "Disociază"
 
 #. TRANSLATORS: Send clipboard content to device
 #: data/ui/preferences-device-panel.ui:2734
 msgid "To Device"
-msgstr "Į įrenginį"
+msgstr "La aparat"
 
 #. TRANSLATORS: Receive clipboard content from the device
 #: data/ui/preferences-device-panel.ui:2740
 msgid "From Device"
-msgstr "Iš įrenginio"
+msgstr "De la aparat"
 
 #. TRANSLATORS: Don't change the system volume
 #: data/ui/preferences-device-panel.ui:2752
 #: data/ui/preferences-device-panel.ui:2785
 msgid "Nothing"
-msgstr "Nieko"
+msgstr "Sistem"
 
 #. TRANSLATORS: Restore the system volume
 #: data/ui/preferences-device-panel.ui:2759
 #: data/ui/preferences-device-panel.ui:2792
 msgid "Restore"
-msgstr "Atkurti"
+msgstr "Sistem"
 
 #. TRANSLATORS: Lower the system volume
 #: data/ui/preferences-device-panel.ui:2766
 #: data/ui/preferences-device-panel.ui:2799
 msgid "Lower"
-msgstr "Sumažinti"
+msgstr "Mai încet"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the actively ringing call
@@ -459,153 +459,153 @@ msgstr "Sumažinti"
 #: data/ui/preferences-device-panel.ui:2806
 #: src/service/plugins/telephony.js:198
 msgid "Mute"
-msgstr "Nutildyti"
+msgstr "Mut"
 
 #: data/ui/preferences-shortcut-editor.ui:25
 msgid "Set"
-msgstr "Nustatyti"
+msgstr "Stabilește"
 
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:80
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr "Norėdami atsisakyti, paspauskite Grįžimo (Esc) klavišą arba Naikinimo (Backspace) klavišą, norėdami atstatyti trumpinį."
+msgstr "Apasă Esc pentru a anula sau Backspace pentru a restabili scurtătura de la început."
 
 #: data/ui/preferences-window.ui:24
 msgid "Device Name"
-msgstr "Įrenginio pavadinimas"
+msgstr "Numele aparatului"
 
 #: data/ui/preferences-window.ui:61
 msgid "_Rename"
-msgstr "Pe_rvadinti"
+msgstr "_Redenumește"
 
 #: data/ui/preferences-window.ui:98 data/ui/preferences-window.ui:112
 msgid "Refresh"
-msgstr "Įkelti iš naujo"
+msgstr "Actualizează"
 
 #: data/ui/preferences-window.ui:139 src/extension.js:113
 msgid "Mobile Settings"
-msgstr "Mobiliųjų nustatymai"
+msgstr "Preferințe"
 
 #: data/ui/preferences-window.ui:166
 msgid "Service Menu"
-msgstr "Paslaugos meniu"
+msgstr "Opțiuni Serviciu"
 
 #: data/ui/preferences-window.ui:189
 msgid "Device Menu"
-msgstr "Įrenginio meniu"
+msgstr "Opțiuni Aparat"
 
 #: data/ui/preferences-window.ui:203 data/ui/preferences-window.ui:218
 msgid "Edit Device Name"
-msgstr "Taisyti įrenginio pavadinimą"
+msgstr "Schimbă numele aparatului"
 
 #: data/ui/preferences-window.ui:278
 msgid "Devices"
-msgstr "Įrenginiai"
+msgstr "Aparate"
 
 #: data/ui/preferences-window.ui:328 src/preferences/service.js:686
 msgid "Searching for devices…"
-msgstr "Ieškoma įrenginių…"
+msgstr "Se caută aparate…"
 
 #: data/ui/preferences-window.ui:353
 msgid "Extension Settings"
-msgstr "Plėtinio nustatymai"
+msgstr "Opțiuni pentru extensie"
 
 #: data/ui/preferences-window.ui:390
 msgid "GSConnect remains active when GNOME Shell is locked"
-msgstr "GSConnect lieka aktyvus, kai GNOME Shell yra užrakintas"
+msgstr "GSConnect rămâne activă când interfața GNOME este blocată"
 
 #: data/ui/preferences-window.ui:410
 msgid "Browser Add-Ons"
-msgstr "Naršyklių priedai"
+msgstr "Extensii pentru navigator"
 
 #: data/ui/preferences-window.ui:728
 msgid "Enable"
-msgstr "Įjungti"
+msgstr "Activează"
 
 #: data/ui/preferences-window.ui:760
 msgid "This device is invisible to unpaired devices"
-msgstr "Šis įrenginys yra nematomas nesuporuotiems įrenginiams"
+msgstr "Acest aparat este invizibil pentru aparatele neasociate"
 
 #: data/ui/preferences-window.ui:772 src/service/manager.js:177
 msgid "Discovery Disabled"
-msgstr "Aptikimas išjungtas"
+msgstr "Descoperire dezactivată"
 
 #: data/ui/preferences-window.ui:826
 msgid "Retry"
-msgstr "Bandyti dar kartą"
+msgstr "Încearcă din nou"
 
 #: data/ui/preferences-window.ui:858
 msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
 "Use your distro's package manager to install it.\n"
 "For more information, visit <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</a>."
-msgstr "Atrodo, kad nėra įdiegtas <tt>openssl</tt> komandų eilutės įrankis.\n"
-"Norėdami jį įdiegti, naudokite savo platinamojo paketo paketų tvarkytuvę.\n"
-"Išsamesnei informacijai apsilankykite <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">GSConnect vikyje</a>."
+msgstr "Instrumentul de comandă <tt>openssl</tt> nu pare a fi instalat.\n"
+"Poate fi instalat folosind administratorul de pachete.\n"
+"Pentru mai multe informații, vezi <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">GSConnect wiki</a>."
 
 #: data/ui/preferences-window.ui:874 src/service/init.js:361
 msgid "OpenSSL not found"
-msgstr "OpenSSL nerasta"
+msgstr "OpenSSL nu a fost găsit"
 
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/preferences-window.ui:923
 msgid "Add device by IP…"
-msgstr "Pridėti įrenginį pagal IP adresą…"
+msgstr "Adaugă IP-ul aparatului…"
 
 #: data/ui/preferences-window.ui:928
 msgid "Display Mode"
-msgstr "Rodinio veiksena"
+msgstr "Modul de afișare"
 
 #. TRANSLATORS: Show device indicators in the top bar
 #: data/ui/preferences-window.ui:931
 msgid "Panel"
-msgstr "Skydelis"
+msgstr "Panou"
 
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
 #: data/ui/preferences-window.ui:937
 msgid "User Menu"
-msgstr "Naudotojo meniu"
+msgstr "Opțiuni"
 
 #. TRANSLATORS: Generate a support log
 #: data/ui/preferences-window.ui:945 src/preferences/service.js:414
 msgid "Generate Support Log"
-msgstr "Generuoti palaikymo žurnalą"
+msgstr "Generează jurnalul"
 
 #: data/ui/preferences-window.ui:953
 msgid "About GSConnect"
-msgstr "Apie GSConnect"
+msgstr "Despre GSConnect"
 
 #: data/ui/service-device-chooser.ui:15
 msgid "Select a Device"
-msgstr "Pasirinkti įrenginį"
+msgstr "Alege un aparat"
 
 #: data/ui/service-device-chooser.ui:33 data/ui/service-device-chooser.ui:38
 msgid "Select"
-msgstr "Pasirinkti"
+msgstr "Alege"
 
 #. TRANSLATORS: No devices are known or available
 #: data/ui/service-device-chooser.ui:101 webextension/gettext.js:37
 msgid "No Device Found"
-msgstr "Nerasta jokių įrenginių"
+msgstr "Niciun aparat"
 
 #: data/ui/service-device-chooser.ui:118
 msgid "Device List"
-msgstr "Įrenginių sąrašas"
+msgstr "Lista aparatelor"
 
 #: data/ui/service-error-dialog.ui:39 data/ui/service-error-dialog.ui:47
 msgid "Report"
-msgstr "Ataskaita"
+msgstr "Raportează"
 
 #: data/ui/service-error-dialog.ui:79
 msgid "Something’s gone wrong"
-msgstr "Kažkas nutiko"
+msgstr "Ceva nu a mers bine"
 
 #: data/ui/service-error-dialog.ui:91
 msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
-msgstr "GSConnect susidūrė su netikėta klaida. Praneškite apie problemą ir įtraukite bet kokią informaciją, kuri galėtų padėti."
+msgstr "GSConnect a avut o problemă. Raportează problema și include orice informație care ar putea ajuta."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
-msgstr "Techninė informacija"
+msgstr "Detalii tehnice"
 
 #. TRANSLATORS: Send to <device_name>, for file manager
 #. context menu
@@ -615,202 +615,201 @@ msgstr "Techninė informacija"
 #: src/service/ui/contacts.js:533
 #, python-format, javascript-format
 msgid "Send to %s"
-msgstr "Siųsti %s"
+msgstr "Trimite la %s"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: nautilus-extension/nautilus-gsconnect.py:195 webextension/gettext.js:33
 msgid "Send To Mobile Device"
-msgstr "Siųsti į mobilųjį įrenginį"
+msgstr "Trimite la telefonul mobil"
 
 #: src/extension.js:49
 msgid "Sync between your devices"
-msgstr "Sinchronizuoti tarp įrenginių"
+msgstr "Sincronizează între aparatele asociate"
 
 #: src/extension.js:158
 #, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
-msgstr[0] "%d prijungtas"
-msgstr[1] "%d prijungti"
-msgstr[2] "%d prijungtų"
-msgstr[3] "%d prijungtas"
+msgstr[0] "%d conectat"
+msgstr[1] "%d conectate"
+msgstr[2] "%d conectate"
 
 #: src/preferences/device.js:671 src/preferences/device.js:677
 msgid "Edit"
-msgstr "Taisyti"
+msgstr "Modifică"
 
 #: src/preferences/device.js:686 src/preferences/device.js:692
 msgid "Remove"
-msgstr "Šalinti"
+msgstr "Elimină"
 
 #: src/preferences/device.js:946 src/preferences/device.js:974
 msgid "Disabled"
-msgstr "Išjungta"
+msgstr "Dezactivată"
 
 #. TRANSLATORS: Summary of a keyboard shortcut function
 #. Example: Enter a new shortcut to change Messaging
 #: src/preferences/keybindings.js:66
 #, javascript-format
 msgid "Enter a new shortcut to change <b>%s</b>"
-msgstr "Norėdami pakeisti <b>%s</b>, įveskite naują trumpinį"
+msgstr "Introdu o scurtătură nouă pentru <b>%s</b>"
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
 #: src/preferences/keybindings.js:132
 #, javascript-format
 msgid "%s is already being used"
-msgstr "%s jau yra naudojamas"
+msgstr "%s este deja folosită"
 
 #: src/preferences/service.js:373
 msgid "A complete KDE Connect implementation for GNOME"
-msgstr "Pilnas KDE Connect įgyvendinimas, skirtas GNOME"
+msgstr "O implementare completă a KDE Connect pentru GNOME"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:382
 msgid "translator-credits"
-msgstr "Moo"
+msgstr "Antonio Marin <gnmer.6qxyg@slmail.me>"
 
 #: src/preferences/service.js:415
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
-msgstr "Derinimo pranešimai yra registruojami. Atlikite reikiamus veiksmus, kad pakartotumėte problemą, o tuomet peržiūrėkite žurnalą."
+msgstr "Mesajele de depanare sunt înregistrate. Trebuie făcuți pașii necesari pentru a reproduce o problemă și apoi verificat jurnalul."
 
 #: src/preferences/service.js:418
 msgid "Review Log"
-msgstr "Peržiūrėti žurnalą"
+msgstr "Verifică jurnalul"
 
 #: src/preferences/service.js:443
 msgid "Invalid Device Name"
-msgstr "Neteisingas įrenginio pavadinimas"
+msgstr "Nume incorect"
 
 #. TRANSLATOR: %s is a list of forbidden characters
 #: src/preferences/service.js:445
 #, javascript-format
 msgid "Device name must not contain any of %s and have a length of 1-32 characters"
-msgstr "Įrenginio pavadinime negali būti nei vieno iš šių simbolių %s, be to, pavadinimas turi būti 1–32 simbolių ilgio"
+msgstr "Numele aparatului nu trebuie să conțină %s și să aibă lungimea între 1-32 de caractere"
 
 #: src/preferences/service.js:516
 msgid "Laptop"
-msgstr "Nešiojamas kompiuteris"
+msgstr "Calculator"
 
 #: src/preferences/service.js:518
 msgid "Smartphone"
-msgstr "Išmanusis telefonas"
+msgstr "Telefon"
 
 #: src/preferences/service.js:520
 msgid "Tablet"
-msgstr "Planšetė"
+msgstr "Tabletă"
 
 #: src/preferences/service.js:522
 msgid "Television"
-msgstr "Televizija"
+msgstr "Televizor"
 
 #: src/preferences/service.js:544
 msgid "Unpaired"
-msgstr "Nesuporuotas"
+msgstr "Neasociat"
 
 #: src/preferences/service.js:548
 msgid "Disconnected"
-msgstr "Atjungtas"
+msgstr "Deconectat"
 
 #: src/preferences/service.js:552
 msgid "Connected"
-msgstr "Prijungtas"
+msgstr "Conectat"
 
 #: src/preferences/service.js:688
 msgid "Waiting for service…"
-msgstr "Laukiama paslaugos…"
+msgstr "Se așteaptă serviciul…"
 
 #. Notify the user
 #: src/service/daemon.js:99
 msgid "Settings Migrated"
-msgstr "Nustatymai perkelti"
+msgstr "Preferințe migrate"
 
 #: src/service/daemon.js:100
 msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
-msgstr "GSConnect atsinaujino, kad palaikytų KDE Connect protokolui atliktus pakeitimus. Kai kuriuos įrenginius gali prireikti suporuoti iš naujo."
+msgstr "GSConnect a fost actualizat pentru a fi compatibil cu modificările aduse protocolului KDE Connect. Poate că unele aparate trebuie reasociate."
 
 #: src/service/daemon.js:241
 msgid "Click for help troubleshooting"
-msgstr "Spustelėkite, norėdami šalinti nesklandumus"
+msgstr "Apasă pentru depanare"
 
 #: src/service/daemon.js:251
 msgid "Click for more information"
-msgstr "Spustelėkite išsamesnei informacijai"
+msgstr "Apasă pentru mai multe informații"
 
 #: src/service/daemon.js:359
 msgid "Dial Number"
-msgstr "Rinkti numerį"
+msgstr "Formează numărul"
 
 #: src/service/daemon.js:365 src/service/daemon.js:554
 #: src/service/plugins/share.js:31
 msgid "Share File"
-msgstr "Bendrinti failą"
+msgstr "Trimite fișiere"
 
 #: src/service/daemon.js:416
 msgid "List available devices"
-msgstr "Išvardyti prieinamus įrenginius"
+msgstr "Lista aparatelor disponibile"
 
 #: src/service/daemon.js:425
 msgid "List all devices"
-msgstr "Išvardyti visus įrenginius"
+msgstr "Lista tuturor aparatelor"
 
 #: src/service/daemon.js:434
 msgid "Target Device"
-msgstr "Paskirties įrenginys"
+msgstr "Aparatul de destinație"
 
 #: src/service/daemon.js:476
 msgid "Message Body"
-msgstr "Pagrindinė žinutės dalis"
+msgstr "Conținutul mesajului"
 
 #: src/service/daemon.js:488 src/service/plugins/notification.js:57
 msgid "Send Notification"
-msgstr "Siųsti pranešimą"
+msgstr "Trimite o notificare"
 
 #: src/service/daemon.js:497
 msgid "Notification App Name"
-msgstr "Pranešimo programėlės pavadinimas"
+msgstr "Numele aplicației de notificare"
 
 #: src/service/daemon.js:506
 msgid "Notification Body"
-msgstr "Pagrindinė pranešimo dalis"
+msgstr "Conținutul notificării"
 
 #: src/service/daemon.js:515
 msgid "Notification Icon"
-msgstr "Pranešimo piktograma"
+msgstr "Simbolul notificării"
 
 #: src/service/daemon.js:524
 msgid "Notification ID"
-msgstr "Pranešimo ID"
+msgstr "ID-ul notificării"
 
 #: src/service/daemon.js:533 src/service/plugins/ping.js:13
 #: src/service/plugins/ping.js:20 src/service/plugins/ping.js:47
 msgid "Ping"
-msgstr "Ryšio patikrinimas"
+msgstr "Probă de conectare"
 
 #: src/service/daemon.js:542 src/service/plugins/battery.js:247
 #: src/service/plugins/battery.js:276 src/service/plugins/battery.js:305
 #: src/service/plugins/findmyphone.js:22
 msgid "Ring"
-msgstr "Rasti telefoną"
+msgstr "Sună"
 
 #: src/service/daemon.js:563 src/service/plugins/share.js:47
 #: src/service/ui/messaging.js:1257 src/service/ui/messaging.js:1265
 msgid "Share Link"
-msgstr "Bendrinti nuorodą"
+msgstr "Trimite legături"
 
 #: src/service/daemon.js:572 src/service/plugins/share.js:39
 msgid "Share Text"
-msgstr "Bendrinti tekstą"
+msgstr "Trimite text"
 
 #: src/service/daemon.js:584
 msgid "Show release version"
-msgstr "Rodyti laidos versiją"
+msgstr "Arată versiunea"
 
 #. TRANSLATORS: Bluetooth address for remote device
 #: src/service/device.js:195
 #, javascript-format
 msgid "Bluetooth device at %s"
-msgstr "Bluetooth įrenginys ties %s"
+msgstr "Aparat Bluetooth la %s"
 
 #. TRANSLATORS: Label for TLS connection verification key
 #.
@@ -820,99 +819,99 @@ msgstr "Bluetooth įrenginys ties %s"
 #: src/service/device.js:223
 #, javascript-format
 msgid "Verification key: %s"
-msgstr "Patvirtinimo raktas: %s"
+msgstr "Cheie de verificare: %s"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:862
 #, javascript-format
 msgid "Pair Request from %s"
-msgstr "Suporavimo užklausa nuo %s"
+msgstr "Cerere de asociere de la %s"
 
 #: src/service/device.js:869
 msgid "Reject"
-msgstr "Atmesti"
+msgstr "Refuză"
 
 #: src/service/device.js:874
 msgid "Accept"
-msgstr "Priimti"
+msgstr "Acceptă"
 
 #. TRANSLATORS: eg. Failed to pair with Google Pixel
 #: src/service/device.js:960
 #, javascript-format
 msgid "Failed to pair with %s"
-msgstr "Nepavyko suporuoti su %s"
+msgstr "Nu s-a reușit asocierea cu %s"
 
 #: src/service/device.js:961
 msgid "Device clocks are out of sync"
-msgstr "Įrenginių laikrodžiai nėra sinchronizuoti"
+msgstr "Ceasurile aparatelor nu sunt sincronizate"
 
 #: src/service/manager.js:178
 msgid "Discovery has been disabled due to the number of devices on this network."
-msgstr "Aptikimas buvo išjungtas dėl šiame tinkle esančių įrenginių skaičiaus."
+msgstr "Descoperirea a fost dezactivată din cauza numărului mare de aparate din această rețea."
 
 #: src/service/backends/lan.js:477
 msgid "Port already in use"
-msgstr "Prievadas jau naudojamas"
+msgstr "Portul este deja utilizat"
 
 #: src/service/plugins/battery.js:16
 msgid "Exchange battery information"
-msgstr "Apsikeitimas informacija apie bateriją"
+msgstr "Obține informații despre baterie"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:256
 #, javascript-format
 msgid "%s: Battery is full"
-msgstr "%s: Baterija pilna"
+msgstr "%s: Bateria e încărcată"
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
 #: src/service/plugins/battery.js:258 src/shell/device.js:119
 msgid "Fully Charged"
-msgstr "Pilnai įkrauta"
+msgstr "Încărcată complet"
 
 #. TRANSLATORS: eg. Google Pixel: Battery has reached custom charge level
 #: src/service/plugins/battery.js:285
 #, javascript-format
 msgid "%s: Battery has reached custom charge level"
-msgstr "%s: Baterija pasiekė tinkintą įkrovos lygį"
+msgstr "%s: Bateria a atins nivelul de încărcare prestabilit"
 
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:287
 #, javascript-format
 msgid "%d%% Charged"
-msgstr "%d%% įkrauta"
+msgstr "Încărcată %d%%"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:314
 #, javascript-format
 msgid "%s: Battery is low"
-msgstr "%s: Baterija baigia išsikrauti"
+msgstr "%s: Bateria este descărcată"
 
 #. TRANSLATORS: eg. 15% remaining
 #: src/service/plugins/battery.js:316
 #, javascript-format
 msgid "%d%% remaining"
-msgstr "Liko %d%%"
+msgstr "A rămas %d%%"
 
 #: src/service/plugins/clipboard.js:12
 msgid "Clipboard"
-msgstr "Iškarpinė"
+msgstr "Copiate"
 
 #: src/service/plugins/clipboard.js:13
 msgid "Share the clipboard content"
-msgstr "Bendrinti iškarpinės turinį"
+msgstr "Distribuie conținutul copiat"
 
 #: src/service/plugins/clipboard.js:25
 msgid "Clipboard Push"
-msgstr "Išsiųsti iškarpinės turinį"
+msgstr "Trimite Copiate"
 
 #: src/service/plugins/clipboard.js:33
 msgid "Clipboard Pull"
-msgstr "Gauti iškaprinės turinį"
+msgstr "Primește Copiate"
 
 #: src/service/plugins/contacts.js:29
 msgid "Access contacts of the paired device"
-msgstr "Gauti prieigą prie suporuotų įrenginių adresatų"
+msgstr "Acces la contactele aparatului asociat"
 
 #. Ensure we have a sender
 #. TRANSLATORS: No name or phone number
@@ -921,27 +920,27 @@ msgstr "Gauti prieigą prie suporuotų įrenginių adresatų"
 #: src/service/plugins/telephony.js:156 src/service/plugins/telephony.js:175
 #: src/service/ui/contacts.js:620 src/service/ui/messaging.js:756
 msgid "Unknown Contact"
-msgstr "Nežinomas adresatas"
+msgstr "Contact necunoscut"
 
 #: src/service/plugins/findmyphone.js:15
 msgid "Find My Phone"
-msgstr "Rasti mano telefoną"
+msgstr "Găsește-mi telefonul"
 
 #: src/service/plugins/findmyphone.js:16
 msgid "Ring your paired device"
-msgstr "Skambinti į suporuotą įrenginį"
+msgstr "Face să sune aparatul asociat"
 
 #: src/service/plugins/mousepad.js:14
 msgid "Mousepad"
-msgstr "Jutiklinis kilimėlis"
+msgstr "Panou tactil"
 
 #: src/service/plugins/mousepad.js:15
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr "Leidžia suporuotam įrenginiui veikti kaip nuotolinei pelei ir klaviatūrai"
+msgstr "Permite folosirea aparatului asociat ca maus și tastatură"
 
 #: src/service/plugins/mousepad.js:29 src/service/ui/mousepad.js:107
 msgid "Remote Input"
-msgstr "Nuotolinė įvestis"
+msgstr "Introducere de la distanță"
 
 #: src/service/plugins/mpris.js:18
 msgid "MPRIS"
@@ -949,58 +948,58 @@ msgstr "MPRIS"
 
 #: src/service/plugins/mpris.js:19
 msgid "Bidirectional remote media playback control"
-msgstr "Abikryptis nuotolinės medijos atkūrimo valdymas"
+msgstr "Control bidirecțional de redare multimedia"
 
 #: src/service/plugins/mpris.js:357
 msgid "Unknown"
-msgstr "Nežinoma"
+msgstr "Necunoscut"
 
 #: src/service/plugins/notification.js:19
 msgid "Share notifications with the paired device"
-msgstr "Bendrinti pranešimus su suporuotu įrenginiu"
+msgstr "Distribuie notificări aparatului asociat"
 
 #: src/service/plugins/notification.js:33
 msgid "Cancel Notification"
-msgstr "Atsisakyti pranešimo"
+msgstr "Anulează notificarea"
 
 #: src/service/plugins/notification.js:41
 msgid "Close Notification"
-msgstr "Užverti pranešimą"
+msgstr "Închide notificarea"
 
 #: src/service/plugins/notification.js:49
 msgid "Reply Notification"
-msgstr "Atsakyti į pranešimą"
+msgstr "Răspunde la notificare"
 
 #: src/service/plugins/notification.js:65
 msgid "Activate Notification"
-msgstr "Aktyvuoti pranešimą"
+msgstr "Activează notificările"
 
 #: src/service/plugins/ping.js:14
 msgid "Send and receive pings"
-msgstr "Siųsti ir gauti ryšio patikrinimus"
+msgstr "Trimite și primește ping-uri"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
 #: src/service/plugins/ping.js:54
 #, javascript-format
 msgid "Ping: %s"
-msgstr "Ryšio patikrinimas: %s"
+msgstr "Ping: %s"
 
 #: src/service/plugins/presenter.js:12
 msgid "Presentation"
-msgstr "Pristatymas"
+msgstr "Prezentare"
 
 #: src/service/plugins/presenter.js:13
 msgid "Use the paired device as a presenter"
-msgstr "Naudoti suporuotą įrenginį kaip pristatytoją"
+msgstr "Folosește aparatul asociat ca prezentator"
 
 #: src/service/plugins/runcommand.js:13
 msgid "Run Commands"
-msgstr "Vykdyti komandas"
+msgstr "Execută comenzi"
 
 #: src/service/plugins/runcommand.js:15
 msgid "Run commands on your paired device or let the device run predefined commands on this PC"
-msgstr "Vykdyti komandas suporuotame įrenginyje arba leisti įrenginiui vykdyti šiame kompiuteryje iš anksto apibrėžtas komandas"
+msgstr "Execută comenzi pentru aparatul tău asociat sau permite aparatului asociat să execute comenzi pentru acest computer"
 
 #: src/service/plugins/sftp.js:15
 msgid "SFTP"
@@ -1008,113 +1007,113 @@ msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:17
 msgid "Browse the paired device filesystem"
-msgstr "Naršyti suporuoto įrenginio failų sistemą"
+msgstr "Răsfoiește sistemul de fișiere al aparatului asociat"
 
 #: src/service/plugins/sftp.js:22
 msgid "Mount"
-msgstr "Prijungti"
+msgstr "Montează"
 
 #: src/service/plugins/sftp.js:30
 msgid "Unmount"
-msgstr "Atjungti"
+msgstr "Demontează"
 
 #: src/service/plugins/sftp.js:191
 #, javascript-format
 msgid "%s reported an error"
-msgstr "%s pranešė apie klaidą"
+msgstr "%s a raportat o eroare"
 
 #: src/service/plugins/share.js:16 src/service/plugins/share.js:23
 msgid "Share"
-msgstr "Bendrinti"
+msgstr "Distribuie"
 
 #: src/service/plugins/share.js:18
 msgid "Share files and URLs between devices"
-msgstr "Bendrinti failus ir URL adresus tarp įrenginių"
+msgstr "Trimite fișiere și adrese URL altor aparate"
 
 #: src/service/plugins/share.js:148 src/service/plugins/share.js:227
 #: src/service/plugins/share.js:337
 msgid "Transfer Failed"
-msgstr "Persiuntimas nepavyko"
+msgstr "Transfer nereușit"
 
 #. TRANSLATORS: eg. Google Pixel is not allowed to upload files
 #: src/service/plugins/share.js:150
 #, javascript-format
 msgid "%s is not allowed to upload files"
-msgstr "%s neleidžiama įkelti failų"
+msgstr "%s nu are permisiunea să trimită fișiere"
 
 #: src/service/plugins/share.js:172 src/service/plugins/share.js:307
 msgid "Transferring File"
-msgstr "Persiunčiamas failas"
+msgstr "Transfer de fișiere"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:174
 #, javascript-format
 msgid "Receiving “%s” from %s"
-msgstr "Gaunama „%s“ iš %s"
+msgstr "Se primește „%s” de la %s"
 
 #: src/service/plugins/share.js:193 src/service/plugins/share.js:327
 msgid "Transfer Successful"
-msgstr "Persiuntimas sėkmingas"
+msgstr "Transfer efectuat cu succes"
 
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:195
 #, javascript-format
 msgid "Received “%s” from %s"
-msgstr "Gautas „%s“ iš %s"
+msgstr "S-a primit „%s” de la %s"
 
 #: src/service/plugins/share.js:205
 msgid "Show File Location"
-msgstr "Rodyti failo vietą"
+msgstr "Arată locul fișierului"
 
 #: src/service/plugins/share.js:210
 msgid "Open File"
-msgstr "Atverti failą"
+msgstr "Deschide fișierul"
 
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:229
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
-msgstr "Nepavyko gauti “%s” iš %s"
+msgstr "Nu s-a putut primi „%s” de la %s"
 
 #: src/service/plugins/share.js:259
 #, javascript-format
 msgid "Text Shared By %s"
-msgstr "%s bendrino tekstą"
+msgstr "Text trimis de %s"
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
 #: src/service/plugins/share.js:309
 #, javascript-format
 msgid "Sending “%s” to %s"
-msgstr "Siunčiama „%s“ į %s"
+msgstr "Se trimite „%s” la %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:329
 #, javascript-format
 msgid "Sent “%s” to %s"
-msgstr "Išsiųsta „%s“ į %s"
+msgstr "S-a trimis „%s” la %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:339
 #, javascript-format
 msgid "Failed to send “%s” to %s"
-msgstr "Nepavyko išsiųsti “%s” į %s"
+msgstr "Nu s-a putut trimite „%s” la %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:397
 #, javascript-format
 msgid "Send files to %s"
-msgstr "Siųsti failus į %s"
+msgstr "Trimite fișiere la %s"
 
 #. TRANSLATORS: Mark the file to be opened once completed
 #: src/service/plugins/share.js:401
 msgid "Open when done"
-msgstr "Užbaigus, atverti failą"
+msgstr "Deschide când e gata"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
 #: src/service/plugins/share.js:440
 #, javascript-format
 msgid "Send a link to %s"
-msgstr "Siųsti nuorodą į %s"
+msgstr "Trimite o legătură la %s"
 
 #: src/service/plugins/sms.js:16
 msgid "SMS"
@@ -1122,157 +1121,155 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:17
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr "Siųsti bei gauti suporuoto įrenginio SMS žinutes ir gauti pranešimus apie naujas SMS"
+msgstr "Trimite și citește SMS-uri de pe aparatul asociat și primește notificări pentru SMS-uri noi"
 
 #: src/service/plugins/sms.js:38
 msgid "New SMS (URI)"
-msgstr "Nauja SMS žinutė (URI)"
+msgstr "SMS nou (URI)"
 
 #: src/service/plugins/sms.js:46
 msgid "Reply SMS"
-msgstr "Atsakyti į SMS žinutę"
+msgstr "Răspunde la SMS"
 
 #: src/service/plugins/sms.js:70
 msgid "Share SMS"
-msgstr "Bendrinti SMS žinutę"
+msgstr "Distribuie SMS"
 
 #: src/service/plugins/systemvolume.js:36
 msgid "System Volume"
-msgstr "Sistemos garsumas"
+msgstr "Volumul sistemului"
 
 #: src/service/plugins/systemvolume.js:37
 msgid "Enable the paired device to control the system volume"
-msgstr "Leisti suporuotam įrenginiui valdyti sistemos garsumą"
+msgstr "Permite aparatului asociat să controleze volumul sistemului"
 
 #: src/service/plugins/systemvolume.js:81
 msgid "PulseAudio not found"
-msgstr "PulseAudio nerasta"
+msgstr "PulseAudio nu a fost găsit"
 
 #: src/service/plugins/telephony.js:17
 msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr "Gauti pranešimus apie skambučius ir reguliuoti sistemos garsumą skambučių metu"
+msgstr "Primește notificări despre apeluri și reglează volumul sistemului în timpul apelurilor"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:29
 msgid "Mute Call"
-msgstr "Nutildyti skambutį"
+msgstr "Apel silențios"
 
 #. TRANSLATORS: The phone is ringing
 #: src/service/plugins/telephony.js:194
 msgid "Incoming call"
-msgstr "Gaunamas skambutis"
+msgstr "Sună telefonul"
 
 #. TRANSLATORS: A phone call is active
 #: src/service/plugins/telephony.js:209
 msgid "Ongoing call"
-msgstr "Vykstantis skambutis"
+msgstr "Apel în curs"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:143
 msgid "Fax"
-msgstr "Faksas"
+msgstr "Fax"
 
 #. TRANSLATORS: A work or office phone number
 #: src/service/ui/contacts.js:147
 msgid "Work"
-msgstr "Darbo"
+msgstr "Serviciu"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:151
 msgid "Mobile"
-msgstr "Mobilusis"
+msgstr "Mobil"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:155
 msgid "Home"
-msgstr "Namų"
+msgstr "De casă"
 
 #. TRANSLATORS: Less than a minute ago
 #: src/service/ui/messaging.js:105 src/service/ui/messaging.js:146
 msgid "Just now"
-msgstr "Ką tik"
+msgstr "Chiar acum"
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
 #: src/service/ui/messaging.js:114
 #, javascript-format
 msgid "Yesterday・%s"
-msgstr "Vakar・%s"
+msgstr "Ieri・%s"
 
 #: src/service/ui/messaging.js:151
 #, javascript-format
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] "%d minutė"
-msgstr[1] "%d minutės"
-msgstr[2] "%d minučių"
-msgstr[3] "%d minutė"
+msgstr[0] "%d minut"
+msgstr[1] "%d minute"
+msgstr[2] "%d de minute"
 
 #: src/service/ui/messaging.js:407
 msgid "Not available"
-msgstr "Neprieinamas"
+msgstr "Indisponibil"
 
 #: src/service/ui/messaging.js:764
 msgid "Group Message"
-msgstr "Grupės žinutė"
+msgstr "Mesaj de grup"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:779
 #, javascript-format
 msgid "You: %s"
-msgstr "Jūs: %s"
+msgstr "Tu: %s"
 
 #: src/service/ui/messaging.js:965
 #, javascript-format
 msgid "And %d other contact"
 msgid_plural "And %d others"
-msgstr[0] "Ir dar %d adresatas"
-msgstr[1] "Ir dar %d adresatai"
-msgstr[2] "Ir dar %d adresatų"
-msgstr[3] "Ir dar %d adresatas"
+msgstr[0] "Și %d alt contact"
+msgstr[1] "Și alte %d"
+msgstr[2] "Și alte %d"
 
 #. TRANSLATORS: Displayed when the remote keyboard is not ready to accept input
 #: src/service/ui/mousepad.js:115
 #, javascript-format
 msgid "Remote keyboard on %s is not active"
-msgstr "Nuotolinė klaviatūra ties %s nėra aktyvi"
+msgstr "Tastatura de la distanță pe %s nu este activă"
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
 #: src/shell/device.js:124
 #, javascript-format
 msgid "%d%% (Estimating…)"
-msgstr "%d%% (Apskaičiuojama…)"
+msgstr "%d%% (Estimare…)"
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
 #: src/shell/device.js:133
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
-msgstr "%d%% (%d∶%02d iki pilnos)"
+msgstr "%d%% (%d∶%02d Până la încărcarea completă)"
 
 #. TRANSLATORS: Estimated time until battery is empty
 #. EXAMPLE: 42% (12:15 Remaining)
 #: src/shell/device.js:141
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
-msgstr "%d%% (Liko %d∶%02d)"
+msgstr "%d%% (%d∶%02d Rămase)"
 
 #: src/shell/notification.js:73
 msgid "Reply"
-msgstr "Atsakyti"
+msgstr "Răspunde"
 
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:31
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr "Bendrinti nuorodas, naudojant GSConnect, tiesiogiai į naršyklę ar per SMS žinutę."
+msgstr "Trimite adrese de internet prin GSConnect, direct din navigatorul web sau prin SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:35
 msgid "Service Unavailable"
-msgstr "Paslauga neprieinama"
+msgstr "Serviciu indisponibil"
 
 #. TRANSLATORS: Open URL with the device's browser
 #: webextension/gettext.js:39
 msgid "Open in Browser"
-msgstr "Atverti naršyklėje"
+msgstr "Deschide în navigator"
 
