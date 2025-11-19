@@ -531,8 +531,8 @@ const Device = GObject.registerClass({
     }
 
     /**
-     * Get the position of a GMenuItem with @actionName in the top level of the
-     * device menu.
+     * Get the position of a GMenuItem with {@link actionName} in the top level
+     * of the device menu.
      *
      * @param {string} actionName - An action name with scope (eg. device.foo)
      * @returns {number} An 0-based index or -1 if not found
@@ -755,7 +755,7 @@ const Device = GObject.registerClass({
     }
 
     /**
-     * Reject the transfer payload described by @packet.
+     * Reject the transfer payload described by {@link packet}.
      *
      * @param {Core.Packet} packet - A packet
      * @returns {void}

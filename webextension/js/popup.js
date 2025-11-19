@@ -7,7 +7,6 @@
 
 var CONNECTED = false;
 var DEVICES = [];
-// eslint-disable-next-line no-unused-vars
 var TARGET_URL = null;
 
 

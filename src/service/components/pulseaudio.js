@@ -80,7 +80,7 @@ class Stream {
     }
 
     /**
-     * Gradually raise or lower the stream volume to @value
+     * Gradually raise or lower the stream volume to {@link value}
      *
      * @param {number} value - A number in the range 0-1
      * @param {number} [duration] - Duration to fade in seconds

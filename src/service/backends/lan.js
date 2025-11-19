@@ -411,9 +411,9 @@ export const ChannelService = GObject.registerClass({
     /**
      * Broadcast an identity packet
      *
-     * If @address is not %null it may specify an IPv4 or IPv6 address to send
-     * the identity packet directly to, otherwise it will be broadcast to the
-     * default address, 255.255.255.255.
+     * If {@link address] is not %null it may specify an IPv4 or IPv6 address
+     * to send the identity packet directly to, otherwise it will be broadcast
+     * to the default address, 255.255.255.255.
      *
      * @param {string} [address] - An optional target IPv4 or IPv6 address
      */
@@ -773,9 +773,8 @@ export const Channel = GObject.registerClass({
 
             // Starting with protocol version 8, the devices are expected to
             // exchange identity packets again after TLS negotiation
-            if (this.identity.body.protocolVersion >= 8) {
+            if (this.identity.body.protocolVersion >= 8)
                 await this._exchangeIdentities();
-            }
         } catch (e) {
             this.close();
             throw e;
@@ -803,9 +802,8 @@ export const Channel = GObject.registerClass({
 
             // Starting with protocol version 8, the devices are expected to
             // exchange identity packets again after TLS negotiation
-            if (this.identity.body.protocolVersion >= 8) {
+            if (this.identity.body.protocolVersion >= 8)
                 await this._exchangeIdentities();
-            }
         } catch (e) {
             this.close();
             throw e;

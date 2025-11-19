@@ -74,9 +74,9 @@ const _numberRegex = new RegExp(
 
 
 /**
- * Searches @str for URLs and returns an array of objects with %url
+ * Searches {@link str} for URLs and returns an array of objects with %url
  * properties showing the matched URL string, and %pos properties indicating
- * the position within @str where the URL was found.
+ * the position within {@link str} where the URL was found.
  *
  * @param {string} str - the string to search
  * @returns {object[]} the list of match objects, as described above

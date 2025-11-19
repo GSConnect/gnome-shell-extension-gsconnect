@@ -19,7 +19,7 @@ import Tooltip from './tooltip.js';
  * Get a dictionary of a GMenuItem's attributes
  *
  * @param {Gio.MenuModel} model - The menu model containing the item
- * @param {number} index - The index of the item in @model
+ * @param {number} index - The index of the item in {@link model}
  * @returns {object} A dictionary of the item's attributes
  */
 function getItemInfo(model, index) {
