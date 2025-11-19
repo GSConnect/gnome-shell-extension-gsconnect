@@ -113,7 +113,7 @@ const SystemVolumePlugin = GObject.registerClass({
     }
 
     /**
-     * Update the cache for @stream
+     * Update the cache for {@link stream}
      *
      * @param {"Gvc.MixerStream"} stream - The stream to cache
      * @returns {object} The updated cache object

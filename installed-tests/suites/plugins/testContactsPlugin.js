@@ -38,7 +38,7 @@ const Packets = {
 /**
  * Mocked packet handling for the test device
  *
- * @param {*} packet - a KDE Connect protocol packet
+ * @param {object} packet - a KDE Connect protocol packet
  */
 function handlePacket(packet) {
     if (packet.type === 'kdeconnect.contacts.request_all_uids_timestamps') {

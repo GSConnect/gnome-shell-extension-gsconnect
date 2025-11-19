@@ -93,7 +93,7 @@ async function postMessage(message) {
  * Forward a message from the browserAction popup to the NMH
  *
  * @param {object} message - A message from the NMH to forward
- * @param {*} sender - A message from the NMH to forward
+ * @param {object} sender - A message from the NMH to forward
  */
 async function onPopupMessage(message, sender) {
     try {
