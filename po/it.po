@@ -14,7 +14,8 @@ msgstr ""
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: it\n"
-"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/"
+"org.gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -32,12 +33,22 @@ msgid "GSConnect Team"
 msgstr "Team GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
-msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr "GSConnect è un'implementazione completa di KDE Connect per GNOME Shell, integrata con Nautilus, Chrome e Firefox. Il team di GSConnect produce applicazioni per Linux, BSD, Android, Sailfish, iOS, macOS e Windows."
+msgid ""
+"GSConnect is a complete implementation of KDE Connect especially for GNOME "
+"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
+"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr ""
+"GSConnect è un'implementazione completa di KDE Connect per GNOME Shell, "
+"integrata con Nautilus, Chrome e Firefox. Il team di GSConnect produce "
+"applicazioni per Linux, BSD, Android, Sailfish, iOS, macOS e Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
-msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
-msgstr "Con GSConnect è possibile connettersi in sicurezza a dispositivi mobili e altri computer per:"
+msgid ""
+"With GSConnect you can securely connect to mobile devices and other desktops "
+"to:"
+msgstr ""
+"Con GSConnect è possibile connettersi in sicurezza a dispositivi mobili e "
+"altri computer per:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:48
 msgid "Share files, links and text"
@@ -180,20 +191,24 @@ msgid "Select or start a conversation"
 msgstr "Seleziona o inizia una conversazione"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid "Touchpad.\n"
+msgid ""
+"Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n\n"
+"Press long to drag to drag mouse cursor.\n"
+"\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr "Touchpad.\n"
+msgstr ""
+"Touchpad.\n"
 "Trascina su questa area per spostare il cursore del mouse.\n"
-"Premi a lungo per trascinare il cursore del mouse.\n\n"
+"Premi a lungo per trascinare il cursore del mouse.\n"
+"\n"
 "Un semplice clic verrà inviato al dispositivo accoppiato.\n"
 "Sinistra, centrale, tasto destro e rotelle della ruota."
 
 #: data/ui/preferences-command-editor.ui:14
 msgid "Edit Command"
-msgstr "Comando Modifica"
+msgstr "Modifica Comando"
 
 #: data/ui/preferences-command-editor.ui:28
 msgid "Save"
@@ -300,7 +315,7 @@ msgstr "Comandi"
 
 #: data/ui/preferences-device-panel.ui:1091
 msgid "Add Command"
-msgstr "Aggiungere comando"
+msgstr "Aggiungi comando"
 
 #. TRANSLATORS: 'Share' is a verb here; this refers to the action of sharing
 #: data/ui/preferences-device-panel.ui:1179
@@ -600,8 +615,12 @@ msgid "Something’s gone wrong"
 msgstr "Qualcosa è andato storto"
 
 #: data/ui/service-error-dialog.ui:91
-msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
-msgstr "GSConnect ha riscontrato un errore imprevisto. Segnalare il problema e includere le informazioni necessarie."
+msgid ""
+"GSConnect encountered an unexpected error. Please report the problem and "
+"include any information that may help."
+msgstr ""
+"GSConnect ha riscontrato un errore imprevisto. Segnalare il problema e "
+"includere le informazioni necessarie."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
@@ -846,7 +865,9 @@ msgstr "Gli orologi del dispositivo non sono sincronizzati"
 
 #: src/service/manager.js:178
 msgid "Discovery has been disabled due to the number of devices on this network."
-msgstr "La ricerca è stata disattivata a causa dell'elevato numero di dispositivi nella rete."
+msgstr ""
+"La ricerca è stata disattivata a causa dell'elevato numero di dispositivi "
+"nella rete."
 
 #: src/service/backends/lan.js:477
 msgid "Port already in use"
@@ -997,8 +1018,12 @@ msgid "Run Commands"
 msgstr "Esegui comandi"
 
 #: src/service/plugins/runcommand.js:15
-msgid "Run commands on your paired device or let the device run predefined commands on this PC"
-msgstr "Eseguire comandi sul dispositivo o lasciare che il dispositivo esegua comandi predefiniti su questo PC"
+msgid ""
+"Run commands on your paired device or let the device run predefined commands "
+"on this PC"
+msgstr ""
+"Eseguire comandi sul dispositivo o lasciare che il dispositivo esegua "
+"comandi predefiniti su questo PC"
 
 #: src/service/plugins/sftp.js:15
 msgid "SFTP"
@@ -1023,7 +1048,7 @@ msgstr "%s ha segnalato un errore"
 
 #: src/service/plugins/share.js:16 src/service/plugins/share.js:23
 msgid "Share"
-msgstr "Invia file"
+msgstr "Condividi"
 
 #: src/service/plugins/share.js:18
 msgid "Share files and URLs between devices"
@@ -1120,7 +1145,8 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:17
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr "Inviare e leggere SMS del dispositivo e ricevere le notifiche per nuovi SMS"
+msgstr ""
+"Inviare e leggere SMS del dispositivo e ricevere le notifiche per nuovi SMS"
 
 #: src/service/plugins/sms.js:38
 msgid "New SMS (URI)"
@@ -1270,3 +1296,52 @@ msgstr "Servizio non disponibile"
 msgid "Open in Browser"
 msgstr "Apri nel browser"
 
+#: src/service/plugins/findmyphone.js:194
+#: data/ui/messaging-conversation-participants.ui:14
+msgid "Participants"
+msgstr "Partecipanti"
+
+#: data/ui/command-row.ui:33
+msgid "Delete Command"
+msgstr "Elimina Comando"
+
+#: src/service/plugins/findmyphone.js:194
+#: data/ui/find-my-phone.js:26
+msgid "You found me!"
+msgstr "Mi hai trovato!"
+
+msgid "Select Folder"
+msgstr "Seleziona Cartella"
+
+msgid "Command"
+msgstr "Comando"
+
+msgid "Set Shortcut"
+msgstr "Imposta scorciatoia da tastiera"
+
+msgid "Main Menu"
+msgstr "Menu Principale"
+
+msgid "Welcome to GSConnect"
+msgstr "Benvenuto su GSConnect"
+
+msgid "Settings"
+msgstr "Impostazioni"
+
+msgid "This device"
+msgstr "Questo dispositivo"
+
+msgid "Apparence"
+msgstr "Aspetto"
+
+msgid "Support"
+msgstr "Supporto"
+
+msgid "Unpair Device"
+msgstr "Disaccoppia il dispositivo"
+
+msgid "is not paired"
+msgstr "non accopiato"
+
+msgid "Pair Device"
+msgstr "Accoppia il dispositivo"
