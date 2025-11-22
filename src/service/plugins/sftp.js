@@ -263,8 +263,8 @@ const SFTPPlugin = GObject.registerClass({
     }
 
     /**
-     * Remove all host keys from ~/.ssh/known_hosts for @host in the port range
-     * used by KDE Connect (1739-1764).
+     * Remove all host keys from ~/.ssh/known_hosts for {@link host} in the
+     * port range used by KDE Connect (1739-1764).
      *
      * @param {string} host - A hostname or IP address
      */

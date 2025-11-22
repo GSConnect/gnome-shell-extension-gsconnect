@@ -267,7 +267,7 @@ export const Clipboard = GObject.registerClass({
     }
 
     /**
-     * Get the content of the clipboard with the type @mimetype.
+     * Get the content of the clipboard with the type {@link mimetype}.
      *
      * @param {string} mimetype - the mimetype to request
      * @returns {Promise<Uint8Array>} The content of the clipboard
@@ -296,7 +296,8 @@ export const Clipboard = GObject.registerClass({
     }
 
     /**
-     * Set the content of the clipboard to @value with the type @mimetype.
+     * Set the content of the clipboard to {@link value} with the type
+     * {@link mimetype}.
      *
      * @param {Uint8Array} value - the value to set
      * @param {string} mimetype - the mimetype of the value

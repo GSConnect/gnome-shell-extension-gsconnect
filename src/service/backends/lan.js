@@ -411,9 +411,9 @@ export const ChannelService = GObject.registerClass({
     /**
      * Broadcast an identity packet
      *
-     * If @address is not %null it may specify an IPv4 or IPv6 address to send
-     * the identity packet directly to, otherwise it will be broadcast to the
-     * default address, 255.255.255.255.
+     * If {@link address] is not %null it may specify an IPv4 or IPv6 address
+     * to send the identity packet directly to, otherwise it will be broadcast
+     * to the default address, 255.255.255.255.
      *
      * @param {string} [address] - An optional target IPv4 or IPv6 address
      */
@@ -707,6 +707,25 @@ export const Channel = GObject.registerClass({
         return this._authenticate(connection);
     }
 
+    async _exchangeIdentities() {
+        await this.sendPacket(this.backend.identity);
+        const identity = await this.readPacket();
+
+        if (this.identity.body.protocolVersion !== identity.body.protocolVersion) {
+            this.identity = null;
+            throw new Error(`Unexpected protocol version ${identity.protocolVersion}; ` +
+                            `handshake started with protocol version ${this.identity.protocolVersion}`);
+        }
+
+        if (this.identity.body.deviceId !== identity.body.deviceId) {
+            this.identity = null;
+            throw new Error(`Unexpected device ID "${identity.body.deviceId}"; ` +
+                            `handshake started with device ID "${this.identity.body.deviceId}"`);
+        }
+
+        this.identity = identity;
+    }
+
     /**
      * Negotiate an incoming connection
      *
@@ -754,10 +773,8 @@ export const Channel = GObject.registerClass({
 
             // Starting with protocol version 8, the devices are expected to
             // exchange identity packets again after TLS negotiation
-            if (this.identity.body.protocolVersion >= 8) {
-                await this.sendPacket(this.backend.identity);
-                this.identity = await this.readPacket();
-            }
+            if (this.identity.body.protocolVersion >= 8)
+                await this._exchangeIdentities();
         } catch (e) {
             this.close();
             throw e;
@@ -785,10 +802,8 @@ export const Channel = GObject.registerClass({
 
             // Starting with protocol version 8, the devices are expected to
             // exchange identity packets again after TLS negotiation
-            if (this.identity.body.protocolVersion >= 8) {
-                await this.sendPacket(this.backend.identity);
-                this.identity = await this.readPacket();
-            }
+            if (this.identity.body.protocolVersion >= 8)
+                await this._exchangeIdentities();
         } catch (e) {
             this.close();
             throw e;

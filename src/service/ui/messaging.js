@@ -1235,7 +1235,7 @@ export const MessagingWindow = GObject.registerClass({
     }
 
     /**
-     * Find the thread row for @contacts
+     * Find the thread row for {@link contacts}
      *
      * @param {object[]} contacts - A contact group
      * @returns {ConversationSummary|null} The thread row or %null
@@ -1386,7 +1386,7 @@ export const MessagingWindow = GObject.registerClass({
     }
 
     /**
-     * Try and find an existing conversation widget for @message.
+     * Try and find an existing conversation widget for {@link message}.
      *
      * @param {object} message - A message object
      * @returns {MessagingConversation|null} A conversation widget or %null
@@ -1428,8 +1428,8 @@ export const MessagingWindow = GObject.registerClass({
     }
 
     /**
-     * Set the contents of the message entry. If @pending is %false set the
-     * message of the currently selected conversation, otherwise mark the
+     * Set the contents of the message entry. If {@link pending} is %false set
+     * the message of the currently selected conversation, otherwise mark the
      * message to be set for the next selected conversation.
      *
      * @param {string} message - The message to place in the entry

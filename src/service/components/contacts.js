@@ -473,8 +473,8 @@ const Store = GObject.registerClass({
     }
 
     /**
-     * Lookup a contact for each address object in @addresses and return a
-     * dictionary of address (eg. phone number) to contact object.
+     * Lookup a contact for each address object in {@link addresses} and return
+     * a dictionary of address (eg. phone number) to contact object.
      *
      * { "555-5555": { "name": "...", "numbers": [], ... } }
      *

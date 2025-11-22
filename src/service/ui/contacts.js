@@ -37,7 +37,7 @@ function getNumberTypeLabel(type) {
 }
 
 /**
- * Get a display number from @contact for @address.
+ * Get a display number from {@link contact} for {@link address}.
  *
  * @param {object} contact - A contact object
  * @param {string} address - A phone number

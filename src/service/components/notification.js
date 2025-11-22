@@ -150,10 +150,10 @@ const Listener = GObject.registerClass({
     }
 
     /**
-     * Try and find a well-known name for @sender on the session bus
+     * Try and find a well-known name for {@link sender} on the session bus
      *
      * @param {string} sender - A DBus unique name (eg. :1.2282)
-     * @param {string} appName - @appName passed to Notify() (Optional)
+     * @param {string} appName - appName passed to Notify() (Optional)
      * @returns {string} A well-known name or %null
      */
     async _getAppId(sender, appName) {
@@ -195,7 +195,7 @@ const Listener = GObject.registerClass({
     }
 
     /**
-     * Try and find the application name for @sender
+     * Try and find the application name for {@link sender}
      *
      * @param {string} sender - A DBus unique name
      * @param {string} [appName] - `appName` supplied by Notify()

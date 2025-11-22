@@ -477,7 +477,7 @@ const SMSPlugin = GObject.registerClass({
     }
 
     /**
-     * Try to find a thread_id in @smsPlugin for @addresses.
+     * Try to find a thread_id in for {@link addresses}.
      *
      * @param {object[]} addresses - a list of address objects
      * @returns {string|null} a thread ID
