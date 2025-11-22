@@ -6,7 +6,7 @@ data/ui/contacts-address-row.ui
 data/ui/find-my-phone.ui
 data/ui/legacy-messaging-dialog.ui
 data/ui/messaging-conversation-message.ui
-data/ui/messaging-conversation-partecipants.ui
+data/ui/messaging-conversation-participants.ui
 data/ui/messaging-conversation-sharesms.ui
 data/ui/messaging-conversation-summary.ui
 data/ui/messaging-conversation.ui

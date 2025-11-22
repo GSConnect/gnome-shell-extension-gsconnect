@@ -1297,8 +1297,8 @@ msgid "Open in Browser"
 msgstr "Apri nel browser"
 
 #: src/service/plugins/findmyphone.js:194
-#: data/ui/messaging-conversation-partecipants.ui:14
-msgid "Partecipants"
+#: data/ui/messaging-conversation-participants.ui:14
+msgid "Participants"
 msgstr "Partecipanti"
 
 #: data/ui/command-row.ui:33

@@ -19,11 +19,11 @@ SPDX-License-Identifier: GPL-2.0-or-later
           <object class="AdwHeaderBar">
             <property name="visible">True</property>
             <property name="title-widget">
-              <object class="GtkButton" id ="partecipants-button">
+              <object class="GtkButton" id ="participants-button">
                 <property name="has-tooltip">True</property>
-                <property name="tooltip-text" translatable="yes">Show partecipants</property>
+                <property name="tooltip-text" translatable="yes">Show participants</property>
                 <accessibility>
-                  <property name="label" translatable="yes">Show partecipants</property>
+                  <property name="label" translatable="yes">Show participants</property>
                 </accessibility>
                 <child>
                   <object class="GtkBox">

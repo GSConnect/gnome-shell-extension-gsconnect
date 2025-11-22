@@ -278,7 +278,7 @@ const ConversationParticipants = GObject.registerClass({
             GObject.Object
         ),
     },
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/messaging-conversation-partecipants.ui',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/messaging-conversation-participants.ui',
     Children: [
         'contacts-list',
     ],
@@ -340,7 +340,7 @@ const MessagingConversation = GObject.registerClass({
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/messaging-conversation.ui',
     Children: [
         'list', 'scrolled', 'pending', 'pending-box', 'avatar', 'content-title',
-        'spinner', 'spinner-anim', 'partecipants-button', 'bottom-bar',
+        'spinner', 'spinner-anim', 'participants-button', 'bottom-bar',
     ],
 }, class MessagingConversation extends Adw.NavigationPage {
 
@@ -370,14 +370,14 @@ const MessagingConversation = GObject.registerClass({
         const address = this.addresses[0].address;
         const contact = this.device.contacts.query({number: address});
 
-        this._partecipantsId = this.partecipants_button.connect('clicked', () => {
-            if (this._partecipants_dialog === undefined) {
-                this._partecipants_dialog = new ConversationParticipants({
+        this._participantsId = this.participants_button.connect('clicked', () => {
+            if (this._participants_dialog === undefined) {
+                this._participants_dialog = new ConversationParticipants({
                     device: this.device,
                     addresses: this.addresses,
                 });
             }
-            this._partecipants_dialog.present(Gio.Application.get_default().get_active_window());
+            this._participants_dialog.present(Gio.Application.get_default().get_active_window());
         });
 
         if (this.addresses.length === 1) {
@@ -830,7 +830,7 @@ const MessagingConversation = GObject.registerClass({
     destroy() {
         this.list.set_header_func(null);
         this.message_bar.disconnect(this._sendmessageId);
-        this.partecipants_button.disconnect(this._partecipantsId);
+        this.participants_button.disconnect(this._participantsId);
         this.device.disconnect(this._connectedId);
         this._vadj.disconnect(this._scrolledId);
         this._deviceBinding.unbind();
