@@ -300,7 +300,6 @@ const ConnectDialog = GObject.registerClass({
         const errorDialog = new Adw.AlertDialog({
             heading: _('Oops! An error occurred…'),
             body: message,
-            transient_for: win,
         });
 
         // Add a close button to dismiss the dialog
@@ -310,7 +309,7 @@ const ConnectDialog = GObject.registerClass({
         // Handle the response to close the dialog
         errorDialog.connect('response', () => errorDialog.close());
 
-        errorDialog.present();
+        errorDialog.present(win);
     }
 });
 
