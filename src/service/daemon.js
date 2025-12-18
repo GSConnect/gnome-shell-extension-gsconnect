@@ -770,17 +770,14 @@ const Service = GObject.registerClass({
             let id = null;
             if (options.contains('device')) {
                 id = options.lookup_value('device', null).unpack();
-            }
-            else if (options.contains('name')) {
+            } else if (options.contains('name')) {
                 const name = options.lookup_value('name', null).unpack();
                 id = this._findDeviceID(name) // May return null if no match found
             }
             
             if (id === null)
                 return -1;
-
-            id = Object.freeze(id);
-
+            
             // Pairing
             if (options.contains('pair')) {
                 this._cliAction(id, 'pair');
