@@ -773,7 +773,6 @@ const Service = GObject.registerClass({
                 const name = options.lookup_value('name', null).unpack();
                 id = this._findDeviceID(name); // May return null if no match found
             }
-            
             if (id === null)
                 return -1;
             // Pairing
