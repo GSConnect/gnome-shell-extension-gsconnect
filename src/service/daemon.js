@@ -742,7 +742,6 @@ const Service = GObject.registerClass({
             if (name === device.Name)
                 return device.Id;
         }
-        
         return null;
     }
 
