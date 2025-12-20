@@ -144,6 +144,7 @@ const Dialog = GObject.registerClass({
 }, class Dialog extends Gtk.MessageDialog {
     _init(params) {
         super._init({
+            application: Gio.Application.get_default(),
             buttons: Gtk.ButtonsType.CLOSE,
             device: params.device,
             image: new Gtk.Image({

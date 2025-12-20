@@ -249,4 +249,3 @@ export const ErrorDialog = GObject.registerClass({
         return uri;
     }
 });
-
