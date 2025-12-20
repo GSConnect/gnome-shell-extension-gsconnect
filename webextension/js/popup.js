@@ -149,7 +149,7 @@ function onPortMessage(message, sender) {
     try {
         // console.log(`WebExtension-popup RECV: ${JSON.stringify(message)}`);
 
-        if (sender.url.includes('/background.html')) {
+        // if (sender.url.includes('/background.html')) {
             if (message.type === 'connected') {
                 CONNECTED = message.data;
             } else if (message.type === 'devices') {
@@ -158,7 +158,7 @@ function onPortMessage(message, sender) {
             }
 
             setPopup();
-        }
+        // }
     } catch (e) {
         logError(e);
     }
@@ -170,10 +170,10 @@ function onPortMessage(message, sender) {
  */
 async function onPopup() {
     try {
-        const tabs = await browser.tabs.query({
-            active: true,
+        const tabs = (await browser.tabs.query({
+            // active: true,
             currentWindow: true,
-        });
+        })).filter(tab => tab.active);
 
         if (tabs.length)
             TARGET_URL = tabs[0].url;
