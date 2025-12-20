@@ -552,6 +552,11 @@ msgstr "Paneel"
 msgid "User Menu"
 msgstr "Gebruikersmenu"
 
+#. TRANSLATORS: Show devices in the user menu like Bluetooth, but hidden
+#: data/ui/preferences-window.ui:943
+msgid "Hidden"
+msgstr "Hidden"
+
 #. TRANSLATORS: Generate a support log
 #: data/ui/preferences-window.ui:843 src/preferences/service.js:402
 msgid "Generate Support Log"
