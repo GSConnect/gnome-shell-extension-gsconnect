@@ -504,7 +504,7 @@ msgstr "מכשירים"
 
 #: data/ui/preferences-window.ui:328 src/preferences/service.js:686
 msgid "Searching for devices…"
-msgstr "מחפש מכשירים…"
+msgstr "בחיפוש אחר מכשירים…"
 
 #: data/ui/preferences-window.ui:353
 msgid "Extension Settings"
@@ -532,7 +532,7 @@ msgstr "גילוי מושבת"
 
 #: data/ui/preferences-window.ui:826
 msgid "Retry"
-msgstr ""
+msgstr "ניסיון חוזר"
 
 #: data/ui/preferences-window.ui:858
 msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
@@ -547,7 +547,7 @@ msgstr "‏ OpenSSL לא נמצא"
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/preferences-window.ui:923
 msgid "Add device by IP…"
-msgstr ""
+msgstr "הוספת מכשיר לפי כתובת IP…"
 
 #: data/ui/preferences-window.ui:928
 msgid "Display Mode"
@@ -629,8 +629,8 @@ msgstr "סנכרון בין המכשירים שלך"
 msgid "%d Connected"
 msgid_plural "%d Connected"
 msgstr[0] "אחד מחובר"
-msgstr[1] ""
-msgstr[2] "%d מכשירים מחוברים"
+msgstr[1] "%d מחוברים"
+msgstr[2] "%d מחוברים"
 msgstr[3] "%d מחוברים"
 
 #: src/preferences/device.js:671 src/preferences/device.js:677
@@ -650,7 +650,7 @@ msgstr "מושבת"
 #: src/preferences/keybindings.js:66
 #, javascript-format
 msgid "Enter a new shortcut to change <b>%s</b>"
-msgstr "יש להזין צירופי מקשים לשינוי <b>%s</b>"
+msgstr "יש ללחוץ על צירופי מקשים לשינוי <b>%s</b>"
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -666,7 +666,7 @@ msgstr "יישום מלא של KDE Connect עבור GNOME"
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:382
 msgid "translator-credits"
-msgstr "יוסף אור בוצ׳קו <yoseforb@gmail.com>"
+msgstr "יוסף אור בוצ׳קו <yoseforb@gmail.com>,עומר א״ש <omeritzicshwartz@gmail.com>"
 
 #: src/preferences/service.js:415
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
@@ -678,7 +678,7 @@ msgstr "סקירת יומן"
 
 #: src/preferences/service.js:443
 msgid "Invalid Device Name"
-msgstr ""
+msgstr "שם מכשיר לא תקני"
 
 #. TRANSLATOR: %s is a list of forbidden characters
 #: src/preferences/service.js:445
@@ -725,7 +725,7 @@ msgstr ""
 
 #: src/service/daemon.js:100
 msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
-msgstr ""
+msgstr "‏GSConnect עודכן בשביל לתמוך בשינויים בפרוטוקול של KDE Connect. ייתכן צורך בצימוד מחדש של חלק מהמכשירים."
 
 #: src/service/daemon.js:241
 msgid "Click for help troubleshooting"
@@ -774,7 +774,7 @@ msgstr "גוף התרעה"
 
 #: src/service/daemon.js:515
 msgid "Notification Icon"
-msgstr "סמליל התרעה"
+msgstr "סמל התרעה"
 
 #: src/service/daemon.js:524
 msgid "Notification ID"
@@ -838,7 +838,7 @@ msgstr "אישור"
 #: src/service/device.js:960
 #, javascript-format
 msgid "Failed to pair with %s"
-msgstr ""
+msgstr "הצימוד עם %s נכשל"
 
 #: src/service/device.js:961
 msgid "Device clocks are out of sync"
@@ -1032,13 +1032,13 @@ msgstr "שיתוף קבצים וכתובות URL בין מכשירים"
 #: src/service/plugins/share.js:148 src/service/plugins/share.js:227
 #: src/service/plugins/share.js:337
 msgid "Transfer Failed"
-msgstr "ההעברה כשלה"
+msgstr "ההעברה נכשלה"
 
 #. TRANSLATORS: eg. Google Pixel is not allowed to upload files
 #: src/service/plugins/share.js:150
 #, javascript-format
 msgid "%s is not allowed to upload files"
-msgstr "‏%s לא מאפשר להעלות קבצים"
+msgstr "‏%s לא מורשה להעלות קבצים"
 
 #: src/service/plugins/share.js:172 src/service/plugins/share.js:307
 msgid "Transferring File"
@@ -1072,7 +1072,7 @@ msgstr "פתיחת הקובץ"
 #: src/service/plugins/share.js:229
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
-msgstr "ארע כשל בקבלת ‏„%s” מ־„%s”"
+msgstr "נכשלה קבלת ‏„%s” מ־„%s”"
 
 #: src/service/plugins/share.js:259
 #, javascript-format
@@ -1095,7 +1095,7 @@ msgstr "‏„%s” נשלח אל „%s”"
 #: src/service/plugins/share.js:339
 #, javascript-format
 msgid "Failed to send “%s” to %s"
-msgstr "אירעה שגיאה בשליחת „%s” אל „%s”"
+msgstr "נכשלה שליחת „%s” אל „%s”"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:397
