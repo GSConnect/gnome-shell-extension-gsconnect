@@ -223,7 +223,7 @@ const SFTPPlugin = GObject.registerClass({
 
             // This is the actual call to mount the device
             const host = this.device.channel.host;
-            const uri = `sftp://${host}:${packet.body.port}/`;
+            const uri = `sftp://${host}:${packet.body.port}/sdcard/`;
             const file = Gio.File.new_for_uri(uri);
 
             await file.mount_enclosing_volume(GLib.PRIORITY_DEFAULT, op,
