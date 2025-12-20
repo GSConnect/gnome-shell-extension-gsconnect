@@ -7,7 +7,6 @@ import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 
 import Config from '../../config.js';
-import * as Core from '../core.js';
 import Plugin from '../plugin.js';
 
 
@@ -38,9 +37,6 @@ export const Metadata = {
 };
 
 
-const MAX_MOUNT_DIRS = 12;
-
-
 /**
  * SFTP Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/sftp
@@ -55,6 +51,12 @@ const SFTPPlugin = GObject.registerClass({
 
         this._gmount = null;
         this._mounting = false;
+
+        // Stores multiPaths/pathNames from the device packet.
+        this._remoteDirectories = null;
+
+        // Track if the mount was requested by user interaction (clicking Mount)
+        this._userRequested = false;
 
         // A reusable launcher for ssh processes
         this._launcher = new Gio.SubprocessLauncher({
@@ -80,8 +82,9 @@ const SFTPPlugin = GObject.registerClass({
         if (this._gmount === null && this.device.connected) {
             const host = this.device.channel.host;
 
+            // The URI can include a path like /storage/emulated/0
             const regex = new RegExp(
-                `sftp://(${host}):(1739|17[4-5][0-9]|176[0-4])`
+                `^sftp://${host.replace(/\./g, '\\.')}:(1739|17[4-5][0-9]|176[0-4])(/|$)`
             );
 
             for (const mount of this._volumeMonitor.get_mounts()) {
@@ -89,8 +92,9 @@ const SFTPPlugin = GObject.registerClass({
 
                 if (regex.test(uri)) {
                     this._gmount = mount;
-                    this._addSubmenu(mount);
-                    this._addSymlink(mount);
+                    // Only add submenu if we're not currently mounting thus we're waiting for the packet with the multiPaths
+                    if (!this._mounting)
+                        this._addSubmenu(mount);
 
                     break;
                 }
@@ -106,7 +110,7 @@ const SFTPPlugin = GObject.registerClass({
         // Only enable for Lan connections
         if (this.device.channel.constructor.name === 'LanChannel') { // FIXME: Circular import workaround
             if (this.settings.get_boolean('automount'))
-                this.mount();
+                this.mount(false);  // Automount without opening directory
         } else {
             this.device.lookup_action('mount').enabled = false;
             this.device.lookup_action('unmount').enabled = false;
@@ -116,11 +120,14 @@ const SFTPPlugin = GObject.registerClass({
     handlePacket(packet) {
         switch (packet.type) {
             case 'kdeconnect.sftp':
-                if (packet.body.hasOwnProperty('errorMessage'))
+                if (packet.body.hasOwnProperty('errorMessage')) {
                     this._handleError(packet);
-                else
-                    this._handleMount(packet);
-
+                } else {
+                    this._handleMount(packet).catch(e => {
+                        log(`GSConnect SFTP [${this.device.name}]: Unhandled error in _handleMount`);
+                        logError(e, this.device.name);
+                    });
+                }
                 break;
         }
     }
@@ -130,7 +137,7 @@ const SFTPPlugin = GObject.registerClass({
             return;
 
         const host = this.device.channel.host;
-        const regex = new RegExp(`sftp://(${host}):(1739|17[4-5][0-9]|176[0-4])`);
+        const regex = new RegExp(`^sftp://${host.replace(/\./g, '\\.')}:(1739|17[4-5][0-9]|176[0-4])(/|$)`);
         const uri = mount.get_root().get_uri();
 
         if (!regex.test(uri))
@@ -138,7 +145,11 @@ const SFTPPlugin = GObject.registerClass({
 
         this._gmount = mount;
         this._addSubmenu(mount);
-        this._addSymlink(mount);
+
+        if (this._userRequested) {
+            this._userRequested = false;
+            this._openDirectory(mount);
+        }
     }
 
     _onMountRemoved(monitor, mount) {
@@ -146,30 +157,9 @@ const SFTPPlugin = GObject.registerClass({
             return;
 
         this._gmount = null;
+        this._remoteDirectories = null;
+        this._mounting = false;
         this._removeSubmenu();
-    }
-
-    async _listDirectories(mount) {
-        const file = mount.get_root();
-
-        const iter = await file.enumerate_children_async(
-            Gio.FILE_ATTRIBUTE_STANDARD_NAME,
-            Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
-            GLib.PRIORITY_DEFAULT,
-            this.cancellable);
-
-        const infos = await iter.next_files_async(MAX_MOUNT_DIRS,
-            GLib.PRIORITY_DEFAULT, this.cancellable);
-        iter.close_async(GLib.PRIORITY_DEFAULT, null, null);
-
-        const directories = {};
-
-        for (const info of infos) {
-            const name = info.get_name();
-            directories[name] = `${file.get_uri()}${name}/`;
-        }
-
-        return directories;
     }
 
     _onAskQuestion(op, message, choices) {
@@ -201,10 +191,55 @@ const SFTPPlugin = GObject.registerClass({
      * @param {Core.Packet} packet - a `kdeconnect.sftp`
      */
     async _handleMount(packet) {
+        const host = this.device.channel.host;
+        let uri = `sftp://${host}:${packet.body.port}/`;
+
         try {
-            // Already mounted or mounting
-            if (this.gmount !== null || this._mounting)
+            // Storing multiPaths information from the packet first
+            this._remoteDirectories = null;
+            if (packet.body.hasOwnProperty('multiPaths') &&
+                packet.body.hasOwnProperty('pathNames')) {
+                const paths = packet.body.multiPaths;
+                const names = packet.body.pathNames;
+                const size = Math.min(paths.length, names.length);
+
+                if (size > 0) {
+                    this._remoteDirectories = {};
+                    for (let i = 0; i < size; i++)
+                        this._remoteDirectories[names[i]] = paths[i];
+                }
+            }
+
+            // We're just updating the submenu if we're already mounted
+            if (this._gmount !== null) {
+                await this._addSubmenu(this._gmount);
+                if (this._userRequested) {
+                    this._userRequested = false;
+                    this._openDirectory(this._gmount);
+                }
                 return;
+            }
+
+            // Check for existing mount in volume monitor that we have not tracked yet
+            const regex = new RegExp(`^sftp://${host.replace(/\./g, '\\.')}:(1739|17[4-5][0-9]|176[0-4])(/|$)`);
+            for (const mount of this._volumeMonitor.get_mounts()) {
+                const mountUri = mount.get_root().get_uri();
+                if (regex.test(mountUri)) {
+                    this._gmount = mount;
+                    await this._addSubmenu(mount);
+                    if (this._userRequested) {
+                        this._userRequested = false;
+                        this._openDirectory(mount);
+                    }
+                    return;
+                }
+            }
+
+            if (this._mounting) {
+                // _userRequested was already set in mount()
+                // so when mount completes _onMountAdded will open the directory
+                return;
+            }
 
             this._mounting = true;
 
@@ -221,25 +256,44 @@ const SFTPPlugin = GObject.registerClass({
             op.connect('ask-question', this._onAskQuestion);
             op.connect('ask-password', this._onAskPassword);
 
-            // This is the actual call to mount the device
-            const host = this.device.channel.host;
-            const uri = `sftp://${host}:${packet.body.port}/`;
+            // Mount to the SFTP root. Deep path mounting (e.g., /storage/emulated/0)
+            // fails with "Connection failed"
+            // uri = `sftp://${host}:${packet.body.port}/storage/emulated/0`;
+            // It looks to me that this is about the following bug in GVfs:
+            // https://gitlab.gnome.org/GNOME/gvfs/-/issues/625#note_1448225
+            uri = `sftp://${host}:${packet.body.port}/`;
             const file = Gio.File.new_for_uri(uri);
 
             await file.mount_enclosing_volume(GLib.PRIORITY_DEFAULT, op,
                 this.cancellable);
         } catch (e) {
             // Special case when the GMount didn't unmount properly but is still
-            // on the same port and can be reused.
-            if (e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.ALREADY_MOUNTED))
+            // on the same port and can be reused, or when we get a permission error
+            // because the mount already exists.
+            if (e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.ALREADY_MOUNTED) ||
+                e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.PERMISSION_DENIED)) {
+                // Try to find and use the existing mount
+                const regex = new RegExp(`^sftp://${host.replace(/\./g, '\\.')}:(1739|17[4-5][0-9]|176[0-4])(/|$)`);
+                for (const mount of this._volumeMonitor.get_mounts()) {
+                    const mountUri = mount.get_root().get_uri();
+                    if (regex.test(mountUri)) {
+                        this._gmount = mount;
+                        await this._addSubmenu(mount);
+                        if (this._userRequested)
+                            this._openDirectory(mount);
+                        return;
+                    }
+                }
                 return;
+            }
 
             // There's a good chance this is a host key verification error;
             // regardless we'll remove the key for security.
-            this._removeHostKey(this.device.channel.host);
-            logError(e, this.device.name);
+            this._removeHostKey(host);
         } finally {
             this._mounting = false;
+            // Don't reset _userRequested here - it will be reset in _onMountAdded
+            // after opening the directory (if requested)
         }
     }
 
@@ -259,7 +313,7 @@ const SFTPPlugin = GObject.registerClass({
             this.cancellable);
 
         if (ssh_add.get_exit_status() !== 0)
-            debug(stdout.trim(), this.device.name);
+            logError(new Error(stdout.trim()), this.device.name);
     }
 
     /**
@@ -294,73 +348,75 @@ const SFTPPlugin = GObject.registerClass({
         }
     }
 
-    /*
-     * Mount menu helpers
+    _createFilesMenuItem() {
+        // Files menu icon
+        const emblem = new Gio.Emblem({
+            icon: new Gio.ThemedIcon({name: 'emblem-default'}),
+        });
+
+        const mountedIcon = new Gio.EmblemedIcon({
+            gicon: new Gio.ThemedIcon({name: 'folder-remote-symbolic'}),
+        });
+        mountedIcon.add_emblem(emblem);
+
+        // Files menu item
+        const filesMenuItem = new Gio.MenuItem();
+        filesMenuItem.set_detailed_action('device.mount');
+        filesMenuItem.set_icon(mountedIcon);
+        filesMenuItem.set_label(_('Files'));
+
+        return filesMenuItem;
+    }
+
+    /**
+     * Open the primary accessible directory in the file browser.
+     *
+     * @param {Gio.Mount} mount - The GMount to open
      */
-    _getUnmountSection() {
-        if (this._unmountSection === undefined) {
-            this._unmountSection = new Gio.Menu();
+    _openDirectory(mount) {
+        const baseUri = mount.get_root().get_uri();
 
-            const unmountItem = new Gio.MenuItem();
-            unmountItem.set_label(Metadata.actions.unmount.label);
-            unmountItem.set_icon(new Gio.ThemedIcon({
-                name: Metadata.actions.unmount.icon_name,
-            }));
-            unmountItem.set_detailed_action('device.unmount');
-            this._unmountSection.append_item(unmountItem);
+        // Open via SFTP URI directly - faster than going through symlinks
+        if (this._remoteDirectories !== null) {
+            const entries = Object.entries(this._remoteDirectories);
+            if (entries.length > 0) {
+                const [name, path] = entries[0];
+                Gio.AppInfo.launch_default_for_uri_async(
+                    `${baseUri}${path.replace(/^\//, '')}/`, null, null, null);
+                return;
+            }
         }
 
-        return this._unmountSection;
+        // Fallback: open mount root
+        Gio.AppInfo.launch_default_for_uri_async(baseUri, null, null, null);
     }
 
-    _getFilesMenuItem() {
-        if (this._filesMenuItem === undefined) {
-            // Files menu icon
-            const emblem = new Gio.Emblem({
-                icon: new Gio.ThemedIcon({name: 'emblem-default'}),
-            });
-
-            const mountedIcon = new Gio.EmblemedIcon({
-                gicon: new Gio.ThemedIcon({name: 'folder-remote-symbolic'}),
-            });
-            mountedIcon.add_emblem(emblem);
-
-            // Files menu item
-            this._filesMenuItem = new Gio.MenuItem();
-            this._filesMenuItem.set_detailed_action('device.mount');
-            this._filesMenuItem.set_icon(mountedIcon);
-            this._filesMenuItem.set_label(_('Files'));
-        }
-
-        return this._filesMenuItem;
-    }
-
+    /**
+     * Replace the Mount menu item with Files and Unmount items when mounted.
+     *
+     * @param {Gio.Mount} mount - The GMount
+     */
     async _addSubmenu(mount) {
         try {
-            const directories = await this._listDirectories(mount);
+            const filesMenuItem = this._createFilesMenuItem();
 
-            // Submenu sections
-            const dirSection = new Gio.Menu();
-            const unmountSection = this._getUnmountSection();
-
-            for (const [name, uri] of Object.entries(directories))
-                dirSection.append(name, `device.openPath::${uri}`);
-
-            // Files submenu
-            const filesSubmenu = new Gio.Menu();
-            filesSubmenu.append_section(null, dirSection);
-            filesSubmenu.append_section(null, unmountSection);
-
-            // Files menu item
-            const filesMenuItem = this._getFilesMenuItem();
-            filesMenuItem.set_submenu(filesSubmenu);
-
-            // Replace the existing menu item
+            // Replace Mount with Files
             const index = this.device.removeMenuAction('device.mount');
             this.device.addMenuItem(filesMenuItem, index);
+
+            // Add Unmount after Files
+            const unmountAction = this.device.lookup_action('unmount');
+            if (unmountAction !== null) {
+                this.device.addMenuAction(
+                    unmountAction,
+                    index + 1,
+                    Metadata.actions.unmount.label,
+                    Metadata.actions.unmount.icon_name
+                );
+            }
         } catch (e) {
             if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
-                debug(e, this.device.name);
+                logError(e, `${this.device.name}: Error building menu`);
 
             // Reset to allow retrying
             this._gmount = null;
@@ -369,6 +425,10 @@ const SFTPPlugin = GObject.registerClass({
 
     _removeSubmenu() {
         try {
+            // Remove Unmount menu item
+            this.device.removeMenuAction('device.unmount');
+
+            // Replace Files with Mount
             const index = this.device.removeMenuAction('device.mount');
             const action = this.device.lookup_action('mount');
 
@@ -386,66 +446,29 @@ const SFTPPlugin = GObject.registerClass({
     }
 
     /**
-     * Create a symbolic link referring to the device by name
-     *
-     * @param {Gio.Mount} mount - A GMount to link to
-     */
-    async _addSymlink(mount) {
-        try {
-            const by_name_dir = Gio.File.new_for_path(
-                `${Config.RUNTIMEDIR}/by-name/`
-            );
-
-            try {
-                by_name_dir.make_directory_with_parents(null);
-            } catch (e) {
-                if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.EXISTS))
-                    throw e;
-            }
-
-            // Replace path separator with a Unicode lookalike:
-            let safe_device_name = this.device.name.replace('/', '∕');
-
-            if (safe_device_name === '.')
-                safe_device_name = '·';
-            else if (safe_device_name === '..')
-                safe_device_name = '··';
-
-            const link_target = mount.get_root().get_path();
-            const link = Gio.File.new_for_path(
-                `${by_name_dir.get_path()}/${safe_device_name}`);
-
-            // Check for and remove any existing stale link
-            try {
-                const link_stat = await link.query_info_async(
-                    'standard::symlink-target',
-                    Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
-                    GLib.PRIORITY_DEFAULT,
-                    this.cancellable);
-
-                if (link_stat.get_symlink_target() === link_target)
-                    return;
-
-                await link.delete_async(GLib.PRIORITY_DEFAULT,
-                    this.cancellable);
-            } catch (e) {
-                if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.NOT_FOUND))
-                    throw e;
-            }
-
-            link.make_symbolic_link(link_target, this.cancellable);
-        } catch (e) {
-            debug(e, this.device.name);
-        }
-    }
-
-    /**
      * Send a request to mount the remote device
+     *
+     * @param {boolean} [openDirectory=true] - Whether to open the directory after mounting
      */
-    mount() {
-        if (this.gmount !== null)
-            return;
+    mount(openDirectory) {
+        // Default to true if not explicitly set to false
+        // action activation passes null so we can't use default parameter
+        const shouldOpen = openDirectory !== false;
 
+        // If already mounted and user wants to open, open immediately
+        if (this._gmount !== null && shouldOpen) {
+            this._openDirectory(this._gmount);
+            return;
+        }
+
+        // Mark this as a user-requested mount so we know to open the directory
+        // Only open if explicitly requested (not for automount)
+        this._userRequested = shouldOpen;
+
+        // Reset mounting flag to allow fresh mount attempt
+        this._mounting = false;
+
+        // Request SFTP info from the phone to get multiPaths and mount.
         this.device.sendPacket({
             type: 'kdeconnect.sftp.request',
             body: {
