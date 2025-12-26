@@ -69,6 +69,14 @@ export const Metadata = {
             incoming: [],
             outgoing: ['kdeconnect.notification.action'],
         },
+        copyText: {
+            label: _('Copy Text'),
+            icon_name: 'preferences-system-notifications-symbolic',
+
+            parameter_type: new GLib.VariantType('(ss)'),
+            incoming: [],
+            outgoing: [],
+        },
     },
 };
 
@@ -170,6 +178,7 @@ const NotificationPlugin = GObject.registerClass({
 
         this._listener = Components.acquire('notification');
         this._session = Components.acquire('session');
+        this._clipboard = Components.acquire('clipboard');
 
         this._notificationAddedId = this._listener.connect(
             'notification-added',
@@ -514,7 +523,14 @@ const NotificationPlugin = GObject.registerClass({
             let buttons = [];
             let id = packet.body.id;
             let title = packet.body.appName;
-            let body = `${packet.body.title}: ${packet.body.text}`;
+            let text = [];
+            if (packet.body.title) {
+                text.push(packet.body.title);
+            }
+            if (packet.body.text) {
+                text.push(packet.body.text);
+            }
+            let body = text.join(': ');
             let icon = await this._downloadIcon(packet);
 
             // Repliable Notification
@@ -573,6 +589,18 @@ const NotificationPlugin = GObject.registerClass({
             // Use the device icon if we still don't have one
             if (icon === null)
                 icon = new Gio.ThemedIcon({name: this.device.icon_name});
+
+            // Find TOTP using naive algorithm of
+            //   <space or start><6 digits><space or end>
+            let totp = body.match(/(?:\s|^)(\d{6})(?:\s|$)/);
+            if (totp) {
+                let [, code] = totp;
+                buttons.push({
+                    label: `Copy ${code}`,
+                    action: 'copyText',
+                    parameter: new GLib.Variant('(ss)', [id, code]),
+                });
+            }
 
             // Show the notification
             this.device.showNotification({
@@ -689,6 +717,18 @@ const NotificationPlugin = GObject.registerClass({
             this._session = Components.release('session');
 
         super.destroy();
+    }
+
+    /**
+     * Copies text to the clipboard and dismisses the notification
+     *
+     * @param {string} id - The remote notification ID
+     * @param {string} text - The text to copy
+     */
+    copyText(id, text) {
+        this._clipboard.text = text;
+        // Since clicking the button closes it on this device, also close it on the remote
+        this.closeNotification(id);
     }
 });
 
