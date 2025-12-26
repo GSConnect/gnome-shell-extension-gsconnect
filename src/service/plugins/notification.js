@@ -514,7 +514,14 @@ const NotificationPlugin = GObject.registerClass({
             let buttons = [];
             let id = packet.body.id;
             let title = packet.body.appName;
-            let body = `${packet.body.title}: ${packet.body.text}`;
+            let text = [];
+            if (packet.body.title) {
+                text.push(packet.body.title);
+            }
+            if (packet.body.text) {
+                text.push(packet.body.text);
+            }
+            let body = text.join(': ');
             let icon = await this._downloadIcon(packet);
 
             // Repliable Notification
