@@ -15,6 +15,7 @@ const MockGtkClipboard = GObject.registerClass({
     },
 }, class MockGtkClipboard extends GObject.Object {
     _text = null;
+    _signal = null;
 
     set_content(provider) {
         this._text = provider.get_value().get_string()[0];
@@ -29,6 +30,18 @@ const MockGtkClipboard = GObject.registerClass({
                 return GLib.SOURCE_REMOVE;
             });
         });
+    }
+
+    connect(signal, callback) { 
+        this._signal = callback; return 1; 
+    }
+    
+    disconnect(id) { 
+        this._signal = null; 
+    }
+    
+    changed() { 
+        if (this._signal) this._signal(this);
     }
 });
 
