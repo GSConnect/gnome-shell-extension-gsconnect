@@ -4,7 +4,7 @@ import GObject from 'gi://GObject';
 import GLib from 'gi://GLib';
 
 import Config from '../config.js';
-const { default: Clipboard } = await import(
+const {default: Clipboard} = await import(
     `file://${Config.PACKAGE_DATADIR}/service/components/clipboard.js`
 );
 
@@ -22,7 +22,13 @@ const MockGtkClipboard = GObject.registerClass({
     }
 
     async read_text_async() {
-        return this._text;
+        return await new Promise((resolve) => {
+            // simulate async delay in next main loop iteration
+            GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
+                resolve(this._text);
+                return GLib.SOURCE_REMOVE;
+            });
+        });
     }
 });
 
