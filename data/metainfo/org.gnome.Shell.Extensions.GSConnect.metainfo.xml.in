@@ -176,8 +176,28 @@ SPDX-License-Identifier: CC0-1.0
 
   <screenshots>
     <screenshot type="default">
-      <image>https://raw.githubusercontent.com/GSConnect/gnome-shell-extension-gsconnect/master/data/metainfo/image-01.png</image>
-      <caption>GSConnect in GNOME Shell</caption>
+      <image>https://raw.githubusercontent.com/GSConnect/gnome-shell-extension-gsconnect/main/data/metainfo/screenshots/overview.png</image>
+      <caption>GSConnect Overview</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/GSConnect/gnome-shell-extension-gsconnect/main/data/metainfo/screenshots/preferences-window.png</image>
+      <caption>Preferences Window</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/GSConnect/gnome-shell-extension-gsconnect/main/data/metainfo/screenshots/device-page.png</image>
+      <caption>Device Settings Page</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/GSConnect/gnome-shell-extension-gsconnect/main/data/metainfo/screenshots/messaging-window.png</image>
+      <caption>Messaging Window</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/GSConnect/gnome-shell-extension-gsconnect/main/data/metainfo/screenshots/nautilus-extension.png</image>
+      <caption>GNOME Nautilus Extension</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/GSConnect/gnome-shell-extension-gsconnect/main/data/metainfo/screenshots/device-control-dialog.png</image>
+      <caption>Device Control Window</caption>
     </screenshot>
   </screenshots>
 </component>

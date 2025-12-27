@@ -7,76 +7,15 @@ SPDX-License-Identifier: GPL-2.0-or-later
 -->
 
 <interface domain="org.gnome.Shell.Extensions.GSConnect">
-  <requires lib="gtk+" version="3.24"/>
-  <template class="GSConnectPreferencesSectionRow" parent="GtkListBoxRow">
-    <property name="height_request">56</property>
-    <property name="selectable">False</property>
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+  
+  <template class="GSConnectPreferencesSectionRow" parent="AdwActionRow">
     <property name="visible">True</property>
-    <property name="can_focus">True</property>
-    <accessibility>
-      <relation type="labelled-by" target="title-label"/>
-      <relation type="described-by" target="subtitle-label"/>
-    </accessibility>
-    <child>
-      <object class="GtkGrid">
-        <property name="margin_top">8</property>
-        <property name="margin_bottom">8</property>
-        <property name="margin_start">12</property>
-        <property name="margin_end">12</property>
-        <property name="column_spacing">12</property>
+    <child type="prefix">
+      <object class="GtkImage" id="icon-image">
         <property name="visible">True</property>
-        <child>
-          <object class="GtkImage" id="icon-image">
-            <property name="pixel_size">32</property>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">0</property>
-            <property name="width">1</property>
-            <property name="height">2</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="title-label">
-            <property name="halign">start</property>
-            <property name="hexpand">True</property>
-            <property name="valign">center</property>
-            <property name="vexpand">True</property>
-            <accessibility>
-              <relation type="label-for" target="GSConnectPreferencesSectionRow"/>
-            </accessibility>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">0</property>
-            <property name="width">1</property>
-            <property name="height">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="subtitle-label">
-            <property name="halign">start</property>
-            <property name="hexpand">True</property>
-            <property name="valign">center</property>
-            <property name="vexpand">True</property>
-            <property name="ellipsize">3</property>
-            <accessibility>
-              <relation type="description-for" target="GSConnectPreferencesSectionRow"/>
-            </accessibility>
-            <style>
-              <class name="dim-label"/>
-            </style>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">1</property>
-            <property name="width">1</property>
-            <property name="height">1</property>
-          </packing>
-        </child>
-        <style>
-          <class name="preferences-row"/>
-        </style>
+        <property name="pixel-size">32</property>
       </object>
     </child>
   </template>

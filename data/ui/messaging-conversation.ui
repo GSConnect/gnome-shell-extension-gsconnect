@@ -7,104 +7,126 @@ SPDX-License-Identifier: GPL-2.0-or-later
 -->
 
 <interface domain="org.gnome.Shell.Extensions.GSConnect">
-  <requires lib="gtk+" version="3.24"/>
-  <template class="GSConnectMessagingConversation" parent="GtkGrid">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+
+  <template class="GSConnectMessagingConversation" parent="AdwNavigationPage">
+    <property name="title" translatable="no">Messaging Conversation</property>
     <child>
-      <object class="GtkScrolledWindow" id="scrolled">
+      <object class="AdwToolbarView">
         <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="hexpand">True</property>
-        <property name="vexpand">True</property>
-        <property name="hscrollbar_policy">never</property>
-        <signal name="edge-reached" handler="_onEdgeReached" swapped="no"/>
-        <child>
-          <object class="GtkViewport">
+        <child type="top">
+          <object class="AdwHeaderBar">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <child>
-              <object class="GtkListBox" id="list">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="valign">end</property>
-                <property name="selection_mode">none</property>
-                <property name="activate_on_single_click">False</property>
-                <signal name="size-allocate" handler="_onSizeAllocate" swapped="no"/>
+            <property name="title-widget">
+              <object class="GtkButton" id ="participants-button">
+                <property name="has-tooltip">True</property>
+                <property name="tooltip-text" translatable="yes">Show participants</property>
+                <accessibility>
+                  <property name="label" translatable="yes">Show participants</property>
+                </accessibility>
                 <child>
-                  <object class="GtkListBoxRow" id="pending">
-                    <property name="can_focus">False</property>
-                    <property name="hexpand">True</property>
-                    <property name="activatable">False</property>
-                    <property name="selectable">False</property>
-                    <property name="visible" bind-source="GSConnectMessagingConversation" bind-property="has-pending" bind-flags="sync-create"/>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="orientation">horizontal</property>
                     <child>
-                      <object class="GtkBox" id="pending-box">
+                      <object class="AdwAvatar" id="avatar">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">end</property>
-                        <property name="margin_left">50</property>
-                        <property name="margin_right">6</property>
-                        <property name="margin_top">6</property>
-                        <property name="margin_bottom">6</property>
-                        <property name="orientation">vertical</property>
-                        <property name="spacing">3</property>
-                        <child>
-                          <placeholder/>
-                        </child>
+                        <property name="size">30</property>
+                        <property name="show-initials">True</property>
+                      </object>                            
+                    </child>
+                    <child>
+                      <object class="AdwWindowTitle" id="content-title">
+                        <property name="visible">True</property>
+                        <property name="title" translatable="no">Contact Name</property>
                       </object>
                     </child>
-                    <style>
-                      <class name="message-pending"/>
-                    </style>
                   </object>
                 </child>
                 <style>
-                  <class name="message-list"/>
+                  <class name="flat"/>
                 </style>
+              </object>
+            </property>
+          </object>
+        </child>
+        <property name="content">
+          <object class="GtkScrolledWindow" id="scrolled">
+            <property name="visible">True</property>
+            <property name="hscrollbar-policy">never</property>
+            <child>
+              <object class="AdwClamp">
+                <property name="maximum-size">800</property>
+                <child>
+                  <object class="GtkListBox" id="list">
+                    <property name="visible">True</property>
+                    <property name="vexpand">True</property>
+                    <property name="hexpand">True</property>
+                    <property name="selection-mode">none</property>
+                    <property name="activate-on-single-click">False</property>
+                    <style>
+                      <class name="message-list"/>
+                      <class name="background"/>
+                    </style>
+                    <child>
+                      <object class="GtkListBoxRow" id="spinner">
+                        <property name="visible">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="hexpand">True</property>
+                        <property name="vexpand">True</property>
+                        <property name="activatable">False</property>
+                        <property name="selectable">False</property>
+                        <child>
+                          <object class="AdwSpinner" id="spinner-anim">
+                            <property name="visible">True</property>
+                            <property name="hexpand">True</property>
+                            <property name="vexpand">True</property>
+                            <property name="halign">center</property>
+                            <property name="valign">center</property>
+                            <property name="width-request">60</property>
+                            <property name="height-request">60</property>
+                          </object>
+                        </child>
+                        <style>
+                          <class name="messages-loading"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkListBoxRow" id="pending">
+                        <property name="visible" bind-source="GSConnectMessagingConversation" bind-property="has-pending" bind-flags="sync-create"/>
+                        <property name="hexpand">True</property>
+                        <property name="activatable">False</property>
+                        <property name="selectable">False</property>
+                        <style>
+                          <class name="message-pending"/>
+                        </style>
+                        <child>
+                          <object class="GtkBox" id="pending-box">
+                            <property name="visible">True</property>
+                            <property name="orientation">vertical</property>
+                            <property name="margin-top">6</property>
+                            <property name="margin-bottom">6</property>
+                            <property name="margin-start">50</property>
+                            <property name="margin-end">6</property>
+                            <property name="spacing">3</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
               </object>
             </child>
           </object>
-        </child>
-        <style>
-          <class name="message-scrolled"/>
-          <class name="view"/>
-        </style>
-      </object>
-      <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">0</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkEntry" id="entry">
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="enable_emoji_completion">True</property>
-        <property name="margin_left">6</property>
-        <property name="margin_right">6</property>
-        <property name="margin_top">6</property>
-        <property name="margin_bottom">6</property>
-        <property name="caps_lock_warning">False</property>
-        <property name="secondary_icon_name">sms-send</property>
-        <property name="secondary_icon_sensitive">False</property>
-        <property name="secondary_icon_tooltip_text" translatable="yes">Send Message</property>
-        <property name="placeholder_text" translatable="yes">Type a message</property>
-        <signal name="activate" handler="_onSendMessage" swapped="no"/>
-        <signal name="changed" handler="_onEntryChanged" swapped="no"/>
-        <signal name="icon-release" handler="_onSendMessage" swapped="no"/>
-        <signal name="key-release-event" handler="_onKeyPressEvent" swapped="no"/>
-        <child internal-child="accessible">
-          <object class="AtkObject">
-            <property name="AtkObject::accessible-name" translatable="yes">Message Entry</property>
-            <property name="AtkObject::accessible-description" translatable="yes">Type a message and press Enter to send</property>
+        </property>
+        <child type="bottom">
+          <object class="AdwClamp" id="bottom-bar">
+            <property name="maximum-size">800</property>
           </object>
         </child>
       </object>
-      <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">1</property>
-      </packing>
     </child>
   </template>
 </interface>

@@ -2,17 +2,17 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-import Gdk from 'gi://Gdk';
-import GdkPixbuf from 'gi://GdkPixbuf';
+import Gdk from 'gi://Gdk?version=4.0';
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
-import Gtk from 'gi://Gtk';
+import Gtk from 'gi://Gtk?version=4.0';
+import Adw from 'gi://Adw';
 
 import system from 'system';
 
 import Config from '../config.js';
-import {Panel, rowSeparators} from './device.js';
+import {DeviceNavigationPage, DevicePairPage} from './device.js';
 import {Service} from '../utils/remote.js';
 
 
@@ -27,11 +27,16 @@ OS:        ${GLib.get_os_info('PRETTY_NAME')}
 --------------------------------------------------------------------------------
 `);
 
-
 /**
- * Generate a support log.
+ * Generate Support Log by fetching system journal logs since a specified start time.
  *
- * @param {string} time - Start time as a string (24-hour notation)
+ * This function creates a temporary log file and writes a predefined log header to it.
+ * It then executes `journalctl` to retrieve logs from the system journal since the specified start time
+ * and appends the logs to the temporary file. Finally, it opens the generated log file for review.
+ *
+ * @param {string} time - Start time as a string (24-hour notation, e.g., "2025-04-26 14:00:00").
+ *
+ * @returns {Promise<void>} Resolves when the log generation is complete.
  */
 async function generateSupportLog(time) {
     try {
@@ -91,46 +96,222 @@ async function generateSupportLog(time) {
 /**
  * "Connect to..." Dialog
  */
-const ConnectDialog = GObject.registerClass({
-    GTypeName: 'GSConnectConnectDialog',
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/connect-dialog.ui',
+const OpenSSLAlertDialog = GObject.registerClass({
+    GTypeName: 'GSConnectOpenSSLAlertDialog',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/openssl-dialog.ui',
+}, class OpenSSLAlertDialog extends Adw.AlertDialog {});
+
+/**
+ * Settings dialog for GSConnect, allowing users to configure device settings.
+ *
+ * This dialog enables the user to modify the device's display mode (either as a panel or a user menu) and rename the device.
+ * It validates the device name input and ensures it does not contain any forbidden characters or exceed the character limit.
+ * The dialog also reflects the current settings, and updates the device's settings based on user interactions.
+ *
+ * @class SettingsDialog
+ * @augments Adw.PreferencesDialog
+ */
+const SettingsDialog = GObject.registerClass({
+    GTypeName: 'GSConnectSettingsDialog',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/preferences-settings.ui',
     Children: [
-        'cancel-button', 'connect-button',
-        'lan-grid', 'lan-ip', 'lan-port',
+        'display-mode-toggle', 'rename-entry',
     ],
-}, class ConnectDialog extends Gtk.Dialog {
+}, class SettingsDialog extends Adw.PreferencesDialog {
+
 
     _init(params = {}) {
-        super._init(Object.assign({
-            use_header_bar: true,
-        }, params));
+        super._init();
+        Object.assign(this, params);
+
+        this.rename_entry.text = this.settings.get_string('name');
+        this.display_mode_toggle.set_active_name(this.display_mode);
+        this.display_mode_toggle.connect('notify::active-name', () => {
+            const name = this.display_mode_toggle.active_name;
+            if (name)
+                this.display_mode = name;
+
+        });
     }
 
-    vfunc_response(response_id) {
-        if (response_id === Gtk.ResponseType.OK) {
-            try {
-                let address;
+    /**
+     * Gets or sets the display mode for the settings.
+     * If 'show-indicators' is enabled, the mode will be 'panel'; otherwise, 'user-menu'.
+     *
+     * @type {string} - The display mode, either 'panel' or 'user-menu'.
+     */
+    get display_mode() {
+        if (this.settings.get_boolean('show-indicators'))
+            return 'panel';
 
-                // Lan host/port entered
-                if (this.lan_ip.text) {
-                    const host = this.lan_ip.text;
-                    const port = this.lan_port.value;
-                    address = GLib.Variant.new_string(`lan://${host}:${port}`);
-                } else {
-                    return false;
-                }
+        return 'user-menu';
+    }
 
-                this.application.activate_action('connect', address);
-            } catch (e) {
-                logError(e);
-            }
-        }
+    set display_mode(mode) {
+        this.settings.set_boolean('show-indicators', (mode === 'panel'));
+    }
 
-        this.destroy();
+    /**
+     * Handles setting the service name when the user confirms their input.
+     * Validates the input name and updates the service name in settings if valid.
+     *
+     * @param {Gtk.Widget} widget - The widget that triggered the event (e.g., a button or entry).
+     */
+    _onSetServiceName(widget) {
+        if (this._validateName(this.rename_entry.text))
+            this.settings.set_string('name', this.rename_entry.text);
+
+    }
+
+    /**
+     * Validates the device name to ensure it meets specific criteria:
+     * - The name must not contain any forbidden characters.
+     * - The name must not be empty (it must have at least one non-whitespace character).
+     * - The name must be between 1 and 32 characters in length.
+     *
+     * If the validation fails, an error message is shown to the user, specifying the invalid characters
+     * and the acceptable length constraints.
+     *
+     * @param {string} name - The device name to validate.
+     * @returns {boolean} True if the name is valid, false otherwise.
+     */
+    _validateName(name) {
+        // None of the forbidden characters and at least one non-whitespace
+        if (name.trim() && /^[^"',;:.!?()[\]<>]{1,32}$/.test(name))
+            return true;
+
+        const dialog = new Adw.AlertDialog({
+            heading: _('Invalid Device Name'),
+            // TRANSLATOR: %s is a list of forbidden characters
+            body: _('Device name must not contain any of %s ' +
+                    'and have a length of 1-32 characters')
+                .format('^"\',;:.!?()[]&lt;&gt;'),
+            default_response: 'close',
+        });
+        dialog.add_response('close', _('Close'));
+
+        dialog.present(Gio.Application.get_default().get_active_window());
+
         return false;
     }
 });
 
+/**
+ * "Connect to..." Dialog
+ */
+const ConnectDialog = GObject.registerClass({
+    GTypeName: 'GSConnectConnectDialog',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/connect-dialog.ui',
+    Children: [
+        'lan_ip', 'lan_port',
+    ],
+    Signals: {
+        'response': {
+            param_types: [GObject.TYPE_OBJECT, GObject.TYPE_INT],
+        },
+    },
+}, class ConnectDialog extends Adw.Dialog {
+
+    _init() {
+        super._init();
+        this.set_title = _('Connect to...');
+        this.connect('destroy', () => {
+            this.response = Gtk.ResponseType.CANCEL;
+        });
+    }
+
+    /**
+     * Handles the connect button action.
+     * Sets the response type to `Gtk.ResponseType.OK` when the button is clicked.
+     *
+     * @returns {void} - This function does not return any value.
+     */
+    _onConnectButton() {
+        this.response = Gtk.ResponseType.OK;
+    }
+
+    /**
+     * Handles the response when the dialog is closed. If the response is OK, it validates the host and port,
+     * and attempts to trigger the 'connect' action. If validation fails or an error occurs, an error message is displayed.
+     *
+     * @param {Gtk.ResponseType} response - The response type from the dialog interaction (OK or others).
+     *
+     * @returns {void} - No return value. Closes the dialog after processing.
+     */
+    set response(response) {
+        if (response === Gtk.ResponseType.OK) {
+            try {
+                // Retrieve host and port from the input fields
+                const host = this.lan_ip.text.trim();
+                const port = this.lan_port.value;
+
+                // Validate host and port
+                if (!this._validateHostAndPort(host, port)) {
+                    this._showErrorMessage(_('Invalid host or port.'));
+                    return;
+                }
+
+                const address = GLib.Variant.new_string(`lan://${host}:${port}`);
+                this.application.activate_action('connect', address);
+            } catch (e) {
+                logError(e);
+                this._showErrorMessage(_('An unexpected error occurred.'));
+            }
+        }
+
+        // Close the dialog
+        this.emit('response', response);
+        this.close();
+    }
+
+    /**
+     * Validates the provided host and port.
+     * Ensures the host is non-empty and the port is within the valid range (1-65535).
+     * Checks if the host is a valid IP address.
+     *
+     * @param {string} host - The host to validate.
+     * @param {number} port - The port to validate.
+     * @returns {boolean} - Returns true if the host is valid and the port is in range, false otherwise.
+     */
+    _validateHostAndPort(host, port) {
+        // Ensure host is non-empty and port is within valid range
+        if (!host || port < 1 || port > 65535)
+            return false;
+
+
+        try {
+            return GLib.InetAddress.new_from_string(host) !== null;
+        } catch {
+            return false;
+        }
+    }
+
+    /**
+     * Displays an error dialog with a custom message.
+     * The dialog is transient and includes a close button to dismiss it.
+     *
+     * @param {string} message - The error message to display in the dialog.
+     * @returns {void} - No return value.
+     */
+    _showErrorMessage(message) {
+        const win = Gtk.Application.get_default().get_active_window();
+
+        // Create a transient error dialog
+        const errorDialog = new Adw.AlertDialog({
+            heading: _('Oops! An error occurred…'),
+            body: message,
+        });
+
+        // Add a close button to dismiss the dialog
+        errorDialog.add_response('close', _('Close'));
+        errorDialog.set_response_appearance('close', Adw.ResponseAppearance.DESTRUCTIVE);
+
+        // Handle the response to close the dialog
+        errorDialog.connect('response', () => errorDialog.close());
+
+        errorDialog.present(win);
+    }
+});
 
 export const Window = GObject.registerClass({
     GTypeName: 'GSConnectPreferencesWindow',
@@ -140,27 +321,15 @@ export const Window = GObject.registerClass({
             'Display Mode',
             'Display devices in either the Panel or User Menu',
             GObject.ParamFlags.READWRITE,
-            null
+            ''
         ),
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/preferences-window.ui',
     Children: [
-        // HeaderBar
-        'headerbar', 'stack',
-        'infobar_discoverable', 'infobar_openssl',
-        'service-menu', 'service-edit', 'refresh-button',
-        'device-menu', 'prev-button',
-
-        // Popover
-        'rename-popover', 'rename', 'rename-label', 'rename-entry', 'rename-submit',
-
-        // Focus Box
-        'service-window', 'service-box',
-
-        // Device List
-        'device-list', 'device-list-spinner', 'device-list-placeholder',
+        'window-title', 'split-view', 'refresh-button', 'refresh-spinner',
+        'refresh-stack', 'device-list', 'welcome',
     ],
-}, class PreferencesWindow extends Gtk.ApplicationWindow {
+}, class Window extends Adw.ApplicationWindow {
 
     _init(params = {}) {
         super._init(params);
@@ -172,9 +341,12 @@ export const Window = GObject.registerClass({
                 true
             ),
         });
+        this._deviceListId = this.device_list.connect('row-selected', this._onDeviceSelected.bind(this));
 
         // Service Proxy
         this.service = new Service();
+
+        this.pages = new Map();
 
         this._deviceAddedId = this.service.connect(
             'device-added',
@@ -191,32 +363,14 @@ export const Window = GObject.registerClass({
             this._onServiceChanged.bind(this)
         );
 
-        // HeaderBar (Service Name)
-        this.headerbar.title = this.settings.get_string('name');
-        this.rename_entry.text = this.headerbar.title;
-
-        // Scroll with keyboard focus
-        this.service_box.set_focus_vadjustment(this.service_window.vadjustment);
-
-        // Device List
-        this.device_list.set_header_func(rowSeparators);
-
-        // Discoverable InfoBar
-        this.settings.bind(
-            'discoverable',
-            this.infobar_discoverable,
-            'reveal-child',
-            Gio.SettingsBindFlags.INVERT_BOOLEAN
-        );
         this.add_action(this.settings.create_action('discoverable'));
 
-        // OpenSSL-missing infobar
-        this.settings.bind(
-            'missing-openssl',
-            this.infobar_openssl,
-            'reveal-child',
-            Gio.SettingsBindFlags.DEFAULT
-        );
+        if (this.settings.get_boolean('missing-openssl')) {
+            const dialog = new OpenSSLAlertDialog();
+            dialog.connect('response', this._onRetryOpenssl.bind(this));
+            dialog.present(this);
+        }
+
         this.add_action(this.settings.create_action('missing-openssl'));
 
         // Application Menu
@@ -239,18 +393,31 @@ export const Window = GObject.registerClass({
         this._initService();
     }
 
-    get display_mode() {
-        if (this.settings.get_boolean('show-indicators'))
-            return 'panel';
+    /**
+     * Cleans up resources on window close:
+     * - Removes and disposes pages.
+     * - Disconnects service signals and destroys the service.
+     * - Saves window geometry and removes the refresh source.
+     *
+     * @param {Gdk.Event} event - The close request event.
+     * @returns {boolean} - Returns false to allow window close.
+     */
+    vfunc_close_request(event) {
+        this.device_list.disconnect(this._deviceListId);
+        // Remove row inside the list
+        this.rows.forEach(row => {
+            if (row.device._connectedId)
+                row.device.disconnect(row.device._connectedId);
+            if (row.device._pairedId)
+                row.device.disconnect(row.device._pairedId);
+            this.device_list.remove(row);
+        });
+        // Remove pages inside the Map
+        Array.from(this.pages.keys()).forEach(id => {
+            this.pages.delete(id);
+        });
 
-        return 'user-menu';
-    }
-
-    set display_mode(mode) {
-        this.settings.set_boolean('show-indicators', (mode === 'panel'));
-    }
-
-    vfunc_delete_event(event) {
+        // Disconnect signals
         if (this.service) {
             this.service.disconnect(this._deviceAddedId);
             this.service.disconnect(this._deviceRemovedId);
@@ -259,6 +426,7 @@ export const Window = GObject.registerClass({
             this.service = null;
         }
 
+        // Save the window geometry
         this._saveGeometry();
         GLib.source_remove(this._refreshSource);
 
@@ -267,9 +435,8 @@ export const Window = GObject.registerClass({
 
     async _initService() {
         try {
-            this.refresh_button.grab_focus();
-
             this._onServiceChanged(this.service, null);
+            this.refresh_button.grab_focus();
             await this.service.reload();
         } catch (e) {
             logError(e, 'GSConnect');
@@ -295,6 +462,10 @@ export const Window = GObject.registerClass({
         connectDialog.connect('activate', this._connectDialog.bind(this));
         this.add_action(connectDialog);
 
+        const settingsDialog = new Gio.SimpleAction({name: 'settings'});
+        settingsDialog.connect('activate', this._settingsDialog.bind(this));
+        this.add_action(settingsDialog);
+
         // "Generate Support Log" GAction
         const generateSupportLog = new Gio.SimpleAction({name: 'support-log'});
         generateSupportLog.connect('activate', this._generateSupportLog.bind(this));
@@ -306,15 +477,15 @@ export const Window = GObject.registerClass({
         this.add_action(help);
     }
 
-    _refresh() {
-        const missing_openssl = this.settings.get_boolean('missing-openssl');
-        const no_devices = this.service.active && this.device_list.get_children().length < 1;
-        if (missing_openssl || no_devices) {
-            this.device_list_spinner.active = true;
-            this.service.activate_action('refresh', null);
-        } else {
-            this.device_list_spinner.active = false;
+    _refresh(widget) {
+        if (widget) {
+            this.refresh_stack.set_visible_child(this.refresh_spinner);
+            GLib.timeout_add(GLib.PRIORITY_DEFAULT, 3000, () => {
+                this.refresh_stack.set_visible_child(this.refresh_button);
+            });
         }
+        if (this.service.active)
+            this.service.activate_action('refresh', null);
 
         return GLib.SOURCE_CONTINUE;
     }
@@ -343,79 +514,80 @@ export const Window = GObject.registerClass({
     }
 
     _saveGeometry() {
-        const state = this.get_window().get_state();
-
-        // Maximized State
-        const maximized = (state & Gdk.WindowState.MAXIMIZED);
+        const maximized = this.is_maximized();  // GTK 4 method
         this._windowState.set_boolean('window-maximized', maximized);
 
-        // Leave the size at the value before maximizing
-        if (maximized || (state & Gdk.WindowState.FULLSCREEN))
+        if (maximized || this.is_fullscreen())
             return;
 
         // Size
-        const size = this.get_size();
-        this._windowState.set_value('window-size', new GLib.Variant('(ii)', size));
+        const width = this.get_allocated_width();
+        const height = this.get_allocated_height();
+        this._windowState.set_value('window-size', new GLib.Variant('(ii)', [width, height]));
     }
 
     /**
      * About Dialog
      */
     _aboutDialog() {
-        if (this._about === undefined) {
-            this._about = new Gtk.AboutDialog({
-                application: Gio.Application.get_default(),
-                authors: [
-                    'Andy Holmes <andrew.g.r.holmes@gmail.com>',
-                    'Bertrand Lacoste <getzze@gmail.com>',
-                    'Frank Dana <ferdnyc@gmail.com>',
-                ],
-                comments: _('A complete KDE Connect implementation for GNOME'),
-                logo: GdkPixbuf.Pixbuf.new_from_resource_at_scale(
-                    '/org/gnome/Shell/Extensions/GSConnect/icons/org.gnome.Shell.Extensions.GSConnect.svg',
-                    128,
-                    128,
-                    true
-                ),
-                program_name: 'GSConnect',
-                // TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
-                translator_credits: _('translator-credits'),
-                version: Config.PACKAGE_VERSION.toString(),
-                website: Config.PACKAGE_URL,
-                license_type: Gtk.License.GPL_2_0,
-                modal: true,
-                transient_for: this,
-            });
+        const about = new Adw.AboutDialog({
+            application_name: _('GSConnect'),
+            application_icon: 'org.gnome.Shell.Extensions.GSConnect',
+            comments: _('A complete KDE Connect implementation for GNOME'),
+            version: Config.PACKAGE_VERSION.toString(),
+            license_type: Gtk.License.GPL_2_0,
+            website: Config.PACKAGE_URL,
+            translator_credits: _('translator-credits'),
+            designers: [
+                'Giorgio Dramis <dramisgiorgio@outlook.com>',
+                'Matthieu Lorier <loriermatthieu@gmail.com>',
+            ],
+            developers: [
+                'Andy Holmes <andrew.g.r.holmes@gmail.com>',
+                'Bertrand Lacoste <getzze@gmail.com>',
+                'Frank Dana <ferdnyc@gmail.com>',
+            ],
+        });
+        about.present(this);
 
-            // Persist
-            this._about.connect('response', (dialog) => dialog.hide_on_delete());
-            this._about.connect('delete-event', (dialog) => dialog.hide_on_delete());
-        }
-
-        this._about.present();
     }
 
     /**
      * Connect to..." Dialog
      */
     _connectDialog() {
-        new ConnectDialog({
-            application: Gio.Application.get_default(),
-            modal: true,
-            transient_for: this,
-        });
+        if (this._dialog === undefined)
+            this._dialog = new ConnectDialog();
+        this._dialog.present(this);
     }
 
-    /*
-     * "Generate Support Log" GAction
+    /**
+     * Displays the settings dialog. If it doesn't already exist,
+     * it creates a new SettingsDialog instance and presents it.
+     *
+     * @returns {void}
+     */
+    _settingsDialog() {
+        if (this._settings_dialog === undefined) {
+            this._settings_dialog = new SettingsDialog({
+                settings: this.settings,
+            });
+        }
+        this._settings_dialog.present(this);
+    }
+
+    /**
+     * Generate a support log.
      */
     _generateSupportLog() {
-        const dialog = new Gtk.MessageDialog({
-            text: _('Generate Support Log'),
-            secondary_text: _('Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log.'),
+        const dialog = new Adw.AlertDialog({
+            heading: _('Generate Support Log'),
+            body: _('Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log.'),
+            default_response: 'cancel',
         });
-        dialog.add_button(_('Cancel'), Gtk.ResponseType.CANCEL);
-        dialog.add_button(_('Review Log'), Gtk.ResponseType.OK);
+
+        dialog.add_response('cancel',  _('Cancel'));
+        dialog.add_response('review_log',  _('Review Log'));
 
         // Enable debug logging and mark the current time
         this.settings.set_boolean('debug', true);
@@ -424,14 +596,13 @@ export const Window = GObject.registerClass({
         dialog.connect('response', (dialog, response_id) => {
             // Disable debug logging and destroy the dialog
             this.settings.set_boolean('debug', false);
-            dialog.destroy();
 
             // Only generate a log if instructed
-            if (response_id === Gtk.ResponseType.OK)
+            if (response_id !== 'cancel')
                 generateSupportLog(now);
         });
 
-        dialog.show_all();
+        dialog.present(Gio.Application.get_default().get_active_window());
     }
 
     _validateName(name) {
@@ -439,19 +610,16 @@ export const Window = GObject.registerClass({
         if (name.trim() && /^[^"',;:.!?()[\]<>]{1,32}$/.test(name))
             return true;
 
-        const dialog = new Gtk.MessageDialog({
-            text: _('Invalid Device Name'),
+        const dialog = new Adw.AlertDialog({
+            heading: _('Invalid Device Name'),
             // TRANSLATOR: %s is a list of forbidden characters
-            secondary_text: _('Device name must not contain any of %s ' +
+            body: _('Device name must not contain any of %s ' +
                               'and have a length of 1-32 characters')
                 .format('<b><tt>^"\',;:.!?()[]&lt;&gt;</tt></b>'),
-            secondary_use_markup: true,
-            buttons: Gtk.ButtonsType.OK,
-            modal: true,
-            transient_for: this,
+            default_response: 'close',
         });
-        dialog.connect('response', (dialog) => dialog.destroy());
-        dialog.show_all();
+        dialog.add_response('close', _('Close'));
+        dialog.present(Gio.Application.get_default().get_active_window());
 
         return false;
     }
@@ -462,67 +630,6 @@ export const Window = GObject.registerClass({
     _help(action, parameter) {
         const uri = `${Config.PACKAGE_URL}/wiki/Help`;
         Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
-    }
-
-    /*
-     * HeaderBar Callbacks
-     */
-    _onPrevious(button, event) {
-        // HeaderBar (Service)
-        this.prev_button.visible = false;
-        this.device_menu.visible = false;
-
-        this.refresh_button.visible = true;
-        this.service_edit.visible = true;
-        this.service_menu.visible = true;
-
-        this.headerbar.title = this.settings.get_string('name');
-        this.headerbar.subtitle = null;
-
-        // Panel
-        this.stack.visible_child_name = 'service';
-        this._setDeviceMenu();
-    }
-
-    _onEditServiceName(button, event) {
-        this.rename_entry.text = this.headerbar.title;
-        this.rename_entry.has_focus = true;
-    }
-
-    _onSetServiceName(widget) {
-        if (this._validateName(this.rename_entry.text)) {
-            this.headerbar.title = this.rename_entry.text;
-            this.settings.set_string('name', this.rename_entry.text);
-        }
-
-        this.service_edit.active = false;
-        this.service_edit.grab_focus();
-    }
-
-    _onRetryOpenssl(button, event) {
-        this.settings.set_boolean('enabled', false);
-        GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT_IDLE, 2, () => {
-            this.settings.set_boolean('enabled', true);
-            return GLib.SOURCE_REMOVE;
-        });
-    }
-
-    /*
-     * Context Switcher
-     */
-    _getTypeLabel(device) {
-        switch (device.type) {
-            case 'laptop':
-                return _('Laptop');
-            case 'phone':
-                return _('Smartphone');
-            case 'tablet':
-                return _('Tablet');
-            case 'tv':
-                return _('Television');
-            default:
-                return _('Desktop');
-        }
     }
 
     _setDeviceMenu(panel = null) {
@@ -538,97 +645,51 @@ export const Window = GObject.registerClass({
         this.device_menu.set_menu_model(panel.menu);
     }
 
-    _onDeviceChanged(statusLabel, device, pspec) {
+    _onDeviceChanged(device, paramspec) {
+        const row = this.rows[device.id];
         switch (false) {
             case device.paired:
-                statusLabel.label = _('Unpaired');
+                row.set_subtitle(_('Unpaired'));
                 break;
-
             case device.connected:
-                statusLabel.label = _('Disconnected');
+                row.set_subtitle(_('Disconnected'));
                 break;
-
             default:
-                statusLabel.label = _('Connected');
+                row.set_subtitle(_('Connected'));
         }
-    }
 
-    _createDeviceRow(device) {
-        const row = new Gtk.ListBoxRow({
-            height_request: 52,
-            selectable: false,
-            visible: true,
-        });
-        row.set_name(device.id);
-
-        const grid = new Gtk.Grid({
-            column_spacing: 12,
-            margin_left: 20,
-            margin_right: 20,
-            margin_bottom: 8,
-            margin_top: 8,
-            visible: true,
-        });
-        row.add(grid);
-
-        const icon = new Gtk.Image({
-            gicon: new Gio.ThemedIcon({name: device.icon_name}),
-            icon_size: Gtk.IconSize.BUTTON,
-            visible: true,
-        });
-        grid.attach(icon, 0, 0, 1, 1);
-
-        const title = new Gtk.Label({
-            halign: Gtk.Align.START,
-            hexpand: true,
-            valign: Gtk.Align.CENTER,
-            vexpand: true,
-            visible: true,
-        });
-        grid.attach(title, 1, 0, 1, 1);
-
-        const status = new Gtk.Label({
-            halign: Gtk.Align.END,
-            hexpand: true,
-            valign: Gtk.Align.CENTER,
-            vexpand: true,
-            visible: true,
-        });
-        grid.attach(status, 2, 0, 1, 1);
-
-        // Keep name up to date
-        device.bind_property(
-            'name',
-            title,
-            'label',
-            GObject.BindingFlags.SYNC_CREATE
-        );
-
-        // Keep status up to date
-        device.connect(
-            'notify::connected',
-            this._onDeviceChanged.bind(null, status)
-        );
-        device.connect(
-            'notify::paired',
-            this._onDeviceChanged.bind(null, status)
-        );
-        this._onDeviceChanged(status, device, null);
-
-        return row;
+        if (this.device_list.get_selected_row() !== null &&
+            this.device_list.get_selected_row().device.id === device.id)
+            this._onDeviceSelected(null, this.rows[device.id]);
     }
 
     _onDeviceAdded(service, device) {
         try {
-            if (!this.stack.get_child_by_name(device.id)) {
-                // Add the device preferences
-                const prefs = new Panel(device);
-                this.stack.add_titled(prefs, device.id, device.name);
+            if (this.rows === undefined)
+                this.rows = [];
 
-                // Add a row to the device list
-                prefs.row = this._createDeviceRow(device);
-                this.device_list.add(prefs.row);
-            }
+            const row = new Adw.ActionRow();
+            row.set_title(device.name);
+            row.set_title_lines(1);
+            row.set_subtitle_lines(1);
+            row.add_prefix(new Gtk.Image({
+                icon_name: device.icon_name,
+                visible: true,
+            }));
+
+            device._connectedId = device.connect(
+                'notify::connected',
+                this._onDeviceChanged.bind(this)
+            );
+            device._pairedId = device.connect(
+                'notify::paired',
+                this._onDeviceChanged.bind(this)
+            );
+
+            row.device = device;
+            this.rows[device.id] = row;
+            this.device_list.append(row);
+            this._onDeviceChanged(device, null);
         } catch (e) {
             logError(e);
         }
@@ -636,19 +697,12 @@ export const Window = GObject.registerClass({
 
     _onDeviceRemoved(service, device) {
         try {
-            const prefs = this.stack.get_child_by_name(device.id);
-
-            if (prefs === null)
-                return;
-
-            if (prefs === this.stack.get_visible_child())
-                this._onPrevious();
-
-            prefs.row.destroy();
-            prefs.row = null;
-
-            prefs.dispose();
-            prefs.destroy();
+            const row = this.rows[device.id];
+            if (row !== null) {
+                row.device.disconnect(row.device._connectedId);
+                row.device.disconnect(row.device._pairedId);
+                this.device_list.remove(row);
+            }
         } catch (e) {
             logError(e);
         }
@@ -656,35 +710,55 @@ export const Window = GObject.registerClass({
 
     _onDeviceSelected(box, row) {
         try {
-            if (row === null)
-                return this._onPrevious();
+            if (!row) {
+                this.split_view.set_content(this.welcome);
+                this.split_view.set_show_content(true);
+            } else {
+                let navigation_page = this.pages.get(row.device.id);
+                if (row.device.paired) {
+                    if (!navigation_page) {
+                        navigation_page = new DeviceNavigationPage({device: row.device});
+                    } else if (navigation_page instanceof DevicePairPage) {
+                        this.pages.delete(row.device.id);
+                        navigation_page.unparent();
+                        navigation_page = new DeviceNavigationPage({device: row.device});
+                    }
 
-            // Transition the panel
-            const name = row.get_name();
-            const prefs = this.stack.get_child_by_name(name);
-
-            this.stack.visible_child = prefs;
-            this._setDeviceMenu(prefs);
-
-            // HeaderBar (Device)
-            this.refresh_button.visible = false;
-            this.service_edit.visible = false;
-            this.service_menu.visible = false;
-
-            this.prev_button.visible = true;
-            this.device_menu.visible = true;
-
-            this.headerbar.title = prefs.device.name;
-            this.headerbar.subtitle = this._getTypeLabel(prefs.device);
+                } else if (!row.device.paired) {
+                    if (!navigation_page) {
+                        navigation_page = new DevicePairPage({device: row.device});
+                    } else if (navigation_page instanceof DeviceNavigationPage) {
+                        this.pages.delete(row.device.id);
+                        navigation_page.unparent();
+                        navigation_page = new DevicePairPage({device: row.device});
+                    }
+                }
+                this.pages.set(row.device.id, navigation_page);
+                this.split_view.set_content(navigation_page);
+                this.split_view.set_show_content(true);
+            }
         } catch (e) {
             logError(e);
         }
     }
 
     _onServiceChanged(service, pspec) {
-        if (this.service.active)
-            this.device_list_placeholder.label = _('Searching for devices…');
-        else
-            this.device_list_placeholder.label = _('Waiting for service…');
+        if (service.active) {
+            this.window_title.set_subtitle(_('Searching for devices…'));
+            this.refresh_button.set_sensitive(true);
+        } else {
+            this.window_title.set_subtitle(_('Waiting for service…'));
+            this.refresh_button.set_sensitive(false);
+        }
+    }
+
+    _onRetryOpenssl(widget, event) {
+        if (event === 'retry') {
+            this.settings.set_boolean('enabled', false);
+            GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT_IDLE, 2, () => {
+                this.settings.set_boolean('enabled', true);
+                return GLib.SOURCE_REMOVE;
+            });
+        }
     }
 });

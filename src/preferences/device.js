@@ -5,17 +5,19 @@
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
-import Gtk from 'gi://Gtk';
-import Pango from 'gi://Pango';
+import Gtk from 'gi://Gtk?version=4.0';
+import Adw from 'gi://Adw';
 
 import Config from '../config.js';
 import plugins from '../service/plugins/index.js';
 import * as Keybindings from './keybindings.js';
 
-
 // Build a list of plugins and shortcuts for devices
 const DEVICE_PLUGINS = [];
 const DEVICE_SHORTCUTS = {};
+
+// Duration of the pairing spinner timer in secon
+const PAIR_SPINNER_SEC = 30;
 
 for (const name in plugins) {
     const module = plugins[name];
@@ -33,28 +35,6 @@ for (const name in plugins) {
     }
 }
 
-
-/**
- * A Gtk.ListBoxHeaderFunc for sections that adds separators between each row.
- *
- * @param {Gtk.ListBoxRow} row - The current row
- * @param {Gtk.ListBoxRow} before - The previous row
- */
-export function rowSeparators(row, before) {
-    const header = row.get_header();
-
-    if (before === null) {
-        if (header !== null)
-            header.destroy();
-
-        return;
-    }
-
-    if (header === null)
-        row.set_header(new Gtk.Separator({visible: true}));
-}
-
-
 /**
  * A Gtk.ListBoxSortFunc for SectionRow rows
  *
@@ -69,167 +49,268 @@ export function titleSortFunc(row1, row2) {
     return row1.title.localeCompare(row2.title);
 }
 
-
 /**
- * A row for a section of settings
+ * A GtkListBox widget that displays a list of action rows based on a menu model.
+ *
+ * This custom widget listens for changes in the model and updates the list of rows accordingly.
+ * It supports hierarchical menu structures by creating expandable rows for submenus.
+ * Additionally, it adds a special row for encryption information. Each action row can be activated
+ * and is linked to a corresponding action in the associated action group.
+ *
+ * The widget handles dynamic updates when actions are added, removed, or enabled/disabled,
+ * and rebuilds the list of rows in response to these changes.
+ *
+ * @class ActionRowBox
+ * @augments Gtk.ListBox
  */
-const SectionRow = GObject.registerClass({
-    GTypeName: 'GSConnectPreferencesSectionRow',
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/preferences-section-row.ui',
-    Children: ['icon-image', 'title-label', 'subtitle-label'],
-    Properties: {
-        'gicon': GObject.ParamSpec.object(
-            'gicon',
-            'GIcon',
-            'A GIcon for the row',
-            GObject.ParamFlags.READWRITE,
-            Gio.Icon.$gtype
-        ),
-        'icon-name': GObject.ParamSpec.string(
-            'icon-name',
-            'Icon Name',
-            'An icon name for the row',
-            GObject.ParamFlags.READWRITE,
-            null
-        ),
-        'subtitle': GObject.ParamSpec.string(
-            'subtitle',
-            'Subtitle',
-            'A subtitle for the row',
-            GObject.ParamFlags.READWRITE,
-            null
-        ),
-        'title': GObject.ParamSpec.string(
-            'title',
-            'Title',
-            'A title for the row',
-            GObject.ParamFlags.READWRITE,
-            null
-        ),
-        'widget': GObject.ParamSpec.object(
-            'widget',
-            'Widget',
-            'An action widget for the row',
-            GObject.ParamFlags.READWRITE,
-            Gtk.Widget.$gtype
-        ),
-    },
-}, class SectionRow extends Gtk.ListBoxRow {
+const ActionRowBox = GObject.registerClass({
+    GTypeName: 'GSConnectActionRowBox',
+}, class ActionRowBox extends Gtk.ListBox {
 
-    _init(params = {}) {
+    _init(params) {
         super._init();
-
-        // NOTE: we can't pass construct properties to _init() because the
-        //       template children are not assigned until after it runs.
-        this.freeze_notify();
         Object.assign(this, params);
-        this.thaw_notify();
+
+        this.get_style_context().add_class('boxed-list');
+
+        // Watch the model for changes
+        this._itemsChangedId = this.model.connect(
+            'items-changed',
+            this._onItemsChanged.bind(this)
+        );
+        this._onItemsChanged();
+
+        // GActions
+        this._actionAddedId = this.action_group.connect(
+            'action-added',
+            this._onItemsChanged.bind(this)
+        );
+        this._actionEnabledChangedId = this.action_group.connect(
+            'action-enabled-changed',
+            this._onItemsChanged.bind(this)
+        );
+        this._actionRemovedId = this.action_group.connect(
+            'action-removed',
+            this._onItemsChanged.bind(this)
+        );
     }
 
-    get icon_name() {
-        return this.icon_image.icon_name;
+    /**
+     * Rebuilds all the rows in the list based on the model.
+     *
+     * This method handles changes in the menu model, and when items are added or removed,
+     * it rebuilds the list of rows. It clears the existing rows and appends new ones based
+     * on the updated menu model. After updating the rows, it adds a specific encryption row.
+     *
+     * @param {Gio.MenuModel} model - The menu model that has been changed. This model contains the updated list of menu items.
+     * @param {number} position - The position at which the change (addition or removal) occurred in the menu model.
+     * @param {number} removed - The number of items that were removed from the menu model.
+     * @param {number} added - The number of items that were added to the menu model.
+     *
+     * @returns {void} - This method does not return anything. It updates the UI by rebuilding the rows.
+     */
+    _onItemsChanged(model, position, removed, added) {
+        // Clear the menu
+        this.remove_all();
+        const rows = this.buildActionRowsFromMenuModel(this.model);
+        this.visible = false;
+        rows.forEach(row => {
+            if (row.visible)
+                this.visible = true;
+            this.append(row);
+        });
+        if (this.visible)
+            this.append(this._create_encription_row());
     }
 
-    set icon_name(icon_name) {
-        if (this.icon_name === icon_name)
-            return;
+    /**
+     * Builds an array of rows from a menu model.
+     *
+     * This method processes a `Gio.MenuModel` and constructs a list of rows (either `Adw.ActionRow` or `Adw.ExpanderRow`)
+     * to be added to a UI, based on the items in the menu model. It handles submenus by creating expandable rows
+     * for hierarchical menu structures and adds appropriate action rows for each item in the model.
+     *
+     * @param {Gio.MenuModel} menuModel - The menu model from which items will be extracted to create the rows.
+     *
+     * @returns {Array<Adw.ActionRow|Adw.ExpanderRow>} - A list of rows (`Adw.ActionRow` or `Adw.ExpanderRow`)
+     * that can be added to a UI component. These rows represent the actions or submenus in the menu model.
+     */
+    buildActionRowsFromMenuModel(menuModel) {
+        const rows = [];
 
-        this.icon_image.visible = !!icon_name;
-        this.icon_image.icon_name = icon_name;
-        this.notify('icon-name');
+        const nItems = menuModel.get_n_items();
+        for (let i = 0; i < nItems; i++) {
+            const label = menuModel.get_item_attribute_value(i, 'label', null).get_string()[0];
+            const iconName = menuModel.get_item_attribute_value(i, 'icon', null);
+            const actionName = menuModel.get_item_attribute_value(i, 'action', null).get_string()[0].split('.')[1];
+            const target = menuModel.get_item_attribute_value(i, 'target', null);
+            const submenu = menuModel.get_item_link(i, 'submenu');
+
+            const icon = Gio.Icon.deserialize(iconName);
+
+            if (!label)
+                continue;
+
+            if (submenu) {
+                submenu.connect(
+                    'items-changed',
+                    this._onItemsChanged.bind(this)
+                );
+                if (submenu.get_n_items() > 0) {
+
+                    // Expander row con contenuto da submenu
+                    const expander = new Adw.ExpanderRow({
+                        title: label,
+                        activatable: false,
+                        selectable: false,
+                    });
+
+                    if (icon) {
+                        const icon_row = new Gtk.Image({
+                            gicon: icon,
+                            visible: true,
+                        });
+                        expander.add_prefix(icon_row);
+                    }
+
+                    const childRows = this.buildActionRowsFromMenuModel(submenu);
+                    for (const row of childRows)
+                        expander.add_row(row);
+
+                    if (childRows.length > 0)
+                        rows.push(expander);
+                }
+            } else {
+                const row = new Adw.ActionRow({
+                    title: label,
+                    activatable: !!actionName,
+                    selectable: false,
+                });
+
+                if (iconName) {
+                    const icon_row = new Gtk.Image({
+                        gicon: icon,
+                        visible: true,
+                    });
+                    row.add_prefix(icon_row);
+                }
+                row.set_visible(this.action_group.get_action_enabled(actionName));
+                row.connect('activated', this._onRowActivated.bind(this, actionName, target));
+                rows.push(row);
+            }
+        }
+
+        return rows;
     }
 
-    get gicon() {
-        return this.icon_image.gicon;
+    /**
+     * Creates an encryption information row.
+     *
+     * This method creates a row that contains encryption-related information. It returns
+     * an `Adw.ActionRow` containing a title and an icon that indicates encryption status.
+     * The row is activatable and connected to an action that will trigger the encryption info action when activated.
+     *
+     * @returns {Adw.ActionRow} The encryption info row, which is an instance of `Adw.ActionRow`.
+     */
+    _create_encription_row() {
+        const row = new Adw.ActionRow({
+            visible: true,
+            title: _('Encryption Info'),
+            selectable: false,
+            activatable: true,
+            action_name: 'settings.encryption-info',
+        });
+
+        const icon = new Gtk.Image({
+            visible: true,
+            icon_name: 'system-lock-screen-symbolic',
+        });
+        row.add_prefix(icon);
+        return row;
     }
 
-    set gicon(gicon) {
-        if (this.gicon === gicon)
-            return;
-
-        this.icon_image.visible = !!gicon;
-        this.icon_image.gicon = gicon;
-        this.notify('gicon');
+    /**
+     * Activates an action from the action group.
+     *
+     * This method is called when a row in the list is activated. It uses the action group
+     * to activate the specified action by its name. If there is a target associated with
+     * the action, it is passed along during activation; otherwise, `null` is used.
+     *
+     * @param {string} action_name - The name of the action to activate. It should match
+     *                               the name of an action in the action group.
+     * @param {object} target - The target associated with the action (can be `null`).
+     *                     This is typically the data or object the action should operate on.
+     *
+     * @returns {void} - This method does not return anything.
+     */
+    _onRowActivated(action_name, target) {
+        this.action_group.activate_action(action_name, target);
     }
 
-    get title() {
-        return this.title_label.label;
-    }
-
-    set title(text) {
-        if (this.title === text)
-            return;
-
-        this.title_label.visible = !!text;
-        this.title_label.label = text;
-        this.notify('title');
-    }
-
-    get subtitle() {
-        return this.subtitle_label.label;
-    }
-
-    set subtitle(text) {
-        if (this.subtitle === text)
-            return;
-
-        this.subtitle_label.visible = !!text;
-        this.subtitle_label.label = text;
-        this.notify('subtitle');
-    }
-
-    get widget() {
-        if (this._widget === undefined)
-            this._widget = null;
-
-        return this._widget;
-    }
-
-    set widget(widget) {
-        if (this.widget === widget)
-            return;
-
-        if (this.widget instanceof Gtk.Widget)
-            this.widget.destroy();
-
-        // Add the widget
-        this._widget = widget;
-        this.get_child().attach(widget, 2, 0, 1, 2);
-        this.notify('widget');
-    }
+    /**
+     * Disconnects signals and destroys the widget.
+     *
+     * This method cleans up resources when the widget is no longer needed. It disconnects
+     * any connected signals (like the `items-changed` signal in this case) and then calls
+     * the superclass's `destroy` method to properly dispose of the widget.
+     *
+     * @returns {void} - This method does not return anything.
+     */
 });
 
-
 /**
- * Command Editor Dialog
+ * A dialog for editing commands in the GSConnect preferences.
+ *
+ * This class represents a command editor dialog that allows users to define and edit
+ * custom commands. The dialog includes fields for entering the command name and command
+ * line, as well as a button to browse for the command file. The dialog provides functionality
+ * for selecting a command file and updating the entries accordingly. The save button is enabled
+ * only when both the command name and command line are valid.
+ *
+ * @class CommandEditor
+ * @augments Adw.Dialog
  */
 const CommandEditor = GObject.registerClass({
     GTypeName: 'GSConnectPreferencesCommandEditor',
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/preferences-command-editor.ui',
     Children: [
-        'cancel-button', 'save-button',
-        'command-entry', 'name-entry', 'command-chooser',
+        'command_entry', 'name_entry', 'save_button',
     ],
-}, class CommandEditor extends Gtk.Dialog {
+    Signals: {
+        'response': {
+            param_types: [GObject.TYPE_INT],
+        },
+    },
+}, class CommandEditor extends Adw.Dialog {
 
-    _onBrowseCommand(entry, icon_pos, event) {
-        this.command_chooser.present();
-    }
-
-    _onCommandChosen(dialog, response_id) {
-        if (response_id === Gtk.ResponseType.OK)
-            this.command_entry.text = dialog.get_filename();
-
-        dialog.hide();
+    /**
+     * Updates the state of the save button based on the changes in the entries.
+     *
+     * @returns {void}
+     */
+    _onAddCommand() {
+        this.response = Gtk.ResponseType.OK;
     }
 
     _onEntryChanged(entry, pspec) {
         this.save_button.sensitive = (this.command_name && this.command_line);
     }
 
+    get response() {
+        if (this._response === undefined)
+            return Gtk.ResponseType.CANCEL;
+        return this._response;
+    }
+
+    set response(response) {
+        this._response = response;
+        this.emit('response', response);
+    }
+
     get command_line() {
         return this.command_entry.text;
     }
+
 
     set command_line(text) {
         this.command_entry.text = text;
@@ -244,12 +325,17 @@ const CommandEditor = GObject.registerClass({
     }
 });
 
-
 /**
- * A widget for configuring a remote device.
+ * The DeviceNavigationPage manages navigation and settings for a device in the context of the GSConnect extension.
+ * This class extends Adw.NavigationPage and handles device-specific configurations,
+ * including sharing settings, battery, commands, and notifications.
+ *
+ * @class DeviceNavigationPage
+ * @augments Adw.NavigationPage
  */
-export const Panel = GObject.registerClass({
-    GTypeName: 'GSConnectPreferencesDevicePanel',
+export const DeviceNavigationPage = GObject.registerClass({
+    GTypeName: 'GSConnectDeviceNavigationPage',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/preferences-device-page.ui',
     Properties: {
         'device': GObject.ParamSpec.object(
             'device',
@@ -259,96 +345,105 @@ export const Panel = GObject.registerClass({
             GObject.Object.$gtype
         ),
     },
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/preferences-device-panel.ui',
     Children: [
-        'sidebar', 'stack', 'infobar',
-
-        // Sharing
-        'sharing', 'sharing-page',
-        'desktop-list', 'clipboard', 'clipboard-sync', 'mousepad', 'mpris', 'systemvolume',
-        'share', 'share-list', 'receive-files', 'receive-directory',
-        'links', 'links-list', 'launch-urls',
-
-        // Battery
-        'battery',
-        'battery-device-label', 'battery-device', 'battery-device-list',
-        'battery-system-label', 'battery-system', 'battery-system-list',
+        'window-title',
+        'notification-apps',
+        'receive-directory',
+        'plugin-list',
+        'device-cache',
+        'command-list',
+        'shortcuts-actions-list',
+        'battery-system',
         'battery-custom-notification-value',
-
-        // RunCommand
-        'runcommand', 'runcommand-page',
-        'command-list', 'command-add',
-
-        // Notifications
-        'notification', 'notification-page',
-        'notification-list', 'notification-apps',
-
-        // Telephony
-        'telephony', 'telephony-page',
-        'ringing-list', 'ringing-volume', 'talking-list', 'talking-volume',
-
-        // Shortcuts
-        'shortcuts-page',
-        'shortcuts-actions', 'shortcuts-actions-title', 'shortcuts-actions-list',
-
-        // Advanced
-        'advanced-page',
-        'plugin-list', 'experimental-list',
-
-        'device-menu',
+        'action-row-box',
+        'ringing-volume-toogle',
+        'talking-volume-toogle',
     ],
-}, class Panel extends Gtk.Grid {
 
-    _init(device) {
-        super._init({
-            device: device,
-        });
+}, class DeviceNavigationPage extends Adw.NavigationPage {
 
-        // GSettings
+    _init(params = {}) {
+        super._init(params);
+
+        this.shortcuts_actions_list_rows = [];
+        this.plugin_list_rows = [];
+
+        // GSetting
         this.settings = new Gio.Settings({
             settings_schema: Config.GSCHEMA.lookup(
                 'org.gnome.Shell.Extensions.GSConnect.Device',
                 true
             ),
-            path: `/org/gnome/shell/extensions/gsconnect/device/${device.id}/`,
+            path: `/org/gnome/shell/extensions/gsconnect/device/${this.device.id}/`,
         });
-
-        // Infobar
-        this.device.bind_property(
-            'paired',
-            this.infobar,
-            'reveal-child',
-            (GObject.BindingFlags.SYNC_CREATE |
-             GObject.BindingFlags.INVERT_BOOLEAN)
-        );
 
         this._setupActions();
 
         // Settings Pages
+        this._setWindowTitle();
         this._sharingSettings();
         this._batterySettings();
         this._runcommandSettings();
         this._notificationSettings();
-        this._telephonySettings();
         // --------------------------
         this._keybindingSettings();
         this._advancedSettings();
 
-        // Separate plugins and other settings
-        this.sidebar.set_header_func((row, before) => {
-            if (row.get_name() === 'shortcuts')
-                row.set_header(new Gtk.Separator({visible: true}));
+        // Add device's action rows
+        const action_list_box = new ActionRowBox({
+            action_group: this.device.action_group,
+            model: this.device.menu,
         });
+        action_list_box.bind_property(
+            'visible',
+            this.action_row_box,
+            'visible',
+            GObject.BindingFlags.SYNC_CREATE
+
+        );
+        this.action_row_box.child = action_list_box;
     }
 
-    get menu() {
-        if (this._menu === undefined) {
-            this._menu = this.device_menu;
-            this._menu.prepend_section(null, this.device.menu);
-            this.insert_action_group('device', this.device.action_group);
+    /**
+     * Sets the window title and subtitle based on the device type.
+     *
+     * This function sets the main title of the window to the device's name,
+     * and updates the subtitle based on the type of device (e.g., laptop, phone, etc.).
+     * The subtitle is translated into the current language using the _() function.
+     *
+     * @returns {void}
+     */
+    _setWindowTitle() {
+        this.window_title.set_title(this.device.name);
+        let device_type = _('Desktop');
+        switch (this.device.type) {
+            case 'laptop':
+                device_type = _('Laptop');
+                break;
+            case 'phone':
+                device_type = _('Smartphone');
+                break;
+            case 'tablet':
+                device_type = _('Tablet');
+                break;
+            case 'tv':
+                device_type = _('Television');
+                break;
         }
+        this.window_title.set_subtitle(device_type);
+    }
 
-        return this._menu;
+    _onEncryptionInfo() {
+        const win = Gtk.Application.get_default().get_active_window();
+
+        const dialog = new Adw.AlertDialog({
+            heading: _('Encryption Info'),
+            body: this.device.encryption_info,
+        });
+
+        dialog.add_response('ok',  _('Ok'));
+
+        dialog.present(win);
     }
 
     get_incoming_supported(type) {
@@ -361,62 +456,21 @@ export const Panel = GObject.registerClass({
         return outgoing.includes(`kdeconnect.${type}`);
     }
 
-    _onKeynavFailed(widget, direction) {
-        if (direction === Gtk.DirectionType.UP && widget.prev)
-            widget.prev.child_focus(direction);
-
-        else if (direction === Gtk.DirectionType.DOWN && widget.next)
-            widget.next.child_focus(direction);
-
-        return true;
-    }
-
-    _onSwitcherRowSelected(box, row) {
-        this.stack.set_visible_child_name(row.get_name());
-    }
-
-    _onSectionRowActivated(box, row) {
-        if (row.widget !== undefined)
-            row.widget.active = !row.widget.active;
-    }
-
-    _onToggleRowActivated(box, row) {
-        const widget = row.get_child().get_child_at(1, 0);
-        widget.active = !widget.active;
-    }
-
-    _onEncryptionInfo() {
-        const dialog = new Gtk.MessageDialog({
-            buttons: Gtk.ButtonsType.OK,
-            text: _('Encryption Info'),
-            secondary_text: this.device.encryption_info,
-            modal: true,
-            transient_for: this.get_toplevel(),
-        });
-        dialog.connect('response', (dialog) => dialog.destroy());
-        dialog.present();
-    }
-
     _deviceAction(action, parameter) {
         this.action_group.activate_action(action.name, parameter);
     }
 
-    dispose() {
-        if (this._commandEditor !== undefined)
-            this._commandEditor.destroy();
+    _setupToggleGroup(toggle, action) {
+        const state = action.get_state() ? action.get_state().deep_unpack() : null;
+        if (state) {
+            toggle.set_active_name(state);
+            toggle.connect('notify::active-name', () => {
+                const name = toggle.active_name;
+                if (name && action)
+                    action.change_state(new GLib.Variant('s', name));
 
-        // Device signals
-        this.device.action_group.disconnect(this._actionAddedId);
-        this.device.action_group.disconnect(this._actionRemovedId);
-
-        // GSettings
-        for (const settings of Object.values(this._pluginSettings))
-            settings.run_dispose();
-
-        this.settings.disconnect(this._keybindingsId);
-        this.settings.disconnect(this._disabledPluginsId);
-        this.settings.disconnect(this._supportedPluginsId);
-        this.settings.run_dispose();
+            });
+        }
     }
 
     pluginSettings(name) {
@@ -477,25 +531,34 @@ export const Panel = GObject.registerClass({
         this.actions.add_action(settings.create_action('share-sinks'));
 
         settings = this.pluginSettings('telephony');
-        this.actions.add_action(settings.create_action('ringing-volume'));
+
+        const ringing_action = settings.create_action('ringing-volume');
+        this.actions.add_action(ringing_action);
+        this._setupToggleGroup(this.ringing_volume_toogle, ringing_action);
         this.actions.add_action(settings.create_action('ringing-pause'));
-        this.actions.add_action(settings.create_action('talking-volume'));
+
+        const talking_action = settings.create_action('talking-volume');
+        this.actions.add_action(talking_action);
+        this._setupToggleGroup(this.talking_volume_toogle, talking_action);
         this.actions.add_action(settings.create_action('talking-pause'));
         this.actions.add_action(settings.create_action('talking-microphone'));
+
+        if (this.device.action_group.get_action_enabled('clearCache')) {
+            this.device_cache.connect('clicked', () => {
+                this.device.action_group.activate_action('clearCache', null);
+            });
+        } else {
+            this.device_cache.sensitive = false;
+        }
 
         // Pair Actions
         const encryption_info = new Gio.SimpleAction({name: 'encryption-info'});
         encryption_info.connect('activate', this._onEncryptionInfo.bind(this));
         this.actions.add_action(encryption_info);
 
-        const status_pair = new Gio.SimpleAction({name: 'pair'});
-        status_pair.connect('activate', this._deviceAction.bind(this.device));
-        this.settings.bind('paired', status_pair, 'enabled', 16);
-        this.actions.add_action(status_pair);
-
         const status_unpair = new Gio.SimpleAction({name: 'unpair'});
         status_unpair.connect('activate', this._deviceAction.bind(this.device));
-        this.settings.bind('paired', status_unpair, 'enabled', 0);
+        this.settings.bind('paired', status_unpair, 'enabled', GObject.BindingFlags.DEFAULT);
         this.actions.add_action(status_unpair);
     }
 
@@ -511,30 +574,6 @@ export const Panel = GObject.registerClass({
             this._onReceiveDirectoryChanged.bind(this)
         );
         this._onReceiveDirectoryChanged(settings, 'receive-directory');
-
-        // Visibility
-        this.desktop_list.foreach(row => {
-            const name = row.get_name();
-            row.visible = this.get_outgoing_supported(`${name}.request`);
-        });
-
-        // Separators & Sorting
-        this.desktop_list.set_header_func(rowSeparators);
-
-        this.desktop_list.set_sort_func((row1, row2) => {
-            row1 = row1.get_child().get_child_at(0, 0);
-            row2 = row2.get_child().get_child_at(0, 0);
-            return row1.label.localeCompare(row2.label);
-        });
-        this.share_list.set_header_func(rowSeparators);
-
-        // Scroll with keyboard focus
-        const sharing_box = this.sharing_page.get_child().get_child();
-        sharing_box.set_focus_vadjustment(this.sharing_page.vadjustment);
-
-        // Continue focus chain between lists
-        this.desktop_list.next = this.share_list;
-        this.share_list.prev = this.desktop_list;
     }
 
     _onReceiveDirectoryChanged(settings, key) {
@@ -554,17 +593,23 @@ export const Panel = GObject.registerClass({
             settings.set_string(key, receiveDir);
         }
 
-        if (this.receive_directory.get_filename() !== receiveDir)
-            this.receive_directory.set_filename(receiveDir);
+        if (this.receive_directory.get_subtitle() !== receiveDir)
+            this.receive_directory.set_subtitle(receiveDir);
     }
 
     _onReceiveDirectorySet(button) {
-        const settings = this.pluginSettings('share');
-        const receiveDir = settings.get_string('receive-directory');
-        const filename = button.get_filename();
+        const win = Gtk.Application.get_default().get_active_window();
+        const fileDialog = new Gtk.FileDialog({
+            title: _('Select Folder'),
+        });
 
-        if (filename !== receiveDir)
-            settings.set_string('receive-directory', filename);
+        fileDialog.select_folder(win, null, (dialog, response) => {
+            const filename = fileDialog.select_folder_finish(response);
+            const settings = this.pluginSettings('share');
+            const receiveDir = settings.get_string('receive-directory');
+            if (filename.get_path() !== receiveDir)
+                settings.set_string('receive-directory', filename.get_path());
+        });
     }
 
     /**
@@ -572,21 +617,18 @@ export const Panel = GObject.registerClass({
      */
     async _batterySettings() {
         try {
-            this.battery_device_list.set_header_func(rowSeparators);
-            this.battery_system_list.set_header_func(rowSeparators);
             const settings = this.pluginSettings('battery');
             const oldLevel = settings.get_uint('custom-battery-notification-value');
             this.battery_custom_notification_value.set_value(oldLevel);
 
             // If the device can't handle statistics we're done
             if (!this.get_incoming_supported('battery')) {
-                this.battery_system_label.visible = false;
                 this.battery_system.visible = false;
                 return;
             }
 
             // Check UPower for a battery
-            const hasBattery = await new Promise((resolve, reject) => {
+            await new Promise((resolve, reject) => {
                 Gio.DBus.system.call(
                     'org.freedesktop.UPower',
                     '/org/freedesktop/UPower/devices/DisplayDevice',
@@ -614,107 +656,78 @@ export const Panel = GObject.registerClass({
                 );
             });
 
-            this.battery_system_label.visible = hasBattery;
-            this.battery_system.visible = hasBattery;
-        } catch {
-            this.battery_system_label.visible = false;
-            this.battery_system.visible = false;
+        } catch (e) {
+            console.log(e + ' - ' + this.device.name);
         }
     }
 
     _setCustomChargeLevel(spin) {
         const settings = this.pluginSettings('battery');
-        settings.set_uint('custom-battery-notification-value', spin.get_value_as_int());
+        settings.set_uint('custom-battery-notification-value', spin.get_value());
     }
 
     /**
      * RunCommand Page
      */
     _runcommandSettings() {
-        // Scroll with keyboard focus
-        const runcommand_box = this.runcommand_page.get_child().get_child();
-        runcommand_box.set_focus_vadjustment(this.runcommand_page.vadjustment);
-
         // Local Command List
         const settings = this.pluginSettings('runcommand');
         this._commands = settings.get_value('command-list').recursiveUnpack();
-
-        this.command_list.set_sort_func(this._sortCommands);
-        this.command_list.set_header_func(rowSeparators);
-
         for (const uuid of Object.keys(this._commands))
             this._insertCommand(uuid);
+        const row = new Adw.ButtonRow({
+            title: _('Add Command'),
+            start_icon_name: 'list-add-symbolic',
+        });
+        row.connect('activated', this._onEditCommand.bind(this));
+        this.command_list.prepend(row);
+        this.command_list.set_sort_func(this._sortCommands);
     }
 
     _sortCommands(row1, row2) {
-        if (!row1.title || !row2.title)
+        if (!row1.title || row1.title === _('Add Command'))
             return 1;
-
+        if (!row2.title || row2.title === _('Add Command'))
+            return 0;
         return row1.title.localeCompare(row2.title);
     }
 
+    _onDeleteCommand(button) {
+        const row = button.get_ancestor(Gtk.ListBoxRow.$gtype);
+        delete this._commands[row.command_name];
+        this._storeCommands();
+    }
+
+    /**
+     * Inserts a new command row into the command list.
+     *
+     * This method creates a `CommandActionRow` for the command identified by the given `uuid`. The row is
+     * populated with the command's name as the title and the command line as the subtitle. It also attaches the
+     * `edit` and `delete` button click events to their respective handler methods (`_onEditCommand` and `_onDeleteCommand`).
+     * After setting up the row, it is added to the `command_list` to be displayed in the UI.
+     *
+     * @param {string} uuid - The unique identifier of the command to insert into the list.
+     */
     _insertCommand(uuid) {
-        const row = new SectionRow({
+        const row = new CommandActionRow({
             title: this._commands[uuid].name,
             subtitle: this._commands[uuid].command,
-            activatable: false,
+            command_name: uuid,
         });
-        row.set_name(uuid);
-        row.subtitle_label.ellipsize = Pango.EllipsizeMode.MIDDLE;
-
-        const editButton = new Gtk.Button({
-            image: new Gtk.Image({
-                icon_name: 'document-edit-symbolic',
-                pixel_size: 16,
-                visible: true,
-            }),
-            tooltip_text: _('Edit'),
-            valign: Gtk.Align.CENTER,
-            vexpand: true,
-            visible: true,
-        });
-        editButton.connect('clicked', this._onEditCommand.bind(this));
-        editButton.get_accessible().set_name(_('Edit'));
-        row.get_child().attach(editButton, 2, 0, 1, 2);
-
-        const deleteButton = new Gtk.Button({
-            image: new Gtk.Image({
-                icon_name: 'edit-delete-symbolic',
-                pixel_size: 16,
-                visible: true,
-            }),
-            tooltip_text: _('Remove'),
-            valign: Gtk.Align.CENTER,
-            vexpand: true,
-            visible: true,
-        });
-        deleteButton.connect('clicked', this._onDeleteCommand.bind(this));
-        deleteButton.get_accessible().set_name(_('Remove'));
-        row.get_child().attach(deleteButton, 3, 0, 1, 2);
-
-        this.command_list.add(row);
+        row.edit_button.connect('clicked', this._onEditCommand.bind(this));
+        row.delete_button.connect('clicked', this._onDeleteCommand.bind(this));
+        this.command_list.append(row);
     }
 
     _onEditCommand(widget) {
         if (this._commandEditor === undefined) {
-            this._commandEditor = new CommandEditor({
-                modal: true,
-                transient_for: this.get_toplevel(),
-                use_header_bar: true,
-            });
-
-            this._commandEditor.connect(
-                'response',
-                this._onSaveCommand.bind(this)
-            );
-
-            this._commandEditor.resize(1, 1);
+            this._commandEditor = new CommandEditor();
+            this._commandEditor.connect('response', this._onSaveCommand);
         }
 
         if (widget instanceof Gtk.Button) {
             const row = widget.get_ancestor(Gtk.ListBoxRow.$gtype);
-            const uuid = row.get_name();
-
+            const uuid = row.command_name;
             this._commandEditor.uuid = uuid;
             this._commandEditor.command_name = this._commands[uuid].name;
             this._commandEditor.command_line = this._commands[uuid].command;
@@ -724,31 +737,12 @@ export const Panel = GObject.registerClass({
             this._commandEditor.command_line = '';
         }
 
-        this._commandEditor.present();
+        this._commandEditor.present(Gtk.Application.get_default().get_active_window());
     }
 
-    _storeCommands() {
-        const variant = {};
-
-        for (const [uuid, command] of Object.entries(this._commands))
-            variant[uuid] = new GLib.Variant('a{ss}', command);
-
-        this.pluginSettings('runcommand').set_value(
-            'command-list',
-            new GLib.Variant('a{sv}', variant)
-        );
-    }
-
-    _onDeleteCommand(button) {
-        const row = button.get_ancestor(Gtk.ListBoxRow.$gtype);
-        delete this._commands[row.get_name()];
-        row.destroy();
-
-        this._storeCommands();
-    }
 
     _onSaveCommand(dialog, response_id) {
-        if (response_id === Gtk.ResponseType.ACCEPT) {
+        if (response_id === Gtk.ResponseType.OK) {
             this._commands[dialog.uuid] = {
                 name: dialog.command_name,
                 command: dialog.command_line,
@@ -791,19 +785,7 @@ export const Panel = GObject.registerClass({
             Gio.SettingsBindFlags.DEFAULT
         );
 
-        // Separators & Sorting
-        this.notification_list.set_header_func(rowSeparators);
-
-        // Scroll with keyboard focus
-        const notification_box = this.notification_page.get_child().get_child();
-        notification_box.set_focus_vadjustment(this.notification_page.vadjustment);
-
-        // Continue focus chain between lists
-        this.notification_list.next = this.notification_apps;
-        this.notification_apps.prev = this.notification_list;
-
         this.notification_apps.set_sort_func(titleSortFunc);
-        this.notification_apps.set_header_func(rowSeparators);
 
         this._populateApplications(settings);
     }
@@ -813,15 +795,13 @@ export const Panel = GObject.registerClass({
             const row = widget.get_ancestor(Gtk.ListBoxRow.$gtype);
             const settings = this.pluginSettings('notification');
             let applications = {};
-
             try {
                 applications = JSON.parse(settings.get_string('applications'));
             } catch {
                 applications = {};
             }
-
             applications[row.title].enabled = !applications[row.title].enabled;
-            row.widget.state = applications[row.title].enabled;
+            row.set_active(applications[row.title].enabled);
             settings.set_string('applications', JSON.stringify(applications));
 
         } catch (e) {
@@ -829,29 +809,17 @@ export const Panel = GObject.registerClass({
         }
     }
 
-
-
     _populateApplications(settings) {
         const applications = this._queryApplications(settings);
 
         for (const name in applications) {
-            const row = new SectionRow({
-                gicon: Gio.Icon.new_for_string(applications[name].iconName),
+            const row = new Adw.SwitchRow({
                 title: name,
-                height_request: 48,
-                widget: new Gtk.Switch({
-                    state: applications[name].enabled,
-                    margin_start: 12,
-                    margin_end: 12,
-                    halign: Gtk.Align.END,
-                    valign: Gtk.Align.CENTER,
-                    vexpand: true,
-                    visible: true,
-                }),
+                icon_name: applications[name].iconName,
+                active: applications[name].enabled,
             });
-
-            row.widget.connect('notify::active', this._toggleNotification.bind(this));
-            this.notification_apps.add(row);
+            row.connect('notify::active', this._toggleNotification.bind(this));
+            this.notification_apps.append(row);
         }
     }
 
@@ -894,30 +862,9 @@ export const Panel = GObject.registerClass({
     }
 
     /**
-     * Telephony Settings
-     */
-    _telephonySettings() {
-        // Continue focus chain between lists
-        this.ringing_list.next = this.talking_list;
-        this.talking_list.prev = this.ringing_list;
-
-        this.ringing_list.set_header_func(rowSeparators);
-        this.talking_list.set_header_func(rowSeparators);
-    }
-
-    /**
-     * Keyboard Shortcuts
+     * Keybinding Shortcuts
      */
     _keybindingSettings() {
-        // Scroll with keyboard focus
-        const shortcuts_box = this.shortcuts_page.get_child().get_child();
-        shortcuts_box.set_focus_vadjustment(this.shortcuts_page.vadjustment);
-
-        // Filter & Sort
-        this.shortcuts_actions_list.set_filter_func(this._filterPluginKeybindings.bind(this));
-        this.shortcuts_actions_list.set_header_func(rowSeparators);
-        this.shortcuts_actions_list.set_sort_func(titleSortFunc);
-
         // Init
         for (const name in DEVICE_SHORTCUTS)
             this._addPluginKeybinding(name);
@@ -941,37 +888,34 @@ export const Panel = GObject.registerClass({
 
     _addPluginKeybinding(name) {
         const [icon_name, label] = DEVICE_SHORTCUTS[name];
-
-        const widget = new Gtk.Label({
+        const row = new Adw.ActionRow({
+            height_request: 48,
+            icon_name: icon_name,
+            selectable: false,
+            activatable: true,
+            title: label,
+        });
+        const acc_label = new Gtk.Label({
             label: _('Disabled'),
             visible: true,
         });
-        widget.get_style_context().add_class('dim-label');
-
-        const row = new SectionRow({
-            height_request: 48,
-            icon_name: icon_name,
-            title: label,
-            widget: widget,
-        });
-        row.icon_image.pixel_size = 16;
+        row.add_suffix(acc_label);
         row.action = name;
-        this.shortcuts_actions_list.add(row);
-    }
+        row.label = acc_label;
 
-    _filterPluginKeybindings(row) {
-        return this.device.action_group.has_action(row.action);
+        this.shortcuts_actions_list.append(row);
+        this.shortcuts_actions_list_rows.push(row);
     }
 
     _setPluginKeybindings() {
         const keybindings = this.settings.get_value('keybindings').deepUnpack();
 
-        this.shortcuts_actions_list.foreach(row => {
+        this.shortcuts_actions_list_rows.forEach(row => {
             if (keybindings[row.action]) {
                 const accel = Gtk.accelerator_parse(keybindings[row.action]);
-                row.widget.label = Gtk.accelerator_get_label(...accel);
+                row.label.set_label(Gtk.accelerator_get_label(...accel));
             } else {
-                row.widget.label = _('Disabled');
+                row.label.set_label(_('Disabled'));
             }
         });
     }
@@ -1016,19 +960,6 @@ export const Panel = GObject.registerClass({
      * Advanced Page
      */
     _advancedSettings() {
-        // Scroll with keyboard focus
-        const advanced_box = this.advanced_page.get_child().get_child();
-        advanced_box.set_focus_vadjustment(this.advanced_page.vadjustment);
-
-        // Sort & Separate
-        this.plugin_list.set_header_func(rowSeparators);
-        this.plugin_list.set_sort_func(titleSortFunc);
-        this.experimental_list.set_header_func(rowSeparators);
-
-        // Continue focus chain between lists
-        this.plugin_list.next = this.experimental_list;
-        this.experimental_list.prev = this.plugin_list;
-
         this._disabledPluginsId = this.settings.connect(
             'changed::disabled-plugins',
             this._onPluginsChanged.bind(this)
@@ -1061,42 +992,22 @@ export const Panel = GObject.registerClass({
     _addPlugin(name) {
         const plugin = plugins[name];
 
-        const row = new SectionRow({
-            height_request: 48,
+        const row = new Adw.SwitchRow({
             title: plugin.Metadata.label,
             subtitle: plugin.Metadata.description || '',
             visible: this._supportedPlugins.includes(name),
-            widget: new Gtk.Switch({
-                active: this._enabledPlugins.includes(name),
-                valign: Gtk.Align.CENTER,
-                vexpand: true,
-                visible: true,
-            }),
+            active: this._enabledPlugins.includes(name),
         });
-        row.widget.connect('notify::active', this._togglePlugin.bind(this));
+        row.connect('notify::active', this._togglePlugin.bind(this));
         row.set_name(name);
 
-        if (this.hasOwnProperty(name))
-            this[name].visible = row.widget.active;
-
         this.plugin_list.add(row);
-    }
-
-    _updatePlugins(settings, key) {
-        for (const row of this.plugin_list.get_children()) {
-            const name = row.get_name();
-
-            row.visible = this._supportedPlugins.includes(name);
-            row.widget.active = this._enabledPlugins.includes(name);
-
-            if (this.hasOwnProperty(name))
-                this[name].visible = row.widget.active;
-        }
+        this.plugin_list_rows.push(row);
     }
 
     _togglePlugin(widget) {
         try {
-            const name = widget.get_ancestor(Gtk.ListBoxRow.$gtype).get_name();
+            const name = widget.get_name();
             const index = this._disabledPlugins.indexOf(name);
 
             // Either add or remove the plugin from the disabled list
@@ -1110,4 +1021,121 @@ export const Panel = GObject.registerClass({
             logError(e);
         }
     }
+
+    _updatePlugins(settings, key) {
+        for (const row of this.plugin_list_rows) {
+            const name = row.get_name();
+
+            row.visible = this._supportedPlugins.includes(name);
+            row.active = this._enabledPlugins.includes(name);
+        }
+    }
+});
+
+/**
+ * CommandActionRow represents a row in the command list, providing a UI element for each command.
+ *
+ * This class extends the `Adw.ActionRow` and provides buttons for editing and deleting commands.
+ * It uses a custom UI template located at 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/command-row.ui'.
+ * The class is designed to manage command-related actions within a list (such as adding, editing, and deleting commands).
+ * It provides methods to access the command's name and the associated edit and delete buttons.
+ *
+ * @class CommandActionRow
+ * @augments Adw.ActionRow
+ */
+export const CommandActionRow = GObject.registerClass({
+    GTypeName: 'GSConnectCommandActionRow',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/command-row.ui',
+    Children: [
+        'edit_button',
+        'delete_button',
+    ],
+}, class CommandActionRow extends Adw.ActionRow {
+
+    _init(params = {}) {
+        super._init();
+        Object.assign(this, params);
+    }
+
+});
+
+/**
+ * DevicePairPage handles the user interface for pairing a device within the GSConnect extension.
+ *
+ * This page is part of the preferences UI where users can see the device's status and initiate pairing.
+ * The page includes a label showing the device's name, a spinner that indicates progress while pairing,
+ * and a button that allows the user to start the pairing process. The class interacts with the GSConnect
+ * settings and handles the device pairing action.
+ *
+ * @class DevicePairPage
+ * @augments Adw.NavigationPage
+ */
+export const DevicePairPage = GObject.registerClass({
+    GTypeName: 'GSConnectDevicePairPage',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/preferences-device-pair.ui',
+    Children: [
+        'pair_label', 'spinner',  'pair-button',
+    ],
+}, class DevicePairPage extends Adw.NavigationPage {
+
+    _init(params = {}) {
+        super._init();
+        Object.assign(this, params);
+
+        this.pair_label.label = this.device.name;
+        this.actions = new Gio.SimpleActionGroup();
+        this.insert_action_group('settings', this.actions);
+
+        this.settings = new Gio.Settings({
+            settings_schema: Config.GSCHEMA.lookup(
+                'org.gnome.Shell.Extensions.GSConnect.Device',
+                true
+            ),
+            path: `/org/gnome/shell/extensions/gsconnect/device/${this.device.id}/`,
+        });
+
+        const status_pair = new Gio.SimpleAction({name: 'pair'});
+        this.settings.bind('paired', status_pair, 'enabled', GObject.BindingFlags.INVERT_BOOLEAN);
+        this.actions.add_action(status_pair);
+    }
+
+    /**
+     * Pair Device Callback
+     *
+     * This method is invoked when the user clicks the "Pair" button to initiate the device pairing process.
+     * It performs the following actions:
+     * - Activates the 'pair' action in the device's action group, triggering the pairing process.
+     * - Displays a spinner to indicate that the pairing is in progress.
+     * - Hides the "Pair" button to prevent the user from clicking it again while the pairing is ongoing.
+     * - Calls `_stopSpinner()` to hide the spinner and show the "Pair" button again after a specified timeout.
+     *
+     * @returns {void}
+     */
+    _pairDevice() {
+        this.device.action_group.activate_action('pair', null);
+        this.spinner.set_visible(true);
+        this.pair_button.set_visible(false);
+        this._stopSpinner();
+    }
+
+    /**
+     * Stop Pair Millis Timer
+     *
+     * This method stops the spinner and restores the "Pair" button after a timeout to simulate
+     * the completion of the pairing process. It is called after initiating the pairing process
+     * to provide feedback to the user by updating the UI.
+     * The timeout duration is specified in milliseconds, so `PAIR_SPINNER_SEC` is multiplied by
+     * 1000 to convert seconds to milliseconds.
+     *
+     * @returns {void}
+     */
+    _stopSpinner() {
+        const PAIR_SPINNER_MILLIS = PAIR_SPINNER_SEC * 1000;
+        GLib.timeout_add(GLib.PRIORITY_DEFAULT, PAIR_SPINNER_MILLIS, () => {
+            this.spinner.set_visible(false);
+            this.pair_button.set_visible(true);
+            return false;
+        });
+    }
+
 });

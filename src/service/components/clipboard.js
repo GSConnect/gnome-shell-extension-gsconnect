@@ -2,9 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-import Gdk from 'gi://Gdk';
+import Gdk from 'gi://Gdk?version=4.0';
 import GLib from 'gi://GLib';
-import Gtk from 'gi://Gtk';
 import Gio from 'gi://Gio';
 import GObject from 'gi://GObject';
 
@@ -29,11 +28,11 @@ const Clipboard = GObject.registerClass({
     },
 }, class Clipboard extends GObject.Object {
 
-    _init() {
+    _init(gtkClipboard = null) {
         super._init();
 
         this._cancellable = new Gio.Cancellable();
-        this._clipboard = null;
+        this._gtkClipboard = gtkClipboard ?? Gdk.Display.get_default().get_clipboard();
 
         this._ownerChangeId = 0;
         this._nameWatcherId = Gio.bus_watch_name(
@@ -62,8 +61,10 @@ const Clipboard = GObject.registerClass({
         if (typeof content !== 'string')
             return;
 
-        if (this._clipboard instanceof Gtk.Clipboard)
-            this._clipboard.set_text(content, -1);
+        if (this._clipboard instanceof Gdk.Clipboard) {
+            const provider = Gdk.ContentProvider.new_for_value(new GLib.Variant('s', content));
+            this._clipboard.set_content(provider);
+        }
 
         if (this._clipboard instanceof Gio.DBusProxy) {
             this._clipboard.call('SetText', new GLib.Variant('(s)', [content]),
@@ -123,10 +124,7 @@ const Clipboard = GObject.registerClass({
             this._clipboardChangedId = 0;
         }
 
-        const display = Gdk.Display.get_default();
-        this._clipboard = Gtk.Clipboard.get_default(display);
-
-        this._ownerChangeId = this._clipboard.connect('owner-change',
+        this._ownerChangeId = this._clipboard.connect('changed',
             this._onOwnerChange.bind(this));
 
         this._onOwnerChange();
@@ -134,7 +132,7 @@ const Clipboard = GObject.registerClass({
 
     async _onOwnerChange() {
         try {
-            if (this._clipboard instanceof Gtk.Clipboard)
+            if (this._clipboard instanceof Gdk.Clipboard)
                 await this._gtkUpdateText();
 
             else if (this._clipboard instanceof Gio.DBusProxy)

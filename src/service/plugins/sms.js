@@ -8,7 +8,7 @@ import GObject from 'gi://GObject';
 
 import Plugin from '../plugin.js';
 import LegacyMessagingDialog from '../ui/legacyMessaging.js';
-import * as Messaging from '../ui/messaging.js';
+import {MessagingWindow, ConversationChooser} from '../ui/messaging.js';
 import SmsURI from '../utils/uri.js';
 
 
@@ -28,7 +28,7 @@ export const Metadata = {
         // SMS Actions
         sms: {
             label: _('Messaging'),
-            icon_name: 'sms-symbolic',
+            icon_name: 'chat-bubbles-text-symbolic',
 
             parameter_type: null,
             incoming: [],
@@ -36,7 +36,7 @@ export const Metadata = {
         },
         uriSms: {
             label: _('New SMS (URI)'),
-            icon_name: 'sms-symbolic',
+            icon_name: 'chat-bubbles-text-symbolic',
 
             parameter_type: new GLib.VariantType('s'),
             incoming: [],
@@ -44,15 +44,15 @@ export const Metadata = {
         },
         replySms: {
             label: _('Reply SMS'),
-            icon_name: 'sms-symbolic',
+            icon_name: 'chat-bubbles-text-symbolic',
 
-            parameter_type: new GLib.VariantType('s'),
+            parameter_type: new GLib.VariantType('(ss)'),
             incoming: [],
             outgoing: ['kdeconnect.sms.request'],
         },
         sendMessage: {
             label: _('Send Message'),
-            icon_name: 'sms-send',
+            icon_name: 'paper-plane-symbolic',
 
             parameter_type: new GLib.VariantType('(aa{sv})'),
             incoming: [],
@@ -60,7 +60,7 @@ export const Metadata = {
         },
         sendSms: {
             label: _('Send SMS'),
-            icon_name: 'sms-send',
+            icon_name: 'paper-plane-symbolic',
 
             parameter_type: new GLib.VariantType('(ss)'),
             incoming: [],
@@ -68,7 +68,7 @@ export const Metadata = {
         },
         shareSms: {
             label: _('Share SMS'),
-            icon_name: 'sms-send',
+            icon_name: 'paper-plane-symbolic',
 
             parameter_type: new GLib.VariantType('s'),
             incoming: [],
@@ -148,7 +148,7 @@ const SMSPlugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'sms');
 
-        this.cacheProperties(['_threads']);
+        // this.cacheProperties(['_threads']);
     }
 
     get threads() {
@@ -159,21 +159,22 @@ const SMSPlugin = GObject.registerClass({
     }
 
     get window() {
-        if (this.settings.get_boolean('legacy-sms')) {
-            return new LegacyMessagingDialog({
-                device: this.device,
-                plugin: this,
-            });
-        }
-
         if (this._window === undefined) {
-            this._window = new Messaging.Window({
-                application: Gio.Application.get_default(),
-                device: this.device,
-                plugin: this,
-            });
+            if (this.settings.get_boolean('legacy-sms')) {
+                this._window = new LegacyMessagingDialog({
+                    application: Gio.Application.get_default(),
+                    device: this.device,
+                    plugin: this,
+                });
+            } else {
+                this._window = new MessagingWindow({
+                    application: Gio.Application.get_default(),
+                    device: this.device,
+                    plugin: this,
+                });
+            }
 
-            this._window.connect('destroy', () => {
+            this._windowId = this._window.connect('close-request', () => {
                 this._window = undefined;
             });
         }
@@ -204,58 +205,14 @@ const SMSPlugin = GObject.registerClass({
     }
 
     /**
-     * Handle a digest of threads.
-     *
-     * @param {object[]} messages - A list of message objects
-     * @param {string[]} thread_ids - A list of thread IDs as strings
-     */
-    _handleDigest(messages, thread_ids) {
-        // Prune threads
-        for (const thread_id of Object.keys(this.threads)) {
-            if (!thread_ids.includes(thread_id))
-                delete this.threads[thread_id];
-        }
-
-        // Request each new or newer thread
-        for (let i = 0, len = messages.length; i < len; i++) {
-            const message = messages[i];
-            const cache = this.threads[message.thread_id];
-
-            if (cache === undefined) {
-                this._requestConversation(message.thread_id);
-                continue;
-            }
-
-            // If this message is marked read, mark the rest as read
-            if (message.read === MessageStatus.READ) {
-                for (const msg of cache)
-                    msg.read = MessageStatus.READ;
-            }
-
-            // If we don't have a thread for this message or it's newer
-            // than the last message in the cache, request the thread
-            if (!cache.length || cache[cache.length - 1].date < message.date)
-                this._requestConversation(message.thread_id);
-        }
-
-        this.notify('threads');
-    }
-
-    /**
      * Handle a new single message
      *
      * @param {object} message - A message object
      */
     _handleMessage(message) {
-        let conversation = null;
-
-        // If the window is open, try and find an active conversation
+        // If the window is open, send an update
         if (this._window)
-            conversation = this._window.getConversationForMessage(message);
-
-        // If there's an active conversation, we should log the message now
-        if (conversation)
-            conversation.logNext(message);
+            this._window.logMessage(message);
     }
 
     /**
@@ -269,32 +226,28 @@ const SMSPlugin = GObject.registerClass({
             return;
 
         const thread_id = thread[0].thread_id;
-        const cache = this.threads[thread_id] || [];
+        const orig_cached = this.threads[thread_id];
 
         // Handle each message
         for (let i = 0, len = thread.length; i < len; i++) {
             const message = thread[i];
 
-            // TODO: We only cache messages of a known MessageBox since we
+            // TODO: We only process messages of a known MessageBox since we
             // have no reliable way to determine its direction, let alone
             // what to do with it.
             if (message.type < 0 || message.type > 6)
                 continue;
 
-            // If the message exists, just update it
-            const cacheMessage = cache.find(m => m.date === message.date);
+            const cached = this.threads[thread_id];
+            if (cached === undefined || message.date > cached.date)
+                this.threads[thread_id] = message;
 
-            if (cacheMessage) {
-                Object.assign(cacheMessage, message);
-            } else {
-                cache.push(message);
-                this._handleMessage(message);
-            }
+            this._handleMessage(message);
         }
 
-        // Sort the thread by ascending date and notify
-        this.threads[thread_id] = cache.sort((a, b) => a.date - b.date);
-        this.notify('threads');
+        // Notify if the cache has changed
+        if (orig_cached !== this.threads[thread_id])
+            this.notify('threads');
     }
 
     /**
@@ -328,13 +281,15 @@ const SMSPlugin = GObject.registerClass({
                 }
             }
 
-            // If there's multiple thread_id's it's a summary of threads
-            if (thread_ids.some(id => id !== thread_ids[0]))
-                this._handleDigest(messages, thread_ids);
-
-            // Otherwise this is single thread or new message
-            else
+            // If there are multiple thread_id values, handle each message
+            // separately
+            if (thread_ids.some(id => id !== thread_ids[0])) {
+                for (let i = 0, len = messages.length; i < len; i++)
+                    this._handleThread([messages[i]]);
+            // Otherwise, handle as a thread chunk.
+            } else {
                 this._handleThread(messages);
+            }
         } catch (e) {
             debug(e, this.device.name);
         }
@@ -344,14 +299,25 @@ const SMSPlugin = GObject.registerClass({
      * Request a list of messages from a single thread.
      *
      * @param {number} thread_id - The id of the thread to request
+     * @param {number} numberToGet - The messages remaining
+     * @param {number} earliestTimestamp - The timestamp of the earliest message
      */
-    _requestConversation(thread_id) {
+    _requestConversation(thread_id, numberToGet = -1, earliestTimestamp = -1) {
+        const pkt_body = {threadID: thread_id};
+
+        if (numberToGet > 0)
+            pkt_body['numberToRequest'] = numberToGet;
+        if (earliestTimestamp > 0)
+            pkt_body['rangeStartTimestamp'] = earliestTimestamp;
+
         this.device.sendPacket({
             type: 'kdeconnect.sms.request_conversation',
-            body: {
-                threadID: thread_id,
-            },
+            body: pkt_body,
         });
+    }
+
+    requestMore(thread_id, earliestTimestamp) {
+        this._requestConversation(thread_id, 10, earliestTimestamp);
     }
 
     /**
@@ -366,9 +332,14 @@ const SMSPlugin = GObject.registerClass({
     /**
      * A notification action for replying to SMS messages (or missed calls).
      *
-     * @param {string} hint - Could be either a contact name or phone number
+     * @param {string} sender - The message sender's name
+     * @param {string} body - The message body
      */
-    replySms(hint) {
+    replySms(sender, body) {
+        this.window.message = {
+            title: sender,
+            body: body,
+        };
         this.window.present();
         // FIXME: causes problems now that non-numeric addresses are allowed
         // this.window.address = hint.toPhoneNumber();
@@ -441,7 +412,7 @@ const SMSPlugin = GObject.registerClass({
 
         // If there are active threads, show the chooser dialog
         } else if (Object.values(this.threads).length > 0) {
-            const window = new Messaging.ConversationChooser({
+            const window = new ConversationChooser({
                 application: Gio.Application.get_default(),
                 device: this.device,
                 message: url,
@@ -492,10 +463,10 @@ const SMSPlugin = GObject.registerClass({
         }
     }
 
-    _threadHasAddress(thread, addressObj) {
+    _messageHasAddress(message, addressObj) {
         const number = addressObj.address.toPhoneNumber();
 
-        for (const taddressObj of thread[0].addresses) {
+        for (const taddressObj of message.addresses) {
             const tnumber = taddressObj.address.toPhoneNumber();
 
             if (number.endsWith(tnumber) || tnumber.endsWith(number))
@@ -512,23 +483,49 @@ const SMSPlugin = GObject.registerClass({
      * @returns {string|null} a thread ID
      */
     getThreadIdForAddresses(addresses = []) {
-        const threads = Object.values(this.threads);
+        const messages = Object.values(this.threads);
 
-        for (const thread of threads) {
-            if (addresses.length !== thread[0].addresses.length)
+        for (const message of messages) {
+            if (addresses.length !== message.addresses.length)
                 continue;
 
-            if (addresses.every(addressObj => this._threadHasAddress(thread, addressObj)))
-                return thread[0].thread_id;
+            if (addresses.every(addressObj => this._messageHasAddress(message, addressObj)))
+                return message.thread_id;
         }
 
         return null;
     }
 
-    destroy() {
-        if (this._window !== undefined)
-            this._window.destroy();
+    /**
+     * Retrieve the cached latest-message for a thread.
+     *
+     * @param {string} thread_id a thread ID
+     * @returns {object} a message object
+     */
+    getThreadLatestMessage(thread_id) {
+        const message = this.threads[thread_id];
 
+        if (message)
+            return message;
+
+        return null;
+    }
+
+    getLatestMessagePerThread() {
+        const messages = {};
+
+        for (const [thread_id, message] of Object.entries(this.threads))
+            messages[thread_id] = message;
+
+        return messages;
+    }
+
+    destroy() {
+        if (this._window !== undefined) {
+            const window = this._window;
+            window.close();
+            window.disconnect(this._windowId);
+        }
         super.destroy();
     }
 });

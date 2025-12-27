@@ -6,12 +6,13 @@
 
 // -*- mode: js; -*-
 
-import Gdk from 'gi://Gdk?version=3.0';
+import Gdk from 'gi://Gdk?version=4.0';
 import 'gi://GdkPixbuf?version=2.0';
 import Gio from 'gi://Gio?version=2.0';
 import GLib from 'gi://GLib?version=2.0';
 import GObject from 'gi://GObject?version=2.0';
-import Gtk from 'gi://Gtk?version=3.0';
+import Gtk from 'gi://Gtk?version=4.0';
+import Adw from 'gi://Adw';
 
 import system from 'system';
 
@@ -28,8 +29,7 @@ import('gi://GioUnix?version=2.0').catch(() => {}); // Set version for optional 
 const Preferences = GObject.registerClass({
     GTypeName: 'GSConnectPreferences',
     Implements: [Gio.ActionGroup],
-}, class Preferences extends Gtk.Application {
-
+}, class Preferences extends Adw.Application {
     _init() {
         super._init({
             application_id: 'org.gnome.Shell.Extensions.GSConnect.Preferences',
@@ -46,7 +46,6 @@ const Preferences = GObject.registerClass({
                 application: this,
             });
         }
-
         this._window.present();
     }
 
@@ -56,8 +55,8 @@ const Preferences = GObject.registerClass({
         // Init some resources
         const provider = new Gtk.CssProvider();
         provider.load_from_resource(`${Config.APP_PATH}/application.css`);
-        Gtk.StyleContext.add_provider_for_screen(
-            Gdk.Screen.get_default(),
+        Gtk.StyleContext.add_provider_for_display(
+            Gdk.Display.get_default(),
             provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         );
@@ -75,8 +74,8 @@ const Preferences = GObject.registerClass({
             this.add_action(action);
         }
     }
-
-    vfunc_activate_action(action_name, parameter) {
+    
+    activate_action(action_name, parameter) {
         try {
             const paramArray = [];
 

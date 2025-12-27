@@ -4,20 +4,29 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-import Gdk from 'gi://Gdk?version=3.0';
+import Gdk from 'gi://Gdk?version=4.0';
 import 'gi://GdkPixbuf?version=2.0';
 import Gio from 'gi://Gio?version=2.0';
 import GLib from 'gi://GLib?version=2.0';
 import GObject from 'gi://GObject?version=2.0';
-import Gtk from 'gi://Gtk?version=3.0';
+import Gtk from 'gi://Gtk?version=4.0';
 import 'gi://Pango?version=1.0';
+import Adw from 'gi://Adw';
 
 // GNOME 49 uses GIRepository 3.0
 import('gi://GIRepository?version=3.0').catch(() => {
     import('gi://GIRepository?version=2.0').catch(() => {});
 });
 
-import('gi://GioUnix?version=2.0').catch(() => {}); // Set version for optional dependency
+let GioUnix;
+try {
+    GioUnix = (await import('gi://GioUnix?version=2.0')).default;
+} catch {
+    GioUnix = {
+        InputStream: Gio.UnixInputStream,
+        OutputStream: Gio.UnixOutputStream,
+    };
+}
 
 import system from 'system';
 
@@ -27,15 +36,13 @@ import Config from '../config.js';
 import Device from './device.js';
 import Manager from './manager.js';
 import * as ServiceUI from './ui/service.js';
-import {MissingOpensslError} from '../utils/exceptions.js';
-
 
 /**
  * Class representing the GSConnect service daemon.
  */
 const Service = GObject.registerClass({
     GTypeName: 'GSConnectService',
-}, class Service extends Gtk.Application {
+}, class Service extends Adw.Application {
 
     _init() {
         super._init({
@@ -49,6 +56,7 @@ const Service = GObject.registerClass({
 
         // Command-line
         this._initOptions();
+
     }
 
     _migrateConfiguration() {
@@ -185,7 +193,9 @@ const Service = GObject.registerClass({
                 return;
             }
 
-            const dialog = new ServiceUI.ErrorDialog(error);
+            const dialog = new ServiceUI.ErrorDialog({
+                error: error,
+            });
             dialog.present();
         } catch (e) {
             logError(e);
@@ -288,15 +298,15 @@ const Service = GObject.registerClass({
         // Init some resources
         const provider = new Gtk.CssProvider();
         provider.load_from_resource(`${Config.APP_PATH}/application.css`);
-        Gtk.StyleContext.add_provider_for_screen(
-            Gdk.Screen.get_default(),
+        Gtk.StyleContext.add_provider_for_display(
+            Gdk.Display.get_default(),
             provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         );
 
         // Ensure our handlers are registered
         try {
-            const appInfo = Gio.DesktopAppInfo.new(`${Config.APP_ID}.desktop`);
+            const appInfo = GioUnix.DesktopAppInfo.new(`${Config.APP_ID}.desktop`);
             appInfo.add_supports_type('x-scheme-handler/sms');
             appInfo.add_supports_type('x-scheme-handler/tel');
         } catch (e) {
@@ -309,15 +319,9 @@ const Service = GObject.registerClass({
         // TODO: remove after a reasonable period of time
         try {
             this._migrateConfiguration();
-            if (this.settings.get_boolean('missing-openssl'))
-                this.withdraw_notification('gsconnect-missing-openssl');
-            this.settings.set_boolean('missing-openssl', false);
         } catch (e) {
-            if (e instanceof MissingOpensslError) {
-                this.settings.set_boolean('missing-openssl', true);
-                this.notify_error(e, 'gsconnect-missing-openssl');
-            }
-            throw e;
+            if (!e.message === 'OpenSSL not found')
+                throw e;
         }
 
         this.manager.start();

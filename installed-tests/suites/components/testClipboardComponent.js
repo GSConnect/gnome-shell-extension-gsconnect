@@ -1,15 +1,49 @@
-// SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
-//
-// SPDX-License-Identifier: GPL-2.0-or-later
-
 import '../fixtures/utils.js';
 
-import Gdk from 'gi://Gdk';
-import Gtk from 'gi://Gtk';
+import GObject from 'gi://GObject';
 import GLib from 'gi://GLib';
 
 import Config from '../config.js';
-const {default: Clipboard} = await import(`file://${Config.PACKAGE_DATADIR}/service/components/clipboard.js`);
+const {default: Clipboard} = await import(
+    `file://${Config.PACKAGE_DATADIR}/service/components/clipboard.js`
+);
+
+/* Mock GTK Clipboard */
+const MockGtkClipboard = GObject.registerClass({
+    Signals: {
+        changed: {},
+    },
+}, class MockGtkClipboard extends GObject.Object {
+    _text = null;
+    _signal = null;
+
+    set_content(provider) {
+        this._text = provider.get_value().get_string()[0];
+        this.emit('changed');
+    }
+
+    async read_text_async() {
+        return await new Promise((resolve) => {
+            // simulate async delay in next main loop iteration
+            GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
+                resolve(this._text);
+                return GLib.SOURCE_REMOVE;
+            });
+        });
+    }
+
+    connect(signal, callback) { 
+        this._signal = callback; return 1; 
+    }
+    
+    disconnect(id) { 
+        this._signal = null; 
+    }
+    
+    changed() { 
+        if (this._signal) this._signal(this);
+    }
+});
 
 
 describe('The Clipboard component', function () {
@@ -17,12 +51,8 @@ describe('The Clipboard component', function () {
     let gtkClipboard;
 
     beforeAll(function () {
-        Gtk.init(null);
-
-        const display = Gdk.Display.get_default();
-        gtkClipboard = Gtk.Clipboard.get_default(display);
-
-        clipboard = new Clipboard();
+        gtkClipboard = new MockGtkClipboard();
+        clipboard = new Clipboard(gtkClipboard);
     });
 
     afterAll(function () {
@@ -32,27 +62,21 @@ describe('The Clipboard component', function () {
     it('pulls changes from the session clipboard', function (done) {
         const text = GLib.uuid_string_random();
 
-        const id = clipboard.connect('notify::text', (clipboard) => {
-            clipboard.disconnect(id);
-
+        clipboard.connect('notify::text', () => {
             expect(clipboard.text).toBe(text);
             done();
         });
 
-        gtkClipboard.set_text(text, -1);
+        gtkClipboard.set_content({
+            get_value: () => new GLib.Variant('s', text),
+        });
     });
 
-    it('pushes changes to the session clipboard', function (done) {
+    it('pushes changes to clipboard', async function () {
         const text = GLib.uuid_string_random();
-
-        const id = gtkClipboard.connect('owner-change', (gtkClipboard) => {
-            gtkClipboard.disconnect(id);
-
-            expect(gtkClipboard.wait_for_text()).toBe(text);
-            done();
-        });
-
         clipboard.text = text;
+
+        const value = await gtkClipboard.read_text_async(null);
+        expect(value).toBe(text);
     });
 });
-
