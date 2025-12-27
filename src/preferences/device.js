@@ -238,7 +238,7 @@ const ActionRowBox = GObject.registerClass({
      *
      * @param {string} action_name - The name of the action to activate. It should match
      *                               the name of an action in the action group.
-     * @param {*} target - The target associated with the action (can be `null`).
+     * @param {object} target - The target associated with the action (can be `null`).
      *                     This is typically the data or object the action should operate on.
      *
      * @returns {void} - This method does not return anything.

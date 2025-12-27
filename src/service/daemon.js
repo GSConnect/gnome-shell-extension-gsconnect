@@ -18,7 +18,15 @@ import('gi://GIRepository?version=3.0').catch(() => {
     import('gi://GIRepository?version=2.0').catch(() => {});
 });
 
-import('gi://GioUnix?version=2.0').catch(() => {}); // Set version for optional dependency
+let GioUnix;
+try {
+    GioUnix = (await import('gi://GioUnix?version=2.0')).default;
+} catch {
+    GioUnix = {
+        InputStream: Gio.UnixInputStream,
+        OutputStream: Gio.UnixOutputStream,
+    };
+}
 
 import system from 'system';
 
@@ -28,8 +36,6 @@ import Config from '../config.js';
 import Device from './device.js';
 import Manager from './manager.js';
 import * as ServiceUI from './ui/service.js';
-import {MissingOpensslError} from '../utils/exceptions.js';
-
 
 /**
  * Class representing the GSConnect service daemon.

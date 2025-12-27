@@ -370,7 +370,7 @@ export const Window = GObject.registerClass({
             dialog.connect('response', this._onRetryOpenssl.bind(this));
             dialog.present(this);
         }
-        
+
         this.add_action(this.settings.create_action('missing-openssl'));
 
         // Application Menu
@@ -753,7 +753,7 @@ export const Window = GObject.registerClass({
     }
 
     _onRetryOpenssl(widget, event) {
-        if (event == 'retry') {
+        if (event === 'retry') {
             this.settings.set_boolean('enabled', false);
             GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT_IDLE, 2, () => {
                 this.settings.set_boolean('enabled', true);

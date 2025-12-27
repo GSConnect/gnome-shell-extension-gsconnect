@@ -904,9 +904,9 @@ const ConversationSummary = GObject.registerClass({
             this.avatar.icon_name = 'people-symbolic';
             const participants = [];
             addresses.forEach(address => {
-                if (this.contacts[address] != null && this.contacts[address] != undefined)
+                if (this.contacts[address] !== null && this.contacts[address] !== undefined)
                     participants.push(this.contacts[address].name);
-                else 
+                else
                     participants.push(address);
             });
             // this.name_label.tooltip_text = participants.join(', ');
