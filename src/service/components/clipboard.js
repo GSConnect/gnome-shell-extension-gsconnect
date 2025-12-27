@@ -28,11 +28,11 @@ const Clipboard = GObject.registerClass({
     },
 }, class Clipboard extends GObject.Object {
 
-    _init() {
+    _init(gtkClipboard = null) {
         super._init();
 
         this._cancellable = new Gio.Cancellable();
-        this._clipboard = null;
+        this._gtkClipboard = gtkClipboard ?? Gdk.Display.get_default().get_clipboard();
 
         this._ownerChangeId = 0;
         this._nameWatcherId = Gio.bus_watch_name(
@@ -123,9 +123,6 @@ const Clipboard = GObject.registerClass({
             this._clipboard.disconnect(this._ownerChangeId);
             this._clipboardChangedId = 0;
         }
-
-        const display = Gdk.Display.get_default();
-        this._clipboard = display.get_clipboard();
 
         this._ownerChangeId = this._clipboard.connect('changed',
             this._onOwnerChange.bind(this));
