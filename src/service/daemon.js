@@ -435,6 +435,15 @@ const Service = GObject.registerClass({
             '<device-id>'
         );
 
+        this.add_main_option(
+            'name',
+            'n'.charCodeAt(0),
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.STRING,
+            _('Target Device Name'),
+            '<device-name>'
+        );
+
         /**
          * Pairing
          */
@@ -710,6 +719,32 @@ const Service = GObject.registerClass({
         this._cliAction(device, 'shareText', GLib.Variant.new_string(text));
     }
 
+    _findDeviceID(name) {
+        const result = Gio.DBus.session.call_sync(
+            'org.gnome.Shell.Extensions.GSConnect',
+            '/org/gnome/Shell/Extensions/GSConnect',
+            'org.freedesktop.DBus.ObjectManager',
+            'GetManagedObjects',
+            null,
+            null,
+            Gio.DBusCallFlags.NONE,
+            -1,
+            null
+        );
+
+        const variant = result.unpack()[0].unpack();
+        let device;
+
+        for (let object of Object.values(variant)) {
+            object = object.recursiveUnpack();
+            device = object['org.gnome.Shell.Extensions.GSConnect.Device'];
+
+            if (name === device.Name)
+                return device.Id;
+        }
+        return null;
+    }
+
     vfunc_handle_local_options(options) {
         try {
             if (options.contains('version')) {
@@ -731,11 +766,15 @@ const Service = GObject.registerClass({
 
             // We need a device for anything else; exit since this is probably
             // the daemon being started.
-            if (!options.contains('device'))
+            let id = null;
+            if (options.contains('device')) {
+                id = options.lookup_value('device', null).unpack();
+            } else if (options.contains('name')) {
+                const name = options.lookup_value('name', null).unpack();
+                id = this._findDeviceID(name); // May return null if no match found
+            }
+            if (id === null)
                 return -1;
-
-            const id = options.lookup_value('device', null).unpack();
-
             // Pairing
             if (options.contains('pair')) {
                 this._cliAction(id, 'pair');
