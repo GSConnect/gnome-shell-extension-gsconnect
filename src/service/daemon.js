@@ -17,7 +17,11 @@ import('gi://GIRepository?version=3.0').catch(() => {
     import('gi://GIRepository?version=2.0').catch(() => {});
 });
 
-import('gi://GioUnix?version=2.0').catch(() => {}); // Set version for optional dependency
+// DesktopAppInfo is no longer in Gio in GNOME 49
+let GioUnix;
+GioUnix = import('gi://GioUnix?version=2.0').catch(() => {
+    GioUnix = Gio;
+});
 
 import system from 'system';
 
@@ -296,7 +300,7 @@ const Service = GObject.registerClass({
 
         // Ensure our handlers are registered
         try {
-            const appInfo = Gio.DesktopAppInfo.new(`${Config.APP_ID}.desktop`);
+            const appInfo = GioUnix.DesktopAppInfo.new(`${Config.APP_ID}.desktop`);
             appInfo.add_supports_type('x-scheme-handler/sms');
             appInfo.add_supports_type('x-scheme-handler/tel');
         } catch (e) {
