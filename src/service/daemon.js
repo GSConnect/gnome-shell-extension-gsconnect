@@ -66,7 +66,7 @@ const Service = GObject.registerClass({
 
         const certificate = Gio.TlsCertificate.new_for_paths(certPath, keyPath, null);
 
-        if (Device.validateId(certificate.common_name))
+        if (Device.validateLocalId(certificate.common_name))
             return;
 
         // Remove the old certificate, serving as the single source of truth

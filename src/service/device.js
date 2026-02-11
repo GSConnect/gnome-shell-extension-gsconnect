@@ -139,6 +139,10 @@ const Device = GObject.registerClass({
         return /^[a-zA-Z0-9_-]{32,38}$/.test(id);
     }
 
+    static validateLocalId(id) {
+        return /^[a-zA-Z0-9_]{32,38}$/.test(id);
+    }
+
     static validateName(name) {
         // None of the forbidden characters and at least one non-whitespace
         return name.trim() && /^[^"',;:.!?()[\]<>]{1,32}$/.test(name);
