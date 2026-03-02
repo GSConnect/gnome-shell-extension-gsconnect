@@ -12,6 +12,10 @@ The current implementation adds a new `bluetooth` backend that:
 - Discovers paired BlueZ devices that advertise KDE Connect service UUIDs.
 - Initiates `ConnectProfile()` calls and accepts incoming profile connections.
 - Exchanges `kdeconnect.identity` packets over the Bluetooth socket.
+- Implements KDE Connect's Bluetooth channel multiplexer (default packet
+  channel plus payload UUID channels).
+- Supports payload upload/download using `payloadTransferInfo.uuid`, enabling
+  file sharing over Bluetooth.
 - Verifies and persists remote certificates from identity packets.
 - Integrates with existing manager/device pairing and reconnect flows through
   `bluetooth://<MAC>` URIs.
@@ -44,6 +48,9 @@ Integration points:
    `Gio.SocketConnection` and creates a GSConnect channel.
 6. The channel exchanges identity packets and verifies the peer certificate
    against the trusted device certificate if one is already stored.
+7. Packet I/O and payload transfers are handled through a Bluetooth multiplexer
+  compatible with KDE Connect's message types (`OPEN_CHANNEL`, `READ`,
+  `WRITE`, `CLOSE_CHANNEL`) and default channel UUID.
 
 ## Security Model
 
@@ -60,9 +67,6 @@ pairing state:
 
 ## Current Limitations
 
-- Payload transfers (`upload`/`download`) are not implemented for Bluetooth in
-  this iteration. Packet-only plugins should work; plugins requiring payload
-  channels still rely on LAN transport.
 - The connect dialog currently supports manual Bluetooth MAC entry, while scan
   and auto-connect are backend-driven.
 - This backend depends on BlueZ `ProfileManager1` support and RFCOMM profile
@@ -73,7 +77,9 @@ pairing state:
 1. Open GSConnect preferences and use `Connect to...`.
 2. Enter a Bluetooth MAC address (`XX:XX:XX:XX:XX:XX`) and click `Connect`.
 3. Ensure the device appears and pairing works.
-4. Validate packet-based plugin functionality (for example ping and clipboard
-   metadata sync).
-5. Confirm reconnect after service restart using saved `last-connection`.
-6. Verify LAN pairing/discovery behavior remains unchanged.
+4. Send a file from GSConnect to Android and verify it arrives.
+5. Send a file from Android KDE Connect to GSConnect and verify download.
+6. Validate packet-based plugin functionality (for example ping and clipboard
+  metadata sync).
+7. Confirm reconnect after service restart using saved `last-connection`.
+8. Verify LAN pairing/discovery behavior remains unchanged.
