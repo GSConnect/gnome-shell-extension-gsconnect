@@ -709,6 +709,11 @@ export const ChannelService = GObject.registerClass({
 
         const target = address ? _normalizeAddress(address) : null;
 
+        // Prefer incoming Bluetooth links by default and only attempt
+        // outbound ConnectProfile for explicit/manual target addresses.
+        if (target === null)
+            return;
+
         for (const proxy of this._iterDeviceProxies()) {
             const current = _normalizeAddress(_property(proxy, 'Address', ''));
 
@@ -735,6 +740,10 @@ export const ChannelService = GObject.registerClass({
             return;
 
         if (!this._isKdeConnectDevice(proxy))
+            return;
+
+        const address = _normalizeAddress(_property(proxy, 'Address', ''));
+        if (!this._allowed.has(address))
             return;
 
         this._connectProxy(proxy).catch(e => {
@@ -766,16 +775,14 @@ export const ChannelService = GObject.registerClass({
         this._scanId = GLib.timeout_add_seconds(
             GLib.PRIORITY_LOW,
             SCAN_INTERVAL_SECONDS,
-            () => {
-                this.broadcast();
-                return GLib.SOURCE_CONTINUE;
-            }
+            () => GLib.SOURCE_CONTINUE
         );
 
         this._active = true;
         this.notify('active');
 
-        await this._scanDevices();
+        // Do not initiate unsolicited outbound RFCOMM connections here.
+        // Android KDE Connect actively discovers paired services and connects in.
     }
 
     NewConnection(device, fd) {
