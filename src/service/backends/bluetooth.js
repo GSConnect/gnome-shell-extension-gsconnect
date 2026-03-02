@@ -615,9 +615,9 @@ export const ChannelService = GObject.registerClass({
             Name: new GLib.Variant('s', 'GSConnect'),
             Role: new GLib.Variant('s', 'server'),
             AutoConnect: new GLib.Variant('b', true),
-            // Android uses a secure RFCOMM socket for KDE Connect.
-            // Match KDE's encrypted/authenticated transport expectations.
-            RequireAuthentication: new GLib.Variant('b', true),
+            // Keep profile auth relaxed for compatibility with adapters/
+            // stacks that are bonded but not marked trusted identically.
+            RequireAuthentication: new GLib.Variant('b', false),
             RequireAuthorization: new GLib.Variant('b', false),
         };
 
