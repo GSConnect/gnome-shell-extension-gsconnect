@@ -24,6 +24,7 @@ const RFCOMM_CHANNEL = 29;
 const DEFAULT_CHANNEL_UUID = 'a0d0aaf4-1072-4d81-aa35-902a954b1266';
 const SCAN_INTERVAL_SECONDS = 15;
 const CONNECT_RETRY_SECONDS = 60;
+const PROFILE_UNAVAILABLE_RETRY_SECONDS = 300;
 const BUFFER_SIZE = 4096;
 
 const MESSAGE_PROTOCOL_VERSION = 0;
@@ -710,7 +711,13 @@ export const ChannelService = GObject.registerClass({
             );
             this._retryAfter.delete(address);
         } catch (e) {
-            this._retryAfter.set(address, now + CONNECT_RETRY_SECONDS);
+            const message = e?.message ?? '';
+
+            if (message.includes('ProfileUnavailable'))
+                this._retryAfter.set(address, now + PROFILE_UNAVAILABLE_RETRY_SECONDS);
+            else
+                this._retryAfter.set(address, now + CONNECT_RETRY_SECONDS);
+
             debug(e, `Bluetooth ConnectProfile (${address})`);
         } finally {
             this._connecting.delete(address);
@@ -725,8 +732,6 @@ export const ChannelService = GObject.registerClass({
 
         for (const proxy of this._iterDeviceProxies()) {
             const current = _normalizeAddress(_property(proxy, 'Address', ''));
-            const connected = _property(proxy, 'Connected', false);
-            const trusted = _property(proxy, 'Trusted', false);
             const knownService = this._isKdeConnectDevice(proxy);
             const allowed = this._allowed.has(current);
 
@@ -736,9 +741,8 @@ export const ChannelService = GObject.registerClass({
             if (!_property(proxy, 'Paired', false))
                 continue;
 
-            // BlueZ can hold stale UUID data; probe trusted currently-connected
-            // devices in addition to known KDE Connect service UUIDs.
-            if (!(knownService || allowed || (connected && trusted)))
+            // Probe only explicit targets or devices advertising KDE Connect.
+            if (!(knownService || allowed))
                 continue;
 
             await this._connectProxy(proxy);
