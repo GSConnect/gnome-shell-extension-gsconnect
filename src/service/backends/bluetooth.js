@@ -59,13 +59,6 @@ function _property(proxy, name, fallback = null) {
     return property.recursiveUnpack();
 }
 
-function _loadSdpRecord() {
-    const path = '/org/gnome/Shell/Extensions/GSConnect/' +
-        'org.gnome.Shell.Extensions.GSConnect.sdp.xml';
-    const bytes = Gio.resources_lookup_data(path, Gio.ResourceLookupFlags.NONE);
-    return new TextDecoder().decode(bytes.toArray());
-}
-
 function _deviceSettings(deviceId) {
     return new Gio.Settings({
         settings_schema: Config.GSCHEMA.lookup(
@@ -621,9 +614,10 @@ export const ChannelService = GObject.registerClass({
         const options = {
             Name: new GLib.Variant('s', 'GSConnect'),
             Role: new GLib.Variant('s', 'server'),
-            ServiceRecord: new GLib.Variant('s', _loadSdpRecord()),
             AutoConnect: new GLib.Variant('b', true),
-            RequireAuthentication: new GLib.Variant('b', false),
+            // Android uses a secure RFCOMM socket for KDE Connect.
+            // Match KDE's encrypted/authenticated transport expectations.
+            RequireAuthentication: new GLib.Variant('b', true),
             RequireAuthorization: new GLib.Variant('b', false),
         };
 

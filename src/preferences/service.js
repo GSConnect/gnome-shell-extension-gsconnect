@@ -16,6 +16,11 @@ import {Panel, rowSeparators} from './device.js';
 import {Service} from '../utils/remote.js';
 
 
+const BLUEZ_SERVICE = 'org.bluez';
+const BLUEZ_PATH = '/';
+const BLUEZ_ADAPTER_IFACE = 'org.bluez.Adapter1';
+
+
 /*
  * Header for support logs
  */
@@ -152,6 +157,9 @@ export const Window = GObject.registerClass({
         // HeaderBar
         'headerbar', 'stack',
         'infobar_discoverable', 'infobar_openssl',
+        'infobar_bluetooth', 'bluetooth-infobar',
+        'bluetooth-status-title', 'bluetooth-status-body',
+        'bluetooth-settings-button',
         'service-menu', 'service-edit', 'refresh-button',
         'device-menu', 'prev-button',
 
@@ -236,6 +244,9 @@ export const Window = GObject.registerClass({
             this._refresh.bind(this)
         );
 
+        // Poll BlueZ state and keep a visible Bluetooth status indicator up to date
+        this._initBluetoothStatus();
+
         // Restore window size/maximized/position
         this._restoreGeometry();
 
@@ -266,7 +277,81 @@ export const Window = GObject.registerClass({
         this._saveGeometry();
         GLib.source_remove(this._refreshSource);
 
+        if (this._bluetoothSource > 0)
+            GLib.source_remove(this._bluetoothSource);
+
         return false;
+    }
+
+    _initBluetoothStatus() {
+        this._bluetoothManager = null;
+
+        try {
+            this._bluetoothManager = Gio.DBusObjectManagerClient.new_for_bus_sync(
+                Gio.BusType.SYSTEM,
+                Gio.DBusObjectManagerClientFlags.DO_NOT_AUTO_START,
+                BLUEZ_SERVICE,
+                BLUEZ_PATH,
+                null,
+                null
+            );
+        } catch (e) {
+            debug(e, 'BlueZ Object Manager');
+        }
+
+        this._updateBluetoothStatus();
+
+        this._bluetoothSource = GLib.timeout_add_seconds(
+            GLib.PRIORITY_DEFAULT,
+            3,
+            () => {
+                this._updateBluetoothStatus();
+                return GLib.SOURCE_CONTINUE;
+            }
+        );
+    }
+
+    _updateBluetoothStatus() {
+        let available = false;
+        let powered = false;
+
+        if (this._bluetoothManager) {
+            for (const object of this._bluetoothManager.get_objects()) {
+                const adapter = object.get_interface(BLUEZ_ADAPTER_IFACE);
+
+                if (!(adapter instanceof Gio.DBusProxy))
+                    continue;
+
+                available = true;
+
+                const value = adapter.get_cached_property('Powered');
+                if (value && value.unpack()) {
+                    powered = true;
+                    break;
+                }
+            }
+        }
+
+        if (!available) {
+            this.bluetooth_infobar.message_type = Gtk.MessageType.WARNING;
+            this.bluetooth_status_title.label = _('Bluetooth backend unavailable');
+            this.bluetooth_status_body.label = _('BlueZ was not detected. Bluetooth transport will not be available.');
+            this.bluetooth_settings_button.visible = false;
+            return;
+        }
+
+        if (!powered) {
+            this.bluetooth_infobar.message_type = Gtk.MessageType.WARNING;
+            this.bluetooth_status_title.label = _('Bluetooth adapter is off');
+            this.bluetooth_status_body.label = _('Turn on Bluetooth to allow GSConnect Bluetooth transport and discovery.');
+            this.bluetooth_settings_button.visible = true;
+            return;
+        }
+
+        this.bluetooth_infobar.message_type = Gtk.MessageType.INFO;
+        this.bluetooth_status_title.label = _('Bluetooth transport enabled');
+        this.bluetooth_status_body.label = _('Bluetooth is on and GSConnect can accept Bluetooth connections.');
+        this.bluetooth_settings_button.visible = true;
     }
 
     async _initService() {
@@ -370,7 +455,7 @@ export const Window = GObject.registerClass({
             this._about = new Gtk.AboutDialog({
                 application: Gio.Application.get_default(),
                 authors: [
-                    'Andy Holmes <andrew.g.r.holmes@gmail.com>',
+                    'FarisZR <fariszr@fariszr.com>',
                     'Bertrand Lacoste <getzze@gmail.com>',
                     'Frank Dana <ferdnyc@gmail.com>',
                 ],
@@ -509,6 +594,17 @@ export const Window = GObject.registerClass({
             this.settings.set_boolean('enabled', true);
             return GLib.SOURCE_REMOVE;
         });
+    }
+
+    _onOpenBluetoothSettings(button, event) {
+        try {
+            Gio.Subprocess.new(
+                ['gnome-control-center', 'bluetooth'],
+                Gio.SubprocessFlags.NONE
+            );
+        } catch (e) {
+            logError(e, 'Opening Bluetooth Settings');
+        }
     }
 
     /*
