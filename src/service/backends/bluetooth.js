@@ -822,12 +822,15 @@ export const ChannelService = GObject.registerClass({
     }
 
     broadcast(address = null) {
-        if (address !== null)
+        if (address !== null) {
             this._allowed.add(_normalizeAddress(address));
+            return;
+        }
 
-        this._scanDevices(address).catch(e => {
-            debug(e, 'Bluetooth Scan');
-        });
+        // Bluetooth transport remains discoverable through the registered
+        // Profile1 server. We intentionally avoid outbound ConnectProfile
+        // retries from periodic identify/reconnect to prevent tight timeout
+        // loops against devices that are not currently accepting RFCOMM.
     }
 
     start() {
