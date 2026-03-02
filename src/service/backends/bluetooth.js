@@ -778,7 +778,7 @@ export const ChannelService = GObject.registerClass({
         await this._scanDevices();
     }
 
-    async NewConnection(device, fd) {
+    NewConnection(device, fd) {
         const proxy = this._objectManager?.get_object(device)
             ?.get_interface(BLUEZ_DEVICE_IFACE);
         const address = _normalizeAddress(_property(proxy, 'Address', ''));
@@ -790,19 +790,17 @@ export const ChannelService = GObject.registerClass({
             allowed: this._allowed.has(address),
         });
 
-        try {
-            await channel.accept(fd);
-
+        channel.accept(fd).then(() => {
             const existing = this.channels.get(channel.address);
             if (existing)
                 existing.close();
 
             this.channels.set(channel.address, channel);
             this.channel(channel);
-        } catch (e) {
+        }).catch(e => {
+            debug(e, `Bluetooth NewConnection (${channel.address})`);
             channel.close();
-            throw e;
-        }
+        });
     }
 
     RequestDisconnection(device) {
