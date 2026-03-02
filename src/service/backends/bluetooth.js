@@ -23,6 +23,7 @@ const SERVICE_UUID_HEX = '185f3df432684e3f9fcad4d5059915bd';
 const RFCOMM_CHANNEL = 29;
 const DEFAULT_CHANNEL_UUID = 'a0d0aaf4-1072-4d81-aa35-902a954b1266';
 const SCAN_INTERVAL_SECONDS = 15;
+const CONNECT_RETRY_SECONDS = 60;
 const BUFFER_SIZE = 4096;
 
 const MESSAGE_PROTOCOL_VERSION = 0;
@@ -550,6 +551,7 @@ export const ChannelService = GObject.registerClass({
         super._init(params);
 
         this._allowed = new Set();
+        this._retryAfter = new Map();
         this._connecting = new Set();
         this._signalIds = [];
         this._profile = null;
@@ -690,6 +692,12 @@ export const ChannelService = GObject.registerClass({
         if (this._connecting.has(address))
             return;
 
+        const now = Math.floor(Date.now() / 1000);
+        const retryAt = this._retryAfter.get(address) ?? 0;
+
+        if (retryAt > now)
+            return;
+
         this._connecting.add(address);
 
         try {
@@ -700,7 +708,9 @@ export const ChannelService = GObject.registerClass({
                 -1,
                 this.cancellable
             );
+            this._retryAfter.delete(address);
         } catch (e) {
+            this._retryAfter.set(address, now + CONNECT_RETRY_SECONDS);
             debug(e, `Bluetooth ConnectProfile (${address})`);
         } finally {
             this._connecting.delete(address);
@@ -713,13 +723,12 @@ export const ChannelService = GObject.registerClass({
 
         const target = address ? _normalizeAddress(address) : null;
 
-        // Prefer incoming Bluetooth links by default and only attempt
-        // outbound ConnectProfile for explicit/manual target addresses.
-        if (target === null)
-            return;
-
         for (const proxy of this._iterDeviceProxies()) {
             const current = _normalizeAddress(_property(proxy, 'Address', ''));
+            const connected = _property(proxy, 'Connected', false);
+            const trusted = _property(proxy, 'Trusted', false);
+            const knownService = this._isKdeConnectDevice(proxy);
+            const allowed = this._allowed.has(current);
 
             if (target !== null && current !== target)
                 continue;
@@ -727,7 +736,9 @@ export const ChannelService = GObject.registerClass({
             if (!_property(proxy, 'Paired', false))
                 continue;
 
-            if (!this._isKdeConnectDevice(proxy))
+            // BlueZ can hold stale UUID data; probe trusted currently-connected
+            // devices in addition to known KDE Connect service UUIDs.
+            if (!(knownService || allowed || (connected && trusted)))
                 continue;
 
             await this._connectProxy(proxy);
@@ -781,7 +792,12 @@ export const ChannelService = GObject.registerClass({
         this._scanId = GLib.timeout_add_seconds(
             GLib.PRIORITY_LOW,
             SCAN_INTERVAL_SECONDS,
-            () => GLib.SOURCE_CONTINUE
+            () => {
+                this._scanDevices().catch(e => {
+                    debug(e, 'Bluetooth Periodic Scan');
+                });
+                return GLib.SOURCE_CONTINUE;
+            }
         );
 
         this._active = true;
@@ -789,8 +805,7 @@ export const ChannelService = GObject.registerClass({
 
         debug('Bluetooth backend active');
 
-        // Do not initiate unsolicited outbound RFCOMM connections here.
-        // Android KDE Connect actively discovers paired services and connects in.
+        await this._scanDevices();
     }
 
     NewConnection(device, fd) {
@@ -831,14 +846,18 @@ export const ChannelService = GObject.registerClass({
 
     broadcast(address = null) {
         if (address !== null) {
-            this._allowed.add(_normalizeAddress(address));
+            const normalized = _normalizeAddress(address);
+            this._allowed.add(normalized);
+            this._retryAfter.delete(normalized);
+            this._scanDevices(normalized).catch(e => {
+                debug(e, 'Bluetooth Scan');
+            });
             return;
         }
 
-        // Bluetooth transport remains discoverable through the registered
-        // Profile1 server. We intentionally avoid outbound ConnectProfile
-        // retries from periodic identify/reconnect to prevent tight timeout
-        // loops against devices that are not currently accepting RFCOMM.
+        this._scanDevices().catch(e => {
+            debug(e, 'Bluetooth Broadcast Scan');
+        });
     }
 
     start() {
@@ -869,6 +888,7 @@ export const ChannelService = GObject.registerClass({
 
         this.channels.clear();
         this._allowed.clear();
+        this._retryAfter.clear();
         this._objectManager = null;
 
         this._unregisterProfile().catch(e => {
@@ -920,7 +940,7 @@ export const Channel = GObject.registerClass({
     _attachSocket(fd) {
         const socket = Gio.Socket.new_from_fd(fd);
 
-        this._connection = Gio.SocketConnection.factory_create_connection(socket);
+        this._connection = socket.connection_factory_create_connection();
         this._multiplexer = new ConnectionMultiplexer(this._connection);
         this._multiplexer.start(this.cancellable).catch(e => {
             debug(e, 'Bluetooth Multiplexer Loop');
