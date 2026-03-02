@@ -11,6 +11,7 @@ import * as Core from './core.js';
 import * as DBus from './utils/dbus.js';
 import Device from './device.js';
 
+import * as BluetoothBackend from './backends/bluetooth.js';
 import * as LanBackend from './backends/lan.js';
 
 import {MissingOpensslError} from '../utils/exceptions.js';
@@ -21,6 +22,7 @@ const DEVICE_IFACE = Config.DBUS.lookup_interface(DEVICE_NAME);
 
 
 const backends = {
+    bluetooth: BluetoothBackend,
     lan: LanBackend,
 };
 

@@ -97,6 +97,7 @@ const ConnectDialog = GObject.registerClass({
     Children: [
         'cancel-button', 'connect-button',
         'lan-grid', 'lan-ip', 'lan-port',
+        'bluetooth-grid', 'bluetooth-address',
     ],
 }, class ConnectDialog extends Gtk.Dialog {
 
@@ -116,6 +117,9 @@ const ConnectDialog = GObject.registerClass({
                     const host = this.lan_ip.text;
                     const port = this.lan_port.value;
                     address = GLib.Variant.new_string(`lan://${host}:${port}`);
+                } else if (this.bluetooth_address.text) {
+                    const btAddress = this.bluetooth_address.text.toUpperCase();
+                    address = GLib.Variant.new_string(`bluetooth://${btAddress}`);
                 } else {
                     return false;
                 }

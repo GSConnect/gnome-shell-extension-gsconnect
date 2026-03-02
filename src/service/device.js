@@ -189,10 +189,24 @@ const Device = GObject.registerClass({
         if (!this.channel)
             return '';
 
-        // Bluetooth connections have no certificate so we use the host address
+        // Bluetooth links carry certificate metadata in the identity packet.
         if (this.connection_type === 'bluetooth') {
+            const address = this.channel.address.replace('bluetooth://', '');
+            const remoteCert = this.channel?.peer_certificate;
+
+            if (!remoteCert)
+                return _('Bluetooth device at %s').format(address || '???');
+
+            const checksum = new GLib.Checksum(GLib.ChecksumType.SHA256);
+            checksum.update(remoteCert.pubkey_der().toArray());
+
+            const verificationKey = checksum.get_string()
+                .substring(0, 8)
+                .toUpperCase();
+
             // TRANSLATORS: Bluetooth address for remote device
-            return _('Bluetooth device at %s').format('???');
+            return _('Bluetooth device at %s (key: %s)')
+                .format(address || '???', verificationKey);
         }
 
         // FIXME: another ugly reach-around
@@ -918,6 +932,15 @@ const Device = GObject.registerClass({
                 this.settings.set_string(
                     'certificate-pem',
                     this.channel.peer_certificate.certificate_pem
+                );
+            } else {
+                this.settings.reset('certificate-pem');
+            }
+        } else if (this.connection_type === 'bluetooth') {
+            if (paired) {
+                this.settings.set_string(
+                    'certificate-pem',
+                    this.channel.identity.body.certificate || ''
                 );
             } else {
                 this.settings.reset('certificate-pem');
