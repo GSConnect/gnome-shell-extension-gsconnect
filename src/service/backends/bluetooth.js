@@ -20,6 +20,7 @@ const BLUEZ_DEVICE_IFACE = 'org.bluez.Device1';
 const PROFILE_OBJECT = '/org/gnome/Shell/Extensions/GSConnect/BluetoothProfile';
 const SERVICE_UUID = '185f3df4-3268-4e3f-9fca-d4d5059915bd';
 const SERVICE_UUID_HEX = '185f3df432684e3f9fcad4d5059915bd';
+const RFCOMM_CHANNEL = 29;
 const DEFAULT_CHANNEL_UUID = 'a0d0aaf4-1072-4d81-aa35-902a954b1266';
 const SCAN_INTERVAL_SECONDS = 15;
 const BUFFER_SIZE = 4096;
@@ -614,6 +615,7 @@ export const ChannelService = GObject.registerClass({
         const options = {
             Name: new GLib.Variant('s', 'GSConnect'),
             Role: new GLib.Variant('s', 'server'),
+            Channel: new GLib.Variant('q', RFCOMM_CHANNEL),
             AutoConnect: new GLib.Variant('b', true),
             // Keep profile auth relaxed for compatibility with adapters/
             // stacks that are bonded but not marked trusted identically.
@@ -628,6 +630,8 @@ export const ChannelService = GObject.registerClass({
             -1,
             this.cancellable
         );
+
+        debug(`Bluetooth profile registered: uuid=${SERVICE_UUID} channel=${RFCOMM_CHANNEL}`);
     }
 
     async _unregisterProfile() {
@@ -754,6 +758,8 @@ export const ChannelService = GObject.registerClass({
     async _start() {
         this.buildIdentity();
 
+        debug('Bluetooth backend starting');
+
         this._systemBus = Gio.bus_get_sync(Gio.BusType.SYSTEM, this.cancellable);
 
         this._objectManager = Gio.DBusObjectManagerClient.new_for_bus_sync(
@@ -780,6 +786,8 @@ export const ChannelService = GObject.registerClass({
 
         this._active = true;
         this.notify('active');
+
+        debug('Bluetooth backend active');
 
         // Do not initiate unsolicited outbound RFCOMM connections here.
         // Android KDE Connect actively discovers paired services and connects in.
@@ -871,6 +879,8 @@ export const ChannelService = GObject.registerClass({
 
         this._active = false;
         this.notify('active');
+
+        debug('Bluetooth backend stopped');
     }
 
     destroy() {
