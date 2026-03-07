@@ -7,6 +7,7 @@ import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 
 import Config from '../../config.js';
+import * as Core from '../core.js';
 import Plugin from '../plugin.js';
 
 
@@ -212,7 +213,7 @@ const SFTPPlugin = GObject.registerClass({
 
             // We're just updating the submenu if we're already mounted
             if (this._gmount !== null) {
-                await this._addSubmenu(this._gmount);
+                this._addSubmenu(this._gmount);
                 if (this._userRequested) {
                     this._userRequested = false;
                     this._openDirectory(this._gmount);
@@ -226,7 +227,7 @@ const SFTPPlugin = GObject.registerClass({
                 const mountUri = mount.get_root().get_uri();
                 if (regex.test(mountUri)) {
                     this._gmount = mount;
-                    await this._addSubmenu(mount);
+                    this._addSubmenu(mount);
                     if (this._userRequested) {
                         this._userRequested = false;
                         this._openDirectory(mount);
@@ -278,7 +279,7 @@ const SFTPPlugin = GObject.registerClass({
                     const mountUri = mount.get_root().get_uri();
                     if (regex.test(mountUri)) {
                         this._gmount = mount;
-                        await this._addSubmenu(mount);
+                        this._addSubmenu(mount);
                         if (this._userRequested)
                             this._openDirectory(mount);
                         return;
@@ -380,7 +381,8 @@ const SFTPPlugin = GObject.registerClass({
         if (this._remoteDirectories !== null) {
             const entries = Object.entries(this._remoteDirectories);
             if (entries.length > 0) {
-                const [name, path] = entries[0];
+                // eslint-disable-next-line no-unused-vars
+                const [_name, path] = entries[0];
                 Gio.AppInfo.launch_default_for_uri_async(
                     `${baseUri}${path.replace(/^\//, '')}/`, null, null, null);
                 return;
@@ -396,7 +398,7 @@ const SFTPPlugin = GObject.registerClass({
      *
      * @param {Gio.Mount} mount - The GMount
      */
-    async _addSubmenu(mount) {
+    _addSubmenu(mount) {
         try {
             const filesMenuItem = this._createFilesMenuItem();
 
