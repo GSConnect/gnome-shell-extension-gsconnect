@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-13 14:44-0400\n"
-"PO-Revision-Date: 2025-09-13 18:59\n"
+"PO-Revision-Date: 2025-12-15 11:08\n"
 "Last-Translator: \n"
 "Language-Team: Korean\n"
 "Language: ko_KR\n"
@@ -250,11 +250,11 @@ msgstr "파일로 저장"
 
 #: data/ui/preferences-device-panel.ui:510
 msgid "Links"
-msgstr ""
+msgstr "링크"
 
 #: data/ui/preferences-device-panel.ui:562
 msgid "Automatically open received URLs"
-msgstr ""
+msgstr "URL을 받았을 때 자동으로 열기"
 
 #: data/ui/preferences-device-panel.ui:623
 #: data/ui/preferences-device-panel.ui:2286
@@ -532,7 +532,7 @@ msgstr "Discovery 비활성화"
 
 #: data/ui/preferences-window.ui:826
 msgid "Retry"
-msgstr ""
+msgstr "다시 시도"
 
 #: data/ui/preferences-window.ui:858
 msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
@@ -547,7 +547,7 @@ msgstr "OpenSSL을 찾을 수 없음"
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/preferences-window.ui:923
 msgid "Add device by IP…"
-msgstr ""
+msgstr "IP로 기기 추가하기…"
 
 #: data/ui/preferences-window.ui:928
 msgid "Display Mode"
@@ -675,7 +675,7 @@ msgstr "로그 확인"
 
 #: src/preferences/service.js:443
 msgid "Invalid Device Name"
-msgstr ""
+msgstr "잘못된 기기 이름"
 
 #. TRANSLATOR: %s is a list of forbidden characters
 #: src/preferences/service.js:445
@@ -835,7 +835,7 @@ msgstr "동의"
 #: src/service/device.js:960
 #, javascript-format
 msgid "Failed to pair with %s"
-msgstr ""
+msgstr "%s와 연결 실패함"
 
 #: src/service/device.js:961
 msgid "Device clocks are out of sync"
