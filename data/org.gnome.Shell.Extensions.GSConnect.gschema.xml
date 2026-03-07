@@ -38,6 +38,9 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <key name="discoverable" type="b">
       <default>true</default>
     </key>
+    <key name="missing-openssl" type="b">
+      <default>false</default>
+    </key>
   </schema>
 
   <!-- Window Geometry -->
@@ -159,6 +162,9 @@ SPDX-License-Identifier: GPL-2.0-or-later
     </key>
     <key name="receive-directory" type="s">
       <default>""</default>
+    </key>
+    <key name="launch-urls" type="b">
+      <default>false</default>
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.SMS">

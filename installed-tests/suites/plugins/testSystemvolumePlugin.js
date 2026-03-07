@@ -8,7 +8,7 @@ import * as Utils from '../fixtures/utils.js';
 /**
  * Mocked packet handling for the test device
  *
- * @param {*} packet - a KDE Connect protocol packet
+ * @param {object} packet - a KDE Connect protocol packet
  */
 function handlePacket(packet) {
     switch (packet.type) {

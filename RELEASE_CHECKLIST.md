@@ -10,7 +10,7 @@ Steps to prepare a new release.
 
 ## Submit a PR to update the version metadata
 
-- [ ] Bump the `project(version)` value in `meson.build`
+- [ ] IF NECESSARY: Bump the `project(version)` value in `meson.build`
 - [ ] Add a corresponding `<release>...</release>` block
       to the top of the `<releases>` section in
       `data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in`
@@ -52,4 +52,4 @@ Once the release is published to GitHub,
 the attached zip file can also be submitted to extensions.gnome.org
 by the designated extension author (currently @daniellandau).
 
-[New Release template]: https://github.com/GSConnect/gnome-shell-extensions-gsconnect/releases/new
+[New Release template]: https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/new

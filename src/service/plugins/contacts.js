@@ -440,7 +440,7 @@ const ContactsPlugin = GObject.registerClass({
     }
 
     /**
-     * Request the vCards for @uids.
+     * Request the vCards for {@link uids}.
      *
      * @param {string[]} uids - A list of contact UIDs
      */

@@ -14,7 +14,7 @@ import system from 'system';
 /**
  * Return a random color
  *
- * @param {*} [salt] - If not %null, will be used as salt for generating a color
+ * @param {string} [salt] - If not %null, will be used as salt for generating a color
  * @param {number} alpha - A value in the [0...1] range for the alpha channel
  * @returns {Gdk.RGBA} A new Gdk.RGBA object generated from the input
  */
@@ -72,8 +72,8 @@ function getFgRGBA(rgba) {
 
 
 /**
- * Get a GdkPixbuf for @path, allowing the corrupt JPEG's KDE Connect sometimes
- * sends. This function is synchronous.
+ * Get a GdkPixbuf for {@link path}, allowing the corrupt JPEG's KDE Connect
+ * sometimes sends. This function is synchronous.
  *
  * @param {string} path - A local file path
  * @param {number} size - Size in pixels
@@ -159,7 +159,7 @@ function getNumberTypeLabel(type) {
 }
 
 /**
- * Get a display number from @contact for @address.
+ * Get a display number from {@link contact} for {@link address}.
  *
  * @param {object} contact - A contact object
  * @param {string} address - A phone number

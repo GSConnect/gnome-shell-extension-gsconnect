@@ -241,7 +241,7 @@ export const Interface = GObject.registerClass({
 });
 
 /**
- * Get a new, dedicated DBus connection on @busType
+ * Get a new, dedicated DBus connection on {@link busType}
  *
  * @param {Gio.BusType} [busType] - a Gio.BusType constant
  * @param {Gio.Cancellable} [cancellable] - an optional Gio.Cancellable

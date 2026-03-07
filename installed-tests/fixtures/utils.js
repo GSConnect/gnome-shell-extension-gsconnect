@@ -165,7 +165,7 @@ export function generateIdentity(params = {}) {
 
 
 /**
- * Check if @subset is a subset of @obj.
+ * Check if {@link subset} is a subset of {@link obj}.
  *
  * @param {object} obj - The haystack to compare with
  * @param {object} subset - The needle to search for

@@ -7,7 +7,6 @@
 html, body {
     margin: 0;
     padding: 0;
-    background-color: #fafafa;
     font-family: Ubuntu, Cantrell, Arial, sans-serif;
     font-size: 0.9em;
 }
@@ -35,17 +34,12 @@ html, body {
 }
 
 .plugin-button {
-    border-radius: 3px;
     margin-right: 6px;
     padding: 4px;
 }
 
-.plugin-button:hover {
-    background-color: rgba(204, 204, 204, 0.5);
-}
-
-.plugin-button:active {
-    background-color: rgba(204, 204, 204, 0.75);
+.plugin-button > img {
+    vertical-align: middle;
 }
 
 .popup-menu-message {

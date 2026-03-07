@@ -4,7 +4,7 @@
 
 import GLib from 'gi://GLib';
 
-import setup, {setupGettext} from '../utils/setup.js';
+import {setup, setupGettext} from '../utils/setup.js';
 
 
 // Bootstrap

@@ -64,7 +64,7 @@ const Store = GObject.registerClass({
     /**
      * Parse an EContact and add it to the store.
      *
-     * @param {EBookContacts.Contact} econtact - an EContact to parse
+     * @param {"EBookContacts.Contact"} econtact - an EContact to parse
      * @param {string} [origin] - an optional origin string
      */
     async _parseEContact(econtact, origin = 'desktop') {
@@ -463,8 +463,8 @@ const Store = GObject.registerClass({
     }
 
     /**
-     * Lookup a contact for each address object in @addresses and return a
-     * dictionary of address (eg. phone number) to contact object.
+     * Lookup a contact for each address object in {@link addresses} and return
+     * a dictionary of address (eg. phone number) to contact object.
      *
      * { "555-5555": { "name": "...", "numbers": [], ... } }
      *

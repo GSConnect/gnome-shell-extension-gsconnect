@@ -107,7 +107,7 @@ export class Packet {
     /**
      * Check if the packet has a payload.
      *
-     * @returns {boolean} %true if @packet has a payload
+     * @returns {boolean} %true if the packet has a payload
      */
     hasPayload() {
         if (!this.hasOwnProperty('payloadSize'))
@@ -351,7 +351,7 @@ export const ChannelService = GObject.registerClass({
 
     get name() {
         if (this._name === undefined)
-            this._name = GLib.get_host_name();
+            this._name = GLib.get_host_name().slice(0, 32);
 
         return this._name;
     }
@@ -386,7 +386,7 @@ export const ChannelService = GObject.registerClass({
     }
 
     /**
-     * Broadcast directly to @address or the whole network if %null
+     * Broadcast directly to {@link address} or the whole network if %null
      *
      * @param {string} [address] - A string address
      */

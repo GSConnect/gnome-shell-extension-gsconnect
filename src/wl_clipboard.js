@@ -164,7 +164,7 @@ export const Clipboard = GObject.registerClass(
                 proc.communicate_utf8_async(null, null, (proc, res) => {
                     try {
                         const [, stdout, stderr] =
-              proc.communicate_utf8_finish(res);
+                            proc.communicate_utf8_finish(res);
                         if (proc.get_successful())
                             resolve(stdout.trim().split('\n'));
                         else
@@ -194,7 +194,7 @@ export const Clipboard = GObject.registerClass(
                         proc.communicate_utf8_async(null, null, (proc, res) => {
                             try {
                                 const [, stdout, stderr] =
-                  proc.communicate_utf8_finish(res);
+                                    proc.communicate_utf8_finish(res);
                                 if (proc.get_successful())
                                     resolve(stdout);
                                 else

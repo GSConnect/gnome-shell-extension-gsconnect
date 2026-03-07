@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-03 13:38-0500\n"
-"PO-Revision-Date: 2025-01-03 22:05\n"
+"POT-Creation-Date: 2025-09-13 14:44-0400\n"
+"PO-Revision-Date: 2025-09-13 18:59\n"
 "Last-Translator: \n"
 "Language-Team: Belarusian\n"
 "Language: be_BY\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #. TRANSLATORS: Extension name
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:12
-#: webextension/gettext.js:30
+#: webextension/gettext.js:29
 msgid "GSConnect"
 msgstr "GSConnect"
 
@@ -75,7 +75,7 @@ msgstr "Выконваць папярэдне зададзеныя каманд�
 msgid "And more…"
 msgstr "І іншае…"
 
-#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:141
+#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:165
 msgid "GSConnect in GNOME Shell"
 msgstr "GSConnect у GNOME Shell"
 
@@ -92,8 +92,8 @@ msgstr "Падлучыцца да…"
 #: data/ui/preferences-shortcut-editor.ui:19
 #: data/ui/service-device-chooser.ui:21 data/ui/service-device-chooser.ui:25
 #: data/ui/service-error-dialog.ui:20 data/ui/service-error-dialog.ui:28
-#: src/preferences/service.js:405 src/service/plugins/share.js:161
-#: src/service/plugins/share.js:297 src/service/plugins/share.js:428
+#: src/preferences/service.js:417 src/service/plugins/share.js:179
+#: src/service/plugins/share.js:314 src/service/plugins/share.js:445
 msgid "Cancel"
 msgstr "Скасаваць"
 
@@ -110,7 +110,7 @@ msgid "No contacts"
 msgstr "Няма кантактаў"
 
 #: data/ui/contact-chooser.ui:68 data/ui/messaging-window.ui:103
-#: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:847
+#: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:949
 msgid "Help"
 msgstr "Даведка"
 
@@ -119,20 +119,20 @@ msgid "Type a phone number or name"
 msgstr "Увесці нумар тэлефона або імя"
 
 #. TRANSLATORS: All other phone number types
-#: data/ui/contacts-address-row.ui:71 src/service/ui/contacts.js:149
+#: data/ui/contacts-address-row.ui:71 src/service/ui/contacts.js:158
 msgid "Other"
 msgstr "Іншае"
 
 #. TRANSLATORS: Share URL by SMS
-#: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:274
-#: src/service/daemon.js:388 src/service/plugins/sms.js:62
-#: webextension/gettext.js:42
+#: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:353
+#: src/service/daemon.js:467 src/service/plugins/sms.js:62
+#: webextension/gettext.js:41
 msgid "Send SMS"
 msgstr "Адправіць SMS"
 
 #: data/ui/legacy-messaging-dialog.ui:32 data/ui/legacy-messaging-dialog.ui:36
 #: data/ui/notification-reply-dialog.ui:31
-#: data/ui/notification-reply-dialog.ui:35 src/service/plugins/share.js:429
+#: data/ui/notification-reply-dialog.ui:35 src/service/plugins/share.js:446
 msgid "Send"
 msgstr "Адправіць"
 
@@ -145,7 +145,7 @@ msgstr "Прылада адлучана"
 msgid "Send Message"
 msgstr "Адправіць паведамленне"
 
-#: data/ui/messaging-conversation.ui:92 src/shell/notification.js:84
+#: data/ui/messaging-conversation.ui:92 src/shell/notification.js:88
 msgid "Type a message"
 msgstr "Напісаць паведамлене"
 
@@ -158,12 +158,12 @@ msgid "Type a message and press Enter to send"
 msgstr "Увядзіце паведамленне націсніце Enter для адпраўкі"
 
 #: data/ui/messaging-window.ui:21 src/service/plugins/sms.js:30
-#: src/service/ui/messaging.js:1057
+#: src/service/ui/messaging.js:1063
 msgid "Messaging"
 msgstr "Паведамленні"
 
 #: data/ui/messaging-window.ui:30 data/ui/messaging-window.ui:43
-#: src/service/ui/messaging.js:1268
+#: src/service/ui/messaging.js:1274
 msgid "New Conversation"
 msgstr "Новая размова"
 
@@ -212,7 +212,7 @@ msgstr "Выбраць выконвальны файл"
 msgid "Open"
 msgstr "Адкрыць"
 
-#: data/ui/preferences-device-panel.ui:53 src/preferences/service.js:482
+#: data/ui/preferences-device-panel.ui:53 src/preferences/service.js:524
 msgid "Desktop"
 msgstr "Камп'ютар"
 
@@ -232,220 +232,228 @@ msgstr "Мыш і клавіятура"
 msgid "Volume Control"
 msgstr "Кіраванне гучнасцю"
 
-#: data/ui/preferences-device-panel.ui:336 src/service/plugins/sftp.js:331
+#: data/ui/preferences-device-panel.ui:337 src/service/plugins/sftp.js:332
 msgid "Files"
 msgstr "Файлы"
 
-#: data/ui/preferences-device-panel.ui:388
+#: data/ui/preferences-device-panel.ui:390
 msgid "Receive Files"
 msgstr "Атрымліваць файлы"
 
-#: data/ui/preferences-device-panel.ui:447
+#: data/ui/preferences-device-panel.ui:449
 msgid "Save files to"
 msgstr "Захаваць файлы ў"
 
-#: data/ui/preferences-device-panel.ui:508
-#: data/ui/preferences-device-panel.ui:2170
+#: data/ui/preferences-device-panel.ui:510
+msgid "Links"
+msgstr ""
+
+#: data/ui/preferences-device-panel.ui:562
+msgid "Automatically open received URLs"
+msgstr ""
+
+#: data/ui/preferences-device-panel.ui:623
+#: data/ui/preferences-device-panel.ui:2286
 msgid "Sharing"
 msgstr "Абагульванне"
 
-#: data/ui/preferences-device-panel.ui:539
+#: data/ui/preferences-device-panel.ui:655
 msgid "Device Battery"
 msgstr "Акумулятар прылады"
 
-#: data/ui/preferences-device-panel.ui:590
+#: data/ui/preferences-device-panel.ui:706
 msgid "Low Battery Notification"
 msgstr "Апавяшчэнне пра нізкі ўзровень зараду акумулятара"
 
-#: data/ui/preferences-device-panel.ui:649
+#: data/ui/preferences-device-panel.ui:765
 msgid "Charged Up to Custom Level Notification"
 msgstr "Апавяшчаць пра зададзены ўзровень зараду"
 
-#: data/ui/preferences-device-panel.ui:729
+#: data/ui/preferences-device-panel.ui:845
 msgid "Fully Charged Notification"
 msgstr "Апавяшчэнне пра поўнасцю зараджаны акумулятар"
 
-#: data/ui/preferences-device-panel.ui:783
+#: data/ui/preferences-device-panel.ui:899
 msgid "System Battery"
 msgstr "Сістэмны акумулятар"
 
-#: data/ui/preferences-device-panel.ui:832
+#: data/ui/preferences-device-panel.ui:948
 msgid "Share Statistics"
 msgstr "Абагульваць статыстыку"
 
-#: data/ui/preferences-device-panel.ui:886
-#: data/ui/preferences-device-panel.ui:2216 src/service/plugins/battery.js:14
+#: data/ui/preferences-device-panel.ui:1002
+#: data/ui/preferences-device-panel.ui:2332 src/service/plugins/battery.js:15
 msgid "Battery"
 msgstr "Акумулятар"
 
-#: data/ui/preferences-device-panel.ui:916
-#: data/ui/preferences-device-panel.ui:1001
-#: data/ui/preferences-device-panel.ui:2262
+#: data/ui/preferences-device-panel.ui:1032
+#: data/ui/preferences-device-panel.ui:1117
+#: data/ui/preferences-device-panel.ui:2378
 #: src/service/plugins/runcommand.js:26 src/service/plugins/runcommand.js:34
 #: src/service/plugins/runcommand.js:194
 msgid "Commands"
 msgstr "Каманды"
 
-#: data/ui/preferences-device-panel.ui:975
+#: data/ui/preferences-device-panel.ui:1091
 msgid "Add Command"
 msgstr "Дадаць каманду"
 
 #. TRANSLATORS: 'Share' is a verb here; this refers to the action of sharing
-#: data/ui/preferences-device-panel.ui:1063
+#: data/ui/preferences-device-panel.ui:1179
 msgid "Share Notifications"
 msgstr "Абагульваць апавяшчэнні"
 
-#: data/ui/preferences-device-panel.ui:1123
+#: data/ui/preferences-device-panel.ui:1239
 msgid "Share When Active"
 msgstr "Абагульваць, калі актыўны"
 
-#: data/ui/preferences-device-panel.ui:1174
+#: data/ui/preferences-device-panel.ui:1290
 msgid "Applications"
 msgstr "Праграмы"
 
-#: data/ui/preferences-device-panel.ui:1220
-#: data/ui/preferences-device-panel.ui:2308
-#: src/service/plugins/notification.js:17
+#: data/ui/preferences-device-panel.ui:1336
+#: data/ui/preferences-device-panel.ui:2424
+#: src/service/plugins/notification.js:18
 msgid "Notifications"
 msgstr "Апавяшчэнні"
 
-#: data/ui/preferences-device-panel.ui:1278 src/service/plugins/contacts.js:27
+#: data/ui/preferences-device-panel.ui:1394 src/service/plugins/contacts.js:28
 msgid "Contacts"
 msgstr "Кантакты"
 
-#: data/ui/preferences-device-panel.ui:1331
+#: data/ui/preferences-device-panel.ui:1447
 msgid "Incoming Calls"
 msgstr "Уваходныя выклікі"
 
-#: data/ui/preferences-device-panel.ui:1380
-#: data/ui/preferences-device-panel.ui:1547
+#: data/ui/preferences-device-panel.ui:1496
+#: data/ui/preferences-device-panel.ui:1663
 msgid "Volume"
 msgstr "Гук"
 
-#: data/ui/preferences-device-panel.ui:1446
-#: data/ui/preferences-device-panel.ui:1613
+#: data/ui/preferences-device-panel.ui:1562
+#: data/ui/preferences-device-panel.ui:1729
 msgid "Pause Media"
 msgstr "Прыпыніць прайграванне"
 
-#: data/ui/preferences-device-panel.ui:1499
+#: data/ui/preferences-device-panel.ui:1615
 msgid "Ongoing Calls"
 msgstr "Выходныя выклікі"
 
-#: data/ui/preferences-device-panel.ui:1669
+#: data/ui/preferences-device-panel.ui:1785
 msgid "Mute Microphone"
 msgstr "Адключыць мікрафон"
 
-#: data/ui/preferences-device-panel.ui:1723
-#: data/ui/preferences-device-panel.ui:2354 src/service/plugins/telephony.js:15
+#: data/ui/preferences-device-panel.ui:1839
+#: data/ui/preferences-device-panel.ui:2470 src/service/plugins/telephony.js:16
 msgid "Telephony"
 msgstr "Тэлефанія"
 
-#: data/ui/preferences-device-panel.ui:1758
+#: data/ui/preferences-device-panel.ui:1874
 msgid "Action Shortcuts"
 msgstr "Спалучэнні клавіш для дзеянняў"
 
-#: data/ui/preferences-device-panel.ui:1774
+#: data/ui/preferences-device-panel.ui:1890
 msgid "Reset All…"
 msgstr "Скінуць усе…"
 
-#: data/ui/preferences-device-panel.ui:1826
+#: data/ui/preferences-device-panel.ui:1942
 msgid "Shortcuts"
 msgstr "Спалучэнні клавіш"
 
-#: data/ui/preferences-device-panel.ui:1857
+#: data/ui/preferences-device-panel.ui:1973
 msgid "Plugins"
 msgstr "Убудовы"
 
-#: data/ui/preferences-device-panel.ui:1904
+#: data/ui/preferences-device-panel.ui:2020
 msgid "Experimental"
 msgstr "Эксперыментальныя"
 
-#: data/ui/preferences-device-panel.ui:1951
+#: data/ui/preferences-device-panel.ui:2067
 msgid "Device Cache"
 msgstr "Кэш прылады"
 
-#: data/ui/preferences-device-panel.ui:1969
+#: data/ui/preferences-device-panel.ui:2085
 msgid "Clear Cache…"
 msgstr "Ачыстка кэшу…"
 
-#: data/ui/preferences-device-panel.ui:2008
+#: data/ui/preferences-device-panel.ui:2124
 msgid "Legacy SMS Support"
 msgstr "Падтрымка SMS (ранейшая версія)"
 
-#: data/ui/preferences-device-panel.ui:2065
+#: data/ui/preferences-device-panel.ui:2181
 msgid "SFTP Automount"
 msgstr "Аўтападлучэнне SFTP"
 
-#: data/ui/preferences-device-panel.ui:2120
-#: data/ui/preferences-device-panel.ui:2446
+#: data/ui/preferences-device-panel.ui:2236
+#: data/ui/preferences-device-panel.ui:2562
 msgid "Advanced"
 msgstr "Пашыраныя"
 
-#: data/ui/preferences-device-panel.ui:2400
+#: data/ui/preferences-device-panel.ui:2516
 msgid "Keyboard Shortcuts"
 msgstr "Спалучэнні клавіш"
 
-#: data/ui/preferences-device-panel.ui:2464
+#: data/ui/preferences-device-panel.ui:2580
 msgid "Device Settings"
 msgstr "Налады прылады"
 
 #. TRANSLATORS: Send a pair request to the device
-#: data/ui/preferences-device-panel.ui:2508
-#: data/ui/preferences-device-panel.ui:2600 src/service/daemon.js:367
+#: data/ui/preferences-device-panel.ui:2624
+#: data/ui/preferences-device-panel.ui:2716 src/service/daemon.js:446
 msgid "Pair"
 msgstr "Спалучыць"
 
-#: data/ui/preferences-device-panel.ui:2540
+#: data/ui/preferences-device-panel.ui:2656
 msgid "Device is unpaired"
 msgstr "Прылада разлучана"
 
-#: data/ui/preferences-device-panel.ui:2555
+#: data/ui/preferences-device-panel.ui:2671
 msgid "You may configure this device before pairing"
 msgstr "Вы можаце наладзіць гэту прыладу перад спалучэннем"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
-#: data/ui/preferences-device-panel.ui:2595 src/preferences/device.js:390
+#: data/ui/preferences-device-panel.ui:2711 src/preferences/device.js:391
 msgid "Encryption Info"
 msgstr "Інфармацыя пра шыфраванне"
 
 #. TRANSLATORS: Unpair the device and notify it
-#: data/ui/preferences-device-panel.ui:2606 src/service/daemon.js:376
+#: data/ui/preferences-device-panel.ui:2722 src/service/daemon.js:455
 msgid "Unpair"
 msgstr "Разлучыць"
 
 #. TRANSLATORS: Send clipboard content to device
-#: data/ui/preferences-device-panel.ui:2618
+#: data/ui/preferences-device-panel.ui:2734
 msgid "To Device"
 msgstr "На прыладу"
 
 #. TRANSLATORS: Receive clipboard content from the device
-#: data/ui/preferences-device-panel.ui:2624
+#: data/ui/preferences-device-panel.ui:2740
 msgid "From Device"
 msgstr "З прылады"
 
 #. TRANSLATORS: Don't change the system volume
-#: data/ui/preferences-device-panel.ui:2636
-#: data/ui/preferences-device-panel.ui:2669
+#: data/ui/preferences-device-panel.ui:2752
+#: data/ui/preferences-device-panel.ui:2785
 msgid "Nothing"
 msgstr "Нічога"
 
 #. TRANSLATORS: Restore the system volume
-#: data/ui/preferences-device-panel.ui:2643
-#: data/ui/preferences-device-panel.ui:2676
+#: data/ui/preferences-device-panel.ui:2759
+#: data/ui/preferences-device-panel.ui:2792
 msgid "Restore"
 msgstr "Аднавіць"
 
 #. TRANSLATORS: Lower the system volume
-#: data/ui/preferences-device-panel.ui:2650
-#: data/ui/preferences-device-panel.ui:2683
+#: data/ui/preferences-device-panel.ui:2766
+#: data/ui/preferences-device-panel.ui:2799
 msgid "Lower"
 msgstr "Ніжэйшы"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the actively ringing call
-#: data/ui/preferences-device-panel.ui:2657
-#: data/ui/preferences-device-panel.ui:2690
-#: src/service/plugins/telephony.js:197
+#: data/ui/preferences-device-panel.ui:2773
+#: data/ui/preferences-device-panel.ui:2806
+#: src/service/plugins/telephony.js:198
 msgid "Mute"
 msgstr "Выключыць гук"
 
@@ -470,7 +478,7 @@ msgstr "_Перайменаваць"
 msgid "Refresh"
 msgstr "Абнавіць"
 
-#: data/ui/preferences-window.ui:139 src/extension.js:114
+#: data/ui/preferences-window.ui:139 src/extension.js:113
 msgid "Mobile Settings"
 msgstr "Налады прылад"
 
@@ -490,7 +498,7 @@ msgstr "Рэдагаваць назву прылады"
 msgid "Devices"
 msgstr "Прылады"
 
-#: data/ui/preferences-window.ui:328 src/preferences/service.js:644
+#: data/ui/preferences-window.ui:328 src/preferences/service.js:686
 msgid "Searching for devices…"
 msgstr "Пошук прылад…"
 
@@ -514,35 +522,49 @@ msgstr "Уключана"
 msgid "This device is invisible to unpaired devices"
 msgstr "Гэта прылада нябачная для разлучаных прылад"
 
-#: data/ui/preferences-window.ui:772 src/service/manager.js:144
+#: data/ui/preferences-window.ui:772 src/service/manager.js:177
 msgid "Discovery Disabled"
 msgstr "Знаходжанне адключана"
 
+#: data/ui/preferences-window.ui:826
+msgid "Retry"
+msgstr ""
+
+#: data/ui/preferences-window.ui:858
+msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
+"Use your distro's package manager to install it.\n"
+"For more information, visit <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</a>."
+msgstr ""
+
+#: data/ui/preferences-window.ui:874 src/service/init.js:361
+msgid "OpenSSL not found"
+msgstr "OpenSSL не знойдзены"
+
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
-#: data/ui/preferences-window.ui:821
+#: data/ui/preferences-window.ui:923
 msgid "Add device by IP…"
 msgstr ""
 
-#: data/ui/preferences-window.ui:826
+#: data/ui/preferences-window.ui:928
 msgid "Display Mode"
 msgstr "Рэжым паказу"
 
 #. TRANSLATORS: Show device indicators in the top bar
-#: data/ui/preferences-window.ui:829
+#: data/ui/preferences-window.ui:931
 msgid "Panel"
 msgstr "Панэль"
 
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
-#: data/ui/preferences-window.ui:835
+#: data/ui/preferences-window.ui:937
 msgid "User Menu"
 msgstr "Меню карыстальніка"
 
 #. TRANSLATORS: Generate a support log
-#: data/ui/preferences-window.ui:843 src/preferences/service.js:402
+#: data/ui/preferences-window.ui:945 src/preferences/service.js:414
 msgid "Generate Support Log"
 msgstr "Стварыць журнал для падтрымкі"
 
-#: data/ui/preferences-window.ui:851
+#: data/ui/preferences-window.ui:953
 msgid "About GSConnect"
 msgstr "Пра GSConnect"
 
@@ -555,7 +577,7 @@ msgid "Select"
 msgstr "Выбраць"
 
 #. TRANSLATORS: No devices are known or available
-#: data/ui/service-device-chooser.ui:101 webextension/gettext.js:38
+#: data/ui/service-device-chooser.ui:101 webextension/gettext.js:37
 msgid "No Device Found"
 msgstr "Не знойдзена прылад"
 
@@ -583,22 +605,22 @@ msgstr "Тэхнічныя падрабязнасці"
 #. context menu
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #. Update UI
-#: nautilus-extension/nautilus-gsconnect.py:187 src/service/ui/contacts.js:509
-#: src/service/ui/contacts.js:524
+#: nautilus-extension/nautilus-gsconnect.py:187 src/service/ui/contacts.js:518
+#: src/service/ui/contacts.js:533
 #, python-format, javascript-format
 msgid "Send to %s"
 msgstr "Адправіць у %s"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
-#: nautilus-extension/nautilus-gsconnect.py:195 webextension/gettext.js:34
+#: nautilus-extension/nautilus-gsconnect.py:195 webextension/gettext.js:33
 msgid "Send To Mobile Device"
 msgstr "Адправіць на мабільную прыладу"
 
-#: src/extension.js:50
+#: src/extension.js:49
 msgid "Sync between your devices"
 msgstr ""
 
-#: src/extension.js:159
+#: src/extension.js:158
 #, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
@@ -607,15 +629,15 @@ msgstr[1] "%d падлучаны"
 msgstr[2] "%d падлучана"
 msgstr[3] "%d падлучана"
 
-#: src/preferences/device.js:669 src/preferences/device.js:675
+#: src/preferences/device.js:671 src/preferences/device.js:677
 msgid "Edit"
 msgstr "Рэдагаваць"
 
-#: src/preferences/device.js:684 src/preferences/device.js:690
+#: src/preferences/device.js:686 src/preferences/device.js:692
 msgid "Remove"
 msgstr "Выдаліць"
 
-#: src/preferences/device.js:944 src/preferences/device.js:972
+#: src/preferences/device.js:946 src/preferences/device.js:974
 msgid "Disabled"
 msgstr "Адключана"
 
@@ -633,134 +655,153 @@ msgstr "Увядзіце новыя спалучэнні, каб змяніць 
 msgid "%s is already being used"
 msgstr "%s ужо выкарыстоўваецца"
 
-#: src/preferences/service.js:361
+#: src/preferences/service.js:373
 msgid "A complete KDE Connect implementation for GNOME"
 msgstr "Паўнавартасная рэалізацыя KDE Connect для GNOME"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
-#: src/preferences/service.js:370
+#: src/preferences/service.js:382
 msgid "translator-credits"
 msgstr "Maksim Krapiŭka <metalomaniax@gmail.com>"
 
-#: src/preferences/service.js:403
+#: src/preferences/service.js:415
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
 msgstr "Паведамленні адладкі былі запісаны ў журнал. Зрабіце любыя крокі неабходныя для ўзнаўлення праблемы і затым праглядзіце журнал."
 
-#: src/preferences/service.js:406
+#: src/preferences/service.js:418
 msgid "Review Log"
 msgstr "Праверыць журнал"
 
-#: src/preferences/service.js:474
+#: src/preferences/service.js:443
+msgid "Invalid Device Name"
+msgstr ""
+
+#. TRANSLATOR: %s is a list of forbidden characters
+#: src/preferences/service.js:445
+#, javascript-format
+msgid "Device name must not contain any of %s and have a length of 1-32 characters"
+msgstr ""
+
+#: src/preferences/service.js:516
 msgid "Laptop"
 msgstr "Ноўтбук"
 
-#: src/preferences/service.js:476
+#: src/preferences/service.js:518
 msgid "Smartphone"
 msgstr "Смартфон"
 
-#: src/preferences/service.js:478
+#: src/preferences/service.js:520
 msgid "Tablet"
 msgstr "Планшэт"
 
-#: src/preferences/service.js:480
+#: src/preferences/service.js:522
 msgid "Television"
 msgstr "Тэлебачанне"
 
-#: src/preferences/service.js:502
+#: src/preferences/service.js:544
 msgid "Unpaired"
 msgstr "Разлучана"
 
-#: src/preferences/service.js:506
+#: src/preferences/service.js:548
 msgid "Disconnected"
 msgstr "Адлучана"
 
-#: src/preferences/service.js:510
+#: src/preferences/service.js:552
 msgid "Connected"
 msgstr "Падлучана"
 
-#: src/preferences/service.js:646
+#: src/preferences/service.js:688
 msgid "Waiting for service…"
 msgstr "Чаканне сэрвісу…"
 
-#: src/service/daemon.js:175
+#. Notify the user
+#: src/service/daemon.js:99
+msgid "Settings Migrated"
+msgstr ""
+
+#: src/service/daemon.js:100
+msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
+msgstr ""
+
+#: src/service/daemon.js:241
 msgid "Click for help troubleshooting"
 msgstr "Націсніце для дапамогі ў выпраўленні непаладак"
 
-#: src/service/daemon.js:186
+#: src/service/daemon.js:251
 msgid "Click for more information"
 msgstr "Націсніце для большай інфармацыі"
 
-#: src/service/daemon.js:280
+#: src/service/daemon.js:359
 msgid "Dial Number"
 msgstr "Набраць нумар"
 
-#: src/service/daemon.js:286 src/service/daemon.js:475
+#: src/service/daemon.js:365 src/service/daemon.js:554
 #: src/service/plugins/share.js:31
 msgid "Share File"
 msgstr "Абагуліць файл"
 
-#: src/service/daemon.js:337
+#: src/service/daemon.js:416
 msgid "List available devices"
 msgstr "Спіс даступных прылад"
 
-#: src/service/daemon.js:346
+#: src/service/daemon.js:425
 msgid "List all devices"
 msgstr "Спіс усіх прылад"
 
-#: src/service/daemon.js:355
+#: src/service/daemon.js:434
 msgid "Target Device"
 msgstr "Мэтавая прылада"
 
-#: src/service/daemon.js:397
+#: src/service/daemon.js:476
 msgid "Message Body"
 msgstr "Змест паведамлення"
 
-#: src/service/daemon.js:409 src/service/plugins/notification.js:56
+#: src/service/daemon.js:488 src/service/plugins/notification.js:57
 msgid "Send Notification"
 msgstr "Адправіць апавяшчэнне"
 
-#: src/service/daemon.js:418
+#: src/service/daemon.js:497
 msgid "Notification App Name"
 msgstr "Назва праграмы ў апавяшчэнні"
 
-#: src/service/daemon.js:427
+#: src/service/daemon.js:506
 msgid "Notification Body"
 msgstr "Змест апавяшчэння"
 
-#: src/service/daemon.js:436
+#: src/service/daemon.js:515
 msgid "Notification Icon"
 msgstr "Значок апавяшчэння"
 
-#: src/service/daemon.js:445
+#: src/service/daemon.js:524
 msgid "Notification ID"
 msgstr "Ідэнтыфікатар апавяшчэння"
 
-#: src/service/daemon.js:454 src/service/plugins/ping.js:13
+#: src/service/daemon.js:533 src/service/plugins/ping.js:13
 #: src/service/plugins/ping.js:20 src/service/plugins/ping.js:47
 msgid "Ping"
 msgstr "Пінг"
 
-#: src/service/daemon.js:463 src/service/plugins/battery.js:246
-#: src/service/plugins/battery.js:275 src/service/plugins/battery.js:304
+#: src/service/daemon.js:542 src/service/plugins/battery.js:247
+#: src/service/plugins/battery.js:276 src/service/plugins/battery.js:305
 #: src/service/plugins/findmyphone.js:22
 msgid "Ring"
 msgstr "Званок"
 
-#: src/service/daemon.js:484 src/service/plugins/share.js:47
-#: src/service/ui/messaging.js:1251 src/service/ui/messaging.js:1259
+#: src/service/daemon.js:563 src/service/plugins/share.js:47
+#: src/service/ui/messaging.js:1257 src/service/ui/messaging.js:1265
 msgid "Share Link"
 msgstr "Абагуліць спасылку"
 
-#: src/service/daemon.js:493 src/service/plugins/share.js:39
+#: src/service/daemon.js:572 src/service/plugins/share.js:39
 msgid "Share Text"
 msgstr "Абагуліць тэкст"
 
-#: src/service/daemon.js:505
+#: src/service/daemon.js:584
 msgid "Show release version"
 msgstr "Паказаць версію праграмы"
 
 #. TRANSLATORS: Bluetooth address for remote device
-#: src/service/device.js:171
+#: src/service/device.js:195
 #, javascript-format
 msgid "Bluetooth device at %s"
 msgstr "Bluetooth прылада па %s"
@@ -770,73 +811,79 @@ msgstr "Bluetooth прылада па %s"
 #. Example:
 #.
 #. Verification key: 0123456789abcdef000000000000000000000000
-#: src/service/device.js:212
+#: src/service/device.js:223
 #, javascript-format
 msgid "Verification key: %s"
 msgstr ""
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
-#: src/service/device.js:846
+#: src/service/device.js:862
 #, javascript-format
 msgid "Pair Request from %s"
 msgstr "Запыт спалучэння ад %s"
 
-#: src/service/device.js:853
+#: src/service/device.js:869
 msgid "Reject"
 msgstr "Адхіліць"
 
-#: src/service/device.js:858
+#: src/service/device.js:874
 msgid "Accept"
 msgstr "Прыняць"
 
-#: src/service/manager.js:145
+#. TRANSLATORS: eg. Failed to pair with Google Pixel
+#: src/service/device.js:960
+#, javascript-format
+msgid "Failed to pair with %s"
+msgstr ""
+
+#: src/service/device.js:961
+msgid "Device clocks are out of sync"
+msgstr ""
+
+#: src/service/manager.js:178
 msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Знаходжанне было адключана праз колькасць прылад у гэтай сетцы."
 
-#: src/service/backends/lan.js:177
-msgid "OpenSSL not found"
-msgstr "OpenSSL не знойдзены"
-
-#: src/service/backends/lan.js:470
+#: src/service/backends/lan.js:477
 msgid "Port already in use"
 msgstr "Порт ужо выкарыстоўваецца"
 
-#: src/service/plugins/battery.js:15
+#: src/service/plugins/battery.js:16
 msgid "Exchange battery information"
 msgstr "Абмен інфармацыяй пра акумулятар"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
-#: src/service/plugins/battery.js:255
+#: src/service/plugins/battery.js:256
 #, javascript-format
 msgid "%s: Battery is full"
 msgstr "%s: акумулятар зараджаны"
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
-#: src/service/plugins/battery.js:257 src/shell/device.js:119
+#: src/service/plugins/battery.js:258 src/shell/device.js:119
 msgid "Fully Charged"
 msgstr "Зараджана цалкам"
 
 #. TRANSLATORS: eg. Google Pixel: Battery has reached custom charge level
-#: src/service/plugins/battery.js:284
+#: src/service/plugins/battery.js:285
 #, javascript-format
 msgid "%s: Battery has reached custom charge level"
 msgstr "%s: акумулятар дасягнуў зададзенага ўзроўню зараду"
 
 #. TRANSLATORS: when the battery has reached custom charge level
-#: src/service/plugins/battery.js:286
+#: src/service/plugins/battery.js:287
 #, javascript-format
 msgid "%d%% Charged"
 msgstr "%d%% зараджана"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
-#: src/service/plugins/battery.js:313
+#: src/service/plugins/battery.js:314
 #, javascript-format
 msgid "%s: Battery is low"
 msgstr "%s: нізкі зарад акумулятара"
 
 #. TRANSLATORS: eg. 15% remaining
-#: src/service/plugins/battery.js:315
+#: src/service/plugins/battery.js:316
 #, javascript-format
 msgid "%d%% remaining"
 msgstr "%d%% засталося"
@@ -857,9 +904,18 @@ msgstr "Адправіць буфер абмену"
 msgid "Clipboard Pull"
 msgstr "Запрасіць буфер абмену"
 
-#: src/service/plugins/contacts.js:28
+#: src/service/plugins/contacts.js:29
 msgid "Access contacts of the paired device"
 msgstr "Доступ да кантактаў спалучанай прылады"
+
+#. Ensure we have a sender
+#. TRANSLATORS: No name or phone number
+#. Contact Name
+#: src/service/plugins/contacts.js:242 src/service/plugins/contacts.js:362
+#: src/service/plugins/telephony.js:156 src/service/plugins/telephony.js:175
+#: src/service/ui/contacts.js:620 src/service/ui/messaging.js:756
+msgid "Unknown Contact"
+msgstr "Невядомы кантакт"
 
 #: src/service/plugins/findmyphone.js:15
 msgid "Find My Phone"
@@ -881,35 +937,35 @@ msgstr "Дазваляе спалучанай прыладзе дзейніча�
 msgid "Remote Input"
 msgstr ""
 
-#: src/service/plugins/mpris.js:17
+#: src/service/plugins/mpris.js:18
 msgid "MPRIS"
 msgstr "MPRIS"
 
-#: src/service/plugins/mpris.js:18
+#: src/service/plugins/mpris.js:19
 msgid "Bidirectional remote media playback control"
 msgstr "Двухнакіраванае аддаленае кіраванне прайграваннем"
 
-#: src/service/plugins/mpris.js:329
+#: src/service/plugins/mpris.js:357
 msgid "Unknown"
 msgstr "Невядомы"
 
-#: src/service/plugins/notification.js:18
+#: src/service/plugins/notification.js:19
 msgid "Share notifications with the paired device"
 msgstr "Абагульваць апавяшчэнні са спалучанымі прыладамі"
 
-#: src/service/plugins/notification.js:32
+#: src/service/plugins/notification.js:33
 msgid "Cancel Notification"
 msgstr "Скасаваць апавяшчэнне"
 
-#: src/service/plugins/notification.js:40
+#: src/service/plugins/notification.js:41
 msgid "Close Notification"
 msgstr "Закрыць апавяшчэнне"
 
-#: src/service/plugins/notification.js:48
+#: src/service/plugins/notification.js:49
 msgid "Reply Notification"
 msgstr "Адказаць на апавяшчэнне"
 
-#: src/service/plugins/notification.js:64
+#: src/service/plugins/notification.js:65
 msgid "Activate Notification"
 msgstr "Актываваць апавяшчэнне"
 
@@ -940,23 +996,23 @@ msgstr "Запускаць каманды"
 msgid "Run commands on your paired device or let the device run predefined commands on this PC"
 msgstr "Запускаць каманды на спалучанай прыладзе або дазволіць ёй запускаць прадвызначаныя каманды на гэтым ПК"
 
-#: src/service/plugins/sftp.js:14
+#: src/service/plugins/sftp.js:15
 msgid "SFTP"
 msgstr "SFTP"
 
-#: src/service/plugins/sftp.js:16
+#: src/service/plugins/sftp.js:17
 msgid "Browse the paired device filesystem"
 msgstr "Праглядаць файлавую сістэму спалучанай прылады"
 
-#: src/service/plugins/sftp.js:21
+#: src/service/plugins/sftp.js:22
 msgid "Mount"
 msgstr "Падлучыць"
 
-#: src/service/plugins/sftp.js:29
+#: src/service/plugins/sftp.js:30
 msgid "Unmount"
 msgstr "Адлучыць"
 
-#: src/service/plugins/sftp.js:190
+#: src/service/plugins/sftp.js:191
 #, javascript-format
 msgid "%s reported an error"
 msgstr "%s паведаміў пра памылку"
@@ -969,87 +1025,87 @@ msgstr "Абагуліць"
 msgid "Share files and URLs between devices"
 msgstr "Абагульваць файлы і спасылкі паміж прыладамі"
 
-#: src/service/plugins/share.js:130 src/service/plugins/share.js:209
-#: src/service/plugins/share.js:320
+#: src/service/plugins/share.js:148 src/service/plugins/share.js:227
+#: src/service/plugins/share.js:337
 msgid "Transfer Failed"
 msgstr "Збой перадачы"
 
 #. TRANSLATORS: eg. Google Pixel is not allowed to upload files
-#: src/service/plugins/share.js:132
+#: src/service/plugins/share.js:150
 #, javascript-format
 msgid "%s is not allowed to upload files"
 msgstr "%s не дазваляе запампоўваць файлы"
 
-#: src/service/plugins/share.js:154 src/service/plugins/share.js:290
+#: src/service/plugins/share.js:172 src/service/plugins/share.js:307
 msgid "Transferring File"
 msgstr "Перадача файла"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:156
+#: src/service/plugins/share.js:174
 #, javascript-format
 msgid "Receiving “%s” from %s"
 msgstr "Атрыманне “%s” з %s"
 
-#: src/service/plugins/share.js:175 src/service/plugins/share.js:310
+#: src/service/plugins/share.js:193 src/service/plugins/share.js:327
 msgid "Transfer Successful"
 msgstr "Паспяхова перададзена"
 
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:177
+#: src/service/plugins/share.js:195
 #, javascript-format
 msgid "Received “%s” from %s"
 msgstr "Атрымана “%s” з %s"
 
-#: src/service/plugins/share.js:187
+#: src/service/plugins/share.js:205
 msgid "Show File Location"
 msgstr ""
 
-#: src/service/plugins/share.js:192
+#: src/service/plugins/share.js:210
 msgid "Open File"
 msgstr "Адкрыць файл"
 
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:211
+#: src/service/plugins/share.js:229
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
 msgstr "Не ўдалося атрымаць “%s” з %s"
 
-#: src/service/plugins/share.js:242
+#: src/service/plugins/share.js:259
 #, javascript-format
 msgid "Text Shared By %s"
 msgstr "Тэкст абагулены %s"
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
-#: src/service/plugins/share.js:292
+#: src/service/plugins/share.js:309
 #, javascript-format
 msgid "Sending “%s” to %s"
 msgstr "Адпраўка “%s” у %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:312
+#: src/service/plugins/share.js:329
 #, javascript-format
 msgid "Sent “%s” to %s"
 msgstr "Адпраўлена “%s” у %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:322
+#: src/service/plugins/share.js:339
 #, javascript-format
 msgid "Failed to send “%s” to %s"
 msgstr "Збой адпраўкі “%s” у %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
-#: src/service/plugins/share.js:380
+#: src/service/plugins/share.js:397
 #, javascript-format
 msgid "Send files to %s"
 msgstr "Адправіць файлы ў %s"
 
 #. TRANSLATORS: Mark the file to be opened once completed
-#: src/service/plugins/share.js:384
+#: src/service/plugins/share.js:401
 msgid "Open when done"
 msgstr "Адкрыць па сканчэнні"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
-#: src/service/plugins/share.js:423
+#: src/service/plugins/share.js:440
 #, javascript-format
 msgid "Send a link to %s"
 msgstr "Адправіць спасылку ў %s"
@@ -1074,62 +1130,54 @@ msgstr "Адказаць на SMS"
 msgid "Share SMS"
 msgstr "Абагуліць SMS"
 
-#: src/service/plugins/systemvolume.js:13
+#: src/service/plugins/systemvolume.js:36
 msgid "System Volume"
 msgstr "Сістэмная гучнасць"
 
-#: src/service/plugins/systemvolume.js:14
+#: src/service/plugins/systemvolume.js:37
 msgid "Enable the paired device to control the system volume"
 msgstr "Дазволіць спалучанай прыладзе кіраваць гучнасцю сістэмы"
 
-#: src/service/plugins/systemvolume.js:58
+#: src/service/plugins/systemvolume.js:81
 msgid "PulseAudio not found"
 msgstr "PulseAudio не знойдзены"
 
-#: src/service/plugins/telephony.js:16
+#: src/service/plugins/telephony.js:17
 msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
 msgstr "Апавяшчаць пра выклікі і рэгуляваць гучнасць сістэмы падчас выклікаў"
 
 #. TRANSLATORS: Silence the actively ringing call
-#: src/service/plugins/telephony.js:28
+#: src/service/plugins/telephony.js:29
 msgid "Mute Call"
 msgstr "Адкл. гук выкліку"
 
-#. Ensure we have a sender
-#. TRANSLATORS: No name or phone number
-#. Contact Name
-#: src/service/plugins/telephony.js:155 src/service/plugins/telephony.js:174
-#: src/service/ui/contacts.js:611 src/service/ui/messaging.js:750
-msgid "Unknown Contact"
-msgstr "Невядомы кантакт"
-
 #. TRANSLATORS: The phone is ringing
-#: src/service/plugins/telephony.js:193
+#: src/service/plugins/telephony.js:194
 msgid "Incoming call"
 msgstr "Уваходны выклік"
 
 #. TRANSLATORS: A phone call is active
-#: src/service/plugins/telephony.js:208
+#: src/service/plugins/telephony.js:209
 msgid "Ongoing call"
 msgstr "Выходны выклік"
 
 #. TRANSLATORS: A fax number
-#: src/service/ui/contacts.js:134
+#: src/service/ui/contacts.js:143
 msgid "Fax"
 msgstr "Факс"
 
 #. TRANSLATORS: A work or office phone number
-#: src/service/ui/contacts.js:138
+#: src/service/ui/contacts.js:147
 msgid "Work"
 msgstr "Працоўны"
 
 #. TRANSLATORS: A mobile or cellular phone number
-#: src/service/ui/contacts.js:142
+#: src/service/ui/contacts.js:151
 msgid "Mobile"
 msgstr "Мабільны"
 
 #. TRANSLATORS: A home phone number
-#: src/service/ui/contacts.js:146
+#: src/service/ui/contacts.js:155
 msgid "Home"
 msgstr "Дамашні"
 
@@ -1153,21 +1201,21 @@ msgstr[1] "%d хвіліны"
 msgstr[2] "%d хвілін"
 msgstr[3] "%d хвіліны"
 
-#: src/service/ui/messaging.js:401
+#: src/service/ui/messaging.js:407
 msgid "Not available"
 msgstr "Недаступны"
 
-#: src/service/ui/messaging.js:758
+#: src/service/ui/messaging.js:764
 msgid "Group Message"
 msgstr "Групавое паведамленне"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
-#: src/service/ui/messaging.js:773
+#: src/service/ui/messaging.js:779
 #, javascript-format
 msgid "You: %s"
 msgstr "Вы: %s"
 
-#: src/service/ui/messaging.js:959
+#: src/service/ui/messaging.js:965
 #, javascript-format
 msgid "And %d other contact"
 msgid_plural "And %d others"
@@ -1203,22 +1251,22 @@ msgstr "%d%% (%d∶%02d Да поўнага зараду)"
 msgid "%d%% (%d∶%02d Remaining)"
 msgstr "%d%% (%d∶%02d застаецца)"
 
-#: src/shell/notification.js:69
+#: src/shell/notification.js:73
 msgid "Reply"
 msgstr "Адказаць"
 
 #. TRANSLATORS: Chrome/Firefox WebExtension description
-#: webextension/gettext.js:32
+#: webextension/gettext.js:31
 msgid "Share links with GSConnect, direct to the browser or by SMS."
 msgstr "Абагульвайце спасылкі з GSConnect, напрамую ў браўзер або праз SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
-#: webextension/gettext.js:36
+#: webextension/gettext.js:35
 msgid "Service Unavailable"
 msgstr "Сэрвіс недаступны"
 
 #. TRANSLATORS: Open URL with the device's browser
-#: webextension/gettext.js:40
+#: webextension/gettext.js:39
 msgid "Open in Browser"
 msgstr "Адкрыць у браўзеры"
 

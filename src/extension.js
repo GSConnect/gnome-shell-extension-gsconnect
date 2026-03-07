@@ -22,9 +22,8 @@ import * as Device from './shell/device.js';
 import * as Keybindings from './shell/keybindings.js';
 import * as Notification from './shell/notification.js';
 import * as Input from './shell/input.js';
-import * as Utils from './shell/utils.js';
 import * as Remote from './utils/remote.js';
-import setup from './utils/setup.js';
+import * as Setup from './utils/setup.js';
 
 const QuickSettingsMenu = Main.panel.statusArea.quickSettings;
 
@@ -358,7 +357,7 @@ export default class GSConnectExtension extends Extension {
 
     constructor(metadata) {
         super(metadata);
-        setup(this.path);
+        Setup.setup(this.path);
 
         // If installed as a user extension, this checks the permissions
         // on certain critical files in the extension directory
@@ -366,13 +365,13 @@ export default class GSConnectExtension extends Extension {
         // and makes them executable if not. Some packaging methods
         // (particularly GitHub Actions artifacts) automatically remove
         // executable bits from all contents, presumably for security.
-        Utils.ensurePermissions();
+        Setup.ensurePermissions();
 
         // If installed as a user extension, this will install the Desktop entry,
         // DBus and systemd service files necessary for DBus activation and
         // GNotifications. Since there's no uninit()/uninstall() hook for extensions
         // and they're only used *by* GSConnect, they should be okay to leave.
-        Utils.installService();
+        Setup.installService();
 
         // These modify the notification source for GSConnect's GNotifications and
         // need to be active even when the extension is disabled (eg. lock screen).

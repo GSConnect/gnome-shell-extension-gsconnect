@@ -316,7 +316,7 @@ const MousepadPlugin = GObject.registerClass({
     }
 
     /**
-     * Send an echo/ACK of @input, if requested
+     * Send an echo/ACK of {@link input}, if requested
      *
      * @param {object} input - The body of a 'kdeconnect.mousepad.request'
      */

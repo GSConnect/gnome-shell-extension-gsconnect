@@ -58,6 +58,45 @@ SPDX-License-Identifier: CC0-1.0
   </description>
 
   <releases>
+    <release version="71" date="2025-11-17">
+      <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v71</url>
+    </release>
+    <release version="70" date="2025-11-17">
+      <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v70</url>
+    </release>
+    <release version="69" date="2025-11-17">
+      <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v69</url>
+    </release>
+    <release version="68" date="2025-11-17">
+      <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v68</url>
+    </release>
+    <release version="67" date="2025-09-19">
+      <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v67</url>
+    </release>
+    <release version="66" date="2025-06-12">
+      <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v66</url>
+    </release>
+    <release version="65" date="2025-06-12">
+      <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v65</url>
+    </release>
+    <release version="64" date="2025-06-12">
+      <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v64</url>
+    </release>
+    <release version="63" date="2025-06-12">
+      <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v63</url>
+    </release>
+    <release version="62" date="2025-03-29">
+      <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v62</url>
+    </release>
+    <release version="61" date="2025-03-29">
+      <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v61</url>
+    </release>
+    <release version="60" date="2025-03-29">
+      <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v60</url>
+    </release>
+    <release version="59" date="2025-03-29">
+      <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v59</url>
+    </release>
     <release version="58" date="2024-10-24">
       <url>https://github.com/GSConnect/gnome-shell-extension-gsconnect/releases/tag/v58</url>
     </release>

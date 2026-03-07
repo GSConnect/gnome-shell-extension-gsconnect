@@ -24,7 +24,6 @@ cp -pr ${DESTDIR}/${DATADIR}/gnome-shell/extensions/${UUID}/* ${ZIP_DIR}
 cp -pr ${DESTDIR}/${DATADIR}/nautilus-python/extensions/* ${ZIP_DIR}
 cp -pr ${DESTDIR}/${LOCALEDIR} ${ZIP_DIR}
 cp -pr ${DESTDIR}/${GSCHEMADIR} ${ZIP_DIR}
-glib-compile-schemas ${ZIP_DIR}/schemas
 
 # Stop without zipping dir, if requested
 if [ "$NOZIP" = true ]; then
@@ -39,13 +38,6 @@ echo "Extension saved to ${ZIP_FILE}"
 
 # INSTALL
 if [ "$INSTALL" = true ]; then
-    EXTENSIONS_DIR="${HOME}/.local/share/gnome-shell/extensions"
-    INSTALL_DIR="${EXTENSIONS_DIR}/${UUID}"
-
-    mkdir -p ${EXTENSIONS_DIR}
-    rm -rf ${INSTALL_DIR}
-    unzip -q ${ZIP_FILE} -d ${INSTALL_DIR}
-
-    echo "Extension installed to ${INSTALL_DIR}"
+    gnome-extensions install --force ${ZIP_FILE}
 fi
 

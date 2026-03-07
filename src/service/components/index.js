@@ -41,7 +41,7 @@ const Default = new Map();
  * followed by a call to `release()`.
  *
  * @param {string} name - The module name
- * @returns {*} The default instance of a component
+ * @returns {object} The default instance of a component
  */
 export function acquire(name) {
     if (functionOverrides.acquire)
