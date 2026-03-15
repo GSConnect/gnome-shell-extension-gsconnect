@@ -18,15 +18,11 @@ import('gi://GIRepository?version=3.0').catch(() => {
     import('gi://GIRepository?version=2.0').catch(() => {});
 });
 
+// DesktopAppInfo is no longer in Gio in GNOME 49
 let GioUnix;
-try {
-    GioUnix = (await import('gi://GioUnix?version=2.0')).default;
-} catch {
-    GioUnix = {
-        InputStream: Gio.UnixInputStream,
-        OutputStream: Gio.UnixOutputStream,
-    };
-}
+GioUnix = import('gi://GioUnix?version=2.0').catch(() => {
+    GioUnix = Gio;
+});
 
 import system from 'system';
 
@@ -216,10 +212,11 @@ const Service = GObject.registerClass({
     }
 
     _preferences() {
-        Gio.Subprocess.new(
-            [`${Config.PACKAGE_DATADIR}/gsconnect-preferences`],
-            Gio.SubprocessFlags.NONE
+        const _launcher = Gio.SubprocessLauncher.new(
+            {flags: Gio.SubprocessFlags.NONE}
         );
+        _launcher.set_cwd(Config.PACKAGE_DATADIR);
+        _launcher.spawnv(['gjs', '-m', 'gsconnect-preferences.js']);
     }
 
     /**
