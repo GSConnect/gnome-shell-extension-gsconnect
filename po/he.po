@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-13 14:44-0400\n"
-"PO-Revision-Date: 2026-03-25 16:50\n"
+"PO-Revision-Date: 2026-03-25 18:44\n"
 "Last-Translator: \n"
 "Language-Team: Hebrew\n"
 "Language: he_IL\n"
@@ -538,7 +538,9 @@ msgstr "לנסות שוב"
 msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
 "Use your distro's package manager to install it.\n"
 "For more information, visit <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</a>."
-msgstr ""
+msgstr "נראה שכלי שורת הפקודות <tt>openssl</tt> לא מותקן.\n"
+"יש להשתמש במנהל החבילות של ההפצה שלך כדי להתקין אותו.\n"
+"לפרטים נוספים, יש לגשת אל <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">הוויקי של GSConnect</a>."
 
 #: data/ui/preferences-window.ui:874 src/service/init.js:361
 msgid "OpenSSL not found"
@@ -684,7 +686,7 @@ msgstr "שם התקן שגוי"
 #: src/preferences/service.js:445
 #, javascript-format
 msgid "Device name must not contain any of %s and have a length of 1-32 characters"
-msgstr ""
+msgstr "שם ההתקן לא יכול להכיל אף אחד מהתווים %s והאורך שלו צריך להיות בין 1 ל־32 תווים"
 
 #: src/preferences/service.js:516
 msgid "Laptop"
@@ -725,7 +727,7 @@ msgstr "ההגדרות הוסבו"
 
 #: src/service/daemon.js:100
 msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
-msgstr ""
+msgstr "GSConnect התעדכן כדי לתמוך בשינויים שנערכו בפרוטוקול KDE Connect. את חלק מהההתקנים שלך יהיה עליך לצמד מחדש."
 
 #: src/service/daemon.js:241
 msgid "Click for help troubleshooting"
@@ -838,11 +840,11 @@ msgstr "אישור"
 #: src/service/device.js:960
 #, javascript-format
 msgid "Failed to pair with %s"
-msgstr ""
+msgstr "הצימוד מול %s נכשל"
 
 #: src/service/device.js:961
 msgid "Device clocks are out of sync"
-msgstr ""
+msgstr "השעונים של ההתקנים לא מתואמים"
 
 #: src/service/manager.js:178
 msgid "Discovery has been disabled due to the number of devices on this network."
