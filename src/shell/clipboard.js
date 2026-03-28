@@ -141,7 +141,7 @@ export const Clipboard = GObject.registerClass({
         let retval;
         let invocation, parameters;
 
-        // GNOME 49+ changed the callback signature from
+        // GNOME 50+ changed the callback signature from
         // (iface, name, parameters, invocation) to
         // (iface, name, invocation, parameters)
         // Detect which order is being used

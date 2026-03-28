@@ -111,14 +111,14 @@ export const Interface = GObject.registerClass({
      * @param {Gio.DBusInterfaceInfo} info - The DBus interface
      * @param {Gio.DBusInterface} iface - The DBus interface
      * @param {string} name - The DBus method name
-     * @param {GLib.Variant|Gio.DBusMethodInvocation} param1 - The method parameters or invocation (GNOME 49+ changed order)
-     * @param {Gio.DBusMethodInvocation|GLib.Variant} param2 - The method invocation or parameters (GNOME 49+ changed order)
+     * @param {GLib.Variant|Gio.DBusMethodInvocation} param1 - The method parameters or invocation (GNOME 50+ changed order)
+     * @param {Gio.DBusMethodInvocation|GLib.Variant} param2 - The method invocation or parameters (GNOME 50+ changed order)
      */
     async _call(info, iface, name, param1, param2) {
         let retval;
         let invocation, parameters;
 
-        // GNOME 49+ changed the callback signature from
+        // GNOME 50+ changed the callback signature from
         // (iface, name, parameters, invocation) to
         // (iface, name, invocation, parameters)
         // Detect which order is being used
