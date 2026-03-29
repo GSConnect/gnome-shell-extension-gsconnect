@@ -6,263 +6,201 @@ SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
 SPDX-License-Identifier: GPL-2.0-or-later
 -->
 
-<interface>
-  <requires lib="gtk+" version="3.24"/>
-  <template class="GSConnectMousepadInputDialog" parent="GtkDialog">
-    <property name="can_focus">False</property>
-    <property name="default_width">480</property>
-    <property name="type_hint">dialog</property>
-    <child internal-child="vbox">
-      <object class="GtkBox">
-        <property name="border_width">0</property>
-        <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
-        <child>
-          <object class="GtkRevealer" id="infobar">
+<interface domain="org.gnome.Shell.Extensions.GSConnect">
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+
+  <template class="GSConnectMousepadInputDialog" parent="AdwApplicationWindow">
+    <property name="title">Test</property>
+    <property name="width-request">360</property>
+    <property name="height-request">640</property>
+    <child>
+      <object class="AdwBottomSheet" id="bottom_sheet">
+        <property name="content">
+          <object class="AdwToolbarView">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <child>
-              <object class="GtkInfoBar">
+            <child type="top">
+              <object class="AdwHeaderBar">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="message_type">warning</property>
-                <child internal-child="content_area">
-                  <object class="GtkBox">
-                    <property name="can_focus">False</property>
-                    <child>
-                      <object class="GtkImage">
-                        <property name="can_focus">False</property>
-                        <property name="icon_name">dialog-warning-symbolic</property>
-                        <property name="visible">True</property>
-                      </object>
-                      <packing>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="infobar-label">
-                        <property name="can_focus">False</property>
-                        <property name="halign">start</property>
-                        <property name="hexpand">True</property>
-                        <property name="visible">True</property>
-                      </object>
-                      <packing>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLinkButton">
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Help</property>
-                        <property name="uri">https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Help#remote-keyboard-not-active</property>
-                        <property name="visible">True</property>
-                      </object>
-                      <packing>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-              </object>
-            </child>
-            <style>
-              <class name="info"/>
-            </style>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-
-        <child>
-          <object class="GtkBox">
-            <property name="vexpand">True</property>
-            <property name="halign">fill</property>
-            <property name="orientation">vertical</property>
-            <child>
-              <object class="GtkEventBox" id="touchpad-eventbox">
-                <child>
-                  <object class="GtkLabel">
-                    <property name="can_focus">False</property>
-                    <property name="vexpand">True</property>
-                    <property name="halign">fill</property>
-                    <property name="justify">center</property>
-                    <property name="label" translatable="yes">Touchpad.
-Drag on this area to move mouse cursor.
-Press long to drag to drag mouse cursor.
-
-Simple click will be sent to paired device.
-Left, middle, right button, and wheel scrolls.</property>
-                  </object>
-                </child>
-              </object>
-            </child>
-            <child>
-              <object class="GtkActionBar">
-                <child type="center">
-                  <object class="GtkButtonBox">
-                    <style>
-                      <class name="linked"/>
-                    </style>
-                    <child>
-                      <object class="GtkButton" id="mouse-left-button">
-                        <property name="can_focus">False</property>
-                        <signal name="clicked" handler="_onMouseLeftButtonClicked"/>
-                        <child>
-                          <object class="GtkImage">
-                            <property name="icon-name">mouse-left-button-symbolic</property>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="mouse-middle-button">
-                        <property name="can_focus">False</property>
-                        <signal name="clicked" handler="_onMouseMiddleButtonClicked"/>
-                        <child>
-                          <object class="GtkImage">
-                            <property name="icon-name">mouse-with-smaller-scrollwheel-symbolic</property>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="mouse-right-button">
-                        <property name="can_focus">False</property>
-                        <signal name="clicked" handler="_onMouseRightButtonClicked"/>
-                        <child>
-                          <object class="GtkImage">
-                            <property name="icon-name">mouse-right-button-symbolic</property>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                  </object>
-                </child>
-              </object>
-            </child>
-          </object>
-        </child>
-
-        <child>
-          <object class="GtkGrid">
-            <property name="can_focus">False</property>
-            <property name="vexpand">False</property>
-            <property name="margin_left">6</property>
-            <property name="margin_right">6</property>
-            <property name="margin_top">6</property>
-            <property name="margin_bottom">6</property>
-            <property name="orientation">vertical</property>
-            <property name="column_spacing">6</property>
-            <property name="visible">True</property>
-            <child>
-              <object class="GtkShortcutLabel" id="shift-label">
-                <property name="halign">end</property>
-                <property name="sensitive">False</property>
-                <property name="valign">start</property>
-                <property name="visible">True</property>
-                <property name="accelerator">&lt;Shift&gt;</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkShortcutLabel" id="ctrl-label">
-                <property name="halign">end</property>
-                <property name="sensitive">False</property>
-                <property name="valign">start</property>
-                <property name="visible">True</property>
-                <property name="accelerator">&lt;Ctrl&gt;</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkShortcutLabel" id="alt-label">
-                <property name="halign">end</property>
-                <property name="sensitive">False</property>
-                <property name="valign">start</property>
-                <property name="visible">True</property>
-                <property name="accelerator">&lt;Alt&gt;</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkShortcutLabel" id="super-label">
-                <property name="halign">end</property>
-                <property name="sensitive">False</property>
-                <property name="valign">start</property>
-                <property name="visible">True</property>
-                <property name="accelerator">&lt;Super&gt;</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">3</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkScrolledWindow">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="hscrollbar_policy">never</property>
-                <property name="shadow_type">in</property>
-                <child>
-                  <object class="GtkViewport">
+                <property name="title-widget">
+                  <object class="AdwWindowTitle" id="title-widget">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="title" translatable="yes">Remote Input</property>
+                  </object>
+                </property>
+                <child>
+                  <object class="GtkToggleButton">
+                    <property name="active" bind-source="bottom_sheet" bind-property="open" bind-flags="sync-create|bidirectional"/>
+                    <property name="icon-name">input-keyboard-symbolic</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child type="top">
+              <object class="AdwBanner" id="infobar">
+                <property name="revealed">True</property>
+                <property name="button-label" translatable="yes">Help</property>
+                <property name="revealed">True</property>
+              </object>
+            </child>
+            <property name="content">
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="orientation">vertical</property>
+                <property name="margin-top">10</property>
+                <property name="margin-bottom">10</property>
+                <property name="margin-start">10</property>
+                <property name="margin-end">10</property>
+                <property name="spacing">10</property>
+                <child>
+                  <object class="GtkLabel" id="touchpad-zone">
+                    <property name="visible">True</property>
+                    <property name="hexpand">True</property>
+                    <property name="vexpand">True</property>
+                    <property name="justify">center</property>
+                    <property name="wrap">True</property>
+                    <property name="wrap-mode">word</property>
+                    <style>
+                      <class name="card"/>
+                      <class name="activatable"/>
+                    </style>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwClamp">
+                    <property name="margin-top">5</property>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="orientation">horizontal</property>
+                        <child>
+                          <object class="GtkButton" id="mouse-right-button">
+                            <property name="hexpand">true</property>
+                            <property name="margin-end">2</property>
+                            <property name="icon-name">mouse-left-button-symbolic</property>
+                            <property name="has-tooltip">True</property>
+                            <property name="tooltip-text" translatable="yes">Mouse left button</property>
+                            <accessibility>
+                              <property name="label" translatable="yes">Mouse left button</property>
+                            </accessibility>
+                            <signal name="clicked" handler="_onMouseLeftButtonClicked" swapped="no"/>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="mouse-middle-button">
+                            <property name="hexpand">true</property>
+                            <property name="margin-start">2</property>
+                            <property name="margin-end">2</property>
+                            <property name="icon-name">input-mouse-symbolic</property>
+                            <property name="has-tooltip">True</property>
+                            <property name="tooltip-text" translatable="yes">Mouse middle button</property>
+                            <accessibility>
+                              <property name="label" translatable="yes">Mouse middle button</property>
+                            </accessibility>
+                            <signal name="clicked" handler="_onMouseMiddleButtonClicked" swapped="no"/>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="mouse-left-button">
+                            <property name="hexpand">true</property>
+                            <property name="margin-start">2</property>
+                            <property name="icon-name">mouse-right-button-symbolic</property>
+                            <property name="has-tooltip">True</property>
+                            <property name="tooltip-text" translatable="yes">Mouse right button</property>
+                            <accessibility>
+                              <property name="label" translatable="yes">Mouse right button</property>
+                            </accessibility>
+                            <signal name="clicked" handler="_onMouseRightButtonClicked" swapped="no"/>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </property>
+          </object>
+        </property>
+        <property name="sheet">
+          <object class="AdwToolbarView">
+            <property name="visible">True</property>
+            <property name="content">
+              <object class="AdwClamp">
+                <property name="margin-top">10</property>
+                <property name="margin-bottom">5</property>
+                <property name="margin-start">10</property>
+                <property name="margin-end">10</property>
+                <child>
+                  <object class="GtkScrolledWindow">
+                    <property name="visible">True</property>
+                    <property name="height-request">200</property>
+                    <property name="hscrollbar-policy">never</property>
+                    <property name="hexpand">True</property>
                     <child>
                       <object class="GtkTextView" id="entry">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="hexpand">True</property>
-                        <property name="vexpand">True</property>
-                        <property name="border_width">6</property>
-                        <property name="wrap_mode">word-char</property>
+                        <property name="wrap-mode">word</property>
+                        <style>
+                          <class name="card"/>
+                          <class name="keyboard-text-view"/>
+                        </style>
                       </object>
                     </child>
                   </object>
                 </child>
               </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">0</property>
-                <property name="width">1</property>
-                <property name="height">4</property>
-              </packing>
+            </property>
+            <child type="bottom">
+              <object class="AdwClamp">
+                <property name="margin-top">5</property>
+                <property name="margin-bottom">10</property>
+                <property name="margin-start">10</property>
+                <property name="margin-end">10</property>
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="orientation">horizontal</property>
+                    <child>
+                      <object class="GtkShortcutLabel" id="shift-label">
+                        <property name="visible">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="margin-end">5</property>
+                        <property name="accelerator">&lt;Shift&gt;</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkShortcutLabel" id="ctrl-label">
+                        <property name="visible">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="margin-start">5</property>
+                        <property name="margin-end">5</property>
+                        <property name="accelerator">&lt;Ctrl&gt;</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkShortcutLabel" id="alt-label">
+                        <property name="visible">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="margin-start">5</property>
+                        <property name="margin-end">5</property>
+                        <property name="accelerator">&lt;Alt&gt;</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkShortcutLabel" id="super-label">
+                        <property name="visible">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="margin-start">5</property>
+                        <property name="margin-end">10</property>
+                        <property name="accelerator">&lt;Super&gt;</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
             </child>
           </object>
-        </child>
+        </property>
       </object>
     </child>
   </template>
-
-  <!-- Touchpad Gestures -->
-  <object class="GtkGestureDrag" id="touchpad-drag">
-    <property name="widget">touchpad-eventbox</property>
-    <signal name="begin" handler="_onTouchpadDragBegin"/>
-    <signal name="drag-update" handler="_onTouchpadDragUpdate"/>
-    <signal name="end" handler="_onTouchpadDragEnd"/>
-  </object>
-
-  <object class="GtkGestureLongPress" id="touchpad-long-press">
-    <property name="widget">touchpad-eventbox</property>
-    <property name="button">0</property>
-    <signal name="cancelled" handler="_onTouchpadLongPressCancelled"/>
-    <signal name="pressed" handler="_onTouchpadLongPressPressed"/>
-    <signal name="end" handler="_onTouchpadLongPressEnd"/>
-  </object>
 </interface>

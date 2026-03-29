@@ -10,19 +10,27 @@ SPDX-License-Identifier: GPL-2.0-or-later
   <gresource prefix="/org/gnome/Shell/Extensions/GSConnect">
     <!-- UI -->
     <file compressed="true">application.css</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/command-row.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/connect-dialog.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/contacts-address-row.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/contact-chooser.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/contacts-address-row.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/find-my-phone.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/legacy-messaging-dialog.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/messaging-conversation-input-text.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/messaging-conversation-message.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/messaging-conversation-participants.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/messaging-conversation-summary.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/messaging-conversation-sharesms.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/messaging-conversation.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/messaging-window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/mousepad-input-dialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/notification-reply-dialog.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/openssl-dialog.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/preferences-device-pair.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/preferences-device-page.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/preferences-command-editor.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/preferences-device-panel.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/preferences-section-row.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/preferences-settings.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/preferences-shortcut-editor.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/preferences-window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/service-device-chooser.ui</file>
@@ -35,44 +43,46 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.GSConnect.xml</file>
     <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.GSConnect.sdp.xml</file>
 
-    <!-- Application Icons -->
-    <file compressed="true" preprocess="xml-stripblanks">icons/org.gnome.Shell.Extensions.GSConnect.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">icons/org.gnome.Shell.Extensions.GSConnect-symbolic.svg</file>
-
-    <!-- Device Icons (Fallback) c/o GNOME -->
-    <file compressed="true" preprocess="xml-stripblanks">icons/computer-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">icons/smartphone-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">icons/tv-symbolic.svg</file>
-
-    <!-- Device Icons (Fallbacks) c/o Numix
-
-         NOTE: GNOME currently doesn't have an icon for `laptop`
-               The stock icon for `tablet` is actually a wacom tablet
-    -->
-    <file compressed="true" preprocess="xml-stripblanks">icons/laptop-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">icons/tablet-symbolic.svg</file>
-
-    <!-- Phonelink Icons c/o GNOME -->
-    <file compressed="true" preprocess="xml-stripblanks">icons/phonelink-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">icons/phonelink-delete-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">icons/phonelink-lock-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">icons/phonelink-off-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">icons/phonelink-ring-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">icons/phonelink-setup-symbolic.svg</file>
-
-    <!-- Misc Resources c/o GNOME -->
-    <file compressed="true" preprocess="xml-stripblanks">icons/group-avatar-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">icons/sms-send.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">icons/sms-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">images/enter-keyboard-shortcut.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">icons/mouse-left-button-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">icons/mouse-right-button-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">icons/mouse-with-smaller-scrollwheel-symbolic.svg</file>
-
     <!-- WebExtension Manifests & Badges -->
     <file compressed="true">webextension/org.gnome.shell.extensions.gsconnect.json.google.in</file>
     <file compressed="true">webextension/org.gnome.shell.extensions.gsconnect.json.mozilla.in</file>
     <file compressed="true">images/chrome-badge.png</file>
     <file compressed="true">images/firefox-badge.png</file>
+  </gresource>
+  <!-- Icon Theme -->
+  <gresource prefix="/org/gnome/Shell/Extensions/GSConnect/icons/scalable/apps">
+    <file compressed="true" preprocess="xml-stripblanks" alias="org.gnome.Shell.Extensions.GSConnect.svg">icons/org.gnome.Shell.Extensions.GSConnect.svg</file>
+  </gresource>
+  <gresource prefix="/org/gnome/Shell/Extensions/GSConnect/icons/symbolic/apps">
+      <file compressed="true" preprocess="xml-stripblanks" alias="org.gnome.Shell.Extensions.GSConnect-symbolic.svg">icons/org.gnome.Shell.Extensions.GSConnect-symbolic.svg</file>
+  </gresource>
+  <gresource prefix="/org/gnome/Shell/Extensions/GSConnect/icons/scalable/actions">
+    <file compressed="true" preprocess="xml-stripblanks" alias="phonelink-symbolic.svg">icons/phonelink-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="phonelink-delete-symbolic.svg">icons/phonelink-delete-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="phonelink-lock-symbolic.svg">icons/phonelink-lock-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="phonelink-off-symbolic.svg">icons/phonelink-off-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="phone-vibrate-symbolic.svg">icons/phone-vibrate-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="sad-computer-symbolic.svg">icons/sad-computer-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="phonelink-setup-symbolic.svg">icons/phonelink-setup-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="paper-plane-symbolic.svg">icons/paper-plane-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="chat-bubbles-text-symbolic.svg">icons/chat-bubbles-text-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="mouse-left-button-symbolic.svg">icons/mouse-left-button-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="mouse-with-smaller-scrollwheel-symbolic.svg">icons/mouse-with-smaller-scrollwheel-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="mouse-right-button-symbolic.svg">icons/mouse-right-button-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="people-symbolic.svg">icons/people-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="tablet-symbolic.svg">icons/tablet-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="computer-symbolic.svg">icons/computer-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="laptop-symbolic.svg">icons/laptop-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="tv-symbolic.svg">icons/tv-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="phone-symbolic.svg">icons/phone-symbolic.svg</file>
+  </gresource>
+  <gresource prefix="/org/gnome/Shell/Extensions/GSConnect/icons/symbolic/actions">
+    <file compressed="true" preprocess="xml-stripblanks" alias="computer-symbolic.svg">icons/computer-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="laptop-symbolic.svg">icons/laptop-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="tablet-symbolic.svg">icons/tablet-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="tv-symbolic.svg">icons/tv-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="phone-symbolic.svg">icons/phone-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="phone-vibrate-symbolic.svg">icons/phone-vibrate-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="chat-bubbles-text-symbolic.svg">icons/chat-bubbles-text-symbolic.svg</file>
   </gresource>
 </gresources>
