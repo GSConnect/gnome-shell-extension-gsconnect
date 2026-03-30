@@ -1,4 +1,4 @@
-# Wayland Clipboard Sync Fix (GNOME 45+)
+# Wayland Clipboard Sync Fix (GNOME 46-50)
 
 ## Issue Description
 On modern Wayland sessions (specifically tested on GNOME 49), pushing clipboard data from an Android device to the desktop via GSConnect fails silently. 
@@ -22,7 +22,7 @@ To bypass the strict Wayland background window restriction while remaining nativ
    clipboard.set_text(St.ClipboardType.CLIPBOARD, text);
    ```
 3. **Graceful Fallback:**
-   If the `St` method fails (ensuring backward compatibility with older GNOME releases or X11 sessions where `St` might behave differently), it catches the exception and falls back to the original `Meta.SelectionSourceMemory` implementation.
+   Because `St.Clipboard.set_text` fails silently (returns void without throwing exceptions) when denied by Wayland, the logic verifies the write by reading the clipboard back immediately. If the text does not match, it falls back to the original `Meta.SelectionSourceMemory` implementation.
 
 ## Testing
-This fix was locally patched and verified working on **GNOME 49.4 (Wayland)**. Both Android-to-PC and PC-to-Android clipboard syncing operate seamlessly without requiring global shortcut workarounds.
+This fix was locally patched and verified working on **GNOME 49.4 (Wayland)**. Both Android-to-PC and PC-to-Android clipboard syncing operate seamlessly.
