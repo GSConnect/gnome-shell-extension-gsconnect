@@ -8,6 +8,7 @@ import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 
 import Meta from 'gi://Meta';
+import St from 'gi://St';
 
 
 /*
@@ -268,11 +269,16 @@ export const Clipboard = GObject.registerClass({
                     });
                 }
 
-                const source = Meta.SelectionSourceMemory.new(
-                    'text/plain;charset=utf-8', GLib.Bytes.new(text));
-
-                this._selection.set_owner(
-                    Meta.SelectionType.SELECTION_CLIPBOARD, source);
+                try {
+                    const clipboard = St.Clipboard.get_default();
+                    clipboard.set_text(St.ClipboardType.CLIPBOARD, text);
+                } catch (e) {
+                    // Fallback to older Meta.Selection if St fails
+                    const source = Meta.SelectionSourceMemory.new(
+                        'text/plain;charset=utf-8', GLib.Bytes.new(text));
+                    this._selection.set_owner(
+                        Meta.SelectionType.SELECTION_CLIPBOARD, source);
+                }
 
                 resolve();
             } catch (e) {
