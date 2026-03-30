@@ -1,18 +1,9 @@
-// SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
-//
-// SPDX-License-Identifier: GPL-2.0-or-later
-
-import Gio from 'gi://Gio';
-import GjsPrivate from 'gi://GjsPrivate';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
-
 import Meta from 'gi://Meta';
+import St from 'gi://St';
 
 
-/*
- * DBus Interface Info
- */
 const DBUS_NAME = 'org.gnome.Shell.Extensions.GSConnect.Clipboard';
 const DBUS_PATH = '/org/gnome/Shell/Extensions/GSConnect/Clipboard';
 const DBUS_NODE = Gio.DBusNodeInfo.new_for_xml(`
@@ -46,79 +37,183 @@ const DBUS_INFO = DBUS_NODE.lookup_interface(DBUS_NAME);
 
 
 /*
- * Text Mimetypes
+ * GSConnect.Clipboard -> St.Clipboard mapping.
+ *
+ * Mimetypes that are just plaintext data. Note that image/png does not go here
+ * because in Gtk3 image clipboards are handled as GdkPixbuf, so we have to map
+ * that to a raw data stream.
  */
-const TEXT_MIMETYPES = [
+const TEXT_TYPES = [
+    'text/plain',
     'text/plain;charset=utf-8',
     'UTF8_STRING',
-    'text/plain',
-    'STRING',
+    'COMPOUND_TEXT',
 ];
 
 
-/* GSConnectClipboardPortal:
- *
- * A simple clipboard portal, especially useful on Wayland where GtkClipboard
- * doesn't work in the background.
- */
 export const Clipboard = GObject.registerClass({
     GTypeName: 'GSConnectShellClipboard',
-}, class GSConnectShellClipboard extends GjsPrivate.DBusImplementation {
+    Properties: {
+        'text': GObject.ParamSpec.string(
+            'text',
+            'Text',
+            'The current text content of the clipboard',
+            GObject.ParamFlags.READABLE,
+            ''
+        ),
+    },
+}, class Clipboard extends GObject.Object {
 
-    _init(params = {}) {
-        super._init({
-            g_interface_info: DBUS_INFO,
-        });
+    _init() {
+        super._init();
 
-        this._transferring = false;
+        this._busId = 0;
+        this._text = '';
 
-        // Watch global selection
         this._selection = global.display.get_selection();
-        this._ownerChangedId = this._selection.connect(
+        this._selectionId = this._selection.connect(
             'owner-changed',
             this._onOwnerChanged.bind(this)
-        );
-
-        // Prepare DBus interface
-        this._handleMethodCallId = this.connect(
-            'handle-method-call',
-            this._onHandleMethodCall.bind(this)
-        );
-
-        this._nameId = Gio.DBus.own_name(
-            Gio.BusType.SESSION,
-            DBUS_NAME,
-            Gio.BusNameOwnerFlags.NONE,
-            this._onBusAcquired.bind(this),
-            null,
-            this._onNameLost.bind(this)
         );
     }
 
     _onOwnerChanged(selection, type, source) {
-        /* We're only interested in the standard clipboard */
         if (type !== Meta.SelectionType.SELECTION_CLIPBOARD)
             return;
 
-        /* In Wayland an intermediate GMemoryOutputStream is used which triggers
-         * a second ::owner-changed emission, so we need to ensure we ignore
-         * that while the transfer is resolving.
-         */
-        if (this._transferring)
+        // Try to get standard text content
+        const mimetypes = this._getMimetypes();
+        const mimetype = TEXT_TYPES.find(type => mimetypes.includes(type));
+
+        if (mimetype === undefined) {
+            this._text = '';
+            this.emit('owner-changed');
             return;
+        }
 
-        this._transferring = true;
-
-        /* We need to put our signal emission in an idle callback to ensure that
-         * Mutter's internal calls have finished resolving in the loop, or else
-         * we'll end up with the previous selection's content.
+        /* In Wayland an intermediate GMemoryOutputStream is used which triggers
+         * an owner-changed signal. To avoid notifying on incomplete transfers
+         * we ignore sources with an active stream.
+         *
+         * https://github.com/GSConnect/gnome-shell-extension-gsconnect/issues/521
+         * https://gitlab.gnome.org/GNOME/mutter/issues/727
          */
-        GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
-            this.emit_signal('OwnerChange', null);
-            this._transferring = false;
+        if (source && source.stream) {
+            this._streamId = source.stream.connect('notify::is-closed', (stream) => {
+                source.stream.disconnect(this._streamId);
+                this._streamId = 0;
 
-            return GLib.SOURCE_REMOVE;
+                this._getSelectionText(mimetype);
+            });
+        } else {
+            this._getSelectionText(mimetype);
+        }
+    }
+
+    _getSelectionText(mimetype) {
+        this._selection.transfer_async(
+            Meta.SelectionType.SELECTION_CLIPBOARD,
+            mimetype,
+            -1,
+            null,
+            (selection, res) => {
+                try {
+                    const stream = selection.transfer_finish(res);
+
+                    this._readTextAsync(stream);
+                } catch (e) {
+                    if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
+                        logError(e, 'GSConnect: Failed to transfer clipboard');
+                }
+            }
+        );
+    }
+
+    _readTextAsync(stream) {
+        const reader = new Gio.DataInputStream({
+            base_stream: stream,
+            close_base_stream: true,
         });
+
+        reader.read_upto_async('\0', 1, 0, null, (reader, res) => {
+            try {
+                const [text, length] = reader.read_upto_finish(res);
+
+                this._text = text || '';
+                this.emit('owner-changed');
+            } catch (e) {
+                logError(e);
+            } finally {
+                reader.close_async(0, null, null);
+            }
+        });
+    }
+
+    /*
+     * D-Bus Export
+     */
+    export(connection, object_path) {
+        this._busId = connection.register_object(
+            object_path,
+            DBUS_INFO,
+            this._onHandleMethodCall.bind(this),
+            this._onHandlePropertyGet.bind(this),
+            this._onHandlePropertySet.bind(this)
+        );
+
+        this._ownerChangeId = this.connect('owner-changed', () => {
+            connection.emit_signal(
+                null,
+                DBUS_PATH,
+                DBUS_NAME,
+                'OwnerChange',
+                null
+            );
+        });
+
+        this.emit('owner-changed');
+    }
+
+    unexport() {
+        if (this._ownerChangeId > 0) {
+            this.disconnect(this._ownerChangeId);
+            this._ownerChangeId = 0;
+        }
+
+        if (this._busId > 0) {
+            const connection = Gio.DBus.session;
+            connection.unregister_object(this._busId);
+            this._busId = 0;
+        }
+    }
+
+    /*
+     * DBus/Method Call
+     */
+    watchService() {
+        return Gio.DBus.session.watch_name(
+            'org.gnome.Shell.Extensions.GSConnect',
+            Gio.BusNameWatcherFlags.NONE,
+            this._onBusAcquired.bind(this),
+            this._onNameLost.bind(this)
+        );
+    }
+
+    unwatchService(watcherId) {
+        Gio.DBus.session.unwatch_name(watcherId);
+    }
+
+    watchServiceAsync() {
+        return Gio.DBus.session.watch_name(
+            'org.gnome.Shell.Extensions.GSConnect',
+            Gio.BusNameWatcherFlags.NONE,
+            (connection, name) => {
+                this.export(connection, DBUS_PATH);
+            },
+            (connection, name) => {
+                this.unexport();
+            }
+        );
     }
 
     _onBusAcquired(connection, name) {
@@ -137,23 +232,8 @@ export const Clipboard = GObject.registerClass({
         }
     }
 
-    async _onHandleMethodCall(iface, name, param1, param2) {
+    async _onHandleMethodCall(iface, name, parameters, invocation) {
         let retval;
-        let invocation, parameters;
-
-        // GNOME 50+ changed the callback signature from
-        // (iface, name, parameters, invocation) to
-        // (iface, name, invocation, parameters)
-        // Detect which order is being used
-        if (param1 instanceof GLib.Variant) {
-            // Old order: parameters, invocation
-            parameters = param1;
-            invocation = param2;
-        } else {
-            // New order: invocation, parameters
-            invocation = param1;
-            parameters = param2;
-        }
 
         try {
             const args = parameters.recursiveUnpack();
@@ -178,78 +258,51 @@ export const Clipboard = GObject.registerClass({
         try {
             if (!(retval instanceof GLib.Variant)) {
                 const args = DBUS_INFO.lookup_method(name).out_args;
-                retval = new GLib.Variant(
-                    `(${args.map(arg => arg.signature).join('')})`,
-                    (args.length === 1) ? [retval] : retval
-                );
+
+                if (args.length === 1)
+                    retval = new GLib.Variant(`(${args[0].signature})`, [retval]);
+                else
+                    retval = new GLib.Variant(`(${args.map(a => a.signature).join('')})`, retval);
             }
 
             invocation.return_value(retval);
-
-        // Without a response, the client will wait for timeout
-        } catch {
-            invocation.return_dbus_error(
-                'org.gnome.gjs.JSError.ValueError',
-                'Service implementation returned an incorrect value type'
-            );
+        } catch (e) {
+            logError(e, `GSConnect: Error returning ${DBUS_NAME}.${name}()`);
         }
     }
 
-    /**
-     * Get the available mimetypes of the current clipboard content
-     *
-     * @returns {Promise<string[]>} A list of mime-types
-     */
-    GetMimetypes() {
-        return new Promise((resolve, reject) => {
-            try {
-                const mimetypes = this._selection.get_mimetypes(
-                    Meta.SelectionType.SELECTION_CLIPBOARD
-                );
+    _onHandlePropertyGet(iface, name, property) {
+        return null;
+    }
 
-                resolve(mimetypes);
-            } catch (e) {
-                reject(e);
-            }
-        });
+    _onHandlePropertySet(iface, name, property, value) {
+        return false;
+    }
+
+    /*
+     * D-Bus API
+     */
+
+    _getMimetypes() {
+        return this._selection.get_mimetypes(Meta.SelectionType.SELECTION_CLIPBOARD);
     }
 
     /**
-     * Get the text content of the clipboard
+     * Get a list of mimetypes available in the clipboard.
      *
-     * @returns {Promise<string>} Text content of the clipboard
+     * @returns {Promise<string[]>} A list of mimetypes
+     */
+    GetMimetypes() {
+        return Promise.resolve(this._getMimetypes());
+    }
+
+    /**
+     * Get the text content of the clipboard.
+     *
+     * @returns {Promise<string>} The text content of the clipboard
      */
     GetText() {
-        return new Promise((resolve, reject) => {
-            const mimetypes = this._selection.get_mimetypes(
-                Meta.SelectionType.SELECTION_CLIPBOARD);
-
-            const mimetype = TEXT_MIMETYPES.find(type => mimetypes.includes(type));
-
-            if (mimetype !== undefined) {
-                const stream = Gio.MemoryOutputStream.new_resizable();
-
-                this._selection.transfer_async(
-                    Meta.SelectionType.SELECTION_CLIPBOARD,
-                    mimetype, -1,
-                    stream, null,
-                    (selection, res) => {
-                        try {
-                            selection.transfer_finish(res);
-
-                            const bytes = stream.steal_as_bytes();
-                            const bytearray = bytes.get_data();
-
-                            resolve(new TextDecoder().decode(bytearray));
-                        } catch (e) {
-                            reject(e);
-                        }
-                    }
-                );
-            } else {
-                reject(new Error('text not available'));
-            }
-        });
+        return Promise.resolve(this._text);
     }
 
     /**
@@ -268,11 +321,19 @@ export const Clipboard = GObject.registerClass({
                     });
                 }
 
-                const source = Meta.SelectionSourceMemory.new(
-                    'text/plain;charset=utf-8', GLib.Bytes.new(text));
+                const clipboard = St.Clipboard.get_default();
+                clipboard.set_text(St.ClipboardType.CLIPBOARD, text);
 
-                this._selection.set_owner(
-                    Meta.SelectionType.SELECTION_CLIPBOARD, source);
+                // Verify clipboard content and fall back to older Meta.Selection if needed
+                clipboard.get_text(St.ClipboardType.CLIPBOARD,
+                    (clip, currentText) => {
+                        if (currentText !== text) {
+                            const source = Meta.SelectionSourceMemory.new(
+                                'text/plain;charset=utf-8', GLib.Bytes.new(text));
+                            this._selection.set_owner(
+                                Meta.SelectionType.SELECTION_CLIPBOARD, source);
+                        }
+                    });
 
                 resolve();
             } catch (e) {
@@ -282,47 +343,89 @@ export const Clipboard = GObject.registerClass({
     }
 
     /**
-     * Get the content of the clipboard with the type {@link mimetype}.
+     * Get the content of the clipboard with the type @mimetype.
      *
      * @param {string} mimetype - the mimetype to request
      * @returns {Promise<Uint8Array>} The content of the clipboard
      */
     GetValue(mimetype) {
         return new Promise((resolve, reject) => {
-            const stream = Gio.MemoryOutputStream.new_resizable();
-
-            this._selection.transfer_async(
-                Meta.SelectionType.SELECTION_CLIPBOARD,
-                mimetype, -1,
-                stream, null,
-                (selection, res) => {
-                    try {
-                        selection.transfer_finish(res);
-
-                        const bytes = stream.steal_as_bytes();
-
-                        resolve(bytes.get_data());
-                    } catch (e) {
-                        reject(e);
-                    }
+            try {
+                if (!this._getMimetypes().includes(mimetype)) {
+                    throw new Gio.DBusError({
+                        code: Gio.DBusError.INVALID_ARGS,
+                        message: `mimetype '${mimetype}' not in clipboard`,
+                    });
                 }
-            );
+
+                this._selection.transfer_async(
+                    Meta.SelectionType.SELECTION_CLIPBOARD,
+                    mimetype,
+                    -1,
+                    null,
+                    (selection, res) => {
+                        try {
+                            const stream = selection.transfer_finish(res);
+
+                            this._readValueAsync(stream, resolve, reject);
+                        } catch (e) {
+                            reject(e);
+                        }
+                    }
+                );
+            } catch (e) {
+                reject(e);
+            }
         });
     }
 
+    _readValueAsync(stream, resolve, reject) {
+        const stream_out = Gio.MemoryOutputStream.new_resizable();
+
+        stream_out.splice_async(
+            stream,
+            Gio.OutputStreamSpliceFlags.CLOSE_SOURCE |
+            Gio.OutputStreamSpliceFlags.CLOSE_TARGET,
+            0,
+            null,
+            (stream_out, res) => {
+                try {
+                    stream_out.splice_finish(res);
+                    const bytes = stream_out.steal_as_bytes().toArray();
+                    resolve(bytes);
+                } catch (e) {
+                    reject(e);
+                }
+            }
+        );
+    }
+
     /**
-     * Set the content of the clipboard to {@link value} with the type
-     * {@link mimetype}.
+     * Set the content of the clipboard.
      *
-     * @param {Uint8Array} value - the value to set
-     * @param {string} mimetype - the mimetype of the value
-     * @returns {Promise} - A promise for the operation
+     * @param {Uint8Array} value - The content to set
+     * @param {string} mimetype - The mimetype of the content
+     * @returns {Promise} A promise for the operation
      */
     SetValue(value, mimetype) {
         return new Promise((resolve, reject) => {
             try {
-                const source = Meta.SelectionSourceMemory.new(mimetype,
-                    GLib.Bytes.new(value));
+                if (!(value instanceof Uint8Array)) {
+                    throw new Gio.DBusError({
+                        code: Gio.DBusError.INVALID_ARGS,
+                        message: 'expected byte array',
+                    });
+                }
+
+                if (typeof mimetype !== 'string') {
+                    throw new Gio.DBusError({
+                        code: Gio.DBusError.INVALID_ARGS,
+                        message: 'expected string',
+                    });
+                }
+
+                const source = Meta.SelectionSourceMemory.new(
+                    mimetype, GLib.Bytes.new(value));
 
                 this._selection.set_owner(
                     Meta.SelectionType.SELECTION_CLIPBOARD, source);
@@ -333,63 +436,4 @@ export const Clipboard = GObject.registerClass({
             }
         });
     }
-
-    destroy() {
-        if (this._selection && this._ownerChangedId > 0) {
-            this._selection.disconnect(this._ownerChangedId);
-            this._ownerChangedId = 0;
-        }
-
-        if (this._nameId > 0) {
-            Gio.bus_unown_name(this._nameId);
-            this._nameId = 0;
-        }
-
-        if (this._handleMethodCallId > 0) {
-            this.disconnect(this._handleMethodCallId);
-            this._handleMethodCallId = 0;
-            this.unexport();
-        }
-    }
 });
-
-
-let _portal = null;
-let _portalId = 0;
-
-/**
- * Watch for the service to start and export the clipboard portal when it does.
- */
-export function watchService() {
-    if (GLib.getenv('XDG_SESSION_TYPE') !== 'wayland')
-        return;
-
-    if (_portalId > 0)
-        return;
-
-    _portalId = Gio.bus_watch_name(
-        Gio.BusType.SESSION,
-        'org.gnome.Shell.Extensions.GSConnect',
-        Gio.BusNameWatcherFlags.NONE,
-        () => {
-            if (_portal === null)
-                _portal = new Clipboard();
-        },
-        () => {
-            if (_portal !== null) {
-                _portal.destroy();
-                _portal = null;
-            }
-        }
-    );
-}
-
-/**
- * Stop watching the service and export the portal if currently running.
- */
-export function unwatchService() {
-    if (_portalId > 0) {
-        Gio.bus_unwatch_name(_portalId);
-        _portalId = 0;
-    }
-}
