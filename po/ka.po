@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-13 14:44-0400\n"
-"PO-Revision-Date: 2026-02-25 13:22\n"
+"PO-Revision-Date: 2026-04-01 06:30\n"
 "Last-Translator: \n"
 "Language-Team: Georgian\n"
 "Language: ka_GE\n"
@@ -21,67 +21,67 @@ msgstr ""
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:12
 #: webextension/gettext.js:29
 msgid "GSConnect"
-msgstr ""
+msgstr "GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:13
 msgid "KDE Connect implementation for GNOME"
-msgstr ""
+msgstr "KDE Connect-ის განხორციელება GNOME-ისთვის"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:24
 msgid "GSConnect Team"
-msgstr ""
+msgstr "GSConnect-ის გუნდი"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
 msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
+msgstr "GSConnect წარმოადგენს KDE Connect-ის სრულ განხორციელებას GNOME-ის გარსისთვის Nautilus-ის, Chrome-ის და Firefox-ის ინტეგრაციებით. KDE Connect-ის გუნდს აქვს აპლიკაციები Linux-ისთვის, BSD-ისთვის, Androis-ისთვის, Sailfish-ისთვის, iOS-ისთვის, macOS-ისთვის და Windows-ისთვის."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
 msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
-msgstr ""
+msgstr "GSConnect-თან ერთად შეგიძლიათ, უსაფრთხოდ დაუკავშირდეთ მობილურ მოწყობილობებს და სხვა კომპიუტერებს, რომ:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:48
 msgid "Share files, links and text"
-msgstr ""
+msgstr "ფაილების, ბმულებისა და ტექსტის გაზიარება"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:49
 msgid "Send and receive messages"
-msgstr ""
+msgstr "შეტყობინებების გაგზავნა და მიღება"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:50
 msgid "Sync clipboard content"
-msgstr ""
+msgstr "ბუფერის შემცველობის სინქრონიზაცია"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:51
 msgid "Sync contacts"
-msgstr ""
+msgstr "კონტაქტების სინქრონიზაცია"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:52
 msgid "Sync notifications"
-msgstr ""
+msgstr "გაფრთხილებების სინქრონიზაცია"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:53
 msgid "Control media players"
-msgstr ""
+msgstr "მედიადამკვრელების მართვა"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:54
 msgid "Control system volume"
-msgstr ""
+msgstr "სისტემური ხმის კონტროლი"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:55
 msgid "Execute predefined commands"
-msgstr ""
+msgstr "წინასწარ აღწერილი ბრძანებების შესრულება"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:56
 msgid "And more…"
-msgstr ""
+msgstr "და მეტი…"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:165
 msgid "GSConnect in GNOME Shell"
-msgstr ""
+msgstr "GSConnect 'GNOME Shell'-ში"
 
 #: data/ui/connect-dialog.ui:20
 msgid "Connect to…"
-msgstr ""
+msgstr "დაკავშირება…"
 
 #: data/ui/connect-dialog.ui:26 data/ui/legacy-messaging-dialog.ui:20
 #: data/ui/legacy-messaging-dialog.ui:24
@@ -95,89 +95,89 @@ msgstr ""
 #: src/preferences/service.js:417 src/service/plugins/share.js:179
 #: src/service/plugins/share.js:314 src/service/plugins/share.js:445
 msgid "Cancel"
-msgstr ""
+msgstr "გაუქმება"
 
 #: data/ui/connect-dialog.ui:33
 msgid "Connect"
-msgstr ""
+msgstr "დაკავშირება"
 
 #: data/ui/connect-dialog.ui:80
 msgid "IP Address"
-msgstr ""
+msgstr "IP მისამართი"
 
 #: data/ui/contact-chooser.ui:56
 msgid "No contacts"
-msgstr ""
+msgstr "კონტაქტების გარეშე"
 
 #: data/ui/contact-chooser.ui:68 data/ui/messaging-window.ui:103
 #: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:949
 msgid "Help"
-msgstr ""
+msgstr "დახმარება"
 
 #: data/ui/contact-chooser.ui:109
 msgid "Type a phone number or name"
-msgstr ""
+msgstr "აკრიფეთ ტელეფონის ნომერი, ან სახელი"
 
 #. TRANSLATORS: All other phone number types
 #: data/ui/contacts-address-row.ui:71 src/service/ui/contacts.js:158
 msgid "Other"
-msgstr ""
+msgstr "სხვა"
 
 #. TRANSLATORS: Share URL by SMS
 #: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:353
 #: src/service/daemon.js:467 src/service/plugins/sms.js:62
 #: webextension/gettext.js:41
 msgid "Send SMS"
-msgstr ""
+msgstr "SMS-ის გაგზავნა"
 
 #: data/ui/legacy-messaging-dialog.ui:32 data/ui/legacy-messaging-dialog.ui:36
 #: data/ui/notification-reply-dialog.ui:31
 #: data/ui/notification-reply-dialog.ui:35 src/service/plugins/share.js:446
 msgid "Send"
-msgstr ""
+msgstr "გაგზავნა"
 
 #: data/ui/legacy-messaging-dialog.ui:69 data/ui/messaging-window.ui:263
 #: data/ui/notification-reply-dialog.ui:68
 msgid "Device is disconnected"
-msgstr ""
+msgstr "მოწყობილობა გათიშულია"
 
 #: data/ui/messaging-conversation.ui:91 src/service/plugins/sms.js:54
 msgid "Send Message"
-msgstr ""
+msgstr "შეტყობინების გაგზავნა"
 
 #: data/ui/messaging-conversation.ui:92 src/shell/notification.js:88
 msgid "Type a message"
-msgstr ""
+msgstr "აკრიფეთ შეტყობინება"
 
 #: data/ui/messaging-conversation.ui:99
 msgid "Message Entry"
-msgstr ""
+msgstr "შეტყობინების ჩანაწერი"
 
 #: data/ui/messaging-conversation.ui:100
 msgid "Type a message and press Enter to send"
-msgstr ""
+msgstr "აკრიფეთ შეტყობინება და დააჭირეთ Enter-ს გასაგზავნად"
 
 #: data/ui/messaging-window.ui:21 src/service/plugins/sms.js:30
 #: src/service/ui/messaging.js:1063
 msgid "Messaging"
-msgstr ""
+msgstr "შეტყობინებები"
 
 #: data/ui/messaging-window.ui:30 data/ui/messaging-window.ui:43
 #: src/service/ui/messaging.js:1274
 msgid "New Conversation"
-msgstr ""
+msgstr "ახალი საუბარი"
 
 #: data/ui/messaging-window.ui:120
 msgid "No Conversations"
-msgstr ""
+msgstr "საუბრების გარეშე"
 
 #: data/ui/messaging-window.ui:180
 msgid "No conversation selected"
-msgstr ""
+msgstr "საუბარი არჩეული არაა"
 
 #: data/ui/messaging-window.ui:196
 msgid "Select or start a conversation"
-msgstr ""
+msgstr "აირჩიეთ, ან დაიწყეთ საუბარი"
 
 #: data/ui/mousepad-input-dialog.ui:97
 msgid "Touchpad.\n"
@@ -185,106 +185,110 @@ msgid "Touchpad.\n"
 "Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr ""
+msgstr "თაცპედი\n"
+"გადაათრიეთ ამ ადგილას თაგუნას კურსორის გადასაადგილებლად.\n"
+"დააჭირეთ დიდხანს, რომ გადაათრიოთ თაგუნას კურსორი.\n\n"
+"მარტივი წკაპი დაწყვილებულ მოწყობილობას გაეგზავნება.\n"
+"მარცხენა, შუა, მარჯვენა ღილაკი და ბორბლით გადახვევები."
 
 #: data/ui/preferences-command-editor.ui:14
 msgid "Edit Command"
-msgstr ""
+msgstr "ბრძანების ჩასწორება"
 
 #: data/ui/preferences-command-editor.ui:28
 msgid "Save"
-msgstr ""
+msgstr "შენახვა"
 
 #: data/ui/preferences-command-editor.ui:61
 msgid "Name"
-msgstr ""
+msgstr "სახელი"
 
 #: data/ui/preferences-command-editor.ui:99
 msgid "Command Line"
-msgstr ""
+msgstr "ბრძანების სტრიქონი"
 
 #: data/ui/preferences-command-editor.ui:121
 #: data/ui/preferences-command-editor.ui:150
 msgid "Choose an executable"
-msgstr ""
+msgstr "აირჩიეთ გამშვები ფაილი"
 
 #: data/ui/preferences-command-editor.ui:164
 msgid "Open"
-msgstr ""
+msgstr "გახსნა"
 
 #: data/ui/preferences-device-panel.ui:53 src/preferences/service.js:524
 msgid "Desktop"
-msgstr ""
+msgstr "სამუშაო მაგიდა"
 
 #: data/ui/preferences-device-panel.ui:102
 msgid "Clipboard Sync"
-msgstr ""
+msgstr "ბუფერის სინქრონიზაცია"
 
 #: data/ui/preferences-device-panel.ui:168
 msgid "Media Players"
-msgstr ""
+msgstr "მედიადამკვრელები"
 
 #: data/ui/preferences-device-panel.ui:225
 msgid "Mouse & Keyboard"
-msgstr ""
+msgstr "თაგუნა და კლავიატურა"
 
 #: data/ui/preferences-device-panel.ui:282
 msgid "Volume Control"
-msgstr ""
+msgstr "ხმის კონტროლი"
 
 #: data/ui/preferences-device-panel.ui:337 src/service/plugins/sftp.js:332
 msgid "Files"
-msgstr ""
+msgstr "ფაილები"
 
 #: data/ui/preferences-device-panel.ui:390
 msgid "Receive Files"
-msgstr ""
+msgstr "ფაილების მიღება"
 
 #: data/ui/preferences-device-panel.ui:449
 msgid "Save files to"
-msgstr ""
+msgstr "ფაილების შენახვა სად"
 
 #: data/ui/preferences-device-panel.ui:510
 msgid "Links"
-msgstr ""
+msgstr "ბმულები"
 
 #: data/ui/preferences-device-panel.ui:562
 msgid "Automatically open received URLs"
-msgstr ""
+msgstr "მიღებული ბმულების ავტომატური გახსნა"
 
 #: data/ui/preferences-device-panel.ui:623
 #: data/ui/preferences-device-panel.ui:2286
 msgid "Sharing"
-msgstr ""
+msgstr "გაზიარება"
 
 #: data/ui/preferences-device-panel.ui:655
 msgid "Device Battery"
-msgstr ""
+msgstr "მოწყობილობის ელემენტი"
 
 #: data/ui/preferences-device-panel.ui:706
 msgid "Low Battery Notification"
-msgstr ""
+msgstr "ელემენტის დაბალი მუხტის შეტყობინება"
 
 #: data/ui/preferences-device-panel.ui:765
 msgid "Charged Up to Custom Level Notification"
-msgstr ""
+msgstr "დატენილია რაღაც დონემდე შეტყობინება"
 
 #: data/ui/preferences-device-panel.ui:845
 msgid "Fully Charged Notification"
-msgstr ""
+msgstr "სრულად დატენვის შეტყობინება"
 
 #: data/ui/preferences-device-panel.ui:899
 msgid "System Battery"
-msgstr ""
+msgstr "სისტემური ელემენტი"
 
 #: data/ui/preferences-device-panel.ui:948
 msgid "Share Statistics"
-msgstr ""
+msgstr "გაზიარების სტატისტიკა"
 
 #: data/ui/preferences-device-panel.ui:1002
 #: data/ui/preferences-device-panel.ui:2332 src/service/plugins/battery.js:15
 msgid "Battery"
-msgstr ""
+msgstr "ელემენტი"
 
 #: data/ui/preferences-device-panel.ui:1032
 #: data/ui/preferences-device-panel.ui:1117
@@ -292,162 +296,162 @@ msgstr ""
 #: src/service/plugins/runcommand.js:26 src/service/plugins/runcommand.js:34
 #: src/service/plugins/runcommand.js:194
 msgid "Commands"
-msgstr ""
+msgstr "ბრძანებები"
 
 #: data/ui/preferences-device-panel.ui:1091
 msgid "Add Command"
-msgstr ""
+msgstr "ბრძანების დამატება"
 
 #. TRANSLATORS: 'Share' is a verb here; this refers to the action of sharing
 #: data/ui/preferences-device-panel.ui:1179
 msgid "Share Notifications"
-msgstr ""
+msgstr "გაზიარების გაფრთხილებები"
 
 #: data/ui/preferences-device-panel.ui:1239
 msgid "Share When Active"
-msgstr ""
+msgstr "გაზიარება, როცა აქტიურია"
 
 #: data/ui/preferences-device-panel.ui:1290
 msgid "Applications"
-msgstr ""
+msgstr "პროგრამები"
 
 #: data/ui/preferences-device-panel.ui:1336
 #: data/ui/preferences-device-panel.ui:2424
 #: src/service/plugins/notification.js:18
 msgid "Notifications"
-msgstr ""
+msgstr "გაფრთხილებები"
 
 #: data/ui/preferences-device-panel.ui:1394 src/service/plugins/contacts.js:28
 msgid "Contacts"
-msgstr ""
+msgstr "კონტაქტები"
 
 #: data/ui/preferences-device-panel.ui:1447
 msgid "Incoming Calls"
-msgstr ""
+msgstr "შემომავალი ზარები"
 
 #: data/ui/preferences-device-panel.ui:1496
 #: data/ui/preferences-device-panel.ui:1663
 msgid "Volume"
-msgstr ""
+msgstr "ხმის სიმაღლე"
 
 #: data/ui/preferences-device-panel.ui:1562
 #: data/ui/preferences-device-panel.ui:1729
 msgid "Pause Media"
-msgstr ""
+msgstr "მედიის შეჩერება"
 
 #: data/ui/preferences-device-panel.ui:1615
 msgid "Ongoing Calls"
-msgstr ""
+msgstr "გამავალი ზარები"
 
 #: data/ui/preferences-device-panel.ui:1785
 msgid "Mute Microphone"
-msgstr ""
+msgstr "მიკროფონის დადუმება"
 
 #: data/ui/preferences-device-panel.ui:1839
 #: data/ui/preferences-device-panel.ui:2470 src/service/plugins/telephony.js:16
 msgid "Telephony"
-msgstr ""
+msgstr "ტელეფონია"
 
 #: data/ui/preferences-device-panel.ui:1874
 msgid "Action Shortcuts"
-msgstr ""
+msgstr "ქმედების მალსახმობები"
 
 #: data/ui/preferences-device-panel.ui:1890
 msgid "Reset All…"
-msgstr ""
+msgstr "ყველას ჩამოყრა…"
 
 #: data/ui/preferences-device-panel.ui:1942
 msgid "Shortcuts"
-msgstr ""
+msgstr "მალსახმობები"
 
 #: data/ui/preferences-device-panel.ui:1973
 msgid "Plugins"
-msgstr ""
+msgstr "დამატებები"
 
 #: data/ui/preferences-device-panel.ui:2020
 msgid "Experimental"
-msgstr ""
+msgstr "ექსპერიმენტული"
 
 #: data/ui/preferences-device-panel.ui:2067
 msgid "Device Cache"
-msgstr ""
+msgstr "მოწყობილობის კეში"
 
 #: data/ui/preferences-device-panel.ui:2085
 msgid "Clear Cache…"
-msgstr ""
+msgstr "ქეშის გასუფთავება…"
 
 #: data/ui/preferences-device-panel.ui:2124
 msgid "Legacy SMS Support"
-msgstr ""
+msgstr "მოძველებული SMS-ის მხარდაჭერა"
 
 #: data/ui/preferences-device-panel.ui:2181
 msgid "SFTP Automount"
-msgstr ""
+msgstr "SFTP-ის ავტომიმაგრება"
 
 #: data/ui/preferences-device-panel.ui:2236
 #: data/ui/preferences-device-panel.ui:2562
 msgid "Advanced"
-msgstr ""
+msgstr "დამატებით"
 
 #: data/ui/preferences-device-panel.ui:2516
 msgid "Keyboard Shortcuts"
-msgstr ""
+msgstr "კლავიატურის მალსახმობები"
 
 #: data/ui/preferences-device-panel.ui:2580
 msgid "Device Settings"
-msgstr ""
+msgstr "მოწყობილობის პარამეტრები"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/ui/preferences-device-panel.ui:2624
 #: data/ui/preferences-device-panel.ui:2716 src/service/daemon.js:446
 msgid "Pair"
-msgstr ""
+msgstr "წყვილი"
 
 #: data/ui/preferences-device-panel.ui:2656
 msgid "Device is unpaired"
-msgstr ""
+msgstr "მოწყობილობა დაწყვილებული არაა"
 
 #: data/ui/preferences-device-panel.ui:2671
 msgid "You may configure this device before pairing"
-msgstr ""
+msgstr "შეგიძლიათ, მოირგოთ ეს მოწყობილობა დაწყვილებამდე"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
 #: data/ui/preferences-device-panel.ui:2711 src/preferences/device.js:391
 msgid "Encryption Info"
-msgstr ""
+msgstr "დაშიფვრის ინფორმაცია"
 
 #. TRANSLATORS: Unpair the device and notify it
 #: data/ui/preferences-device-panel.ui:2722 src/service/daemon.js:455
 msgid "Unpair"
-msgstr ""
+msgstr "დაწყვილების მოხსნა"
 
 #. TRANSLATORS: Send clipboard content to device
 #: data/ui/preferences-device-panel.ui:2734
 msgid "To Device"
-msgstr ""
+msgstr "მოწყობილობაზე"
 
 #. TRANSLATORS: Receive clipboard content from the device
 #: data/ui/preferences-device-panel.ui:2740
 msgid "From Device"
-msgstr ""
+msgstr "მოწყობილობიდან"
 
 #. TRANSLATORS: Don't change the system volume
 #: data/ui/preferences-device-panel.ui:2752
 #: data/ui/preferences-device-panel.ui:2785
 msgid "Nothing"
-msgstr ""
+msgstr "არაფერი"
 
 #. TRANSLATORS: Restore the system volume
 #: data/ui/preferences-device-panel.ui:2759
 #: data/ui/preferences-device-panel.ui:2792
 msgid "Restore"
-msgstr ""
+msgstr "აღდგენა"
 
 #. TRANSLATORS: Lower the system volume
 #: data/ui/preferences-device-panel.ui:2766
 #: data/ui/preferences-device-panel.ui:2799
 msgid "Lower"
-msgstr ""
+msgstr "დაწევა"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the actively ringing call
@@ -455,151 +459,153 @@ msgstr ""
 #: data/ui/preferences-device-panel.ui:2806
 #: src/service/plugins/telephony.js:198
 msgid "Mute"
-msgstr ""
+msgstr "გაჩუმება"
 
 #: data/ui/preferences-shortcut-editor.ui:25
 msgid "Set"
-msgstr ""
+msgstr "დაყენებულია"
 
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:80
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
+msgstr "დააწექით Esc-ს, ან Backspace-ს კლავიატურის მალსახმობის ჩამოსაყრელად."
 
 #: data/ui/preferences-window.ui:24
 msgid "Device Name"
-msgstr ""
+msgstr "მოწყობილობის სახელი"
 
 #: data/ui/preferences-window.ui:61
 msgid "_Rename"
-msgstr ""
+msgstr "_სახელის გადარქმევა"
 
 #: data/ui/preferences-window.ui:98 data/ui/preferences-window.ui:112
 msgid "Refresh"
-msgstr ""
+msgstr "განახლება"
 
 #: data/ui/preferences-window.ui:139 src/extension.js:113
 msgid "Mobile Settings"
-msgstr ""
+msgstr "მობილურობის მორგება"
 
 #: data/ui/preferences-window.ui:166
 msgid "Service Menu"
-msgstr ""
+msgstr "სერვისის მენიუ"
 
 #: data/ui/preferences-window.ui:189
 msgid "Device Menu"
-msgstr ""
+msgstr "მოწყობილობის მენიუ"
 
 #: data/ui/preferences-window.ui:203 data/ui/preferences-window.ui:218
 msgid "Edit Device Name"
-msgstr ""
+msgstr "მოწყობილობის სახელის ჩასწორება"
 
 #: data/ui/preferences-window.ui:278
 msgid "Devices"
-msgstr ""
+msgstr "მოწყობილობები"
 
 #: data/ui/preferences-window.ui:328 src/preferences/service.js:686
 msgid "Searching for devices…"
-msgstr ""
+msgstr "მოწყობილობების ძებნა…"
 
 #: data/ui/preferences-window.ui:353
 msgid "Extension Settings"
-msgstr ""
+msgstr "გაფართოების მორგება"
 
 #: data/ui/preferences-window.ui:390
 msgid "GSConnect remains active when GNOME Shell is locked"
-msgstr ""
+msgstr "GSConnect რჩება აქტიურად, როცა GNOME Shell დაიბლოკება"
 
 #: data/ui/preferences-window.ui:410
 msgid "Browser Add-Ons"
-msgstr ""
+msgstr "ბრაუზერის დამატებები"
 
 #: data/ui/preferences-window.ui:728
 msgid "Enable"
-msgstr ""
+msgstr "ჩართვა"
 
 #: data/ui/preferences-window.ui:760
 msgid "This device is invisible to unpaired devices"
-msgstr ""
+msgstr "ეს მოწყობილობა უხილავია დაუწყვილებელი მოწყობილობებისთვის"
 
 #: data/ui/preferences-window.ui:772 src/service/manager.js:177
 msgid "Discovery Disabled"
-msgstr ""
+msgstr "აღმოჩენა გამორთულია"
 
 #: data/ui/preferences-window.ui:826
 msgid "Retry"
-msgstr ""
+msgstr "თავიდან"
 
 #: data/ui/preferences-window.ui:858
 msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
 "Use your distro's package manager to install it.\n"
 "For more information, visit <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</a>."
-msgstr ""
+msgstr "როგორც ჩანს, პროგრამა <tt>openssl</tt> დაყენებული არაა.\n"
+"გამოიყენეთ თქვენი დისტრიბუტიივის პაკეტების მმართველი და დააყენეთ ის.\n"
+"მეტი ინფორმაციისთვის ეწვიეთ <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">GSConnect-ის ვიკის</a>."
 
 #: data/ui/preferences-window.ui:874 src/service/init.js:361
 msgid "OpenSSL not found"
-msgstr ""
+msgstr "OpenSSL აღმოჩენილი არაა"
 
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/preferences-window.ui:923
 msgid "Add device by IP…"
-msgstr ""
+msgstr "მოწყობილობის დამატება IP-ით…"
 
 #: data/ui/preferences-window.ui:928
 msgid "Display Mode"
-msgstr ""
+msgstr "ჩვენების რეჟიმი"
 
 #. TRANSLATORS: Show device indicators in the top bar
 #: data/ui/preferences-window.ui:931
 msgid "Panel"
-msgstr ""
+msgstr "პანელი"
 
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
 #: data/ui/preferences-window.ui:937
 msgid "User Menu"
-msgstr ""
+msgstr "მომხმარებლის მენიუ"
 
 #. TRANSLATORS: Generate a support log
 #: data/ui/preferences-window.ui:945 src/preferences/service.js:414
 msgid "Generate Support Log"
-msgstr ""
+msgstr "მხარდაჭერის ჟურნალის გენერაცია"
 
 #: data/ui/preferences-window.ui:953
 msgid "About GSConnect"
-msgstr ""
+msgstr "GSConnect-ის შესახებ"
 
 #: data/ui/service-device-chooser.ui:15
 msgid "Select a Device"
-msgstr ""
+msgstr "აირჩიეთ მოწყობილობა"
 
 #: data/ui/service-device-chooser.ui:33 data/ui/service-device-chooser.ui:38
 msgid "Select"
-msgstr ""
+msgstr "არჩევა"
 
 #. TRANSLATORS: No devices are known or available
 #: data/ui/service-device-chooser.ui:101 webextension/gettext.js:37
 msgid "No Device Found"
-msgstr ""
+msgstr "მოწყობილობა აღმოჩენილი არაა"
 
 #: data/ui/service-device-chooser.ui:118
 msgid "Device List"
-msgstr ""
+msgstr "მოწყობილობების სია"
 
 #: data/ui/service-error-dialog.ui:39 data/ui/service-error-dialog.ui:47
 msgid "Report"
-msgstr ""
+msgstr "ანგარიში"
 
 #: data/ui/service-error-dialog.ui:79
 msgid "Something’s gone wrong"
-msgstr ""
+msgstr "რაღაც გაფუჭდა"
 
 #: data/ui/service-error-dialog.ui:91
 msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
-msgstr ""
+msgstr "GSConnect-მა აღმოაჩინა მოულოდნელი შეცდომა. მოგვწერეთ ამის შესახებ და დაურთეთ ნებისმიერი ინფორმაცია, რომელიც შეიძლება, დაგვეხმაროს."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
-msgstr ""
+msgstr "ტექნიკური დეტალები"
 
 #. TRANSLATORS: Send to <device_name>, for file manager
 #. context menu
@@ -609,200 +615,200 @@ msgstr ""
 #: src/service/ui/contacts.js:533
 #, python-format, javascript-format
 msgid "Send to %s"
-msgstr ""
+msgstr "%s-ზე გაგზავნა"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: nautilus-extension/nautilus-gsconnect.py:195 webextension/gettext.js:33
 msgid "Send To Mobile Device"
-msgstr ""
+msgstr "გაგზავნა მობილურ მოწყობილობაზე"
 
 #: src/extension.js:49
 msgid "Sync between your devices"
-msgstr ""
+msgstr "სინქრონიზაცია თქვენს მოწყობილობებს შორის"
 
 #: src/extension.js:158
 #, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d მიერთებულია"
+msgstr[1] "%d მიერთებულია"
 
 #: src/preferences/device.js:671 src/preferences/device.js:677
 msgid "Edit"
-msgstr ""
+msgstr "ჩასწორება"
 
 #: src/preferences/device.js:686 src/preferences/device.js:692
 msgid "Remove"
-msgstr ""
+msgstr "წაშლა"
 
 #: src/preferences/device.js:946 src/preferences/device.js:974
 msgid "Disabled"
-msgstr ""
+msgstr "გათიშულია"
 
 #. TRANSLATORS: Summary of a keyboard shortcut function
 #. Example: Enter a new shortcut to change Messaging
 #: src/preferences/keybindings.js:66
 #, javascript-format
 msgid "Enter a new shortcut to change <b>%s</b>"
-msgstr ""
+msgstr "შეიყვანეთ ახალი მალსახმობი <b>%s</b>-ის შესაცვლელად"
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
 #: src/preferences/keybindings.js:132
 #, javascript-format
 msgid "%s is already being used"
-msgstr ""
+msgstr "%s უკვე გამოიყენება"
 
 #: src/preferences/service.js:373
 msgid "A complete KDE Connect implementation for GNOME"
-msgstr ""
+msgstr "სრული KDE Connect-ის განხორციელება GNOME-ისთვის"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:382
 msgid "translator-credits"
-msgstr ""
+msgstr "ეკატერინე პაპავა"
 
 #: src/preferences/service.js:415
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
-msgstr ""
+msgstr "მიმდინარეობს გამართვის შეტყობინებების ჟურნალში ჩაწერა. შეასრულეთ ნაბიჯები, რათა პრობლემა განმეორდეს, შემდეგ კი გადახედეთ ჟურნალს."
 
 #: src/preferences/service.js:418
 msgid "Review Log"
-msgstr ""
+msgstr "ჟურნალის გადახედვა"
 
 #: src/preferences/service.js:443
 msgid "Invalid Device Name"
-msgstr ""
+msgstr "არასწორი მოწყობილობის სახელი"
 
 #. TRANSLATOR: %s is a list of forbidden characters
 #: src/preferences/service.js:445
 #, javascript-format
 msgid "Device name must not contain any of %s and have a length of 1-32 characters"
-msgstr ""
+msgstr "მოწყობილობა არ უნდა შეიცავდეს სიმბოლოებს %s და სიგრძეში 1-32 სიმბოლო უნდა იყოს"
 
 #: src/preferences/service.js:516
 msgid "Laptop"
-msgstr ""
+msgstr "ლეპტოპი"
 
 #: src/preferences/service.js:518
 msgid "Smartphone"
-msgstr ""
+msgstr "სმარტფონი"
 
 #: src/preferences/service.js:520
 msgid "Tablet"
-msgstr ""
+msgstr "ტაბლეტი"
 
 #: src/preferences/service.js:522
 msgid "Television"
-msgstr ""
+msgstr "ტელევიზია"
 
 #: src/preferences/service.js:544
 msgid "Unpaired"
-msgstr ""
+msgstr "დაწყვილება გაუქმებულია"
 
 #: src/preferences/service.js:548
 msgid "Disconnected"
-msgstr ""
+msgstr "გათიშულია"
 
 #: src/preferences/service.js:552
 msgid "Connected"
-msgstr ""
+msgstr "დაკავშირებულია"
 
 #: src/preferences/service.js:688
 msgid "Waiting for service…"
-msgstr ""
+msgstr "სერვისის გაშვების მოლოდინი…"
 
 #. Notify the user
 #: src/service/daemon.js:99
 msgid "Settings Migrated"
-msgstr ""
+msgstr "პარამეტრების მიგრაცია დასრულდა"
 
 #: src/service/daemon.js:100
 msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
-msgstr ""
+msgstr "GSConnect განახლდა, რომ ჰქონდეს KDE Connect-ის ცვლილებების მხარდაჭერა. ზოგიერთი მოწყობილობის დაწყვილება თავიდან უნდა მოხდეს."
 
 #: src/service/daemon.js:241
 msgid "Click for help troubleshooting"
-msgstr ""
+msgstr "დააწკაპუნეთ პრობლემის გადაჭრაში დასახმარებლად"
 
 #: src/service/daemon.js:251
 msgid "Click for more information"
-msgstr ""
+msgstr "დააწკაპუნეთ მეტი ინფორმაციისთვის"
 
 #: src/service/daemon.js:359
 msgid "Dial Number"
-msgstr ""
+msgstr "ნომერზე დარეკვა"
 
 #: src/service/daemon.js:365 src/service/daemon.js:554
 #: src/service/plugins/share.js:31
 msgid "Share File"
-msgstr ""
+msgstr "ფაილის გაზიარება"
 
 #: src/service/daemon.js:416
 msgid "List available devices"
-msgstr ""
+msgstr "ხელმისაწვდომი მოწყობილობების სია"
 
 #: src/service/daemon.js:425
 msgid "List all devices"
-msgstr ""
+msgstr "მოწყობილობების სია"
 
 #: src/service/daemon.js:434
 msgid "Target Device"
-msgstr ""
+msgstr "სამიზნე მოწყობილობა"
 
 #: src/service/daemon.js:476
 msgid "Message Body"
-msgstr ""
+msgstr "შეტყობინების შემცველობა"
 
 #: src/service/daemon.js:488 src/service/plugins/notification.js:57
 msgid "Send Notification"
-msgstr ""
+msgstr "გაფრთხილების გაგზავნა"
 
 #: src/service/daemon.js:497
 msgid "Notification App Name"
-msgstr ""
+msgstr "გაფრთხილების აპის სახელი"
 
 #: src/service/daemon.js:506
 msgid "Notification Body"
-msgstr ""
+msgstr "გაფრთხილების სხეული"
 
 #: src/service/daemon.js:515
 msgid "Notification Icon"
-msgstr ""
+msgstr "გაფრთხილების ხატულა"
 
 #: src/service/daemon.js:524
 msgid "Notification ID"
-msgstr ""
+msgstr "გაფრთხილების ID"
 
 #: src/service/daemon.js:533 src/service/plugins/ping.js:13
 #: src/service/plugins/ping.js:20 src/service/plugins/ping.js:47
 msgid "Ping"
-msgstr ""
+msgstr "პინგი"
 
 #: src/service/daemon.js:542 src/service/plugins/battery.js:247
 #: src/service/plugins/battery.js:276 src/service/plugins/battery.js:305
 #: src/service/plugins/findmyphone.js:22
 msgid "Ring"
-msgstr ""
+msgstr "ზარი"
 
 #: src/service/daemon.js:563 src/service/plugins/share.js:47
 #: src/service/ui/messaging.js:1257 src/service/ui/messaging.js:1265
 msgid "Share Link"
-msgstr ""
+msgstr "ბმულის გაზიარება"
 
 #: src/service/daemon.js:572 src/service/plugins/share.js:39
 msgid "Share Text"
-msgstr ""
+msgstr "ტექსტის გაზიარება"
 
 #: src/service/daemon.js:584
 msgid "Show release version"
-msgstr ""
+msgstr "ვერსიის ჩვენება"
 
 #. TRANSLATORS: Bluetooth address for remote device
 #: src/service/device.js:195
 #, javascript-format
 msgid "Bluetooth device at %s"
-msgstr ""
+msgstr "ბლუთუზის მოწყობილობა %s-ზე"
 
 #. TRANSLATORS: Label for TLS connection verification key
 #.
@@ -812,99 +818,99 @@ msgstr ""
 #: src/service/device.js:223
 #, javascript-format
 msgid "Verification key: %s"
-msgstr ""
+msgstr "გადამოწმების გასაღები: %s"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:862
 #, javascript-format
 msgid "Pair Request from %s"
-msgstr ""
+msgstr "დაწყვილების მოთხოვნა %s-დან"
 
 #: src/service/device.js:869
 msgid "Reject"
-msgstr ""
+msgstr "უარყოფა"
 
 #: src/service/device.js:874
 msgid "Accept"
-msgstr ""
+msgstr "მიღება"
 
 #. TRANSLATORS: eg. Failed to pair with Google Pixel
 #: src/service/device.js:960
 #, javascript-format
 msgid "Failed to pair with %s"
-msgstr ""
+msgstr "%s-ისთან დაწყვილება ჩავარდა"
 
 #: src/service/device.js:961
 msgid "Device clocks are out of sync"
-msgstr ""
+msgstr "მოწყობილობის საათების სინქრონიზაცია დარღვეულია"
 
 #: src/service/manager.js:178
 msgid "Discovery has been disabled due to the number of devices on this network."
-msgstr ""
+msgstr "აღმოჩენა გამორთულია ამ ქსელში არსებული მოწყობილობების რაოდენობის გამო."
 
 #: src/service/backends/lan.js:477
 msgid "Port already in use"
-msgstr ""
+msgstr "პორტი უკვე გამოიყენება"
 
 #: src/service/plugins/battery.js:16
 msgid "Exchange battery information"
-msgstr ""
+msgstr "ელემენტის ინფორმაციის მიმოცვლა"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:256
 #, javascript-format
 msgid "%s: Battery is full"
-msgstr ""
+msgstr "%s: ელემენტი სავსეა"
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
 #: src/service/plugins/battery.js:258 src/shell/device.js:119
 msgid "Fully Charged"
-msgstr ""
+msgstr "სრულად დატენილი"
 
 #. TRANSLATORS: eg. Google Pixel: Battery has reached custom charge level
 #: src/service/plugins/battery.js:285
 #, javascript-format
 msgid "%s: Battery has reached custom charge level"
-msgstr ""
+msgstr "%s: ელემენტმა მიაღწია მომხმარებლის სასურველი დამუხტვის დონეს"
 
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:287
 #, javascript-format
 msgid "%d%% Charged"
-msgstr ""
+msgstr "%d%% დამუხტულია"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:314
 #, javascript-format
 msgid "%s: Battery is low"
-msgstr ""
+msgstr "%s: ელემენტი ჯდება"
 
 #. TRANSLATORS: eg. 15% remaining
 #: src/service/plugins/battery.js:316
 #, javascript-format
 msgid "%d%% remaining"
-msgstr ""
+msgstr "დარჩენილია %d%%"
 
 #: src/service/plugins/clipboard.js:12
 msgid "Clipboard"
-msgstr ""
+msgstr "გაცვლის ბუფერი"
 
 #: src/service/plugins/clipboard.js:13
 msgid "Share the clipboard content"
-msgstr ""
+msgstr "ბუფერის შემცველობის გაზიარება"
 
 #: src/service/plugins/clipboard.js:25
 msgid "Clipboard Push"
-msgstr ""
+msgstr "ბუფერის გაგზავნა"
 
 #: src/service/plugins/clipboard.js:33
 msgid "Clipboard Pull"
-msgstr ""
+msgstr "ბუფერის მიღება"
 
 #: src/service/plugins/contacts.js:29
 msgid "Access contacts of the paired device"
-msgstr ""
+msgstr "წვდომა დაწყვილებული მოწყობილობის კონტაქტებთან"
 
 #. Ensure we have a sender
 #. TRANSLATORS: No name or phone number
@@ -913,354 +919,354 @@ msgstr ""
 #: src/service/plugins/telephony.js:156 src/service/plugins/telephony.js:175
 #: src/service/ui/contacts.js:620 src/service/ui/messaging.js:756
 msgid "Unknown Contact"
-msgstr ""
+msgstr "უცნობი კონტაქტი"
 
 #: src/service/plugins/findmyphone.js:15
 msgid "Find My Phone"
-msgstr ""
+msgstr "იპოვე ჩემი ტელეფონი"
 
 #: src/service/plugins/findmyphone.js:16
 msgid "Ring your paired device"
-msgstr ""
+msgstr "დარეკვა თქვენს დაწყვილებულ მოწყობილობაზე"
 
 #: src/service/plugins/mousepad.js:14
 msgid "Mousepad"
-msgstr ""
+msgstr "თაგუნას ხალიჩა"
 
 #: src/service/plugins/mousepad.js:15
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr ""
+msgstr "საშუალებას აძლევს დაწყვილებულ მოწყობილობას, მოიქცეს, როგორც დაშორებული თაგუნა და კლავიატურა"
 
 #: src/service/plugins/mousepad.js:29 src/service/ui/mousepad.js:107
 msgid "Remote Input"
-msgstr ""
+msgstr "დაშორებული შეყვანა"
 
 #: src/service/plugins/mpris.js:18
 msgid "MPRIS"
-msgstr ""
+msgstr "MPRIS"
 
 #: src/service/plugins/mpris.js:19
 msgid "Bidirectional remote media playback control"
-msgstr ""
+msgstr "ორმხრივი დაშორებული მედიის დაკვრის მართვა"
 
 #: src/service/plugins/mpris.js:357
 msgid "Unknown"
-msgstr ""
+msgstr "უცნობი"
 
 #: src/service/plugins/notification.js:19
 msgid "Share notifications with the paired device"
-msgstr ""
+msgstr "შეტყობინებების გაზიარება დაწყვილებულ მოწყობილობასთან"
 
 #: src/service/plugins/notification.js:33
 msgid "Cancel Notification"
-msgstr ""
+msgstr "შეტყობინების გაუქმება"
 
 #: src/service/plugins/notification.js:41
 msgid "Close Notification"
-msgstr ""
+msgstr "გაფრთხილებ"
 
 #: src/service/plugins/notification.js:49
 msgid "Reply Notification"
-msgstr ""
+msgstr "პასუხი შეტყობინებაზე"
 
 #: src/service/plugins/notification.js:65
 msgid "Activate Notification"
-msgstr ""
+msgstr "შეტყობინების გააქტიურება"
 
 #: src/service/plugins/ping.js:14
 msgid "Send and receive pings"
-msgstr ""
+msgstr "პინგების მიღების და გაგზავნა"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
 #: src/service/plugins/ping.js:54
 #, javascript-format
 msgid "Ping: %s"
-msgstr ""
+msgstr "პინგი: %s"
 
 #: src/service/plugins/presenter.js:12
 msgid "Presentation"
-msgstr ""
+msgstr "პრეზენტაცია"
 
 #: src/service/plugins/presenter.js:13
 msgid "Use the paired device as a presenter"
-msgstr ""
+msgstr "დაწყვილებული მოწყობილობის გამოყენება პრეზენტაციისთვის"
 
 #: src/service/plugins/runcommand.js:13
 msgid "Run Commands"
-msgstr ""
+msgstr "ბრძანებების გაშვება"
 
 #: src/service/plugins/runcommand.js:15
 msgid "Run commands on your paired device or let the device run predefined commands on this PC"
-msgstr ""
+msgstr "გაუშვით ბრძანებები თქვენს დაწყვილებულ მოწყობილობაზე, ან მიეცით უფლება მოწყობილობას, გაუშვას წინასწარ აღწერილი ბრძანებები ამ კომპიუტერზე"
 
 #: src/service/plugins/sftp.js:15
 msgid "SFTP"
-msgstr ""
+msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:17
 msgid "Browse the paired device filesystem"
-msgstr ""
+msgstr "დაწყვილებული მოწყობილობის ფაილური სისტემის დათვალიერება"
 
 #: src/service/plugins/sftp.js:22
 msgid "Mount"
-msgstr ""
+msgstr "მიმაგრება"
 
 #: src/service/plugins/sftp.js:30
 msgid "Unmount"
-msgstr ""
+msgstr "მოხსნა"
 
 #: src/service/plugins/sftp.js:191
 #, javascript-format
 msgid "%s reported an error"
-msgstr ""
+msgstr "%s-მა შეცდომა დააბრუნა"
 
 #: src/service/plugins/share.js:16 src/service/plugins/share.js:23
 msgid "Share"
-msgstr ""
+msgstr "ზიარი"
 
 #: src/service/plugins/share.js:18
 msgid "Share files and URLs between devices"
-msgstr ""
+msgstr "გააზიარეთ ფაილები და ბმულები მოწყობილობებს შორის"
 
 #: src/service/plugins/share.js:148 src/service/plugins/share.js:227
 #: src/service/plugins/share.js:337
 msgid "Transfer Failed"
-msgstr ""
+msgstr "გადაცემა ჩავარდა"
 
 #. TRANSLATORS: eg. Google Pixel is not allowed to upload files
 #: src/service/plugins/share.js:150
 #, javascript-format
 msgid "%s is not allowed to upload files"
-msgstr ""
+msgstr "%s-ს არ აქვს უფლება, ფაილები ატვირთოს"
 
 #: src/service/plugins/share.js:172 src/service/plugins/share.js:307
 msgid "Transferring File"
-msgstr ""
+msgstr "ფაილის გადაცემა"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:174
 #, javascript-format
 msgid "Receiving “%s” from %s"
-msgstr ""
+msgstr "\"%s\"-ის მიღება %s-დან"
 
 #: src/service/plugins/share.js:193 src/service/plugins/share.js:327
 msgid "Transfer Successful"
-msgstr ""
+msgstr "გადაცემა წარმატებულია"
 
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:195
 #, javascript-format
 msgid "Received “%s” from %s"
-msgstr ""
+msgstr "\"%s\" მიღებულია %s-დან"
 
 #: src/service/plugins/share.js:205
 msgid "Show File Location"
-msgstr ""
+msgstr "ფაილის მდებარეობის ჩვენება"
 
 #: src/service/plugins/share.js:210
 msgid "Open File"
-msgstr ""
+msgstr "ფაილის გახსნა"
 
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:229
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
-msgstr ""
+msgstr "\"%s\"-ის %s-დან მიღება ჩავარდა"
 
 #: src/service/plugins/share.js:259
 #, javascript-format
 msgid "Text Shared By %s"
-msgstr ""
+msgstr "%s-ის მიერ გაზიარებული ტექსტი"
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
 #: src/service/plugins/share.js:309
 #, javascript-format
 msgid "Sending “%s” to %s"
-msgstr ""
+msgstr "\"%s\" იგზავნება %s-ზე"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:329
 #, javascript-format
 msgid "Sent “%s” to %s"
-msgstr ""
+msgstr "\"%s\"-ის გაგზავნა %s-ზე"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:339
 #, javascript-format
 msgid "Failed to send “%s” to %s"
-msgstr ""
+msgstr "\"%s\"-ის %s-ისთვის გაგზავნა ჩავარდა"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:397
 #, javascript-format
 msgid "Send files to %s"
-msgstr ""
+msgstr "ფაილების გაგზავნა %s-ზე"
 
 #. TRANSLATORS: Mark the file to be opened once completed
 #: src/service/plugins/share.js:401
 msgid "Open when done"
-msgstr ""
+msgstr "გახსნა, როცა დასრულდება"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
 #: src/service/plugins/share.js:440
 #, javascript-format
 msgid "Send a link to %s"
-msgstr ""
+msgstr "ბმულის გაგზავნა %s-ზე"
 
 #: src/service/plugins/sms.js:16
 msgid "SMS"
-msgstr ""
+msgstr "SMS"
 
 #: src/service/plugins/sms.js:17
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
+msgstr "გააგზავნეთ და წაიკითხეტ დაწყვილებული მოწყობილობის SMS-ები და მიიღეთ შეტყობინება ახალი SMS-ის შესახებ"
 
 #: src/service/plugins/sms.js:38
 msgid "New SMS (URI)"
-msgstr ""
+msgstr "ახალი SMS (URI)"
 
 #: src/service/plugins/sms.js:46
 msgid "Reply SMS"
-msgstr ""
+msgstr "SMS-ზე პასუხი"
 
 #: src/service/plugins/sms.js:70
 msgid "Share SMS"
-msgstr ""
+msgstr "SMS-ის გაზიარება"
 
 #: src/service/plugins/systemvolume.js:36
 msgid "System Volume"
-msgstr ""
+msgstr "სისტემური საცავი"
 
 #: src/service/plugins/systemvolume.js:37
 msgid "Enable the paired device to control the system volume"
-msgstr ""
+msgstr "დაწყვილებული მოწყობილობისთვის სისტემის ხმის დონის მართვის უფლების მიცება"
 
 #: src/service/plugins/systemvolume.js:81
 msgid "PulseAudio not found"
-msgstr ""
+msgstr "PulseAudio აღმოჩენილ არაა"
 
 #: src/service/plugins/telephony.js:17
 msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
+msgstr "მიიღეთ შეტყობინებები ზარების შესახებ და გაასწორეთ სისტემის ხმის სიმაღლე ზარის დარეკვისას/განხორციელებისას"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:29
 msgid "Mute Call"
-msgstr ""
+msgstr "ზარის დადუმება"
 
 #. TRANSLATORS: The phone is ringing
 #: src/service/plugins/telephony.js:194
 msgid "Incoming call"
-msgstr ""
+msgstr "შემომავალი ზარი"
 
 #. TRANSLATORS: A phone call is active
 #: src/service/plugins/telephony.js:209
 msgid "Ongoing call"
-msgstr ""
+msgstr "მიმდინარე ზარი"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:143
 msgid "Fax"
-msgstr ""
+msgstr "ფაქსი"
 
 #. TRANSLATORS: A work or office phone number
 #: src/service/ui/contacts.js:147
 msgid "Work"
-msgstr ""
+msgstr "სამუშაო"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:151
 msgid "Mobile"
-msgstr ""
+msgstr "მობილური"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:155
 msgid "Home"
-msgstr ""
+msgstr "საწყისი"
 
 #. TRANSLATORS: Less than a minute ago
 #: src/service/ui/messaging.js:105 src/service/ui/messaging.js:146
 msgid "Just now"
-msgstr ""
+msgstr "ახლა"
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
 #: src/service/ui/messaging.js:114
 #, javascript-format
 msgid "Yesterday・%s"
-msgstr ""
+msgstr "გუშინ・%s"
 
 #: src/service/ui/messaging.js:151
 #, javascript-format
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d წუთი"
+msgstr[1] "%d წუთი"
 
 #: src/service/ui/messaging.js:407
 msgid "Not available"
-msgstr ""
+msgstr "ხელმისაწვდომი არაა"
 
 #: src/service/ui/messaging.js:764
 msgid "Group Message"
-msgstr ""
+msgstr "ჯგუფური შეტყობინება"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:779
 #, javascript-format
 msgid "You: %s"
-msgstr ""
+msgstr "თქვენ: %s"
 
 #: src/service/ui/messaging.js:965
 #, javascript-format
 msgid "And %d other contact"
 msgid_plural "And %d others"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "და კიდევ %d კონტაქტი"
+msgstr[1] "და კიდევ %d კონტაქტი"
 
 #. TRANSLATORS: Displayed when the remote keyboard is not ready to accept input
 #: src/service/ui/mousepad.js:115
 #, javascript-format
 msgid "Remote keyboard on %s is not active"
-msgstr ""
+msgstr "დაშორებული კლავიატურა %s-ზე აქტიურია არაა"
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
 #: src/shell/device.js:124
 #, javascript-format
 msgid "%d%% (Estimating…)"
-msgstr ""
+msgstr "%d%% (დაახლ…)"
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
 #: src/shell/device.js:133
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
-msgstr ""
+msgstr "%d%% (%d∶%02d სრულად დამუხტვამდე)"
 
 #. TRANSLATORS: Estimated time until battery is empty
 #. EXAMPLE: 42% (12:15 Remaining)
 #: src/shell/device.js:141
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
-msgstr ""
+msgstr "%d%% (%d∶%02d დარჩემილია)"
 
 #: src/shell/notification.js:73
 msgid "Reply"
-msgstr ""
+msgstr "პასუხი"
 
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:31
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
+msgstr "გააზიარეთ ბმულები GSConnect-თან, პირდაპირ ბრაუზერში, ან SMS-ით."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:35
 msgid "Service Unavailable"
-msgstr ""
+msgstr "სერვისი მიუწვდომელია"
 
 #. TRANSLATORS: Open URL with the device's browser
 #: webextension/gettext.js:39
 msgid "Open in Browser"
-msgstr ""
+msgstr "ბრაუზერში გახსნა"
 
