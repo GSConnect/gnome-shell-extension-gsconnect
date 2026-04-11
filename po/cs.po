@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-13 14:44-0400\n"
-"PO-Revision-Date: 2026-04-11 08:31\n"
+"PO-Revision-Date: 2026-04-11 09:30\n"
 "Last-Translator: \n"
 "Language-Team: Czech\n"
 "Language: cs_CZ\n"
@@ -538,7 +538,9 @@ msgstr "Zkusit znovu"
 msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
 "Use your distro's package manager to install it.\n"
 "For more information, visit <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</a>."
-msgstr ""
+msgstr "Zdá se, že nástroj <tt>openssl</tt> není nainstalován.\n"
+"Použijte správce balíčků vaší distribuce k jeho instalaci.\n"
+"Pro více informací navštivte <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">wiki</a> GSConnect."
 
 #: data/ui/preferences-window.ui:874 src/service/init.js:361
 msgid "OpenSSL not found"
@@ -547,7 +549,7 @@ msgstr "OpenSSL nebylo nalezeno"
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/preferences-window.ui:923
 msgid "Add device by IP…"
-msgstr ""
+msgstr "Přidat zařízení podle IP…"
 
 #: data/ui/preferences-window.ui:928
 msgid "Display Mode"
@@ -678,13 +680,13 @@ msgstr "Prohlédnout si záznam událostí"
 
 #: src/preferences/service.js:443
 msgid "Invalid Device Name"
-msgstr ""
+msgstr "Neplatný název zařízení"
 
 #. TRANSLATOR: %s is a list of forbidden characters
 #: src/preferences/service.js:445
 #, javascript-format
 msgid "Device name must not contain any of %s and have a length of 1-32 characters"
-msgstr ""
+msgstr "Název zařízení nesmí obsahovat znaky %s a musí být 1-32 znaků dlouhý"
 
 #: src/preferences/service.js:516
 msgid "Laptop"
@@ -721,11 +723,11 @@ msgstr "Čeká se na službu…"
 #. Notify the user
 #: src/service/daemon.js:99
 msgid "Settings Migrated"
-msgstr ""
+msgstr "Nastavení migrováno"
 
 #: src/service/daemon.js:100
 msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
-msgstr ""
+msgstr "GSConnect byl aktualizován aby podporoval změny protokolu KDE Connect. Některá zařízení budou muset být znovu spárována."
 
 #: src/service/daemon.js:241
 msgid "Click for help troubleshooting"
@@ -838,7 +840,7 @@ msgstr "Přijmout"
 #: src/service/device.js:960
 #, javascript-format
 msgid "Failed to pair with %s"
-msgstr ""
+msgstr "Nepodařilo se spárovat s %s"
 
 #: src/service/device.js:961
 msgid "Device clocks are out of sync"
