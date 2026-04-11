@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-13 14:44-0400\n"
-"PO-Revision-Date: 2025-09-13 18:59\n"
+"PO-Revision-Date: 2026-04-11 08:31\n"
 "Last-Translator: \n"
 "Language-Team: Czech\n"
 "Language: cs_CZ\n"
@@ -250,11 +250,11 @@ msgstr "Uložit soubory do"
 
 #: data/ui/preferences-device-panel.ui:510
 msgid "Links"
-msgstr ""
+msgstr "Odkazy"
 
 #: data/ui/preferences-device-panel.ui:562
 msgid "Automatically open received URLs"
-msgstr ""
+msgstr "Automaticky otevírat přijaté URL"
 
 #: data/ui/preferences-device-panel.ui:623
 #: data/ui/preferences-device-panel.ui:2286
@@ -532,7 +532,7 @@ msgstr "Objevování vypnuto"
 
 #: data/ui/preferences-window.ui:826
 msgid "Retry"
-msgstr ""
+msgstr "Zkusit znovu"
 
 #: data/ui/preferences-window.ui:858
 msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
@@ -842,7 +842,7 @@ msgstr ""
 
 #: src/service/device.js:961
 msgid "Device clocks are out of sync"
-msgstr ""
+msgstr "Hodiny zařízení se neshodují"
 
 #: src/service/manager.js:178
 msgid "Discovery has been disabled due to the number of devices on this network."
