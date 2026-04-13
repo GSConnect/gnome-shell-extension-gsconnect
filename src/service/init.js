@@ -169,7 +169,7 @@ if (settings.get_boolean('debug')) {
  * Start wl_clipboard if not under Gnome
  */
 if (!globalThis.HAVE_GNOME) {
-    debug('Not running as a Gnome extension');
+    console.debug('Not running as a Gnome extension');
     watchService();
 }
 

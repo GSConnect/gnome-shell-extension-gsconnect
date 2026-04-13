@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# SPDX-FileCopyrightText: JingMatrix https://github.com/JingMatrix
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+
+fallback_dir=$HOME/.local/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/
+
+extension_dir="$(dirname "$(realpath "$(command -v "$0")")")"
+if [ ! -d "$extension_dir" ]; then
+    extension_dir="$fallback_dir"
+fi
+cd "$extension_dir" || exit 1
+
+exec /usr/bin/env gjs -m service/daemon.js "$@"
+
