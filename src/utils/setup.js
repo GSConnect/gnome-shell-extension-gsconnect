@@ -174,6 +174,12 @@ export function installService() {
     const manifestFile = 'org.gnome.shell.extensions.gsconnect.json';
     const google = getResource(`webextension/${manifestFile}.google.in`);
     const mozilla = getResource(`webextension/${manifestFile}.mozilla.in`);
+
+    // Use $HOME/.mozilla if it already exists
+    const mozillaConfigFolder = GLib.file_test(`${homeDir}/.mozilla`, GLib.FileTest.EXISTS)
+        ? `${homeDir}/.mozilla`
+        : `${confDir}/mozilla`;
+
     const manifests = [
         [`${confDir}/chromium/NativeMessagingHosts/`, google],
         [`${confDir}/google-chrome/NativeMessagingHosts/`, google],
@@ -182,7 +188,7 @@ export function installService() {
         [`${confDir}/BraveSoftware/Brave-Browser/NativeMessagingHosts/`, google],
         [`${confDir}/BraveSoftware/Brave-Browser-Beta/NativeMessagingHosts/`, google],
         [`${confDir}/BraveSoftware/Brave-Browser-Nightly/NativeMessagingHosts/`, google],
-        [`${homeDir}/.mozilla/native-messaging-hosts/`, mozilla],
+        [`${mozillaConfigFolder}/native-messaging-hosts/`, mozilla],
         [`${homeDir}/.config/microsoft-edge-dev/NativeMessagingHosts`, google],
         [`${homeDir}/.config/microsoft-edge-beta/NativeMessagingHosts`, google],
     ];
