@@ -15,7 +15,7 @@ import {gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js'
 import {HAS_MESSAGELIST_NOTIFICATIONMESSAGE, getIcon} from './utils.js';
 
 const {NotificationMessage} = HAS_MESSAGELIST_NOTIFICATIONMESSAGE
-    ? await import('resource:///org/gnome/shell/ui/messageList.js')  // GNOME 48
+    ? await import('resource:///org/gnome/shell/ui/messageList.js')  // GNOME 48+
     : await import('resource:///org/gnome/shell/ui/calendar.js');    // GNOME 46/47
 
 const APP_ID = 'org.gnome.Shell.Extensions.GSConnect';
