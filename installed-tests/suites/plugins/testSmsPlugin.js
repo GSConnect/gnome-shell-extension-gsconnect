@@ -223,23 +223,23 @@ describe('The sms plugin', function () {
     });
 
     it('can request a list of conversations', async function () {
-        spyOn(localPlugin, '_handleDigest');
+        spyOn(localPlugin, '_handleMessages');
 
         localPlugin._requestConversations();
 
         await localPlugin.awaitPacket('kdeconnect.sms.messages');
-        expect(localPlugin._handleDigest).toHaveBeenCalled();
+        expect(localPlugin._handleMessages).toHaveBeenCalled();
     });
 
     it('can request full conversations', async function () {
-        spyOn(localPlugin, '_handleDigest').and.callThrough();
+        spyOn(localPlugin, '_handleMessages').and.callThrough();
         spyOn(localPlugin, '_handleThread').and.callThrough();
         spyOn(localPlugin, '_requestConversation').and.callThrough();
 
         localPlugin._requestConversations();
 
         await localPlugin.awaitPacket('kdeconnect.sms.messages');
-        expect(localPlugin._handleDigest).toHaveBeenCalled();
+        expect(localPlugin._handleMessages).toHaveBeenCalled();
         expect(localPlugin._requestConversation).toHaveBeenCalledTimes(2);
 
         localPlugin.handlePacket.calls.reset();
@@ -249,14 +249,14 @@ describe('The sms plugin', function () {
     });
 
     it('only requests new or updated converations', async function () {
-        spyOn(localPlugin, '_handleDigest').and.callThrough();
+        spyOn(localPlugin, '_handleMessages').and.callThrough();
         spyOn(localPlugin, '_handleThread').and.callThrough();
         spyOn(localPlugin, '_requestConversation').and.callThrough();
 
         localPlugin._requestConversations();
 
         await localPlugin.awaitPacket('kdeconnect.sms.messages');
-        expect(localPlugin._handleDigest).toHaveBeenCalled();
+        expect(localPlugin._handleMessages).toHaveBeenCalled();
 
         expect(localPlugin._requestConversation).not.toHaveBeenCalled();
     });

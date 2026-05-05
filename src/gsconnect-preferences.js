@@ -1,15 +1,18 @@
+#!/usr/bin/env -S gjs -m
+
 // SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 // -*- mode: js; -*-
 
-import Gdk from 'gi://Gdk?version=3.0';
+import Gdk from 'gi://Gdk?version=4.0';
 import 'gi://GdkPixbuf?version=2.0';
 import Gio from 'gi://Gio?version=2.0';
 import GLib from 'gi://GLib?version=2.0';
 import GObject from 'gi://GObject?version=2.0';
-import Gtk from 'gi://Gtk?version=3.0';
+import Gtk from 'gi://Gtk?version=4.0';
+import Adw from 'gi://Adw';
 
 import system from 'system';
 
@@ -17,8 +20,12 @@ import './preferences/init.js';
 import {Window} from './preferences/service.js';
 import Config from './config.js';
 
-import('gi://GioUnix?version=2.0').catch(() => {}); // Set version for optional dependency
-
+let GioUnix;
+try {
+    GioUnix = (await import('gi://GioUnix?version=2.0')).default;
+} catch {
+    GioUnix = Gio
+}
 
 /**
  * Class representing the GSConnect service daemon.
@@ -26,8 +33,7 @@ import('gi://GioUnix?version=2.0').catch(() => {}); // Set version for optional 
 const Preferences = GObject.registerClass({
     GTypeName: 'GSConnectPreferences',
     Implements: [Gio.ActionGroup],
-}, class Preferences extends Gtk.Application {
-
+}, class Preferences extends Adw.Application {
     _init() {
         super._init({
             application_id: 'org.gnome.Shell.Extensions.GSConnect.Preferences',
@@ -44,7 +50,6 @@ const Preferences = GObject.registerClass({
                 application: this,
             });
         }
-
         this._window.present();
     }
 
@@ -54,8 +59,8 @@ const Preferences = GObject.registerClass({
         // Init some resources
         const provider = new Gtk.CssProvider();
         provider.load_from_resource(`${Config.APP_PATH}/application.css`);
-        Gtk.StyleContext.add_provider_for_screen(
-            Gdk.Screen.get_default(),
+        Gtk.StyleContext.add_provider_for_display(
+            Gdk.Display.get_default(),
             provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         );
