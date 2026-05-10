@@ -53,13 +53,9 @@ describe('The Clipboard component', function () {
 
         const promise = new Promise((resolve) => {
             const id = gtkClipboard.connect('changed', async (gtkClipboard) => {
-                const value = await new Promise((resolve, reject) => {
+                const value = await new Promise((resolve) => {
                     gtkClipboard.read_text_async(null, (source, res) => {
-                        try {
-                            resolve(source.read_text_finish(res));
-                        } catch (e) {
-                            reject(e);
-                        }
+                        resolve(source.read_text_finish(res));
                     });
                 });
 
@@ -73,13 +69,9 @@ describe('The Clipboard component', function () {
         clipboard.text = text;
 
         await promise;
-        const value = await new Promise((resolve, reject) => {
+        const value = await new Promise((resolve) => {
             gtkClipboard.read_text_async(null, (source, res) => {
-                try {
-                    resolve(source.read_text_finish(res));
-                } catch (e) {
-                    reject(e);
-                }
+                resolve(source.read_text_finish(res));
             });
         });
         expect(value).toBe(text);
