@@ -199,7 +199,7 @@ const SMSPlugin = GObject.registerClass({
     handlePacket(packet) {
         switch (packet.type) {
             case 'kdeconnect.sms.messages':
-                this._handleMessages(packet.body.messages);
+                this._handleDigest(packet.body.messages);
                 break;
         }
     }
@@ -255,7 +255,7 @@ const SMSPlugin = GObject.registerClass({
      *
      * @param {object[]} messages - A list of sms message objects
      */
-    _handleMessages(messages) {
+    _handleDigest(messages) {
         try {
             // If messages is empty there's nothing to do...
             if (messages.length === 0)

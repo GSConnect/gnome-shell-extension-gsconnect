@@ -223,42 +223,23 @@ describe('The sms plugin', function () {
     });
 
     it('can request a list of conversations', async function () {
-        spyOn(localPlugin, '_handleMessages');
+        spyOn(localPlugin, '_handleDigest');
 
         localPlugin._requestConversations();
 
         await localPlugin.awaitPacket('kdeconnect.sms.messages');
-        expect(localPlugin._handleMessages).toHaveBeenCalled();
+        expect(localPlugin._handleDigest).toHaveBeenCalled();
     });
 
     it('can request full conversations', async function () {
-        spyOn(localPlugin, '_handleMessages').and.callThrough();
         spyOn(localPlugin, '_handleThread').and.callThrough();
         spyOn(localPlugin, '_requestConversation').and.callThrough();
 
-        localPlugin._requestConversations();
+        localPlugin.requestMore('1', -1);
 
         await localPlugin.awaitPacket('kdeconnect.sms.messages');
-        expect(localPlugin._handleMessages).toHaveBeenCalled();
-        expect(localPlugin._requestConversation).toHaveBeenCalledTimes(2);
-
-        localPlugin.handlePacket.calls.reset();
-
-        await localPlugin.awaitPacket('kdeconnect.sms.messages');
+        expect(localPlugin._requestConversation).toHaveBeenCalledWith('1', 10, -1);
         expect(localPlugin._handleThread).toHaveBeenCalled();
-    });
-
-    it('only requests new or updated converations', async function () {
-        spyOn(localPlugin, '_handleMessages').and.callThrough();
-        spyOn(localPlugin, '_handleThread').and.callThrough();
-        spyOn(localPlugin, '_requestConversation').and.callThrough();
-
-        localPlugin._requestConversations();
-
-        await localPlugin.awaitPacket('kdeconnect.sms.messages');
-        expect(localPlugin._handleMessages).toHaveBeenCalled();
-
-        expect(localPlugin._requestConversation).not.toHaveBeenCalled();
     });
 
     it('can send SMS messages', async function () {

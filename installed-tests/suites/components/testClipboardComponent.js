@@ -29,32 +29,60 @@ describe('The Clipboard component', function () {
         clipboard.destroy();
     });
 
-    it('pulls changes from the session clipboard', function (done) {
+    it('pulls changes from the session clipboard', async function () {
         const text = GLib.uuid_string_random();
 
-        const id = clipboard.connect('notify::text', (clipboard) => {
-            clipboard.disconnect(id);
-
-            expect(clipboard.text).toBe(text);
-            done();
+        const promise = new Promise((resolve) => {
+            const id = clipboard.connect('notify::text', (clipboard) => {
+                if (clipboard.text === text) {
+                    clipboard.disconnect(id);
+                    resolve();
+                }
+            });
         });
 
-        const provider = Gdk.ContentProvider.new_for_value(new GLib.Variant('s', text));
+        const provider = Gdk.ContentProvider.new_for_value(text);
         gtkClipboard.set_content(provider);
+
+        await promise;
+        expect(clipboard.text).toBe(text);
     });
 
-    it('pushes changes to the session clipboard', function (done) {
+    it('pushes changes to the session clipboard', async function () {
         const text = GLib.uuid_string_random();
 
-        const id = gtkClipboard.connect('changed', async (gtkClipboard) => {
-            gtkClipboard.disconnect(id);
+        const promise = new Promise((resolve) => {
+            const id = gtkClipboard.connect('changed', async (gtkClipboard) => {
+                const value = await new Promise((resolve, reject) => {
+                    gtkClipboard.read_text_async(null, (source, res) => {
+                        try {
+                            resolve(source.read_text_finish(res));
+                        } catch (e) {
+                            reject(e);
+                        }
+                    });
+                });
 
-            const value = await gtkClipboard.read_text_async(null);
-            expect(value).toBe(text);
-            done();
+                if (value === text) {
+                    gtkClipboard.disconnect(id);
+                    resolve();
+                }
+            });
         });
 
         clipboard.text = text;
+
+        await promise;
+        const value = await new Promise((resolve, reject) => {
+            gtkClipboard.read_text_async(null, (source, res) => {
+                try {
+                    resolve(source.read_text_finish(res));
+                } catch (e) {
+                    reject(e);
+                }
+            });
+        });
+        expect(value).toBe(text);
     });
 });
 

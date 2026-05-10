@@ -20,13 +20,6 @@ import './preferences/init.js';
 import {Window} from './preferences/service.js';
 import Config from './config.js';
 
-let GioUnix;
-try {
-    GioUnix = (await import('gi://GioUnix?version=2.0')).default;
-} catch {
-    GioUnix = Gio
-}
-
 /**
  * Class representing the GSConnect service daemon.
  */
