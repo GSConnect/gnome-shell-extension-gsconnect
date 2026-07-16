@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-01 01:34-0400\n"
-"PO-Revision-Date: 2025-09-13 18:59\n"
+"PO-Revision-Date: 2026-07-16 03:15\n"
 "Last-Translator: \n"
 "Language-Team: Turkish\n"
 "Language: tr_TR\n"
@@ -14,8 +14,7 @@ msgstr ""
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: tr\n"
-"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/"
-"org.gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -33,23 +32,12 @@ msgid "GSConnect Team"
 msgstr "GSConnect Takımı"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
-"GSConnect, Nautilus, Chrome ve Firefox bütünleşmesi ile özellikle GNOME "
-"Kabuğu için eksiksiz bir KDE Connect uygulamasıdır. KDE Connect ekibinin "
-"Linux, BSD, Android, Sailfish, iOS, macOS ve Windows için uygulamaları "
-"vardır."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr "GSConnect, Nautilus, Chrome ve Firefox bütünleşmesi ile özellikle GNOME Kabuğu için eksiksiz bir KDE Connect uygulamasıdır. KDE Connect ekibinin Linux, BSD, Android, Sailfish, iOS, macOS ve Windows için uygulamaları vardır."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"GSConnect ile mobil cihazlara ve diğer masaüstlerine bağlanarak şunları "
-"yapabilirsiniz:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
+msgstr "GSConnect ile mobil cihazlara ve diğer masaüstlerine bağlanarak şunları yapabilirsiniz:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:48
 msgid "Share files, links and text"
@@ -192,18 +180,14 @@ msgid "Select or start a conversation"
 msgstr "Sohbet seç ya da başlat"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid ""
-"Touchpad.\n"
+msgid "Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n"
-"\n"
+"Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr ""
-"Dokunmatik yüzey.\n"
+msgstr "Dokunmatik yüzey.\n"
 "Fare imlecini hareket ettirmek için bu alanda sürükleyin.\n"
-"Fare imlecini bi yerden bi yere sürüklemek için uzun basın.\n"
-"\n"
+"Fare imlecini bi yerden bi yere sürüklemek için uzun basın.\n\n"
 "Eşleştirilmiş cihaza basit bir tıklama gönderilecektir.\n"
 "Sol, orta, sağ düğme ve imleç kaydırmaları."
 
@@ -484,8 +468,7 @@ msgstr "Ayarla"
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:80
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Klavye kısayolunu sıfırlamak için iptal, geri almak için ESC tuşuna bas."
+msgstr "Klavye kısayolunu sıfırlamak için iptal, geri almak için ESC tuşuna bas."
 
 #: data/ui/preferences-window.ui:24
 msgid "Device Name"
@@ -552,12 +535,9 @@ msgid "Retry"
 msgstr ""
 
 #: data/ui/preferences-window.ui:858
-msgid ""
-"The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
+msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
 "Use your distro's package manager to install it.\n"
-"For more information, visit <a href=\"https://github.com/gsconnect/gnome-"
-"shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</"
-"a>."
+"For more information, visit <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</a>."
 msgstr ""
 
 #: data/ui/preferences-window.ui:874 src/service/init.js:361
@@ -618,12 +598,8 @@ msgid "Something’s gone wrong"
 msgstr "Bir şeyler ters gitti"
 
 #: data/ui/service-error-dialog.ui:91
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
-"GSConnect beklenmedik bir hatayla karşılaştı. Lütfen sorunu bildirin ve "
-"yardımcı olabilecek tüm bilgileri ekleyin."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "GSConnect beklenmedik bir hatayla karşılaştı. Lütfen sorunu bildirin ve yardımcı olabilecek tüm bilgileri ekleyin."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
@@ -688,18 +664,13 @@ msgstr "GNOME için eksiksiz bir KDE Connect uygulaması"
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:382
 msgid "translator-credits"
-msgstr ""
-"Serdar Sağlam <teknomobil@yandex.com>\n"
+msgstr "Serdar Sağlam <teknomobil@yandex.com>\n"
 "Orhan Engin Okay <orhanenginokay@hotmail.com>\n"
 "A. Burak Tektaş <abtektas@gmail.com>"
 
 #: src/preferences/service.js:415
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Hata ayıklama mesajları kaydediliyor. Sorunu yeniden oluşturmak için gerekli "
-"adımları izleyin ve günlüğü inceleyin."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Hata ayıklama mesajları kaydediliyor. Sorunu yeniden oluşturmak için gerekli adımları izleyin ve günlüğü inceleyin."
 
 #: src/preferences/service.js:418
 msgid "Review Log"
@@ -712,8 +683,7 @@ msgstr ""
 #. TRANSLATOR: %s is a list of forbidden characters
 #: src/preferences/service.js:445
 #, javascript-format
-msgid ""
-"Device name must not contain any of %s and have a length of 1-32 characters"
+msgid "Device name must not contain any of %s and have a length of 1-32 characters"
 msgstr ""
 
 #: src/preferences/service.js:516
@@ -754,9 +724,7 @@ msgid "Settings Migrated"
 msgstr ""
 
 #: src/service/daemon.js:104
-msgid ""
-"GSConnect has updated to support changes to the KDE Connect protocol. Some "
-"devices may need to be re-paired."
+msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
 msgstr ""
 
 #: src/service/daemon.js:246
@@ -789,9 +757,8 @@ msgid "Target Device"
 msgstr "Hedef Cihaz"
 
 #: src/service/daemon.js:448
-#, fuzzy
 msgid "Target Device Name"
-msgstr "Hedef Cihaz"
+msgstr ""
 
 #: src/service/daemon.js:490
 msgid "Message Body"
@@ -882,8 +849,7 @@ msgid "Device clocks are out of sync"
 msgstr ""
 
 #: src/service/manager.js:178
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Bu ağdaki cihazların sayısı nedeniyle keşif devre dışı bırakıldı."
 
 #: src/service/backends/lan.js:477
@@ -1035,9 +1001,7 @@ msgid "Run Commands"
 msgstr "Komutları Çalıştır"
 
 #: src/service/plugins/runcommand.js:15
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
 msgstr ""
 
 #: src/service/plugins/sftp.js:15
@@ -1187,8 +1151,7 @@ msgid "PulseAudio not found"
 msgstr "PulseAudio bulunamadı"
 
 #: src/service/plugins/telephony.js:17
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
 msgstr ""
 
 #. TRANSLATORS: Silence the actively ringing call
@@ -1310,3 +1273,4 @@ msgstr "Servis Mevcut Değil"
 #: webextension/gettext.js:39
 msgid "Open in Browser"
 msgstr "Tarayıcıda Aç"
+
