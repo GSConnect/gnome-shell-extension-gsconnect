@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-13 14:44-0400\n"
-"PO-Revision-Date: 2025-09-13 18:59\n"
+"PO-Revision-Date: 2026-05-01 08:26\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -189,7 +189,7 @@ msgstr "Touchpad.\n"
 "Faites glisser cette zone pour déplacer le curseur de la souris.\n"
 "Appuyez sur long pour faire glisser le curseur de la souris.\n\n"
 "Un simple clic sera envoyé à un appareil apparié.\n"
-"À gauche, au milieu, à droite et à roue."
+"À gauche, au milieu, à droite et défilement à la molette."
 
 #: data/ui/preferences-command-editor.ui:14
 msgid "Edit Command"
@@ -538,7 +538,9 @@ msgstr ""
 msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
 "Use your distro's package manager to install it.\n"
 "For more information, visit <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</a>."
-msgstr ""
+msgstr "L'outil en ligne de commande <tt>openssl</tt> ne semble pas être installé.\n"
+"Utilisez le gestionnaire de paquets de votre distribution pour l'installer.\n"
+"Pour plus d'informations, visitez <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">le wiki de GSConnect</a>."
 
 #: data/ui/preferences-window.ui:874 src/service/init.js:361
 msgid "OpenSSL not found"
@@ -719,11 +721,11 @@ msgstr "En attente du service…"
 #. Notify the user
 #: src/service/daemon.js:99
 msgid "Settings Migrated"
-msgstr ""
+msgstr "Paramètres migrés"
 
 #: src/service/daemon.js:100
 msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
-msgstr ""
+msgstr "GSConnect a été mis à jour pour prendre en charge les changements du protocole KDE Connect. Certains appareils devront peut-être être ré-appairés."
 
 #: src/service/daemon.js:241
 msgid "Click for help troubleshooting"
