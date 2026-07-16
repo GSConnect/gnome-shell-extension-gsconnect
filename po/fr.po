@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-13 14:44-0400\n"
+"POT-Creation-Date: 2026-05-01 01:34-0400\n"
 "PO-Revision-Date: 2026-05-01 08:26\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
@@ -14,7 +14,8 @@ msgstr ""
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: fr\n"
-"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/"
+"org.gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -32,12 +33,23 @@ msgid "GSConnect Team"
 msgstr "L'équipe de GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
-msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr "GSConnect est une implémentation complète de KDE Connect, en particulier pour GNOME Shell avec l'intégration de Nautilus, Chrome et Firefox. L'équipe KDE Connect à des applications pour Linux, BSD, Android, Sailfish, iOS, macOS et Windows."
+msgid ""
+"GSConnect is a complete implementation of KDE Connect especially for GNOME "
+"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
+"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr ""
+"GSConnect est une implémentation complète de KDE Connect, en particulier "
+"pour GNOME Shell avec l'intégration de Nautilus, Chrome et Firefox. L'équipe "
+"KDE Connect à des applications pour Linux, BSD, Android, Sailfish, iOS, "
+"macOS et Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
-msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
-msgstr "Avec GSConnect, vous pouvez vous connecter en toute sécurité à des appareils mobiles et à d'autres ordinateurs de bureau à :"
+msgid ""
+"With GSConnect you can securely connect to mobile devices and other desktops "
+"to:"
+msgstr ""
+"Avec GSConnect, vous pouvez vous connecter en toute sécurité à des appareils "
+"mobiles et à d'autres ordinateurs de bureau à :"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:48
 msgid "Share files, links and text"
@@ -75,7 +87,7 @@ msgstr "Exécuter des commandes prédéfinies"
 msgid "And more…"
 msgstr "Et bien plus encore…"
 
-#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:165
+#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:183
 msgid "GSConnect in GNOME Shell"
 msgstr "GSConnect dans GNOME Shell"
 
@@ -124,8 +136,8 @@ msgid "Other"
 msgstr "Autre"
 
 #. TRANSLATORS: Share URL by SMS
-#: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:353
-#: src/service/daemon.js:467 src/service/plugins/sms.js:62
+#: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:358
+#: src/service/daemon.js:481 src/service/plugins/sms.js:62
 #: webextension/gettext.js:41
 msgid "Send SMS"
 msgstr "Envoyer un SMS"
@@ -180,14 +192,18 @@ msgid "Select or start a conversation"
 msgstr "Choisir ou commencer une discussion"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid "Touchpad.\n"
+msgid ""
+"Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n\n"
+"Press long to drag to drag mouse cursor.\n"
+"\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr "Touchpad.\n"
+msgstr ""
+"Touchpad.\n"
 "Faites glisser cette zone pour déplacer le curseur de la souris.\n"
-"Appuyez sur long pour faire glisser le curseur de la souris.\n\n"
+"Appuyez sur long pour faire glisser le curseur de la souris.\n"
+"\n"
 "Un simple clic sera envoyé à un appareil apparié.\n"
 "À gauche, au milieu, à droite et défilement à la molette."
 
@@ -403,7 +419,7 @@ msgstr "Paramètres de l'appareil"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/ui/preferences-device-panel.ui:2624
-#: data/ui/preferences-device-panel.ui:2716 src/service/daemon.js:446
+#: data/ui/preferences-device-panel.ui:2716 src/service/daemon.js:460
 msgid "Pair"
 msgstr "Associer"
 
@@ -421,7 +437,7 @@ msgid "Encryption Info"
 msgstr "Informations de chiffrement"
 
 #. TRANSLATORS: Unpair the device and notify it
-#: data/ui/preferences-device-panel.ui:2722 src/service/daemon.js:455
+#: data/ui/preferences-device-panel.ui:2722 src/service/daemon.js:469
 msgid "Unpair"
 msgstr "Dissocier"
 
@@ -468,7 +484,9 @@ msgstr "Définir"
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:80
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr "Appuyez sur Echap pour annuler ou sur Retour Arrière pour réinitialiser le raccourci clavier."
+msgstr ""
+"Appuyez sur Echap pour annuler ou sur Retour Arrière pour réinitialiser le "
+"raccourci clavier."
 
 #: data/ui/preferences-window.ui:24
 msgid "Device Name"
@@ -535,12 +553,18 @@ msgid "Retry"
 msgstr ""
 
 #: data/ui/preferences-window.ui:858
-msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
+msgid ""
+"The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
 "Use your distro's package manager to install it.\n"
-"For more information, visit <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</a>."
-msgstr "L'outil en ligne de commande <tt>openssl</tt> ne semble pas être installé.\n"
+"For more information, visit <a href=\"https://github.com/gsconnect/gnome-"
+"shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</"
+"a>."
+msgstr ""
+"L'outil en ligne de commande <tt>openssl</tt> ne semble pas être installé.\n"
 "Utilisez le gestionnaire de paquets de votre distribution pour l'installer.\n"
-"Pour plus d'informations, visitez <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">le wiki de GSConnect</a>."
+"Pour plus d'informations, visitez <a href=\"https://github.com/gsconnect/"
+"gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">le wiki de "
+"GSConnect</a>."
 
 #: data/ui/preferences-window.ui:874 src/service/init.js:361
 msgid "OpenSSL not found"
@@ -600,8 +624,12 @@ msgid "Something’s gone wrong"
 msgstr "Un problème est survenu"
 
 #: data/ui/service-error-dialog.ui:91
-msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
-msgstr "GSConnect a rencontré une erreur inattendue. Veuillez signaler le problème et inclure toutes les informations qui pourraient nous aider."
+msgid ""
+"GSConnect encountered an unexpected error. Please report the problem and "
+"include any information that may help."
+msgstr ""
+"GSConnect a rencontré une erreur inattendue. Veuillez signaler le problème "
+"et inclure toutes les informations qui pourraient nous aider."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
@@ -669,8 +697,12 @@ msgid "translator-credits"
 msgstr "Mickaël Coiraton <mickael.coiraton@gmail.com>"
 
 #: src/preferences/service.js:415
-msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
-msgstr "Les messages de dépannage sont enregistrés. Faites le nécessaire pour reproduire le problème puis vérifiez le fichier de log."
+msgid ""
+"Debug messages are being logged. Take any steps necessary to reproduce a "
+"problem then review the log."
+msgstr ""
+"Les messages de dépannage sont enregistrés. Faites le nécessaire pour "
+"reproduire le problème puis vérifiez le fichier de log."
 
 #: src/preferences/service.js:418
 msgid "Review Log"
@@ -683,7 +715,8 @@ msgstr ""
 #. TRANSLATOR: %s is a list of forbidden characters
 #: src/preferences/service.js:445
 #, javascript-format
-msgid "Device name must not contain any of %s and have a length of 1-32 characters"
+msgid ""
+"Device name must not contain any of %s and have a length of 1-32 characters"
 msgstr ""
 
 #: src/preferences/service.js:516
@@ -719,88 +752,97 @@ msgid "Waiting for service…"
 msgstr "En attente du service…"
 
 #. Notify the user
-#: src/service/daemon.js:99
+#: src/service/daemon.js:103
 msgid "Settings Migrated"
 msgstr "Paramètres migrés"
 
-#: src/service/daemon.js:100
-msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
-msgstr "GSConnect a été mis à jour pour prendre en charge les changements du protocole KDE Connect. Certains appareils devront peut-être être ré-appairés."
+#: src/service/daemon.js:104
+msgid ""
+"GSConnect has updated to support changes to the KDE Connect protocol. Some "
+"devices may need to be re-paired."
+msgstr ""
+"GSConnect a été mis à jour pour prendre en charge les changements du "
+"protocole KDE Connect. Certains appareils devront peut-être être ré-appairés."
 
-#: src/service/daemon.js:241
+#: src/service/daemon.js:246
 msgid "Click for help troubleshooting"
 msgstr "Cliquer pour l'aide de dépannage"
 
-#: src/service/daemon.js:251
+#: src/service/daemon.js:256
 msgid "Click for more information"
 msgstr "Cliquer pour plus d'informations"
 
-#: src/service/daemon.js:359
+#: src/service/daemon.js:364
 msgid "Dial Number"
 msgstr "Composer le numéro"
 
-#: src/service/daemon.js:365 src/service/daemon.js:554
+#: src/service/daemon.js:370 src/service/daemon.js:568
 #: src/service/plugins/share.js:31
 msgid "Share File"
 msgstr "Partager un fichier"
 
-#: src/service/daemon.js:416
+#: src/service/daemon.js:421
 msgid "List available devices"
 msgstr "Liste des appareils disponibles"
 
-#: src/service/daemon.js:425
+#: src/service/daemon.js:430
 msgid "List all devices"
 msgstr "Liste de tous les appareils"
 
-#: src/service/daemon.js:434
+#: src/service/daemon.js:439
 msgid "Target Device"
 msgstr "Appareil cible"
 
-#: src/service/daemon.js:476
+#: src/service/daemon.js:448
+#, fuzzy
+msgid "Target Device Name"
+msgstr "Appareil cible"
+
+#: src/service/daemon.js:490
 msgid "Message Body"
 msgstr "Corps du message"
 
-#: src/service/daemon.js:488 src/service/plugins/notification.js:57
+#: src/service/daemon.js:502 src/service/plugins/notification.js:57
 msgid "Send Notification"
 msgstr "Envoyer la notification"
 
-#: src/service/daemon.js:497
+#: src/service/daemon.js:511
 msgid "Notification App Name"
 msgstr "Nom de l'application de la notification"
 
-#: src/service/daemon.js:506
+#: src/service/daemon.js:520
 msgid "Notification Body"
 msgstr "Corps de la notification"
 
-#: src/service/daemon.js:515
+#: src/service/daemon.js:529
 msgid "Notification Icon"
 msgstr "Icône de la notification"
 
-#: src/service/daemon.js:524
+#: src/service/daemon.js:538
 msgid "Notification ID"
 msgstr "ID de la notification"
 
-#: src/service/daemon.js:533 src/service/plugins/ping.js:13
+#: src/service/daemon.js:547 src/service/plugins/ping.js:13
 #: src/service/plugins/ping.js:20 src/service/plugins/ping.js:47
 msgid "Ping"
 msgstr "Ping"
 
-#: src/service/daemon.js:542 src/service/plugins/battery.js:247
+#: src/service/daemon.js:556 src/service/plugins/battery.js:247
 #: src/service/plugins/battery.js:276 src/service/plugins/battery.js:305
 #: src/service/plugins/findmyphone.js:22
 msgid "Ring"
 msgstr "Faire sonner"
 
-#: src/service/daemon.js:563 src/service/plugins/share.js:47
+#: src/service/daemon.js:577 src/service/plugins/share.js:47
 #: src/service/ui/messaging.js:1257 src/service/ui/messaging.js:1265
 msgid "Share Link"
 msgstr "Partager un lien"
 
-#: src/service/daemon.js:572 src/service/plugins/share.js:39
+#: src/service/daemon.js:586 src/service/plugins/share.js:39
 msgid "Share Text"
 msgstr "Partager du texte"
 
-#: src/service/daemon.js:584
+#: src/service/daemon.js:598
 msgid "Show release version"
 msgstr "Montrer la sortie de version"
 
@@ -845,8 +887,11 @@ msgid "Device clocks are out of sync"
 msgstr ""
 
 #: src/service/manager.js:178
-msgid "Discovery has been disabled due to the number of devices on this network."
-msgstr "La découverte a été désactivée en raison du nombre de périphériques sur ce réseau."
+msgid ""
+"Discovery has been disabled due to the number of devices on this network."
+msgstr ""
+"La découverte a été désactivée en raison du nombre de périphériques sur ce "
+"réseau."
 
 #: src/service/backends/lan.js:477
 msgid "Port already in use"
@@ -935,7 +980,8 @@ msgstr "Pavé tactile"
 
 #: src/service/plugins/mousepad.js:15
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr "Permet à l'appareil appairé d'agir comme une souris et un clavier à distance"
+msgstr ""
+"Permet à l'appareil appairé d'agir comme une souris et un clavier à distance"
 
 #: src/service/plugins/mousepad.js:29 src/service/ui/mousepad.js:107
 msgid "Remote Input"
@@ -949,7 +995,7 @@ msgstr "MPRIS"
 msgid "Bidirectional remote media playback control"
 msgstr "Contrôle à distance bidirectionnel de lecture de médias"
 
-#: src/service/plugins/mpris.js:357
+#: src/service/plugins/mpris.js:330
 msgid "Unknown"
 msgstr "Inconnu"
 
@@ -997,8 +1043,12 @@ msgid "Run Commands"
 msgstr "Exécuter des commandes"
 
 #: src/service/plugins/runcommand.js:15
-msgid "Run commands on your paired device or let the device run predefined commands on this PC"
-msgstr "Exécutez des commandes sur votre périphérique appairé ou laissez le périphérique exécuter des commandes prédéfinies sur ce PC"
+msgid ""
+"Run commands on your paired device or let the device run predefined commands "
+"on this PC"
+msgstr ""
+"Exécutez des commandes sur votre périphérique appairé ou laissez le "
+"périphérique exécuter des commandes prédéfinies sur ce PC"
 
 #: src/service/plugins/sftp.js:15
 msgid "SFTP"
@@ -1120,7 +1170,9 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:17
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr "Envoyer et lire les SMS de l'appareil appairé et être informé des nouveaux SMS"
+msgstr ""
+"Envoyer et lire les SMS de l'appareil appairé et être informé des nouveaux "
+"SMS"
 
 #: src/service/plugins/sms.js:38
 msgid "New SMS (URI)"
@@ -1134,21 +1186,24 @@ msgstr "Répondre au SMS"
 msgid "Share SMS"
 msgstr "Partager le SMS"
 
-#: src/service/plugins/systemvolume.js:36
+#: src/service/plugins/systemvolume.js:14
 msgid "System Volume"
 msgstr "Volume du système"
 
-#: src/service/plugins/systemvolume.js:37
+#: src/service/plugins/systemvolume.js:15
 msgid "Enable the paired device to control the system volume"
 msgstr "Permettre à l'appareil appairé de contrôler le volume du système"
 
-#: src/service/plugins/systemvolume.js:81
+#: src/service/plugins/systemvolume.js:59
 msgid "PulseAudio not found"
 msgstr "PulseAudio introuvable"
 
 #: src/service/plugins/telephony.js:17
-msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr "Être notifié des appels et régler le volume du système pendant la sonnerie/les appels en cours"
+msgid ""
+"Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgstr ""
+"Être notifié des appels et régler le volume du système pendant la sonnerie/"
+"les appels en cours"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:29
@@ -1258,7 +1313,8 @@ msgstr "Répondre"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:31
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr "Partagez des liens avec GSConnect, directement vers le navigateur ou par SMS."
+msgstr ""
+"Partagez des liens avec GSConnect, directement vers le navigateur ou par SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:35
@@ -1269,4 +1325,3 @@ msgstr "Service indisponible"
 #: webextension/gettext.js:39
 msgid "Open in Browser"
 msgstr "Ouvrir dans le navigateur"
-

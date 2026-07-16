@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-01 07:34+0200\n"
+"POT-Creation-Date: 2026-05-01 01:34-0400\n"
 "PO-Revision-Date: 2026-07-11 11:26+0200\n"
 "Last-Translator: Grzegorz Szymaszek <gszymaszek@short.pl>\n"
 "Language-Team: Polish\n"
@@ -485,7 +485,9 @@ msgstr "Ustaw"
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:80
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr "Naciśnij klawisz Esc aby anulować lub Backspace aby przywrócić skrót klawiszowy."
+msgstr ""
+"Naciśnij klawisz Esc aby anulować lub Backspace aby przywrócić skrót "
+"klawiszowy."
 
 #: data/ui/preferences-window.ui:24
 msgid "Device Name"
