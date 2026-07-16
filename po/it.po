@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-01 01:34-0400\n"
-"PO-Revision-Date: 2025-10-08 18:43\n"
+"PO-Revision-Date: 2026-07-16 03:15\n"
 "Last-Translator: \n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
@@ -14,8 +14,7 @@ msgstr ""
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: it\n"
-"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/"
-"org.gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -33,22 +32,12 @@ msgid "GSConnect Team"
 msgstr "Team GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
-"GSConnect è un'implementazione completa di KDE Connect per GNOME Shell, "
-"integrata con Nautilus, Chrome e Firefox. Il team di GSConnect produce "
-"applicazioni per Linux, BSD, Android, Sailfish, iOS, macOS e Windows."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr "GSConnect è un'implementazione completa di KDE Connect per GNOME Shell, integrata con Nautilus, Chrome e Firefox. Il team di GSConnect produce applicazioni per Linux, BSD, Android, Sailfish, iOS, macOS e Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"Con GSConnect è possibile connettersi in sicurezza a dispositivi mobili e "
-"altri computer per:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
+msgstr "Con GSConnect è possibile connettersi in sicurezza a dispositivi mobili e altri computer per:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:48
 msgid "Share files, links and text"
@@ -191,18 +180,14 @@ msgid "Select or start a conversation"
 msgstr "Seleziona o inizia una conversazione"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid ""
-"Touchpad.\n"
+msgid "Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n"
-"\n"
+"Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr ""
-"Touchpad.\n"
+msgstr "Touchpad.\n"
 "Trascina su questa area per spostare il cursore del mouse.\n"
-"Premi a lungo per trascinare il cursore del mouse.\n"
-"\n"
+"Premi a lungo per trascinare il cursore del mouse.\n\n"
 "Un semplice clic verrà inviato al dispositivo accoppiato.\n"
 "Sinistra, centrale, tasto destro e rotelle della ruota."
 
@@ -550,19 +535,12 @@ msgid "Retry"
 msgstr "Riprova"
 
 #: data/ui/preferences-window.ui:858
-msgid ""
-"The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
+msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
 "Use your distro's package manager to install it.\n"
-"For more information, visit <a href=\"https://github.com/gsconnect/gnome-"
-"shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</"
-"a>."
-msgstr ""
-"Lo strumento a riga di comando <tt>openssl</tt> non sembra essere "
-"installato.\n"
+"For more information, visit <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</a>."
+msgstr "Lo strumento a riga di comando <tt>openssl</tt> non sembra essere installato.\n"
 "Usa il gestore di pacchetti della tua distribuzione per installarlo.\n"
-"Per ulteriori informazioni, visita <a href=\"https://github.com/gsconnect/"
-"gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">il wiki "
-"GSConnect</a>."
+"Per ulteriori informazioni, visita <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">il wiki GSConnect</a>."
 
 #: data/ui/preferences-window.ui:874 src/service/init.js:361
 msgid "OpenSSL not found"
@@ -622,12 +600,8 @@ msgid "Something’s gone wrong"
 msgstr "Qualcosa è andato storto"
 
 #: data/ui/service-error-dialog.ui:91
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
-"GSConnect ha riscontrato un errore imprevisto. Segnalare il problema e "
-"includere le informazioni necessarie."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "GSConnect ha riscontrato un errore imprevisto. Segnalare il problema e includere le informazioni necessarie."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
@@ -695,12 +669,8 @@ msgid "translator-credits"
 msgstr "Jimmy Scionti <jimmy.scionti@gmail.com>"
 
 #: src/preferences/service.js:415
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"I messaggi di debug vengono registrati. Adotta tutte le misure necessarie "
-"per riprodurre un problema, quindi rivedi il registro."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "I messaggi di debug vengono registrati. Adotta tutte le misure necessarie per riprodurre un problema, quindi rivedi il registro."
 
 #: src/preferences/service.js:418
 msgid "Review Log"
@@ -713,11 +683,8 @@ msgstr "Nome Dispositivo Non Valido"
 #. TRANSLATOR: %s is a list of forbidden characters
 #: src/preferences/service.js:445
 #, javascript-format
-msgid ""
-"Device name must not contain any of %s and have a length of 1-32 characters"
-msgstr ""
-"Il nome del dispositivo non deve contenere %s e avere una lunghezza compresa "
-"tra 1-32 caratteri"
+msgid "Device name must not contain any of %s and have a length of 1-32 characters"
+msgstr "Il nome del dispositivo non deve contenere %s e avere una lunghezza compresa tra 1-32 caratteri"
 
 #: src/preferences/service.js:516
 msgid "Laptop"
@@ -757,12 +724,8 @@ msgid "Settings Migrated"
 msgstr "Impostazioni migrate"
 
 #: src/service/daemon.js:104
-msgid ""
-"GSConnect has updated to support changes to the KDE Connect protocol. Some "
-"devices may need to be re-paired."
-msgstr ""
-"GSConnect è stato aggiornato per supportare le modifiche al protocollo KDE "
-"Connect. Potrebbe essere necessario riaccoppiare alcuni dispositivi."
+msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
+msgstr "GSConnect è stato aggiornato per supportare le modifiche al protocollo KDE Connect. Potrebbe essere necessario riaccoppiare alcuni dispositivi."
 
 #: src/service/daemon.js:246
 msgid "Click for help troubleshooting"
@@ -794,9 +757,8 @@ msgid "Target Device"
 msgstr "Dispositivo di destinazione"
 
 #: src/service/daemon.js:448
-#, fuzzy
 msgid "Target Device Name"
-msgstr "Dispositivo di destinazione"
+msgstr ""
 
 #: src/service/daemon.js:490
 msgid "Message Body"
@@ -887,11 +849,8 @@ msgid "Device clocks are out of sync"
 msgstr "Gli orologi del dispositivo non sono sincronizzati"
 
 #: src/service/manager.js:178
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
-msgstr ""
-"La ricerca è stata disattivata a causa dell'elevato numero di dispositivi "
-"nella rete."
+msgid "Discovery has been disabled due to the number of devices on this network."
+msgstr "La ricerca è stata disattivata a causa dell'elevato numero di dispositivi nella rete."
 
 #: src/service/backends/lan.js:477
 msgid "Port already in use"
@@ -1042,12 +1001,8 @@ msgid "Run Commands"
 msgstr "Esegui comandi"
 
 #: src/service/plugins/runcommand.js:15
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
-msgstr ""
-"Eseguire comandi sul dispositivo o lasciare che il dispositivo esegua "
-"comandi predefiniti su questo PC"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
+msgstr "Eseguire comandi sul dispositivo o lasciare che il dispositivo esegua comandi predefiniti su questo PC"
 
 #: src/service/plugins/sftp.js:15
 msgid "SFTP"
@@ -1169,8 +1124,7 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:17
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
-"Inviare e leggere SMS del dispositivo e ricevere le notifiche per nuovi SMS"
+msgstr "Inviare e leggere SMS del dispositivo e ricevere le notifiche per nuovi SMS"
 
 #: src/service/plugins/sms.js:38
 msgid "New SMS (URI)"
@@ -1197,11 +1151,8 @@ msgid "PulseAudio not found"
 msgstr "PulseAudio non trovato"
 
 #: src/service/plugins/telephony.js:17
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
-"Ricevere notifiche sulle telefonate e livellare il volume durante le "
-"telefonate"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgstr "Ricevere notifiche sulle telefonate e livellare il volume durante le telefonate"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:29
@@ -1311,8 +1262,7 @@ msgstr "Rispondi"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:31
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
-"Condividi collegamenti con GSConnect, direttamente nel browser o via SMS."
+msgstr "Condividi collegamenti con GSConnect, direttamente nel browser o via SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:35
@@ -1323,3 +1273,4 @@ msgstr "Servizio non disponibile"
 #: webextension/gettext.js:39
 msgid "Open in Browser"
 msgstr "Apri nel browser"
+
