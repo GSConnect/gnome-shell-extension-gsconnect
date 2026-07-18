@@ -146,6 +146,12 @@ SPDX-License-Identifier: GPL-2.0-or-later
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Ping"/>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Presenter"/>
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.VirtualMonitor">
+    <key name="remote-desktop-certificate" type="s">
+      <default>""</default>
+      <summary>Certificate fingerprint allowed to request remote desktop access</summary>
+    </key>
+  </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.RunCommand">
     <key name="command-list" type="a{sv}">
       <default><![CDATA[{'lock': <{'name': 'Lock', 'command': 'xdg-screensaver lock'}>, 'restart': <{'name': 'Restart', 'command': 'systemctl reboot'}>, 'logout': <{'name': 'Log Out', 'command': 'gnome-session-quit --logout --no-prompt'}>, 'poweroff': <{'name': 'Power Off', 'command': 'systemctl poweroff'}>, 'suspend': <{'name': 'Suspend', 'command': 'systemctl suspend'}>}]]></default>
@@ -195,4 +201,3 @@ SPDX-License-Identifier: GPL-2.0-or-later
     </key>
   </schema>
 </schemalist>
-
