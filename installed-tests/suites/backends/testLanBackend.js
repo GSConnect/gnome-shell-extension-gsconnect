@@ -84,6 +84,11 @@ describe('A LAN channel service', function () {
         expect(remoteChannel).toBeDefined();
     });
 
+    it('exposes the authenticated connection local address', function () {
+        expect(localChannel.local_host).toBe('127.0.0.1');
+        expect(remoteChannel.local_host).toBe('127.0.0.1');
+    });
+
     describe('produces channels', function () {
         it('that can transfer packets', async function () {
             const outgoingPacket = new Core.Packet({
@@ -144,4 +149,3 @@ describe('A LAN channel service', function () {
 
     // TODO: restarting stopped services
 });
-
