@@ -12,6 +12,47 @@ import * as Core from './core.js';
 import plugins from './plugins/index.js';
 
 const ALLOWED_TIMESTAMP_TIME_DIFFERENCE_SECONDS = 1800; // 30 min
+const VIRTUAL_MONITOR_PACKET_TYPES = new Set([
+    'kdeconnect.virtualmonitor',
+    'kdeconnect.virtualmonitor.request',
+]);
+
+
+/**
+ * Return a safe packet representation for debug logging.
+ *
+ * Virtual-monitor connection packets carry short-lived RDP credentials and
+ * remote diagnostics contain arbitrary text. Neither may be persisted in the
+ * journal by the generic packet logger.
+ *
+ * @param {Core.Packet|object} packet - packet about to be logged
+ * @returns {Core.Packet|object} the original packet or a redacted copy
+ */
+export function _packetForDebug(packet) {
+    if (!VIRTUAL_MONITOR_PACKET_TYPES.has(packet.type) ||
+        packet.body === null || typeof packet.body !== 'object') {
+        return packet;
+    }
+
+    const body = {...packet.body};
+
+    for (const field of [
+        'password',
+        'certificateFingerprint',
+        'certificate',
+        'certificateKey',
+    ]) {
+        if (Object.hasOwn(body, field))
+            body[field] = '[redacted]';
+    }
+
+    if (body.action === 'diagnostic' &&
+        Object.hasOwn(body, 'entries')) {
+        body.entries = '[redacted]';
+    }
+
+    return {...packet, body};
+}
 
 /**
  * An object representing a remote device.
@@ -366,7 +407,7 @@ const Device = GObject.registerClass({
             let packet = null;
 
             while ((packet = await this.channel.readPacket())) {
-                debug(packet, this.name);
+                debug(_packetForDebug(packet), this.name);
                 this.handlePacket(packet);
             }
         } catch (e) {
@@ -474,7 +515,7 @@ const Device = GObject.registerClass({
 
             while ((next = this._outputQueue.shift())) {
                 await this.channel.sendPacket(next);
-                debug(next, this.name);
+                debug(_packetForDebug(next), this.name);
             }
 
             this._outputLock = false;
