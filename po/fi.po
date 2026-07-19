@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-01 01:34-0400\n"
-"PO-Revision-Date: 2026-07-16 03:15\n"
+"PO-Revision-Date: 2026-07-19 10:55\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
 "Language: fi_FI\n"
@@ -33,7 +33,7 @@ msgstr "GSConnect-tiimi"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
 msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
+msgstr "GSConnect on täydellinen toteutus KDE Connectista erityisesti Gnome Shellille Nautilus-, Chrome- ja Firefox-integraatiolla. KDE Connect -tiimillä on sovelluksia Linuxille, BSD:lle, Androidille, Sailfishille, iOS:lle, macOS:lle ja Windowsille."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
 msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
@@ -681,7 +681,7 @@ msgstr "Virheellinen laitteen nimi"
 #: src/preferences/service.js:445
 #, javascript-format
 msgid "Device name must not contain any of %s and have a length of 1-32 characters"
-msgstr ""
+msgstr "Laitteen nimi ei saa sisältää merkkejä %s ja sen pituus on oltava 1-32 merkkiä"
 
 #: src/preferences/service.js:516
 msgid "Laptop"
@@ -722,7 +722,7 @@ msgstr ""
 
 #: src/service/daemon.js:104
 msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
-msgstr ""
+msgstr "GSConnect on päivitetty tukemaan KDE Connect -yhteyskäytäntöä. Joidenkin laitteiden laiteparitus on ehkä tehtävä uudelleen."
 
 #: src/service/daemon.js:246
 msgid "Click for help troubleshooting"
@@ -755,7 +755,7 @@ msgstr "Kohdelaite"
 
 #: src/service/daemon.js:448
 msgid "Target Device Name"
-msgstr ""
+msgstr "Kohdelaitteen nimi"
 
 #: src/service/daemon.js:490
 msgid "Message Body"
