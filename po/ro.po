@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-01 01:34-0400\n"
-"PO-Revision-Date: 2026-07-16 03:15\n"
+"PO-Revision-Date: 2026-07-19 16:39\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
 "Language: ro_RO\n"
@@ -755,11 +755,11 @@ msgstr "Lista tuturor aparatelor"
 
 #: src/service/daemon.js:439
 msgid "Target Device"
-msgstr "Aparatul de destinație"
+msgstr "Aparatul destinație"
 
 #: src/service/daemon.js:448
 msgid "Target Device Name"
-msgstr ""
+msgstr "Numele aparatului destinație"
 
 #: src/service/daemon.js:490
 msgid "Message Body"
