@@ -202,7 +202,9 @@ export const Clipboard = GObject.registerClass({
                 } catch { /* invocation already returned or peer is gone */ }
             }
         } catch (e) {
-            try { logError(e, 'gsconnect clipboard handler'); } catch { /* */ }
+            try {
+                logError(e, 'gsconnect clipboard handler');
+            } catch { /* */ }
         }
     }
 
