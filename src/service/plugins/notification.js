@@ -476,10 +476,15 @@ const NotificationPlugin = GObject.registerClass({
             if (!packet.hasPayload())
                 return null;
 
-            // Save the file in the global cache
+            // Save the file in the global cache. payloadHash is remote-supplied and used as a filename, so collapse it to a basename to prevent '../' traversal out of the cache dir.
+            let payloadHash = GLib.path_get_basename(packet.body.payloadHash || `${Date.now()}`);
+            if (!payloadHash || payloadHash === '.' || payloadHash === '..' ||
+                payloadHash.includes('/'))
+                payloadHash = `${Date.now()}`;
+
             const path = GLib.build_filenamev([
                 Config.CACHEDIR,
-                packet.body.payloadHash || `${Date.now()}`,
+                payloadHash,
             ]);
 
             // Check if we've already downloaded this icon
