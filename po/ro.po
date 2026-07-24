@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-13 14:44-0400\n"
+"POT-Creation-Date: 2026-05-01 01:34-0400\n"
 "PO-Revision-Date: 2025-11-17 16:08\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
@@ -10,11 +10,13 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100>0 && n%100<20)) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100>0 && "
+"n%100<20)) ? 1 : 2);\n"
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: ro\n"
-"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/"
+"org.gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -32,12 +34,22 @@ msgid "GSConnect Team"
 msgstr "Echipa GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
-msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr "GSConnect este o implementare completă a KDE Connect în special pentru GNOME Shell. Se integrează cu Nautilus, Chrome și Firefox. Echipa KDE Connect are aplicații pentru Linux, BSD, Android, Sailfish, iOS, macOS și Windows."
+msgid ""
+"GSConnect is a complete implementation of KDE Connect especially for GNOME "
+"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
+"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr ""
+"GSConnect este o implementare completă a KDE Connect în special pentru GNOME "
+"Shell. Se integrează cu Nautilus, Chrome și Firefox. Echipa KDE Connect are "
+"aplicații pentru Linux, BSD, Android, Sailfish, iOS, macOS și Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
-msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
-msgstr "Cu GSConnect te poți conecta în siguranță la telefoane mobile și calculatoare pentru:"
+msgid ""
+"With GSConnect you can securely connect to mobile devices and other desktops "
+"to:"
+msgstr ""
+"Cu GSConnect te poți conecta în siguranță la telefoane mobile și "
+"calculatoare pentru:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:48
 msgid "Share files, links and text"
@@ -75,7 +87,7 @@ msgstr "Executarea comenzilor predefinite"
 msgid "And more…"
 msgstr "Și altele…"
 
-#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:165
+#: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:183
 msgid "GSConnect in GNOME Shell"
 msgstr "GSConnect în interfața GNOME"
 
@@ -124,8 +136,8 @@ msgid "Other"
 msgstr "Altul"
 
 #. TRANSLATORS: Share URL by SMS
-#: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:353
-#: src/service/daemon.js:467 src/service/plugins/sms.js:62
+#: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:358
+#: src/service/daemon.js:481 src/service/plugins/sms.js:62
 #: webextension/gettext.js:41
 msgid "Send SMS"
 msgstr "Trimite SMS"
@@ -180,14 +192,18 @@ msgid "Select or start a conversation"
 msgstr "Alege sau începe o conversație"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid "Touchpad.\n"
+msgid ""
+"Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n\n"
+"Press long to drag to drag mouse cursor.\n"
+"\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr "Panoul tactil.\n"
+msgstr ""
+"Panoul tactil.\n"
 "Trage în această zonă pentru a muta cursorul mausului.\n"
-"Apasă lung pentru a muta cursorul mausului.\n\n"
+"Apasă lung pentru a muta cursorul mausului.\n"
+"\n"
 "Un clic simplu va fi trimis la aparatul asociat.\n"
 "Stânga, mijloc, butonul din dreapta și rotița."
 
@@ -403,7 +419,7 @@ msgstr "Preferințe Aparat"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/ui/preferences-device-panel.ui:2624
-#: data/ui/preferences-device-panel.ui:2716 src/service/daemon.js:446
+#: data/ui/preferences-device-panel.ui:2716 src/service/daemon.js:460
 msgid "Pair"
 msgstr "Asociază"
 
@@ -421,7 +437,7 @@ msgid "Encryption Info"
 msgstr "Informații Cifrare"
 
 #. TRANSLATORS: Unpair the device and notify it
-#: data/ui/preferences-device-panel.ui:2722 src/service/daemon.js:455
+#: data/ui/preferences-device-panel.ui:2722 src/service/daemon.js:469
 msgid "Unpair"
 msgstr "Disociază"
 
@@ -468,7 +484,9 @@ msgstr "Stabilește"
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:80
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr "Apasă Esc pentru a anula sau Backspace pentru a restabili scurtătura de la început."
+msgstr ""
+"Apasă Esc pentru a anula sau Backspace pentru a restabili scurtătura de la "
+"început."
 
 #: data/ui/preferences-window.ui:24
 msgid "Device Name"
@@ -535,12 +553,18 @@ msgid "Retry"
 msgstr "Încearcă din nou"
 
 #: data/ui/preferences-window.ui:858
-msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
+msgid ""
+"The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
 "Use your distro's package manager to install it.\n"
-"For more information, visit <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</a>."
-msgstr "Instrumentul de comandă <tt>openssl</tt> nu pare a fi instalat.\n"
+"For more information, visit <a href=\"https://github.com/gsconnect/gnome-"
+"shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</"
+"a>."
+msgstr ""
+"Instrumentul de comandă <tt>openssl</tt> nu pare a fi instalat.\n"
 "Poate fi instalat folosind administratorul de pachete.\n"
-"Pentru mai multe informații, vezi <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">GSConnect wiki</a>."
+"Pentru mai multe informații, vezi <a href=\"https://github.com/gsconnect/"
+"gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">GSConnect "
+"wiki</a>."
 
 #: data/ui/preferences-window.ui:874 src/service/init.js:361
 msgid "OpenSSL not found"
@@ -600,8 +624,12 @@ msgid "Something’s gone wrong"
 msgstr "Ceva nu a mers bine"
 
 #: data/ui/service-error-dialog.ui:91
-msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
-msgstr "GSConnect a avut o problemă. Raportează problema și include orice informație care ar putea ajuta."
+msgid ""
+"GSConnect encountered an unexpected error. Please report the problem and "
+"include any information that may help."
+msgstr ""
+"GSConnect a avut o problemă. Raportează problema și include orice informație "
+"care ar putea ajuta."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
@@ -670,8 +698,12 @@ msgid "translator-credits"
 msgstr "Antonio Marin <gnmer.6qxyg@slmail.me>"
 
 #: src/preferences/service.js:415
-msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
-msgstr "Mesajele de depanare sunt înregistrate. Trebuie făcuți pașii necesari pentru a reproduce o problemă și apoi verificat jurnalul."
+msgid ""
+"Debug messages are being logged. Take any steps necessary to reproduce a "
+"problem then review the log."
+msgstr ""
+"Mesajele de depanare sunt înregistrate. Trebuie făcuți pașii necesari pentru "
+"a reproduce o problemă și apoi verificat jurnalul."
 
 #: src/preferences/service.js:418
 msgid "Review Log"
@@ -684,8 +716,11 @@ msgstr "Nume incorect"
 #. TRANSLATOR: %s is a list of forbidden characters
 #: src/preferences/service.js:445
 #, javascript-format
-msgid "Device name must not contain any of %s and have a length of 1-32 characters"
-msgstr "Numele aparatului nu trebuie să conțină %s și să aibă lungimea între 1-32 de caractere"
+msgid ""
+"Device name must not contain any of %s and have a length of 1-32 characters"
+msgstr ""
+"Numele aparatului nu trebuie să conțină %s și să aibă lungimea între 1-32 de "
+"caractere"
 
 #: src/preferences/service.js:516
 msgid "Laptop"
@@ -720,88 +755,97 @@ msgid "Waiting for service…"
 msgstr "Se așteaptă serviciul…"
 
 #. Notify the user
-#: src/service/daemon.js:99
+#: src/service/daemon.js:103
 msgid "Settings Migrated"
 msgstr "Preferințe migrate"
 
-#: src/service/daemon.js:100
-msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
-msgstr "GSConnect a fost actualizat pentru a fi compatibil cu modificările aduse protocolului KDE Connect. Poate că unele aparate trebuie reasociate."
+#: src/service/daemon.js:104
+msgid ""
+"GSConnect has updated to support changes to the KDE Connect protocol. Some "
+"devices may need to be re-paired."
+msgstr ""
+"GSConnect a fost actualizat pentru a fi compatibil cu modificările aduse "
+"protocolului KDE Connect. Poate că unele aparate trebuie reasociate."
 
-#: src/service/daemon.js:241
+#: src/service/daemon.js:246
 msgid "Click for help troubleshooting"
 msgstr "Apasă pentru depanare"
 
-#: src/service/daemon.js:251
+#: src/service/daemon.js:256
 msgid "Click for more information"
 msgstr "Apasă pentru mai multe informații"
 
-#: src/service/daemon.js:359
+#: src/service/daemon.js:364
 msgid "Dial Number"
 msgstr "Formează numărul"
 
-#: src/service/daemon.js:365 src/service/daemon.js:554
+#: src/service/daemon.js:370 src/service/daemon.js:568
 #: src/service/plugins/share.js:31
 msgid "Share File"
 msgstr "Trimite fișiere"
 
-#: src/service/daemon.js:416
+#: src/service/daemon.js:421
 msgid "List available devices"
 msgstr "Lista aparatelor disponibile"
 
-#: src/service/daemon.js:425
+#: src/service/daemon.js:430
 msgid "List all devices"
 msgstr "Lista tuturor aparatelor"
 
-#: src/service/daemon.js:434
+#: src/service/daemon.js:439
 msgid "Target Device"
 msgstr "Aparatul de destinație"
 
-#: src/service/daemon.js:476
+#: src/service/daemon.js:448
+#, fuzzy
+msgid "Target Device Name"
+msgstr "Aparatul de destinație"
+
+#: src/service/daemon.js:490
 msgid "Message Body"
 msgstr "Conținutul mesajului"
 
-#: src/service/daemon.js:488 src/service/plugins/notification.js:57
+#: src/service/daemon.js:502 src/service/plugins/notification.js:57
 msgid "Send Notification"
 msgstr "Trimite o notificare"
 
-#: src/service/daemon.js:497
+#: src/service/daemon.js:511
 msgid "Notification App Name"
 msgstr "Numele aplicației de notificare"
 
-#: src/service/daemon.js:506
+#: src/service/daemon.js:520
 msgid "Notification Body"
 msgstr "Conținutul notificării"
 
-#: src/service/daemon.js:515
+#: src/service/daemon.js:529
 msgid "Notification Icon"
 msgstr "Simbolul notificării"
 
-#: src/service/daemon.js:524
+#: src/service/daemon.js:538
 msgid "Notification ID"
 msgstr "ID-ul notificării"
 
-#: src/service/daemon.js:533 src/service/plugins/ping.js:13
+#: src/service/daemon.js:547 src/service/plugins/ping.js:13
 #: src/service/plugins/ping.js:20 src/service/plugins/ping.js:47
 msgid "Ping"
 msgstr "Probă de conectare"
 
-#: src/service/daemon.js:542 src/service/plugins/battery.js:247
+#: src/service/daemon.js:556 src/service/plugins/battery.js:247
 #: src/service/plugins/battery.js:276 src/service/plugins/battery.js:305
 #: src/service/plugins/findmyphone.js:22
 msgid "Ring"
 msgstr "Sună"
 
-#: src/service/daemon.js:563 src/service/plugins/share.js:47
+#: src/service/daemon.js:577 src/service/plugins/share.js:47
 #: src/service/ui/messaging.js:1257 src/service/ui/messaging.js:1265
 msgid "Share Link"
 msgstr "Trimite legături"
 
-#: src/service/daemon.js:572 src/service/plugins/share.js:39
+#: src/service/daemon.js:586 src/service/plugins/share.js:39
 msgid "Share Text"
 msgstr "Trimite text"
 
-#: src/service/daemon.js:584
+#: src/service/daemon.js:598
 msgid "Show release version"
 msgstr "Arată versiunea"
 
@@ -846,8 +890,11 @@ msgid "Device clocks are out of sync"
 msgstr "Ceasurile aparatelor nu sunt sincronizate"
 
 #: src/service/manager.js:178
-msgid "Discovery has been disabled due to the number of devices on this network."
-msgstr "Descoperirea a fost dezactivată din cauza numărului mare de aparate din această rețea."
+msgid ""
+"Discovery has been disabled due to the number of devices on this network."
+msgstr ""
+"Descoperirea a fost dezactivată din cauza numărului mare de aparate din "
+"această rețea."
 
 #: src/service/backends/lan.js:477
 msgid "Port already in use"
@@ -950,7 +997,7 @@ msgstr "MPRIS"
 msgid "Bidirectional remote media playback control"
 msgstr "Control bidirecțional de redare multimedia"
 
-#: src/service/plugins/mpris.js:357
+#: src/service/plugins/mpris.js:330
 msgid "Unknown"
 msgstr "Necunoscut"
 
@@ -998,8 +1045,12 @@ msgid "Run Commands"
 msgstr "Execută comenzi"
 
 #: src/service/plugins/runcommand.js:15
-msgid "Run commands on your paired device or let the device run predefined commands on this PC"
-msgstr "Execută comenzi pentru aparatul tău asociat sau permite aparatului asociat să execute comenzi pentru acest computer"
+msgid ""
+"Run commands on your paired device or let the device run predefined commands "
+"on this PC"
+msgstr ""
+"Execută comenzi pentru aparatul tău asociat sau permite aparatului asociat "
+"să execute comenzi pentru acest computer"
 
 #: src/service/plugins/sftp.js:15
 msgid "SFTP"
@@ -1121,7 +1172,9 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:17
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr "Trimite și citește SMS-uri de pe aparatul asociat și primește notificări pentru SMS-uri noi"
+msgstr ""
+"Trimite și citește SMS-uri de pe aparatul asociat și primește notificări "
+"pentru SMS-uri noi"
 
 #: src/service/plugins/sms.js:38
 msgid "New SMS (URI)"
@@ -1135,21 +1188,24 @@ msgstr "Răspunde la SMS"
 msgid "Share SMS"
 msgstr "Distribuie SMS"
 
-#: src/service/plugins/systemvolume.js:36
+#: src/service/plugins/systemvolume.js:14
 msgid "System Volume"
 msgstr "Volumul sistemului"
 
-#: src/service/plugins/systemvolume.js:37
+#: src/service/plugins/systemvolume.js:15
 msgid "Enable the paired device to control the system volume"
 msgstr "Permite aparatului asociat să controleze volumul sistemului"
 
-#: src/service/plugins/systemvolume.js:81
+#: src/service/plugins/systemvolume.js:59
 msgid "PulseAudio not found"
 msgstr "PulseAudio nu a fost găsit"
 
 #: src/service/plugins/telephony.js:17
-msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr "Primește notificări despre apeluri și reglează volumul sistemului în timpul apelurilor"
+msgid ""
+"Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgstr ""
+"Primește notificări despre apeluri și reglează volumul sistemului în timpul "
+"apelurilor"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:29
@@ -1261,7 +1317,9 @@ msgstr "Răspunde"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:31
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr "Trimite adrese de internet prin GSConnect, direct din navigatorul web sau prin SMS."
+msgstr ""
+"Trimite adrese de internet prin GSConnect, direct din navigatorul web sau "
+"prin SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:35
@@ -1272,4 +1330,3 @@ msgstr "Serviciu indisponibil"
 #: webextension/gettext.js:39
 msgid "Open in Browser"
 msgstr "Deschide în navigator"
-

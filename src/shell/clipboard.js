@@ -138,60 +138,73 @@ export const Clipboard = GObject.registerClass({
     }
 
     async _onHandleMethodCall(iface, name, param1, param2) {
-        let retval;
-        let invocation, parameters;
-
-        // GNOME 50+ changed the callback signature from
-        // (iface, name, parameters, invocation) to
-        // (iface, name, invocation, parameters)
-        // Detect which order is being used
-        if (param1 instanceof GLib.Variant) {
-            // Old order: parameters, invocation
-            parameters = param1;
-            invocation = param2;
-        } else {
-            // New order: invocation, parameters
-            invocation = param1;
-            parameters = param2;
-        }
-
+        // Signal doesn't await this Promise, so any uncaught throw becomes an
+        // unhandled rejection. Wrap the whole body.
         try {
-            const args = parameters.recursiveUnpack();
+            let retval;
+            let invocation, parameters;
 
-            retval = await this[name](...args);
-        } catch (e) {
-            if (e instanceof GLib.Error) {
-                invocation.return_gerror(e);
+            // GNOME 50+ changed the callback signature from
+            // (iface, name, parameters, invocation) to
+            // (iface, name, invocation, parameters)
+            // Detect which order is being used
+            if (param1 instanceof GLib.Variant) {
+                // Old order: parameters, invocation
+                parameters = param1;
+                invocation = param2;
             } else {
-                if (!e.name.includes('.'))
-                    e.name = `org.gnome.gjs.JSError.${e.name}`;
-
-                invocation.return_dbus_error(e.name, e.message);
+                // New order: invocation, parameters
+                invocation = param1;
+                parameters = param2;
             }
 
-            return;
-        }
+            try {
+                const args = parameters.recursiveUnpack();
 
-        if (retval === undefined)
-            retval = new GLib.Variant('()', []);
+                retval = await this[name](...args);
+            } catch (e) {
+                try {
+                    if (e instanceof GLib.Error) {
+                        invocation.return_gerror(e);
+                    } else {
+                        const ename = (e && typeof e.name === 'string') ? e.name : 'Error';
+                        const dname = ename.includes('.')
+                            ? ename
+                            : `org.gnome.gjs.JSError.${ename}`;
+                        invocation.return_dbus_error(dname, (e && e.message) || String(e));
+                    }
+                } catch { /* invocation already returned or peer is gone */ }
 
-        try {
-            if (!(retval instanceof GLib.Variant)) {
-                const args = DBUS_INFO.lookup_method(name).out_args;
-                retval = new GLib.Variant(
-                    `(${args.map(arg => arg.signature).join('')})`,
-                    (args.length === 1) ? [retval] : retval
-                );
+                return;
             }
 
-            invocation.return_value(retval);
+            if (retval === undefined)
+                retval = new GLib.Variant('()', []);
 
-        // Without a response, the client will wait for timeout
-        } catch {
-            invocation.return_dbus_error(
-                'org.gnome.gjs.JSError.ValueError',
-                'Service implementation returned an incorrect value type'
-            );
+            try {
+                if (!(retval instanceof GLib.Variant)) {
+                    const out_args = DBUS_INFO.lookup_method(name).out_args;
+                    retval = new GLib.Variant(
+                        `(${out_args.map(arg => arg.signature).join('')})`,
+                        (out_args.length === 1) ? [retval] : retval
+                    );
+                }
+
+                invocation.return_value(retval);
+
+            // Without a response, the client will wait for timeout
+            } catch {
+                try {
+                    invocation.return_dbus_error(
+                        'org.gnome.gjs.JSError.ValueError',
+                        'Service implementation returned an incorrect value type'
+                    );
+                } catch { /* invocation already returned or peer is gone */ }
+            }
+        } catch (e) {
+            try {
+                logError(e, 'gsconnect clipboard handler');
+            } catch { /* */ }
         }
     }
 
