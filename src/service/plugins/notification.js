@@ -528,13 +528,13 @@ const NotificationPlugin = GObject.registerClass({
             let buttons = [];
             let id = packet.body.id;
             let title = packet.body.appName;
-            let text = [];
-            if (packet.body.title) {
+            const text = [];
+            if (packet.body.title)
                 text.push(packet.body.title);
-            }
-            if (packet.body.text) {
+
+            if (packet.body.text)
                 text.push(packet.body.text);
-            }
+
             let body = text.join(': ');
             let icon = await this._downloadIcon(packet);
 
@@ -597,9 +597,9 @@ const NotificationPlugin = GObject.registerClass({
 
             // Find TOTP using naive algorithm of
             //   <space or start><6 digits><space or end or period>
-            let totp = body.match(/(?:\s|^)(\d{6})(?:\s|$|\.)/);
+            const totp = body.match(/(?:\s|^)(\d{6})(?:\s|$|\.)/);
             if (totp) {
-                let [, code] = totp;
+                const [, code] = totp;
                 buttons.push({
                     label: `Copy ${code}`,
                     action: 'copyText',
