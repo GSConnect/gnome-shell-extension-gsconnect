@@ -18,9 +18,10 @@ import('gi://GIRepository?version=3.0').catch(() => {
 });
 
 // DesktopAppInfo is no longer in Gio in GNOME 49
-let GioUnix;
-GioUnix = import('gi://GioUnix?version=2.0').catch(() => {
-    GioUnix = Gio;
+const GioUnix = await import('gi://GioUnix?version=2.0').then((imp) => {
+    return imp.default;
+}).catch(() => {
+    return Gio;
 });
 
 import system from 'system';

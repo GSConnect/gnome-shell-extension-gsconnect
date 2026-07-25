@@ -10,9 +10,10 @@ import GObject from 'gi://GObject';
 import * as DBus from '../utils/dbus.js';
 
 // DesktopAppInfo is no longer in Gio in GNOME 49
-let GioUnix;
-GioUnix = import('gi://GioUnix?version=2.0').catch(() => {
-    GioUnix = Gio;
+const GioUnix = await import('gi://GioUnix?version=2.0').then((imp) => {
+    return imp.default;
+}).catch(() => {
+    return Gio;
 });
 
 
