@@ -370,7 +370,8 @@ const Store = GObject.registerClass({
             for (const num of contact.numbers) {
                 const cnumber = num.value.toPhoneNumber();
 
-                if (qnumber.endsWith(cnumber) || cnumber.endsWith(qnumber)) {
+                if ((qnumber !== '' && cnumber !== '' && (qnumber.endsWith(cnumber) || cnumber.endsWith(qnumber))) ||
+                    (qnumber === '' && cnumber === '')) {
                     // If no query name or exact match, return immediately
                     if (!query.name || query.name === contact.name)
                         return contact;
