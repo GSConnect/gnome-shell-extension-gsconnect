@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-01 01:34-0400\n"
-"PO-Revision-Date: 2026-07-16 03:15\n"
+"PO-Revision-Date: 2026-07-28 13:33\n"
 "Last-Translator: \n"
 "Language-Team: Ukrainian\n"
 "Language: uk_UA\n"
@@ -760,7 +760,7 @@ msgstr "Цільовий пристрій"
 
 #: src/service/daemon.js:448
 msgid "Target Device Name"
-msgstr ""
+msgstr "Назва цільового пристрою"
 
 #: src/service/daemon.js:490
 msgid "Message Body"
