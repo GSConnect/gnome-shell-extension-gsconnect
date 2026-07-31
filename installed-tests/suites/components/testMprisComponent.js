@@ -8,7 +8,9 @@ import '../fixtures/utils.js';
 import MockPlayer from '../fixtures/mpris.js';
 
 import Config from '../config.js';
-const {default: Manager} = await import(`file://${Config.PACKAGE_DATADIR}/service/components/mpris.js`);
+const {default: Manager} = await import(
+    `file://${Config.PACKAGE_DATADIR}/service/components/mpris.js`
+);
 
 
 // Prevent auto-loading
@@ -136,4 +138,3 @@ describe('The MPRIS component', function () {
         });
     });
 });
-

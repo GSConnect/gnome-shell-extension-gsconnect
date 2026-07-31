@@ -9,7 +9,9 @@ import Gtk from 'gi://Gtk';
 import GLib from 'gi://GLib';
 
 import Config from '../config.js';
-const {default: Clipboard} = await import(`file://${Config.PACKAGE_DATADIR}/service/components/clipboard.js`);
+const {default: Clipboard} = await import(
+    `file://${Config.PACKAGE_DATADIR}/service/components/clipboard.js`
+);
 
 
 describe('The Clipboard component', function () {
@@ -55,4 +57,3 @@ describe('The Clipboard component', function () {
         clipboard.text = text;
     });
 });
-

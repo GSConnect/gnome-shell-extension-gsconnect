@@ -122,7 +122,8 @@ async function forwardPortMessage(message) {
 /**
  * Context Menu Item Callback
  *
- * @param {browser.menus.OnClickData} info - Information about the item and context
+ * @param {browser.menus.OnClickData} info
+ *        - Information about the item and context
  */
 async function onContextItem(info) {
     try {

@@ -476,7 +476,10 @@ const NotificationPlugin = GObject.registerClass({
             if (!packet.hasPayload())
                 return null;
 
-            // Save the file in the global cache. payloadHash is remote-supplied and used as a filename, so collapse it to a basename to prevent '../' traversal out of the cache dir.
+            // Save the file in the global cache.
+            // payloadHash is remote-supplied and used as a filename,
+            // so collapse it to a basename to prevent '../' traversal
+            // out of the cache dir.
             let payloadHash = GLib.path_get_basename(packet.body.payloadHash || `${Date.now()}`);
             if (!payloadHash || payloadHash === '.' || payloadHash === '..' ||
                 payloadHash.includes('/'))
@@ -732,7 +735,8 @@ const NotificationPlugin = GObject.registerClass({
      */
     copyText(id, text) {
         this._clipboard.text = text;
-        // Since clicking the button closes it on this device, also close it on the remote
+        // Since clicking the button closes it on this device,
+        // also close it on the remote
         this.closeNotification(id);
     }
 });

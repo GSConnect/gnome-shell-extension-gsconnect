@@ -153,10 +153,17 @@ export const InputDialog = GObject.registerClass({
         const keyvalLower = Gdk.keyval_to_lower(event.keyval);
         const realMask = event.state & Gtk.accelerator_get_default_mod_mask();
 
-        this.alt_label.sensitive = !isAlt(keyvalLower) && (realMask & Gdk.ModifierType.MOD1_MASK);
-        this.ctrl_label.sensitive = !isCtrl(keyvalLower) && (realMask & Gdk.ModifierType.CONTROL_MASK);
-        this.shift_label.sensitive = !isShift(keyvalLower) && (realMask & Gdk.ModifierType.SHIFT_MASK);
-        this.super_label.sensitive = !isSuper(keyvalLower) && (realMask & Gdk.ModifierType.SUPER_MASK);
+        this.alt_label.sensitive = !isAlt(keyvalLower) &&
+            (realMask & Gdk.ModifierType.MOD1_MASK);
+
+        this.ctrl_label.sensitive = !isCtrl(keyvalLower) &&
+            (realMask & Gdk.ModifierType.CONTROL_MASK);
+
+        this.shift_label.sensitive = !isShift(keyvalLower) &&
+            (realMask & Gdk.ModifierType.SHIFT_MASK);
+
+        this.super_label.sensitive = !isSuper(keyvalLower) &&
+            (realMask & Gdk.ModifierType.SUPER_MASK);
 
         return super.vfunc_key_release_event(event);
     }
@@ -168,10 +175,17 @@ export const InputDialog = GObject.registerClass({
         let keyvalLower = Gdk.keyval_to_lower(event.keyval);
         let realMask = event.state & Gtk.accelerator_get_default_mod_mask();
 
-        this.alt_label.sensitive = isAlt(keyvalLower) || (realMask & Gdk.ModifierType.MOD1_MASK);
-        this.ctrl_label.sensitive = isCtrl(keyvalLower) || (realMask & Gdk.ModifierType.CONTROL_MASK);
-        this.shift_label.sensitive = isShift(keyvalLower) || (realMask & Gdk.ModifierType.SHIFT_MASK);
-        this.super_label.sensitive = isSuper(keyvalLower) || (realMask & Gdk.ModifierType.SUPER_MASK);
+        this.alt_label.sensitive = isAlt(keyvalLower) ||
+            (realMask & Gdk.ModifierType.MOD1_MASK);
+
+        this.ctrl_label.sensitive = isCtrl(keyvalLower) ||
+            (realMask & Gdk.ModifierType.CONTROL_MASK);
+
+        this.shift_label.sensitive = isShift(keyvalLower) ||
+            (realMask & Gdk.ModifierType.SHIFT_MASK);
+
+        this.super_label.sensitive = isSuper(keyvalLower) ||
+            (realMask & Gdk.ModifierType.SUPER_MASK);
 
         // Wait for a real key before sending
         if (MOD_KEYS.includes(keyvalLower))
