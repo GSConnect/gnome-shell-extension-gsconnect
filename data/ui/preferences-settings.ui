@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+
+SPDX-License-Identifier: GPL-2.0-or-later
+-->
+
+<interface domain="org.gnome.Shell.Extensions.GSConnect">
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+
+  <template class="GSConnectSettingsDialog" parent="AdwPreferencesDialog">
+    <property name="title" translatable="yes">Settings</property>
+    <child>
+      <object class="AdwPreferencesPage">
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">This device</property>
+            <child>
+              <object class="AdwEntryRow" id="rename-entry">
+                <property name="title" translatable="yes">Hostname</property>
+                <property name="show-apply-button">True</property>
+                <signal name="apply" handler="_onSetServiceName" swapped="no"/>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow">
+                <property name="title" translatable="yes">GSConnect remains active when GNOME Shell is locked</property>
+                <property name="action-name">win.keep-alive-when-locked</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Apparence</property>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Display Mode</property>
+                <child>
+                  <object class="AdwToggleGroup" id="display-mode-toggle">
+                    <property name="valign">center</property>
+                    <child>
+                      <object class="AdwToggle">
+                        <property name="label" translatable="yes">Panel</property>
+                        <property name="tooltip">Panel</property>
+                        <property name="name">panel</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwToggle">
+                        <property name="label" translatable="yes">User Menu</property>
+                        <property name="tooltip">User Menu</property>
+                        <property name="name">user-menu</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Support</property>
+            <child>
+              <object class="AdwButtonRow">
+                <property name="title" translatable="yes">Generate Support Log</property>
+                <property name="action-name">win.support-log</property>
+              </object>
+            </child>  
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

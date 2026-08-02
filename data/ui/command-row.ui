@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+
+SPDX-License-Identifier: GPL-2.0-or-later
+-->
+
+<interface domain="org.gnome.Shell.Extensions.GSConnect">
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+  
+  <template class="GSConnectCommandActionRow" parent="AdwActionRow">
+    <property name="visible">True</property>
+    <child>
+      <object class="GtkButton" id="edit_button">
+        <property name="visible">True</property>
+        <property name="valign">center</property>
+        <property name="icon-name">document-edit-symbolic</property>
+        <property name="has-tooltip">True</property>
+        <property name="tooltip-text" translatable="yes">Edit Command</property>
+        <accessibility>
+          <property name="label" translatable="yes">Edit Command</property>
+        </accessibility>
+      </object>
+    </child>
+    <child>
+      <object class="GtkButton" id="delete_button">
+        <property name="visible">True</property>
+        <property name="valign">center</property>
+        <property name="icon-name">user-trash-symbolic</property>
+        <property name="has-tooltip">True</property>
+        <property name="tooltip-text" translatable="yes">Delete Command</property>
+        <accessibility>
+          <property name="label" translatable="yes">Delete Command</property>
+        </accessibility>
+        <style>
+          <class name="destructive-action"/>
+        </style>
+      </object>
+    </child>
+  </template>
+</interface>

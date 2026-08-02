@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 import Gio from 'gi://Gio';
-import Gdk from 'gi://Gdk';
+import Gdk from 'gi://Gdk?version=4.0';
 
 const keyCodes = new Map([
     ['1', 2],

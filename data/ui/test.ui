@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <object class="AdwStatusPage">
+    <property name="title" translatable="true">Share</property>
+    <property name="icon-name">folder-publicshare-symbolic</property>
+    <child>
+      <object class="AdwClamp">
+        <child>
+          <object class="GtkListBox">
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="true">Text</property>
+                <property name="icon-name">accessories-text-editor-symbolic</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="true">Link</property>
+                <property name="icon-name">web-browser-symbolic</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="true">File</property>
+                <property name="icon-name">system-file-manager-symbolic</property>
+              </object>
+            </child>
+            <style>
+              <class name="boxed-list"/>
+            </style>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

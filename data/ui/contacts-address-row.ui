@@ -7,86 +7,33 @@ SPDX-License-Identifier: GPL-2.0-or-later
 -->
 
 <interface domain="org.gnome.Shell.Extensions.GSConnect">
-  <requires lib="gtk+" version="3.24"/>
-  <template class="GSConnectContactsAddressRow" parent="GtkListBoxRow">
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+  
+  <template class="GSConnectContactsAddressRow" parent="AdwActionRow">
+    <property name="visible">True</property>
     <property name="activatable">True</property>
     <property name="selectable">True</property>
-    <property name="hexpand">True</property>
-    <property name="can_focus">True</property>
-    <property name="visible">True</property>
-    <child>
-      <object class="GtkGrid" id="grid">
-        <property name="can_focus">False</property>
-        <property name="hexpand">True</property>
-        <property name="margin_top">6</property>
-        <property name="margin_bottom">6</property>
-        <property name="margin_start">6</property>
-        <property name="margin_end">6</property>
-        <property name="column_spacing">6</property>
+    <child type="prefix">
+      <object class="AdwAvatar" id="avatar">
         <property name="visible">True</property>
-        <child>
-          <object class="GSConnectContactAvatar" id="avatar">
-            <property name="valign">center</property>
-            <property name="visible">False</property>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">0</property>
-            <property name="width">1</property>
-            <property name="height">2</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="name-label">
-            <property name="halign">start</property>
-            <property name="hexpand">True</property>
-            <property name="visible">False</property>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">0</property>
-            <property name="width">2</property>
-            <property name="height">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="address-label">
-            <property name="halign">start</property>
-            <property name="hexpand">True</property>
-            <property name="visible">True</property>
-            <style>
-              <class name="dim-label"/>
-            </style>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">1</property>
-            <property name="width">1</property>
-            <property name="height">1</property>
-          </packing>
-        </child>
+        <property name="valign">center</property>
+        <property name="size">40</property>
+        <property name="show-initials">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkBox">
+        <property name="valign">end</property>
+        <property name="margin-bottom">5</property>
         <child>
           <object class="GtkLabel" id="type-label">
-            <property name="halign">end</property>
-            <property name="label" translatable="yes">Other</property>
-            <property name="visible">True</property>
-            <property name="xalign">1.0</property>
             <style>
-              <class name="dim-label"/>
+              <class name="caption"/>
             </style>
           </object>
-          <packing>
-            <property name="left_attach">2</property>
-            <property name="top_attach">1</property>
-            <property name="width">1</property>
-            <property name="height">1</property>
-          </packing>
         </child>
-        <style>
-          <class name="contacts-address-row"/>
-        </style>
       </object>
     </child>
   </template>
 </interface>
-

@@ -6,119 +6,98 @@ SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
 SPDX-License-Identifier: GPL-2.0-or-later
 -->
 
-<interface>
-  <requires lib="gtk+" version="3.24"/>
-  <object class="GtkAdjustment" id="port-adjustment">
-    <property name="lower">1716</property>
-    <property name="upper">1764</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">1</property>
-  </object>
-  <template class="GSConnectConnectDialog" parent="GtkDialog">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
+<interface domain="org.gnome.Shell.Extensions.GSConnect">
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+
+  <template class="GSConnectConnectDialog" parent="AdwDialog">
     <property name="title" translatable="yes">Connect to…</property>
-    <property name="type_hint">dialog</property>
-    <property name="visible">True</property>
-    <child type="action">
-      <object class="GtkButton" id="cancel-button">
-        <property name="can_focus">False</property>
-        <property name="label" translatable="yes">Cancel</property>
+    <property name="content-width">500</property>
+    <child>
+      <object class="AdwToolbarView">
         <property name="visible">True</property>
-     </object>
-    </child>
-    <child type="action">
-      <object class="GtkButton" id="connect-button">
-        <property name="can-default">True</property>
-        <property name="label" translatable="yes">Connect</property>
-        <property name="visible">True</property>
-      </object>
-    </child>
-    <action-widgets>
-      <action-widget response="cancel">cancel-button</action-widget>
-      <action-widget response="ok" default="true">connect-button</action-widget>
-    </action-widgets>
-    <child internal-child="vbox">
-      <object class="GtkBox">
-        <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
-        <property name="spacing">2</property>
-        <child>
-          <object class="GtkGrid">
+        <child type="top">
+          <object class="AdwHeaderBar" id="headerbar">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="margin_left">18</property>
-            <property name="margin_right">18</property>
-            <property name="margin_top">18</property>
-            <property name="margin_bottom">18</property>
-            <property name="row_spacing">18</property>
-            <property name="column_spacing">12</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="orientation">vertical</property>
+            <property name="margin-top">24</property>
+            <property name="margin-bottom">24</property>
+            <property name="margin-start">12</property>
+            <property name="margin-end">12</property>
+            <property name="spacing">24</property>
             <child>
-              <object class="GtkGrid" id="lan-grid">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="row_spacing">6</property>
-                <property name="column_spacing">6</property>
-                <child>
-                  <object class="GtkEntry" id="lan-ip">
+              <object class="AdwClamp">
+                <property name="child">
+                  <object class="GtkBox">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="hexpand">True</property>
-                    <property name="activates_default">True</property>
-                    <property name="placeholder_text">0.0.0.0</property>
+                    <property name="orientation">vertical</property>
+                    <property name="margin-top">12</property>
+                    <property name="margin-bottom">24</property>
+                    <property name="margin-start">12</property>
+                    <property name="margin-end">12</property>
+                    <property name="spacing">24</property>
+                    <child>
+                      <object class="GtkListBox">
+                        <property name="visible">True</property>
+                        <property name="selection-mode">none</property>
+                        <style>
+                          <class name="boxed-list"/>
+                        </style>
+                        <child>
+                          <object class="AdwEntryRow" id="lan_ip">
+                            <property name="visible">True</property>
+                            <property name="title" translatable="yes">IP Address</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwSpinRow" id="lan_port">
+                            <property name="visible">True</property>
+                            <property name="title" translatable="yes">Port</property>
+                            <property name="adjustment">
+                              <object class="GtkAdjustment" id="port-adjustment">
+                                <property name="lower">1716</property>
+                                <property name="upper">1764</property>
+                                <property name="value">1716</property>
+                                <property name="step-increment">1</property>
+                                <property name="page-increment">1</property>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkListBox">
+                        <property name="visible">True</property>
+                        <property name="selection-mode">none</property>
+                        <style>
+                          <class name="boxed-list"/>
+                        </style>
+                        <child>
+                          <object class="AdwButtonRow" id="connect-button">
+                            <property name="visible">True</property>
+                            <property name="title" translatable="yes">Connect</property>
+                            <property name="start-icon-name">network-transmit-receive-symbolic</property>
+                            <signal name="activated" handler="_onConnectButton" swapped="no"/>
+                            <style>
+                              <class name="suggested-action"/>
+                            </style>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
                   </object>
-                  <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="halign">start</property>
-                    <property name="label" translatable="yes">IP Address</property>
-                    <attributes>
-                      <attribute name="weight" value="bold"/>
-                    </attributes>
-                  </object>
-                  <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">0</property>
-                    <property name="width">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkSpinButton" id="lan-port">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="max_length">4</property>
-                    <property name="activates_default">True</property>
-                    <property name="width_chars">4</property>
-                    <property name="input_purpose">digits</property>
-                    <property name="adjustment">port-adjustment</property>
-                    <property name="value">1716</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="top_attach">1</property>
-                  </packing>
-                </child>
+                </property>
               </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">0</property>
-              </packing>
             </child>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
         </child>
       </object>
     </child>
   </template>
 </interface>
-

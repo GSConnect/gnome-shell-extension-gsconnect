@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-import Gdk from 'gi://Gdk';
+import Gdk from 'gi://Gdk?version=4.0';
 import GObject from 'gi://GObject';
 
 import * as Components from '../components/index.js';
@@ -295,13 +295,13 @@ const MousepadPlugin = GObject.registerClass({
         if (input.alt || input.ctrl || input.super)
             return;
 
-        if (input.key) {
-            this._dialog._isAck = true;
+        if (input.key)
+
             this._dialog.entry.buffer.text += input.key;
-            this._dialog._isAck = false;
-        } else if (KeyMap.get(input.specialKey) === Gdk.KEY_BackSpace) {
+
+        else if (KeyMap.get(input.specialKey) === Gdk.KEY_BackSpace)
             this._dialog.entry.emit('backspace');
-        }
+
     }
 
     /**

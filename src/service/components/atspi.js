@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 import Atspi from 'gi://Atspi?version=2.0';
-import Gdk from 'gi://Gdk';
+import Gdk from 'gi://Gdk?version=4.0';
 
 
 /**
