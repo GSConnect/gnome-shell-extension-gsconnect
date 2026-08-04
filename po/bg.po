@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-01 01:34-0400\n"
-"PO-Revision-Date: 2025-09-13 19:34\n"
+"PO-Revision-Date: 2026-07-16 03:15\n"
 "Last-Translator: \n"
 "Language-Team: Bulgarian\n"
 "Language: bg_BG\n"
@@ -14,8 +14,7 @@ msgstr ""
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: bg\n"
-"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/"
-"org.gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -33,22 +32,12 @@ msgid "GSConnect Team"
 msgstr "Екип на GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
-"GSConnect е цялостна реализация на KDE Connect специално за GNOME Shell с "
-"интеграция на Nautilus, Chrome и Firefox. Екипът на KDE Connect има "
-"приложения за Linux, BSD, Android, Sailfish, iOS, macOS и Windows."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr "GSConnect е цялостна реализация на KDE Connect специално за GNOME Shell с интеграция на Nautilus, Chrome и Firefox. Екипът на KDE Connect има приложения за Linux, BSD, Android, Sailfish, iOS, macOS и Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"С GSConnect можете сигурно да се свързвате с мобилни устройства и други "
-"настолни компютри към:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
+msgstr "С GSConnect можете сигурно да се свързвате с мобилни устройства и други настолни компютри към:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:48
 msgid "Share files, links and text"
@@ -191,18 +180,14 @@ msgid "Select or start a conversation"
 msgstr "Изберете или започнете разговор"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid ""
-"Touchpad.\n"
+msgid "Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n"
-"\n"
+"Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr ""
-"Тъчпад.\n"
+msgstr "Тъчпад.\n"
 "Плъзнете върху тази област, за да преместите курсора на мишката.\n"
-"Натиснете дълго, за да плъзнете, за да влачите курсора на мишката.\n"
-"\n"
+"Натиснете дълго, за да плъзнете, за да влачите курсора на мишката.\n\n"
 "Просто щракване ще бъде изпратено до сдвоеното устройство.\n"
 "Ляв, среден, десен бутон и колело за превъртане."
 
@@ -483,8 +468,7 @@ msgstr "Задаване"
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:80
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Натиснете Esc за отмяна или Backspace за нулиране на клавишната комбинация."
+msgstr "Натиснете Esc за отмяна или Backspace за нулиране на клавишната комбинация."
 
 #: data/ui/preferences-window.ui:24
 msgid "Device Name"
@@ -551,19 +535,12 @@ msgid "Retry"
 msgstr "Опитайте отново"
 
 #: data/ui/preferences-window.ui:858
-msgid ""
-"The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
+msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
 "Use your distro's package manager to install it.\n"
-"For more information, visit <a href=\"https://github.com/gsconnect/gnome-"
-"shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</"
-"a>."
-msgstr ""
-"Инструментът за команден ред <tt>openssl</tt> изглежда не е инсталиран.\n"
-"Използвайте мениджъра на пакети на вашата дистрибуция, за да го "
-"инсталирате.\n"
-"За повече информация посетете <a href=\"https://github.com/gsconnect/gnome-"
-"shell-extension-gsconnect/wiki/Error#openssl-not-found\">уикито на "
-"GSConnect</a>."
+"For more information, visit <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</a>."
+msgstr "Инструментът за команден ред <tt>openssl</tt> изглежда не е инсталиран.\n"
+"Използвайте мениджъра на пакети на вашата дистрибуция, за да го инсталирате.\n"
+"За повече информация посетете <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">уикито на GSConnect</a>."
 
 #: data/ui/preferences-window.ui:874 src/service/init.js:361
 msgid "OpenSSL not found"
@@ -623,12 +600,8 @@ msgid "Something’s gone wrong"
 msgstr "Нещо се е обърка"
 
 #: data/ui/service-error-dialog.ui:91
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
-"GSConnect се натъкна на неочаквана грешка. Моля, докладвайте за проблема и "
-"включете всяка информация, която може да помогне."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "GSConnect се натъкна на неочаквана грешка. Моля, докладвайте за проблема и включете всяка информация, която може да помогне."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
@@ -696,13 +669,8 @@ msgid "translator-credits"
 msgstr "trunars"
 
 #: src/preferences/service.js:415
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Съобщенията за отстраняване на грешки се регистрират. Предприемете всички "
-"необходими стъпки за възпроизвеждане на проблем, след което прегледайте "
-"регистрационния файл."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Съобщенията за отстраняване на грешки се регистрират. Предприемете всички необходими стъпки за възпроизвеждане на проблем, след което прегледайте регистрационния файл."
 
 #: src/preferences/service.js:418
 msgid "Review Log"
@@ -715,11 +683,8 @@ msgstr "Невалидно име на устройство"
 #. TRANSLATOR: %s is a list of forbidden characters
 #: src/preferences/service.js:445
 #, javascript-format
-msgid ""
-"Device name must not contain any of %s and have a length of 1-32 characters"
-msgstr ""
-"Името на устройството не трябва да съдържа %s и да е с дължина от 1 до 32 "
-"символа."
+msgid "Device name must not contain any of %s and have a length of 1-32 characters"
+msgstr "Името на устройството не трябва да съдържа %s и да е с дължина от 1 до 32 символа."
 
 #: src/preferences/service.js:516
 msgid "Laptop"
@@ -759,12 +724,8 @@ msgid "Settings Migrated"
 msgstr "Мигрирани настройки"
 
 #: src/service/daemon.js:104
-msgid ""
-"GSConnect has updated to support changes to the KDE Connect protocol. Some "
-"devices may need to be re-paired."
-msgstr ""
-"GSConnect е актуализиран, за да поддържа промени в протокола KDE Connect. "
-"Някои устройства може да се нуждаят от повторно сдвояване."
+msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
+msgstr "GSConnect е актуализиран, за да поддържа промени в протокола KDE Connect. Някои устройства може да се нуждаят от повторно сдвояване."
 
 #: src/service/daemon.js:246
 msgid "Click for help troubleshooting"
@@ -796,9 +757,8 @@ msgid "Target Device"
 msgstr "Целево устройство"
 
 #: src/service/daemon.js:448
-#, fuzzy
 msgid "Target Device Name"
-msgstr "Целево устройство"
+msgstr ""
 
 #: src/service/daemon.js:490
 msgid "Message Body"
@@ -889,8 +849,7 @@ msgid "Device clocks are out of sync"
 msgstr "Часовниците на устройството не са синхронизирани"
 
 #: src/service/manager.js:178
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Откриването е деактивирано поради броя на устройствата в тази мрежа."
 
 #: src/service/backends/lan.js:477
@@ -980,9 +939,7 @@ msgstr "Мауспад"
 
 #: src/service/plugins/mousepad.js:15
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr ""
-"Позволява на сдвоеното устройство да действа като отдалечена мишка и "
-"клавиатура"
+msgstr "Позволява на сдвоеното устройство да действа като отдалечена мишка и клавиатура"
 
 #: src/service/plugins/mousepad.js:29 src/service/ui/mousepad.js:107
 msgid "Remote Input"
@@ -1044,12 +1001,8 @@ msgid "Run Commands"
 msgstr "Изпълнение на команди"
 
 #: src/service/plugins/runcommand.js:15
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
-msgstr ""
-"Изпълнете команди на вашето сдвоено устройство или оставете устройството да "
-"изпълнява предварително зададени команди на този компютър"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
+msgstr "Изпълнете команди на вашето сдвоено устройство или оставете устройството да изпълнява предварително зададени команди на този компютър"
 
 #: src/service/plugins/sftp.js:15
 msgid "SFTP"
@@ -1171,9 +1124,7 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:17
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
-"Изпращайте и четете SMS на сдвоеното устройство и получавайте известия за "
-"нов SMS"
+msgstr "Изпращайте и четете SMS на сдвоеното устройство и получавайте известия за нов SMS"
 
 #: src/service/plugins/sms.js:38
 msgid "New SMS (URI)"
@@ -1193,19 +1144,15 @@ msgstr "Сила на звука на системата"
 
 #: src/service/plugins/systemvolume.js:15
 msgid "Enable the paired device to control the system volume"
-msgstr ""
-"Активирайте сдвоеното устройство за контрол на силата на звука на системата"
+msgstr "Активирайте сдвоеното устройство за контрол на силата на звука на системата"
 
 #: src/service/plugins/systemvolume.js:59
 msgid "PulseAudio not found"
 msgstr "PulseAudio не е намерен"
 
 #: src/service/plugins/telephony.js:17
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
-"Уведомяване за повиквания и регулиране на силата на звука на системата по "
-"време на звънене/текущи повиквания"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgstr "Уведомяване за повиквания и регулиране на силата на звука на системата по време на звънене/текущи повиквания"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:29
@@ -1326,3 +1273,4 @@ msgstr "Услугата не е налична"
 #: webextension/gettext.js:39
 msgid "Open in Browser"
 msgstr "Отвори в браузър"
+

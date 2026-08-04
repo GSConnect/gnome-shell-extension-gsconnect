@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-01 01:34-0400\n"
-"PO-Revision-Date: 2025-09-13 19:34\n"
+"PO-Revision-Date: 2026-07-19 10:55\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
 "Language: fi_FI\n"
@@ -14,8 +14,7 @@ msgstr ""
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: fi\n"
-"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/"
-"org.gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -33,19 +32,12 @@ msgid "GSConnect Team"
 msgstr "GSConnect-tiimi"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr "GSConnect on täydellinen toteutus KDE Connectista erityisesti Gnome Shellille Nautilus-, Chrome- ja Firefox-integraatiolla. KDE Connect -tiimillä on sovelluksia Linuxille, BSD:lle, Androidille, Sailfishille, iOS:lle, macOS:lle ja Windowsille."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"GSConnectin avulla voit muodostaa turvallisen yhteyden mobiililaitteisiin ja "
-"muihin tietokoneisiin:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
+msgstr "GSConnectin avulla voit muodostaa turvallisen yhteyden mobiililaitteisiin ja muihin tietokoneisiin:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:48
 msgid "Share files, links and text"
@@ -188,11 +180,9 @@ msgid "Select or start a conversation"
 msgstr "Valitse tai aloita keskustelu"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid ""
-"Touchpad.\n"
+msgid "Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n"
-"\n"
+"Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
 msgstr ""
@@ -530,9 +520,7 @@ msgstr "Ota käyttöön"
 
 #: data/ui/preferences-window.ui:760
 msgid "This device is invisible to unpaired devices"
-msgstr ""
-"Tämä laite on näkymätön laitteille, joiden kanssa ei ole muodostettu "
-"laiteparia"
+msgstr "Tämä laite on näkymätön laitteille, joiden kanssa ei ole muodostettu laiteparia"
 
 #: data/ui/preferences-window.ui:772 src/service/manager.js:177
 msgid "Discovery Disabled"
@@ -543,17 +531,12 @@ msgid "Retry"
 msgstr "Yritä uudelleen"
 
 #: data/ui/preferences-window.ui:858
-msgid ""
-"The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
+msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
 "Use your distro's package manager to install it.\n"
-"For more information, visit <a href=\"https://github.com/gsconnect/gnome-"
-"shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</"
-"a>."
-msgstr ""
-"Komentorivityökalu <tt>openssl</tt> ei vaikuta olevan asennettu.\n"
+"For more information, visit <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</a>."
+msgstr "Komentorivityökalu <tt>openssl</tt> ei vaikuta olevan asennettu.\n"
 "Käytä jakelusi paketinhallintaa asentaaksesi sen.\n"
-"Lisätietoja on saatavilla <a href=\"https://github.com/gsconnect/gnome-shell-"
-"extension-gsconnect/wiki/Error#openssl-not-found\">GSConnectin wikissä</a>."
+"Lisätietoja on saatavilla <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">GSConnectin wikissä</a>."
 
 #: data/ui/preferences-window.ui:874 src/service/init.js:361
 msgid "OpenSSL not found"
@@ -613,12 +596,8 @@ msgid "Something’s gone wrong"
 msgstr "Jokin meni pieleen"
 
 #: data/ui/service-error-dialog.ui:91
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
-"GSConnect havaitsi odottamattoman virheen. Ilmoita ongelmasta ja liitä "
-"mukaan kaikki mahdolliset tiedot."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "GSConnect havaitsi odottamattoman virheen. Ilmoita ongelmasta ja liitä mukaan kaikki mahdolliset tiedot."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
@@ -683,17 +662,12 @@ msgstr "Täydellinen KDE Connect -toteutus Gnomea varten"
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:382
 msgid "translator-credits"
-msgstr ""
-"Jiri Grönroos <jiri.gronroos+l10n@iki.fi>\n"
+msgstr "Jiri Grönroos <jiri.gronroos+l10n@iki.fi>\n"
 "..."
 
 #: src/preferences/service.js:415
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Vianmääritysviestit kirjataan. Tee kaikki tarvittavat toimenpiteet ongelman "
-"toistamiseksi ja tarkista sitten loki."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Vianmääritysviestit kirjataan. Tee kaikki tarvittavat toimenpiteet ongelman toistamiseksi ja tarkista sitten loki."
 
 #: src/preferences/service.js:418
 msgid "Review Log"
@@ -706,9 +680,8 @@ msgstr "Virheellinen laitteen nimi"
 #. TRANSLATOR: %s is a list of forbidden characters
 #: src/preferences/service.js:445
 #, javascript-format
-msgid ""
-"Device name must not contain any of %s and have a length of 1-32 characters"
-msgstr ""
+msgid "Device name must not contain any of %s and have a length of 1-32 characters"
+msgstr "Laitteen nimi ei saa sisältää merkkejä %s ja sen pituus on oltava 1-32 merkkiä"
 
 #: src/preferences/service.js:516
 msgid "Laptop"
@@ -748,10 +721,8 @@ msgid "Settings Migrated"
 msgstr ""
 
 #: src/service/daemon.js:104
-msgid ""
-"GSConnect has updated to support changes to the KDE Connect protocol. Some "
-"devices may need to be re-paired."
-msgstr ""
+msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
+msgstr "GSConnect on päivitetty tukemaan KDE Connect -yhteyskäytäntöä. Joidenkin laitteiden laiteparitus on ehkä tehtävä uudelleen."
 
 #: src/service/daemon.js:246
 msgid "Click for help troubleshooting"
@@ -783,9 +754,8 @@ msgid "Target Device"
 msgstr "Kohdelaite"
 
 #: src/service/daemon.js:448
-#, fuzzy
 msgid "Target Device Name"
-msgstr "Kohdelaite"
+msgstr "Kohdelaitteen nimi"
 
 #: src/service/daemon.js:490
 msgid "Message Body"
@@ -876,11 +846,8 @@ msgid "Device clocks are out of sync"
 msgstr "Laitteen kellot eivät ole synkronoituna"
 
 #: src/service/manager.js:178
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
-msgstr ""
-"Laitehaku on poistettu käytöstä tässä verkossa olevien laitteiden lukumäärän "
-"vuoksi."
+msgid "Discovery has been disabled due to the number of devices on this network."
+msgstr "Laitehaku on poistettu käytöstä tässä verkossa olevien laitteiden lukumäärän vuoksi."
 
 #: src/service/backends/lan.js:477
 msgid "Port already in use"
@@ -1031,12 +998,8 @@ msgid "Run Commands"
 msgstr "Suorita komentoja"
 
 #: src/service/plugins/runcommand.js:15
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
-msgstr ""
-"Suorita komennot liitetyllä laitteellasi tai anna laitteen suorittaa "
-"etukäteen määriteltyjä komentoja tällä tietokoneella"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
+msgstr "Suorita komennot liitetyllä laitteellasi tai anna laitteen suorittaa etukäteen määriteltyjä komentoja tällä tietokoneella"
 
 #: src/service/plugins/sftp.js:15
 msgid "SFTP"
@@ -1158,9 +1121,7 @@ msgstr "Tekstiviesti"
 
 #: src/service/plugins/sms.js:17
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
-"Lähetä ja lue laiteparin tekstiviestejä ja vastaanota ilmoitus uusista "
-"tekstiviesteistä"
+msgstr "Lähetä ja lue laiteparin tekstiviestejä ja vastaanota ilmoitus uusista tekstiviesteistä"
 
 #: src/service/plugins/sms.js:38
 msgid "New SMS (URI)"
@@ -1187,11 +1148,8 @@ msgid "PulseAudio not found"
 msgstr "PulseAudiota ei löytynyt"
 
 #: src/service/plugins/telephony.js:17
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
-"Vastaanota ilmoitus puheluista ja säädä järjestelmän äänenvoimakkuutta "
-"saapuvien ja käynnissä olevien puhelujen aikana"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgstr "Vastaanota ilmoitus puheluista ja säädä järjestelmän äänenvoimakkuutta saapuvien ja käynnissä olevien puhelujen aikana"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:29
@@ -1312,3 +1270,4 @@ msgstr "Palvelu ei ole käytettävissä"
 #: webextension/gettext.js:39
 msgid "Open in Browser"
 msgstr "Avaa selaimessa"
+

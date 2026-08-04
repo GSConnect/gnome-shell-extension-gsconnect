@@ -129,7 +129,14 @@ const SharePlugin = GObject.registerClass({
 
     _getFile(filename) {
         const dirpath = this._ensureReceiveDirectory();
-        const basepath = GLib.build_filenamev([dirpath, filename]);
+
+        // Remote-supplied filename is untrusted; collapse to a basename so it can't escape the download dir via '../' or an absolute path.
+        let basename = GLib.path_get_basename(filename);
+        if (!basename || basename === '.' || basename === '..' ||
+            basename.includes('/'))
+            basename = 'unnamed-file';
+
+        const basepath = GLib.build_filenamev([dirpath, basename]);
         let filepath = basepath;
         let copyNum = 0;
 
