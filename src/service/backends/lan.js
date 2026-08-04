@@ -10,6 +10,8 @@ import Config from '../../config.js';
 import * as Core from '../core.js';
 import Device from '../device.js';
 
+import {AvahiServer, AvahiGroup, AvahiServiceBrowser} from  './avahi/avahi-dbus.js';
+
 // Retain compatibility with GLib < 2.80, which lacks GioUnix
 let GioUnix;
 try {
@@ -30,6 +32,12 @@ const PROTOCOL_PORT_MAX = 1764;
 const TRANSFER_MIN = 1739;
 const TRANSFER_MAX = 1764;
 
+
+/**
+ * Avahi Constants
+ */
+const DBUS_AVAHI = 'org.freedesktop.Avahi';
+const KDE_CONNECT_SERVICE_TYPE = '_kdeconnect._udp';
 
 /*
  * One-time check for Linux/FreeBSD socket options
@@ -125,6 +133,16 @@ export const ChannelService = GObject.registerClass({
         this._networkMonitor = Gio.NetworkMonitor.get_default();
         this._networkAvailable = false;
         this._networkChangedId = 0;
+
+        this._avahiAvaible = false;
+        this._avahiGroup = null;
+        this._avahiServer = null;
+        this._avahiServiceBrowser = null;
+        this._discoverySignal = null;
+
+        this._dbusWatchID = Gio.bus_watch_name(Gio.BusType.SYSTEM, DBUS_AVAHI,
+            Gio.BusNameWatcherFlags.NONE, this._initAvahi.bind(this), null);
+
     }
 
     get certificate() {
@@ -222,6 +240,74 @@ export const ChannelService = GObject.registerClass({
 
             throw e;
         }
+    }
+
+    _initAvahi(connection, name, _owner) {
+        try {
+            this._avahiServer = new AvahiServer(connection, name, '/',
+                null, null, Gio.DBusProxyFlags.DO_NOT_LOAD_PROPERTIES);
+        } catch (e) {
+            logError(e);
+            return;
+        }
+
+        try {
+            const entry_path = this._avahiServer.EntryGroupNewSync()[0];
+            this._avahiGroup = new AvahiGroup(
+                connection,
+                name,
+                entry_path, null, null,
+                Gio.DBusProxyFlags.DO_NOT_LOAD_PROPERTIES);
+        } catch (e) {
+            logError(e);
+            return;
+        }
+        const utf8Encode = new TextEncoder();
+        const txtRecords = [`id=${this.id.trim()}`,
+            `name=${this.name.trim()}`,
+            `type=${Core._getDeviceType().trim()}`,
+            'protocol=8'].map((x) => utf8Encode.encode(x));
+
+        this._avahiGroup.AddServiceSync(-1, -1, 64, `${this.identity.body.deviceId}`,
+            KDE_CONNECT_SERVICE_TYPE,
+            '',
+            '',
+            this.port,
+            txtRecords);
+        // setup service Browser, but don't start it yet
+        try {
+            const service_path = this._avahiServer.ServiceBrowserPrepareSync(-1, -1,
+                KDE_CONNECT_SERVICE_TYPE,
+                '', 0)[0];
+
+            this._avahiServiceBrowser = new AvahiServiceBrowser(connection,
+                name,
+                service_path,
+                null,
+                null,
+                Gio.DBusProxyFlags.DO_NOT_LOAD_PROPERTIES);
+        } catch (e) {
+            logError(e);
+            return;
+        }
+
+        const callback = this._ahaviServiceDiscoveryCallback.bind(this);
+        this._discoverySignal = this._avahiServiceBrowser.connectSignal('ItemNew', callback);
+        // register service and mark avahi as avaible
+        this._avahiGroup.CommitSync();
+        if (this._active)
+            this._avahiServiceBrowser.StartSync();
+
+        this._avahiAvaible = true;
+    }
+
+    _ahaviServiceDiscoveryCallback(proxy, name, args) {
+        if (args[2] === this.identity.body.deviceId)
+            return;
+
+        const resolve = this._avahiServer.ResolveServiceSync(args[0], args[1], args[2], args[3], args[4], -1, 0);
+        debug(`sending packet:${resolve[7]} (${args[2]})`);
+        this.broadcast(resolve[7]);
     }
 
     async _onIncomingChannel(listener, connection) {
@@ -487,6 +573,8 @@ export const ChannelService = GObject.registerClass({
             this._networkChangedId = this._networkMonitor.connect(
                 'network-changed', this._onNetworkChanged.bind(this));
         }
+        if (this._avahiAvaible)
+            this._avahiServiceBrowser.StartSync();
 
         this._active = true;
         this.notify('active');
@@ -522,6 +610,14 @@ export const ChannelService = GObject.registerClass({
         for (const channel of this.channels.values())
             channel.close();
 
+        if (this._avahiAvaible) {
+            this._avahiServiceBrowser.disconnectSignal(this._discoverySignal);
+            this._avahiServiceBrowser.FreeSync();
+            this._avahiGroup.ResetSync();
+            this._avahiGroup.FreeSync();
+            this.Gio.bus_unown_name(this._dbusWatchID);
+            this._avahiAvaible = false;
+        }
         this._active = false;
         this.notify('active');
     }
