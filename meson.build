@@ -53,6 +53,62 @@ extconfig.set('SSHADD_PATH', get_option('sshadd_path'))
 extconfig.set('SSHKEYGEN_PATH', get_option('sshkeygen_path'))
 
 
+# Optional private KRdp runtime
+krdp_runtime_option = get_option('krdp_runtime')
+
+if krdp_runtime_option.enabled()
+  krdp_runtime_builder = find_program(
+    join_paths(meson.project_source_root(), 'build-aux', 'build-krdp-runtime.sh')
+  )
+
+  krdp_runtime_command = [
+    krdp_runtime_builder,
+    '--kpipewire-source', get_option('krdp_runtime_kpipewire_source'),
+    '--krdp-source', get_option('krdp_runtime_krdp_source'),
+    '--build-root', join_paths(meson.project_build_root(), 'krdp-runtime-build'),
+    '--build-type', get_option('krdp_runtime_build_type'),
+    '--archive', '@OUTPUT@',
+  ]
+
+  krdp_runtime_jobs = get_option('krdp_runtime_jobs')
+  if krdp_runtime_jobs > 0
+    krdp_runtime_command += ['--jobs', krdp_runtime_jobs.to_string()]
+  endif
+
+  if get_option('krdp_runtime_plasma')
+    krdp_runtime_command += ['--plasma-session']
+  endif
+
+  krdp_runtime_kf6_min_version = get_option('krdp_runtime_kf6_min_version')
+  if krdp_runtime_kf6_min_version != ''
+    krdp_runtime_command += [
+      '--kf6-min-version', krdp_runtime_kf6_min_version,
+    ]
+  endif
+
+  foreach library : get_option('krdp_runtime_bundle_libraries')
+    krdp_runtime_command += ['--bundle-library', library]
+  endforeach
+
+  krdp_runtime_archive = custom_target(
+    'krdp-runtime',
+    output: 'gsconnect-krdp-runtime.tar',
+    command: krdp_runtime_command,
+    build_by_default: true,
+    build_always_stale: true,
+  )
+
+  # The archive contains runtime/krdp. Extracting it at install time makes the
+  # generated directory available to system installs and the ZIP staging
+  # targets without copying native artifacts into src/ or installed tests.
+  meson.add_install_script(
+    krdp_runtime_builder,
+    '--install-archive', krdp_runtime_archive,
+    '--destination', extdatadir,
+  )
+endif
+
+
 # ZIP targets for user extension builds
 env_util = find_program('env')
 
@@ -153,4 +209,3 @@ subdir('data')
 subdir('installed-tests')
 subdir('nautilus-extension')
 subdir('po')
-

@@ -22,6 +22,7 @@ plugin_tests = [
   'SmsPlugin',
   'SystemvolumePlugin',
   'TelephonyPlugin',
+  'VirtualmonitorPlugin',
 ]
 
 
@@ -54,4 +55,3 @@ foreach test : plugin_tests
     )
   endif
 endforeach
-

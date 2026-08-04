@@ -111,3 +111,63 @@ option(
   description: 'Install tests'
 )
 
+# Optional private KRdp runtime used by the remote-desktop plugin. This is
+# disabled by default because the resulting bundle is distribution- and
+# architecture-specific.
+option(
+  'krdp_runtime',
+  type: 'feature',
+  value: 'disabled',
+  description: 'Build and package a private KRdp/KPipeWire runtime'
+)
+
+option(
+  'krdp_runtime_kpipewire_source',
+  type: 'string',
+  value: '../kde-connect/kpipewire',
+  description: 'KPipeWire source directory for the private KRdp runtime'
+)
+
+option(
+  'krdp_runtime_krdp_source',
+  type: 'string',
+  value: '../kde-connect/krdp',
+  description: 'KRdp source directory for the private KRdp runtime'
+)
+
+option(
+  'krdp_runtime_build_type',
+  type: 'combo',
+  choices: ['Release', 'RelWithDebInfo', 'Debug', 'MinSizeRel'],
+  value: 'RelWithDebInfo',
+  description: 'CMake build type for the private KRdp runtime'
+)
+
+option(
+  'krdp_runtime_kf6_min_version',
+  type: 'string',
+  value: '',
+  description: 'Explicit KPipeWire KF6/ECM minimum override (empty keeps its upstream default)'
+)
+
+option(
+  'krdp_runtime_jobs',
+  type: 'integer',
+  min: 0,
+  value: 0,
+  description: 'Parallel jobs for the private KRdp runtime (0 uses all CPUs)'
+)
+
+option(
+  'krdp_runtime_bundle_libraries',
+  type: 'array',
+  value: [],
+  description: 'Additional runtime SONAMEs to bundle for target ABI compatibility'
+)
+
+option(
+  'krdp_runtime_plasma',
+  type: 'boolean',
+  value: false,
+  description: 'Include KRdp Plasma session support in the private runtime'
+)
