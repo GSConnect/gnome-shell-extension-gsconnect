@@ -14,7 +14,8 @@ import system from 'system';
 /**
  * Return a random color
  *
- * @param {string} [salt] - If not %null, will be used as salt for generating a color
+ * @param {string} [salt]
+ *        - If not %null, will be used as salt for generating a color
  * @param {number} alpha - A value in the [0...1] range for the alpha channel
  * @returns {Gdk.RGBA} A new Gdk.RGBA object generated from the input
  */

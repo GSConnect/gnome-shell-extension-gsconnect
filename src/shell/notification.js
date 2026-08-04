@@ -33,7 +33,8 @@ const REPLY_REGEX = new RegExp(/^([^|]+)\|([\s\S]+)\|([0-9a-f]{8}-[0-9a-f]{4}-[1
  * Extracted from notificationDaemon.js, as it's no longer exported
  * https://gitlab.gnome.org/GNOME/gnome-shell/-/blob/main/js/ui/notificationDaemon.js#L556
  *
- * @returns {{ 'desktop-startup-id': string }} Object with ID containing current time
+ * @returns {{ 'desktop-startup-id': string }}
+ *          Object with ID containing current time
  */
 function getPlatformData() {
     const startupId = GLib.Variant.new('s', `_TIME${global.get_current_time()}`);
@@ -236,7 +237,13 @@ const Source = GObject.registerClass({
      * GsConnect information
      */
     _createNotification(notification) {
-        const [idMatch, deviceId, requestReplyId, remoteId, localId] = this._parseNotificationId(notification.id);
+        const [
+            idMatch,
+            deviceId,
+            requestReplyId,
+            remoteId,
+            localId,
+        ] = this._parseNotificationId(notification.id);
         const cachedNotification = this._notifications[localId];
 
         // Check if this is a repeat
@@ -321,7 +328,8 @@ const Source = GObject.registerClass({
         notification.connect('notify::acknowledged', () => {
             this.countUpdated();
 
-            // If acknowledged was set to false try to show the notification again
+            // If acknowledged was set to false,
+            // try to show the notification again
             if (!notification.acknowledged)
                 this.emit('notification-request-banner', notification);
         });
@@ -407,10 +415,12 @@ export function unpatchGtkNotificationDaemon() {
  * We patch other Gtk notification sources so we can notify remote devices when
  * notifications have been closed locally.
  */
-const _addNotification = NotificationDaemon.GtkNotificationDaemonAppSource.prototype.addNotification;
+const _addNotification = NotificationDaemon.GtkNotificationDaemonAppSource
+    .prototype.addNotification;
 
 /**
- * Update the prototype for {@link NotificationDaemon.GtkNotificationDaemonAppSource}.
+ * Update the prototype for
+ * {@link NotificationDaemon.GtkNotificationDaemonAppSource}.
  */
 export function patchGtkNotificationSources() {
     // eslint-disable-next-line func-style
@@ -454,14 +464,19 @@ export function patchGtkNotificationSources() {
         );
     };
 
-    NotificationDaemon.GtkNotificationDaemonAppSource.prototype._withdrawGSConnectNotification = _withdrawGSConnectNotification;
+    NotificationDaemon.GtkNotificationDaemonAppSource.prototype
+        ._withdrawGSConnectNotification = _withdrawGSConnectNotification;
 }
 
 
 /**
- * Restore the prototype for {@link NotificationDaemon.GtkNotificationDaemonAppSource}.
+ * Restore the prototype for
+ * {@link NotificationDaemon.GtkNotificationDaemonAppSource}.
  */
 export function unpatchGtkNotificationSources() {
-    NotificationDaemon.GtkNotificationDaemonAppSource.prototype.addNotification = _addNotification;
-    delete NotificationDaemon.GtkNotificationDaemonAppSource.prototype._withdrawGSConnectNotification;
+    NotificationDaemon.GtkNotificationDaemonAppSource.prototype
+        .addNotification = _addNotification;
+
+    delete NotificationDaemon.GtkNotificationDaemonAppSource
+        .prototype._withdrawGSConnectNotification;
 }

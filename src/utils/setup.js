@@ -226,8 +226,9 @@ export function installService() {
                 _installFile(dirname, manifestFile, contents);
         }
 
-        // Otherwise, if running as a system extension, ensure anything previously
-        // installed when running as a user extension is removed.
+        // Otherwise, if running as a system extension,
+        // ensure anything previously installed when running as a user
+        // extension is removed.
     } else {
         GLib.unlink(GLib.build_filenamev([dbusDir, dbusFile]));
         GLib.unlink(GLib.build_filenamev([appDir, appFile]));
