@@ -1,4 +1,7 @@
-// SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+// SPDX-FileCopyrightText: Franco Bianconi
+// SPDX-FileContributor: Karel Mácha
+// SPDX-FileContributor: Raphael Rochet
+// SPDX-FileContributor: GSConnect Developers https://github.com/GSConnect
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
