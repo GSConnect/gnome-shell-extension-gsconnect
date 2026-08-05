@@ -181,7 +181,7 @@ if (!globalThis.HAVE_GNOME) {
  * @returns {string} Return the string stripped of leading 0, and ' ()-+'
  */
 String.prototype.toPhoneNumber = function () {
-    const strippedNumber = this.replace(/^0*|[ ()+-]/g, '');
+    const strippedNumber = this.replace(/[ ()+-]/g, '').replace(/^0*/, '');
 
     if (strippedNumber.length)
         return strippedNumber;
@@ -200,7 +200,7 @@ String.prototype.equalsPhoneNumber = function (number) {
     const a = this.toPhoneNumber();
     const b = number.toPhoneNumber();
 
-    return (a.length && b.length && (a.endsWith(b) || b.endsWith(a)));
+    return Boolean(a.length && b.length && (a.endsWith(b) || b.endsWith(a)));
 };
 
 
