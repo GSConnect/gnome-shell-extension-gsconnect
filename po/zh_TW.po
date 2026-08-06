@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-01 01:34-0400\n"
-"PO-Revision-Date: 2026-07-16 03:15\n"
+"PO-Revision-Date: 2026-08-06 09:31\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -250,11 +250,11 @@ msgstr "將檔案儲存到"
 
 #: data/ui/preferences-device-panel.ui:510
 msgid "Links"
-msgstr ""
+msgstr "連結"
 
 #: data/ui/preferences-device-panel.ui:562
 msgid "Automatically open received URLs"
-msgstr ""
+msgstr "自動開啟接收到的網址"
 
 #: data/ui/preferences-device-panel.ui:623
 #: data/ui/preferences-device-panel.ui:2286
@@ -532,13 +532,15 @@ msgstr "探索已被停用"
 
 #: data/ui/preferences-window.ui:826
 msgid "Retry"
-msgstr ""
+msgstr "重試"
 
 #: data/ui/preferences-window.ui:858
 msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
 "Use your distro's package manager to install it.\n"
 "For more information, visit <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</a>."
-msgstr ""
+msgstr "命令列工具 <tt>openssl</tt> 似乎並未安裝。\n"
+"請使用您的發行版的套件管理員安裝它。\n"
+"更多資訊請參照 <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">GSConnect 的 wiki</a>。"
 
 #: data/ui/preferences-window.ui:874 src/service/init.js:361
 msgid "OpenSSL not found"
@@ -547,7 +549,7 @@ msgstr "未找到 OpenSSL"
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/preferences-window.ui:923
 msgid "Add device by IP…"
-msgstr ""
+msgstr "用 IP 位址新增裝置…"
 
 #: data/ui/preferences-window.ui:928
 msgid "Display Mode"
@@ -663,7 +665,10 @@ msgstr "一個為 GNOME 桌面環境設計的 KDE Connect 完整實作"
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:382
 msgid "translator-credits"
-msgstr "翻譯者銘謝"
+msgstr "Julian_Lai\n"
+"taijuin\n"
+"林博仁\n"
+"Kisaragi Hiu <mail@kisaragi-hiu.com>"
 
 #: src/preferences/service.js:415
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
@@ -675,13 +680,13 @@ msgstr "審核日誌"
 
 #: src/preferences/service.js:443
 msgid "Invalid Device Name"
-msgstr ""
+msgstr "無效的裝置名稱"
 
 #. TRANSLATOR: %s is a list of forbidden characters
 #: src/preferences/service.js:445
 #, javascript-format
 msgid "Device name must not contain any of %s and have a length of 1-32 characters"
-msgstr ""
+msgstr "裝置名稱長度必須介於 1-32 個字元之間且不能包含 %s 任一字元"
 
 #: src/preferences/service.js:516
 msgid "Laptop"
@@ -718,11 +723,11 @@ msgstr "正在等待服務…"
 #. Notify the user
 #: src/service/daemon.js:103
 msgid "Settings Migrated"
-msgstr ""
+msgstr "設定已移轉"
 
 #: src/service/daemon.js:104
 msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
-msgstr ""
+msgstr "GSConnect 以更新來支援 KDE Connect 協定的變更。某些裝置可能會需要重新配對。"
 
 #: src/service/daemon.js:246
 msgid "Click for help troubleshooting"
@@ -755,7 +760,7 @@ msgstr "目標裝置"
 
 #: src/service/daemon.js:448
 msgid "Target Device Name"
-msgstr ""
+msgstr "目標裝置名稱"
 
 #: src/service/daemon.js:490
 msgid "Message Body"
@@ -839,11 +844,11 @@ msgstr "接受"
 #: src/service/device.js:960
 #, javascript-format
 msgid "Failed to pair with %s"
-msgstr ""
+msgstr "與 %s 配對失敗"
 
 #: src/service/device.js:961
 msgid "Device clocks are out of sync"
-msgstr ""
+msgstr "裝置的時鐘不同步"
 
 #: src/service/manager.js:178
 msgid "Discovery has been disabled due to the number of devices on this network."
