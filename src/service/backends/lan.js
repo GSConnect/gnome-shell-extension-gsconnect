@@ -78,6 +78,104 @@ export function _configureSocket(connection) {
 
 
 /**
+ * Resolve a network interface name to its index, for use as an IPv6 scope id.
+ *
+ * GJS exposes no binding for if_nametoindex(), so this reads sysfs. Returns 0
+ * (ie. no scope) on platforms without sysfs, which is correct for every address
+ * except link-local ones.
+ *
+ * @param {string} name - An interface name, eg. "wlan0"
+ * @returns {number} The interface index, or 0 if it could not be resolved
+ */
+export function _interfaceIndex(name) {
+    try {
+        const [ok, bytes] = GLib.file_get_contents(
+            `/sys/class/net/${name}/ifindex`);
+
+        if (ok)
+            return parseInt(new TextDecoder().decode(bytes).trim()) || 0;
+    } catch {
+        // Unknown interface, or no sysfs
+    }
+
+    return 0;
+}
+
+
+/**
+ * Format a host and port as a `lan://` URI, bracketing IPv6 literals so that
+ * the result can be parsed back unambiguously.
+ *
+ * @param {string} host - A hostname or IP address
+ * @param {number} port - A port number
+ * @returns {string} A `lan://` URI
+ */
+export function _formatAddress(host, port) {
+    if (typeof host === 'string' && host.includes(':'))
+        return `lan://[${host}]:${port}`;
+
+    return `lan://${host}:${port}`;
+}
+
+
+/**
+ * Parse a `<host>:<port>` string into a Gio.InetSocketAddress.
+ *
+ * Accepts a bracketed IPv6 literal with an optional zone (`[fe80::1%wlan0]:1716`)
+ * as well as the plain IPv4 form. Bare IPv6 literals are also accepted, since
+ * earlier versions stored them unbracketed in the `last-connection` setting.
+ *
+ * @param {string} address - The address to parse
+ * @param {number} defaultPort - The port to use if the address omits one
+ * @returns {?Gio.InetSocketAddress} A socket address, or %null if unparseable
+ */
+export function _parseSocketAddress(address, defaultPort) {
+    let host = address;
+    let portstr;
+    let scopeId = 0;
+
+    const bracketed = address.match(/^\[([^\]]+)\](?::(\d+))?$/);
+
+    if (bracketed !== null) {
+        host = bracketed[1];
+        portstr = bracketed[2];
+
+    // More than one colon means an IPv6 literal. It may or may not have a
+    // trailing port, and without brackets that is genuinely ambiguous, so
+    // prefer the reading where the whole string is an address.
+    } else if (address.indexOf(':') !== address.lastIndexOf(':')) {
+        if (Gio.InetAddress.new_from_string(address) === null) {
+            const sep = address.lastIndexOf(':');
+            host = address.slice(0, sep);
+            portstr = address.slice(sep + 1);
+        }
+
+    } else {
+        [host, portstr] = address.split(':');
+    }
+
+    // Split off a zone ("%wlan0"); link-local addresses are unusable without it
+    const zone = host.indexOf('%');
+
+    if (zone !== -1) {
+        scopeId = _interfaceIndex(host.slice(zone + 1));
+        host = host.slice(0, zone);
+    }
+
+    const inetAddress = Gio.InetAddress.new_from_string(host);
+
+    if (inetAddress === null)
+        return null;
+
+    return new Gio.InetSocketAddress({
+        address: inetAddress,
+        port: parseInt(portstr) || defaultPort,
+        scope_id: scopeId,
+    });
+}
+
+
+/**
  * Lan.ChannelService consists of two parts:
  *
  * The TCP Listener listens on a port and constructs a Channel object from the
@@ -422,12 +520,9 @@ export const ChannelService = GObject.registerClass({
             if (!this._networkAvailable)
                 return;
 
-            // Try to parse strings as <host>:<port>
-            if (typeof address === 'string') {
-                const [host, portstr] = address.split(':');
-                const port = parseInt(portstr) || this.port;
-                address = Gio.InetSocketAddress.new_from_string(host, port);
-            }
+            // Try to parse strings as <host>:<port>, including bracketed IPv6
+            if (typeof address === 'string')
+                address = _parseSocketAddress(address, this.port);
 
             // If we succeed, remember this host
             if (address instanceof Gio.InetSocketAddress) {
@@ -439,12 +534,19 @@ export const ChannelService = GObject.registerClass({
                 address = this._udp_address;
             }
 
-            // Broadcast on each open socket
-            if (this._udp6 !== null)
-                this._udp6.send_to(address, this.identity.serialize(), null);
+            // Send on a socket that can carry this address family. Note that
+            // when the IPv6 socket is dual-stack _initUdpListener() leaves
+            // _udp4 as null, so IPv4 targets fall through to it.
+            if (address.address.family === Gio.SocketFamily.IPV6) {
+                if (this._udp6 !== null)
+                    this._udp6.send_to(address, this.identity.serialize(), null);
 
-            if (this._udp4 !== null)
+            } else if (this._udp4 !== null) {
                 this._udp4.send_to(address, this.identity.serialize(), null);
+
+            } else if (this._udp6 !== null) {
+                this._udp6.send_to(address, this.identity.serialize(), null);
+            }
         } catch (e) {
             debug(e, address);
         }
@@ -552,7 +654,7 @@ export const Channel = GObject.registerClass({
     }
 
     get address() {
-        return `lan://${this.host}:${this.port}`;
+        return _formatAddress(this.host, this.port);
     }
 
     get certificate() {
