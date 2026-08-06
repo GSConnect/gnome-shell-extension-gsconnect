@@ -145,3 +145,93 @@ describe('A LAN channel service', function () {
     // TODO: restarting stopped services
 });
 
+
+describe('LAN address formatting', function () {
+    it('leaves IPv4 addresses unbracketed', function () {
+        expect(Lan._formatAddress('192.168.1.10', 1716))
+            .toBe('lan://192.168.1.10:1716');
+    });
+
+    it('brackets IPv6 addresses', function () {
+        expect(Lan._formatAddress('2001:db8::1', 1716))
+            .toBe('lan://[2001:db8::1]:1716');
+    });
+
+    it('brackets IPv6 addresses carrying a zone', function () {
+        expect(Lan._formatAddress('fe80::1%wlan0', 1716))
+            .toBe('lan://[fe80::1%wlan0]:1716');
+    });
+});
+
+
+describe('LAN address parsing', function () {
+    it('parses an IPv4 address with a port', function () {
+        const addr = Lan._parseSocketAddress('192.168.1.10:1716', 1716);
+
+        expect(addr).not.toBeNull();
+        expect(addr.address.to_string()).toBe('192.168.1.10');
+        expect(addr.port).toBe(1716);
+    });
+
+    it('falls back to the default port', function () {
+        const addr = Lan._parseSocketAddress('192.168.1.10', 1716);
+
+        expect(addr).not.toBeNull();
+        expect(addr.port).toBe(1716);
+    });
+
+    it('parses a bracketed IPv6 address with a port', function () {
+        const addr = Lan._parseSocketAddress('[2001:db8::1]:1739', 1716);
+
+        expect(addr).not.toBeNull();
+        expect(addr.address.to_string()).toBe('2001:db8::1');
+        expect(addr.port).toBe(1739);
+    });
+
+    it('parses a bracketed IPv6 address without a port', function () {
+        const addr = Lan._parseSocketAddress('[2001:db8::1]', 1716);
+
+        expect(addr).not.toBeNull();
+        expect(addr.address.to_string()).toBe('2001:db8::1');
+        expect(addr.port).toBe(1716);
+    });
+
+    // Earlier versions stored IPv6 addresses unbracketed in `last-connection`
+    it('parses a bare IPv6 address', function () {
+        const addr = Lan._parseSocketAddress('2001:db8::1', 1716);
+
+        expect(addr).not.toBeNull();
+        expect(addr.address.to_string()).toBe('2001:db8::1');
+        expect(addr.port).toBe(1716);
+    });
+
+    it('round-trips a formatted IPv6 address', function () {
+        const uri = Lan._formatAddress('2001:db8::1', 1716);
+        const addr = Lan._parseSocketAddress(uri.replace('lan://', ''), 1716);
+
+        expect(addr).not.toBeNull();
+        expect(addr.address.to_string()).toBe('2001:db8::1');
+        expect(addr.port).toBe(1716);
+    });
+
+    it('parses an IPv6 address carrying a zone', function () {
+        const addr = Lan._parseSocketAddress('[fe80::1%lo]:1716', 1716);
+
+        expect(addr).not.toBeNull();
+        expect(addr.address.to_string()).toBe('fe80::1');
+        expect(addr.port).toBe(1716);
+    });
+
+    it('tolerates an unresolvable zone', function () {
+        const addr = Lan._parseSocketAddress('[fe80::1%nosuchiface0]:1716', 1716);
+
+        expect(addr).not.toBeNull();
+        expect(addr.address.to_string()).toBe('fe80::1');
+        expect(addr.scope_id).toBe(0);
+    });
+
+    it('returns null for an unparseable address', function () {
+        expect(Lan._parseSocketAddress('not-an-address', 1716)).toBeNull();
+    });
+});
+
