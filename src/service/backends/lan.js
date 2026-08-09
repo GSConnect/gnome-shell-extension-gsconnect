@@ -121,9 +121,10 @@ export function _formatAddress(host, port) {
 /**
  * Parse a `<host>:<port>` string into a Gio.InetSocketAddress.
  *
- * Accepts a bracketed IPv6 literal with an optional zone (`[fe80::1%wlan0]:1716`)
- * as well as the plain IPv4 form. Bare IPv6 literals are also accepted, since
- * earlier versions stored them unbracketed in the `last-connection` setting.
+ * Accepts a bracketed IPv6 literal with an optional zone
+ * (`[fe80::1%wlan0]:1716`) as well as the plain IPv4 form.
+ * Bare IPv6 literals are also accepted, since earlier versions
+ * stored them unbracketed in the `last-connection` setting.
  *
  * @param {string} address - The address to parse
  * @param {number} defaultPort - The port to use if the address omits one
