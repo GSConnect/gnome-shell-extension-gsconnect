@@ -56,7 +56,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
             <property name="can_focus">False</property>
             <property name="halign">center</property>
             <property name="hexpand">True</property>
-            <property name="label" translatable="yes">Note that you have to first disable any conflicting shortucts in GNOME Settings.</property>
+            <property name="label" translatable="yes">Note that you have to first disable any conflicting shortcuts in GNOME Settings.</property>
             <property name="visible">True</property>
           </object>
           <packing>
