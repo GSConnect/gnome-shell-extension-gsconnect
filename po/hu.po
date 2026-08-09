@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-01 01:34-0400\n"
-"PO-Revision-Date: 2025-10-07 08:51\n"
+"PO-Revision-Date: 2026-07-16 03:15\n"
 "Last-Translator: \n"
 "Language-Team: Hungarian\n"
 "Language: hu_HU\n"
@@ -14,8 +14,7 @@ msgstr ""
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: hu\n"
-"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/"
-"org.gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -33,23 +32,12 @@ msgid "GSConnect Team"
 msgstr "A GSConnect csapata"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
-"A GSConnect egy teljes KDE Connect implementáció, főként a GNOME Shellhez, "
-"Nautilus, Chrome és Firefox integrációval. A KDE Connect csapatának "
-"alkalmazásai elérhetőek Linux, BSD, Android, Sailfish, iOS, macOS és Windows "
-"rendszereken."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr "A GSConnect egy teljes KDE Connect implementáció, főként a GNOME Shellhez, Nautilus, Chrome és Firefox integrációval. A KDE Connect csapatának alkalmazásai elérhetőek Linux, BSD, Android, Sailfish, iOS, macOS és Windows rendszereken."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"A GSConnect segítségével biztonságosan csatlakozhat mobileszközökhöz és "
-"másik számítógépekhez a következőkhöz:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
+msgstr "A GSConnect segítségével biztonságosan csatlakozhat mobileszközökhöz és másik számítógépekhez a következőkhöz:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:48
 msgid "Share files, links and text"
@@ -192,18 +180,14 @@ msgid "Select or start a conversation"
 msgstr "Indítson, vagy válasszon ki egy beszélgetést"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid ""
-"Touchpad.\n"
+msgid "Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n"
-"\n"
+"Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr ""
-"Érintőtábla.\n"
+msgstr "Érintőtábla.\n"
 "Az egérkurzor mozgatásához húzza a kurzort ezen a területen.\n"
-"Hosszan megnyomva húzhatja az egérkurzort.\n"
-"\n"
+"Hosszan megnyomva húzhatja az egérkurzort.\n\n"
 "Egyet kattintva elküldi azt a párosított eszközre.\n"
 "Bal, középső, jobb gombés, és görgetés."
 
@@ -484,9 +468,7 @@ msgstr "Kiválasztás"
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:80
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"A megszakításhoz nyomjon Esc gombot, vagy Backspace-t a gyorsbillentyű "
-"visszaállításához."
+msgstr "A megszakításhoz nyomjon Esc gombot, vagy Backspace-t a gyorsbillentyű visszaállításához."
 
 #: data/ui/preferences-window.ui:24
 msgid "Device Name"
@@ -553,18 +535,12 @@ msgid "Retry"
 msgstr "Újrapróbálkozás"
 
 #: data/ui/preferences-window.ui:858
-msgid ""
-"The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
+msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
 "Use your distro's package manager to install it.\n"
-"For more information, visit <a href=\"https://github.com/gsconnect/gnome-"
-"shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</"
-"a>."
-msgstr ""
-"Úgy tűnik, hogy a parancssoros <tt>openssl</tt> program nincsen telepítve.\n"
+"For more information, visit <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</a>."
+msgstr "Úgy tűnik, hogy a parancssoros <tt>openssl</tt> program nincsen telepítve.\n"
 "A telepítéséhez használja a disztribúció csomagtelepítőjét.\n"
-"További információkért tekintse meg <a href=\"https://github.com/gsconnect/"
-"gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">a GSConnect "
-"wikit</a>."
+"További információkért tekintse meg <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">a GSConnect wikit</a>."
 
 #: data/ui/preferences-window.ui:874 src/service/init.js:361
 msgid "OpenSSL not found"
@@ -624,12 +600,8 @@ msgid "Something’s gone wrong"
 msgstr "Valami elromlott"
 
 #: data/ui/service-error-dialog.ui:91
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
-"A GSConnect egy váratlan hibába ütközött. Kérem, jelentse a hibát, és "
-"csatoljon minden olyan információt, ami segíthet."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "A GSConnect egy váratlan hibába ütközött. Kérem, jelentse a hibát, és csatoljon minden olyan információt, ami segíthet."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
@@ -697,12 +669,8 @@ msgid "translator-credits"
 msgstr "Báthory Péter <bathory86p@gmail.com>"
 
 #: src/preferences/service.js:415
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"A hibakeresési üzenetek naplózásra kerülnek. Tegye meg a hiba "
-"reprodukálásához szükséges lépést, majd nézze át a naplót."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "A hibakeresési üzenetek naplózásra kerülnek. Tegye meg a hiba reprodukálásához szükséges lépést, majd nézze át a naplót."
 
 #: src/preferences/service.js:418
 msgid "Review Log"
@@ -715,11 +683,8 @@ msgstr "Érvénytelen eszköznév"
 #. TRANSLATOR: %s is a list of forbidden characters
 #: src/preferences/service.js:445
 #, javascript-format
-msgid ""
-"Device name must not contain any of %s and have a length of 1-32 characters"
-msgstr ""
-"Az eszköz neve nem tartalmazhatja a(z) %s karaktereket, és 1-32 karakter "
-"hosszú kell legyen"
+msgid "Device name must not contain any of %s and have a length of 1-32 characters"
+msgstr "Az eszköz neve nem tartalmazhatja a(z) %s karaktereket, és 1-32 karakter hosszú kell legyen"
 
 #: src/preferences/service.js:516
 msgid "Laptop"
@@ -759,12 +724,8 @@ msgid "Settings Migrated"
 msgstr "Beállítások átmigrálva"
 
 #: src/service/daemon.js:104
-msgid ""
-"GSConnect has updated to support changes to the KDE Connect protocol. Some "
-"devices may need to be re-paired."
-msgstr ""
-"A GSConnect frissült, hogy támogassa a KDE Connect protokoll változásait. "
-"Egyes eszközöket újra kellhet párosítani."
+msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
+msgstr "A GSConnect frissült, hogy támogassa a KDE Connect protokoll változásait. Egyes eszközöket újra kellhet párosítani."
 
 #: src/service/daemon.js:246
 msgid "Click for help troubleshooting"
@@ -796,9 +757,8 @@ msgid "Target Device"
 msgstr "Céleszköz"
 
 #: src/service/daemon.js:448
-#, fuzzy
 msgid "Target Device Name"
-msgstr "Céleszköz"
+msgstr ""
 
 #: src/service/daemon.js:490
 msgid "Message Body"
@@ -889,8 +849,7 @@ msgid "Device clocks are out of sync"
 msgstr "Az eszközök órái nincsenek szinkronban"
 
 #: src/service/manager.js:178
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "A felderítés le lett tiltva a hálózaton lévő eszközök száma miatt."
 
 #: src/service/backends/lan.js:477
@@ -980,9 +939,7 @@ msgstr "Egérpad"
 
 #: src/service/plugins/mousepad.js:15
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr ""
-"A párosított eszköz egérként és billentyűzetként való használatának "
-"egedélyezése"
+msgstr "A párosított eszköz egérként és billentyűzetként való használatának egedélyezése"
 
 #: src/service/plugins/mousepad.js:29 src/service/ui/mousepad.js:107
 msgid "Remote Input"
@@ -1044,12 +1001,8 @@ msgid "Run Commands"
 msgstr "Parancsok futtatása"
 
 #: src/service/plugins/runcommand.js:15
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
-msgstr ""
-"Parancsok futtatása a párosított eszközön, vagy előre megadott parancsok "
-"futtassanak engedélyezése ezen a számítógépen"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
+msgstr "Parancsok futtatása a párosított eszközön, vagy előre megadott parancsok futtassanak engedélyezése ezen a számítógépen"
 
 #: src/service/plugins/sftp.js:15
 msgid "SFTP"
@@ -1171,9 +1124,7 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:17
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
-"SMS-ek küldése és fogadása a párosított eszközről, és értesítés az érkező "
-"SMS-ekről"
+msgstr "SMS-ek küldése és fogadása a párosított eszközről, és értesítés az érkező SMS-ekről"
 
 #: src/service/plugins/sms.js:38
 msgid "New SMS (URI)"
@@ -1193,19 +1144,15 @@ msgstr "Rendszerhangerő"
 
 #: src/service/plugins/systemvolume.js:15
 msgid "Enable the paired device to control the system volume"
-msgstr ""
-"A rendszerhangerő állításának engedélyezése a párosított eszköz számára"
+msgstr "A rendszerhangerő állításának engedélyezése a párosított eszköz számára"
 
 #: src/service/plugins/systemvolume.js:59
 msgid "PulseAudio not found"
 msgstr "PulseAudio nem található"
 
 #: src/service/plugins/telephony.js:17
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
-"Értesítés a hívásokról, és a rendszerhangerő állítása csörgés és folyamatban "
-"lévő hívások közben"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgstr "Értesítés a hívásokról, és a rendszerhangerő állítása csörgés és folyamatban lévő hívások közben"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:29
@@ -1315,8 +1262,7 @@ msgstr "Válasz"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:31
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
-"Hivatkozások megosztása GSConnecttel, közvetlenül a böngészőből vagy SMS-ben."
+msgstr "Hivatkozások megosztása GSConnecttel, közvetlenül a böngészőből vagy SMS-ben."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:35
@@ -1327,3 +1273,4 @@ msgstr "A szolgáltatás nem érhető el"
 #: webextension/gettext.js:39
 msgid "Open in Browser"
 msgstr "Megnyitás böngészőben"
+

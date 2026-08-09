@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-01 01:34-0400\n"
-"PO-Revision-Date: 2026-04-01 06:30\n"
+"PO-Revision-Date: 2026-07-16 03:15\n"
 "Last-Translator: \n"
 "Language-Team: Georgian\n"
 "Language: ka_GE\n"
@@ -14,8 +14,7 @@ msgstr ""
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: ka\n"
-"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/"
-"org.gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -33,23 +32,12 @@ msgid "GSConnect Team"
 msgstr "GSConnect-ის გუნდი"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
-"GSConnect წარმოადგენს KDE Connect-ის სრულ განხორციელებას GNOME-ის გარსისთვის "
-"Nautilus-ის, Chrome-ის და Firefox-ის ინტეგრაციებით. KDE Connect-ის გუნდს "
-"აქვს აპლიკაციები Linux-ისთვის, BSD-ისთვის, Androis-ისთვის, Sailfish-ისთვის, "
-"iOS-ისთვის, macOS-ისთვის და Windows-ისთვის."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr "GSConnect წარმოადგენს KDE Connect-ის სრულ განხორციელებას GNOME-ის გარსისთვის Nautilus-ის, Chrome-ის და Firefox-ის ინტეგრაციებით. KDE Connect-ის გუნდს აქვს აპლიკაციები Linux-ისთვის, BSD-ისთვის, Androis-ისთვის, Sailfish-ისთვის, iOS-ისთვის, macOS-ისთვის და Windows-ისთვის."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"GSConnect-თან ერთად შეგიძლიათ, უსაფრთხოდ დაუკავშირდეთ მობილურ მოწყობილობებს "
-"და სხვა კომპიუტერებს, რომ:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
+msgstr "GSConnect-თან ერთად შეგიძლიათ, უსაფრთხოდ დაუკავშირდეთ მობილურ მოწყობილობებს და სხვა კომპიუტერებს, რომ:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:48
 msgid "Share files, links and text"
@@ -192,18 +180,14 @@ msgid "Select or start a conversation"
 msgstr "აირჩიეთ, ან დაიწყეთ საუბარი"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid ""
-"Touchpad.\n"
+msgid "Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n"
-"\n"
+"Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr ""
-"თაცპედი\n"
+msgstr "თაცპედი\n"
 "გადაათრიეთ ამ ადგილას თაგუნას კურსორის გადასაადგილებლად.\n"
-"დააჭირეთ დიდხანს, რომ გადაათრიოთ თაგუნას კურსორი.\n"
-"\n"
+"დააჭირეთ დიდხანს, რომ გადაათრიოთ თაგუნას კურსორი.\n\n"
 "მარტივი წკაპი დაწყვილებულ მოწყობილობას გაეგზავნება.\n"
 "მარცხენა, შუა, მარჯვენა ღილაკი და ბორბლით გადახვევები."
 
@@ -551,18 +535,12 @@ msgid "Retry"
 msgstr "თავიდან"
 
 #: data/ui/preferences-window.ui:858
-msgid ""
-"The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
+msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
 "Use your distro's package manager to install it.\n"
-"For more information, visit <a href=\"https://github.com/gsconnect/gnome-"
-"shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</"
-"a>."
-msgstr ""
-"როგორც ჩანს, პროგრამა <tt>openssl</tt> დაყენებული არაა.\n"
+"For more information, visit <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</a>."
+msgstr "როგორც ჩანს, პროგრამა <tt>openssl</tt> დაყენებული არაა.\n"
 "გამოიყენეთ თქვენი დისტრიბუტიივის პაკეტების მმართველი და დააყენეთ ის.\n"
-"მეტი ინფორმაციისთვის ეწვიეთ <a href=\"https://github.com/gsconnect/gnome-"
-"shell-extension-gsconnect/wiki/Error#openssl-not-found\">GSConnect-ის ვიკის</"
-"a>."
+"მეტი ინფორმაციისთვის ეწვიეთ <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">GSConnect-ის ვიკის</a>."
 
 #: data/ui/preferences-window.ui:874 src/service/init.js:361
 msgid "OpenSSL not found"
@@ -622,12 +600,8 @@ msgid "Something’s gone wrong"
 msgstr "რაღაც გაფუჭდა"
 
 #: data/ui/service-error-dialog.ui:91
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
-"GSConnect-მა აღმოაჩინა მოულოდნელი შეცდომა. მოგვწერეთ ამის შესახებ და დაურთეთ "
-"ნებისმიერი ინფორმაცია, რომელიც შეიძლება, დაგვეხმაროს."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "GSConnect-მა აღმოაჩინა მოულოდნელი შეცდომა. მოგვწერეთ ამის შესახებ და დაურთეთ ნებისმიერი ინფორმაცია, რომელიც შეიძლება, დაგვეხმაროს."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
@@ -695,12 +669,8 @@ msgid "translator-credits"
 msgstr "ეკატერინე პაპავა"
 
 #: src/preferences/service.js:415
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"მიმდინარეობს გამართვის შეტყობინებების ჟურნალში ჩაწერა. შეასრულეთ ნაბიჯები, "
-"რათა პრობლემა განმეორდეს, შემდეგ კი გადახედეთ ჟურნალს."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "მიმდინარეობს გამართვის შეტყობინებების ჟურნალში ჩაწერა. შეასრულეთ ნაბიჯები, რათა პრობლემა განმეორდეს, შემდეგ კი გადახედეთ ჟურნალს."
 
 #: src/preferences/service.js:418
 msgid "Review Log"
@@ -713,11 +683,8 @@ msgstr "არასწორი მოწყობილობის სახ�
 #. TRANSLATOR: %s is a list of forbidden characters
 #: src/preferences/service.js:445
 #, javascript-format
-msgid ""
-"Device name must not contain any of %s and have a length of 1-32 characters"
-msgstr ""
-"მოწყობილობა არ უნდა შეიცავდეს სიმბოლოებს %s და სიგრძეში 1-32 სიმბოლო უნდა "
-"იყოს"
+msgid "Device name must not contain any of %s and have a length of 1-32 characters"
+msgstr "მოწყობილობა არ უნდა შეიცავდეს სიმბოლოებს %s და სიგრძეში 1-32 სიმბოლო უნდა იყოს"
 
 #: src/preferences/service.js:516
 msgid "Laptop"
@@ -757,12 +724,8 @@ msgid "Settings Migrated"
 msgstr "პარამეტრების მიგრაცია დასრულდა"
 
 #: src/service/daemon.js:104
-msgid ""
-"GSConnect has updated to support changes to the KDE Connect protocol. Some "
-"devices may need to be re-paired."
-msgstr ""
-"GSConnect განახლდა, რომ ჰქონდეს KDE Connect-ის ცვლილებების მხარდაჭერა. "
-"ზოგიერთი მოწყობილობის დაწყვილება თავიდან უნდა მოხდეს."
+msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
+msgstr "GSConnect განახლდა, რომ ჰქონდეს KDE Connect-ის ცვლილებების მხარდაჭერა. ზოგიერთი მოწყობილობის დაწყვილება თავიდან უნდა მოხდეს."
 
 #: src/service/daemon.js:246
 msgid "Click for help troubleshooting"
@@ -794,9 +757,8 @@ msgid "Target Device"
 msgstr "სამიზნე მოწყობილობა"
 
 #: src/service/daemon.js:448
-#, fuzzy
 msgid "Target Device Name"
-msgstr "სამიზნე მოწყობილობა"
+msgstr ""
 
 #: src/service/daemon.js:490
 msgid "Message Body"
@@ -887,8 +849,7 @@ msgid "Device clocks are out of sync"
 msgstr "მოწყობილობის საათების სინქრონიზაცია დარღვეულია"
 
 #: src/service/manager.js:178
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "აღმოჩენა გამორთულია ამ ქსელში არსებული მოწყობილობების რაოდენობის გამო."
 
 #: src/service/backends/lan.js:477
@@ -978,9 +939,7 @@ msgstr "თაგუნას ხალიჩა"
 
 #: src/service/plugins/mousepad.js:15
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr ""
-"საშუალებას აძლევს დაწყვილებულ მოწყობილობას, მოიქცეს, როგორც დაშორებული "
-"თაგუნა და კლავიატურა"
+msgstr "საშუალებას აძლევს დაწყვილებულ მოწყობილობას, მოიქცეს, როგორც დაშორებული თაგუნა და კლავიატურა"
 
 #: src/service/plugins/mousepad.js:29 src/service/ui/mousepad.js:107
 msgid "Remote Input"
@@ -1042,12 +1001,8 @@ msgid "Run Commands"
 msgstr "ბრძანებების გაშვება"
 
 #: src/service/plugins/runcommand.js:15
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
-msgstr ""
-"გაუშვით ბრძანებები თქვენს დაწყვილებულ მოწყობილობაზე, ან მიეცით უფლება "
-"მოწყობილობას, გაუშვას წინასწარ აღწერილი ბრძანებები ამ კომპიუტერზე"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
+msgstr "გაუშვით ბრძანებები თქვენს დაწყვილებულ მოწყობილობაზე, ან მიეცით უფლება მოწყობილობას, გაუშვას წინასწარ აღწერილი ბრძანებები ამ კომპიუტერზე"
 
 #: src/service/plugins/sftp.js:15
 msgid "SFTP"
@@ -1169,9 +1124,7 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:17
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
-"გააგზავნეთ და წაიკითხეტ დაწყვილებული მოწყობილობის SMS-ები და მიიღეთ "
-"შეტყობინება ახალი SMS-ის შესახებ"
+msgstr "გააგზავნეთ და წაიკითხეტ დაწყვილებული მოწყობილობის SMS-ები და მიიღეთ შეტყობინება ახალი SMS-ის შესახებ"
 
 #: src/service/plugins/sms.js:38
 msgid "New SMS (URI)"
@@ -1191,19 +1144,15 @@ msgstr "სისტემური საცავი"
 
 #: src/service/plugins/systemvolume.js:15
 msgid "Enable the paired device to control the system volume"
-msgstr ""
-"დაწყვილებული მოწყობილობისთვის სისტემის ხმის დონის მართვის უფლების მიცება"
+msgstr "დაწყვილებული მოწყობილობისთვის სისტემის ხმის დონის მართვის უფლების მიცება"
 
 #: src/service/plugins/systemvolume.js:59
 msgid "PulseAudio not found"
 msgstr "PulseAudio აღმოჩენილ არაა"
 
 #: src/service/plugins/telephony.js:17
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
-"მიიღეთ შეტყობინებები ზარების შესახებ და გაასწორეთ სისტემის ხმის სიმაღლე "
-"ზარის დარეკვისას/განხორციელებისას"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgstr "მიიღეთ შეტყობინებები ზარების შესახებ და გაასწორეთ სისტემის ხმის სიმაღლე ზარის დარეკვისას/განხორციელებისას"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:29
@@ -1324,3 +1273,4 @@ msgstr "სერვისი მიუწვდომელია"
 #: webextension/gettext.js:39
 msgid "Open in Browser"
 msgstr "ბრაუზერში გახსნა"
+

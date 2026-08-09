@@ -3,21 +3,18 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-01 01:34-0400\n"
-"PO-Revision-Date: 2026-07-11 11:26+0200\n"
-"Last-Translator: Grzegorz Szymaszek <gszymaszek@short.pl>\n"
+"PO-Revision-Date: 2026-07-16 03:15\n"
+"Last-Translator: \n"
 "Language-Team: Polish\n"
 "Language: pl_PL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && "
-"(n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && "
-"n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: pl\n"
-"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/"
-"org.gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -28,65 +25,55 @@ msgstr "GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:13
 msgid "KDE Connect implementation for GNOME"
-msgstr "Implementacja KDE Connecta dla środowiska GNOME"
+msgstr "Implementacja KDE Connect dla środowiska GNOME"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:24
 msgid "GSConnect Team"
-msgstr "Zespół GSConnecta"
+msgstr "Zespół GSConnect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
-"GSConnect to pełna implementacja KDE Connecta dedykowana dla Powłoki GNOME "
-"z integracją z programami Nautilus, Chrome i Firefox. Zespół KDE Connecta ma "
-"aplikacje dla systemów Linux, BSD, Android, Sailfish, iOS, macOS i Windows."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr "GSConnect to pełna implementacja KDE Connect specjalnie dla Powłoki GNOME z integracją z programami Nautilus, Chrome i Firefox. Zespół KDE Connect ma aplikacje dla systemów Linux, BSD, Android, Sailfish, iOS, macOS i Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"Za pomocą GSConnecta możesz bezpiecznie połączyć się z telefonami i innymi "
-"komputerami, aby:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
+msgstr "Za pomocą GSConnect można bezpiecznie połączyć się z telefonem i innymi komputerami, aby:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:48
 msgid "Share files, links and text"
-msgstr "udostępniać pliki, odnośniki i teksty,"
+msgstr "Udostępniać pliki, odnośniki i teksty"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:49
 msgid "Send and receive messages"
-msgstr "wysyłać i odbierać wiadomości,"
+msgstr "Wysyłać i odbierać wiadomości"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:50
 msgid "Sync clipboard content"
-msgstr "synchronizować zawartość schowka,"
+msgstr "Synchronizować zawartość schowka"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:51
 msgid "Sync contacts"
-msgstr "synchronizować kontakty,"
+msgstr "Synchronizować kontakty"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:52
 msgid "Sync notifications"
-msgstr "synchronizować powiadomienia,"
+msgstr "Synchronizować powiadomienia"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:53
 msgid "Control media players"
-msgstr "sterować odtwarzaczami multimediów,"
+msgstr "Sterować odtwarzaczami multimedialnymi"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:54
 msgid "Control system volume"
-msgstr "sterować głośnością systemu,"
+msgstr "Sterować głośnością systemową"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:55
 msgid "Execute predefined commands"
-msgstr "wykonywać wcześniej określone polecenia,"
+msgstr "Wykonywać wcześniej określone polecenia"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:56
 msgid "And more…"
-msgstr "i wiele więcej…"
+msgstr "I wiele więcej…"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:183
 msgid "GSConnect in GNOME Shell"
@@ -94,7 +81,7 @@ msgstr "GSConnect w Powłoce GNOME"
 
 #: data/ui/connect-dialog.ui:20
 msgid "Connect to…"
-msgstr "Połącz z…"
+msgstr "Połącz z…"
 
 #: data/ui/connect-dialog.ui:26 data/ui/legacy-messaging-dialog.ui:20
 #: data/ui/legacy-messaging-dialog.ui:24
@@ -129,7 +116,7 @@ msgstr "Pomoc"
 
 #: data/ui/contact-chooser.ui:109
 msgid "Type a phone number or name"
-msgstr "Wprowadź numer telefonu lub nazwę kontaktu"
+msgstr "Numer telefonu lub nazwa kontaktu"
 
 #. TRANSLATORS: All other phone number types
 #: data/ui/contacts-address-row.ui:71 src/service/ui/contacts.js:158
@@ -141,7 +128,7 @@ msgstr "Inny"
 #: src/service/daemon.js:481 src/service/plugins/sms.js:62
 #: webextension/gettext.js:41
 msgid "Send SMS"
-msgstr "Wyślij SMS‑a"
+msgstr "Wyślij SMS"
 
 #: data/ui/legacy-messaging-dialog.ui:32 data/ui/legacy-messaging-dialog.ui:36
 #: data/ui/notification-reply-dialog.ui:31
@@ -156,7 +143,7 @@ msgstr "Urządzenie jest rozłączone"
 
 #: data/ui/messaging-conversation.ui:91 src/service/plugins/sms.js:54
 msgid "Send Message"
-msgstr "Wyślij wiadomość"
+msgstr "Wysyła wiadomość"
 
 #: data/ui/messaging-conversation.ui:92 src/shell/notification.js:88
 msgid "Type a message"
@@ -193,18 +180,14 @@ msgid "Select or start a conversation"
 msgstr "Wybierz lub rozpocznij rozmowę"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid ""
-"Touchpad.\n"
+msgid "Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n"
-"\n"
+"Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr ""
-"Panel dotykowy.\n"
+msgstr "Panel dotykowy.\n"
 "Przeciągnięcie na tym obszarze przeniesie kursor myszy.\n"
-"Długie naciśnięcie przeciągnie kursor myszy.\n"
-"\n"
+"Długie naciśnięcie przeciągnie kursor myszy.\n\n"
 "Proste kliknięcie zostanie wysłane do połączonego urządzenia.\n"
 "Lewy, środkowy, prawy przycisk i przewinięcia kółkiem."
 
@@ -263,15 +246,15 @@ msgstr "Odbieranie plików"
 
 #: data/ui/preferences-device-panel.ui:449
 msgid "Save files to"
-msgstr "Zapisywanie plików w"
+msgstr "Zapisywanie plików w"
 
 #: data/ui/preferences-device-panel.ui:510
 msgid "Links"
-msgstr "Odnośniki"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:562
 msgid "Automatically open received URLs"
-msgstr "Automatyczne otwieranie odbieranych URL‑i"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:623
 #: data/ui/preferences-device-panel.ui:2286
@@ -367,7 +350,7 @@ msgstr "Wyciszanie mikrofonu"
 #: data/ui/preferences-device-panel.ui:1839
 #: data/ui/preferences-device-panel.ui:2470 src/service/plugins/telephony.js:16
 msgid "Telephony"
-msgstr "Telefonia"
+msgstr "Komunikacja"
 
 #: data/ui/preferences-device-panel.ui:1874
 msgid "Action Shortcuts"
@@ -399,11 +382,11 @@ msgstr "Wyczyść pamięć podręczną…"
 
 #: data/ui/preferences-device-panel.ui:2124
 msgid "Legacy SMS Support"
-msgstr "Przestarzała obsługa SMS‑ów"
+msgstr "Obsługa SMS (poprzednia wersja)"
 
 #: data/ui/preferences-device-panel.ui:2181
 msgid "SFTP Automount"
-msgstr "Automatyczne montowanie SFTP‑a"
+msgstr "Automatyczne montowanie SFTP"
 
 #: data/ui/preferences-device-panel.ui:2236
 #: data/ui/preferences-device-panel.ui:2562
@@ -456,7 +439,7 @@ msgstr "Z urządzenia"
 #: data/ui/preferences-device-panel.ui:2752
 #: data/ui/preferences-device-panel.ui:2785
 msgid "Nothing"
-msgstr "Bez zmiany"
+msgstr "Nic"
 
 #. TRANSLATORS: Restore the system volume
 #: data/ui/preferences-device-panel.ui:2759
@@ -468,7 +451,7 @@ msgstr "Przywróć"
 #: data/ui/preferences-device-panel.ui:2766
 #: data/ui/preferences-device-panel.ui:2799
 msgid "Lower"
-msgstr "Przycisz"
+msgstr "Ciszej"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the actively ringing call
@@ -485,9 +468,7 @@ msgstr "Ustaw"
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:80
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Naciśnij klawisz Esc aby anulować lub Backspace aby przywrócić skrót "
-"klawiszowy."
+msgstr "Klawisz Esc anuluje, a Backspace przywróci skrót klawiszowy."
 
 #: data/ui/preferences-window.ui:24
 msgid "Device Name"
@@ -515,7 +496,7 @@ msgstr "Menu urządzenia"
 
 #: data/ui/preferences-window.ui:203 data/ui/preferences-window.ui:218
 msgid "Edit Device Name"
-msgstr "Modyfikuj nazwę urządzenia"
+msgstr "Modyfikuje nazwę urządzenia"
 
 #: data/ui/preferences-window.ui:278
 msgid "Devices"
@@ -531,7 +512,7 @@ msgstr "Ustawienia rozszerzenia"
 
 #: data/ui/preferences-window.ui:390
 msgid "GSConnect remains active when GNOME Shell is locked"
-msgstr "Bez wyłączania GSConnecta po zablokowaniu Powłoki GNOME"
+msgstr "Bez wyłączania GSConnect po zablokowaniu Powłoki GNOME"
 
 #: data/ui/preferences-window.ui:410
 msgid "Browser Add-Ons"
@@ -551,22 +532,13 @@ msgstr "Wykrywanie jest wyłączone"
 
 #: data/ui/preferences-window.ui:826
 msgid "Retry"
-msgstr "Ponów"
+msgstr ""
 
 #: data/ui/preferences-window.ui:858
-msgid ""
-"The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
+msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
 "Use your distro's package manager to install it.\n"
-"For more information, visit <a href=\"https://github.com/gsconnect/gnome-"
-"shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</"
-"a>."
+"For more information, visit <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</a>."
 msgstr ""
-"Wygląda na to, że narzędzie wiersza poleceń <tt>openssl</tt> nie jest "
-"zainstalowane.\n"
-"Użyj menedżera pakietów Twojej dystrybucji aby je zainstalować.\n"
-"Odwiedź <a href=\"https://github.com/gsconnect/gnome-shell-extension-"
-"gsconnect/wiki/Error#openssl-not-found\">wiki GSConnecta</a> aby uzyskać "
-"więcej informacji."
 
 #: data/ui/preferences-window.ui:874 src/service/init.js:361
 msgid "OpenSSL not found"
@@ -575,7 +547,7 @@ msgstr "Nie odnaleziono biblioteki OpenSSL"
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/preferences-window.ui:923
 msgid "Add device by IP…"
-msgstr "Dodaj urządzenie poprzez adres IP…"
+msgstr ""
 
 #: data/ui/preferences-window.ui:928
 msgid "Display Mode"
@@ -626,12 +598,8 @@ msgid "Something’s gone wrong"
 msgstr "Coś się nie powiodło"
 
 #: data/ui/service-error-dialog.ui:91
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
-"Wystąpił nieoczekiwany błąd w GSConnect. Proszę go zgłosić i dołączyć "
-"wszelkie informacje, które mogą pomóc."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "Wystąpił nieoczekiwany błąd w GSConnect. Proszę go zgłosić i dołączyć wszelkie informacje, które mogą pomóc."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
@@ -645,7 +613,7 @@ msgstr "Informacje techniczne"
 #: src/service/ui/contacts.js:533
 #, python-format, javascript-format
 msgid "Send to %s"
-msgstr "Wyślij do %s"
+msgstr "Wyślij do „%s”"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: nautilus-extension/nautilus-gsconnect.py:195 webextension/gettext.js:33
@@ -682,7 +650,7 @@ msgstr "Wyłączone"
 #: src/preferences/keybindings.js:66
 #, javascript-format
 msgid "Enter a new shortcut to change <b>%s</b>"
-msgstr "Proszę wprowadzić nowy skrót, aby zmienić <b>%s</b>"
+msgstr "Proszę wprowadzić nowy skrót, aby zmienić „<b>%s</b>”"
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -693,24 +661,18 @@ msgstr "%s jest już używane"
 
 #: src/preferences/service.js:373
 msgid "A complete KDE Connect implementation for GNOME"
-msgstr "Pełna implementacja KDE Connecta dla środowiska GNOME"
+msgstr "Pełna implementacja KDE Connect dla środowiska GNOME"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:382
 msgid "translator-credits"
-msgstr ""
-"Adrian Kryński <krynkaxd@gmail.com>, 2017\n"
+msgstr "Adrian Kryński <krynkaxd@gmail.com>, 2017\n"
 "Piotr Drąg <piotrdrag@gmail.com>, 2018-2020\n"
-"Aviary.pl <community-poland@mozilla.org>, 2018-2020\n"
-"Grzegorz Szymaszek <gszymaszek@short.pl>, 2026"
+"Aviary.pl <community-poland@mozilla.org>, 2018-2020"
 
 #: src/preferences/service.js:415
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Komunikaty debugowania są zapisywane w dzienniku. Proszę podjąć działania "
-"niezbędne do powtórzenia problemu, a następnie przejrzeć dziennik."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Komunikaty debugowania są zapisywane w dzienniku. Proszę podjąć działania niezbędne do powtórzenia problemu, a następnie przejrzeć dziennik."
 
 #: src/preferences/service.js:418
 msgid "Review Log"
@@ -718,16 +680,13 @@ msgstr "Przejrzyj dziennik"
 
 #: src/preferences/service.js:443
 msgid "Invalid Device Name"
-msgstr "Nieprawidłowa nazwa urządzenia"
+msgstr ""
 
 #. TRANSLATOR: %s is a list of forbidden characters
 #: src/preferences/service.js:445
 #, javascript-format
-msgid ""
-"Device name must not contain any of %s and have a length of 1-32 characters"
+msgid "Device name must not contain any of %s and have a length of 1-32 characters"
 msgstr ""
-"Nazwa urządzenia nie może zawierać żadnego ze znaków %s i musi mieć długość "
-"1–32 znaków"
 
 #: src/preferences/service.js:516
 msgid "Laptop"
@@ -764,23 +723,19 @@ msgstr "Oczekiwanie na usługę…"
 #. Notify the user
 #: src/service/daemon.js:103
 msgid "Settings Migrated"
-msgstr "Ustawienia zmigrowane"
+msgstr ""
 
 #: src/service/daemon.js:104
-msgid ""
-"GSConnect has updated to support changes to the KDE Connect protocol. Some "
-"devices may need to be re-paired."
+msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
 msgstr ""
-"GSConnect został zaktualizowany aby obsługiwać zmiany w protokole KDE "
-"Connecta. Niektóre urządzenia mogą wymagać ponownego parowania."
 
 #: src/service/daemon.js:246
 msgid "Click for help troubleshooting"
-msgstr "Kliknij aby uzyskać pomoc w rozwiązaniu problemu"
+msgstr "Uzyskaj pomoc w rozwiązaniu problemu"
 
 #: src/service/daemon.js:256
 msgid "Click for more information"
-msgstr "Kliknij aby uzyskać więcej informacji"
+msgstr "Więcej informacji"
 
 #: src/service/daemon.js:364
 msgid "Dial Number"
@@ -805,7 +760,7 @@ msgstr "Urządzenie docelowe"
 
 #: src/service/daemon.js:448
 msgid "Target Device Name"
-msgstr "Nazwa urządzenia docelowego"
+msgstr ""
 
 #: src/service/daemon.js:490
 msgid "Message Body"
@@ -889,15 +844,14 @@ msgstr "Przyjmij"
 #: src/service/device.js:960
 #, javascript-format
 msgid "Failed to pair with %s"
-msgstr "Nie udało się powiązać z %s"
+msgstr ""
 
 #: src/service/device.js:961
 msgid "Device clocks are out of sync"
-msgstr "Zegary urządzeń są rozsynchronizowane"
+msgstr ""
 
 #: src/service/manager.js:178
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Wykrywanie zostało wyłączone z powodu liczby urządzeń w tej sieci."
 
 #: src/service/backends/lan.js:477
@@ -924,7 +878,7 @@ msgstr "W pełni naładowane"
 #: src/service/plugins/battery.js:285
 #, javascript-format
 msgid "%s: Battery has reached custom charge level"
-msgstr "%s: akumulator został naładowany do określonego poziomu"
+msgstr "%s: akumulator został naładowany do danego poziomu"
 
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:287
@@ -987,8 +941,7 @@ msgstr "Podkładka pod mysz"
 
 #: src/service/plugins/mousepad.js:15
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr ""
-"Umożliwienie używania powiązanego urządzenia jako zdalnej myszy i klawiatury"
+msgstr "Umożliwienie używania powiązanego urządzenia jako zdalnej myszy i klawiatury"
 
 #: src/service/plugins/mousepad.js:29 src/service/ui/mousepad.js:107
 msgid "Remote Input"
@@ -1050,12 +1003,8 @@ msgid "Run Commands"
 msgstr "Wykonywanie poleceń"
 
 #: src/service/plugins/runcommand.js:15
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
-msgstr ""
-"Wykonywanie poleceń na powiązanym urządzeniu lub umożliwienie urządzeniu "
-"wykonywania wcześniej ustalonych poleceń na tym komputerze"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
+msgstr "Wykonywanie poleceń na powiązanym urządzeniu lub umożliwienie urządzeniu wykonywania wcześniej ustalonych poleceń na tym komputerze"
 
 #: src/service/plugins/sftp.js:15
 msgid "SFTP"
@@ -1177,9 +1126,7 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:17
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
-"Wysyłanie i odczytywanie wiadomości SMS powiązanego urządzenia "
-"i powiadamianie o nowych SMS‑ach"
+msgstr "Wysyłanie i odczytywanie wiadomości SMS powiązanego urządzenia i powiadamianie o nowych SMS-ach"
 
 #: src/service/plugins/sms.js:38
 msgid "New SMS (URI)"
@@ -1206,11 +1153,8 @@ msgid "PulseAudio not found"
 msgstr "Nie odnaleziono usługi PulseAudio"
 
 #: src/service/plugins/telephony.js:17
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
-"Powiadamianie o połączeniach i dostosowywanie głośności systemu podczas "
-"oczekujących/trwających połączeń"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgstr "Powiadamianie o połączeniach i dostosowywanie głośności systemu podczas oczekujących/trwających połączeń"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:29
@@ -1324,9 +1268,7 @@ msgstr "Odpowiedz"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:31
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
-"Udostępnianie odnośników za pomocą GSConnecta, bezpośrednio do przeglądarki "
-"lub przez wiadomość SMS."
+msgstr "Udostępnianie odnośników za pomocą GSConnect, bezpośrednio do przeglądarki lub przez wiadomość SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:35
@@ -1337,3 +1279,4 @@ msgstr "Usługa jest niedostępna"
 #: webextension/gettext.js:39
 msgid "Open in Browser"
 msgstr "Otwórz w przeglądarce"
+

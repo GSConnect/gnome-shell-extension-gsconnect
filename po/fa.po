@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-01 01:34-0400\n"
-"PO-Revision-Date: 2025-09-13 18:59\n"
+"PO-Revision-Date: 2026-07-16 03:16\n"
 "Last-Translator: \n"
 "Language-Team: Persian\n"
 "Language: fa_IR\n"
@@ -14,8 +14,7 @@ msgstr ""
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: fa\n"
-"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/"
-"org.gnome.Shell.Extensions.GSConnect.pot\n"
+"X-Crowdin-File: /[GSConnect.gnome-shell-extension-gsconnect] main/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -33,22 +32,12 @@ msgid "GSConnect Team"
 msgstr "گروه جی‌اس‌کانکت"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:41
-msgid ""
-"GSConnect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
-"جی‌اس‌کانکت، پیاده‌سازی کاملی از کی‌دی‌ای کانکت، مخصوص پوستهٔ گنوم با یکپارچگی "
-"ناتیلوس، کروم و فایرفاکس است. گروه کی‌دی‌ای کانکت، برنامه‌هایی برای گنو/لینوکس، "
-"بی‌اس‌دی، اندروید، سیل‌فیش، آی‌اواس، مک‌او‌اس و ویندوز دارند."
+msgid "GSConnect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr "جی‌اس‌کانکت، پیاده‌سازی کاملی از کی‌دی‌ای کانکت، مخصوص پوستهٔ گنوم با یکپارچگی ناتیلوس، کروم و فایرفاکس است. گروه کی‌دی‌ای کانکت، برنامه‌هایی برای گنو/لینوکس، بی‌اس‌دی، اندروید، سیل‌فیش، آی‌اواس، مک‌او‌اس و ویندوز دارند."
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:44
-msgid ""
-"With GSConnect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"با جی‌اس‌کانکت می‌توانید به صورت امن به افزاره‌های همراه و دیگر میزکارهایتان وصل "
-"شوید تا:"
+msgid "With GSConnect you can securely connect to mobile devices and other desktops to:"
+msgstr "با جی‌اس‌کانکت می‌توانید به صورت امن به افزاره‌های همراه و دیگر میزکارهایتان وصل شوید تا:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.GSConnect.metainfo.xml.in:48
 msgid "Share files, links and text"
@@ -191,18 +180,14 @@ msgid "Select or start a conversation"
 msgstr "گفت‌وگویی را برگیده یا آغاز کنید"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid ""
-"Touchpad.\n"
+msgid "Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n"
-"\n"
+"Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr ""
-"صفحه‌لمسی.\n"
+msgstr "صفحه‌لمسی.\n"
 "برای جابه‌جایی نشانگر موشی این‌جا بکشید.\n"
-"برای کشیدن نشانگر موشی طولانی نگه دارید.\n"
-"\n"
+"برای کشیدن نشانگر موشی طولانی نگه دارید.\n\n"
 "کلیک ساده به افزارهٔ جفت شده فرستاده خواهد شد.\n"
 "دکمه‌های راست، وسط، چپ و لغزنده‌های چرخی."
 
@@ -550,12 +535,9 @@ msgid "Retry"
 msgstr ""
 
 #: data/ui/preferences-window.ui:858
-msgid ""
-"The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
+msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
 "Use your distro's package manager to install it.\n"
-"For more information, visit <a href=\"https://github.com/gsconnect/gnome-"
-"shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</"
-"a>."
+"For more information, visit <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">the GSConnect wiki</a>."
 msgstr ""
 
 #: data/ui/preferences-window.ui:874 src/service/init.js:361
@@ -616,12 +598,8 @@ msgid "Something’s gone wrong"
 msgstr "چیزی اشتباه شد"
 
 #: data/ui/service-error-dialog.ui:91
-msgid ""
-"GSConnect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
-"جی‌ای‌کانکت با خطایی غیرمنتظره روبه‌رو شد. لطفاً مشکل را گزارش داده و هر "
-"اطّلاعاتی که ممکن است کمک کند را بدهید."
+msgid "GSConnect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "جی‌ای‌کانکت با خطایی غیرمنتظره روبه‌رو شد. لطفاً مشکل را گزارش داده و هر اطّلاعاتی که ممکن است کمک کند را بدهید."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
@@ -689,12 +667,8 @@ msgid "translator-credits"
 msgstr "دانیال بهزادی <dani.behzi@ubuntu.com>"
 
 #: src/preferences/service.js:415
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"پیام‌های رفع اشکال ثبت شده‌اند. هر اقدامی که برای بازتولید مشکل لازم است را "
-"انجام داده، سپس گزارش را بررسی کنید."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "پیام‌های رفع اشکال ثبت شده‌اند. هر اقدامی که برای بازتولید مشکل لازم است را انجام داده، سپس گزارش را بررسی کنید."
 
 #: src/preferences/service.js:418
 msgid "Review Log"
@@ -707,8 +681,7 @@ msgstr "نام افزارهٔ نامعتبر"
 #. TRANSLATOR: %s is a list of forbidden characters
 #: src/preferences/service.js:445
 #, javascript-format
-msgid ""
-"Device name must not contain any of %s and have a length of 1-32 characters"
+msgid "Device name must not contain any of %s and have a length of 1-32 characters"
 msgstr "نام افزاره باید دارای %s نبوده و درازایش بین ۱ تا ۳۲ نویسه باشد"
 
 #: src/preferences/service.js:516
@@ -749,12 +722,8 @@ msgid "Settings Migrated"
 msgstr "تنظمیات مهاجرت داده شدند"
 
 #: src/service/daemon.js:104
-msgid ""
-"GSConnect has updated to support changes to the KDE Connect protocol. Some "
-"devices may need to be re-paired."
-msgstr ""
-"جی‌اس‌کانکت برا یپشتیبانی از تغییرات در شیوه‌نامهٔ کی‌دی‌ای کانکت به‌روز شد. شاید "
-"برخی افزاره‌ها نیاز به جفت شدن دوباره داشته باشند."
+msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
+msgstr "جی‌اس‌کانکت برا یپشتیبانی از تغییرات در شیوه‌نامهٔ کی‌دی‌ای کانکت به‌روز شد. شاید برخی افزاره‌ها نیاز به جفت شدن دوباره داشته باشند."
 
 #: src/service/daemon.js:246
 msgid "Click for help troubleshooting"
@@ -786,9 +755,8 @@ msgid "Target Device"
 msgstr "افزارهٔ هدف"
 
 #: src/service/daemon.js:448
-#, fuzzy
 msgid "Target Device Name"
-msgstr "افزارهٔ هدف"
+msgstr ""
 
 #: src/service/daemon.js:490
 msgid "Message Body"
@@ -879,8 +847,7 @@ msgid "Device clocks are out of sync"
 msgstr "ساعت‌های افزاره‌ها ناهمگامند"
 
 #: src/service/manager.js:178
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "به خاطر تعداد افزاره‌های روی این شبکه، کشف از کار افتاد."
 
 #: src/service/backends/lan.js:477
@@ -1032,12 +999,8 @@ msgid "Run Commands"
 msgstr "اجرای دستورها"
 
 #: src/service/plugins/runcommand.js:15
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
-msgstr ""
-"اجرای فرمان‌ها روی افزارهٔ جفت شده‌ةان یا اجازه به افزاره برای اجرای فرمان‌های "
-"از پیش تعریف شده روی این رایانه"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
+msgstr "اجرای فرمان‌ها روی افزارهٔ جفت شده‌ةان یا اجازه به افزاره برای اجرای فرمان‌های از پیش تعریف شده روی این رایانه"
 
 #: src/service/plugins/sftp.js:15
 msgid "SFTP"
@@ -1186,8 +1149,7 @@ msgid "PulseAudio not found"
 msgstr "پالس‌آدیو پیدا نشد"
 
 #: src/service/plugins/telephony.js:17
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
 msgstr "آگاه شدن از تماس‌ها و تنظیم حجم صدای سامانه در طول زنگ خوردن و تماس"
 
 #. TRANSLATORS: Silence the actively ringing call
@@ -1309,3 +1271,4 @@ msgstr "خدمت ناموجود"
 #: webextension/gettext.js:39
 msgid "Open in Browser"
 msgstr "گشودن در مرورگر"
+
