@@ -655,7 +655,7 @@ const Device = GObject.registerClass({
         if (this.service === null)
             return;
 
-        // KDE Connect on Android can sometimes give an undefined for params.body
+        // KDE Connect on Android can sometimes give undefined for params.body
         Object.keys(params)
             .forEach(key => params[key] === undefined && delete params[key]);
 

@@ -394,8 +394,8 @@ const Manager = GObject.registerClass({
     }
 
     /**
-     * Return a device for {@link packet}, creating it and adding it to the list of
-     * of known devices if it doesn't exist.
+     * Return a device for {@link packet}, creating it and adding it
+     * to the list of of known devices if it doesn't exist.
      *
      * @param {Core.Packet} packet - An identity packet for the device
      * @returns {Device} A device object
