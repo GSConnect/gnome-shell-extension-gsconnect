@@ -283,7 +283,7 @@ const MPRISPlugin = GObject.registerClass({
                     loopStatus: player.LoopStatus,
                     shuffle: player.Shuffle,
 
-                    // default values for members that will be filled conditionally
+                    // defaults for members that will be filled conditionally
                     albumArtUrl: '',
                     length: 0,
                     artist: '',

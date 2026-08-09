@@ -14,7 +14,8 @@ import {MissingOpensslError} from '../utils/exceptions.js';
 
 
 // Promise Wrappers
-// We don't use top-level await since it returns control flow to importing module, causing bugs
+// We don't use top-level await since it returns control flow
+// to importing module, causing bugs
 import('gi://EBook').then(({default: EBook}) => {
     Gio._promisify(EBook.BookClient, 'connect');
     Gio._promisify(EBook.BookClient.prototype, 'get_view');
@@ -181,7 +182,7 @@ if (!globalThis.HAVE_GNOME) {
  * @returns {string} Return the string stripped of leading 0, and ' ()-+'
  */
 String.prototype.toPhoneNumber = function () {
-    const strippedNumber = this.replace(/^0*|[ ()+-]/g, '');
+    const strippedNumber = this.replace(/[ ()+-]/g, '').replace(/^0*/, '');
 
     if (strippedNumber.length)
         return strippedNumber;
@@ -200,7 +201,7 @@ String.prototype.equalsPhoneNumber = function (number) {
     const a = this.toPhoneNumber();
     const b = number.toPhoneNumber();
 
-    return (a.length && b.length && (a.endsWith(b) || b.endsWith(a)));
+    return Boolean(a.length && b.length && (a.endsWith(b) || b.endsWith(a)));
 };
 
 
@@ -241,7 +242,8 @@ Gio.File.rm_rf = function (file) {
 /**
  * Extend GLib.Variant with a static method to recursively pack a variant
  *
- * @param {object} [obj] - May be a GLib.Variant, Array, standard Object or literal.
+ * @param {object} [obj]
+ *        - May be a GLib.Variant, Array, standard Object or literal.
  * @returns {GLib.Variant} The resulting GVariant
  */
 function _full_pack(obj) {
@@ -297,7 +299,8 @@ GLib.Variant.full_pack = _full_pack;
 /**
  * Extend GLib.Variant with a method to recursively deepUnpack() a variant
  *
- * @param {object} [obj] - May be a GLib.Variant, Array, standard Object or literal.
+ * @param {object} [obj]
+ *        - May be a GLib.Variant, Array, standard Object or literal.
  * @returns {object} The resulting object
  */
 function _full_unpack(obj) {

@@ -113,6 +113,18 @@ export default defineConfig([
                 max: 5,
             }],
 
+            '@stylistic/max-len': ['error', {
+                code: 100,
+                comments: 80,
+                ignoreComments: false,
+                ignorePattern: 'TRANSLATORS:',
+                ignoreTrailingComments: false,
+                ignoreRegExpLiterals: true,
+                ignoreStrings: true,
+                ignoreTemplateLiterals: true,
+                ignoreUrls: true,
+            }],
+
             '@stylistic/max-statements-per-line': 'error',
             '@stylistic/new-parens': 'error',
             'no-array-constructor': 'error',

@@ -10,9 +10,10 @@ import GObject from 'gi://GObject';
 import * as DBus from '../utils/dbus.js';
 
 // DesktopAppInfo is no longer in Gio in GNOME 49
-let GioUnix;
-GioUnix = import('gi://GioUnix?version=2.0').catch(() => {
-    GioUnix = Gio;
+const GioUnix = await import('gi://GioUnix?version=2.0').then((imp) => {
+    return imp.default;
+}).catch(() => {
+    return Gio;
 });
 
 
@@ -158,7 +159,8 @@ const Listener = GObject.registerClass({
             const names = await this._listNames();
             names.splice(names.indexOf(sender), 1);
 
-            // Make a short list for substring matches (fractal/org.gnome.Fractal)
+            // Make a short list for substring matches
+            // (fractal/org.gnome.Fractal)
             const appLower = appName.toLowerCase();
 
             const shortList = names.filter(name => {
@@ -219,8 +221,10 @@ const Listener = GObject.registerClass({
      *
      * @param {DBus.Interface} iface - The DBus interface
      * @param {string} name - The DBus method name
-     * @param {GLib.Variant|Gio.DBusMethodInvocation} param1 - The method parameters or invocation (GNOME 50+ changed order)
-     * @param {Gio.DBusMethodInvocation|GLib.Variant} param2 - The method invocation or parameters (GNOME 50+ changed order)
+     * @param {GLib.Variant|Gio.DBusMethodInvocation} param1
+     *        - The method parameters or invocation (GNOME 50+ changed order)
+     * @param {Gio.DBusMethodInvocation|GLib.Variant} param2
+     *        - The method invocation or parameters (GNOME 50+ changed order)
      */
     async _onHandleMethodCall(iface, name, param1, param2) {
         let invocation, parameters;
