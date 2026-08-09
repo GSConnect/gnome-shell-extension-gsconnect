@@ -1,0 +1,45 @@
+{
+    "extensionName": {
+        "message": "GSConnect",
+        "description": "The extension name"
+    },
+    "extensionDescription": {
+        "message": "Condividi collegamenti con GSConnect, direttamente nel browser o via SMS.",
+        "description": "The extension description"
+    },
+    "contextMenuMultipleDevices": {
+        "message": "Invia al dispositivo mobile",
+        "description": "Top-level Context Menu label when multiple devices are available"
+    },
+    "contextMenuSinglePlugin": {
+        "message": "$NAME$ ($PLUGIN$)",
+        "description": "Context Menu label for devices that only support a single plugin",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Nexus 4"
+            },
+            "plugin": {
+                "content": "$2",
+                "example": "Open in Browser"
+            }
+        }
+    },
+    "popupMenuDisconnected": {
+        "message": "Servizio non disponibile",
+        "description": "Popup Menu label when disconnected from the GNOME Shell extension"
+    },
+    "popupMenuNoDevices": {
+        "message": "Dispositivo non trovato",
+        "description": "Popup Menu label when no devices are connected or have supported plugins enabled"
+    },
+    "shareMessage": {
+        "message": "Apri nel browser",
+        "description": "Context Menu label for opening a link in the device's web browser"
+    },
+    "smsMessage": {
+        "message": "Invia SMS",
+        "description": "Context Menu label for sharing a link in an SMS message"
+    }
+}
+

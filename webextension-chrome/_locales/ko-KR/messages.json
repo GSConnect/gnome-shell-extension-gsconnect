@@ -1,0 +1,45 @@
+{
+    "extensionName": {
+        "message": "GSConnect",
+        "description": "The extension name"
+    },
+    "extensionDescription": {
+        "message": "GSConnect로 링크를 공유하여 웹 브라우저에서 열거나 메시지를 통해 공유합니다.",
+        "description": "The extension description"
+    },
+    "contextMenuMultipleDevices": {
+        "message": "모바일 기기로 전송",
+        "description": "Top-level Context Menu label when multiple devices are available"
+    },
+    "contextMenuSinglePlugin": {
+        "message": "$NAME$ ($PLUGIN$)",
+        "description": "Context Menu label for devices that only support a single plugin",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Nexus 4"
+            },
+            "plugin": {
+                "content": "$2",
+                "example": "Open in Browser"
+            }
+        }
+    },
+    "popupMenuDisconnected": {
+        "message": "서비스 안 됨",
+        "description": "Popup Menu label when disconnected from the GNOME Shell extension"
+    },
+    "popupMenuNoDevices": {
+        "message": "장치를 찾을 수 없음",
+        "description": "Popup Menu label when no devices are connected or have supported plugins enabled"
+    },
+    "shareMessage": {
+        "message": "웹 브라우저에서 열기",
+        "description": "Context Menu label for opening a link in the device's web browser"
+    },
+    "smsMessage": {
+        "message": "메시지 보내기",
+        "description": "Context Menu label for sharing a link in an SMS message"
+    }
+}
+

@@ -1,0 +1,55 @@
+/*
+ * SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+ *
+ * SPDX-License-Identifier: GPL-2.0-or-later
+ */
+
+html, body {
+    margin: 0;
+    padding: 0;
+    background-color: #fafafa;
+    font-family: Ubuntu, Cantrell, Arial, sans-serif;
+    font-size: 0.9em;
+}
+
+#popup {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 15em;
+    margin: 0.5em 0;
+}
+
+.device {
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+}
+
+.device-icon {
+    margin: 0.5em;
+}
+
+.device-name {
+    margin-right: auto;
+}
+
+.plugin-button {
+    border-radius: 3px;
+    margin-right: 6px;
+    padding: 4px;
+}
+
+.plugin-button:hover {
+    background-color: rgba(204, 204, 204, 0.5);
+}
+
+.plugin-button:active {
+    background-color: rgba(204, 204, 204, 0.75);
+}
+
+.popup-menu-message {
+    font-style: italic;
+    text-align: center;
+}
+
