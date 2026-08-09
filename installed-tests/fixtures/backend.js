@@ -380,6 +380,17 @@ export const Channel = GObject.registerClass({
         this._host = host;
     }
 
+    get local_host() {
+        if (this._localHost === undefined)
+            this._localHost = null;
+
+        return this._localHost;
+    }
+
+    set local_host(host) {
+        this._localHost = host;
+    }
+
     get port() {
         if (this._port === undefined) {
             if (this.identity && this.identity.body.tcpPort)
@@ -397,6 +408,7 @@ export const Channel = GObject.registerClass({
 
     async accept(connection) {
         try {
+            this._localHost = connection.get_local_address().address.to_string();
             this._connection = connection;
             this.backend.channels.set(this.address, this);
 
@@ -419,6 +431,7 @@ export const Channel = GObject.registerClass({
 
     async open(connection) {
         try {
+            this._localHost = connection.get_local_address().address.to_string();
             this._connection = connection;
             this.backend.channels.set(this.address, this);
 

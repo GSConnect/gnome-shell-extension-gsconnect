@@ -584,6 +584,19 @@ export const Channel = GObject.registerClass({
         this._host = host;
     }
 
+    /**
+     * The local address of the authenticated LAN connection.
+     *
+     * Plugins that open a related listener must bind to this address instead
+     * of trusting an address supplied by the remote peer.
+     */
+    get local_host() {
+        if (this._localHost === undefined)
+            this._localHost = null;
+
+        return this._localHost;
+    }
+
     get port() {
         if (this._port === undefined) {
             if (this.identity && this.identity.body.tcpPort)
@@ -735,6 +748,7 @@ export const Channel = GObject.registerClass({
         debug(`${this.address} (${this.uuid})`);
 
         try {
+            this._localHost = connection.get_local_address().address.to_string();
             this._connection = connection;
             this.backend.channels.set(this.address, this);
 
@@ -790,6 +804,7 @@ export const Channel = GObject.registerClass({
         debug(`${this.address} (${this.uuid})`);
 
         try {
+            this._localHost = connection.get_local_address().address.to_string();
             this._connection = connection;
             this.backend.channels.set(this.address, this);
 
