@@ -167,15 +167,10 @@ function getNumberTypeLabel(type) {
  * @returns {string} A (possibly) better display number for the address
  */
 export function getDisplayNumber(contact, address) {
-    const number = address.toPhoneNumber();
-
     for (const contactNumber of contact.numbers) {
-        const cnumber = contactNumber.value.toPhoneNumber();
-
-        if (number.endsWith(cnumber) || cnumber.endsWith(number))
+        if (address?.equalsPhoneNumber(contactNumber.value))
             return GLib.markup_escape_text(contactNumber.value, -1);
     }
-
     return GLib.markup_escape_text(address, -1);
 }
 
