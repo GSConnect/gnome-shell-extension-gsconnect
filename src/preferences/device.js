@@ -281,7 +281,7 @@ export const Panel = GObject.registerClass({
 
         // Notifications
         'notification', 'notification-page',
-        'notification-list', 'notification-apps',
+        'notification-list', 'notification-apps', "share-notification-active",
 
         // Telephony
         'telephony', 'telephony-page',
@@ -787,6 +787,13 @@ export const Panel = GObject.registerClass({
         settings.bind(
             'send-notifications',
             this.notification_apps,
+            'sensitive',
+            Gio.SettingsBindFlags.DEFAULT
+        );
+        
+        settings.bind(
+            'send-notifications',
+            this.share_notification_active,
             'sensitive',
             Gio.SettingsBindFlags.DEFAULT
         );
