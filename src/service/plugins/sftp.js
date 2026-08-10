@@ -9,6 +9,7 @@ import GObject from 'gi://GObject';
 import Config from '../../config.js';
 import * as Core from '../core.js';
 import Plugin from '../plugin.js';
+import {safe_dirname} from '../utils/file.js';
 
 
 export const Metadata = {
@@ -38,9 +39,6 @@ export const Metadata = {
 };
 
 
-const MAX_MOUNT_DIRS = 12;
-
-
 /**
  * SFTP Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/sftp
@@ -54,6 +52,8 @@ const SFTPPlugin = GObject.registerClass({
         super._init(device, 'sftp');
 
         this._gmount = null;
+        this._directories = {};
+        this._device_dir = null;
         this._mounting = false;
 
         // A reusable launcher for ssh processes
@@ -90,7 +90,7 @@ const SFTPPlugin = GObject.registerClass({
                 if (regex.test(uri)) {
                     this._gmount = mount;
                     this._addSubmenu(mount);
-                    this._addSymlink(mount);
+                    this._addSymlinks(mount, this._directories);
 
                     break;
                 }
@@ -105,8 +105,11 @@ const SFTPPlugin = GObject.registerClass({
 
         // Only enable for Lan connections
         if (this.device.channel.constructor.name === 'LanChannel') { // FIXME: Circular import workaround
-            if (this.settings.get_boolean('automount'))
+            if (this.settings.get_boolean('automount')) {
+                debug(
+                    `Initial SFTP automount for ${this.device.name}`);
                 this.mount();
+            }
         } else {
             this.device.lookup_action('mount').enabled = false;
             this.device.lookup_action('unmount').enabled = false;
@@ -136,40 +139,20 @@ const SFTPPlugin = GObject.registerClass({
         if (!regex.test(uri))
             return;
 
+        debug(`Found new SFTP mount for ${this.device.name}`);
         this._gmount = mount;
         this._addSubmenu(mount);
-        this._addSymlink(mount);
+        this._addSymlinks(mount, this._directories);
     }
 
     _onMountRemoved(monitor, mount) {
         if (this.gmount !== mount)
             return;
 
+        debug(`Mount for ${this.device.name} removed, cleaning up`);
         this._gmount = null;
         this._removeSubmenu();
-    }
-
-    async _listDirectories(mount) {
-        const file = mount.get_root();
-
-        const iter = await file.enumerate_children_async(
-            Gio.FILE_ATTRIBUTE_STANDARD_NAME,
-            Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
-            GLib.PRIORITY_DEFAULT,
-            this.cancellable);
-
-        const infos = await iter.next_files_async(MAX_MOUNT_DIRS,
-            GLib.PRIORITY_DEFAULT, this.cancellable);
-        iter.close_async(GLib.PRIORITY_DEFAULT, null, null);
-
-        const directories = {};
-
-        for (const info of infos) {
-            const name = info.get_name();
-            directories[name] = `${file.get_uri()}${name}/`;
-        }
-
-        return directories;
+        this._cleanupDirectories();
     }
 
     _onAskQuestion(op, message, choices) {
@@ -221,11 +204,23 @@ const SFTPPlugin = GObject.registerClass({
             op.connect('ask-question', this._onAskQuestion);
             op.connect('ask-password', this._onAskPassword);
 
-            // This is the actual call to mount the device
             const host = this.device.channel.host;
             const uri = `sftp://${host}:${packet.body.port}/`;
             const file = Gio.File.new_for_uri(uri);
 
+            const _directories = {};
+            for (let i = 0; i < packet.body.multiPaths.length; ++i) {
+                try {
+                    const _name = packet.body.pathNames[i];
+                    const _dir = packet.body.multiPaths[i];
+                    _directories[_name] = _dir;
+                } catch {}
+            }
+            this._directories = _directories;
+            debug(`Directories: ${Object.entries(this._directories)}`);
+
+            debug(`Mounting ${this.device.name} SFTP server as ${uri}`);
+            // This is the actual call to mount the device
             await file.mount_enclosing_volume(GLib.PRIORITY_DEFAULT, op,
                 this.cancellable);
         } catch (e) {
@@ -259,7 +254,7 @@ const SFTPPlugin = GObject.registerClass({
             this.cancellable);
 
         if (ssh_add.get_exit_status() !== 0)
-            debug(stdout.trim(), this.device.name);
+            logError(stdout.trim(), this.device.name);
     }
 
     /**
@@ -335,16 +330,17 @@ const SFTPPlugin = GObject.registerClass({
         return this._filesMenuItem;
     }
 
-    async _addSubmenu(mount) {
+    _addSubmenu(mount) {
         try {
-            const directories = await this._listDirectories(mount);
 
             // Submenu sections
             const dirSection = new Gio.Menu();
             const unmountSection = this._getUnmountSection();
 
-            for (const [name, uri] of Object.entries(directories))
+            for (const [name, path] of Object.entries(this._directories)) {
+                const uri = `${mount.get_root().get_uri()}${path}`;
                 dirSection.append(name, `device.openPath::${uri}`);
+            }
 
             // Files submenu
             const filesSubmenu = new Gio.Menu();
@@ -368,6 +364,7 @@ const SFTPPlugin = GObject.registerClass({
     }
 
     _removeSubmenu() {
+        debug('Removing device.mount submenu and restoring mount action');
         try {
             const index = this.device.removeMenuAction('device.mount');
             const action = this.device.lookup_action('mount');
@@ -389,54 +386,95 @@ const SFTPPlugin = GObject.registerClass({
      * Create a symbolic link referring to the device by name
      *
      * @param {Gio.Mount} mount - A GMount to link to
+     * @param {object} directories - The name:path mappings for
+     *                               the directory symlinks.
      */
-    async _addSymlink(mount) {
+    async _addSymlinks(mount, directories) {
+        if (!directories)
+            return;
+        debug(`Building symbolic links for ${this.device.name}`);
         try {
-            const by_name_dir = Gio.File.new_for_path(
-                `${Config.RUNTIMEDIR}/by-name/`
+            // Replace path separator with a Unicode lookalike:
+            const safe_device_name = safe_dirname(this.device.name);
+
+            const device_dir = Gio.File.new_for_path(
+                `${Config.RUNTIMEDIR}/by-name/${safe_device_name}`
             );
+            // Check for and remove any existing links or other cruft
+            if (device_dir.query_exists(null) &&
+                device_dir.query_file_type(
+                    Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS, null) !==
+                Gio.FileType.DIRECTORY) {
+                await device_dir.delete_async(
+                    GLib.PRIORITY_DEFAULT, this.cancellable);
+            }
 
             try {
-                by_name_dir.make_directory_with_parents(null);
+                device_dir.make_directory_with_parents(null);
             } catch (e) {
                 if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.EXISTS))
                     throw e;
             }
+            this._device_dir = device_dir;
 
-            // Replace path separator with a Unicode lookalike:
-            let safe_device_name = this.device.name.replace('/', '∕');
+            const base_path = mount.get_root().get_path();
+            for (const [_name, _path] of Object.entries(directories)) {
+                const safe_name = safe_dirname(_name);
+                const link_target = `${base_path}${_path}`;
+                const link = Gio.File.new_for_path(
+                    `${device_dir.get_path()}/${safe_name}`);
 
-            if (safe_device_name === '.')
-                safe_device_name = '·';
-            else if (safe_device_name === '..')
-                safe_device_name = '··';
+                // Check for and remove any existing stale link
+                try {
+                    const link_stat = await link.query_info_async(
+                        'standard::symlink-target',
+                        Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
+                        GLib.PRIORITY_DEFAULT,
+                        this.cancellable);
 
-            const link_target = mount.get_root().get_path();
-            const link = Gio.File.new_for_path(
-                `${by_name_dir.get_path()}/${safe_device_name}`);
+                    if (link_stat.get_symlink_target() === link_target)
+                        continue;
 
-            // Check for and remove any existing stale link
-            try {
-                const link_stat = await link.query_info_async(
-                    'standard::symlink-target',
-                    Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
-                    GLib.PRIORITY_DEFAULT,
-                    this.cancellable);
+                    await link.delete_async(GLib.PRIORITY_DEFAULT,
+                        this.cancellable);
+                } catch (e) {
+                    if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.NOT_FOUND))
+                        throw e;
+                }
 
-                if (link_stat.get_symlink_target() === link_target)
-                    return;
-
-                await link.delete_async(GLib.PRIORITY_DEFAULT,
-                    this.cancellable);
-            } catch (e) {
-                if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.NOT_FOUND))
-                    throw e;
+                debug(`Linking '${_name}' to device path ${_path}`);
+                link.make_symbolic_link(link_target, this.cancellable);
             }
-
-            link.make_symbolic_link(link_target, this.cancellable);
         } catch (e) {
             debug(e, this.device.name);
         }
+    }
+
+    /**
+     * Remove the directory symlinks placed in the by-name path for the
+     * device.
+     */
+    async _cleanupDirectories() {
+        if (this._device_dir === null || !this._directories)
+            return;
+
+        for (const _name of Object.keys(this._directories)) {
+            try {
+                const safe_name = safe_dirname(_name);
+
+                debug(`Destroying symlink '${safe_name}'`);
+                const link = Gio.File.new_for_path(
+                    `${this._device_dir.get_path()}/${safe_name}`);
+                await link.delete_async(GLib.PRIORITY_DEFAULT, null);
+            } catch (e) {
+                if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.NOT_FOUND))
+                    debug(e, this.device.name);
+            }
+        }
+        this._device_dir = null;
+        // We don't clean up this._directories here, because a new mount may
+        // be created in the future without another packet being received,
+        // and we'll need to know the pathnames to re-create.
     }
 
     /**
@@ -463,6 +501,7 @@ const SFTPPlugin = GObject.registerClass({
                 return;
 
             this._removeSubmenu();
+            this._cleanupDirectories();
             this._mounting = false;
 
             await this.gmount.unmount_with_operation(
