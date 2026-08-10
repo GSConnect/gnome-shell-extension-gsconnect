@@ -1,4 +1,5 @@
-# SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+# SPDX-FileCopyrightText: 2016 KDE Connect Indicator Developers
+# SPDX-FileContributor: GSConnect Developers https://github.com/GSConnect
 #
 # SPDX-License-Identifier: GPL-2.0-or-later
 
