@@ -1,0 +1,36 @@
+{
+  "manifest_version": 2,
+  "name": "__MSG_extensionName__",
+  "description": "__MSG_extensionDescription__",
+  "version": "8",
+  "homepage_url": "https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki",
+  "default_locale": "en",
+  "browser_action": {
+    "default_title": "__MSG_extensionName__",
+    "default_popup": "popup.html",
+    "default_icon": "images/gsconnect.svg"
+  },
+  "applications": {
+    "gecko": {
+      "id": "gsconnect@andyholmes.github.io"
+    }
+  },
+  "background": {
+    "page": "background.html"
+  },
+  "permissions": [
+    "nativeMessaging",
+    "tabs",
+    "contextMenus"
+  ],
+  "icons": {
+    "256": "images/gsconnect.svg",
+    "128": "images/gsconnect.svg",
+    "64": "images/gsconnect.svg",
+    "48": "images/gsconnect.svg",
+    "32": "images/gsconnect.svg",
+    "24": "images/gsconnect.svg",
+    "22": "images/gsconnect.svg",
+    "16": "images/gsconnect.svg"
+  }
+}
