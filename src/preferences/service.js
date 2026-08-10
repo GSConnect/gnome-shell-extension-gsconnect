@@ -52,7 +52,7 @@ async function generateSupportLog(time) {
         const proc = new Gio.Subprocess({
             flags: (Gio.SubprocessFlags.STDOUT_PIPE |
                     Gio.SubprocessFlags.STDERR_MERGE),
-            argv: ['journalctl', '--no-host', '--since', time],
+            argv: ['journalctl', '--no-host', '--since', time, '--identifier', 'org.gnome.Shell.Extensions.GSConnect'],
         });
         proc.init(null);
 
