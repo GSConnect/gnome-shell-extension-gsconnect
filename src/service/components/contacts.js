@@ -362,15 +362,12 @@ const Store = GObject.registerClass({
         // First look for an existing contact by number
         const contacts = this.contacts;
         const matches = [];
-        const qnumber = query.number.toPhoneNumber();
 
         for (let i = 0, len = contacts.length; i < len; i++) {
             const contact = contacts[i];
 
             for (const num of contact.numbers) {
-                const cnumber = num.value.toPhoneNumber();
-
-                if (qnumber.endsWith(cnumber) || cnumber.endsWith(qnumber)) {
+                if (query.number.equalsPhoneNumber(num.value)) {
                     // If no query name or exact match, return immediately
                     if (!query.name || query.name === contact.name)
                         return contact;
