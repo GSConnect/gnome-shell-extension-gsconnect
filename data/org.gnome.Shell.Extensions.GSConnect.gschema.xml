@@ -12,8 +12,8 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <key name="enabled" type="b">
       <default>true</default>
     </key>
-    <key name="show-indicators" type="b">
-      <default>false</default>
+    <key name="display-mode" type="s">
+      <default>"user-menu"</default>
     </key>
     <key name="keep-alive-when-locked" type="b">
       <default>true</default>
