@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+
+SPDX-License-Identifier: GPL-2.0-or-later
+-->
+
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+
+  <template class="GSConnectShareDialog" parent="AdwApplicationWindow">
+    <property name="title" translatable="yes">Share</property>
+    <property name="default-width">420</property>
+    <property name="default-height">180</property>
+    <property name="modal">True</property>
+    <child>
+      <object class="AdwToolbarView">
+        <property name="visible">True</property>
+        <child type="top">
+          <object class="AdwHeaderBar">
+            <property name="visible">True</property>
+            <property name="title-widget">
+              <object class="AdwWindowTitle" id="title-widget">
+                <property name="title" translatable="yes">Share</property>
+              </object>
+            </property>
+          </object>
+        </child>
+        <property name="content">
+          <object class="AdwClamp">
+            <property name="visible">True</property>
+            <property name="margin-top">12</property>
+            <property name="margin-bottom">12</property>
+            <property name="margin-start">12</property>
+            <property name="margin-end">12</property>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="orientation">vertical</property>
+                <property name="spacing">12</property>
+                <child>
+                  <object class="GtkCheckButton" id="open-check">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Open when done</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkButton" id="files-button">
+                    <property name="visible">True</property>
+                    <property name="icon-name">document-send-symbolic</property>
+                    <property name="label" translatable="no">Send Files</property>
+                    <property name="has-tooltip">True</property>
+                    <signal name="clicked" handler="_onChooseFiles" swapped="no"/>
+                    <accessibility>
+                      <property name="label" translatable="yes">Send Files</property>
+                    </accessibility>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="orientation">horizontal</property>
+                    <property name="spacing">6</property>
+                    <child>
+                      <object class="GtkEntry" id="uri-entry">
+                        <property name="visible">True</property>
+                        <property name="placeholder-text" translatable="no">https://</property>
+                        <property name="hexpand">True</property>
+                        <signal name="activate" handler="_onSendLink" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="link-button">
+                        <property name="visible">True</property>
+                        <property name="icon-name">send-to-symbolic</property>
+                        <property name="has-tooltip">True</property>
+                        <signal name="clicked" handler="_onSendLink" swapped="no"/>
+                        <accessibility>
+                          <property name="label" translatable="yes">Send Link</property>
+                        </accessibility>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </property>
+      </object>
+    </child>
+  </template>
+</interface>

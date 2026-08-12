@@ -1274,3 +1274,52 @@ msgstr "Servizio non disponibile"
 msgid "Open in Browser"
 msgstr "Apri nel browser"
 
+#: src/service/plugins/findmyphone.js:194
+#: data/ui/messaging-conversation-participants.ui:14
+msgid "Participants"
+msgstr "Partecipanti"
+
+#: data/ui/command-row.ui:33
+msgid "Delete Command"
+msgstr "Elimina Comando"
+
+#: src/service/plugins/findmyphone.js:194
+#: data/ui/find-my-phone.js:26
+msgid "You found me!"
+msgstr "Mi hai trovato!"
+
+msgid "Select Folder"
+msgstr "Seleziona Cartella"
+
+msgid "Command"
+msgstr "Comando"
+
+msgid "Set Shortcut"
+msgstr "Imposta scorciatoia da tastiera"
+
+msgid "Main Menu"
+msgstr "Menu Principale"
+
+msgid "Welcome to GSConnect"
+msgstr "Benvenuto su GSConnect"
+
+msgid "Settings"
+msgstr "Impostazioni"
+
+msgid "This device"
+msgstr "Questo dispositivo"
+
+msgid "Apparence"
+msgstr "Aspetto"
+
+msgid "Support"
+msgstr "Supporto"
+
+msgid "Unpair Device"
+msgstr "Disaccoppia il dispositivo"
+
+msgid "is not paired"
+msgstr "non accopiato"
+
+msgid "Pair Device"
+msgstr "Accoppia il dispositivo"

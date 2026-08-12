@@ -54,6 +54,7 @@ const SFTPPlugin = GObject.registerClass({
         super._init(device, 'sftp');
 
         this._gmount = null;
+        this._directories = {};
         this._mounting = false;
 
         // A reusable launcher for ssh processes
@@ -78,22 +79,11 @@ const SFTPPlugin = GObject.registerClass({
 
     get gmount() {
         if (this._gmount === null && this.device.connected) {
-            const host = this.device.channel.host;
+            this._gmount = this._findMount();
 
-            const regex = new RegExp(
-                `sftp://(${host}):(1739|17[4-5][0-9]|176[0-4])`
-            );
-
-            for (const mount of this._volumeMonitor.get_mounts()) {
-                const uri = mount.get_root().get_uri();
-
-                if (regex.test(uri)) {
-                    this._gmount = mount;
-                    this._addSubmenu(mount);
-                    this._addSymlink(mount);
-
-                    break;
-                }
+            if (this._gmount !== null && this._hasDirectoryPaths()) {
+                this._addSubmenu(this._gmount);
+                this._addSymlink(this._gmount);
             }
         }
 
@@ -105,12 +95,25 @@ const SFTPPlugin = GObject.registerClass({
 
         // Only enable for Lan connections
         if (this.device.channel.constructor.name === 'LanChannel') { // FIXME: Circular import workaround
-            if (this.settings.get_boolean('automount'))
+            if (this.gmount !== null && !this._hasDirectoryPaths())
+                this.mount();
+            else if (this.settings.get_boolean('automount'))
                 this.mount();
         } else {
             this.device.lookup_action('mount').enabled = false;
             this.device.lookup_action('unmount').enabled = false;
         }
+    }
+
+    disconnected() {
+        super.disconnected();
+
+        if (this.device.getMenuAction('device.mount') > -1)
+            this._removeSubmenu();
+
+        this._gmount = null;
+        this._directories = {};
+        this._mounting = false;
     }
 
     handlePacket(packet) {
@@ -137,8 +140,13 @@ const SFTPPlugin = GObject.registerClass({
             return;
 
         this._gmount = mount;
-        this._addSubmenu(mount);
-        this._addSymlink(mount);
+
+        if (this._hasDirectoryPaths()) {
+            this._addSubmenu(mount);
+            this._addSymlink(mount);
+        } else {
+            this.mount();
+        }
     }
 
     _onMountRemoved(monitor, mount) {
@@ -146,10 +154,73 @@ const SFTPPlugin = GObject.registerClass({
             return;
 
         this._gmount = null;
+        this._directories = {};
         this._removeSubmenu();
     }
 
+    _findMount() {
+        const host = this.device.channel.host;
+
+        const regex = new RegExp(
+            `sftp://(${host}):(1739|17[4-5][0-9]|176[0-4])`
+        );
+
+        for (const mount of this._volumeMonitor.get_mounts()) {
+            const uri = mount.get_root().get_uri();
+
+            if (regex.test(uri))
+                return mount;
+        }
+
+        return null;
+    }
+
+    _hasDirectoryPaths() {
+        return Object.keys(this._directories).length > 0;
+    }
+
+    _getDirectoryPaths(packet) {
+        const directories = {};
+        const paths = [...(packet.body.multiPaths || [])];
+        const names = packet.body.pathNames || [];
+
+        if (paths.length === 0 && packet.body.path)
+            paths.push(packet.body.path);
+
+        for (let i = 0, len = paths.length; i < len; i++) {
+            const path = paths[i];
+
+            if (!path)
+                continue;
+
+            const name = names[i] || GLib.path_get_basename(path);
+            directories[name] = path;
+        }
+
+        return directories;
+    }
+
+    _getFileForPath(root, path) {
+        if (!path || path === '/')
+            return root;
+
+        return root.resolve_relative_path(path.replace(/^\/+/, ''));
+    }
+
     async _listDirectories(mount) {
+        if (Object.keys(this._directories).length > 0) {
+            const directories = {};
+
+            for (const [name, path] of Object.entries(this._directories)) {
+                directories[name] = this._getFileForPath(
+                    mount.get_root(),
+                    path
+                ).get_uri();
+            }
+
+            return directories;
+        }
+
         const file = mount.get_root();
 
         const iter = await file.enumerate_children_async(
@@ -202,8 +273,20 @@ const SFTPPlugin = GObject.registerClass({
      */
     async _handleMount(packet) {
         try {
+            this._directories = this._getDirectoryPaths(packet);
+
+            const mount = this._gmount ?? this._findMount();
+
+            if (mount !== null) {
+                this._gmount = mount;
+                this._addSubmenu(mount);
+                this._addSymlink(mount);
+
+                return;
+            }
+
             // Already mounted or mounting
-            if (this.gmount !== null || this._mounting)
+            if (this._mounting)
                 return;
 
             this._mounting = true;
@@ -223,16 +306,25 @@ const SFTPPlugin = GObject.registerClass({
 
             // This is the actual call to mount the device
             const host = this.device.channel.host;
-            const uri = `sftp://${host}:${packet.body.port}/`;
-            const file = Gio.File.new_for_uri(uri);
+            const root = Gio.File.new_for_uri(`sftp://${host}:${packet.body.port}/`);
+            const file = this._getFileForPath(root, packet.body.path);
 
             await file.mount_enclosing_volume(GLib.PRIORITY_DEFAULT, op,
                 this.cancellable);
         } catch (e) {
             // Special case when the GMount didn't unmount properly but is still
             // on the same port and can be reused.
-            if (e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.ALREADY_MOUNTED))
+            if (e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.ALREADY_MOUNTED)) {
+                const mount = this._findMount();
+
+                if (mount !== null) {
+                    this._gmount = mount;
+                    this._addSubmenu(mount);
+                    this._addSymlink(mount);
+                }
+
                 return;
+            }
 
             // There's a good chance this is a host key verification error;
             // regardless we'll remove the key for security.
@@ -339,6 +431,9 @@ const SFTPPlugin = GObject.registerClass({
         try {
             const directories = await this._listDirectories(mount);
 
+            if (!this.device.connected)
+                return;
+
             // Submenu sections
             const dirSection = new Gio.Menu();
             const unmountSection = this._getUnmountSection();
@@ -411,7 +506,15 @@ const SFTPPlugin = GObject.registerClass({
             else if (safe_device_name === '..')
                 safe_device_name = '··';
 
-            const link_target = mount.get_root().get_path();
+            const [path = null] = Object.values(this._directories);
+            const link_target = this._getFileForPath(
+                mount.get_root(),
+                path
+            ).get_path();
+
+            if (link_target === null)
+                return;
+
             const link = Gio.File.new_for_path(
                 `${by_name_dir.get_path()}/${safe_device_name}`);
 
@@ -443,7 +546,7 @@ const SFTPPlugin = GObject.registerClass({
      * Send a request to mount the remote device
      */
     mount() {
-        if (this.gmount !== null)
+        if (this.gmount !== null && this._hasDirectoryPaths())
             return;
 
         this.device.sendPacket({

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+SPDX-FileCopyrightText: GSConnect Developers https://github.com/GSConnect
+
+SPDX-License-Identifier: GPL-2.0-or-later
+-->
+
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <template class="GSConnectMessagingConversationShareSMS" parent="AdwApplicationWindow">
+    <property name="title">Share Link</property>
+    <property name="default-width">500</property>
+    <property name="default-height">300</property>
+    <child>
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="AdwHeaderBar">
+            <property name="show-title">true</property>
+            <child>
+              <object class="GtkButton">
+                <property name="icon-name">list-add-symbolic</property>
+                <property name="has-tooltip">True</property>
+                <property name="tooltip-text" translatable="yes">New Conversation</property>
+                <accessibility>
+                  <property name="label" translatable="yes">New Conversation</property>
+                </accessibility>
+              </object>
+            </child>
+          </object>
+        </child>
+        <property name="content">
+          <object class="GtkScrolledWindow">
+            <property name="can-focus">false</property>
+            <property name="hexpand">true</property>
+            <property name="vexpand">true</property>
+            <property name="hscrollbar-policy">never</property>
+            <child>
+              <object class="AdwClamp">
+                <property name="margin-top">10</property>
+                <property name="margin-start">10</property>
+                <property name="margin-end">10</property>
+                <property name="margin-bottom">10</property>
+                <child>
+                  <object class="GtkListBox" id="thread_list">
+                    <property name="activate-on-single-click">false</property>
+                    <style>
+                      <class name="boxed-list"/>
+                    </style>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </property>
+      </object>
+    </child>
+  </template>
+</interface>

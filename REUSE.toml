@@ -8,7 +8,7 @@ SPDX-PackageSupplier = "GSConnect Developers <>"
 SPDX-PackageDownloadLocation = "https://github.com/GSConnect/gnome-shell-extension-gsconnect"
 
 [[annotations]]
-path = ["data/icons/**", "data/images/enter-keyboard-shortcut.svg", "data/metainfo/**.png"]
+path = ["data/icons/**", "data/metainfo/**.png"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "GSConnect Developers <>"
 SPDX-License-Identifier = "GPL-2.0-or-later"

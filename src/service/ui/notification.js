@@ -2,9 +2,11 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-import Gio from 'gi://Gio';
 import GObject from 'gi://GObject';
-import Gtk from 'gi://Gtk';
+import Gtk from 'gi://Gtk?version=4.0';
+import Adw from 'gi://Adw';
+import {MessagingInputText} from './components.js';
+
 
 import * as URI from '../utils/uri.js';
 import '../utils/ui.js';
@@ -39,83 +41,73 @@ const ReplyDialog = GObject.registerClass({
         ),
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/notification-reply-dialog.ui',
-    Children: ['infobar', 'notification-title', 'notification-body', 'entry'],
-}, class ReplyDialog extends Gtk.Dialog {
+    Children: ['title-widget', 'infobar', 'notification-title', 'notification-body', 'bottom-bar'],
+    Signals: {
+        'response': {
+            param_types: [GObject.TYPE_OBJECT, GObject.TYPE_INT],
+        },
+    },
+}, class ReplyDialog extends Adw.ApplicationWindow {
 
     _init(params) {
-        super._init({
-            application: Gio.Application.get_default(),
-            device: params.device,
-            plugin: params.plugin,
-            uuid: params.uuid,
-            use_header_bar: true,
-        });
-
-        this.set_response_sensitive(Gtk.ResponseType.OK, false);
+        super._init();
+        Object.assign(this, params);
 
         // Info bar
         this.device.bind_property(
             'connected',
             this.infobar,
-            'reveal-child',
+            'revealed',
             GObject.BindingFlags.INVERT_BOOLEAN
         );
 
-        // Notification Data
-        const headerbar = this.get_titlebar();
-        headerbar.title = params.notification.appName;
-        headerbar.subtitle = this.device.name;
-
-        this.notification_title.label = params.notification.title;
-        this.notification_body.label = URI.linkify(params.notification.text);
-
-        // Message Entry/Send Button
-        this.device.bind_property(
+        // Message text input
+        this.message_bar = new MessagingInputText();
+        this._entryChangedId = this.message_bar.connect('message-send', () => {
+            this.response = Gtk.ResponseType.OK;
+        });
+        this.bottom_bar.child = this.message_bar;
+        this.deviceBinding = this.device.bind_property(
             'connected',
-            this.entry,
+            this.message_bar,
             'sensitive',
-            GObject.BindingFlags.DEFAULT
+            GObject.BindingFlags.SYNC_CREATE
         );
 
-        this._connectedId = this.device.connect(
-            'notify::connected',
-            this._onStateChanged.bind(this)
-        );
+        // Notification Data
+        this.title_widget.title = this.notification.appName;
+        this.title_widget.subtitle = this.device.name;
 
-        this._entryChangedId = this.entry.buffer.connect(
-            'changed',
-            this._onStateChanged.bind(this)
-        );
+        this.notification_title.label = this.notification.title;
+        this.notification_body.label = URI.linkify(this.notification.text);
+
+
 
         this.restoreGeometry('notification-reply-dialog');
-
-        this.connect('destroy', this._onDestroy);
     }
 
-    _onDestroy(dialog) {
-        dialog.entry.buffer.disconnect(dialog._entryChangedId);
-        dialog.device.disconnect(dialog._connectedId);
-    }
-
-    vfunc_delete_event() {
+    vfunc_close_request() {
+        this.message_bar.disconnect(this._entryChangedId);
+        this.device.disconnect(this._connectedId);
+        this.deviceBinding.unbind();
+        this.emit('response', this, Gtk.ResponseType.CANCEL);
         this.saveGeometry();
-
         return false;
     }
 
-    vfunc_response(response_id) {
-        if (response_id === Gtk.ResponseType.OK) {
+    set response(response) {
+        if (response === Gtk.ResponseType.OK) {
             // Refuse to send empty or whitespace only messages
-            if (!this.entry.buffer.text.trim())
+            if (!this.message_bar.text.trim())
                 return;
 
             this.plugin.replyNotification(
                 this.uuid,
-                this.entry.buffer.text
+                this.message_bar.text
             );
         }
-
-        this.destroy();
+        this.emit('response', this, response);
+        this.close();
     }
 
     get device() {
@@ -152,8 +144,8 @@ const ReplyDialog = GObject.registerClass({
 
         // We must have a UUID
         if (!uuid) {
-            this.destroy();
             debug('no uuid for repliable notification');
+            this.close();
         }
     }
 
@@ -167,12 +159,6 @@ const ReplyDialog = GObject.registerClass({
         return true;
     }
 
-    _onStateChanged() {
-        if (this.device.connected && this.entry.buffer.text.trim())
-            this.set_response_sensitive(Gtk.ResponseType.OK, true);
-        else
-            this.set_response_sensitive(Gtk.ResponseType.OK, false);
-    }
 });
 
 export default ReplyDialog;

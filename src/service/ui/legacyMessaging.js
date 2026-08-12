@@ -2,15 +2,14 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-import Gio from 'gi://Gio';
 import GObject from 'gi://GObject';
-import Gtk from 'gi://Gtk';
+import Gtk from 'gi://Gtk?version=4.0';
+import Adw from 'gi://Adw';
+import {MessagingInputText} from './components.js'; // this dependency is needed for template build
 
 import * as Contacts from '../ui/contacts.js';
-import * as Messaging from '../ui/messaging.js';
 import * as URI from '../utils/uri.js';
 import '../utils/ui.js';
-
 
 const Dialog = GObject.registerClass({
     GTypeName: 'GSConnectLegacyMessagingDialog',
@@ -32,39 +31,26 @@ const Dialog = GObject.registerClass({
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/legacy-messaging-dialog.ui',
     Children: [
-        'infobar', 'stack',
-        'message-box', 'message-avatar', 'message-label', 'entry',
+        'infobar', 'nav-view', 'message-avatar', 'message-editor',
+        'message-label', 'title-widget', 'bottom-bar',
     ],
-}, class Dialog extends Gtk.Dialog {
+    Signals: {
+        'response': {
+            param_types: [GObject.TYPE_OBJECT, GObject.TYPE_INT],
+        },
+    },
+}, class Dialog extends Adw.ApplicationWindow {
 
     _init(params) {
-        super._init({
-            application: Gio.Application.get_default(),
-            device: params.device,
-            plugin: params.plugin,
-            use_header_bar: true,
-        });
-
-        this.set_response_sensitive(Gtk.ResponseType.OK, false);
-
-        // Dup some functions
-        this.headerbar = this.get_titlebar();
-        this._setHeaderBar = Messaging.Window.prototype._setHeaderBar;
+        super._init();
+        Object.assign(this, params);
 
         // Info bar
         this.device.bind_property(
             'connected',
             this.infobar,
-            'reveal-child',
+            'revealed',
             GObject.BindingFlags.INVERT_BOOLEAN
-        );
-
-        // Message Entry/Send Button
-        this.device.bind_property(
-            'connected',
-            this.entry,
-            'sensitive',
-            GObject.BindingFlags.DEFAULT
         );
 
         this._connectedId = this.device.connect(
@@ -72,79 +58,70 @@ const Dialog = GObject.registerClass({
             this._onStateChanged.bind(this)
         );
 
-        this._entryChangedId = this.entry.buffer.connect(
-            'changed',
-            this._onStateChanged.bind(this)
+        this.message_bar = new MessagingInputText();
+        this.message_bar.connect('message-send',  () => {
+            this.response = Gtk.ResponseType.OK;
+        });
+        this.bottom_bar.child = this.message_bar;
+
+        this.contact_chooser = new Contacts.ContactChooser({
+            device: this.device,
+        });
+
+        this.contact_chooser.show_back_button = false;
+        this.nav_view.push(this.contact_chooser);
+        this._numberSelectedId = this.contact_chooser.connect(
+            'number-selected',
+            this._onNumberSelected.bind(this)
         );
 
-        // Set the message if given
-        if (params.message) {
-            this.message = params.message;
-            this.addresses = params.message.addresses;
-
-            this.message_avatar.contact = this.device.contacts.query({
-                number: this.addresses[0].address,
-            });
-            this.message_label.label = URI.linkify(this.message.body);
-            this.message_box.visible = true;
-
-        // Otherwise set the address(es) if we were passed those
-        } else if (params.addresses) {
-            this.addresses = params.addresses;
-        }
-
-        // Load the contact list if we weren't supplied with an address
-        if (this.addresses.length === 0) {
-            this.contact_chooser = new Contacts.ContactChooser({
-                device: this.device,
-            });
-            this.stack.add_named(this.contact_chooser, 'contact-chooser');
-            this.stack.child_set_property(this.contact_chooser, 'position', 0);
-
-            this._numberSelectedId = this.contact_chooser.connect(
-                'number-selected',
-                this._onNumberSelected.bind(this)
-            );
-
-            this.stack.visible_child_name = 'contact-chooser';
-        }
+        const contact_chooser_controller = new Gtk.EventControllerKey();
+        contact_chooser_controller.connect('key-pressed', (controller, keyval, keycode, state) => {
+            if (this.nav_view.get_visible_page() === this.contact_chooser)
+                this.contact_chooser.onKeyPress(controller, keyval, keycode, state);
+        });
+        this.add_controller(contact_chooser_controller);
 
         this.restoreGeometry('legacy-messaging-dialog');
-
-        this.connect('destroy', this._onDestroy);
     }
 
-    _onDestroy(dialog) {
-        if (dialog._numberSelectedId !== undefined) {
-            dialog.contact_chooser.disconnect(dialog._numberSelectedId);
-            dialog.contact_chooser.destroy();
-        }
-
-        dialog.entry.buffer.disconnect(dialog._entryChangedId);
-        dialog.device.disconnect(dialog._connectedId);
-    }
-
-    vfunc_delete_event() {
+    vfunc_close_request() {
+        this.response = Gtk.ResponseType.CANCEL;
         this.saveGeometry();
 
         return false;
     }
 
-    vfunc_response(response_id) {
+    set response(response_id) {
         if (response_id === Gtk.ResponseType.OK) {
             // Refuse to send empty or whitespace only texts
-            if (!this.entry.buffer.text.trim())
+            if (!this.message_bar.text.trim())
                 return;
 
             this.plugin.sendMessage(
                 this.addresses,
-                this.entry.buffer.text,
-                1,
-                true
+                this.message_bar.text,
+                1
             );
         }
+        this.emit('response', this, response_id);
+        this.close();
+    }
 
-        this.destroy();
+    set message(message) {
+        this.message_label.label = URI.linkify(message.body);
+        this.message_avatar.visible = true;
+
+        const sender = message.title || 'unknown';
+        const contact = this.device.contacts.query({
+            name: sender,
+        });
+        if (contact)
+            this.addresses = [{address: contact.numbers[0].value}];
+        else
+            this.title_widget.title = sender;
+
+        this.nav_view.pop();
     }
 
     get addresses() {
@@ -157,11 +134,15 @@ const Dialog = GObject.registerClass({
     set addresses(addresses = []) {
         this._addresses = addresses;
 
-        // Set the headerbar
-        this._setHeaderBar(this._addresses);
+        const contact = this.device.contacts.query({
+            number: addresses[0].address,
+        });
 
-        // Show the message editor
-        this.stack.visible_child_name = 'message-editor';
+        this.title_widget.title = contact.name;
+        this.title_widget.subtitle = Contacts.getDisplayNumber(contact, addresses[0].address);
+        this.message_avatar.text = contact.name;
+        this.message_avatar.visible = true;
+
         this._onStateChanged();
     }
 
@@ -199,19 +180,15 @@ const Dialog = GObject.registerClass({
 
     _onNumberSelected(chooser, number) {
         const contacts = chooser.getSelected();
-
         this.addresses = Object.keys(contacts).map(address => {
             return {address: address};
         });
+        this.nav_view.pop();
     }
 
     _onStateChanged() {
-        if (this.device.connected &&
-            this.entry.buffer.text.trim() &&
-            this.stack.visible_child_name === 'message-editor')
-            this.set_response_sensitive(Gtk.ResponseType.OK, true);
-        else
-            this.set_response_sensitive(Gtk.ResponseType.OK, false);
+        if (!this.device.connected)
+            this.message_bar.sensitive = false;
     }
 
     /**
@@ -220,7 +197,7 @@ const Dialog = GObject.registerClass({
      * @param {string} text - The message to place in the entry
      */
     setMessage(text) {
-        this.entry.buffer.text = text;
+        this.message_bar.text = text;
     }
 });
 

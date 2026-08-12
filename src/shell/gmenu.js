@@ -68,6 +68,17 @@ function getItemInfo(model, index) {
 }
 
 
+const ListSubmenuItem = GObject.registerClass({
+    GTypeName: 'GSConnectShellListSubmenuItem',
+}, class ListSubmenuItem extends PopupMenu.PopupMenuItem {
+
+    // PopupMenuBase closes the top-level menu when an item emits ::activate.
+    activate(event) {
+        this.openSubmenu?.(event);
+    }
+});
+
+
 /**
  *
  */
@@ -196,7 +207,10 @@ export class ListBox extends PopupMenu.PopupMenuSection {
     }
 
     _addGMenuItem(info) {
-        const item = new PopupMenu.PopupMenuItem(info.label);
+        const hasSubmenu = info.links.some(link => link.name === 'submenu');
+        const item = hasSubmenu
+            ? new ListSubmenuItem(info.label)
+            : new PopupMenu.PopupMenuItem(info.label);
         this.addMenuItem(item);
 
         if (info.action !== undefined) {
@@ -208,11 +222,16 @@ export class ListBox extends PopupMenu.PopupMenuSection {
             );
         }
 
-        item.connectObject(
-            'activate',
-            this._onGMenuItemActivate.bind(this),
-            this
-        );
+        if (hasSubmenu) {
+            item.openSubmenu =
+                this._onGMenuItemActivate.bind(this, item);
+        } else {
+            item.connectObject(
+                'activate',
+                this._onGMenuItemActivate.bind(this),
+                this
+            );
+        }
 
         return item;
     }
@@ -285,16 +304,16 @@ export class ListBox extends PopupMenu.PopupMenuSection {
         // If this is a submenu of another item...
         if (this.submenu_for) {
             // Prepend an "<= Go Back" item, bold with a unicode arrow
-            const prev = new PopupMenu.PopupMenuItem(this.submenu_for.label.text);
+            const prev = new ListSubmenuItem(this.submenu_for.label.text);
             prev.label.style = 'font-weight: bold;';
             const prevArrow = PopupMenu.arrowIcon(St.Side.LEFT);
             prev.replace_child(prev._ornamentIcon, prevArrow);
             this.addMenuItem(prev, 0);
 
-            prev.connectObject('activate', (item, event) => {
-                this.emit('activate', item);
+            prev.openSubmenu = (event) => {
+                this.emit('activate', prev);
                 this._parent.submenu = null;
-            }, this);
+            };
         }
     }
 

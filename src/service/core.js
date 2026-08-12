@@ -256,8 +256,35 @@ export const Channel = GObject.registerClass({
         if (cancellable === null)
             cancellable = this.cancellable;
 
-        return this.output_stream.write_all_async(packet.serialize(),
-            GLib.PRIORITY_DEFAULT, cancellable);
+        if (this._outputQueue === undefined)
+            this._outputQueue = [];
+
+        return new Promise((resolve, reject) => {
+            this._outputQueue.push({packet, cancellable, resolve, reject});
+
+            if (!this._outputLock)
+                this._writePackets();
+        });
+    }
+
+    async _writePackets() {
+        this._outputLock = true;
+
+        let item;
+        while ((item = this._outputQueue.shift())) {
+            try {
+                const result = await this.output_stream.write_all_async(
+                    item.packet.serialize(),
+                    GLib.PRIORITY_DEFAULT,
+                    item.cancellable
+                );
+                item.resolve(result);
+            } catch (e) {
+                item.reject(e);
+            }
+        }
+
+        this._outputLock = false;
     }
 
     /**

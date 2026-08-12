@@ -8,7 +8,7 @@ import GObject from 'gi://GObject';
 
 import Plugin from '../plugin.js';
 import LegacyMessagingDialog from '../ui/legacyMessaging.js';
-import * as Messaging from '../ui/messaging.js';
+import {MessagingWindow, ConversationChooser} from '../ui/messaging.js';
 import SmsURI from '../utils/uri.js';
 
 
@@ -28,7 +28,7 @@ export const Metadata = {
         // SMS Actions
         sms: {
             label: _('Messaging'),
-            icon_name: 'sms-symbolic',
+            icon_name: 'chat-bubbles-text-symbolic',
 
             parameter_type: null,
             incoming: [],
@@ -36,7 +36,7 @@ export const Metadata = {
         },
         uriSms: {
             label: _('New SMS (URI)'),
-            icon_name: 'sms-symbolic',
+            icon_name: 'chat-bubbles-text-symbolic',
 
             parameter_type: new GLib.VariantType('s'),
             incoming: [],
@@ -44,7 +44,7 @@ export const Metadata = {
         },
         replySms: {
             label: _('Reply SMS'),
-            icon_name: 'sms-symbolic',
+            icon_name: 'chat-bubbles-text-symbolic',
 
             parameter_type: new GLib.VariantType('s'),
             incoming: [],
@@ -52,7 +52,7 @@ export const Metadata = {
         },
         sendMessage: {
             label: _('Send Message'),
-            icon_name: 'sms-send',
+            icon_name: 'paper-plane-symbolic',
 
             parameter_type: new GLib.VariantType('(aa{sv})'),
             incoming: [],
@@ -60,7 +60,7 @@ export const Metadata = {
         },
         sendSms: {
             label: _('Send SMS'),
-            icon_name: 'sms-send',
+            icon_name: 'paper-plane-symbolic',
 
             parameter_type: new GLib.VariantType('(ss)'),
             incoming: [],
@@ -68,7 +68,7 @@ export const Metadata = {
         },
         shareSms: {
             label: _('Share SMS'),
-            icon_name: 'sms-send',
+            icon_name: 'paper-plane-symbolic',
 
             parameter_type: new GLib.VariantType('s'),
             incoming: [],
@@ -159,21 +159,22 @@ const SMSPlugin = GObject.registerClass({
     }
 
     get window() {
-        if (this.settings.get_boolean('legacy-sms')) {
-            return new LegacyMessagingDialog({
-                device: this.device,
-                plugin: this,
-            });
-        }
-
         if (this._window === undefined) {
-            this._window = new Messaging.Window({
-                application: Gio.Application.get_default(),
-                device: this.device,
-                plugin: this,
-            });
+            if (this.settings.get_boolean('legacy-sms')) {
+                this._window = new LegacyMessagingDialog({
+                    application: Gio.Application.get_default(),
+                    device: this.device,
+                    plugin: this,
+                });
+            } else {
+                this._window = new MessagingWindow({
+                    application: Gio.Application.get_default(),
+                    device: this.device,
+                    plugin: this,
+                });
+            }
 
-            this._window.connect('destroy', () => {
+            this._windowId = this._window.connect('close-request', () => {
                 this._window = undefined;
             });
         }
@@ -187,7 +188,34 @@ const SMSPlugin = GObject.registerClass({
     }
 
     cacheLoaded() {
+        this._normalizeThreads();
         this.notify('threads');
+    }
+
+    _getThreadCache(thread_id) {
+        const cache = this.threads[thread_id];
+
+        if (Array.isArray(cache))
+            return cache;
+
+        if (cache && typeof cache === 'object')
+            return [cache];
+
+        return [];
+    }
+
+    _normalizeThreads() {
+        for (const [thread_id, thread] of Object.entries(this.threads)) {
+            if (Array.isArray(thread))
+                continue;
+
+            if (thread && typeof thread === 'object') {
+                thread.thread_id = `${thread.thread_id ?? thread_id}`;
+                this.threads[thread_id] = [thread];
+            } else {
+                delete this.threads[thread_id];
+            }
+        }
     }
 
     connected() {
@@ -210,6 +238,8 @@ const SMSPlugin = GObject.registerClass({
      * @param {string[]} thread_ids - A list of thread IDs as strings
      */
     _handleDigest(messages, thread_ids) {
+        this._normalizeThreads();
+
         // Prune threads
         for (const thread_id of Object.keys(this.threads)) {
             if (!thread_ids.includes(thread_id))
@@ -255,7 +285,7 @@ const SMSPlugin = GObject.registerClass({
 
         // If there's an active conversation, we should log the message now
         if (conversation)
-            conversation.logNext(message);
+            conversation.addMessage(message);
     }
 
     /**
@@ -269,7 +299,7 @@ const SMSPlugin = GObject.registerClass({
             return;
 
         const thread_id = thread[0].thread_id;
-        const cache = this.threads[thread_id] || [];
+        const cache = this._getThreadCache(thread_id);
 
         // Handle each message
         for (let i = 0, len = thread.length; i < len; i++) {
@@ -441,7 +471,7 @@ const SMSPlugin = GObject.registerClass({
 
         // If there are active threads, show the chooser dialog
         } else if (Object.values(this.threads).length > 0) {
-            const window = new Messaging.ConversationChooser({
+            const window = new ConversationChooser({
                 application: Gio.Application.get_default(),
                 device: this.device,
                 message: url,
@@ -493,6 +523,9 @@ const SMSPlugin = GObject.registerClass({
     }
 
     _threadHasAddress(thread, addressObj) {
+        if (!thread?.[0]?.addresses)
+            return false;
+
         const number = addressObj.address.toPhoneNumber();
 
         for (const taddressObj of thread[0].addresses) {
@@ -515,6 +548,9 @@ const SMSPlugin = GObject.registerClass({
         const threads = Object.values(this.threads);
 
         for (const thread of threads) {
+            if (!thread?.[0]?.addresses)
+                continue;
+
             if (addresses.length !== thread[0].addresses.length)
                 continue;
 
@@ -526,9 +562,11 @@ const SMSPlugin = GObject.registerClass({
     }
 
     destroy() {
-        if (this._window !== undefined)
-            this._window.destroy();
-
+        if (this._window !== undefined) {
+            const window = this._window;
+            window.close();
+            window.disconnect(this._windowId);
+        }
         super.destroy();
     }
 });

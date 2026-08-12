@@ -2,10 +2,11 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-import Gdk from 'gi://Gdk';
+import Gdk from 'gi://Gdk?version=4.0';
 import Gio from 'gi://Gio';
 import GObject from 'gi://GObject';
-import Gtk from 'gi://Gtk';
+import Gtk from 'gi://Gtk?version=4.0';
+import Adw from 'gi://Adw';
 
 import * as Components from '../components/index.js';
 import Plugin from '../plugin.js';
@@ -20,15 +21,13 @@ export const Metadata = {
     actions: {
         ring: {
             label: _('Ring'),
-            icon_name: 'phonelink-ring-symbolic',
-
+            icon_name: 'phone-vibrate-symbolic',
             parameter_type: null,
             incoming: [],
             outgoing: ['kdeconnect.findmyphone.request'],
         },
     },
 };
-
 
 /**
  * FindMyPhone Plugin
@@ -52,6 +51,7 @@ const FindMyPhonePlugin = GObject.registerClass({
                 this._handleRequest();
                 break;
         }
+
     }
 
     /**
@@ -73,6 +73,8 @@ const FindMyPhonePlugin = GObject.registerClass({
             this._dialog.connect('response', () => {
                 this._dialog = null;
             });
+
+            this._dialog.present();
         } catch (e) {
             this._cancelRequest();
             logError(e, this.device.name);
@@ -111,7 +113,7 @@ const FindMyPhonePlugin = GObject.registerClass({
 });
 
 
-/*
+/**
  * Used to ensure 'audible-bell' is enabled for fallback
  */
 const _WM_SETTINGS = new Gio.Settings({
@@ -121,7 +123,7 @@ const _WM_SETTINGS = new Gio.Settings({
 
 
 /**
- * A custom GtkMessageDialog for alerting of incoming requests
+ * A custom AdwApplicationWindow for alerting of incoming requests
  */
 const Dialog = GObject.registerClass({
     GTypeName: 'GSConnectFindMyPhoneDialog',
@@ -141,28 +143,38 @@ const Dialog = GObject.registerClass({
             GObject.Object
         ),
     },
-}, class Dialog extends Gtk.MessageDialog {
+    Signals: {
+        'response': {
+            param_types: [GObject.TYPE_INT],
+        },
+    },
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/find-my-phone.ui',
+
+}, class Dialog extends Adw.ApplicationWindow {
     _init(params) {
-        super._init({
-            buttons: Gtk.ButtonsType.CLOSE,
-            device: params.device,
-            image: new Gtk.Image({
-                icon_name: 'phonelink-ring-symbolic',
-                pixel_size: 512,
-                halign: Gtk.Align.CENTER,
-                hexpand: true,
-                valign: Gtk.Align.CENTER,
-                vexpand: true,
-                visible: true,
-            }),
-            plugin: params.plugin,
-            urgency_hint: true,
+        super._init();
+
+        Object.assign(this, params);
+        this._notificationId = 'findmyphone-notification';
+
+        const motionController = new Gtk.EventControllerMotion();
+        motionController.connect('motion', (controller, x, y) => {
+            this.response(Gtk.ResponseType.DELETE_EVENT);
+            return Gdk.EVENT_STOP;
         });
 
-        this.set_keep_above(true);
-        this.maximize();
-        this.message_area.destroy();
+        const keyController = new Gtk.EventControllerKey();
+        keyController.connect('key-pressed', (controller, keyval, keycode, state) => {
+            this.response(Gtk.ResponseType.DELETE_EVENT);
+            return Gdk.EVENT_STOP;
+        });
 
+        // Add the controller to the window
+        this.add_controller(motionController);
+        this.add_controller(keyController);
+    }
+
+    present() {
         // If an output stream is available start fading the volume up
         if (this.plugin._mixer && this.plugin._mixer.output) {
             this._stream = this.plugin._mixer.output;
@@ -183,23 +195,34 @@ const Dialog = GObject.registerClass({
         if (this.plugin._player !== undefined)
             this.plugin._player.loopSound('phone-incoming-call', this.cancellable);
 
-        // Show the dialog
-        this.show_all();
+        this.emitNotification();
+        super.present();
     }
 
-    vfunc_key_press_event(event) {
-        this.response(Gtk.ResponseType.DELETE_EVENT);
+    // Create a notification
+    emitNotification() {
+        const notification = Gio.Notification.new(_('Find My Phone'));
+        notification.set_body(_('You found me!'));
+        notification.set_priority(Gio.NotificationPriority.HIGH);
 
-        return Gdk.EVENT_STOP;
+        // Add action to cancel request when notification is clicked
+        notification.add_button(_('Stop Ringing'), 'app.stop-ringing');
+        notification.set_default_action('app.stop-ringing');
+
+        // Register action
+        const action = new Gio.SimpleAction({name: 'stop-ringing'});
+        action.connect('activate', () => {
+            this.response(Gtk.ResponseType.DELETE_EVENT);
+            return Gdk.EVENT_STOP;
+        });
+
+        Gio.Application.get_default().add_action(action);
+        // Send notification
+        Gio.Application.get_default().send_notification(this._notificationId, notification);
+
     }
 
-    vfunc_motion_notify_event(event) {
-        this.response(Gtk.ResponseType.DELETE_EVENT);
-
-        return Gdk.EVENT_STOP;
-    }
-
-    vfunc_response(response_id) {
+    response(response_id) {
         // Stop the alarm
         this.cancellable.cancel();
 
@@ -212,7 +235,8 @@ const Dialog = GObject.registerClass({
         } else {
             _WM_SETTINGS.set_boolean('audible-bell', this._previousBell);
         }
-
+        Gio.Application.get_default().withdraw_notification(this._notificationId);
+        this.emit('response', response_id);
         this.destroy();
     }
 

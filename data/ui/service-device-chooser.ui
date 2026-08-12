@@ -7,115 +7,83 @@ SPDX-License-Identifier: GPL-2.0-or-later
 -->
 
 <interface>
-  <requires lib="gtk+" version="3.24"/>
-  <template class="GSConnectServiceDeviceChooser" parent="GtkDialog">
-    <property name="can_focus">False</property>
-    <property name="default_width">300</property>
-    <property name="default_height">200</property>
-    <property name="title" translatable="yes">Select a Device</property>
-    <property name="type_hint">dialog</property>
-    <property name="visible">True</property>
-    <child type="action">
-      <object class="GtkButton" id="cancel-button">
-        <property name="can_focus">False</property>
-        <property name="label" translatable="yes">Cancel</property>
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+
+  <template class="GSConnectServiceDeviceChooser" parent="AdwApplicationWindow">
+    <property name="title" translatable="yes">Select Device</property>
+    <property name="width-request">360</property>
+    <property name="height-request">640</property>
+    <child>
+      <object class="AdwToolbarView">
         <property name="visible">True</property>
-        <child internal-child="accessible">
-          <object class="AtkObject" id="cancel-button-atkobject">
-            <property name="AtkObject::accessible-name" translatable="yes">Cancel</property>
-          </object>
-        </child>
-     </object>
-    </child>
-    <child type="action">
-      <object class="GtkButton" id="select-button">
-        <property name="can-default">True</property>
-        <property name="label" translatable="yes">Select</property>
-        <property name="sensitive">False</property>
-        <property name="visible">True</property>
-        <child internal-child="accessible">
-          <object class="AtkObject" id="select-button-atkobject">
-            <property name="AtkObject::accessible-name" translatable="yes">Select</property>
-          </object>
-        </child>
-      </object>
-    </child>
-    <action-widgets>
-      <action-widget response="cancel">cancel-button</action-widget>
-      <action-widget response="ok" default="true">select-button</action-widget>
-    </action-widgets>
-    <child internal-child="vbox">
-      <object class="GtkBox">
-        <property name="border_width">0</property>
-        <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
-        <child>
-          <object class="GtkScrolledWindow">
-            <property name="border_width">0</property>
-            <property name="can_focus">False</property>
-            <property name="hexpand">True</property>
-            <property name="hscrollbar_policy">never</property>
-            <property name="shadow_type">in</property>
-            <property name="vexpand">True</property>
+        <child type="top">
+          <object class="AdwHeaderBar">
             <property name="visible">True</property>
-            <child>
-              <object class="GtkViewport">
+            <property name="show-title">False</property>
+            <property name="show-end-title-buttons">False</property>
+            <property name="title-widget">
+              <object class="AdwWindowTitle" id="title-widget"/>
+            </property>
+            <child type="start">
+              <object class="GtkButton">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Cancel</property>
+                <signal name="clicked" handler="_onCancelClicked" swapped="no"/>
+                <property name="has-tooltip">True</property>
+                <property name="tooltip-text" translatable="yes">Cancel</property>
+                <accessibility>
+                  <property name="label" translatable="yes">Cancel</property>
+                </accessibility>
+                <style>
+                  <class name="destructive-action"/>
+                </style>
+              </object>
+            </child>
+            <child type="end">
+              <object class="GtkButton" id="select-button">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Select</property>
+                <property name="sensitive">False</property>
+                <property name="has-tooltip">True</property>
+                <property name="tooltip-text" translatable="yes">Select</property>
+                <accessibility>
+                  <property name="label" translatable="yes">Select</property>
+                </accessibility>
+                <style>
+                  <class name="suggested-action"/>
+                </style>
+                <signal name="clicked" handler="_onSelectClicked" swapped="no"/>
+                <style>
+                  <class name="suggested-action"/>
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
+        <property name="content">
+          <object class="GtkScrolledWindow">
+            <property name="visible">True</property>
+            <property name="hscrollbar-policy">never</property>
+            <child>
+              <object class="AdwClamp">
+                <property name="margin-top">10</property>
+                <property name="margin-bottom">10</property>
+                <property name="margin-start">10</property>
+                <property name="margin-end">10</property>
                 <child>
                   <object class="GtkListBox" id="device-list">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="hexpand">True</property>
-                    <property name="vexpand">True</property>
-                    <property name="border_width">6</property>
-                    <property name="activate_on_single_click">True</property>
-                    <signal name="row-activated" handler="_onDeviceActivated" swapped="no"/>
+                    <property name="activate-on-single-click">True</property>
+                    <style>
+                      <class name="boxed-list"/>
+                    </style>
                     <signal name="selected-rows-changed" handler="_onDeviceSelected" swapped="no"/>
                     <child type="placeholder">
-                      <object class="GtkGrid">
+                      <object class="AdwStatusPage">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">center</property>
-                        <property name="valign">center</property>
-                        <child>
-                          <object class="GtkImage">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="pixel_size">48</property>
-                            <property name="icon_name">org.gnome.Shell.Extensions.GSConnect-symbolic</property>
-                            <style>
-                              <class name="placeholder-image"/>
-                            </style>
-                          </object>
-                          <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="margin_top">12</property>
-                            <property name="label" translatable="yes">No Device Found</property>
-                            <style>
-                              <class name="placeholder-title"/>
-                            </style>
-                          </object>
-                          <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">1</property>
-                          </packing>
-                        </child>
-                        <style>
-                          <class name="placeholder"/>
-                        </style>
-                      </object>
-                    </child>
-                    <child internal-child="accessible">
-                      <object class="AtkObject" id="device-list-atkobject">
-                        <property name="AtkObject::accessible-name" translatable="yes">Device List</property>
+                        <property name="icon-name">system-search-symbolic</property>
+                        <property name="title" translatable="yes">No Device Found</property>
                       </object>
                     </child>
                   </object>
@@ -123,9 +91,8 @@ SPDX-License-Identifier: GPL-2.0-or-later
               </object>
             </child>
           </object>
-        </child>
+        </property>
       </object>
     </child>
   </template>
 </interface>
-

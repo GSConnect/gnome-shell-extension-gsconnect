@@ -2,9 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-import Gdk from 'gi://Gdk';
+import Gdk from 'gi://Gdk?version=4.0';
 import GLib from 'gi://GLib';
-import Gtk from 'gi://Gtk';
 import Gio from 'gi://Gio';
 import GObject from 'gi://GObject';
 
@@ -62,8 +61,10 @@ const Clipboard = GObject.registerClass({
         if (typeof content !== 'string')
             return;
 
-        if (this._clipboard instanceof Gtk.Clipboard)
-            this._clipboard.set_text(content, -1);
+        if (this._clipboard instanceof Gdk.Clipboard) {
+            const provider = Gdk.ContentProvider.new_for_value(content);
+            this._clipboard.set_content(provider);
+        }
 
         if (this._clipboard instanceof Gio.DBusProxy) {
             this._clipboard.call('SetText', new GLib.Variant('(s)', [content]),
@@ -124,9 +125,9 @@ const Clipboard = GObject.registerClass({
         }
 
         const display = Gdk.Display.get_default();
-        this._clipboard = Gtk.Clipboard.get_default(display);
+        this._clipboard = display.get_clipboard();
 
-        this._ownerChangeId = this._clipboard.connect('owner-change',
+        this._ownerChangeId = this._clipboard.connect('changed',
             this._onOwnerChange.bind(this));
 
         this._onOwnerChange();
@@ -134,7 +135,7 @@ const Clipboard = GObject.registerClass({
 
     async _onOwnerChange() {
         try {
-            if (this._clipboard instanceof Gtk.Clipboard)
+            if (this._clipboard instanceof Gdk.Clipboard)
                 await this._gtkUpdateText();
 
             else if (this._clipboard instanceof Gio.DBusProxy)
@@ -180,23 +181,36 @@ const Clipboard = GObject.registerClass({
      * GtkClipboard
      */
     async _gtkUpdateText() {
-        const mimetypes = await new Promise((resolve, reject) => {
-            this._clipboard.request_targets((clipboard, atoms) => resolve(atoms));
-        });
+        try {
+            const formats = this._clipboard.get_formats();
+            const mimetypes = formats.get_mime_types() || [];
 
-        // Special case for a cleared clipboard
-        if (mimetypes.length === 0)
-            return this._applyUpdate('');
+            // Special case for a cleared clipboard
+            if (mimetypes.length === 0)
+                return this._applyUpdate('');
 
-        // Special case to ignore copied files
-        if (mimetypes.includes('text/uri-list'))
-            return;
+            // Special case to ignore copied files
+            if (mimetypes.includes('text/uri-list'))
+                return;
 
-        const text = await new Promise((resolve, reject) => {
-            this._clipboard.request_text((clipboard, text) => resolve(text));
-        });
+            const text = await new Promise((resolve, reject) => {
+                this._clipboard.read_text_async(this._cancellable, (source, res) => {
+                    try {
+                        resolve(source.read_text_finish(res));
+                    } catch (e) {
+                        reject(e);
+                    }
+                });
+            });
+            this._applyUpdate(text);
+        } catch (e) {
+            if (e instanceof Error && e.matches &&
+                e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
+                return;
 
-        this._applyUpdate(text);
+            if (e instanceof Error)
+                debug(e);
+        }
     }
 
     destroy() {
