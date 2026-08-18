@@ -220,7 +220,7 @@ const Listener = GObject.registerClass({
     /**
      * Callback for AddNotification()/Notify()
      *
-     * @param {DBus.Interface} iface - The DBus interface
+     * @param {GjsPrivate.DBusImplementation} iface - The DBus interface
      * @param {string} name - The DBus method name
      * @param {GLib.Variant|Gio.DBusMethodInvocation} param1
      *        - The method parameters or invocation (GNOME 50+ changed order)
