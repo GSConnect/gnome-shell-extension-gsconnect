@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-08-09 19:53+0300\n"
-"PO-Revision-Date: 2026-08-09 17:58\n"
+"PO-Revision-Date: 2026-08-25 17:20\n"
 "Last-Translator: \n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
@@ -467,7 +467,7 @@ msgstr "Imposta"
 
 #: data/ui/preferences-shortcut-editor.ui:59
 msgid "Note that you have to first disable any conflicting shortcuts in GNOME Settings."
-msgstr ""
+msgstr "È necessario prima disabilitare eventuali scorciatoie in conflitto nelle Impostazioni di GNOME."
 
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:94
@@ -976,7 +976,7 @@ msgstr "Attivare le notifiche"
 
 #: src/service/plugins/notification.js:73
 msgid "Copy Text"
-msgstr ""
+msgstr "Copia testo"
 
 #: src/service/plugins/ping.js:14
 msgid "Send and receive pings"
