@@ -10,7 +10,7 @@ import St from 'gi://St';
 
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 
-import {HAS_ST_ORIENTATION, getIcon} from './utils.js';
+import {HAS_CLUTTER_CONTROLLERS, HAS_ST_ORIENTATION, getIcon} from './utils.js';
 
 import Tooltip from './tooltip.js';
 
@@ -121,10 +121,19 @@ export class ListBox extends PopupMenu.PopupMenuSection {
         );
 
         // Handle keyboard navigation
-        this._submenuCloseKeyId = this.sub.connect(
-            'key-press-event',
-            this._onSubmenuCloseKey.bind(this)
-        );
+        if (HAS_CLUTTER_CONTROLLERS) {
+            const keyController = new Clutter.KeyController();
+            keyController.connect(
+                'key-press',
+                () => this._onSubmenuCloseKey(this.actor, keyController.get_key()[1])
+            );
+            this.sub.add_action(keyController);
+        } else {
+            this._submenuCloseKeyId = this.sub.connect(
+                'key-press-event',
+                (actor, event) => this._onSubmenuCloseKey(actor, event.get_key_symbol())
+            );
+        }
 
         // Refresh the menu when mapped
         this._mappedId = this.actor.connect(
@@ -160,8 +169,8 @@ export class ListBox extends PopupMenu.PopupMenuSection {
         }
     }
 
-    _onSubmenuCloseKey(actor, event) {
-        if (this.submenu && event.get_key_symbol() === Clutter.KEY_Left) {
+    _onSubmenuCloseKey(actor, key) {
+        if (this.submenu && key === Clutter.KEY_Left) {
             this.submenu.submenu_for.setActive(true);
             this.submenu = null;
             return Clutter.EVENT_STOP;
@@ -170,10 +179,10 @@ export class ListBox extends PopupMenu.PopupMenuSection {
         return Clutter.EVENT_PROPAGATE;
     }
 
-    _onSubmenuOpenKey(actor, event) {
+    _onSubmenuOpenKey(actor, key) {
         const item = actor._delegate;
 
-        if (item.submenu && event.get_key_symbol() === Clutter.KEY_Right) {
+        if (item.submenu && key === Clutter.KEY_Right) {
             this.submenu = item.submenu;
             item.submenu.firstMenuItem.setActive(true);
         }
@@ -235,10 +244,19 @@ export class ListBox extends PopupMenu.PopupMenuSection {
         // Mark it as an expandable and open on right-arrow
         item.actor.add_accessible_state(Atk.StateType.EXPANDABLE);
 
-        item.actor.connect(
-            'key-press-event',
-            this._onSubmenuOpenKey.bind(this)
-        );
+        if (HAS_CLUTTER_CONTROLLERS) {
+            const keyController = new Clutter.KeyController();
+            keyController.connect(
+                'key-press',
+                () => this._onSubmenuOpenKey(item.actor, keyController.get_key()[1])
+            );
+            item.actor.add_action(keyController);
+        } else {
+            item.actor.connect(
+                'key-press-event',
+                (actor, event) => this._onSubmenuOpenKey(actor, event.get_key_symbol())
+            );
+        }
 
         // Create the submenu
         item.submenu = new ListBox({
@@ -370,7 +388,8 @@ export class ListBox extends PopupMenu.PopupMenuSection {
         this.actor.disconnect(this._mappedId);
         this.box.disconnect(this._boxTransitionsCompletedId);
         this.sub.disconnect(this._subTransitionsCompletedId);
-        this.sub.disconnect(this._submenuCloseKeyId);
+        if (!HAS_CLUTTER_CONTROLLERS)
+            this.sub.disconnect(this._submenuCloseKeyId);
         this.model.disconnect(this._itemsChangedId);
 
         super.destroy();
