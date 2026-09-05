@@ -10,7 +10,7 @@ import St from 'gi://St';
 
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
-import {HAS_ST_ORIENTATION} from './utils.js';
+import {HAS_CLUTTER_CONTROLLERS, HAS_ST_ORIENTATION} from './utils.js';
 
 /**
  * An StTooltip for ClutterActors
@@ -40,10 +40,17 @@ export default class Tooltip {
             this._onHover.bind(this)
         );
 
-        this._buttonPressEventId = this.parent.connect(
-            'button-press-event',
-            this._hide.bind(this)
-        );
+        if (HAS_CLUTTER_CONTROLLERS) {
+            const clickGesture = new Clutter.ClickGesture();
+            clickGesture.set_recognize_on_press(true);
+            clickGesture.connect('recognize', this._hide.bind(this));
+            this.parent.add_action(clickGesture);
+        } else {
+            this._buttonPressEventId = this.parent.connect(
+                'button-press-event',
+                this._hide.bind(this)
+            );
+        }
     }
 
     get custom() {
@@ -293,7 +300,8 @@ export default class Tooltip {
     destroy() {
         this.parent.disconnect(this._destroyId);
         this.parent.disconnect(this._hoverId);
-        this.parent.disconnect(this._buttonPressEventId);
+        if (!HAS_CLUTTER_CONTROLLERS)
+            this.parent.disconnect(this._buttonPressEventId);
 
         if (this.custom)
             this.custom.destroy();

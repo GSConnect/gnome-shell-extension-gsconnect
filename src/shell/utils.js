@@ -13,6 +13,7 @@ export const SHELL_MAJOR_VERSION = Number(PACKAGE_VERSION.split('.')[0]);
 
 export const HAS_ST_ORIENTATION = SHELL_MAJOR_VERSION >= 48;
 export const HAS_MESSAGELIST_NOTIFICATIONMESSAGE = SHELL_MAJOR_VERSION >= 48;
+export const HAS_CLUTTER_CONTROLLERS = SHELL_MAJOR_VERSION >= 51;
 
 /**
  * Get a themed icon, using fallbacks from GSConnect's GResource when necessary.
