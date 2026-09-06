@@ -171,7 +171,7 @@ export class ListBox extends PopupMenu.PopupMenuSection {
 
     _onSubmenuCloseKey(actor, key) {
         if (this.submenu && key === Clutter.KEY_Left) {
-            this.submenu.submenu_for.setActive(true);
+            this.submenu.submenu_for.active = true;
             this.submenu = null;
             return Clutter.EVENT_STOP;
         }
@@ -184,7 +184,7 @@ export class ListBox extends PopupMenu.PopupMenuSection {
 
         if (item.submenu && key === Clutter.KEY_Right) {
             this.submenu = item.submenu;
-            item.submenu.firstMenuItem.setActive(true);
+            item.submenu.firstMenuItem.active = true;
         }
 
         return Clutter.EVENT_PROPAGATE;
@@ -199,6 +199,7 @@ export class ListBox extends PopupMenu.PopupMenuSection {
 
         if (item.submenu) {
             this.submenu = item.submenu;
+            item.submenu.firstMenuItem.active = true;
         } else if (item.action_name) {
             this.action_group.activate_action(
                 item.action_name,
@@ -315,6 +316,7 @@ export class ListBox extends PopupMenu.PopupMenuSection {
 
             prev.connectObject('activate', (item, event) => {
                 this.emit('activate', item);
+                this.submenu_for.active = true;
                 this._parent.submenu = null;
             }, this);
         }
