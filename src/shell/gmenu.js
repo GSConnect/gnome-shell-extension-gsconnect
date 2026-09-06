@@ -190,6 +190,10 @@ export class ListBox extends PopupMenu.PopupMenuSection {
         return Clutter.EVENT_PROPAGATE;
     }
 
+    itemActivated() {
+        // no-op; handle item activation ourselves in _onGMenuItemActivate
+    }
+
     _onGMenuItemActivate(item, event) {
         this.emit('activate', item);
 
@@ -200,7 +204,7 @@ export class ListBox extends PopupMenu.PopupMenuSection {
                 item.action_name,
                 item.action_target
             );
-            this.itemActivated();
+            super.itemActivated();
         }
     }
 
