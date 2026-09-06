@@ -81,6 +81,7 @@ export class ListBox extends PopupMenu.PopupMenuSection {
         this.actor = new St.BoxLayout({
             x_expand: true,
             clip_to_allocation: true,
+            reactive: true,
         });
         this.actor._delegate = this;
 
@@ -127,9 +128,9 @@ export class ListBox extends PopupMenu.PopupMenuSection {
                 'key-press',
                 () => this._onSubmenuCloseKey(this.actor, keyController.get_key()[1])
             );
-            this.sub.add_action(keyController);
+            this.actor.add_action(keyController);
         } else {
-            this._submenuCloseKeyId = this.sub.connect(
+            this._submenuCloseKeyId = this.actor.connect(
                 'key-press-event',
                 (actor, event) => this._onSubmenuCloseKey(actor, event.get_key_symbol())
             );
@@ -170,9 +171,9 @@ export class ListBox extends PopupMenu.PopupMenuSection {
     }
 
     _onSubmenuCloseKey(actor, key) {
-        if (this.submenu && key === Clutter.KEY_Left) {
-            this.submenu.submenu_for.active = true;
-            this.submenu = null;
+        if (this._parent && key === Clutter.KEY_Left) {
+            this.submenu_for.active = true;
+            this._parent.submenu = null;
             return Clutter.EVENT_STOP;
         }
 
@@ -395,7 +396,7 @@ export class ListBox extends PopupMenu.PopupMenuSection {
         this.box.disconnect(this._boxTransitionsCompletedId);
         this.sub.disconnect(this._subTransitionsCompletedId);
         if (!HAS_CLUTTER_CONTROLLERS)
-            this.sub.disconnect(this._submenuCloseKeyId);
+            this.actor.disconnect(this._submenuCloseKeyId);
         this.model.disconnect(this._itemsChangedId);
 
         super.destroy();
