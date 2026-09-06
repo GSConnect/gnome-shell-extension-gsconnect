@@ -2,15 +2,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-01 01:34-0400\n"
-"PO-Revision-Date: 2026-07-16 03:15\n"
+"POT-Creation-Date: 2026-08-09 19:53+0300\n"
+"PO-Revision-Date: 2026-09-06 01:49\n"
 "Last-Translator: \n"
 "Language-Team: Hebrew\n"
 "Language: he_IL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3;\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n==2 ? 1 : 2);\n"
 "X-Crowdin-Project: gsconnect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: he\n"
@@ -92,8 +92,8 @@ msgstr "התחברות אל…"
 #: data/ui/preferences-shortcut-editor.ui:19
 #: data/ui/service-device-chooser.ui:21 data/ui/service-device-chooser.ui:25
 #: data/ui/service-error-dialog.ui:20 data/ui/service-error-dialog.ui:28
-#: src/preferences/service.js:417 src/service/plugins/share.js:179
-#: src/service/plugins/share.js:314 src/service/plugins/share.js:445
+#: src/preferences/service.js:417 src/service/plugins/share.js:188
+#: src/service/plugins/share.js:323 src/service/plugins/share.js:454
 msgid "Cancel"
 msgstr "ביטול"
 
@@ -119,20 +119,20 @@ msgid "Type a phone number or name"
 msgstr "יש להזין מספר טלפון או שם"
 
 #. TRANSLATORS: All other phone number types
-#: data/ui/contacts-address-row.ui:71 src/service/ui/contacts.js:158
+#: data/ui/contacts-address-row.ui:71 src/service/ui/contacts.js:159
 msgid "Other"
 msgstr "אחרים"
 
 #. TRANSLATORS: Share URL by SMS
-#: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:358
-#: src/service/daemon.js:481 src/service/plugins/sms.js:62
+#: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:359
+#: src/service/daemon.js:482 src/service/plugins/sms.js:62
 #: webextension/gettext.js:41
 msgid "Send SMS"
 msgstr "שליחת מסרון SMS"
 
 #: data/ui/legacy-messaging-dialog.ui:32 data/ui/legacy-messaging-dialog.ui:36
 #: data/ui/notification-reply-dialog.ui:31
-#: data/ui/notification-reply-dialog.ui:35 src/service/plugins/share.js:446
+#: data/ui/notification-reply-dialog.ui:35 src/service/plugins/share.js:455
 msgid "Send"
 msgstr "שליחה"
 
@@ -145,7 +145,7 @@ msgstr "ההתקן מנותק"
 msgid "Send Message"
 msgstr "שליחת הודעה"
 
-#: data/ui/messaging-conversation.ui:92 src/shell/notification.js:88
+#: data/ui/messaging-conversation.ui:92 src/shell/notification.js:89
 msgid "Type a message"
 msgstr "יש להקליד הודעה"
 
@@ -403,7 +403,7 @@ msgstr "הגדרות מכשיר"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/ui/preferences-device-panel.ui:2624
-#: data/ui/preferences-device-panel.ui:2716 src/service/daemon.js:460
+#: data/ui/preferences-device-panel.ui:2716 src/service/daemon.js:461
 msgid "Pair"
 msgstr "מצומד"
 
@@ -421,7 +421,7 @@ msgid "Encryption Info"
 msgstr "מידע על הצפנה"
 
 #. TRANSLATORS: Unpair the device and notify it
-#: data/ui/preferences-device-panel.ui:2722 src/service/daemon.js:469
+#: data/ui/preferences-device-panel.ui:2722 src/service/daemon.js:470
 msgid "Unpair"
 msgstr "ביטול צימוד"
 
@@ -465,8 +465,12 @@ msgstr "השתקה"
 msgid "Set"
 msgstr "הגדרה"
 
+#: data/ui/preferences-shortcut-editor.ui:59
+msgid "Note that you have to first disable any conflicting shortcuts in GNOME Settings."
+msgstr ""
+
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
-#: data/ui/preferences-shortcut-editor.ui:80
+#: data/ui/preferences-shortcut-editor.ui:94
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
 msgstr "יש ללחוץ Esc לביטול או Backspace לאיפוס קיצורי המקשים."
 
@@ -542,7 +546,7 @@ msgstr "נראה שכלי שורת הפקודות <tt>openssl</tt> לא מותק
 "יש להשתמש במנהל החבילות של ההפצה שלך כדי להתקין אותו.\n"
 "לפרטים נוספים, יש לגשת אל <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">הוויקי של GSConnect</a>."
 
-#: data/ui/preferences-window.ui:874 src/service/init.js:361
+#: data/ui/preferences-window.ui:874 src/service/init.js:364
 msgid "OpenSSL not found"
 msgstr "‏ OpenSSL לא נמצא"
 
@@ -611,8 +615,8 @@ msgstr "פרטים טכניים"
 #. context menu
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #. Update UI
-#: nautilus-extension/nautilus-gsconnect.py:187 src/service/ui/contacts.js:518
-#: src/service/ui/contacts.js:533
+#: nautilus-extension/nautilus-gsconnect.py:187 src/service/ui/contacts.js:519
+#: src/service/ui/contacts.js:534
 #, python-format, javascript-format
 msgid "Send to %s"
 msgstr "שליחה אל %s"
@@ -632,8 +636,7 @@ msgid "%d Connected"
 msgid_plural "%d Connected"
 msgstr[0] "אחד מחובר"
 msgstr[1] ""
-msgstr[2] "%d מכשירים מחוברים"
-msgstr[3] "%d מחוברים"
+msgstr[2] "%d מחוברים"
 
 #: src/preferences/device.js:671 src/preferences/device.js:677
 msgid "Edit"
@@ -649,17 +652,10 @@ msgstr "מושבת"
 
 #. TRANSLATORS: Summary of a keyboard shortcut function
 #. Example: Enter a new shortcut to change Messaging
-#: src/preferences/keybindings.js:66
+#: src/preferences/keybindings.js:65
 #, javascript-format
 msgid "Enter a new shortcut to change <b>%s</b>"
 msgstr "יש להזין צירופי מקשים לשינוי <b>%s</b>"
-
-#. TRANSLATORS: When a keyboard shortcut is unavailable
-#. Example: [Ctrl]+[S] is already being used
-#: src/preferences/keybindings.js:132
-#, javascript-format
-msgid "%s is already being used"
-msgstr "‏%s כבר בשימוש"
 
 #: src/preferences/service.js:373
 msgid "A complete KDE Connect implementation for GNOME"
@@ -721,92 +717,92 @@ msgid "Waiting for service…"
 msgstr "ממתין לשרת…"
 
 #. Notify the user
-#: src/service/daemon.js:103
+#: src/service/daemon.js:104
 msgid "Settings Migrated"
 msgstr "ההגדרות הוסבו"
 
-#: src/service/daemon.js:104
+#: src/service/daemon.js:105
 msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
 msgstr "GSConnect התעדכן כדי לתמוך בשינויים שנערכו בפרוטוקול KDE Connect. את חלק מהההתקנים שלך יהיה עליך לצמד מחדש."
 
-#: src/service/daemon.js:246
+#: src/service/daemon.js:247
 msgid "Click for help troubleshooting"
 msgstr "יש ללחוץ לעזרה בטיפול בבעיות"
 
-#: src/service/daemon.js:256
+#: src/service/daemon.js:257
 msgid "Click for more information"
 msgstr "יש ללחוץ למידע נוסף"
 
-#: src/service/daemon.js:364
+#: src/service/daemon.js:365
 msgid "Dial Number"
 msgstr "חיוג מספר"
 
-#: src/service/daemon.js:370 src/service/daemon.js:568
+#: src/service/daemon.js:371 src/service/daemon.js:569
 #: src/service/plugins/share.js:31
 msgid "Share File"
 msgstr "שיתוף קובץ"
 
-#: src/service/daemon.js:421
+#: src/service/daemon.js:422
 msgid "List available devices"
 msgstr "רשימת מכשירים זמינים"
 
-#: src/service/daemon.js:430
+#: src/service/daemon.js:431
 msgid "List all devices"
 msgstr "רשימת כל המכשירים הזמינים"
 
-#: src/service/daemon.js:439
+#: src/service/daemon.js:440
 msgid "Target Device"
 msgstr "מכשיר יעד"
 
-#: src/service/daemon.js:448
+#: src/service/daemon.js:449
 msgid "Target Device Name"
 msgstr ""
 
-#: src/service/daemon.js:490
+#: src/service/daemon.js:491
 msgid "Message Body"
 msgstr "גוף ההודעה"
 
-#: src/service/daemon.js:502 src/service/plugins/notification.js:57
+#: src/service/daemon.js:503 src/service/plugins/notification.js:57
 msgid "Send Notification"
 msgstr "שליחת התרעה"
 
-#: src/service/daemon.js:511
+#: src/service/daemon.js:512
 msgid "Notification App Name"
 msgstr "שם יישום להתרעה"
 
-#: src/service/daemon.js:520
+#: src/service/daemon.js:521
 msgid "Notification Body"
 msgstr "גוף התרעה"
 
-#: src/service/daemon.js:529
+#: src/service/daemon.js:530
 msgid "Notification Icon"
 msgstr "סמליל התרעה"
 
-#: src/service/daemon.js:538
+#: src/service/daemon.js:539
 msgid "Notification ID"
 msgstr "מזהה התרעה"
 
-#: src/service/daemon.js:547 src/service/plugins/ping.js:13
+#: src/service/daemon.js:548 src/service/plugins/ping.js:13
 #: src/service/plugins/ping.js:20 src/service/plugins/ping.js:47
 msgid "Ping"
 msgstr "פינג"
 
-#: src/service/daemon.js:556 src/service/plugins/battery.js:247
+#: src/service/daemon.js:557 src/service/plugins/battery.js:247
 #: src/service/plugins/battery.js:276 src/service/plugins/battery.js:305
 #: src/service/plugins/findmyphone.js:22
 msgid "Ring"
 msgstr "צלצול"
 
-#: src/service/daemon.js:577 src/service/plugins/share.js:47
+#: src/service/daemon.js:578 src/service/plugins/share.js:47
 #: src/service/ui/messaging.js:1257 src/service/ui/messaging.js:1265
 msgid "Share Link"
 msgstr "שיתוף קישור"
 
-#: src/service/daemon.js:586 src/service/plugins/share.js:39
+#: src/service/daemon.js:587 src/service/plugins/share.js:39
 msgid "Share Text"
 msgstr "שיתוף טקסט"
 
-#: src/service/daemon.js:598
+#: src/service/daemon.js:599
 msgid "Show release version"
 msgstr "הצגת גרסת שחרור"
 
@@ -854,7 +850,7 @@ msgstr "השעונים של ההתקנים לא מתואמים"
 msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "הגילוי הושבת עקב מספר המכשירים על הרשת."
 
-#: src/service/backends/lan.js:477
+#: src/service/backends/lan.js:580
 msgid "Port already in use"
 msgstr "פתחה כבר בשימוש"
 
@@ -923,7 +919,7 @@ msgstr "גישה לאנשי הקשר של המכשיר המצומד"
 #. Contact Name
 #: src/service/plugins/contacts.js:242 src/service/plugins/contacts.js:362
 #: src/service/plugins/telephony.js:156 src/service/plugins/telephony.js:175
-#: src/service/ui/contacts.js:620 src/service/ui/messaging.js:756
+#: src/service/ui/contacts.js:621 src/service/ui/messaging.js:756
 msgid "Unknown Contact"
 msgstr "איש קשר לא ידוע"
 
@@ -978,6 +974,10 @@ msgstr "תגובה בהודעה"
 #: src/service/plugins/notification.js:65
 msgid "Activate Notification"
 msgstr "הפעלת התרעה"
+
+#: src/service/plugins/notification.js:73
+msgid "Copy Text"
+msgstr ""
 
 #: src/service/plugins/ping.js:14
 msgid "Send and receive pings"
@@ -1035,87 +1035,87 @@ msgstr "שיתוף"
 msgid "Share files and URLs between devices"
 msgstr "שיתוף קבצים וכתובות URL בין מכשירים"
 
-#: src/service/plugins/share.js:148 src/service/plugins/share.js:227
-#: src/service/plugins/share.js:337
+#: src/service/plugins/share.js:157 src/service/plugins/share.js:236
+#: src/service/plugins/share.js:346
 msgid "Transfer Failed"
 msgstr "ההעברה כשלה"
 
 #. TRANSLATORS: eg. Google Pixel is not allowed to upload files
-#: src/service/plugins/share.js:150
+#: src/service/plugins/share.js:159
 #, javascript-format
 msgid "%s is not allowed to upload files"
 msgstr "‏%s לא מאפשר להעלות קבצים"
 
-#: src/service/plugins/share.js:172 src/service/plugins/share.js:307
+#: src/service/plugins/share.js:181 src/service/plugins/share.js:316
 msgid "Transferring File"
 msgstr "מעביר קובץ"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:174
+#: src/service/plugins/share.js:183
 #, javascript-format
 msgid "Receiving “%s” from %s"
 msgstr "‏„%s” מתקבל מ־„%s”"
 
-#: src/service/plugins/share.js:193 src/service/plugins/share.js:327
+#: src/service/plugins/share.js:202 src/service/plugins/share.js:336
 msgid "Transfer Successful"
 msgstr "ההעברה הצליחה"
 
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:195
+#: src/service/plugins/share.js:204
 #, javascript-format
 msgid "Received “%s” from %s"
 msgstr "‏„%s” התקבל מ־„%s”"
 
-#: src/service/plugins/share.js:205
+#: src/service/plugins/share.js:214
 msgid "Show File Location"
 msgstr "הצגת מיקום הקובץ"
 
-#: src/service/plugins/share.js:210
+#: src/service/plugins/share.js:219
 msgid "Open File"
 msgstr "פתיחת הקובץ"
 
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:229
+#: src/service/plugins/share.js:238
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
 msgstr "ארע כשל בקבלת ‏„%s” מ־„%s”"
 
-#: src/service/plugins/share.js:259
+#: src/service/plugins/share.js:268
 #, javascript-format
 msgid "Text Shared By %s"
 msgstr "טקסט משותף על ידי %s"
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
-#: src/service/plugins/share.js:309
+#: src/service/plugins/share.js:318
 #, javascript-format
 msgid "Sending “%s” to %s"
 msgstr "‏„%s” נשלח כעת אל „%s”"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:329
+#: src/service/plugins/share.js:338
 #, javascript-format
 msgid "Sent “%s” to %s"
 msgstr "‏„%s” נשלח אל „%s”"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:339
+#: src/service/plugins/share.js:348
 #, javascript-format
 msgid "Failed to send “%s” to %s"
 msgstr "אירעה שגיאה בשליחת „%s” אל „%s”"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
-#: src/service/plugins/share.js:397
+#: src/service/plugins/share.js:406
 #, javascript-format
 msgid "Send files to %s"
 msgstr "שליחת קבצים אל %s"
 
 #. TRANSLATORS: Mark the file to be opened once completed
-#: src/service/plugins/share.js:401
+#: src/service/plugins/share.js:410
 msgid "Open when done"
 msgstr "פתיחה עם סיום"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
-#: src/service/plugins/share.js:440
+#: src/service/plugins/share.js:449
 #, javascript-format
 msgid "Send a link to %s"
 msgstr "שליחת קישור אל %s"
@@ -1172,22 +1172,22 @@ msgid "Ongoing call"
 msgstr "שיחה פעילה"
 
 #. TRANSLATORS: A fax number
-#: src/service/ui/contacts.js:143
+#: src/service/ui/contacts.js:144
 msgid "Fax"
 msgstr "פקס"
 
 #. TRANSLATORS: A work or office phone number
-#: src/service/ui/contacts.js:147
+#: src/service/ui/contacts.js:148
 msgid "Work"
 msgstr "עבודה"
 
 #. TRANSLATORS: A mobile or cellular phone number
-#: src/service/ui/contacts.js:151
+#: src/service/ui/contacts.js:152
 msgid "Mobile"
 msgstr "טלפון נייד"
 
 #. TRANSLATORS: A home phone number
-#: src/service/ui/contacts.js:155
+#: src/service/ui/contacts.js:156
 msgid "Home"
 msgstr "בית"
 
@@ -1208,8 +1208,7 @@ msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "לפני %d דקות"
+msgstr[2] "לפני %d דקות"
 
 #: src/service/ui/messaging.js:407
 msgid "Not available"
@@ -1231,8 +1230,7 @@ msgid "And %d other contact"
 msgid_plural "And %d others"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] "הוספת %d אנשי קשר נוספים"
-msgstr[3] "ו ־%d אנשי קשר נוספים"
+msgstr[2] "ו ־%d אנשי קשר נוספים"
 
 #. TRANSLATORS: Displayed when the remote keyboard is not ready to accept input
 #: src/service/ui/mousepad.js:115
@@ -1261,7 +1259,7 @@ msgstr "‏‎%d%% (‎%d∶%02d‎ ‏עד טעינה מלאה)"
 msgid "%d%% (%d∶%02d Remaining)"
 msgstr "‏‎%d%% (‎%d∶%02d‎ ‏נותרו)"
 
-#: src/shell/notification.js:73
+#: src/shell/notification.js:74
 msgid "Reply"
 msgstr "להשיב"
 
