@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 import Gio from 'gi://Gio';
-import GjsPrivate from 'gi://GjsPrivate';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 
@@ -40,222 +39,78 @@ function toUnderscoreCase(string) {
     }).replace(/[\s-]+/g, '');
 }
 
-
 /**
- * DBus.Interface represents a DBus interface bound to an object instance, meant
- * to be exported over DBus.
+ * Creates a DBus interface which performs property get/set and method
+ * calls on the an GObject, using the `Gio.DBusExportedObject.wrapJSObject`
+ * convenience helper from GJS.
+ *
+ * On top of the convenience helper, handle translating DBus-style property
+ * names to JS-style names, emitting property changed signals to DBus, and
+ * emitting DBus interface signals.
+ *
+ * @param {Gio.DBusInterfaceInfo} interfaceInfo - The info for a DBus interface
+ * @param {GObject.Object} obj - The object with DBus properties and methods
+ * @returns {Gio.DBusExportedObject} - The DBus interface
  */
-export const Interface = GObject.registerClass({
-    GTypeName: 'GSConnectDBusInterface',
-    Implements: [Gio.DBusInterface],
-    Properties: {
-        'g-instance': GObject.ParamSpec.object(
-            'g-instance',
-            'Instance',
-            'The delegate GObject',
-            GObject.ParamFlags.READWRITE,
-            GObject.Object.$gtype
-        ),
-    },
-}, class Interface extends GjsPrivate.DBusImplementation {
+export function wrapObject(interfaceInfo, obj) {
+    // Intercept property get/set on the object to translate property names to
+    // JS-style names if necessary.
+    const proxyObj = new Proxy(
+        obj,
+        {
+            get(target, prop, receiver) {
+                const value = Reflect.has(target, prop)
+                    ? Reflect.get(target, prop)
+                    : Reflect.get(target, toUnderscoreCase(prop));
 
-    _init(params) {
-        super._init({
-            g_instance: params.g_instance,
-            g_interface_info: params.g_interface_info,
-        });
+                // `this` should not be pointing at Proxy
+                if (typeof value === 'function')
+                    return value.bind(target);
 
-        // Cache member lookups
-        this._instanceHandlers = [];
-        this._instanceMethods = {};
-        this._instanceProperties = {};
+                return value;
+            },
+            set(target, prop, newValue, receiver) {
+                return Reflect.has(target, prop)
+                    ? Reflect.set(target, prop, newValue)
+                    : Reflect.set(target, toUnderscoreCase(prop), newValue);
+            },
+        }
+    );
+    const impl = Gio.DBusExportedObject.wrapJSObject(interfaceInfo, proxyObj);
 
-        const info = this.get_info();
-        this.connect('handle-method-call', this._call.bind(this._instance, info));
-        this.connect('handle-property-get', this._get.bind(this._instance, info));
-        this.connect('handle-property-set', this._set.bind(this._instance, info));
+    // Automatically forward known signals
+    obj.connect(
+        'notify',
+        (_, pspec) => {
+            const name = toDBusCase(pspec.name);
+            const propertyInfo = interfaceInfo.lookup_property(name);
 
-        // Automatically forward known signals
-        const id = this._instance.connect('notify', this._notify.bind(this));
-        this._instanceHandlers.push(id);
+            if (propertyInfo === null)
+                return;
 
-        for (const signal of info.signals) {
-            const type = `(${signal.args.map(arg => arg.signature).join('')})`;
-            const id = this._instance.connect(
-                signal.name,
-                this._emit.bind(this, signal.name, type)
+            impl.emit_property_changed(
+                name,
+                new GLib.Variant(
+                    propertyInfo.signature,
+                    // Adjust for GJS's '-'/'_' conversion
+                    obj[pspec.name.replace(/-/gi, '_')]
+                )
             );
-
-            this._instanceHandlers.push(id);
         }
+    );
 
-        // Export if connection and object path were given
-        if (params.g_connection && params.g_object_path)
-            this.export(params.g_connection, params.g_object_path);
-    }
-
-    get g_instance() {
-        if (this._instance === undefined)
-            this._instance = null;
-
-        return this._instance;
-    }
-
-    set g_instance(instance) {
-        this._instance = instance;
-    }
-
-    /**
-     * Invoke an instance's method for a DBus method call.
-     *
-     * @param {Gio.DBusInterfaceInfo} info - The DBus interface
-     * @param {Gio.DBusInterface} iface - The DBus interface
-     * @param {string} name - The DBus method name
-     * @param {GLib.Variant|Gio.DBusMethodInvocation} param1
-     *        - The method parameters or invocation (GNOME 50+ changed order)
-     * @param {Gio.DBusMethodInvocation|GLib.Variant} param2
-     *        - The method invocation or parameters (GNOME 50+ changed order)
-     */
-    async _call(info, iface, name, param1, param2) {
-        let retval;
-        let invocation, parameters;
-
-        // GNOME 50+ changed the callback signature from
-        // (iface, name, parameters, invocation) to
-        // (iface, name, invocation, parameters)
-        // Detect which order is being used
-        if (param1 instanceof GLib.Variant) {
-            // Old order: parameters, invocation
-            parameters = param1;
-            invocation = param2;
-        } else {
-            // New order: invocation, parameters
-            invocation = param1;
-            parameters = param2;
-        }
-
-        // Invoke the instance method
-        try {
-            const args = parameters.unpack().map(parameter => {
-                if (parameter.get_type_string() === 'h') {
-                    const message = invocation.get_message();
-                    const fds = message.get_unix_fd_list();
-                    const idx = parameter.deepUnpack();
-                    return fds.get(idx);
-                } else {
-                    return parameter.recursiveUnpack();
-                }
-            });
-
-            retval = await this[name](...args);
-        } catch (e) {
-            if (e instanceof GLib.Error) {
-                invocation.return_gerror(e);
-            } else {
-                // likely to be a normal JS error
-                if (!e.name.includes('.'))
-                    e.name = `org.gnome.gjs.JSError.${e.name}`;
-
-                invocation.return_dbus_error(e.name, e.message);
+    for (const signal of interfaceInfo.signals) {
+        const type = `(${signal.args.map(arg => arg.signature).join('')})`;
+        obj.connect(
+            signal.name,
+            (_, ...args) => {
+                impl.emit_signal(signal.name, new GLib.Variant(type, args));
             }
-
-            logError(e, `${this}: ${name}`);
-            return;
-        }
-
-        // `undefined` is an empty tuple on DBus
-        if (retval === undefined)
-            retval = new GLib.Variant('()', []);
-
-        // Return the instance result or error
-        try {
-            if (!(retval instanceof GLib.Variant)) {
-                const args = info.lookup_method(name).out_args;
-                retval = new GLib.Variant(
-                    `(${args.map(arg => arg.signature).join('')})`,
-                    (args.length === 1) ? [retval] : retval
-                );
-            }
-
-            invocation.return_value(retval);
-        } catch (e) {
-            invocation.return_dbus_error(
-                'org.gnome.gjs.JSError.ValueError',
-                'Service implementation returned an incorrect value type'
-            );
-
-            logError(e, `${this}: ${name}`);
-        }
-    }
-
-    _nativeProp(obj, name) {
-        if (this._instanceProperties[name] === undefined) {
-            let propName = name;
-
-            if (propName in obj)
-                this._instanceProperties[name] = propName;
-
-            if (this._instanceProperties[name] === undefined) {
-                propName = toUnderscoreCase(name);
-
-                if (propName in obj)
-                    this._instanceProperties[name] = propName;
-            }
-        }
-
-        return this._instanceProperties[name];
-    }
-
-    _emit(name, type, obj, ...args) {
-        this.emit_signal(name, new GLib.Variant(type, args));
-    }
-
-    _get(info, iface, name) {
-        const nativeValue = this[iface._nativeProp(this, name)];
-        const propertyInfo = info.lookup_property(name);
-
-        if (nativeValue === undefined || propertyInfo === null)
-            return null;
-
-        return new GLib.Variant(propertyInfo.signature, nativeValue);
-    }
-
-    _set(info, iface, name, value) {
-        const nativeValue = value.recursiveUnpack();
-
-        this[iface._nativeProp(this, name)] = nativeValue;
-    }
-
-    _notify(obj, pspec) {
-        const name = toDBusCase(pspec.name);
-        const propertyInfo = this.get_info().lookup_property(name);
-
-        if (propertyInfo === null)
-            return;
-
-        this.emit_property_changed(
-            name,
-            new GLib.Variant(
-                propertyInfo.signature,
-                // Adjust for GJS's '-'/'_' conversion
-                this._instance[pspec.name.replace(/-/gi, '_')]
-            )
         );
     }
 
-    destroy() {
-        try {
-            for (const id of this._instanceHandlers)
-                this._instance.disconnect(id);
-            this._instanceHandlers = [];
-
-            this.flush();
-            this.unexport();
-        } catch (e) {
-            logError(e);
-        }
-    }
-});
+    return impl;
+}
 
 /**
  * Get a new, dedicated DBus connection on {@link busType}

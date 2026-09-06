@@ -3,9 +3,9 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 import Gio from 'gi://Gio';
-import GjsPrivate from 'gi://GjsPrivate';
-import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
+
+import * as DBus from './service/utils/dbus.js';
 
 // laucher for wl-clipboard
 const launcher = new Gio.SubprocessLauncher({
@@ -57,11 +57,9 @@ export const Clipboard = GObject.registerClass(
     {
         GTypeName: 'GSConnectShellClipboard',
     },
-    class GSConnectShellClipboard extends GjsPrivate.DBusImplementation {
+    class GSConnectShellClipboard extends GObject.Object {
         _init() {
-            super._init({
-                g_interface_info: DBUS_INFO,
-            });
+            super._init();
 
             this._transferring = false;
 
@@ -75,10 +73,7 @@ export const Clipboard = GObject.registerClass(
             ], Gio.SubprocessFlags.NONE);
 
             // Prepare DBus interface
-            this._handleMethodCallId = this.connect(
-                'handle-method-call',
-                this._onHandleMethodCall.bind(this)
-            );
+            this._dbus = DBus.wrapObject(DBUS_INFO, this);
 
             this._nameId = Gio.DBus.own_name(
                 Gio.BusType.SESSION,
@@ -92,7 +87,7 @@ export const Clipboard = GObject.registerClass(
 
         _onBusAcquired(connection, name) {
             try {
-                this.export(connection, DBUS_PATH);
+                this._dbus.export(connection, DBUS_PATH);
             } catch (e) {
                 logError(e);
             }
@@ -100,67 +95,9 @@ export const Clipboard = GObject.registerClass(
 
         _onNameLost(connection, name) {
             try {
-                this.unexport();
+                this._dbus.unexport();
             } catch (e) {
                 logError(e);
-            }
-        }
-
-        async _onHandleMethodCall(iface, name, param1, param2) {
-            let retval;
-            let invocation, parameters;
-
-            // GNOME 50+ changed the callback signature from
-            // (iface, name, parameters, invocation) to
-            // (iface, name, invocation, parameters)
-            // Detect which order is being used
-            if (param1 instanceof GLib.Variant) {
-                // Old order: parameters, invocation
-                parameters = param1;
-                invocation = param2;
-            } else {
-                // New order: invocation, parameters
-                invocation = param1;
-                parameters = param2;
-            }
-
-            try {
-                const args = parameters.recursiveUnpack();
-
-                retval = await this[name](...args);
-            } catch (e) {
-                if (e instanceof GLib.Error) {
-                    invocation.return_gerror(e);
-                } else {
-                    if (!e.name.includes('.'))
-                        e.name = `org.gnome.gjs.JSError.${e.name}`;
-
-                    invocation.return_dbus_error(e.name, e.message);
-                }
-
-                return;
-            }
-
-            if (retval === undefined)
-                retval = new GLib.Variant('()', []);
-
-            try {
-                if (!(retval instanceof GLib.Variant)) {
-                    const args = DBUS_INFO.lookup_method(name).out_args;
-                    retval = new GLib.Variant(
-                        `(${args.map((arg) => arg.signature).join('')})`,
-                        args.length === 1 ? [retval] : retval
-                    );
-                }
-
-                invocation.return_value(retval);
-
-                // Without a response, the client will wait for timeout
-            } catch {
-                invocation.return_dbus_error(
-                    'org.gnome.gjs.JSError.ValueError',
-                    'Service implementation returned an incorrect value type'
-                );
             }
         }
 
@@ -258,10 +195,10 @@ export const Clipboard = GObject.registerClass(
                 this._nameId = 0;
             }
 
-            if (this._handleMethodCallId > 0) {
-                this.disconnect(this._handleMethodCallId);
-                this._handleMethodCallId = 0;
-                this.unexport();
+            try {
+                this._dbus.unexport();
+            } catch (e) {
+                logError(e);
             }
             if (this.watcher)
                 this.watcher.force_exit();

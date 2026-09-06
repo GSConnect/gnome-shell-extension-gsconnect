@@ -3,11 +3,12 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 import Gio from 'gi://Gio';
-import GjsPrivate from 'gi://GjsPrivate';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 
 import Meta from 'gi://Meta';
+
+import * as DBus from '../service/utils/dbus.js';
 
 
 /*
@@ -63,12 +64,16 @@ const TEXT_MIMETYPES = [
  */
 export const Clipboard = GObject.registerClass({
     GTypeName: 'GSConnectShellClipboard',
-}, class GSConnectShellClipboard extends GjsPrivate.DBusImplementation {
+    Signals: {
+        'OwnerChange': {
+            flags: GObject.SignalFlags.RUN_FIRST,
+            param_types: [],
+        },
+    },
+}, class GSConnectShellClipboard extends GObject.Object {
 
     _init(params = {}) {
-        super._init({
-            g_interface_info: DBUS_INFO,
-        });
+        super._init();
 
         this._transferring = false;
 
@@ -80,10 +85,7 @@ export const Clipboard = GObject.registerClass({
         );
 
         // Prepare DBus interface
-        this._handleMethodCallId = this.connect(
-            'handle-method-call',
-            this._onHandleMethodCall.bind(this)
-        );
+        this._dbus = DBus.wrapObject(DBUS_INFO, this);
 
         this._nameId = Gio.DBus.own_name(
             Gio.BusType.SESSION,
@@ -114,7 +116,7 @@ export const Clipboard = GObject.registerClass({
          * we'll end up with the previous selection's content.
          */
         GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
-            this.emit_signal('OwnerChange', null);
+            this.emit('OwnerChange');
             this._transferring = false;
 
             return GLib.SOURCE_REMOVE;
@@ -123,7 +125,7 @@ export const Clipboard = GObject.registerClass({
 
     _onBusAcquired(connection, name) {
         try {
-            this.export(connection, DBUS_PATH);
+            this._dbus.export(connection, DBUS_PATH);
         } catch (e) {
             logError(e);
         }
@@ -131,80 +133,9 @@ export const Clipboard = GObject.registerClass({
 
     _onNameLost(connection, name) {
         try {
-            this.unexport();
+            this._dbus.unexport();
         } catch (e) {
             logError(e);
-        }
-    }
-
-    async _onHandleMethodCall(iface, name, param1, param2) {
-        // Signal doesn't await this Promise, so any uncaught throw becomes an
-        // unhandled rejection. Wrap the whole body.
-        try {
-            let retval;
-            let invocation, parameters;
-
-            // GNOME 50+ changed the callback signature from
-            // (iface, name, parameters, invocation) to
-            // (iface, name, invocation, parameters)
-            // Detect which order is being used
-            if (param1 instanceof GLib.Variant) {
-                // Old order: parameters, invocation
-                parameters = param1;
-                invocation = param2;
-            } else {
-                // New order: invocation, parameters
-                invocation = param1;
-                parameters = param2;
-            }
-
-            try {
-                const args = parameters.recursiveUnpack();
-
-                retval = await this[name](...args);
-            } catch (e) {
-                try {
-                    if (e instanceof GLib.Error) {
-                        invocation.return_gerror(e);
-                    } else {
-                        const ename = (e && typeof e.name === 'string') ? e.name : 'Error';
-                        const dname = ename.includes('.')
-                            ? ename
-                            : `org.gnome.gjs.JSError.${ename}`;
-                        invocation.return_dbus_error(dname, (e && e.message) || String(e));
-                    }
-                } catch { /* invocation already returned or peer is gone */ }
-
-                return;
-            }
-
-            if (retval === undefined)
-                retval = new GLib.Variant('()', []);
-
-            try {
-                if (!(retval instanceof GLib.Variant)) {
-                    const out_args = DBUS_INFO.lookup_method(name).out_args;
-                    retval = new GLib.Variant(
-                        `(${out_args.map(arg => arg.signature).join('')})`,
-                        (out_args.length === 1) ? [retval] : retval
-                    );
-                }
-
-                invocation.return_value(retval);
-
-            // Without a response, the client will wait for timeout
-            } catch {
-                try {
-                    invocation.return_dbus_error(
-                        'org.gnome.gjs.JSError.ValueError',
-                        'Service implementation returned an incorrect value type'
-                    );
-                } catch { /* invocation already returned or peer is gone */ }
-            }
-        } catch (e) {
-            try {
-                logError(e, 'gsconnect clipboard handler');
-            } catch { /* */ }
         }
     }
 
@@ -358,10 +289,10 @@ export const Clipboard = GObject.registerClass({
             this._nameId = 0;
         }
 
-        if (this._handleMethodCallId > 0) {
-            this.disconnect(this._handleMethodCallId);
-            this._handleMethodCallId = 0;
-            this.unexport();
+        try {
+            this._dbus.unexport();
+        } catch (e) {
+            logError(e);
         }
     }
 });

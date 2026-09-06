@@ -572,21 +572,13 @@ const PlayerRemote = GObject.registerClass({
                 const MPRISPlayerIface = Config.DBUS.lookup_interface('org.mpris.MediaPlayer2.Player');
 
                 if (this._applicationIface === null) {
-                    this._applicationIface = new DBus.Interface({
-                        g_instance: this,
-                        g_connection: this._connection,
-                        g_object_path: '/org/mpris/MediaPlayer2',
-                        g_interface_info: MPRISIface,
-                    });
+                    this._applicationIface = DBus.wrapObject(MPRISIface, this);
+                    this._applicationIface.export(this._connection, '/org/mpris/MediaPlayer2');
                 }
 
                 if (this._playerIface === null) {
-                    this._playerIface = new DBus.Interface({
-                        g_instance: this,
-                        g_connection: this._connection,
-                        g_object_path: '/org/mpris/MediaPlayer2',
-                        g_interface_info: MPRISPlayerIface,
-                    });
+                    this._playerIface = DBus.wrapObject(MPRISPlayerIface, this);
+                    this._playerIface.export(this._connection, '/org/mpris/MediaPlayer2');
                 }
             }
 
@@ -903,12 +895,12 @@ const PlayerRemote = GObject.registerClass({
             this._connection = null;
 
             if (this._applicationIface) {
-                this._applicationIface.destroy();
+                this._applicationIface.unexport();
                 this._applicationIface = null;
             }
 
             if (this._playerIface) {
-                this._playerIface.destroy();
+                this._playerIface.unexport();
                 this._playerIface = null;
             }
         }
