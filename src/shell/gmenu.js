@@ -347,7 +347,7 @@ export class ListBox extends PopupMenu.PopupMenuSection {
         } else {
             this.box.set_opacity(0);
             this.box.set_width(0);
-            this.sub.set_height(0);
+            this.box.set_height(0);
             this.box.visible = true;
         }
 
