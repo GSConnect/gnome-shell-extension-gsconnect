@@ -276,7 +276,13 @@ const MPRISPlugin = GObject.registerClass({
                     pos: Math.floor(player.Position / 1000),
                     isPlaying: (player.PlaybackStatus === 'Playing'),
                     canPause: player.CanPause,
-                    canPlay: player.CanPlay,
+                    // Some players (notably VLC) never emit PropertiesChanged
+                    // for CanPlay, so the cached value stays at whatever it was
+                    // when the proxy was created — `false` if the player was
+                    // still Stopped. A paused, controllable player can always
+                    // be resumed, so treat that as playable.
+                    canPlay: player.CanPlay ||
+                        (player.CanControl && player.PlaybackStatus === 'Paused'),
                     canGoNext: player.CanGoNext,
                     canGoPrevious: player.CanGoPrevious,
                     canSeek: player.CanSeek,
