@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-08-09 19:53+0300\n"
-"PO-Revision-Date: 2026-08-09 17:57\n"
+"PO-Revision-Date: 2026-09-23 18:49\n"
 "Last-Translator: \n"
 "Language-Team: Ukrainian\n"
 "Language: uk_UA\n"
@@ -467,7 +467,7 @@ msgstr "Встановити"
 
 #: data/ui/preferences-shortcut-editor.ui:59
 msgid "Note that you have to first disable any conflicting shortcuts in GNOME Settings."
-msgstr ""
+msgstr "Зауважте, що спочатку потрібно вимкнути конфліктні комбінації клавіш в налаштуваннях GNOME."
 
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:94
@@ -978,7 +978,7 @@ msgstr "Активувати сповіщення"
 
 #: src/service/plugins/notification.js:73
 msgid "Copy Text"
-msgstr ""
+msgstr "Копіювати текст"
 
 #: src/service/plugins/ping.js:14
 msgid "Send and receive pings"
