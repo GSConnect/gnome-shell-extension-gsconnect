@@ -18,6 +18,7 @@ import * as share from './share.js';
 import * as sms from './sms.js';
 import * as systemvolume from './systemvolume.js';
 import * as telephony from './telephony.js';
+import * as virtualcamera from './virtualcamera.js';
 
 export default {
     battery,
@@ -36,4 +37,5 @@ export default {
     sms,
     systemvolume,
     telephony,
+    virtualcamera,
 };
