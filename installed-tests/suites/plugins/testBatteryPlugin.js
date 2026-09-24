@@ -214,5 +214,49 @@ describe('The battery plugin', function () {
             expect(localPlugin.device.sendPacket).not.toHaveBeenCalled();
         });
     });
+
+    describe('when the device cannot handle battery requests', function () {
+        let requestlessRig, requestlessPlugin;
+
+        beforeAll(async function () {
+            await Utils.mockComponents();
+
+            requestlessRig = new Utils.TestRig();
+            await requestlessRig.prepare({
+                remoteDevice: {
+                    incomingCapabilities: [
+                        'kdeconnect.battery',
+                        // NOTE: 'kdeconnect.battery.request' intentionally
+                        // omitted, matching devices that only push updates
+                    ],
+                    outgoingCapabilities: [
+                        'kdeconnect.battery',
+                    ],
+                },
+            });
+            requestlessRig.setPaired(true);
+
+            await requestlessRig.loadPlugins();
+            requestlessPlugin =
+                requestlessRig.remoteDevice._plugins.get('battery');
+        });
+
+        afterAll(function () {
+            requestlessRig.destroy();
+        });
+
+        it('does not send a battery request when connected', async function () {
+            spyOn(requestlessPlugin.device, 'sendPacket');
+
+            requestlessRig.setConnected(true);
+            await Promise.idle();
+
+            const sentTypes = requestlessPlugin.device.sendPacket
+                .calls.allArgs()
+                .map(args => args[0].type);
+
+            expect(sentTypes).not.toContain('kdeconnect.battery.request');
+        });
+    });
 });
 

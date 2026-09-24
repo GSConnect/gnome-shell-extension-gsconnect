@@ -148,6 +148,15 @@ const ConnectivityReportPlugin = GObject.registerClass({
      * Request the remote device's connectivity state
      */
     _requestState() {
+        // Only request the state if the device can handle the request packet;
+        // `kdeconnect.connectivity_report.request` is deprecated in the KDE
+        // Connect protocol, so devices will only send updates at their
+        // discretion
+        const incoming = this.device.settings.get_strv('incoming-capabilities');
+
+        if (!incoming.includes('kdeconnect.connectivity_report.request'))
+            return;
+
         this.device.sendPacket({
             type: 'kdeconnect.connectivity_report.request',
             body: {},

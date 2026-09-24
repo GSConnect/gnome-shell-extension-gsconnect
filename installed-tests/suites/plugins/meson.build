@@ -9,6 +9,7 @@ plugin_tests_metadir = join_paths(installed_tests_metadir, 'plugins')
 plugin_tests = [
   'BatteryPlugin',
   'ClipboardPlugin',
+  'ConnectivityReportPlugin',
   'ContactsPlugin',
   'FindmyphonePlugin',
   'MousepadPlugin',
