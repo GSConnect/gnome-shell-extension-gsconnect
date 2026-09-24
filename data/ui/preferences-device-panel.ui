@@ -1218,7 +1218,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                                 <property name="can_focus">True</property>
                                 <property name="action_name">settings.send-active</property>
                                 <property name="selectable">False</property>
-                                <property name="sensitive" bind-source="share-notification" bind-property="active" bind-flags="sync-create"/>
+                                <property name="sensitive">False</property>
                                 <child>
                                   <object class="GtkGrid">
                                     <property name="visible">True</property>
