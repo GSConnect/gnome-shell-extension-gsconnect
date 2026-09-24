@@ -23,8 +23,7 @@
     "service_worker": "js/webworker.js"
   },
   "permissions": [
-    "nativeMessaging",
-    "tabs"
+    "nativeMessaging"
   ],
   "host_permissions": [
     "*://*/*"
