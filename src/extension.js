@@ -72,7 +72,7 @@ const ServiceToggle = GObject.registerClass({
         );
 
         this._panelModeId = this.settings.connect(
-            'changed::show-indicators',
+            'changed::display-mode',
             this._sync.bind(this)
         );
 
@@ -98,7 +98,7 @@ const ServiceToggle = GObject.registerClass({
         this.deviceSection = new PopupMenu.PopupMenuSection();
         this.deviceSection.actor.add_style_class_name('gsconnect-device-section');
         this.settings.bind(
-            'show-indicators',
+            'display-mode',
             this.deviceSection.actor,
             'visible',
             Gio.SettingsBindFlags.INVERT_BOOLEAN
@@ -132,10 +132,11 @@ const ServiceToggle = GObject.registerClass({
         const available = this.service.devices.filter(device => {
             return (device.connected && device.paired);
         });
-        const panelMode = this.settings.get_boolean('show-indicators');
+        const displayMode = this.settings.get_string('display-mode');
+        const panelMode = displayMode === 'panel';
 
-        // Hide status indicator if in Panel mode or no devices are available
-        serviceIndicator._indicator.visible = (!panelMode && available.length);
+        // Show status indicator only if in User mode and some devices are available
+        serviceIndicator._indicator.visible = (displayMode === 'user-menu' && available.length);
 
         // Show device indicators in Panel mode if available
         for (const device of this.service.devices) {

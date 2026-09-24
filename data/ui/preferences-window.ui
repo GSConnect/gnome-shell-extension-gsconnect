@@ -938,6 +938,12 @@ For more information, visit &lt;a href="https://github.com/gsconnect/gnome-shell
         <attribute name="action">win.display-mode</attribute>
         <attribute name="target">user-menu</attribute>
       </item>
+      <item>
+        <!-- TRANSLATORS: Show devices in the user menu like Bluetooth, but hidden -->
+        <attribute name="label" translatable="yes">Hidden</attribute>
+        <attribute name="action">win.display-mode</attribute>
+        <attribute name="target">hidden</attribute>
+      </item>
     </section>
     <section>
       <item>
