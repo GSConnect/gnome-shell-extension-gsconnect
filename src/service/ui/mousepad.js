@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import Gdk from 'gi://Gdk';
 import GObject from 'gi://GObject';
@@ -100,6 +101,7 @@ export const InputDialog = GObject.registerClass({
 
     _init(params) {
         super._init(Object.assign({
+            application: Gio.Application.get_default(),
             use_header_bar: true,
         }, params));
 
