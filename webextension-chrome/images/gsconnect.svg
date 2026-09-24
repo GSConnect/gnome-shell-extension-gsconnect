@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   width="32px"
+   height="32px"
+   viewBox="0 0 32 32"
+   version="1.1"
+   id="SVGRoot">
+  <defs
+     id="defs6152" />
+  <metadata
+     id="metadata6155">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     style="display:inline">
+    <rect
+       rx="1"
+       y="4"
+       x="3"
+       style="opacity:1;fill:#555753;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.57287949"
+       height="18"
+       width="26"
+       id="rect3749"
+       ry="1" />
+    <rect
+       y="6"
+       x="5"
+       style="fill:#d3d7cf;fill-opacity:1;stroke:none;stroke-width:0.57592726"
+       height="14"
+       width="22"
+       id="rect3751" />
+    <path
+       d="M 3,22 1,24 H 31 L 29,22 Z"
+       style="fill:#888a85;fill-opacity:1;stroke:none;stroke-width:0.32499966"
+       id="path3755" />
+    <path
+       d="m 1,24 h 30 c 0,1 -1,2 -2,2 H 3 C 2,26 1,25 1,24 Z"
+       style="fill:#555753;fill-opacity:1;stroke:none;stroke-width:0.4976353"
+       id="path3753" />
+    <path
+       d="M 16,20 22,6 h 5 v 14"
+       style="fill:#ffffff;fill-opacity:0.1882353;fill-rule:nonzero;stroke:none;stroke-width:0.63332039"
+       id="path3701-7" />
+  </g>
+  <g
+     id="layer2"
+     style="display:inline">
+    <rect
+       rx="1"
+       y="10"
+       x="21"
+       style="display:inline;opacity:1;fill:#2e3436;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.36212718"
+       height="17"
+       width="10"
+       id="rect3749-3" />
+    <rect
+       y="11"
+       x="22"
+       style="display:inline;fill:#729fcf;fill-opacity:1;stroke:none;stroke-width:0.37558597"
+       height="14"
+       width="8"
+       id="rect3751-6" />
+    <path
+       d="m 23,25 6,-14 h 1 v 14"
+       style="display:inline;fill:#ffffff;fill-opacity:0.1882353;fill-rule:nonzero;stroke:none;stroke-width:0.37690103"
+       id="path3701" />
+  </g>
+</svg>

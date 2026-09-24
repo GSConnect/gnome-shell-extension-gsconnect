@@ -352,10 +352,7 @@ const Manager = GObject.registerClass({
         info.menu = Gio.DBus.session.export_menu_model(objectPath, device.menu);
 
         // Export the Device interface
-        info.interface = new DBus.Interface({
-            g_instance: device,
-            g_interface_info: DEVICE_IFACE,
-        });
+        info.interface = DBus.wrapObject(DEVICE_IFACE, device);
         info.object.add_interface(info.interface);
 
         this._exported.set(device, info);
