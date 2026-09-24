@@ -36,19 +36,11 @@ const MockPlayer = GObject.registerClass({
         if (this._connection === null) {
             this._connection = await DBus.newConnection();
 
-            this._applicationIface = new DBus.Interface({
-                g_instance: this,
-                g_connection: this._connection,
-                g_object_path: '/org/mpris/MediaPlayer2',
-                g_interface_info: MPRISIface,
-            });
+            this._applicationIface = DBus.wrapObject(MPRISIface, this);
+            this._applicationIface.export(this._connection, '/org/mpris/MediaPlayer2');
 
-            this._playerIface = new DBus.Interface({
-                g_instance: this,
-                g_connection: this._connection,
-                g_object_path: '/org/mpris/MediaPlayer2',
-                g_interface_info: MPRISPlayerIface,
-            });
+            this._playerIface = DBus.wrapObject(MPRISPlayerIface, this);
+            this._playerIface.export(this._connection, '/org/mpris/MediaPlayer2');
         }
 
         if (this._ownerId !== 0)
@@ -114,10 +106,10 @@ const MockPlayer = GObject.registerClass({
             this._connection.close(null, null);
             this._connection = null;
 
-            this._applicationIface.destroy();
+            this._applicationIface.unexport();
             this._applicationIface = null;
 
-            this._playerIface.destroy();
+            this._playerIface.unexport();
             this._playerIface = null;
         }
     }

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-09 14:43+0300\n"
+"POT-Creation-Date: 2026-08-09 19:53+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -471,7 +471,7 @@ msgstr ""
 
 #: data/ui/preferences-shortcut-editor.ui:59
 msgid ""
-"Note that you have to first disable any conflicting shortucts in GNOME "
+"Note that you have to first disable any conflicting shortcuts in GNOME "
 "Settings."
 msgstr ""
 

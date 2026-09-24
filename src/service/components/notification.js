@@ -10,11 +10,12 @@ import GObject from 'gi://GObject';
 import * as DBus from '../utils/dbus.js';
 
 // DesktopAppInfo is no longer in Gio in GNOME 49
-const GioUnix = await import('gi://GioUnix?version=2.0').then((imp) => {
-    return imp.default;
-}).catch(() => {
-    return Gio;
-});
+let GioUnix;
+try {
+    GioUnix = (await import('gi://GioUnix?version=2.0')).default;
+} catch {
+    GioUnix = Gio;
+}
 
 
 const _nodeInfo = Gio.DBusNodeInfo.new_for_xml(`
@@ -219,7 +220,7 @@ const Listener = GObject.registerClass({
     /**
      * Callback for AddNotification()/Notify()
      *
-     * @param {DBus.Interface} iface - The DBus interface
+     * @param {GjsPrivate.DBusImplementation} iface - The DBus interface
      * @param {string} name - The DBus method name
      * @param {GLib.Variant|Gio.DBusMethodInvocation} param1
      *        - The method parameters or invocation (GNOME 50+ changed order)
