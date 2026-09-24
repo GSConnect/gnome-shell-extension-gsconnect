@@ -129,6 +129,21 @@ function _isSmsNotification(packet) {
 }
 
 
+// A cache of recently received notifications, used to suppress duplicate
+// re-sends. When a remote device's service restarts or reconnects (e.g.
+// after the OS kills its background service), it re-sends its complete
+// list of active notifications, causing the same notifications to be
+// shown repeatedly on this device.
+const RECENT_NOTIFICATION_TTL = 30 * 60 * 1000;
+const RECENT_NOTIFICATION_MAX = 200;
+
+// Only suppress duplicate re-sends which arrive shortly after a device
+// (re)connection; the remote service re-sends its full notification list
+// as part of the reconnection handshake. Notifications re-posted while
+// the connection is stable are considered new and are never suppressed.
+const RECENT_NOTIFICATION_BURST_WINDOW = 60 * 1000;
+
+
 /**
  * Remove a local libnotify or Gtk notification.
  *
@@ -192,10 +207,15 @@ const NotificationPlugin = GObject.registerClass({
         );
         this._onApplicationsChanged(this.settings, 'applications');
         this._applicationsChangedSkip = false;
+
+        this._recentNotifications = new Map();
+        this._lastConnectedAt = 0;
     }
 
     connected() {
         super.connected();
+
+        this._lastConnectedAt = Date.now();
 
         this._requestNotifications();
     }
@@ -520,12 +540,68 @@ const NotificationPlugin = GObject.registerClass({
     }
 
     /**
+     * Check if a notification packet is a duplicate of one received
+     * recently, and update the cache.
+     *
+     * @param {Core.Packet} packet - A `kdeconnect.notification`
+     * @returns {boolean} Whether the notification was recently received
+     */
+    _isRecentNotification(packet) {
+        const body = packet.body;
+        const key = [
+            body.id,
+            body.appName,
+            body.title,
+            body.text,
+            body.requestReplyId,
+        ].join('\u0000');
+
+        const now = Date.now();
+
+        const timestamp = this._recentNotifications.get(key);
+
+        // A duplicate re-send; refresh the timestamp so the suppression
+        // window continues to cover the remote device's reconnect cadence
+        if (timestamp !== undefined &&
+            now - timestamp <= RECENT_NOTIFICATION_TTL &&
+            now - this._lastConnectedAt <= RECENT_NOTIFICATION_BURST_WINDOW) {
+            this._recentNotifications.set(key, now);
+            debug(`Suppressing duplicate notification: ${body.appName}: ${body.title}`);
+            return true;
+        }
+
+        // Remove expired entries
+        for (const [k, ts] of this._recentNotifications) {
+            if (now - ts > RECENT_NOTIFICATION_TTL)
+                this._recentNotifications.delete(k);
+        }
+
+        // Evict the oldest entries if the cache is too large
+        while (this._recentNotifications.size >= RECENT_NOTIFICATION_MAX) {
+            this._recentNotifications.delete(
+                this._recentNotifications.keys().next().value
+            );
+        }
+
+        this._recentNotifications.set(key, now);
+
+        return false;
+    }
+
+    /**
      * Receive an incoming notification.
      *
      * @param {Core.Packet} packet - A `kdeconnect.notification`
      */
     async _receiveNotification(packet) {
         try {
+            // Ignore duplicate re-sends of a notification we've recently
+            // shown; the remote device re-sends its full list of active
+            // notifications whenever its service restarts or the connection
+            // drops and reconnects
+            if (this._isRecentNotification(packet))
+                return;
+
             // Set defaults
             let action = null;
             let buttons = [];
