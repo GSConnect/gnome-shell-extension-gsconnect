@@ -192,6 +192,14 @@ const Clipboard = GObject.registerClass({
         if (mimetypes.includes('text/uri-list'))
             return;
 
+        // Special case to avoid copying identifiable passwords,
+        // for privacy reasons.
+        // (See https://github.com/GSConnect/gnome-shell-extension-gsconnect/issues/1893)
+        // TODO: Should there be a preference to re-enable password-sharing,
+        // for users who desire it?
+        if (mimetypes.includes('x-kde-passwordManagerHint'))
+            return;
+
         const text = await new Promise((resolve, reject) => {
             this._clipboard.request_text((clipboard, text) => resolve(text));
         });
