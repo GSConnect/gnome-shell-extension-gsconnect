@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-01 01:34-0400\n"
-"PO-Revision-Date: 2026-07-19 10:55\n"
+"POT-Creation-Date: 2026-08-09 19:53+0300\n"
+"PO-Revision-Date: 2026-08-23 15:49\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
 "Language: fi_FI\n"
@@ -92,8 +92,8 @@ msgstr "Yhdistä kohteeseen…"
 #: data/ui/preferences-shortcut-editor.ui:19
 #: data/ui/service-device-chooser.ui:21 data/ui/service-device-chooser.ui:25
 #: data/ui/service-error-dialog.ui:20 data/ui/service-error-dialog.ui:28
-#: src/preferences/service.js:417 src/service/plugins/share.js:179
-#: src/service/plugins/share.js:314 src/service/plugins/share.js:445
+#: src/preferences/service.js:417 src/service/plugins/share.js:188
+#: src/service/plugins/share.js:323 src/service/plugins/share.js:454
 msgid "Cancel"
 msgstr "Peru"
 
@@ -119,20 +119,20 @@ msgid "Type a phone number or name"
 msgstr "Kirjoita puhelinnumero tai nimi"
 
 #. TRANSLATORS: All other phone number types
-#: data/ui/contacts-address-row.ui:71 src/service/ui/contacts.js:158
+#: data/ui/contacts-address-row.ui:71 src/service/ui/contacts.js:159
 msgid "Other"
 msgstr "Muut"
 
 #. TRANSLATORS: Share URL by SMS
-#: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:358
-#: src/service/daemon.js:481 src/service/plugins/sms.js:62
+#: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:359
+#: src/service/daemon.js:482 src/service/plugins/sms.js:62
 #: webextension/gettext.js:41
 msgid "Send SMS"
 msgstr "Lähetä tekstiviestillä"
 
 #: data/ui/legacy-messaging-dialog.ui:32 data/ui/legacy-messaging-dialog.ui:36
 #: data/ui/notification-reply-dialog.ui:31
-#: data/ui/notification-reply-dialog.ui:35 src/service/plugins/share.js:446
+#: data/ui/notification-reply-dialog.ui:35 src/service/plugins/share.js:455
 msgid "Send"
 msgstr "Lähetä"
 
@@ -145,7 +145,7 @@ msgstr "Laite on kytketty irti"
 msgid "Send Message"
 msgstr "Lähetä viesti"
 
-#: data/ui/messaging-conversation.ui:92 src/shell/notification.js:88
+#: data/ui/messaging-conversation.ui:92 src/shell/notification.js:89
 msgid "Type a message"
 msgstr "Kirjoita viesti"
 
@@ -399,7 +399,7 @@ msgstr "Laitteen asetukset"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/ui/preferences-device-panel.ui:2624
-#: data/ui/preferences-device-panel.ui:2716 src/service/daemon.js:460
+#: data/ui/preferences-device-panel.ui:2716 src/service/daemon.js:461
 msgid "Pair"
 msgstr "Muodosta laitepari"
 
@@ -417,7 +417,7 @@ msgid "Encryption Info"
 msgstr "Salaustiedot"
 
 #. TRANSLATORS: Unpair the device and notify it
-#: data/ui/preferences-device-panel.ui:2722 src/service/daemon.js:469
+#: data/ui/preferences-device-panel.ui:2722 src/service/daemon.js:470
 msgid "Unpair"
 msgstr "Poista paritus"
 
@@ -461,8 +461,12 @@ msgstr "Mykistä"
 msgid "Set"
 msgstr "Aseta"
 
+#: data/ui/preferences-shortcut-editor.ui:59
+msgid "Note that you have to first disable any conflicting shortcuts in GNOME Settings."
+msgstr ""
+
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
-#: data/ui/preferences-shortcut-editor.ui:80
+#: data/ui/preferences-shortcut-editor.ui:94
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
 msgstr "Paina Esc peruuttaaksesi tai Backspace nollataksesi pikanäppäimen."
 
@@ -538,7 +542,7 @@ msgstr "Komentorivityökalu <tt>openssl</tt> ei vaikuta olevan asennettu.\n"
 "Käytä jakelusi paketinhallintaa asentaaksesi sen.\n"
 "Lisätietoja on saatavilla <a href=\"https://github.com/gsconnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found\">GSConnectin wikissä</a>."
 
-#: data/ui/preferences-window.ui:874 src/service/init.js:361
+#: data/ui/preferences-window.ui:874 src/service/init.js:364
 msgid "OpenSSL not found"
 msgstr "OpenSSL:ää ei löytynyt"
 
@@ -607,8 +611,8 @@ msgstr "Tekniset yksityiskohdat"
 #. context menu
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #. Update UI
-#: nautilus-extension/nautilus-gsconnect.py:187 src/service/ui/contacts.js:518
-#: src/service/ui/contacts.js:533
+#: nautilus-extension/nautilus-gsconnect.py:187 src/service/ui/contacts.js:519
+#: src/service/ui/contacts.js:534
 #, python-format, javascript-format
 msgid "Send to %s"
 msgstr "Lähetä numeroon %s"
@@ -643,17 +647,10 @@ msgstr "Poistettu käytöstä"
 
 #. TRANSLATORS: Summary of a keyboard shortcut function
 #. Example: Enter a new shortcut to change Messaging
-#: src/preferences/keybindings.js:66
+#: src/preferences/keybindings.js:65
 #, javascript-format
 msgid "Enter a new shortcut to change <b>%s</b>"
 msgstr "Anna uusi pikanäppäin muuttaaksesi <b>%s</b>"
-
-#. TRANSLATORS: When a keyboard shortcut is unavailable
-#. Example: [Ctrl]+[S] is already being used
-#: src/preferences/keybindings.js:132
-#, javascript-format
-msgid "%s is already being used"
-msgstr "%s on jo käytössä"
 
 #: src/preferences/service.js:373
 msgid "A complete KDE Connect implementation for GNOME"
@@ -716,92 +713,92 @@ msgid "Waiting for service…"
 msgstr "Odotetaan palvelua…"
 
 #. Notify the user
-#: src/service/daemon.js:103
+#: src/service/daemon.js:104
 msgid "Settings Migrated"
 msgstr ""
 
-#: src/service/daemon.js:104
+#: src/service/daemon.js:105
 msgid "GSConnect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
 msgstr "GSConnect on päivitetty tukemaan KDE Connect -yhteyskäytäntöä. Joidenkin laitteiden laiteparitus on ehkä tehtävä uudelleen."
 
-#: src/service/daemon.js:246
+#: src/service/daemon.js:247
 msgid "Click for help troubleshooting"
 msgstr "Napsauta tästä vianmääritykseen"
 
-#: src/service/daemon.js:256
+#: src/service/daemon.js:257
 msgid "Click for more information"
 msgstr "Napsauta saadaksesi lisätietoja"
 
-#: src/service/daemon.js:364
+#: src/service/daemon.js:365
 msgid "Dial Number"
 msgstr "Näppäile numero"
 
-#: src/service/daemon.js:370 src/service/daemon.js:568
+#: src/service/daemon.js:371 src/service/daemon.js:569
 #: src/service/plugins/share.js:31
 msgid "Share File"
 msgstr "Jaa tiedosto"
 
-#: src/service/daemon.js:421
+#: src/service/daemon.js:422
 msgid "List available devices"
 msgstr "Listaa saatavilla olevat laitteet"
 
-#: src/service/daemon.js:430
+#: src/service/daemon.js:431
 msgid "List all devices"
 msgstr "Listaa kaikki laitteet"
 
-#: src/service/daemon.js:439
+#: src/service/daemon.js:440
 msgid "Target Device"
 msgstr "Kohdelaite"
 
-#: src/service/daemon.js:448
+#: src/service/daemon.js:449
 msgid "Target Device Name"
 msgstr "Kohdelaitteen nimi"
 
-#: src/service/daemon.js:490
+#: src/service/daemon.js:491
 msgid "Message Body"
 msgstr "Viestin runko"
 
-#: src/service/daemon.js:502 src/service/plugins/notification.js:57
+#: src/service/daemon.js:503 src/service/plugins/notification.js:57
 msgid "Send Notification"
 msgstr "Lähetä ilmoitus"
 
-#: src/service/daemon.js:511
+#: src/service/daemon.js:512
 msgid "Notification App Name"
 msgstr "Ilmoitussovelluksen nimi"
 
-#: src/service/daemon.js:520
+#: src/service/daemon.js:521
 msgid "Notification Body"
 msgstr "Ilmoituksen runko"
 
-#: src/service/daemon.js:529
+#: src/service/daemon.js:530
 msgid "Notification Icon"
 msgstr "Ilmoituksen kuvake"
 
-#: src/service/daemon.js:538
+#: src/service/daemon.js:539
 msgid "Notification ID"
 msgstr "Ilmoituksen tunniste"
 
-#: src/service/daemon.js:547 src/service/plugins/ping.js:13
+#: src/service/daemon.js:548 src/service/plugins/ping.js:13
 #: src/service/plugins/ping.js:20 src/service/plugins/ping.js:47
 msgid "Ping"
 msgstr "Ping"
 
-#: src/service/daemon.js:556 src/service/plugins/battery.js:247
+#: src/service/daemon.js:557 src/service/plugins/battery.js:247
 #: src/service/plugins/battery.js:276 src/service/plugins/battery.js:305
 #: src/service/plugins/findmyphone.js:22
 msgid "Ring"
 msgstr "Soita ääni"
 
-#: src/service/daemon.js:577 src/service/plugins/share.js:47
+#: src/service/daemon.js:578 src/service/plugins/share.js:47
 #: src/service/ui/messaging.js:1257 src/service/ui/messaging.js:1265
 msgid "Share Link"
 msgstr "Jaa linkki"
 
-#: src/service/daemon.js:586 src/service/plugins/share.js:39
+#: src/service/daemon.js:587 src/service/plugins/share.js:39
 msgid "Share Text"
 msgstr "Jaa teksti"
 
-#: src/service/daemon.js:598
+#: src/service/daemon.js:599
 msgid "Show release version"
 msgstr "Näytä julkaisuversio"
 
@@ -849,7 +846,7 @@ msgstr "Laitteen kellot eivät ole synkronoituna"
 msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Laitehaku on poistettu käytöstä tässä verkossa olevien laitteiden lukumäärän vuoksi."
 
-#: src/service/backends/lan.js:477
+#: src/service/backends/lan.js:580
 msgid "Port already in use"
 msgstr "Portti on jo käytössä"
 
@@ -918,7 +915,7 @@ msgstr "Käytä parilaitteen yhteystietoja"
 #. Contact Name
 #: src/service/plugins/contacts.js:242 src/service/plugins/contacts.js:362
 #: src/service/plugins/telephony.js:156 src/service/plugins/telephony.js:175
-#: src/service/ui/contacts.js:620 src/service/ui/messaging.js:756
+#: src/service/ui/contacts.js:621 src/service/ui/messaging.js:756
 msgid "Unknown Contact"
 msgstr "Tuntematon yhteystieto"
 
@@ -973,6 +970,10 @@ msgstr "Vastaa ilmoitukseen"
 #: src/service/plugins/notification.js:65
 msgid "Activate Notification"
 msgstr "Aktivoi ilmoitus"
+
+#: src/service/plugins/notification.js:73
+msgid "Copy Text"
+msgstr "Kopioi teksti"
 
 #: src/service/plugins/ping.js:14
 msgid "Send and receive pings"
@@ -1030,87 +1031,87 @@ msgstr "Jaa"
 msgid "Share files and URLs between devices"
 msgstr "Jaa tiedostoja ja URL-osoitteita laitteiden välillä"
 
-#: src/service/plugins/share.js:148 src/service/plugins/share.js:227
-#: src/service/plugins/share.js:337
+#: src/service/plugins/share.js:157 src/service/plugins/share.js:236
+#: src/service/plugins/share.js:346
 msgid "Transfer Failed"
 msgstr "Siirto epäonnistui"
 
 #. TRANSLATORS: eg. Google Pixel is not allowed to upload files
-#: src/service/plugins/share.js:150
+#: src/service/plugins/share.js:159
 #, javascript-format
 msgid "%s is not allowed to upload files"
 msgstr "Laitteella %s ei ole lupaa lähettää tiedostoja"
 
-#: src/service/plugins/share.js:172 src/service/plugins/share.js:307
+#: src/service/plugins/share.js:181 src/service/plugins/share.js:316
 msgid "Transferring File"
 msgstr "Siirretään tiedostoa"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:174
+#: src/service/plugins/share.js:183
 #, javascript-format
 msgid "Receiving “%s” from %s"
 msgstr "Vastaanotetaan “%s” laitteelta %s"
 
-#: src/service/plugins/share.js:193 src/service/plugins/share.js:327
+#: src/service/plugins/share.js:202 src/service/plugins/share.js:336
 msgid "Transfer Successful"
 msgstr "Siirto valmistui"
 
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:195
+#: src/service/plugins/share.js:204
 #, javascript-format
 msgid "Received “%s” from %s"
 msgstr "Vastaanotettiin “%s” laitteelta %s"
 
-#: src/service/plugins/share.js:205
+#: src/service/plugins/share.js:214
 msgid "Show File Location"
 msgstr "Näytä tiedoston sijainti"
 
-#: src/service/plugins/share.js:210
+#: src/service/plugins/share.js:219
 msgid "Open File"
 msgstr "Avaa tiedosto"
 
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:229
+#: src/service/plugins/share.js:238
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
 msgstr "Tiedoston “%s” vastaanotto laitteelta %s epäonnistui"
 
-#: src/service/plugins/share.js:259
+#: src/service/plugins/share.js:268
 #, javascript-format
 msgid "Text Shared By %s"
 msgstr "Laitteen %s jakama teksti"
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
-#: src/service/plugins/share.js:309
+#: src/service/plugins/share.js:318
 #, javascript-format
 msgid "Sending “%s” to %s"
 msgstr "Lähetetään “%s” laitteelle %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:329
+#: src/service/plugins/share.js:338
 #, javascript-format
 msgid "Sent “%s” to %s"
 msgstr "Lähetettiiin “%s” laitteelle %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:339
+#: src/service/plugins/share.js:348
 #, javascript-format
 msgid "Failed to send “%s” to %s"
 msgstr "Tiedoston “%s” lähettäminen laitteelle %s epäonnistui"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
-#: src/service/plugins/share.js:397
+#: src/service/plugins/share.js:406
 #, javascript-format
 msgid "Send files to %s"
 msgstr "Lähetä tiedostoja laitteeseen %s"
 
 #. TRANSLATORS: Mark the file to be opened once completed
-#: src/service/plugins/share.js:401
+#: src/service/plugins/share.js:410
 msgid "Open when done"
 msgstr "Avaa kun valmis"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
-#: src/service/plugins/share.js:440
+#: src/service/plugins/share.js:449
 #, javascript-format
 msgid "Send a link to %s"
 msgstr "Lähetä linkki laitteeseen %s"
@@ -1167,22 +1168,22 @@ msgid "Ongoing call"
 msgstr "Käynnissä oleva puhelu"
 
 #. TRANSLATORS: A fax number
-#: src/service/ui/contacts.js:143
+#: src/service/ui/contacts.js:144
 msgid "Fax"
 msgstr "Faksi"
 
 #. TRANSLATORS: A work or office phone number
-#: src/service/ui/contacts.js:147
+#: src/service/ui/contacts.js:148
 msgid "Work"
 msgstr "Työ"
 
 #. TRANSLATORS: A mobile or cellular phone number
-#: src/service/ui/contacts.js:151
+#: src/service/ui/contacts.js:152
 msgid "Mobile"
 msgstr "Mobiili"
 
 #. TRANSLATORS: A home phone number
-#: src/service/ui/contacts.js:155
+#: src/service/ui/contacts.js:156
 msgid "Home"
 msgstr "Koti"
 
@@ -1252,7 +1253,7 @@ msgstr "%d% % (%d∶%02d kunnes täynnä)"
 msgid "%d%% (%d∶%02d Remaining)"
 msgstr "%d% % (%d∶%02d jäljellä)"
 
-#: src/shell/notification.js:73
+#: src/shell/notification.js:74
 msgid "Reply"
 msgstr "Vastaa"
 
