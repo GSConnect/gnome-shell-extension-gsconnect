@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-08-09 19:53+0300\n"
-"PO-Revision-Date: 2026-08-09 17:58\n"
+"PO-Revision-Date: 2026-10-02 09:53\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Language: ru_RU\n"
@@ -757,7 +757,7 @@ msgstr "Целевое устройство"
 
 #: src/service/daemon.js:449
 msgid "Target Device Name"
-msgstr ""
+msgstr "Название целевого устройства"
 
 #: src/service/daemon.js:491
 msgid "Message Body"
@@ -978,7 +978,7 @@ msgstr "Активировать уведомление"
 
 #: src/service/plugins/notification.js:73
 msgid "Copy Text"
-msgstr ""
+msgstr "Копировать текст"
 
 #: src/service/plugins/ping.js:14
 msgid "Send and receive pings"
