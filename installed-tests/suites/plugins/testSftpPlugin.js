@@ -117,6 +117,15 @@ describe('The sftp plugin', function () {
         expect(localPlugin.device.showNotification).toHaveBeenCalled();
     });
 
+    it('builds correct SFTP URIs', function () {
+        expect(localPlugin._sftpUri('192.168.1.2', 1739, '/storage/emulated/0'))
+            .toBe('sftp://192.168.1.2:1739/storage/emulated/0/');
+        expect(localPlugin._sftpUri('192.168.1.2', 1739, '/'))
+            .toBe('sftp://192.168.1.2:1739/');
+        expect(localPlugin._sftpUri('192.168.1.2', 1739, '/a b/c'))
+            .toBe('sftp://192.168.1.2:1739/a%20b/c/');
+    });
+
     it('disables its GActions when disconnected', function () {
         testRig.setConnected(false);
 
