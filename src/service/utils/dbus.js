@@ -40,6 +40,55 @@ function toUnderscoreCase(string) {
 }
 
 /**
+ * Call a DBus method and reply with its awaited result.
+ *
+ * @param {Gio.DBusInterfaceInfo} interfaceInfo - The interface info
+ * @param {GObject.Object} obj - The implementation
+ * @param {string} name - The method name
+ * @param {Array} parameters - The method parameters
+ * @param {Gio.DBusMethodInvocation} invocation - The invocation
+ */
+async function invokeMethod(interfaceInfo, obj, name, parameters, invocation) {
+    let retval;
+
+    try {
+        retval = await obj[name](...parameters);
+    } catch (e) {
+        if (e instanceof GLib.Error) {
+            invocation.return_gerror(e);
+        } else {
+            const errorName = e.name.includes('.')
+                ? e.name
+                : `org.gnome.gjs.JSError.${e.name}`;
+            invocation.return_dbus_error(errorName, e.message);
+        }
+
+        logError(e, `${obj}: ${name}`);
+        return;
+    }
+
+    if (retval === undefined)
+        retval = new GLib.Variant('()', []);
+
+    try {
+        if (!(retval instanceof GLib.Variant)) {
+            const args = interfaceInfo.lookup_method(name).out_args;
+            retval = new GLib.Variant(
+                `(${args.map(arg => arg.signature).join('')})`,
+                (args.length === 1) ? [retval] : retval
+            );
+        }
+
+        invocation.return_value(retval);
+    } catch (e) {
+        invocation.return_dbus_error('org.gnome.gjs.JSError.ValueError',
+            'Service implementation returned an incorrect value type');
+
+        logError(e, `${obj}: ${name}`);
+    }
+}
+
+/**
  * Creates a DBus interface which performs property get/set and method
  * calls on the an GObject, using the `Gio.DBusExportedObject.wrapJSObject`
  * convenience helper from GJS.
@@ -53,12 +102,26 @@ function toUnderscoreCase(string) {
  * @returns {Gio.DBusExportedObject} - The DBus interface
  */
 export function wrapObject(interfaceInfo, obj) {
+    const methods = new Set(interfaceInfo.methods.map(method => method.name));
+    const asyncMethods = new Map(
+        [...methods].map(method => [`${method}Async`, method]));
+
     // Intercept property get/set on the object to translate property names to
     // JS-style names if necessary.
     const proxyObj = new Proxy(
         obj,
         {
             get(target, prop, receiver) {
+                // GJS < 1.88 doesn't await methods; use the `Async` form
+                if (methods.has(prop))
+                    return undefined;
+
+                const method = asyncMethods.get(prop);
+                if (method !== undefined) {
+                    return (parameters, invocation) => invokeMethod(
+                        interfaceInfo, target, method, parameters, invocation);
+                }
+
                 const value = Reflect.has(target, prop)
                     ? Reflect.get(target, prop)
                     : Reflect.get(target, toUnderscoreCase(prop));
