@@ -312,9 +312,12 @@ const Device = GObject.registerClass({
             if (meta === undefined)
                 continue;
 
-            // If we can handle packets it sends or send packets it can handle
+            // If we can handle packets it sends or send packets it can handle,
+            // or the plugin works without any packets
             if (meta.incomingCapabilities.some(t => outgoing.includes(t)) ||
-                meta.outgoingCapabilities.some(t => incoming.includes(t)))
+                meta.outgoingCapabilities.some(t => incoming.includes(t)) ||
+                (meta.incomingCapabilities.length === 0 &&
+                 meta.outgoingCapabilities.length === 0))
                 supported.push(name);
         }
 

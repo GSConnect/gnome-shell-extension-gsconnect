@@ -17,6 +17,7 @@ plugin_tests = [
   'PingPlugin',
   'PresenterPlugin',
   'RuncommandPlugin',
+  'ScreensaverInhibitPlugin',
   'SftpPlugin',
   'SharePlugin',
   'SmsPlugin',
