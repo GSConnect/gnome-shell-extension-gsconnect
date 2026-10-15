@@ -465,8 +465,8 @@ export const Channel = GObject.registerClass({
         const connection = await client.connect_async(address, cancellable);
 
         // Start the transfer
-        const transferredSize = await connection.output_stream.splice_async(
-            target, connection.input_stream,
+        const transferredSize = await target.splice_async(
+            connection.input_stream,
             (Gio.OutputStreamSpliceFlags.CLOSE_SOURCE |
              Gio.OutputStreamSpliceFlags.CLOSE_TARGET),
             GLib.PRIORITY_DEFAULT, cancellable);
@@ -509,7 +509,8 @@ export const Channel = GObject.registerClass({
             cancellable);
 
         // Accept the connection and configure the channel
-        const [, connection] = await Promise([sendPacket, acceptConnection]);
+        const [, [connection]] = await Promise.all([sendPacket,
+            acceptConnection]);
 
         // Start the transfer
         const transferredSize = await connection.output_stream.splice_async(
@@ -517,6 +518,10 @@ export const Channel = GObject.registerClass({
             (Gio.OutputStreamSpliceFlags.CLOSE_SOURCE |
              Gio.OutputStreamSpliceFlags.CLOSE_TARGET),
             GLib.PRIORITY_DEFAULT, cancellable);
+
+        // Without TLS, the other end only sees the end of the payload when the
+        // connection is closed
+        connection.close(null);
 
         if (transferredSize !== size) {
             throw new Gio.IOErrorEnum({
