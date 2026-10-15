@@ -321,6 +321,17 @@ const Device = GObject.registerClass({
         // Only write GSettings if something has changed
         const currentSupported = this.settings.get_strv('supported-plugins');
 
+        // Plugins that are off by default start disabled when first supported
+        const disabled = this.settings.get_strv('disabled-plugins');
+        const newlyDisabled = supported.filter(name => {
+            return plugins[name].Metadata.enabledByDefault === false &&
+                !currentSupported.includes(name) &&
+                !disabled.includes(name);
+        });
+
+        if (newlyDisabled.length > 0)
+            this.settings.set_strv('disabled-plugins', [...disabled, ...newlyDisabled]);
+
         if (currentSupported.join('') !== supported.sort().join(''))
             this.settings.set_strv('supported-plugins', supported);
 
