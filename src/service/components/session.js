@@ -14,30 +14,60 @@ const Session = class {
         this._initAsync();
     }
 
-    async _initAsync() {
+    /**
+     * Get the object path of the user's graphical session, falling back to
+     * their first session.
+     *
+     * @returns {Promise<string>} A logind session object path
+     */
+    async _getSessionPath() {
         try {
             const reply = await this._connection.call(
                 'org.freedesktop.login1',
-                '/org/freedesktop/login1',
-                'org.freedesktop.login1.Manager',
-                'ListSessions',
-                null,
+                '/org/freedesktop/login1/user/self',
+                'org.freedesktop.DBus.Properties',
+                'Get',
+                new GLib.Variant('(ss)', ['org.freedesktop.login1.User', 'Display']),
                 null,
                 Gio.DBusCallFlags.NONE,
                 -1,
                 null);
 
-            const sessions = reply.deepUnpack()[0];
-            const userName = GLib.get_user_name();
-            let sessionPath = '/org/freedesktop/login1/session/auto';
-
             // eslint-disable-next-line no-unused-vars
-            for (const [num, uid, name, seat, objectPath] of sessions) {
-                if (name === userName) {
-                    sessionPath = objectPath;
-                    break;
-                }
-            }
+            const [id, objectPath] = reply.deepUnpack()[0].deepUnpack();
+
+            if (objectPath !== '/')
+                return objectPath;
+        } catch (e) {
+            debug(e);
+        }
+
+        const reply = await this._connection.call(
+            'org.freedesktop.login1',
+            '/org/freedesktop/login1',
+            'org.freedesktop.login1.Manager',
+            'ListSessions',
+            null,
+            null,
+            Gio.DBusCallFlags.NONE,
+            -1,
+            null);
+
+        const sessions = reply.deepUnpack()[0];
+        const userName = GLib.get_user_name();
+
+        // eslint-disable-next-line no-unused-vars
+        for (const [num, uid, name, seat, objectPath] of sessions) {
+            if (name === userName)
+                return objectPath;
+        }
+
+        return '/org/freedesktop/login1/session/auto';
+    }
+
+    async _initAsync() {
+        try {
+            const sessionPath = await this._getSessionPath();
 
             this._session = new Gio.DBusProxy({
                 g_connection: this._connection,
