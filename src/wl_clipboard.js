@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 
 import * as DBus from './service/utils/dbus.js';
@@ -104,9 +105,12 @@ export const Clipboard = GObject.registerClass(
         /**
          * Get the available mimetypes of the current clipboard content
          *
-         * @returns {Promise<string[]>} A list of mime-types
+         * @param {Array} params - empty
+         * @param {Gio.DBusMethodInvocation} invocation - List of mime-types is
+         *  returned via. invocation
+         * @returns {Promise<void>}
          */
-        GetMimetypes() {
+        GetMimetypesAsync(params, invocation) {
             return new Promise((resolve, reject) => {
                 const proc = launcher.spawnv([
                     'wl-paste',
@@ -126,15 +130,19 @@ export const Clipboard = GObject.registerClass(
                         reject(e);
                     }
                 });
-            });
+            })
+            .then((value) => invocation.return_value(new GLib.Variant('(as)', [value])));
         }
 
         /**
          * Get the text content of the clipboard
          *
-         * @returns {Promise<string>} Text content of the clipboard
+         * @param {Array} params - empty
+         * @param {Gio.DBusMethodInvocation} invocation - Text content of the
+         *  clipboard is returned via. invocation
+         * @returns {Promise<void>}
          */
-        GetText() {
+        GetTextAsync(params, invocation) {
             return new Promise((resolve, reject) => {
                 this.GetMimetypes().then((mimetypes) => {
                     const mimetype = TEXT_MIMETYPES.find((type) =>
@@ -160,31 +168,25 @@ export const Clipboard = GObject.registerClass(
                         reject(new Error('text not available'));
                     }
                 });
-            });
+            })
+            .then((value) => invocation.return_value(new GLib.Variant('(s)', [value])));
         }
 
         /**
          * Set the text content of the clipboard
          *
          * @param {string} text - text content to set
-         * @returns {Promise} A promise for the operation
+         * @returns {void}
          */
         SetText(text) {
-            return new Promise((resolve, reject) => {
-                try {
-                    if (typeof text !== 'string') {
-                        throw new Gio.DBusError({
-                            code: Gio.DBusError.INVALID_ARGS,
-                            message: 'expected string',
-                        });
-                    }
+            if (typeof text !== 'string') {
+                throw new Gio.DBusError({
+                    code: Gio.DBusError.INVALID_ARGS,
+                    message: 'expected string',
+                });
+            }
 
-                    launcher.spawnv(['wl-copy', text]);
-                    resolve();
-                } catch (e) {
-                    reject(e);
-                }
-            });
+            launcher.spawnv(['wl-copy', text]);
         }
 
 
