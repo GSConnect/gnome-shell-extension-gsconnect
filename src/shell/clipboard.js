@@ -142,28 +142,25 @@ export const Clipboard = GObject.registerClass({
     /**
      * Get the available mimetypes of the current clipboard content
      *
-     * @returns {Promise<string[]>} A list of mime-types
+     * @returns {string[]} A list of mime-types
      */
     GetMimetypes() {
-        return new Promise((resolve, reject) => {
-            try {
-                const mimetypes = this._selection.get_mimetypes(
-                    Meta.SelectionType.SELECTION_CLIPBOARD
-                );
+        const mimetypes = this._selection.get_mimetypes(
+            Meta.SelectionType.SELECTION_CLIPBOARD
+        );
 
-                resolve(mimetypes);
-            } catch (e) {
-                reject(e);
-            }
-        });
+        return mimetypes;
     }
 
     /**
      * Get the text content of the clipboard
      *
-     * @returns {Promise<string>} Text content of the clipboard
+     * @param {Array} params - empty
+     * @param {Gio.DBusMethodInvocation} invocation - Text content of the
+     *  clipboard is returned via. invocation
+     * @returns {Promise<void>}
      */
-    GetText() {
+    GetTextAsync(params, invocation) {
         return new Promise((resolve, reject) => {
             const mimetypes = this._selection.get_mimetypes(
                 Meta.SelectionType.SELECTION_CLIPBOARD);
@@ -193,45 +190,41 @@ export const Clipboard = GObject.registerClass({
             } else {
                 reject(new Error('text not available'));
             }
-        });
+        })
+        .then((value) => invocation.return_value(new GLib.Variant('(s)', [value])));
     }
 
     /**
      * Set the text content of the clipboard
      *
      * @param {string} text - text content to set
-     * @returns {Promise} A promise for the operation
+     * @returns {void}
      */
     SetText(text) {
-        return new Promise((resolve, reject) => {
-            try {
-                if (typeof text !== 'string') {
-                    throw new Gio.DBusError({
-                        code: Gio.DBusError.INVALID_ARGS,
-                        message: 'expected string',
-                    });
-                }
+        if (typeof text !== 'string') {
+            throw new Gio.DBusError({
+                code: Gio.DBusError.INVALID_ARGS,
+                message: 'expected string',
+            });
+        }
 
-                const source = Meta.SelectionSourceMemory.new(
-                    'text/plain;charset=utf-8', GLib.Bytes.new(text));
+        const source = Meta.SelectionSourceMemory.new(
+            'text/plain;charset=utf-8', GLib.Bytes.new(text));
 
-                this._selection.set_owner(
-                    Meta.SelectionType.SELECTION_CLIPBOARD, source);
-
-                resolve();
-            } catch (e) {
-                reject(e);
-            }
-        });
+        this._selection.set_owner(
+            Meta.SelectionType.SELECTION_CLIPBOARD, source);
     }
 
     /**
-     * Get the content of the clipboard with the type {@link mimetype}.
+     * Get the content of the clipboard with the type {@link params}.
      *
-     * @param {string} mimetype - the mimetype to request
-     * @returns {Promise<Uint8Array>} The content of the clipboard
+     * @param {Array} params - [mimetype]
+     * @param {Gio.DBusMethodInvocation} invocation - The content of the
+     *  clipboard is returned via. invocation
+     * @returns {Promise<void>}
      */
-    GetValue(mimetype) {
+    GetValueAsync(params, invocation) {
+        const mimetype = params.mimetype;
         return new Promise((resolve, reject) => {
             const stream = Gio.MemoryOutputStream.new_resizable();
 
@@ -251,7 +244,8 @@ export const Clipboard = GObject.registerClass({
                     }
                 }
             );
-        });
+        })
+        .then((value) => invocation.return_value(new GLib.Variant('(ay)', [value])));
     }
 
     /**
@@ -260,22 +254,14 @@ export const Clipboard = GObject.registerClass({
      *
      * @param {Uint8Array} value - the value to set
      * @param {string} mimetype - the mimetype of the value
-     * @returns {Promise} - A promise for the operation
+     * @returns {void}
      */
     SetValue(value, mimetype) {
-        return new Promise((resolve, reject) => {
-            try {
-                const source = Meta.SelectionSourceMemory.new(mimetype,
-                    GLib.Bytes.new(value));
+        const source = Meta.SelectionSourceMemory.new(mimetype,
+            GLib.Bytes.new(value));
 
-                this._selection.set_owner(
-                    Meta.SelectionType.SELECTION_CLIPBOARD, source);
-
-                resolve();
-            } catch (e) {
-                reject(e);
-            }
-        });
+        this._selection.set_owner(
+            Meta.SelectionType.SELECTION_CLIPBOARD, source);
     }
 
     destroy() {
