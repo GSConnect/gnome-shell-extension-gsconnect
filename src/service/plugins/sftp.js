@@ -55,6 +55,7 @@ const SFTPPlugin = GObject.registerClass({
 
         this._gmount = null;
         this._mounting = false;
+        this._sftpInfo = null;
 
         // A reusable launcher for ssh processes
         this._launcher = new Gio.SubprocessLauncher({
@@ -196,6 +197,24 @@ const SFTPPlugin = GObject.registerClass({
     }
 
     /**
+     * Build an SFTP URI for a remote path, percent-encoding segments.
+     *
+     * @param {string} host - The remote host
+     * @param {number} port - The remote port
+     * @param {string} path - The remote path
+     * @returns {string} The SFTP URI
+     */
+    _sftpUri(host, port, path) {
+        const segments = String(path || '/').split('/').filter(
+            (part) => part.length > 0);
+        const suffix = segments.map(encodeURIComponent).join('/');
+
+        return (suffix.length > 0)
+            ? `sftp://${host}:${port}/${suffix}/`
+            : `sftp://${host}:${port}/`;
+    }
+
+    /**
      * Mount the remote device using the provided information.
      *
      * @param {Core.Packet} packet - a `kdeconnect.sftp`
@@ -223,11 +242,34 @@ const SFTPPlugin = GObject.registerClass({
 
             // This is the actual call to mount the device
             const host = this.device.channel.host;
-            const uri = `sftp://${host}:${packet.body.port}/`;
-            const file = Gio.File.new_for_uri(uri);
+            const port = packet.body.port;
 
-            await file.mount_enclosing_volume(GLib.PRIORITY_DEFAULT, op,
-                this.cancellable);
+            // Newer devices report every exposed location; older ones only
+            // send a single path (or nothing at all)
+            const multiPaths = (packet.body.multiPaths || []).filter(
+                (target) => typeof target === 'string' && target.length > 0);
+            const pathNames = (packet.body.pathNames || []).filter(
+                (name) => typeof name === 'string' && name.length > 0);
+            const singlePath = (typeof packet.body.path === 'string' &&
+                packet.body.path.length > 0) ? packet.body.path : '/';
+            const targets = (multiPaths.length > 0) ? multiPaths : [singlePath];
+
+            this._sftpInfo = {host, port, targets, pathNames};
+
+            for (const target of targets) {
+                const uri = this._sftpUri(host, port, target);
+                const file = Gio.File.new_for_uri(uri);
+
+                try {
+                    await file.mount_enclosing_volume(GLib.PRIORITY_DEFAULT,
+                        op, this.cancellable);
+                } catch (targetError) {
+                    // The GMount is already there and can be reused
+                    if (!targetError.matches(Gio.IOErrorEnum,
+                        Gio.IOErrorEnum.ALREADY_MOUNTED))
+                        throw targetError;
+                }
+            }
         } catch (e) {
             // Special case when the GMount didn't unmount properly but is still
             // on the same port and can be reused.
@@ -337,7 +379,27 @@ const SFTPPlugin = GObject.registerClass({
 
     async _addSubmenu(mount) {
         try {
-            const directories = await this._listDirectories(mount);
+            let directories = null;
+            const info = this._sftpInfo;
+
+            // Prefer the locations reported by the device; listing the root
+            // fails on newer Android releases (permission denied)
+            if (info && Array.isArray(info.targets) && info.targets.length > 0 &&
+                    info.host && info.port) {
+                directories = {};
+
+                for (let i = 0; i < info.targets.length; i++) {
+                    const target = info.targets[i];
+                    const name = (Array.isArray(info.pathNames) &&
+                        typeof info.pathNames[i] === 'string' &&
+                        info.pathNames[i].length > 0)
+                        ? info.pathNames[i]
+                        : target;
+                    directories[name] = this._sftpUri(info.host, info.port, target);
+                }
+            } else {
+                directories = await this._listDirectories(mount);
+            }
 
             // Submenu sections
             const dirSection = new Gio.Menu();
