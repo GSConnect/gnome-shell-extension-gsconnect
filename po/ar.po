@@ -110,7 +110,7 @@ msgid "No contacts"
 msgstr "لا توجد جهات اتصال"
 
 #: data/ui/contact-chooser.ui:68 data/ui/messaging-window.ui:103
-#: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:949
+#: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:955
 msgid "Help"
 msgstr "المساعدة"
 
@@ -563,12 +563,17 @@ msgstr "لوحة"
 msgid "User Menu"
 msgstr "قائمة المستخدم"
 
+#. TRANSLATORS: Show devices in the user menu like Bluetooth, but hidden
+#: data/ui/preferences-window.ui:943
+msgid "Hidden"
+msgstr "Hidden"
+
 #. TRANSLATORS: Generate a support log
-#: data/ui/preferences-window.ui:945 src/preferences/service.js:414
+#: data/ui/preferences-window.ui:951 src/preferences/service.js:414
 msgid "Generate Support Log"
 msgstr "إنشاء سجل الدعم"
 
-#: data/ui/preferences-window.ui:953
+#: data/ui/preferences-window.ui:959
 msgid "About GSConnect"
 msgstr "حول GSConnect"
 
