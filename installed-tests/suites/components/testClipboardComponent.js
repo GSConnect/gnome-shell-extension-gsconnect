@@ -16,13 +16,22 @@ const {default: Clipboard} = await import(
 
 describe('The Clipboard component', function () {
     let clipboard;
-    let gtkClipboard;
+    let gdkClipboard;
+
+    const readText = () => new Promise((resolve, reject) => {
+        gdkClipboard.read_text_async(null, (source, res) => {
+            try {
+                resolve(source.read_text_finish(res));
+            } catch (e) {
+                reject(e);
+            }
+        });
+    });
 
     beforeAll(function () {
-        Gtk.init(null);
+        Gtk.init();
 
-        const display = Gdk.Display.get_default();
-        gtkClipboard = Gtk.Clipboard.get_default(display);
+        gdkClipboard = Gdk.Display.get_default().get_clipboard();
 
         clipboard = new Clipboard();
     });
@@ -41,19 +50,14 @@ describe('The Clipboard component', function () {
             done();
         });
 
-        gtkClipboard.set_text(text, -1);
+        gdkClipboard.set_content(Gdk.ContentProvider.new_for_value(text));
     });
 
-    it('pushes changes to the session clipboard', function (done) {
+    it('pushes changes to the session clipboard', async function () {
         const text = GLib.uuid_string_random();
 
-        const id = gtkClipboard.connect('owner-change', (gtkClipboard) => {
-            gtkClipboard.disconnect(id);
-
-            expect(gtkClipboard.wait_for_text()).toBe(text);
-            done();
-        });
-
         clipboard.text = text;
+
+        expect(await readText()).toBe(text);
     });
 });

@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+import Gdk from 'gi://Gdk';
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
@@ -12,6 +13,7 @@ import * as Core from '../core.js';
 import Config from '../../config.js';
 import Plugin from '../plugin.js';
 import ReplyDialog from '../ui/notification.js';
+
 
 
 export const Metadata = {
@@ -380,17 +382,28 @@ const NotificationPlugin = GObject.registerClass({
      * @param {Gio.ThemedIcon} icon - The GIcon to upload
      */
     _uploadThemedIcon(packet, icon) {
-        const theme = Gtk.IconTheme.get_default();
+        const theme = Gtk.IconTheme.get_for_display(Gdk.Display.get_default());
         let file = null;
 
         for (const name of icon.names) {
-            // NOTE: kdeconnect-android doesn't support SVGs
-            const size = Math.max.apply(null, theme.get_icon_sizes(name));
-            const info = theme.lookup_icon(name, size, Gtk.IconLookupFlags.NO_SVG);
+            if (!theme.has_icon(name))
+                continue;
 
-            // Send the first icon we find from the options
-            if (info) {
-                file = Gio.File.new_for_path(info.get_filename());
+            // NOTE: kdeconnect-android doesn't support SVGs
+            const size = Math.max(64, ...theme.get_icon_sizes(name));
+            const paintable = theme.lookup_icon(
+                name,
+                null,
+                size,
+                1,
+                Gtk.TextDirection.NONE,
+                Gtk.IconLookupFlags.FORCE_REGULAR
+            );
+            const iconFile = paintable.get_file();
+
+            // Send the first raster icon we find from the options
+            if (iconFile && !iconFile.get_basename().endsWith('.svg')) {
+                file = iconFile;
                 break;
             }
         }

@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+import Adw from 'gi://Adw';
+import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import Gdk from 'gi://Gdk';
 import GObject from 'gi://GObject';
@@ -89,30 +91,22 @@ export const InputDialog = GObject.registerClass({
             GObject.Object
         ),
     },
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/mousepad-input-dialog.ui',
-    Children: [
-        'infobar', 'infobar-label',
-        'touchpad-eventbox', 'mouse-left-button', 'mouse-middle-button', 'mouse-right-button',
-        'touchpad-drag', 'touchpad-long-press',
-        'shift-label', 'ctrl-label', 'alt-label', 'super-label', 'entry',
-    ],
-}, class InputDialog extends Gtk.Dialog {
+}, class InputDialog extends Adw.Window {
 
     _init(params) {
-        super._init(Object.assign({
-            use_header_bar: true,
-        }, params));
+        super._init({
+            default_width: 480,
+            default_height: 560,
+            application: Gio.Application.get_default(),
+            device: params.device,
+            plugin: params.plugin,
+            title: _('Remote Input'),
+        });
 
-        const headerbar = this.get_titlebar();
-        headerbar.title = _('Remote Input');
-        headerbar.subtitle = this.device.name;
-
-        // Main Box
-        const content = this.get_content_area();
-        content.border_width = 0;
+        this._buildLayout();
 
         // TRANSLATORS: Displayed when the remote keyboard is not ready to accept input
-        this.infobar_label.label = _('Remote keyboard on %s is not active').format(this.device.name);
+        this._banner.title = _('Remote keyboard on %s is not active').format(this.device.name);
 
         // Text Input
         this.entry.buffer.connect(
@@ -120,88 +114,214 @@ export const InputDialog = GObject.registerClass({
             this._onInsertText.bind(this)
         );
 
-        this.infobar.connect('notify::reveal-child', this._onState.bind(this));
-        this.plugin.bind_property('state', this.infobar, 'reveal-child', 6);
+        this.plugin.bind_property(
+            'state',
+            this._banner,
+            'revealed',
+            GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.INVERT_BOOLEAN
+        );
 
         // Mouse Pad
         this._resetTouchpadMotion();
         this.touchpad_motion_timeout_id = 0;
         this.touchpad_holding = false;
 
+        // Keyboard
+        const keys = new Gtk.EventControllerKey({
+            propagation_phase: Gtk.PropagationPhase.CAPTURE,
+        });
+        keys.connect('key-pressed', this._onKeyPressed.bind(this));
+        keys.connect('key-released', this._onKeyReleased.bind(this));
+        this.add_controller(keys);
+
         // Scroll Input
-        this.add_events(Gdk.EventMask.SCROLL_MASK);
+        const scroll = new Gtk.EventControllerScroll({
+            flags: Gtk.EventControllerScrollFlags.BOTH_AXES,
+        });
+        scroll.connect('scroll', this._onScroll.bind(this));
+        this.add_controller(scroll);
 
-        this.show_all();
+        // Grab/release system shortcuts with the focus
+        this.connect('notify::is-active', this._onState.bind(this));
+        this.connect('close-request', this._onCloseRequest.bind(this));
     }
 
-    vfunc_delete_event(event) {
+    _buildLayout() {
+        const toolbar = new Adw.ToolbarView();
+        this.set_content(toolbar);
+
+        toolbar.add_top_bar(new Adw.HeaderBar({
+            title_widget: new Adw.WindowTitle({
+                title: _('Remote Input'),
+                subtitle: this.device.name,
+            }),
+        }));
+
+        this._banner = new Adw.Banner({
+            button_label: _('Help'),
+        });
+        this._banner.connect('button-clicked', () => {
+            Gio.AppInfo.launch_default_for_uri_async(
+                'https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Help#remote-keyboard-not-active',
+                null, null, null
+            );
+        });
+        toolbar.add_top_bar(this._banner);
+
+        const box = new Gtk.Box({orientation: Gtk.Orientation.VERTICAL});
+        toolbar.set_content(box);
+
+        // Touchpad
+        this.touchpad = new Gtk.Box({
+            vexpand: true,
+            margin_top: 12,
+            margin_start: 12,
+            margin_end: 12,
+            margin_bottom: 6,
+        });
+        this.touchpad.add_css_class('card');
+        this.touchpad.append(new Gtk.Label({
+            label: _('Touchpad.\nDrag on this area to move mouse cursor.\nPress long to drag to drag mouse cursor.\n\nSimple click will be sent to paired device.\nLeft, middle, right button, and wheel scrolls.'),
+            justify: Gtk.Justification.CENTER,
+            hexpand: true,
+            halign: Gtk.Align.FILL,
+            wrap: true,
+        }));
+        box.append(this.touchpad);
+
+        this.touchpad_drag = new Gtk.GestureDrag();
+        this.touchpad_drag.connect('drag-begin', this._onTouchpadDragBegin.bind(this));
+        this.touchpad_drag.connect('drag-update', this._onTouchpadDragUpdate.bind(this));
+        this.touchpad_drag.connect('drag-end', this._onTouchpadDragEnd.bind(this));
+        this.touchpad.add_controller(this.touchpad_drag);
+
+        this.touchpad_long_press = new Gtk.GestureLongPress({button: 0});
+        this.touchpad_long_press.connect('cancelled', this._onTouchpadLongPressCancelled.bind(this));
+        this.touchpad_long_press.connect('pressed', this._onTouchpadLongPressPressed.bind(this));
+        this.touchpad_long_press.connect('end', this._onTouchpadLongPressEnd.bind(this));
+        this.touchpad.add_controller(this.touchpad_long_press);
+
+        // Mouse buttons
+        const buttons = new Gtk.Box({
+            halign: Gtk.Align.CENTER,
+            margin_bottom: 6,
+        });
+        buttons.add_css_class('linked');
+        box.append(buttons);
+
+        for (const [icon, key] of [
+            ['mouse-left-button-symbolic', 'singleclick'],
+            ['mouse-with-smaller-scrollwheel-symbolic', 'middleclick'],
+            ['mouse-right-button-symbolic', 'rightclick'],
+        ]) {
+            const button = new Gtk.Button({icon_name: icon});
+            button.connect('clicked', () => {
+                this.device.sendPacket({
+                    type: 'kdeconnect.mousepad.request',
+                    body: {[key]: true},
+                });
+            });
+            buttons.append(button);
+        }
+
+        // Modifier state
+        const modifiers = new Gtk.Box({
+            spacing: 12,
+            halign: Gtk.Align.CENTER,
+            margin_bottom: 6,
+        });
+        box.append(modifiers);
+
+        for (const [name, accelerator] of [
+            ['shift_label', '<Shift>'],
+            ['ctrl_label', '<Control>'],
+            ['alt_label', '<Alt>'],
+            ['super_label', '<Super>'],
+        ]) {
+            this[name] = new Gtk.ShortcutLabel({accelerator, sensitive: false});
+            modifiers.append(this[name]);
+        }
+
+        // Text entry
+        this.entry = new Gtk.TextView({
+            wrap_mode: Gtk.WrapMode.WORD_CHAR,
+            top_margin: 6,
+            bottom_margin: 6,
+            left_margin: 6,
+            right_margin: 6,
+        });
+        const frame = new Gtk.ScrolledWindow({
+            child: this.entry,
+            height_request: 80,
+            margin_start: 12,
+            margin_end: 12,
+            margin_bottom: 12,
+        });
+        frame.add_css_class('card');
+        box.append(frame);
+    }
+
+    _onCloseRequest() {
         this._ungrab();
-        return this.hide_on_delete();
+        this.set_visible(false);
+
+        return true;
     }
 
-    vfunc_grab_broken_event(event) {
-        if (event.keyboard)
-            this._ungrab();
-
-        return false;
-    }
-
-    vfunc_key_release_event(event) {
+    _onKeyReleased(controller, keyval, keycode, state) {
         if (!this.plugin.state)
             debug('ignoring remote keyboard state');
 
-        const keyvalLower = Gdk.keyval_to_lower(event.keyval);
-        const realMask = event.state & Gtk.accelerator_get_default_mod_mask();
+        const keyvalLower = Gdk.keyval_to_lower(keyval);
+        const realMask = state & Gtk.accelerator_get_default_mod_mask();
 
         this.alt_label.sensitive = !isAlt(keyvalLower) &&
-            (realMask & Gdk.ModifierType.MOD1_MASK);
+            !!(realMask & Gdk.ModifierType.ALT_MASK);
 
         this.ctrl_label.sensitive = !isCtrl(keyvalLower) &&
-            (realMask & Gdk.ModifierType.CONTROL_MASK);
+            !!(realMask & Gdk.ModifierType.CONTROL_MASK);
 
         this.shift_label.sensitive = !isShift(keyvalLower) &&
-            (realMask & Gdk.ModifierType.SHIFT_MASK);
+            !!(realMask & Gdk.ModifierType.SHIFT_MASK);
 
         this.super_label.sensitive = !isSuper(keyvalLower) &&
-            (realMask & Gdk.ModifierType.SUPER_MASK);
-
-        return super.vfunc_key_release_event(event);
+            !!(realMask & Gdk.ModifierType.SUPER_MASK);
     }
 
-    vfunc_key_press_event(event) {
+    _onKeyPressed(controller, keyval, keycode, state) {
         if (!this.plugin.state)
             debug('ignoring remote keyboard state');
 
-        let keyvalLower = Gdk.keyval_to_lower(event.keyval);
-        let realMask = event.state & Gtk.accelerator_get_default_mod_mask();
+        let keyvalLower = Gdk.keyval_to_lower(keyval);
+        let realMask = state & Gtk.accelerator_get_default_mod_mask();
 
         this.alt_label.sensitive = isAlt(keyvalLower) ||
-            (realMask & Gdk.ModifierType.MOD1_MASK);
+            !!(realMask & Gdk.ModifierType.ALT_MASK);
 
         this.ctrl_label.sensitive = isCtrl(keyvalLower) ||
-            (realMask & Gdk.ModifierType.CONTROL_MASK);
+            !!(realMask & Gdk.ModifierType.CONTROL_MASK);
 
         this.shift_label.sensitive = isShift(keyvalLower) ||
-            (realMask & Gdk.ModifierType.SHIFT_MASK);
+            !!(realMask & Gdk.ModifierType.SHIFT_MASK);
 
         this.super_label.sensitive = isSuper(keyvalLower) ||
-            (realMask & Gdk.ModifierType.SUPER_MASK);
+            !!(realMask & Gdk.ModifierType.SUPER_MASK);
 
         // Wait for a real key before sending
         if (MOD_KEYS.includes(keyvalLower))
-            return false;
+            return Gdk.EVENT_PROPAGATE;
 
         // Normalize Tab
         if (keyvalLower === Gdk.KEY_ISO_Left_Tab)
             keyvalLower = Gdk.KEY_Tab;
 
         // Put shift back if it changed the case of the key, not otherwise.
-        if (keyvalLower !== event.keyval)
+        if (keyvalLower !== keyval)
             realMask |= Gdk.ModifierType.SHIFT_MASK;
 
         // HACK: we don't want to use SysRq as a keybinding (but we do want
         // Alt+Print), so we avoid translation from Alt+Print to SysRq
-        if (keyvalLower === Gdk.KEY_Sys_Req && (realMask & Gdk.ModifierType.MOD1_MASK) !== 0)
+        if (keyvalLower === Gdk.KEY_Sys_Req && (realMask & Gdk.ModifierType.ALT_MASK) !== 0)
             keyvalLower = Gdk.KEY_Print;
 
         // CapsLock isn't supported as a keybinding modifier, so keep it from
@@ -209,12 +329,12 @@ export const InputDialog = GObject.registerClass({
         realMask &= ~Gdk.ModifierType.LOCK_MASK;
 
         if (keyvalLower === 0)
-            return false;
+            return Gdk.EVENT_PROPAGATE;
 
-        debug(`keyval: ${event.keyval}, mask: ${realMask}`);
+        debug(`keyval: ${keyval}, mask: ${realMask}`);
 
         const request = {
-            alt: !!(realMask & Gdk.ModifierType.MOD1_MASK),
+            alt: !!(realMask & Gdk.ModifierType.ALT_MASK),
             ctrl: !!(realMask & Gdk.ModifierType.CONTROL_MASK),
             shift: !!(realMask & Gdk.ModifierType.SHIFT_MASK),
             super: !!(realMask & Gdk.ModifierType.SUPER_MASK),
@@ -222,12 +342,12 @@ export const InputDialog = GObject.registerClass({
         };
 
         // specialKey
-        if (ReverseKeyMap.has(event.keyval)) {
-            request.specialKey = ReverseKeyMap.get(event.keyval);
+        if (ReverseKeyMap.has(keyval)) {
+            request.specialKey = ReverseKeyMap.get(keyval);
 
         // key
         } else {
-            const codePoint = Gdk.keyval_to_unicode(event.keyval);
+            const codePoint = Gdk.keyval_to_unicode(keyval);
             request.key = String.fromCodePoint(codePoint);
         }
 
@@ -238,36 +358,25 @@ export const InputDialog = GObject.registerClass({
 
         // Pass these key combinations rather than using the echo reply
         if (request.alt || request.ctrl || request.super)
-            return super.vfunc_key_press_event(event);
+            return Gdk.EVENT_PROPAGATE;
 
-        return false;
+        return Gdk.EVENT_STOP;
     }
 
-    vfunc_scroll_event(event) {
-        if (event.delta_x === 0 && event.delta_y === 0)
-            return true;
+    _onScroll(controller, dx, dy) {
+        if (dx === 0 && dy === 0)
+            return Gdk.EVENT_STOP;
 
         this.device.sendPacket({
             type: 'kdeconnect.mousepad.request',
             body: {
                 scroll: true,
-                dx: event.delta_x * 200,
-                dy: event.delta_y * 200,
+                dx: dx * 200,
+                dy: dy * 200,
             },
         });
-        return true;
-    }
 
-    vfunc_window_state_event(event) {
-        if (!this.plugin.state)
-            debug('ignoring remote keyboard state');
-
-        if (event.new_window_state & Gdk.WindowState.FOCUSED)
-            this._grab();
-        else
-            this._ungrab();
-
-        return super.vfunc_window_state_event(event);
+        return Gdk.EVENT_STOP;
     }
 
     _onInsertText(buffer, location, text, len) {
@@ -295,7 +404,7 @@ export const InputDialog = GObject.registerClass({
         }
     }
 
-    _onState(widget) {
+    _onState() {
         if (!this.plugin.state)
             debug('ignoring remote keyboard state');
 
@@ -305,35 +414,25 @@ export const InputDialog = GObject.registerClass({
             this._ungrab();
     }
 
+    /*
+     * Ask the compositor to deliver system shortcuts (eg. Super, Alt+Tab) to
+     * this window while it is focused, so they can be sent to the device.
+     */
     _grab() {
-        if (!this.visible || this._keyboard)
+        const surface = this.get_surface();
+
+        if (!this.visible || this._keyboard || !surface?.inhibit_system_shortcuts)
             return;
 
-        const seat = Gdk.Display.get_default().get_default_seat();
-        const status = seat.grab(
-            this.get_window(),
-            Gdk.SeatCapabilities.KEYBOARD,
-            false,
-            null,
-            null,
-            null
-        );
-
-        if (status !== Gdk.GrabStatus.SUCCESS) {
-            logError(new Error('Grabbing keyboard failed'));
-            return;
-        }
-
-        this._keyboard = seat.get_keyboard();
-        this.grab_add();
-        this.entry.has_focus = true;
+        surface.inhibit_system_shortcuts(null);
+        this._keyboard = surface;
+        this.set_focus(this.entry);
     }
 
     _ungrab() {
         if (this._keyboard) {
-            this._keyboard.get_seat().ungrab();
+            this._keyboard.restore_system_shortcuts();
             this._keyboard = null;
-            this.grab_remove();
         }
 
         this.entry.buffer.text = '';
@@ -344,33 +443,6 @@ export const InputDialog = GObject.registerClass({
         this.touchpad_motion_prev_y = 0;
         this.touchpad_motion_x = 0;
         this.touchpad_motion_y = 0;
-    }
-
-    _onMouseLeftButtonClicked(button) {
-        this.device.sendPacket({
-            type: 'kdeconnect.mousepad.request',
-            body: {
-                singleclick: true,
-            },
-        });
-    }
-
-    _onMouseMiddleButtonClicked(button) {
-        this.device.sendPacket({
-            type: 'kdeconnect.mousepad.request',
-            body: {
-                middleclick: true,
-            },
-        });
-    }
-
-    _onMouseRightButtonClicked(button) {
-        this.device.sendPacket({
-            type: 'kdeconnect.mousepad.request',
-            body: {
-                rightclick: true,
-            },
-        });
     }
 
     _onTouchpadDragBegin(gesture) {
@@ -389,8 +461,10 @@ export const InputDialog = GObject.registerClass({
     _onTouchpadDragEnd(gesture) {
         this._resetTouchpadMotion();
 
-        GLib.Source.remove(this.touchpad_motion_timeout_id);
-        this.touchpad_motion_timeout_id = 0;
+        if (this.touchpad_motion_timeout_id > 0) {
+            GLib.Source.remove(this.touchpad_motion_timeout_id);
+            this.touchpad_motion_timeout_id = 0;
+        }
     }
 
     _onTouchpadLongPressCancelled(gesture) {

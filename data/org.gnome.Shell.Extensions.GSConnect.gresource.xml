@@ -10,23 +10,6 @@ SPDX-License-Identifier: GPL-2.0-or-later
   <gresource prefix="/org/gnome/Shell/Extensions/GSConnect">
     <!-- UI -->
     <file compressed="true">application.css</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/connect-dialog.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/contacts-address-row.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/contact-chooser.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/legacy-messaging-dialog.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/messaging-conversation-message.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/messaging-conversation-summary.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/messaging-conversation.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/messaging-window.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/mousepad-input-dialog.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/notification-reply-dialog.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/preferences-command-editor.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/preferences-device-panel.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/preferences-section-row.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/preferences-shortcut-editor.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/preferences-window.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/service-device-chooser.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/service-error-dialog.ui</file>
 
     <!-- DBus Service Files -->
     <file compressed="true">org.gnome.Shell.Extensions.GSConnect.desktop</file>

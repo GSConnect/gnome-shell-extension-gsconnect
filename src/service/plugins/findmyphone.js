@@ -4,6 +4,7 @@
 
 import Gdk from 'gi://Gdk';
 import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk';
 
@@ -61,7 +62,7 @@ const FindMyPhonePlugin = GObject.registerClass({
         try {
             // If this is a second request, stop announcing and return
             if (this._dialog !== null) {
-                this._dialog.response(Gtk.ResponseType.DELETE_EVENT);
+                this._dialog.close();
                 return;
             }
 
@@ -70,7 +71,7 @@ const FindMyPhonePlugin = GObject.registerClass({
                 plugin: this,
             });
 
-            this._dialog.connect('response', () => {
+            this._dialog.connect('destroy', () => {
                 this._dialog = null;
             });
         } catch (e) {
@@ -84,7 +85,7 @@ const FindMyPhonePlugin = GObject.registerClass({
      */
     _cancelRequest() {
         if (this._dialog !== null)
-            this._dialog.response(Gtk.ResponseType.DELETE_EVENT);
+            this._dialog.close();
     }
 
     /**
@@ -121,7 +122,7 @@ const _WM_SETTINGS = new Gio.Settings({
 
 
 /**
- * A custom GtkMessageDialog for alerting of incoming requests
+ * A fullscreen window for alerting of incoming requests
  */
 const Dialog = GObject.registerClass({
     GTypeName: 'GSConnectFindMyPhoneDialog',
@@ -141,27 +142,39 @@ const Dialog = GObject.registerClass({
             GObject.Object
         ),
     },
-}, class Dialog extends Gtk.MessageDialog {
+}, class Dialog extends Gtk.Window {
     _init(params) {
         super._init({
-            buttons: Gtk.ButtonsType.CLOSE,
+            application: Gio.Application.get_default(),
             device: params.device,
-            image: new Gtk.Image({
-                icon_name: 'phonelink-ring-symbolic',
-                pixel_size: 512,
-                halign: Gtk.Align.CENTER,
-                hexpand: true,
-                valign: Gtk.Align.CENTER,
-                vexpand: true,
-                visible: true,
-            }),
             plugin: params.plugin,
-            urgency_hint: true,
+            title: _('Find My Phone'),
+            fullscreened: true,
+            decorated: false,
         });
 
-        this.set_keep_above(true);
-        this.maximize();
-        this.message_area.destroy();
+        const image = new Gtk.Image({
+            icon_name: 'phonelink-ring-symbolic',
+            pixel_size: 512,
+            halign: Gtk.Align.CENTER,
+            hexpand: true,
+            valign: Gtk.Align.CENTER,
+            vexpand: true,
+        });
+        this.set_child(image);
+
+        // Any input dismisses the alarm
+        const keys = new Gtk.EventControllerKey();
+        keys.connect('key-pressed', () => this._dismiss());
+        this.add_controller(keys);
+
+        const motion = new Gtk.EventControllerMotion();
+        motion.connect('motion', () => this._dismiss());
+        this.add_controller(motion);
+
+        const click = new Gtk.GestureClick({button: 0});
+        click.connect('pressed', () => this._dismiss());
+        this.add_controller(click);
 
         // If an output stream is available start fading the volume up
         if (this.plugin._mixer && this.plugin._mixer.output) {
@@ -183,23 +196,28 @@ const Dialog = GObject.registerClass({
         if (this.plugin._player !== undefined)
             this.plugin._player.loopSound('phone-incoming-call', this.cancellable);
 
-        // Show the dialog
-        this.show_all();
+        this.connect('close-request', this._onCloseRequest.bind(this));
+
+        // Show the dialog (a little delay avoids dismissing on the pointer
+        // motion caused by the window appearing)
+        this.present();
+        this._armed = false;
+        GLib.timeout_add(GLib.PRIORITY_DEFAULT, 500, () => {
+            this._armed = true;
+            return GLib.SOURCE_REMOVE;
+        });
     }
 
-    vfunc_key_press_event(event) {
-        this.response(Gtk.ResponseType.DELETE_EVENT);
+    _dismiss() {
+        if (this._armed === false)
+            return Gdk.EVENT_PROPAGATE;
+
+        this.close();
 
         return Gdk.EVENT_STOP;
     }
 
-    vfunc_motion_notify_event(event) {
-        this.response(Gtk.ResponseType.DELETE_EVENT);
-
-        return Gdk.EVENT_STOP;
-    }
-
-    vfunc_response(response_id) {
+    _onCloseRequest() {
         // Stop the alarm
         this.cancellable.cancel();
 
@@ -213,7 +231,7 @@ const Dialog = GObject.registerClass({
             _WM_SETTINGS.set_boolean('audible-bell', this._previousBell);
         }
 
-        this.destroy();
+        return false;
     }
 
     get cancellable() {

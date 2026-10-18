@@ -100,7 +100,7 @@ describe('The mousepad plugin', function () {
     });
 
     describe('handles keypresses', function () {
-        const keyModifiers = Gdk.ModifierType.MOD1_MASK |
+        const keyModifiers = Gdk.ModifierType.ALT_MASK |
             Gdk.ModifierType.SHIFT_MASK;
         const specialModifiers = Gdk.ModifierType.CONTROL_MASK |
             Gdk.ModifierType.SUPER_MASK;

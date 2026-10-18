@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+import Adw from 'gi://Adw';
+import Gdk from 'gi://Gdk';
 import Gio from 'gi://Gio';
 import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk';
@@ -38,43 +40,35 @@ const ReplyDialog = GObject.registerClass({
             null
         ),
     },
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/notification-reply-dialog.ui',
-    Children: ['infobar', 'notification-title', 'notification-body', 'entry'],
-}, class ReplyDialog extends Gtk.Dialog {
+}, class ReplyDialog extends Adw.Window {
 
     _init(params) {
         super._init({
             application: Gio.Application.get_default(),
-            device: params.device,
-            plugin: params.plugin,
-            uuid: params.uuid,
-            use_header_bar: true,
+            default_width: 320,
+            default_height: 300,
         });
 
-        this.set_response_sensitive(Gtk.ResponseType.OK, false);
+        this.device = params.device;
+        this.plugin = params.plugin;
+        this.uuid = params.uuid;
+
+        this._buildLayout(params.notification);
 
         // Info bar
         this.device.bind_property(
             'connected',
-            this.infobar,
-            'reveal-child',
-            GObject.BindingFlags.INVERT_BOOLEAN
+            this._banner,
+            'revealed',
+            GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.INVERT_BOOLEAN
         );
-
-        // Notification Data
-        const headerbar = this.get_titlebar();
-        headerbar.title = params.notification.appName;
-        headerbar.subtitle = this.device.name;
-
-        this.notification_title.label = params.notification.title;
-        this.notification_body.label = URI.linkify(params.notification.text);
 
         // Message Entry/Send Button
         this.device.bind_property(
             'connected',
             this.entry,
             'sensitive',
-            GObject.BindingFlags.DEFAULT
+            GObject.BindingFlags.SYNC_CREATE
         );
 
         this._connectedId = this.device.connect(
@@ -86,36 +80,107 @@ const ReplyDialog = GObject.registerClass({
             'changed',
             this._onStateChanged.bind(this)
         );
+        this._onStateChanged();
 
         this.restoreGeometry('notification-reply-dialog');
 
-        this.connect('destroy', this._onDestroy);
+        this.connect('close-request', this._onCloseRequest.bind(this));
     }
 
-    _onDestroy(dialog) {
-        dialog.entry.buffer.disconnect(dialog._entryChangedId);
-        dialog.device.disconnect(dialog._connectedId);
+    _buildLayout(notification) {
+        const toolbar = new Adw.ToolbarView();
+        this.set_content(toolbar);
+
+        const header = new Adw.HeaderBar({
+            show_start_title_buttons: false,
+            show_end_title_buttons: false,
+            title_widget: new Adw.WindowTitle({
+                title: notification.appName,
+                subtitle: this.device.name,
+            }),
+        });
+        toolbar.add_top_bar(header);
+
+        const cancel = new Gtk.Button({label: _('Cancel')});
+        cancel.connect('clicked', () => this.close());
+        header.pack_start(cancel);
+
+        this._sendButton = new Gtk.Button({label: _('Send'), sensitive: false});
+        this._sendButton.add_css_class('suggested-action');
+        this._sendButton.connect('clicked', this._onSend.bind(this));
+        header.pack_end(this._sendButton);
+
+        this._banner = new Adw.Banner({title: _('Device is disconnected')});
+        toolbar.add_top_bar(this._banner);
+
+        const box = new Gtk.Box({
+            orientation: Gtk.Orientation.VERTICAL,
+            spacing: 12,
+            margin_top: 12,
+            margin_bottom: 12,
+            margin_start: 12,
+            margin_end: 12,
+        });
+        toolbar.set_content(box);
+
+        const title = new Gtk.Label({
+            label: notification.title,
+            xalign: 0,
+            wrap: true,
+            selectable: true,
+        });
+        title.add_css_class('heading');
+        box.append(title);
+
+        const body = new Gtk.Label({
+            label: URI.linkify(notification.text),
+            use_markup: true,
+            xalign: 0,
+            yalign: 0,
+            wrap: true,
+            selectable: true,
+        });
+        body.connect('activate-link', this._onActivateLink.bind(this));
+        box.append(body);
+
+        this.entry = new Gtk.TextView({
+            wrap_mode: Gtk.WrapMode.WORD_CHAR,
+            top_margin: 6,
+            bottom_margin: 6,
+            left_margin: 6,
+            right_margin: 6,
+            vexpand: true,
+        });
+        const frame = new Gtk.ScrolledWindow({
+            child: this.entry,
+            vexpand: true,
+            min_content_height: 80,
+        });
+        frame.add_css_class('card');
+        box.append(frame);
+
+        this.set_focus(this.entry);
     }
 
-    vfunc_delete_event() {
+    _onCloseRequest() {
         this.saveGeometry();
+        this.entry.buffer.disconnect(this._entryChangedId);
+        this.device.disconnect(this._connectedId);
 
         return false;
     }
 
-    vfunc_response(response_id) {
-        if (response_id === Gtk.ResponseType.OK) {
-            // Refuse to send empty or whitespace only messages
-            if (!this.entry.buffer.text.trim())
-                return;
+    _onSend() {
+        // Refuse to send empty or whitespace only messages
+        if (!this.entry.buffer.text.trim())
+            return;
 
-            this.plugin.replyNotification(
-                this.uuid,
-                this.entry.buffer.text
-            );
-        }
+        this.plugin.replyNotification(
+            this.uuid,
+            this.entry.buffer.text
+        );
 
-        this.destroy();
+        this.close();
     }
 
     get device() {
@@ -158,20 +223,18 @@ const ReplyDialog = GObject.registerClass({
     }
 
     _onActivateLink(label, uri) {
-        Gtk.show_uri_on_window(
-            this.get_toplevel(),
+        Gtk.show_uri(
+            this,
             uri.includes('://') ? uri : `https://${uri}`,
-            Gtk.get_current_event_time()
+            Gdk.CURRENT_TIME
         );
 
         return true;
     }
 
     _onStateChanged() {
-        if (this.device.connected && this.entry.buffer.text.trim())
-            this.set_response_sensitive(Gtk.ResponseType.OK, true);
-        else
-            this.set_response_sensitive(Gtk.ResponseType.OK, false);
+        this._sendButton.sensitive =
+            this.device.connected && !!this.entry.buffer.text.trim();
     }
 });
 

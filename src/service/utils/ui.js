@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-import Gdk from 'gi://Gdk';
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import Gtk from 'gi://Gtk';
@@ -34,18 +33,39 @@ Gtk.Window.prototype.restoreGeometry = function (context = 'default') {
 };
 
 Gtk.Window.prototype.saveGeometry = function () {
-    const state = this.get_window().get_state();
+    if (this._windowState === undefined)
+        return;
 
     // Maximized State
-    const maximized = (state & Gdk.WindowState.MAXIMIZED);
+    const maximized = this.maximized;
     this._windowState.set_boolean('window-maximized', maximized);
 
     // Leave the size at the value before maximizing
-    if (maximized || (state & Gdk.WindowState.FULLSCREEN))
+    if (maximized || this.fullscreened)
         return;
 
     // Size
-    const size = this.get_size();
+    const size = [this.get_width(), this.get_height()];
     this._windowState.set_value('window-size', new GLib.Variant('(ii)', size));
 };
 
+
+/**
+ * Get a snapshot of the children of a widget, since GTK4 no longer has
+ * `get_children()`. The result is a copy, so it is safe to remove children
+ * while iterating it.
+ *
+ * @param {Gtk.Widget} widget - A container widget
+ * @returns {Gtk.Widget[]} The children of the widget
+ */
+export function children(widget) {
+    const result = [];
+    let child = widget.get_first_child();
+
+    while (child !== null) {
+        result.push(child);
+        child = child.get_next_sibling();
+    }
+
+    return result;
+}
