@@ -4,12 +4,13 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-import Gdk from 'gi://Gdk?version=3.0';
+import Adw from 'gi://Adw?version=1';
+import Gdk from 'gi://Gdk?version=4.0';
 import 'gi://GdkPixbuf?version=2.0';
 import Gio from 'gi://Gio?version=2.0';
 import GLib from 'gi://GLib?version=2.0';
 import GObject from 'gi://GObject?version=2.0';
-import Gtk from 'gi://Gtk?version=3.0';
+import Gtk from 'gi://Gtk?version=4.0';
 import 'gi://Pango?version=1.0';
 
 // GNOME 49 uses GIRepository 3.0
@@ -41,7 +42,7 @@ import {MissingOpensslError} from '../utils/exceptions.js';
  */
 const Service = GObject.registerClass({
     GTypeName: 'GSConnectService',
-}, class Service extends Gtk.Application {
+}, class Service extends Adw.Application {
 
     _init() {
         super._init({
@@ -295,8 +296,8 @@ const Service = GObject.registerClass({
         // Init some resources
         const provider = new Gtk.CssProvider();
         provider.load_from_resource(`${Config.APP_PATH}/application.css`);
-        Gtk.StyleContext.add_provider_for_screen(
-            Gdk.Screen.get_default(),
+        Gtk.StyleContext.add_provider_for_display(
+            Gdk.Display.get_default(),
             provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         );

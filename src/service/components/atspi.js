@@ -39,8 +39,6 @@ export default class Controller {
 
         try {
             this._display = Gdk.Display.get_default();
-            this._seat = this._display.get_default_seat();
-            this._pointer = this._seat.get_pointer();
         } catch (e) {
             this.destroy();
             throw e;
@@ -48,23 +46,22 @@ export default class Controller {
 
         // Try to read modifier keycodes from Gdk
         try {
-            const keymap = Gdk.Keymap.get_for_display(this._display);
-            let modifier;
-
-            modifier = keymap.get_entries_for_keyval(Gdk.KEY_Alt_L)[1][0];
-            XKeycode.Alt_L = modifier.keycode;
-
-            modifier = keymap.get_entries_for_keyval(Gdk.KEY_Control_L)[1][0];
-            XKeycode.Control_L = modifier.keycode;
-
-            modifier = keymap.get_entries_for_keyval(Gdk.KEY_Shift_L)[1][0];
-            XKeycode.Shift_L = modifier.keycode;
-
-            modifier = keymap.get_entries_for_keyval(Gdk.KEY_Super_L)[1][0];
-            XKeycode.Super_L = modifier.keycode;
+            XKeycode.Alt_L = this._getKeycode(Gdk.KEY_Alt_L);
+            XKeycode.Control_L = this._getKeycode(Gdk.KEY_Control_L);
+            XKeycode.Shift_L = this._getKeycode(Gdk.KEY_Shift_L);
+            XKeycode.Super_L = this._getKeycode(Gdk.KEY_Super_L);
         } catch {
             debug('using default modifier keycodes');
         }
+    }
+
+    _getKeycode(keyval) {
+        const [ok, keys] = this._display.map_keyval(keyval);
+
+        if (!ok || keys.length === 0)
+            throw new Error(`no keycode for keyval ${keyval}`);
+
+        return keys[0].keycode;
     }
 
     /*
@@ -72,10 +69,7 @@ export default class Controller {
      */
     clickPointer(button) {
         try {
-            const [, x, y] = this._pointer.get_position();
-            const monitor = this._display.get_monitor_at_point(x, y);
-            const scale = monitor.get_scale_factor();
-            Atspi.generate_mouse_event(scale * x, scale * y, `b${button}c`);
+            Atspi.generate_mouse_event(-1, -1, `b${button}c`);
         } catch (e) {
             logError(e);
         }
@@ -83,10 +77,7 @@ export default class Controller {
 
     doubleclickPointer(button) {
         try {
-            const [, x, y] = this._pointer.get_position();
-            const monitor = this._display.get_monitor_at_point(x, y);
-            const scale = monitor.get_scale_factor();
-            Atspi.generate_mouse_event(scale * x, scale * y, `b${button}d`);
+            Atspi.generate_mouse_event(-1, -1, `b${button}d`);
         } catch (e) {
             logError(e);
         }
@@ -94,9 +85,7 @@ export default class Controller {
 
     movePointer(dx, dy) {
         try {
-            const [, x, y] = this._pointer.get_position();
-            const monitor = this._display.get_monitor_at_point(x, y);
-            const scale = monitor.get_scale_factor();
+            const scale = this._display.get_monitors().get_item(0).get_scale_factor();
             Atspi.generate_mouse_event(scale * dx, scale * dy, 'rel');
         } catch (e) {
             logError(e);
@@ -105,10 +94,7 @@ export default class Controller {
 
     pressPointer(button) {
         try {
-            const [, x, y] = this._pointer.get_position();
-            const monitor = this._display.get_monitor_at_point(x, y);
-            const scale = monitor.get_scale_factor();
-            Atspi.generate_mouse_event(scale * x, scale * y, `b${button}p`);
+            Atspi.generate_mouse_event(-1, -1, `b${button}p`);
         } catch (e) {
             logError(e);
         }
@@ -116,10 +102,7 @@ export default class Controller {
 
     releasePointer(button) {
         try {
-            const [, x, y] = this._pointer.get_position();
-            const monitor = this._display.get_monitor_at_point(x, y);
-            const scale = monitor.get_scale_factor();
-            Atspi.generate_mouse_event(scale * x, scale * y, `b${button}r`);
+            Atspi.generate_mouse_event(-1, -1, `b${button}r`);
         } catch (e) {
             logError(e);
         }
@@ -158,7 +141,7 @@ export default class Controller {
     _pressASCII(key, modifiers) {
         try {
             // Press Modifiers
-            if (modifiers & Gdk.ModifierType.MOD1_MASK)
+            if (modifiers & Gdk.ModifierType.ALT_MASK)
                 this._modeLock(XKeycode.Alt_L);
             if (modifiers & Gdk.ModifierType.CONTROL_MASK)
                 this._modeLock(XKeycode.Control_L);
@@ -174,7 +157,7 @@ export default class Controller {
             );
 
             // Release Modifiers
-            if (modifiers & Gdk.ModifierType.MOD1_MASK)
+            if (modifiers & Gdk.ModifierType.ALT_MASK)
                 this._modeUnlock(XKeycode.Alt_L);
             if (modifiers & Gdk.ModifierType.CONTROL_MASK)
                 this._modeUnlock(XKeycode.Control_L);
@@ -190,7 +173,7 @@ export default class Controller {
     _pressKeysym(keysym, modifiers) {
         try {
             // Press Modifiers
-            if (modifiers & Gdk.ModifierType.MOD1_MASK)
+            if (modifiers & Gdk.ModifierType.ALT_MASK)
                 this._modeLock(XKeycode.Alt_L);
             if (modifiers & Gdk.ModifierType.CONTROL_MASK)
                 this._modeLock(XKeycode.Control_L);
@@ -206,7 +189,7 @@ export default class Controller {
             );
 
             // Release Modifiers
-            if (modifiers & Gdk.ModifierType.MOD1_MASK)
+            if (modifiers & Gdk.ModifierType.ALT_MASK)
                 this._modeUnlock(XKeycode.Alt_L);
             if (modifiers & Gdk.ModifierType.CONTROL_MASK)
                 this._modeUnlock(XKeycode.Control_L);

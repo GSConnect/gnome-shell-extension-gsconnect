@@ -2,18 +2,17 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+import Adw from 'gi://Adw';
 import Gdk from 'gi://Gdk';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk';
 import Pango from 'gi://Pango';
 
-import system from 'system';
-
 import * as Contacts from './contacts.js';
 import * as Sms from '../plugins/sms.js';
 import * as URI from '../utils/uri.js';
-import '../utils/ui.js';
+import {children} from '../utils/ui.js';
 
 const Tweener = imports.tweener.tweener;
 
@@ -183,6 +182,24 @@ function getDetailedTime(time) {
 
 
 /**
+ * Open a link from a message label
+ *
+ * @param {Gtk.Widget} widget - The widget that emitted `activate-link`
+ * @param {string} uri - The URI or bare address
+ * @returns {boolean} %true, to stop other handlers
+ */
+function activateLink(widget, uri) {
+    Gtk.show_uri(
+        widget.get_root(),
+        uri.includes('://') ? uri : `https://${uri}`,
+        Gdk.CURRENT_TIME
+    );
+
+    return true;
+}
+
+
+/**
  * Make the avatar for an incoming message visible or invisible
  *
  * @param {ConversationMessage} row - The message row to modify
@@ -207,15 +224,67 @@ function setAvatarVisible(row, visible) {
 
 
 /**
+ * Get the pages of a Gtk.Stack
+ *
+ * @param {Gtk.Stack} stack - A stack
+ * @returns {Gtk.Widget[]} The children of the stack
+ */
+function stackChildren(stack) {
+    const pages = stack.get_pages();
+    const result = [];
+
+    for (let i = 0, len = pages.get_n_items(); i < len; i++)
+        result.push(pages.get_item(i).child);
+
+    return result;
+}
+
+
+/**
  * A ListBoxRow for a preview of a conversation
  */
 const ConversationMessage = GObject.registerClass({
     GTypeName: 'GSConnectMessagingConversationMessage',
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/messaging-conversation-message.ui',
-    Children: ['grid', 'avatar', 'sender-label', 'message-label'],
 }, class ConversationMessage extends Gtk.ListBoxRow {
     _init(contact, message) {
-        super._init();
+        super._init({hexpand: true});
+
+        this.grid = new Gtk.Grid({
+            halign: Gtk.Align.END,
+            hexpand: true,
+            margin_top: 6,
+            margin_bottom: 6,
+            margin_start: 6,
+            margin_end: 6,
+            column_spacing: 6,
+        });
+        this.grid.add_css_class('message-row');
+        this.set_child(this.grid);
+
+        this.avatar = new Contacts.Avatar();
+        this.avatar.valign = Gtk.Align.END;
+        this.avatar.visible = false;
+        this.grid.attach(this.avatar, 0, 1, 1, 1);
+
+        this.sender_label = new Gtk.Label({
+            halign: Gtk.Align.START,
+            valign: Gtk.Align.START,
+            margin_start: 6,
+            visible: false,
+        });
+        this.grid.attach(this.sender_label, 1, 0, 1, 1);
+
+        this.message_label = new Gtk.Label({
+            halign: Gtk.Align.END,
+            use_markup: true,
+            wrap: true,
+            wrap_mode: Pango.WrapMode.WORD_CHAR,
+            max_width_chars: 48,
+            selectable: true,
+            xalign: 0,
+        });
+        this.message_label.connect('activate-link', activateLink);
+        this.grid.attach(this.message_label, 1, 1, 1, 1);
 
         this.contact = contact;
         this.message = message;
@@ -236,21 +305,11 @@ const ConversationMessage = GObject.registerClass({
             this.sender_label.label = contact.name;
             this.sender_label.visible = true;
 
-            this.message_label.get_style_context().add_class('message-in');
+            this.message_label.add_css_class('message-in');
             this.message_label.halign = Gtk.Align.START;
         } else {
-            this.message_label.get_style_context().add_class('message-out');
+            this.message_label.add_css_class('message-out');
         }
-    }
-
-    _onActivateLink(label, uri) {
-        Gtk.show_uri_on_window(
-            this.get_toplevel(),
-            uri.includes('://') ? uri : `https://${uri}`,
-            Gtk.get_current_event_time()
-        );
-
-        return true;
     }
 
     get date() {
@@ -309,18 +368,16 @@ const Conversation = GObject.registerClass({
             ''
         ),
     },
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/messaging-conversation.ui',
-    Children: [
-        'entry', 'list', 'scrolled',
-        'pending', 'pending-box',
-    ],
-}, class MessagingConversation extends Gtk.Grid {
+}, class MessagingConversation extends Gtk.Box {
 
     _init(params) {
         super._init({
+            orientation: Gtk.Orientation.VERTICAL,
             device: params.device,
             plugin: params.plugin,
         });
+
+        this._buildLayout();
         Object.assign(this, params);
 
         this.device.bind_property(
@@ -349,14 +406,77 @@ const Conversation = GObject.registerClass({
             'value-changed',
             this._holdPosition.bind(this)
         );
+        this._upperId = this._vadj.connect(
+            'notify::upper',
+            this._onSizeChanged.bind(this)
+        );
+        this._pageSizeId = this._vadj.connect(
+            'notify::page-size',
+            this._onSizeChanged.bind(this)
+        );
 
         // Message List
         this.list.set_header_func(this._headerMessages);
         this.list.set_sort_func(this._sortMessages);
         this._populateMessages();
+    }
 
-        // Cleanup on ::destroy
-        this.connect('destroy', this._onDestroy);
+    _buildLayout() {
+        this.list = new Gtk.ListBox({
+            valign: Gtk.Align.END,
+            selection_mode: Gtk.SelectionMode.NONE,
+        });
+        this.list.add_css_class('message-list');
+
+        this.scrolled = new Gtk.ScrolledWindow({
+            child: this.list,
+            hexpand: true,
+            vexpand: true,
+            hscrollbar_policy: Gtk.PolicyType.NEVER,
+        });
+        this.scrolled.add_css_class('message-scrolled');
+        this.scrolled.connect('edge-reached', this._onEdgeReached.bind(this));
+        this.append(this.scrolled);
+
+        // Pending messages
+        this.pending = new Gtk.ListBoxRow({
+            hexpand: true,
+            activatable: false,
+            selectable: false,
+        });
+        this.pending.set_name('pending');
+        this.pending.add_css_class('message-pending');
+        this.pending_box = new Gtk.Box({
+            halign: Gtk.Align.END,
+            margin_top: 6,
+            margin_bottom: 6,
+            margin_end: 6,
+            orientation: Gtk.Orientation.VERTICAL,
+            spacing: 3,
+        });
+        this.pending.set_child(this.pending_box);
+        this.list.append(this.pending);
+
+        // Entry
+        this.entry = new Gtk.Entry({
+            margin_top: 6,
+            margin_bottom: 6,
+            margin_start: 6,
+            margin_end: 6,
+            secondary_icon_name: 'mail-send-symbolic',
+            secondary_icon_tooltip_text: _('Send Message'),
+            secondary_icon_sensitive: false,
+            placeholder_text: _('Type a message'),
+        });
+        this.entry.update_property([Gtk.AccessibleProperty.LABEL], [_('Message')]);
+        this.entry.connect('activate', this._onSendMessage.bind(this));
+        this.entry.connect('changed', this._onEntryChanged.bind(this));
+        this.entry.connect('icon-release', this._onSendMessage.bind(this));
+
+        const keys = new Gtk.EventControllerKey();
+        keys.connect('key-pressed', this._onKeyPressed.bind(this));
+        this.entry.add_controller(keys);
+        this.append(this.entry);
     }
 
     get addresses() {
@@ -421,7 +541,7 @@ const Conversation = GObject.registerClass({
         if (this.pending_box === undefined)
             return false;
 
-        return (this.pending_box.get_children().length > 0);
+        return this.pending_box.get_first_child() !== null;
     }
 
     get plugin() {
@@ -453,19 +573,30 @@ const Conversation = GObject.registerClass({
     }
 
     _onConnected(device) {
-        if (device.connected)
-            this.pending_box.foreach(msg => msg.destroy());
+        if (device.connected) {
+            for (const message of children(this.pending_box))
+                this.pending_box.remove(message);
+
+            this.notify('has-pending');
+        }
     }
 
-    _onDestroy(conversation) {
-        conversation.device.disconnect(conversation._connectedId);
-        conversation._vadj.disconnect(conversation._scrolledId);
+    /**
+     * Release signal handlers and rows. Must be called before the
+     * conversation is discarded.
+     */
+    cleanup() {
+        if (this._connectedId === undefined)
+            return;
 
-        conversation.list.foreach(message => {
-            // HACK: temporary mitigator for mysterious GtkListBox leak
-            message.destroy();
-            system.gc();
-        });
+        this.device.disconnect(this._connectedId);
+        this._vadj.disconnect(this._scrolledId);
+        this._vadj.disconnect(this._upperId);
+        this._vadj.disconnect(this._pageSizeId);
+        this._connectedId = undefined;
+
+        for (const row of children(this.list))
+            this.list.remove(row);
     }
 
     _onEdgeReached(scrolled_window, pos) {
@@ -479,23 +610,21 @@ const Conversation = GObject.registerClass({
     }
 
     _onEntryChanged(entry) {
-        entry.secondary_icon_sensitive = (entry.text.length);
+        entry.secondary_icon_sensitive = (entry.text.length > 0);
     }
 
-    _onKeyPressEvent(entry, event) {
-        const keyval = event.get_keyval()[1];
-        const state = event.get_state()[1];
+    _onKeyPressed(controller, keyval, keycode, state) {
         const mask = state & Gtk.accelerator_get_default_mod_mask();
 
         if (keyval === Gdk.KEY_Return && (mask & Gdk.ModifierType.SHIFT_MASK)) {
-            entry.emit('insert-at-cursor', '\n');
-            return true;
+            this.entry.emit('insert-at-cursor', '\n');
+            return Gdk.EVENT_STOP;
         }
 
-        return false;
+        return Gdk.EVENT_PROPAGATE;
     }
 
-    _onSendMessage(entry, signal_id, event) {
+    _onSendMessage() {
         // Don't send empty texts
         if (!this.entry.text.trim())
             return;
@@ -509,31 +638,34 @@ const Conversation = GObject.registerClass({
             halign: Gtk.Align.END,
             selectable: true,
             use_markup: true,
-            visible: true,
             wrap: true,
             wrap_mode: Pango.WrapMode.WORD_CHAR,
+            max_width_chars: 48,
             xalign: 0,
         });
-        message.get_style_context().add_class('message-out');
+        message.add_css_class('message-out');
         message.date = Date.now();
         message.type = Sms.MessageBox.SENT;
 
         // Notify to reveal the pending box
-        this.pending_box.add(message);
+        this.pending_box.append(message);
         this.notify('has-pending');
 
         // Clear the entry
         this.entry.text = '';
     }
 
-    _onSizeAllocate(listbox, allocation) {
+    /*
+     * Replaces the GTK3 `size-allocate` handler: the content of the list
+     * changed size, so either load more, hold the position or follow the end.
+     */
+    _onSizeChanged() {
         const upper = this._vadj.get_upper();
         const pageSize = this._vadj.get_page_size();
 
         // If the scrolled window hasn't been filled yet, load another message
         if (upper <= pageSize) {
             this.logPrevious();
-            this.scrolled.get_child().check_resize();
 
         // We've been asked to hold the position, so we'll reset the adjustment
         // value and update the hold position
@@ -596,8 +728,8 @@ const Conversation = GObject.registerClass({
 
         if ((row.message.date - before.message.date) > TIME_SPAN_HOUR) {
             if (!header) {
-                header = new Gtk.Label({visible: true, selectable: true});
-                header.get_style_context().add_class('dim-label');
+                header = new Gtk.Label({selectable: true});
+                header.add_css_class('dim-label');
                 row.set_header(header);
             }
 
@@ -648,6 +780,7 @@ const Conversation = GObject.registerClass({
             GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
                 this._vadj.set_value(vpos);
                 this._vadj.thaw_notify();
+                return GLib.SOURCE_REMOVE;
             });
         }
     }
@@ -670,12 +803,12 @@ const Conversation = GObject.registerClass({
 
             // Append the message
             const row = this._createMessageRow(message);
-            this.list.add(row);
+            this.list.append(row);
             this.list.invalidate_headers();
 
             // Remove the first pending message
             if (this.has_pending && message.type === Sms.MessageBox.SENT) {
-                this.pending_box.get_children()[0].destroy();
+                this.pending_box.remove(this.pending_box.get_first_child());
                 this.notify('has-pending');
             }
         } catch (e) {
@@ -714,7 +847,7 @@ const Conversation = GObject.registerClass({
      */
     setMessage(text) {
         this.entry.text = text;
-        this.entry.emit('move-cursor', 0, text.length, false);
+        this.entry.set_position(-1);
     }
 });
 
@@ -724,11 +857,49 @@ const Conversation = GObject.registerClass({
  */
 const ConversationSummary = GObject.registerClass({
     GTypeName: 'GSConnectMessagingConversationSummary',
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/messaging-conversation-summary.ui',
-    Children: ['avatar', 'name-label', 'time-label', 'body-label'],
 }, class ConversationSummary extends Gtk.ListBoxRow {
     _init(contacts, message) {
         super._init();
+
+        const grid = new Gtk.Grid({
+            margin_top: 6,
+            margin_bottom: 6,
+            margin_start: 8,
+            margin_end: 8,
+            column_spacing: 8,
+        });
+        grid.add_css_class('conversation-row');
+        this.set_child(grid);
+
+        this.avatar = new Contacts.Avatar();
+        this.avatar.margin_end = 4;
+        grid.attach(this.avatar, 0, 0, 1, 2);
+
+        this.name_label = new Gtk.Label({
+            halign: Gtk.Align.START,
+            hexpand: true,
+            ellipsize: Pango.EllipsizeMode.END,
+            use_markup: true,
+            xalign: 0,
+        });
+        grid.attach(this.name_label, 1, 0, 1, 1);
+
+        this.time_label = new Gtk.Label({
+            halign: Gtk.Align.END,
+            ellipsize: Pango.EllipsizeMode.END,
+            use_markup: true,
+            xalign: 0,
+        });
+        this.time_label.add_css_class('dim-label');
+        grid.attach(this.time_label, 2, 0, 1, 1);
+
+        this.body_label = new Gtk.Label({
+            halign: Gtk.Align.START,
+            ellipsize: Pango.EllipsizeMode.END,
+            use_markup: true,
+            xalign: 0,
+        });
+        grid.attach(this.body_label, 1, 1, 2, 1);
 
         this.contacts = contacts;
         this.message = message;
@@ -756,7 +927,7 @@ const ConversationSummary = GObject.registerClass({
         // Update avatar for single-recipient messages
         if (message.addresses.length === 1) {
             this.avatar.contact = this.contacts[this._sender];
-            nameLabel = GLib.markup_escape_text(this.avatar.contact.name, -1);
+            nameLabel = GLib.markup_escape_text(this.contacts[this._sender].name, -1);
         } else {
             this.avatar.contact = null;
             nameLabel = _('Group Message');
@@ -802,7 +973,45 @@ const ConversationSummary = GObject.registerClass({
 
 
 /**
- * A Gtk.ApplicationWindow for SMS conversations
+ * A placeholder with an icon, a title and an optional description
+ *
+ * @param {string} icon - An icon name
+ * @param {number} size - The icon pixel size
+ * @param {string} title - The title
+ * @param {string} [description] - An optional description
+ * @returns {Gtk.Box} A placeholder widget
+ */
+function createPlaceholder(icon, size, title, description = null) {
+    const box = new Gtk.Box({
+        orientation: Gtk.Orientation.VERTICAL,
+        halign: Gtk.Align.CENTER,
+        valign: Gtk.Align.CENTER,
+        vexpand: true,
+        hexpand: true,
+        spacing: 6,
+    });
+    box.add_css_class('placeholder');
+
+    const image = new Gtk.Image({icon_name: icon, pixel_size: size});
+    image.add_css_class('placeholder-image');
+    box.append(image);
+
+    const titleLabel = new Gtk.Label({label: title});
+    titleLabel.add_css_class('placeholder-title');
+    box.append(titleLabel);
+
+    if (description) {
+        const descriptionLabel = new Gtk.Label({label: description});
+        descriptionLabel.add_css_class('placeholder-description');
+        box.append(descriptionLabel);
+    }
+
+    return box;
+}
+
+
+/**
+ * An Adw.ApplicationWindow for SMS conversations
  */
 export const Window = GObject.registerClass({
     GTypeName: 'GSConnectMessagingWindow',
@@ -829,15 +1038,19 @@ export const Window = GObject.registerClass({
             ''
         ),
     },
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/messaging-window.ui',
-    Children: [
-        'headerbar', 'infobar',
-        'thread-list', 'stack',
-    ],
-}, class MessagingWindow extends Gtk.ApplicationWindow {
+}, class MessagingWindow extends Adw.ApplicationWindow {
 
     _init(params) {
-        super._init(params);
+        super._init({
+            application: params.application,
+            default_width: 640,
+            default_height: 480,
+            icon_name: 'org.gnome.Shell.Extensions.GSConnect-symbolic',
+            device: params.device,
+            plugin: params.plugin,
+        });
+
+        this._buildLayout();
         this.headerbar.subtitle = this.device.name;
 
         this.insert_action_group('device', this.device);
@@ -846,8 +1059,8 @@ export const Window = GObject.registerClass({
         this.device.bind_property(
             'connected',
             this.infobar,
-            'reveal-child',
-            GObject.BindingFlags.INVERT_BOOLEAN
+            'revealed',
+            GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.INVERT_BOOLEAN
         );
 
         // Contacts
@@ -878,14 +1091,111 @@ export const Window = GObject.registerClass({
         this._sync();
         this._onThreadsChanged();
         this.restoreGeometry('messaging');
+
+        this.connect('close-request', this._onCloseRequest.bind(this));
     }
 
-    vfunc_delete_event(event) {
+    _buildLayout() {
+        const split = new Adw.NavigationSplitView({
+            min_sidebar_width: 220,
+            max_sidebar_width: 320,
+        });
+        this.split_view = split;
+        this.set_content(split);
+
+        // Collapse to one pane on narrow windows
+        const breakpoint = new Adw.Breakpoint({
+            condition: Adw.BreakpointCondition.parse('max-width: 560sp'),
+        });
+        breakpoint.add_setter(split, 'collapsed', true);
+        this.add_breakpoint(breakpoint);
+
+        // Sidebar: the thread list
+        const sidebarToolbar = new Adw.ToolbarView();
+        const sidebarHeader = new Adw.HeaderBar();
+        const newButton = new Gtk.Button({
+            icon_name: 'list-add-symbolic',
+            tooltip_text: _('New Conversation'),
+            valign: Gtk.Align.CENTER,
+        });
+        newButton.update_property([Gtk.AccessibleProperty.LABEL], [_('New Conversation')]);
+        newButton.connect('clicked', this._onNewConversation.bind(this));
+        sidebarHeader.pack_start(newButton);
+        sidebarHeader.title_widget = new Adw.WindowTitle({
+            title: _('Messaging'),
+            subtitle: '',
+        });
+        sidebarToolbar.add_top_bar(sidebarHeader);
+
+        this.thread_list = new Gtk.ListBox({vexpand: true});
+        this.thread_list.add_css_class('navigation-sidebar');
+        this.thread_list.add_css_class('thread-list');
+        this.thread_list.connect('row-activated', this._onThreadSelected.bind(this));
+
+        const listPlaceholder = createPlaceholder(
+            'view-list-symbolic',
+            96,
+            _('No Conversations')
+        );
+        listPlaceholder.append(new Gtk.LinkButton({
+            label: _('Help'),
+            uri: 'https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Help#contacts-dont-sync',
+        }));
+        this.thread_list.set_placeholder(listPlaceholder);
+
+        sidebarToolbar.set_content(new Gtk.ScrolledWindow({
+            child: this.thread_list,
+            hscrollbar_policy: Gtk.PolicyType.NEVER,
+        }));
+
+        split.set_sidebar(new Adw.NavigationPage({
+            title: _('Messaging'),
+            child: sidebarToolbar,
+        }));
+
+        // Content: the conversation stack
+        const contentToolbar = new Adw.ToolbarView();
+        const contentHeader = new Adw.HeaderBar();
+        this.headerbar = new Adw.WindowTitle({title: _('Messaging'), subtitle: ''});
+        contentHeader.title_widget = this.headerbar;
+        contentToolbar.add_top_bar(contentHeader);
+
+        this.infobar = new Adw.Banner({title: _('Device is disconnected')});
+        contentToolbar.add_top_bar(this.infobar);
+
+        this.stack = new Gtk.Stack({
+            hexpand: true,
+            transition_type: Gtk.StackTransitionType.CROSSFADE,
+        });
+        this.stack.add_named(
+            createPlaceholder(
+                'sms-symbolic',
+                144,
+                _('No conversation selected'),
+                _('Select or start a conversation')
+            ),
+            'placeholder'
+        );
+        contentToolbar.set_content(this.stack);
+
+        split.set_content(new Adw.NavigationPage({
+            title: _('Conversation'),
+            child: contentToolbar,
+        }));
+    }
+
+    _onCloseRequest() {
         this.saveGeometry();
 
         GLib.source_remove(this._timestampThreadsId);
         this.contact_chooser.disconnect(this._numberSelectedId);
+        this.contact_chooser.cleanup();
         this.plugin.disconnect(this._threadsChangedId);
+
+        for (const child of stackChildren(this.stack)) {
+            if (child instanceof Conversation)
+                child.cleanup();
+        }
 
         return false;
     }
@@ -936,7 +1246,8 @@ export const Window = GObject.registerClass({
 
         // Select the conversation and entry active
         this.stack.visible_child = conversation;
-        this.stack.visible_child.entry.has_focus = true;
+        this.stack.visible_child.entry.grab_focus();
+        this.split_view.show_content = true;
 
         // There was a pending message waiting for a conversation to be chosen
         if (this._pendingShare) {
@@ -953,12 +1264,12 @@ export const Window = GObject.registerClass({
         const contact = this.device.contacts.query({number: address});
 
         if (addresses.length === 1) {
-            this.headerbar.title = contact.name;
+            this.headerbar.title = GLib.markup_escape_text(contact.name, -1);
             this.headerbar.subtitle = Contacts.getDisplayNumber(contact, address);
         } else {
             const otherLength = addresses.length - 1;
 
-            this.headerbar.title = contact.name;
+            this.headerbar.title = GLib.markup_escape_text(contact.name, -1);
             this.headerbar.subtitle = ngettext(
                 'And %d other contact',
                 'And %d others',
@@ -976,7 +1287,8 @@ export const Window = GObject.registerClass({
         this._sync();
         this.stack.set_visible_child_name('contact-chooser');
         this.thread_list.select_row(null);
-        this.contact_chooser.entry.has_focus = true;
+        this.contact_chooser.entry.grab_focus();
+        this.split_view.show_content = true;
     }
 
     _onNumberSelected(chooser, number) {
@@ -1005,7 +1317,7 @@ export const Window = GObject.registerClass({
         }
 
         // Update existing summaries and destroy old ones
-        for (const row of this.thread_list.get_children()) {
+        for (const row of children(this.thread_list)) {
             const message = messages[row.thread_id];
 
             // If it's an existing conversation, update it
@@ -1025,17 +1337,17 @@ export const Window = GObject.registerClass({
             // Otherwise destroy it
             } else {
                 // Destroy the conversation widget
-                const conversation = this.stack.get_child_by_name(`${row.thread_id}`);
+                const conversation = this.stack?.get_child_by_name(`${row.thread_id}`);
 
                 if (conversation) {
-                    conversation.destroy();
-                    system.gc();
+                    if (conversation.cleanup)
+                        conversation.cleanup();
+
+                    this.stack.remove(conversation);
                 }
 
                 // Then the summary widget
-                row.destroy();
-                // HACK: temporary mitigator for mysterious GtkListBox leak
-                system.gc();
+                this.thread_list.remove(row);
             }
         }
 
@@ -1043,7 +1355,7 @@ export const Window = GObject.registerClass({
         for (const message of Object.values(messages)) {
             const contacts = this.device.contacts.lookupAddresses(message.addresses);
             const conversation = new ConversationSummary(contacts, message);
-            this.thread_list.add(conversation);
+            this.thread_list.append(conversation);
         }
 
         // Re-sort the summaries
@@ -1068,8 +1380,10 @@ export const Window = GObject.registerClass({
     }
 
     _timestampThreads() {
-        if (this.visible)
-            this.thread_list.foreach(row => row.update());
+        if (this.visible) {
+            for (const row of children(this.thread_list))
+                row.update();
+        }
 
         return GLib.SOURCE_CONTINUE;
     }
@@ -1088,7 +1402,7 @@ export const Window = GObject.registerClass({
         // Try to find a thread_id
         const thread_id = this.plugin.getThreadIdForAddresses(addresses);
 
-        for (const row of this.thread_list.get_children()) {
+        for (const row of children(this.thread_list)) {
             if (row.message.thread_id === thread_id)
                 return row;
         }
@@ -1132,7 +1446,7 @@ export const Window = GObject.registerClass({
         // Select the conversation and entry active
         this.stack.add_named(conversation, thread_id);
         this.stack.visible_child = conversation;
-        this.stack.visible_child.entry.has_focus = true;
+        this.stack.visible_child.entry.grab_focus();
 
         // There was a pending message waiting for a conversation to be chosen
         if (this._pendingShare) {
@@ -1174,7 +1488,7 @@ export const Window = GObject.registerClass({
         // started a thread locally and haven't set the thread_id
         const addresses = message.addresses;
 
-        for (const conversation of this.stack.get_children()) {
+        for (const conversation of stackChildren(this.stack)) {
             if (conversation.addresses === undefined ||
                 conversation.addresses.length !== addresses.length)
                 continue;
@@ -1182,10 +1496,10 @@ export const Window = GObject.registerClass({
             const caddrs = conversation.addresses;
 
             // If we find a match, set `thread-id` on the conversation and the
-            // child property `name`.
+            // page `name`.
             if (addresses.every(addr => this._includesAddress(caddrs, addr))) {
                 conversation._thread_id = thread_id;
-                this.stack.child_set_property(conversation, 'name', thread_id);
+                this.stack.get_page(conversation).name = thread_id;
 
                 return conversation;
             }
@@ -1216,7 +1530,7 @@ export const Window = GObject.registerClass({
 
 
 /**
- * A Gtk.ApplicationWindow for selecting from open conversations
+ * An Adw.ApplicationWindow for selecting from open conversations
  */
 export const ConversationChooser = GObject.registerClass({
     GTypeName: 'GSConnectConversationChooser',
@@ -1243,52 +1557,67 @@ export const ConversationChooser = GObject.registerClass({
             GObject.Object
         ),
     },
-}, class ConversationChooser extends Gtk.ApplicationWindow {
+}, class ConversationChooser extends Adw.ApplicationWindow {
 
     _init(params) {
-        super._init(Object.assign({
+        super._init({
+            application: params.application,
             title: _('Share Link'),
             default_width: 300,
-            default_height: 200,
-        }, params));
-        this.set_keep_above(true);
+            default_height: 300,
+            device: params.device,
+            message: params.message,
+            plugin: params.plugin,
+        });
+
+        const toolbar = new Adw.ToolbarView();
+        this.set_content(toolbar);
 
         // HeaderBar
-        this.headerbar = new Gtk.HeaderBar({
-            title: _('Share Link'),
-            subtitle: this.message,
-            show_close_button: true,
-            tooltip_text: this.message,
+        this.headerbar = new Adw.HeaderBar({
+            title_widget: new Adw.WindowTitle({
+                title: _('Share Link'),
+                subtitle: this.message,
+            }),
         });
-        this.set_titlebar(this.headerbar);
+        this.headerbar.tooltip_text = this.message;
+        toolbar.add_top_bar(this.headerbar);
 
         const newButton = new Gtk.Button({
-            image: new Gtk.Image({icon_name: 'list-add-symbolic'}),
+            icon_name: 'list-add-symbolic',
             tooltip_text: _('New Conversation'),
-            always_show_image: true,
         });
+        newButton.update_property([Gtk.AccessibleProperty.LABEL], [_('New Conversation')]);
         newButton.connect('clicked', this._new.bind(this));
         this.headerbar.pack_start(newButton);
 
         // Threads
-        const scrolledWindow = new Gtk.ScrolledWindow({
-            can_focus: false,
-            hexpand: true,
-            vexpand: true,
-            hscrollbar_policy: Gtk.PolicyType.NEVER,
-        });
-        this.add(scrolledWindow);
-
         this.thread_list = new Gtk.ListBox({
             activate_on_single_click: false,
         });
+        this.thread_list.add_css_class('navigation-sidebar');
         this.thread_list.set_sort_func(Window.prototype._sortThreads);
         this.thread_list.connect('row-activated', this._select.bind(this));
-        scrolledWindow.add(this.thread_list);
+
+        toolbar.set_content(new Gtk.ScrolledWindow({
+            child: this.thread_list,
+            hexpand: true,
+            vexpand: true,
+            hscrollbar_policy: Gtk.PolicyType.NEVER,
+        }));
 
         // Filter Setup
         Window.prototype._onThreadsChanged.call(this);
-        this.show_all();
+
+        const keys = new Gtk.EventControllerKey();
+        keys.connect('key-pressed', (controller, keyval) => {
+            if (keyval === Gdk.KEY_Escape) {
+                this.close();
+                return Gdk.EVENT_STOP;
+            }
+            return Gdk.EVENT_PROPAGATE;
+        });
+        this.add_controller(keys);
     }
 
     get plugin() {
@@ -1301,7 +1630,7 @@ export const ConversationChooser = GObject.registerClass({
 
     _new(button) {
         const message = this.message;
-        this.destroy();
+        this.close();
 
         this.plugin.sms();
         this.plugin.window._onNewConversation();
@@ -1313,6 +1642,6 @@ export const ConversationChooser = GObject.registerClass({
         this.plugin.window.thread_id = row.message.thread_id.toString();
         this.plugin.window.setMessage(this.message);
 
-        this.destroy();
+        this.close();
     }
 });

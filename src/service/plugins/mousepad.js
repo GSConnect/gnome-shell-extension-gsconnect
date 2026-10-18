@@ -6,8 +6,9 @@ import Gdk from 'gi://Gdk';
 import GObject from 'gi://GObject';
 
 import * as Components from '../components/index.js';
-import {InputDialog} from '../ui/mousepad.js';
 import Plugin from '../plugin.js';
+import {InputDialog} from '../ui/mousepad.js';
+
 
 
 export const Metadata = {
@@ -211,7 +212,7 @@ const MousepadPlugin = GObject.registerClass({
 
                 // Modifiers
                 if (input.alt) {
-                    modifiers |= Gdk.ModifierType.MOD1_MASK;
+                    modifiers |= Gdk.ModifierType.ALT_MASK;
                     modifiers_codes.push(56);
                 }
 

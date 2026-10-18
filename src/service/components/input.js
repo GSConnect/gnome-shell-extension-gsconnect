@@ -193,7 +193,7 @@ const RemoteSession = GObject.registerClass({
      */
     pressKey(input, modifiers) {
         // Press Modifiers
-        if (modifiers & Gdk.ModifierType.MOD1_MASK)
+        if (modifiers & Gdk.ModifierType.ALT_MASK)
             this.pressKeysym(Gdk.KEY_Alt_L);
         if (modifiers & Gdk.ModifierType.CONTROL_MASK)
             this.pressKeysym(Gdk.KEY_Control_L);
@@ -210,7 +210,7 @@ const RemoteSession = GObject.registerClass({
         }
 
         // Release Modifiers
-        if (modifiers & Gdk.ModifierType.MOD1_MASK)
+        if (modifiers & Gdk.ModifierType.ALT_MASK)
             this.releaseKeysym(Gdk.KEY_Alt_L);
         if (modifiers & Gdk.ModifierType.CONTROL_MASK)
             this.releaseKeysym(Gdk.KEY_Control_L);

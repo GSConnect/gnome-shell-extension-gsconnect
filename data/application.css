@@ -5,20 +5,9 @@
  */
 
 /**
- * Chrome/Firefox buttons in Settings Window
- */
-.badge-button {
-  border: 0px;
-  padding: 0px;
-  background: transparent;
-}
-
-
-/**
  * Placeholders
  */
 .placeholder {
-  background: @content_view_bg_color;
   margin-bottom: 30px;
 }
 
@@ -44,7 +33,7 @@
  * GSConnectContactChooser
  */
 .contact-window {
-  border-top: 1px solid @borders;
+  border-top: 1px solid alpha(currentColor, 0.15);
 }
 
 .contact-list row {
@@ -56,7 +45,7 @@
  * GSConnectConversationWidget
  */
 .message-scrolled {
-  border-bottom: 1px solid @borders;
+  border-bottom: 1px solid alpha(currentColor, 0.15);
 }
 
 /**
@@ -67,25 +56,27 @@
   margin-bottom: 1em;
 }
 
-.thread-list {
-  background: @content_view_bg_color;
+.message-list,
+.message-list > row {
+  background: none;
 }
+
 
 /**
  * Incoming Message Bubbles (GtkLabel subclass)
  */
 .message-in {
-  color: @theme_fg_color;
-  background: alpha(@theme_selected_bg_color, 0.2);
-  border: 1px solid alpha(@theme_selected_bg_color, 0.2);
-  border-radius: 5px;
+  color: @window_fg_color;
+  background: alpha(@accent_bg_color, 0.2);
+  border: 1px solid alpha(@accent_bg_color, 0.2);
+  border-radius: 8px;
   box-shadow: 2px 2px 3px -2px rgba(0, 0, 0, 0.75);
   padding: 6px 9px 6px 9px;
 }
 
 .message-in selection {
-  color: @theme_selected_bg_color;
-  background-color: @theme_selected_fg_color;
+  color: @accent_fg_color;
+  background-color: @accent_bg_color;
 }
 
 
@@ -93,19 +84,17 @@
  * Outgoing Message Bubbles (GtkLabel subclass)
  */
 .message-out {
-  color: @theme_fg_color;
-  background-color: @theme_bg_color;
-  border: 1px solid alpha(@theme_fg_color, 0.1);
-  border-radius: 5px;
+  color: @card_fg_color;
+  background-color: @card_bg_color;
+  border: 1px solid alpha(currentColor, 0.1);
+  border-radius: 8px;
   box-shadow: 2px 2px 3px -2px rgba(0, 0, 0, 0.75);
-  caret-color: currentColor;
-  -gtk-secondary-caret-color: currentColor;
   padding: 6px 9px 6px 9px;
 }
 
 .message-out selection {
-  background-color: @theme_selected_bg_color;
-  color: @theme_selected_fg_color;
+  background-color: @accent_bg_color;
+  color: @accent_fg_color;
 }
 
 /**
@@ -113,7 +102,7 @@
  */
 .message-in *:link,
 .message-out *:link {
-  color: @theme_fg_color;
+  color: currentColor;
 }
 
 /**
@@ -122,11 +111,3 @@
 .message-pending .message-out {
   opacity: 0.5;
 }
-
-/**
- * Error Dialog
- */
-.error-stack-frame > * {
-  border-top-width: 0;
-}
-

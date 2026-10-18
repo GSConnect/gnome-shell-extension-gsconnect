@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-import GdkPixbuf from 'gi://GdkPixbuf';
+import Adw from 'gi://Adw';
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
@@ -264,16 +264,35 @@ const SharePlugin = GObject.registerClass({
     }
 
     _handleText(message) {
-        const dialog = new Gtk.MessageDialog({
-            text: _('Text Shared By %s').format(this.device.name),
-            secondary_text: URI.linkify(message),
-            secondary_use_markup: true,
-            buttons: Gtk.ButtonsType.CLOSE,
+        const dialog = new Adw.Window({
+            application: Gio.Application.get_default(),
+            default_width: 400,
+            default_height: 240,
+            title: _('Text Shared By %s').format(this.device.name),
         });
-        dialog.message_area.get_children()[1].selectable = true;
-        dialog.set_keep_above(true);
-        dialog.connect('response', (dialog) => dialog.destroy());
-        dialog.show();
+
+        const toolbar = new Adw.ToolbarView();
+        toolbar.add_top_bar(new Adw.HeaderBar());
+        dialog.set_content(toolbar);
+
+        const label = new Gtk.Label({
+            label: URI.linkify(message),
+            use_markup: true,
+            selectable: true,
+            wrap: true,
+            xalign: 0,
+            yalign: 0,
+            margin_top: 12,
+            margin_bottom: 12,
+            margin_start: 18,
+            margin_end: 18,
+        });
+        toolbar.set_content(new Gtk.ScrolledWindow({
+            hscrollbar_policy: Gtk.PolicyType.NEVER,
+            child: label,
+        }));
+
+        dialog.present();
     }
 
     /**
@@ -281,7 +300,7 @@ const SharePlugin = GObject.registerClass({
      */
     share() {
         const dialog = new FileChooserDialog(this.device);
-        dialog.show();
+        dialog.present();
     }
 
     /**
@@ -395,127 +414,90 @@ const SharePlugin = GObject.registerClass({
 });
 
 
-/** A simple FileChooserDialog for sharing files */
+/** A simple dialog for sharing files or links */
 const FileChooserDialog = GObject.registerClass({
     GTypeName: 'GSConnectShareFileChooserDialog',
-}, class FileChooserDialog extends Gtk.FileChooserDialog {
+}, class FileChooserDialog extends Adw.Window {
 
     _init(device) {
         super._init({
+            application: Gio.Application.get_default(),
             // TRANSLATORS: eg. Send files to Google Pixel
             title: _('Send files to %s').format(device.name),
-            select_multiple: true,
-            extra_widget: new Gtk.CheckButton({
-                // TRANSLATORS: Mark the file to be opened once completed
-                label: _('Open when done'),
-                visible: true,
-            }),
-            use_preview_label: false,
+            default_width: 420,
         });
 
         this.device = device;
 
-        // Align checkbox with sidebar
-        const box = this.get_content_area().get_children()[0].get_children()[0];
-        const paned = box.get_children()[0];
-        paned.bind_property(
-            'position',
-            this.extra_widget,
-            'margin-left',
-            GObject.BindingFlags.SYNC_CREATE
-        );
+        const toolbar = new Adw.ToolbarView();
+        toolbar.add_top_bar(new Adw.HeaderBar());
+        this.set_content(toolbar);
 
-        // Preview Widget
-        this.preview_widget = new Gtk.Image();
-        this.preview_widget_active = false;
-        this.connect('update-preview', this._onUpdatePreview);
+        const page = new Adw.PreferencesPage();
+        toolbar.set_content(page);
 
-        // URI entry
-        this._uriEntry = new Gtk.Entry({
-            placeholder_text: 'https://',
-            hexpand: true,
-            visible: true,
+        // Files
+        const files = new Adw.PreferencesGroup();
+        page.add(files);
+
+        this._openRow = new Adw.SwitchRow({
+            // TRANSLATORS: Mark the file to be opened once completed
+            title: _('Open when done'),
         });
-        this._uriEntry.connect('activate', this._sendLink.bind(this));
 
-        // URI/File toggle
-        this._uriButton = new Gtk.ToggleButton({
-            image: new Gtk.Image({
-                icon_name: 'web-browser-symbolic',
-                pixel_size: 16,
-            }),
-            valign: Gtk.Align.CENTER,
+        const choose = new Adw.ActionRow({
+            title: _('Choose Files…'),
+            activatable: true,
+        });
+        choose.add_prefix(new Gtk.Image({icon_name: 'document-send-symbolic'}));
+        choose.add_suffix(new Gtk.Image({icon_name: 'go-next-symbolic'}));
+        choose.connect('activated', this._onChooseFiles.bind(this));
+        files.add(choose);
+        files.add(this._openRow);
+
+        // Link
+        const links = new Adw.PreferencesGroup();
+        page.add(links);
+
+        this._uriRow = new Adw.EntryRow({
             // TRANSLATORS: eg. Send a link to Google Pixel
-            tooltip_text: _('Send a link to %s').format(device.name),
-            visible: true,
+            title: _('Send a link to %s').format(device.name),
+            show_apply_button: true,
+            input_purpose: Gtk.InputPurpose.URL,
         });
-        this._uriButton.connect('toggled', this._onUriButtonToggled.bind(this));
-
-        this.add_button(_('Cancel'), Gtk.ResponseType.CANCEL);
-        const sendButton = this.add_button(_('Send'), Gtk.ResponseType.OK);
-        sendButton.connect('clicked', this._sendLink.bind(this));
-
-        this.get_header_bar().pack_end(this._uriButton);
-        this.set_default_response(Gtk.ResponseType.OK);
+        this._uriRow.connect('apply', this._sendLink.bind(this));
+        links.add(this._uriRow);
     }
 
-    _onUpdatePreview(chooser) {
+    async _onChooseFiles() {
         try {
-            const pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                chooser.get_preview_filename(),
-                chooser.get_scale_factor() * 128,
-                -1
-            );
-            chooser.preview_widget.pixbuf = pixbuf;
-            chooser.preview_widget.visible = true;
-            chooser.preview_widget_active = true;
-        } catch {
-            chooser.preview_widget.visible = false;
-            chooser.preview_widget_active = false;
-        }
-    }
+            const dialog = new Gtk.FileDialog({title: this.title});
+            const files = await dialog.open_multiple(this, null);
 
-    _onUriButtonToggled(button) {
-        const header = this.get_header_bar();
-
-        // Show and focus the URL entry
-        if (button.active) {
-            this.extra_widget.sensitive = false;
-            header.set_custom_title(this._uriEntry);
-            this._uriEntry.grab_focus();
-            this.set_response_sensitive(Gtk.ResponseType.OK, true);
-
-        // Hide the URL entry
-        } else {
-            header.set_custom_title(null);
-            this.set_response_sensitive(
-                Gtk.ResponseType.OK,
-                this.get_uris().length > 1
-            );
-            this.extra_widget.sensitive = true;
-        }
-    }
-
-    _sendLink(widget) {
-        if (this._uriButton.active && this._uriEntry.text.length)
-            this.response(1);
-    }
-
-    vfunc_response(response_id) {
-        if (response_id === Gtk.ResponseType.OK) {
-            for (const uri of this.get_uris()) {
+            for (let i = 0; i < files.get_n_items(); i++) {
                 const parameter = new GLib.Variant(
                     '(sb)',
-                    [uri, this.extra_widget.active]
+                    [files.get_item(i).get_uri(), this._openRow.active]
                 );
                 this.device.activate_action('shareFile', parameter);
             }
-        } else if (response_id === 1) {
-            const parameter = new GLib.Variant('s', this._uriEntry.text);
-            this.device.activate_action('shareUri', parameter);
-        }
 
-        this.destroy();
+            this.close();
+        } catch (e) {
+            if (!e.matches?.(Gtk.DialogError, Gtk.DialogError.DISMISSED) &&
+                !e.matches?.(Gtk.DialogError, Gtk.DialogError.CANCELLED))
+                logError(e);
+        }
+    }
+
+    _sendLink() {
+        const text = this._uriRow.text.trim();
+
+        if (!text)
+            return;
+
+        this.device.activate_action('shareUri', new GLib.Variant('s', text));
+        this.close();
     }
 });
 
