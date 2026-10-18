@@ -4,6 +4,7 @@
 
 import Clutter from 'gi://Clutter';
 import GObject from 'gi://GObject';
+import Pango from 'gi://Pango';
 import St from 'gi://St';
 
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
@@ -311,7 +312,7 @@ export class Menu extends PopupMenu.PopupMenuSection {
 
         // Title -> Name
         this._title.label.style_class = 'gsconnect-device-name';
-        this._title.label.clutter_text.ellipsize = 0;
+        this._title.label.clutter_text.ellipsize = Pango.EllipsizeMode.END;
         this.device.bind_property(
             'name',
             this._title.label,
