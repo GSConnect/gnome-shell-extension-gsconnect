@@ -95,16 +95,32 @@ const TelephonyPlugin = GObject.registerClass({
     }
 
     /**
-     * Restore volume, microphone and media player state (if changed), making
-     * sure to unpause before raising volume.
+     * Restore volume and microphone, plus media player state
+     * (if we changed it and restore is enabled).
+     *
+     * If we're going to auto-resume, make sure to do that first
+     * before raising volume.
+     * Otherwise, still raise the volume (so the user can unpause).
      *
      * TODO: there's a possibility we might revert a media/mixer state set for
      *       another device.
      */
     _restoreMediaState() {
         // Media Playback
-        if (this._mpris)
-            this._mpris.unpauseAll();
+        if (this._mpris) {
+            if (this.settings.get_boolean('ended-resume')) {
+                this._mpris.unpauseAll();
+            } else {
+                /* Even if resume is disabled, we still need to clear
+                 * the list of which players we're holding paused
+                 *
+                 * TODO: This potentially worsens the multi-device
+                 *       problem, since we may be erasing the player
+                 *       list when another device still needs it.
+                 */
+                this._mpris.clearPaused();
+            }
+        }
 
         // Mixer Volume
         if (this._mixer)
