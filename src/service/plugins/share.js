@@ -10,6 +10,7 @@ import Gtk from 'gi://Gtk';
 
 import Plugin from '../plugin.js';
 import * as URI from '../utils/uri.js';
+import '../../utils/filedialog.js';
 
 
 export const Metadata = {

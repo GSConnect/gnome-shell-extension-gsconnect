@@ -12,6 +12,7 @@ import Pango from 'gi://Pango';
 import Config from '../config.js';
 import plugins from '../service/plugins/index.js';
 import * as Keybindings from './keybindings.js';
+import '../utils/filedialog.js';
 
 
 // Build a list of plugins and shortcuts for devices
@@ -75,14 +76,14 @@ function bindComboRow(settings, key, title, choices) {
     };
     sync();
 
-    const changedId = settings.connect(`changed::${key}`, sync);
+    // The handler lives as long as @settings, which the panel disposes
+    settings.connect(`changed::${key}`, sync);
     row.connect('notify::selected', () => {
         const choice = choices[row.selected];
 
         if (choice && settings.get_string(key) !== choice[0])
             settings.set_string(key, choice[0]);
     });
-    row.connect('destroy', () => settings.disconnect(changedId));
 
     return row;
 }

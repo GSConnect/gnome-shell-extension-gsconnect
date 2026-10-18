@@ -28,6 +28,7 @@ src/service/ui/contacts.js
 src/service/ui/legacyMessaging.js
 src/service/ui/messaging.js
 src/service/ui/mousepad.js
+src/service/ui/notification.js
 src/service/ui/service.js
 src/shell/device.js
 src/shell/notification.js

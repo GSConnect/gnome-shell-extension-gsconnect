@@ -62,7 +62,7 @@ const Clipboard = GObject.registerClass({
             return;
 
         if (this._clipboard instanceof Gdk.Clipboard)
-            this._clipboard.set_text(content);
+            this._clipboard.set_content(Gdk.ContentProvider.new_for_value(content));
 
         if (this._clipboard instanceof Gio.DBusProxy) {
             this._clipboard.call('SetText', new GLib.Variant('(s)', [content]),

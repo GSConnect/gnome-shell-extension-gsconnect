@@ -617,7 +617,7 @@ const Conversation = GObject.registerClass({
         const mask = state & Gtk.accelerator_get_default_mod_mask();
 
         if (keyval === Gdk.KEY_Return && (mask & Gdk.ModifierType.SHIFT_MASK)) {
-            this.entry.emit('insert-at-cursor', '\n');
+            this.entry.get_delegate().emit('insert-at-cursor', '\n');
             return Gdk.EVENT_STOP;
         }
 
@@ -1264,12 +1264,12 @@ export const Window = GObject.registerClass({
         const contact = this.device.contacts.query({number: address});
 
         if (addresses.length === 1) {
-            this.headerbar.title = GLib.markup_escape_text(contact.name, -1);
-            this.headerbar.subtitle = Contacts.getDisplayNumber(contact, address);
+            this.headerbar.title = contact.name;
+            this.headerbar.subtitle = Contacts.getDisplayNumber(contact, address, false);
         } else {
             const otherLength = addresses.length - 1;
 
-            this.headerbar.title = GLib.markup_escape_text(contact.name, -1);
+            this.headerbar.title = contact.name;
             this.headerbar.subtitle = ngettext(
                 'And %d other contact',
                 'And %d others',

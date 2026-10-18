@@ -104,14 +104,17 @@ function getNumberTypeLabel(type) {
  *
  * @param {object} contact - A contact object
  * @param {string} address - A phone number
+ * @param {boolean} [markup] - Whether to escape the result for Pango markup
  * @returns {string} A (possibly) better display number for the address
  */
-export function getDisplayNumber(contact, address) {
+export function getDisplayNumber(contact, address, markup = true) {
+    const escape = text => (markup ? GLib.markup_escape_text(text, -1) : text);
+
     for (const contactNumber of contact.numbers) {
         if (address?.equalsPhoneNumber(contactNumber.value))
-            return GLib.markup_escape_text(contactNumber.value, -1);
+            return escape(contactNumber.value);
     }
-    return GLib.markup_escape_text(address, -1);
+    return escape(address);
 }
 
 
