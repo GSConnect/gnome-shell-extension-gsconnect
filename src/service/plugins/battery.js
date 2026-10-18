@@ -362,6 +362,14 @@ const BatteryPlugin = GObject.registerClass({
      * Request the remote battery's current state
      */
     _requestState() {
+        // Only request the state if the device can handle the request packet;
+        // `kdeconnect.battery.request` is deprecated in the KDE Connect
+        // protocol, so devices will only send updates at their discretion
+        const incoming = this.device.settings.get_strv('incoming-capabilities');
+
+        if (!incoming.includes('kdeconnect.battery.request'))
+            return;
+
         this.device.sendPacket({
             type: 'kdeconnect.battery.request',
             body: {request: true},
