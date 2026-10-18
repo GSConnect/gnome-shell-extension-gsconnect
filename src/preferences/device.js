@@ -40,7 +40,7 @@ for (const name in plugins) {
  * Create an Adw.SwitchRow bound to a boolean GSettings key.
  *
  * @param {Gio.Settings} settings - The settings object
- * @param {string} key - A boolean key in @settings
+ * @param {string} key - A boolean key in the settings
  * @param {string} title - The row title
  * @param {string} [subtitle] - An optional row subtitle
  * @returns {Adw.SwitchRow} The new row
@@ -57,7 +57,7 @@ function bindSwitchRow(settings, key, title, subtitle = '') {
  * Create an Adw.ComboRow bound to a string GSettings key.
  *
  * @param {Gio.Settings} settings - The settings object
- * @param {string} key - A string key in @settings
+ * @param {string} key - A string key in the settings
  * @param {string} title - The row title
  * @param {Array<[string, string]>} choices - Pairs of [value, label]
  * @returns {Adw.ComboRow} The new row
@@ -241,7 +241,9 @@ export const Panel = GObject.registerClass({
         device.bind_property('name', this, 'title', GObject.BindingFlags.SYNC_CREATE);
         this._windowTitle.subtitle = this._getTypeLabel(device);
 
-        this.connect('hidden', () => this._sidebarToggle.active = false);
+        this.connect('hidden', () => {
+            this._sidebarToggle.active = false;
+        });
     }
 
     get menu() {
@@ -634,7 +636,12 @@ export const Panel = GObject.registerClass({
 
         const level = new Adw.SpinRow({
             title: _('Custom Level'),
-            adjustment: new Gtk.Adjustment({lower: 1, upper: 99, step_increment: 1, page_increment: 10}),
+            adjustment: new Gtk.Adjustment({
+                lower: 1,
+                upper: 99,
+                step_increment: 1,
+                page_increment: 10,
+            }),
         });
         settings.bind('custom-battery-notification-value', level, 'value', Gio.SettingsBindFlags.DEFAULT);
         custom.bind_property('active', level, 'sensitive', GObject.BindingFlags.SYNC_CREATE);

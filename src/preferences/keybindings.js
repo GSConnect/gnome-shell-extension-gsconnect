@@ -196,7 +196,7 @@ export const ShortcutChooserDialog = GObject.registerClass({
  * @param {Gtk.Widget} parent - The widget to present the dialog over
  * @param {string} summary - A description of the keybinding's function
  * @param {string} accelerator - An accelerator as taken by Gtk.ShortcutLabel
- * @returns {Promise<string|null>} An accelerator or %null if it should be unset.
+ * @returns {Promise<string|null>} An accelerator, or %null to unset it
  */
 export async function getAccelerator(parent, summary, accelerator = null) {
     try {

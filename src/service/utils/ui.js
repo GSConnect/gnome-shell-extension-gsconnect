@@ -56,7 +56,7 @@ Gtk.Window.prototype.saveGeometry = function () {
  * while iterating it.
  *
  * @param {Gtk.Widget} widget - A container widget
- * @returns {Gtk.Widget[]} The children of @widget
+ * @returns {Gtk.Widget[]} The children of the widget
  */
 export function children(widget) {
     const result = [];

@@ -664,18 +664,17 @@ const Conversation = GObject.registerClass({
         const pageSize = this._vadj.get_page_size();
 
         // If the scrolled window hasn't been filled yet, load another message
-        if (upper <= pageSize) {
+        if (upper <= pageSize)
             this.logPrevious();
 
         // We've been asked to hold the position, so we'll reset the adjustment
         // value and update the hold position
-        } else if (this.__pos) {
+        else if (this.__pos)
             this._vadj.set_value(upper - this.__pos);
 
         // Otherwise we probably appended a message and should scroll to it
-        } else {
+        else
             this._scrollPosition(Gtk.PositionType.BOTTOM);
-        }
     }
 
     /**

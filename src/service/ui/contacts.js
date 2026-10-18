@@ -49,29 +49,6 @@ function getPixbufForPath(path, size, scale = 1.0) {
 }
 
 /**
- * Retrieve the GdkPixbuf for a named icon
- *
- * @param {string} name - The icon name to load
- * @param {number} size - The pixel size requested
- * @param {number} scale - The scale multiplier
- * @param {string} bgColor - The background color the icon will be used against
- * @returns {GdkPixbuf.pixbuf|null} The icon image
- */
-function getPixbufForIcon(name, size, scale, bgColor) {
-    const color = getFgRGBA(bgColor);
-    const theme = Gtk.IconTheme.get_default();
-    const info = theme.lookup_icon_for_scale(
-        name,
-        size,
-        scale,
-        Gtk.IconLookupFlags.FORCE_SYMBOLIC
-    );
-
-    return info.load_symbolic(color, null, null, null)[0];
-}
-
-
-/**
  * Return a localized string for a phone number type
  * See: http://www.ietf.org/rfc/rfc2426.txt
  *
