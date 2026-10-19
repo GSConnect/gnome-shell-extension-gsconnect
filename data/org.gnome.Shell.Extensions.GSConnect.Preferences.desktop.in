@@ -10,4 +10,5 @@ Terminal=false
 NoDisplay=true
 Icon=org.gnome.Shell.Extensions.GSConnect
 Categories=Network;
+StartupWMClass=org.gnome.Shell.Extensions.GSConnect.Preferences
 

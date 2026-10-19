@@ -50,7 +50,9 @@ const Service = GObject.registerClass({
             resource_base_path: '/org/gnome/Shell/Extensions/GSConnect',
         });
 
-        GLib.set_prgname('gsconnect');
+        // On Wayland GTK uses the program name as the window's app ID, so use
+        // the application ID to let the shell match the desktop entry exactly
+        GLib.set_prgname('org.gnome.Shell.Extensions.GSConnect');
         GLib.set_application_name('GSConnect');
 
         // Command-line

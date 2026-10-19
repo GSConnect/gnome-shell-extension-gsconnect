@@ -34,7 +34,8 @@ const Preferences = GObject.registerClass({
             resource_base_path: '/org/gnome/Shell/Extensions/GSConnect',
         });
 
-        GLib.set_prgname('gsconnect-preferences');
+        // GTK uses the program name as the app ID, matching the desktop entry
+        GLib.set_prgname('org.gnome.Shell.Extensions.GSConnect.Preferences');
         GLib.set_application_name(_('GSConnect Preferences'));
     }
 
