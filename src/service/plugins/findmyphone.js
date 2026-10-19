@@ -144,6 +144,7 @@ const Dialog = GObject.registerClass({
 }, class Dialog extends Gtk.MessageDialog {
     _init(params) {
         super._init({
+            title: _('Find My Phone'),
             buttons: Gtk.ButtonsType.CLOSE,
             device: params.device,
             image: new Gtk.Image({
