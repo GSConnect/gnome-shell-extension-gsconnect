@@ -2,10 +2,9 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-import Gdk from 'gi://Gdk';
 import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
-import Gtk from 'gi://Gtk';
 
 import * as Components from '../components/index.js';
 import Plugin from '../plugin.js';
@@ -29,6 +28,17 @@ export const Metadata = {
     },
 };
 
+const NOTIFICATIONS_NAME = 'org.freedesktop.Notifications';
+const NOTIFICATIONS_PATH = '/org/freedesktop/Notifications';
+
+/*
+ * Used to ensure 'audible-bell' is enabled for fallback
+ */
+const _WM_SETTINGS = new Gio.Settings({
+    schema_id: 'org.gnome.desktop.wm.preferences',
+    path: '/org/gnome/desktop/wm/preferences/',
+});
+
 
 /**
  * FindMyPhone Plugin
@@ -41,9 +51,16 @@ const FindMyPhonePlugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'findmyphone');
 
-        this._dialog = null;
+        this._ringingCancellable = null;
+        this._notificationId = 0;
+        this._notificationSignalIds = [];
         this._player = Components.acquire('sound');
         this._mixer = Components.acquire('pulseaudio');
+    }
+
+    disconnected() {
+        super.disconnected();
+        this.stopRinging();
     }
 
     handlePacket(packet) {
@@ -60,112 +77,27 @@ const FindMyPhonePlugin = GObject.registerClass({
     _handleRequest() {
         try {
             // If this is a second request, stop announcing and return
-            if (this._dialog !== null) {
-                this._dialog.response(Gtk.ResponseType.DELETE_EVENT);
+            if (this._ringingCancellable !== null) {
+                this.stopRinging();
                 return;
             }
 
-            this._dialog = new Dialog({
-                device: this.device,
-                plugin: this,
-            });
-
-            this._dialog.connect('response', () => {
-                this._dialog = null;
-            });
+            this._startRinging();
         } catch (e) {
-            this._cancelRequest();
+            this.stopRinging();
             logError(e, this.device.name);
         }
     }
 
     /**
-     * Cancel any ongoing ringing and destroy the dialog.
+     * Start the alarm and show a notification for silencing it.
      */
-    _cancelRequest() {
-        if (this._dialog !== null)
-            this._dialog.response(Gtk.ResponseType.DELETE_EVENT);
-    }
-
-    /**
-     * Request that the remote device announce it's location
-     */
-    ring() {
-        this.device.sendPacket({
-            type: 'kdeconnect.findmyphone.request',
-            body: {},
-        });
-    }
-
-    destroy() {
-        this._cancelRequest();
-
-        if (this._mixer !== undefined)
-            this._mixer = Components.release('pulseaudio');
-
-        if (this._player !== undefined)
-            this._player = Components.release('sound');
-
-        super.destroy();
-    }
-});
-
-
-/*
- * Used to ensure 'audible-bell' is enabled for fallback
- */
-const _WM_SETTINGS = new Gio.Settings({
-    schema_id: 'org.gnome.desktop.wm.preferences',
-    path: '/org/gnome/desktop/wm/preferences/',
-});
-
-
-/**
- * A custom GtkMessageDialog for alerting of incoming requests
- */
-const Dialog = GObject.registerClass({
-    GTypeName: 'GSConnectFindMyPhoneDialog',
-    Properties: {
-        'device': GObject.ParamSpec.object(
-            'device',
-            'Device',
-            'The device associated with this window',
-            GObject.ParamFlags.READWRITE,
-            GObject.Object
-        ),
-        'plugin': GObject.ParamSpec.object(
-            'plugin',
-            'Plugin',
-            'The plugin providing messages',
-            GObject.ParamFlags.READWRITE,
-            GObject.Object
-        ),
-    },
-}, class Dialog extends Gtk.MessageDialog {
-    _init(params) {
-        super._init({
-            buttons: Gtk.ButtonsType.CLOSE,
-            device: params.device,
-            image: new Gtk.Image({
-                icon_name: 'phonelink-ring-symbolic',
-                pixel_size: 512,
-                halign: Gtk.Align.CENTER,
-                hexpand: true,
-                valign: Gtk.Align.CENTER,
-                vexpand: true,
-                visible: true,
-            }),
-            plugin: params.plugin,
-            urgency_hint: true,
-        });
-
-        this.set_keep_above(true);
-        this.maximize();
-        this.message_area.destroy();
+    _startRinging() {
+        this._ringingCancellable = new Gio.Cancellable();
 
         // If an output stream is available start fading the volume up
-        if (this.plugin._mixer && this.plugin._mixer.output) {
-            this._stream = this.plugin._mixer.output;
+        if (this._mixer && this._mixer.output) {
+            this._stream = this._mixer.output;
 
             this._previousMuted = this._stream.muted;
             this._previousVolume = this._stream.volume;
@@ -180,69 +112,167 @@ const Dialog = GObject.registerClass({
         }
 
         // Start the alarm
-        if (this.plugin._player !== undefined)
-            this.plugin._player.loopSound('phone-incoming-call', this.cancellable);
+        if (this._player !== undefined)
+            this._player.loopSound('phone-incoming-call', this._ringingCancellable);
 
-        // Show the dialog
-        this.show_all();
+        this._showNotification();
     }
 
-    vfunc_key_press_event(event) {
-        this.response(Gtk.ResponseType.DELETE_EVENT);
+    /**
+     * Show a notification for silencing the alarm.
+     *
+     * This uses the Freedesktop notification service directly, since unlike
+     * GNotification it reports when the notification is dismissed.
+     */
+    _showNotification() {
+        const connection = Gio.DBus.session;
+        const ringing = this._ringingCancellable;
 
-        return Gdk.EVENT_STOP;
+        // Subscribe first, so a close can't be missed
+        this._notificationSignalIds = [
+            'NotificationClosed',
+            'ActionInvoked',
+        ].map(signal => connection.signal_subscribe(
+            NOTIFICATIONS_NAME,
+            NOTIFICATIONS_NAME,
+            signal,
+            NOTIFICATIONS_PATH,
+            null,
+            Gio.DBusSignalFlags.NONE,
+            (_connection, _sender, _path, _iface, _name, parameters) => {
+                const [id] = parameters.deepUnpack();
+
+                if (id === this._notificationId)
+                    this.stopRinging();
+            }
+        ));
+
+        connection.call(
+            NOTIFICATIONS_NAME,
+            NOTIFICATIONS_PATH,
+            NOTIFICATIONS_NAME,
+            'Notify',
+            new GLib.Variant('(susssasa{sv}i)', [
+                GLib.get_application_name(),
+                0,
+                'phonelink-ring-symbolic',
+                this.device.name,
+                // TRANSLATORS: The device asked this computer to ring, eg. to find it
+                _('Ringing this device'),
+                // The default action is used when the notification is clicked
+                ['default', _('Silence'), 'silence', _('Silence')],
+                {
+                    'desktop-entry': new GLib.Variant('s', 'org.gnome.Shell.Extensions.GSConnect'),
+                    'urgency': new GLib.Variant('y', 2),
+                },
+                0,
+            ]),
+            new GLib.VariantType('(u)'),
+            Gio.DBusCallFlags.NONE,
+            -1,
+            null,
+            (_connection, result) => {
+                try {
+                    const [id] = connection.call_finish(result).deepUnpack();
+
+                    // Stopped while the notification was being shown
+                    if (this._ringingCancellable !== ringing)
+                        this._closeNotification(id, false);
+                    else
+                        this._notificationId = id;
+                } catch (e) {
+                    // Without a notification there'd be no way to silence it
+                    logError(e, this.device.name);
+
+                    if (this._ringingCancellable === ringing)
+                        this.stopRinging();
+                }
+            }
+        );
     }
 
-    vfunc_motion_notify_event(event) {
-        this.response(Gtk.ResponseType.DELETE_EVENT);
+    /**
+     * Withdraw the notification and stop listening for it being closed.
+     *
+     * @param {number} id - The notification id
+     * @param {boolean} [current] - Whether it belongs to the current alarm
+     */
+    _closeNotification(id, current = true) {
+        const connection = Gio.DBus.session;
 
-        return Gdk.EVENT_STOP;
+        if (current) {
+            for (const signalId of this._notificationSignalIds)
+                connection.signal_unsubscribe(signalId);
+
+            this._notificationSignalIds = [];
+            this._notificationId = 0;
+        }
+
+        if (id === 0)
+            return;
+
+        connection.call(
+            NOTIFICATIONS_NAME,
+            NOTIFICATIONS_PATH,
+            NOTIFICATIONS_NAME,
+            'CloseNotification',
+            new GLib.Variant('(u)', [id]),
+            null,
+            Gio.DBusCallFlags.NONE,
+            -1,
+            null,
+            null
+        );
     }
 
-    vfunc_response(response_id) {
+    /**
+     * Stop the alarm, restore the mixer level and withdraw the notification.
+     */
+    stopRinging() {
+        if (this._ringingCancellable === null)
+            return;
+
+        // Unsubscribe before closing, which would be reported back otherwise
+        const id = this._notificationId;
+
         // Stop the alarm
-        this.cancellable.cancel();
+        this._ringingCancellable.cancel();
+        this._ringingCancellable = null;
 
         // Restore the mixer level
         if (this._stream) {
             this._stream.muted = this._previousMuted;
             this._stream.fade(this._previousVolume);
+            this._stream = null;
 
         // Restore the audible-bell
         } else {
             _WM_SETTINGS.set_boolean('audible-bell', this._previousBell);
         }
 
-        this.destroy();
+        this._closeNotification(id);
     }
 
-    get cancellable() {
-        if (this._cancellable === undefined)
-            this._cancellable = new Gio.Cancellable();
-
-        return this._cancellable;
+    /**
+     * Request that the remote device announce it's location
+     */
+    ring() {
+        this.device.sendPacket({
+            type: 'kdeconnect.findmyphone.request',
+            body: {},
+        });
     }
 
-    get device() {
-        if (this._device === undefined)
-            this._device = null;
+    destroy() {
+        this.stopRinging();
 
-        return this._device;
-    }
+        if (this._mixer !== undefined)
+            this._mixer = Components.release('pulseaudio');
 
-    set device(device) {
-        this._device = device;
-    }
+        if (this._player !== undefined)
+            this._player = Components.release('sound');
 
-    get plugin() {
-        if (this._plugin === undefined)
-            this._plugin = null;
-
-        return this._plugin;
-    }
-
-    set plugin(plugin) {
-        this._plugin = plugin;
+        super.destroy();
     }
 });
 
