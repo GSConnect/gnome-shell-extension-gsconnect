@@ -81,6 +81,7 @@ const Manager = GObject.registerClass({
 
         this._exported = new WeakMap();
         this._reconnectId = 0;
+        this._rediscoveryTicks = 0;
 
         this._settings = new Gio.Settings({
             settings_schema: Config.GSCHEMA.lookup(Config.APP_ID, true),
@@ -454,11 +455,14 @@ const Manager = GObject.registerClass({
      * @returns {boolean} Always %true
      */
     _reconnect() {
+        let disconnected = false;
+
         for (const [id, device] of this.devices) {
             if (device.connected)
                 continue;
 
             if (device.paired) {
+                disconnected = true;
                 this.identify(device.settings.get_string('last-connection'));
                 continue;
             }
@@ -466,6 +470,20 @@ const Manager = GObject.registerClass({
             this._unexportDevice(device);
             this._removeDevice(id);
             device.destroy();
+        }
+
+        // Cached addresses can become stale after DHCP or network changes.
+        // Rediscover every 30 seconds while a paired device is missing, without
+        // overriding the user's discovery setting or broadcasting every retry.
+        if (disconnected && this.discoverable) {
+            this._rediscoveryTicks += 1;
+
+            if (this._rediscoveryTicks >= 6) {
+                this._rediscoveryTicks = 0;
+                this.backends.forEach(backend => backend.broadcast());
+            }
+        } else {
+            this._rediscoveryTicks = 0;
         }
 
         return GLib.SOURCE_CONTINUE;
@@ -507,6 +525,7 @@ const Manager = GObject.registerClass({
         if (this.active)
             return;
 
+        this._rediscoveryTicks = 0;
         this._loadDevices();
         this._loadBackends();
 
