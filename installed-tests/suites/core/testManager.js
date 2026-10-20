@@ -98,3 +98,86 @@ describe('Manager', function () {
     });
 });
 
+
+describe('Manager rediscovery', function () {
+    let manager;
+    let backend;
+    let device;
+
+    beforeEach(function () {
+        manager = new Manager({
+            object_path: '/org/gnome/Shell/Extensions/GSConnect/RediscoveryTest',
+        });
+        manager.discoverable = true;
+        backend = {broadcast: jasmine.createSpy('broadcast')};
+        device = {
+            connected: false,
+            paired: true,
+            settings: {get_string: () => 'mock://192.0.2.1:1716'},
+        };
+        manager.backends.set('mock', backend);
+        manager.devices.set('paired-device', device);
+    });
+
+    afterEach(function () {
+        manager.devices.clear();
+        manager.backends.clear();
+        manager.destroy();
+    });
+
+    it('retries cached addresses and periodically rediscovers missing devices', function () {
+        for (let i = 0; i < 5; i++)
+            manager._reconnect();
+
+        expect(backend.broadcast.calls.count()).toBe(5);
+        expect(backend.broadcast.calls.allArgs()).toEqual(
+            Array.from({length: 5}, () => ['192.0.2.1:1716']));
+
+        manager._reconnect();
+        expect(backend.broadcast.calls.count()).toBe(7);
+        expect(backend.broadcast.calls.mostRecent().args).toEqual([]);
+
+        for (let i = 0; i < 6; i++)
+            manager._reconnect();
+
+        expect(backend.broadcast.calls.count()).toBe(14);
+    });
+
+    it('does not broadcast discovery when discovery is disabled', function () {
+        manager.discoverable = false;
+        for (let i = 0; i < 12; i++)
+            manager._reconnect();
+
+        expect(backend.broadcast.calls.allArgs()).toEqual(
+            Array.from({length: 12}, () => ['192.0.2.1:1716']));
+    });
+
+    it('does not rediscover when all paired devices are connected', function () {
+        device.connected = true;
+        for (let i = 0; i < 12; i++)
+            manager._reconnect();
+
+        expect(backend.broadcast).not.toHaveBeenCalled();
+    });
+
+    it('does not rediscover when there are no devices', function () {
+        manager.devices.clear();
+        for (let i = 0; i < 12; i++)
+            manager._reconnect();
+
+        expect(backend.broadcast).not.toHaveBeenCalled();
+    });
+
+    it('resets the rediscovery interval after a device reconnects', function () {
+        for (let i = 0; i < 5; i++)
+            manager._reconnect();
+
+        device.connected = true;
+        manager._reconnect();
+        device.connected = false;
+        backend.broadcast.calls.reset();
+        manager._reconnect();
+
+        expect(backend.broadcast.calls.allArgs()).toEqual([['192.0.2.1:1716']]);
+    });
+});
