@@ -188,6 +188,7 @@ export function installService() {
         [`${confDir}/BraveSoftware/Brave-Browser/NativeMessagingHosts/`, google],
         [`${confDir}/BraveSoftware/Brave-Browser-Beta/NativeMessagingHosts/`, google],
         [`${confDir}/BraveSoftware/Brave-Browser-Nightly/NativeMessagingHosts/`, google],
+        [`${confDir}/BraveSoftware/Brave-Origin/NativeMessagingHosts/`, google],
         [`${mozillaConfigFolder}/native-messaging-hosts/`, mozilla],
         [`${homeDir}/.config/microsoft-edge-dev/NativeMessagingHosts`, google],
         [`${homeDir}/.config/microsoft-edge-beta/NativeMessagingHosts`, google],
