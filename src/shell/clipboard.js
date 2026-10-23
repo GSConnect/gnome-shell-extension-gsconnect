@@ -224,8 +224,20 @@ export const Clipboard = GObject.registerClass({
      * @returns {Promise<void>}
      */
     GetValueAsync(params, invocation) {
-        const mimetype = params.mimetype;
+        const [mimetype] = params;
+
         return new Promise((resolve, reject) => {
+            const mimetypes = this._selection.get_mimetypes(
+                Meta.SelectionType.SELECTION_CLIPBOARD);
+
+            if (!mimetypes.includes(mimetype)) {
+                reject(new Gio.DBusError({
+                    code: Gio.DBusError.INVALID_ARGS,
+                    message: `${mimetype} not available`,
+                }));
+                return;
+            }
+
             const stream = Gio.MemoryOutputStream.new_resizable();
 
             this._selection.transfer_async(
@@ -236,16 +248,16 @@ export const Clipboard = GObject.registerClass({
                     try {
                         selection.transfer_finish(res);
 
-                        const bytes = stream.steal_as_bytes();
-
-                        resolve(bytes.get_data());
+                        resolve(stream.steal_as_bytes());
                     } catch (e) {
                         reject(e);
                     }
                 }
             );
         })
-        .then((value) => invocation.return_value(new GLib.Variant('(ay)', [value])));
+        .then((bytes) => invocation.return_value(GLib.Variant.new_tuple([
+            GLib.Variant.new_from_bytes(new GLib.VariantType('ay'), bytes, true),
+        ])));
     }
 
     /**

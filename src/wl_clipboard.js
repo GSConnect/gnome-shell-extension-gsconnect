@@ -8,11 +8,6 @@ import GObject from 'gi://GObject';
 
 import * as DBus from './service/utils/dbus.js';
 
-// laucher for wl-clipboard
-const launcher = new Gio.SubprocessLauncher({
-    flags: Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_MERGE,
-});
-
 /*
  * DBus Interface Info
  */
@@ -30,6 +25,14 @@ const DBUS_NODE = Gio.DBusNodeInfo.new_for_xml(`
     </method>
     <method name="SetText">
       <arg direction="in" type="s" name="text"/>
+    </method>
+    <method name="GetValue">
+      <arg direction="in" type="s" name="mimetype"/>
+      <arg direction="out" type="ay" name="value"/>
+    </method>
+    <method name="SetValue">
+      <arg direction="in" type="ay" name="value"/>
+      <arg direction="in" type="s" name="mimetype"/>
     </method>
 
     <!-- Signals -->
@@ -103,6 +106,50 @@ export const Clipboard = GObject.registerClass(
         }
 
         /**
+         * Run wl-paste with {@link args} and return its output.
+         *
+         * @param {string[]} args - Arguments for wl-paste
+         * @returns {Promise<GLib.Bytes>} The output of wl-paste
+         */
+        _wlPaste(args) {
+            return new Promise((resolve, reject) => {
+                const proc = Gio.Subprocess.new(['wl-paste', ...args],
+                    Gio.SubprocessFlags.STDOUT_PIPE |
+                    Gio.SubprocessFlags.STDERR_SILENCE);
+
+                proc.communicate_async(null, null, (proc, res) => {
+                    try {
+                        const [, stdout] = proc.communicate_finish(res);
+
+                        if (proc.get_successful())
+                            resolve(stdout);
+                        else
+                            reject(new Error(`wl-paste exited with ${proc.get_exit_status()}`));
+                    } catch (e) {
+                        reject(e);
+                    }
+                });
+            });
+        }
+
+        /**
+         * Get the available mimetypes of the current clipboard content
+         *
+         * @returns {Promise<string[]>} A list of mime-types
+         */
+        async _getMimetypes() {
+            try {
+                const bytes = await this._wlPaste(['--list-types']);
+                const output = new TextDecoder().decode(bytes.toArray());
+
+                return output.split('\n').filter(type => type.length > 0);
+            } catch {
+                // wl-paste fails if the clipboard is empty
+                return [];
+            }
+        }
+
+        /**
          * Get the available mimetypes of the current clipboard content
          *
          * @param {Array} params - empty
@@ -110,28 +157,10 @@ export const Clipboard = GObject.registerClass(
          *  returned via. invocation
          * @returns {Promise<void>}
          */
-        GetMimetypesAsync(params, invocation) {
-            return new Promise((resolve, reject) => {
-                const proc = launcher.spawnv([
-                    'wl-paste',
-                    '--list-types',
-                    '-n',
-                ]);
-                proc.communicate_utf8_async(null, null, (proc, res) => {
-                    try {
-                        const [, stdout, stderr] =
-                            proc.communicate_utf8_finish(res);
-                        if (proc.get_successful())
-                            resolve(stdout.trim().split('\n'));
-                        else
-                            logError(stderr);
+        async GetMimetypesAsync(params, invocation) {
+            const mimetypes = await this._getMimetypes();
 
-                    } catch (e) {
-                        reject(e);
-                    }
-                });
-            })
-            .then((value) => invocation.return_value(new GLib.Variant('(as)', [value])));
+            invocation.return_value(new GLib.Variant('(as)', [mimetypes]));
         }
 
         /**
@@ -142,34 +171,17 @@ export const Clipboard = GObject.registerClass(
          *  clipboard is returned via. invocation
          * @returns {Promise<void>}
          */
-        GetTextAsync(params, invocation) {
-            return new Promise((resolve, reject) => {
-                this.GetMimetypes().then((mimetypes) => {
-                    const mimetype = TEXT_MIMETYPES.find((type) =>
-                        mimetypes.includes(type)
-                    );
+        async GetTextAsync(params, invocation) {
+            const mimetypes = await this._getMimetypes();
+            const mimetype = TEXT_MIMETYPES.find(type => mimetypes.includes(type));
 
-                    if (mimetype !== undefined) {
-                        const proc = launcher.spawnv(['wl-paste', '-n']);
-                        proc.communicate_utf8_async(null, null, (proc, res) => {
-                            try {
-                                const [, stdout, stderr] =
-                                    proc.communicate_utf8_finish(res);
-                                if (proc.get_successful())
-                                    resolve(stdout);
-                                else
-                                    logError(stderr);
+            if (mimetype === undefined)
+                throw new Error('text not available');
 
-                            } catch (e) {
-                                reject(e);
-                            }
-                        });
-                    } else {
-                        reject(new Error('text not available'));
-                    }
-                });
-            })
-            .then((value) => invocation.return_value(new GLib.Variant('(s)', [value])));
+            const bytes = await this._wlPaste(['--no-newline', '--type', mimetype]);
+            const text = new TextDecoder().decode(bytes.toArray());
+
+            invocation.return_value(new GLib.Variant('(s)', [text]));
         }
 
         /**
@@ -186,10 +198,66 @@ export const Clipboard = GObject.registerClass(
                 });
             }
 
-            launcher.spawnv(['wl-copy', text]);
+            this._wlCopy(new TextEncoder().encode(text));
         }
 
+        /**
+         * Run wl-copy with {@link value} as input.
+         *
+         * @param {Uint8Array} value - The value to copy
+         * @param {string} [mimetype] - The mimetype of the value, inferred by
+         *   wl-copy if not given
+         */
+        _wlCopy(value, mimetype = null) {
+            const argv = ['wl-copy'];
 
+            if (mimetype !== null)
+                argv.push('--type', mimetype);
+
+            // wl-copy forks to serve the clipboard, so its output is
+            // silenced to avoid waiting for the fork to exit
+            const proc = Gio.Subprocess.new(argv,
+                Gio.SubprocessFlags.STDIN_PIPE |
+                Gio.SubprocessFlags.STDOUT_SILENCE |
+                Gio.SubprocessFlags.STDERR_SILENCE);
+
+            proc.communicate_async(new GLib.Bytes(value), null, (proc, res) => {
+                try {
+                    proc.communicate_finish(res);
+                } catch (e) {
+                    logError(e);
+                }
+            });
+        }
+
+        /**
+         * Get the content of the clipboard with the type {@link params}.
+         *
+         * @param {Array} params - [mimetype]
+         * @param {Gio.DBusMethodInvocation} invocation - The content of the
+         *  clipboard is returned via. invocation
+         * @returns {Promise<void>}
+         */
+        async GetValueAsync(params, invocation) {
+            const [mimetype] = params;
+            const bytes = await this._wlPaste(['--no-newline', '--type', mimetype]);
+
+            invocation.return_value(GLib.Variant.new_tuple([
+                GLib.Variant.new_from_bytes(new GLib.VariantType('ay'), bytes, true),
+            ]));
+        }
+
+        /**
+         * Set the content of the clipboard to {@link value} with the type
+         * {@link mimetype}.
+         *
+         * @param {Uint8Array} value - the value to set
+         * @param {string} mimetype - the mimetype of the value
+         * @returns {void}
+         */
+        SetValue(value, mimetype) {
+            this._wlCopy(value, mimetype);
+        }
 
         destroy() {
             if (this._nameId > 0) {
