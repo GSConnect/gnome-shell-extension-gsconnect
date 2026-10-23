@@ -647,13 +647,14 @@ export const Transfer = GObject.registerClass({
      */
     async start(cancellable = null) {
         let error = null;
+        let cancelledId = 0;
 
         try {
             let item;
 
             // If a cancellable is passed in, chain to its signal
             if (cancellable instanceof Gio.Cancellable)
-                cancellable.connect(() => this._cancellable.cancel());
+                cancelledId = cancellable.connect(() => this._cancellable.cancel());
 
             while ((item = this._items.shift())) {
                 // If created for a device, ignore connection changes by
@@ -682,6 +683,9 @@ export const Transfer = GObject.registerClass({
         } catch (e) {
             error = e;
         } finally {
+            if (cancelledId > 0)
+                cancellable.disconnect(cancelledId);
+
             this._completed = true;
             this.notify('completed');
         }
