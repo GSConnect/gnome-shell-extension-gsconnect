@@ -256,8 +256,22 @@ export const Channel = GObject.registerClass({
         if (cancellable === null)
             cancellable = this.cancellable;
 
-        return this.output_stream.write_all_async(packet.serialize(),
-            GLib.PRIORITY_DEFAULT, cancellable);
+        // GIO forbids concurrent async operations on the same stream, but
+        // packets can be written at the same instant (eg. one for each file
+        // when several are shared at once), so queue them per-channel.
+        const write = () => this.output_stream.write_all_async(
+            packet.serialize(),
+            GLib.PRIORITY_DEFAULT,
+            cancellable
+        );
+
+        if (this._pendingWrites === undefined)
+            this._pendingWrites = Promise.resolve();
+
+        // Chain onto the tail; carry on after a failed write either way
+        this._pendingWrites = this._pendingWrites.then(write, write);
+
+        return this._pendingWrites;
     }
 
     /**
