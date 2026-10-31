@@ -268,11 +268,11 @@ export const ChannelService = GObject.registerClass({
     }
 
     _onNetworkChanged(monitor, network_available) {
-        if (this._networkAvailable === network_available)
-            return;
-
         this._networkAvailable = network_available;
-        this.broadcast();
+
+        // Interfaces and addresses can change while connectivity stays up.
+        if (network_available)
+            this.broadcast();
     }
 
     _initCertificate() {

@@ -146,6 +146,32 @@ describe('A LAN channel service', function () {
 });
 
 
+describe('LAN network changes', function () {
+    it('broadcasts even when connectivity stays available', function () {
+        const service = {
+            _networkAvailable: true,
+            broadcast: jasmine.createSpy('broadcast'),
+        };
+
+        Lan.ChannelService.prototype._onNetworkChanged.call(service, null, true);
+
+        expect(service.broadcast).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not broadcast when connectivity becomes unavailable', function () {
+        const service = {
+            _networkAvailable: true,
+            broadcast: jasmine.createSpy('broadcast'),
+        };
+
+        Lan.ChannelService.prototype._onNetworkChanged.call(service, null, false);
+
+        expect(service._networkAvailable).toBeFalse();
+        expect(service.broadcast).not.toHaveBeenCalled();
+    });
+});
+
+
 describe('LAN address formatting', function () {
     it('leaves IPv4 addresses unbracketed', function () {
         expect(Lan._formatAddress('192.168.1.10', 1716))
