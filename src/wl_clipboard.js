@@ -57,6 +57,12 @@ const TEXT_MIMETYPES = [
 export const Clipboard = GObject.registerClass(
     {
         GTypeName: 'GSConnectShellClipboard',
+        Signals: {
+            'OwnerChange': {
+                flags: GObject.SignalFlags.RUN_FIRST,
+                param_types: [],
+            },
+        },
     },
     class GSConnectShellClipboard extends GObject.Object {
         _init() {
@@ -105,12 +111,9 @@ export const Clipboard = GObject.registerClass(
         /**
          * Get the available mimetypes of the current clipboard content
          *
-         * @param {Array} params - empty
-         * @param {Gio.DBusMethodInvocation} invocation - List of mime-types is
-         *  returned via. invocation
-         * @returns {Promise<void>}
+         * @returns {Promise<string[]>} A list of mime-types
          */
-        GetMimetypesAsync(params, invocation) {
+        _getMimetypes() {
             return new Promise((resolve, reject) => {
                 const proc = launcher.spawnv([
                     'wl-paste',
@@ -119,19 +122,57 @@ export const Clipboard = GObject.registerClass(
                 ]);
                 proc.communicate_utf8_async(null, null, (proc, res) => {
                     try {
-                        const [, stdout, stderr] =
-                            proc.communicate_utf8_finish(res);
-                        if (proc.get_successful())
-                            resolve(stdout.trim().split('\n'));
-                        else
-                            logError(stderr);
+                        const [, stdout] = proc.communicate_utf8_finish(res);
 
+                        // An empty or unowned selection is not an error
+                        if (!proc.get_successful()) {
+                            resolve([]);
+                            return;
+                        }
+
+                        resolve(stdout.split('\n').filter((type) => type));
                     } catch (e) {
                         reject(e);
                     }
                 });
-            })
-            .then((value) => invocation.return_value(new GLib.Variant('(as)', [value])));
+            });
+        }
+
+        /**
+         * Get the text content of the current clipboard content
+         *
+         * @returns {Promise<string>} The text content
+         */
+        _getText() {
+            return new Promise((resolve, reject) => {
+                const proc = launcher.spawnv(['wl-paste', '-n']);
+                proc.communicate_utf8_async(null, null, (proc, res) => {
+                    try {
+                        // stderr is merged into stdout by the launcher
+                        const [, stdout] = proc.communicate_utf8_finish(res);
+
+                        if (proc.get_successful())
+                            resolve(stdout);
+                        else
+                            reject(new Error(stdout.trim() || 'wl-paste failed'));
+                    } catch (e) {
+                        reject(e);
+                    }
+                });
+            });
+        }
+
+        /**
+         * Get the available mimetypes of the current clipboard content
+         *
+         * @param {Array} params - empty
+         * @param {Gio.DBusMethodInvocation} invocation - List of mime-types is
+         *  returned via. invocation
+         * @returns {Promise<void>}
+         */
+        GetMimetypesAsync(params, invocation) {
+            return this._getMimetypes().then((mimetypes) =>
+                invocation.return_value(new GLib.Variant('(as)', [mimetypes])));
         }
 
         /**
@@ -143,33 +184,17 @@ export const Clipboard = GObject.registerClass(
          * @returns {Promise<void>}
          */
         GetTextAsync(params, invocation) {
-            return new Promise((resolve, reject) => {
-                this.GetMimetypes().then((mimetypes) => {
-                    const mimetype = TEXT_MIMETYPES.find((type) =>
-                        mimetypes.includes(type)
-                    );
+            return this._getMimetypes().then((mimetypes) => {
+                const mimetype = TEXT_MIMETYPES.find((type) =>
+                    mimetypes.includes(type)
+                );
 
-                    if (mimetype !== undefined) {
-                        const proc = launcher.spawnv(['wl-paste', '-n']);
-                        proc.communicate_utf8_async(null, null, (proc, res) => {
-                            try {
-                                const [, stdout, stderr] =
-                                    proc.communicate_utf8_finish(res);
-                                if (proc.get_successful())
-                                    resolve(stdout);
-                                else
-                                    logError(stderr);
+                if (mimetype === undefined)
+                    throw new Error('text not available');
 
-                            } catch (e) {
-                                reject(e);
-                            }
-                        });
-                    } else {
-                        reject(new Error('text not available'));
-                    }
-                });
-            })
-            .then((value) => invocation.return_value(new GLib.Variant('(s)', [value])));
+                return this._getText();
+            }).then((text) =>
+                invocation.return_value(new GLib.Variant('(s)', [text])));
         }
 
         /**
