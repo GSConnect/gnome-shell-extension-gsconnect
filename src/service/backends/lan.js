@@ -848,7 +848,8 @@ export const Channel = GObject.registerClass({
     }
 
     async _exchangeIdentities() {
-        await this.sendPacket(this.backend.identity);
+        this._localIdentity = this.backend.identity;
+        await this.sendPacket(this._localIdentity);
         const identity = await this.readPacket();
 
         if (this.identity.body.protocolVersion !== identity.body.protocolVersion) {
@@ -877,6 +878,10 @@ export const Channel = GObject.registerClass({
         try {
             this._connection = connection;
             this.backend.channels.set(this.address, this);
+
+            // Devices using protocol versions before 8 are only told about the
+            // identity broadcast before they connect, which is likely this one
+            this._localIdentity = this.backend.identity;
 
             // In principle this disposable wrapper could buffer more than the
             // identity packet, but in practice the remote device shouldn't send
@@ -933,8 +938,9 @@ export const Channel = GObject.registerClass({
             this._connection = connection;
             this.backend.channels.set(this.address, this);
 
+            this._localIdentity = this.backend.identity;
             await connection.get_output_stream().write_all_async(
-                this.backend.identity.serialize(),
+                this._localIdentity.serialize(),
                 GLib.PRIORITY_DEFAULT,
                 this.cancellable);
 

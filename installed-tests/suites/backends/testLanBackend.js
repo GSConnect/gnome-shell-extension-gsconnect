@@ -337,6 +337,87 @@ describe('A LAN channel service', function () {
             }
         });
 
+        it('that record the identity they sent', function () {
+            expect(localChannel.localIdentity).toBe(local.identity);
+            expect(remoteChannel.localIdentity).toBe(remote.identity);
+        });
+
+        it('that record an identity rebuilt before they send it', async function () {
+            // A device that never answers, so the channel is closed before
+            // it's encrypted
+            const server = new Gio.SocketListener();
+            const port = server.add_any_inet_port(null);
+            const address = Gio.InetSocketAddress.new_from_string('127.0.0.1',
+                port);
+            const connection = await new Gio.SocketClient({
+                enable_proxy: false,
+            }).connect_async(address, null);
+
+            const channel = new Lan.Channel({
+                backend: local,
+                certificate: local.certificate,
+                host: '127.0.0.1',
+                port,
+            });
+
+            // The capabilities change after the channel is created
+            const previous = local.identity;
+            local.buildIdentity();
+            const opening = channel.open(connection).catch(() => {});
+
+            try {
+                expect(local.identity).not.toBe(previous);
+                expect(channel.localIdentity).toBe(local.identity);
+            } finally {
+                channel.close();
+                await opening;
+                server.close();
+            }
+        });
+
+        it('that write packets one at a time', async function () {
+            const packets = ['first', 'second', 'third'].map(name => {
+                return new Core.Packet({type: 'kdeconnect.test', body: {name}});
+            });
+
+            await Promise.all(packets.map(packet => {
+                return localChannel.sendPacket(packet);
+            }));
+
+            for (const packet of packets) {
+                const received = await remoteChannel.readPacket();
+                expect(received.body.name).toBe(packet.body.name);
+            }
+        });
+
+        it('that only skip packets cancelled before they are written', async function () {
+            const cancellable = new Gio.Cancellable();
+            const first = new Core.Packet({
+                type: 'kdeconnect.test',
+                body: {name: 'first'},
+            });
+            const skipped = new Core.Packet({
+                type: 'kdeconnect.test',
+                body: {name: 'skipped'},
+            });
+            const last = new Core.Packet({
+                type: 'kdeconnect.test',
+                body: {name: 'last'},
+            });
+
+            // The first packet is written in full, even if cancelled
+            const writeFirst = localChannel.sendPacket(first, cancellable);
+            const writeSkipped = localChannel.sendPacket(skipped, cancellable);
+            cancellable.cancel();
+
+            await expectAsync(writeFirst).toBeResolved();
+            await expectAsync(writeSkipped).toBeRejected();
+            await localChannel.sendPacket(last);
+
+            expect((await remoteChannel.readPacket()).body.name).toBe('first');
+            expect((await remoteChannel.readPacket()).body.name).toBe('last');
+        });
+
         it('that stop an upload the device does not encrypt', async function () {
             const cancellable = new Gio.Cancellable();
             let stalled = null;

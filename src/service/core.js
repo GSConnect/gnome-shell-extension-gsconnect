@@ -161,6 +161,17 @@ export const Channel = GObject.registerClass({
         return this._cancellable;
     }
 
+    /**
+     * The identity the device was told about for this channel, if known,
+     * which implementations record as they send it. The service rebuilds its
+     * identity when its capabilities change, so it may differ.
+     *
+     * @type {Packet|null}
+     */
+    get localIdentity() {
+        return this._localIdentity ?? null;
+    }
+
     get closed() {
         if (this._closed === undefined)
             this._closed = false;
@@ -253,11 +264,64 @@ export const Channel = GObject.registerClass({
      * @returns {Promise<boolean>} %true if successful
      */
     sendPacket(packet, cancellable = null) {
-        if (cancellable === null)
-            cancellable = this.cancellable;
+        return new Promise((resolve, reject) => {
+            this.resendPackets([{packet, cancellable, resolve, reject}]);
+        });
+    }
 
-        return this.output_stream.write_all_async(packet.serialize(),
-            GLib.PRIORITY_DEFAULT, cancellable);
+    /**
+     * Take the packets waiting to be written, so they can be written to
+     * another channel instead.
+     *
+     * @returns {object[]} The packets, as passed to resendPackets()
+     */
+    takeUnsentPackets() {
+        const unsent = this._unsent ?? [];
+        this._unsent = [];
+
+        return unsent;
+    }
+
+    /**
+     * Write packets taken from another channel, before any sent later.
+     *
+     * @param {object[]} unsent - Packets from takeUnsentPackets()
+     */
+    resendPackets(unsent) {
+        if (this._unsent === undefined)
+            this._unsent = [];
+
+        this._unsent.push(...unsent);
+
+        if (!this._writing)
+            this._writePackets();
+    }
+
+    /**
+     * Write the packets waiting to be written.
+     *
+     * Packets are written one at a time, since a write can't start before the
+     * last one is done. A packet is skipped if cancelled before it's written,
+     * but once started it's only stopped with the channel, so it's never
+     * written in part.
+     */
+    async _writePackets() {
+        this._writing = true;
+        let next;
+
+        while ((next = this._unsent.shift())) {
+            try {
+                next.cancellable?.set_error_if_cancelled();
+
+                next.resolve(await this.output_stream.write_all_async(
+                    next.packet.serialize(), GLib.PRIORITY_DEFAULT,
+                    this.cancellable));
+            } catch (e) {
+                next.reject(e);
+            }
+        }
+
+        this._writing = false;
     }
 
     /**

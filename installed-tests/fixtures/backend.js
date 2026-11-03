@@ -404,6 +404,10 @@ export const Channel = GObject.registerClass({
                 base_stream: this._connection.get_input_stream(),
             });
 
+            // The device is only told about the identity broadcast before it
+            // connects, which is likely this one
+            this._localIdentity = this.backend.identity;
+
             const [data] = await this.input_stream.read_line_async(
                 GLib.PRIORITY_DEFAULT, this.cancellable);
 
@@ -426,8 +430,9 @@ export const Channel = GObject.registerClass({
                 base_stream: this._connection.get_input_stream(),
             });
 
+            this._localIdentity = this.backend.identity;
             await connection.output_stream.write_all_async(
-                this.backend.identity.serialize(),
+                this._localIdentity.serialize(),
                 GLib.PRIORITY_DEFAULT,
                 this.cancellable);
         } catch (e) {
