@@ -12,6 +12,13 @@ import * as DBus from '../service/utils/dbus.js';
 
 
 /*
+ * The maximum size of a value read from the clipboard, which is the largest
+ * file or image the service shares
+ */
+const MAX_VALUE_SIZE = 50 * 1024 * 1024;
+
+
+/*
  * DBus Interface Info
  */
 const DBUS_NAME = 'org.gnome.Shell.Extensions.GSConnect.Clipboard';
@@ -224,28 +231,51 @@ export const Clipboard = GObject.registerClass({
      * @returns {Promise<void>}
      */
     GetValueAsync(params, invocation) {
-        const mimetype = params.mimetype;
+        const [mimetype] = params;
+
         return new Promise((resolve, reject) => {
+            const mimetypes = this._selection.get_mimetypes(
+                Meta.SelectionType.SELECTION_CLIPBOARD);
+
+            if (!mimetypes.includes(mimetype)) {
+                reject(new Gio.DBusError({
+                    code: Gio.DBusError.INVALID_ARGS,
+                    message: `${mimetype} not available`,
+                }));
+                return;
+            }
+
             const stream = Gio.MemoryOutputStream.new_resizable();
 
+            // Transfer one byte more than allowed, to tell if it's too large
             this._selection.transfer_async(
                 Meta.SelectionType.SELECTION_CLIPBOARD,
-                mimetype, -1,
+                mimetype, MAX_VALUE_SIZE + 1,
                 stream, null,
                 (selection, res) => {
                     try {
                         selection.transfer_finish(res);
+                        stream.close(null);
 
                         const bytes = stream.steal_as_bytes();
 
-                        resolve(bytes.get_data());
+                        if (bytes.get_size() > MAX_VALUE_SIZE) {
+                            throw new Gio.DBusError({
+                                code: Gio.DBusError.LIMITS_EXCEEDED,
+                                message: `${mimetype} is too large`,
+                            });
+                        }
+
+                        resolve(bytes);
                     } catch (e) {
                         reject(e);
                     }
                 }
             );
         })
-        .then((value) => invocation.return_value(new GLib.Variant('(ay)', [value])));
+        .then((bytes) => invocation.return_value(GLib.Variant.new_tuple([
+            GLib.Variant.new_from_bytes(new GLib.VariantType('ay'), bytes, true),
+        ])));
     }
 
     /**
