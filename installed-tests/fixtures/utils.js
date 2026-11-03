@@ -112,6 +112,29 @@ Promise.idle = function (priority = GLib.PRIORITY_DEFAULT_IDLE) {
 };
 
 
+/**
+ * Wait for a condition to become true, checking it every few milliseconds.
+ *
+ * @param {function(): boolean} condition - The condition
+ * @param {number} [timeout] - The time to wait, in milliseconds
+ */
+export async function waitFor(condition, timeout = 4000) {
+    const deadline = GLib.get_monotonic_time() + timeout * 1000;
+
+    while (!condition()) {
+        if (GLib.get_monotonic_time() > deadline)
+            throw new Error('Timed out waiting for a condition');
+
+        await new Promise(resolve => {
+            GLib.timeout_add(GLib.PRIORITY_DEFAULT, 5, () => {
+                resolve();
+                return GLib.SOURCE_REMOVE;
+            });
+        });
+    }
+}
+
+
 /*
  * Identity Helpers
  */
@@ -237,11 +260,12 @@ Plugin.prototype.awaitPacket = _awaitPacket;
 
 
 /**
- * Create temporary directories used by GSConnect.
+ * Create temporary directories used by GSConnect, so tests don't affect a
+ * running service.
  *
  * @returns {string} The root temporary directory
  */
-function isolateDirectories() {
+export function isolateDirectories() {
     const tmpdir = GLib.Dir.make_tmp('gsconnect.XXXXXX');
 
     Config.CACHEDIR = GLib.build_filenamev([tmpdir, 'cache']);
@@ -278,7 +302,7 @@ export async function mockComponents() {
  *
  * @param {Gio.File|string} file - The file or path to delete
  */
-function removeDirectory(file) {
+export function removeDirectory(file) {
     try {
         if (typeof file === 'string')
             file = Gio.File.new_for_path(file);

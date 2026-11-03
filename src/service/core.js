@@ -565,17 +565,15 @@ export const Transfer = GObject.registerClass({
                 return;
 
             if (item.file instanceof Gio.File) {
-                const read = item.file.read_async(GLib.PRIORITY_DEFAULT,
-                    cancellable);
+                // The stream is kept first, so it's closed if this fails
+                item.source = await item.file.read_async(
+                    GLib.PRIORITY_DEFAULT, cancellable);
 
-                const query = item.file.query_info_async(
+                const info = await item.file.query_info_async(
                     Gio.FILE_ATTRIBUTE_STANDARD_SIZE,
                     Gio.FileQueryInfoFlags.NONE,
                     GLib.PRIORITY_DEFAULT,
                     cancellable);
-
-                const [stream, info] = await Promise.all([read, query]);
-                item.source = stream;
                 item.size = info.get_size();
             }
         }
@@ -647,13 +645,13 @@ export const Transfer = GObject.registerClass({
      */
     async start(cancellable = null) {
         let error = null;
+        let cancelledId = 0;
+        let item;
 
         try {
-            let item;
-
             // If a cancellable is passed in, chain to its signal
             if (cancellable instanceof Gio.Cancellable)
-                cancellable.connect(() => this._cancellable.cancel());
+                cancelledId = cancellable.connect(() => this._cancellable.cancel());
 
             while ((item = this._items.shift())) {
                 // If created for a device, ignore connection changes by
@@ -681,7 +679,18 @@ export const Transfer = GObject.registerClass({
             }
         } catch (e) {
             error = e;
+
+            // A stream opened for a file is only closed once transferred.
+            // Only one of them is opened, and the packet can't tell which,
+            // since uploading adds the payload to it.
+            if (item?.file instanceof Gio.File) {
+                item.source?.close_async(GLib.PRIORITY_DEFAULT, null, null);
+                item.target?.close_async(GLib.PRIORITY_DEFAULT, null, null);
+            }
         } finally {
+            if (cancelledId > 0)
+                cancellable.disconnect(cancelledId);
+
             this._completed = true;
             this.notify('completed');
         }

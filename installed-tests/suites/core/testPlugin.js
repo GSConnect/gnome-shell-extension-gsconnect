@@ -189,6 +189,33 @@ describe('Plugin GActions', function () {
 });
 
 
+describe('Plugin operations', function () {
+    let device;
+
+    beforeAll(function () {
+        device = new Device(Utils.generateIdentity({
+            body: {
+                incomingCapabilities: Metadata.outgoingCapabilities,
+                outgoingCapabilities: Metadata.incomingCapabilities,
+            },
+        }));
+    });
+
+    afterAll(function () {
+        device.destroy();
+    });
+
+    it('are cancelled when destroyed, even if not started', function () {
+        const plugin = new TestPlugin(device);
+        plugin.destroy();
+
+        // An operation that started before checks the cancellable once it
+        // continues
+        expect(plugin.cancellable.is_cancelled()).toBeTrue();
+    });
+});
+
+
 describe('Plugin packets', function () {
     let device, plugin;
 
