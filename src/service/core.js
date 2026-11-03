@@ -6,6 +6,7 @@ import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 
+import Config from '../config.js';
 import Device from './device.js';
 import plugins from './plugins/index.js';
 
@@ -477,17 +478,34 @@ export const ChannelService = GObject.registerClass({
             },
         });
 
+        // Capabilities may depend on a boolean setting of the service
+        if (this._serviceSettings === undefined) {
+            this._serviceSettings = new Gio.Settings({
+                settings_schema: Config.GSCHEMA.lookup(Config.APP_ID, true),
+            });
+        }
+
+        const settings = this._serviceSettings;
+        const isEnabled = (meta, type) => {
+            const key = meta.capabilitySettings?.[type];
+            return key === undefined || settings.get_boolean(key);
+        };
+
         for (const name in plugins) {
             const meta = plugins[name].Metadata;
 
             if (meta === undefined)
                 continue;
 
-            for (const type of meta.incomingCapabilities)
-                this._identity.body.incomingCapabilities.push(type);
+            for (const type of meta.incomingCapabilities) {
+                if (isEnabled(meta, type))
+                    this._identity.body.incomingCapabilities.push(type);
+            }
 
-            for (const type of meta.outgoingCapabilities)
-                this._identity.body.outgoingCapabilities.push(type);
+            for (const type of meta.outgoingCapabilities) {
+                if (isEnabled(meta, type))
+                    this._identity.body.outgoingCapabilities.push(type);
+            }
         }
     }
 
