@@ -351,13 +351,13 @@ const Device = GObject.registerClass({
             this._readLoop(channel);
         }
 
-        // The connected state didn't change
-        if (this.connected === !!this.channel)
-            return;
+        // Notify only when the connected state changes. Plugins must also
+        // synchronize with a replacement channel, even if we stayed connected.
+        if (this.connected !== !!this.channel) {
+            this._connected = !!this.channel;
+            this.notify('connected');
+        }
 
-        // Notify and trigger plugins
-        this._connected = !!this.channel;
-        this.notify('connected');
         this._triggerPlugins();
     }
 
@@ -365,7 +365,12 @@ const Device = GObject.registerClass({
         try {
             let packet = null;
 
-            while ((packet = await this.channel.readPacket())) {
+            while (this.channel === channel &&
+                (packet = await channel.readPacket())) {
+                // A buffered read may finish after this channel was replaced.
+                if (this.channel !== channel)
+                    return;
+
                 debug(packet, this.name);
                 this.handlePacket(packet);
             }

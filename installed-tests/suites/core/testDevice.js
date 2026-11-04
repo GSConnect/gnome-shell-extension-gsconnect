@@ -112,3 +112,61 @@ describe('A device constructed from an ID', function () {
     });
 });
 
+
+describe('Device channel replacement', function () {
+    it('resynchronizes plugins when a connected channel is replaced', function () {
+        const device = new Device(Utils.generateIdentity());
+        const first = {close: jasmine.createSpy('close')};
+        const second = {close: jasmine.createSpy('close')};
+        spyOn(device, '_handleIdentity');
+        spyOn(device, '_readLoop');
+        spyOn(device, '_triggerPlugins');
+
+        try {
+            device.setChannel(first);
+            device._triggerPlugins.calls.reset();
+            device.setChannel(second);
+
+            expect(first.close).toHaveBeenCalledTimes(1);
+            expect(device.connected).toBeTrue();
+            expect(device._triggerPlugins).toHaveBeenCalledTimes(1);
+        } finally {
+            device.setChannel(null);
+            device.destroy();
+        }
+    });
+
+    it('stops an old reader without reading or dispatching on the new channel', async function () {
+        let finishRead;
+        const previous = {
+            readPacket: jasmine.createSpy('old read').and.returnValue(
+                new Promise(resolve => {
+                    finishRead = resolve;
+                })
+            ),
+        };
+        const current = {
+            readPacket: jasmine.createSpy('new read').and.callFake(() => {
+                return Promise.reject(new Gio.IOErrorEnum({
+                    code: Gio.IOErrorEnum.CANCELLED,
+                    message: 'Test finished',
+                }));
+            }),
+        };
+        const device = {
+            channel: previous,
+            handlePacket: jasmine.createSpy('handlePacket'),
+            setChannel: jasmine.createSpy('setChannel'),
+        };
+
+        const reading = Device.prototype._readLoop.call(device, previous);
+        device.channel = current;
+        finishRead({type: 'kdeconnect.clipboard', body: {content: 'old'}});
+        await reading;
+
+        expect(current.readPacket).not.toHaveBeenCalled();
+        expect(device.handlePacket).not.toHaveBeenCalled();
+        expect(device.setChannel).not.toHaveBeenCalled();
+    });
+});
+
