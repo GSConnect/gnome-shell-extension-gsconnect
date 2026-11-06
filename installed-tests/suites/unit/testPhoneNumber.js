@@ -41,4 +41,17 @@ describe('A patched String definition', function () {
 
         expect(badNumber.equalsPhoneNumber(emptyNumber)).toBeFalse();
     });
+
+    it('does not match short codes with regular numbers', function () {
+        const aNumber = '+48 123 456 900';
+        const shortCode = '900';
+
+        expect('900'.toPhoneNumber().isShortCode()).toBeTrue();
+        expect(aNumber.toPhoneNumber().isShortCode()).toBeFalse();
+
+        expect(aNumber.equalsPhoneNumber(shortCode)).toBeFalse();
+        expect(shortCode.equalsPhoneNumber(aNumber)).toBeFalse();
+        expect(shortCode.equalsPhoneNumber('900')).toBeTrue();
+        expect('8080'.equalsPhoneNumber('+8080')).toBeTrue();
+    });
 });

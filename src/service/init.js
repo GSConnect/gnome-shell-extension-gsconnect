@@ -194,6 +194,11 @@ String.prototype.toPhoneNumber = function () {
 /**
  * A simple equality check for phone numbers based on `toPhoneNumber()`
  *
+ * One number may end with the other (e.g. with and without a country code),
+ * but a short code never matches a regular number, so a message from `900`
+ * does not match a contact with `+48 123 456 900`.
+ * See: https://invent.kde.org/network/kdeconnect-kde/-/blob/master/smsapp/smshelper.cpp
+ *
  * @param {string} number - A phone number string to compare
  * @returns {boolean} If `this` and {@link number} are equivalent phone numbers
  */
@@ -201,7 +206,24 @@ String.prototype.equalsPhoneNumber = function (number) {
     const a = this.toPhoneNumber();
     const b = number.toPhoneNumber();
 
-    return Boolean(a.length && b.length && (a.endsWith(b) || b.endsWith(a)));
+    if (!a.length || !b.length)
+        return false;
+
+    if (a.isShortCode() !== b.isShortCode())
+        return false;
+
+    return a.endsWith(b) || b.endsWith(a);
+};
+
+
+/**
+ * Whether a phone number, as returned by `toPhoneNumber()`, is a short code
+ * (e.g. a bank or carrier service number) rather than a regular number.
+ *
+ * @returns {boolean} If `this` is a short code
+ */
+String.prototype.isShortCode = function () {
+    return this.length <= 6;
 };
 
 
