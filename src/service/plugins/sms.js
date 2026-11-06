@@ -192,6 +192,7 @@ const SMSPlugin = GObject.registerClass({
 
     connected() {
         super.connected();
+        this._requestedThreads = new Set();
         this._requestConversations();
     }
 
@@ -298,6 +299,38 @@ const SMSPlugin = GObject.registerClass({
     }
 
     /**
+     * Handle a packet containing messages from a single thread.
+     *
+     * Newer KDE Connect for Android answers `request_conversations` with one
+     * packet per thread (each holding only the latest message) instead of a
+     * single digest packet, so `_handleDigest()` never runs and full threads
+     * are never requested. Request the thread here, once per connection, if
+     * the cache doesn't already hold it.
+     *
+     * @param {object[]} messages - A list of sms message objects
+     */
+    _handleSingleThread(messages) {
+        const thread_id = messages[0].thread_id;
+        const cache = this.threads[thread_id];
+        const newest = Math.max(...messages.map(m => m.date));
+        const needsThread = messages.length === 1 && (
+            cache === undefined ||
+            cache.length < 2 ||
+            cache[cache.length - 1].date < newest
+        );
+
+        this._handleThread(messages);
+
+        if (this._requestedThreads === undefined)
+            this._requestedThreads = new Set();
+
+        if (needsThread && !this._requestedThreads.has(thread_id)) {
+            this._requestedThreads.add(thread_id);
+            this._requestConversation(thread_id);
+        }
+    }
+
+    /**
      * Handle a response to telephony.request_conversation(s)
      *
      * @param {object[]} messages - A list of sms message objects
@@ -334,7 +367,7 @@ const SMSPlugin = GObject.registerClass({
 
             // Otherwise this is single thread or new message
             else
-                this._handleThread(messages);
+                this._handleSingleThread(messages);
         } catch (e) {
             debug(e, this.device.name);
         }
