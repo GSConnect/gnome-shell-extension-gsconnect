@@ -192,6 +192,7 @@ const SMSPlugin = GObject.registerClass({
 
     connected() {
         super.connected();
+        this._requestedThreads = new Set();
         this._requestConversations();
     }
 
@@ -201,44 +202,6 @@ const SMSPlugin = GObject.registerClass({
                 this._handleMessages(packet.body.messages);
                 break;
         }
-    }
-
-    /**
-     * Handle a digest of threads.
-     *
-     * @param {object[]} messages - A list of message objects
-     * @param {string[]} thread_ids - A list of thread IDs as strings
-     */
-    _handleDigest(messages, thread_ids) {
-        // Prune threads
-        for (const thread_id of Object.keys(this.threads)) {
-            if (!thread_ids.includes(thread_id))
-                delete this.threads[thread_id];
-        }
-
-        // Request each new or newer thread
-        for (let i = 0, len = messages.length; i < len; i++) {
-            const message = messages[i];
-            const cache = this.threads[message.thread_id];
-
-            if (cache === undefined) {
-                this._requestConversation(message.thread_id);
-                continue;
-            }
-
-            // If this message is marked read, mark the rest as read
-            if (message.read === MessageStatus.READ) {
-                for (const msg of cache)
-                    msg.read = MessageStatus.READ;
-            }
-
-            // If we don't have a thread for this message or it's newer
-            // than the last message in the cache, request the thread
-            if (!cache.length || cache[cache.length - 1].date < message.date)
-                this._requestConversation(message.thread_id);
-        }
-
-        this.notify('threads');
     }
 
     /**
@@ -298,6 +261,45 @@ const SMSPlugin = GObject.registerClass({
     }
 
     /**
+     * Handle the messages of a single thread from a `kdeconnect.sms.messages`
+     * packet.
+     *
+     * KDE Connect for Android answers `request_conversations` with one packet
+     * per thread, each holding only the thread's latest message, so this is
+     * where full threads get requested: once per connection, unless the cache
+     * already holds the thread.
+     *
+     * @param {object[]} messages - A list of sms message objects
+     */
+    _handleSingleThread(messages) {
+        const thread_id = messages[0].thread_id;
+        const cache = this.threads[thread_id];
+        const newest = Math.max(...messages.map(m => m.date));
+        const needsThread = messages.length === 1 && (
+            cache === undefined ||
+            cache.length < 2 ||
+            cache[cache.length - 1].date < newest
+        );
+
+        // If the latest message is marked read, mark the rest as read
+        if (cache !== undefined && messages.length === 1 &&
+            messages[0].read === MessageStatus.READ) {
+            for (const msg of cache)
+                msg.read = MessageStatus.READ;
+        }
+
+        this._handleThread(messages);
+
+        if (this._requestedThreads === undefined)
+            this._requestedThreads = new Set();
+
+        if (needsThread && !this._requestedThreads.has(thread_id)) {
+            this._requestedThreads.add(thread_id);
+            this._requestConversation(thread_id);
+        }
+    }
+
+    /**
      * Handle a response to telephony.request_conversation(s)
      *
      * @param {object[]} messages - A list of sms message objects
@@ -308,7 +310,7 @@ const SMSPlugin = GObject.registerClass({
             if (messages.length === 0)
                 return;
 
-            const thread_ids = [];
+            const threads = new Map();
 
             // Perform some modification of the messages
             for (let i = 0, len = messages.length; i < len; i++) {
@@ -316,7 +318,6 @@ const SMSPlugin = GObject.registerClass({
 
                 // COERCION: thread_id's to strings
                 message.thread_id = `${message.thread_id}`;
-                thread_ids.push(message.thread_id);
 
                 // TODO: Remove bogus `insert-address-token` entries
                 let a = message.addresses.length;
@@ -326,15 +327,20 @@ const SMSPlugin = GObject.registerClass({
                         message.addresses[a].address === 'insert-address-token')
                         message.addresses.splice(a, 1);
                 }
+
+                if (!threads.has(message.thread_id))
+                    threads.set(message.thread_id, []);
+
+                threads.get(message.thread_id).push(message);
             }
 
-            // If there's multiple thread_id's it's a summary of threads
-            if (thread_ids.some(id => id !== thread_ids[0]))
-                this._handleDigest(messages, thread_ids);
-
-            // Otherwise this is single thread or new message
-            else
-                this._handleThread(messages);
+            // A packet holding several threads is not a reliable digest: the
+            // thread summary now arrives one thread per packet, and a packet
+            // of new messages can also carry the previous latest message of
+            // another thread. Handle each thread on its own and never prune
+            // the cache based on a single packet.
+            for (const thread of threads.values())
+                this._handleSingleThread(thread);
         } catch (e) {
             debug(e, this.device.name);
         }
