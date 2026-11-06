@@ -293,9 +293,10 @@ const NotificationPlugin = GObject.registerClass({
     /**
      * Handle an incoming notification or closed report.
      *
-     * FIXME: upstream kdeconnect-android is tagging many notifications as
-     *        `silent`, causing them to never be shown. Since we already handle
-     *        duplicates in the Shell, we ignore that flag for now.
+     * kdeconnect-android tags notifications as `silent` when they were already
+     * present on the device (e.g. all of them, right after connecting) or are
+     * updates that shouldn't alert again. These are still shown, but with a
+     * low priority, so GNOME Shell lists them without popping up a banner.
      *
      * @param {Core.Packet} packet - A `kdeconnect.notification`
      */
@@ -618,6 +619,9 @@ const NotificationPlugin = GObject.registerClass({
                 icon: icon,
                 action: action,
                 buttons: buttons,
+                priority: packet.body.silent
+                    ? Gio.NotificationPriority.LOW
+                    : Gio.NotificationPriority.NORMAL,
             });
         } catch (e) {
             logError(e);
