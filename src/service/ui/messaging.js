@@ -3,6 +3,8 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 import Gdk from 'gi://Gdk';
+import GdkPixbuf from 'gi://GdkPixbuf';
+import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk';
@@ -207,6 +209,45 @@ function setAvatarVisible(row, visible) {
 
 
 /**
+ * Whether an attachment can be opened with the default application. Only
+ * media is opened, so a crafted MMS can't make us launch e.g. a .desktop file.
+ *
+ * @param {string} contentType - A content type
+ * @returns {boolean} If the content type is image, video or audio
+ */
+function isMediaType(contentType) {
+    return ['image/', 'video/', 'audio/'].some(prefix => {
+        return `${contentType}`.startsWith(prefix);
+    });
+}
+
+
+/**
+ * Get a one-line description of a message's attachments.
+ *
+ * @param {object} message - A message object
+ * @returns {string} A description, or an empty string without attachments
+ */
+function getAttachmentsLabel(message) {
+    if (!Array.isArray(message.attachments) || !message.attachments.length)
+        return '';
+
+    const type = `${message.attachments[0].mime_type}`;
+
+    if (type.startsWith('image/'))
+        return _('Picture');
+
+    if (type.startsWith('video/'))
+        return _('Video');
+
+    if (type.startsWith('audio/'))
+        return _('Audio');
+
+    return _('Attachment');
+}
+
+
+/**
  * A ListBoxRow for a preview of a conversation
  */
 const ConversationMessage = GObject.registerClass({
@@ -214,11 +255,12 @@ const ConversationMessage = GObject.registerClass({
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/ui/messaging-conversation-message.ui',
     Children: ['grid', 'avatar', 'sender-label', 'message-label'],
 }, class ConversationMessage extends Gtk.ListBoxRow {
-    _init(contact, message) {
+    _init(contact, message, plugin = null) {
         super._init();
 
         this.contact = contact;
         this.message = message;
+        this._plugin = plugin;
 
         // Sort properties
         this.sender = message.addresses[0].address || 'unknown';
@@ -240,6 +282,113 @@ const ConversationMessage = GObject.registerClass({
             this.message_label.halign = Gtk.Align.START;
         } else {
             this.message_label.get_style_context().add_class('message-out');
+        }
+
+        this._addAttachments(message.attachments);
+    }
+
+    _addAttachments(attachments) {
+        if (!Array.isArray(attachments) || !attachments.length)
+            return;
+
+        const box = new Gtk.Box({
+            orientation: Gtk.Orientation.VERTICAL,
+            spacing: 6,
+            halign: this.message_label.halign,
+            visible: true,
+        });
+
+        for (const attachment of attachments)
+            box.add(this._createAttachmentWidget(attachment));
+
+        // Show the attachments above the text, in the same grid cell
+        this.grid.remove(this.message_label);
+        box.add(this.message_label);
+        this.message_label.visible = Boolean(this.message.body);
+        this.grid.attach(box, 1, 1, 1, 1);
+    }
+
+    _createAttachmentWidget(attachment) {
+        let image = null;
+
+        if (attachment.encoded_thumbnail) {
+            try {
+                const loader = new GdkPixbuf.PixbufLoader();
+                loader.write_bytes(new GLib.Bytes(
+                    GLib.base64_decode(attachment.encoded_thumbnail)));
+                loader.close();
+
+                image = new Gtk.Image({
+                    pixbuf: loader.get_pixbuf(),
+                    visible: true,
+                });
+            } catch (e) {
+                debug(e);
+            }
+        }
+
+        if (image === null) {
+            image = new Gtk.Image({
+                gicon: Gio.content_type_get_symbolic_icon(
+                    `${attachment.mime_type}`),
+                pixel_size: 48,
+                visible: true,
+            });
+        }
+
+        if (!isMediaType(attachment.mime_type) || this._plugin === null)
+            return image;
+
+        const spinner = new Gtk.Spinner({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER,
+            width_request: 32,
+            height_request: 32,
+        });
+        const overlay = new Gtk.Overlay({visible: true});
+        overlay.add(image);
+        overlay.add_overlay(spinner);
+
+        const button = new Gtk.Button({
+            relief: Gtk.ReliefStyle.NONE,
+            tooltip_text: _('Open'),
+            visible: true,
+        });
+        button.add(overlay);
+        button.connect('clicked', () => {
+            this._openAttachment(button, spinner, attachment);
+        });
+
+        return button;
+    }
+
+    async _openAttachment(button, spinner, attachment) {
+        button.sensitive = false;
+        spinner.visible = true;
+        spinner.start();
+
+        try {
+            const file = await this._plugin.requestAttachment(attachment);
+
+            // Don't trust the device-provided type alone
+            const [contentType] = Gio.content_type_guess(file.get_path(), null);
+
+            if (!isMediaType(contentType))
+                throw new Error(`Refusing to open ${contentType} attachment`);
+
+            Gtk.show_uri_on_window(
+                this.get_toplevel(),
+                file.get_uri(),
+                Gtk.get_current_event_time()
+            );
+            button.tooltip_text = _('Open');
+        } catch (e) {
+            debug(e);
+            button.tooltip_text = _('Failed to download attachment');
+        } finally {
+            spinner.stop();
+            spinner.visible = false;
+            button.sensitive = true;
         }
     }
 
@@ -563,7 +712,8 @@ const Conversation = GObject.registerClass({
             });
         }
 
-        return new ConversationMessage(this.contacts[sender], message);
+        return new ConversationMessage(this.contacts[sender], message,
+            this.plugin);
     }
 
     _populateMessages() {
@@ -768,7 +918,8 @@ const ConversationSummary = GObject.registerClass({
         }
 
         // Contact Name & Message body
-        let bodyLabel = message.body.split(/\r|\n/)[0];
+        let bodyLabel = (message.body || getAttachmentsLabel(message))
+            .split(/\r|\n/)[0];
         bodyLabel = GLib.markup_escape_text(bodyLabel, -1);
 
         // Ignore the 'read' flag if it's an outgoing message
@@ -999,8 +1150,8 @@ export const Window = GObject.registerClass({
         for (const [thread_id, thread] of Object.entries(this.plugin.threads)) {
             const message = thread[thread.length - 1];
 
-            // Skip messages without a body (eg. MMS messages without text)
-            if (message.body)
+            // Skip messages without a body or attachments
+            if (message.body || getAttachmentsLabel(message))
                 messages[thread_id] = thread[thread.length - 1];
         }
 
