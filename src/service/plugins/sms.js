@@ -6,6 +6,7 @@ import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 
+import Config from '../../config.js';
 import Plugin from '../plugin.js';
 import LegacyMessagingDialog from '../ui/legacyMessaging.js';
 import * as Messaging from '../ui/messaging.js';
@@ -17,10 +18,12 @@ export const Metadata = {
     description: _('Send and read SMS of the paired device and be notified of new SMS'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.SMS',
     incomingCapabilities: [
+        'kdeconnect.sms.attachment_file',
         'kdeconnect.sms.messages',
     ],
     outgoingCapabilities: [
         'kdeconnect.sms.request',
+        'kdeconnect.sms.request_attachment',
         'kdeconnect.sms.request_conversation',
         'kdeconnect.sms.request_conversations',
     ],
@@ -200,6 +203,10 @@ const SMSPlugin = GObject.registerClass({
             case 'kdeconnect.sms.messages':
                 this._handleMessages(packet.body.messages);
                 break;
+
+            case 'kdeconnect.sms.attachment_file':
+                this._handleAttachmentFile(packet);
+                break;
         }
     }
 
@@ -352,6 +359,155 @@ const SMSPlugin = GObject.registerClass({
                 threadID: thread_id,
             },
         });
+    }
+
+    /**
+     * Get the local cache file for an MMS attachment.
+     *
+     * @param {string} name - The attachment's `unique_identifier`
+     * @returns {Gio.File} The cache file
+     */
+    _getAttachmentFile(name) {
+        const dir = GLib.build_filenamev([
+            Config.CACHEDIR,
+            this.device.id,
+            'attachments',
+        ]);
+        GLib.mkdir_with_parents(dir, 448);
+
+        // The name comes from the device; never let it leave the directory
+        let basename = GLib.path_get_basename(`${name}`);
+
+        if (['', '.', '..', '/'].includes(basename)) {
+            basename = GLib.compute_checksum_for_string(
+                GLib.ChecksumType.SHA256, `${name}`, -1);
+        }
+
+        return Gio.File.new_for_path(GLib.build_filenamev([dir, basename]));
+    }
+
+    /**
+     * Get the full file of an MMS attachment, downloading it if necessary.
+     *
+     * @param {object} attachment - An attachment object from a message
+     * @param {function(number): void} [onProgress] - Called with the
+     *   downloaded fraction (0 to 1) while the file is transferred
+     * @returns {Promise<Gio.File>} The downloaded file
+     */
+    requestAttachment(attachment, onProgress = null) {
+        const file = this._getAttachmentFile(attachment.unique_identifier);
+
+        if (file.query_exists(null))
+            return Promise.resolve(file);
+
+        if (this._attachmentRequests === undefined)
+            this._attachmentRequests = new Map();
+
+        const path = file.get_path();
+        let request = this._attachmentRequests.get(path);
+
+        if (request === undefined) {
+            request = {listeners: new Set()};
+            request.promise = new Promise((resolve, reject) => {
+                request.resolve = resolve;
+                request.reject = reject;
+            });
+
+            // Give up if the device never answers
+            request.timeoutId = GLib.timeout_add_seconds(
+                GLib.PRIORITY_DEFAULT, 120, () => {
+                    this._attachmentRequests.delete(path);
+                    request.reject(new Gio.IOErrorEnum({
+                        code: Gio.IOErrorEnum.TIMED_OUT,
+                        message: 'Attachment request timed out',
+                    }));
+                    return GLib.SOURCE_REMOVE;
+                });
+
+            this._attachmentRequests.set(path, request);
+
+            this.device.sendPacket({
+                type: 'kdeconnect.sms.request_attachment',
+                body: {
+                    part_id: attachment.part_id,
+                    unique_identifier: attachment.unique_identifier,
+                },
+            });
+        }
+
+        if (onProgress !== null)
+            request.listeners.add(onProgress);
+
+        return request.promise;
+    }
+
+    /**
+     * Handle an attachment file sent in response to `request_attachment`.
+     *
+     * @param {object} packet - A `kdeconnect.sms.attachment_file` packet
+     */
+    async _handleAttachmentFile(packet) {
+        const file = this._getAttachmentFile(packet.body.filename);
+        const path = file.get_path();
+        const request = this._attachmentRequests?.get(path);
+
+        if (request !== undefined) {
+            this._attachmentRequests.delete(path);
+            GLib.source_remove(request.timeoutId);
+        }
+
+        // Download next to the target, so an interrupted transfer never
+        // leaves a partial file behind that looks complete
+        const partial = Gio.File.new_for_path(`${path}.part`);
+
+        // Report progress by watching the partial file grow
+        let progressId = 0;
+
+        if (request?.listeners.size && packet.payloadSize > 0) {
+            progressId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 250, () => {
+                try {
+                    const size = partial.query_info('standard::size',
+                        Gio.FileQueryInfoFlags.NONE, null).get_size();
+                    const fraction = Math.min(size / packet.payloadSize, 1);
+
+                    for (const listener of request.listeners)
+                        listener(fraction);
+                } catch (e) {
+                    if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.NOT_FOUND))
+                        debug(e, this.device.name);
+                }
+
+                return GLib.SOURCE_CONTINUE;
+            });
+        }
+
+        try {
+            const transfer = this.device.createTransfer();
+            transfer.addFile(packet, partial);
+            await transfer.start();
+
+            if (progressId) {
+                GLib.source_remove(progressId);
+                progressId = 0;
+            }
+
+            partial.move(file, Gio.FileCopyFlags.OVERWRITE, null, null);
+            request?.resolve(file);
+        } catch (e) {
+            debug(e, this.device.name);
+
+            if (progressId)
+                GLib.source_remove(progressId);
+
+            try {
+                partial.delete(null);
+            } catch (de) {
+                if (!de.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.NOT_FOUND))
+                    debug(de, this.device.name);
+            }
+
+            request?.reject(e);
+        }
     }
 
     /**
