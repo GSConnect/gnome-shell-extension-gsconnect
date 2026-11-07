@@ -390,9 +390,11 @@ const SMSPlugin = GObject.registerClass({
      * Get the full file of an MMS attachment, downloading it if necessary.
      *
      * @param {object} attachment - An attachment object from a message
+     * @param {function(number): void} [onProgress] - Called with the
+     *   downloaded fraction (0 to 1) while the file is transferred
      * @returns {Promise<Gio.File>} The downloaded file
      */
-    requestAttachment(attachment) {
+    requestAttachment(attachment, onProgress = null) {
         const file = this._getAttachmentFile(attachment.unique_identifier);
 
         if (file.query_exists(null))
@@ -405,7 +407,7 @@ const SMSPlugin = GObject.registerClass({
         let request = this._attachmentRequests.get(path);
 
         if (request === undefined) {
-            request = {};
+            request = {listeners: new Set()};
             request.promise = new Promise((resolve, reject) => {
                 request.resolve = resolve;
                 request.reject = reject;
@@ -433,6 +435,9 @@ const SMSPlugin = GObject.registerClass({
             });
         }
 
+        if (onProgress !== null)
+            request.listeners.add(onProgress);
+
         return request.promise;
     }
 
@@ -455,15 +460,44 @@ const SMSPlugin = GObject.registerClass({
         // leaves a partial file behind that looks complete
         const partial = Gio.File.new_for_path(`${path}.part`);
 
+        // Report progress by watching the partial file grow
+        let progressId = 0;
+
+        if (request?.listeners.size && packet.payloadSize > 0) {
+            progressId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 250, () => {
+                try {
+                    const size = partial.query_info('standard::size',
+                        Gio.FileQueryInfoFlags.NONE, null).get_size();
+                    const fraction = Math.min(size / packet.payloadSize, 1);
+
+                    for (const listener of request.listeners)
+                        listener(fraction);
+                } catch (e) {
+                    if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.NOT_FOUND))
+                        debug(e, this.device.name);
+                }
+
+                return GLib.SOURCE_CONTINUE;
+            });
+        }
+
         try {
             const transfer = this.device.createTransfer();
             transfer.addFile(packet, partial);
             await transfer.start();
 
+            if (progressId) {
+                GLib.source_remove(progressId);
+                progressId = 0;
+            }
+
             partial.move(file, Gio.FileCopyFlags.OVERWRITE, null, null);
             request?.resolve(file);
         } catch (e) {
             debug(e, this.device.name);
+
+            if (progressId)
+                GLib.source_remove(progressId);
 
             try {
                 partial.delete(null);
