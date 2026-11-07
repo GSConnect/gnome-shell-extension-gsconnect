@@ -12,6 +12,18 @@ import * as Messaging from '../ui/messaging.js';
 import SmsURI from '../utils/uri.js';
 
 
+/**
+ * Number of messages requested per page of a thread, as in KDE Connect's
+ * smsapp (`MIN_NUMBER_TO_REQUEST`).
+ */
+const THREAD_PAGE_SIZE = 25;
+
+/**
+ * Seconds to wait for a page of a thread before allowing a new request.
+ */
+const THREAD_PAGE_TIMEOUT = 30;
+
+
 export const Metadata = {
     label: _('SMS'),
     description: _('Send and read SMS of the paired device and be notified of new SMS'),
@@ -192,7 +204,29 @@ const SMSPlugin = GObject.registerClass({
 
     connected() {
         super.connected();
+        this._resetThreadRequests();
         this._requestConversations();
+    }
+
+    disconnected() {
+        super.disconnected();
+        this._resetThreadRequests();
+    }
+
+    _resetThreadRequests() {
+        if (this._pageRequests !== undefined) {
+            for (const request of this._pageRequests.values())
+                GLib.source_remove(request.timeoutId);
+        }
+
+        // Pending page requests, by thread ID
+        this._pageRequests = new Map();
+
+        // Threads whose newest page was fetched on this connection
+        this._freshThreads = new Set();
+
+        // Threads known to be loaded back to their first message
+        this._completeThreads = new Set();
     }
 
     handlePacket(packet) {
@@ -201,44 +235,6 @@ const SMSPlugin = GObject.registerClass({
                 this._handleMessages(packet.body.messages);
                 break;
         }
-    }
-
-    /**
-     * Handle a digest of threads.
-     *
-     * @param {object[]} messages - A list of message objects
-     * @param {string[]} thread_ids - A list of thread IDs as strings
-     */
-    _handleDigest(messages, thread_ids) {
-        // Prune threads
-        for (const thread_id of Object.keys(this.threads)) {
-            if (!thread_ids.includes(thread_id))
-                delete this.threads[thread_id];
-        }
-
-        // Request each new or newer thread
-        for (let i = 0, len = messages.length; i < len; i++) {
-            const message = messages[i];
-            const cache = this.threads[message.thread_id];
-
-            if (cache === undefined) {
-                this._requestConversation(message.thread_id);
-                continue;
-            }
-
-            // If this message is marked read, mark the rest as read
-            if (message.read === MessageStatus.READ) {
-                for (const msg of cache)
-                    msg.read = MessageStatus.READ;
-            }
-
-            // If we don't have a thread for this message or it's newer
-            // than the last message in the cache, request the thread
-            if (!cache.length || cache[cache.length - 1].date < message.date)
-                this._requestConversation(message.thread_id);
-        }
-
-        this.notify('threads');
     }
 
     /**
@@ -298,6 +294,143 @@ const SMSPlugin = GObject.registerClass({
     }
 
     /**
+     * Handle the messages of a single thread from a `kdeconnect.sms.messages`
+     * packet.
+     *
+     * KDE Connect for Android answers `request_conversations` with one packet
+     * per thread, each holding only the thread's latest message. Threads are
+     * not fetched here: the messaging window requests them page by page with
+     * `requestThreadPage()` when they are viewed.
+     *
+     * @param {object[]} messages - A list of sms message objects
+     */
+    _handleSingleThread(messages) {
+        const thread_id = messages[0].thread_id;
+        const cache = this.threads[thread_id];
+        const known = new Set((cache || []).map(m => m.date));
+
+        // If the latest message is marked read, mark the rest as read
+        if (cache !== undefined && messages.length === 1 &&
+            messages[0].read === MessageStatus.READ) {
+            for (const msg of cache)
+                msg.read = MessageStatus.READ;
+        }
+
+        this._handleThread(messages);
+
+        // Anything arriving for a thread with a pending page request is taken
+        // as the response; the protocol has no request IDs to match on
+        const request = this._pageRequests?.get(thread_id);
+
+        if (request !== undefined)
+            this._handleThreadPage(thread_id, request, messages, known);
+    }
+
+    /**
+     * Handle a page of messages requested with `requestThreadPage()`.
+     *
+     * @param {string} thread_id - The thread ID
+     * @param {object} request - The pending request
+     * @param {object[]} messages - The messages received
+     * @param {Set<number>} known - Dates of the messages cached before
+     */
+    _handleThreadPage(thread_id, request, messages, known) {
+        this._pageRequests.delete(thread_id);
+        GLib.source_remove(request.timeoutId);
+
+        const oldest = Math.min(...messages.map(m => m.date));
+        const added = messages.filter(m => !known.has(m.date));
+
+        // A short page, or one with nothing older than we had, means we've
+        // reached the start of the thread
+        if (messages.length < THREAD_PAGE_SIZE ||
+            (request.older && !added.some(m => m.date < request.start))) {
+            this._completeThreads.add(thread_id);
+            return;
+        }
+
+        // The newest page didn't reach the cached messages, so messages that
+        // arrived while disconnected are missing in between: keep going back
+        // until the gap is filled
+        const cachedBefore = [...known].filter(date => date < oldest);
+        const overlaps = messages.some(m => known.has(m.date));
+
+        if (!overlaps && cachedBefore.length > 0)
+            this._sendThreadPageRequest(thread_id, oldest);
+    }
+
+    /**
+     * Request a page of messages for a thread, if one isn't already pending.
+     *
+     * The first request for a thread on each connection fetches its newest
+     * messages; later requests fetch messages older than the oldest cached
+     * one, so the full history is only downloaded as it's scrolled through.
+     *
+     * @param {string} thread_id - The thread ID
+     * @returns {boolean} %true if a page is pending, %false if there is nothing
+     *   (more) to request
+     */
+    requestThreadPage(thread_id) {
+        if (!this.device.connected || thread_id === null)
+            return false;
+
+        if (this._pageRequests === undefined)
+            this._resetThreadRequests();
+
+        thread_id = `${thread_id}`;
+
+        if (this._pageRequests.has(thread_id))
+            return true;
+
+        if (!this._freshThreads.has(thread_id)) {
+            this._freshThreads.add(thread_id);
+            this._sendThreadPageRequest(thread_id, -1);
+            return true;
+        }
+
+        const cache = this.threads[thread_id];
+
+        if (this._completeThreads.has(thread_id) || !cache?.length)
+            return false;
+
+        this._sendThreadPageRequest(thread_id, cache[0].date);
+        return true;
+    }
+
+    /**
+     * Send a `request_conversation` packet for a page of a thread.
+     *
+     * @param {string} thread_id - The thread ID
+     * @param {number} start - Fetch messages up to this date (inclusive), or
+     *   -1 for the newest messages
+     */
+    _sendThreadPageRequest(thread_id, start) {
+        const request = {
+            older: start >= 0,
+            start: start,
+            timeoutId: GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT,
+                THREAD_PAGE_TIMEOUT, () => {
+                    this._pageRequests.delete(thread_id);
+                    return GLib.SOURCE_REMOVE;
+                }),
+        };
+        this._pageRequests.set(thread_id, request);
+
+        const body = {
+            threadID: thread_id,
+            numberToRequest: THREAD_PAGE_SIZE,
+        };
+
+        if (start >= 0)
+            body.rangeStartTimestamp = start;
+
+        this.device.sendPacket({
+            type: 'kdeconnect.sms.request_conversation',
+            body: body,
+        });
+    }
+
+    /**
      * Handle a response to telephony.request_conversation(s)
      *
      * @param {object[]} messages - A list of sms message objects
@@ -308,7 +441,7 @@ const SMSPlugin = GObject.registerClass({
             if (messages.length === 0)
                 return;
 
-            const thread_ids = [];
+            const threads = new Map();
 
             // Perform some modification of the messages
             for (let i = 0, len = messages.length; i < len; i++) {
@@ -316,7 +449,6 @@ const SMSPlugin = GObject.registerClass({
 
                 // COERCION: thread_id's to strings
                 message.thread_id = `${message.thread_id}`;
-                thread_ids.push(message.thread_id);
 
                 // TODO: Remove bogus `insert-address-token` entries
                 let a = message.addresses.length;
@@ -326,32 +458,23 @@ const SMSPlugin = GObject.registerClass({
                         message.addresses[a].address === 'insert-address-token')
                         message.addresses.splice(a, 1);
                 }
+
+                if (!threads.has(message.thread_id))
+                    threads.set(message.thread_id, []);
+
+                threads.get(message.thread_id).push(message);
             }
 
-            // If there's multiple thread_id's it's a summary of threads
-            if (thread_ids.some(id => id !== thread_ids[0]))
-                this._handleDigest(messages, thread_ids);
-
-            // Otherwise this is single thread or new message
-            else
-                this._handleThread(messages);
+            // A packet holding several threads is not a reliable digest: the
+            // thread summary now arrives one thread per packet, and a packet
+            // of new messages can also carry the previous latest message of
+            // another thread. Handle each thread on its own and never prune
+            // the cache based on a single packet.
+            for (const thread of threads.values())
+                this._handleSingleThread(thread);
         } catch (e) {
             debug(e, this.device.name);
         }
-    }
-
-    /**
-     * Request a list of messages from a single thread.
-     *
-     * @param {number} thread_id - The id of the thread to request
-     */
-    _requestConversation(thread_id) {
-        this.device.sendPacket({
-            type: 'kdeconnect.sms.request_conversation',
-            body: {
-                threadID: thread_id,
-            },
-        });
     }
 
     /**

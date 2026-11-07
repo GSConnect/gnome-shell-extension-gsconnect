@@ -355,6 +355,13 @@ const Conversation = GObject.registerClass({
         this.list.set_sort_func(this._sortMessages);
         this._populateMessages();
 
+        // Merge pages of the thread as they arrive, and fetch the newest one
+        this._threadsChangedId = this.plugin.connect(
+            'notify::threads',
+            this._onThreadsChanged.bind(this)
+        );
+        this._requestPage();
+
         // Cleanup on ::destroy
         this.connect('destroy', this._onDestroy);
     }
@@ -460,6 +467,7 @@ const Conversation = GObject.registerClass({
     _onDestroy(conversation) {
         conversation.device.disconnect(conversation._connectedId);
         conversation._vadj.disconnect(conversation._scrolledId);
+        conversation.plugin.disconnect(conversation._threadsChangedId);
 
         conversation.list.foreach(message => {
             // HACK: temporary mitigator for mysterious GtkListBox leak
@@ -556,6 +564,7 @@ const Conversation = GObject.registerClass({
     _createMessageRow(message) {
         // Ensure we have a contact
         const sender = message.addresses[0].address || 'unknown';
+        this.__shown.add(message.date);
 
         if (this.contacts[sender] === undefined) {
             this.contacts[sender] = this.device.contacts.query({
@@ -571,6 +580,7 @@ const Conversation = GObject.registerClass({
         this.__last = null;
         this.__pos = 0;
         this.__messages = [];
+        this.__shown = new Set();
 
         // Try and find a thread_id for this number
         if (this.thread_id === null && this.addresses.length)
@@ -690,8 +700,11 @@ const Conversation = GObject.registerClass({
         try {
             const message = this.__messages.pop();
 
-            if (!message)
+            // Out of cached messages; ask the device for older ones
+            if (!message) {
+                this._requestPage();
                 return;
+            }
 
             // TODO: Unsupported MessageBox
             if (message.type !== Sms.MessageBox.INBOX &&
@@ -704,6 +717,54 @@ const Conversation = GObject.registerClass({
             this.list.invalidate_headers();
         } catch (e) {
             debug(e);
+        }
+    }
+
+    /**
+     * Request a page of this thread from the device. The plugin ignores the
+     * request if one is already pending or the thread is fully loaded.
+     */
+    _requestPage() {
+        if (this.thread_id !== null)
+            this.plugin.requestThreadPage(this.thread_id);
+    }
+
+    /**
+     * Merge messages added to the thread (e.g. a page from the device) into
+     * the conversation.
+     */
+    _onThreadsChanged() {
+        const thread = this.plugin.threads[this.thread_id];
+
+        if (!thread || this.__shown === undefined)
+            return;
+
+        const newestShown = Math.max(-1, ...this.__shown);
+        const queued = new Set(this.__messages.map(m => m.date));
+        let added = 0;
+
+        for (const message of thread) {
+            if (this.__shown.has(message.date) || queued.has(message.date))
+                continue;
+
+            if (message.date > newestShown) {
+                this.logNext(message);
+            } else {
+                this.__messages.push(message);
+                added++;
+            }
+        }
+
+        if (added === 0)
+            return;
+
+        // Keep the queue in ascending order; logPrevious() pops the newest
+        this.__messages.sort((a, b) => a.date - b.date);
+
+        // If scrolled to the top, show what just arrived
+        if (this._vadj.get_value() === 0) {
+            for (let i = 0; i < added; i++)
+                this.logPrevious();
         }
     }
 
