@@ -318,8 +318,11 @@ const ConversationMessage = GObject.registerClass({
                     GLib.base64_decode(attachment.encoded_thumbnail)));
                 loader.close();
 
+                // Honour the EXIF orientation of photos taken sideways
+                const pixbuf = loader.get_pixbuf().apply_embedded_orientation();
+
                 image = new Gtk.Image({
-                    pixbuf: loader.get_pixbuf(),
+                    pixbuf: pixbuf,
                     visible: true,
                 });
             } catch (e) {
