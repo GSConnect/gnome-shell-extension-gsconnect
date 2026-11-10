@@ -124,6 +124,62 @@ describe('A LAN channel service', function () {
 
             expect(receivedBytes.equal(sentBytes)).toBeTrue();
         });
+
+        it('that wait for a free port to transfer payloads', async function () {
+            // Occupy every transfer port
+            const blockers = [];
+
+            for (let port = 1739; port <= 1764; port++) {
+                const blocker = new Gio.SocketListener();
+
+                try {
+                    blocker.add_inet_port(port, null);
+                    blockers.push([port, blocker]);
+                } catch {
+                    blocker.close();
+                }
+            }
+
+            // Uploading Channel
+            const outgoingPacket = new Core.Packet({
+                type: 'kdeconnect.test',
+                body: {foo: 'bar'},
+            });
+            const sentBytes = new GLib.Bytes(GLib.uuid_string_random());
+            const inputStream = Gio.MemoryInputStream.new_from_bytes(sentBytes);
+            const localTransfer = new Core.Transfer({channel: localChannel});
+
+            localTransfer.addStream(outgoingPacket, inputStream,
+                sentBytes.get_size());
+            localTransfer.start().catch(e => logError(e));
+
+            // The upload request must wait until a port is released
+            let requested = false;
+            const readPacket = remoteChannel.readPacket().then(packet => {
+                requested = true;
+                return packet;
+            });
+
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            expect(requested).toBeFalse();
+
+            const [freedPort, freedBlocker] = blockers.pop();
+            freedBlocker.close();
+
+            // Downloading Channel
+            const incomingPacket = await readPacket;
+            blockers.forEach(([, blocker]) => blocker.close());
+            expect(incomingPacket.payloadTransferInfo.port).toBe(freedPort);
+
+            const outputStream = Gio.MemoryOutputStream.new_resizable();
+            const remoteTransfer = new Core.Transfer({channel: remoteChannel});
+
+            remoteTransfer.addStream(incomingPacket, outputStream);
+            await remoteTransfer.start();
+            const receivedBytes = outputStream.steal_as_bytes();
+
+            expect(receivedBytes.equal(sentBytes)).toBeTrue();
+        });
     });
 
     it('can be stopped', function () {
