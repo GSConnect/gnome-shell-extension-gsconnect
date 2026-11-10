@@ -41,6 +41,11 @@ SPDX-License-Identifier: GPL-2.0-or-later
     <key name="missing-openssl" type="b">
       <default>false</default>
     </key>
+    <key name="clipboard-files" type="b">
+      <default>false</default>
+      <summary>Share images and files through the clipboard</summary>
+      <description>Share copied images and files with devices that support it. When disabled, only text is shared and the clipboard is not inspected for images or files. Takes effect when devices reconnect.</description>
+    </key>
   </schema>
 
   <!-- Window Geometry -->

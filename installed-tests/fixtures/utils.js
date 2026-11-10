@@ -99,6 +99,55 @@ export function loadDataContents(filename) {
 }
 
 
+/**
+ * Create a PNG image that claims the given dimensions, but has almost no pixel
+ * data, which is enough to read them without decoding the image.
+ *
+ * @param {number} width - The width
+ * @param {number} height - The height
+ * @returns {Uint8Array} PNG data
+ */
+export function createHugePng(width, height) {
+    const crc32 = data => {
+        let crc = 0xffffffff;
+
+        for (const byte of data) {
+            crc ^= byte;
+
+            for (let i = 0; i < 8; i++)
+                crc = (crc >>> 1) ^ (0xedb88320 & -(crc & 1));
+        }
+
+        return (crc ^ 0xffffffff) >>> 0;
+    };
+
+    const chunk = (type, data) => {
+        const bytes = new Uint8Array(data.length + 12);
+        const view = new DataView(bytes.buffer);
+        view.setUint32(0, data.length);
+        bytes.set(new TextEncoder().encode(type), 4);
+        bytes.set(data, 8);
+        view.setUint32(data.length + 8,
+            crc32(bytes.subarray(4, data.length + 8)));
+
+        return [...bytes];
+    };
+
+    const header = new Uint8Array(13);
+    const view = new DataView(header.buffer);
+    view.setUint32(0, width);
+    view.setUint32(4, height);
+    header.set([8, 2, 0, 0, 0], 8);
+
+    return new Uint8Array([
+        0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
+        ...chunk('IHDR', header),
+        ...chunk('IDAT', [0x78, 0x9c, 0x63, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01]),
+        ...chunk('IEND', []),
+    ]);
+}
+
+
 /*
  * Async Helpers
  */
@@ -110,6 +159,29 @@ Promise.idle = function (priority = GLib.PRIORITY_DEFAULT_IDLE) {
         });
     });
 };
+
+
+/**
+ * Wait for a condition to become true, checking it every few milliseconds.
+ *
+ * @param {function(): boolean} condition - The condition
+ * @param {number} [timeout] - The time to wait, in milliseconds
+ */
+export async function waitFor(condition, timeout = 4000) {
+    const deadline = GLib.get_monotonic_time() + timeout * 1000;
+
+    while (!condition()) {
+        if (GLib.get_monotonic_time() > deadline)
+            throw new Error('Timed out waiting for a condition');
+
+        await new Promise(resolve => {
+            GLib.timeout_add(GLib.PRIORITY_DEFAULT, 5, () => {
+                resolve();
+                return GLib.SOURCE_REMOVE;
+            });
+        });
+    }
+}
 
 
 /*
@@ -237,11 +309,12 @@ Plugin.prototype.awaitPacket = _awaitPacket;
 
 
 /**
- * Create temporary directories used by GSConnect.
+ * Create temporary directories used by GSConnect, so tests don't affect a
+ * running service.
  *
  * @returns {string} The root temporary directory
  */
-function isolateDirectories() {
+export function isolateDirectories() {
     const tmpdir = GLib.Dir.make_tmp('gsconnect.XXXXXX');
 
     Config.CACHEDIR = GLib.build_filenamev([tmpdir, 'cache']);
@@ -278,7 +351,7 @@ export async function mockComponents() {
  *
  * @param {Gio.File|string} file - The file or path to delete
  */
-function removeDirectory(file) {
+export function removeDirectory(file) {
     try {
         if (typeof file === 'string')
             file = Gio.File.new_for_path(file);

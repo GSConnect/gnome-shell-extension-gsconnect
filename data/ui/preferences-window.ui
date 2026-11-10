@@ -402,6 +402,58 @@ SPDX-License-Identifier: GPL-2.0-or-later
 
                         </child>
                         <child>
+                          <object class="GtkBox" id="clipboard-files-box">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="margin_left">12</property>
+                            <property name="margin_right">12</property>
+                            <property name="margin_bottom">20</property>
+                            <property name="spacing">24</property>
+                            <child>
+                              <object class="GtkSwitch" id="clipboard-files">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="halign">start</property>
+                                <property name="valign">center</property>
+                                <property name="margin_bottom">10</property>
+                                <property name="action_name">win.clipboard-files</property>
+                                <accessibility>
+                                  <relation type="labelled-by" target="clipboard-files-label"/>
+                                </accessibility>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="clipboard-files-label">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="halign">start</property>
+                                <property name="margin_bottom">12</property>
+                                <property name="label" translatable="yes">Share images and files through the clipboard with devices that support it. Takes effect when devices reconnect.</property>
+                                <property name="wrap">True</property>
+                                <property name="xalign">0</property>
+                                <accessibility>
+                                  <relation type="label-for" target="clipboard-files"/>
+                                </accessibility>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">4</property>
+                          </packing>
+                        </child>
+                        <child>
                           <object class="GtkLabel" id="webextension-label">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
@@ -418,7 +470,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">True</property>
-                            <property name="position">4</property>
+                            <property name="position">5</property>
                           </packing>
                         </child>
                         <child>
@@ -507,7 +559,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">True</property>
-                            <property name="position">5</property>
+                            <property name="position">6</property>
                           </packing>
                         </child>
                         <child>
@@ -528,7 +580,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">True</property>
-                            <property name="position">6</property>
+                            <property name="position">7</property>
                           </packing>
                         </child>
                         <child>
@@ -691,7 +743,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">True</property>
-                            <property name="position">7</property>
+                            <property name="position">8</property>
                           </packing>
                         </child>
                       </object>

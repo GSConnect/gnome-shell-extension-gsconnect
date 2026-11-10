@@ -205,11 +205,18 @@ const Manager = GObject.registerClass({
         this._name = value;
         this.notify('name');
 
-        // Broadcast changes to the network
-        for (const backend of this.backends.values()) {
+        for (const backend of this.backends.values())
             backend.name = this.name;
+
+        this._rebuildIdentity();
+    }
+
+    /**
+     * Rebuild the identity of each backend and broadcast it to the network.
+     */
+    _rebuildIdentity() {
+        for (const backend of this.backends.values())
             backend.buildIdentity();
-        }
 
         this.identify();
     }
@@ -245,6 +252,13 @@ const Manager = GObject.registerClass({
         this.settings.bind('debug', this, 'debug', 0);
         this.settings.bind('discoverable', this, 'discoverable', 0);
         this.settings.bind('name', this, 'name', 0);
+
+        // Settings that enable capabilities, which devices learn about when
+        // they next connect. The key is read once connected, since changes
+        // are only reported for keys read while a handler is connected.
+        this._clipboardFilesChangedId = this.settings.connect(
+            'changed::clipboard-files', this._rebuildIdentity.bind(this));
+        this.settings.get_boolean('clipboard-files');
     }
 
     _onDebugChanged(debug = false) {
@@ -552,6 +566,11 @@ const Manager = GObject.registerClass({
     destroy() {
         this.stop();
         this.set_connection(null);
+
+        if (this._clipboardFilesChangedId) {
+            this.settings.disconnect(this._clipboardFilesChangedId);
+            this._clipboardFilesChangedId = 0;
+        }
     }
 });
 

@@ -98,8 +98,6 @@ const Device = GObject.registerClass({
         this._procs = new Set();
         this._transfers = new Map();
 
-        this._outputLock = false;
-        this._outputQueue = [];
 
         // GSettings
         this.settings = new Gio.Settings({
@@ -337,16 +335,34 @@ const Device = GObject.registerClass({
         if (this.channel === channel)
             return;
 
-        if (this.channel !== null)
+        // Packets waiting to be written to a replaced channel are written to
+        // the new one, first, and are dropped with it if disconnected. Those
+        // requesting a transfer are dropped too, since the transfer belongs to
+        // the replaced channel.
+        const unsent = [];
+
+        if (this.channel !== null) {
+            if (channel !== null) {
+                for (const item of this.channel.takeUnsentPackets()) {
+                    if (item.packet.hasPayload?.()) {
+                        item.reject(new Gio.IOErrorEnum({
+                            code: Gio.IOErrorEnum.CONNECTION_CLOSED,
+                            message: 'Channel replaced',
+                        }));
+                    } else {
+                        unsent.push(item);
+                    }
+                }
+            }
+
             this.channel.close();
+        }
 
         this._channel = channel;
 
-        // If we've disconnected empty the queue, otherwise restart the read
-        // loop and update the device metadata
-        if (this.channel === null) {
-            this._outputQueue.length = 0;
-        } else {
+        // Restart the read loop and update the device metadata
+        if (this.channel !== null) {
+            this.channel.resendPackets(unsent);
             this._handleIdentity(this.channel.identity);
             this._readLoop(channel);
         }
@@ -365,7 +381,7 @@ const Device = GObject.registerClass({
         try {
             let packet = null;
 
-            while ((packet = await this.channel.readPacket())) {
+            while ((packet = await channel.readPacket())) {
                 debug(packet, this.name);
                 this.handlePacket(packet);
             }
@@ -464,25 +480,14 @@ const Device = GObject.registerClass({
             if (!this.paired && packet.type !== 'kdeconnect.pair')
                 return;
 
-            this._outputQueue.push(new Core.Packet(packet));
-
-            if (this._outputLock)
-                return;
-
-            this._outputLock = true;
-            let next;
-
-            while ((next = this._outputQueue.shift())) {
-                await this.channel.sendPacket(next);
-                debug(next, this.name);
-            }
-
-            this._outputLock = false;
+            // The channel writes packets one at a time, in the order they
+            // are sent, including those it sends itself
+            const next = new Core.Packet(packet);
+            await this.channel.sendPacket(next);
+            debug(next, this.name);
         } catch (e) {
-            if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
+            if (!e.matches?.(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
                 debug(e, this.name);
-
-            this._outputLock = false;
         }
     }
 
@@ -932,7 +937,7 @@ const Device = GObject.registerClass({
             this._procs.clear();
 
             for (const transfer of this._transfers.values())
-                transfer.close();
+                transfer.cancel();
 
             this._transfers.clear();
         }

@@ -11,6 +11,7 @@ component_tests = [
   # 'ContactsComponent',
   # 'InputComponent',
   'MprisComponent',
+  'WlClipboard',
   # 'NotificationComponent',
   # 'PulseaudioComponent',
   # 'SessionComponent',

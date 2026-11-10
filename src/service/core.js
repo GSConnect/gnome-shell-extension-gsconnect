@@ -6,6 +6,7 @@ import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 
+import Config from '../config.js';
 import Device from './device.js';
 import plugins from './plugins/index.js';
 
@@ -161,6 +162,17 @@ export const Channel = GObject.registerClass({
         return this._cancellable;
     }
 
+    /**
+     * The identity the device was told about for this channel, if known,
+     * which implementations record as they send it. The service rebuilds its
+     * identity when its capabilities change, so it may differ.
+     *
+     * @type {Packet|null}
+     */
+    get localIdentity() {
+        return this._localIdentity ?? null;
+    }
+
     get closed() {
         if (this._closed === undefined)
             this._closed = false;
@@ -253,11 +265,64 @@ export const Channel = GObject.registerClass({
      * @returns {Promise<boolean>} %true if successful
      */
     sendPacket(packet, cancellable = null) {
-        if (cancellable === null)
-            cancellable = this.cancellable;
+        return new Promise((resolve, reject) => {
+            this.resendPackets([{packet, cancellable, resolve, reject}]);
+        });
+    }
 
-        return this.output_stream.write_all_async(packet.serialize(),
-            GLib.PRIORITY_DEFAULT, cancellable);
+    /**
+     * Take the packets waiting to be written, so they can be written to
+     * another channel instead.
+     *
+     * @returns {object[]} The packets, as passed to resendPackets()
+     */
+    takeUnsentPackets() {
+        const unsent = this._unsent ?? [];
+        this._unsent = [];
+
+        return unsent;
+    }
+
+    /**
+     * Write packets taken from another channel, before any sent later.
+     *
+     * @param {object[]} unsent - Packets from takeUnsentPackets()
+     */
+    resendPackets(unsent) {
+        if (this._unsent === undefined)
+            this._unsent = [];
+
+        this._unsent.push(...unsent);
+
+        if (!this._writing)
+            this._writePackets();
+    }
+
+    /**
+     * Write the packets waiting to be written.
+     *
+     * Packets are written one at a time, since a write can't start before the
+     * last one is done. A packet is skipped if cancelled before it's written,
+     * but once started it's only stopped with the channel, so it's never
+     * written in part.
+     */
+    async _writePackets() {
+        this._writing = true;
+        let next;
+
+        while ((next = this._unsent.shift())) {
+            try {
+                next.cancellable?.set_error_if_cancelled();
+
+                next.resolve(await this.output_stream.write_all_async(
+                    next.packet.serialize(), GLib.PRIORITY_DEFAULT,
+                    this.cancellable));
+            } catch (e) {
+                next.reject(e);
+            }
+        }
+
+        this._writing = false;
     }
 
     /**
@@ -413,17 +478,34 @@ export const ChannelService = GObject.registerClass({
             },
         });
 
+        // Capabilities may depend on a boolean setting of the service
+        if (this._serviceSettings === undefined) {
+            this._serviceSettings = new Gio.Settings({
+                settings_schema: Config.GSCHEMA.lookup(Config.APP_ID, true),
+            });
+        }
+
+        const settings = this._serviceSettings;
+        const isEnabled = (meta, type) => {
+            const key = meta.capabilitySettings?.[type];
+            return key === undefined || settings.get_boolean(key);
+        };
+
         for (const name in plugins) {
             const meta = plugins[name].Metadata;
 
             if (meta === undefined)
                 continue;
 
-            for (const type of meta.incomingCapabilities)
-                this._identity.body.incomingCapabilities.push(type);
+            for (const type of meta.incomingCapabilities) {
+                if (isEnabled(meta, type))
+                    this._identity.body.incomingCapabilities.push(type);
+            }
 
-            for (const type of meta.outgoingCapabilities)
-                this._identity.body.outgoingCapabilities.push(type);
+            for (const type of meta.outgoingCapabilities) {
+                if (isEnabled(meta, type))
+                    this._identity.body.outgoingCapabilities.push(type);
+            }
         }
     }
 
@@ -565,17 +647,15 @@ export const Transfer = GObject.registerClass({
                 return;
 
             if (item.file instanceof Gio.File) {
-                const read = item.file.read_async(GLib.PRIORITY_DEFAULT,
-                    cancellable);
+                // The stream is kept first, so it's closed if this fails
+                item.source = await item.file.read_async(
+                    GLib.PRIORITY_DEFAULT, cancellable);
 
-                const query = item.file.query_info_async(
+                const info = await item.file.query_info_async(
                     Gio.FILE_ATTRIBUTE_STANDARD_SIZE,
                     Gio.FileQueryInfoFlags.NONE,
                     GLib.PRIORITY_DEFAULT,
                     cancellable);
-
-                const [stream, info] = await Promise.all([read, query]);
-                item.source = stream;
                 item.size = info.get_size();
             }
         }
@@ -647,13 +727,13 @@ export const Transfer = GObject.registerClass({
      */
     async start(cancellable = null) {
         let error = null;
+        let cancelledId = 0;
+        let item;
 
         try {
-            let item;
-
             // If a cancellable is passed in, chain to its signal
             if (cancellable instanceof Gio.Cancellable)
-                cancellable.connect(() => this._cancellable.cancel());
+                cancelledId = cancellable.connect(() => this._cancellable.cancel());
 
             while ((item = this._items.shift())) {
                 // If created for a device, ignore connection changes by
@@ -681,7 +761,18 @@ export const Transfer = GObject.registerClass({
             }
         } catch (e) {
             error = e;
+
+            // A stream opened for a file is only closed once transferred.
+            // Only one of them is opened, and the packet can't tell which,
+            // since uploading adds the payload to it.
+            if (item?.file instanceof Gio.File) {
+                item.source?.close_async(GLib.PRIORITY_DEFAULT, null, null);
+                item.target?.close_async(GLib.PRIORITY_DEFAULT, null, null);
+            }
         } finally {
+            if (cancelledId > 0)
+                cancellable.disconnect(cancelledId);
+
             this._completed = true;
             this.notify('completed');
         }

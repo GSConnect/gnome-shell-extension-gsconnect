@@ -214,9 +214,9 @@ const Plugin = GObject.registerClass({
      * any dangling signal handlers.
      */
     destroy() {
-        // Cancel any pending plugin operations
-        if (this._cancellable !== undefined)
-            this._cancellable.cancel();
+        // Cancel any pending plugin operations, including those that check
+        // the cancellable once they continue
+        this.cancellable.cancel();
 
         for (const action of this._gactions) {
             this.device.removeMenuAction(`device.${action.name}`);
