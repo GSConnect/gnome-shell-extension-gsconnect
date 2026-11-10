@@ -29,6 +29,8 @@ const PROTOCOL_PORT_MIN = 1716;
 const PROTOCOL_PORT_MAX = 1764;
 const TRANSFER_MIN = 1739;
 const TRANSFER_MAX = 1764;
+const TRANSFER_PORT_RETRY = 1; // seconds between retries when all ports are busy
+const TRANSFER_TIMEOUT = 30; // seconds to wait for the remote to connect
 
 
 /*
@@ -970,51 +972,99 @@ export const Channel = GObject.registerClass({
     }
 
     async upload(packet, source, size, cancellable = null) {
-        // Start listening on the first available port between 1739-1764
+        // Start listening on the first available port between 1739-1764,
+        // waiting for one to be released if they are all in use
         const listener = new Gio.SocketListener();
         let port = TRANSFER_MIN;
 
-        while (port <= TRANSFER_MAX) {
+        while (true) {
             try {
                 listener.add_inet_port(port, null);
                 break;
             } catch (e) {
-                if (port < TRANSFER_MAX) {
-                    port++;
-                    continue;
-                } else {
+                if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.ADDRESS_IN_USE))
                     throw e;
-                }
             }
+
+            if (port < TRANSFER_MAX) {
+                port++;
+                continue;
+            }
+
+            port = TRANSFER_MIN;
+            await new Promise(resolve => {
+                GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT,
+                    TRANSFER_PORT_RETRY, () => {
+                        resolve();
+                        return GLib.SOURCE_REMOVE;
+                    });
+            });
+            cancellable?.set_error_if_cancelled();
         }
 
-        // Listen for the incoming connection
-        const acceptConnection = listener.accept_async(cancellable)
-            .then(result => this._encryptServer(result[0]));
-
-        // Create an upload request
-        packet.body.payloadHash = this.checksum;
-        packet.payloadSize = size;
-        packet.payloadTransferInfo = {port: port};
-        const requestUpload = this.sendPacket(new Core.Packet(packet),
-            cancellable);
-
-        // Request an upload stream, accept the connection and get the output
-        const [, connection] = await Promise.all([requestUpload,
-            acceptConnection]);
-
-        // Start the transfer
-        const transferredSize = await connection.output_stream.splice_async(
-            source,
-            (Gio.OutputStreamSpliceFlags.CLOSE_SOURCE |
-             Gio.OutputStreamSpliceFlags.CLOSE_TARGET),
-            GLib.PRIORITY_DEFAULT, cancellable);
-
-        if (transferredSize !== size) {
-            throw new Gio.IOErrorEnum({
-                code: Gio.IOErrorEnum.PARTIAL_INPUT,
-                message: 'Transfer incomplete',
+        // Stop waiting for the incoming connection if the remote device never
+        // connects, so the port is not held forever
+        const acceptCancellable = new Gio.Cancellable();
+        const cancelledId = cancellable
+            ? cancellable.connect(() => acceptCancellable.cancel())
+            : 0;
+        let timedOut = false;
+        let timeoutId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT,
+            TRANSFER_TIMEOUT, () => {
+                timeoutId = 0;
+                timedOut = true;
+                acceptCancellable.cancel();
+                return GLib.SOURCE_REMOVE;
             });
+
+        try {
+            // Listen for the incoming connection
+            const acceptConnection = listener.accept_async(acceptCancellable)
+                .then(result => this._encryptServer(result[0]));
+
+            // Create an upload request
+            packet.body.payloadHash = this.checksum;
+            packet.payloadSize = size;
+            packet.payloadTransferInfo = {port: port};
+            const requestUpload = this.sendPacket(new Core.Packet(packet),
+                cancellable);
+
+            // Request an upload stream, accept the connection, get the output
+            const [, connection] = await Promise.all([requestUpload,
+                acceptConnection]);
+
+            if (timeoutId) {
+                GLib.Source.remove(timeoutId);
+                timeoutId = 0;
+            }
+
+            // Start the transfer
+            const transferredSize = await connection.output_stream.splice_async(
+                source,
+                (Gio.OutputStreamSpliceFlags.CLOSE_SOURCE |
+                 Gio.OutputStreamSpliceFlags.CLOSE_TARGET),
+                GLib.PRIORITY_DEFAULT, cancellable);
+
+            if (transferredSize !== size) {
+                throw new Gio.IOErrorEnum({
+                    code: Gio.IOErrorEnum.PARTIAL_INPUT,
+                    message: 'Transfer incomplete',
+                });
+            }
+        } catch (e) {
+            if (!timedOut)
+                throw e;
+
+            throw new Gio.IOErrorEnum({
+                code: Gio.IOErrorEnum.TIMED_OUT,
+                message: `${this.host} did not connect to port ${port} within ${TRANSFER_TIMEOUT}s`,
+            });
+        } finally {
+            if (timeoutId)
+                GLib.Source.remove(timeoutId);
+            if (cancelledId)
+                cancellable.disconnect(cancelledId);
+            listener.close();
         }
     }
 
