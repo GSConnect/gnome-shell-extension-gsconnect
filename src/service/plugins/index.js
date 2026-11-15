@@ -13,6 +13,7 @@ import * as notification from './notification.js';
 import * as ping from './ping.js';
 import * as presenter from './presenter.js';
 import * as runcommand from './runcommand.js';
+import * as screenmirror from './screenmirror.js';
 import * as sftp from './sftp.js';
 import * as share from './share.js';
 import * as sms from './sms.js';
@@ -31,6 +32,7 @@ export default {
     ping,
     presenter,
     runcommand,
+    screenmirror,
     sftp,
     share,
     sms,
