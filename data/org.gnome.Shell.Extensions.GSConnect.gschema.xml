@@ -194,5 +194,38 @@ SPDX-License-Identifier: GPL-2.0-or-later
       <default>true</default>
     </key>
   </schema>
-</schemalist>
 
+  <!-- ScreenMirror Plugin -->
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.ScreenMirror">
+    <key name="max-size" type="u">
+      <default>1024</default>
+      <summary>Maximum screen dimension</summary>
+      <description>Limit both width and height to this value (0 for unlimited)</description>
+    </key>
+    <key name="bit-rate" type="u">
+      <default>8</default>
+      <summary>Video bit-rate (Mbps)</summary>
+      <description>Target video bit-rate in megabits per second</description>
+    </key>
+    <key name="adb-port" type="u">
+      <default>5555</default>
+      <summary>ADB TCP/IP Port</summary>
+      <description>Port used for wireless ADB connections</description>
+    </key>
+    <key name="turn-screen-off" type="b">
+      <default>true</default>
+      <summary>Turn device screen off</summary>
+      <description>Turn off the physical device screen while mirroring</description>
+    </key>
+    <key name="stay-awake" type="b">
+      <default>true</default>
+      <summary>Stay awake</summary>
+      <description>Keep the device awake while connected</description>
+    </key>
+    <key name="enable-audio" type="b">
+      <default>true</default>
+      <summary>Forward audio</summary>
+      <description>Forward device audio to the computer (requires Android 11+)</description>
+    </key>
+  </schema>
+</schemalist>
