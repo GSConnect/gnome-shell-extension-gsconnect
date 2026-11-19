@@ -475,6 +475,8 @@ const PlayerRemote = GObject.registerClass({
 
         this._ownerId = 0;
         this._connection = null;
+        this._connecting = null;
+        this._destroyed = false;
         this._applicationIface = null;
         this._playerIface = null;
     }
@@ -564,22 +566,48 @@ const PlayerRemote = GObject.registerClass({
         }
     }
 
+    /**
+     * Open the player's dedicated bus connection and export the MPRIS
+     * interfaces on it.
+     */
+    async _connect() {
+        const connection = await DBus.newConnection();
+
+        // destroy() cannot close a connection that is still being opened, so
+        // we must close it here if the player was destroyed in the meantime.
+        if (this._destroyed) {
+            connection.close(null, null);
+            return;
+        }
+
+        this._connection = connection;
+
+        const MPRISIface = Config.DBUS.lookup_interface('org.mpris.MediaPlayer2');
+        const MPRISPlayerIface = Config.DBUS.lookup_interface('org.mpris.MediaPlayer2.Player');
+
+        this._applicationIface = DBus.wrapObject(MPRISIface, this);
+        this._applicationIface.export(this._connection, '/org/mpris/MediaPlayer2');
+
+        this._playerIface = DBus.wrapObject(MPRISPlayerIface, this);
+        this._playerIface.export(this._connection, '/org/mpris/MediaPlayer2');
+    }
+
     async export() {
         try {
             if (this._connection === null) {
-                this._connection = await DBus.newConnection();
-                const MPRISIface = Config.DBUS.lookup_interface('org.mpris.MediaPlayer2');
-                const MPRISPlayerIface = Config.DBUS.lookup_interface('org.mpris.MediaPlayer2.Player');
-
-                if (this._applicationIface === null) {
-                    this._applicationIface = DBus.wrapObject(MPRISIface, this);
-                    this._applicationIface.export(this._connection, '/org/mpris/MediaPlayer2');
+                // update() calls export() again while the connection is still
+                // being opened, so all pending calls must wait for the same
+                // connection instead of each opening their own.
+                if (this._connecting === null) {
+                    this._connecting = this._connect().finally(() => {
+                        this._connecting = null;
+                    });
                 }
 
-                if (this._playerIface === null) {
-                    this._playerIface = DBus.wrapObject(MPRISPlayerIface, this);
-                    this._playerIface.export(this._connection, '/org/mpris/MediaPlayer2');
-                }
+                await this._connecting;
+
+                if (this._connection === null)
+                    return;
             }
 
             if (this._ownerId !== 0)
@@ -888,6 +916,7 @@ const PlayerRemote = GObject.registerClass({
     }
 
     destroy() {
+        this._destroyed = true;
         this.unexport();
 
         if (this._connection) {
