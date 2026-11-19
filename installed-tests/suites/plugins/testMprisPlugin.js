@@ -2,7 +2,69 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+
 import * as Utils from '../fixtures/utils.js';
+
+
+/**
+ * Count the session bus connections that belong to this process.
+ *
+ * @returns {number} The number of connections
+ */
+function countBusConnections() {
+    const pid = new Gio.Credentials().get_unix_pid();
+    const call = (method, parameters = null) => {
+        return Gio.DBus.session.call_sync(
+            'org.freedesktop.DBus',
+            '/org/freedesktop/DBus',
+            'org.freedesktop.DBus',
+            method,
+            parameters,
+            null,
+            Gio.DBusCallFlags.NONE,
+            -1,
+            null
+        ).deepUnpack();
+    };
+
+    const [names] = call('ListNames');
+
+    return names.filter(name => {
+        if (!name.startsWith(':'))
+            return false;
+
+        // A connection can close between the two calls
+        try {
+            const [owner] = call('GetConnectionUnixProcessID',
+                new GLib.Variant('(s)', [name]));
+
+            return owner === pid;
+        } catch {
+            return false;
+        }
+    }).length;
+}
+
+/**
+ * Wait for this process to hold `expected` session bus connections. Give up
+ * after two seconds, so that a leaked connection fails the expectation instead
+ * of blocking the suite.
+ *
+ * @param {number} expected - The expected number of connections
+ * @returns {Promise<number>} The number of connections last counted
+ */
+async function awaitBusConnections(expected) {
+    let count = countBusConnections();
+
+    for (let i = 0; i < 40 && count !== expected; i++) {
+        await new Promise(resolve => setTimeout(resolve, 50));
+        count = countBusConnections();
+    }
+
+    return count;
+}
 
 
 describe('The mpris plugin', function () {
@@ -303,6 +365,30 @@ describe('The mpris plugin', function () {
         });
 
         expect(remotePlayer.export).toHaveBeenCalled();
+    });
+
+    it('opens one bus connection for overlapping exports', async function () {
+        const PlayerRemote = remotePlugin._players.get('Music Player').constructor;
+        const player = new PlayerRemote(remotePlugin.device, 'Overlap Player');
+        const connections = countBusConnections();
+
+        await Promise.all([player.export(), player.export()]);
+        expect(await awaitBusConnections(connections + 1)).toBe(connections + 1);
+
+        player.destroy();
+        expect(await awaitBusConnections(connections)).toBe(connections);
+    });
+
+    it('closes the bus connection of players destroyed while exporting', async function () {
+        const PlayerRemote = remotePlugin._players.get('Music Player').constructor;
+        const player = new PlayerRemote(remotePlugin.device, 'Short Player');
+        const connections = countBusConnections();
+
+        const exported = player.export();
+        player.destroy();
+        await exported;
+
+        expect(await awaitBusConnections(connections)).toBe(connections);
     });
 
     it('removes players', async function () {
