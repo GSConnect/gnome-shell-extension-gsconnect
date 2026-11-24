@@ -312,14 +312,28 @@ const Device = GObject.registerClass({
             if (meta === undefined)
                 continue;
 
-            // If we can handle packets it sends or send packets it can handle
+            // If we can handle packets it sends or send packets it can handle,
+            // or the plugin works without any packets
             if (meta.incomingCapabilities.some(t => outgoing.includes(t)) ||
-                meta.outgoingCapabilities.some(t => incoming.includes(t)))
+                meta.outgoingCapabilities.some(t => incoming.includes(t)) ||
+                (meta.incomingCapabilities.length === 0 &&
+                 meta.outgoingCapabilities.length === 0))
                 supported.push(name);
         }
 
         // Only write GSettings if something has changed
         const currentSupported = this.settings.get_strv('supported-plugins');
+
+        // Plugins that are off by default start disabled when first supported
+        const disabled = this.settings.get_strv('disabled-plugins');
+        const newlyDisabled = supported.filter(name => {
+            return plugins[name].Metadata.enabledByDefault === false &&
+                !currentSupported.includes(name) &&
+                !disabled.includes(name);
+        });
+
+        if (newlyDisabled.length > 0)
+            this.settings.set_strv('disabled-plugins', [...disabled, ...newlyDisabled]);
 
         if (currentSupported.join('') !== supported.sort().join(''))
             this.settings.set_strv('supported-plugins', supported);

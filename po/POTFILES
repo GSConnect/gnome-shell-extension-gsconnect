@@ -36,6 +36,7 @@ src/service/plugins/notification.js
 src/service/plugins/ping.js
 src/service/plugins/presenter.js
 src/service/plugins/runcommand.js
+src/service/plugins/screensaver_inhibit.js
 src/service/plugins/sftp.js
 src/service/plugins/share.js
 src/service/plugins/sms.js
