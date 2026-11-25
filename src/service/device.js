@@ -313,7 +313,8 @@ const Device = GObject.registerClass({
                 continue;
 
             // If we can handle packets it sends or send packets it can handle
-            if (meta.incomingCapabilities.some(t => outgoing.includes(t)) ||
+            if (meta.localOnly === true ||
+                meta.incomingCapabilities.some(t => outgoing.includes(t)) ||
                 meta.outgoingCapabilities.some(t => incoming.includes(t)))
                 supported.push(name);
         }
