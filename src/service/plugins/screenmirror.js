@@ -11,6 +11,7 @@ export const Metadata = {
     label: _('Screen Mirror'),
     description: _('Mirror device screen natively'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.ScreenMirror',
+    localOnly: true,
     incomingCapabilities: [],
     outgoingCapabilities: [],
     actions: {
@@ -18,11 +19,15 @@ export const Metadata = {
             label: _('Mirror Screen'),
             icon_name: 'preferences-desktop-display-symbolic',
             parameter_type: null,
+            incoming: [],
+            outgoing: [],
         },
         stopMirroring: {
             label: _('Stop Mirroring'),
             icon_name: 'process-stop-symbolic',
             parameter_type: null,
+            incoming: [],
+            outgoing: [],
         },
     },
 };
@@ -43,7 +48,8 @@ const ScreenMirrorPlugin = GObject.registerClass({
         super._init(device, 'screenmirror');
 
         this._subprocess = null;
-        this._cancellable = null;
+        this._stopRequested = false;
+        this._destroyed = false;
         this._isMirroring = false;
         this._scrcpyPath = GLib.find_program_in_path('scrcpy');
     }
@@ -102,10 +108,46 @@ const ScreenMirrorPlugin = GObject.registerClass({
         const host = this._getDeviceIpAddress();
         const adbPort = this.settings.get_uint('adb-port');
 
-        if (host)
-            args.push(`--tcpip=${host}:${adbPort}`);
+        if (host) {
+            const serial = this._findAdbSerial(host);
+
+            if (serial)
+                args.push(`--serial=${serial}`);
+            else
+                args.push(`--tcpip=${host}:${adbPort}`);
+        } else {
+            throw new Error(_('Could not determine device IP address.'));
+        }
 
         return args;
+    }
+
+    _findAdbSerial(host) {
+        const adbPath = GLib.find_program_in_path('adb');
+
+        if (!adbPath)
+            throw new Error(_('ADB is not installed.'));
+
+        const process = Gio.Subprocess.new(
+            [adbPath, 'devices'],
+            Gio.SubprocessFlags.STDOUT_PIPE |
+            Gio.SubprocessFlags.STDERR_PIPE
+        );
+
+        const [, stdout] = process.communicate_utf8(null, null);
+
+        if (!process.get_successful())
+            throw new Error(_('Could not list ADB devices.'));
+
+        const matches = stdout.split('\n')
+            .map(line => line.trim().split(/\s+/))
+            .filter(([serial, state]) =>
+                serial.startsWith(`${host}:`) && state === 'device');
+
+        if (matches.length > 1)
+            throw new Error(_('Multiple ADB connections match this device.'));
+
+        return matches.length === 1 ? matches[0][0] : null;
     }
 
     _getDeviceIpAddress() {
@@ -120,23 +162,24 @@ const ScreenMirrorPlugin = GObject.registerClass({
     }
 
     async mirrorScreen() {
-        if (this._isMirroring || this._subprocess)
+        if (this._destroyed || this._isMirroring || this._subprocess)
             return;
+
+        this._stopRequested = false;
 
         try {
             const argv = this._buildArguments();
-            this._cancellable = new Gio.Cancellable();
 
             const launcher = new Gio.SubprocessLauncher({
-                flags: Gio.SubprocessFlags.STDERR_PIPE,
+                flags: Gio.SubprocessFlags.NONE,
             });
 
             this._subprocess = launcher.spawnv(argv);
             this._setMirroringState(true);
 
-            await this._waitSubprocessAsync(this._subprocess, this._cancellable);
+            await this._subprocess.wait_check_async(null);
         } catch (e) {
-            if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED)) {
+            if (!this._stopRequested && !this._destroyed) {
                 logError(e, `${this.device.name}: ScreenMirror failed`);
                 this._notifyError(e.message);
             }
@@ -145,45 +188,20 @@ const ScreenMirrorPlugin = GObject.registerClass({
         }
     }
 
-    _waitSubprocessAsync(subprocess, cancellable) {
-        return new Promise((resolve, reject) => {
-            subprocess.wait_check_async(cancellable, (proc, res) => {
-                try {
-                    proc.wait_check_finish(res);
-                    resolve();
-                } catch (e) {
-                    const stderrStream = proc.get_stderr_pipe();
-                    if (stderrStream) {
-                        const dataStream = new Gio.DataInputStream({
-                            base_stream: stderrStream,
-                        });
-                        const [line] = dataStream.read_line_utf8(null);
-                        if (line) {
-                            reject(new Error(line));
-                            return;
-                        }
-                    }
-                    reject(e);
-                }
-            });
-        });
-    }
-
     stopMirroring() {
-        if (this._cancellable) {
-            this._cancellable.cancel();
-            this._cancellable = null;
-        }
+        if (!this._subprocess || this._stopRequested)
+            return;
 
-        if (this._subprocess) {
-            this._subprocess.send_signal(15);
-            this._cleanupProcess();
-        }
+        this._stopRequested = true;
+        this._subprocess.send_signal(15);
     }
 
     _cleanupProcess() {
         this._subprocess = null;
-        this._setMirroringState(false);
+        this._stopRequested = false;
+
+        if (!this._destroyed)
+            this._setMirroringState(false);
     }
 
     _notifyError(message) {
@@ -196,6 +214,7 @@ const ScreenMirrorPlugin = GObject.registerClass({
     }
 
     destroy() {
+        this._destroyed = true;
         this.stopMirroring();
         super.destroy();
     }

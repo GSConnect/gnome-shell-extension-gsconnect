@@ -53,12 +53,17 @@ describe('A device constructed from a packet', function () {
         expect(device.paired).toBeTrue();
 
         await device._loadPlugins();
-        expect(device._plugins).toHaveSize(1);
+        expect(device._plugins).toHaveSize(2);
+        expect(device._plugins.has('ping')).toBeTrue();
+        expect(device._plugins.has('screenmirror')).toBeTrue();
     });
 
-    it('unloads plugins when unpaired', function () {
+    it('unloads plugins when unpaired', async function () {
         device.unpair();
         expect(device.paired).toBeFalse();
+
+        await Promise.idle();
+
         expect(device._plugins).toHaveSize(0);
     });
 });

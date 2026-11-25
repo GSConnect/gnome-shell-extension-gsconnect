@@ -62,7 +62,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
       <default>{}</default>
     </key>
     <key name="menu-actions" type="as">
-      <default>["sms", "ring", "mount", "commands", "share", "keyboard"]</default>
+      <default>["sms", "ring", "mount", "commands", "share", "keyboard", "mirrorScreen", "stopMirroring"]</default>
     </key>
     <key name="name" type="s">
       <default>""</default>
