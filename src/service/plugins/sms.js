@@ -143,6 +143,12 @@ const SMSPlugin = GObject.registerClass({
             GObject.ParamFlags.READABLE
         ),
     },
+    Signals: {
+        'thread-changed': {
+            flags: GObject.SignalFlags.RUN_FIRST,
+            param_types: [GObject.TYPE_STRING],
+        },
+    },
 }, class SMSPlugin extends Plugin {
 
     _init(device) {
@@ -212,8 +218,10 @@ const SMSPlugin = GObject.registerClass({
     _handleDigest(messages, thread_ids) {
         // Prune threads
         for (const thread_id of Object.keys(this.threads)) {
-            if (!thread_ids.includes(thread_id))
+            if (!thread_ids.includes(thread_id)) {
                 delete this.threads[thread_id];
+                this.emit('thread-changed', thread_id);
+            }
         }
 
         // Request each new or newer thread
@@ -230,6 +238,8 @@ const SMSPlugin = GObject.registerClass({
             if (message.read === MessageStatus.READ) {
                 for (const msg of cache)
                     msg.read = MessageStatus.READ;
+
+                this.emit('thread-changed', message.thread_id);
             }
 
             // If we don't have a thread for this message or it's newer
@@ -237,8 +247,6 @@ const SMSPlugin = GObject.registerClass({
             if (!cache.length || cache[cache.length - 1].date < message.date)
                 this._requestConversation(message.thread_id);
         }
-
-        this.notify('threads');
     }
 
     /**
@@ -294,7 +302,7 @@ const SMSPlugin = GObject.registerClass({
 
         // Sort the thread by ascending date and notify
         this.threads[thread_id] = cache.sort((a, b) => a.date - b.date);
-        this.notify('threads');
+        this.emit('thread-changed', thread_id);
     }
 
     /**
