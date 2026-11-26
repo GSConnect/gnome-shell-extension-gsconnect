@@ -875,6 +875,9 @@ export const Window = GObject.registerClass({
             this._timestampThreads.bind(this)
         );
 
+        // Cleanup on ::destroy
+        this.connect('destroy', this._onDestroy);
+
         this._sync();
         this._onThreadsChanged();
         this.restoreGeometry('messaging');
@@ -883,11 +886,13 @@ export const Window = GObject.registerClass({
     vfunc_delete_event(event) {
         this.saveGeometry();
 
-        GLib.source_remove(this._timestampThreadsId);
-        this.contact_chooser.disconnect(this._numberSelectedId);
-        this.plugin.disconnect(this._threadsChangedId);
-
         return false;
+    }
+
+    _onDestroy(window) {
+        GLib.source_remove(window._timestampThreadsId);
+        window.contact_chooser.disconnect(window._numberSelectedId);
+        window.plugin.disconnect(window._threadsChangedId);
     }
 
     get plugin() {
