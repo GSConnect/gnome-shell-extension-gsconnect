@@ -207,6 +207,20 @@ function setAvatarVisible(row, visible) {
 
 
 /**
+ * Get the message to show in the summary of a thread
+ *
+ * @param {object[]} [thread] - A list of messages in ascending date order
+ * @returns {object|null} The last message, or %null if it has no body
+ */
+function getSummaryMessage(thread) {
+    const message = thread?.[thread.length - 1];
+
+    // Skip messages without a body (eg. MMS messages without text)
+    return message?.body ? message : null;
+}
+
+
+/**
  * A ListBoxRow for a preview of a conversation
  */
 const ConversationMessage = GObject.registerClass({
@@ -863,10 +877,16 @@ export const Window = GObject.registerClass({
 
         // Threads
         this.thread_list.set_sort_func(this._sortThreads);
+        this._summaries = new Map();
 
         this._threadsChangedId = this.plugin.connect(
             'notify::threads',
             this._onThreadsChanged.bind(this)
+        );
+
+        this._threadChangedId = this.plugin.connect(
+            'thread-changed',
+            this._onThreadChanged.bind(this)
         );
 
         this._timestampThreadsId = GLib.timeout_add_seconds(
@@ -886,6 +906,7 @@ export const Window = GObject.registerClass({
         GLib.source_remove(this._timestampThreadsId);
         this.contact_chooser.disconnect(this._numberSelectedId);
         this.plugin.disconnect(this._threadsChangedId);
+        this.plugin.disconnect(this._threadChangedId);
 
         return false;
     }
@@ -993,61 +1014,56 @@ export const Window = GObject.registerClass({
      * Threads
      */
     _onThreadsChanged() {
-        // Get the last message in each thread
-        const messages = {};
+        const thread_ids = new Set([
+            ...this._summaries.keys(),
+            ...Object.keys(this.plugin.threads),
+        ]);
 
-        for (const [thread_id, thread] of Object.entries(this.plugin.threads)) {
-            const message = thread[thread.length - 1];
+        for (const thread_id of thread_ids)
+            this._onThreadChanged(this.plugin, thread_id);
+    }
 
-            // Skip messages without a body (eg. MMS messages without text)
-            if (message.body)
-                messages[thread_id] = thread[thread.length - 1];
-        }
+    _onThreadChanged(plugin, thread_id) {
+        const message = getSummaryMessage(this.plugin.threads[thread_id]);
+        const row = this._summaries.get(thread_id);
 
-        // Update existing summaries and destroy old ones
-        for (const row of this.thread_list.get_children()) {
-            const message = messages[row.thread_id];
+        // If it's an existing conversation, update it
+        if (message && row) {
+            // Ensure there's a contact mapping
+            const sender = message.addresses[0].address || 'unknown';
 
-            // If it's an existing conversation, update it
-            if (message) {
-                // Ensure there's a contact mapping
-                const sender = message.addresses[0].address || 'unknown';
+            if (row.contacts[sender] === undefined) {
+                row.contacts[sender] = this.device.contacts.query({
+                    number: sender,
+                });
+            }
 
-                if (row.contacts[sender] === undefined) {
-                    row.contacts[sender] = this.device.contacts.query({
-                        number: sender,
-                    });
-                }
+            row.message = message;
+            row.changed();
 
-                row.message = message;
-                delete messages[row.thread_id];
+        // Otherwise destroy it
+        } else if (row) {
+            // Destroy the conversation widget
+            const conversation = this.stack.get_child_by_name(thread_id);
 
-            // Otherwise destroy it
-            } else {
-                // Destroy the conversation widget
-                const conversation = this.stack.get_child_by_name(`${row.thread_id}`);
-
-                if (conversation) {
-                    conversation.destroy();
-                    system.gc();
-                }
-
-                // Then the summary widget
-                row.destroy();
-                // HACK: temporary mitigator for mysterious GtkListBox leak
+            if (conversation) {
+                conversation.destroy();
                 system.gc();
             }
-        }
 
-        // What's left in the dictionary is new summaries
-        for (const message of Object.values(messages)) {
+            // Then the summary widget
+            this._summaries.delete(thread_id);
+            row.destroy();
+            // HACK: temporary mitigator for mysterious GtkListBox leak
+            system.gc();
+
+        // If it's a new conversation, add a summary
+        } else if (message) {
             const contacts = this.device.contacts.lookupAddresses(message.addresses);
             const conversation = new ConversationSummary(contacts, message);
+            this._summaries.set(thread_id, conversation);
             this.thread_list.add(conversation);
         }
-
-        // Re-sort the summaries
-        this.thread_list.invalidate_sort();
     }
 
     // GtkListBox::row-activated
@@ -1088,12 +1104,7 @@ export const Window = GObject.registerClass({
         // Try to find a thread_id
         const thread_id = this.plugin.getThreadIdForAddresses(addresses);
 
-        for (const row of this.thread_list.get_children()) {
-            if (row.message.thread_id === thread_id)
-                return row;
-        }
-
-        return null;
+        return this._summaries.get(thread_id) ?? null;
     }
 
     setContacts(contacts) {
@@ -1287,7 +1298,14 @@ export const ConversationChooser = GObject.registerClass({
         scrolledWindow.add(this.thread_list);
 
         // Filter Setup
-        Window.prototype._onThreadsChanged.call(this);
+        for (const thread of Object.values(this.plugin.threads)) {
+            const message = getSummaryMessage(thread);
+
+            if (message) {
+                const contacts = this.device.contacts.lookupAddresses(message.addresses);
+                this.thread_list.add(new ConversationSummary(contacts, message));
+            }
+        }
         this.show_all();
     }
 
