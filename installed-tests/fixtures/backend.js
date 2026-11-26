@@ -426,10 +426,8 @@ export const Channel = GObject.registerClass({
                 base_stream: this._connection.get_input_stream(),
             });
 
-            await connection.output_stream.write_all_async(
-                this.backend.identity.serialize(),
-                GLib.PRIORITY_DEFAULT,
-                this.cancellable);
+            await Core.writeAll(connection.output_stream,
+                this.backend.identity.serialize(), this.cancellable);
         } catch (e) {
             this.close();
             return e;

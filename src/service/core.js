@@ -11,6 +11,29 @@ import plugins from './plugins/index.js';
 
 
 /**
+ * Write a string to a stream asynchronously.
+ *
+ * @param {Gio.OutputStream} stream - The stream to write to
+ * @param {string} data - The data to write
+ * @param {Gio.Cancellable} [cancellable] - A cancellable
+ * @returns {Promise<boolean>} %true if successful
+ */
+export async function writeAll(stream, data, cancellable = null) {
+    // GIO does not copy async write buffers, so we must pass a GLib.Bytes
+    let bytes = new GLib.Bytes(new TextEncoder().encode(data));
+
+    while (bytes.get_size() > 0) {
+        const written = await stream.write_bytes_async(bytes,
+            GLib.PRIORITY_DEFAULT, cancellable);
+
+        bytes = GLib.Bytes.new_from_bytes(bytes, written,
+            bytes.get_size() - written);
+    }
+
+    return true;
+}
+
+/**
  * Get the local device type.
  *
  * @returns {string} A device type string
@@ -256,8 +279,7 @@ export const Channel = GObject.registerClass({
         if (cancellable === null)
             cancellable = this.cancellable;
 
-        return this.output_stream.write_all_async(packet.serialize(),
-            GLib.PRIORITY_DEFAULT, cancellable);
+        return writeAll(this.output_stream, packet.serialize(), cancellable);
     }
 
     /**

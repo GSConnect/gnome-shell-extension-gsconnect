@@ -44,7 +44,7 @@ Gio._promisify(Gio.Mount.prototype, 'unmount_with_operation');
 Gio._promisify(Gio.InputStream.prototype, 'close_async');
 Gio._promisify(Gio.OutputStream.prototype, 'close_async');
 Gio._promisify(Gio.OutputStream.prototype, 'splice_async');
-Gio._promisify(Gio.OutputStream.prototype, 'write_all_async');
+Gio._promisify(Gio.OutputStream.prototype, 'write_bytes_async');
 Gio._promisify(Gio.SocketClient.prototype, 'connect_async');
 Gio._promisify(Gio.SocketListener.prototype, 'accept_async');
 Gio._promisify(Gio.Subprocess.prototype, 'communicate_utf8_async');
